@@ -1,5 +1,5 @@
 /*
-Copyright 2010 OCAD University 
+Copyright 2010-2011 OCAD University 
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -86,6 +86,12 @@ var fluid_1_3 = fluid_1_3 || {};
         events.onFileComplete.fire(file);
     };
     
+    fluid.uploader.html5Strategy.fileStopHandler = function (file, events) {
+        file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
+        events.onFileError.fire(file, fluid.uploader.errorConstants.UPLOAD_STOPPED);
+        events.onFileComplete.fire(file);
+    };
+    
     fluid.uploader.html5Strategy.progressTracker = function () {
         var that = {
             previousBytesLoaded: 0
@@ -105,8 +111,12 @@ var fluid_1_3 = fluid_1_3 || {};
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
+                var status = xhr.status;
+                // TODO: See a pattern here? Fix it.
+                if (status === 200) {
                     fluid.uploader.html5Strategy.fileSuccessHandler(file, events);
+                } else if (status === 0) {
+                    fluid.uploader.html5Strategy.fileStopHandler(file, events);
                 } else {
                     fluid.uploader.html5Strategy.fileErrorHandler(file, events);
                 }
@@ -148,12 +158,7 @@ var fluid_1_3 = fluid_1_3 || {};
         };
 
         that.stop = function () {
-            var batch = that.queue.currentBatch;
-            var file = batch.files[batch.fileIdx];                                    
-            file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
-            that.queue.shouldStop = true;
-            that.currentXHR.abort();
-            that.events.onUploadStop.fire();
+            that.currentXHR.abort();         
         };
         
         fluid.initDependents(that);

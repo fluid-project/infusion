@@ -2,7 +2,7 @@
 Copyright 2008-2009 University of Toronto
 Copyright 2008-2009 University of California, Berkeley
 Copyright 2008-2009 University of Cambridge
-Copyright 2010 OCAD University
+Copyright 2010-2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -262,6 +262,24 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("The first row should no longer be selected.",
                                 locateRows(q).eq(0).hasClass(q.options.styles.selected));
         });
+        
+        
+        /********************
+         * Scrollable tests *
+         ********************/
+        
+        fileQueueViewTests.test("fluid.scrollableTable", function () {
+            var table = $("#scrollableTable");
+
+            var scroller = fluid.scrollableTable(table);
+
+            jqUnit.assertTrue("The table's parent element is a div", table.parent().is("div"));
+            jqUnit.assertTrue("The table's parent element has the fl-scrollable-inner class",
+                              table.parent().hasClass("fl-scrollable-inner"));
+            jqUnit.assertTrue("The table's grandparent element has the fl-scrollable-scroller class",
+                              table.parent().parent().hasClass("fl-scrollable-scroller"));
+        });
     });
+    
     
 })(jQuery);

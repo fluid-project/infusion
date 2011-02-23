@@ -2,7 +2,7 @@
 Copyright 2008-2009 University of Toronto
 Copyright 2008-2009 University of California, Berkeley
 Copyright 2008-2009 University of Cambridge
-Copyright 2010 OCAD University
+Copyright 2010-2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -202,9 +202,9 @@ var fluid_1_3 = fluid_1_3 || {};
         that.container.append(row);
         row.attr("title", that.options.strings.status.remove);
         row.fadeIn("slow");
-        that.scroller.scrollTo("100%");
         createProgressorFromTemplate(that, row);
         that.refreshView();
+        that.scroller.scrollTo("100%");
     };
     
     // Toggle keyboard row handlers on and off depending on the uploader state
@@ -441,6 +441,83 @@ var fluid_1_3 = fluid_1_3 || {};
             events: "preserve"
         }
     });
+    
+    
+    /**************
+     * Scrollable *
+     **************/
+     
+    /**
+     * Simple component cover for the jQuery scrollTo plugin. Provides roughly equivalent
+     * functionality to Uploader's old Scroller plugin.
+     *
+     * @param {jQueryable} element the element to make scrollable
+     * @param {Object} options for the component
+     * @return the scrollable component
+     */
+    fluid.scrollable = function (element, options) {
+        var that = fluid.initLittleComponent("fluid.scrollable", options);
+        element = fluid.container(element);
+        that.scrollable = that.options.makeScrollableFn(element, that.options);
+        that.maxHeight = that.scrollable.css("max-height");
+
+        /**
+         * Programmatically scrolls this scrollable element to the region specified.
+         * This method is directly compatible with the underlying jQuery.scrollTo plugin.
+         */
+        that.scrollTo = function () {
+            that.scrollable.scrollTo.apply(that.scrollable, arguments);
+        };
+
+        /* 
+         * Updates the view of the scrollable region. This should be called when the content of the scrollable region is changed. 
+         */
+        that.refreshView = function () {
+            if ($.browser.msie && $.browser.version === "6.0") {    
+                that.scrollable.css("height", "");
+
+                // Set height, if max-height is reached, to allow scrolling in IE6.
+                if (that.scrollable.height() >= parseInt(that.maxHeight, 10)) {
+                    that.scrollable.css("height", that.maxHeight);           
+                }
+            }
+        };          
+
+        that.refreshView();
+
+        return that;
+    };
+
+    fluid.scrollable.makeSimple = function (element, options) {
+        return fluid.container(element);
+    };
+
+    fluid.scrollable.makeTable =  function (table, options) {
+        table.wrap(options.wrapperMarkup);
+        return table.closest(".fl-scrollable-scroller");
+    };
+
+    fluid.defaults("fluid.scrollable", {
+        makeScrollableFn: fluid.scrollable.makeSimple
+    });
+
+    /** 
+     * Wraps a table in order to make it scrollable with the jQuery.scrollTo plugin.
+     * Container divs are injected to allow cross-browser support. 
+     *
+     * @param {jQueryable} table the table to make scrollable
+     * @param {Object} options configuration options
+     * @return the scrollable component
+     */
+    fluid.scrollableTable = function (table, options) {
+        options = $.extend({}, fluid.defaults("fluid.scrollableTable"), options);
+        return fluid.scrollable(table, options);
+    };
+
+    fluid.defaults("fluid.scrollableTable", {
+        makeScrollableFn: fluid.scrollable.makeTable,
+        wrapperMarkup: "<div class='fl-scrollable-scroller'><div class='fl-scrollable-inner'></div></div>"
+    });    
     
     fluid.demands("fluid.scrollableTable", "fluid.uploader.fileQueueView", {
         funcName: "fluid.scrollableTable",

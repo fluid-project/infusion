@@ -1,45 +1,33 @@
-Fluid Infusion 1.3
+Fluid Infusion 1.3.1
 ====================
 Main Project Site:  http://fluidproject.org
 Documentation:      http://wiki.fluidproject.org/display/fluid/Infusion+Documentation
 
 
-What's New in 1.3?
-==================
+What's New in 1.3.1?
+====================
 
-    * Sneak Peek at the new Inversion of Control (IoC) system
-    * Uploader support for HTML 5
-         o Flash-free for modern browsers!
-         o Substantially improved keyboard and screen reader accessibility
-         o Comprehensive automatic progressive enhancement based on browser capabilities
-    * Tons of accessibility improvements
-         o Better feedback for the Progress component
-         o Enhanced screen reader support for the Inline Edit component
-         o Location and movement announcements for the Reorderer component
-         o No wrap option for the Reorderer component
-    * The new Infusion Builder site, which allows you to create custom builds: 
-         http://builder.fluidproject.org
-    * Renderer improvements
-    * Transactional change applier
-    * Bug fixes
-    * Many improved demos
-
+This release:
+    * Updates Pager to use the Renderer by default
+    * Fixes several bugs in the Uploader
+    * Fixes a keyboard navigation bug in the Layout Reorderer
 
 What's in this Release?
 =======================
 
 This release is available in three forms:
-    Deployment Bundle - infusion-1.3.zip 
-    Source Code Bundle - infusion-1.3-src.zip
+    Deployment Bundle - infusion-1.3.1.zip 
+    Source Code Bundle - infusion-1.3.1-src.zip
     Your own custom build, using the new Infusion Builder: http://builder.fluidproject.org
     
 In addition to source code, samples and tests, both bundles include at the top level a single JavaScript file,
-InfusionAll.js, which is a combination of all other source files. Developers can include this single file in 
+    InfusionAll.js
+which is a combination of all other source files. Developers can include this single file in 
 their pages to provide all the necessary support for the Infusion component Library. In the Deployment Bundle,
 this script is compressed and suitable for production use.
 
 The Deployment Bundle also includes a WAR file suitable for deployment in Java-based containers: 
-        fluid-components-1.3.war
+        fluid-components-1.3.1.war
 
 Source Code
 -----------
@@ -110,6 +98,9 @@ Tests
             manual-tests/
             test-core/
 
+Please note that the tests in the "manual-tests" folder are deprecated, and are being
+converted into unit tests. Any remaining tests in that folder may not function properly.
+
 License
 -------
 Fluid Infusion code is licensed under both the ECL 2.0 and new BSD licenses. The specific licenses can be
@@ -127,30 +118,33 @@ More information about Infusion licensing is available in our wiki:
 
 Third Party Software in Infusion
 --------------------------------
-This is a list of publicly available software that is included in the Fluid Infusion bundle, along
-with their licensing terms.
+This is a list of publicly available software that is redistributed with Fluid Infusion, 
+categorized by license:
 
-    * jQuery javascript library v1.4.2: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
-    * jQuery UI javascript widget library v1.8: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
-    * jQuery UI tooltip plugin from the tooltip branch on github for jQuery UI v1.9: (MIT and GPL licensed http://docs.jquery.com/Licensing)
-            https://github.com/jquery/jquery-ui/tree/tooltip
-            commit  48a5977d3325869abd7b
-            tree    43fd0cda4af2cdcd33f5
-            parent  bdd815e8dcdeace8be6d 
-    * jQuery QUnit revision 2dbf603: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
-    * jQuery Mockjax: https://github.com/appendto/jquery-mockjax (MIT and GPL licensed) 
-    * jQuery Chili code highlighter http://code.google.com/p/jquery-chili-js/ (MIT licensed)
-    * Douglas Crockford's JSON parsing and stringifying methods (from 2007-11-06): http://www.json.org/ (Public Domain)
-    * SWFUpload v2.2.0.1: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
-    * SWFObject v2.2: http://code.google.com/p/swfobject/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
-    * Sample markup and stylesheets from Sakai v2.5 (http://sakaiproject.org) and uPortal v2.6 (http://www.uportal.org/)
+MIT License:
+    * jQuery javascript library v1.4.2: http://jquery.com/ 
+    * jQuery UI javascript widget library v1.8: http://ui.jquery.com/
+    * jQuery UI tooltip (pre-release from jQuery 1.9 branch) https://github.com/jquery/jquery-ui/tree/tooltip
+    * jQuery QUnit: http://docs.jquery.com/QUnit
+    * jQuery Mockjax: https://github.com/appendto/jquery-mockjax
+    * jQuery Chili code highlighter http://code.google.com/p/jquery-chili-js/ 
+    * SWFUpload v2.2.0.1: http://swfupload.org/
+    * SWFObject v2.2: http://code.google.com/p/swfobject/
 
-Other third party software
-
+zlib/libpng License:
     * fastXmlPull is based on XML for Script's Fast Pull Parser v3.1
-      (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js )
+      (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
+  
+BSD License:
     * fluid.reset.css is based on YUI's CSS reset styling v2.5.2
-      see: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
+      see: http://developer.yahoo.com/yui/reset/
+    * Sample markup and stylesheets from uPortal v2.6 (http://www.uportal.org/)
+
+ECL 2.0:
+    * Sample markup and stylesheets from Sakai v2.5 (http://sakaiproject.org)
+
+Other licenses:
+    * Douglas Crockford's JSON.js (from 2007-11-06): http://www.json.org/ (Public Domain)
     
 
 Documentation
@@ -177,7 +171,7 @@ Some of our Sneak Peek functionality is now documented at
 Supported Browsers
 ==================
 
-The following browsers are fully supported and were actively tested against for Infusion 1.3:
+The following browsers are fully supported and were actively tested against for Infusion 1.3.1:
 
 Mac OS X 10.6:
     * Safari 5
@@ -254,8 +248,8 @@ Layout Reorderer:
     FLUID-858:  Portlet Columns load with no padding between them in IE7
 
 Pager:
+    FLUID-4036: The Pager is dependent on the use of rsf:ids for sortable columns
     FLUID-2880: The Pager will be refactored. Note that as a result of this, there will be significant changes to the Pager API
-    FLUID-2329: The self-rendering mode of the Pager is not the default mode
     FLUID-3584: Clicking page numbers throws an error: using IE 6
 
 Renderer: 
@@ -273,12 +267,11 @@ UI Options:
     FLUID-2398: Minimum font size control changes the text size even when the base size is larger then the minimum.
     
 Uploader: 
-    FLUID-4017: Total file progress information is inaccurate when uploading files with the HTML 5 version of Uploader
-    FLUID-4018: The "Stop" button is unavailable in the HTML 5 version of Uploader
-    FLUID-3992: When JavaScript is turned off, the Uploader is still visible beneath the Simple Uploader
+    FLUID-3886: The HTML5 version of the Uploader can't exclude certain files based on file type
+    FLUID-4078: The HTML5 Upload strategy incorrectly interprets the fileSizeLimit option as MB instead of KB
     FLUID-3996: Deleting files on the local filesystem after they have been added to the Uploader's queue will cause inconsistent behaviour
     FLUID-3997: Can't tab to the "Browse/Add More" button with the keyboard in IE with Flash 10
-    FLUID-3999: "Add more" button is not disabled while uploading other files
+    FLUID-3999: "Add more" button is not disabled while uploading other files in HTML5-compliant browsers
     FLUID-2052: Cannot tab away from the "Browse Files" button with Flash 10*
     * For information related to known issues with Flash 10 compatibility, 
       see http://wiki.fluidproject.org/x/kwZo

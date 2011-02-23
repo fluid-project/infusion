@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2009 University of Toronto
 Copyright 2008-2009 University of California, Berkeley
-Copyright 2010 OCAD University
+Copyright 2010-2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -114,7 +114,7 @@ var fluid_1_3 = fluid_1_3 || {};
         var fileLabelStr = fileOrFiles(that, numFilesInBatch);
         
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalProgressLabel, {
-            curFileN: batch.fileIdx + 1, 
+            curFileN: batch.fileIdx, 
             totalFilesN: numFilesInBatch, 
             fileLabel: fileLabelStr,
             currBytes: fluid.uploader.formatFileSize(batch.totalBytesUploaded), 
@@ -231,7 +231,7 @@ var fluid_1_3 = fluid_1_3 || {};
         });
         
         that.events.onUploadStop.addListener(function () {
-            that.locate(that.options.focusWithEvent.afterUploadStop).focus();
+            that.locate(that.options.focusWithEvent.onUploadStop).focus();
         });
         
         that.events.onFileStart.addListener(function (file) {
@@ -251,10 +251,6 @@ var fluid_1_3 = fluid_1_3 || {};
             if (that.queue.shouldUploadNextFile()) {
                 that.strategy.remote.uploadNextFile();
             } else {
-                if (that.queue.shouldStop) {
-                    that.strategy.remote.stop();
-                }
-
                 that.events.afterUploadComplete.fire(that.queue.currentBatch.files);
                 that.queue.clearCurrentBatch();
             }
@@ -270,10 +266,13 @@ var fluid_1_3 = fluid_1_3 || {};
         });
         
         that.events.onFileError.addListener(function (file, error) {
-            file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
             if (error === fluid.uploader.errorConstants.UPLOAD_STOPPED) {
                 that.queue.isUploading = false;
-            } else if (that.queue.isUploading) {
+                return;
+            }
+            
+            file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
+            if (that.queue.isUploading) {
                 that.queue.currentBatch.totalBytesUploaded += file.size;
                 that.queue.currentBatch.numFilesErrored++;
             }
@@ -393,12 +392,8 @@ var fluid_1_3 = fluid_1_3 || {};
          * Cancels an in-progress upload.
          */
         that.stop = function () {
-            /* FLUID-822: while stopping the upload cycle while a file is in mid-upload should be possible
-             * in practice, it sets up a state where when the upload cycle is restarted SWFUpload will get stuck
-             * therefore we only stop the upload after a file has completed but before the next file begins. 
-             */
-            that.queue.shouldStop = true;
             that.events.onUploadStop.fire();
+            that.strategy.remote.stop();
         };
         
         setupUploader(that);
@@ -466,7 +461,7 @@ var fluid_1_3 = fluid_1_3 || {};
         focusWithEvent: {
             afterFileDialog: "uploadButton",
             afterUploadStart: "pauseButton",
-            afterUploadStop: "uploadButton"
+            onUploadStop: "uploadButton"
         },
         
         styles: {
