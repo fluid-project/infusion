@@ -824,6 +824,78 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 
                 var button = fluid.inlineEdit.setupTextEditButton(editor);     
                 jqUnit.assertTrue("textEditButton has button role", "button", button.attr("role"));
+            });            
+            
+            
+            var multipleInlineEditCommonSteps = function (container, option) {
+                var editor = fluid.inlineEdits(container, option);
+                
+                //checks if the elements has undo option
+                for (var i = 0; i < editor.length; i++) {
+                    if (option)
+                        jqUnit.assertEquals("has undo option", "undo edit", editor[i].container.children(":contains('undo edit')").find('a:nth-child(1)').text());
+                    else
+                        jqUnit.assertNotEquals("does not have undo option", "undo edit", editor[i].container.children(":contains('undo edit')").find('a:nth-child(1)').text());
+                }
+                
+                //checks if items are inside the container
+                for (var i = 0; i < editor.length; i++) {
+                    if (option)
+                        jqUnit.assertEquals("belong to container #inline-multiple-edits ", "inline-multiple-edits", editor[i].container.parent().attr("id"));
+                    else
+                        jqUnit.assertEquals("belong to container #inline-multiple-edits-2", "inline-multiple-edits-2", editor[i].container.parent().attr("id"));
+                }               
+            };
+            
+            inlineEditTests.test("Test two copies of multiple inline edits with undo - " +
+                    "we need to make sure we cover containment within a group " +
+                    "when using the multiple inline edit API ", function () {           
+                var option = {selectOnEdit: true,
+                            componentDecorators: "fluid.undoDecorator"
+                };
+            
+                multipleInlineEditCommonSteps("#inline-multiple-edits", option);
+                multipleInlineEditCommonSteps("#inline-multiple-edits-2");
+            });            
+
+            inlineEditTests.test("Test overriding the tooltip text ", function () {
+                var options = {useTooltip: true, 
+                               tooltipText: "Updating the default tooltip text..."
+                };
+                var editor = fluid.inlineEdit("#inline-override-tooltip", options);
+                var display = editor.locate("text");                
+                display.mouseover();
+                
+                //tool tip enabled
+                jqUnit.assertTrue("after mouse hover check if the tooltip was enabled", editor.tooltipEnabled());
+                
+                var toolTipId = display.attr("aria-describedby"); 
+                var toolTipVal = $("#" + toolTipId).text();
+                
+                //now display the text once mouse is over
+                jqUnit.assertEquals("the tool tip with custom text  ", editor.options.tooltipText, toolTipVal);                
+            });
+            
+            var tableCellInlineEditCommonSteps = function (that, expectedValues) {
+                var edit = that.editField;
+                var display = that.model;
+                that.edit();
+                jqUnit.assertEquals("After switching into edit mode, edit field should be empty: ", expectedValues[0], display.value);
+                edit.attr("value", expectedValues[1]);
+                display = that.model;
+                that.finish();
+                jqUnit.assertEquals("After editing the field, display should have test text ", expectedValues[1], display.value);
+            };
+            
+            inlineEditTests.test("Test using inline edit to edit a table cell  ", function () {
+                var cellOneExpectedTexts = ["This is an editable table cell.", "This is test text cell one."];
+                var cellTwoExpectedTexts = ["This is another editable table cell.", "This is test text cell two."];
+                var editor = fluid.inlineEdits("#inline-edit-table-cell");
+                var cellOne = editor[0];
+                var cellTwo = editor[1];
+                
+                tableCellInlineEditCommonSteps(editor[0], cellOneExpectedTexts);
+                tableCellInlineEditCommonSteps(editor[1], cellTwoExpectedTexts);
             });
         })();
     });
