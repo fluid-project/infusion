@@ -17,6 +17,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 fluid.registerNamespace("fluid.tests");
 
 (function ($) {
+    fluid.setLogging(true);
 
     fluid.tests.testRendererUtilities = function () {
     
@@ -115,6 +116,80 @@ fluid.registerNamespace("fluid.tests");
                 jqUnit.assertEquals("Element " + index + " text", array[index], $(el).text());
             });
         }
+        
+        fluid.defaults("fluid.tests.rendererParent", {
+            components: {
+                middle: {
+                    type: "fluid.tests.rendererMiddle"
+                }
+            },
+            selectors: {
+                middle: ".middle-component"  
+            }
+        });
+        
+        fluid.tests.rendererParent = function(container, options) {
+            var that = fluid.initView("fluid.tests.rendererParent", container, options);
+            fluid.initDependents(that);
+            return that;  
+        };
+        
+        fluid.demands("fluid.tests.rendererMiddle", "fluid.tests.rendererParent",
+        ["{rendererParent}.dom.middle", fluid.COMPONENT_OPTIONS]);
+        
+        fluid.defaults("fluid.tests.rendererMiddle", {
+            mergePolicy: {
+                "rendererOptions.instantiator": "nomerge",
+                "rendererOptions.parentComponent": "nomerge"  
+            },
+            rendererOptions: {
+                instantiator: "{instantiator}",
+                parentComponent: "{rendererMiddle}"
+            },
+            selectors: {
+                decorated: ".decorated-component"
+            },
+            protoTree: {
+                decorated: {
+                    decorators: {
+                        type: "fluid",
+                        func: "fluid.tests.rendererChild"
+     // TODO: currently supplying direct options causes the instantiator to break
+       //                 options: { decoratorValue: "{rendererParent}.options.parentValue"}
+                    }
+                }
+            }
+        });
+        
+        fluid.tests.rendererMiddle = function(container, options) {
+            var that = fluid.initRendererComponent("fluid.tests.rendererMiddle", container, options);
+            return that;
+        };
+
+        fluid.defaults("fluid.tests.rendererChild", {
+            value: "{rendererParent}.options.parentValue"  
+        });
+        
+        fluid.demands("fluid.tests.rendererChild", "fluid.tests.rendererMiddle", 
+           ["@0", fluid.COMPONENT_OPTIONS]);
+             
+        fluid.tests.rendererChild = function(container, options) {
+            var that = fluid.initView("fluid.tests.rendererChild", container, options);
+            $(container).text(that.options.value);
+            return that;
+        };
+        
+        var IoCTests = jqUnit.testCase("IoC Renderer tests");
+        
+        IoCTests.test("initDependent upgrade test", function() {
+            var parentValue = "parentValue";
+            var component = fluid.tests.rendererParent(".renderer-ioc-test", {parentValue: parentValue});
+            var middleNode = component.middle.container;
+            jqUnit.assertValue("Middle component constructed", middleNode);
+            component.middle.refreshView();
+            var decorated = component.middle.locate("decorated");
+            jqUnit.assertEquals("Decorated text resolved from top level", parentValue, decorated.text());
+        });
         
         var compTests = jqUnit.testCase("Renderer component tests");
         

@@ -151,38 +151,38 @@ fluid_1_3 = fluid_1_3 || {};
           }
       };
   
-  renderer.applyComponentType = function (component) {
-      component.componentType = renderer.inferComponentType(component);
-      if (component.componentType === undefined && component.ID !== undefined) {
-          component.componentType = "UIBound";
-      }
-  };
+    renderer.applyComponentType = function (component) {
+        component.componentType = renderer.inferComponentType(component);
+        if (component.componentType === undefined && component.ID !== undefined) {
+            component.componentType = "UIBound";
+        }
+    };
   
     function unzipComponent(component, model, resolverGetConfig) {
-      if (component) {
-          renderer.applyComponentType(component);
-      }
-      if (!component || component.componentType === undefined) {
-          var decorators = component.decorators;
-          if (decorators) {delete component.decorators;}
-          component = {componentType: "UIContainer", children: component};
-          component.decorators = decorators;
-      }
-      var cType = component.componentType;
-      if (cType === "UIContainer") {
-          component.children = fixChildren(component.children);
-      }
-      else {
-          map = renderer.boundMap[cType];
-          if (map) {
-              fluid.each(map, function (value, key) {
-                  upgradeBound(component, key, model, resolverGetConfig);
-              });
-          }
-      }
-      
-      return component;
-  }
+        if (component) {
+            renderer.applyComponentType(component);
+        }
+        if (!component || component.componentType === undefined) {
+            var decorators = component.decorators;
+            if (decorators) {delete component.decorators;}
+            component = {componentType: "UIContainer", children: component};
+            component.decorators = decorators;
+        }
+        var cType = component.componentType;
+        if (cType === "UIContainer") {
+            component.children = fixChildren(component.children);
+        }
+        else {
+            map = renderer.boundMap[cType];
+            if (map) {
+                fluid.each(map, function (value, key) {
+                    upgradeBound(component, key, model, resolverGetConfig);
+                });
+            }
+        }
+        
+        return component;
+    }
   
     function fixupTree(tree, model, resolverGetConfig) {
     if (tree.componentType === undefined) {
@@ -258,6 +258,29 @@ fluid_1_3 = fluid_1_3 || {};
       a: "href", link: "href", img: "src", frame: "src", script: "src", style: "src", input: "src", embed: "src",
       form: "action",
       applet: "codebase", object: "codebase"
+  };
+  
+  renderer.IDtoComponentName = function(ID) {
+      return "**-renderer-" + ID.replace(/\./g, "");
+  };
+  
+  renderer.invokeFluidDecorator = function(func, args, ID, options) {
+      var that;
+      if (options.instantiator && options.parentComponent) {
+          var parent = options.parentComponent;
+          var name = renderer.IDtoComponentName(ID);
+          // TODO: The best we can do here without GRADES is to wildly guess 
+          // that it is a view component with options in the 2nd place and container in first place
+          fluid.set(parent, fluid.path("options", "components", name), {type: func, options: args[1]});
+          // This MIGHT really be a variant of fluid.invoke... only we often probably DO want the component
+          // itself to be inserted into the that stack. This *ALSO* requires GRADES to resolve. A 
+          // "function" is that which has no grade. The gradeless grade.
+          that = fluid.initDependent(options.parentComponent, name, options.instantiator, [args[0]]);
+      }
+      else {
+          that = fluid.invokeGlobalFunction(func, args);
+      }
+      return that;
   };
   
   fluid.renderer = function (templates, tree, options, fossilsIn) {
@@ -1334,7 +1357,7 @@ fluid_1_3 = fluid_1_3 || {};
                       }
                       args = [decorator.container, decorator.options];
                   }
-                  var that = fluid.invokeGlobalFunction(decorator.func, args);
+                  var that = renderer.invokeFluidDecorator(decorator.func, args, decorator.id, options);
                   decorator.that = that;
               }
               else if (decorator.type === "event") {

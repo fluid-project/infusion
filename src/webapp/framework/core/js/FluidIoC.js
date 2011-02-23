@@ -472,8 +472,9 @@ var fluid_1_3 = fluid_1_3 || {};
     };
     
     // The case without the instantiator is from the ginger strategy - this logic is still a little ragged
-    fluid.initDependent = function(that, name, userInstantiator) {
+    fluid.initDependent = function(that, name, userInstantiator, directArgs) {
         if (!that || that[name]) { return; }
+        directArgs = directArgs || [];
         var instantiator;
         if (!userInstantiator) {
             instantiator = fluid.threadLocal()["fluid.instantiator"];
@@ -489,7 +490,7 @@ var fluid_1_3 = fluid_1_3 || {};
             that[name] = fluid.expandOptions([component], that)[0]; // TODO: expose more sensible semantic for expandOptions 
         }
         else if (component.type) {
-            var invokeSpec = fluid.resolveDemands(thatStack, [component.type, name], [], {componentOptions: component.options});
+            var invokeSpec = fluid.resolveDemands(thatStack, [component.type, name], directArgs, {componentOptions: component.options});
             // TODO: only want to expand "options" or all args? See "component rescuing" in expandOptions above
             //invokeSpec.args = fluid.expandOptions(invokeSpec.args, thatStack, true);
             instantiator.pushUpcomingInstantiation(that, name);

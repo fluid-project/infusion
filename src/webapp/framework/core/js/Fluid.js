@@ -704,7 +704,7 @@ var fluid = fluid || fluid_1_3;
             }
             else if (seenIds[source.id] === source) {
                 fluid.fail("Circularity in options merging - component with typename " + source.typeName + " and id " + source.id 
-                + " has already been seen when evaluating path " + basePath + " - please protect components from merging using the \"noexpand\" merge policy");  
+                + " has already been seen when evaluating path " + basePath + " - please protect components from merging using the \"nomerge\" merge policy");  
             }
         }
       
@@ -718,7 +718,7 @@ var fluid = fluid || fluid_1_3;
             if (thisSource !== undefined) {
                 if (thisSource !== null && typeof thisSource === 'object' &&
                       !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
-                       !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "noexpand")) {
+                       !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "nomerge") && !fluid.mergePolicyIs(newPolicy, "noexpand")) {
                     if (primitiveTarget) {
                         target[name] = thisTarget = thisSource instanceof Array ? [] : {};
                     }
