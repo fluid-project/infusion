@@ -276,6 +276,8 @@ var fluid_1_3 = fluid_1_3 || {};
         that.recordComponent = function(component) {
             if (that.expectedName) {
                 that.recordKnownComponent(that.expectedParent, component, that.expectedName);
+                delete that.expectedName;
+                delete that.expectedParent;
             }
             else {
                 that.recordRoot(component);
