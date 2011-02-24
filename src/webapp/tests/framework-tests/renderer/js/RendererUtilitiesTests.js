@@ -153,9 +153,8 @@ fluid.registerNamespace("fluid.tests");
                 decorated: {
                     decorators: {
                         type: "fluid",
-                        func: "fluid.tests.rendererChild"
-     // TODO: currently supplying direct options causes the instantiator to break
-       //                 options: { decoratorValue: "{rendererParent}.options.parentValue"}
+                        func: "fluid.tests.rendererChild",
+                        options: { decoratorValue: "{rendererParent}.options.parentValue"}
                     }
                 }
             }
@@ -189,6 +188,8 @@ fluid.registerNamespace("fluid.tests");
             component.middle.refreshView();
             var decorated = component.middle.locate("decorated");
             jqUnit.assertEquals("Decorated text resolved from top level", parentValue, decorated.text());
+            var child = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
+            jqUnit.assertEquals("Located decorator with IoC-resolved value", parentValue, child.options.decoratorValue);
         });
         
         var compTests = jqUnit.testCase("Renderer component tests");

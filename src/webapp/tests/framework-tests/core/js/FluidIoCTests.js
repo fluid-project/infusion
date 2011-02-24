@@ -125,7 +125,15 @@ fluid.registerNamespace("fluid.testUtils");
                         child2: {
                             type: "fluid.testUtils.reinsChild2",
                             options: {
-                                value: "{reinstantiation}.options.headValue"
+                                value: "{reinstantiation}.options.headValue",
+                                components: {
+                                    child3: {
+                                        type: "fluid.testUtils.reinsChild2",
+                                        options: {
+                                            value: "{reinstantiation}.options.headValue"
+                                        }
+                                    }  
+                                }
                             }
                         }
                     }
@@ -140,6 +148,7 @@ fluid.registerNamespace("fluid.testUtils");
     
     fluid.testUtils.reinsChild2 = function(options, otherValue) {
         var that = fluid.initLittleComponent("fluid.testUtils.reinsChild2", options);
+        fluid.initDependents(that);
         that.otherValue = otherValue;
         return that;
     }
@@ -575,19 +584,25 @@ fluid.registerNamespace("fluid.testUtils");
         });
     };
     
+    function checkValue(message, root, value, paths) {
+        fluid.each(paths, function(path) {
+            jqUnit.assertEquals(message + " transmitted from root", value, fluid.get(root, path));
+        }); 
+    }
+    
     fluidIoCTests.test("FLUID-4055 reinstantiation test", function() {
         var reins = fluid.testUtils.reinstantiation();
         var origID = reins.child1.child2.id;
         var instantiator = reins.child1.instantiator;
-        jqUnit.assertEquals("Original value transmission", reins.options.headValue, reins.child1.child2.options.value);
-        jqUnit.assertEquals("Original value transmission through demands block", reins.options.headValue, reins.child1.child2.otherValue);
+        var expectedPaths = ["child1.child2.options.value", "child1.child2.otherValue", 
+            "child1.child2.child3.options.value", "child1.child2.child3.otherValue"]
+        checkValue("Original value", reins, reins.options.headValue, expectedPaths);
         reins.options.headValue = "headValue2"; // in poor style, modify options to verify reexpansion
         reins.child1.options.components.child2 = fluid.copy(fluid.defaults("fluid.testUtils.reinstantiation").components.child1.options.components.child2);
         instantiator.clearComponent(reins.child1, "child2");
         fluid.initDependent(reins.child1, "child2", instantiator);
         jqUnit.assertNotEquals("Child2 reinstantiated", origID, reins.child1.child2.id);
-        jqUnit.assertEquals("Changed value found in expansion", "headValue2", reins.child1.child2.options.value);
-        jqUnit.assertEquals("Changed value found in expansion through demands block", "headValue2", reins.child1.child2.otherValue); 
+        checkValue("Changed value", reins, "headValue2", expectedPaths);
     });
     
     fluidIoCTests.test("Tree circularity test", function() {

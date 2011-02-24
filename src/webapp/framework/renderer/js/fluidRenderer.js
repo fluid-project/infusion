@@ -260,15 +260,15 @@ fluid_1_3 = fluid_1_3 || {};
       applet: "codebase", object: "codebase"
   };
   
-  renderer.IDtoComponentName = function(ID) {
-      return "**-renderer-" + ID.replace(/\./g, "");
+  renderer.IDtoComponentName = function(ID, num) {
+      return "**-renderer-" + ID.replace(/\./g, "") + "-" + num;
   };
   
-  renderer.invokeFluidDecorator = function(func, args, ID, options) {
+  renderer.invokeFluidDecorator = function(func, args, ID, num, options) {
       var that;
       if (options.instantiator && options.parentComponent) {
           var parent = options.parentComponent;
-          var name = renderer.IDtoComponentName(ID);
+          var name = renderer.IDtoComponentName(ID, num);
           // TODO: The best we can do here without GRADES is to wildly guess 
           // that it is a view component with options in the 2nd place and container in first place
           fluid.set(parent, fluid.path("options", "components", name), {type: func, options: args[1]});
@@ -1357,7 +1357,7 @@ fluid_1_3 = fluid_1_3 || {};
                       }
                       args = [decorator.container, decorator.options];
                   }
-                  var that = renderer.invokeFluidDecorator(decorator.func, args, decorator.id, options);
+                  var that = renderer.invokeFluidDecorator(decorator.func, args, decorator.id, i, options);
                   decorator.that = that;
               }
               else if (decorator.type === "event") {

@@ -227,7 +227,7 @@ var fluid_1_3 = fluid_1_3 || {};
     };
     
     fluid.instantiator = function() {
-        // NB: We may not use the options merging framework itself here, since "withNewComponent" below
+        // NB: We may not use the options merging framework itself here, since "withInstantiator" below
         // will blow up, as it tries to resolve the instantiator which we are instantiating *NOW*
         var preThat = {
             options: {
@@ -257,7 +257,7 @@ var fluid_1_3 = fluid_1_3 || {};
             return togo;
         };
         that.getFullStack = function(component) {
-            var thatStack = that.getThatStack(component);
+            var thatStack = component? that.getThatStack(component) : [];
             return [fluid.staticEnvironment, fluid.threadLocal()].concat(thatStack);
         }
         function recordComponent(component, path) {
@@ -365,8 +365,7 @@ var fluid_1_3 = fluid_1_3 || {};
     // after the first successful invocation
     fluid.invoke = function(functionName, args, that, environment) {
         args = fluid.makeArray(args);
-        that = that || {typeName: functionName};
-        return fluid.withNewComponent(that, function(instantiator) {
+        return fluid.withInstantiator(that, function(instantiator) {
             var thatStack = instantiator.getFullStack(that);
             var invokeSpec = fluid.resolveDemands(thatStack, functionName, args, {passArgs: true});
             return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
@@ -455,7 +454,7 @@ var fluid_1_3 = fluid_1_3 || {};
         if (fluid.isPrimitive(args)) {
             return args;
         }
-        return fluid.withNewComponent(that, function(instantiator) {
+        return fluid.withInstantiator(that, function(instantiator) {
             fluid.log("expandOptions for " + that.typeName + " executing with instantiator " + instantiator.id);
             var thatStack = instantiator.getFullStack(that);
             var expandOptions = makeStackResolverOptions(thatStack);
@@ -475,64 +474,73 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.initDependent = function(that, name, userInstantiator, directArgs) {
         if (!that || that[name]) { return; }
         directArgs = directArgs || [];
-        var instantiator;
-        if (!userInstantiator) {
-            instantiator = fluid.threadLocal()["fluid.instantiator"];
-            fluid.log("*** initDependent for " + that.typeName + " member " + name + " fetched existing instantiator " + instantiator.id);
+        var root = fluid.threadLocal();
+        if (userInstantiator) {
+           var existing = root["fluid.instantiator"];
+           if (existing && existing !== userInstantiator) {
+               fluid.fail("Error in initDependent: user instantiator supplied with id " + userInstantiator.id 
+                + " which differs from that for currently active instantiation with id " + existing.id);
+           }
+           else {
+               root["fluid.instantiator"] = userInstantiator;
+               fluid.log("*** initDependent for " + that.typeName + " member " + name + " was supplied USER instantiator with id " + userInstantiator.id + " - STORED");
+           }
         }
-        else {
-            instantiator = fluid.threadLocal()["fluid.instantiator"] = userInstantiator;
-            fluid.log("*** initDependent for " + that.typeName + " member " + name + " was supplied USER instantiator with id " + instantiator.id + " - STORED");
-        }
-        var thatStack = instantiator.getFullStack(that);
-        var component = that.options.components[name];
-        if (typeof(component) === "string") {
-            that[name] = fluid.expandOptions([component], that)[0]; // TODO: expose more sensible semantic for expandOptions 
-        }
-        else if (component.type) {
-            var invokeSpec = fluid.resolveDemands(thatStack, [component.type, name], directArgs, {componentOptions: component.options});
-            // TODO: only want to expand "options" or all args? See "component rescuing" in expandOptions above
-            //invokeSpec.args = fluid.expandOptions(invokeSpec.args, thatStack, true);
-            instantiator.pushUpcomingInstantiation(that, name);
-            try {
-                that[inCreationMarker] = true;
-                var instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
-                if (instance) { // TODO: more fallibility
-                   // Interestingly, by the time we have actually recorded this component here, it is far too late
-                   // to have used it for resolution required by itself and subcomponents....
-                    that[name] = instance;
+        
+        fluid.withInstantiator(that, function(instantiator) {
+            var thatStack = instantiator.getFullStack(that);
+            var component = that.options.components[name];
+            if (typeof(component) === "string") {
+                that[name] = fluid.expandOptions([component], that)[0]; // TODO: expose more sensible semantic for expandOptions 
+            }
+            else if (component.type) {
+                var invokeSpec = fluid.resolveDemands(thatStack, [component.type, name], directArgs, {componentOptions: component.options});
+                // TODO: only want to expand "options" or all args? See "component rescuing" in expandOptions above
+                //invokeSpec.args = fluid.expandOptions(invokeSpec.args, thatStack, true);
+                instantiator.pushUpcomingInstantiation(that, name);
+                try {
+                    that[inCreationMarker] = true;
+                    var instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
+                    if (instance) { // TODO: more fallibility
+                       // Interestingly, by the time we have actually recorded this component here, it is far too late
+                       // to have used it for resolution required by itself and subcomponents....
+                        that[name] = instance;
+                    }
+                }
+                finally {
+                    delete that[inCreationMarker];
+                    instantiator.pushUpcomingInstantiation();
                 }
             }
-            finally {
-                delete that[inCreationMarker];
-                instantiator.pushUpcomingInstantiation();
+            else { 
+                that[name] = component;
             }
-        }
-        else { 
-            that[name] = component;
-        }
+        });
     };
     
     // NON-API function
     // This function is stateful and MUST NOT be called by client code
-    fluid.withNewComponent = function(that, func) {
+    fluid.withInstantiator = function(that, func) {
+        var typeName = that? that.typeName: "[none]";
         var root = fluid.threadLocal();
         var instantiator = root["fluid.instantiator"];
         if (!instantiator) {
             instantiator = root["fluid.instantiator"] = fluid.instantiator();
-            fluid.log("Created new instantiator with id " + instantiator.id + " in order to record component " + that.typeName);
+            fluid.log("Created new instantiator with id " + instantiator.id + " in order to operate on component " + typeName);
         }
         try {
-            instantiator.recordComponent(that);
+            if (that) {
+                instantiator.recordComponent(that);
+            }
             instantiator.stack(1);
-            fluid.log("Instantiator stack +1 to " + instantiator.stackCount + " for " + that.typeName);
+            fluid.log("Instantiator stack +1 to " + instantiator.stackCount + " for " + typeName);
             return func(instantiator);
         }
         finally {
             var count = instantiator.stack(-1);
-            fluid.log("Instantiator stack -1 to " + instantiator.stackCount + " for " + that.typeName);
+            fluid.log("Instantiator stack -1 to " + instantiator.stackCount + " for " + typeName);
             if (count === 0) {
-                fluid.log("Clearing instantiator with id " + instantiator.id + " from threadLocal for end of " + that.typeName);
+                fluid.log("Clearing instantiator with id " + instantiator.id + " from threadLocal for end of " + typeName);
                 delete root["fluid.instantiator"];
             }
         }              
@@ -540,18 +548,18 @@ var fluid_1_3 = fluid_1_3 || {};
         
     fluid.initDependents = function(that) {
         var options = that.options;
-        fluid.withNewComponent(that, function(instantiator) {
-            var components = options.components || {};
-            for (var name in components) {
-                fluid.initDependent(that, name, instantiator);
-            }
-            var invokers = options.invokers || {};
-            for (var name in invokers) {
-                var invokerec = invokers[name];
-                var funcName = typeof(invokerec) === "string"? invokerec : null;
-                that[name] = fluid.makeInvoker(that, instantiator, funcName? null : invokerec, funcName);
-            }
-        });
+        var components = options.components || {};
+        for (var name in components) {
+            fluid.initDependent(that, name);
+        }
+        var invokers = options.invokers || {};
+        for (var name in invokers) {
+            var invokerec = invokers[name];
+            var funcName = typeof(invokerec) === "string"? invokerec : null;
+            that[name] = fluid.withInstantiator(that, function(instantiator) { 
+                return fluid.makeInvoker(that, instantiator, funcName? null : invokerec, funcName);
+            });
+        }
     };
     
     // Standard Fluid component types
