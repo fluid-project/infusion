@@ -43,7 +43,7 @@ var orderableIds = makeOrderableIds(orderableIndices);
 var imageIds = makeImageIds(orderableIndices);
 
 var orderableBaseId = "gallery:::gallery-thumbs:::lightbox-cell:";
-var selectByDivAndId = "div[id^=" + orderableBaseId + "]";
+var selectByDivAndId = "div[id=^" + orderableBaseId + "]";
 
 // CSS class names
 var defaultClass = "fl-reorderer-movable-default";
