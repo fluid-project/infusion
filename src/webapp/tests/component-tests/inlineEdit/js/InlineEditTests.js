@@ -19,21 +19,20 @@ https://source.fluidproject.org/svn/LICENSE.txt
     $(document).ready(function () {
         
         var inlineEditTests = new jqUnit.TestCase("InlineEdit Tests");
-    
         var customOptions = {selectors: {
                 text: ".customText",
                 editContainer: ".customEditContainer",
                 edit: ".customEdit"
             },
-            styles: {
-                invitation: "customInvitation",
-                focus: "customFocus"
-            },          
-            paddings: {
-                edit: 20,
-                minimumEdit: 40
-            }
-        };
+                styles: {
+                    invitation: "customInvitation",
+                    focus: "customFocus"
+                },          
+                paddings: {
+                    edit: 20,
+                    minimumEdit: 40
+                }
+                };
         
         function insistSelect(message, that, name) {
             var togo = that.locate(name);
@@ -44,8 +43,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         function assertVisibility(state, name, selector) {
             if (state) {
                 jqUnit.isVisible(name + " should be visible", selector);
-            }
-            else {
+            } else {
                 jqUnit.notVisible(name + " should not be visible", selector);
             }
         }
@@ -95,16 +93,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     };
                     fluid.selfRender(root, 
                         [{ID: "inline-edit", 
-                         decorators: decorator},
-                         {ID: "inline-edit-control",
-                         valuebinding: "value"}], 
+                            decorators: decorator},
+                            {ID: "inline-edit-control",
+                                valuebinding: "value"}], 
                          {cutpoints: [{id: "inline-edit", selector: "#inline-edit-custom"},
                                       {id: "inline-edit-control", selector: "#edit-custom"}],
-                          model: model,
-                          autoBind: true});
+                            model: model,
+                            autoBind: true});
                     inlineEditor = decorator.that;
-                }
-                else {
+                } else {
                     inlineEditor = fluid.inlineEdit("#inline-edit-custom", customOptions);
                 }
                 var container = $(".customContainer", root);
@@ -829,39 +826,41 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             var multipleInlineEditCommonSteps = function (container, option) {
                 var editor = fluid.inlineEdits(container, option);
-                
+                var i = 0;
                 //checks if the elements has undo option
-                for (var i = 0; i < editor.length; i++) {
-                    if (option)
+                for (i = 0; i < editor.length; i++) {
+                    if (option) {
                         jqUnit.assertEquals("has undo option", "undo edit", editor[i].container.children(":contains('undo edit')").find('a:nth-child(1)').text());
-                    else
+                    } else {
                         jqUnit.assertNotEquals("does not have undo option", "undo edit", editor[i].container.children(":contains('undo edit')").find('a:nth-child(1)').text());
+                    }
                 }
                 
                 //checks if items are inside the container
-                for (var i = 0; i < editor.length; i++) {
-                    if (option)
+                for (i = 0; i < editor.length; i++) {
+                    if (option) {
                         jqUnit.assertEquals("belong to container #inline-multiple-edits ", "inline-multiple-edits", editor[i].container.parent().attr("id"));
-                    else
+                    } else {
                         jqUnit.assertEquals("belong to container #inline-multiple-edits-2", "inline-multiple-edits-2", editor[i].container.parent().attr("id"));
+                    }
                 }               
             };
             
             inlineEditTests.test("Test two copies of multiple inline edits with undo - " +
                     "we need to make sure we cover containment within a group " +
                     "when using the multiple inline edit API ", function () {           
-                var option = {selectOnEdit: true,
+                    var option = {selectOnEdit: true,
                             componentDecorators: "fluid.undoDecorator"
-                };
+                            };
             
-                multipleInlineEditCommonSteps("#inline-multiple-edits", option);
-                multipleInlineEditCommonSteps("#inline-multiple-edits-2");
-            });            
+                    multipleInlineEditCommonSteps("#inline-multiple-edits", option);
+                    multipleInlineEditCommonSteps("#inline-multiple-edits-2");
+                });            
 
             inlineEditTests.test("Test overriding the tooltip text ", function () {
                 var options = {useTooltip: true, 
                                tooltipText: "Updating the default tooltip text..."
-                };
+                        };
                 var editor = fluid.inlineEdit("#inline-override-tooltip", options);
                 var display = editor.locate("text");                
                 display.mouseover();
@@ -891,8 +890,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var cellOneExpectedTexts = ["This is an editable table cell.", "This is test text cell one."];
                 var cellTwoExpectedTexts = ["This is another editable table cell.", "This is test text cell two."];
                 var editor = fluid.inlineEdits("#inline-edit-table-cell");
-                var cellOne = editor[0];
-                var cellTwo = editor[1];
                 
                 tableCellInlineEditCommonSteps(editor[0], cellOneExpectedTexts);
                 tableCellInlineEditCommonSteps(editor[1], cellTwoExpectedTexts);
