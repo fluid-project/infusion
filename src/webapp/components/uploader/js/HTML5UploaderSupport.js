@@ -33,8 +33,7 @@ var fluid_1_3 = fluid_1_3 || {};
                 type: "fluid.uploader.html5Strategy.local",
                 options: {
                     queueSettings: "{multiFileUploader}.options.queueSettings",
-                    events: "{multiFileUploader}.events",
-                    errorHandler: "{multiFileUploader}.dom.errorHandler"
+                    events: "{multiFileUploader}.events"
                 }
             },
             

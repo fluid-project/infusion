@@ -44,7 +44,10 @@ var fluid_1_3 = fluid_1_3 || {};
             },
             
             local: {
-                type: "fluid.uploader.swfUploadStrategy.local"
+                type: "fluid.uploader.swfUploadStrategy.local",
+                options: {
+                    errorHandler: "{multiFileUploader}.dom.errorHandler"
+                }
             },
             
             remote: {
@@ -324,6 +327,7 @@ var fluid_1_3 = fluid_1_3 || {};
         // Manually update our public model to keep it in sync with SWFUpload's insane,
         // always-changing references to its internal model.        
         var manualModelUpdater = function (file) {
+        alert('hey')
             fluid.find(model, function (potentialMatch) {
                 if (potentialMatch.id === file.id) {
                     potentialMatch.filestatus = file.filestatus;
