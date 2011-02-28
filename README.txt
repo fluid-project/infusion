@@ -1,33 +1,41 @@
-Fluid Infusion 1.3.1
-====================
+Fluid Infusion
+==============
 Main Project Site:  http://fluidproject.org
 Documentation:      http://wiki.fluidproject.org/display/fluid/Infusion+Documentation
 
+Latest Stable Version: 1.3.1, available at http://builder.fluidproject.org
 
-What's New in 1.3.1?
-====================
+What Are We Working On For 1.4?
+===============================
 
-This release:
-    * Updates Pager to use the Renderer by default
-    * Fixes several bugs in the Uploader
-    * Fixes a keyboard navigation bug in the Layout Reorderer
-
-What's in this Release?
-=======================
-
-This release is available in three forms:
-    Deployment Bundle - infusion-1.3.1.zip 
-    Source Code Bundle - infusion-1.3.1-src.zip
-    Your own custom build, using the new Infusion Builder: http://builder.fluidproject.org
+    * Improvements to the Fluid Skinning System (FSS)
+    * Updates to UI Options
     
-In addition to source code, samples and tests, both bundles include at the top level a single JavaScript file,
-    InfusionAll.js
-which is a combination of all other source files. Developers can include this single file in 
-their pages to provide all the necessary support for the Infusion component Library. In the Deployment Bundle,
-this script is compressed and suitable for production use.
+For more information, please see the Infusion Roadmap, at
+    http://wiki.fluidproject.org/display/fluid/Infusion+Roadmap+1.3.1+-+1.5
 
-The Deployment Bundle also includes a WAR file suitable for deployment in Java-based containers: 
-        fluid-components-1.3.1.war
+How To Create Your Own Infusion Build
+=====================================
+
+Latest Stable Version
+---------------------
+You can create your own custom build of the latest stable release of Infusion using the Infusion Builder:
+    http://builder.fluidproject.org
+This will create a single concatenated file, InfusionAll.js, containing only the modules you require.
+
+Current Working Version
+-----------------------
+To create a custom build from the current working version of the code, see        
+    http://wiki.fluidproject.org/display/fluid/Custom+Infusion+Builds+With+Ant
+
+Pre-Packaged Bundles
+--------------------
+You can download a full bundle of the latest stable release, including our demos and tests, from the project website:
+    http://fluidproject.org/products/infusion/download-infusion/
+
+
+What's in Infusion?
+===================
 
 Source Code
 -----------
