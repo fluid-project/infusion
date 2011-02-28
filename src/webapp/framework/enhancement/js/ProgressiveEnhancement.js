@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2009 University of Toronto
-Copyright 2010 OCAD University
+Copyright 2010-2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -12,14 +12,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global window, swfobject, jQuery*/
 
-var fluid_1_3 = fluid_1_3 || {};
+var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
     
     fluid.browser = fluid.browser || {};
     
     fluid.browser.binaryXHR = function () {
-        var canSendBinary = window.FormData || (window.XMLHttpRequest && window.XMLHttpRequest.prototype.sendAsBinary);
+        var canSendBinary = window.FormData || 
+            (window.XMLHttpRequest && 
+                window.XMLHttpRequest.prototype &&
+                window.XMLHttpRequest.prototype.sendAsBinary);
         return canSendBinary ? fluid.typeTag("fluid.browser.supportsBinaryXHR") : undefined;
     };
     
@@ -70,4 +73,4 @@ var fluid_1_3 = fluid_1_3 || {};
     };
     fluid.merge(null, fluid.staticEnvironment, features);
     
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);

@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2010 OCAD University
+Copyright 2010-2011 OCAD University
 Copyright 2010 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -13,9 +13,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 // Declare dependencies.
-/*global jQuery, fluid, fluid_1_3:true*/
+/*global jQuery, fluid, fluid_1_4:true*/
 
-var fluid_1_3 = fluid_1_3 || {};
+var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
     
@@ -242,4 +242,4 @@ var fluid_1_3 = fluid_1_3 || {};
               
         return that;
     };
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);

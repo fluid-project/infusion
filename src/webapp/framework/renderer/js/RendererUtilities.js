@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2010 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2010 Lucendo Development Ltd.
+Copyright 2010-2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -12,9 +12,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_1_3*/
+/*global fluid_1_4*/
 
-fluid_1_3 = fluid_1_3 || {};
+fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
@@ -491,5 +491,5 @@ fluid_1_3 = fluid_1_3 || {};
         return expandEntry;
     };
     
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);
     

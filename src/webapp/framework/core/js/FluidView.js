@@ -1,5 +1,5 @@
 /*
-Copyright 2010 Lucendo Development Ltd.
+Copyright 2010-2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -15,7 +15,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 /*global jQuery*/
 
-var fluid_1_3 = fluid_1_3 || {};
+var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
@@ -129,4 +129,4 @@ var fluid_1_3 = fluid_1_3 || {};
         backDelay: 100
     });
     
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);
