@@ -12,9 +12,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_1_3:true*/
+/*global fluid_1_4:true*/
 
-fluid_1_3 = fluid_1_3 || {};
+fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
   
@@ -1530,4 +1530,4 @@ fluid_1_3 = fluid_1_3 || {};
          return fluid.render({node: node, armouring: options.armouring}, node, tree, options);
      };
 
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);

@@ -51,18 +51,18 @@
     </ul>
   
     <script type="text/javascript">
-        fluid_1_3.setLogging(true);
-        fluid_1_3.log("Check sanity...");
-        fluid_1_3.defaults("foofer", {bar: "bat"});
-        fluid_1_3.log("1.3.defaults: " + fluid_1_3.defaults("foofer"));
-        fluid_1_3.log("0.3.defaults: " + fluid.defaults);
-        fluid_1_3.log("1.3.model.getBeanValue: " + fluid_1_3.model.getBeanValue);
+        fluid_1_4.setLogging(true);
+        fluid_1_4.log("Check sanity...");
+        fluid_1_4.defaults("foofer", {bar: "bat"});
+        fluid_1_4.log("1.4.defaults: " + fluid_1_4.defaults("foofer"));
+        fluid_1_4.log("0.3.defaults: " + fluid.defaults);
+        fluid_1_4.log("1.4.model.getBeanValue: " + fluid_1_4.model.getBeanValue);
         
         // initialize the 0.3 list
         fluid.reorderList("#list-03", "li", function(){});
 
         // initialize the 1.0 list
-        fluid_1_3.reorderList("#list-05");
+        fluid_1_4.reorderList("#list-05");
     </script>
   </body>
 </html>

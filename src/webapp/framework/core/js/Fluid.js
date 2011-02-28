@@ -1,5 +1,5 @@
 /*!
- * Fluid Infusion v1.3.1
+ * Fluid Infusion v1.4-SNAPSHOT
  *
  * Infusion is distributed under the Educational Community License 2.0 and new BSD licenses: 
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
@@ -25,12 +25,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 /*global jQuery, YAHOO, opera, window, console*/
 
-var fluid_1_3 = fluid_1_3 || {};
-var fluid = fluid || fluid_1_3;
+var fluid_1_4 = fluid_1_4 || {};
+var fluid = fluid || fluid_1_4;
 
 (function ($, fluid) {
     
-    fluid.version = "Infusion 1.3.1";
+    fluid.version = "Infusion 1.4-SNAPSHOT";
     
     fluid.environment = {
         fluid: fluid
@@ -1274,4 +1274,4 @@ var fluid = fluid || fluid_1_3;
         };
     };
 
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);
