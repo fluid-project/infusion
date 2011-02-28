@@ -566,13 +566,16 @@ var fluid_1_3 = fluid_1_3 || {};
     
     // Standard Fluid component types
     
-    fluid.standardComponent = function(name) {
+    fluid.viewComponent = function(name) {
         return function(container, options) {
             var that = fluid.initView(name, container, options);
             fluid.initDependents(that);
             return that;
         };
     };
+    
+    // backwards compatibility with 1.3.x although this was probably never used/advertised
+    fluid.standardComponent = fluid.viewComponent; 
     
     fluid.littleComponent = function(name) {
         return function(options) {

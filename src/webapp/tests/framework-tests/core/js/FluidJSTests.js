@@ -422,31 +422,29 @@ https://source.fluidproject.org/svn/LICENSE.txt
                               fluid.defaults("timemachine"));
         });
         
-        var defineTestComponent = function () {
-            fluid.tests = fluid.tests || {};
-            
-            fluid.tests.testComponent = function (container, options) {
-                var that = fluid.initView("fluid.tests.testComponent", container, options);
-                that.subcomponent = fluid.initSubcomponent(that, "subcomponent", [that.container, fluid.COMPONENT_OPTIONS]);
-                return that;
-            };
-            
-            fluid.tests.subcomponent = function (container, options) {
-                var that = fluid.initView("fluid.tests.subcomponent", container, options);
-                that.greeting = that.options.greeting;
-                return that;
-            };
-            
-            fluid.defaults("fluid.tests.testComponent", {
-                subcomponent: {
-                    type: "fluid.tests.subcomponent"
-                } 
-            });
-            
-            fluid.defaults("fluid.tests.subcomponent", {
-                greeting: "hello"
-            });
+        
+        fluid.tests.testComponent = function (container, options) {
+            var that = fluid.initView("fluid.tests.testComponent", container, options);
+            that.subcomponent = fluid.initSubcomponent(that, "subcomponent", [that.container, fluid.COMPONENT_OPTIONS]);
+            return that;
         };
+        
+        fluid.tests.subcomponent = function (container, options) {
+            var that = fluid.initView("fluid.tests.subcomponent", container, options);
+            that.greeting = that.options.greeting;
+            return that;
+        };
+        
+        fluid.defaults("fluid.tests.testComponent", {
+            subcomponent: {
+                type: "fluid.tests.subcomponent"
+            } 
+        });
+        
+        fluid.defaults("fluid.tests.subcomponent", {
+            greeting: "hello"
+        });
+        
         
         var componentWithOverridenSubcomponentOptions = function (greeting) {
             return fluid.tests.testComponent("#notmain", {
@@ -459,8 +457,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
         };
         
         fluidJSTests.test("initSubcomponents", function () {
-            defineTestComponent();
-           
             // First, let's check that the defaults are used if no other options are specified.
             var myComponent = fluid.tests.testComponent("#notmain");
             jqUnit.assertEquals("The subcomponent should have its default options.", 

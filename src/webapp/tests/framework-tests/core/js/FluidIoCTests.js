@@ -176,10 +176,10 @@ fluid.registerNamespace("fluid.testUtils");
     
 
     fluid.makeComponents({
-        "fluid.testUtils.testComponent":      "fluid.standardComponent",
-        "fluid.testUtils.testComponent2":     "fluid.standardComponent",
-        "fluid.testUtils.testOrder":          "fluid.standardComponent", 
-        "fluid.testUtils.subComponent":       "fluid.standardComponent",
+        "fluid.testUtils.testComponent":      "fluid.viewComponent",
+        "fluid.testUtils.testComponent2":     "fluid.viewComponent",
+        "fluid.testUtils.testOrder":          "fluid.viewComponent", 
+        "fluid.testUtils.subComponent":       "fluid.viewComponent",
         "fluid.testUtils.invokerComponent":   "fluid.littleComponent",
         "fluid.testUtils.invokerComponent2":  "fluid.littleComponent",
         "fluid.testUtils.modelComponent":     "fluid.littleComponent",
