@@ -661,33 +661,44 @@ var fluid = fluid || fluid_1_3;
     
     var defaultsStore = {};
         
-    var resolveGradesImpl = function(gs, gradeName) {
-        var options = fluid.rawDefaults(gradeName);
-        gs.gradeHash[gradeName] = true;
-        gs.gradeChain.push(gradeName);
-        gs.optionsChain.push(options);
-        fluid.each(options.gradeParents, function(parent) {
-            if (!gs.gradeHash[parent]) {
-                resolveGradesImpl(gs, parent);
+    var resolveGradesImpl = function(gs, gradeNames) {
+        gradeNames = fluid.makeArray(gradeNames);
+        fluid.each(gradeNames, function(gradeName) {
+            var options = fluid.rawDefaults(gradeName);
+            if (!options) {
+                return;
             }
-        });  
+            gs.gradeHash[gradeName] = true;
+            gs.gradeChain.push(gradeName);
+            gs.optionsChain.push(options);
+            fluid.each(options.gradeNames, function(parent) {
+                if (!gs.gradeHash[parent]) {
+                    resolveGradesImpl(gs, parent);
+                }
+            });
+        });
+        return gs;
     };
     
-    fluid.resolveGrade = function(gradeName) {
+    fluid.resolveGrade = function(gradeNames) {
         var gradeStruct = {
             gradeChain: [],
             gradeHash: {},
             optionsChain:[]
         };
-        return resolveGradesImpl(gradeStruct, gradeName);
+        return resolveGradesImpl(gradeStruct, gradeNames);
     };
 
     fluid.resolveGradedOptions = function(componentName) {
         var defaults = fluid.rawDefaults(componentName);
+        if (!defaults) {
+            return defaults;
+        }
         var mergeArgs = [defaults];
-        if (defaults.gradeName) {
-            var gradeStruct = fluid.resolveGrade(gradeName);
-            mergeArgs = gs.optionsChain.reverse().concat(mergeStack);
+        var gradeNames = defaults.gradeNames;
+        if (gradeNames) {
+            var gradeStruct = fluid.resolveGrade(gradeNames);
+            mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs);
         }
         mergeArgs = [{}, {}].concat(mergeArgs);
         var mergedDefaults = fluid.merge.apply(null, mergeArgs);
@@ -724,8 +735,20 @@ var fluid = fluid || fluid_1_3;
             return fluid.resolveGradedOptions(componentName);
         }
         else {
-            fluid.rawDefaults(componentName, options);         
+            fluid.rawDefaults(componentName, options);
+            if (options && options.gradeNames && $.inArray("autoInit", options.gradeNames) !== -1) {
+                fluid.makeComponent(componentName, fluid.resolveGradedOptions(componentName));
+            }
         }
+    };
+    
+    fluid.makeComponent = function(componentName, options) {
+        if (!options.initFunction) {
+            fluid.fail("Cannot autoInit component " + componentName + " which does not have an initFunction defined");
+        }
+        fluid.setGlobalValue(componentName, function() {
+            return fluid.initComponent(componentName, arguments);
+        });
     };
     
     fluid.defaults("fluid.littleComponent", {
@@ -738,16 +761,19 @@ var fluid = fluid || fluid_1_3;
         }
     });
     
-    fluid.defaults("fluid.modelBearing", {
-        gradeParents: ["fluid.littleComponent"],
+    fluid.defaults("fluid.modelComponent", {
+        gradeNames: ["fluid.littleComponent"],
+        postInitFunction: {
+            postInitModelComponent: "fluid.postInitModelComponent"
+        },
         mergePolicy: {
             model: "preserve",
             applier: "nomerge"
         }
     });
     
-    fluid.defaults("fluid.viewBearing", {
-        gradeParents: ["fluid.littleComponent"],
+    fluid.defaults("fluid.viewComponent", {
+        gradeNames: ["fluid.littleComponent", "fluid.modelComponent"],
         initFunction: "fluid.initView",
         argumentMap: {
             container: 0,
@@ -924,24 +950,49 @@ var fluid = fluid || fluid_1_3;
         fluid.mergeComponentOptions(that, name, options);
         return that;
     };
-
     
-    fluid.initModelComponent = function(componentName, options, auxiliary) {
-        var that = fluid.initLittleComponent(componentName, options, auxiliary);
+    fluid.postInitModelComponent = function(that) {
         that.model = that.options.model || {};
         that.applier = that.options.applier || fluid.makeChangeApplier(that.model, that.options.changeApplierOptions);
-        return that;
+    };
+    
+    fluid.invokeLifecycleFunction = function(that, func) {
+        if (typeof(func) === "string") {
+            fluid.invokeGlobalFunction(func, [that]);
+        }
+        else if (typeof(func) === "function") {
+            func.apply(null, [that]);
+        }
+    };
+    
+    fluid.invokeLifecycleFunctions = function(that, element) {
+        var el = fluid.get(that, fluid.path("options", element));
+        if (!fluid.isPrimitive(el)) {
+            fluid.each(el, function(elitem) {
+                fluid.invokeLifecycleFunction(that, elitem);
+            });
+        }
+        else if (el) {
+            fluid.invokeLifecycleFunction(that, el);
+        }
     };
     
     fluid.initComponent = function(componentName, initArgs) {
         var options = fluid.defaults(componentName);
-        if (!options.gradeName) {
+        if (!options.gradeNames) {
             fluid.fail("Cannot initialise component " + componentName + " which has no gradeName registered");
         }
-        var that = fluid.invokeGlobalFunction(mergedDefaults.initFunction, initArgs);
+        var args = [componentName].concat(fluid.makeArray(initArgs)); // TODO: support different initFunction variants
+        var that = fluid.invokeGlobalFunction(options.initFunction, args);
+        fluid.invokeLifecycleFunctions(that, "postInitFunction");
+        if (fluid.initDependents) {
+            fluid.initDependents(that);
+        }
+        fluid.invokeLifecycleFunctions(that, "finalInitFunction");
         if (that.options.finalInitFunction) {
             fluid.invokeGlobalFunction(that.options.finalInitFunction, [that]);
         }
+        return that;
     };
     
     // TODO: for components of the "old style", unless a GRADE is written in defaults, there

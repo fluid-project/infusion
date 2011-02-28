@@ -399,7 +399,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // Assign a collection of defaults for the first time.
             fluid.defaults("test", testDefaults);
-            jqUnit.assertEquals("defaults() should return the specified defaults", 
+            jqUnit.assertDeepEq("defaults() should return the specified defaults", 
                                 testDefaults, fluid.defaults("test"));
             
             // Re-assign the defaults with a new collection.
@@ -407,7 +407,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 baz: "foo"
             };
             fluid.defaults("test", testDefaults);
-            jqUnit.assertEquals("defaults() should return the new defaults", 
+            jqUnit.assertDeepEq("defaults() should return the new defaults", 
                                 testDefaults, fluid.defaults("test"));
             jqUnit.assertEquals("Foo should no longer be a property of the tabs defaults.", 
                                 undefined, fluid.defaults("test").foo);
@@ -467,6 +467,21 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("The subcomponent's options should have been overridden correctly.", 
                                 "bonjour", myComponent.subcomponent.greeting);
                                
+        });
+        
+        fluid.defaults("fluid.tests.testGradedView", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+            selectors: {
+                "page-link": ".page-link"
+            }
+        });
+        
+        fluidJSTests.test("Graded View Component", function() {
+            var model = {myKey: "myValue"};
+            var that = fluid.tests.testGradedView("#pager-top", {model: model});
+            jqUnit.assertValue("Constructed component", that);
+            jqUnit.assertEquals("Constructed functioning DOM binder", 3, that.locate("page-link").length);
+            jqUnit.assertEquals("View component correctly preserved model", that.model, model);   
         });
         
         fluidJSTests.test("set/getBeanValue", function () {

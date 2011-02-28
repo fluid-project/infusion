@@ -17,6 +17,7 @@ fluid.registerNamespace("fluid.testUtils");
 (function ($) {
 
     fluid.defaults("fluid.testUtils.testComponent", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         default1: "testComponent value",
         components: {
             test2: {
@@ -29,6 +30,7 @@ fluid.registerNamespace("fluid.testUtils");
     });
 
     fluid.defaults("fluid.testUtils.testComponent2", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             sub1: {
                 type: "fluid.testUtils.subComponent"
@@ -50,10 +52,11 @@ fluid.registerNamespace("fluid.testUtils");
 
     // Somehow we sort of have to write this. Perhaps "component grading" will make it
     // possible to guess instantiation signatures
-    fluid.demands("fluid.testUtils.modelComponent", "fluid.testUtils.dependentModel",
-      [fluid.COMPONENT_OPTIONS]);
+    //fluid.demands("fluid.testUtils.modelComponent", "fluid.testUtils.dependentModel",
+    //  [fluid.COMPONENT_OPTIONS]);
 
     fluid.defaults("fluid.testUtils.modelComponent", {
+        gradeNames: "modelComponent",
         mergePolicy: {
             model: "preserve"
         }
@@ -176,8 +179,8 @@ fluid.registerNamespace("fluid.testUtils");
     
 
     fluid.makeComponents({
-        "fluid.testUtils.testComponent":      "fluid.viewComponent",
-        "fluid.testUtils.testComponent2":     "fluid.viewComponent",
+   //     "fluid.testUtils.testComponent":      "fluid.viewComponent",
+   //     "fluid.testUtils.testComponent2":     "fluid.viewComponent",
         "fluid.testUtils.testOrder":          "fluid.viewComponent", 
         "fluid.testUtils.subComponent":       "fluid.viewComponent",
         "fluid.testUtils.invokerComponent":   "fluid.littleComponent",
@@ -433,7 +436,7 @@ fluid.registerNamespace("fluid.testUtils");
         }
     });
 
-    fluidIoCTests.test("Default interaction test", function () {
+    fluidIoCTests.test("Basic interaction between defaults and demands", function () {
         var that = fluid.testUtils.defaultInteraction();
         jqUnit.assertValue("Constructed", that);
         var standardDefaults = fluid.copy(fluid.defaults("fluid.testUtils.popup"));
