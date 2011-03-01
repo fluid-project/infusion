@@ -824,12 +824,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             });            
             
             
-            var multipleInlineEditCommonSteps = function (container, option) {
-                var editor = fluid.inlineEdits(container, option);
+            var multipleInlineEditCommonSteps = function (container, options) {
+                var editor = fluid.inlineEdits(container, options);
                 var i = 0;
                 //checks if the elements has undo option
                 for (i = 0; i < editor.length; i++) {
-                    if (option) {
+                    if (options && options.componentDecorators && options.componentDecorators === "fluid.undoDecorator") {
                         jqUnit.assertEquals("has undo option", "undo edit", editor[i].container.children(":contains('undo edit')").find('a:nth-child(1)').text());
                     } else {
                         jqUnit.assertNotEquals("does not have undo option", "undo edit", editor[i].container.children(":contains('undo edit')").find('a:nth-child(1)').text());
@@ -838,7 +838,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 
                 //checks if items are inside the container
                 for (i = 0; i < editor.length; i++) {
-                    if (option) {
+                    if (options && options.componentDecorators && options.componentDecorators === "fluid.undoDecorator") {
                         jqUnit.assertEquals("belong to container #inline-multiple-edits ", "inline-multiple-edits", editor[i].container.parent().attr("id"));
                     } else {
                         jqUnit.assertEquals("belong to container #inline-multiple-edits-2", "inline-multiple-edits-2", editor[i].container.parent().attr("id"));
@@ -872,27 +872,24 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var toolTipVal = $("#" + toolTipId).text();
                 
                 //now display the text once mouse is over
-                jqUnit.assertEquals("the tool tip with custom text  ", editor.options.tooltipText, toolTipVal);                
+                jqUnit.assertEquals("the tool tip with custom text  ", options.tooltipText, toolTipVal);                
             });
             
-            var tableCellInlineEditCommonSteps = function (that, expectedValues) {
+            var tableCellInlineEditCommonSteps = function (that, initialExpectedValue, newExpectedValue) {
                 var edit = that.editField;
                 var display = that.model;
                 that.edit();
-                jqUnit.assertEquals("After switching into edit mode, edit field should be empty: ", expectedValues[0], display.value);
-                edit.attr("value", expectedValues[1]);
+                jqUnit.assertEquals("After switching into edit mode, should have initial text: ", initialExpectedValue, display.value);
+                edit.attr("value", newExpectedValue);
                 display = that.model;
                 that.finish();
-                jqUnit.assertEquals("After editing the field, display should have test text ", expectedValues[1], display.value);
+                jqUnit.assertNotEquals("After editing the field, display should have new text which should not equal to the initial text ", initialExpectedValue, display.value);
             };
             
             inlineEditTests.test("Test using inline edit to edit a table cell  ", function () {
-                var cellOneExpectedTexts = ["This is an editable table cell.", "This is test text cell one."];
-                var cellTwoExpectedTexts = ["This is another editable table cell.", "This is test text cell two."];
-                var editor = fluid.inlineEdits("#inline-edit-table-cell");
-                
-                tableCellInlineEditCommonSteps(editor[0], cellOneExpectedTexts);
-                tableCellInlineEditCommonSteps(editor[1], cellTwoExpectedTexts);
+                var editor = fluid.inlineEdits("#inline-edit-table-cell");                
+                tableCellInlineEditCommonSteps(editor[0], "This is an editable table cell.", "This is test text cell one.");
+                tableCellInlineEditCommonSteps(editor[1], "This is another editable table cell.", "This is test text cell two.");
             });
         })();
     });
