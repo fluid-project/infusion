@@ -207,8 +207,9 @@ var fluid_1_4 = fluid_1_4 || {};
     var updateStateAfterFileRemoval = function (that) {
         if (that.queue.getReadyFiles().length === 0) {
             setStateEmpty(that);
+        } else {
+            setStateLoaded(that);
         }
-        setStateLoaded(that);
         renderUploadTotalMessage(that);
         updateQueueSummaryText(that);
     };
