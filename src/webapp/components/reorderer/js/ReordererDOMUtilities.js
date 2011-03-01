@@ -12,9 +12,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 // Declare dependencies.
 /*global jQuery*/
-/*global fluid_1_3*/
+/*global fluid_1_4*/
 
-var fluid_1_3 = fluid_1_3 || {};
+var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
     /** 
@@ -92,4 +92,4 @@ var fluid_1_3 = fluid_1_3 || {};
          ((node.nodeType === 3) && fluid.dom.isWhitespaceNode(node)); // a text node, all ws
     };
 
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);
