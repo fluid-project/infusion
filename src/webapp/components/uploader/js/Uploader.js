@@ -295,10 +295,10 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         });
 
-        that.events.onFileQueueError.addListener(function (file, error) {
-            if (error === fluid.uploader.errorConstants.UPLOAD_LIMIT_EXCEEDED) {
+        that.events.onFileQueueError.addListener(function (file, error, message) {
+            if (error === fluid.uploader.queueErrorConstnats.FILE_EXCEEDS_SIZE_LIMIT) {
                 that.errorHandler.addError(file.fileName, "exceedsUploadLimit");
-            } else if (error === fluid.uploader.errorConstants.FILE_LIMIT_EXCEEDED) {
+            } else if (error === fluid.uploader.queueErrorConstnats.QUEUE_LIMIT_EXCEEDED) {
                 that.errorHandler.addError(file.fileName, "exceedsFileLimit");
             }
         });
@@ -624,6 +624,13 @@ var fluid_1_4 = fluid_1_4 || {};
      * TODO: These are SWFUpload-specific error codes *
      **************************************************/
      
+    fluid.uploader.queueErrorConstnats = {
+        QUEUE_LIMIT_EXCEEDED: -100,
+        FILE_EXCEEDS_SIZE_LIMIT: -110,
+        ZERO_BYTE_FILE: -120,
+        INVALID_FILETYPE: -130
+    }
+    
     fluid.uploader.errorConstants = {
         HTTP_ERROR: -200,
         MISSING_UPLOAD_URL: -210,
@@ -634,8 +641,7 @@ var fluid_1_4 = fluid_1_4 || {};
         SPECIFIED_FILE_ID_NOT_FOUND: -260,
         FILE_VALIDATION_FAILED: -270,
         FILE_CANCELLED: -280,
-        UPLOAD_STOPPED: -290,
-        FILE_LIMIT_EXCEEDED: -300
+        UPLOAD_STOPPED: -290
     };
     
     fluid.uploader.fileStatusConstants = {

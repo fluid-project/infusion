@@ -273,7 +273,7 @@ var fluid_1_4 = fluid_1_4 || {};
             if (fileLimit !== 0 && filesToUpload > remainingUploadLimit) {
                 filesToUpload = remainingUploadLimit; 
                 for (var i = filesToUpload; i < files.length; i++) {
-                    that.events.onFileQueueError.fire(files[i], fluid.uploader.errorConstants.FILE_LIMIT_EXCEEDED);                    
+                    that.events.onFileQueueError.fire(files[i], fluid.uploader.queueErrorConstnats.QUEUE_LIMIT_EXCEEDED);                    
                 }
             } 
              
@@ -283,7 +283,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 var file = files[i];
                 if (file.size >= sizeLimit) {
                     file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
-                    that.events.onFileQueueError.fire(file, fluid.uploader.errorConstants.UPLOAD_LIMIT_EXCEEDED);
+                    that.events.onFileQueueError.fire(file, fluid.uploader.queueErrorConstnats.FILE_EXCEEDS_SIZE_LIMIT);
                 } else if (!fileLimit || remainingUploadLimit > 0) {
                     file.id = "file-" + fluid.allocateGuid();
                     file.filestatus = fluid.uploader.fileStatusConstants.QUEUED;

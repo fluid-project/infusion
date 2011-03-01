@@ -246,7 +246,7 @@ var fluid_1_4 = fluid_1_4 || {};
         afterReady: "swfupload_loaded_handler",
         onFileDialog: "file_dialog_start_handler",
         afterFileQueued: "file_queued_handler",
-        onQueueError: "file_queue_error_handler",
+        onFileQueueError: "file_queue_error_handler",
         afterFileDialog: "file_dialog_complete_handler",
         onFileStart: "upload_start_handler",
         onFileProgress: "upload_progress_handler",
@@ -327,7 +327,6 @@ var fluid_1_4 = fluid_1_4 || {};
         // Manually update our public model to keep it in sync with SWFUpload's insane,
         // always-changing references to its internal model.        
         var manualModelUpdater = function (file) {
-        alert('hey')
             fluid.find(model, function (potentialMatch) {
                 if (potentialMatch.id === file.id) {
                     potentialMatch.filestatus = file.filestatus;
