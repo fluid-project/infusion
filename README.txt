@@ -14,8 +14,22 @@ What Are We Working On For 1.4?
 For more information, please see the Infusion Roadmap, at
     http://wiki.fluidproject.org/display/fluid/Infusion+Roadmap+1.3.1+-+1.5
 
-How To Create Your Own Infusion Build
-=====================================
+Downloading Infusion
+====================
+
+You can download a full bundle of the latest stable release, including our demos and tests, from the project website:
+    http://fluidproject.org/products/infusion/download-infusion/
+
+Alternatively, you can download a full bundle from github:
+    https://github.com/fluid-project/infusion/zipball/infusion-1.3.1
+    https://github.com/fluid-project/infusion/tarball/infusion-1.3.1
+
+To download the latest version of the code (i.e. currently under active development), use the master branch:
+    https://github.com/fluid-project/infusion/zipball/master
+    https://github.com/fluid-project/infusion/tarball/master
+
+Create Your Own Infusion Build
+==============================
 
 Latest Stable Version
 ---------------------
@@ -23,15 +37,12 @@ You can create your own custom build of the latest stable release of Infusion us
     http://builder.fluidproject.org
 This will create a single concatenated file, InfusionAll.js, containing only the modules you require.
 
+Please note that this package will not include tests or demos.
+
 Current Working Version
 -----------------------
 To create a custom build from the current working version of the code, see        
     http://wiki.fluidproject.org/display/fluid/Custom+Infusion+Builds+With+Ant
-
-Pre-Packaged Bundles
---------------------
-You can download a full bundle of the latest stable release, including our demos and tests, from the project website:
-    http://fluidproject.org/products/infusion/download-infusion/
 
 
 What's in Infusion?
