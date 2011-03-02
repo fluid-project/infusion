@@ -1,8 +1,3 @@
-a. What's new?
-b. Where do I go get it?
-c. What are the known issues?
-etc
-
 
 Release Notes for Fluid Infusion 1.3.1
 ======================================
