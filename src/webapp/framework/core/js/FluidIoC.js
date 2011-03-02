@@ -13,7 +13,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 /*global jQuery*/
 
-var fluid_1_3 = fluid_1_3 || {};
+var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
@@ -72,14 +72,11 @@ var fluid_1_3 = fluid_1_3 || {};
     
     function makeGingerStrategy(thatStack) {
         return function(component, thisSeg) {
-            if (thisSeg === "") {
-                return component; // explicitly allow lookup to self TODO review
-            }
             var atval = component[thisSeg];
             if (atval !== undefined) {
                 if (atval[inCreationMarker] && atval !== thatStack[0]) {
                     fluid.fail("Component of type " + 
-                    atval.typeName + " cannot be used for lookup of path " + thisSeg +
+                    atval.typeName + " cannot be used for lookup of path " + segs.join(".") +
                     " since it is still in creation. Please reorganise your dependencies so that they no longer contain circular references");
                 }
             }
@@ -119,7 +116,7 @@ var fluid_1_3 = fluid_1_3 || {};
                 // TODO: we used to get a helpful diagnostic when we failed to match a context name before we fell back
                 // to the environment for FLUID-3818
                 //fluid.fail("No context matched for name " + context + " from root of type " + thatStack[0].typeName);
-            return fluid.get(foundComponent, parsed.path, {strategies: fetchStrategies});
+            return fluid.get(foundComponent, parsed.path, fetchStrategies);
         };
         return fetcher;
     }
@@ -715,7 +712,6 @@ var fluid_1_3 = fluid_1_3 || {};
         while (typeof(string) === "string") {
             var i1 = string.indexOf("${");
             var i2 = string.indexOf("}", i1 + 2);
-            var all = (i1 === 0 && i2 === string.length - 1); 
             if (i1 !== -1 && i2 !== -1) {
                 var parsed;
                 if (string.charAt(i1 + 2) === "{") {
@@ -726,6 +722,7 @@ var fluid_1_3 = fluid_1_3 || {};
                     parsed = {path: string.substring(i1 + 2, i2)};
                 }
                 var subs = options.fetcher(parsed);
+                var all = (i1 === 0 && i2 === string.length - 1); 
                 // TODO: test case for all undefined substitution
                 if (subs === undefined || subs === null) {
                     return subs;
@@ -835,4 +832,4 @@ var fluid_1_3 = fluid_1_3 || {};
         return fluid.resolveEnvironment(source, options.model, options);       
     };
           
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);

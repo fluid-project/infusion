@@ -54,11 +54,6 @@
     cursor      : pointer;
 }
 
-.fl-inlineEdit-richText-invitation {
-    background  : lightyellow;
-    cursor      : pointer;
-}
-
 .fl-inlineEdit-emptyText-invitation  {
     font-style : italic;
     color      : #9f9f9f;

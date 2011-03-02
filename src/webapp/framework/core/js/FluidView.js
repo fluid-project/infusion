@@ -1,5 +1,5 @@
 /*
-Copyright 2010 Lucendo Development Ltd.
+Copyright 2010-2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -15,7 +15,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 /*global jQuery*/
 
-var fluid_1_3 = fluid_1_3 || {};
+var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
@@ -129,57 +129,4 @@ var fluid_1_3 = fluid_1_3 || {};
         backDelay: 100
     });
     
-    /**
-     * Simple component cover for the jQuery scrollTo plugin. Provides roughly equivalent
-     * functionality to Uploader's old Scroller plugin.
-     *
-     * @param {jQueryable} element the element to make scrollable
-     * @param {Object} options for the component
-     * @return the scrollable component
-     */
-    fluid.scrollable = function (element, options) {
-        var that = fluid.initLittleComponent("fluid.scrollable", options);
-        that.scrollable = that.options.makeScrollableFn(element, that.options);
-        if (that.options.css) {
-            that.scrollable.css(that.options.css);
-        }
-        
-        that.scrollTo = function () {
-            that.scrollable.scrollTo.apply(that.scrollable, arguments);
-        };
-        
-        return that;
-    };
-    
-    fluid.scrollable.makeSimple = function (element, options) {
-        return fluid.container(element);
-    };
-    
-    fluid.scrollable.makeTable =  function (table, options) {
-        table.wrap(options.wrapperMarkup);
-        return table.parent();
-    };
-    
-    fluid.defaults("fluid.scrollable", {
-        makeScrollableFn: fluid.scrollable.makeSimple
-    });
-    
-    /** 
-     * Wraps a table in order to make it scrollable with the jQuery.scrollTo plugin.
-     * Container divs are injected to allow cross-browser support. 
-     *
-     * @param {jQueryable} table the table to make scrollable
-     * @param {Object} options configuration options
-     * @return the scrollable component
-     */
-    fluid.scrollableTable = function (table, options) {
-        options = $.extend({}, fluid.defaults("fluid.scrollableTable"), options);
-        return fluid.scrollable(table, options);
-    };
-    
-    fluid.defaults("fluid.scrollableTable", {
-        makeScrollableFn: fluid.scrollable.makeTable,
-        wrapperMarkup: "<div class='fl-table-scrollable-container'><div class='fl-table-scrollable-area'></div></div>"
-    });
-    
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);

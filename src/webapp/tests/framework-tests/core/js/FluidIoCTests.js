@@ -628,7 +628,7 @@ fluid.registerNamespace("fluid.testUtils");
     });
     
     
-    fluidIoCTests.test("FLUID-3681 merge policy for component options", function() {
+    fluidIoCTests.test("FLUID-4129 merge policy for component options", function() {
         var mergeComp = fluid.tests.mergeComponent();
         var defs = fluid.defaults("fluid.tests.mergeComponent");
         jqUnit.assertEquals("Dangerous parameters unexpanded",

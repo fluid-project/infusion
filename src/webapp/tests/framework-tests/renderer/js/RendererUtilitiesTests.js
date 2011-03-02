@@ -2,7 +2,7 @@
 Copyright 2008-2010 University of Cambridge
 Copyright 2008-2009 University of Toronto
 Copyright 2010 OCAD University
-Copyright 2010 Lucendo Development Ltd.
+Copyright 2010-2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -311,7 +311,7 @@ fluid.registerNamespace("fluid.tests");
         
         compTests.test("FLUID-3819 test: messagekey with no value", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test-repeat", {
-                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]},
+                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
                 model: {
                     recordlist: {
                         test: {
@@ -359,7 +359,7 @@ fluid.registerNamespace("fluid.tests");
         
         compTests.test("Renderer component with custom resolver", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
-                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]}
+                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)]
             });
             testFilteredRecords(that);
         });
@@ -374,7 +374,7 @@ fluid.registerNamespace("fluid.tests");
                 ]  
             };
             var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
-                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]},
+                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
                 protoTree: tree,
                 rendererFnOptions: {
                     noexpand: true
@@ -866,6 +866,35 @@ fluid.registerNamespace("fluid.tests");
             return;
         });
         
+        protoTests.test("FLUID-4128 test: Literal booleans within repetition/condition expander", function() {
+            var model = {conditions: [true, false, true, true, false]};
+            var expander = fluid.renderer.makeProtoExpander({model: model});
+            var protoTree = {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    repeatID: "repeat-row:",
+                    pathAs: "row",
+                    valueAs: "rowValue",
+                    controlledBy: "conditions",
+                    tree: {
+                        expander: {
+                            type: "fluid.renderer.condition",
+                            condition: "{rowValue}",
+                            trueTree: {
+                                leafValue: "{rowValue}"
+                            }
+                        }
+                    }
+                }
+            }
+            var expanded = expander(protoTree);
+            jqUnit.assertEquals("Only three rows produced", 3, expanded.children.length);
+            var protoTree2 = fluid.copy(protoTree);
+            protoTree.expander.tree.expander.condition = "${{rowValue}}";
+            var expanded = expander(protoTree);
+            jqUnit.assertEquals("Only three rows produced - alternative reference style", 3, expanded.children.length);
+        });
+        
         protoTests.test("FLUID-3658 test: selection to inputs expander", function () {
             var model = { };
             var expopts = {ELstyle: "${}", model: model};
@@ -887,7 +916,7 @@ fluid.registerNamespace("fluid.tests");
                             }
                         },
                         "permissions-record-type": "${fields.permissions.0.recordType}"
-                     }
+                    }
                     ]
                 }
             };

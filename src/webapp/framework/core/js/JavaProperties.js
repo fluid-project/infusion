@@ -12,9 +12,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_1_3*/
+/*global fluid_1_4*/
 
-fluid_1_3 = fluid_1_3 || {};
+fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
       
@@ -117,4 +117,4 @@ fluid_1_3 = fluid_1_3 || {};
         return messageString;
     };
       
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);

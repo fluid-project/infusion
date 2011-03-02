@@ -279,23 +279,3 @@ input.fl-icon {padding-left:16px;}
 
 /* hide text for screen readers. */
 .fl-offScreen-hidden {position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden;}
-
-
-/* scrollable table with fixed header */
-.fl-table-scrollable-container { /* space for fixed header */
-    position:relative;
-    padding-top:2em;   
-}
-
-.fl-table-scrollable-area { 
-    max-height:160px;
-    overflow: auto;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-.fl-table-scrollable-area table thead tr { /* fixed table header */
-    left: -1px; 
-    top: 0;
-    position: absolute;   
-}
