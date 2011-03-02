@@ -1,296 +1,56 @@
-Fluid Infusion
-==============
-Main Project Site:  http://fluidproject.org
-Documentation:      http://wiki.fluidproject.org/display/fluid/Infusion+Documentation
 
-Latest Stable Version: 1.3.1, available at http://builder.fluidproject.org
+What Is Infusion?
+=================
+Infusion is a different kind of JavaScript framework. Built for creating applications that are highly usable and accessible, Infusion provides a rich set of APIs for creating loosely-coupled models and views using a declarative and event-driven style.
 
-What Are We Working On For 1.4?
-===============================
+Infusion includes:
+    * an application framework for developing applications with JavaScript and jQuery,
+    * a growing collection of user interface components, and
+    * a modular CSS framework that allows you to add, remove and mix classes to get effect you want.
+
+Infusion embraces unobtrusive, functional techniques that promote less code and greater flexibility. Infusion takes the pain out of developing accessible, high performance, clean and nimble front-ends for applications that want to do more. Our approach is to leave you in control - it's your interface, using your markup, your way.
+
+
+Where Can I See Infusion Components?
+====================================
+
+We have a convenient, one-stop-shop for seeing all our components in action:
+
+    http://fluidproject.org/products/infusion/infusion-demos/
+
+
+How Do I Get Infusion?
+======================
+
+You can create your own custom build of Infusion using the new Infusion Builder:
+
+    http://builder.fluidproject.org
+
+Alternatively, you can download a source code release from Github:
+
+    https://github.com/fluid-project/infusion
+
+
+What Are You Working On Now?
+============================
+
+Our plans for our next release, 1.4, include:
 
     * Improvements to the Fluid Skinning System (FSS)
     * Updates to UI Options
     
-For more information, please see the Infusion Roadmap, at
+For more information, please see the Infusion Roadmap:
+
     http://wiki.fluidproject.org/display/fluid/Infusion+Roadmap+1.3.1+-+1.5
 
-Downloading Infusion
-====================
 
-You can download a full bundle of the latest stable release, including our demos and tests, from the project website:
-    http://fluidproject.org/products/infusion/download-infusion/
+Who Makes Infusion, and How Can I Help?
+=======================================
 
-Alternatively, you can download a full bundle from github:
-    https://github.com/fluid-project/infusion/zipball/infusion-1.3.1
-    https://github.com/fluid-project/infusion/tarball/infusion-1.3.1
+The Fluid community is an international group of designers, developers, volunteers, and advisers who focus on a common mission: improving the user experience of community and open source web applications.
 
-To download the latest version of the code (i.e. currently under active development), use the master branch:
-    https://github.com/fluid-project/infusion/zipball/master
-    https://github.com/fluid-project/infusion/tarball/master
+The best way to join the Fluid Community is to jump in to any of our community activities. Visit our "Get Involved" page for links to our mailing lists, chat room, wiki, etc.:
 
-Create Your Own Infusion Build
-==============================
-
-Latest Stable Version
----------------------
-You can create your own custom build of the latest stable release of Infusion using the Infusion Builder:
-    http://builder.fluidproject.org
-This will create a single concatenated file, InfusionAll.js, containing only the modules you require.
-
-Please note that this package will not include tests or demos.
-
-Current Working Version
------------------------
-To create a custom build from the current working version of the code, see        
-    http://wiki.fluidproject.org/display/fluid/Custom+Infusion+Builds+With+Ant
+    http://fluidproject.org/getinvolved/
 
 
-What's in Infusion?
-===================
-
-Source Code
------------
-The organization of the full source code for the Infusion library is as follows:
-
-        components/
-             inlineEdit/
-             pager/
-             progress/
-             reorderer/
-             tableOfContents/
-             tooltip/
-             uiOptions/
-             undo/
-             uploader/
-        framework/
-             core/
-             enhancement/
-             fss/
-             renderer/
-        lib/
-             fastXmlPull/
-             jquery/
-             json/
-             swfobject/
-             swfupload/
-
-In the Deployment Bundle, the JavaScript source has been minified: comments and whitespace have
-been removed. 
-
-Developers wishing to learn about the Fluid Infusion code, or debug their applications, should use
-the Source Code Bundle.
-
-Demo Portal
------------
-The bundle now comes with a convenient one-stop-shop for seeing all components in action. You can
-find the demo portal in the "demos" folder in the release bundle or on our Website at:
-
-    http://fluidproject.org/products/infusion/infusion-demos/
-
-When run from a local file system, several of these demos require you to enable local file AJAX 
-if you're using Firefox 3 and higher. Here's more information:
-
-    http://kb.mozillazine.org/Security.fileuri.strict_origin_policy
-    http://ejohn.org/blog/tightened-local-file-security/
-    
-        
-Other Examples and Sample Code
-------------------------------
-Sample code illustrating how Infusion components can be used:
-
-        integration-demos/
-             sakai/     (showcases: Inline Edit, Pager, UI Options, FSS)
-             uportal/   (showcases: Reorderer, UI Options, FSS)
-        standalone-demos/
-             pager/
-             renderer/
-             reorderer/
-             table-of-contents/
-
-Tests
------
-        tests/
-            component-tests/
-            escalated-tests/
-            framework-tests/
-            lib/
-            manual-tests/
-            test-core/
-
-Please note that the tests in the "manual-tests" folder are deprecated, and are being
-converted into unit tests. Any remaining tests in that folder may not function properly.
-
-License
--------
-Fluid Infusion code is licensed under both the ECL 2.0 and new BSD licenses. The specific licenses can be
-found in the license file:
-        licenses/Infusion-LICENSE.txt
-
-Infusion also depends upon some third party open source modules. These are contained in their own
-folders, and their licenses are also present in
-        licenses/
-        
-More information about Infusion licensing is available in our wiki:
-
-    http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
-
-
-Third Party Software in Infusion
---------------------------------
-This is a list of publicly available software that is redistributed with Fluid Infusion, 
-categorized by license:
-
-MIT License:
-    * jQuery javascript library v1.4.2: http://jquery.com/ 
-    * jQuery UI javascript widget library v1.8: http://ui.jquery.com/
-    * jQuery UI tooltip (pre-release from jQuery 1.9 branch) https://github.com/jquery/jquery-ui/tree/tooltip
-    * jQuery QUnit: http://docs.jquery.com/QUnit
-    * jQuery Mockjax: https://github.com/appendto/jquery-mockjax
-    * jQuery Chili code highlighter http://code.google.com/p/jquery-chili-js/ 
-    * SWFUpload v2.2.0.1: http://swfupload.org/
-    * SWFObject v2.2: http://code.google.com/p/swfobject/
-
-zlib/libpng License:
-    * fastXmlPull is based on XML for Script's Fast Pull Parser v3.1
-      (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
-  
-BSD License:
-    * fluid.reset.css is based on YUI's CSS reset styling v2.5.2
-      see: http://developer.yahoo.com/yui/reset/
-    * Sample markup and stylesheets from uPortal v2.6 (http://www.uportal.org/)
-
-ECL 2.0:
-    * Sample markup and stylesheets from Sakai v2.5 (http://sakaiproject.org)
-
-Other licenses:
-    * Douglas Crockford's JSON.js (from 2007-11-06): http://www.json.org/ (Public Domain)
-    
-
-Documentation
-=============
-
-The Fluid Project uses a wiki for documentation and project collaboration: http://wiki.fluidproject.org
-The main Infusion documentation can be found at:
-
-    http://wiki.fluidproject.org/display/fluid/Infusion+Documentation
-
-The documentation for Infusion consists of a number of information pages stored in the Fluid Wiki.
-The pages include tutorials, API descriptions, testing procedures, and data-gathering approaches. To make the 
-manual pages easy to navigate, we have added the following guides:
-
-    * The above-mentioned landing page, which links to all of our documentation.
-    * A link to the documentation appears at the top of the left-side wiki navigation
-      bar with the name "Infusion Documentation".
-
-NOTE: Starting with Infusion 1.3, we are beginning to migrate our documentation to a new home.
-Some of our Sneak Peek functionality is now documented at
-    http://wiki.fluidproject.org/display/docs/Infusion+Documentation+Home
-
-
-Supported Browsers
-==================
-
-The following browsers are fully supported and were actively tested against for Infusion 1.3.1:
-
-Mac OS X 10.6:
-    * Safari 5
-    * Firefox 3.6
-    * Firefox 4
-   
-Windows XP:
-    * Firefox 3.6
-    * Internet Explorer 6
-    * Internet Explorer 7
-    * Internet Explorer 8
-    * Google Chrome
-    
-Windows 7:
-    * Firefox 3.6
-    * Firefox 4
-    * Internet Explorer 8
-    * Internet Explorer 9
-    
-For more information on Fluid Infusion browser support, please see:
-    http://wiki.fluidproject.org/display/fluid/Browser+Support
-
-
-Status of Components and Framework Features
-===========================================
-
-Production: supports A-Grade browsers, stable for production usage across a wide range of
-applications and use cases
-    * Fluid Skinning System 
-    * Infusion Framework Core
-    * Inline Edit: Simple Text
-    * Renderer
-    * Reorderer: List, Grid, Layout, Image
-    * Undo
-
-Preview: still growing, but with broad browser support. Expect new features in upcoming releases
-    * Pager
-    * Progress
-    * UI Options
-    * Uploader
-
-Sneak Peek: in development; APIs will change. Share your feedback, ideas, and code
-    * IoC
-    * Transactional ChangeApplier
-    * Inline Edit: Dropdown
-    * Inline Edit: Rich Text
-    * Mobile Fluid Skinning System
-    * Table of Contents
-    * Model Transformation
-    * Progressive Enhancement
-
-
-Known Issues
-============
-
-The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org
-Some of the known issues in this release are described here:
-
-FSS:
-    FLUID-2504: Flexible columns don't maintain proper alignment under certain conditions
-    FLUID-2434: In IE, major font size changes break text positioning within form controls
-
-Framework:
-    FLUID-2577: Renderer performance can be slow on IE 6 and 7 in some contexts.
-
-Inline Edit: 
-    FLUID-3632: Chrome 4 in WIN XP does not allow tabbing out of tinyMCE editor's edit field
-    FLUID-3811: Previous edits are persisting in Edit Mode despite demo being reloaded in IE8
-    FLUID-1600: Pressing the "Tab" key to exit edit mode places focus on the wrong item
-
-Layout Reorderer: 
-    FLUID-3864: Layout Reorderer failed to move portlets back to the first column in three-columns view with keyboard
-    FLUID-3089: If columns become stacked, can't drag item into lower column
-    FLUID-858:  Portlet Columns load with no padding between them in IE7
-
-Pager:
-    FLUID-4036: The Pager is dependent on the use of rsf:ids for sortable columns
-    FLUID-2880: The Pager will be refactored. Note that as a result of this, there will be significant changes to the Pager API
-    FLUID-3584: Clicking page numbers throws an error: using IE 6
-
-Renderer: 
-    FLUID-3493: Renderer appears to corrupt templates containing empty tags on Opera (maybe others)
-    FLUID-3277: Attempt to add children to leaf component in tree results in "targetlump is undefined" error
-    FLUID-3276: Enclosing branch nodes within markup which has "headers" attribute causes them to become invisible to the renderer
-
-Reorderer: 
-    FLUID-3288: Moving an item with the keyboard "loses" the "ctrl-key is down" status
-    FLUID-118:  Dragging an image offscreen or out of the frame has some unexpected results.
-
-UI Options: 
-    FLUID-3621: The text in buttons does not change size.
-    FLUID-2481: "Links" selection does not work correctly in UIOptions
-    FLUID-2398: Minimum font size control changes the text size even when the base size is larger then the minimum.
-    
-Uploader: 
-    FLUID-3886: The HTML5 version of the Uploader can't exclude certain files based on file type
-    FLUID-4078: The HTML5 Upload strategy incorrectly interprets the fileSizeLimit option as MB instead of KB
-    FLUID-3996: Deleting files on the local filesystem after they have been added to the Uploader's queue will cause inconsistent behaviour
-    FLUID-3997: Can't tab to the "Browse/Add More" button with the keyboard in IE with Flash 10
-    FLUID-3999: "Add more" button is not disabled while uploading other files in HTML5-compliant browsers
-    FLUID-2052: Cannot tab away from the "Browse Files" button with Flash 10*
-    * For information related to known issues with Flash 10 compatibility, 
-      see http://wiki.fluidproject.org/x/kwZo
