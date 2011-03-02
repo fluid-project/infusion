@@ -20,7 +20,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global portalRootId*/ 
  
  // JSLint options 
- /*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 50, indent: 4 */
+ /*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
  
 fluid.testUtils = fluid.testUtils || {};
 

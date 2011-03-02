@@ -15,7 +15,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global fluid: true, jQuery, jqUnit, expect, ok, window*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 50, indent: 4 */
+/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid = fluid || {};
 // Import definition of fluid.unwrap, it is just too irritating fiddling around without it
