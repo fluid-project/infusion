@@ -270,18 +270,18 @@ var fluid_1_3 = fluid_1_3 || {};
         var pen = fluid.model.getPenultimate(model, request.path, resolverSetConfig || fluid.model.defaultSetConfig);
         
         if (request.type === "ADD" || request.type === "MERGE") {
-            if (pen.last === "" || request.type === "MERGE") {
+            if (request.path === "" || request.type === "MERGE") {
                 if (request.type === "ADD") {
                     fluid.clear(pen.root);
                 }
-                $.extend(true, pen.last === "" ? pen.root: pen.root[pen.last], request.value);
+                $.extend(true, request.path === "" ? pen.root: pen.root[pen.last], request.value);
             }
             else {
                 pen.root[pen.last] = request.value;
             }
         }
         else if (request.type === "DELETE") {
-            if (pen.last === "") {
+            if (request.path === "") {
                 fluid.clear(pen.root);
             }
             else {

@@ -130,6 +130,11 @@ var fluid = fluid || fluid_1_3;
     // Framework and instantiation functions.
 
     
+    /** Returns true if the argument is a value other than null or undefined **/
+    fluid.isValue = function(value) {
+        return value !== undefined && value !== null;
+    }
+    
     /** Returns true if the argument is a primitive type **/
     fluid.isPrimitive = function (value) {
         var valueType = typeof(value);
@@ -825,10 +830,10 @@ var fluid = fluid || fluid_1_3;
                     if (typeof(newPolicy) === "function") {
                         newPolicy.call(null, target, source, name);
                     }
-                    else if (thisTarget === null || thisTarget === undefined || !fluid.mergePolicyIs(newPolicy, "reverse")) {
+                    else if (!fluid.isValue(thisTarget) || !fluid.mergePolicyIs(newPolicy, "reverse")) {
                         // TODO: When "grades" are implemented, grandfather in any paired applier to perform these operations
                         // NB: mergePolicy of "preserve" now creates dependency on DataBinding.js
-                        target[name] = fluid.mergePolicyIs(newPolicy, "preserve") ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
+                        target[name] = fluid.isValue(thisTarget) && fluid.mergePolicyIs(newPolicy, "preserve") ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
                     }
                 }
             }
