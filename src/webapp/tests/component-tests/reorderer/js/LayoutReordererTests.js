@@ -14,6 +14,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global document, jQuery, fluid, demo, jqUnit*/
 
+// JSLint options 
+/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 50, indent: 4 */
+
 (function ($) {
     $(document).ready(function () {
         var layoutReordererTests = new jqUnit.TestCase("LayoutReorderer Tests");

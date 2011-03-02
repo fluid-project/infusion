@@ -12,6 +12,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global window, swfobject, jQuery*/
 
+// JSLint options 
+/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 50, indent: 4 */
+
 var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {

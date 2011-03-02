@@ -15,14 +15,15 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+/*global importClass, Packages */
+/*global java, File, BufferedReader, FileReader, LogLevel */
+
+// JSLint options 
+/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 50, indent: 4 */
 
 /*
  * This is the Fluid Infusion dependency manager.
  */
-
-/*global importClass, Packages */
-/*global java, File, BufferedReader, FileReader, LogLevel */
-
 importClass(java.io.BufferedReader);
 importClass(java.io.FileReader);
 importClass(java.io.File);

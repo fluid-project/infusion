@@ -10,6 +10,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+// JSLint options 
+/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 50, indent: 4 */
+
 (function ($, fluid) {
     var absoluteProgress, floatyProgress, staticProgressOne, staticProgressTwo;
     

@@ -15,6 +15,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global fluid*/
 
 /*global demo*/
+
+// JSLint options 
+/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 50, indent: 4 */
+
 var demo = demo || {};
 
 (function ($, fluid) {

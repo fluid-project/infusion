@@ -13,10 +13,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global jQuery*/
 /*global fluid*/
 
+// JSLint options 
+/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 50, indent: 4 */
+
 /**
  * This file contains test constants and setup and teardown functions that are used when testing with the data in the Lightbox.html file.
  */
- 
 var numOfImages = 14;
 
 // The id of the root node of the lightbox
