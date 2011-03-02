@@ -822,40 +822,27 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var button = fluid.inlineEdit.setupTextEditButton(editor);     
                 jqUnit.assertTrue("textEditButton has button role", "button", button.attr("role"));
             });            
-            
-            
-            var multipleInlineEditCommonSteps = function (container, options) {
-                var editor = fluid.inlineEdits(container, options);
-                var i = 0;
-                //checks if the elements has undo option
-                for (i = 0; i < editor.length; i++) {
-                    if (options && options.componentDecorators && options.componentDecorators === "fluid.undoDecorator") {
-                        jqUnit.assertEquals("has undo option", "undo edit", editor[i].container.children(":contains('undo edit')").find('a:nth-child(1)').text());
-                    } else {
-                        jqUnit.assertNotEquals("does not have undo option", "undo edit", editor[i].container.children(":contains('undo edit')").find('a:nth-child(1)').text());
-                    }
+       
+            var testMultiInlineEdits = function (containerId, numEditors, hasUndo, options) {
+                var editors = fluid.inlineEdits("#" + containerId, options);
+                jqUnit.assertEquals(containerId + " has " + numEditors + " editors", numEditors, editors.length);
+                var i;
+                for (i = 0; i < numEditors; i++) {
+                    var editor = editors[i];
+                    var currentHasUndo = !!editor.decorators && editor.decorators[0].typeName === "undo";
+                    jqUnit.assertEquals("Check whether or not editor has undo option", hasUndo, currentHasUndo);
+                    jqUnit.assertEquals("Belongs to container " + containerId, containerId, editor.container.parent().attr("id"));
                 }
-                
-                //checks if items are inside the container
-                for (i = 0; i < editor.length; i++) {
-                    if (options && options.componentDecorators && options.componentDecorators === "fluid.undoDecorator") {
-                        jqUnit.assertEquals("belong to container #inline-multiple-edits ", "inline-multiple-edits", editor[i].container.parent().attr("id"));
-                    } else {
-                        jqUnit.assertEquals("belong to container #inline-multiple-edits-2", "inline-multiple-edits-2", editor[i].container.parent().attr("id"));
-                    }
-                }               
             };
             
-            inlineEditTests.test("Test two copies of multiple inline edits with undo - " +
-                    "we need to make sure we cover containment within a group " +
-                    "when using the multiple inline edit API ", function () {           
-                    var option = {selectOnEdit: true,
-                            componentDecorators: "fluid.undoDecorator"
-                            };
-            
-                    multipleInlineEditCommonSteps("#inline-multiple-edits", option);
-                    multipleInlineEditCommonSteps("#inline-multiple-edits-2");
-                });            
+            inlineEditTests.test("Test two copies of multiple inline edits with - we need to make sure we cover containment within a group when using the multiple inline edit API ", function () {           
+                var options = {selectOnEdit: true,
+                               componentDecorators: "fluid.undoDecorator"
+                        };
+        
+                testMultiInlineEdits("inline-multiple-edits", 2, true, options);                
+                testMultiInlineEdits("inline-multiple-edits-2", 3, false);
+            });            
 
             inlineEditTests.test("Test overriding the tooltip text ", function () {
                 var options = {useTooltip: true, 
