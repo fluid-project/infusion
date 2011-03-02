@@ -93,10 +93,18 @@ var fluid_1_3 = fluid_1_3 || {};
         }
     };
 
-    function makeStackFetcher(thatStack, directModel) {
+    function makeStackFetcher(instantiator, parentThat, localRecord) {
+        var thatStack = instantiator.getFullStack(parentThat);
         var fetchStrategies = [fluid.model.funcResolverStrategy, makeGingerStrategy(thatStack)]; 
         var fetcher = function(parsed) {
             var context = parsed.context;
+            if (localRecord && localRecord[context]) {
+                var fetched = fluid.get(localRecord[context], parsed.path);
+                return context === "options"? {
+                    marker: fluid.EXPAND,
+                    value: fetched
+                } : fetched;
+            }
             var foundComponent;
             visitComponents(thatStack, function(component, name) {
                 if (context === name || context === component.typeName || context === component.nickName) {
@@ -116,69 +124,63 @@ var fluid_1_3 = fluid_1_3 || {};
         return fetcher;
     }
      
-    function makeStackResolverOptions(thatStack, directModel) {
+    function makeStackResolverOptions(instantiator, parentThat, localRecord) {
         return $.extend({}, fluid.defaults("fluid.resolveEnvironment"), {
             noCopy: true,
-            fetcher: makeStackFetcher(thatStack, directModel)
+            fetcher: makeStackFetcher(instantiator, parentThat, localRecord)
             }); 
     } 
-     
-    function resolveRvalue(thatStack, arg, initArgs, componentOptions) {
-        var directModel = thatStack[0].model; // TODO: this is not reasonable
-        var options = makeStackResolverOptions(thatStack, directModel);
-        options.model = directModel;
-        
-        if (fluid.isMarker(arg, fluid.COMPONENT_OPTIONS)) {
-            arg = fluid.expandOptions(componentOptions, thatStack[thatStack.length - 1]); //fluid.expander.expandLight(componentOptions, options);
-        }
-        else {
-            if (typeof(arg) === "string" && arg.charAt(0) === "@") { // Test cases for i) single-args, ii) composite args
-                var argpos = arg.substring(1);
-                arg = initArgs[argpos];
-            }
-            else {
-                arg = fluid.expander.expandLight(arg, options); // fluid.resolveEnvironment(arg, directModel, options);
-            }
-        }
-        return arg;
-    }
     
+    fluid.argMapToDemands = function(argMap) {
+        var togo = [];
+        fluid.each(argMap, function(value, key) {
+            togo[value] = "{" + key + "}";  
+        });
+        return togo;
+    };
     
     /** Given a concrete argument list and/or options, determine the final concrete
      * "invocation specification" which is coded by the supplied demandspec in the 
      * environment "thatStack" - the return is a package of concrete global function name
      * and argument list which is suitable to be executed directly by fluid.invokeGlobalFunction.
      */
-    fluid.embodyDemands = function(thatStack, demandspec, initArgs, options) {
+    fluid.embodyDemands = function(instantiator, parentThat, demandspec, initArgs, options) {
         var demands = $.makeArray(demandspec.args);
+        var upDefaults = fluid.defaults(demandspec.funcName); // I can SEE into TIME!!
+        var argMap = upDefaults? upDefaults.argumentMap : null;
+        if (!argMap && (upDefaults || options && options.componentRecord)) {
+            // infer that it must be a little component if we have any reason to believe it is a component
+            argMap =  fluid.rawDefaults("fluid.littleComponent").argumentMap;
+        }
+        var expandMap = {};
         options = options || {};
         if (demands.length === 0) {
-            if (options.componentOptions) { // Guess that it is meant to be a subcomponent TODO: component grades
-               demands = [fluid.COMPONENT_OPTIONS];
+            if (options.componentRecord) {
+                demands = fluid.argMapToDemands(argMap);
             }
             else if (options.passArgs) {
                 demands = fluid.transform(initArgs, function(arg, index) {
-                    return "@"+index;
+                    return "{arguments}." + index;
                 });
             }
         }
+        var localRecord = $.extend({"arguments": initArgs}, options.componentRecord);
+        var expandOptions = makeStackResolverOptions(instantiator, parentThat, localRecord);
         var args = [];
         if (demands) {
             for (var i = 0; i < demands.length; ++ i) {
                 var arg = demands[i];
-                if (typeof(arg) === "object" && !fluid.isMarker(arg)) {
-                    var resolvedOptions = {};
-                    for (var key in arg) {
-                        var ref = arg[key];
-                        var rvalue = resolveRvalue(thatStack, ref, initArgs, options.componentOptions);
-                        fluid.set(resolvedOptions, key, rvalue);
+                // Weak detection since we cannot guarantee this material has not been copied
+                if (fluid.isMarker(arg) && arg.value === fluid.COMPONENT_OPTIONS.value) {
+                    arg = "{options}";//fluid.expandOptions(componentOptions, thatStack[thatStack.length - 1]); //fluid.expander.expandLight(componentOptions, options);
+                }
+                if (typeof(arg) === "string") {
+                    if (arg.charAt(0) === "@") {
+                        var argpos = arg.substring(1);
+                        arg = "{arguments}." + argpos;
                     }
-                    args[i] = resolvedOptions;
                 }
-                else {
-                    var resolvedArg = resolveRvalue(thatStack, arg, initArgs, options.componentOptions);
-                    args[i] = resolvedArg;
-                }
+                args[i] = fluid.expander.expandLight(arg, expandOptions);
                 if (i === demands.length - 1 && args[i] && typeof(args[i]) === "object" && !args[i].typeName && !args[i].targetTypeName) {
                     args[i].targetTypeName = demandspec.funcName; // TODO: investigate the general sanity of this
                 }
@@ -226,7 +228,7 @@ var fluid_1_3 = fluid_1_3 || {};
         exist.push({contexts: contextNames, spec: spec});
     };
     
-    fluid.instantiator = function() {
+    fluid.instantiator = function(freeInstantiator) {
         // NB: We may not use the options merging framework itself here, since "withInstantiator" below
         // will blow up, as it tries to resolve the instantiator which we are instantiating *NOW*
         var preThat = {
@@ -256,9 +258,16 @@ var fluid_1_3 = fluid_1_3 || {};
             }
             return togo;
         };
+        that.getEnvironmentalStack = function() {
+            var togo = [fluid.staticEnvironment];
+            if (!freeInstantiator) {
+                togo.push(fluid.threadLocal());
+            }
+            return togo;
+        }
         that.getFullStack = function(component) {
             var thatStack = component? that.getThatStack(component) : [];
-            return [fluid.staticEnvironment, fluid.threadLocal()].concat(thatStack);
+            return that.getEnvironmentalStack().concat(thatStack);
         }
         function recordComponent(component, path) {
             that.idToPath[component.id] = path;
@@ -297,9 +306,12 @@ var fluid_1_3 = fluid_1_3 || {};
         };
         return that;
     };
+    
+    fluid.freeInstantiator = fluid.instantiator(true);
 
-    fluid.locateDemands = function(demandingNames, thatStack) {
+    fluid.locateDemands = function(instantiator, parentThat, demandingNames) {
         var contextNames = {};
+        var thatStack = instantiator.getFullStack(parentThat);
         visitComponents(thatStack, function(component) {
             contextNames[component.typeName] = true;
         });
@@ -329,10 +341,9 @@ var fluid_1_3 = fluid_1_3 || {};
     /** Determine the appropriate demand specification held in the fluid.demands environment 
      * relative to "thatStack" for the function name(s) funcNames.
      */
-    fluid.determineDemands = function (thatStack, funcNames) {
-        var that = thatStack[thatStack.length - 1];
+    fluid.determineDemands = function (instantiator, parentThat, funcNames) {
         funcNames = $.makeArray(funcNames);
-        var demandspec = fluid.locateDemands(funcNames, thatStack);
+        var demandspec = fluid.locateDemands(instantiator, parentThat, funcNames);
    
         if (!demandspec) {
             demandspec = {};
@@ -358,9 +369,9 @@ var fluid_1_3 = fluid_1_3 || {};
         return {funcName: newFuncName, args: args};
     };
     
-    fluid.resolveDemands = function (thatStack, funcNames, initArgs, options) {
-        var demandspec = fluid.determineDemands(thatStack, funcNames);
-        return fluid.embodyDemands(thatStack, demandspec, initArgs, options);
+    fluid.resolveDemands = function(instantiator, parentThat, funcNames, initArgs, options) {
+        var demandspec = fluid.determineDemands(instantiator, parentThat, funcNames);
+        return fluid.embodyDemands(instantiator, parentThat, demandspec, initArgs, options);
     };
     
     // TODO: make a *slightly* more performant version of fluid.invoke that perhaps caches the demands
@@ -368,8 +379,7 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.invoke = function(functionName, args, that, environment) {
         args = fluid.makeArray(args);
         return fluid.withInstantiator(that, function(instantiator) {
-            var thatStack = instantiator.getFullStack(that);
-            var invokeSpec = fluid.resolveDemands(thatStack, functionName, args, {passArgs: true});
+            var invokeSpec = fluid.resolveDemands(instantiator, that, functionName, args, {passArgs: true});
             return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
         });
     };
@@ -381,27 +391,24 @@ var fluid_1_3 = fluid_1_3 || {};
      */
     
     fluid.makeFreeInvoker = function(functionName, environment) {
-        var demandSpec = fluid.determineDemands([fluid.staticEnvironment], functionName);
+        var demandSpec = fluid.determineDemands(fluid.freeInstantiator, null, functionName);
         return function() {
-            var invokeSpec = fluid.embodyDemands(fluid.staticEnvironment, demandSpec, arguments);
+            var invokeSpec = fluid.embodyDemands(fluid.freeInstantiator, null, demandSpec, arguments);
+            return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
+        };
+    };
+    // TODO: non-standard signature
+    fluid.makeInvoker = function(instantiator, that, demandspec, functionName, environment) {
+        demandspec = demandspec || fluid.determineDemands(instantiator, that, functionName);
+        return function() {
+            var invokeSpec = fluid.embodyDemands(instantiator, that, demandspec, arguments);
             return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
         };
     };
     
-    fluid.makeInvoker = function(that, instantiator, demandspec, functionName, environment) {
-        var thatStack = instantiator.getFullStack(that);
-        demandspec = demandspec || fluid.determineDemands(thatStack, functionName);
-        return function() {
-            var invokeSpec = fluid.embodyDemands(thatStack, demandspec, arguments);
-            return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
-        };
-    };
-    
-    fluid.addBoiledListener = function(thatStack, eventName, listener, namespace, predicate) {
-        thatStack = $.makeArray(thatStack);
-        var topThat = thatStack[thatStack.length - 1];
-        topThat.events[eventName].addListener(function(args) {
-            var resolved = fluid.resolveDemands(thatStack, eventName, args);
+    fluid.addBoiledListener = function(instantiator, that, eventName, listener, namespace, predicate) {
+        that.events[eventName].addListener(function(args) {
+            var resolved = fluid.resolveDemands(instantiator, that, eventName, args);
             listener.apply(null, resolved.args);
         }, namespace, predicate);
     };
@@ -458,8 +465,7 @@ var fluid_1_3 = fluid_1_3 || {};
         }
         return fluid.withInstantiator(that, function(instantiator) {
             fluid.log("expandOptions for " + that.typeName + " executing with instantiator " + instantiator.id);
-            var thatStack = instantiator.getFullStack(that);
-            var expandOptions = makeStackResolverOptions(thatStack);
+            var expandOptions = makeStackResolverOptions(instantiator, that);
             expandOptions.noCopy = true; // It is still possible a model may be fetched even though it is preserved
             if (!fluid.isArrayable(args)) {
                 var pres = fluid.expander.preserveFromExpansion(args);
@@ -490,15 +496,12 @@ var fluid_1_3 = fluid_1_3 || {};
         }
         
         fluid.withInstantiator(that, function(instantiator) {
-            var thatStack = instantiator.getFullStack(that);
             var component = that.options.components[name];
             if (typeof(component) === "string") {
                 that[name] = fluid.expandOptions([component], that)[0]; // TODO: expose more sensible semantic for expandOptions 
             }
             else if (component.type) {
-                var invokeSpec = fluid.resolveDemands(thatStack, [component.type, name], directArgs, {componentOptions: component.options});
-                // TODO: only want to expand "options" or all args? See "component rescuing" in expandOptions above
-                //invokeSpec.args = fluid.expandOptions(invokeSpec.args, thatStack, true);
+                var invokeSpec = fluid.resolveDemands(instantiator, that, [component.type, name], directArgs, {componentRecord: component});
                 instantiator.pushUpcomingInstantiation(that, name);
                 try {
                     that[inCreationMarker] = true;
@@ -559,7 +562,7 @@ var fluid_1_3 = fluid_1_3 || {};
             var invokerec = invokers[name];
             var funcName = typeof(invokerec) === "string"? invokerec : null;
             that[name] = fluid.withInstantiator(that, function(instantiator) { 
-                return fluid.makeInvoker(that, instantiator, funcName? null : invokerec, funcName);
+                return fluid.makeInvoker(instantiator, that, funcName? null : invokerec, funcName);
             });
         }
     };

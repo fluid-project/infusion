@@ -348,6 +348,9 @@ var fluid = fluid || fluid_1_3;
      * signalling using the value "undefined" is not possible) */
     fluid.NO_VALUE = {type: "fluid.marker", value: "NO_VALUE"};
     
+    /** A marker indicating that a value requires to be expanded **/
+    fluid.EXPAND = {type: "fluid.marker", value: "EXPAND"};
+    
     /** Determine whether an object is any marker, or a particular marker - omit the
      * 2nd argument to detect any marker
      */
@@ -358,7 +361,7 @@ var fluid = fluid || fluid_1_3;
         if (!type) {
             return true;
         }
-        return totest.value === type || totest.value === type.value;
+        return totest === type;
     };
    
     /** Copy a source "model" onto a target **/
@@ -894,6 +897,13 @@ var fluid = fluid || fluid_1_3;
         var defaults = fluid.defaults(componentName); 
         if (fluid.expandOptions) {
             defaults = fluid.expandOptions(fluid.copy(defaults), that);
+            if (userOptions && userOptions.marker === fluid.EXPAND) {
+                var toExpand = userOptions.value;
+                if (defaults && defaults.mergePolicy) {
+                    toExpand.mergePolicy = defaults.mergePolicy;
+                }
+                userOptions = fluid.expandOptions(toExpand, that);
+            }
         }
         var mergePolicy = $.extend({}, defaults? defaults.mergePolicy : {});
         that.options = fluid.merge(mergePolicy, {}, defaults, userOptions);    
@@ -999,134 +1009,6 @@ var fluid = fluid || fluid_1_3;
         }
         return that;
     };
-    
-    // TODO: for components of the "old style", unless a GRADE is written in defaults, there
-    // is no way we could infer it. We don't know which init function a component is going to call 
-    // before it executes. For modern-style components, they will presumably use "makeComponents" - 
-    // and should really use the "initFunction" + "finalInitFunction" style.
-    // If they do this, we can somehow pervert the componentName signature so that we can tell
-    // when we are instantiating, although that is a "later problem" - the one of "unrelated instantiation" - not so important
-    // Our important problem now is on seeing no grade, we have no idea what do. In the renderer, unless we see a grade,
-    // probably have to assume it is a view component - if we don't even see defaults? 
-    // Another thing we want to implement is "mergePaths".
-    // What we want to support is some demands blocks being able to override material from componentOptions - 
-    // specified by fluid.COMPONENT_OPTIONS in the demands blocks.
-    // currently we specified that this needs to be specified as specific args - but this causes signature pollution.
-    // thing is - that IoC expansion currently occurs AFTER merging. Phases:
-    // i) resolve graded defaults (without expansion or IoC), ii) expand THAT merged form,
-    // using IoC - it is passed to "expandOptions"., iii) merge on the user options
-    
-    // however - issue is that BEFORE i), COMPONENT_OPTIONS are fished out of configuration, and 
-    // expanded FIRST - since they can only appear as user options. This is the reason we cannot mix
-    // them right now with demands block material - in resolveDemands for the instantiation itself, they
-    // are expanded. However this is PRECISELY what we could do with a grade. If we see a grade which
-    // mentions a mergePath of {componentOptions}, we can instead tunnel them in raw somehow.
-    // This is where the whole "tunneling" aspect appears. We somehow need to be able to get
-    // EXTRA arguments in to the component creator functions, which, for example, can specify that
-    // componentOptions NEED MERGING AND EXPANSION. For example, componentOptions are something that appear
-    // in the tree, and so need expansion. However, they may need to be merged with various other things
-    // in the tree by demands blocks, with parts overriden. THEN they can be supplied as an "expanded argument"
-    // to the component's creator function. This possibility needs to be advertised in the antigenic
-    // (graded) part of the upcoming component's defaults. What we ALSO advertise is where to put this
-    // expanded, merged argument, and that it should NOT be expanded again. This means that the branch for
-    // "expandOptions" in littleComponent is defeated in this case. ALL of this is an antigenic advertisemenet
-    // to the IoC system ahead of time. 
-    // Further requirement of the tunnelling of course is that littleComponent is informed... but of course we
-    // just assume "the will of the framework is always being done" - we just look in our own default options
-    // to see if they indicate that they WILL be expanded and merged before being provided. 
-    // Big problem here is with demands blocks referring to the component itself.   So, this implies we
-    // cannot do it "up front" in that way.
-    // littleComponent constructs first, and THEN calls mergeComponentOptions. So all of this REALLY needs
-    // to go in mergeComponentOptions. Ah! not all of it! We STILL need to defeat expansion, which currently
-    // occurs in resolveRValue, and then inform mCO that expansion now IS required, only after merging (and resolution).
-    // we then somehow need {componentOptions} to be put in a tree where they are somehow resolvable.... in theory,
-    // we could just look at our own argument list to know where we directed the IoC system to put them.
-    // For "old" components that lack a grade, we will just have to infer an "argumentMap" somehow - we could
-    // even make THIS an IoC resolvable operation so it could be done in bulk - try to invoke a 
-    // resolveArgumentMap function which just defaults to its being the first and only arg. 
-    
-    // grades: "autoInit" - the framework does all the packaging and just invokes the "final" function, if any.
-    // grades: "mergePaths" - if we see this, we defeat RValue expansion, and instead do it all in expandOptions, firstly
-    // IoC resolving all the material referred in the paths
-    // mergePaths: ["{componentOptions}", "{parent}.innerPath"] etc. but how do we CONTRIBUTE to this with
-    // demands blocks? mergePaths itself is the main thing that will be demanded... but demands blocks hit
-    // SIGNATURES. For example, they mention [args] as replacement material for the arguments - there are "direct arguments",
-    // which in the case of subcomponents are mainly "invented" - although clearly a manual call to initDependent can supply
-    // literal ones. In the normal case, [COMPONENT_OPTIONS] is just spliced in, already-expanded, at one position or another.
-    // Once we have resolved the **FUNC NAME** addressed by the demands block, ONLY THEN do we know where to put the 
-    // options. The caller, however, knows... one big issue is that we have no way for writing an expansion directive that
-    // performs arbitrary "compositing" - we can only attach subtrees at particular paths. This is because demands blocks
-    // cannot specify MERGING. 
-    // So - the fact remains - it needs to be possible to write something, purely in a demands block, that contributes to 
-    // the MERGE DIRECTIVE - this seems to be really separate from the ability to write args. But really - it is 
-    // IN THE SAME SPACE as args - this is why demands blocks are defective - we are ALREADY compositing the args out of 
-    // pieces.... it's just that we are using the "limited dialect" of "direct tree attachment compositing".
-    // Again - this MUST be in the demands block - since we are not going to write a new component or change component logic.
-    // Can we write "merge compositing" in the same syntax as "args" are currently written? This is exactly the
-    // "model transformation" problem, with exactly the same core issue - that the current dialect makes an assumption that
-    // "you get what is there already" - an absence of any "{context}.name" directives implies you just get the literal
-    // object unchanged. Well.... of course we are compositing "args" themselves!! But again, we either mention a value, and
-    // get it WHOLE, or not - we can't specify a value, and then have it possibly overwritten during compositing.
-    // of course, compositing and expansion need to occur in step - we aren't doing GLOBAL GINGER MERGING, but we still
-    // need to be able to expand EACH RHS before sending it to merging.
-    // This is very similar to grades themselves - we fetch a collection of things and they are merged together. We need to
-    // be able to write, for example, ["": "{expr}"], ["path2", "{expr2}"] etc. A LIST which is then send in to be merged.
-    // This is a FLAT STRUCTURE.... as opposed to the RECURSIVE STRUCTURE of the RHS. This implies that we want
-    // each RHS to be EXACTLY as before, a "leaf-composited object". After this expansion, merging then happens, according to the
-    // mergePolicy. 
-    // The only question now, is how to WRITE this. We can't write it in args: [] directly... can we just get by with making
-    // a new directive, "mergeArgs" and expect just one or the other? Bothering every user with the ["":] syntax is a bit
-    // disagreeable. We can say that if we just find a string, or an object, as one of the elements, we will interpret it
-    // as a root? Hopefully this will not surprise people who actually write a literal array too much? This is only with
-    // "mergeArgs" after all. People who use literal arrays and want them to mean arrays can just use "args".
-    // What would be nice is to be able to write general args specs in components: areas rather than having a demands
-    // block... we already experimented with converting these into equivalent demands using the member nickname.
-    
-    // The plan for this was that we would actually take "components": material and simply remove it... and create 1-valent
-    // demands blocks for them. This itself of course created the special role for COMPONENT_OPTIONS... it *IS* the value
-    // written in the components block. If it is put into a demands block, how will we know which value it is :)
-    // That is... a TRUE demands block expects to be able to refer to the ONE, unique value which is in component
-    // options by a stable name. TRUE demands blocks hide each other - only one can be active. So one could never 
-    // refer to another. The ability to resolve {options} is then unique... this material was "put in the space of the
-    // users" and so became stably referencable during expansion, along with initArgs. 
-    // So, we have a problem operating "defaults to demands" rewriting - the rewritten demands block would violate
-    // rules on SINGLE-ACTIVITY of demands blocks.
-    // However, can we STILL have a contribution to args or mergeArgs from the components area, even if it is not
-    // rewritten? If a demands block DOES act, clearly it trashes this completely. Well - semicompletely.
-    // Clearly, there is an issue of the args/mergeArgs attempts to deposit something in the number in the argument
-    // list that represents "components" - **OTHER** demands blocks are expecting to refer to this material - yet
-    // we are compositing it ourselves! If the other blocks refer to it...... they presumably will have to do so
-    // in this "already composited form".... Of course, these demands blocks are executing BEFORE the component
-    // constructs. This makes a real mess... (*Q) do we really just want to honour "the part" of the in-line demands block
-    // that produces "options" for the purpose of making the EXTERNAL demands blocks have something to resolve to {options} - 
-    // whilst throwing away all the rest of the material they produce?
-    // Remember that external demands blocks always resolve FIRST... they intercept the ferrying of 
-    // initArgs/components to the creator function. 
-    // Well, they don't really, do they... otherwise how could you write material in an external demands block that
-    // refers to the component itself under construction? Or can they? I don't think they actually can... 
-    // initDependent calls "resolveDemands"... which then embodyDemands -> expandOptions for componentOptions ... this is all
-    // before initLittle even begins. Once it HAS begun... it then just expands its DEFAULTS. NOT these already expanded
-    // args-derived material.
-    // In our new model, mergeArgs expansion is done LATER... ALL in the initLittle expandOptions branch.
-    // probably a component could NOT refer to itself... we would say that this is what "mergePolicy" is for.
-    // the fact that mergePolicy consists of "lhs PATH: rhs PATH"... is suggestive. The big issue is that mergePolicy
-    // is currently UNORDERED, and allows just one string per path. We need an ORDERED version of this, and one which 
-    // actually accepts context references on RHS rather than just strings - and IN ADDITION one which works across
-    // all args, not just the particular component options.
-    // And then, we need to make sure what we write... doesn't interfere with genuine merge policy. 
-    // Well... "plain merge policy" is applied at EVERY STEP, after expansion of mergeArgs. 
-    
-    // Back to (*Q). If we put componentOptions itself on an equal footing with demands blocks, ....
-    // (*A) well.... clearly, the "options" part can be preserved and honoured... and then we can write
-    // BOTH args/mergeArgs there too. "options" then remains permanent, if written - but args/mergeArgs 
-    // can be beaten and so permanently replaced. And given that "mergeArgs" is at least as powerful
-    // as "options" anyway - given that it can not only refuse to mention "options" but also do even more
-    // with respect to compositing.... 
-    
-    
-    
-    
-
 
     // The Model Events system.
     

@@ -608,6 +608,34 @@ fluid.registerNamespace("fluid.testUtils");
         checkValue("Changed value", reins, "headValue2", expectedPaths);
     });
     
+    fluid.defaults("fluid.tests.mergeChild", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        mergePolicy: {
+            dangerousParams: "noexpand"  
+        }
+    });
+    
+    fluid.defaults("fluid.tests.mergeComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            mergeChild: {
+                type: "fluid.tests.mergeChild",
+                options: {
+                    dangerousParams: "{mergeComponent}.nothingUseful"
+                }
+            }
+        }  
+    });
+    
+    
+    fluidIoCTests.test("FLUID-3681 merge policy for component options", function() {
+        var mergeComp = fluid.tests.mergeComponent();
+        var defs = fluid.defaults("fluid.tests.mergeComponent");
+        jqUnit.assertEquals("Dangerous parameters unexpanded",
+            defs.components.mergeChild.options.dangerousParams, 
+            mergeComp.mergeChild.options.dangerousParams);
+    });
+    
     fluidIoCTests.test("Tree circularity test", function() {
         var circular = fluid.testUtils.circularity();
         // if this test fails, the browser will bomb with a stack overflow 
