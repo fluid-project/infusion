@@ -264,7 +264,7 @@ var fluid_1_4 = fluid_1_4 || {};
             var remainingUploadLimit = fileLimit - uploaded - queued;
             var filesToUpload = files.length;
             
-            // Clear the error queue when "User successfully added an error through the file dialog"
+            // Clear the error queue when "User successfully added a file through the file dialog"
             // that is LEQV to remainingUploadLimit > 0
             if (remainingUploadLimit > 0) {
                 that.events.clearFileError.fire();
@@ -273,7 +273,7 @@ var fluid_1_4 = fluid_1_4 || {};
             if (fileLimit !== 0 && filesToUpload > remainingUploadLimit) {
                 filesToUpload = remainingUploadLimit; 
                 for (var i = filesToUpload; i < files.length; i++) {
-                    that.events.onFileQueueError.fire(files[i], fluid.uploader.queueErrorConstnats.QUEUE_LIMIT_EXCEEDED);                    
+                    that.events.onQueueError.fire(files[i], fluid.uploader.queueErrorConstants.QUEUE_LIMIT_EXCEEDED);                    
                 }
             } 
              
@@ -283,7 +283,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 var file = files[i];
                 if (file.size >= sizeLimit) {
                     file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
-                    that.events.onFileQueueError.fire(file, fluid.uploader.queueErrorConstnats.FILE_EXCEEDS_SIZE_LIMIT);
+                    that.events.onQueueError.fire(file, fluid.uploader.queueErrorConstants.FILE_EXCEEDS_SIZE_LIMIT);
                 } else if (!fileLimit || remainingUploadLimit > 0) {
                     file.id = "file-" + fluid.allocateGuid();
                     file.filestatus = fluid.uploader.fileStatusConstants.QUEUED;
