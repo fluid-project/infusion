@@ -596,7 +596,6 @@ var fluid_1_4 = fluid_1_4 || {};
         while (typeof(string) === "string") {
             var i1 = string.indexOf("${");
             var i2 = string.indexOf("}", i1 + 2);
-            var all = (i1 === 0 && i2 === string.length - 1); 
             if (i1 !== -1 && i2 !== -1) {
                 var parsed;
                 if (string.charAt(i1 + 2) === "{") {
@@ -607,6 +606,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     parsed = {path: string.substring(i1 + 2, i2)};
                 }
                 var subs = options.fetcher(parsed);
+                var all = (i1 === 0 && i2 === string.length - 1); 
                 // TODO: test case for all undefined substitution
                 if (subs === undefined || subs === null) {
                     return subs;

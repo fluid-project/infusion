@@ -790,6 +790,35 @@ fluid.registerNamespace("fluid.tests");
             return;
         });
         
+        protoTests.test("FLUID-4128 test: Literal booleans within repetition/condition expander", function() {
+            var model = {conditions: [true, false, true, true, false]};
+            var expander = fluid.renderer.makeProtoExpander({model: model});
+            var protoTree = {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    repeatID: "repeat-row:",
+                    pathAs: "row",
+                    valueAs: "rowValue",
+                    controlledBy: "conditions",
+                    tree: {
+                        expander: {
+                            type: "fluid.renderer.condition",
+                            condition: "{rowValue}",
+                            trueTree: {
+                                leafValue: "{rowValue}"
+                            }
+                        }
+                    }
+                }
+            }
+            var expanded = expander(protoTree);
+            jqUnit.assertEquals("Only three rows produced", 3, expanded.children.length);
+            var protoTree2 = fluid.copy(protoTree);
+            protoTree.expander.tree.expander.condition = "${{rowValue}}";
+            var expanded = expander(protoTree);
+            jqUnit.assertEquals("Only three rows produced - alternative reference style", 3, expanded.children.length);
+        });
+        
         protoTests.test("FLUID-3658 test: selection to inputs expander", function () {
             var model = { };
             var expopts = {ELstyle: "${}", model: model};
@@ -811,7 +840,7 @@ fluid.registerNamespace("fluid.tests");
                             }
                         },
                         "permissions-record-type": "${fields.permissions.0.recordType}"
-                     }
+                    }
                     ]
                 }
             };

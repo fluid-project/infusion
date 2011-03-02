@@ -278,7 +278,7 @@ fluid_1_4 = fluid_1_4 || {};
         } else if (options.condition.expander) {
             condition = config.expander(options.condition);
         } else {
-            condition = options.condition;
+            condition = config.expandLight(options.condition);
         }
         var tree = (condition ? options.trueTree : options.falseTree);
         if (!tree) {
