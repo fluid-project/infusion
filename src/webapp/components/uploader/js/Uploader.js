@@ -299,7 +299,7 @@ var fluid_1_4 = fluid_1_4 || {};
             if (error === fluid.uploader.queueErrorConstants.FILE_EXCEEDS_SIZE_LIMIT) {
                 that.errorHandler.addError(file.name, "exceedsUploadLimit");
             } else if (error === fluid.uploader.queueErrorConstants.QUEUE_LIMIT_EXCEEDED) {
-                //that.errorHandler.addError(file.name, "exceedsFileLimit");
+                that.errorHandler.addError(file.name, "exceedsFileLimit");
             }
         });
 

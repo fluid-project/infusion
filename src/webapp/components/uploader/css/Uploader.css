@@ -253,8 +253,8 @@ html>body .fl-uploader span.fl-uploader-browse {
 
 .fl-uploader-browse-overlay {
     position: absolute;
-    bottom: 50px;
-    left: 325px;
+    top: 8px;
+    left: 320px;
     z-index: 7;
 }
 
