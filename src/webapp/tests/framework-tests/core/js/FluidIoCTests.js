@@ -19,6 +19,7 @@ fluid.registerNamespace("fluid.testUtils");
 (function ($) {
 
     fluid.defaults("fluid.testUtils.testComponent", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         default1: "testComponent value",
         components: {
             test2: {
@@ -31,6 +32,7 @@ fluid.registerNamespace("fluid.testUtils");
     });
 
     fluid.defaults("fluid.testUtils.testComponent2", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             sub1: {
                 type: "fluid.testUtils.subComponent"
@@ -52,10 +54,11 @@ fluid.registerNamespace("fluid.testUtils");
 
     // Somehow we sort of have to write this. Perhaps "component grading" will make it
     // possible to guess instantiation signatures
-    fluid.demands("fluid.testUtils.modelComponent", "fluid.testUtils.dependentModel",
-      [fluid.COMPONENT_OPTIONS]);
+    //fluid.demands("fluid.testUtils.modelComponent", "fluid.testUtils.dependentModel",
+    //  [fluid.COMPONENT_OPTIONS]);
 
     fluid.defaults("fluid.testUtils.modelComponent", {
+        gradeNames: "modelComponent",
         mergePolicy: {
             model: "preserve"
         }
@@ -116,11 +119,50 @@ fluid.registerNamespace("fluid.testUtils");
         }
     });
 
+    fluid.defaults("fluid.testUtils.reinstantiation", {
+        headValue: "headValue",
+        components: {
+            child1: {
+                type: "fluid.testUtils.reinsChild",
+                options: {
+                    components: {
+                        instantiator: "{instantiator}",
+                        child2: {
+                            type: "fluid.testUtils.reinsChild2",
+                            options: {
+                                value: "{reinstantiation}.options.headValue",
+                                components: {
+                                    child3: {
+                                        type: "fluid.testUtils.reinsChild2",
+                                        options: {
+                                            value: "{reinstantiation}.options.headValue"
+                                        }
+                                    }  
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    fluid.demands("fluid.testUtils.reinsChild2", "fluid.testUtils.reinstantiation",
+       [fluid.COMPONENT_OPTIONS, "{reinstantiation}.options.headValue"] 
+    );
+    
+    fluid.testUtils.reinsChild2 = function(options, otherValue) {
+        var that = fluid.initLittleComponent("fluid.testUtils.reinsChild2", options);
+        fluid.initDependents(that);
+        that.otherValue = otherValue;
+        return that;
+    } 
+
     fluid.makeComponents({
-        "fluid.testUtils.testComponent":      "fluid.standardComponent",
-        "fluid.testUtils.testComponent2":     "fluid.standardComponent",
-        "fluid.testUtils.testOrder":          "fluid.standardComponent", 
-        "fluid.testUtils.subComponent":       "fluid.standardComponent",
+   //     "fluid.testUtils.testComponent":      "fluid.viewComponent",
+   //     "fluid.testUtils.testComponent2":     "fluid.viewComponent",
+        "fluid.testUtils.testOrder":          "fluid.viewComponent", 
+        "fluid.testUtils.subComponent":       "fluid.viewComponent",
         "fluid.testUtils.invokerComponent":   "fluid.littleComponent",
         "fluid.testUtils.invokerComponent2":  "fluid.littleComponent",
         "fluid.testUtils.modelComponent":     "fluid.littleComponent",
@@ -134,7 +176,10 @@ fluid.registerNamespace("fluid.testUtils");
         "fluid.testUtils.fluid3818head":      "fluid.littleComponent",
         "fluid.testUtils.fluid3818child":     "fluid.littleComponent",
         "fluid.testUtils.thatStackHead":      "fluid.littleComponent",
-        "fluid.testUtils.thatStackTail":      "fluid.littleComponent"
+        "fluid.testUtils.thatStackTail":      "fluid.littleComponent",
+        "fluid.testUtils.reinstantiation":    "fluid.littleComponent",
+        "fluid.testUtils.reinsChild":         "fluid.littleComponent",
+        //"fluid.testUtils.reinsChild2":        "fluid.littleComponent",
         // TODO: GRADES
         //"fluid.testUtils.resultsPager":       "fluid.littleComponent"
     });
@@ -369,7 +414,7 @@ fluid.registerNamespace("fluid.testUtils");
         }
     });
 
-    fluidIoCTests.test("Default interaction test", function () {
+    fluidIoCTests.test("Basic interaction between defaults and demands", function () {
         var that = fluid.testUtils.defaultInteraction();
         jqUnit.assertValue("Constructed", that);
         var standardDefaults = fluid.copy(fluid.defaults("fluid.testUtils.popup"));
@@ -399,10 +444,10 @@ fluid.registerNamespace("fluid.testUtils");
 
     fluidIoCTests.test("Environmental Tests II - FLUID-3818", function () {
         var component = fluid.withEnvironment({
-            environmentalValue: {
-                typeName: "environmentalValue", 
+            environmentalValue: $.extend(fluid.typeTag("environmentalValue"),
+            { 
                 derived: "derivedValue"
-            }
+            })
         }, function () {
             return fluid.testUtils.fluid3818head();
         });
@@ -519,6 +564,144 @@ fluid.registerNamespace("fluid.testUtils");
             fetchKey: recordType
         });
     };
+    
+    function checkValue(message, root, value, paths) {
+        fluid.each(paths, function(path) {
+            jqUnit.assertEquals(message + " transmitted from root", value, fluid.get(root, path));
+        }); 
+    }
+    
+    fluidIoCTests.test("FLUID-4055 reinstantiation test", function() {
+        var reins = fluid.testUtils.reinstantiation();
+        var origID = reins.child1.child2.id;
+        var instantiator = reins.child1.instantiator;
+        var expectedPaths = ["child1.child2.options.value", "child1.child2.otherValue", 
+            "child1.child2.child3.options.value", "child1.child2.child3.otherValue"]
+        checkValue("Original value", reins, reins.options.headValue, expectedPaths);
+        reins.options.headValue = "headValue2"; // in poor style, modify options to verify reexpansion
+        reins.child1.options.components.child2 = fluid.copy(fluid.defaults("fluid.testUtils.reinstantiation").components.child1.options.components.child2);
+        instantiator.clearComponent(reins.child1, "child2");
+        fluid.initDependent(reins.child1, "child2", instantiator);
+        jqUnit.assertNotEquals("Child2 reinstantiated", origID, reins.child1.child2.id);
+        checkValue("Changed value", reins, "headValue2", expectedPaths);
+    });
+    
+    fluid.defaults("fluid.tests.mergeChild", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        mergePolicy: {
+            dangerousParams: "noexpand"  
+        }
+    });
+    
+    fluid.defaults("fluid.tests.mergeComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            mergeChild: {
+                type: "fluid.tests.mergeChild",
+                options: {
+                    dangerousParams: "{mergeComponent}.nothingUseful"
+                }
+            }
+        }  
+    });
+    
+    fluidIoCTests.test("FLUID-4129 merge policy for component options", function() {
+        var mergeComp = fluid.tests.mergeComponent();
+        var defs = fluid.defaults("fluid.tests.mergeComponent");
+        jqUnit.assertEquals("Dangerous parameters unexpanded",
+            defs.components.mergeChild.options.dangerousParams, 
+            mergeComp.mergeChild.options.dangerousParams);
+    });
+
+    
+    fluid.defaults("fluid.tests.mergePaths", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        headOption: "headValue1",
+        components: {
+            child: {
+                type: "fluid.tests.mergePathsChild",
+                options: {
+                    childOption1: "directValue1",
+                    childOption2: "directValue2"
+                }
+            }
+        }  
+    });
+    
+    fluid.defaults("fluid.tests.mergePathsChild", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.demands("fluid.tests.mergePathsChild", "fluid.tests.mergePaths", {
+        options: {
+            mergePaths: [
+                "{options}", {childOption1: "demandValue1"}, {childOption3: "{mergePaths}.options.headOption"}
+                ]
+        }
+    });
+    
+    fluidIoCTests.test("FLUID-4130 mergePaths for demanded component options", function() {
+        var mergePaths = fluid.tests.mergePaths();
+        var expected = {
+            childOption1: "demandValue1",
+            childOption2: "directValue2",
+            childOption3: "headValue1"
+        };
+        jqUnit.assertDeepEq("Direct options overriden by demands", 
+           expected, fluid.filterKeys(mergePaths.child.options, ["childOption1", "childOption2", "childOption3"]));
+    });
+    
+    fluid.defaults("fluid.testUtils.circularity", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            instantiator: "{instantiator}",
+            child1: {
+                type: "fluid.testUtils.circChild"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.testUtils.circChild", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        mergePolicy: {
+            instantiator: "noexpand"
+        }
+    });
+    
+    fluid.demands("fluid.testUtils.circChild", "fluid.testUtils.circularity",
+        [{
+        instantiator: "{circularity}.instantiator"  
+        }] 
+    );
+    
+    fluidIoCTests.test("Tree circularity test", function() {
+        try {
+            fluid.pushSoftFailure(true);
+            expect(3);
+            var circular = fluid.testUtils.circularity();
+            // if this test fails, the browser will bomb with a stack overflow 
+            jqUnit.assertValue("Circular test delivered instantiator", circular.child1.options.instantiator);
+            
+            var rawDefaults = fluid.rawDefaults("fluid.testUtils.circChild");
+            delete rawDefaults.mergePolicy;
+            try {
+                var circular2 = fluid.testUtils.circularity();
+            }
+            catch (e) {
+                jqUnit.assertTrue("Exception caught in circular instantiation", true);
+            }
+            try {
+                fluid.expandOptions(circular, circular);
+            }
+            catch (e) {
+                jqUnit.assertTrue("Exception caught in circular expansion", true);
+            }
+        }
+        finally {
+            fluid.pushSoftFailure(-1);  
+        }
+    });
+
 
     fluidIoCTests.test("Deferred expander Tests", function () {
         var pageBuilder = {

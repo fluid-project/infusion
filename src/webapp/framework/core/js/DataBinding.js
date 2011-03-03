@@ -251,7 +251,9 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.model.mergeModel = function (target, source, applier) {
         var copySource = fluid.copy(source);
         applier = applier || fluid.makeChangeApplier(source);
-        applier.fireChangeRequest({type: "ADD", path: "", value: target});
+        if (!fluid.isPrimitive(target)) {
+            applier.fireChangeRequest({type: "ADD", path: "", value: target});
+        }
         applier.fireChangeRequest({type: "MERGE", path: "", value: copySource});
         return source; 
     };
@@ -271,18 +273,18 @@ var fluid_1_4 = fluid_1_4 || {};
         var pen = fluid.model.getPenultimate(model, request.path, resolverSetConfig || fluid.model.defaultSetConfig);
         
         if (request.type === "ADD" || request.type === "MERGE") {
-            if (pen.last === "" || request.type === "MERGE") {
+            if (request.path === "" || request.type === "MERGE") {
                 if (request.type === "ADD") {
                     fluid.clear(pen.root);
                 }
-                $.extend(true, pen.last === "" ? pen.root: pen.root[pen.last], request.value);
+                $.extend(true, request.path === "" ? pen.root: pen.root[pen.last], request.value);
             }
             else {
                 pen.root[pen.last] = request.value;
             }
         }
         else if (request.type === "DELETE") {
-            if (pen.last === "") {
+            if (request.path === "") {
                 fluid.clear(pen.root);
             }
             else {

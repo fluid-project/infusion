@@ -1,5 +1,5 @@
 /*!
- * Fluid Infusion v1.4-SNAPSHOT
+ * Fluid Infusion v1.3
  *
  * Infusion is distributed under the Educational Community License 2.0 and new BSD licenses: 
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
@@ -10,9 +10,9 @@
 
 /*
 Copyright 2007-2010 University of Cambridge
-Copyright 2007-2010 University of Toronto
+Copyright 2007-2009 University of Toronto
 Copyright 2007-2009 University of California, Berkeley
-Copyright 2010-2011 Lucendo Development Ltd.
+Copyright 2010 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -33,12 +33,14 @@ var fluid = fluid || fluid_1_4;
 
 (function ($, fluid) {
     
-    fluid.version = "Infusion 1.4-SNAPSHOT";
+    fluid.version = "Infusion 1.3";
     
     fluid.environment = {
         fluid: fluid
     };
     var globalObject = window || {};
+    
+    var softFailure = [false];
     
     /**
      * Causes an error message to be logged to the console and a real runtime error to be thrown.
@@ -48,8 +50,21 @@ var fluid = fluid || fluid_1_4;
     fluid.fail = function (message) {
         fluid.setLogging(true);
         fluid.log(message.message ? message.message : message);
-        //throw new Error(message);
-        message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
+        if (softFailure[0]) {
+            throw new Error(message);
+        }
+        else {
+            message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
+        }
+    };
+    
+    fluid.pushSoftFailure = function(condition) {
+        if (typeof(condition) === "boolean") {
+            softFailure.unshift(condition);
+        }
+        else if (condition === -1) {
+            softFailure.shift();
+        }
     };
     
     // Logging
@@ -133,10 +148,21 @@ var fluid = fluid || fluid_1_4;
     // Framework and instantiation functions.
 
     
+    /** Returns true if the argument is a value other than null or undefined **/
+    fluid.isValue = function(value) {
+        return value !== undefined && value !== null;
+    }
+    
     /** Returns true if the argument is a primitive type **/
     fluid.isPrimitive = function (value) {
         var valueType = typeof(value);
         return !value || valueType === "string" || valueType === "boolean" || valueType === "number" || valueType === "function";
+    };
+    
+    fluid.isDOMNode = function (obj) {
+      // This could be more sound, but messy: 
+      // http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
+        return obj && typeof(obj.nodeType) === "number";  
     };
     
     /** Determines whether the supplied object can be treated as an array, by 
@@ -217,12 +243,11 @@ var fluid = fluid || fluid_1_4;
      * matches a predicate function.
      * @param source {Arrayable or Object} The list or hash of objects to be searched.
      * @param func {Function} A predicate function, acting on a member. A predicate which
-     * returns any value which is not <code>null</code> or <code>undefined</code> will terminate
+     * returns any value which is not <code>undefined</code> will terminate
      * the search. The function accepts (object, index).
      * @param deflt {Object} A value to be returned in the case no predicate function matches
      * a list member. The default will be the natural value of <code>undefined</code>
-     * @return The first return value from the predicate function which is not <code>null</code>
-     * or <code>undefined</code>
+     * @return The first return value from the predicate function which is not <code>undefined</code>
      */
     fluid.find = function (source, func, deflt) {
         var disp;
@@ -290,6 +315,15 @@ var fluid = fluid || fluid_1_4;
         return source;
     };
     
+    fluid.filterKeys = function(toFilter, keys, exclude) {
+        return fluid.remove_if($.extend({}, toFilter), function(value, key) {
+            return exclude ^ ($.inArray(key, keys) === -1);
+        });
+    };
+    
+    fluid.censorKeys = function(toCensor, keys) {
+        return fluid.filterKeys(toCensor, keys, true);
+    };
     
     /** 
      * Searches through the supplied object for the first value which matches the one supplied.
@@ -341,6 +375,11 @@ var fluid = fluid || fluid_1_4;
      * signalling using the value "undefined" is not possible) */
     fluid.NO_VALUE = {type: "fluid.marker", value: "NO_VALUE"};
     
+    /** A marker indicating that a value requires to be expanded after component construction begins **/
+    fluid.EXPAND = {type: "fluid.marker", value: "EXPAND"};
+    /** A marker indicating that a value requires to be expanded immediately**/
+    fluid.EXPAND_NOW = {type: "fluid.marker", value: "EXPAND_NOW"};
+    
     /** Determine whether an object is any marker, or a particular marker - omit the
      * 2nd argument to detect any marker
      */
@@ -351,7 +390,7 @@ var fluid = fluid || fluid_1_4;
         if (!type) {
             return true;
         }
-        return totest.value === type || totest.value === type.value;
+        return totest === type;
     };
    
     /** Copy a source "model" onto a target **/
@@ -364,10 +403,11 @@ var fluid = fluid || fluid_1_4;
      * @param {String} EL The EL expression to be split
      * @return {Array of String} the component path expressions.
      * TODO: This needs to be upgraded to handle (the same) escaping rules (as RSF), so that
-     * path segments containing periods and backslashes etc. can be processed.
+     * path segments containing periods and backslashes etc. can be processed, and be harmonised
+     * with the more complex implementations in fluid.pathUtil(data binding).
      */
-    fluid.model.parseEL = function (EL) {
-        return String(EL).split('.');
+    fluid.model.parseEL = function(EL) {
+        return EL === ""? [] : String(EL).split('.');
     };
     
     /** Compose an EL expression from two separate EL expressions. The returned 
@@ -383,13 +423,16 @@ var fluid = fluid || fluid_1_4;
     fluid.model.composeSegments = function () {
         return $.makeArray(arguments).join(".");
     };
+    
+    /** Helpful alias for old-style API **/
+    fluid.path = fluid.model.composeSegments;
 
     /** Standard strategies for resolving path segments **/
-    fluid.model.environmentStrategy = function (initEnvironment) {
+    fluid.model.environmentStrategy = function(initEnvironment) {
         return {
-            init: function () {
+            init: function() {
                 var environment = initEnvironment;
-                return function (root, segment, index) {
+                return function(root, segment, index) {
                     var togo;
                     if (environment && environment[segment]) {
                         togo = environment[segment];
@@ -409,7 +452,7 @@ var fluid = fluid || fluid_1_4;
     };
     
     fluid.model.defaultFetchStrategy = function (root, segment) {
-        return root[segment];
+        return segment === ""? root : root[segment];
     };
         
     fluid.model.funcResolverStrategy = function (root, segment) {
@@ -418,14 +461,36 @@ var fluid = fluid || fluid_1_4;
         }
     };
     
-    fluid.model.makeResolver = function (root, EL, config) {
+    // unsupported, NON-API function
+    fluid.model.applyStrategy = function(strategy, root, segment, index) {
+        if (typeof(strategy) === "function") { 
+            return strategy(root, segment, index);
+        }
+        else if (strategy && strategy.next) {
+            return strategy.next(root, segment, index);
+        }
+    };
+    
+    fluid.model.initStrategy = function(baseStrategy, index, oldStrategies) {
+        return baseStrategy.init? baseStrategy.init(oldStrategies? oldStrategies[index] : undefined) : baseStrategy;
+    };
+    
+    // unsupported, NON-API function
+    fluid.model.makeTrundler = function(root, config, oldStrategies) {
         var that = {
-            segs: fluid.model.parseEL(EL),
             root: root,
-            index: 0,
-            strategies: fluid.transform(config, function (figel) {
-                return figel.init ? figel.init() : figel;
+            strategies: fluid.isArrayable(config)? config : 
+                fluid.transform(config.strategies, function (strategy, index) {
+                    return fluid.model.initStrategy(strategy, index, oldStrategies); 
             })
+        };
+        that.trundle = function(EL, uncess) {
+            uncess = uncess || 0;
+            var newThat = fluid.model.makeTrundler(that.root, config, that.strategies);
+            newThat.segs = fluid.model.parseEL(EL);
+            newThat.index = 0;
+            newThat.step(newThat.segs.length - uncess);
+            return newThat;
         };
         that.next = function () {
             if (!that.root) {
@@ -433,7 +498,7 @@ var fluid = fluid || fluid_1_4;
             }
             var accepted;
             for (var i = 0; i < that.strategies.length; ++ i) {
-                var value = that.strategies[i](that.root, that.segs[that.index], that.index);
+                var value = fluid.model.applyStrategy(that.strategies[i], that.root, that.segs[that.index], that.index);
                 if (accepted === undefined) {
                     accepted = value;
                 }
@@ -453,22 +518,52 @@ var fluid = fluid || fluid_1_4;
         return that;
     };
 
-    fluid.model.defaultSetConfig = [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy];
+    fluid.model.defaultSetConfig = {
+        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
+    };
+    
+    // unsupported, NON-API function
+    // core trundling recursion point
+    fluid.model.trundleImpl = function(trundler, EL, config, uncess) {
+        if (typeof(EL) === "string") {
+            trundler = trundler.trundle(EL, uncess);
+        }
+        else {
+            var key = EL.type || "default";
+            var resolver = config.resolvers[key];
+            if (!resolver) {
+                fluid.fail("Unable to find resolver of type " + key);
+            }
+            trundler = resolver(EL, trundler) || {};
+            if (EL.path && trundler.trundle && trundler.root !== undefined) {
+                trundler = fluid.model.trundleImpl(trundler, EL.path, config, uncess);
+            }
+        }
+        return trundler;  
+    };
+    
+    // unsupported, NON-API function
+    // entry point for initially unbased trundling
+    fluid.model.trundle = function(root, EL, config, uncess) {
+        EL = EL || "";
+        config = config || fluid.model.defaultGetConfig;
+        var trundler = fluid.model.makeTrundler(root, config);
+        return fluid.model.trundleImpl(trundler, EL, config, uncess);
+    };
     
     fluid.model.getPenultimate = function (root, EL, config) {
-        config = config || fluid.model.defaultGetConfig;
-        var resolver = fluid.model.makeResolver(root, EL, config);
-        resolver.step(resolver.segs.length - 1);
-        return resolver;
+        return fluid.model.trundle(root, EL, config, 1);
     };
     
     fluid.set = function (root, EL, newValue, config) {
         config = config || fluid.model.defaultSetConfig;
-        var resolver = fluid.model.getPenultimate(root, EL, config);
-        resolver.root[resolver.last] = newValue;
+        var trundler = fluid.model.getPenultimate(root, EL, config);
+        trundler.root[trundler.last] = newValue;
     };
     
-    fluid.model.defaultGetConfig = [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy];
+    fluid.model.defaultGetConfig = {
+        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy]
+    };
     
     /** Evaluates an EL expression by fetching a dot-separated list of members
      * recursively from a provided root.
@@ -480,13 +575,7 @@ var fluid = fluid || fluid_1_4;
      */
     
     fluid.get = function (root, EL, config) {
-        if (EL === "" || EL === null || EL === undefined) {
-            return root;
-        }
-        config = config || fluid.model.defaultGetConfig;
-        var resolver = fluid.model.makeResolver(root, EL, config);
-        resolver.step(resolver.segs.length);
-        return resolver.root;
+        return fluid.model.trundle(root, EL, config).root;
     };
 
     // This backward compatibility will be maintained for a number of releases, probably until Fluid 2.0
@@ -497,7 +586,7 @@ var fluid = fluid || fluid_1_4;
         if (path) {
             env = env || fluid.environment;
             var envFetcher = fluid.model.environmentStrategy(env);
-            return fluid.get(globalObject, path, [envFetcher].concat(fluid.model.defaultGetConfig));
+            return fluid.get(globalObject, path, {strategies: [envFetcher].concat(fluid.model.defaultGetConfig.strategies)});
         }
     };
     
@@ -523,7 +612,7 @@ var fluid = fluid || fluid_1_4;
     fluid.registerGlobalFunction = function (functionPath, func, env) {
         env = env || fluid.environment;
         var envFetcher = fluid.model.environmentStrategy(env);
-        fluid.set(globalObject, functionPath, func, [envFetcher].concat(fluid.model.defaultSetConfig));
+        fluid.set(globalObject, functionPath, func, {strategies: [envFetcher].concat(fluid.model.defaultSetConfig.strategies)});
     };
     
     fluid.setGlobalValue = fluid.registerGlobalFunction;
@@ -605,39 +694,144 @@ var fluid = fluid || fluid_1_4;
     fluid.dumpEl = fluid.identity;
     fluid.renderTimestamp = fluid.identity;
     
-    /**
+    /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
+    
+    var defaultsStore = {};
+        
+    var resolveGradesImpl = function(gs, gradeNames) {
+        gradeNames = fluid.makeArray(gradeNames);
+        fluid.each(gradeNames, function(gradeName) {
+            var options = fluid.rawDefaults(gradeName);
+            if (!options) {
+                return;
+            }
+            gs.gradeHash[gradeName] = true;
+            gs.gradeChain.push(gradeName);
+            gs.optionsChain.push(options);
+            fluid.each(options.gradeNames, function(parent) {
+                if (!gs.gradeHash[parent]) {
+                    resolveGradesImpl(gs, parent);
+                }
+            });
+        });
+        return gs;
+    };
+    
+    fluid.resolveGrade = function(gradeNames) {
+        var gradeStruct = {
+            gradeChain: [],
+            gradeHash: {},
+            optionsChain:[]
+        };
+        return resolveGradesImpl(gradeStruct, gradeNames);
+    };
+
+    fluid.resolveGradedOptions = function(componentName) {
+        var defaults = fluid.rawDefaults(componentName);
+        if (!defaults) {
+            return defaults;
+        }
+        var mergeArgs = [defaults];
+        var gradeNames = defaults.gradeNames;
+        if (gradeNames) {
+            var gradeStruct = fluid.resolveGrade(gradeNames);
+            mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs);
+        }
+        mergeArgs = [{}, {}].concat(mergeArgs);
+        var mergedDefaults = fluid.merge.apply(null, mergeArgs);
+        return mergedDefaults;
+    };
+    
+    fluid.rawDefaults = function(componentName, options) {
+        if (options === undefined) {
+            return defaultsStore[componentName];
+        }
+        else {
+            defaultsStore[componentName] = options;
+        }
+    };
+    
+     /**
      * Retreives and stores a component's default settings centrally.
      * @param {boolean} (options) if true, manipulate a global option (for the head
-     *   component) rather than instance options.
+     *   component) rather than instance options. NB - the use of "global options" 
+     *   is deprecated and will be removed from the framework in release 1.5 
      * @param {String} componentName the name of the component
      * @param {Object} (optional) an container of key/value pairs to set
      * 
      */
-    var defaultsStore = {};
-    var globalDefaultsStore = {};
+     
     fluid.defaults = function () {
         var offset = 0;
-        var store = defaultsStore;
         if (typeof arguments[0] === "boolean") {
-            store = globalDefaultsStore;
             offset = 1;
         }
-        var componentName = arguments[offset];
-        var defaultsObject = arguments[offset + 1];
-        if (defaultsObject !== undefined) {
-            store[componentName] = defaultsObject;   
-            return defaultsObject;
+        var componentName = (offset === 0? "" : "*.global-") + arguments[offset];
+        var options = arguments[offset + 1];
+        if (options === undefined) {
+            return fluid.resolveGradedOptions(componentName);
         }
-        
-        return store[componentName];
+        else {
+            fluid.rawDefaults(componentName, options);
+            if (options && options.gradeNames && $.inArray("autoInit", options.gradeNames) !== -1) {
+                fluid.makeComponent(componentName, fluid.resolveGradedOptions(componentName));
+            }
+        }
     };
     
+    fluid.makeComponent = function(componentName, options) {
+        if (!options.initFunction) {
+            fluid.fail("Cannot autoInit component " + componentName + " which does not have an initFunction defined");
+        }
+        fluid.setGlobalValue(componentName, function() {
+            return fluid.initComponent(componentName, arguments);
+        });
+    };
+    
+    fluid.defaults("fluid.littleComponent", {
+        initFunction: "fluid.initLittleComponent",
+        argumentMap: {
+            options: 0
+        }
+    });
+    
+    fluid.defaults("fluid.modelComponent", {
+        gradeNames: ["fluid.littleComponent"],
+        postInitFunction: {
+            postInitModelComponent: "fluid.postInitModelComponent"
+        },
+        mergePolicy: {
+            model: "preserve",
+            applier: "nomerge"
+        }
+    });
+    
+    fluid.defaults("fluid.viewComponent", {
+        gradeNames: ["fluid.littleComponent", "fluid.modelComponent"],
+        initFunction: "fluid.initView",
+        argumentMap: {
+            container: 0,
+            options: 1
+        }
+    });
+    
+    fluid.guardCircularity = function(seenIds, source, message1, message2) {
+        if (source && source.id) {
+            if (!seenIds[source.id]) {
+                seenIds[source.id] = source;
+            }
+            else if (seenIds[source.id] === source) {
+                fluid.fail("Circularity in options " + message1 + " - component with typename " + source.typeName + " and id " + source.id 
+                + " has already been seen" + message2);  
+            }
+        }      
+    };
                 
     fluid.mergePolicyIs = function (policy, test) {
-        return typeof(policy) === "string" && policy.indexOf(test) !== -1;
+        return typeof(policy) === "string" && $.inArray(test, policy.split(/\s*,\s*/)) !== -1;
     };
     
-    function mergeImpl(policy, basePath, target, source, thisPolicy) {
+    function mergeImpl(policy, basePath, target, source, thisPolicy, rec) {
         if (typeof(thisPolicy) === "function") {
             thisPolicy.apply(null, target, source);
             return target;
@@ -645,6 +839,7 @@ var fluid = fluid || fluid_1_4;
         if (fluid.mergePolicyIs(thisPolicy, "replace")) {
             fluid.clear(target);
         }
+        fluid.guardCircularity(rec.seenIds, source, "merging", " when evaluating path " + basePath + " - please protect components from merging using the \"nomerge\" merge policy");
       
         for (var name in source) {
             var path = (basePath ? basePath + ".": "") + name;
@@ -655,21 +850,21 @@ var fluid = fluid || fluid_1_4;
     
             if (thisSource !== undefined) {
                 if (thisSource !== null && typeof thisSource === 'object' &&
-                      !thisSource.nodeType && !thisSource.jquery && thisSource !== fluid.VALUE &&
-                       !fluid.mergePolicyIs(newPolicy, "preserve")) {
+                      !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
+                       !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "nomerge") && !fluid.mergePolicyIs(newPolicy, "noexpand")) {
                     if (primitiveTarget) {
                         target[name] = thisTarget = thisSource instanceof Array ? [] : {};
                     }
-                    mergeImpl(policy, path, thisTarget, thisSource, newPolicy);
+                    mergeImpl(policy, path, thisTarget, thisSource, newPolicy, rec);
                 }
                 else {
                     if (typeof(newPolicy) === "function") {
                         newPolicy.call(null, target, source, name);
                     }
-                    else if (thisTarget === null || thisTarget === undefined || !fluid.mergePolicyIs(newPolicy, "reverse")) {
+                    else if (!fluid.isValue(thisTarget) || !fluid.mergePolicyIs(newPolicy, "reverse")) {
                         // TODO: When "grades" are implemented, grandfather in any paired applier to perform these operations
                         // NB: mergePolicy of "preserve" now creates dependency on DataBinding.js
-                        target[name] = fluid.mergePolicyIs(newPolicy, "preserve") ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
+                        target[name] = fluid.isValue(thisTarget) && fluid.mergePolicyIs(newPolicy, "preserve") ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
                     }
                 }
             }
@@ -679,7 +874,7 @@ var fluid = fluid || fluid_1_4;
     
     /** Merge a collection of options structures onto a target, following an optional policy.
      * This function is typically called automatically, as a result of an invocation of
-     * <code>fluid.iniView</code>. The behaviour of this function is explained more fully on
+     * <code>fluid.initView</code>. The behaviour of this function is explained more fully on
      * the page http://wiki.fluidproject.org/display/fluid/Options+Merging+for+Fluid+Components .
      * @param policy {Object/String} A "policy object" specifiying the type of merge to be performed.
      * If policy is of type {String} it should take on the value "reverse" or "replace" representing
@@ -698,13 +893,13 @@ var fluid = fluid || fluid_1_4;
         for (var i = 2; i < arguments.length; ++i) {
             var source = arguments[i];
             if (source !== null && source !== undefined) {
-                mergeImpl(policy, path, target, source, policy ? policy[""] : null);
+                mergeImpl(policy, path, target, source, policy ? policy[""] : null, {seenIds: {}});
             }
         }
         if (policy && typeof(policy) !== "string") {
             for (var key in policy) {
                 var elrh = policy[key];
-                if (typeof(elrh) === 'string' && elrh !== "replace") {
+                if (typeof(elrh) === "string" && elrh !== "replace" && elrh !== "preserve") {
                     var oldValue = fluid.get(target, key);
                     if (oldValue === null || oldValue === undefined) {
                         var value = fluid.get(target, elrh);
@@ -727,11 +922,17 @@ var fluid = fluid || fluid_1_4;
      * @param {Object} userOptions the user-specified configuration options for this component
      */
     fluid.mergeComponentOptions = function (that, componentName, userOptions) {
-        var defaults = fluid.defaults(componentName); 
-        if (fluid.expandOptions) {
-            defaults = fluid.expandOptions(fluid.copy(defaults), that);
+        var defaults = fluid.defaults(componentName);
+        var mergePolicy = $.extend({}, defaults? defaults.mergePolicy : {});
+        var mergeArgs = [mergePolicy, {}];
+        if (fluid.expandComponentOptions) {
+            var extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
         }
-        that.options = fluid.merge(defaults ? defaults.mergePolicy: null, {}, defaults, userOptions);    
+        else {
+            extraArgs = [defaults, userOptions];
+        }
+        mergeArgs = mergeArgs.concat(extraArgs);
+        that.options = fluid.merge.apply(null, mergeArgs);
     };
     
         
@@ -765,6 +966,16 @@ var fluid = fluid || fluid_1_4;
         return segs[segs.length - 1];
     };
     
+    /** Create a "type tag" component with no state but simply a type name and id. The most 
+     *  minimal form of Fluid component */
+       
+    fluid.typeTag = function(name) {
+        return {
+            typeName: name,
+            id: fluid.allocateGuid()
+        };
+    };
+    
     /**
      * Creates a new "little component": a that-ist object with options merged into it by the framework.
      * This method is a convenience for creating small objects that have options but don't require full
@@ -774,13 +985,56 @@ var fluid = fluid || fluid_1_4;
      * @param {Object} options user-supplied options to merge with the defaults
      */
     fluid.initLittleComponent = function (name, options) {
-        var that = {typeName: name, id: fluid.allocateGuid()};
+        var that = fluid.typeTag(name);
         // TODO: nickName must be available earlier than other merged options so that component may resolve to itself
         that.nickName = options && options.nickName ? options.nickName: fluid.computeNickName(that.typeName);
         fluid.mergeComponentOptions(that, name, options);
         return that;
     };
-
+    
+    fluid.postInitModelComponent = function(that) {
+        that.model = that.options.model || {};
+        that.applier = that.options.applier || fluid.makeChangeApplier(that.model, that.options.changeApplierOptions);
+    };
+    
+    fluid.invokeLifecycleFunction = function(that, func) {
+        if (typeof(func) === "string") {
+            fluid.invokeGlobalFunction(func, [that]);
+        }
+        else if (typeof(func) === "function") {
+            func.apply(null, [that]);
+        }
+    };
+    
+    fluid.invokeLifecycleFunctions = function(that, element) {
+        var el = fluid.get(that, fluid.path("options", element));
+        if (!fluid.isPrimitive(el)) {
+            fluid.each(el, function(elitem) {
+                fluid.invokeLifecycleFunction(that, elitem);
+            });
+        }
+        else if (el) {
+            fluid.invokeLifecycleFunction(that, el);
+        }
+    };
+    
+    fluid.initComponent = function(componentName, initArgs) {
+        var options = fluid.defaults(componentName);
+        if (!options.gradeNames) {
+            fluid.fail("Cannot initialise component " + componentName + " which has no gradeName registered");
+        }
+        var args = [componentName].concat(fluid.makeArray(initArgs)); // TODO: support different initFunction variants
+        var that = fluid.invokeGlobalFunction(options.initFunction, args);
+        fluid.invokeLifecycleFunctions(that, "postInitFunction");
+        if (fluid.initDependents) {
+            fluid.initDependents(that);
+        }
+        fluid.invokeLifecycleFunctions(that, "finalInitFunction");
+        if (that.options.finalInitFunction) {
+            fluid.invokeGlobalFunction(that.options.finalInitFunction, [that]);
+        }
+        return that;
+    };
 
     // The Model Events system.
     
@@ -901,7 +1155,7 @@ var fluid = fluid || fluid_1_4;
      */
     fluid.container = function (containerSpec, fallible) {
         var container = fluid.wrap(containerSpec);
-        if (fallible && !container || container.length === 0) {
+        if (fallible && (!container || container.length === 0)) {
             return null;
         }
         
@@ -916,6 +1170,9 @@ var fluid = fluid || fluid_1_4;
                 message: count > 1 ? "More than one (" + count + ") container elements were "
                 : "No container element was found for selector " + containerSpec
             });
+        }
+        if (!fluid.isDOMNode(container[0])) {
+            fluid.fail("fluid.container was supplied a non-jQueryable element");  
         }
         
         return container;
@@ -1036,10 +1293,6 @@ var fluid = fluid || fluid_1_4;
     };
 
     
-    fluid.initSubcomponent = function (that, className, args) {
-        return fluid.initSubcomponents(that, className, args)[0];
-    };
-    
     fluid.initSubcomponentImpl = function (that, entry, args) {
         var togo;
         if (typeof(entry) !== "function") {
@@ -1106,6 +1359,10 @@ var fluid = fluid || fluid_1_4;
             togo[i] = fluid.initSubcomponentImpl(that, entry, args);
         }
         return togo;
+    };
+        
+    fluid.initSubcomponent = function (that, className, args) {
+        return fluid.initSubcomponents(that, className, args)[0];
     };
     
     /**
