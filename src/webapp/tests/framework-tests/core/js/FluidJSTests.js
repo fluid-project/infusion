@@ -313,34 +313,47 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         fluidJSTests.test("Container: bind to an id", function () {
-            expect(2);
-            // Give it a valid id string.
-            var result = fluid.container("#main");
-            jqUnit.assertTrue("One element should be returned when specifying a selector",
-                              1, result.length);
-          
-            // Now try with a invalid string... a CSS selector matching two elements
             try {
-                result = fluid.container(".container");
-            } catch (e) {
-                jqUnit.assertTrue("We should have received an exception", !!e);
+                fluid.pushSoftFailure(true);
+                expect(2);
+                // Give it a valid id string.
+                var result = fluid.container("#main");
+                jqUnit.assertTrue("One element should be returned when specifying a selector",
+                                  1, result.length);
+              
+                // Now try with a invalid string... a CSS selector matching two elements
+                try {
+                    result = fluid.container(".container");
+                } 
+                catch (e) {
+                    jqUnit.assertTrue("We should have received an exception", !!e);
+                }
+            }
+            finally {
+                fluid.pushSoftFailure(-1);  
             }
         });
     
         fluidJSTests.test("container(): bind to a single jQuery", function () {
-            expect(2);
-            // Try with a single-item jQuery.
-            var oneContainer = jQuery("#main");
-            var result = fluid.container(oneContainer);
-            jqUnit.assertEquals("If a single-element jQuery is used, it should be immediately returned.",
-                         oneContainer, result);
-             
-            // Now try with a two-element jQuery, which should cause an exception.
-            var twoContainers = jQuery(".container");
             try {
-                result = fluid.container(twoContainers);
-            } catch (e) {
-                jqUnit.assertTrue("We should have received an exception", !!e);
+                fluid.pushSoftFailure(true);
+                expect(2);
+                // Try with a single-item jQuery.
+                var oneContainer = jQuery("#main");
+                var result = fluid.container(oneContainer);
+                jqUnit.assertEquals("If a single-element jQuery is used, it should be immediately returned.",
+                             oneContainer, result);
+                 
+                // Now try with a two-element jQuery, which should cause an exception.
+                var twoContainers = jQuery(".container");
+                try {
+                    result = fluid.container(twoContainers);
+                } catch (e) {
+                    jqUnit.assertTrue("We should have received an exception", !!e);
+                }
+            }
+            finally {
+                fluid.pushSoftFailure(-1);  
             }
         });
         
@@ -352,14 +365,21 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         fluidJSTests.test("container(): garbage object", function () {
-            expect(1);
-            // Random objects should fail.
-            var container = {foo: "bar"};
-
             try {
-                fluid.container(container);
-            } catch (e) {
-                jqUnit.assertTrue("We should have received an exception", !!e);
+                fluid.pushSoftFailure(true);
+                expect(1);
+                // Random objects should fail.
+                var container = {foo: "bar"};
+    
+                try {
+                    fluid.container(container);
+                } 
+                catch (e) {
+                    jqUnit.assertTrue("We should have received an exception", !!e);
+                }
+            }
+            finally {
+                fluid.pushSoftFailure(-1);
             }
         });
         

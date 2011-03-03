@@ -37,6 +37,8 @@ var fluid = fluid || fluid_1_4;
     };
     var globalObject = window || {};
     
+    var softFailure = [false];
+    
     /**
      * Causes an error message to be logged to the console and a real runtime error to be thrown.
      * 
@@ -45,8 +47,21 @@ var fluid = fluid || fluid_1_4;
     fluid.fail = function (message) {
         fluid.setLogging(true);
         fluid.log(message.message ? message.message : message);
-        //throw new Error(message);
-        message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
+        if (softFailure[0]) {
+            throw new Error(message);
+        }
+        else {
+            message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
+        }
+    };
+    
+    fluid.pushSoftFailure = function(condition) {
+        if (typeof(condition) === "boolean") {
+            softFailure.unshift(condition);
+        }
+        else if (condition === -1) {
+            softFailure.shift();
+        }
     };
     
     // Logging
@@ -297,6 +312,15 @@ var fluid = fluid || fluid_1_4;
         return source;
     };
     
+    fluid.filterKeys = function(toFilter, keys, exclude) {
+        return fluid.remove_if($.extend({}, toFilter), function(value, key) {
+            return exclude ^ ($.inArray(key, keys) === -1);
+        });
+    };
+    
+    fluid.censorKeys = function(toCensor, keys) {
+        return fluid.filterKeys(toCensor, keys, true);
+    };
     
     /** 
      * Searches through the supplied object for the first value which matches the one supplied.
@@ -763,9 +787,6 @@ var fluid = fluid || fluid_1_4;
     
     fluid.defaults("fluid.littleComponent", {
         initFunction: "fluid.initLittleComponent",
-        mergePolicy: {
-            that: "preserve"
-        },
         argumentMap: {
             options: 0
         }
@@ -791,6 +812,17 @@ var fluid = fluid || fluid_1_4;
         }
     });
     
+    fluid.guardCircularity = function(seenIds, source, message1, message2) {
+        if (source && source.id) {
+            if (!seenIds[source.id]) {
+                seenIds[source.id] = source;
+            }
+            else if (seenIds[source.id] === source) {
+                fluid.fail("Circularity in options " + message1 + " - component with typename " + source.typeName + " and id " + source.id 
+                + " has already been seen" + message2);  
+            }
+        }      
+    };
                 
     fluid.mergePolicyIs = function (policy, test) {
         return typeof(policy) === "string" && $.inArray(test, policy.split(/\s*,\s*/)) !== -1;
@@ -804,16 +836,7 @@ var fluid = fluid || fluid_1_4;
         if (fluid.mergePolicyIs(thisPolicy, "replace")) {
             fluid.clear(target);
         }
-        if (source.id) {
-            var seenIds = rec.seenIds;
-            if (!seenIds[source.id]) {
-                seenIds[source.id] = source;
-            }
-            else if (seenIds[source.id] === source) {
-                fluid.fail("Circularity in options merging - component with typename " + source.typeName + " and id " + source.id 
-                + " has already been seen when evaluating path " + basePath + " - please protect components from merging using the \"nomerge\" merge policy");  
-            }
-        }
+        fluid.guardCircularity(rec.seenIds, source, "merging", " when evaluating path " + basePath + " - please protect components from merging using the \"nomerge\" merge policy");
       
         for (var name in source) {
             var path = (basePath ? basePath + ".": "") + name;
@@ -896,19 +919,17 @@ var fluid = fluid || fluid_1_4;
      * @param {Object} userOptions the user-specified configuration options for this component
      */
     fluid.mergeComponentOptions = function (that, componentName, userOptions) {
-        var defaults = fluid.defaults(componentName); 
-        if (fluid.expandOptions) {
-            defaults = fluid.expandOptions(fluid.copy(defaults), that);
-            if (userOptions && userOptions.marker === fluid.EXPAND) {
-                var toExpand = userOptions.value;
-                if (defaults && defaults.mergePolicy) {
-                    toExpand.mergePolicy = defaults.mergePolicy;
-                }
-                userOptions = fluid.expandOptions(toExpand, that);
-            }
-        }
+        var defaults = fluid.defaults(componentName);
         var mergePolicy = $.extend({}, defaults? defaults.mergePolicy : {});
-        that.options = fluid.merge(mergePolicy, {}, defaults, userOptions);    
+        var mergeArgs = [mergePolicy, {}];
+        if (fluid.expandComponentOptions) {
+            var extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
+        }
+        else {
+            extraArgs = [defaults, userOptions];
+        }
+        mergeArgs = mergeArgs.concat(extraArgs);
+        that.options = fluid.merge.apply(null, mergeArgs);
     };
     
         

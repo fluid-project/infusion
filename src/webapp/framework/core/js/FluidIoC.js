@@ -97,7 +97,7 @@ var fluid_1_4 = fluid_1_4 || {};
             var context = parsed.context;
             if (localRecord && localRecord[context]) {
                 var fetched = fluid.get(localRecord[context], parsed.path);
-                return {
+                return context === "arguments"? fetched : {
                     marker: context === "options"? fluid.EXPAND : fluid.EXPAND_NOW,
                     value: fetched
                 };
@@ -142,26 +142,30 @@ var fluid_1_4 = fluid_1_4 || {};
      * and argument list which is suitable to be executed directly by fluid.invokeGlobalFunction.
      */
     fluid.embodyDemands = function(instantiator, parentThat, demandspec, initArgs, options) {
+        options = options || {};
+        options.componentRecord = $.extend(true, {}, options.componentRecord, 
+            fluid.censorKeys(demandspec, ["args", "funcName"]));
+        
         var demands = $.makeArray(demandspec.args);
         var upDefaults = fluid.defaults(demandspec.funcName); // I can SEE into TIME!!
         var argMap = upDefaults? upDefaults.argumentMap : null;
-        if (!argMap && (upDefaults || options && options.componentRecord)) {
+        if (!argMap && (upDefaults || options && options.componentRecord) && !options.passArgs) {
             // infer that it must be a little component if we have any reason to believe it is a component
-            argMap =  fluid.rawDefaults("fluid.littleComponent").argumentMap;
+            argMap = fluid.rawDefaults("fluid.littleComponent").argumentMap;
         }
         var expandMap = {};
         options = options || {};
         if (demands.length === 0) {
-            if (options.componentRecord) {
-                demands = fluid.argMapToDemands(argMap);
-            }
-            else if (options.passArgs) {
+           if (options.passArgs) {
                 demands = fluid.transform(initArgs, function(arg, index) {
                     return "{arguments}." + index;
                 });
             }
+            else if (options.componentRecord) {
+                demands = fluid.argMapToDemands(argMap);
+            }
         }
-        var localRecord = $.extend({"arguments": initArgs}, options.componentRecord);
+        var localRecord = $.extend({"arguments": initArgs}, fluid.censorKeys(options.componentRecord, ["type"]));
         var expandOptions = makeStackResolverOptions(instantiator, parentThat, localRecord);
         var args = [];
         if (demands) {
@@ -366,7 +370,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
         var args = [];
         fluid.merge(null, args, $.makeArray(mergeArgs), $.makeArray(demandspec.args)); // TODO: avoid so much copying
-        return {funcName: newFuncName, args: args};
+        return $.extend({funcName: newFuncName, args: args}, fluid.censorKeys(demandspec, ["funcName", "args"]));
     };
     
     fluid.resolveDemands = function(instantiator, parentThat, funcNames, initArgs, options) {
@@ -423,7 +427,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.expander.preserveFromExpansion = function(options) {
         var preserve = {};
-        var preserveList = ["mergePolicy", "components", "invokers"];
+        var preserveList = ["mergePolicy", "components", "invokers", "mergePaths"];
         fluid.each(options.mergePolicy, function(value, key) {
             if (fluid.mergePolicyIs(value, "noexpand")) {
                 preserveList.push(key);
@@ -476,6 +480,22 @@ var fluid_1_4 = fluid_1_4 || {};
             }
             return expanded;
         });
+    };
+    
+    fluid.expandComponentOptions = function(defaults, userOptions, that) {
+        defaults = fluid.expandOptions(fluid.copy(defaults), that);
+        if (userOptions && userOptions.marker === fluid.EXPAND) {
+            var toExpand = userOptions.value;
+            if (defaults && defaults.mergePolicy) {
+                toExpand.mergePolicy = defaults.mergePolicy;
+            }
+            userOptions = fluid.expandOptions(toExpand, that);
+        }
+        var mergePaths = userOptions && userOptions.mergePaths || ["{options}"];
+        var togo = fluid.transform(mergePaths, function(path) {
+            return path === "{options}"? userOptions : fluid.expandOptions(path, that); 
+        });
+        return [defaults].concat(togo);
     };
     
     // The case without the instantiator is from the ginger strategy - this logic is still a little ragged
@@ -740,6 +760,8 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     function resolveEnvironmentImpl(obj, options) {
+        fluid.guardCircularity(options.seenIds, obj, "expansion", 
+          " - please ensure options are not circularly connected, or protect from expansion using the \"noexpand\" policy or expander");
         function recurse(arg) {
             return resolveEnvironmentImpl(arg, options);
         }
@@ -773,6 +795,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.resolveEnvironment = function(obj, directModel, userOptions) {
         directModel = directModel || {};
         var options = fluid.merge(null, {}, fluid.defaults("fluid.resolveEnvironment"), userOptions);
+        options.seenIds = {};
         if (!options.fetcher) {
             options.fetcher = fluid.environmentFetcher(directModel);
         }
