@@ -15,6 +15,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 /*global jQuery, fluid, fluid_1_4:true*/
 
+// JSLint options 
+/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+
 var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {

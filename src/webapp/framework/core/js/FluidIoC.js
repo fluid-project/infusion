@@ -13,6 +13,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 /*global jQuery*/
 
+// JSLint options 
+/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+
 var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
@@ -596,7 +599,6 @@ var fluid_1_4 = fluid_1_4 || {};
         while (typeof(string) === "string") {
             var i1 = string.indexOf("${");
             var i2 = string.indexOf("}", i1 + 2);
-            var all = (i1 === 0 && i2 === string.length - 1); 
             if (i1 !== -1 && i2 !== -1) {
                 var parsed;
                 if (string.charAt(i1 + 2) === "{") {
@@ -607,6 +609,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     parsed = {path: string.substring(i1 + 2, i2)};
                 }
                 var subs = options.fetcher(parsed);
+                var all = (i1 === 0 && i2 === string.length - 1); 
                 // TODO: test case for all undefined substitution
                 if (subs === undefined || subs === null) {
                     return subs;

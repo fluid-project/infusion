@@ -15,6 +15,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global fetchLightboxRoot, focusLightbox, createLightbox, createLightboxWithNoOrderables, createAltKeystrokeLightbox, createMultiKeystrokeLightbox, createMultiOverlappingKeystrokeLightbox*/
 /*global imageIds, orderableIds, lightboxRootId, focusPosition:true, numOfImages */
 
+// JSLint options 
+/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+
 (function ($) {
     $(document).ready(function () {
         var lightboxTests = new jqUnit.TestCase("Lightbox Tests");

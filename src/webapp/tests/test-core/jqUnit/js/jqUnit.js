@@ -13,6 +13,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global window, equals, ok, test, module, jQuery, deepEqDiag, asyncTest*/
+
+// JSLint options 
+/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+
 var jqUnit = jqUnit || {};
 
 // A function to load the testswarm agent if running in the testswarm environment
