@@ -440,7 +440,7 @@ var fluid_1_4 = fluid_1_4 || {};
             fileTypes: [
                 "audio/*",
                 "image/*",
-                "text/*"
+                "text/*",
                 "video/*"
             ],
             fileTypesDescription: null,
