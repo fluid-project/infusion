@@ -319,7 +319,8 @@ var fluid_1_4 = fluid_1_4 || {};
         // Set up the environment for progressive enhancement.
         if (fluid.progressiveChecker) {
             that.options.components.uploaderContext = that.options.deferredComponents.uploaderContext;
-            fluid.staticEnvironment.uploaderContext = fluid.initDependent(that, "uploaderContext", that.instantiator);
+            fluid.initDependent(that, "uploaderContext", that.instantiator);
+            fluid.staticEnvironment.uploaderContext = that.uploaderContext;
         }
         
         // Invoke an Uploader implementation, which will be specifically resolved using IoC 
