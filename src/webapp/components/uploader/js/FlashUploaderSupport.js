@@ -278,20 +278,23 @@ var fluid_1_4 = fluid_1_4 || {};
         return result;
     };
     
-    fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload = function (flashContainer, config, events) {
+    fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload = function (flashContainer, config, events, queueSettings) {
         config.flashButtonPeerId = fluid.allocateSimpleId(flashContainer.children().eq(0));
         // Map the event and settings names to SWFUpload's expectations.
         var convertedConfig = mapNames(swfUploadOptionsMap, config);
+        // Convert HTML5 MIME types into SWFUpload file types
+        // TODO:  better place to do this?
+        convertedConfig.file_types = fluid.uploader.fileTypeTransformer(queueSettings, {path: "fileTypes"});
         return mapSWFUploadEvents(swfUploadEventMap, events, convertedConfig);
     };
     
-    fluid.uploader.swfUploadStrategy.flash10SetupConfig = function (config, events, flashContainer, browseButton) {
+    fluid.uploader.swfUploadStrategy.flash10SetupConfig = function (config, events, flashContainer, browseButton, queueSettings) {
         var isTransparent = config.flashButtonAlwaysVisible ? false : (!$.browser.msie || config.flashButtonTransparentEvenInIE);
         config.flashButtonImageURL = isTransparent ? undefined : config.flashButtonImageURL;
         config.flashButtonHeight = config.flashButtonHeight || browseButton.outerHeight();
         config.flashButtonWidth = config.flashButtonWidth || browseButton.outerWidth();
         config.flashButtonWindowMode = isTransparent ? SWFUpload.WINDOW_MODE.TRANSPARENT : SWFUpload.WINDOW_MODE.OPAQUE;
-        return fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload(flashContainer, config, events);
+        return fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload(flashContainer, config, events, queueSettings);
     };
     
     fluid.demands("fluid.uploader.swfUploadStrategy.setupConfig", [
@@ -303,7 +306,8 @@ var fluid_1_4 = fluid_1_4 || {};
             "{engine}.config",
             "{multiFileUploader}.events",
             "{engine}.flashContainer",
-            "{multiFileUploader}.dom.browseButton"
+            "{multiFileUploader}.dom.browseButton",
+            "{multiFileUploader}.options.queueSettings"
         ]
     });
 

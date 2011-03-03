@@ -33,7 +33,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     ]
                 }
             };            
-            checkConvertedFileTypes(options, "*.tif,*.tiff,*.png,*.jpg,*.jpeg");
+            checkConvertedFileTypes(options, "*.tif;*.tiff;*.png;*.jpg;*.jpeg");
         });    
         
         mimeTypeCompatibilityTests.test("Two of the MIME types are invalid", function () {
@@ -65,10 +65,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
         mimeTypeCompatibilityTests.test("fileTypes is not an array.  No transformations performed.", function () {
             var options = {
                 queueSettings: {
-                    fileTypes: "*.jpg,image/png,*.txt"
+                    fileTypes: "*.jpg;image/png;*.txt"
                 }
             };            
-            checkConvertedFileTypes(options, "*.jpg,image/png,*.txt");
+            checkConvertedFileTypes(options, "*.jpg;image/png;*.txt");
         });                
     });    
 })(jQuery);

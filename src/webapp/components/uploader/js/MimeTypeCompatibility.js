@@ -33,7 +33,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 
                 for (var key in mimeTypesMap) {
                     if (mimeTypesMap[key].extension === mimeType) {
-                        fileTypes = fileTypes + mimeTypesMap[key].fileTypeExtension + ",";
+                        fileTypes = fileTypes + mimeTypesMap[key].fileTypeExtension + ";";
                     }
                 }            
             }
