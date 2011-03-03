@@ -19,6 +19,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global fluid*/
 /*global portalRootId*/ 
  
+ // JSLint options 
+ /*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+ 
 fluid.testUtils = fluid.testUtils || {};
 
 fluid.testUtils.moduleLayout = {

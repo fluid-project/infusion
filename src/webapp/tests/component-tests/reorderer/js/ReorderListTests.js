@@ -12,6 +12,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 /*global document, jqUnit, setUp, fluid, itemIds, callbackConfirmer, afterMoveCallbackWasCalled, itemIds2, jQuery*/
 
+// JSLint options 
+/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+
 (function ($) {
     $(document).ready(function () {
         var tests = new jqUnit.TestCase("Reorder List Tests", setUp);
