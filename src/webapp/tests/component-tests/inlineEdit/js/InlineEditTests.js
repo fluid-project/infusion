@@ -479,6 +479,33 @@ https://source.fluidproject.org/svn/LICENSE.txt
             assertVisState(undo1, redo1, false, false); // 4
         });
         
+        inlineEditTests.test("Test overriding the tooltip text ", function () {
+            var options = {tooltipText: "Updating the default tooltip text..."};
+            var editor = fluid.inlineEdit("#inline-override-tooltip", options);
+            var inlineEditText = editor.locate("text");                
+            inlineEditText.mouseover();
+            
+            //tool tip enabled
+            jqUnit.assertTrue("after mouse hover check if the tooltip was enabled", editor.tooltipEnabled());
+            
+            //now display the text once mouse is over
+            jqUnit.assertEquals("the tool tip with custom text  ", options.tooltipText, $("#" + inlineEditText.attr("aria-describedby")).text());                
+        });
+        
+        var tableCellInlineEditCommonSteps = function (that, initialExpectedValue, newExpectedValue) {
+            that.edit();
+            jqUnit.assertEquals("After switching into edit mode, should have initial text: ", initialExpectedValue, that.model.value);
+            that.editField.attr("value", newExpectedValue);
+            that.finish();
+            jqUnit.assertNotEquals("After editing the field, display should have new text which should not equal to the initial text ", initialExpectedValue, that.model.value);
+        };
+        
+        inlineEditTests.test("Test using inline edit to edit a table cell  ", function () {
+            var editor = fluid.inlineEdits("#inline-edit-table-cell");                
+            tableCellInlineEditCommonSteps(editor[0], "This is an editable table cell.", "This is test text cell one.");
+            tableCellInlineEditCommonSteps(editor[1], "This is another editable table cell.", "This is test text cell two.");
+        });
+        
         // Multiple Inline Editors tests
         (function () {
             var inlineEditsSel = "form.inlineEditable";
@@ -557,6 +584,24 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                   1, textFieldIds.length);
                 jqUnit.assertEquals("After finishing, the callback should have been called with the first form field.", 
                                     "edit2", textFieldIds[0]);
+            });
+            
+            var testMultiInlineEdits = function (containerId, numEditors, hasUndo, options) {
+                var editors = fluid.inlineEdits("#" + containerId, options);
+                jqUnit.assertEquals(containerId + " has " + numEditors + " editors", numEditors, editors.length);
+                var i;
+                for (i = 0; i < numEditors; i++) {
+                    var editor = editors[i];
+                    var currentHasUndo = !!editor.decorators && editor.decorators[0].typeName === "undo";
+                    jqUnit.assertEquals("Check whether or not editor has undo option", hasUndo, currentHasUndo);
+                    jqUnit.assertEquals("Belongs to container " + containerId, containerId, editor.container.parent().attr("id"));
+                }
+            };
+            
+            inlineEditTests.test("Test two copies of multiple inline edits with - we need to make sure we cover containment within a group when using the multiple inline edit API ", function () {           
+                var options = {componentDecorators: "fluid.undoDecorator"};        
+                testMultiInlineEdits("inline-multiple-edits", 2, true, options);                
+                testMultiInlineEdits("inline-multiple-edits-2", 3, false);
             });
         })();
         
@@ -822,62 +867,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var button = fluid.inlineEdit.setupTextEditButton(editor);     
                 jqUnit.assertTrue("textEditButton has button role", "button", button.attr("role"));
             });            
-       
-            var testMultiInlineEdits = function (containerId, numEditors, hasUndo, options) {
-                var editors = fluid.inlineEdits("#" + containerId, options);
-                jqUnit.assertEquals(containerId + " has " + numEditors + " editors", numEditors, editors.length);
-                var i;
-                for (i = 0; i < numEditors; i++) {
-                    var editor = editors[i];
-                    var currentHasUndo = !!editor.decorators && editor.decorators[0].typeName === "undo";
-                    jqUnit.assertEquals("Check whether or not editor has undo option", hasUndo, currentHasUndo);
-                    jqUnit.assertEquals("Belongs to container " + containerId, containerId, editor.container.parent().attr("id"));
-                }
-            };
-            
-            inlineEditTests.test("Test two copies of multiple inline edits with - we need to make sure we cover containment within a group when using the multiple inline edit API ", function () {           
-                var options = {selectOnEdit: true,
-                               componentDecorators: "fluid.undoDecorator"
-                        };
-        
-                testMultiInlineEdits("inline-multiple-edits", 2, true, options);                
-                testMultiInlineEdits("inline-multiple-edits-2", 3, false);
-            });            
-
-            inlineEditTests.test("Test overriding the tooltip text ", function () {
-                var options = {useTooltip: true, 
-                               tooltipText: "Updating the default tooltip text..."
-                        };
-                var editor = fluid.inlineEdit("#inline-override-tooltip", options);
-                var display = editor.locate("text");                
-                display.mouseover();
-                
-                //tool tip enabled
-                jqUnit.assertTrue("after mouse hover check if the tooltip was enabled", editor.tooltipEnabled());
-                
-                var toolTipId = display.attr("aria-describedby"); 
-                var toolTipVal = $("#" + toolTipId).text();
-                
-                //now display the text once mouse is over
-                jqUnit.assertEquals("the tool tip with custom text  ", options.tooltipText, toolTipVal);                
-            });
-            
-            var tableCellInlineEditCommonSteps = function (that, initialExpectedValue, newExpectedValue) {
-                var edit = that.editField;
-                var display = that.model;
-                that.edit();
-                jqUnit.assertEquals("After switching into edit mode, should have initial text: ", initialExpectedValue, display.value);
-                edit.attr("value", newExpectedValue);
-                display = that.model;
-                that.finish();
-                jqUnit.assertNotEquals("After editing the field, display should have new text which should not equal to the initial text ", initialExpectedValue, display.value);
-            };
-            
-            inlineEditTests.test("Test using inline edit to edit a table cell  ", function () {
-                var editor = fluid.inlineEdits("#inline-edit-table-cell");                
-                tableCellInlineEditCommonSteps(editor[0], "This is an editable table cell.", "This is test text cell one.");
-                tableCellInlineEditCommonSteps(editor[1], "This is another editable table cell.", "This is test text cell two.");
-            });
         })();
     });
 })(jQuery);
