@@ -22,8 +22,9 @@ var fluid_1_4 = fluid_1_4 || {};
 
     fluid.uploader = fluid.uploader || {};
     
-    fluid.demands("fluid.uploader.impl", ["fluid.uploader", "fluid.uploader.swfUpload"], {
-        funcName: "fluid.uploader.multiFileUploader"
+    fluid.demands("uploaderImpl", ["fluid.uploader", "fluid.uploader.swfUpload"], {
+        funcName: "fluid.uploader.multiFileUploader",
+        args: ["{uploader}.options.deferredComponents.uploaderImpl.container", fluid.COMPONENT_OPTIONS]
     });
     
     /**********************
