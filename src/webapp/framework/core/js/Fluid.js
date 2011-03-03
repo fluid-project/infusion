@@ -348,8 +348,10 @@ var fluid = fluid || fluid_1_4;
      * signalling using the value "undefined" is not possible) */
     fluid.NO_VALUE = {type: "fluid.marker", value: "NO_VALUE"};
     
-    /** A marker indicating that a value requires to be expanded **/
+    /** A marker indicating that a value requires to be expanded after component construction begins **/
     fluid.EXPAND = {type: "fluid.marker", value: "EXPAND"};
+    /** A marker indicating that a value requires to be expanded immediately**/
+    fluid.EXPAND_NOW = {type: "fluid.marker", value: "EXPAND_NOW"};
     
     /** Determine whether an object is any marker, or a particular marker - omit the
      * 2nd argument to detect any marker

@@ -97,10 +97,10 @@ var fluid_1_4 = fluid_1_4 || {};
             var context = parsed.context;
             if (localRecord && localRecord[context]) {
                 var fetched = fluid.get(localRecord[context], parsed.path);
-                return context === "options"? {
-                    marker: fluid.EXPAND,
+                return {
+                    marker: context === "options"? fluid.EXPAND : fluid.EXPAND_NOW,
                     value: fetched
-                } : fetched;
+                };
             }
             var foundComponent;
             visitComponents(thatStack, function(component, name) {
@@ -178,6 +178,9 @@ var fluid_1_4 = fluid_1_4 || {};
                     }
                 }
                 args[i] = fluid.expander.expandLight(arg, expandOptions);
+                if (args[i] && fluid.isMarker(args[i].marker, fluid.EXPAND_NOW)) {
+                    args[i] = fluid.expander.expandLight(args[i].value, expandOptions);
+                }
                 if (i === demands.length - 1 && args[i] && typeof(args[i]) === "object" && !args[i].typeName && !args[i].targetTypeName) {
                     args[i].targetTypeName = demandspec.funcName; // TODO: investigate the general sanity of this
                 }

@@ -382,6 +382,38 @@ fluid.registerNamespace("fluid.tests");
             });
             testFilteredRecords(that);
         });
+        
+        fluid.defaults("fluid.tests.paychequeComponent", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+            selectors: {
+                child: ".flc-renderUtils-test"
+            },
+            components: {
+                renderChild: {
+                    type: "fluid.tests.paychequeRenderer",
+                    container: "{paychequeComponent}.dom.child"
+                }
+            }
+        });
+        
+        // For AC
+        fluid.defaults("fluid.tests.paychequeRenderer", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                message: ".flc-renderUtils-message"  
+            },
+            protoTree: {
+                message: "What, every Friday?"
+            }   
+        });
+        
+        compTests.test("Graded renderer component test", function() {
+            var that = fluid.tests.paychequeComponent(".flc-renderUtils-container");
+            that.renderChild.refreshView();
+            var message = that.renderChild.locate("message");
+            jqUnit.assertEquals("Message rendered", fluid.defaults("fluid.tests.paychequeRenderer").protoTree.message,
+              message.text());
+        });
     
         var protoTests = new jqUnit.TestCase("Protocomponent Expander Tests");
   
