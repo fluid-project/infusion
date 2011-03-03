@@ -437,7 +437,11 @@ var fluid_1_4 = fluid_1_4 || {};
             uploadURL: "",
             postParams: {},
             fileSizeLimit: "20480",
-            fileTypes: "*",
+            fileTypes: [
+                "image/jpeg",
+                "image/tiff",
+                "image/png"
+            ],
             fileTypesDescription: null,
             fileUploadLimit: 0,
             fileQueueLimit: 0
