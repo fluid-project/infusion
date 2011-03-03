@@ -26,6 +26,10 @@ var fluid_1_4 = fluid_1_4 || {};
             extension: "image/jpeg",
             fileTypeExtension: "*.jpeg"
         },
+        BMP: {
+            extension: "image/bmp",
+            fileTypeExtension: "*.bmp"
+        },
         PNG: {
             extension: "image/png",
             fileTypeExtension: "*.png"
@@ -37,6 +41,42 @@ var fluid_1_4 = fluid_1_4 || {};
         TIFF: {
             extension: "image/tiff",
             fileTypeExtension: "*.tiff"            
+        },
+        MP3: {
+            extension: "audio/mpeg",
+            fileTypeExtension: "*.mp3"
+        },
+        WAV: {
+            extension: "audio/x-wav",
+            fileTypeExtension: "*.wav"
+        },        
+        HTML: {
+            extension: "text/html",
+            fileTypeExtension: "*.html"
+        },
+        HTM: {
+            extension: "text/html",
+            fileTypeExtension: "*.htm"
+        },
+        TXT: {
+            extension: "text/plain",
+            fileTypeExtension: "*.txt"
+        },
+        MPG: {
+            extension: "video/mpeg",
+            fileTypeExtension: "*.mpg"
+        },
+        MPEG: {
+            extension: "video/mpeg",
+            fileTypeExtension: "*.mpeg"
+        },
+        MOV: {
+            extension: "video/quicktime",
+            fileTypeExtension: "*.mov"
+        },
+        AVI: {
+            extension: "video/x-msvideo",
+            fileTypeExtension: "*.avi"
         }
     };    
 })(jQuery, fluid_1_4);        
