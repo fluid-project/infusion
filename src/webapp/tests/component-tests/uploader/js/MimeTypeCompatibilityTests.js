@@ -16,6 +16,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         var mimeTypeCompatibilityTests = new jqUnit.TestCase("Uploader MIME type Compatibility Tests");
         
+        var checkConvertedFileTypes = function (options, output) {
+            var result = fluid.uploader.fileTypeTransformer(options, {
+                path: "queueSettings.fileTypes"
+            });
+            jqUnit.assertEquals("The fileTypes string for SWFUpload is", result, output);
+        };
+        
         mimeTypeCompatibilityTests.test("Convert MIME types into SWFUpload file types", function () {
             var options = {
                 queueSettings: {
@@ -26,11 +33,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     ]
                 }
             };            
-            var result = fluid.uploader.fileTypeTransformer(options, {
-                path: "queueSettings.fileTypes"
-            });
-            
-            jqUnit.assertEquals("The file types string for SWFUpload is", result, "*.tif,*.tiff,*.png,*.jpg,*.jpeg");
+            checkConvertedFileTypes(options, "*.tif,*.tiff,*.png,*.jpg,*.jpeg");
         });    
         
         mimeTypeCompatibilityTests.test("Two of the MIME types are invalid", function () {
@@ -43,14 +46,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     ]
                 }
             };            
-            var result = fluid.uploader.fileTypeTransformer(options, {
-                path: "queueSettings.fileTypes"
-            });
-            
-            jqUnit.assertEquals("The file types string for SWFUpload is", result, "*.png");
+            checkConvertedFileTypes(options, "*.png");
         });        
         
-        mimeTypeCompatibilityTests.test("All MIME types are invalid:  Accept all file types", function () {
+        mimeTypeCompatibilityTests.test("All MIME types are invalid:  Accept all file types by default", function () {
             var options = {
                 queueSettings: {
                     fileTypes: [
@@ -59,42 +58,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
                         "*.html"
                     ]
                 }
-            };            
-            var result = fluid.uploader.fileTypeTransformer(options, {
-                path: "queueSettings.fileTypes"
-            });
-            
-            jqUnit.assertEquals("The file types string for SWFUpload is", result, "*");
-        });        
-        
-        mimeTypeCompatibilityTests.test("All MIME types are invalid:  Accept all file types", function () {
-            var options = {
-                queueSettings: {
-                    fileTypes: [
-                        "*.jpg",
-                        "image/hello",
-                        "*.html"
-                    ]
-                }
-            };            
-            var result = fluid.uploader.fileTypeTransformer(options, {
-                path: "queueSettings.fileTypes"
-            });
-            
-            jqUnit.assertEquals("The file types string for SWFUpload is", result, "*");
+            };
+            checkConvertedFileTypes(options, "*");
         });
         
-        mimeTypeCompatibilityTests.test("File types provided is not an array.  No transformations performed.", function () {
+        mimeTypeCompatibilityTests.test("fileTypes is not an array.  No transformations performed.", function () {
             var options = {
                 queueSettings: {
                     fileTypes: "*.jpg,image/png,*.txt"
                 }
             };            
-            var result = fluid.uploader.fileTypeTransformer(options, {
-                path: "queueSettings.fileTypes"
-            });
-            
-            jqUnit.assertEquals("The file types string for SWFUpload is", result, "*.jpg,image/png,*.txt");
+            checkConvertedFileTypes(options, "*.jpg,image/png,*.txt");
         });                
     });    
 })(jQuery);
