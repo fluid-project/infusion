@@ -632,7 +632,7 @@ var fluid_1_4 = fluid_1_4 || {};
         FILE_EXCEEDS_SIZE_LIMIT: -110,
         ZERO_BYTE_FILE: -120,
         INVALID_FILETYPE: -130
-    }
+    };
     
     fluid.uploader.errorConstants = {
         HTTP_ERROR: -200,

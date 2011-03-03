@@ -210,7 +210,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 }
                 testVisibility(uploadLimitRow, upload_state);
                 testVisibility(fileLimitRow, file_state);
-            }
+            };
             testToggle(null, false, false);
             errorHandler.addError(oceanTestFile.fileName, "exceedsUploadLimit");
             errorHandler.addError(oceanTestFile.fileName, "exceedsFileLimit");
