@@ -47,14 +47,6 @@ var demo = demo || {};
     var setupUIOptions = function () {
         var options = {
             listeners: {
-                afterRender: function () {
-                    $(".uiOptions .fl-col:eq(0)").accordion({
-                        header: 'h2',
-                        clearStyle: true,
-                        autoHeight: false
-                    });
-                    $(".uiOptions .fl-col h2:eq(0)").focus();
-                },
                 onCancel: function () {
                     uiOptionsNode.slideUp();
                 },
