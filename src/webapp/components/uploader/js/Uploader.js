@@ -314,18 +314,37 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} options configuration options for the component.
      */
     fluid.uploader = function (container, options) {
-        var that = fluid.typeTag("fluid.uploader");
+        var that = fluid.initLittleComponent("fluid.uploader");
+        fluid.initDependents(that);
         // Set up the environment for progressive enhancement.
         if (fluid.progressiveChecker) {
-            fluid.staticEnvironment.uploaderContext = fluid.invoke("fluid.progressiveChecker", 
-                                                                   null, 
-                                                                   that);
+            that.options.components.uploaderContext = that.options.deferredComponents.uploaderContext;
+            fluid.initDependent(that, "uploaderContext", that.instantiator);
+            fluid.staticEnvironment.uploaderContext = that.uploaderContext;
         }
         
         // Invoke an Uploader implementation, which will be specifically resolved using IoC 
         // based on the static environment configured by the progressiveChecker above.
-        return fluid.invoke("fluid.uploader.impl", [container, options], that);
+        that.options.deferredComponents.uploaderImpl.options = options;
+        that.options.deferredComponents.uploaderImpl.container = container;
+        that.options.components.uploaderImpl = that.options.deferredComponents.uploaderImpl;
+        fluid.initDependent(that, "uploaderImpl", that.instantiator);
+        return that.uploaderImpl;
     };
+    
+    fluid.defaults("fluid.uploader", {
+        components: {
+            instantiator: "{instantiator}"
+        },
+        deferredComponents: {
+            uploaderContext: {
+                type: "fluid.progressiveChecker"
+            },
+            uploaderImpl: {
+                type: "fluid.uploaderImpl"
+            }
+        } 
+    });
     
     fluid.demands("fluid.progressiveChecker", "fluid.uploader", {
         funcName: "fluid.progressiveChecker",
@@ -524,8 +543,9 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.demands("fluid.uploader.impl", "fluid.uploader", {
-        funcName: "fluid.uploader.multiFileUploader"
+    fluid.demands("uploaderImpl", "fluid.uploader", {
+        funcName: "fluid.uploader.multiFileUploader",
+        args: ["{uploader}.options.deferredComponents.uploaderImpl.container", fluid.COMPONENT_OPTIONS]
     });
     
     fluid.demands("fluid.uploader.totalProgressBar", "fluid.uploader.multiFileUploader", {
@@ -656,8 +676,9 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
 
-    fluid.demands("fluid.uploader.impl", ["fluid.uploader", "fluid.uploader.singleFile"], {
-        funcName: "fluid.uploader.singleFileUploader"
+    fluid.demands("uploaderImpl", ["fluid.uploader", "fluid.uploader.singleFile"], {
+        funcName: "fluid.uploader.singleFileUploader",
+        args: ["{uploader}.options.deferredComponents.uploaderImpl.container", fluid.COMPONENT_OPTIONS]
     });
     
 })(jQuery, fluid_1_4);
