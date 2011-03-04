@@ -28,7 +28,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     // unsupported, non-API function
     fluid.isFireBreak = function(component) {
-        return component.options && component.options["fluid.visitComponents.fireBreak"]  
+        return component.options && component.options["fluid.visitComponents.fireBreak"];
     };
     
     var findMatchingComponent = function(that, visitor, visited) {
@@ -38,7 +38,7 @@ var fluid_1_4 = fluid_1_4 || {};
             //if (component && component.typeName && !component.id) {
             //    fluid.fail("No id");
             //}
-            if (!component || !component.typeName || component.id && visited[component.id]) {continue;}
+            if (!component || !component.typeName || (component.id && visited[component.id])) {continue; }
             visited[component.id] = true;
             if (visitor(component, name)) {
                 return true;
@@ -46,16 +46,16 @@ var fluid_1_4 = fluid_1_4 || {};
             if (!fluid.isFireBreak(component)) {
                 findMatchingComponent(component, visitor, visited);
             }
-         }
+        }
     };
     
     // thatStack contains an increasing list of MORE SPECIFIC thats.
     var visitComponents = function(thatStack, visitor, visited) {
         visited = visited || {};
-        for (var i = thatStack.length - 1; i >= 0; -- i) {
+        for (var i = thatStack.length - 1; i >= 0; --i) {
             var that = thatStack[i];
             if (fluid.isFireBreak(that)) {
-               return;
+                return;
             }
             if (that.typeName) {
                 visited[that.id] = true;
@@ -79,8 +79,8 @@ var fluid_1_4 = fluid_1_4 || {};
             if (atval !== undefined) {
                 if (atval[inCreationMarker] && atval !== thatStack[0]) {
                     fluid.fail("Component of type " + 
-                    atval.typeName + " cannot be used for lookup of path " + segs.join(".") +
-                    " since it is still in creation. Please reorganise your dependencies so that they no longer contain circular references");
+                        atval.typeName + " cannot be used for lookup of path " + thisSeg +
+                        " since it is still in creation. Please reorganise your dependencies so that they no longer contain circular references");
                 }
             }
             else {
@@ -88,10 +88,10 @@ var fluid_1_4 = fluid_1_4 || {};
                     fluid.initDependent(component, thisSeg);
                     atval = component[thisSeg];
                 }
-            };
+            }
             return atval;
-        }
-    };
+        };
+    }
 
     function makeStackFetcher(instantiator, parentThat, localRecord) {
         var thatStack = instantiator.getFullStack(parentThat);
@@ -128,7 +128,7 @@ var fluid_1_4 = fluid_1_4 || {};
         return $.extend({}, fluid.defaults("fluid.resolveEnvironment"), {
             noCopy: true,
             fetcher: makeStackFetcher(instantiator, parentThat, localRecord)
-            }); 
+        }); 
     } 
     
     fluid.argMapToDemands = function(argMap) {
@@ -152,14 +152,13 @@ var fluid_1_4 = fluid_1_4 || {};
         var demands = $.makeArray(demandspec.args);
         var upDefaults = fluid.defaults(demandspec.funcName); // I can SEE into TIME!!
         var argMap = upDefaults? upDefaults.argumentMap : null;
-        if (!argMap && (upDefaults || options && options.componentRecord) && !options.passArgs) {
+        if (!argMap && (upDefaults || (options && options.componentRecord)) && !options.passArgs) {
             // infer that it must be a little component if we have any reason to believe it is a component
             argMap = fluid.rawDefaults("fluid.littleComponent").argumentMap;
         }
-        var expandMap = {};
         options = options || {};
         if (demands.length === 0) {
-           if (options.passArgs) {
+            if (options.passArgs) {
                 demands = fluid.transform(initArgs, function(arg, index) {
                     return "{arguments}." + index;
                 });
@@ -172,7 +171,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var expandOptions = makeStackResolverOptions(instantiator, parentThat, localRecord);
         var args = [];
         if (demands) {
-            for (var i = 0; i < demands.length; ++ i) {
+            for (var i = 0; i < demands.length; ++i) {
                 var arg = demands[i];
                 // Weak detection since we cannot guarantee this material has not been copied
                 if (fluid.isMarker(arg) && arg.value === fluid.COMPONENT_OPTIONS.value) {
@@ -194,7 +193,7 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
         else {
-            args = initArgs? initArgs: [];
+            args = initArgs? initArgs : [];
         }
 
         var togo = {
@@ -208,12 +207,12 @@ var fluid_1_4 = fluid_1_4 || {};
     
     function searchDemands(demandingName, contextNames) {
         var exist = dependentStore[demandingName] || [];
-        outer: for (var i = 0; i < exist.length; ++ i) {
+outer:  for (var i = 0; i < exist.length; ++i) {
             var rec = exist[i];
-            for (var j = 0; j < contextNames.length; ++ j) {
-                 if (rec.contexts[j] !== contextNames[j]) {
-                     continue outer;
-                 }
+            for (var j = 0; j < contextNames.length; ++j) {
+                if (rec.contexts[j] !== contextNames[j]) {
+                    continue outer;
+                }
             }
             return rec.spec;   
         }
@@ -251,7 +250,7 @@ var fluid_1_4 = fluid_1_4 || {};
 
         that.stack = function(count) {
             return that.stackCount += count;
-        }
+        };
         that.getThatStack = function(component) {
             var path = that.idToPath[component.id] || "";
             var parsed = fluid.model.parseEL(path);
@@ -271,11 +270,11 @@ var fluid_1_4 = fluid_1_4 || {};
                 togo.push(fluid.threadLocal());
             }
             return togo;
-        }
+        };
         that.getFullStack = function(component) {
             var thatStack = component? that.getThatStack(component) : [];
             return that.getEnvironmentalStack().concat(thatStack);
-        }
+        };
         function recordComponent(component, path) {
             that.idToPath[component.id] = path;
             that.pathToComponent[path] = component;          
@@ -323,16 +322,16 @@ var fluid_1_4 = fluid_1_4 || {};
             contextNames[component.typeName] = true;
         });
         var matches = [];
-        for (var i = 0; i < demandingNames.length; ++ i) {
+        for (var i = 0; i < demandingNames.length; ++i) {
             var rec = dependentStore[demandingNames[i]] || [];
-            for (var j = 0; j < rec.length; ++ j) {
+            for (var j = 0; j < rec.length; ++j) {
                 var spec = rec[j];
                 var record = {spec: spec.spec, intersect: 0, uncess: 0};
-                for (var k = 0; k < spec.contexts.length; ++ k) {
+                for (var k = 0; k < spec.contexts.length; ++k) {
                     record[contextNames[spec.contexts[k]]? "intersect" : "uncess"] += 2;
                 }
                 if (spec.contexts.length === 0) { // allow weak priority for contextless matches
-                    record.intersect ++;
+                    record.intersect++;
                 }
                 // TODO: Potentially more subtle algorithm here - also ambiguity reports  
                 matches.push(record); 
@@ -341,7 +340,7 @@ var fluid_1_4 = fluid_1_4 || {};
         matches.sort(function(speca, specb) {
             var p1 = specb.intersect - speca.intersect; 
             return p1 === 0? speca.uncess - specb.uncess : p1;
-            });
+        });
         return matches.length === 0 || matches[0].intersect === 0? null : matches[0].spec;
     };
     
@@ -447,7 +446,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 fluid.each(preserveList, function(path) {
                     var preserved = fluid.get(preserve, path);
                     if (preserved !== undefined) {
-                        fluid.set(target, path, preserved)
+                        fluid.set(target, path, preserved);
                     }
                 });
             }
@@ -474,8 +473,9 @@ var fluid_1_4 = fluid_1_4 || {};
             fluid.log("expandOptions for " + that.typeName + " executing with instantiator " + instantiator.id);
             var expandOptions = makeStackResolverOptions(instantiator, that);
             expandOptions.noCopy = true; // It is still possible a model may be fetched even though it is preserved
+            var pres;
             if (!fluid.isArrayable(args)) {
-                var pres = fluid.expander.preserveFromExpansion(args);
+                pres = fluid.expander.preserveFromExpansion(args);
             }
             var expanded = fluid.expander.expandLight(args, expandOptions);
             if (pres) {
@@ -494,7 +494,7 @@ var fluid_1_4 = fluid_1_4 || {};
             }
             userOptions = fluid.expandOptions(toExpand, that);
         }
-        var mergePaths = userOptions && userOptions.mergePaths || ["{options}"];
+        var mergePaths = (userOptions && userOptions.mergePaths) || ["{options}"];
         var togo = fluid.transform(mergePaths, function(path) {
             return path === "{options}"? userOptions : fluid.expandOptions(path, that); 
         });
@@ -507,15 +507,15 @@ var fluid_1_4 = fluid_1_4 || {};
         directArgs = directArgs || [];
         var root = fluid.threadLocal();
         if (userInstantiator) {
-           var existing = root["fluid.instantiator"];
-           if (existing && existing !== userInstantiator) {
-               fluid.fail("Error in initDependent: user instantiator supplied with id " + userInstantiator.id 
-                + " which differs from that for currently active instantiation with id " + existing.id);
-           }
-           else {
-               root["fluid.instantiator"] = userInstantiator;
-               fluid.log("*** initDependent for " + that.typeName + " member " + name + " was supplied USER instantiator with id " + userInstantiator.id + " - STORED");
-           }
+            var existing = root["fluid.instantiator"];
+            if (existing && existing !== userInstantiator) {
+                fluid.fail("Error in initDependent: user instantiator supplied with id " + userInstantiator.id 
+                    + " which differs from that for currently active instantiation with id " + existing.id);
+            }
+            else {
+                root["fluid.instantiator"] = userInstantiator;
+                fluid.log("*** initDependent for " + that.typeName + " member " + name + " was supplied USER instantiator with id " + userInstantiator.id + " - STORED");
+            }
         }
         
         fluid.withInstantiator(that, function(instantiator) {
@@ -549,7 +549,7 @@ var fluid_1_4 = fluid_1_4 || {};
     // NON-API function
     // This function is stateful and MUST NOT be called by client code
     fluid.withInstantiator = function(that, func) {
-        var typeName = that? that.typeName: "[none]";
+        var typeName = that? that.typeName : "[none]";
         var root = fluid.threadLocal();
         var instantiator = root["fluid.instantiator"];
         if (!instantiator) {
@@ -646,7 +646,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
         finally {
             for (var key in envAdd) {
-               delete root[key];
+                delete root[key];
             }
         }
     };
@@ -752,7 +752,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 // TODO: test case for all undefined substitution
                 if (subs === undefined || subs === null) {
                     return subs;
-                    }
+                }
                 string = all? subs : string.substring(0, i1) + subs + string.substring(i2 + 1);
             }
             else {
@@ -764,7 +764,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     function resolveEnvironmentImpl(obj, options) {
         fluid.guardCircularity(options.seenIds, obj, "expansion", 
-          " - please ensure options are not circularly connected, or protect from expansion using the \"noexpand\" policy or expander");
+             " - please ensure options are not circularly connected, or protect from expansion using the \"noexpand\" policy or expander");
         function recurse(arg) {
             return resolveEnvironmentImpl(arg, options);
         }
@@ -784,9 +784,10 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     }
     
-    fluid.defaults("fluid.resolveEnvironment", 
-        {ELstyle:     "${}",
-         bareContextRefs: true});
+    fluid.defaults("fluid.resolveEnvironment", {
+        ELstyle:     "${}",
+        bareContextRefs: true
+    });
     
     fluid.environmentFetcher = function(directModel) {
         var env = fluid.threadLocal();
@@ -831,29 +832,29 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.noexpand = fluid.expander.noexpand; // TODO: check naming and namespacing
   
     fluid.expander.lightFilter = function (obj, recurse, options) {
-          var togo;
-          if (fluid.isArrayable(obj)) {
-              togo = options.noCopy? obj : [];
-              fluid.each(obj, function(value, key) {togo[key] = recurse(value);});
-          }
-          else {
-              togo = options.noCopy? obj : {};
-              for (var key in obj) {
-                  var value = obj[key];
-                  var expander;
-                  if (key === "expander" && !(options.expandOnly && options.expandOnly[value.type])){
-                      expander = fluid.getGlobalValue(value.type);  
-                      if (expander) {
-                          return expander.call(null, togo, obj, recurse);
-                      }
-                  }
-                  if (key !== "expander" || !expander) {
-                      togo[key] = recurse(value);
-                  }
-              }
-          }
-          return options.noCopy? obj : togo;
-      };
+        var togo;
+        if (fluid.isArrayable(obj)) {
+            togo = options.noCopy? obj : [];
+            fluid.each(obj, function(value, key) {togo[key] = recurse(value);});
+        }
+        else {
+            togo = options.noCopy? obj : {};
+            for (var key in obj) {
+                var value = obj[key];
+                var expander;
+                if (key === "expander" && !(options.expandOnly && options.expandOnly[value.type])) {
+                    expander = fluid.getGlobalValue(value.type);  
+                    if (expander) {
+                        return expander.call(null, togo, obj, recurse);
+                    }
+                }
+                if (key !== "expander" || !expander) {
+                    togo[key] = recurse(value);
+                }
+            }
+        }
+        return options.noCopy? obj : togo;
+    };
       
     fluid.expander.expandLight = function (source, expandOptions) {
         var options = $.extend({}, expandOptions);

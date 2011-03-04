@@ -187,7 +187,7 @@ var fluid = fluid || fluid_1_4;
     
     function transformInternal(source, togo, key, args) {
         var transit = source[key];
-        for (var j = 0; j < args.length - 1; ++ j) {
+        for (var j = 0; j < args.length - 1; ++j) {
             transit = args[j + 1](transit, key);
         }
         togo[key] = transit; 
@@ -208,7 +208,7 @@ var fluid = fluid || fluid_1_4;
     fluid.transform = function (source) {
         var togo = fluid.freshContainer(source);
         if (fluid.isArrayable(source)) {
-            for (var i = 0; i < source.length; ++ i) {
+            for (var i = 0; i < source.length; ++i) {
                 transformInternal(source, togo, i, arguments);
             }
         }
@@ -228,7 +228,7 @@ var fluid = fluid || fluid_1_4;
      */
     fluid.each = function (source, func) {
         if (fluid.isArrayable(source)) {
-            for (var i = 0; i < source.length; ++ i) {
+            for (var i = 0; i < source.length; ++i) {
                 func(source[i], i);
             }
         }
@@ -252,7 +252,7 @@ var fluid = fluid || fluid_1_4;
     fluid.find = function (source, func, deflt) {
         var disp;
         if (fluid.isArrayable(source)) {
-            for (var i = 0; i < source.length; ++ i) {
+            for (var i = 0; i < source.length; ++i) {
                 disp = func(source[i], i);
                 if (disp !== undefined) {
                     return disp;
@@ -280,7 +280,7 @@ var fluid = fluid || fluid_1_4;
      * @return {Object} the final running total object as returned from the final invocation of the function on the last list member.
      */
     fluid.accumulate = function (list, fn, arg) {
-        for (var i = 0; i < list.length; ++ i) {
+        for (var i = 0; i < list.length; ++i) {
             arg = fn(list[i], arg, i);
         }
         return arg;
@@ -482,7 +482,7 @@ var fluid = fluid || fluid_1_4;
             strategies: fluid.isArrayable(config)? config : 
                 fluid.transform(config.strategies, function (strategy, index) {
                     return fluid.model.initStrategy(strategy, index, oldStrategies); 
-            })
+                })
         };
         that.trundle = function(EL, uncess) {
             uncess = uncess || 0;
@@ -497,7 +497,7 @@ var fluid = fluid || fluid_1_4;
                 return;
             }
             var accepted;
-            for (var i = 0; i < that.strategies.length; ++ i) {
+            for (var i = 0; i < that.strategies.length; ++i) {
                 var value = fluid.model.applyStrategy(that.strategies[i], that.root, that.segs[that.index], that.index);
                 if (accepted === undefined) {
                     accepted = value;
@@ -510,7 +510,7 @@ var fluid = fluid || fluid_1_4;
             ++that.index;
         };
         that.step = function (limit) {
-            for (var i = 0; i < limit; ++ i) {
+            for (var i = 0; i < limit; ++i) {
                 that.next();
             }
             that.last = that.segs[that.index];
@@ -657,7 +657,7 @@ var fluid = fluid || fluid_1_4;
             }
             var firer = events[key];
             if (fluid.isArrayable(value)) {
-                for (var i = 0; i < value.length; ++ i) {
+                for (var i = 0; i < value.length; ++i) {
                     fluid.event.addListenerToFirer(firer, value[i], namespace); 
                 }
             }
@@ -721,7 +721,7 @@ var fluid = fluid || fluid_1_4;
         var gradeStruct = {
             gradeChain: [],
             gradeHash: {},
-            optionsChain:[]
+            optionsChain: []
         };
         return resolveGradesImpl(gradeStruct, gradeNames);
     };
@@ -822,7 +822,7 @@ var fluid = fluid || fluid_1_4;
             }
             else if (seenIds[source.id] === source) {
                 fluid.fail("Circularity in options " + message1 + " - component with typename " + source.typeName + " and id " + source.id 
-                + " has already been seen" + message2);  
+                    + " has already been seen" + message2);  
             }
         }      
     };
@@ -842,7 +842,7 @@ var fluid = fluid || fluid_1_4;
         fluid.guardCircularity(rec.seenIds, source, "merging", " when evaluating path " + basePath + " - please protect components from merging using the \"nomerge\" merge policy");
       
         for (var name in source) {
-            var path = (basePath ? basePath + ".": "") + name;
+            var path = (basePath ? basePath + "." : "") + name;
             var newPolicy = policy && typeof(policy) !== "string" ? policy[path] : policy;
             var thisTarget = target[name];
             var thisSource = source[name];
@@ -850,8 +850,8 @@ var fluid = fluid || fluid_1_4;
     
             if (thisSource !== undefined) {
                 if (thisSource !== null && typeof thisSource === 'object' &&
-                      !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
-                       !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "nomerge") && !fluid.mergePolicyIs(newPolicy, "noexpand")) {
+                        !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
+                        !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "nomerge") && !fluid.mergePolicyIs(newPolicy, "noexpand")) {
                     if (primitiveTarget) {
                         target[name] = thisTarget = thisSource instanceof Array ? [] : {};
                     }
@@ -952,7 +952,7 @@ var fluid = fluid || fluid_1_4;
         var that = {};
         options = $.makeArray(options);
         var empty = function () {};
-        for (var i = 0; i < options.length; ++ i) {
+        for (var i = 0; i < options.length; ++i) {
             that[options[i]] = empty;
         }
         return that;
@@ -988,7 +988,7 @@ var fluid = fluid || fluid_1_4;
     fluid.initLittleComponent = function (name, options) {
         var that = fluid.typeTag(name);
         // TODO: nickName must be available earlier than other merged options so that component may resolve to itself
-        that.nickName = options && options.nickName ? options.nickName: fluid.computeNickName(that.typeName);
+        that.nickName = options && options.nickName? options.nickName : fluid.computeNickName(that.typeName);
         fluid.mergeComponentOptions(that, name, options);
         return that;
     };
@@ -1169,7 +1169,7 @@ var fluid = fluid || fluid_1_4;
             fluid.fail({
                 name: "NotOne",
                 message: count > 1 ? "More than one (" + count + ") container elements were "
-                : "No container element was found for selector " + containerSpec
+                    : "No container element was found for selector " + containerSpec
             });
         }
         if (!fluid.isDOMNode(container[0])) {
@@ -1200,7 +1200,7 @@ var fluid = fluid || fluid_1_4;
             var selector, thisContainer, togo;
             
             selector = selectors[name];
-            thisContainer = localContainer ? localContainer: container;
+            thisContainer = localContainer? localContainer : container;
             if (!thisContainer) {
                 fluid.fail("DOM binder invoked for selector " + name + " without container");
             }
@@ -1228,7 +1228,7 @@ var fluid = fluid || fluid_1_4;
             return togo;
         };
         that.fastLocate = function (name, localContainer) {
-            var thisContainer = localContainer ? localContainer: container;
+            var thisContainer = localContainer? localContainer : container;
             var key = cacheKey(name, thisContainer);
             var togo = cache[key];
             return togo ? togo : that.locate(name, localContainer);
@@ -1237,15 +1237,15 @@ var fluid = fluid || fluid_1_4;
             cache = {};
         };
         that.refresh = function (names, localContainer) {
-            var thisContainer = localContainer ? localContainer: container;
+            var thisContainer = localContainer? localContainer : container;
             if (typeof names === "string") {
                 names = [names];
             }
             if (thisContainer.length === undefined) {
                 thisContainer = [thisContainer];
             }
-            for (var i = 0; i < names.length; ++ i) {
-                for (var j = 0; j < thisContainer.length; ++ j) {
+            for (var i = 0; i < names.length; ++i) {
+                for (var j = 0; j < thisContainer.length; ++j) {
                     that.locate(names[i], thisContainer[j]);
                 }
             }
@@ -1301,8 +1301,8 @@ var fluid = fluid || fluid_1_4;
             var globDef = fluid.defaults(true, entryType);
             fluid.merge("reverse", that.options, globDef);
             togo = entryType === "fluid.emptySubcomponent" ?
-               fluid.emptySubcomponent(entry.options) : 
-               fluid.invokeGlobalFunction(entryType, args);
+                fluid.emptySubcomponent(entry.options) : 
+                fluid.invokeGlobalFunction(entryType, args);
         }
         else {
             togo = entry.apply(null, args);
@@ -1347,12 +1347,12 @@ var fluid = fluid || fluid_1_4;
         var optindex = -1;
         var togo = [];
         args = $.makeArray(args);
-        for (var i = 0; i < args.length; ++ i) {
+        for (var i = 0; i < args.length; ++i) {
             if (args[i] === fluid.COMPONENT_OPTIONS) {
                 optindex = i;
             }
         }
-        for (i = 0; i < entries.length; ++ i) {
+        for (i = 0; i < entries.length; ++i) {
             entry = entries[i];
             if (optindex !== -1) {
                 args[optindex] = entry.options;
@@ -1514,7 +1514,7 @@ var fluid = fluid || fluid_1_4;
     });
     
     fluid.messageResolver.resolveOne = function (messageBase, messagecodes) {
-        for (var i = 0; i < messagecodes.length; ++ i) {
+        for (var i = 0; i < messagecodes.length; ++i) {
             var code = messagecodes[i];
             var message = messageBase[code];
             if (message !== undefined) {
