@@ -39,10 +39,6 @@ $(function () {
     var setupUIOptions = function () {        
         var options = {
             listeners: {
-                afterRender: function () {
-                    $('.fl-uiOptions .fl-col:eq(0)').accordion({header: 'h2', clearStyle: true, autoHeight: false});
-                    $('.fl-uiOptions .fl-col h2:eq(0)').focus();
-                },
                 onCancel: function () {
                     uiOptionsNode.slideUp();
                 }, 
