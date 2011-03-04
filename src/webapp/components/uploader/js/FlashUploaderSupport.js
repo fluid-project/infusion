@@ -196,7 +196,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * swfUpload.setupDOM *
      **********************/
     
-    fluid.uploader.swfUploadStrategy.flash10SetupDOM = function (totalProgress, uploaderContainer, browseButton, styles) {
+    fluid.uploader.swfUploadStrategy.flash10SetupDOM = function (uploaderContainer, browseButton, progressBar, styles) {
         // Wrap the whole uploader first.
         uploaderContainer.wrap("<div class='" + styles.uploaderWrapperFlash10 + "'></div>");
 
@@ -204,7 +204,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var flashContainer = $("<div><span></span></div>");
         flashContainer.addClass(styles.browseButtonOverlay);
         uploaderContainer.after(flashContainer);
-        totalProgress.locate('progressBar').append(flashContainer);
+        progressBar.append(flashContainer);
         browseButton.attr("tabindex", -1);        
         return flashContainer;   
     };
@@ -214,10 +214,10 @@ var fluid_1_4 = fluid_1_4 || {};
         "fluid.uploader.flash.10"
     ], {
         funcName: "fluid.uploader.swfUploadStrategy.flash10SetupDOM",
-        args: [
-            "{multiFileUploader}.totalProgress",
+        args: [            
             "{multiFileUploader}.container",
             "{multiFileUploader}.dom.browseButton",
+            "{totalProgress}.dom.progressBar",
             "{swfUploadStrategy}.options.styles"
         ]
     });
