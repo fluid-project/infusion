@@ -148,7 +148,7 @@ var fluid = fluid || fluid_1_4;
     /** Returns true if the argument is a value other than null or undefined **/
     fluid.isValue = function(value) {
         return value !== undefined && value !== null;
-    }
+    };
     
     /** Returns true if the argument is a primitive type **/
     fluid.isPrimitive = function (value) {
@@ -922,8 +922,9 @@ var fluid = fluid || fluid_1_4;
         var defaults = fluid.defaults(componentName);
         var mergePolicy = $.extend({}, defaults? defaults.mergePolicy : {});
         var mergeArgs = [mergePolicy, {}];
+        var extraArgs;
         if (fluid.expandComponentOptions) {
-            var extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
+            extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
         }
         else {
             extraArgs = [defaults, userOptions];
