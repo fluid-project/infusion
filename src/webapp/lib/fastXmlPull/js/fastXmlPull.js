@@ -50,6 +50,9 @@ freely, subject to the following restrictions:
     distribution.
  */
 
+// Declare dependencies
+/*global fluid_1_4:true, jQuery*/
+
 // JSLint options 
 /*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 

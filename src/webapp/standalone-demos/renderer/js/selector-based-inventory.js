@@ -9,9 +9,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-// Declare dependencies.
-/*global jQuery*/
-/*global fluid*/
+// Declare dependencies
+/*global fluid:true, jQuery*/
 
 // JSLint options 
 /*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */

@@ -14,8 +14,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /** This file contains functions which depend on the presence of a DOM document
  * but which do not depend on the contents of Fluid.js **/
 
-// Declare dependencies.
-/*global jQuery*/
+// Declare dependencies
+/*global fluid_1_4:true, jQuery*/
 
 // JSLint options 
 /*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
