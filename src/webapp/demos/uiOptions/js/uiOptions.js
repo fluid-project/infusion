@@ -52,16 +52,11 @@ var demo = demo || {};
                 onSave: function () {
                     uiOptionsNode.slideUp();
                 }
-            }
+            },
+            templateUrl: "../../../components/uiOptions/html/UIOptions.html"
         };
         
-        uiOptionsComponent = fluid.uiOptions(".uiOptions", options);
-    };
-    
-    //load the UI Options component
-    var loadUIOptions = function () {
-        var urlSelector = "../../../components/uiOptions/html/UIOptions.html .uiOptions";
-        uiOptionsNode.load(urlSelector, setupUIOptions);
+        uiOptionsComponent = fluid.uiOptions("#myUIOptions", options);
     };
     
     var setupPage = function () {
@@ -77,7 +72,7 @@ var demo = demo || {};
     demo.initUIOptions = function () {
         uiOptionsNode = $("#myUIOptions");
         setupUIEnhancer();  
-        loadUIOptions();
         setupPage();
+        setupUIOptions();
     };
 })(jQuery, fluid);

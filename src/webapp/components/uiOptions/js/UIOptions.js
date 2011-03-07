@@ -372,12 +372,15 @@ var fluid_1_4 = fluid_1_4 || {};
             initPreview(that);
         });
         
-        var rendererOptions = createRenderOptions(that);
-        var template = fluid.selfRender(that.container, generateTree(that, rendererOptions.model), rendererOptions);
-     
-        that.events.afterRender.fire();
-            
-        return template;
+        // Fetch UI Options' template.
+        fluid.fetchResources({
+            uiOptions: {
+                href: that.options.templateUrl
+            }
+        }, function (spec) {
+            that.templates = fluid.parseTemplates(spec, ["uiOptions"], {});
+            that.refreshView();
+        });
     };
     
     /**
@@ -397,7 +400,6 @@ var fluid_1_4 = fluid_1_4 || {};
 
         // TODO: we shouldn't need the savedModel and should use the uiEnhancer.model instead
         var savedModel = that.uiEnhancer.model;
-        var template;
  
         /**
          * Saves the current model and fires onSave
@@ -431,7 +433,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.refreshView = function () {
             var rendererOptions = createRenderOptions(that);
-            fluid.reRender(template, that.container, generateTree(that, rendererOptions.model), rendererOptions);
+            fluid.reRender(that.templates, that.container, generateTree(that, rendererOptions.model), rendererOptions);
             that.events.afterRender.fire();
         };
         
@@ -447,7 +449,7 @@ var fluid_1_4 = fluid_1_4 || {};
             fluid.model.copyModel(that.model, newModel);
         };
         
-        template = setupUIOptions(that);
+        setupUIOptions(that);
 
         return that;   
     };
@@ -499,7 +501,8 @@ var fluid_1_4 = fluid_1_4 || {};
             layout: ["simple", "default"],
             toc: ["true", "false"]
         },
-        previewTemplateUrl: "UIOptionsPreview.html"        
+        templateUrl: "UIOptions.html",
+        previewTemplateUrl: "UIOptionsPreview.html"
     });
 
 })(jQuery, fluid_1_4);
