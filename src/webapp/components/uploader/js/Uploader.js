@@ -246,8 +246,6 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.events.onUploadStart.addListener(function () {
             setStateUploading(that);
-            //clear error messages when upload is clicked.
-            that.errorHandler.clearErrors();
         });
         
         that.events.onUploadStop.addListener(function () {
@@ -416,7 +414,9 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.start = function () {
             that.queue.start();
-            that.events.onUploadStart.fire(that.queue.currentBatch.files); 
+            that.events.onUploadStart.fire(that.queue.currentBatch.files);
+            //clear error messages when upload is clicked.
+            that.events.clearFileError.fire();            
             that.strategy.remote.uploadNextFile();
         };
         
