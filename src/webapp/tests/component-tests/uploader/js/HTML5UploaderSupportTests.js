@@ -110,7 +110,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var browseButton = $("#browseButton");
             var browseButtonView = fluid.uploader.html5Strategy.browseButtonView("#browseButtonContainer", {
                 queueSettings: {
-                    fileTypes: ""
+                    fileTypes: []
                 }
             });
             

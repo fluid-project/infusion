@@ -254,7 +254,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.queueSettings = that.options.queueSettings;
 
         // Add files to the file queue without exceeding the fileUploadLimit and the fileSizeLimit
-        // NOTE:  fileSizeLimit set to bytes for HTML5 Uploader (MB for SWF Uploader).  
+        // NOTE:  fileSizeLimit set to bytes for HTML5 Uploader (KB for SWF Uploader).  
         that.addFiles = function (files) {
             // TODO: These look like they should be part of a real model.
             var sizeLimit = (legacyBrowserFileLimit || that.queueSettings.fileSizeLimit) * 1000000;
