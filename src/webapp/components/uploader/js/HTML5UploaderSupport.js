@@ -79,20 +79,24 @@ var fluid_1_4 = fluid_1_4 || {};
     // TODO: The following two or three functions probably ultimately belong on a that responsible for
     // coordinating with the XHR. A fileConnection object or something similar.
     
-    fluid.uploader.html5Strategy.fileSuccessHandler = function (file, events) {
-        events.onFileSuccess.fire(file);
+    fluid.uploader.html5Strategy.fileSuccessHandler = function (file, events, serverData) {
+        events.onFileSuccess.fire(file, serverData);
         events.onFileComplete.fire(file);
     };
     
     fluid.uploader.html5Strategy.fileErrorHandler = function (file, events) {
         file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
-        events.onFileError.fire(file, fluid.uploader.errorConstants.UPLOAD_FAILED);
+        events.onFileError.fire(file, 
+                                fluid.uploader.errorConstants.UPLOAD_FAILED,
+                                "The file failed to upload");
         events.onFileComplete.fire(file);
     };
     
     fluid.uploader.html5Strategy.fileStopHandler = function (file, events) {
         file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
-        events.onFileError.fire(file, fluid.uploader.errorConstants.UPLOAD_STOPPED);
+        events.onFileError.fire(file, 
+                                fluid.uploader.errorConstants.UPLOAD_STOPPED,
+                                "The upload was stopped by the user");
         events.onFileComplete.fire(file);
     };
     
@@ -118,7 +122,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 var status = xhr.status;
                 // TODO: See a pattern here? Fix it.
                 if (status === 200) {
-                    fluid.uploader.html5Strategy.fileSuccessHandler(file, events);
+                    fluid.uploader.html5Strategy.fileSuccessHandler(file, events, xhr.responseText);
                 } else if (status === 0) {
                     fluid.uploader.html5Strategy.fileStopHandler(file, events);
                 } else {
@@ -366,7 +370,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     var renderMultiFileInput = function (that) {
         var multiFileInput = $(that.options.multiFileInputMarkup);
-        var fileTypes = (that.options.queueSettings.fileTypes).replace(/\;/g, ',');       
+        //var fileTypes = (that.options.queueSettings.fileTypes).replace(/\;/g, ',');       
         //multiFileInput.attr("accept", fileTypes);
         bindEventsToFileInput(that, multiFileInput);
         return multiFileInput;
