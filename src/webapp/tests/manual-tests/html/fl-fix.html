@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/fl-fix.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
+        <link rel="stylesheet" type="text/css" href="../lib/jquery/css/jquery.ui.core.css">
+        
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../js/fl-fix.js"></script>
+    </head>
+    <body>
+        <div class="cssFixApplier">
+            <label for="cssFixes">CSS Fixes:</label>
+            <select id="cssFixes" class="location-list" name="CSS Fixes">
+                <option value="none" selected="selected">none</option>
+                <option value="fss">fl-fix</option>
+                <option value="jquery">.ui-helper-clearfix</option>
+                <option value="newClearfix">New Clearfix Method</option>
+            </select>
+        
+            <div id="styledElement">
+                <p class="title">nothing</p>
+                <div class="floating">1</div>
+                <div class="floating">2</div>
+                <div class="floating">3</div>
+                <div class="floating">4</div>
+                <div class="floating">5</div>
+                <div class="floating">6</div>
+                <div class="floating">7</div>
+                <div class="floating">8</div>
+                <div class="floating">9</div>
+            </div>
+        </div>
+        
+        <script>
+            demo.cssFixApplier(".cssFixApplier");
+        </script>
+    </body>
+</html>
