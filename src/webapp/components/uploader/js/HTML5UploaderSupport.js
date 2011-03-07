@@ -276,7 +276,7 @@ var fluid_1_4 = fluid_1_4 || {};
             var numFilesAdded = 0;
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
-                if (fileLimit !== 0 && i > remainingUploadLimit) {
+                if (fileLimit && i >= remainingUploadLimit) {
                     that.events.onQueueError.fire(file, fluid.uploader.queueErrorConstants.QUEUE_LIMIT_EXCEEDED);
                 } else if (file.size >= sizeLimit) {
                     file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
