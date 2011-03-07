@@ -17,7 +17,6 @@ var demo = demo || {};
     
     var bindEvents = function (that) {
         that.locate("stylePicker").change(function (eventObj) {
-            console.log(eventObj);
             changeStyle(that, eventObj);
         });
     };
