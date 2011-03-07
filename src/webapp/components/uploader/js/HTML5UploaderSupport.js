@@ -257,7 +257,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.queueSettings = that.options.queueSettings;
 
         // Add files to the file queue without exceeding the fileUploadLimit and the fileSizeLimit
-        // NOTE:  fileSizeLimit set to bytes for HTML5 Uploader (MB for SWF Uploader).  
+        // NOTE:  fileSizeLimit set to bytes for HTML5 Uploader (KB for SWF Uploader).  
         that.addFiles = function (files) {
             // TODO: These look like they should be part of a real model.
             var sizeLimit = (legacyBrowserFileLimit || that.queueSettings.fileSizeLimit) * 1000000;
@@ -265,7 +265,6 @@ var fluid_1_4 = fluid_1_4 || {};
             var uploaded = that.queue.getUploadedFiles().length;
             var queued = that.queue.getReadyFiles().length;
             var remainingUploadLimit = fileLimit - uploaded - queued;
-            var filesToUpload = files.length;
             
             // Clear the error queue when "User successfully added a file through the file dialog"
             // that is LEQV to remainingUploadLimit > 0
@@ -273,18 +272,13 @@ var fluid_1_4 = fluid_1_4 || {};
                 that.events.clearFileError.fire();
             }
              
-            if (fileLimit !== 0 && filesToUpload > remainingUploadLimit) {
-                filesToUpload = remainingUploadLimit; 
-                for (var i = filesToUpload; i < files.length; i++) {
-                    that.events.onQueueError.fire(files[i], fluid.uploader.queueErrorConstants.QUEUE_LIMIT_EXCEEDED);                    
-                }
-            } 
-             
-            // TODO:  Provide feedback to the user if the file size is too large and isn't added to the file queue
+            // Provide feedback to the user if the file size is too large and isn't added to the file queue
             var numFilesAdded = 0;
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
-                if (file.size >= sizeLimit) {
+                if (fileLimit !== 0 && i > remainingUploadLimit) {
+                    that.events.onQueueError.fire(file, fluid.uploader.queueErrorConstants.QUEUE_LIMIT_EXCEEDED);
+                } else if (file.size >= sizeLimit) {
                     file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
                     that.events.onQueueError.fire(file, fluid.uploader.queueErrorConstants.FILE_EXCEEDS_SIZE_LIMIT);
                 } else if (!fileLimit || remainingUploadLimit > 0) {
