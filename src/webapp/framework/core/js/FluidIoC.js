@@ -214,7 +214,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                     continue outer;
                 }
             }
-            return rec.spec;   
+            return rec.spec; // jslint:ok
         }
     }
     
@@ -581,12 +581,12 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             fluid.initDependent(that, name);
         }
         var invokers = options.invokers || {};
-        for (var name in invokers) {
+        for (var name in invokers) { // jslint:ok
             var invokerec = invokers[name];
             var funcName = typeof(invokerec) === "string"? invokerec : null;
             that[name] = fluid.withInstantiator(that, function(instantiator) { 
                 return fluid.makeInvoker(instantiator, that, funcName? null : invokerec, funcName);
-            });
+            }); // jslint:ok
         }
     };
     
@@ -730,7 +730,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             return options.fetcher(parsed);        
         }
         else if (options.ELstyle && options.ELstyle !== "${}") {
-            var parsed = fluid.extractELWithContext(string, options);
+            var parsed = fluid.extractELWithContext(string, options); // jslint:ok
             if (parsed) {
                 return options.fetcher(parsed);
             }
@@ -739,7 +739,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             var i1 = string.indexOf("${");
             var i2 = string.indexOf("}", i1 + 2);
             if (i1 !== -1 && i2 !== -1) {
-                var parsed;
+                var parsed; // jslint:ok
                 if (string.charAt(i1 + 2) === "{") {
                     parsed = fluid.parseContextReference(string, i1 + 2, "}");
                     i2 = parsed.endpos;
