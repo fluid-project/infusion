@@ -97,6 +97,14 @@ fluid_1_4 = fluid_1_4 || {};
         };
     };
     
+    fluid.defaults("fluid.rendererComponent", {
+        gradeNames: ["fluid.viewComponent"],
+        initFunction: "fluid.initRendererComponent",
+        mergePolicy: {
+            protoTree: "noexpand, replace"
+        }  
+    });
+    
      // TODO: Integrate with FLUID-3681 branch
     fluid.initRendererComponent = function (componentName, container, options) {
         var that = fluid.initView(componentName, container, options);

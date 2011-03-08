@@ -56,7 +56,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
             var comp = fluid.tests.testMergeComponent({model: model});
             
-            var presString = preserve ? " - preserve" : ""; 
+            var presString = preserve ? " - preserve" : "";
             
             jqUnit.assertEquals("Identical model reference" + presString, 
                 preserve, comp.options.model === model);
