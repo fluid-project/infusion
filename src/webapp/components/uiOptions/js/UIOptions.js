@@ -372,7 +372,7 @@ var fluid_1_4 = fluid_1_4 || {};
             initPreview(that);
         });
         
-        // Fetch UI Options' template.
+        // Fetch UI Options' template and parse it on arrival.
         fluid.fetchResources({
             uiOptions: {
                 href: that.options.templateUrl

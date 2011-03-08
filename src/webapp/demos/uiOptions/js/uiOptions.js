@@ -20,12 +20,30 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var demo = demo || {};
 (function ($, fluid) {
     
-    var uiOptionsNode;
-    var uiOptionsComponent;
+    var slidingPanel = function (uiOptions, button) {
+        var slideUp = function () {
+            uiOptions.container.slideUp();
+        };
+        
+        // Bind listeners to UIOptions save & cancel events, sliding the panel up.
+        uiOptions.events.onCancel.addListener(slideUp);
+        uiOptions.events.onSave.addListener(slideUp);
+        
+        // Bind listeners to show and hide the panel when the button is clicked.
+        button.toggle(function () {
+            uiOptions.container.slideDown();
+        }, function () {
+            uiOptions.container.slideUp();
+            uiOptions.cancel();
+        });
+            
+        // Hide the panel to start.
+        uiOptions.container.hide();
+    };
     
-    //initialize the UI Enhancer
-    var setupUIEnhancer = function () {
-        var enhancerOpts = {
+    demo.initUIOptions = function () {
+        // Initialize a UIEnhancer for the page first
+        var pageEnhancer = fluid.uiEnhancer(document, {
             defaultSiteSettings: {
                 theme: "mist",
                 linksBold: true,
@@ -37,42 +55,15 @@ var demo = demo || {};
                 }
             
             }
-        };
+        });
         
-        return fluid.uiEnhancer(document, enhancerOpts);
-    };
-    
-    //initialize UI Options component
-    var setupUIOptions = function () {
-        var options = {
-            listeners: {
-                onCancel: function () {
-                    uiOptionsNode.slideUp();
-                },
-                onSave: function () {
-                    uiOptionsNode.slideUp();
-                }
-            },
+        // Then start up UIOptions
+        var myUIOptions = uiOptionsComponent = fluid.uiOptions("#myUIOptions", {
             templateUrl: "../../../components/uiOptions/html/UIOptions.html"
-        };
+        });
         
-        uiOptionsComponent = fluid.uiOptions("#myUIOptions", options);
+        // Put UIOptions in a sliding panel with an "Edit Appearance" button.
+        slidingPanel(myUIOptions, $(".myButton"));
     };
     
-    var setupPage = function () {
-        $(".myButton").toggle(function () {
-                uiOptionsNode.slideDown();
-            }, function () {
-                uiOptionsNode.slideUp();
-                uiOptionsComponent.cancel();
-            });
-        uiOptionsNode.hide();
-    };
-    
-    demo.initUIOptions = function () {
-        uiOptionsNode = $("#myUIOptions");
-        setupUIEnhancer();  
-        setupPage();
-        setupUIOptions();
-    };
 })(jQuery, fluid);
