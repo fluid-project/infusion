@@ -1,13 +1,19 @@
 div div {
     border: 1px solid black;
-    width: 100px;
+    width: 60px;
+    padding: 4px;
+}
+
+p {
+    width: 60px;
     padding: 4px;
 }
 
 .floating {
     float: left;
-    width: 30px;
-    padding: 0px;
+    padding: 2px;
+    margin: 2px;
+    width: 10px;
 }
 
 /* new clear fix http://perishablepress.com/press/2009/12/06/new-clearfix-hack/ */
