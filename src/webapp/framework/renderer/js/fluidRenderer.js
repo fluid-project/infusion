@@ -68,13 +68,16 @@ fluid_1_4 = fluid_1_4 || {};
   
     renderer.isBoundPrimitive = function (value) {
         return fluid.isPrimitive(value) || value instanceof Array 
-            && (value.length === 0 || typeof (value[0]) === "string");
+            && (value.length === 0 || typeof (value[0]) === "string"); // jslint:ok
     };
+  
+    var unzipComponent;
   
     function processChild(value, key) {
         if (renderer.isBoundPrimitive(value)) {
             return {componentType: "UIBound", value: value, ID: key};
-        } else {
+        } 
+        else {
             var unzip = unzipComponent(value);
             if (unzip.ID) {
                 return {ID: key, componentType: "UIContainer", children: [unzip]};
@@ -82,7 +85,7 @@ fluid_1_4 = fluid_1_4 || {};
                 unzip.ID = key;
                 return unzip;
             } 
-        }    
+        }
     }
   
     function fixChildren(children) {
@@ -137,22 +140,22 @@ fluid_1_4 = fluid_1_4 || {};
             markup: "UIVerbatim", selection: "UISelect", target: "UILink",
             choiceindex: "UISelectChoice", functionname: "UIInitBlock"};
       
-      var boundMap = {
-          UISelect:   ["selection", "optionlist", "optionnames"],
-          UILink:     ["target", "linktext"],
-          UIVerbatim: ["markup"],
-          UIMessage:  ["messagekey"]
-      };
+    var boundMap = {
+        UISelect:   ["selection", "optionlist", "optionnames"],
+        UILink:     ["target", "linktext"],
+        UIVerbatim: ["markup"],
+        UIMessage:  ["messagekey"]
+    };
   
-      renderer.boundMap = fluid.transform(boundMap, fluid.arrayToHash);
+    renderer.boundMap = fluid.transform(boundMap, fluid.arrayToHash);
       
-      renderer.inferComponentType = function (component) {
-          for (var key in renderer.duckMap) {
-              if (component[key] !== undefined) {
-                  return renderer.duckMap[key];
-              }
-          }
-      };
+    renderer.inferComponentType = function (component) {
+        for (var key in renderer.duckMap) {
+            if (component[key] !== undefined) {
+                return renderer.duckMap[key];
+            }
+        }
+    };
   
     renderer.applyComponentType = function (component) {
         component.componentType = renderer.inferComponentType(component);
@@ -160,8 +163,8 @@ fluid_1_4 = fluid_1_4 || {};
             component.componentType = "UIBound";
         }
     };
-  
-    function unzipComponent(component, model, resolverGetConfig) {
+    
+    unzipComponent = function (component, model, resolverGetConfig) {
         if (component) {
             renderer.applyComponentType(component);
         }
@@ -176,7 +179,7 @@ fluid_1_4 = fluid_1_4 || {};
             component.children = fixChildren(component.children);
         }
         else {
-            map = renderer.boundMap[cType];
+            var map = renderer.boundMap[cType];
             if (map) {
                 fluid.each(map, function (value, key) {
                     upgradeBound(component, key, model, resolverGetConfig);
@@ -185,1226 +188,1226 @@ fluid_1_4 = fluid_1_4 || {};
         }
         
         return component;
-    }
-  
-    function fixupTree(tree, model, resolverGetConfig) {
-    if (tree.componentType === undefined) {
-      tree = unzipComponent(tree, model, resolverGetConfig);
-      }
-    if (tree.componentType !== "UIContainer" && !tree.parent) {
-      tree = {children: [tree]};
-    }
-    
-    if (tree.children) {
-      tree.childmap = {};
-      for (var i = 0; i < tree.children.length; ++ i) {
-        var child = tree.children[i];
-        if (child.componentType === undefined) {
-          child = unzipComponent(child, model, resolverGetConfig);
-          tree.children[i] = child;
-          }
-        child.parent = tree;
-        if (child.ID === undefined) {
-           fluid.fail("Error in component tree: component found with no ID " + debugPosition(child));
-        }
-        tree.childmap[child.ID] = child;
-        var colpos = child.ID.indexOf(":"); 
-        if (colpos === -1) {
-        //  tree.childmap[child.ID] = child; // moved out of branch to allow
-        // "relative id expressions" to be easily parsed
-        }
-        else {
-          var prefix = child.ID.substring(0, colpos);
-          var childlist = tree.childmap[prefix]; 
-          if (!childlist) {
-            childlist = [];
-            tree.childmap[prefix] = childlist;
-          }
-          if (child.localID === undefined && childlist.length !== 0) {
-              child.localID = childlist.length;
-          }
-          childlist[childlist.length] = child;
-        }
-        child.fullID = computeFullID(child);
-
-        var componentType = child.componentType;
-        if (componentType == "UISelect") {
-          child.selection.fullID = child.fullID + "-selection";
-        }
-        else if (componentType == "UIInitBlock") {
-          var call = child.functionname + '(';
-          for (var j = 0; j < child.arguments.length; ++ j) {
-            if (child.arguments[j] instanceof fluid.ComponentReference) {
-              // TODO: support more forms of id reference
-              child.arguments[j] = child.parent.fullID + child.arguments[j].reference;
-            }
-            call += JSON.stringify(child.arguments[j]); 
-            if (j < child.arguments.length - 1) {
-              call += ", ";
-            }
-          }
-          child.markup = {value: call + ")\n"};
-          child.componentType = "UIVerbatim";
-          }
-        else if (componentType == "UIBound") {
-            fixupValue(child, model, resolverGetConfig);
-            }
-        fixupTree(child, model, resolverGetConfig);
-        }
-      }
-    return tree;
-    }
-    
-  fluid.NULL_STRING = "\u25a9null\u25a9";
-  
-  var LINK_ATTRIBUTES = {
-      a: "href", link: "href", img: "src", frame: "src", script: "src", style: "src", input: "src", embed: "src",
-      form: "action",
-      applet: "codebase", object: "codebase"
-  };
-  
-  renderer.IDtoComponentName = function(ID, num) {
-      return "**-renderer-" + ID.replace(/\./g, "") + "-" + num;
-  };
-  
-  renderer.invokeFluidDecorator = function(func, args, ID, num, options) {
-      var that;
-      if (options.instantiator && options.parentComponent) {
-          var parent = options.parentComponent;
-          var name = renderer.IDtoComponentName(ID, num);
-          // TODO: The best we can do here without GRADES is to wildly guess 
-          // that it is a view component with options in the 2nd place and container in first place
-          fluid.set(parent, fluid.path("options", "components", name), {type: func, options: args[1]});
-          // This MIGHT really be a variant of fluid.invoke... only we often probably DO want the component
-          // itself to be inserted into the that stack. This *ALSO* requires GRADES to resolve. A 
-          // "function" is that which has no grade. The gradeless grade.
-          that = fluid.initDependent(options.parentComponent, name, options.instantiator, [args[0]]);
-      }
-      else {
-          that = fluid.invokeGlobalFunction(func, args);
-      }
-      return that;
-  };
-  
-  fluid.renderer = function (templates, tree, options, fossilsIn) {
-    
-      options = options || {};
-      tree = tree || {};
-      debugMode = options.debugMode;
-      if (!options.messageLocator && options.messageSource) {
-          options.messageLocator = fluid.resolveMessageSource(options.messageSource);
-      }
-      options.document = options.document || document;
-      
-      var directFossils = fossilsIn || {}; // map of submittingname to {EL, submittingname, oldvalue}
-    
-      var globalmap = {};
-      var branchmap = {};
-      var rewritemap = {}; // map of rewritekey (for original id in template) to full ID 
-      var seenset = {};
-      var collected = {};
-      var out = "";
-      var renderOptions = options;
-      var decoratorQueue = [];
-      
-      var renderedbindings = {}; // map of fullID to true for UISelects which have already had bindings written
-      
-      var that = {};
-      
-      function getRewriteKey(template, parent, id) {
-          return template.resourceKey + parent.fullID + id;
-      }
-      // returns: lump
-      function resolveInScope(searchID, defprefix, scope, child) {
-          var deflump;
-          var scopelook = scope? scope[searchID] : null;
-          if (scopelook) {
-              for (var i = 0; i < scopelook.length; ++ i) {
-                  var scopelump = scopelook[i];
-                  if (!deflump && scopelump.rsfID == defprefix) {
-                      deflump = scopelump;
-                  }
-                  if (scopelump.rsfID == searchID) {
-                      return scopelump;
-                  }
-              }
-          }
-          return deflump;
-      }
-      // returns: lump
-      function resolveCall(sourcescope, child) {
-          var searchID = child.jointID? child.jointID : child.ID;
-          var split = fluid.SplitID(searchID);
-          var defprefix = split.prefix + ':';
-          var match = resolveInScope(searchID, defprefix, sourcescope.downmap, child);
-          if (match) {return match;}
-          if (child.children) {
-              match = resolveInScope(searchID, defprefix, globalmap, child);
-              if (match) {return match;}
-          }
-          return null;
-      }
-      
-      function noteCollected(template) {
-          if (!seenset[template.href]) {
-              fluid.aggregateMMap(collected, template.collectmap);
-              seenset[template.href] = true;
-          }
-      }
-      
-      function resolveRecurse(basecontainer, parentlump) {
-          for (var i = 0; i < basecontainer.children.length; ++ i) {
-              var branch = basecontainer.children[i];
-              if (branch.children) { // it is a branch
-                  var resolved = resolveCall(parentlump, branch);
-                  if (resolved) {
-                      branchmap[branch.fullID] = resolved;
-                      var id = resolved.attributemap.id;
-                      if (id !== undefined) {
-                        rewritemap[getRewriteKey(parentlump.parent, basecontainer, id)] = branch.fullID;
-                      }
-                      // on server-side this is done separately
-                      noteCollected(resolved.parent);
-                      resolveRecurse(branch, resolved);
-                  }
-              }
-          }
-          // collect any rewritten ids for the purpose of later rewriting
-          if (parentlump.downmap) {
-              for (var id in parentlump.downmap) {
-                //if (id.indexOf(":") === -1) {
-                  var lumps = parentlump.downmap[id];
-                  for (var i = 0; i < lumps.length; ++ i) {
-                      var lump = lumps[i];
-                      var lumpid = lump.attributemap.id;
-                      if (lumpid !== undefined && lump.rsfID !== undefined) {
-                          var resolved = fetchComponent(basecontainer, lump.rsfID);
-                          if (resolved !== null) {
-                              var resolveID = resolved.fullID;
-                              if (resolved.componentType === "UISelect") {
-                                resolveID = resolveID + "-selection";
-                              }
-                              rewritemap[getRewriteKey(parentlump.parent, basecontainer,
-                                  lumpid)] = resolveID;
-                          }
-                      }
-                  }
-              //  }
-              } 
-          }
-          
-      }
-      
-      function resolveBranches(globalmapp, basecontainer, parentlump) {
-          branchmap = {};
-          rewritemap = {};
-          seenset = {};
-          collected = {};
-          globalmap = globalmapp;
-          branchmap[basecontainer.fullID] = parentlump;
-          resolveRecurse(basecontainer, parentlump);
-      }
-      
-      function dumpBranchHead(branch, targetlump) {
-          if (targetlump.elide) {
-              return;
-          }
-          var attrcopy = {};
-          $.extend(true, attrcopy, targetlump.attributemap);
-          adjustForID(attrcopy, branch);
-          outDecorators(branch, attrcopy);
-          out += "<" + targetlump.tagname + " ";
-          out += fluid.dumpAttributes(attrcopy);
-          out += ">";
-      }
-      
-      function dumpTillLump(lumps, start, limit) {
-          for (; start < limit; ++ start) {
-              var text = lumps[start].text;
-              if (text) { // guard against "undefined" lumps from "justended"
-                  out += lumps[start].text;
-              }
-          }
-      }
-    
-      function dumpScan(lumps, renderindex, basedepth, closeparent, insideleaf) {
-          var start = renderindex;
-          while (true) {
-              if (renderindex === lumps.length) {
-                  break;
-              }
-              var lump = lumps[renderindex];
-              if (lump.nestingdepth < basedepth) {
-                  break;
-              }
-              if (lump.rsfID !== undefined) {
-                if (!insideleaf) {break;}
-                if (insideleaf && lump.nestingdepth > basedepth + (closeparent?0:1) ) {
-                  fluid.log("Error in component tree - leaf component found to contain further components - at " +
-                      lump.toString());
-                }
-                else {break;}
-              }
-              // target.print(lump.text);
-              ++renderindex;
-          }
-          // ASSUMPTIONS: close tags are ONE LUMP
-          if (!closeparent && (renderindex == lumps.length || !lumps[renderindex].rsfID)) {
-              --renderindex;
-          }
-          
-          dumpTillLump(lumps, start, renderindex);
-          //target.write(buffer, start, limit - start);
-          return renderindex;
-      }
-      // In RSF Client, this is a "flyweight" "global" object that is reused for every tag, 
-      // to avoid generating garbage. In RSF Server, it is an argument to the following rendering
-      // methods of type "TagRenderContext".
-      
-      var trc = {};
-      
-      /*** TRC METHODS ***/
-      
-      function openTag() {
-          if (!trc.iselide) {
-              out += "<" + trc.uselump.tagname;
-          }
-      }
-      
-      function closeTag() {
-          if (!trc.iselide) {
-              out += "</" + trc.uselump.tagname + ">";
-          }
-      }
-    
-      function renderUnchanged() {
-          // TODO needs work since we don't keep attributes in text
-          dumpTillLump(trc.uselump.parent.lumps, trc.uselump.lumpindex + 1,
-              trc.close.lumpindex + (trc.iselide ? 0 : 1));
-      }
-      
-      function replaceAttributes() {
-          if (!trc.iselide) {
-              out += fluid.dumpAttributes(trc.attrcopy);
-          }
-          dumpTemplateBody();
-      }
-    
-      function isSelfClose() {
-          return trc.endopen.lumpindex === trc.close.lumpindex && fluid.XMLP.closedTags[trc.uselump.tagname]; 
-      }
-    
-      function replaceAttributesOpen() {
-          if (trc.iselide) {
-              replaceAttributes();
-          }
-          else {
-              out += fluid.dumpAttributes(trc.attrcopy);
-              var selfClose = isSelfClose();
-              // TODO: the parser does not ever produce empty tags
-              out += selfClose ? "/>" : ">";
-        
-              trc.nextpos = selfClose? trc.close.lumpindex + 1 : trc.endopen.lumpindex;
-          }
-      }
-    
-      function dumpTemplateBody() {
-          // TODO: Think about bringing fastXmlPull into version management
-          if (isSelfClose()) {
-              if (!trc.iselide) {
-                  out += "/>";
-              }
-          }
-          else {
-              if (!trc.iselide) {
-                  out += ">";
-              }
-          dumpTillLump(trc.uselump.parent.lumps, trc.endopen.lumpindex,
-              trc.close.lumpindex + (trc.iselide ? 0 : 1));
-          }
-      }
-    
-      function rewriteLeaf(value) {
-          if (isValue(value)) {
-              replaceBody(value);
-          }
-          else {
-              replaceAttributes();
-          }
-      }
-    
-      function rewriteLeafOpen(value) {
-          if (trc.iselide) {
-              rewriteLeaf(trc.value);
-          }
-          else {
-              if (isValue(value)) { 
-                  replaceBody(value);
-              }
-              else {
-                  replaceAttributesOpen();
-              }
-          }
-      }
-      
-      function replaceBody(value) {
-          out += fluid.dumpAttributes(trc.attrcopy);
-          if (!trc.iselide) {
-              out += ">";
-          }
-          out += fluid.XMLEncode(value.toString());
-          closeTag();
-      }
-      
-      /*** END TRC METHODS**/
-      
-      function isValue(value) {
-          return value !== null && value !== undefined && !isPlaceholder(value);
-      }
-      
-      function isPlaceholder(value) {
-          // TODO: equivalent of server-side "placeholder" system
-          return false;
-      }
-      
-      function rewriteUrl(template, url) {
-          if (renderOptions.urlRewriter) {
-              var rewritten = renderOptions.urlRewriter(url);
-              if (rewritten) {
-                  return rewritten;
-              }
-          }
-          if (!renderOptions.rebaseURLs) {
-              return url;
-          }
-          var protpos = url.indexOf(":/");
-          if (url.charAt(0) === '/' || protpos !== -1 && protpos < 7) {
-              return url;
-          }
-          else {
-              return renderOptions.baseURL + url;
-          }
-      }
-      
-      function dumpHiddenField(/** UIParameter **/ todump) {
-          out += "<input type=\"hidden\" ";
-          var isvirtual = todump.virtual;
-          var outattrs = {};
-          outattrs[isvirtual? "id" : "name"] = todump.name;
-          outattrs.value = todump.value;
-          out += fluid.dumpAttributes(outattrs);
-          out += " />\n";
-      }
-      
-      function applyAutoBind(torender, finalID) {
-          if (!finalID) {
-            // if no id is assigned so far, this is a signal that this is a "virtual" component such as
-            // a non-HTML UISelect which will not have physical markup.
-              return; 
-          }
-          var tagname = trc.uselump.tagname;
-          var applier = renderOptions.applier;
-          function applyFunc() {
-              fluid.applyChange(fluid.byId(finalID), undefined, applier);
-              }
-          if (renderOptions.autoBind && /input|select|textarea/.test(tagname) 
-                && !renderedbindings[finalID]) {
-              var decorators = [{jQuery: ["change", applyFunc]}];
-              // Work around bug 193: http://webbugtrack.blogspot.com/2007/11/bug-193-onchange-does-not-fire-properly.html
-              if ($.browser.msie && tagname === "input" 
-                  && /radio|checkbox/.test(trc.attrcopy.type)) {
-                  decorators.push({jQuery: ["click", applyFunc]});
-              }
-              if ($.browser.safari && tagname === "input" && trc.attrcopy.type === "radio") {
-                  decorators.push({jQuery: ["keyup", applyFunc]});
-              }
-              outDecoratorsImpl(torender, decorators, trc.attrcopy, finalID);
-          }    
-      }
-      
-      function dumpBoundFields(/** UIBound**/ torender, parent) {
-          if (torender) {
-              var holder = parent? parent : torender;
-              if (directFossils && holder.valuebinding) {
-                  var fossilKey = holder.submittingname || torender.finalID;
-                // TODO: this will store multiple times for each member of a UISelect
-                  directFossils[fossilKey] = {
-                    name: fossilKey,
-                    EL: holder.valuebinding,
-                    oldvalue: holder.value};
-                // But this has to happen multiple times
-                  applyAutoBind(torender, torender.finalID);
-              }
-              if (torender.fossilizedbinding) {
-                  dumpHiddenField(torender.fossilizedbinding);
-              }
-              if (torender.fossilizedshaper) {
-                  dumpHiddenField(torender.fossilizedshaper);
-              }
-          }
-      }
-      
-      function dumpSelectionBindings(uiselect) {
-          if (!renderedbindings[uiselect.selection.fullID]) {
-              renderedbindings[uiselect.selection.fullID] = true; // set this true early so that selection does not autobind twice
-              dumpBoundFields(uiselect.selection);
-              dumpBoundFields(uiselect.optionlist);
-              dumpBoundFields(uiselect.optionnames);
-          }
-      }
-        
-      function isSelectedValue(torender, value) {
-          var selection = torender.selection;
-          return selection.value && typeof(selection.value) !== "string" && typeof(selection.value.length) === "number" ? 
-                $.inArray(value, selection.value, value) !== -1 :
-                   selection.value === value;
-      }
-      
-      function getRelativeComponent(component, relativeID) {
-          component = component.parent;
-          while (relativeID.indexOf("..::") === 0) {
-              relativeID = relativeID.substring(4);
-              component = component.parent;
-          }
-          return component.childmap[relativeID];
-      }
-      
-      function adjustForID(attrcopy, component, late, forceID) {
-          if (!late) {
-              delete attrcopy["rsf:id"];
-          }
-          if (component.finalID !== undefined) {
-              attrcopy.id = component.finalID;
-          }
-          else if (forceID !== undefined) {
-              attrcopy.id = forceID;
-          }
-          else {
-              if (attrcopy.id || late) {
-                  attrcopy.id = component.fullID;
-              }
-          }
-          
-          var count = 1;
-          var baseid = attrcopy.id;
-          while (renderOptions.document.getElementById(attrcopy.id)) {
-              attrcopy.id = baseid + "-" + (count++); 
-          }
-          component.finalID = attrcopy.id;
-          return attrcopy.id;
-      }
-      
-    /*
-     * This function is unsupported: It is not really intended for use by implementors.
-     */
-      function assignSubmittingName(attrcopy, component, parent) {
-          var submitting = parent || component;
-        // if a submittingName is required, we must already go out to the document to 
-        // uniquify the id that it will be derived from
-          adjustForID(attrcopy, component, true, component.fullID);
-          if (submitting.submittingname === undefined && submitting.willinput !== false) {
-              submitting.submittingname = submitting.finalID || submitting.fullID;
-          }
-          return submitting.submittingname;
-      }
-           
-      function explodeDecorators(decorators) {
-          var togo = [];
-          if (decorators.type) {
-              togo[0] = decorators;
-          }
-          else {
-              for (var key in decorators) {
-                  if (key === "$") {key = "jQuery";}
-                  var value = decorators[key];
-                  var decorator = {
-                    type: key
-                  };
-                  if (key === "jQuery") {
-                      decorator.func = value[0];
-                      decorator.args = value.slice(1);
-                  }
-                  else if (key === "addClass" || key === "removeClass") {
-                      decorator.classes = value;
-                  }
-                  else if (key === "attrs") {
-                      decorator.attributes = value;
-                  }
-                  else if (key === "identify") {
-                      decorator.key = value;
-                  }
-                  togo[togo.length] = decorator;
-              }
-          }
-          return togo;
-      }
-      
-      function outDecoratorsImpl(torender, decorators, attrcopy, finalID) {
-          renderOptions.idMap = renderOptions.idMap || {};
-          for (var i = 0; i < decorators.length; ++ i) {
-              var decorator = decorators[i];
-              var type = decorator.type;
-              if (!type) {
-                  var explodedDecorators = explodeDecorators(decorator);
-                  outDecoratorsImpl(torender, explodedDecorators, attrcopy, finalID);
-                  continue;
-              }
-              if (type === "$") {type = decorator.type = "jQuery";}
-              if (type === "jQuery" || type === "event" || type === "fluid") {
-                  var id = adjustForID(attrcopy, torender, true, finalID);
-                  decorator.id = id;
-                  decoratorQueue[decoratorQueue.length] = decorator;
-              }
-              // honour these remaining types immediately
-              else if (type === "attrs") {
-                  fluid.each(decorator.attributes, function(value, key) {
-                      if (value === null || value === undefined) {
-                          delete attrcopy[key];
-                      }
-                      else {
-                          attrcopy[key] = fluid.XMLEncode(value);
-                      }
-                  });
-              }
-              else if (type === "addClass" || type === "removeClass") {
-                  var fakeNode = {
-                    nodeType: 1,
-                    className: attrcopy["class"] || ""
-                  };
-                  $(fakeNode)[type](decorator.classes);
-                  attrcopy["class"] = fakeNode.className;
-              }
-              else if (type === "identify") {
-                  var id = adjustForID(attrcopy, torender, true, finalID);
-                  renderOptions.idMap[decorator.key] = id;
-              }
-              else if (type !== "null") {
-                  fluid.log("Unrecognised decorator of type " + type + " found at component of ID " + finalID);
-              }
-          }
-      }
-      
-      function outDecorators(torender, attrcopy) {
-          if (!torender.decorators) {return;}
-          if (torender.decorators.length === undefined) {
-              torender.decorators = explodeDecorators(torender.decorators);
-          }
-          outDecoratorsImpl(torender, torender.decorators, attrcopy);
-      }
-      
-      function resolveArgs(args) {
-          if (!args) {return args;}
-          return fluid.transform(args, function (arg, index) {
-              upgradeBound(args, index, renderOptions.model, renderOptions.resolverGetConfig);
-              return args[index].value;
-          });
-      }
-          
-      function degradeMessage(torender) {
-          if (torender.componentType === "UIMessage") {
-              // degrade UIMessage to UIBound by resolving the message
-              torender.componentType = "UIBound";
-              if (!renderOptions.messageLocator) {
-                 torender.value = "[No messageLocator is configured in options - please consult documentation on options.messageSource]";
-              }
-              else {
-                 upgradeBound(torender, "messagekey", renderOptions.model, renderOptions.resolverGetConfig);
-                 var resArgs = resolveArgs(torender.args);
-                 torender.value = renderOptions.messageLocator(torender.messagekey.value, resArgs);
-              }
-          }
-      }  
-      
-        
-      function renderComponent(torender) {
-          var attrcopy = trc.attrcopy;
-          var lumps = trc.uselump.parent.lumps;
-          var lumpindex = trc.uselump.lumpindex;
-          
-          degradeMessage(torender);
-          var componentType = torender.componentType;
-          var tagname = trc.uselump.tagname;
-          
-          outDecorators(torender, attrcopy);
-          
-          function makeFail(torender, end) {
-              fluid.fail("Error in component tree - UISelectChoice with id " + torender.fullID + end);
-          } 
-          
-          if (componentType === "UIBound" || componentType === "UISelectChoice") {
-              var parent;
-              if (torender.choiceindex !== undefined) {
-                  if (torender.parentRelativeID !== undefined){
-                      parent = getRelativeComponent(torender, torender.parentRelativeID);
-                      if (!parent) {
-                          makeFail(torender, " has parentRelativeID of " + torender.parentRelativeID + " which cannot be resolved");
-                      }
-                  }
-                  else {
-                      makeFail(torender, " does not have parentRelativeID set");
-                  }
-                  assignSubmittingName(attrcopy, torender, parent.selection);
-                  dumpSelectionBindings(parent);
-              }
-      
-              var submittingname = parent? parent.selection.submittingname : torender.submittingname;
-              if (!parent && torender.valuebinding) {
-                  // Do this for all bound fields even if non submitting so that finalID is set in order to track fossils (FLUID-3387)
-                  submittingname = assignSubmittingName(attrcopy, torender);
-                  }
-              if (tagname === "input" || tagname === "textarea") {
-                  if (submittingname !== undefined) {
-                      attrcopy.name = submittingname;
-                      }
-                  }
-              // this needs to happen early on the client, since it may cause the allocation of the
-              // id in the case of a "deferred decorator". However, for server-side bindings, this 
-              // will be an inappropriate time, unless we shift the timing of emitting the opening tag.
-              dumpBoundFields(torender, parent? parent.selection : null);
-        
-              if (typeof(torender.value) === 'boolean' || attrcopy.type === "radio" 
-                     || attrcopy.type === "checkbox") {
-                  var underlyingValue;
-                  var directValue = torender.value;
-                  
-                  if (torender.choiceindex !== undefined) {
-                      if (!parent.optionlist.value) {
-                          fluid.fail("Error in component tree - selection control with full ID " + parent.fullID + " has no values");
-                      }
-                      underlyingValue = parent.optionlist.value[torender.choiceindex];
-                      directValue = isSelectedValue(parent, underlyingValue);
-                  }
-                  if (isValue(directValue)) {
-                      if (directValue) {
-                          attrcopy.checked = "checked";
-                          }
-                      else {
-                          delete attrcopy.checked;
-                          }
-                      }
-                  attrcopy.value = fluid.XMLEncode(underlyingValue? underlyingValue: "true");
-                  rewriteLeaf(null);
-              }
-              else if (torender.value instanceof Array) {
-                  // Cannot be rendered directly, must be fake
-                  renderUnchanged();
-              }
-              else { // String value
-                  var value = parent? 
-                      parent[tagname === "textarea" || tagname === "input" ? "optionlist" : "optionnames"].value[torender.choiceindex] : 
-                        torender.value;
-                  if (tagname === "textarea") {
-                      if (isPlaceholder(value) && torender.willinput) {
-                        // FORCE a blank value for input components if nothing from
-                        // model, if input was intended.
-                        value = "";
-                      }
-                    rewriteLeaf(value);
-                  }
-                  else if (tagname === "input") {
-                      if (torender.willinput || isValue(value)) {
-                          attrcopy.value = fluid.XMLEncode(String(value));
-                      }
-                      rewriteLeaf(null);
-                  }
-                  else {
-                      delete attrcopy.name;
-                      rewriteLeafOpen(value);
-                  }
-              }
-          }
-          else if (componentType === "UISelect") {
-
-              var ishtmlselect = tagname === "select";
-              var ismultiple = false;
-        
-              if (torender.selection.value instanceof Array) {
-                  ismultiple = true;
-                  if (ishtmlselect) {
-                      attrcopy.multiple = "multiple";
-                      }
-                  }
-              // assignSubmittingName is now the definitive trigger point for uniquifying output IDs
-              // However, if id is already assigned it is probably through attempt to decorate root select.
-              // in this case restore it.
-              var oldid = attrcopy.id;
-              assignSubmittingName(attrcopy, torender.selection);
-              if (oldid !== undefined) {
-                  attrcopy.id = oldid;
-              }
-              
-              if (ishtmlselect) {
-                  // The HTML submitted value from a <select> actually corresponds
-                  // with the selection member, not the top-level component.
-                  if (torender.selection.willinput !== false) {
-                    attrcopy.name = torender.selection.submittingname;
-                  }
-                  applyAutoBind(torender, attrcopy.id);
-              }
-              
-              out += fluid.dumpAttributes(attrcopy);
-              if (ishtmlselect) {
-                  out += ">";
-                  var values = torender.optionlist.value;
-                  var names = torender.optionnames === null || torender.optionnames === undefined || !torender.optionnames.value ? values: torender.optionnames.value;
-                  if (!names || !names.length) {
-                      fluid.fail("Error in component tree - UISelect component with fullID " 
-                          + torender.fullID + " does not have optionnames set");
-                  }
-                  for (var i = 0; i < names.length; ++i) {
-                      out += "<option value=\"";
-                      var value = values[i];
-                      if (value === null) {
-                          value = fluid.NULL_STRING;
-                      }
-                      out += fluid.XMLEncode(value);
-                      if (isSelectedValue(torender, value)) {
-                          out += "\" selected=\"selected";
-                          }
-                      out += "\">";
-                      out += fluid.XMLEncode(names[i]);
-                      out += "</option>\n";
-                  }
-                  closeTag();
-              }
-              else {
-                dumpTemplateBody();
-              }
-              dumpSelectionBindings(torender);
-          }
-          else if (componentType === "UILink") {
-              var attrname = LINK_ATTRIBUTES[tagname];
-              if (attrname) {
-                  degradeMessage(torender.target);
-                  var target = torender.target.value;
-                  if (!isValue(target)) {
-                      target = attrcopy[attrname];
-                  }
-                  target = rewriteUrl(trc.uselump.parent, target);
-                  // Note that all real browsers succeed in recovering the URL here even if it is presented in violation of XML
-                  // seemingly due to the purest accident, the text &amp; cannot occur in a properly encoded URL :P
-                  attrcopy[attrname] = fluid.XMLEncode(target);
-              }
-              var value;
-              if (torender.linktext) { 
-                  degradeMessage(torender.linktext);
-                  var value = torender.linktext.value;
-              }
-              if (!isValue(value)) {
-                  replaceAttributesOpen();
-              }
-              else {
-                  rewriteLeaf(value);
-              }
-          }
-          
-          else if (torender.markup !== undefined) { // detect UIVerbatim
-              degradeMessage(torender.markup);
-              var rendered = torender.markup.value;
-              if (rendered === null) {
-                // TODO, doesn't quite work due to attr folding cf Java code
-                  out += fluid.dumpAttributes(attrcopy);
-                  out +=">";
-                  renderUnchanged(); 
-              }
-              else {
-                  if (!trc.iselide) {
-                      out += fluid.dumpAttributes(attrcopy);
-                      out += ">";
-                  }
-                  out += rendered;
-                  closeTag();
-                  }
-              }
-          else {
-                
-          }
-      }
-           
-      function rewriteIDRelation(context) {
-          var attrname;
-          var attrval = trc.attrcopy["for"];
-          if (attrval !== undefined) {
-               attrname = "for";
-          }
-          else {
-              attrval = trc.attrcopy.headers;
-              if (attrval !== undefined) {
-                  attrname = "headers";
-              }
-          }
-          if (!attrname) {return;}
-          var tagname = trc.uselump.tagname;
-          if (attrname === "for" && tagname !== "label") {return;}
-          if (attrname === "headers" && tagname !== "td" && tagname !== "th") {return;}
-          var rewritten = rewritemap[getRewriteKey(trc.uselump.parent, context, attrval)];
-          if (rewritten !== undefined) {
-              trc.attrcopy[attrname] = rewritten;
-          }
-      }
-      
-      function renderComment(message) {
-          out += ("<!-- " + fluid.XMLEncode(message) + "-->");
-      }
-      
-      function renderDebugMessage(message) {
-          out += "<span style=\"background-color:#FF466B;color:white;padding:1px;\">";
-          out += message;
-          out += "</span><br/>";
-      }
-      
-      function reportPath(/*UIComponent*/ branch) {
-          var path = branch.fullID;
-          return !path ? "component tree root" : "full path " + path;
-      }
-      
-      function renderComponentSystem(context, torendero, lump) {
-        var lumpindex = lump.lumpindex;
-        var lumps = lump.parent.lumps;
-        var nextpos = -1;
-        var outerendopen = lumps[lumpindex + 1];
-        var outerclose = lump.close_tag;
-    
-        nextpos = outerclose.lumpindex + 1;
-    
-        var payloadlist = lump.downmap? lump.downmap["payload-component"] : null;
-        var payload = payloadlist? payloadlist[0] : null;
-        
-        var iselide = lump.rsfID.charCodeAt(0) === 126; // "~"
-        
-        var endopen = outerendopen;
-        var close = outerclose;
-        var uselump = lump;
-        var attrcopy = {};
-        $.extend(true, attrcopy, (payload === null? lump : payload).attributemap);
-        
-        trc.attrcopy = attrcopy;
-        trc.uselump = uselump;
-        trc.endopen = endopen;
-        trc.close = close;
-        trc.nextpos = nextpos;
-        trc.iselide = iselide;
-        
-        rewriteIDRelation(context);
-        
-        if (torendero === null) {
-            if (lump.rsfID.indexOf("scr=") === (iselide? 1 : 0)) {
-                var scrname = lump.rsfID.substring(4 + (iselide? 1 : 0));
-                if (scrname === "ignore") {
-                    nextpos = trc.close.lumpindex + 1;
-                }
-                else if (scrname === "rewrite-url") {
-                    torendero = {componentType: "UILink", target: {}};
-                }
-                else {
-                    openTag();
-                    replaceAttributesOpen();
-                    nextpos = trc.endopen.lumpindex;
-                }
-            }
-        }
-        if (torendero !== null) {
-          // else there IS a component and we are going to render it. First make
-          // sure we render any preamble.
-    
-          if (payload) {
-            trc.endopen = lumps[payload.lumpindex + 1];
-            trc.close = payload.close_tag;
-            trc.uselump = payload;
-            dumpTillLump(lumps, lumpindex, payload.lumpindex);
-            lumpindex = payload.lumpindex;
-          }
-    
-          adjustForID(attrcopy, torendero);
-          //decoratormanager.decorate(torendero.decorators, uselump.getTag(), attrcopy);
-    
-          
-          // ALWAYS dump the tag name, this can never be rewritten. (probably?!)
-          openTag();
-    
-          renderComponent(torendero);
-          // if there is a payload, dump the postamble.
-          if (payload !== null) {
-            // the default case is initialised to tag close
-            if (trc.nextpos === nextpos) {
-              dumpTillLump(lumps, trc.close.lumpindex + 1, outerclose.lumpindex + 1);
-            }
-          }
-          nextpos = trc.nextpos;
-          }
-      return nextpos;
-      }
-      
-      function renderContainer(child, targetlump) {
-          var t2 = targetlump.parent;
-          var firstchild = t2.lumps[targetlump.lumpindex + 1];
-          if (child.children !== undefined) {
-              dumpBranchHead(child, targetlump);
-          }
-          else {
-              renderComponentSystem(child.parent, child, targetlump);
-          }
-          renderRecurse(child, targetlump, firstchild);
-      }
-      
-      function fetchComponent(basecontainer, id, lump) {
-          if (id.indexOf("msg=") === 0) {
-              var key = id.substring(4);
-              return {componentType: "UIMessage", messagekey: key};
-          }
-          while (basecontainer) {
-              var togo = basecontainer.childmap[id];
-              if (togo) {
-                  return togo;
-              }
-              basecontainer = basecontainer.parent;
-          }
-          return null;
-      }
-    
-      function fetchComponents(basecontainer, id) {
-          var togo;
-          while (basecontainer) {
-              togo = basecontainer.childmap[id];
-              if (togo) {
-                  break;
-              }
-              basecontainer = basecontainer.parent;
-          }
-          return togo;
-      }
-    
-      function findChild(sourcescope, child) {
-          var split = fluid.SplitID(child.ID);
-          var headlumps = sourcescope.downmap[child.ID];
-          if (!headlumps) {
-              headlumps = sourcescope.downmap[split.prefix + ":"];
-          }
-          return headlumps? headlumps[0]: null;
-      }
-      
-      function renderRecurse(basecontainer, parentlump, baselump) {
-        var renderindex = baselump.lumpindex;
-        var basedepth = parentlump.nestingdepth;
-        var t1 = parentlump.parent;
-        if (debugMode) {
-            var rendered = {};
-        }
-        while (true) {
-          renderindex = dumpScan(t1.lumps, renderindex, basedepth, !parentlump.elide, false);
-          if (renderindex === t1.lumps.length) { 
-            break;
-          }
-          var lump = t1.lumps[renderindex];      
-          var id = lump.rsfID;
-          // new stopping rule - we may have been inside an elided tag
-          if (lump.nestingdepth < basedepth || id === undefined) {
-            break;
-          } 
-    
-          if (id.charCodeAt(0) === 126) { // "~"
-            id = id.substring(1);
-          }
-          
-          //var ismessagefor = id.indexOf("message-for:") === 0;
-          
-          if (id.indexOf(':') !== -1) {
-            var prefix = fluid.getPrefix(id);
-            var children = fetchComponents(basecontainer, prefix);
-            
-            var finallump = lump.uplump.finallump[prefix];
-            var closefinal = finallump.close_tag;
-            
-            if (children) {
-              for (var i = 0; i < children.length; ++ i) {
-                var child = children[i];
-                if (child.children) { // it is a branch 
-                  if (debugMode) {
-                      rendered[child.fullID] = true;
-                  }
-                  var targetlump = branchmap[child.fullID];
-                  if (targetlump) {
-                      if (debugMode) {
-                          renderComment("Branching for " + child.fullID + " from "
-                              + fluid.debugLump(lump) + " to " + fluid.debugLump(targetlump));
-                      }
-                      
-                      renderContainer(child, targetlump);
-                      
-                      if (debugMode) {
-                          renderComment("Branch returned for " + child.fullID
-                              + fluid.debugLump(lump) + " to " + fluid.debugLump(targetlump));
-                    }
-                  }
-                  else if (debugMode){
-                        renderDebugMessage(
-                          "No matching template branch found for branch container with full ID "
-                              + child.fullID
-                              + " rendering from parent template branch "
-                              + fluid.debugLump(baselump));
-                  }
-                }
-                else { // repetitive leaf
-                  var targetlump = findChild(parentlump, child);
-                  if (!targetlump) {
-                      if (debugMode) {
-                          renderDebugMessage(
-                            "Repetitive leaf with full ID " + child.fullID
-                            + " could not be rendered from parent template branch "
-                            + fluid.debugLump(baselump));
-                      }
-                    continue;
-                  }
-                  var renderend = renderComponentSystem(basecontainer, child, targetlump);
-                  var wasopentag = renderend < t1.lumps.lengtn && t1.lumps[renderend].nestingdepth >= targetlump.nestingdepth;
-                  var newbase = child.children? child : basecontainer;
-                  if (wasopentag) {
-                    renderRecurse(newbase, targetlump, t1.lumps[renderend]);
-                    renderend = targetlump.close_tag.lumpindex + 1;
-                  }
-                  if (i !== children.length - 1) {
-                    // TODO - fix this bug in RSF Server!
-                    if (renderend < closefinal.lumpindex) {
-                      dumpScan(t1.lumps, renderend, targetlump.nestingdepth - 1, false, false);
-                    }
-                  }
-                  else {
-                    dumpScan(t1.lumps, renderend, targetlump.nestingdepth, true, false);
-                  }
-                }
-              } // end for each repetitive child
-            }
-            else {
-                if (debugMode) {
-                    renderDebugMessage("No branch container with prefix "
-                        + prefix + ": found in container "
-                        + reportPath(basecontainer)
-                        + " rendering at template position " + fluid.debugLump(baselump)
-                        + ", skipping");
-                }
-            }
-            
-            renderindex = closefinal.lumpindex + 1;
-            if (debugMode) {
-                renderComment("Stack returned from branch for ID " + id + " to "
-                  + fluid.debugLump(baselump) + ": skipping from " + fluid.debugLump(lump)
-                  + " to " + fluid.debugLump(closefinal));
-              }
-          }
-          else {
-            var component;
-            if (id) {
-                component = fetchComponent(basecontainer, id, lump);
-                if (debugMode && component) {
-                    rendered[component.fullID] = true;
-                }
-            }
-            if (component && component.children !== undefined) {
-              renderContainer(component);
-              renderindex = lump.close_tag.lumpindex + 1;
-            }
-            else {
-              renderindex = renderComponentSystem(basecontainer, component, lump);
-            }
-          }
-          if (renderindex === t1.lumps.length) {
-            break;
-          }
-        }
-        if (debugMode) {
-          var children = basecontainer.children;
-          for (var key = 0; key < children.length; ++key) {
-            var child = children[key];
-            if (!rendered[child.fullID]) {
-                renderDebugMessage("Component "
-                  + child.componentType + " with full ID "
-                  + child.fullID + " could not be found within template "
-                  + fluid.debugLump(baselump));
-            }
-          }
-        }  
-        
-      }
-      
-      function renderCollect(collump) {
-          dumpTillLump(collump.parent.lumps, collump.lumpindex, collump.close_tag.lumpindex + 1);
-      }
-      
-      // Let us pray
-      function renderCollects() {
-          for (var key in collected) {
-              var collist = collected[key];
-              for (var i = 0; i < collist.length; ++ i) {
-                  renderCollect(collist[i]);
-              }
-          }
-      }
-      
-      function processDecoratorQueue() {
-          for (var i = 0; i < decoratorQueue.length; ++ i) {
-              var decorator = decoratorQueue[i];
-              var node = fluid.byId(decorator.id, renderOptions.document);
-              if (!node) {
-                fluid.fail("Error during rendering - component with id " + decorator.id 
-                 + " which has a queued decorator was not found in the output markup");
-              }
-              if (decorator.type === "jQuery") {
-                  var jnode = $(node);
-                  jnode[decorator.func].apply(jnode, $.makeArray(decorator.args));
-              }
-              else if (decorator.type === "fluid") {
-                  var args = decorator.args;
-                  if (!args) {
-                      if (!decorator.container) {
-                          decorator.container = node;
-                      }
-                      args = [decorator.container, decorator.options];
-                  }
-                  var that = renderer.invokeFluidDecorator(decorator.func, args, decorator.id, i, options);
-                  decorator.that = that;
-              }
-              else if (decorator.type === "event") {
-                node[decorator.event] = decorator.handler; 
-              }
-          }
-      }
-
-      that.renderTemplates = function () {
-          tree = fixupTree(tree, options.model, options.resolverGetConfig);
-          var template = templates[0];
-          resolveBranches(templates.globalmap, tree, template.rootlump);
-          renderedbindings = {};
-          renderCollects();
-          renderRecurse(tree, template.rootlump, template.lumps[template.firstdocumentindex]);
-          return out;
-      };  
-      
-      that.processDecoratorQueue = function () {
-          processDecoratorQueue();
-      };
-      return that;
-      
-  };
-  
-  jQuery.extend(true, fluid.renderer, renderer);
-
-    /*
-     * This function is unsupported: It is not really intended for use by implementors.
-     */
-  fluid.ComponentReference = function (reference) {
-      this.reference = reference;
-  };
-  
-  // Explodes a raw "hash" into a list of UIOutput/UIBound entries
-  fluid.explode = function (hash, basepath) {
-      var togo = [];
-      for (var key in hash) {
-          var binding = basepath === undefined ? key : basepath + "." + key;
-          togo[togo.length] = {ID: key, value: hash[key], valuebinding: binding};
-      }
-      return togo;
     };
     
+    function fixupTree(tree, model, resolverGetConfig) {
+        if (tree.componentType === undefined) {
+            tree = unzipComponent(tree, model, resolverGetConfig);
+        }
+        if (tree.componentType !== "UIContainer" && !tree.parent) {
+            tree = {children: [tree]};
+        }
+        
+        if (tree.children) {
+            tree.childmap = {};
+            for (var i = 0; i < tree.children.length; ++i) {
+                var child = tree.children[i];
+                if (child.componentType === undefined) {
+                    child = unzipComponent(child, model, resolverGetConfig);
+                    tree.children[i] = child;
+                }
+                child.parent = tree;
+                if (child.ID === undefined) {
+                    fluid.fail("Error in component tree: component found with no ID " + debugPosition(child));
+                }
+                tree.childmap[child.ID] = child;
+                var colpos = child.ID.indexOf(":"); 
+                if (colpos === -1) {
+                //  tree.childmap[child.ID] = child; // moved out of branch to allow
+                // "relative id expressions" to be easily parsed
+                }
+                else { // jslint:ok - TODO: review the above
+                    var prefix = child.ID.substring(0, colpos);
+                    var childlist = tree.childmap[prefix]; 
+                    if (!childlist) {
+                        childlist = [];
+                        tree.childmap[prefix] = childlist;
+                    }
+                    if (child.localID === undefined && childlist.length !== 0) {
+                        child.localID = childlist.length;
+                    }
+                    childlist[childlist.length] = child;
+                }
+                child.fullID = computeFullID(child);
+        
+                var componentType = child.componentType;
+                if (componentType === "UISelect") {
+                    child.selection.fullID = child.fullID + "-selection";
+                }
+                else if (componentType === "UIInitBlock") {
+                    var call = child.functionname + '(';
+                    for (var j = 0; j < child.arguments.length; ++j) { // jslint:ok
+                        if (child.arguments[j] instanceof fluid.ComponentReference) { // jslint:ok
+                            // TODO: support more forms of id reference
+                            child.arguments[j] = child.parent.fullID + child.arguments[j].reference; // jslint:ok
+                        }
+                        call += JSON.stringify(child.arguments[j]); // jslint:ok
+                        if (j < child.arguments.length - 1) { // jslint:ok
+                            call += ", ";
+                        }
+                    }
+                    child.markup = {value: call + ")\n"};
+                    child.componentType = "UIVerbatim";
+                }
+                else if (componentType === "UIBound") {
+                    fixupValue(child, model, resolverGetConfig);
+                }
+                fixupTree(child, model, resolverGetConfig);
+            }
+        }
+        return tree;
+    }
+    
+    fluid.NULL_STRING = "\u25a9null\u25a9";
+  
+    var LINK_ATTRIBUTES = {
+        a: "href", link: "href", img: "src", frame: "src", script: "src", style: "src", input: "src", embed: "src", // jslint:ok
+        form: "action",
+        applet: "codebase", object: "codebase" //jslint:ok
+    };
+  
+    renderer.IDtoComponentName = function(ID, num) {
+        return "**-renderer-" + ID.replace(/\./g, "") + "-" + num;
+    };
+    
+    renderer.invokeFluidDecorator = function(func, args, ID, num, options) {
+        var that;
+        if (options.instantiator && options.parentComponent) {
+            var parent = options.parentComponent;
+            var name = renderer.IDtoComponentName(ID, num);
+            // TODO: The best we can do here without GRADES is to wildly guess 
+            // that it is a view component with options in the 2nd place and container in first place
+            fluid.set(parent, fluid.path("options", "components", name), {type: func, options: args[1]});
+            // This MIGHT really be a variant of fluid.invoke... only we often probably DO want the component
+            // itself to be inserted into the that stack. This *ALSO* requires GRADES to resolve. A 
+            // "function" is that which has no grade. The gradeless grade.
+            that = fluid.initDependent(options.parentComponent, name, options.instantiator, [args[0]]);
+        }
+        else {
+            that = fluid.invokeGlobalFunction(func, args);
+        }
+        return that;
+    };
+  
+    fluid.renderer = function (templates, tree, options, fossilsIn) {
+      
+        options = options || {};
+        tree = tree || {};
+        var debugMode = options.debugMode;
+        if (!options.messageLocator && options.messageSource) {
+            options.messageLocator = fluid.resolveMessageSource(options.messageSource);
+        }
+        options.document = options.document || document;
+        
+        var directFossils = fossilsIn || {}; // map of submittingname to {EL, submittingname, oldvalue}
+      
+        var globalmap = {};
+        var branchmap = {};
+        var rewritemap = {}; // map of rewritekey (for original id in template) to full ID 
+        var seenset = {};
+        var collected = {};
+        var out = "";
+        var renderOptions = options;
+        var decoratorQueue = [];
+        
+        var renderedbindings = {}; // map of fullID to true for UISelects which have already had bindings written
+        
+        var that = {};
+        
+        function getRewriteKey(template, parent, id) {
+            return template.resourceKey + parent.fullID + id;
+        }
+        // returns: lump
+        function resolveInScope(searchID, defprefix, scope, child) {
+            var deflump;
+            var scopelook = scope? scope[searchID] : null;
+            if (scopelook) {
+                for (var i = 0; i < scopelook.length; ++i) {
+                    var scopelump = scopelook[i];
+                    if (!deflump && scopelump.rsfID === defprefix) {
+                        deflump = scopelump;
+                    }
+                    if (scopelump.rsfID === searchID) {
+                        return scopelump;
+                    }
+                }
+            }
+            return deflump;
+        }
+        // returns: lump
+        function resolveCall(sourcescope, child) {
+            var searchID = child.jointID? child.jointID : child.ID;
+            var split = fluid.SplitID(searchID);
+            var defprefix = split.prefix + ':';
+            var match = resolveInScope(searchID, defprefix, sourcescope.downmap, child);
+            if (match) {return match;}
+            if (child.children) {
+                match = resolveInScope(searchID, defprefix, globalmap, child);
+                if (match) {return match;}
+            }
+            return null;
+        }
+        
+        function noteCollected(template) {
+            if (!seenset[template.href]) {
+                fluid.aggregateMMap(collected, template.collectmap);
+                seenset[template.href] = true;
+            }
+        }
+        
+        var fetchComponent;
+        
+        function resolveRecurse(basecontainer, parentlump) {
+            for (var i = 0; i < basecontainer.children.length; ++i) {
+                var branch = basecontainer.children[i];
+                if (branch.children) { // it is a branch
+                    var resolved = resolveCall(parentlump, branch);
+                    if (resolved) {
+                        branchmap[branch.fullID] = resolved;
+                        var id = resolved.attributemap.id;
+                        if (id !== undefined) {
+                            rewritemap[getRewriteKey(parentlump.parent, basecontainer, id)] = branch.fullID;
+                        }
+                        // on server-side this is done separately
+                        noteCollected(resolved.parent);
+                        resolveRecurse(branch, resolved);
+                    }
+                }
+            }
+            // collect any rewritten ids for the purpose of later rewriting
+            if (parentlump.downmap) {
+                for (var id in parentlump.downmap) { // jslint:ok - scoping
+                  //if (id.indexOf(":") === -1) {
+                    var lumps = parentlump.downmap[id];
+                    for (var i = 0; i < lumps.length; ++i) { // jslint:ok - scoping
+                        var lump = lumps[i];
+                        var lumpid = lump.attributemap.id;
+                        if (lumpid !== undefined && lump.rsfID !== undefined) {
+                            var resolved = fetchComponent(basecontainer, lump.rsfID); //jslint:ok - scoping
+                            if (resolved !== null) {
+                                var resolveID = resolved.fullID;
+                                if (resolved.componentType === "UISelect") {
+                                    resolveID = resolveID + "-selection";
+                                }
+                                rewritemap[getRewriteKey(parentlump.parent, basecontainer,
+                                    lumpid)] = resolveID;
+                            }
+                        }
+                    }
+                //  }
+                } 
+            }
+            
+        }
+        
+        function resolveBranches(globalmapp, basecontainer, parentlump) {
+            branchmap = {};
+            rewritemap = {};
+            seenset = {};
+            collected = {};
+            globalmap = globalmapp;
+            branchmap[basecontainer.fullID] = parentlump;
+            resolveRecurse(basecontainer, parentlump);
+        }
+               
+        function dumpTillLump(lumps, start, limit) {
+            for (; start < limit; ++start) {
+                var text = lumps[start].text;
+                if (text) { // guard against "undefined" lumps from "justended"
+                    out += lumps[start].text;
+                }
+            }
+        }
+      
+        function dumpScan(lumps, renderindex, basedepth, closeparent, insideleaf) {
+            var start = renderindex;
+            while (true) {
+                if (renderindex === lumps.length) {
+                    break;
+                }
+                var lump = lumps[renderindex];
+                if (lump.nestingdepth < basedepth) {
+                    break;
+                }
+                if (lump.rsfID !== undefined) {
+                    if (!insideleaf) {break;}
+                    if (insideleaf && lump.nestingdepth > basedepth + (closeparent? 0 : 1)) {
+                        fluid.log("Error in component tree - leaf component found to contain further components - at " +
+                            lump.toString());
+                    }
+                    else {break;}
+                }
+                // target.print(lump.text);
+                ++renderindex;
+            }
+            // ASSUMPTIONS: close tags are ONE LUMP
+            if (!closeparent && (renderindex === lumps.length || !lumps[renderindex].rsfID)) {
+                --renderindex;
+            }
+            
+            dumpTillLump(lumps, start, renderindex);
+            //target.write(buffer, start, limit - start);
+            return renderindex;
+        }
+        
+        
+        function isPlaceholder(value) {
+            // TODO: equivalent of server-side "placeholder" system
+            return false;
+        }
+        
+        function isValue(value) {
+            return value !== null && value !== undefined && !isPlaceholder(value);
+        }
+        
+        // In RSF Client, this is a "flyweight" "global" object that is reused for every tag, 
+        // to avoid generating garbage. In RSF Server, it is an argument to the following rendering
+        // methods of type "TagRenderContext".
+        
+        var trc = {};
+        
+        /*** TRC METHODS ***/
+        
+        function openTag() {
+            if (!trc.iselide) {
+                out += "<" + trc.uselump.tagname;
+            }
+        }
+        
+        function closeTag() {
+            if (!trc.iselide) {
+                out += "</" + trc.uselump.tagname + ">";
+            }
+        }
+      
+        function renderUnchanged() {
+            // TODO needs work since we don't keep attributes in text
+            dumpTillLump(trc.uselump.parent.lumps, trc.uselump.lumpindex + 1,
+                trc.close.lumpindex + (trc.iselide ? 0 : 1));
+        }
+
+        function isSelfClose() {
+            return trc.endopen.lumpindex === trc.close.lumpindex && fluid.XMLP.closedTags[trc.uselump.tagname]; 
+        }
+
+        function dumpTemplateBody() {
+            if (isSelfClose()) {
+                if (!trc.iselide) {
+                    out += "/>";
+                }
+            }
+            else {
+                if (!trc.iselide) {
+                    out += ">";
+                }
+                dumpTillLump(trc.uselump.parent.lumps, trc.endopen.lumpindex,
+                    trc.close.lumpindex + (trc.iselide ? 0 : 1));
+            }
+        }
+        
+        function replaceAttributes() {
+            if (!trc.iselide) {
+                out += fluid.dumpAttributes(trc.attrcopy);
+            }
+            dumpTemplateBody();
+        }
+      
+        function replaceAttributesOpen() {
+            if (trc.iselide) {
+                replaceAttributes();
+            }
+            else {
+                out += fluid.dumpAttributes(trc.attrcopy);
+                var selfClose = isSelfClose();
+                // TODO: the parser does not ever produce empty tags
+                out += selfClose ? "/>" : ">";
+          
+                trc.nextpos = selfClose? trc.close.lumpindex + 1 : trc.endopen.lumpindex;
+            }
+        }
+
+        function replaceBody(value) {
+            out += fluid.dumpAttributes(trc.attrcopy);
+            if (!trc.iselide) {
+                out += ">";
+            }
+            out += fluid.XMLEncode(value.toString());
+            closeTag();
+        }
+      
+        function rewriteLeaf(value) {
+            if (isValue(value)) {
+                replaceBody(value);
+            }
+            else {
+                replaceAttributes();
+            }
+        }
+      
+        function rewriteLeafOpen(value) {
+            if (trc.iselide) {
+                rewriteLeaf(trc.value);
+            }
+            else {
+                if (isValue(value)) {
+                    replaceBody(value);
+                }
+                else {
+                    replaceAttributesOpen();
+                }
+            }
+        }
+
+        
+        /*** END TRC METHODS**/
+        
+        function rewriteUrl(template, url) {
+            if (renderOptions.urlRewriter) {
+                var rewritten = renderOptions.urlRewriter(url);
+                if (rewritten) {
+                    return rewritten;
+                }
+            }
+            if (!renderOptions.rebaseURLs) {
+                return url;
+            }
+            var protpos = url.indexOf(":/");
+            if (url.charAt(0) === '/' || protpos !== -1 && protpos < 7) { // jslint:ok
+                return url;
+            }
+            else {
+                return renderOptions.baseURL + url;
+            }
+        }
+        
+        function dumpHiddenField(/** UIParameter **/ todump) { // jslint:ok
+            out += "<input type=\"hidden\" ";
+            var isvirtual = todump.virtual;
+            var outattrs = {};
+            outattrs[isvirtual? "id" : "name"] = todump.name;
+            outattrs.value = todump.value;
+            out += fluid.dumpAttributes(outattrs);
+            out += " />\n";
+        }
+        
+        var outDecoratorsImpl;
+        
+        function applyAutoBind(torender, finalID) {
+            if (!finalID) {
+              // if no id is assigned so far, this is a signal that this is a "virtual" component such as
+              // a non-HTML UISelect which will not have physical markup.
+                return; 
+            }
+            var tagname = trc.uselump.tagname;
+            var applier = renderOptions.applier;
+            function applyFunc() {
+                fluid.applyChange(fluid.byId(finalID), undefined, applier);
+            }
+            if (renderOptions.autoBind && /input|select|textarea/.test(tagname) 
+                    && !renderedbindings[finalID]) {
+                var decorators = [{jQuery: ["change", applyFunc]}];
+                // Work around bug 193: http://webbugtrack.blogspot.com/2007/11/bug-193-onchange-does-not-fire-properly.html
+                if ($.browser.msie && tagname === "input" 
+                        && /radio|checkbox/.test(trc.attrcopy.type)) {
+                    decorators.push({jQuery: ["click", applyFunc]});
+                }
+                if ($.browser.safari && tagname === "input" && trc.attrcopy.type === "radio") {
+                    decorators.push({jQuery: ["keyup", applyFunc]});
+                }
+                outDecoratorsImpl(torender, decorators, trc.attrcopy, finalID); // jslint:ok - forward reference
+            }    
+        }
+        
+        function dumpBoundFields(/** UIBound**/ torender, parent) { // jslint:ok - whitespace
+            if (torender) {
+                var holder = parent? parent : torender;
+                if (directFossils && holder.valuebinding) {
+                    var fossilKey = holder.submittingname || torender.finalID;
+                  // TODO: this will store multiple times for each member of a UISelect
+                    directFossils[fossilKey] = {
+                        name: fossilKey,
+                        EL: holder.valuebinding,
+                        oldvalue: holder.value
+                    };
+                  // But this has to happen multiple times
+                    applyAutoBind(torender, torender.finalID);
+                }
+                if (torender.fossilizedbinding) {
+                    dumpHiddenField(torender.fossilizedbinding);
+                }
+                if (torender.fossilizedshaper) {
+                    dumpHiddenField(torender.fossilizedshaper);
+                }
+            }
+        }
+        
+        function dumpSelectionBindings(uiselect) {
+            if (!renderedbindings[uiselect.selection.fullID]) {
+                renderedbindings[uiselect.selection.fullID] = true; // set this true early so that selection does not autobind twice
+                dumpBoundFields(uiselect.selection);
+                dumpBoundFields(uiselect.optionlist);
+                dumpBoundFields(uiselect.optionnames);
+            }
+        }
+          
+        function isSelectedValue(torender, value) {
+            var selection = torender.selection;
+            return selection.value && typeof(selection.value) !== "string" && typeof(selection.value.length) === "number" ? 
+                $.inArray(value, selection.value, value) !== -1 :
+                selection.value === value;
+        }
+        
+        function getRelativeComponent(component, relativeID) {
+            component = component.parent;
+            while (relativeID.indexOf("..::") === 0) {
+                relativeID = relativeID.substring(4);
+                component = component.parent;
+            }
+            return component.childmap[relativeID];
+        }
+        
+        function adjustForID(attrcopy, component, late, forceID) {
+            if (!late) {
+                delete attrcopy["rsf:id"];
+            }
+            if (component.finalID !== undefined) {
+                attrcopy.id = component.finalID;
+            }
+            else if (forceID !== undefined) {
+                attrcopy.id = forceID;
+            }
+            else {
+                if (attrcopy.id || late) {
+                    attrcopy.id = component.fullID;
+                }
+            }
+            
+            var count = 1;
+            var baseid = attrcopy.id;
+            while (renderOptions.document.getElementById(attrcopy.id)) {
+                attrcopy.id = baseid + "-" + (count++); 
+            }
+            component.finalID = attrcopy.id;
+            return attrcopy.id;
+        }
+        
+        function assignSubmittingName(attrcopy, component, parent) {
+            var submitting = parent || component;
+          // if a submittingName is required, we must already go out to the document to 
+          // uniquify the id that it will be derived from
+            adjustForID(attrcopy, component, true, component.fullID);
+            if (submitting.submittingname === undefined && submitting.willinput !== false) {
+                submitting.submittingname = submitting.finalID || submitting.fullID;
+            }
+            return submitting.submittingname;
+        }
+             
+        function explodeDecorators(decorators) {
+            var togo = [];
+            if (decorators.type) {
+                togo[0] = decorators;
+            }
+            else {
+                for (var key in decorators) {
+                    if (key === "$") {key = "jQuery";}
+                    var value = decorators[key];
+                    var decorator = {
+                        type: key
+                    };
+                    if (key === "jQuery") {
+                        decorator.func = value[0];
+                        decorator.args = value.slice(1);
+                    }
+                    else if (key === "addClass" || key === "removeClass") {
+                        decorator.classes = value;
+                    }
+                    else if (key === "attrs") {
+                        decorator.attributes = value;
+                    }
+                    else if (key === "identify") {
+                        decorator.key = value;
+                    }
+                    togo[togo.length] = decorator;
+                }
+            }
+            return togo;
+        }
+        
+        outDecoratorsImpl = function(torender, decorators, attrcopy, finalID) {
+            renderOptions.idMap = renderOptions.idMap || {};
+            for (var i = 0; i < decorators.length; ++i) {
+                var decorator = decorators[i];
+                var type = decorator.type;
+                if (!type) {
+                    var explodedDecorators = explodeDecorators(decorator);
+                    outDecoratorsImpl(torender, explodedDecorators, attrcopy, finalID);
+                    continue;
+                }
+                if (type === "$") {type = decorator.type = "jQuery";}
+                if (type === "jQuery" || type === "event" || type === "fluid") {
+                    var id = adjustForID(attrcopy, torender, true, finalID);
+                    decorator.id = id;
+                    decoratorQueue[decoratorQueue.length] = decorator;
+                }
+                // honour these remaining types immediately
+                else if (type === "attrs") {
+                    fluid.each(decorator.attributes, function(value, key) {
+                        if (value === null || value === undefined) {
+                            delete attrcopy[key];
+                        }
+                        else {
+                            attrcopy[key] = fluid.XMLEncode(value);
+                        }
+                    }); // jslint:ok - function within loop
+                }
+                else if (type === "addClass" || type === "removeClass") {
+                    var fakeNode = {
+                        nodeType: 1,
+                        className: attrcopy["class"] || ""
+                    };
+                    $(fakeNode)[type](decorator.classes);
+                    attrcopy["class"] = fakeNode.className;
+                }
+                else if (type === "identify") {
+                    var id = adjustForID(attrcopy, torender, true, finalID); // jslint:ok - scoping
+                    renderOptions.idMap[decorator.key] = id;
+                }
+                else if (type !== "null") {
+                    fluid.log("Unrecognised decorator of type " + type + " found at component of ID " + finalID);
+                }
+            }
+        };
+        
+        function outDecorators(torender, attrcopy) {
+            if (!torender.decorators) {return;}
+            if (torender.decorators.length === undefined) {
+                torender.decorators = explodeDecorators(torender.decorators);
+            }
+            outDecoratorsImpl(torender, torender.decorators, attrcopy);
+        }
+        
+        function dumpBranchHead(branch, targetlump) {
+            if (targetlump.elide) {
+                return;
+            }
+            var attrcopy = {};
+            $.extend(true, attrcopy, targetlump.attributemap);
+            adjustForID(attrcopy, branch); // jslint:ok - forward reference
+            outDecorators(branch, attrcopy);
+            out += "<" + targetlump.tagname + " ";
+            out += fluid.dumpAttributes(attrcopy);
+            out += ">";
+        }
+        
+        function resolveArgs(args) {
+            if (!args) {return args;}
+            return fluid.transform(args, function (arg, index) {
+                upgradeBound(args, index, renderOptions.model, renderOptions.resolverGetConfig);
+                return args[index].value;
+            });
+        }
+            
+        function degradeMessage(torender) {
+            if (torender.componentType === "UIMessage") {
+                // degrade UIMessage to UIBound by resolving the message
+                torender.componentType = "UIBound";
+                if (!renderOptions.messageLocator) {
+                    torender.value = "[No messageLocator is configured in options - please consult documentation on options.messageSource]";
+                }
+                else {
+                    upgradeBound(torender, "messagekey", renderOptions.model, renderOptions.resolverGetConfig);
+                    var resArgs = resolveArgs(torender.args);
+                    torender.value = renderOptions.messageLocator(torender.messagekey.value, resArgs);
+                }
+            }
+        }  
+        
+          
+        function renderComponent(torender) {
+            var attrcopy = trc.attrcopy;
+            
+            degradeMessage(torender);
+            var componentType = torender.componentType;
+            var tagname = trc.uselump.tagname;
+            
+            outDecorators(torender, attrcopy);
+            
+            function makeFail(torender, end) {
+                fluid.fail("Error in component tree - UISelectChoice with id " + torender.fullID + end);
+            } 
+            
+            if (componentType === "UIBound" || componentType === "UISelectChoice") {
+                var parent;
+                if (torender.choiceindex !== undefined) {
+                    if (torender.parentRelativeID !== undefined) {
+                        parent = getRelativeComponent(torender, torender.parentRelativeID);
+                        if (!parent) {
+                            makeFail(torender, " has parentRelativeID of " + torender.parentRelativeID + " which cannot be resolved");
+                        }
+                    }
+                    else {
+                        makeFail(torender, " does not have parentRelativeID set");
+                    }
+                    assignSubmittingName(attrcopy, torender, parent.selection);
+                    dumpSelectionBindings(parent);
+                }
+        
+                var submittingname = parent? parent.selection.submittingname : torender.submittingname;
+                if (!parent && torender.valuebinding) {
+                    // Do this for all bound fields even if non submitting so that finalID is set in order to track fossils (FLUID-3387)
+                    submittingname = assignSubmittingName(attrcopy, torender);
+                }
+                if (tagname === "input" || tagname === "textarea") {
+                    if (submittingname !== undefined) {
+                        attrcopy.name = submittingname;
+                    }
+                }
+                // this needs to happen early on the client, since it may cause the allocation of the
+                // id in the case of a "deferred decorator". However, for server-side bindings, this 
+                // will be an inappropriate time, unless we shift the timing of emitting the opening tag.
+                dumpBoundFields(torender, parent? parent.selection : null);
+          
+                if (typeof(torender.value) === 'boolean' || attrcopy.type === "radio" 
+                        || attrcopy.type === "checkbox") {
+                    var underlyingValue;
+                    var directValue = torender.value;
+                    
+                    if (torender.choiceindex !== undefined) {
+                        if (!parent.optionlist.value) {
+                            fluid.fail("Error in component tree - selection control with full ID " + parent.fullID + " has no values");
+                        }
+                        underlyingValue = parent.optionlist.value[torender.choiceindex];
+                        directValue = isSelectedValue(parent, underlyingValue);
+                    }
+                    if (isValue(directValue)) {
+                        if (directValue) {
+                            attrcopy.checked = "checked";
+                        }
+                        else {
+                            delete attrcopy.checked;
+                        }
+                    }
+                    attrcopy.value = fluid.XMLEncode(underlyingValue? underlyingValue : "true");
+                    rewriteLeaf(null);
+                }
+                else if (torender.value instanceof Array) {
+                    // Cannot be rendered directly, must be fake
+                    renderUnchanged();
+                }
+                else { // String value
+                    var value = parent? 
+                        parent[tagname === "textarea" || tagname === "input" ? "optionlist" : "optionnames"].value[torender.choiceindex] : 
+                            torender.value; // jslint:ok - whitespace
+                    if (tagname === "textarea") {
+                        if (isPlaceholder(value) && torender.willinput) {
+                            // FORCE a blank value for input components if nothing from
+                            // model, if input was intended.
+                            value = "";
+                        }
+                        rewriteLeaf(value);
+                    }
+                    else if (tagname === "input") {
+                        if (torender.willinput || isValue(value)) {
+                            attrcopy.value = fluid.XMLEncode(String(value));
+                        }
+                        rewriteLeaf(null);
+                    }
+                    else {
+                        delete attrcopy.name;
+                        rewriteLeafOpen(value);
+                    }
+                }
+            }
+            else if (componentType === "UISelect") {
+  
+                var ishtmlselect = tagname === "select";
+                var ismultiple = false;
+          
+                if (torender.selection.value instanceof Array) {
+                    ismultiple = true;
+                    if (ishtmlselect) {
+                        attrcopy.multiple = "multiple";
+                    }
+                }
+                // assignSubmittingName is now the definitive trigger point for uniquifying output IDs
+                // However, if id is already assigned it is probably through attempt to decorate root select.
+                // in this case restore it.
+                var oldid = attrcopy.id;
+                assignSubmittingName(attrcopy, torender.selection);
+                if (oldid !== undefined) {
+                    attrcopy.id = oldid;
+                }
+                
+                if (ishtmlselect) {
+                    // The HTML submitted value from a <select> actually corresponds
+                    // with the selection member, not the top-level component.
+                    if (torender.selection.willinput !== false) {
+                        attrcopy.name = torender.selection.submittingname;
+                    }
+                    applyAutoBind(torender, attrcopy.id);
+                }
+                
+                out += fluid.dumpAttributes(attrcopy);
+                if (ishtmlselect) {
+                    out += ">";
+                    var values = torender.optionlist.value;
+                    var names = torender.optionnames === null || torender.optionnames === undefined || !torender.optionnames.value? values : torender.optionnames.value;
+                    if (!names || !names.length) {
+                        fluid.fail("Error in component tree - UISelect component with fullID " 
+                            + torender.fullID + " does not have optionnames set");
+                    }
+                    for (var i = 0; i < names.length; ++i) {
+                        out += "<option value=\"";
+                        var value = values[i]; //jslint:ok - scoping
+                        if (value === null) {
+                            value = fluid.NULL_STRING;
+                        }
+                        out += fluid.XMLEncode(value);
+                        if (isSelectedValue(torender, value)) {
+                            out += "\" selected=\"selected";
+                        }
+                        out += "\">";
+                        out += fluid.XMLEncode(names[i]);
+                        out += "</option>\n";
+                    }
+                    closeTag();
+                }
+                else {
+                    dumpTemplateBody();
+                }
+                dumpSelectionBindings(torender);
+            }
+            else if (componentType === "UILink") {
+                var attrname = LINK_ATTRIBUTES[tagname];
+                if (attrname) {
+                    degradeMessage(torender.target);
+                    var target = torender.target.value;
+                    if (!isValue(target)) {
+                        target = attrcopy[attrname];
+                    }
+                    target = rewriteUrl(trc.uselump.parent, target);
+                    // Note that all real browsers succeed in recovering the URL here even if it is presented in violation of XML
+                    // seemingly due to the purest accident, the text &amp; cannot occur in a properly encoded URL :P
+                    attrcopy[attrname] = fluid.XMLEncode(target);
+                }
+                var value; // jslint:ok
+                if (torender.linktext) { 
+                    degradeMessage(torender.linktext);
+                    value = torender.linktext.value; // jslint:ok - scoping
+                }
+                if (!isValue(value)) {
+                    replaceAttributesOpen();
+                }
+                else {
+                    rewriteLeaf(value);
+                }
+            }
+            
+            else if (torender.markup !== undefined) { // detect UIVerbatim
+                degradeMessage(torender.markup);
+                var rendered = torender.markup.value;
+                if (rendered === null) {
+                  // TODO, doesn't quite work due to attr folding cf Java code
+                    out += fluid.dumpAttributes(attrcopy);
+                    out += ">";
+                    renderUnchanged(); 
+                }
+                else {
+                    if (!trc.iselide) {
+                        out += fluid.dumpAttributes(attrcopy);
+                        out += ">";
+                    }
+                    out += rendered;
+                    closeTag();
+                }
+            }
+        }
+             
+        function rewriteIDRelation(context) {
+            var attrname;
+            var attrval = trc.attrcopy["for"];
+            if (attrval !== undefined) {
+                attrname = "for";
+            }
+            else {
+                attrval = trc.attrcopy.headers;
+                if (attrval !== undefined) {
+                    attrname = "headers";
+                }
+            }
+            if (!attrname) {return;}
+            var tagname = trc.uselump.tagname;
+            if (attrname === "for" && tagname !== "label") {return;}
+            if (attrname === "headers" && tagname !== "td" && tagname !== "th") {return;}
+            var rewritten = rewritemap[getRewriteKey(trc.uselump.parent, context, attrval)];
+            if (rewritten !== undefined) {
+                trc.attrcopy[attrname] = rewritten;
+            }
+        }
+        
+        function renderComment(message) {
+            out += ("<!-- " + fluid.XMLEncode(message) + "-->");
+        }
+        
+        function renderDebugMessage(message) {
+            out += "<span style=\"background-color:#FF466B;color:white;padding:1px;\">";
+            out += message;
+            out += "</span><br/>";
+        }
+        
+        function reportPath(/*UIComponent*/ branch) { // jslint:ok - whitespace
+            var path = branch.fullID;
+            return !path ? "component tree root" : "full path " + path;
+        }
+        
+        function renderComponentSystem(context, torendero, lump) {
+            var lumpindex = lump.lumpindex;
+            var lumps = lump.parent.lumps;
+            var nextpos = -1;
+            var outerendopen = lumps[lumpindex + 1];
+            var outerclose = lump.close_tag;
+        
+            nextpos = outerclose.lumpindex + 1;
+        
+            var payloadlist = lump.downmap? lump.downmap["payload-component"] : null;
+            var payload = payloadlist? payloadlist[0] : null;
+            
+            var iselide = lump.rsfID.charCodeAt(0) === 126; // "~"
+            
+            var endopen = outerendopen;
+            var close = outerclose;
+            var uselump = lump;
+            var attrcopy = {};
+            $.extend(true, attrcopy, (payload === null? lump : payload).attributemap);
+            
+            trc.attrcopy = attrcopy;
+            trc.uselump = uselump;
+            trc.endopen = endopen;
+            trc.close = close;
+            trc.nextpos = nextpos;
+            trc.iselide = iselide;
+            
+            rewriteIDRelation(context);
+            
+            if (torendero === null) {
+                if (lump.rsfID.indexOf("scr=") === (iselide? 1 : 0)) {
+                    var scrname = lump.rsfID.substring(4 + (iselide? 1 : 0));
+                    if (scrname === "ignore") {
+                        nextpos = trc.close.lumpindex + 1;
+                    }
+                    else if (scrname === "rewrite-url") {
+                        torendero = {componentType: "UILink", target: {}};
+                    }
+                    else {
+                        openTag();
+                        replaceAttributesOpen();
+                        nextpos = trc.endopen.lumpindex;
+                    }
+                }
+            }
+            if (torendero !== null) {
+                // else there IS a component and we are going to render it. First make
+                // sure we render any preamble.
+          
+                if (payload) {
+                    trc.endopen = lumps[payload.lumpindex + 1];
+                    trc.close = payload.close_tag;
+                    trc.uselump = payload;
+                    dumpTillLump(lumps, lumpindex, payload.lumpindex);
+                    lumpindex = payload.lumpindex;
+                }
+          
+                adjustForID(attrcopy, torendero);
+                //decoratormanager.decorate(torendero.decorators, uselump.getTag(), attrcopy);
+          
+                
+                // ALWAYS dump the tag name, this can never be rewritten. (probably?!)
+                openTag();
+          
+                renderComponent(torendero);
+                // if there is a payload, dump the postamble.
+                if (payload !== null) {
+                    // the default case is initialised to tag close
+                    if (trc.nextpos === nextpos) {
+                        dumpTillLump(lumps, trc.close.lumpindex + 1, outerclose.lumpindex + 1);
+                    }
+                }
+                nextpos = trc.nextpos;
+            }
+            return nextpos;
+        }
+        var renderRecurse;
+        
+        function renderContainer(child, targetlump) {
+            var t2 = targetlump.parent;
+            var firstchild = t2.lumps[targetlump.lumpindex + 1];
+            if (child.children !== undefined) {
+                dumpBranchHead(child, targetlump);
+            }
+            else {
+                renderComponentSystem(child.parent, child, targetlump);
+            }
+            renderRecurse(child, targetlump, firstchild);
+        }
+        
+        fetchComponent = function(basecontainer, id, lump) {
+            if (id.indexOf("msg=") === 0) {
+                var key = id.substring(4);
+                return {componentType: "UIMessage", messagekey: key};
+            }
+            while (basecontainer) {
+                var togo = basecontainer.childmap[id];
+                if (togo) {
+                    return togo;
+                }
+                basecontainer = basecontainer.parent;
+            }
+            return null;
+        };
+      
+        function fetchComponents(basecontainer, id) {
+            var togo;
+            while (basecontainer) {
+                togo = basecontainer.childmap[id];
+                if (togo) {
+                    break;
+                }
+                basecontainer = basecontainer.parent;
+            }
+            return togo;
+        }
+      
+        function findChild(sourcescope, child) {
+            var split = fluid.SplitID(child.ID);
+            var headlumps = sourcescope.downmap[child.ID];
+            if (!headlumps) {
+                headlumps = sourcescope.downmap[split.prefix + ":"];
+            }
+            return headlumps? headlumps[0] : null;
+        }
+        
+        renderRecurse = function(basecontainer, parentlump, baselump) {
+            var renderindex = baselump.lumpindex;
+            var basedepth = parentlump.nestingdepth;
+            var t1 = parentlump.parent;
+            var rendered;
+            if (debugMode) {
+                rendered = {};
+            }
+            while (true) {
+                renderindex = dumpScan(t1.lumps, renderindex, basedepth, !parentlump.elide, false);
+                if (renderindex === t1.lumps.length) { 
+                    break;
+                }
+                var lump = t1.lumps[renderindex];      
+                var id = lump.rsfID;
+                // new stopping rule - we may have been inside an elided tag
+                if (lump.nestingdepth < basedepth || id === undefined) {
+                    break;
+                } 
+          
+                if (id.charCodeAt(0) === 126) { // "~"
+                    id = id.substring(1);
+                }
+                
+                //var ismessagefor = id.indexOf("message-for:") === 0;
+                
+                if (id.indexOf(':') !== -1) {
+                    var prefix = fluid.getPrefix(id);
+                    var children = fetchComponents(basecontainer, prefix);
+                    
+                    var finallump = lump.uplump.finallump[prefix];
+                    var closefinal = finallump.close_tag;
+                    
+                    if (children) {
+                        for (var i = 0; i < children.length; ++i) {
+                            var child = children[i];
+                            if (child.children) { // it is a branch 
+                                if (debugMode) {
+                                    rendered[child.fullID] = true;
+                                }
+                                var targetlump = branchmap[child.fullID];
+                                if (targetlump) {
+                                    if (debugMode) {
+                                        renderComment("Branching for " + child.fullID + " from "
+                                            + fluid.debugLump(lump) + " to " + fluid.debugLump(targetlump));
+                                    }
+                                    
+                                    renderContainer(child, targetlump);
+                                    
+                                    if (debugMode) {
+                                        renderComment("Branch returned for " + child.fullID
+                                            + fluid.debugLump(lump) + " to " + fluid.debugLump(targetlump));
+                                    }
+                                }
+                                else if (debugMode) {
+                                    renderDebugMessage(
+                                        "No matching template branch found for branch container with full ID "
+                                            + child.fullID
+                                            + " rendering from parent template branch "
+                                            + fluid.debugLump(baselump)); // jslint:ok - line breaking
+                                }
+                            }
+                            else { // repetitive leaf
+                                var targetlump = findChild(parentlump, child); // jslint:ok - scoping
+                                if (!targetlump) {
+                                    if (debugMode) {
+                                        renderDebugMessage("Repetitive leaf with full ID " + child.fullID
+                                            + " could not be rendered from parent template branch "
+                                            + fluid.debugLump(baselump)); // jslint:ok - line breaking
+                                    }
+                                    continue;
+                                }
+                                var renderend = renderComponentSystem(basecontainer, child, targetlump);
+                                var wasopentag = renderend < t1.lumps.lengtn && t1.lumps[renderend].nestingdepth >= targetlump.nestingdepth;
+                                var newbase = child.children? child : basecontainer;
+                                if (wasopentag) {
+                                    renderRecurse(newbase, targetlump, t1.lumps[renderend]);
+                                    renderend = targetlump.close_tag.lumpindex + 1;
+                                }
+                                if (i !== children.length - 1) {
+                                    // TODO - fix this bug in RSF Server!
+                                    if (renderend < closefinal.lumpindex) {
+                                        dumpScan(t1.lumps, renderend, targetlump.nestingdepth - 1, false, false);
+                                    }
+                                }
+                                else {
+                                    dumpScan(t1.lumps, renderend, targetlump.nestingdepth, true, false);
+                                }
+                            }
+                        } // end for each repetitive child
+                    }
+                    else {
+                        if (debugMode) {
+                            renderDebugMessage("No branch container with prefix "
+                                + prefix + ": found in container "
+                                + reportPath(basecontainer)
+                                + " rendering at template position " + fluid.debugLump(baselump)
+                                + ", skipping");
+                        }
+                    }
+                    
+                    renderindex = closefinal.lumpindex + 1;
+                    if (debugMode) {
+                        renderComment("Stack returned from branch for ID " + id + " to "
+                            + fluid.debugLump(baselump) + ": skipping from " + fluid.debugLump(lump)
+                            + " to " + fluid.debugLump(closefinal));
+                    }
+                }
+                else {
+                    var component;
+                    if (id) {
+                        component = fetchComponent(basecontainer, id, lump);
+                        if (debugMode && component) {
+                            rendered[component.fullID] = true;
+                        }
+                    }
+                    if (component && component.children !== undefined) {
+                        renderContainer(component);
+                        renderindex = lump.close_tag.lumpindex + 1;
+                    }
+                    else {
+                        renderindex = renderComponentSystem(basecontainer, component, lump);
+                    }
+                }
+                if (renderindex === t1.lumps.length) {
+                    break;
+                }
+            }
+            if (debugMode) {
+                var children = basecontainer.children; // jslint:ok - scoping
+                for (var key = 0; key < children.length; ++key) {
+                    var child = children[key]; // jslint:ok - scoping
+                    if (!rendered[child.fullID]) {
+                        renderDebugMessage("Component "
+                            + child.componentType + " with full ID "
+                            + child.fullID + " could not be found within template "
+                            + fluid.debugLump(baselump));
+                    }
+                }
+            }  
+            
+        };
+        
+        function renderCollect(collump) {
+            dumpTillLump(collump.parent.lumps, collump.lumpindex, collump.close_tag.lumpindex + 1);
+        }
+        
+        // Let us pray
+        function renderCollects() {
+            for (var key in collected) {
+                var collist = collected[key];
+                for (var i = 0; i < collist.length; ++i) {
+                    renderCollect(collist[i]);
+                }
+            }
+        }
+        
+        function processDecoratorQueue() {
+            for (var i = 0; i < decoratorQueue.length; ++i) {
+                var decorator = decoratorQueue[i];
+                var node = fluid.byId(decorator.id, renderOptions.document);
+                if (!node) {
+                    fluid.fail("Error during rendering - component with id " + decorator.id 
+                        + " which has a queued decorator was not found in the output markup");
+                }
+                if (decorator.type === "jQuery") {
+                    var jnode = $(node);
+                    jnode[decorator.func].apply(jnode, $.makeArray(decorator.args));
+                }
+                else if (decorator.type === "fluid") {
+                    var args = decorator.args;
+                    if (!args) {
+                        if (!decorator.container) {
+                            decorator.container = node;
+                        }
+                        args = [decorator.container, decorator.options];
+                    }
+                    var that = renderer.invokeFluidDecorator(decorator.func, args, decorator.id, i, options);
+                    decorator.that = that;
+                }
+                else if (decorator.type === "event") {
+                    node[decorator.event] = decorator.handler; 
+                }
+            }
+        }
+  
+        that.renderTemplates = function () {
+            tree = fixupTree(tree, options.model, options.resolverGetConfig);
+            var template = templates[0];
+            resolveBranches(templates.globalmap, tree, template.rootlump);
+            renderedbindings = {};
+            renderCollects();
+            renderRecurse(tree, template.rootlump, template.lumps[template.firstdocumentindex]);
+            return out;
+        };  
+        
+        that.processDecoratorQueue = function () {
+            processDecoratorQueue();
+        };
+        return that;
+        
+    };
+    
+    jQuery.extend(true, fluid.renderer, renderer);
+  
+    /*
+     * This function is unsupported: It is not really intended for use by implementors.
+     */
+    fluid.ComponentReference = function (reference) {
+        this.reference = reference;
+    };
+    
+    // Explodes a raw "hash" into a list of UIOutput/UIBound entries
+    fluid.explode = function (hash, basepath) {
+        var togo = [];
+        for (var key in hash) {
+            var binding = basepath === undefined ? key : basepath + "." + key;
+            togo[togo.length] = {ID: key, value: hash[key], valuebinding: binding};
+        }
+        return togo;
+    };
+      
     
    /**
     * A common utility function to make a simple view of rows, where each row has a selection control and a label
@@ -1416,15 +1419,15 @@ fluid_1_4 = fluid_1_4 || {};
             labelID: ""
         }
     */ 
-   fluid.explodeSelectionToInputs = function (optionlist, opts) {
-       return fluid.transform(optionlist, function (option, index) {
+    fluid.explodeSelectionToInputs = function (optionlist, opts) {
+        return fluid.transform(optionlist, function (option, index) {
             return {
-              ID: opts.rowID, 
-              children: [
-                   {ID: opts.inputID, parentRelativeID: "..::" + opts.selectID, choiceindex: index},
-                   {ID: opts.labelID, parentRelativeID: "..::" + opts.selectID, choiceindex: index}]
-             };
-         });
+                ID: opts.rowID, 
+                children: [
+                    {ID: opts.inputID, parentRelativeID: "..::" + opts.selectID, choiceindex: index},
+                    {ID: opts.labelID, parentRelativeID: "..::" + opts.selectID, choiceindex: index}]
+            };
+        });
     };
   
     fluid.resolveMessageSource = function (messageSource) {
@@ -1435,7 +1438,7 @@ fluid_1_4 = fluid_1_4 || {};
             else {
               // TODO: fetch via AJAX, and convert format if necessary
             }
-        }
+        } // jslint:ok - empty block
         else if (messageSource.type === "resolver") {
             return messageSource.resolver.resolve;
         }
@@ -1474,15 +1477,15 @@ fluid_1_4 = fluid_1_4 || {};
         if (options.renderRaw) {
             rendered = fluid.XMLEncode(rendered);
             rendered = rendered.replace(/\n/g, "<br/>");
-            }
+        }
         if (options.model) {
             fluid.bindFossils(node, options.model, fossils);
-            }
+        }
         if ($.browser.msie) {
-          $(node).html(rendered);
+            $(node).html(rendered);
         }
         else {
-          node.innerHTML = rendered;
+            node.innerHTML = rendered;
         }
         renderer.processDecoratorQueue();
         if (lastId) {
@@ -1499,7 +1502,7 @@ fluid_1_4 = fluid_1_4 || {};
         var node = fluid.dom.iterateDom(rootNode, function (node) {
           // NB, in Firefox at least, comment and cdata nodes cannot be distinguished!
             return node.nodeType === 8 || node.nodeType === 4 ? "stop" : null;
-            }, true);
+            }, true); // jslint:ok
         var value = node.nodeValue;
         if (value.indexOf("[CDATA[") === 0) {
             return value.substring(6, value.length - 2);
@@ -1514,7 +1517,7 @@ fluid_1_4 = fluid_1_4 || {};
             return node.innerHTML;
         }
         else {
-          return findNodeValue(node);
+            return findNodeValue(node);
         }
     };
     /** A slightly generalised version of fluid.selfRender that does not assume that the
@@ -1551,9 +1554,9 @@ fluid_1_4 = fluid_1_4 || {};
      * @return A templates structure, suitable for a further call to fluid.reRender or
      * fluid.renderTemplates.
      */  
-     fluid.selfRender = function (node, tree, options) {
-         options = options || {};
-         return fluid.render({node: node, armouring: options.armouring}, node, tree, options);
-     };
+    fluid.selfRender = function (node, tree, options) {
+        options = options || {};
+        return fluid.render({node: node, armouring: options.armouring}, node, tree, options);
+    };
 
 })(jQuery, fluid_1_4);
