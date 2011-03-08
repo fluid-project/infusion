@@ -30,11 +30,13 @@ var demo = demo || {};
         uiOptions.events.onSave.addListener(slideUp);
         
         // Bind listeners to show and hide the panel when the button is clicked.
-        button.toggle(function () {
-            uiOptions.container.slideDown();
-        }, function () {
-            uiOptions.container.slideUp();
-            uiOptions.cancel();
+        button.click(function () {
+            if (uiOptions.container.is(":hidden")) {
+                uiOptions.container.slideDown();
+            } else {
+                uiOptions.container.slideUp();
+                uiOptions.cancel();
+            }
         });
             
         // Hide the panel to start.
