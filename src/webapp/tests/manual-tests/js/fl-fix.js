@@ -5,19 +5,25 @@ var demo = demo || {};
         that.locate("styleTitle").text(title);
     };
     
-    var changeStyle = function (that, eventObj) {
+    var changeClass = function (that, className) {
         var styledElm = that.locate("styledElement");
-        var val = that.locate("stylePicker").children(":selected").attr("value");
-        // var val = $("option:selected", that.locate()).attr("value");
-        var styleModel = that.model[val];
         styledElm.attr("class", that.initialClass);
-        styledElm.addClass(styleModel.className);
+        styledElm.addClass(className);
+    };
+    
+    var getSelectedValue = function (that) {
+        return that.locate("stylePicker").children(":selected").attr("value");
+    };
+    
+    var changeCSSFix = function (that, eventObj) {
+        var styleModel = that.model[getSelectedValue(that)];
+        changeClass(that, styleModel.className);
         updateTitle(that, styleModel.title);
     };
     
     var bindEvents = function (that) {
         that.locate("stylePicker").change(function (eventObj) {
-            changeStyle(that, eventObj);
+            changeCSSFix(that, eventObj);
         });
     };
     
@@ -28,6 +34,7 @@ var demo = demo || {};
     var setup = function (that) {
         saveInitialClasses(that);
         bindEvents(that);
+        that.locate("stylePicker").change();
     };
     
     demo.cssFixApplier = function (container, options) {
