@@ -19,7 +19,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 var demo = demo || {};
 (function ($, fluid) {
-    
+
+    // Places UI Options into a sliding panel, which can be controlled by a button.
     var slidingPanel = function (uiOptions, button) {
         var slideUp = function () {
             uiOptions.container.slideUp();
@@ -37,14 +38,15 @@ var demo = demo || {};
                 uiOptions.container.slideUp();
                 uiOptions.cancel();
             }
+            return false;
         });
             
         // Hide the panel to start.
         uiOptions.container.hide();
     };
     
-    demo.initUIOptions = function () {
-        // Initialize a UIEnhancer for the page first
+    demo.slidingUIOptions = function (container, button) {
+        // First, initialize a UIEnhancer for the page
         var pageEnhancer = fluid.uiEnhancer(document, {
             defaultSiteSettings: {
                 theme: "mist",
@@ -59,13 +61,13 @@ var demo = demo || {};
             }
         });
         
-        // Then start up UIOptions
-        var myUIOptions = uiOptionsComponent = fluid.uiOptions("#myUIOptions", {
+        // Next, start up UI Options
+        var myUIOptions = fluid.uiOptions(container, {
             templateUrl: "../../../components/uiOptions/html/UIOptions.html"
         });
-        
-        // Put UIOptions in a sliding panel with an "Edit Appearance" button.
-        slidingPanel(myUIOptions, $(".myButton"));
+
+        // Put it in the sliding panel.
+        slidingPanel(myUIOptions, button);
     };
     
 })(jQuery, fluid);
