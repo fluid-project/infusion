@@ -79,24 +79,24 @@ var fluid_1_4 = fluid_1_4 || {};
     // TODO: The following two or three functions probably ultimately belong on a that responsible for
     // coordinating with the XHR. A fileConnection object or something similar.
     
-    fluid.uploader.html5Strategy.fileSuccessHandler = function (file, events, serverData) {
-        events.onFileSuccess.fire(file, serverData);
+    fluid.uploader.html5Strategy.fileSuccessHandler = function (file, events, xhr) {
+        events.onFileSuccess.fire(file, xhr);
         events.onFileComplete.fire(file);
     };
     
-    fluid.uploader.html5Strategy.fileErrorHandler = function (file, events) {
+    fluid.uploader.html5Strategy.fileErrorHandler = function (file, events, xhr) {
         file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
         events.onFileError.fire(file, 
                                 fluid.uploader.errorConstants.UPLOAD_FAILED,
-                                "The file failed to upload");
+                                xhr);
         events.onFileComplete.fire(file);
     };
     
-    fluid.uploader.html5Strategy.fileStopHandler = function (file, events) {
+    fluid.uploader.html5Strategy.fileStopHandler = function (file, events, xhr) {
         file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
         events.onFileError.fire(file, 
                                 fluid.uploader.errorConstants.UPLOAD_STOPPED,
-                                "The upload was stopped by the user");
+                                xhr);
         events.onFileComplete.fire(file);
     };
     
@@ -122,11 +122,11 @@ var fluid_1_4 = fluid_1_4 || {};
                 var status = xhr.status;
                 // TODO: See a pattern here? Fix it.
                 if (status === 200) {
-                    fluid.uploader.html5Strategy.fileSuccessHandler(file, events, xhr.responseText);
+                    fluid.uploader.html5Strategy.fileSuccessHandler(file, events, xhr);
                 } else if (status === 0) {
-                    fluid.uploader.html5Strategy.fileStopHandler(file, events);
+                    fluid.uploader.html5Strategy.fileStopHandler(file, events, xhr);
                 } else {
-                    fluid.uploader.html5Strategy.fileErrorHandler(file, events);
+                    fluid.uploader.html5Strategy.fileErrorHandler(file, events, xhr);
                 }
             }
         };

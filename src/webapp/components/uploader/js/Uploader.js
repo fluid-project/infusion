@@ -260,7 +260,7 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         });
         
-        that.events.onFileSuccess.addListener(function (file, serverData) {
+        that.events.onFileSuccess.addListener(function (file, xhr) {
             file.filestatus = fluid.uploader.fileStatusConstants.COMPLETE;
             if (that.queue.currentBatch.bytesUploadedForFile === 0) {
                 that.queue.currentBatch.totalBytesUploaded += file.size;
@@ -269,8 +269,8 @@ var fluid_1_4 = fluid_1_4 || {};
             updateTotalProgress(that); 
         });
         
-        that.events.onFileError.addListener(function (file, errorCode, message) {
-            if (errorCode === fluid.uploader.errorConstants.UPLOAD_STOPPED) {
+        that.events.onFileError.addListener(function (file, error, xhr) {
+            if (error === fluid.uploader.errorConstants.UPLOAD_STOPPED) {
                 that.queue.isUploading = false;
                 return;
             }
