@@ -10,8 +10,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery*/
-/*global fluid*/
+// Declare dependencies
+/*global afterMoveCallbackWasCalled, callbackConfirmer, createListLayoutHandler, findList1, fluid, itemIds, itemIds2, itemThatWasMoved, listHandler1, listMovableFinder, nonOrderabeItemId, setUp, jQuery*/
 
 // JSLint options 
 /*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */

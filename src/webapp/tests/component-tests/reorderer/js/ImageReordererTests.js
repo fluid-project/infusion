@@ -11,9 +11,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global document, jQuery, fluid, demo, jqUnit*/
-/*global fetchLightboxRoot, focusLightbox, createLightbox, createLightboxWithNoOrderables, createAltKeystrokeLightbox, createMultiKeystrokeLightbox, createMultiOverlappingKeystrokeLightbox*/
-/*global imageIds, orderableIds, lightboxRootId, focusPosition:true, numOfImages */
+// Declare dependencies
+/*global createLightbox, createLightboxWithNoOrderables, createAltKeystrokeLightbox, createMultiKeystrokeLightbox, createMultiOverlappingKeystrokeLightbox, fetchLightboxRoot, fluid, focusLightbox, imageIds, jqUnit, lightboxRootId, numOfImages, orderableIds, jQuery*/
 
 // JSLint options 
 /*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */

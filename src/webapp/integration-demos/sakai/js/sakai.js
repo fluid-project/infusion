@@ -9,8 +9,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-// Declare dependencies.
-/*global $, fluid*/
+// Declare dependencies
+/*global fluid, $*/
 
 // JSLint options 
 /*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -39,10 +39,6 @@ $(function () {
     var setupUIOptions = function () {        
         var options = {
             listeners: {
-                afterRender: function () {
-                    $('.fl-uiOptions .fl-col:eq(0)').accordion({header: 'h2', clearStyle: true, autoHeight: false});
-                    $('.fl-uiOptions .fl-col h2:eq(0)').focus();
-                },
                 onCancel: function () {
                     uiOptionsNode.slideUp();
                 }, 

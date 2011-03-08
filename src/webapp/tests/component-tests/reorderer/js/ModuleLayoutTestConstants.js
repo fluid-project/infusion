@@ -15,9 +15,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
  * testing with the data in the portlets.html file.
  */
 
-/*global jQuery*/
-/*global fluid*/
-/*global portalRootId*/ 
+// Declare dependencies
+/*global fluid, jQuery*/
  
  // JSLint options 
  /*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
