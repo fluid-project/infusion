@@ -4,8 +4,8 @@
 var demo = demo || {};
 
 (function ($) {
-    var updateTitle = function (that, title) {
-        that.locate("styleTitle").text(title);
+    var updateDescription = function (that, description) {
+        that.locate("styleDescription").text(description);
     };
     
     var changeClass = function (that, className) {
@@ -21,7 +21,7 @@ var demo = demo || {};
     var changeCSSFix = function (that, eventObj) {
         var styleModel = that.model[getSelectedValue(that)];
         changeClass(that, styleModel.className);
-        updateTitle(that, styleModel.title);
+        updateDescription(that, styleModel.description);
     };
     
     var bindEvents = function (that) {
@@ -54,24 +54,24 @@ var demo = demo || {};
         selectors: {
             stylePicker: "#cssFixes",
             styledElement: ".styledElement",
-            styleTitle: ".title"
+            styleDescription: ".demo-description"
         },
         
         model: {
             none: {
-                title: "No Fix",
+                description: "No Fix",
                 className: ""
             },
             fss: {
-                title: "FSS: .fl-fix",
+                description: "FSS: .fl-fix",
                 className: "fl-fix"
             },
             jquery: {
-                title: "jQuery: .ui-helper-clearfix",
+                description: "jQuery: .ui-helper-clearfix",
                 className: "ui-helper-clearfix"
             },
             newClearfix: {
-                title: "New Clearfix: http://perishablepress.com/press/2009/12/06/new-clearfix-hack/",
+                description: "New Clearfix: http://perishablepress.com/press/2009/12/06/new-clearfix-hack/",
                 className: "clearfix"
             }
         }
