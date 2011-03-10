@@ -49,8 +49,7 @@ var fluid_1_3 = fluid_1_3 || {};
         // Used for browsers that rely on File.getAsBinary(), such as Firefox 3.6,
         // which load the entire file to be loaded into memory.
         // Set this option to a sane limit (100MB) so your users won't experience crashes or slowdowns (FLUID-3937).
-        // File limits in the HTML5 strategy are in bytes.
-        legacyBrowserFileLimit: 100000000,
+        legacyBrowserFileLimit: 100000,
         
         mergePolicy: {
             "components.local.options.events": "preserve",
@@ -255,10 +254,10 @@ var fluid_1_3 = fluid_1_3 || {};
         that.queueSettings = that.options.queueSettings;
 
         // Add files to the file queue without exceeding the fileUploadLimit and the fileSizeLimit
-        // NOTE:  fileSizeLimit set to bytes for HTML5 Uploader (MB for SWF Uploader).  
+        // NOTE:  fileSizeLimit set to bytes for HTML5 Uploader (KB for SWF Uploader).  
         that.addFiles = function (files) {
             // TODO: These look like they should be part of a real model.
-            var sizeLimit = legacyBrowserFileLimit || (that.queueSettings.fileSizeLimit * 1000);
+            var sizeLimit = (legacyBrowserFileLimit || that.queueSettings.fileSizeLimit) * 1024;
             var fileLimit = that.queueSettings.fileUploadLimit;
             var uploaded = that.queue.getUploadedFiles().length;
             var queued = that.queue.getReadyFiles().length;
