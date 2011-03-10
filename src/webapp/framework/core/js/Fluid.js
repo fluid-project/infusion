@@ -667,6 +667,28 @@ var fluid = fluid || fluid_1_4;
         });
     };
     
+    function initEvents(that, events, pass) {
+        fluid.each(events, function(eventSpec, eventKey) { 
+            var isIoCEvent = eventSpec && (typeof(eventSpec) !== "string" || eventSpec.charAt(0) === "{");
+            if (isIoCEvent && pass === "IoC") {
+                var event;
+                if (!fluid.event.resolveEvent) {
+                    fluid.fail("fluid.event.resolveEvent could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor " + 
+                        JSON.stringify(eventSpec));
+                }
+                else {
+                    event = fluid.event.resolveEvent(that, eventKey, eventSpec);
+                }
+            }
+            else if (pass === "flat") {
+                event = fluid.event.getEventFirer(eventSpec === "unicast", eventSpec === "preventable");
+            }
+            if (event) {
+                that.events[eventKey] = event;
+            } 
+        });
+    }
+    
     /**
      * Sets up a component's declared events.
      * Events are specified in the options object by name. There are three different types of events that can be
@@ -680,12 +702,9 @@ var fluid = fluid || fluid_1_4;
      */
     fluid.instantiateFirers = function (that, options) {
         that.events = {};
-        if (options.events) {
-            for (var event in options.events) {
-                var eventType = options.events[event];
-                that.events[event] = fluid.event.getEventFirer(eventType === "unicast", eventType === "preventable");
-            }
-        }
+        // TODO: manual 2-phase instantiation since we have no GINGER WORLD
+        initEvents(that, options.events, "flat"); 
+        initEvents(that, options.events, "IoC");
         fluid.mergeListeners(that.events, options.listeners);
     };
     
@@ -717,7 +736,7 @@ var fluid = fluid || fluid_1_4;
         return gs;
     };
     
-    fluid.resolveGrade = function(gradeNames) {
+    fluid.resolveGradeStructure = function(gradeNames) {
         var gradeStruct = {
             gradeChain: [],
             gradeHash: {},
@@ -725,21 +744,26 @@ var fluid = fluid || fluid_1_4;
         };
         return resolveGradesImpl(gradeStruct, gradeNames);
     };
+    
+    fluid.resolveGrade = function(defaults, gradeNames) {
+        var mergeArgs = [defaults];
+        if (gradeNames) {
+            var gradeStruct = fluid.resolveGradeStructure(gradeNames);
+            mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs);
+        }
+        mergeArgs = [{}, {}].concat(mergeArgs);
+        var mergedDefaults = fluid.merge.apply(null, mergeArgs);
+        return mergedDefaults;      
+    };
 
     fluid.resolveGradedOptions = function(componentName) {
         var defaults = fluid.rawDefaults(componentName);
         if (!defaults) {
             return defaults;
         }
-        var mergeArgs = [defaults];
-        var gradeNames = defaults.gradeNames;
-        if (gradeNames) {
-            var gradeStruct = fluid.resolveGrade(gradeNames);
-            mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs);
+        else {
+            return fluid.resolveGrade(defaults, defaults.gradeNames);
         }
-        mergeArgs = [{}, {}].concat(mergeArgs);
-        var mergedDefaults = fluid.merge.apply(null, mergeArgs);
-        return mergedDefaults;
     };
     
     fluid.rawDefaults = function(componentName, options) {
@@ -749,6 +773,11 @@ var fluid = fluid || fluid_1_4;
         else {
             defaultsStore[componentName] = options;
         }
+    };
+    
+        
+    fluid.hasGrade = function(options, gradeName) {
+        return !options || !options.gradeNames ? false : $.inArray(gradeName, options.gradeNames) !== -1;
     };
     
      /**
@@ -773,7 +802,7 @@ var fluid = fluid || fluid_1_4;
         }
         else {
             fluid.rawDefaults(componentName, options);
-            if (options && options.gradeNames && $.inArray("autoInit", options.gradeNames) !== -1) {
+            if (fluid.hasGrade(options, "autoInit")) {
                 fluid.makeComponent(componentName, fluid.resolveGradedOptions(componentName));
             }
         }
@@ -795,6 +824,10 @@ var fluid = fluid || fluid_1_4;
         }
     });
     
+    fluid.defaults("fluid.eventedComponent", {
+        gradeNames: ["fluid.littleComponent"]  
+    });
+    
     fluid.defaults("fluid.modelComponent", {
         gradeNames: ["fluid.littleComponent"],
         postInitFunction: {
@@ -807,7 +840,7 @@ var fluid = fluid || fluid_1_4;
     });
     
     fluid.defaults("fluid.viewComponent", {
-        gradeNames: ["fluid.littleComponent", "fluid.modelComponent"],
+        gradeNames: ["fluid.littleComponent", "fluid.modelComponent", "fluid.eventedComponent"],
         initFunction: "fluid.initView",
         argumentMap: {
             container: 0,
@@ -942,6 +975,9 @@ var fluid = fluid || fluid_1_4;
      * where it is found, it is replaced in the actual argument position supplied
      * to the specific subcomponent instance, with the particular options block
      * for that instance attached to the overall "that" object.
+     * NOTE: The use of this marker has been deprecated as of the Fluid 1.4 release in 
+     * favour of the contextual EL path "{options}" - it will be removed in a future
+     * release of the framework.
      */
     fluid.COMPONENT_OPTIONS = {type: "fluid.marker", value: "COMPONENT_OPTIONS"};
     
@@ -985,11 +1021,19 @@ var fluid = fluid || fluid_1_4;
      * @param {Object} name the name of the little component to create
      * @param {Object} options user-supplied options to merge with the defaults
      */
-    fluid.initLittleComponent = function (name, options) {
+    // NOTE: the 3rd argument localOptions is NOT to be advertised as part of the stable API, it is present
+    // just to allow backward compatibility whilst grade specifications are not mandatory
+    fluid.initLittleComponent = function (name, options, localOptions) {
         var that = fluid.typeTag(name);
         // TODO: nickName must be available earlier than other merged options so that component may resolve to itself
         that.nickName = options && options.nickName? options.nickName : fluid.computeNickName(that.typeName);
         fluid.mergeComponentOptions(that, name, options);
+        if (localOptions) {
+            localOptions = fluid.resolveGrade({}, localOptions.gradeNames);
+        }
+        if (fluid.hasGrade(that.options, "fluid.eventedComponent") || fluid.hasGrade(localOptions, "fluid.eventedComponent")) {
+            fluid.instantiateFirers(that, that.options);
+        } 
         return that;
     };
     
@@ -1284,11 +1328,9 @@ var fluid = fluid || fluid_1_4;
         if (!container) {
             return null;
         }
-        var that = fluid.initLittleComponent(componentName, userOptions); 
+        var that = fluid.initLittleComponent(componentName, userOptions, {gradeNames: ["fluid.viewComponent"]}); 
         that.container = container;
         fluid.initDomBinder(that);
-        
-        fluid.instantiateFirers(that, that.options);
 
         return that;
     };
