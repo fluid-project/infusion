@@ -378,8 +378,8 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }, function (spec) {
             that.templates = fluid.parseTemplates(spec, ["uiOptions"], {});
+            that.hasFinishedInit = false;
             that.refreshView();
-            that.events.onReady.fire();
         });
     };
     
@@ -435,6 +435,10 @@ var fluid_1_4 = fluid_1_4 || {};
             var rendererOptions = createRenderOptions(that);
             fluid.reRender(that.templates, that.container, generateTree(that, rendererOptions.model), rendererOptions);
             that.events.afterRender.fire();
+            if (!that.hasFinishedInit) {
+                that.hasFinishedInit = true;
+                that.events.onReady.fire();
+            }
         };
         
         /**
