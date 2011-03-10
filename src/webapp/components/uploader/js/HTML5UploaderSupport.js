@@ -84,20 +84,20 @@ var fluid_1_4 = fluid_1_4 || {};
         events.onFileComplete.fire(file);
     };
     
-    fluid.uploader.html5Strategy.fileErrorHandler = function (file, events, status, xhr) {
+    fluid.uploader.html5Strategy.fileErrorHandler = function (file, events, xhr) {
         file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
         events.onFileError.fire(file, 
                                 fluid.uploader.errorConstants.UPLOAD_FAILED,
-                                status,
+                                xhr.status,
                                 xhr);
         events.onFileComplete.fire(file);
     };
     
-    fluid.uploader.html5Strategy.fileStopHandler = function (file, events, status, xhr) {
+    fluid.uploader.html5Strategy.fileStopHandler = function (file, events, xhr) {
         file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
         events.onFileError.fire(file, 
                                 fluid.uploader.errorConstants.UPLOAD_STOPPED,
-                                status,
+                                xhr.status,
                                 xhr);
         events.onFileComplete.fire(file);
     };
@@ -126,9 +126,9 @@ var fluid_1_4 = fluid_1_4 || {};
                 if (status === 200) {
                     fluid.uploader.html5Strategy.fileSuccessHandler(file, events, xhr);
                 } else if (status === 0) {
-                    fluid.uploader.html5Strategy.fileStopHandler(file, events, status, xhr);
+                    fluid.uploader.html5Strategy.fileStopHandler(file, events, xhr);
                 } else {
-                    fluid.uploader.html5Strategy.fileErrorHandler(file, events, status, xhr);
+                    fluid.uploader.html5Strategy.fileErrorHandler(file, events, xhr);
                 }
             }
         };
