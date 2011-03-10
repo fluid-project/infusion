@@ -549,22 +549,63 @@ fluid.registerNamespace("fluid.testUtils");
         var returned = fluid.invoke("fluid.testUtils.freeTarget1", model);
         jqUnit.assertEquals("Identical model reference", model, returned);
     });
+    
+    fluid.defaults("fluid.tests.eventParent", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            parentEvent: null  
+        },
+        components: {
+            eventChild: {
+                type: "fluid.tests.eventChild"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.eventChild", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            parentEvent: "{eventParent}.events.parentEvent",
+            boiledParent: {
+                event: "{eventParent}.events.parentEvent",
+                args: ["{eventParent}", "{eventChild}", "{arguments}.0"]
+            },
+            boiledLocal: {
+                event: "localEvent"
+            },
+            localEvent: null
+        }
+    });
+    
+    fluid.demands("boiledLocal", "fluid.tests.eventChild", 
+      ["{arguments}.0", "{eventChild}"]);
+    
+    fluidIoCTests.test("FLUID-4135 event injection and boiling", function() {
+        var that = fluid.tests.eventParent();
+        var child = that.eventChild;
+        expect(8);
+        jqUnit.assertValue("Child component constructed", child);
+        var origArg0 = "Value";
 
-    var makeArrayExpander = function (recordType) {
-        return fluid.expander.makeFetchExpander({
-            url: buildUrl(recordType), 
-            disposer: function (model) {
-                return {
-                    items: model,
-                    selectionIndex: -1
-                };
-            },
-            options: {
-                async: false
-            },
-            fetchKey: recordType
+        that.events.parentEvent.addListener(function(arg0) {
+            jqUnit.assertEquals("Plain transmission of argument", origArg0, arg0);
         });
-    };
+        child.events.boiledParent.addListener(function(argParent, argChild, arg0) {
+            jqUnit.assertEquals("Injection of resolved parent", that, argParent);
+            jqUnit.assertEquals("Injection of self", child, argChild);
+            jqUnit.assertEquals("Transmission of original arg0", origArg0, arg0);
+        });
+        that.events.parentEvent.fire(origArg0);
+        
+        child.events.localEvent.addListener(function(arg0) {
+            jqUnit.assertEquals("Plain transmission of argument", origArg0, arg0);
+        })
+        child.events.boiledLocal.addListener(function(arg0, argChild) {
+            jqUnit.assertEquals("Transmission of original arg0", origArg0, arg0);
+            jqUnit.assertEquals("Injection of self via demands block", child, argChild);
+        });
+        child.events.localEvent.fire(origArg0);
+    });
     
     function checkValue(message, root, value, paths) {
         fluid.each(paths, function(path) {
@@ -703,6 +744,21 @@ fluid.registerNamespace("fluid.testUtils");
         }
     });
 
+    var makeArrayExpander = function (recordType) {
+        return fluid.expander.makeFetchExpander({
+            url: buildUrl(recordType), 
+            disposer: function (model) {
+                return {
+                    items: model,
+                    selectionIndex: -1
+                };
+            },
+            options: {
+                async: false
+            },
+            fetchKey: recordType
+        });
+    };
 
     fluidIoCTests.test("Deferred expander Tests", function () {
         var pageBuilder = {
