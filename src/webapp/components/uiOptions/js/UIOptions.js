@@ -28,10 +28,11 @@ var fluid_1_4 = fluid_1_4 || {};
     
     // This will be removed once the jQuery UI slider has built in ARIA 
     var initSliderAria = function (thumb, opts) {
-        var ariaDefaults = {role: 'slider',
-         "aria-valuenow": opts.value,
-         "aria-valuemin": opts.min, 
-         "aria-valuemax": opts.max    
+        var ariaDefaults = {
+            role: 'slider',
+            "aria-valuenow": opts.value,
+            "aria-valuemin": opts.min, 
+            "aria-valuemax": opts.max    
         };
         thumb.attr(ariaDefaults);        
     };
@@ -69,8 +70,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 }
                 slider.slider("value", this.value);
                 that.updateModel(this.value, this);
-            }
-            else {
+            } else {
                 // handle invalid entry
                 this.value = that.model;
             }
@@ -79,8 +79,7 @@ var fluid_1_4 = fluid_1_4 || {};
         textfield.keypress(function (evt) {
             if (evt.keyCode !== $.ui.keyCode.ENTER) {
                 return true;
-            } 
-            else {
+            } else {
                 $(evt.target).change();
                 $(fluid.findForm(evt.target)).submit();
                 return false;
@@ -485,7 +484,7 @@ var fluid_1_4 = fluid_1_4 || {};
             modelChanged: null,
             onSave: null,
             onCancel: null,
-            onReset: null,
+            onReset: null
         },
         strings: {
             textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
