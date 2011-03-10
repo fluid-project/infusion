@@ -380,6 +380,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }, function (spec) {
             that.templates = fluid.parseTemplates(spec, ["uiOptions"], {});
             that.refreshView();
+            that.events.onReady.fire();
         });
     };
     
@@ -479,11 +480,12 @@ var fluid_1_4 = fluid_1_4 || {};
             previewFrame : ".flc-uiOptions-preview-frame"
         },
         events: {
+            onReady: null,
+            afterRender: null,
             modelChanged: null,
             onSave: null,
             onCancel: null,
             onReset: null,
-            afterRender: null
         },
         strings: {
             textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
