@@ -1,3 +1,6 @@
+
+/*global demo:true, fluid, jQuery*/
+
 var demo = demo || {};
 
 (function ($) {
@@ -50,7 +53,7 @@ var demo = demo || {};
     fluid.defaults("demo.cssFixApplier", {
         selectors: {
             stylePicker: "#cssFixes",
-            styledElement: "#styledElement",
+            styledElement: ".styledElement",
             styleTitle: ".title"
         },
         

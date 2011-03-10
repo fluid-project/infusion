@@ -1,11 +1,11 @@
 div div {
     border: 1px solid black;
-    width: 60px;
+    width: 100px;
     padding: 4px;
 }
 
-p {
-    width: 60px;
+.title {
+    width: 100px;
     padding: 4px;
 }
 
@@ -13,8 +13,29 @@ p {
     float: left;
     padding: 2px;
     margin: 2px;
-    width: 10px;
+    width: 40px;
 }
+
+.floatingRight {
+    float: right;
+    padding: 2px;
+    margin: 2px;
+    width: 40px;
+}
+
+a:hover {
+    background: none repeat scroll 0 0 #FFFFFF;
+    font-style:italic;
+}
+
+/* ie6 guillotine test */
+
+.blue {border:5px solid blue}
+.float1gb, .float2gb, .float3gb {float:left} 
+.float1gb:hover, .float2gb:hover, .float3gb:hover {border-top:5px solid #eeb} 
+.float1gb {width:134px;height:140px;border-top:5px solid #8da;background: url(http://css-class.com/images/examples/ie7large.png) repeat scroll 0 0 transparent;} 
+.float2gb {width:67px;height:70px;border-top:5px solid #8ad;background: url(http://css-class.com/images/examples/ie7medium2.png) repeat scroll 0 0 transparent;} 
+.float3gb {width:33px;height:34px;border-top:5px solid #d8a;background: url(http://css-class.com/images/examples/ie7small.gif) repeat scroll 0 0 transparent;}
 
 /* new clear fix http://perishablepress.com/press/2009/12/06/new-clearfix-hack/ */
 .clearfix:after {
