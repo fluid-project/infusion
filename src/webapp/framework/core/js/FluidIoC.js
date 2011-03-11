@@ -417,13 +417,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         };
     };
     
-    fluid.addBoiledListener = function(instantiator, that, eventName, listener, namespace, predicate) {
-        that.events[eventName].addListener(function(args) {
-            var resolved = fluid.resolveDemands(instantiator, that, eventName, args);
-            listener.apply(null, resolved.args);
-        }, namespace, predicate);
-    };
-    
     fluid.event.dispatchListener = function(instantiator, that, listener, eventName, eventSpec) {
         return function() {
             var demandspec = fluid.determineDemands(instantiator, that, eventName);
@@ -438,7 +431,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.event.resolveEvent = function(that, eventName, eventSpec) {
         return fluid.withInstantiator(that, function(instantiator) {
             if (typeof(eventSpec) === "string") {
-                return fluid.resolveReference(eventSpec, that);
+                return fluid.resolveReference(that, eventSpec);
             }
             else {
                 var event = eventSpec.event;
@@ -447,7 +440,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                     fluid.fail("Event specification for event with name " + eventName + " does not include a base event specification");
                 }
                 if (event.charAt(0) === "{") {
-                    origin = fluid.resolveReference(event, that);
+                    origin = fluid.resolveReference(that, event);
                 }
                 else {
                     origin = that.events[event];
@@ -529,7 +522,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         });
     };
     
-    fluid.resolveReference = function(ref, that) {
+    fluid.resolveReference = function(that, ref) {
         var pack = [ref];
         var expanded = fluid.expandOptions(pack, that);
         return expanded[0];  
