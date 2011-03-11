@@ -77,12 +77,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 
         var file2 =  {
             id: "file2",
-            size: 5000
+            size: 5
         };
 
         var file3 =  {
             id: "file3",
-            size: 1000001
+            size: 200000
         };
         
         html5UploaderTests.test("Ensure multipart content is correctly built", function () {
@@ -217,7 +217,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var listeners = makeListeners();
             tracker.interceptAll(listeners);
             
-            var localUploader = getLocalUploader(1, 0, listeners, 1000);
+            var localUploader = getLocalUploader(1, 0, listeners, 100000);
             localUploader.addFiles(files);
             
             // Test #1: One out of three files should have been added to the queue.
@@ -243,7 +243,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
              var listeners = makeListeners();
              tracker.interceptAll(listeners);
                                                   
-             var localUploader = getLocalUploader(0, 0, listeners, 1000);
+             var localUploader = getLocalUploader(0, 0, listeners, 100000);
              localUploader.addFiles(files);
              
              // Test #1: All three files should have been added to the queue.
@@ -269,7 +269,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
              var listeners = makeListeners();
              tracker.interceptAll(listeners);
                                                   
-             var localUploader = getLocalUploader(null, 0, listeners, 1000);
+             var localUploader = getLocalUploader(null, 0, listeners, 100000);
              localUploader.addFiles(files);
              
              // Test #1: All three files should have been added to the queue.
@@ -295,7 +295,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
              var listeners = makeListeners();
              tracker.interceptAll(listeners);
                                                   
-             var localUploader = getLocalUploader(undefined, 0, listeners, 1000);
+             var localUploader = getLocalUploader(undefined, 0, listeners, 100000);
              localUploader.addFiles(files);
              
              // Test #1: All three files should have been added to the queue.

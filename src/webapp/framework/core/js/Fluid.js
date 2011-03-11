@@ -644,18 +644,28 @@ var fluid = fluid || fluid_1_4;
      * @param {Object} events a collection of named event firers
      * @param {Object} listeners optional listeners to add
      */
-    fluid.mergeListeners = function (events, listeners) {
+    fluid.mergeListeners = function (that, events, listeners) {
         fluid.each(listeners, function (value, key) {
-            var keydot = key.indexOf(".");
-            var namespace;
-            if (keydot !== -1) {
-                namespace = key.substring(keydot + 1);
-                key = key.substring(0, keydot);
+            var firer;
+            if (key.charAt(0) === "{") {
+                if (!fluid.resolveReference) {
+                    fluid.fail("fluid.resolveReference could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor " + 
+                        key);
+                }
+                firer = fluid.resolveReference(that, key);
             }
-            if (!events[key]) {
-                events[key] = fluid.event.getEventFirer();
+            else {
+                var keydot = key.indexOf(".");
+                var namespace;
+                if (keydot !== -1) {
+                    namespace = key.substring(keydot + 1);
+                    key = key.substring(0, keydot);
+                }
+                if (!events[key]) {
+                    events[key] = fluid.event.getEventFirer();
+                }
+                firer = events[key];
             }
-            var firer = events[key];
             if (fluid.isArrayable(value)) {
                 for (var i = 0; i < value.length; ++i) {
                     fluid.event.addListenerToFirer(firer, value[i], namespace); 
@@ -705,7 +715,7 @@ var fluid = fluid || fluid_1_4;
         // TODO: manual 2-phase instantiation since we have no GINGER WORLD
         initEvents(that, options.events, "flat"); 
         initEvents(that, options.events, "IoC");
-        fluid.mergeListeners(that.events, options.listeners);
+        fluid.mergeListeners(that, that.events, options.listeners);
     };
     
         
