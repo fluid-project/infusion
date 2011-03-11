@@ -1,6 +1,18 @@
-div div {
+.container {
+    border: 5px solid black;
+    width: 500px;
+    padding: 4px;
+}
+
+.column {
     border: 1px solid black;
     width: 100px;
+    padding: 4px;
+}
+
+.content {
+    border: 1px dotted black;
+    width: 75px;
     padding: 4px;
 }
 
