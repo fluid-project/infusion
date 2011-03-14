@@ -1,12 +1,11 @@
 .container {
-    border: 5px solid black;
     width: 500px;
     padding: 4px;
 }
 
 .column {
     border: 1px solid black;
-    width: 100px;
+    width: 50%;
     padding: 4px;
 }
 
