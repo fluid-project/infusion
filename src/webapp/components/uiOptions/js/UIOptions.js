@@ -249,37 +249,6 @@ var fluid_1_4 = fluid_1_4 || {};
             that.save();
         });
     };
-    
-    var initPreview = function (that) {
-        var previewFrame = that.locate("previewFrame");
-        var previewEnhancer;
-        
-        previewFrame.attr("src", that.options.previewTemplateUrl);        
-        
-        that.events.modelChanged.addListener(function (model) {
-            /**
-             * Setimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
-             */
-            setTimeout(function () {
-                if (previewEnhancer) {
-                    previewEnhancer.updateModel(model);
-                }
-            }, 0);
-        });
-
-        previewFrame.load(function () {
-            var previewFrameContents = previewFrame.contents();
-            var options = {
-                savedSettings: that.model,
-                tableOfContents: that.uiEnhancer.options.tableOfContents,
-                settingsStore: {
-                    type: "fluid.uiEnhancer.tempStore"
-                }
-            };
-            previewEnhancer = fluid.uiEnhancer(previewFrameContents, options);
-        });        
-        
-    };
         
     var createLabelMap = function (options) {
         var labelMap = {};
@@ -368,7 +337,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.events.afterRender.addListener(function () {
             initSliders(that);
             bindHandlers(that);
-            initPreview(that);
+            fluid.initDependents(that);
         });
         
         // Fetch UI Options' template and parse it on arrival.
@@ -459,6 +428,11 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.defaults("fluid.uiOptions", {
+        components: {
+            preview: {
+                type: "fluid.uiOptions.preview"
+            }
+        },
         textMinSize: {
             type: "fluid.textfieldSlider",
             options: {
@@ -507,7 +481,63 @@ var fluid_1_4 = fluid_1_4 || {};
             toc: ["true", "false"]
         },
         templateUrl: "UIOptions.html",
-        previewTemplateUrl: "UIOptionsPreview.html"
     });
 
+    /**********************
+     * UI Options Preview *
+     **********************/
+
+    var setupPreview = function () {
+        // TODO: Break out iFrame assumptions from Preview.
+        that.container.attr("src", that.options.previewTemplateUrl);        
+        
+        that.events.modelChanged.addListener(function (model) {
+            /**
+             * Setimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
+             */
+            setTimeout(function () {
+                that.updateModel(model);
+            }, 0);
+        });
+
+        that.container.load(function () {
+            var previewFrameContents = container.contents();
+            var options = {
+                savedSettings: that.model,
+                tableOfContents: that.uiEnhancer.options.tableOfContents,
+                settingsStore: {
+                    type: "fluid.uiEnhancer.tempStore"
+                }
+            };
+            that.previewEnhancer = fluid.uiEnhancer(previewFrameContents, options);
+        });
+    };
+    
+    fluid.uiOptions.preview = function (container, options) {
+        var that = fluid.initView("fluid.uiOptions.prevew", container, options);
+        
+        that.updateModel = function (model) {
+            if (that.previewEnhancer) {
+                that.previewEnhancer.updateModel(model);
+            }
+        };
+        
+        setupPreview(that);
+        return that;
+    };
+    
+    fluid.defaults("fluid.uiOptions.preview". {
+        templateUrl: "UIOptionsPreview.html",
+        events: {
+            modelChanged: "{uiOptions}.events.modelChanged"
+        }
+    });
+    
+    fluid.demands("fluid.uiOptions.preview", "fluid.uiOptions", {
+        args: [
+            "uiOptions.dom.previewFrame",
+            "{options}"
+        ]
+    });
+    
 })(jQuery, fluid_1_4);
