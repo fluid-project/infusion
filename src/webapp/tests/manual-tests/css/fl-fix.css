@@ -21,6 +21,11 @@ strong {
     font-style: italic;
 }
 
+/* inline-block*/
+.inline-block-clearfix {
+    display: inline-block;
+}
+
 /* new clear fix http://perishablepress.com/press/2009/12/06/new-clearfix-hack/ */
 .clearfix:after {
 	visibility: hidden;

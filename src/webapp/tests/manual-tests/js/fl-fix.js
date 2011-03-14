@@ -58,21 +58,25 @@ var demo = demo || {};
         },
         
         model: {
-            none: {
+            "none": {
                 description: "No Fix",
                 className: ""
             },
-            fss: {
+            "fss": {
                 description: "FSS: .fl-fix",
                 className: "fl-fix"
             },
-            jquery: {
+            "jquery": {
                 description: "jQuery: .ui-helper-clearfix",
                 className: "ui-helper-clearfix"
             },
-            newClearfix: {
+            "newClearfix": {
                 description: "New Clearfix: http://perishablepress.com/press/2009/12/06/new-clearfix-hack/",
                 className: "clearfix"
+            },
+            "inline-block": {
+                description: "inline-block: suggested by heidi around 11:45 http://wiki.fluidproject.org/display/fluid/fluid-work+IRC+Logs-2011-03-14",
+                className: "inline-block-clearfix"
             }
         }
     });
