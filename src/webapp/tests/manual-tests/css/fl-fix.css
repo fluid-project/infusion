@@ -1,3 +1,8 @@
+strong {
+    display: block;
+    margin: 4px;
+}
+
 .container {
     width: 500px;
     padding: 4px;
@@ -9,22 +14,10 @@
     padding: 4px;
 }
 
-.content {
-    border: 1px dotted black;
-    width: 75px;
-    padding: 4px;
-}
-
 .description {
     width: 100px;
     padding: 4px;
-}
-
-.floating {
-    float: left;
-    padding: 2px;
-    margin: 2px;
-    width: 40px;
+    font-style: italic;
 }
 
 /* new clear fix http://perishablepress.com/press/2009/12/06/new-clearfix-hack/ */
