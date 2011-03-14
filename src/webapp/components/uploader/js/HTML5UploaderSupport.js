@@ -234,11 +234,11 @@ var fluid_1_4 = fluid_1_4 || {};
         var multipart = "";
         multipart += "--" + boundary + CRLF;
         multipart += "Content-Disposition: form-data;" +
-                     " name=\"fileData\";" + 
-                     " filename=\"" + file.name + 
-                     "\"" + CRLF;
+            " name=\"fileData\";" + 
+            " filename=\"" + file.name + 
+            "\"" + CRLF;
         multipart += "Content-Type: " + file.type + CRLF + CRLF;
-        multipart += file.getAsBinary(); // TODO: Ack, concatting binary data to JS String!
+        multipart += file.getAsBinary(); // Concatting binary data to JS String; yes, FF will handle it.
         multipart += CRLF + "--" + boundary + "--" + CRLF;
         return multipart;
     };
@@ -440,5 +440,6 @@ var fluid_1_4 = fluid_1_4 || {};
             "{multiFileUploader}.container",
             fluid.COMPONENT_OPTIONS
         ]
-    })
-})(jQuery, fluid_1_4);    
+    });
+
+})(jQuery, fluid_1_4);
