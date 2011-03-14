@@ -672,7 +672,7 @@ fluid.registerNamespace("fluid.tests");
 
     
     fluid.defaults("fluid.tests.mergePaths", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         headOption: "headValue1",
         components: {
             child: {
@@ -681,12 +681,19 @@ fluid.registerNamespace("fluid.tests");
                     childOption1: "directValue1",
                     childOption2: "directValue2"
                 }
+            },
+            viewChild: {
+                type: "fluid.tests.mergePathsViewChild"
             }
         }  
     });
     
     fluid.defaults("fluid.tests.mergePathsChild", {
         gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.defaults("fluid.tests.mergePathsViewChild", {
+        gradeNames: ["fluid.viewComponent", "autoInit"]  
     });
     
     fluid.demands("fluid.tests.mergePathsChild", "fluid.tests.mergePaths", {
@@ -697,8 +704,19 @@ fluid.registerNamespace("fluid.tests");
         }
     });
     
+    fluid.demands("fluid.tests.mergePathsViewChild", "fluid.tests.mergePaths", [
+        "#pager-top", {
+            mergePaths: ["{options}", { 
+                model:   "{mergePaths}.model", 
+                applier: "{mergePaths}.options.applier" 
+            }
+            ]
+        }
+    ]);
+    
     fluidIoCTests.test("FLUID-4130 mergePaths for demanded component options", function() {
-        var mergePaths = fluid.tests.mergePaths();
+        var model = {key: "Head model"};
+        var mergePaths = fluid.tests.mergePaths({model: model});
         var expected = {
             childOption1: "demandValue1",
             childOption2: "directValue2",
@@ -706,6 +724,8 @@ fluid.registerNamespace("fluid.tests");
         };
         jqUnit.assertDeepEq("Direct options overriden by demands", 
            expected, fluid.filterKeys(mergePaths.child.options, ["childOption1", "childOption2", "childOption3"]));
+        jqUnit.assertEquals("Model delivered directly through mergePaths in demands block for full args (FLUID-4142)", 
+            mergePaths.model, mergePaths.viewChild.model);
     });
     
     fluid.defaults("fluid.tests.circularity", {
