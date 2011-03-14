@@ -123,10 +123,9 @@ var fluid_1_4 = fluid_1_4 || {};
      */
      // TODO: boil down events to only those we actually need.
      // TODO: remove swfupload references and move into general namespace. Are there any real SWFUpload references here?
-    fluid.uploader.demoRemote = function (queue, events, options) {
+    fluid.uploader.demoRemote = function (queue, options) {
         var that = fluid.initLittleComponent("fluid.uploader.demoRemote", options);
         that.queue = queue;
-        that.events = events;
         
         that.uploadNextFile = function () {
             startUploading(that);   
@@ -155,6 +154,19 @@ var fluid_1_4 = fluid_1_4 || {};
         var delay = Math.floor(Math.random() * 1000 + 100);
         setTimeout(fn, delay);
     };
+    
+    fluid.defaults("fluid.uploader.demoRemote", {
+        gradeNames: ["fluid.eventedComponent"],
+        events: {
+            onFileProgress: "{multiFileUploader}.events.onFileProgress",
+            afterFileComplete: "{multiFileUploader}.events.afterFileComplete",
+            afterUploadComplete: "{multiFileUploader}.events.afterUploadComplete",
+            onFileSuccess: "{multiFileUploader}.events.onFileSuccess",
+            onFileStart: "{multiFileUploader}.events.onFileStart",
+            onFileError: "{multiFileUploader}.events.onFileError",
+            onUploadStop: "{multiFileUploader}.events.onUploadStop"
+        }
+    });
     
     fluid.demands("fluid.uploader.remote", ["fluid.uploader.multiFileUploader", "fluid.uploader.demo"], {
         funcName: "fluid.uploader.demoRemote",

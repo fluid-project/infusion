@@ -38,7 +38,11 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uploader.html5Strategy.local",
                 options: {
                     queueSettings: "{multiFileUploader}.options.queueSettings",
-                    events: "{multiFileUploader}.events"
+                    events: {
+                        afterFileDialog: "{multiFileUploader}.events.afterFileDialog",
+                        afterFileQueued: "{multiFileUploader}.events.afterFileQueued",
+                        onQueueError: "{multiFileUploader}.events.onQueueError"
+                   }
                 }
             },
             
@@ -46,7 +50,14 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uploader.remote",
                 options: {
                     queueSettings: "{multiFileUploader}.options.queueSettings",
-                    events: "{multiFileUploader}.events"
+                     events: {
+                         afterReady: "{multiFileUploader}.events.afterReady",
+                         onFileStart: "{multiFileUploader}.events.onFileStart",
+                         onFileProgress: "{multiFileUploader}.events.onFileProgress",
+                         onFileSuccess: "{multiFileUploader}.events.onFileSuccess",
+                         onFileError: "{multiFileUploader}.events.onFileError",
+                         onFileComplete: "{multiFileUploader}.events.onFileComplete"
+                    }
                 }
             }
         },
@@ -147,7 +158,6 @@ var fluid_1_4 = fluid_1_4 || {};
         var that = fluid.initLittleComponent("fluid.uploader.html5Strategy.remote", options);
         that.queue = queue;
         that.queueSettings = that.options.queueSettings;
-        that.events = that.options.events;
         
         // Upload files in the current batch without exceeding the fileUploadLimit
         that.uploadNextFile = function () {
@@ -172,6 +182,8 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.defaults("fluid.uploader.html5Strategy.remote", {
+        gradeNames: ["fluid.eventedComponent"],
+        
         invokers: {
             doUpload: "fluid.uploader.html5Strategy.doUpload"
         }
@@ -255,7 +267,6 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uploader.html5Strategy.local = function (queue, legacyBrowserFileLimit, options) {
         var that = fluid.initLittleComponent("fluid.uploader.html5Strategy.local", options);
         that.queue = queue;
-        that.events = that.options.events;
         that.queueSettings = that.options.queueSettings;
 
         // Add files to the file queue without exceeding the fileUploadLimit and the fileSizeLimit
@@ -302,6 +313,8 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.defaults("fluid.uploader.html5Strategy.local", {
+        gradeNames: ["fluid.eventedComponent"],
+        
         components: {
             browseButtonView: {
                 type: "fluid.uploader.html5Strategy.browseButtonView",
@@ -311,7 +324,6 @@ var fluid_1_4 = fluid_1_4 || {};
                         browseButton: "{multiFileUploader}.selectors.browseButton"
                     },
                     listeners: {
-                        onBrowse: "{local}.events.onFileDialog.fire", // TODO: Craziness?
                         onFilesQueued: "{local}.addFiles"
                     }
                 }
@@ -414,7 +426,7 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         
         events: {
-            onBrowse: null,
+            onBrowse: "{local}.events.onFileDialog",
             onFilesQueued: null
         }        
     });

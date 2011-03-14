@@ -433,8 +433,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uploader.fileQueueView",
                 options: {
                     model: "{multiFileUploader}.queue.files",
-                    uploaderContainer: "{multiFileUploader}.container",
-                    events: "{multiFileUploader}.events"
+                    uploaderContainer: "{multiFileUploader}.container"
                 }
             },
             
@@ -540,7 +539,7 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         
         mergePolicy: {
-            model: "preserve"
+            "fileQueueView.options.model": "preserve"
         }
     });
     
