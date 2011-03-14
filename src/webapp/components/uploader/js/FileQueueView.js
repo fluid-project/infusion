@@ -273,21 +273,6 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
     
-    var bindModelEvents = function (that) {
-        that.returnedOptions = {
-            listeners: {
-                afterFileQueued: that.addFile,
-                onUploadStart: that.prepareForUpload,
-                onFileStart: that.showFileProgress,
-                onFileProgress: that.updateFileProgress,
-                onFileSuccess: that.markFileComplete,
-                onFileError: that.showErrorForFile,
-                afterFileComplete: that.hideFileProgress,
-                afterUploadComplete: that.refreshAfterUpload
-            }
-        };
-    };
-    
     var addKeyboardNavigation = function (that) {
         fluid.tabbable(that.container);
         that.selectableContext = fluid.selectable(that.container, {
@@ -309,10 +294,22 @@ var fluid_1_4 = fluid_1_4 || {};
         that.rowProgressorTemplate = that.locate("rowProgressorTemplate", that.options.uploaderContainer).remove();
     };
     
+    // TODO: Delete this when we have a viable way of declaratively registering listeners.
+    var bindModelEvents = function (that) {
+        that.events.afterFileQueued.addListener(that.addFile);
+        that.events.onUploadStart.addListener(that.prepareForUpload);
+        that.events.onFileStart.addListener(that.showFileProgress);
+        that.events.onFileProgress.addListener(that.updateFileProgress);
+        that.events.onFileSuccess.addListener(that.markFileComplete);
+        that.events.onFileError.addListener(that.showErrorForFile);
+        that.events.afterFileComplete.addListener(that.hideFileProgress);
+        that.events.afterUploadComplete.addListener(that.refreshAfterUpload);
+    };
+    
     var setupFileQueue = function (that) {
         fluid.initDependents(that);
         prepareTemplateElements(that);         
-        addKeyboardNavigation(that); 
+        addKeyboardNavigation(that);
         bindModelEvents(that);
     };
     
@@ -323,11 +320,10 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {fileQueue} queue a file queue model instance
      * @param {Object} options configuration options for the view
      */
-    fluid.uploader.fileQueueView = function (container, events, options) {
+    fluid.uploader.fileQueueView = function (container, options) {
         var that = fluid.initView("fluid.uploader.fileQueueView", container, options);
         that.fileProgressors = {};
         that.model = that.options.model;
-        that.events = events;
         
         that.addFile = function (file) {
             addFile(that, file);
@@ -379,9 +375,6 @@ var fluid_1_4 = fluid_1_4 || {};
         funcName: "fluid.uploader.fileQueueView",
         args: [
             "{multiFileUploader}.dom.fileQueue",
-            {
-                onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
-            },
             fluid.COMPONENT_OPTIONS
         ]
     });
@@ -440,9 +433,23 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         },
         
+        events: {
+            onFileRemoved: "{multiFileUploader}.events.onFileRemoved",
+            
+            // TODO: FileQueueView only listens for these events. Move them
+            // somewhere more sensible when such a place exists.
+            afterFileQueued: "{multiFileUploader}.events.afterFileQueued",
+            onUploadStart: "{multiFileUploader}.events.onUploadStart",
+            onFileStart: "{multiFileUploader}.events.onFileStart",
+            onFileProgress: "{multiFileUploader}.events.onFileProgress",
+            onFileSuccess: "{multiFileUploader}.events.onFileSuccess",
+            onFileError: "{multiFileUploader}.events.onFileError",
+            afterFileComplete: "{multiFileUploader}.events.afterFileComplete",
+            afterUploadComplete: "{multiFileUploader}.events.afterUploadComplete"
+        },
+        
         mergePolicy: {
-            model: "preserve",
-            events: "preserve"
+            model: "preserve"
         }
     });
     
