@@ -1,6 +1,7 @@
 strong {
     display: block;
     margin: 4px;
+    margin-right: -4px;
 }
 
 .container {
