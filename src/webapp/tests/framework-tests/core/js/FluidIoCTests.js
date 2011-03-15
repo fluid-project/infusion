@@ -667,6 +667,38 @@ fluid.registerNamespace("fluid.tests");
             defs.components.mergeChild.options.dangerousParams, 
             mergeComp.mergeChild.options.dangerousParams);
     });
+    
+    fluid.defaults("fluid.tests.defferedInvoke", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    fluid.defaults("fluid.tests.defferedInvokeParent", {
+        gradeNames: ["fluid.littleComponent"],
+        child: {
+            expander: {
+                type: "fluid.deferredInvokeCall",
+                func: "fluid.tests.defferedInvoke",
+                args: {
+                    test: "test option"
+                }
+            }
+        }
+    });
+    fluid.tests.defferedInvokeParent = fluid.littleComponent("fluid.tests.defferedInvokeParent");
+    fluid.demands("fluid.tests.defferedInvoke", "fluid.tests.testContext", {
+        mergePaths: ["{options}", {
+            test: "test option from demands"
+        }]
+    });
+    
+    fluidIoCTests.test("Deferred invoked creator function", function() {
+        var parent = fluid.tests.defferedInvokeParent();
+        jqUnit.assertEquals("Child options are correctly applied", "test option", parent.options.child.options.test);
+    });
+    fluidIoCTests.test("Deferred invoked creator function with demands", function() {
+        fluid.staticEnvironment.currentTestEnvironment = fluid.typeTag("fluid.tests.testContext");
+        var parent = fluid.tests.defferedInvokeParent();
+        jqUnit.assertEquals("Child options are correctly applied", "test option from demands", parent.options.child.options.test);
+    });
 
     
     fluid.defaults("fluid.tests.mergePaths", {
