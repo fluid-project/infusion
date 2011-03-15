@@ -157,11 +157,9 @@ fluid.registerNamespace("fluid.tests");
         fluid.initDependents(that);
         that.otherValue = otherValue;
         return that;
-    } 
+    };
 
     fluid.makeComponents({
-   //     "fluid.tests.testComponent":      "fluid.viewComponent",
-   //     "fluid.tests.testComponent2":     "fluid.viewComponent",
         "fluid.tests.testOrder":          "fluid.viewComponent", 
         "fluid.tests.subComponent":       "fluid.viewComponent",
         "fluid.tests.invokerComponent":   "fluid.littleComponent",
@@ -179,7 +177,7 @@ fluid.registerNamespace("fluid.tests");
         "fluid.tests.thatStackHead":      "fluid.littleComponent",
         "fluid.tests.thatStackTail":      "fluid.littleComponent",
         "fluid.tests.reinstantiation":    "fluid.littleComponent",
-        "fluid.tests.reinsChild":         "fluid.littleComponent",
+        "fluid.tests.reinsChild":         "fluid.littleComponent"
         //"fluid.tests.reinsChild2":        "fluid.littleComponent",
         // TODO: GRADES
         //"fluid.tests.resultsPager":       "fluid.littleComponent"
@@ -683,7 +681,11 @@ fluid.registerNamespace("fluid.tests");
                 }
             },
             viewChild: {
-                type: "fluid.tests.mergePathsViewChild"
+                type: "fluid.tests.mergePathsViewChild",
+                options: {
+                    childOption1: "directValue1",
+                    childOption2: "{mergePaths}.options.headOption"
+                }
             }
         }  
     });
@@ -726,6 +728,12 @@ fluid.registerNamespace("fluid.tests");
            expected, fluid.filterKeys(mergePaths.child.options, ["childOption1", "childOption2", "childOption3"]));
         jqUnit.assertEquals("Model delivered directly through mergePaths in demands block for full args (FLUID-4142)", 
             mergePaths.model, mergePaths.viewChild.model);
+        var expected2 = {
+            childOption1: "directValue1",
+            childOption2: "headValue1"
+        }
+        jqUnit.assertDeepEq("Options delivered from subcomponent defaults through mergePaths",
+            expected2, fluid.filterKeys(mergePaths.viewChild.options, ["childOption1", "childOption2"]));
     });
     
     fluid.defaults("fluid.tests.circularity", {

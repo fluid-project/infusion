@@ -27,7 +27,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     var fileOrFiles = function (that, numFiles) {
         return (numFiles === 1) ? that.options.strings.progress.singleFile : 
-                                  that.options.strings.progress.pluralFiles;
+            that.options.strings.progress.pluralFiles;
     };
     
     var enableElement = function (that, elm) {
@@ -165,8 +165,7 @@ var fluid_1_4 = fluid_1_4 || {};
         
         if (that.queue.files.length === 0) {
             fileQueueTable.attr("summary", that.options.strings.queue.emptyQueue);
-        }
-        else {
+        } else {
             var queueSummary = fluid.stringTemplate(that.options.strings.queue.queueSummary, {
                 totalUploaded: that.queue.getUploadedFiles().length, 
                 totalInUploadQueue: that.queue.files.length - that.queue.getUploadedFiles().length
@@ -433,8 +432,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uploader.fileQueueView",
                 options: {
                     model: "{multiFileUploader}.queue.files",
-                    uploaderContainer: "{multiFileUploader}.container",
-                    events: "{multiFileUploader}.events"
+                    uploaderContainer: "{multiFileUploader}.container"
                 }
             },
             
@@ -540,7 +538,7 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         
         mergePolicy: {
-            model: "preserve"
+            "fileQueueView.options.model": "preserve"
         }
     });
     
@@ -564,14 +562,13 @@ var fluid_1_4 = fluid_1_4 || {};
     * @param {Number} bytes the files size, specified as in number bytes.
     */
     fluid.uploader.formatFileSize = function (bytes) {
-        if (typeof(bytes) === "number") {
+        if (typeof (bytes) === "number") {
             if (bytes === 0) {
                 return "0.0 KB";
             } else if (bytes > 0) {
                 if (bytes < 1048576) {
                     return (Math.ceil(bytes / 1024 * 10) / 10).toFixed(1) + " KB";
-                }
-                else {
+                } else {
                     return (Math.ceil(bytes / 1048576 * 10) / 10).toFixed(1) + " MB";
                 }
             }
@@ -646,15 +643,6 @@ var fluid_1_4 = fluid_1_4 || {};
             toHide.hide();
         }
     };
-
-    // TODO: Need to resolve the issue of the gracefully degraded view being outside of the component's
-    // container. Perhaps we can embed a standard HTML 5 file input element right in the template, 
-    // and hide everything else?
-    var determineContainer = function (options) {
-        var defaults = fluid.defaults("fluid.uploader.singleFileStrategy");
-        return (options && options.container) ? options.container : defaults.container;
-    };
-
 
     /**
      * Single file Uploader implementation. Use fluid.uploader() for IoC-resolved, progressively

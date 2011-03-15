@@ -648,11 +648,11 @@ var fluid = fluid || fluid_1_4;
         fluid.each(listeners, function (value, key) {
             var firer;
             if (key.charAt(0) === "{") {
-                if (!fluid.resolveReference) {
-                    fluid.fail("fluid.resolveReference could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor " + 
+                if (!fluid.expandOptions) {
+                    fluid.fail("fluid.expandOptions could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor " + 
                         key);
                 }
-                firer = fluid.resolveReference(that, key);
+                firer = fluid.expandOptions(key, that);
             }
             else {
                 var keydot = key.indexOf(".");
