@@ -254,14 +254,26 @@ var fluid_1_4 = fluid_1_4 || {};
         }
         options = options || {};
         if (demands.length === 0) {
-            if (options.passArgs) {
-                demands = fluid.makePassArgsSpec(initArgs);
-            }
-            else if (options.componentRecord) {
+            if (options.componentRecord && argMap) {
                 demands = fluid.argMapToDemands(argMap);
+            }
+            else if (options.passArgs) {
+                demands = fluid.makePassArgsSpec(initArgs);
             }
         }
         var localRecord = $.extend({"arguments": initArgs}, fluid.censorKeys(options.componentRecord, ["type"]));
+        fluid.each(argMap, function(index, name) {
+            if (initArgs.length > 0) {
+                localRecord[name] = localRecord["arguments"][index];
+            }
+            if (demandspec[name] !== undefined && localRecord[name] === undefined) {
+                localRecord[name] = demandspec[name];
+            }
+        });
+        var upstreamLocalRecord = $.extend({}, localRecord);
+        if (options.componentRecord.options !== undefined) {
+            upstreamLocalRecord.options = options.componentRecord.options;
+        }
         var expandOptions = makeStackResolverOptions(instantiator, parentThat, localRecord);
         var args = [];
         if (demands) {
@@ -281,15 +293,15 @@ var fluid_1_4 = fluid_1_4 || {};
                         arg = "{arguments}." + argpos;
                     }
                 }
-                if (!argMap || argMap.options !== i || demandspec.options) {
+                if (!argMap || argMap.options !== i) {
                     // defer expansion required if it is non-pseudoarguments demands and this argument *is* the options
                     args[i] = fluid.expander.expandLight(arg, expandOptions);
                 }
                 else { // It is the component options
-                    if (arg && !arg.targetTypeName) {
+                    if (arg && typeof(arg) === "object" && !arg.targetTypeName) {
                         arg.targetTypeName = demandspec.funcName;
                     }
-                    args[i] = {marker: fluid.EXPAND, value: arg, localRecord: localRecord};
+                    args[i] = {marker: fluid.EXPAND, value: arg, localRecord: upstreamLocalRecord};
                 }
                 if (args[i] && fluid.isMarker(args[i].marker, fluid.EXPAND_NOW)) {
                     args[i] = fluid.expander.expandLight(args[i].value, expandOptions);
@@ -553,6 +565,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 }
                 localRecord.options = fluid.expandOptions(localOptions, that);
             }
+            localRecord.arguments = fluid.get(userOptions, "localRecord.arguments");
             var toExpand = userOptions.value;
             userOptions = fluid.expandOptions(toExpand, that, localRecord, {direct:true});
         }

@@ -1364,7 +1364,7 @@ var fluid = fluid || fluid_1_4;
         if (returnedOptions) {
             fluid.merge(that.options.mergePolicy, that.options, returnedOptions);
             if (returnedOptions.listeners) {
-                fluid.mergeListeners(that.events, returnedOptions.listeners);
+                fluid.mergeListeners(that, that.events, returnedOptions.listeners);
             }
         }
         return togo;

@@ -212,11 +212,11 @@ fluid.registerNamespace("fluid.tests");
     });
 
     fluid.demands("sub1", "fluid.tests.testComponent2",
-    ["{testComponent2}.container", {"crossDefault": "{testComponent2}.sub2.options.value"}]
+        ["{testComponent2}.container", {"crossDefault": "{testComponent2}.sub2.options.value"}]
     );
 
     fluid.demands("sub2", "fluid.tests.testComponent2",
-    ["{testComponent2}.container", fluid.COMPONENT_OPTIONS]);
+        ["{testComponent2}.container", fluid.COMPONENT_OPTIONS]);
 
 
     fluid.defaults("fluid.tests.multiResolution", {
@@ -535,6 +535,44 @@ fluid.registerNamespace("fluid.tests");
         var component = fluid.tests.thatStackHead();
         var value = component.child1.getHeadValue();
         jqUnit.assertValue("Correctly resolved head value through invoker", fluid.defaults("fluid.tests.thatStackHead").headValue, value);
+    });
+
+    fluid.defaults("fluid.tests.deferredInvoke", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.defaults("fluid.tests.deferredInvokeParent", {
+        gradeNames: ["fluid.littleComponent"],
+        child: {
+            expander: {
+                type: "fluid.deferredInvokeCall",
+                func: "fluid.tests.deferredInvoke",
+                args: {
+                    test: "test option"
+                }
+            }
+        }
+    });
+    
+    fluid.tests.deferredInvokeParent = fluid.littleComponent("fluid.tests.deferredInvokeParent");
+    
+    fluid.demands("fluid.tests.deferredInvoke", "fluid.tests.testContext", {
+        options: {
+            mergePaths: ["{options}", {
+                test: "test option from demands"
+            }]
+        }
+    });
+    
+    fluidIoCTests.test("Deferred invoked creator function", function() {
+        var parent = fluid.tests.deferredInvokeParent();
+        jqUnit.assertEquals("Child options are correctly applied", "test option", parent.options.child.options.test);
+    });
+    
+    fluidIoCTests.test("Deferred invoked creator function with demands", function() {
+        fluid.staticEnvironment.currentTestEnvironment = fluid.typeTag("fluid.tests.testContext");
+        var parent = fluid.tests.deferredInvokeParent();
+        jqUnit.assertEquals("Child options are correctly applied", "test option from demands", parent.options.child.options.test);
     });
 
 
