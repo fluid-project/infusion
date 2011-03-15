@@ -447,7 +447,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.event.resolveEvent = function(that, eventName, eventSpec) {
         return fluid.withInstantiator(that, function(instantiator) {
             if (typeof(eventSpec) === "string") {
-                return fluid.resolveReference(that, eventSpec);
+                return fluid.expandOptions(eventSpec, that);
             }
             else {
                 var event = eventSpec.event;
@@ -456,7 +456,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                     fluid.fail("Event specification for event with name " + eventName + " does not include a base event specification");
                 }
                 if (event.charAt(0) === "{") {
-                    origin = fluid.resolveReference(that, event);
+                    origin = fluid.expandOptions(event, that);
                 }
                 else {
                     origin = that.events[event];
@@ -523,7 +523,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             return args;
         }
         return fluid.withInstantiator(that, function(instantiator) {
-            fluid.log("expandOptions for " + that.typeName + " executing with instantiator " + instantiator.id);
+            //fluid.log("expandOptions for " + that.typeName + " executing with instantiator " + instantiator.id);
             var expandOptions = makeStackResolverOptions(instantiator, that, localRecord, outerExpandOptions);
             expandOptions.noCopy = true; // It is still possible a model may be fetched even though it is preserved
             var pres;
@@ -536,12 +536,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
             return expanded;
         });
-    };
-    
-    fluid.resolveReference = function(that, ref) {
-        var pack = [ref];
-        var expanded = fluid.expandOptions(pack, that);
-        return expanded[0];  
     };
     
     fluid.expandComponentOptions = function(defaults, userOptions, that) {
@@ -588,7 +582,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
             else {
                 root["fluid.instantiator"] = userInstantiator;
-                fluid.log("*** initDependent for " + that.typeName + " member " + name + " was supplied USER instantiator with id " + userInstantiator.id + " - STORED");
+                // fluid.log("*** initDependent for " + that.typeName + " member " + name + " was supplied USER instantiator with id " + userInstantiator.id + " - STORED");
             }
         }
         
@@ -628,21 +622,21 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var instantiator = root["fluid.instantiator"];
         if (!instantiator) {
             instantiator = root["fluid.instantiator"] = fluid.instantiator();
-            fluid.log("Created new instantiator with id " + instantiator.id + " in order to operate on component " + typeName);
+            //fluid.log("Created new instantiator with id " + instantiator.id + " in order to operate on component " + typeName);
         }
         try {
             if (that) {
                 instantiator.recordComponent(that);
             }
             instantiator.stack(1);
-            fluid.log("Instantiator stack +1 to " + instantiator.stackCount + " for " + typeName);
+            //fluid.log("Instantiator stack +1 to " + instantiator.stackCount + " for " + typeName);
             return func(instantiator);
         }
         finally {
             var count = instantiator.stack(-1);
-            fluid.log("Instantiator stack -1 to " + instantiator.stackCount + " for " + typeName);
+            //fluid.log("Instantiator stack -1 to " + instantiator.stackCount + " for " + typeName);
             if (count === 0) {
-                fluid.log("Clearing instantiator with id " + instantiator.id + " from threadLocal for end of " + typeName);
+                //fluid.log("Clearing instantiator with id " + instantiator.id + " from threadLocal for end of " + typeName);
                 delete root["fluid.instantiator"];
             }
         }              
@@ -779,7 +773,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.parseContextReference = function(reference, index, delimiter) {
         var endcpos = reference.indexOf("}", index + 1);
         if (endcpos === -1) {
-            fluid.fail("Malformed context reference without }");
+            fluid.fail("Cannot parse context reference \"" + reference + "\": Malformed context reference without }");
         }
         var context = reference.substring(index + 1, endcpos);
         var endpos = delimiter? reference.indexOf(delimiter, endcpos + 1) : reference.length;
