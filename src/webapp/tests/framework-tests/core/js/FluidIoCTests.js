@@ -157,7 +157,7 @@ fluid.registerNamespace("fluid.tests");
         fluid.initDependents(that);
         that.otherValue = otherValue;
         return that;
-    } 
+    };
 
     fluid.makeComponents({
         "fluid.tests.testOrder":          "fluid.viewComponent", 
@@ -177,7 +177,7 @@ fluid.registerNamespace("fluid.tests");
         "fluid.tests.thatStackHead":      "fluid.littleComponent",
         "fluid.tests.thatStackTail":      "fluid.littleComponent",
         "fluid.tests.reinstantiation":    "fluid.littleComponent",
-        "fluid.tests.reinsChild":         "fluid.littleComponent",
+        "fluid.tests.reinsChild":         "fluid.littleComponent"
         //"fluid.tests.reinsChild2":        "fluid.littleComponent",
         // TODO: GRADES
         //"fluid.tests.resultsPager":       "fluid.littleComponent"

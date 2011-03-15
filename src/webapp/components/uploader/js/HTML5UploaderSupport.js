@@ -91,20 +91,26 @@ var fluid_1_4 = fluid_1_4 || {};
     // TODO: The following two or three functions probably ultimately belong on a that responsible for
     // coordinating with the XHR. A fileConnection object or something similar.
     
-    fluid.uploader.html5Strategy.fileSuccessHandler = function (file, events) {
-        events.onFileSuccess.fire(file);
+    fluid.uploader.html5Strategy.fileSuccessHandler = function (file, events, xhr) {
+        events.onFileSuccess.fire(file, xhr.responseText, xhr);
         events.onFileComplete.fire(file);
     };
     
-    fluid.uploader.html5Strategy.fileErrorHandler = function (file, events) {
+    fluid.uploader.html5Strategy.fileErrorHandler = function (file, events, xhr) {
         file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
-        events.onFileError.fire(file, fluid.uploader.errorConstants.UPLOAD_FAILED);
+        events.onFileError.fire(file, 
+                                fluid.uploader.errorConstants.UPLOAD_FAILED,
+                                xhr.status,
+                                xhr);
         events.onFileComplete.fire(file);
     };
     
-    fluid.uploader.html5Strategy.fileStopHandler = function (file, events) {
+    fluid.uploader.html5Strategy.fileStopHandler = function (file, events, xhr) {
         file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
-        events.onFileError.fire(file, fluid.uploader.errorConstants.UPLOAD_STOPPED);
+        events.onFileError.fire(file, 
+                                fluid.uploader.errorConstants.UPLOAD_STOPPED,
+                                xhr.status,
+                                xhr);
         events.onFileComplete.fire(file);
     };
     
@@ -130,11 +136,11 @@ var fluid_1_4 = fluid_1_4 || {};
                 var status = xhr.status;
                 // TODO: See a pattern here? Fix it.
                 if (status === 200) {
-                    fluid.uploader.html5Strategy.fileSuccessHandler(file, events);
+                    fluid.uploader.html5Strategy.fileSuccessHandler(file, events, xhr);
                 } else if (status === 0) {
-                    fluid.uploader.html5Strategy.fileStopHandler(file, events);
+                    fluid.uploader.html5Strategy.fileStopHandler(file, events, xhr);
                 } else {
-                    fluid.uploader.html5Strategy.fileErrorHandler(file, events);
+                    fluid.uploader.html5Strategy.fileErrorHandler(file, events, xhr);
                 }
             }
         };
@@ -228,11 +234,11 @@ var fluid_1_4 = fluid_1_4 || {};
         var multipart = "";
         multipart += "--" + boundary + CRLF;
         multipart += "Content-Disposition: form-data;" +
-                     " name=\"fileData\";" + 
-                     " filename=\"" + file.name + 
-                     "\"" + CRLF;
+            " name=\"fileData\";" + 
+            " filename=\"" + file.name + 
+            "\"" + CRLF;
         multipart += "Content-Type: " + file.type + CRLF + CRLF;
-        multipart += file.getAsBinary(); // TODO: Ack, concatting binary data to JS String!
+        multipart += file.getAsBinary(); // Concatting binary data to JS String; yes, FF will handle it.
         multipart += CRLF + "--" + boundary + "--" + CRLF;
         return multipart;
     };
@@ -379,8 +385,6 @@ var fluid_1_4 = fluid_1_4 || {};
     
     var renderMultiFileInput = function (that) {
         var multiFileInput = $(that.options.multiFileInputMarkup);
-        var fileTypes = (that.options.queueSettings.fileTypes).replace(/\;/g, ',');       
-        //multiFileInput.attr("accept", fileTypes);
         bindEventsToFileInput(that, multiFileInput);
         return multiFileInput;
     };
@@ -436,5 +440,6 @@ var fluid_1_4 = fluid_1_4 || {};
             "{multiFileUploader}.container",
             fluid.COMPONENT_OPTIONS
         ]
-    })
-})(jQuery, fluid_1_4);    
+    });
+
+})(jQuery, fluid_1_4);

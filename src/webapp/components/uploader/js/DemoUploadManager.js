@@ -22,7 +22,6 @@ var fluid_1_4 = fluid_1_4 || {};
 (function ($, fluid) {
     
     fluid.uploader = fluid.uploader || {};
-    fluid.uploader.swfUploadStrategy = fluid.uploader.swfUploadStrategy || {};
     
     var startUploading; // Define early due to subtle circular dependency.
     
@@ -115,14 +114,13 @@ var fluid_1_4 = fluid_1_4 || {};
     };
        
     /**
-     * The Demo Engine wraps a SWFUpload engine and simulates the upload process.
+     * The demo remote pretends to upload files to the server, firing all the appropriate events
+     * but without sending anything over the network or requiring a server to be running.
      * 
      * @param {FileQueue} queue the Uploader's file queue instance
      * @param {Object} the Uploader's bundle of event firers
-     * @param {Object} configuration options for SWFUpload (in its native dialect)
+     * @param {Object} configuration options
      */
-     // TODO: boil down events to only those we actually need.
-     // TODO: remove swfupload references and move into general namespace. Are there any real SWFUpload references here?
     fluid.uploader.demoRemote = function (queue, options) {
         var that = fluid.initLittleComponent("fluid.uploader.demoRemote", options);
         that.queue = queue;
@@ -131,10 +129,6 @@ var fluid_1_4 = fluid_1_4 || {};
             startUploading(that);   
         };
         
-        /**
-         * Cancels a simulated upload.
-         * This method overrides the default behaviour in SWFUploadManager.
-         */
         that.stop = function () {
             stopDemo(that);
         };
