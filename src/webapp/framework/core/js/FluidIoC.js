@@ -271,7 +271,9 @@ var fluid_1_4 = fluid_1_4 || {};
                 if (fluid.isMarker(arg) && arg.value === fluid.COMPONENT_OPTIONS.value) {
                     arg = "{options}";
                     // Backwards compatibility for non-users of GRADES - last-ditch chance to correct the inference
-                    argMap = {options: i}; 
+                    if (inferMap) {
+                        argMap = {options: i};
+                    } 
                 }
                 if (typeof(arg) === "string") {
                     if (arg.charAt(0) === "@") {
