@@ -249,7 +249,7 @@ var fluid_1_4 = fluid_1_4 || {};
     var swfUploadEventMap = {
         afterReady: "swfupload_loaded_handler",
         onFileDialog: "file_dialog_start_handler",
-        afterFileQueued: "file_queued_handler",
+        onFileQueued: "file_queued_handler",        
         onQueueError: "file_queue_error_handler",
         afterFileDialog: "file_dialog_complete_handler",
         onFileStart: "upload_start_handler",
@@ -289,6 +289,9 @@ var fluid_1_4 = fluid_1_4 || {};
         config.flashButtonPeerId = fluid.allocateSimpleId(flashContainer.children().eq(0));
         // Map the event and settings names to SWFUpload's expectations.
         var convertedConfig = mapNames(swfUploadOptionsMap, config);
+        // TODO:  Same with the FLUID-3886 branch:  Can these declarations be done elsewhere?
+        convertedConfig.file_upload_limit = 0;
+        convertedConfig.file_size_limit = 0;
         return mapSWFUploadEvents(swfUploadEventMap, events, convertedConfig);
     };
     
@@ -345,7 +348,23 @@ var fluid_1_4 = fluid_1_4 || {};
         events.onFileSuccess.addListener(manualModelUpdater);
     };
     
-    fluid.uploader.swfUploadStrategy.flash10EventBinder = function (model, events, local) {
+    var filterErroredFiles = function (file, events, queue, queueSettings) {
+        var fileSizeLimit = queueSettings.fileSizeLimit * 1000;
+        var fileUploadLimit = queueSettings.fileUploadLimit;
+        var processedFiles = queue.getReadyFiles().length + queue.getUploadedFiles().length; 
+
+        if (file.size > fileSizeLimit) {
+            file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
+            events.onQueueError.fire(file, fluid.uploader.queueErrorConstants.FILE_EXCEEDS_SIZE_LIMIT);
+        } else if (processedFiles >= fileUploadLimit) {
+            events.onQueueError.fire(file, fluid.uploader.queueErrorConstants.QUEUE_LIMIT_EXCEEDED);
+        } else {
+            events.afterFileQueued.fire(file);
+        }
+    };
+    
+    fluid.uploader.swfUploadStrategy.flash10EventBinder = function (queue, queueSettings, events, local) {
+        var model = queue.files;
         unbindSWFUploadSelectFiles();      
               
         events.onUploadStart.addListener(function () {
@@ -356,6 +375,10 @@ var fluid_1_4 = fluid_1_4 || {};
             local.enableBrowseButton();            
         });
         
+        events.onFileQueued.addListener(function (file) {
+            filterErroredFiles(file, events, queue, queueSettings);
+        });        
+        
         fluid.uploader.swfUploadStrategy.bindFileEventListeners(model, events);
     };
     
@@ -365,7 +388,8 @@ var fluid_1_4 = fluid_1_4 || {};
     ], {
         funcName: "fluid.uploader.swfUploadStrategy.flash10EventBinder",
         args: [
-            "{multiFileUploader}.queue.files",
+            "{multiFileUploader}.queue",
+            "{multiFileUploader}.options.queueSettings",
             "{multiFileUploader}.events",
             "{swfUploadStrategy}.local"
         ]

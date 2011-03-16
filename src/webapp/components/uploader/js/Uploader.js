@@ -513,6 +513,7 @@ var fluid_1_4 = fluid_1_4 || {};
         events: {
             afterReady: null,
             onFileDialog: null,
+            onFileQueued: null,
             afterFileQueued: null,
             onFileRemoved: null,
             afterFileRemoved: null,
