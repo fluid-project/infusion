@@ -28,22 +28,23 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         var saveCalled = false;
 
-        var options = {
+        var uiOptionsOptions = {
             listeners: {
                 onSave: function () {
                     saveCalled = true;
                 }
             },
-            templateUrl: "../../../../components/uiOptions/html/UIOptions.html"
+            templateUrl: "../../../../components/uiOptions/html/UIOptions.html",
+            previewTemplateUrl: "../../../../components/uiOptions/html/UIOptionsPreview.html"
         };
 
         var enhancerOptions = {
             savedSettings: fluid.defaults("fluid.uiEnhancer").defaultSiteSettings
         };
 
-        var testUIOptions = function (uiOptionsOpts, enhancerOpts, testFn) {
-            var uiEnhancer = fluid.uiEnhancer(document, enhancerOpts);
-            var uiOptions = fluid.uiOptions("#ui-options", uiOptionsOpts);            
+        var testUIOptions = function (testFn, uiOptionsTestOptions, enhancerTestOptions) {
+            var uiEnhancer = fluid.uiEnhancer(document, fluid.merge(null, enhancerOptions, enhancerTestOptions));
+            var uiOptions = fluid.uiOptions("#ui-options", fluid.merge(null, uiOptionsOptions, uiOptionsTestOptions));
             uiOptions.events.onReady.addListener(function () {
                 testFn(uiOptions, uiEnhancer);
                 start();
@@ -55,7 +56,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         tests.asyncTest("Init Model and Controls", function () {
             expect(15);
             
-            testUIOptions(options, enhancerOptions, function (uiOptions) {
+            testUIOptions(function (uiOptions) {
                 var model = uiOptions.model;
                 jqUnit.assertNotNull("Model is not null", model);
                 jqUnit.assertNotUndefined("Model is not undefined", model);
@@ -84,12 +85,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jqUnit.assertEquals("There are 2 back ground images values in the control", 2, bgValues.length);
             });            
         });
-        
 
         tests.asyncTest("Save", function () {
             expect(4);
             
-            testUIOptions(options, enhancerOptions, function (uiOptions) {
+            testUIOptions(function (uiOptions) {
                 uiOptions.updateModel(hcSkin);
 
                 jqUnit.assertFalse("Save hasn't been called", saveCalled);
@@ -105,7 +105,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         tests.asyncTest("Refresh View", function () {
             expect(6);
             
-            testUIOptions(options, enhancerOptions, function (uiOptions) {
+            testUIOptions(function (uiOptions) {
                 uiOptions.updateModel(hcSkin);
 
                 jqUnit.assertEquals("hc setting was set in the model", hcSkin.theme, uiOptions.model.theme);
@@ -139,7 +139,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 }
             };
         
-            testUIOptions(options, enhancerOpts, function (uiOptions) {            
+            testUIOptions(function (uiOptions) {
                 var themeValues = uiOptions.options.controlValues.theme;
                 jqUnit.assertEquals("There are 5 themes in the control", 5, themeValues.length);
                 jqUnit.assertEquals("The second theme is mist", "mist", themeValues[1]);
@@ -153,22 +153,21 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var fontValues = uiOptions.options.controlValues.textFont;
                 jqUnit.assertEquals("There are 7 font values in the control", 7, fontValues.length);
                 jqUnit.assertEquals("The last font value is monospace", "monospace", fontValues[6]);
-            });
+            }, null, enhancerOpts);
         });
-        /*
+
         tests.asyncTest("Preview URL", function () {
-            expect(2);
+            expect(1);
             
             var myOpts = {        
-                previewTemplateUrl: "mypath/test/preview.html"
+                previewTemplateUrl: "TestPreviewTemplate.html"
             };
-            testUIOptions(myOpts, enhancerOptions, function (uiOptions) {                        
-                jqUnit.assertEquals("Default URL is UIOptionsPreview.html", "UIOptionsPreview.html", previewTemplate);
-                var previewTemplate = uiOptions.options.previewTemplateUrl;
-                jqUnit.assertEquals("Set URL is mypath/test/preview.html", "mypath/test/preview.html", previewTemplate);
-            });
-        });        
-        */
+            
+            testUIOptions(function (uiOptions) {
+                jqUnit.assertEquals("The preview iFrame is point to the specified markup",
+                    myOpts.previewTemplateUrl, uiOptions.locate("previewFrame").attr("src"));
+            }, myOpts);
+        });
     });
     
 })(jQuery);

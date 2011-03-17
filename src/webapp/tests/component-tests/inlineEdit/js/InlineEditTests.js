@@ -23,21 +23,20 @@ https://source.fluidproject.org/svn/LICENSE.txt
     $(document).ready(function () {
         
         var inlineEditTests = new jqUnit.TestCase("InlineEdit Tests");
-    
         var customOptions = {selectors: {
                 text: ".customText",
                 editContainer: ".customEditContainer",
                 edit: ".customEdit"
             },
-            styles: {
-                invitation: "customInvitation",
-                focus: "customFocus"
-            },          
-            paddings: {
-                edit: 20,
-                minimumEdit: 40
-            }
-        };
+                styles: {
+                    invitation: "customInvitation",
+                    focus: "customFocus"
+                },          
+                paddings: {
+                    edit: 20,
+                    minimumEdit: 40
+                }
+                };
         
         function insistSelect(message, that, name) {
             var togo = that.locate(name);
@@ -48,8 +47,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         function assertVisibility(state, name, selector) {
             if (state) {
                 jqUnit.isVisible(name + " should be visible", selector);
-            }
-            else {
+            } else {
                 jqUnit.notVisible(name + " should not be visible", selector);
             }
         }
@@ -99,16 +97,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     };
                     fluid.selfRender(root, 
                         [{ID: "inline-edit", 
-                         decorators: decorator},
-                         {ID: "inline-edit-control",
-                         valuebinding: "value"}], 
+                            decorators: decorator},
+                            {ID: "inline-edit-control",
+                                valuebinding: "value"}], 
                          {cutpoints: [{id: "inline-edit", selector: "#inline-edit-custom"},
                                       {id: "inline-edit-control", selector: "#edit-custom"}],
-                          model: model,
-                          autoBind: true});
+                            model: model,
+                            autoBind: true});
                     inlineEditor = decorator.that;
-                }
-                else {
+                } else {
                     inlineEditor = fluid.inlineEdit("#inline-edit-custom", customOptions);
                 }
                 var container = $(".customContainer", root);
@@ -486,6 +483,35 @@ https://source.fluidproject.org/svn/LICENSE.txt
             assertVisState(undo1, redo1, false, false); // 4
         });
         
+        inlineEditTests.test("Test overriding the tooltip text ", function () {
+            expect(2);
+            var options = {tooltipText: "Updating the default tooltip text..."};
+            var editor = fluid.inlineEdit("#inline-override-tooltip", options);
+            var inlineEditText = editor.locate("text");                
+            inlineEditText.mouseover();
+            
+            //tool tip enabled
+            jqUnit.assertTrue("after mouse hover check if the tooltip was enabled", editor.tooltipEnabled());
+            
+            //now display the text once mouse is over
+            jqUnit.assertEquals("the tool tip with custom text  ", options.tooltipText, $("#" + inlineEditText.attr("aria-describedby")).text());                
+        });
+        
+        var testTableCellInlineEdit = function (inlineEditTableCell, initialExpectedValue, newExpectedValue) {
+            inlineEditTableCell.edit();
+            jqUnit.assertEquals("After switching into edit mode, the model should have initial value: ", initialExpectedValue, inlineEditTableCell.model.value);
+            inlineEditTableCell.editField.attr("value", newExpectedValue);
+            inlineEditTableCell.finish();
+            jqUnit.assertNotEquals("After editing the field, the model value should change ", initialExpectedValue, inlineEditTableCell.model.value);
+        };
+        
+        inlineEditTests.test("Test using inline edit to edit a table cell  ", function () {
+            expect(4);
+            var editor = fluid.inlineEdits("#inline-edit-table-cell");                
+            testTableCellInlineEdit(editor[0], "This is an editable table cell.", "This is test text cell one.");
+            testTableCellInlineEdit(editor[1], "This is another editable table cell.", "This is test text cell two.");
+        });
+        
         // Multiple Inline Editors tests
         (function () {
             var inlineEditsSel = "form.inlineEditable";
@@ -564,6 +590,25 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                   1, textFieldIds.length);
                 jqUnit.assertEquals("After finishing, the callback should have been called with the first form field.", 
                                     "edit2", textFieldIds[0]);
+            });
+            
+            var testMultiInlineEdits = function (containerId, numEditors, hasUndo, options) {
+                var editors = fluid.inlineEdits("#" + containerId, options);
+                jqUnit.assertEquals(containerId + " has " + numEditors + " editors", numEditors, editors.length);
+                var i;
+                for (i = 0; i < numEditors; i++) {
+                    var editor = editors[i];
+                    var currentHasUndo = !!editor.decorators && editor.decorators[0].typeName === "undo";
+                    jqUnit.assertEquals("Check whether or not editor has undo option", hasUndo, currentHasUndo);
+                    jqUnit.assertEquals("Belongs to container " + containerId, containerId, editor.container.parent().attr("id"));
+                }
+            };
+            
+            inlineEditTests.test("Test two copies of multiple inline edits with - we need to make sure we cover containment within a group when using the multiple inline edit API ", function () {           
+                expect(12);
+                var options = {componentDecorators: "fluid.undoDecorator"};        
+                testMultiInlineEdits("inline-multiple-edits", 2, true, options);                
+                testMultiInlineEdits("inline-multiple-edits-2", 3, false);
             });
         })();
         
@@ -828,7 +873,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 
                 var button = fluid.inlineEdit.setupTextEditButton(editor);     
                 jqUnit.assertTrue("textEditButton has button role", "button", button.attr("role"));
-            });
+            });            
         })();
     });
 })(jQuery);
