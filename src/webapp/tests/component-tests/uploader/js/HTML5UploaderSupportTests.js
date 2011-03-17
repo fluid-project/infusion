@@ -21,25 +21,22 @@ https://source.fluidproject.org/svn/LICENSE.txt
         /************************************************
          * Utility Functions for setting up an Uploader *
          ************************************************/
-         
-        var makeUploaderEventFirers = function () {
-            var mockUploader = {};
-            fluid.instantiateFirers(mockUploader, fluid.defaults("fluid.uploader.multiFileUploader"));
-            return mockUploader.events;
-        };
         
-        var makeListeners = function () {
-            return {
-                afterFileQueued: function () {},
-                onQueueError: function () {},
-                afterFileDialog: function () {}
+        var trackLocalListeners = function () {
+            var tracker = jqUnit.invocationTracker();
+            var emptyFn = function () {};
+            var listeners = {
+                afterFileQueued: emptyFn,
+                onQueueError: emptyFn,
+                afterFileDialog: emptyFn
             };
+            tracker.interceptAll(listeners);
+            tracker.listeners = listeners;
+            return tracker;
         };
         
-        var getLocalUploader = function (fileUploadLimit, fileSizeLimit, listeners, legacyBrowserFileLimit) {
+        var getLocalUploader = function (fileUploadLimit, fileSizeLimit, legacyBrowserFileLimit, tracker) {
             var queue = fluid.uploader.fileQueue();
-            var events = makeUploaderEventFirers();            
-            fluid.mergeListeners(events, listeners);
             
             var local = fluid.uploader.html5Strategy.local(queue, legacyBrowserFileLimit, {
                 components: {
@@ -52,7 +49,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     fileUploadLimit: fileUploadLimit, 
                     fileSizeLimit: fileSizeLimit
                 },
-                events: events
+                events: {
+                    afterFileQueued: null,
+                    onQueueError: null,
+                    afterFileDialog: null
+                },
+                listeners: tracker.listeners 
             });
             
             // TODO: This code is tragic. Refactor the FileQueue and it can go.
@@ -187,11 +189,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 file3
             ];
             
-            var tracker = jqUnit.invocationTracker();
-            var listeners = makeListeners();
-            tracker.interceptAll(listeners);
-            
-            var localUploader = getLocalUploader(3, 1, listeners, null);
+            var tracker = trackLocalListeners();            
+            var localUploader = getLocalUploader(3, 1, null, tracker);
             localUploader.addFiles(files);
             
             // Test #1: Two out of three files should have been added to the queue. The third is too large.
@@ -213,11 +212,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 file3
             ];
             
-            var tracker = jqUnit.invocationTracker();
-            var listeners = makeListeners();
-            tracker.interceptAll(listeners);
-            
-            var localUploader = getLocalUploader(1, 0, listeners, 100000);
+            var tracker = trackLocalListeners();
+            var localUploader = getLocalUploader(1, 0, 100000, tracker);
             localUploader.addFiles(files);
             
             // Test #1: One out of three files should have been added to the queue.
@@ -239,11 +235,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                  file3
              ];
              
-             var tracker = jqUnit.invocationTracker();
-             var listeners = makeListeners();
-             tracker.interceptAll(listeners);
-                                                  
-             var localUploader = getLocalUploader(0, 0, listeners, 100000);
+             var tracker = trackLocalListeners(); 
+             var localUploader = getLocalUploader(0, 0, 100000, tracker);
              localUploader.addFiles(files);
              
              // Test #1: All three files should have been added to the queue.
@@ -265,11 +258,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                  file3
              ];
              
-             var tracker = jqUnit.invocationTracker();
-             var listeners = makeListeners();
-             tracker.interceptAll(listeners);
-                                                  
-             var localUploader = getLocalUploader(null, 0, listeners, 100000);
+             var tracker = trackLocalListeners();
+             var localUploader = getLocalUploader(null, 0, 100000, tracker);
              localUploader.addFiles(files);
              
              // Test #1: All three files should have been added to the queue.
@@ -291,11 +281,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                  file3
              ];
              
-             var tracker = jqUnit.invocationTracker();
-             var listeners = makeListeners();
-             tracker.interceptAll(listeners);
-                                                  
-             var localUploader = getLocalUploader(undefined, 0, listeners, 100000);
+             var tracker = trackLocalListeners();
+             var localUploader = getLocalUploader(undefined, 0, 100000, tracker);
              localUploader.addFiles(files);
              
              // Test #1: All three files should have been added to the queue.
