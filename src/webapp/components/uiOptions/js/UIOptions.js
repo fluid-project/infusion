@@ -439,10 +439,6 @@ var fluid_1_4 = fluid_1_4 || {};
         components: {
             preview: {
                 type: "fluid.uiOptions.preview"
-            },
-
-            eventBinder: {
-                type: "fluid.uiOptions.preview.eventBinder"
             }
         },
         textMinSize: {
@@ -505,8 +501,12 @@ var fluid_1_4 = fluid_1_4 || {};
 
         that.container.load(function () {
             that.previewFrameContents = that.container.contents();
-            fluid.initDependents(that);
+            that.options.components.enhancer = that.options.deferredComponents.enhancer;
+            fluid.initDependent(that, "enhancer", that.instantiator);
+            that.events.onReady.fire();
         });
+        
+        fluid.initDependents(that);
     };
     
     fluid.uiOptions.preview = function (container, options) {
@@ -529,8 +529,16 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.defaults("fluid.uiOptions.preview", {
         gradeNames: ["fluid.viewComponent"], 
-        templateUrl: "UIOptionsPreview.html",
+        
         components: {
+            instantiator: "{instantiator}", // TODO: Remove this when IoC formally supports deferredComponents
+
+            eventBinder: {
+                type: "fluid.uiOptions.preview.eventBinder"
+            }
+        },
+        
+        deferredComponents: {
             enhancer: {
                 type: "fluid.uiEnhancer",
                 options: {
@@ -541,7 +549,13 @@ var fluid_1_4 = fluid_1_4 || {};
                     }
                 }
             }
-        }
+        },
+        
+        events: {
+            onReady: null
+        },
+        
+        templateUrl: "UIOptionsPreview.html"
     });
     
     fluid.demands("fluid.uiOptions.preview", "fluid.uiOptions", {
