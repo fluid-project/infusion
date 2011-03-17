@@ -168,7 +168,6 @@ var fluid_1_4 = fluid_1_4 || {};
 (function ($, fluid) {
 
 //    TODO
-//    - make the preview a subcomponent
 //    - move the general renderer tree generation functions to the renderer
 //    - add the min font size textfieldSlider to the renderer tree
 //    - pull the strings out of the template and put them into the component?
@@ -324,6 +323,14 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
     
+    var firstRender = function (that, source) {
+        var rendererOptions = createRenderOptions(that);
+        var tree = generateTree(that, rendererOptions.model);
+        that.templates = fluid.render(source, that.container, tree, rendererOptions);
+        that.events.afterRender.fire();
+        that.events.onReady.fire();
+    };
+    
     var setupUIOptions = function (that) {
         that.applier.modelChanged.addListener("*",
             function (newModel, oldModel, changeRequest) {
@@ -340,16 +347,20 @@ var fluid_1_4 = fluid_1_4 || {};
             fluid.initDependents(that);
         });
         
-        // Fetch UI Options' template and parse it on arrival.
-        fluid.fetchResources({
-            uiOptions: {
-                href: that.options.templateUrl
-            }
-        }, function (spec) {
-            that.templates = fluid.parseTemplates(spec, ["uiOptions"], {});
-            that.hasFinishedInit = false;
-            that.refreshView();
-        });
+        if (!that.options.templateUrl) {
+            firstRender(that, {
+                node: that.container
+            });
+        } else {
+            // Fetch UI Options' template and parse it on arrival.
+            fluid.fetchResources({
+                uiOptions: {
+                    href: that.options.templateUrl
+                }
+            }, function (spec) {
+                firstRender(that, spec.uiOptions.resourceText);
+            });
+        }
     };
     
     /**
@@ -404,10 +415,6 @@ var fluid_1_4 = fluid_1_4 || {};
             var rendererOptions = createRenderOptions(that);
             fluid.reRender(that.templates, that.container, generateTree(that, rendererOptions.model), rendererOptions);
             that.events.afterRender.fire();
-            if (!that.hasFinishedInit) {
-                that.hasFinishedInit = true;
-                that.events.onReady.fire();
-            }
         };
         
         /**
@@ -480,36 +487,20 @@ var fluid_1_4 = fluid_1_4 || {};
             layout: ["simple", "default"],
             toc: ["true", "false"]
         },
-        templateUrl: "UIOptions.html",
+        templateUrl: "UIOptions.html"
     });
 
     /**********************
      * UI Options Preview *
      **********************/
 
-    var setupPreview = function () {
+    var setupPreview = function (that) {
         // TODO: Break out iFrame assumptions from Preview.
-        that.container.attr("src", that.options.previewTemplateUrl);        
-        
-        that.events.modelChanged.addListener(function (model) {
-            /**
-             * Setimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
-             */
-            setTimeout(function () {
-                that.updateModel(model);
-            }, 0);
-        });
+        that.container.attr("src", that.options.templateUrl);        
 
         that.container.load(function () {
-            var previewFrameContents = container.contents();
-            var options = {
-                savedSettings: that.model,
-                tableOfContents: that.uiEnhancer.options.tableOfContents,
-                settingsStore: {
-                    type: "fluid.uiEnhancer.tempStore"
-                }
-            };
-            that.previewEnhancer = fluid.uiEnhancer(previewFrameContents, options);
+            that.previewFrameContents = that.container.contents();
+            fluid.initDependents(that);
         });
     };
     
@@ -517,27 +508,67 @@ var fluid_1_4 = fluid_1_4 || {};
         var that = fluid.initView("fluid.uiOptions.prevew", container, options);
         
         that.updateModel = function (model) {
-            if (that.previewEnhancer) {
-                that.previewEnhancer.updateModel(model);
-            }
+            /**
+             * Setimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
+             */
+            setTimeout(function () {
+                if (that.previewEnhancer) {
+                    that.previewEnhancer.updateModel(model);
+                }
+            }, 0);
         };
         
         setupPreview(that);
         return that;
     };
     
-    fluid.defaults("fluid.uiOptions.preview". {
+    fluid.defaults("fluid.uiOptions.preview", {
         templateUrl: "UIOptionsPreview.html",
-        events: {
-            modelChanged: "{uiOptions}.events.modelChanged"
+        components: {
+            enhancer: {
+                type: "fluid.uiEnhancer",
+                options: {
+                    savedSettings: "{uiOptions}.model",
+                    tableOfContents: "{uiOptions}.uiEnhancer.options.tableOfContents", // TODO: Tidy this up when the page's UI Enhancer is IoC-visible.
+                    settingsStore: {
+                        type: "fluid.uiEnhancer.tempStore"
+                    }
+                }
+            },
+            
+            eventBinder: {
+                type: "fluid.uiOptions.preview.eventBinder"
+            }
         }
     });
     
     fluid.demands("fluid.uiOptions.preview", "fluid.uiOptions", {
         args: [
-            "uiOptions.dom.previewFrame",
+            "{uiOptions}.dom.previewFrame",
             "{options}"
         ]
     });
     
+    fluid.demands("fluid.uiEnhancer", "fluid.uiOptions.preview", {
+        funcName: "fluid.uiEnhancer",
+        args: [
+            "{preview}.previewFrameContents",
+            "{options}"
+        ]
+    });
+    
+    /***
+     * Event binder binds events between UI Options and the Preview
+     */
+    fluid.defaults("fluid.uiOptions.preview.eventBinder", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"]
+    });
+    
+    fluid.demands("fluid.uiOptions.preview.eventBinder", ["fluid.uiOptions.preview"," fluid.uiOptions"], {
+        options: {
+            listeners: {
+                "{uiOptions}.modelChanged": "{preview}.updateModel"
+            }
+        }
+    });
 })(jQuery, fluid_1_4);
