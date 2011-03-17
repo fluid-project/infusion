@@ -294,23 +294,10 @@ var fluid_1_4 = fluid_1_4 || {};
         that.rowProgressorTemplate = that.locate("rowProgressorTemplate", that.options.uploaderContainer).remove();
     };
     
-    // TODO: Delete this when we have a viable way of declaratively registering listeners.
-    var bindModelEvents = function (that) {
-        that.events.afterFileQueued.addListener(that.addFile);
-        that.events.onUploadStart.addListener(that.prepareForUpload);
-        that.events.onFileStart.addListener(that.showFileProgress);
-        that.events.onFileProgress.addListener(that.updateFileProgress);
-        that.events.onFileSuccess.addListener(that.markFileComplete);
-        that.events.onFileError.addListener(that.showErrorForFile);
-        that.events.afterFileComplete.addListener(that.hideFileProgress);
-        that.events.afterUploadComplete.addListener(that.refreshAfterUpload);
-    };
-    
     var setupFileQueue = function (that) {
         fluid.initDependents(that);
         prepareTemplateElements(that);         
         addKeyboardNavigation(that);
-        bindModelEvents(that);
     };
     
     /**
@@ -383,6 +370,10 @@ var fluid_1_4 = fluid_1_4 || {};
         components: {
             scroller: {
                 type: "fluid.scrollableTable"
+            },
+            
+            eventBinder: {
+                type: "fluid.uploader.fileQueueView.eventBinder"
             }
         },
         
@@ -435,17 +426,6 @@ var fluid_1_4 = fluid_1_4 || {};
         
         events: {
             onFileRemoved: "{multiFileUploader}.events.onFileRemoved",
-            
-            // TODO: FileQueueView only listens for these events. Move them
-            // somewhere more sensible when such a place exists.
-            afterFileQueued: "{multiFileUploader}.events.afterFileQueued",
-            onUploadStart: "{multiFileUploader}.events.onUploadStart",
-            onFileStart: "{multiFileUploader}.events.onFileStart",
-            onFileProgress: "{multiFileUploader}.events.onFileProgress",
-            onFileSuccess: "{multiFileUploader}.events.onFileSuccess",
-            onFileError: "{multiFileUploader}.events.onFileError",
-            afterFileComplete: "{multiFileUploader}.events.afterFileComplete",
-            afterUploadComplete: "{multiFileUploader}.events.afterUploadComplete"
         },
         
         mergePolicy: {
@@ -453,6 +433,30 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
+    /**
+     * EventBinder declaratively binds FileQueueView's methods as listeners to Uploader events using IoC.
+     */
+    fluid.defaults("fluid.uploader.fileQueueView.eventBinder", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"]
+    });
+    
+    fluid.demands("fluid.uploader.fileQueueView.eventBinder", [
+        "fluid.uploader.multiFileUploader",
+        "fluid.uploader.fileQueueView"
+    ], {
+        options: {
+            listeners: {
+                "{multiFileUploader}.events.afterFileQueued": "{fileQueueView}.addFile",
+                "{multiFileUploader}.events.onUploadStart": "{fileQueueView}.prepareForUpload",
+                "{multiFileUploader}.events.onFileStart": "{fileQueueView}.showFileProgress",
+                "{multiFileUploader}.events.onFileProgress": "{fileQueueView}.updateFileProgress",
+                "{multiFileUploader}.events.onFileSuccess": "{fileQueueView}.markFileComplete",
+                "{multiFileUploader}.events.onFileError": "{fileQueueView}.showErrorForFile",
+                "{multiFileUploader}.events.afterFileComplete": "{fileQueueView}.hideFileProgress",
+                "{multiFileUploader}.events.afterUploadComplete": "{fileQueueView}.refreshAfterUpload"
+            }
+        }
+    });
     
     /**************
      * Scrollable *
