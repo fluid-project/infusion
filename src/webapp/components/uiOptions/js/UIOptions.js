@@ -435,9 +435,14 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.defaults("fluid.uiOptions", {
+        gradeNames: ["fluid.viewComponent"], 
         components: {
             preview: {
                 type: "fluid.uiOptions.preview"
+            },
+
+            eventBinder: {
+                type: "fluid.uiOptions.preview.eventBinder"
             }
         },
         textMinSize: {
@@ -505,15 +510,15 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uiOptions.preview = function (container, options) {
-        var that = fluid.initView("fluid.uiOptions.prevew", container, options);
+        var that = fluid.initView("fluid.uiOptions.preview", container, options);
         
         that.updateModel = function (model) {
             /**
              * Setimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
              */
             setTimeout(function () {
-                if (that.previewEnhancer) {
-                    that.previewEnhancer.updateModel(model);
+                if (that.enhancer) {
+                    that.enhancer.updateModel(model);
                 }
             }, 0);
         };
@@ -523,6 +528,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.defaults("fluid.uiOptions.preview", {
+        gradeNames: ["fluid.viewComponent"], 
         templateUrl: "UIOptionsPreview.html",
         components: {
             enhancer: {
@@ -534,10 +540,6 @@ var fluid_1_4 = fluid_1_4 || {};
                         type: "fluid.uiEnhancer.tempStore"
                     }
                 }
-            },
-            
-            eventBinder: {
-                type: "fluid.uiOptions.preview.eventBinder"
             }
         }
     });
@@ -564,10 +566,10 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
     
-    fluid.demands("fluid.uiOptions.preview.eventBinder", ["fluid.uiOptions.preview"," fluid.uiOptions"], {
+    fluid.demands("fluid.uiOptions.preview.eventBinder", ["fluid.uiOptions.preview", "fluid.uiOptions"], {
         options: {
             listeners: {
-                "{uiOptions}.modelChanged": "{preview}.updateModel"
+                "{uiOptions}.events.modelChanged": "{preview}.updateModel"
             }
         }
     });
