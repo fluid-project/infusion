@@ -825,6 +825,14 @@ fluid.registerNamespace("fluid.tests");
                      parent: "{initFunctions}",
                      name: "initTimeComponent"
                  }
+            },
+            eventTimeComponent: {
+                type: "fluid.tests.recordingComponent",
+                createOnEvent: "mainEvent",
+                options: {
+                    parent: "{initFunctions}",
+                    name: "eventTimeComponent"  
+                } 
             }
         }
     });
@@ -837,7 +845,8 @@ fluid.registerNamespace("fluid.tests");
             "postInitFunction",
             "initTimeComponent",
             "finalInitFunction",
-            "mainEventListener"
+            "mainEventListener",
+            "eventTimeComponent"
         ];
         jqUnit.assertDeepEq("Expected initialisation sequence", testComp.initFunctionRecord, expected); 
     });

@@ -685,15 +685,34 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
         }              
     };
-        
+    
+    fluid.bindDeferredComponent = function(that, componentName, component) {
+        fluid.withInstantiator(that, function(instantiator) {
+            var events = fluid.makeArray(component.createOnEvent);
+            fluid.each(events, function(eventName) {
+                that.events[eventName].addListener(function() {
+                    if (that[componentName]) {
+                        instantiator.clearComponent(that, componentName);
+                    }
+                    fluid.initDependent(that, componentName, instantiator);
+                });
+            });
+        });
+    };
+    
     fluid.initDependents = function(that) {
         var options = that.options;
         var components = options.components || {};
-        for (var name in components) {
-            fluid.initDependent(that, name);
-        }
+        fluid.each(components, function(component, name) {
+            if (!component.createOnEvent) {
+                fluid.initDependent(that, name);
+            }
+            else {
+                fluid.bindDeferredComponent(that, name, component);
+            }
+        });
         var invokers = options.invokers || {};
-        for (var name in invokers) { // jslint:ok
+        for (var name in invokers) {
             var invokerec = invokers[name];
             var funcName = typeof(invokerec) === "string"? invokerec : null;
             that[name] = fluid.withInstantiator(that, function(instantiator) { 
