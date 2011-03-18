@@ -25,6 +25,8 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
     
+    fluid.setLogging(true);
+    
     var fileOrFiles = function (that, numFiles) {
         return (numFiles === 1) ? that.options.strings.progress.singleFile : 
             that.options.strings.progress.pluralFiles;
