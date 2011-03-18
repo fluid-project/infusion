@@ -126,7 +126,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     return true;
                 }
             });
-            if (!foundComponent) {
+            if (!foundComponent && parsed.path !== "") {
                 var ref = fluid.renderContextReference(parsed);
                 fluid.log("Failed to resolve reference " + ref + ": thatStack contains\n" + fluid.dumpThatStack(thatStack));
                 fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " 

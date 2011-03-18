@@ -40,17 +40,14 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.progressiveChecker = function (options) {
-        // TODO: Replace with fluid.makeArray() when merged into trunk.
-        var checks = options.checks ? $.makeArray(options.checks) : [];
-        for (var x = 0; x < checks.length; x++) {
-            var check = checks[x];
-                            
+        var that = fluid.initLittleComponent("fluid.progressiveChecker", options);
+        that.resolved = fluid.find(that.options.checks, function(check) {
             if (check.feature) {
                 return fluid.typeTag(check.contextName);
-            }
+            }}, that.options.defaultTypeTag
+        );
 
-        }
-        return options.defaultTypeTag;
+        return that;
     };
     
     fluid.defaults("fluid.progressiveChecker", {

@@ -151,6 +151,9 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.defaults("fluid.uploader.demoRemote", {
         gradeNames: ["fluid.eventedComponent"],
+        argumentMap: {
+            options: 1  
+        },
         events: {
             onFileProgress: "{multiFileUploader}.events.onFileProgress",
             afterFileComplete: "{multiFileUploader}.events.afterFileComplete",
