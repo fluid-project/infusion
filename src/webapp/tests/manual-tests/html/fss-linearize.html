@@ -14,26 +14,175 @@
         <button id="linearize">linear layout</button>  <button id="normal">column layout</button>
         
         <div id="container" class="fl-container-flex">
-	        <h2>Columns: 4 flex, width 750px</h2>
-			<div id="layout-col-flex" class="fl-col-flex4 fl-container-750">		
-				<div class="fl-col">a</div>
-				<div class="fl-col">b</div>
-				<div class="fl-col">c</div>
-				<div class="fl-col">d</div>
+			<h2>Fluid wiki linearizing example</h2>
+			<div class="fl-container-flex fl-col-mixed layout-demo">
+				<div class="fl-col-fixed fl-force-right">
+					<p>Right Column Content</p>
+				</div>
+				<div class="fl-col-fixed fl-force-left">
+					<p>Left Column Content</p>
+				</div>
+				<div class="fl-col-flex">
+					<p>Center Column Content</p>
+				</div>
 			</div>
+
+			<h2>FSS column demo</h2>
 			
-			<h2>Columns: 3 mixed: a fixed force left, b force left, c force right, width 950</h2>			
-			<div id="layout-col-mixed" class="fl-container-950 fl-col-mixed-200">				
-				<div class="fl-col-fixed fl-force-left">a (fixed)</div>						
-				<div class="fl-col-flex fl-force-left">b</div>
-				<div class="fl-col-flex fl-force-right">c</div>				
-			</div>			
+            <div class="fl-col-flex2 layout-demo">
+                <div class="fl-col">50%</div>
+                <div class="fl-col">50%</div>
+            </div>
+            <div class="fl-col-flex3 layout-demo">
+                <div class="fl-col">33%</div>
+                <div class="fl-col">33%</div>
+                <div class="fl-col">33%</div>
+            </div>
+            <div class="fl-col-flex4 layout-demo">
+                <div class="fl-col">25%</div>
+                <div class="fl-col">25%</div>
+                <div class="fl-col">25%</div>
+                <div class="fl-col">25%</div>
+            </div>
+            <div class="fl-col-flex5 layout-demo">
+                <div class="fl-col">20%</div>
+                <div class="fl-col">20%</div>
+                <div class="fl-col">20%</div>
+                <div class="fl-col">20%</div>
+                <div class="fl-col">20%</div>
+            </div>
+
+            <div class="fl-col-mixed layout-demo">
+                <div class="fl-col-fixed fl-force-left">200px left</div>
+                <div class="fl-col-flex">flexible</div>
+            </div>
+
+            <div class="fl-col-mixed-100 layout-demo">
+                <div class="fl-col-fixed fl-force-left">100px left</div>
+                <div class="fl-col-fixed fl-force-right">100px right</div>
+                <div class="fl-col-flex">flexible</div>
+            </div>
+            <div class="fl-col-mixed-150 layout-demo">
+                <div class="fl-col-fixed fl-force-left">150px left</div>
+                <div class="fl-col-fixed fl-force-right">150px right</div>
+                <div class="fl-col-flex">flexible</div>
+            </div>
+            <div class="fl-col-mixed-200 layout-demo">
+                <div class="fl-col-fixed fl-force-left">200px left</div>
+                <div class="fl-col-fixed fl-force-right">200px right</div>
+                <div class="fl-col-flex">flexible</div>
+            </div>
+            <div class="fl-col-mixed-250 layout-demo">
+                <div class="fl-col-fixed fl-force-left">250px left</div>
+                <div class="fl-col-fixed fl-force-right">250px left</div>
+                <div class="fl-col-flex">flexible</div>
+            </div>
+            <div class="fl-col-mixed-300 layout-demo">
+                <div class="fl-col-fixed fl-force-left">300px left</div>
+                <div class="fl-col-fixed fl-force-right">300px right</div>
+                <div class="fl-col-flex">flexible</div>
+            </div>		
+            
+            <h2>FSS container demo</h2>
+            <div class="fl-container">default</div>
+            <div class="fl-container-auto">auto</div>
+            <div class="fl-container-flex">100%</div>
+            <div class="fl-container-flex50">50%</div>
+            <div class="fl-container-flex33">33%</div>
+            <div class="fl-container-flex30">30%</div>
+            <div class="fl-container-flex25">25%</div>
+            
+            <div class="fl-container-flex33 fl-force-left">33% left</div>
+            <div class="fl-container-flex33 fl-force-right">33% right</div>
+
+            <div class="fl-container-950 fl-centered fl-fix">750px overflow fix</div>    
+            
+            <h2>FSS advanced layout demo</h2>
+            <ul class="fl-tabs fl-tabs-left">
+                <li class="fl-tabs-active"><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+
+            <ul class="fl-tabs fl-tabs-center">
+                <li class="fl-tabs-active"><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+
+            <ul class="fl-tabs fl-tabs-right">
+                <li class="fl-tabs-active"><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+
+            <ul class="fl-tabs fl-tabs-center">
+                <li class="fl-tabs-active"><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+            <div class="fl-tabs-content">tab content container</div>
+
+            <ul class="fl-listmenu fl-container-200">
+                <li><a href="#">Tab link</a></li>
+                <li class="fl-activeItem"><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+
+
+            <div class="fl-widget fl-container-250">
+                <div class="fl-widget-titlebar"><h2>Title</h2></div>
+                <div class="fl-widget-options">
+                    <a href="#" class="fl-icon fl-force-right">Icon container</a>
+                    <a href="#" class="fl-icon fl-force-right">Icon container</a>
+                    <a href="#" class="fl-icon fl-force-left">Icon container</a>
+                    <a href="#" class="fl-icon fl-force-left">Icon container</a>
+                    Options w/ icons
+                    </div>
+                <div class="fl-widget-content">Content Content Content Content Content Content Content Content Content Content Content Content Content </div>
+            </div>
+
+            <div class="fl-fix">
+                <a href="#" class="fl-button-left"><strong>|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sliding Door Button &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</strong></a>
+                <a href="#" class="fl-button-left"><strong>-</strong></a>
+                <a href="#" class="fl-button-right"><strong>|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sliding Door Button &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</strong></a>
+                <a href="#" class="fl-button-right"><strong>-</strong></a>
+            </div>
+
+            <ul class="fl-container-flex fl-grid fl-fix">
+                <li><img src="../images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="../images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="../images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="../images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="../images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="../images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="../images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+            </ul>
+
+            <form action="" method="post" class="fl-container-450 fl-centered fl-controls-left">                
+                <li><label class="fl-label">Left aligned labels</label><input type="text" name="" value="" /></li>
+                <li><strong class="fl-label">Left aligned labels</strong><label for="checkbox"><input id="checkbox" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+            </form>
+
+            <form action="" method="post" class="fl-container-450 fl-centered fl-controls-centered">
+                <li><label class="fl-label">Center aligned labels</label><input type="text" name="" value="" /></li>
+                <li><strong class="fl-label">Center aligned labels</strong><label for="checkbox2"><input id="checkbox2" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+            </form>
+            <form action="" method="post" class="fl-container-450 fl-centered fl-controls-right">
+                <li><label class="fl-label">Right aligned labels</label><input type="text" name="" value="" /></li>
+                <li><strong class="fl-label">Right aligned labels</strong><label for="checkbox3"><input id="checkbox3" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+            </form>            
+        		
 			
-			<h2>Position: absolute</h2>
-			<div id="layout-absolute">				
+			<h2>Absolute position</h2>
+			<div class="layout-demo fl-fix">				
 				<div class="fl-container-250" style="position: absolute; left:0px;">a</div>
 				<div class="fl-container-250" style="position: absolute; left:270px;">b</div>				
 			</div>			
+			
+			<h2>Grid layout</h2>
+			<h2>Reorderers...</h2>
+			
         </div>
         
         <script>
