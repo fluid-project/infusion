@@ -1,0 +1,10 @@
+/* FSS Linearize test */
+
+h2 {
+	clear: both;
+	margin-top: 1em;
+}
+
+#layout-col-flex div, #layout-col-mixed div, #layout-absolute div {
+	background-color: #ccc;
+}

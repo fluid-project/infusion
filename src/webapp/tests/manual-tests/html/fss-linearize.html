@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/fss-linearize.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
+        <link rel="stylesheet" type="text/css" href="../lib/jquery/css/jquery.ui.core.css">
+        
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+    </head>
+    <body>
+    	<h1>Linearizing test for fss-layout</h1>
+        <button id="linearize">linear layout</button>  <button id="normal">column layout</button>
+        
+        <div id="container" class="fl-container-flex">
+	        <h2>Columns: 4 flex, width 750px</h2>
+			<div id="layout-col-flex" class="fl-col-flex4 fl-container-750">		
+				<div class="fl-col">a</div>
+				<div class="fl-col">b</div>
+				<div class="fl-col">c</div>
+				<div class="fl-col">d</div>
+			</div>
+			
+			<h2>Columns: 3 mixed: a fixed force left, b force left, c force right, width 950</h2>			
+			<div id="layout-col-mixed" class="fl-container-950 fl-col-mixed-200">				
+				<div class="fl-col-fixed fl-force-left">a (fixed)</div>						
+				<div class="fl-col-flex fl-force-left">b</div>
+				<div class="fl-col-flex fl-force-right">c</div>				
+			</div>			
+			
+			<h2>Position: absolute</h2>
+			<div id="layout-absolute">				
+				<div class="fl-container-250" style="position: absolute; left:0px;">a</div>
+				<div class="fl-container-250" style="position: absolute; left:270px;">b</div>				
+			</div>			
+        </div>
+        
+        <script>
+            (function ($) {
+            	$("#linearize").click(function() {
+            		$("#container").addClass("fl-layout-linear");
+            	});
+            	$("#normal").click(function() {
+            		$("#container").removeClass("fl-layout-linear");
+            	});
+            })(jQuery);
+        </script>
+    </body>
+</html>
