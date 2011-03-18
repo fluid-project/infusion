@@ -430,16 +430,20 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         
         events: {
-            onBrowse: "{local}.events.onFileDialog",
+            onBrowse: null,
             onFilesQueued: null
         }        
     });
 
     fluid.demands("fluid.uploader.html5Strategy.browseButtonView", "fluid.uploader.html5Strategy.local", {
-        args: [
-            "{multiFileUploader}.container",
-            fluid.COMPONENT_OPTIONS
-        ]
+        container: "{multiFileUploader}.container",
+        options: {
+            mergePaths: ["{options}", {
+                events: {
+                    onBrowse: "{local}.events.onFileDialog"
+                }
+            }]
+        }
     });
 
 })(jQuery, fluid_1_4);

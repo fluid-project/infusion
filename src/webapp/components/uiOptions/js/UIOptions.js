@@ -28,10 +28,11 @@ var fluid_1_4 = fluid_1_4 || {};
     
     // This will be removed once the jQuery UI slider has built in ARIA 
     var initSliderAria = function (thumb, opts) {
-        var ariaDefaults = {role: 'slider',
-         "aria-valuenow": opts.value,
-         "aria-valuemin": opts.min, 
-         "aria-valuemax": opts.max    
+        var ariaDefaults = {
+            role: 'slider',
+            "aria-valuenow": opts.value,
+            "aria-valuemin": opts.min, 
+            "aria-valuemax": opts.max    
         };
         thumb.attr(ariaDefaults);        
     };
@@ -69,8 +70,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 }
                 slider.slider("value", this.value);
                 that.updateModel(this.value, this);
-            }
-            else {
+            } else {
                 // handle invalid entry
                 this.value = that.model;
             }
@@ -79,8 +79,7 @@ var fluid_1_4 = fluid_1_4 || {};
         textfield.keypress(function (evt) {
             if (evt.keyCode !== $.ui.keyCode.ENTER) {
                 return true;
-            } 
-            else {
+            } else {
                 $(evt.target).change();
                 $(fluid.findForm(evt.target)).submit();
                 return false;
@@ -372,12 +371,16 @@ var fluid_1_4 = fluid_1_4 || {};
             initPreview(that);
         });
         
-        var rendererOptions = createRenderOptions(that);
-        var template = fluid.selfRender(that.container, generateTree(that, rendererOptions.model), rendererOptions);
-     
-        that.events.afterRender.fire();
-            
-        return template;
+        // Fetch UI Options' template and parse it on arrival.
+        fluid.fetchResources({
+            uiOptions: {
+                href: that.options.templateUrl
+            }
+        }, function (spec) {
+            that.templates = fluid.parseTemplates(spec, ["uiOptions"], {});
+            that.hasFinishedInit = false;
+            that.refreshView();
+        });
     };
     
     /**
@@ -397,7 +400,6 @@ var fluid_1_4 = fluid_1_4 || {};
 
         // TODO: we shouldn't need the savedModel and should use the uiEnhancer.model instead
         var savedModel = that.uiEnhancer.model;
-        var template;
  
         /**
          * Saves the current model and fires onSave
@@ -431,8 +433,12 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.refreshView = function () {
             var rendererOptions = createRenderOptions(that);
-            fluid.reRender(template, that.container, generateTree(that, rendererOptions.model), rendererOptions);
+            fluid.reRender(that.templates, that.container, generateTree(that, rendererOptions.model), rendererOptions);
             that.events.afterRender.fire();
+            if (!that.hasFinishedInit) {
+                that.hasFinishedInit = true;
+                that.events.onReady.fire();
+            }
         };
         
         /**
@@ -447,7 +453,7 @@ var fluid_1_4 = fluid_1_4 || {};
             fluid.model.copyModel(that.model, newModel);
         };
         
-        template = setupUIOptions(that);
+        setupUIOptions(that);
 
         return that;   
     };
@@ -477,11 +483,12 @@ var fluid_1_4 = fluid_1_4 || {};
             previewFrame : ".flc-uiOptions-preview-frame"
         },
         events: {
+            onReady: null,
+            afterRender: null,
             modelChanged: null,
             onSave: null,
             onCancel: null,
-            onReset: null,
-            afterRender: null
+            onReset: null
         },
         strings: {
             textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
@@ -499,7 +506,8 @@ var fluid_1_4 = fluid_1_4 || {};
             layout: ["simple", "default"],
             toc: ["true", "false"]
         },
-        previewTemplateUrl: "UIOptionsPreview.html"        
+        templateUrl: "UIOptions.html",
+        previewTemplateUrl: "UIOptionsPreview.html"
     });
 
 })(jQuery, fluid_1_4);

@@ -64,8 +64,14 @@ var fluid = fluid || fluid_1_4;
             softFailure.shift();
         }
     };
-    
+
     // Logging
+        
+    /** Returns whether logging is enabled **/
+    fluid.isLogging = function() {
+        return logging;
+    };
+
     var logging;
     /** method to allow user to enable logging (off by default) */
     fluid.setLogging = function (enabled) {
@@ -709,7 +715,9 @@ var fluid = fluid || fluid_1_4;
         // TODO: manual 2-phase instantiation since we have no GINGER WORLD
         initEvents(that, options.events, "flat"); 
         initEvents(that, options.events, "IoC");
-        fluid.mergeListeners(that, that.events, options.listeners);
+        // TODO: manually expand these late so that members attached to ourselves with preInitFunction can be detected
+        var listeners = fluid.expandOptions? fluid.expandOptions(options.listeners, that) : options.listeners;
+        fluid.mergeListeners(that, that.events, listeners);
     };
     
         
@@ -826,7 +834,10 @@ var fluid = fluid || fluid_1_4;
     });
     
     fluid.defaults("fluid.eventedComponent", {
-        gradeNames: ["fluid.littleComponent"]  
+        gradeNames: ["fluid.littleComponent"],
+        mergePolicy: {
+            listeners: "noexpand"
+        }
     });
     
     fluid.defaults("fluid.modelComponent", {
@@ -1025,6 +1036,7 @@ var fluid = fluid || fluid_1_4;
         // TODO: nickName must be available earlier than other merged options so that component may resolve to itself
         that.nickName = options && options.nickName ? options.nickName : fluid.computeNickName(that.typeName);
         fluid.mergeComponentOptions(that, name, options);
+        fluid.invokeLifecycleFunctions(that, "preInitFunction");
         if (localOptions) {
             localOptions = fluid.resolveGrade({}, localOptions.gradeNames);
         }
@@ -1070,9 +1082,6 @@ var fluid = fluid || fluid_1_4;
             fluid.initDependents(that);
         }
         fluid.invokeLifecycleFunctions(that, "finalInitFunction");
-        if (that.options.finalInitFunction) {
-            fluid.invokeGlobalFunction(that.options.finalInitFunction, [that]);
-        }
         return that;
     };
 

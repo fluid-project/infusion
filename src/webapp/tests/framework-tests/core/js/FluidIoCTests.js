@@ -284,44 +284,7 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
-    fluid.defaults("fluid.tests.stackThroughInvoke", {
-        components: {
-            resultsPager: {
-                type: "fluid.tests.resultsPager",
-                options: {
-                    dataModel: "{stackThroughInvoke}.model",
-                    dataOffset: "results",
-                    modelFilter: {
-                        expander: {
-                            type: "fluid.deferredCall",
-                            func: "fluid.tests.makeModelFilter",
-                            args: ["{stackThroughInvoke}"]
-                        }
-                    }
-                }
-            }
-        }
-    });
 
-    fluid.tests.makeModelFilter = function (parentThat) {
-        return function () {
-            return {value: parentThat.model.value + 1};
-        };
-    };
-
-    fluid.tests.resultsPager = function (options) {
-        var that = fluid.initLittleComponent("fluid.tests.resultsPager", options);
-        fluid.initDependents(that);
-        return that;
-    };
-
-    fluid.tests.stackThroughInvoke = function (container, options) {
-        var that = fluid.initView(options.targetTypeName || "fluid.tests.stackThroughInvoke", container, options);
-        that.model = {value: 3};
-        that.testFluid3721 = null;
-        fluid.initDependents(that);
-        return that;
-    };
 
     var fluidIoCTests = new jqUnit.TestCase("Fluid IoC Tests");
 
@@ -498,7 +461,7 @@ fluid.registerNamespace("fluid.tests");
             resultsPager: {
                 type: "fluid.tests.resultsPager",
                 options: {
-                    dataModel: "{stackThroughInvoke}.model",
+//                    dataModel: "{stackThroughInvoke}.model",
                     dataOffset: "results",
                     modelFilter: {
                         expander: {
@@ -511,6 +474,26 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
+
+    fluid.tests.makeModelFilter = function (parentThat) {
+        return function () {
+            return {value: parentThat.model.value + 1};
+        };
+    };
+
+    fluid.tests.resultsPager = function (options) {
+        var that = fluid.initLittleComponent("fluid.tests.resultsPager", options);
+        fluid.initDependents(that);
+        return that;
+    };
+
+    fluid.tests.stackThroughInvoke = function (container, options) {
+        var that = fluid.initView(options.targetTypeName || "fluid.tests.stackThroughInvoke", container, options);
+        that.model = {value: 3};
+        that.testFluid3721 = null;
+        fluid.initDependents(that);
+        return that;
+    };
 
     fluidIoCTests.test("thatStack through deferredCall Tests, proleptic ginger nicknames", function () {
         function test(compName) {
@@ -796,6 +779,78 @@ fluid.registerNamespace("fluid.tests");
         instantiator: "{circularity}.instantiator"  
         }] 
     );
+    
+    fluid.tests.makeInitFunction = function(name) {
+        return function(that) {
+            that.initFunctionRecord.push(name);
+        };
+    };
+    
+    fluid.tests.createInitFunctionsMembers = function(that) {
+        that.mainEventListener = function() {
+            that.initFunctionRecord.push("mainEventListener");
+        };
+        that.initFunctionRecord = [];
+    };
+    
+    fluid.tests.initRecordingComponent = function(that) {
+        var parent = that.options.parent;
+        parent.initFunctionRecord.push(that.options.name);
+    };
+    
+    fluid.defaults("fluid.tests.recordingComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        mergePolicy: {
+            parent: "nomerge"  
+        },
+        postInitFunction: fluid.tests.initRecordingComponent
+        }
+    );
+    
+    fluid.defaults("fluid.tests.initFunctions", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        preInitFunction: ["fluid.tests.createInitFunctionsMembers", fluid.tests.makeInitFunction("preInitFunction")],
+        postInitFunction: fluid.tests.makeInitFunction("postInitFunction"),
+        finalInitFunction: fluid.tests.makeInitFunction("finalInitFunction"),
+        events: {
+            mainEvent: null
+        },
+        listeners: {
+            mainEvent: "{initFunctions}.mainEventListener"
+        },
+        components: {
+            initTimeComponent: {
+                 type: "fluid.tests.recordingComponent",
+                 options: {
+                     parent: "{initFunctions}",
+                     name: "initTimeComponent"
+                 }
+            },
+            eventTimeComponent: {
+                type: "fluid.tests.recordingComponent",
+                createOnEvent: "mainEvent",
+                options: {
+                    parent: "{initFunctions}",
+                    name: "eventTimeComponent"  
+                } 
+            }
+        }
+    });
+    
+    fluidIoCTests.test("Component lifecycle test", function() {
+        var testComp = fluid.tests.initFunctions();
+        testComp.events.mainEvent.fire();
+        var expected = [
+            "preInitFunction",
+            "postInitFunction",
+            "initTimeComponent",
+            "finalInitFunction",
+            "mainEventListener",
+            "eventTimeComponent"
+        ];
+        jqUnit.assertDeepEq("Expected initialisation sequence", testComp.initFunctionRecord, expected); 
+    });
+   
     
     fluidIoCTests.test("Tree circularity test", function() {
         try {

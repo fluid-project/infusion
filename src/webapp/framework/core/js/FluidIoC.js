@@ -92,6 +92,15 @@ var fluid_1_4 = fluid_1_4 || {};
             return atval;
         };
     }
+    
+    fluid.dumpThatStack = function(thatStack) {
+        var togo = fluid.transform(thatStack, function(that) {
+            return "{ typeName: \"" + that.typeName + "\" id: " + that.id + "}";  
+        });
+        return togo.join("\n");
+    };
+
+    var localRecordExpected = /arguments|options|container/;
 
     function makeStackFetcher(instantiator, parentThat, localRecord, expandOptions) {
         expandOptions = expandOptions || {};
@@ -99,7 +108,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var fetchStrategies = [fluid.model.funcResolverStrategy, makeGingerStrategy(thatStack)]; 
         var fetcher = function(parsed) {
             var context = parsed.context;
-            if (localRecord && localRecord[context]) {
+            if (localRecord && localRecordExpected.test(context)) {
                 var fetched = fluid.get(localRecord[context], parsed.path);
                 return (context === "arguments" || expandOptions.direct)? fetched : {
                     marker: context === "options"? fluid.EXPAND : fluid.EXPAND_NOW,
@@ -117,9 +126,12 @@ var fluid_1_4 = fluid_1_4 || {};
                     return true;
                 }
             });
-                // TODO: we used to get a helpful diagnostic when we failed to match a context name before we fell back
-                // to the environment for FLUID-3818
-                //fluid.fail("No context matched for name " + context + " from root of type " + thatStack[0].typeName);
+            if (!foundComponent) {
+                var ref = fluid.renderContextReference(parsed);
+                fluid.log("Failed to resolve reference " + ref + ": thatStack contains\n" + fluid.dumpThatStack(thatStack));
+                fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " 
+                  + context + " from component root of type " + thatStack[0].typeName);
+            }
             return fluid.get(foundComponent, parsed.path, fetchStrategies);
         };
         return fetcher;
@@ -351,11 +363,22 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
 
     fluid.locateDemands = function(instantiator, parentThat, demandingNames) {
+        var demandLogging = fluid.isLogging() && demandingNames[0] !== "fluid.threadLocal";
+        if (demandLogging) {
+            fluid.log("Resolving demands for function names " + JSON.stringify(demandingNames) + " in context of " +
+              (parentThat? "component " + parentThat.typeName : "no component"));
+        }
+        
         var contextNames = {};
+        var visited = [];
         var thatStack = instantiator.getFullStack(parentThat);
         visitComponents(thatStack, function(component) {
             contextNames[component.typeName] = true;
+            visited.push(component);
         });
+        if (demandLogging) {
+            fluid.log("Components in scope for resolution:\n" + fluid.dumpThatStack(visited));  
+        }
         var matches = [];
         for (var i = 0; i < demandingNames.length; ++i) {
             var rec = dependentStore[demandingNames[i]] || [];
@@ -376,7 +399,12 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             var p1 = specb.intersect - speca.intersect; 
             return p1 === 0? speca.uncess - specb.uncess : p1;
         });
-        return matches.length === 0 || matches[0].intersect === 0? null : matches[0].spec;
+        var demandspec = matches.length === 0 || matches[0].intersect === 0? null : matches[0].spec;
+        if (demandLogging) {
+            fluid.log(demandspec? "Located " + matches.length + " potential match" + (matches.length === 1? "" : "es") + ", selected best match with " + matches[0].intersect 
+                + " matched context names: " + JSON.stringify(demandspec): "No matches found for demands, using direct implementation");
+        }  
+        return demandspec;
     };
     
     /** Determine the appropriate demand specification held in the fluid.demands environment 
@@ -398,6 +426,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 demandspec = demandspec2; // follow just one redirect
             } **/
         }
+
         var mergeArgs = [];
         if (demandspec.parent) {
             var parent = searchDemands(funcNames[0], $.makeArray(demandspec.parent).sort());
@@ -656,15 +685,34 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
         }              
     };
-        
+    
+    fluid.bindDeferredComponent = function(that, componentName, component) {
+        fluid.withInstantiator(that, function(instantiator) {
+            var events = fluid.makeArray(component.createOnEvent);
+            fluid.each(events, function(eventName) {
+                that.events[eventName].addListener(function() {
+                    if (that[componentName]) {
+                        instantiator.clearComponent(that, componentName);
+                    }
+                    fluid.initDependent(that, componentName, instantiator);
+                });
+            });
+        });
+    };
+    
     fluid.initDependents = function(that) {
         var options = that.options;
         var components = options.components || {};
-        for (var name in components) {
-            fluid.initDependent(that, name);
-        }
+        fluid.each(components, function(component, name) {
+            if (!component.createOnEvent) {
+                fluid.initDependent(that, name);
+            }
+            else {
+                fluid.bindDeferredComponent(that, name, component);
+            }
+        });
         var invokers = options.invokers || {};
-        for (var name in invokers) { // jslint:ok
+        for (var name in invokers) {
             var invokerec = invokers[name];
             var funcName = typeof(invokerec) === "string"? invokerec : null;
             that[name] = fluid.withInstantiator(that, function(instantiator) { 
@@ -719,7 +767,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return singleThreadLocal;
     };
 
-    fluid.threadLocal = fluid.makeFreeInvoker("fluid.threadLocal");
+    fluid.threadLocal = function() {
+        // quick implementation since this is not very dynamic, a hazard to debugging, and used frequently within IoC itself
+        var demands = fluid.locateDemands(fluid.freeInstantiator, null, ["fluid.threadLocal"]);
+        return fluid.invokeGlobalFunction(demands.funcName, arguments);
+    };
 
     fluid.withEnvironment = function(envAdd, func) {
         var root = fluid.threadLocal();
@@ -797,6 +849,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             path = path.substring(1);
         }
         return {context: context, path: path, endpos: endpos};
+    };
+    
+    fluid.renderContextReference = function(parsed) {
+        return "{" + parsed.context + "}" + parsed.path;  
     };
     
     fluid.fetchContextReference = function(parsed, directModel, env) {
