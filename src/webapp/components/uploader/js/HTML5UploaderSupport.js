@@ -13,7 +13,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global FormData, fluid_1_4:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
@@ -22,8 +22,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uploader = fluid.uploader || {};
     
     fluid.demands("uploaderImpl", ["fluid.uploader", "fluid.uploader.html5"], {
-        funcName: "fluid.uploader.multiFileUploader",
-        args: ["{uploader}.options.deferredComponents.uploaderImpl.container", fluid.COMPONENT_OPTIONS]
+        funcName: "fluid.uploader.multiFileUploader"
     });
     
     fluid.uploader.html5Strategy = function (options) {
@@ -319,6 +318,9 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.defaults("fluid.uploader.html5Strategy.local", {
+        argumentMap: {
+            options: 2  
+        },
         gradeNames: ["fluid.eventedComponent"],
         
         components: {
@@ -420,6 +422,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.defaults("fluid.uploader.html5Strategy.browseButtonView", {
+        gradeNames: "fluid.viewComponent",
         multiFileInputMarkup: "<input type='file' multiple='' class='flc-uploader-html5-input fl-hidden' />",
         
         queueSettings: {},

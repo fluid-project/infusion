@@ -13,7 +13,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global fluid, jqUnit, expect, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid.registerNamespace("fluid.tests");
 
@@ -52,11 +52,6 @@ fluid.registerNamespace("fluid.tests");
          {"default1": "{testComponent}.options.default1"}
         ]);
 
-
-    // Somehow we sort of have to write this. Perhaps "component grading" will make it
-    // possible to guess instantiation signatures
-    //fluid.demands("fluid.tests.modelComponent", "fluid.tests.dependentModel",
-    //  [fluid.COMPONENT_OPTIONS]);
 
     fluid.defaults("fluid.tests.modelComponent", {
         gradeNames: "modelComponent",
@@ -851,6 +846,68 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertDeepEq("Expected initialisation sequence", testComp.initFunctionRecord, expected); 
     });
    
+    fluid.defaults("fluid.tests.guidedChild", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        mergePolicy: {
+            parent: "nomerge",
+            mergePaths: "nomerge" // TODO: This should not be necessary!!
+        },
+        finalInitFunction: "fluid.tests.guidedChildInit"
+    });
+    
+    fluid.demands("fluid.tests.guidedChild", "fluid.tests.guidedParent", 
+        {options: {mergePaths: [
+            "{options}", {parent: "{guidedParent}"}
+        ]}
+    });
+    
+    fluid.tests.guidedChildInit = function(that) {
+       // awful, illegal, side-effect-laden init function :P
+        that.options.parent.constructRecord.push(that.options.index);
+    };
+   
+    fluid.defaults("fluid.tests.guidedParent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            compn: {
+                type: "fluid.tests.guidedChild",
+                options: {
+                    index: 4
+                },
+                priority: "last"
+            },
+            comp5: {
+                type: "fluid.tests.guidedChild",
+                options: {
+                    index: 2
+                },
+                priority: 5
+            },
+            comp0: {
+                type: "fluid.tests.guidedChild",
+                options: {
+                    index: 3 
+                }
+            },
+            compf: {
+                type: "fluid.tests.guidedChild",
+                options: {
+                    index: 1  
+                },
+                priority: "first"
+            },
+        },
+        preInitFunction: "fluid.tests.guidedParentInit"
+    });
+    
+    fluid.tests.guidedParentInit = function(that) {
+        that.constructRecord = [];  
+    };
+   
+    fluidIoCTests.test("Guided instantiation test", function() {
+        var testComp = fluid.tests.guidedParent();
+        jqUnit.assertDeepEq("Children constructed in sort order", [1, 2, 3, 4], testComp.constructRecord);
+    });
     
     fluidIoCTests.test("Tree circularity test", function() {
         try {

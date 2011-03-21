@@ -16,7 +16,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global fluid_1_4:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
@@ -367,6 +367,7 @@ var fluid_1_4 = fluid_1_4 || {};
     });
     
     fluid.defaults("fluid.uploader.fileQueueView", {
+        gradeNames: "fluid.viewComponent",
         components: {
             scroller: {
                 type: "fluid.scrollableTable"
@@ -471,9 +472,8 @@ var fluid_1_4 = fluid_1_4 || {};
      * @return the scrollable component
      */
     fluid.scrollable = function (element, options) {
-        var that = fluid.initLittleComponent("fluid.scrollable", options);
-        element = fluid.container(element);
-        that.scrollable = that.options.makeScrollableFn(element, that.options);
+        var that = fluid.initView("fluid.scrollable", element, options);
+        that.scrollable = that.options.makeScrollableFn(that.container, that.options);
         that.maxHeight = that.scrollable.css("max-height");
 
         /**
@@ -530,6 +530,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.defaults("fluid.scrollableTable", {
+        gradeNames: "fluid.viewComponent",
         makeScrollableFn: fluid.scrollable.makeTable,
         wrapperMarkup: "<div class='fl-scrollable-scroller'><div class='fl-scrollable-inner'></div></div>"
     });    

@@ -14,7 +14,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global window, fluid_1_4:true, jQuery, swfobject*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
@@ -40,17 +40,14 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.progressiveChecker = function (options) {
-        // TODO: Replace with fluid.makeArray() when merged into trunk.
-        var checks = options.checks ? $.makeArray(options.checks) : [];
-        for (var x = 0; x < checks.length; x++) {
-            var check = checks[x];
-                            
+        var that = fluid.initLittleComponent("fluid.progressiveChecker", options);
+        that.resolved = fluid.find(that.options.checks, function(check) {
             if (check.feature) {
                 return fluid.typeTag(check.contextName);
-            }
+            }}, that.options.defaultTypeTag
+        );
 
-        }
-        return options.defaultTypeTag;
+        return that;
     };
     
     fluid.defaults("fluid.progressiveChecker", {
