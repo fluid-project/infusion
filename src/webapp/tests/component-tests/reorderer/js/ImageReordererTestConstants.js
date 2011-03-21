@@ -14,7 +14,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global altKeys, createAltKeystrokeLightbox, createLightbox, createLightboxWithNoOrderables, createMultiKeystrokeLightbox, createMultiOverlappingKeystrokeLightbox, defaultClass, draggingClass, fetchLightboxRoot, findNoOrderables, findOrderableByDivAndId, fluid, focusLightbox, imageIds, lightboxRootId, makeImageIds, makeOrderableIds, numOfImages, orderableBaseId, orderableIds, orderableIndices, selectByDivAndId, selectedClass, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 /**
  * This file contains test constants and setup and teardown functions that are used when testing with the data in the Lightbox.html file.
