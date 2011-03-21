@@ -247,7 +247,8 @@ var fluid_1_4 = fluid_1_4 || {};
         return that;  
     };
       
-    fluid.defaults("fluid.progress", {  
+    fluid.defaults("fluid.progress", {
+        gradeNames: "fluid.viewComponent",
         selectors: {
             displayElement: ".flc-progress", // required, the element that gets displayed when progress is displayed, could be the indicator or bar or some larger outer wrapper as in an overlay effect
             progressBar: ".flc-progress-bar", //required

@@ -93,10 +93,12 @@ var fluid_1_4 = fluid_1_4 || {};
         };
     }
     
+    fluid.dumpThat = function(that) {
+        return "{ typeName: \"" + that.typeName + "\" id: " + that.id + "}";  
+    };
+    
     fluid.dumpThatStack = function(thatStack) {
-        var togo = fluid.transform(thatStack, function(that) {
-            return "{ typeName: \"" + that.typeName + "\" id: " + that.id + "}";  
-        });
+        var togo = fluid.transform(thatStack, fluid.dumpThat);
         return togo.join("\n");
     };
 
@@ -530,7 +532,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.expander.preserveFromExpansion = function(options) {
         var preserve = {};
-        var preserveList = ["mergePolicy", "components", "invokers", "mergePaths", "events"];
+        var preserveList = ["mergePolicy", "mergePaths", "components", "invokers", "events"];
         fluid.each(options.mergePolicy, function(value, key) {
             if (fluid.mergePolicyIs(value, "noexpand")) {
                 preserveList.push(key);
@@ -616,6 +618,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // The case without the instantiator is from the ginger strategy - this logic is still a little ragged
     fluid.initDependent = function(that, name, userInstantiator, directArgs) {
         if (!that || that[name]) { return; }
+        fluid.log("Beginning instantiation of component with name \"" + name + "\" as child of " + fluid.dumpThat(that));
         directArgs = directArgs || [];
         var root = fluid.threadLocal();
         if (userInstantiator) {
@@ -695,7 +698,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                         instantiator.clearComponent(that, componentName);
                     }
                     fluid.initDependent(that, componentName, instantiator);
-                });
+                }, null, null, component.priority);
             });
         });
     };
@@ -703,13 +706,18 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.initDependents = function(that) {
         var options = that.options;
         var components = options.components || {};
+        var componentSort = {};
         fluid.each(components, function(component, name) {
             if (!component.createOnEvent) {
-                fluid.initDependent(that, name);
+                componentSort[name] = {key: name, priority: fluid.event.mapPriority(component.priority)};
             }
             else {
                 fluid.bindDeferredComponent(that, name, component);
             }
+        });
+        var componentList = fluid.event.sortListeners(componentSort);
+        fluid.each(componentList, function(entry) {
+            fluid.initDependent(that, entry.key);  
         });
         var invokers = options.invokers || {};
         for (var name in invokers) {
