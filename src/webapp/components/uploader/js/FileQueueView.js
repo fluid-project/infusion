@@ -426,7 +426,7 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         
         events: {
-            onFileRemoved: "{multiFileUploader}.events.onFileRemoved",
+            onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
         },
         
         mergePolicy: {

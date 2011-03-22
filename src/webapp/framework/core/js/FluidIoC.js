@@ -140,7 +140,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 var ref = fluid.renderContextReference(parsed);
                 fluid.log("Failed to resolve reference " + ref + ": thatStack contains\n" + fluid.dumpThatStack(thatStack));
                 fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " 
-                  + context + " from component root of type " + thatStack[0].typeName);
+                    + context + " from component root of type " + thatStack[0].typeName);
             }
             return fluid.get(foundComponent, parsed.path, fetchStrategies);
         };
@@ -227,7 +227,7 @@ var fluid_1_4 = fluid_1_4 || {};
             visited = visited || {};
             var child = component[name];
             fluid.visitComponentChildren(child, function(gchild, gchildname, visited) {
-                that.clearComponent(child, gchildname, visited)
+                that.clearComponent(child, gchildname, visited);
             }, visited);
             var path = that.idToPath[child.id];
             delete that.idToPath[child.id];
@@ -255,7 +255,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.makePassArgsSpec = function(initArgs) {
         return fluid.transform(initArgs, function(arg, index) {
-                    return "{arguments}." + index;
+            return "{arguments}." + index;
         });
     };
     
@@ -385,7 +385,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var demandLogging = fluid.isLogging() && demandingNames[0] !== "fluid.threadLocal";
         if (demandLogging) {
             fluid.log("Resolving demands for function names " + JSON.stringify(demandingNames) + " in context of " +
-              (parentThat? "component " + parentThat.typeName : "no component"));
+                (parentThat? "component " + parentThat.typeName : "no component"));
         }
         
         var contextNames = {};
@@ -421,7 +421,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var demandspec = matches.length === 0 || matches[0].intersect === 0? null : matches[0].spec;
         if (demandLogging) {
             fluid.log(demandspec? "Located " + matches.length + " potential match" + (matches.length === 1? "" : "es") + ", selected best match with " + matches[0].intersect 
-                + " matched context names: " + JSON.stringify(demandspec): "No matches found for demands, using direct implementation");
+                + " matched context names: " + JSON.stringify(demandspec) : "No matches found for demands, using direct implementation");
         }  
         return demandspec;
     };
@@ -531,11 +531,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                     firer[method] = function() {origin[method].apply(null, arguments);};
                 });
                 firer.addListener = function(listener, namespace, predicate, priority) {
-                        origin.addListener(fluid.event.dispatchListener(instantiator, that, listener, eventName, eventSpec),
-                            namespace, predicate, priority);
+                    origin.addListener(fluid.event.dispatchListener(instantiator, that, listener, eventName, eventSpec),
+                        namespace, predicate, priority);
                 };
                 return firer;
-            };
+            }
         }); 
     };
     
@@ -613,9 +613,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 }
                 localRecord.options = fluid.expandOptions(localOptions, that);
             }
-            localRecord.arguments = fluid.get(userOptions, "localRecord.arguments");
+            localRecord["arguments"] = fluid.get(userOptions, "localRecord.arguments");
             var toExpand = userOptions.value;
-            userOptions = fluid.expandOptions(toExpand, that, localRecord, {direct:true});
+            userOptions = fluid.expandOptions(toExpand, that, localRecord, {direct: true});
         }
         localRecord.directOptions = userOptions;
         if (!localRecord.options) {
@@ -627,7 +627,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var mergePaths = (userOptions && userOptions.mergePaths) || ["{directOptions}"];
         var togo = fluid.transform(mergePaths, function(path) {
             // Avoid use of expandOptions in simple case to avoid infinite recursion when constructing instantiator
-            return path === "{directOptions}"? localRecord.directOptions : fluid.expandOptions(path, that, localRecord, {direct:true}); 
+            return path === "{directOptions}"? localRecord.directOptions : fluid.expandOptions(path, that, localRecord, {direct: true}); 
         });
         return [defaults].concat(togo);
     };
@@ -682,7 +682,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // NON-API function
     // This function is stateful and MUST NOT be called by client code
     fluid.withInstantiator = function(that, func) {
-        var typeName = that? that.typeName : "[none]";
         var root = fluid.threadLocal();
         var instantiator = root["fluid.instantiator"];
         if (!instantiator) {
