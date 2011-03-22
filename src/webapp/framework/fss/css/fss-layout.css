@@ -141,44 +141,33 @@ Generic containers for columns and layouts
 .fl-container-flex98 {width: 98%;}
 .fl-container-flex99 {width: 99%;}
 
-/* linearizable containers & columns */
-.fl-layout-linear *,
-.fl-layout-linear .fl-linearEnabled {
-    overflow:visible !important; 
+/* 
+ * Linearizes, !importants override specificity 
+ */
+.fl-layout-linear * {
     clear: both !important; 
     float:none !important;
-    margin-left:0 !important;  
+    display:block !important;
+    margin-left:0 !important;
     margin-right:0 !important;
+    width: 100% !important; 		/* make cols full width, backwards compat with 1.3.1. not good for abs positioned cols */
+    overflow:visible !important;  	/* no scroll bars, backwards compat with 1.3.1 */
 }
-.fl-layout-linear .fl-container,
-.fl-layout-linear .fl-container-100,
-.fl-layout-linear .fl-container-150,
-.fl-layout-linear .fl-container-200,
-.fl-layout-linear .fl-container-250,
-.fl-layout-linear .fl-container-300,
-.fl-layout-linear .fl-container-400,
-.fl-layout-linear .fl-container-750,
-.fl-layout-linear .fl-container-950,
-.fl-layout-linear .fl-container-auto, 
-.fl-layout-linear .fl-container-flex25, 
-.fl-layout-linear .fl-container-flex30, 
-.fl-layout-linear .fl-container-flex33, 
-.fl-layout-linear .fl-container-flex50,
-.fl-layout-linear .fl-col,
-.fl-layout-linear .fl-col-side,
-.fl-layout-linear .fl-col-flex,
-.fl-layout-linear .fl-col-main,
-.fl-layout-linear .fl-col-fixed,
-.fl-layout-linear .fl-col-justified {width:100% !important; margin:auto; padding:0 !important;}
 
-.fl-layout-linear .fl-force-left, 
-.fl-layout-linear .fl-force-right,
-.fl-layout-linear li {display:block !important; float:none !important;}
+/* TODO: Add style to preserve col width instead of making them 100% by default. Would have to be copy/alternative to fl-layout-linear as there's no way to override the width back to original values. */
 
-.fl-layout-linear .fl-linearEnabled {width:100% !important; /*position:relative;*/ display:block;} /* linearization opt in for special cases */
-
-.fl-layout-linear .fl-button-left,
-.fl-layout-linear .fl-button-right {padding:1em;}
+/*
+ * Aligns all contents of a container. Best practice for linear layouts.
+ */
+.fl-layout-align-left * {
+    text-align:left !important;
+}
+.fl-layout-align-right * {
+    text-align:right !important;
+}
+.fl-layout-align-center * {
+    text-align:center !important;
+}
 
 /*
 Layout Helpers

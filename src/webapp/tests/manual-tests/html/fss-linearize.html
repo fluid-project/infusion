@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="../css/fss-linearize.css" />
+        <link rel="stylesheet" type="text/css" href="../lib/jquery/css/jquery.ui.core.css">
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-reset.css" />
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
-        <link rel="stylesheet" type="text/css" href="../lib/jquery/css/jquery.ui.core.css">
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-text.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fss-linearize.css" />
         
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
@@ -84,6 +85,7 @@
             </div>		
             
             <h2>FSS container demo</h2>
+            <div class="layout-demo">
             <div class="fl-container">default</div>
             <div class="fl-container-auto">auto</div>
             <div class="fl-container-flex">100%</div>
@@ -96,6 +98,7 @@
             <div class="fl-container-flex33 fl-force-right">33% right</div>
 
             <div class="fl-container-950 fl-centered fl-fix">750px overflow fix</div>    
+            </div>
             
             <h2>FSS advanced layout demo</h2>
             <ul class="fl-tabs fl-tabs-left">
@@ -189,9 +192,11 @@
             (function ($) {
             	$("#linearize").click(function() {
             		$("#container").addClass("fl-layout-linear");
+            		$("#container").addClass("fl-layout-align-left");            		            		
             	});
             	$("#normal").click(function() {
             		$("#container").removeClass("fl-layout-linear");
+            		$("#container").removeClass("fl-layout-align-left");            		            		            		
             	});
             })(jQuery);
         </script>
