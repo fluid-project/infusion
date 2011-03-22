@@ -323,10 +323,12 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
     
-    var firstRender = function (that, source) {
+    var firstRender = function (that) {
         var rendererOptions = createRenderOptions(that);
         var tree = generateTree(that, rendererOptions.model);
-        that.templates = fluid.render(source, that.container, tree, rendererOptions);
+        var source = {node: that.locate("controls")};
+        
+        that.templates = fluid.render(source, that.locate("controls"), tree, rendererOptions);
         that.events.afterRender.fire();
         that.events.onReady.fire();
     };
@@ -348,9 +350,7 @@ var fluid_1_4 = fluid_1_4 || {};
         });
         
         if (!that.options.templateUrl) {
-            firstRender(that, {
-                node: that.container
-            });
+            firstRender(that);
         } else {
             // Fetch UI Options' template and parse it on arrival.
             fluid.fetchResources({
@@ -358,7 +358,8 @@ var fluid_1_4 = fluid_1_4 || {};
                     href: that.options.templateUrl
                 }
             }, function (spec) {
-                firstRender(that, spec.uiOptions.resourceText);
+                that.container.append(spec.uiOptions.resourceText);
+                firstRender(that);
             });
         }
     };
@@ -413,7 +414,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.refreshView = function () {
             var rendererOptions = createRenderOptions(that);
-            fluid.reRender(that.templates, that.container, generateTree(that, rendererOptions.model), rendererOptions);
+            fluid.reRender(that.templates, that.locate("controls"), generateTree(that, rendererOptions.model), rendererOptions);
             that.events.afterRender.fire();
         };
         
@@ -456,7 +457,7 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         },
         selectors: {
-            controls: ".flc-uiOptions-control",
+            controls: ".flc-uiOptions-controls",
             textMinSizeCtrl: ".flc-uiOptions-min-text-size",
             lineSpacingCtrl: ".flc-uiOptions-line-spacing",
             cancel: ".flc-uiOptions-cancel",
