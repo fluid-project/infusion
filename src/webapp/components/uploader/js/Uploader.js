@@ -290,10 +290,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     var setupUploader = function (that) {
-        // Setup the environment appropriate if we're in demo mode.
-        if (that.options.demo) {
-            that.demo = fluid.typeTag("fluid.uploader.demo");
-        }
+        that.demo = fluid.typeTag(that.options.demo? "fluid.uploader.demo" : "fluid.uploader.live");
         
         fluid.initDependents(that);                 
 
@@ -651,5 +648,8 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
 
+    fluid.demands("uploaderImpl", ["fluid.uploader", "fluid.uploader.singleFile"], {
+        funcName: "fluid.uploader.singleFileUploader"
+    });
     
 })(jQuery, fluid_1_4);

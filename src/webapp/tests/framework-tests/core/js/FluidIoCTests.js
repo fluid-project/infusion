@@ -936,6 +936,84 @@ fluid.registerNamespace("fluid.tests");
             fluid.pushSoftFailure(-1);  
         }
     });
+    
+    
+    /** This test case reproduces a circular reference condition found in the Flash
+     *  implementation of the uploader, which the framework did not properly detect */
+     
+    fluid.registerNamespace("fluid.tests.circular");
+    
+    fluid.defaults("fluid.tests.circular.strategy", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            local: {
+                type: "fluid.tests.circular.local"
+            },
+            engine: {
+                type: "fluid.tests.circular.engine"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.circular.swfUpload", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+    });
+    
+    fluid.tests.circular.initEngine = function(that) {
+      // This line, which is a somewhat illegal use of an invoker before construction is complete,
+      // will trigger failure
+      //  fluid.fail("Thing");
+        that.bindEvents();
+    };
+    
+    fluid.defaults("fluid.tests.circular.engine", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        finalInitFunction: "fluid.tests.circular.initEngine",
+        invokers: {            
+            bindEvents: "fluid.tests.circular.eventBinder"
+        },
+        components: {
+            swfUpload: {
+                type: "fluid.tests.circular.swfUpload"
+            }
+        }
+    });
+    
+    fluid.tests.circular.eventBinder = fluid.identity;
+    
+    fluid.demands("fluid.tests.circular.eventBinder", [
+        "fluid.tests.circular.engine"
+    ], {
+        args: [
+            "{strategy}.local"
+        ]
+    });
+
+    fluid.defaults("fluid.tests.circular.local", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.demands("fluid.tests.circular.local", "fluid.tests.circular.strategy", {
+        args: [
+            "{engine}.swfUpload",
+            fluid.COMPONENT_OPTIONS
+        ]
+    });
+    
+    fluidIoCTests.test("Advanced circularity test I", function() {
+        // If this test fails, it will bomb the browser with an infinite recursion
+        try {
+            fluid.pushSoftFailure(true);
+            expect(1);
+            var comp = fluid.tests.circular.strategy();
+        }
+        catch (e) {
+            jqUnit.assertTrue("Circular construction guarded", true);  
+        }
+        finally {
+            fluid.pushSoftFailure(-1);
+        }
+    });
 
     var makeArrayExpander = function (recordType) {
         return fluid.expander.makeFetchExpander({

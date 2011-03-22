@@ -433,6 +433,7 @@ var fluid = fluid || fluid_1_4;
     
     /** Helpful alias for old-style API **/
     fluid.path = fluid.model.composeSegments;
+    fluid.composePath = fluid.model.composePath;
 
     /** Standard strategies for resolving path segments **/
     fluid.model.environmentStrategy = function (initEnvironment) {

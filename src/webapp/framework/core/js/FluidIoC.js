@@ -73,14 +73,22 @@ var fluid_1_4 = fluid_1_4 || {};
     // components that it discovers along the EL path, if they have been defined but not yet
     // constructed. Spring, eat your heart out! Wot no SPR-2048?
     
-    function makeGingerStrategy(thatStack) {
+    function makeGingerStrategy(instantiator, that, thatStack) {
         return function(component, thisSeg) {
             var atval = component[thisSeg];
+            if (atval === undefined) {
+                var parentPath = instantiator.idToPath[component.id];
+                atval = instantiator.pathToComponent[fluid.composePath(parentPath, thisSeg)];
+                // if it was not attached to the component, but it is in the instantiator, it MUST be in creation - prepare to fail
+                if (atval) {
+                    atval[inCreationMarker] = true;
+                } 
+            }
             if (atval !== undefined) {
-                if (atval[inCreationMarker] && atval !== thatStack[0]) {
-                    fluid.fail("Component of type " + 
-                        atval.typeName + " cannot be used for lookup of path " + thisSeg +
-                        " since it is still in creation. Please reorganise your dependencies so that they no longer contain circular references");
+                if (atval[inCreationMarker]) {
+                    fluid.fail("Component " + fluid.dumpThat(atval) + " at path \"" + thisSeg 
+                        + "\" of parent " + fluid.dumpThat(component) + " cannot be used for lookup" 
+                        + " since it is still in creation. Please reorganise your dependencies so that they no longer contain circular references");
                 }
             }
             else {
@@ -107,7 +115,7 @@ var fluid_1_4 = fluid_1_4 || {};
     function makeStackFetcher(instantiator, parentThat, localRecord, expandOptions) {
         expandOptions = expandOptions || {};
         var thatStack = instantiator.getFullStack(parentThat);
-        var fetchStrategies = [fluid.model.funcResolverStrategy, makeGingerStrategy(thatStack)]; 
+        var fetchStrategies = [fluid.model.funcResolverStrategy, makeGingerStrategy(instantiator, parentThat, thatStack)]; 
         var fetcher = function(parsed) {
             var context = parsed.context;
             if (localRecord && localRecordExpected.test(context)) {
@@ -189,6 +197,11 @@ var fluid_1_4 = fluid_1_4 || {};
         };
         function recordComponent(component, path) {
             that.idToPath[component.id] = path;
+            if (that.pathToComponent[path]) {
+                fluid.fail("Error during instantiation - path " + path + " which has just created component " + fluid.dumpThat(component) 
+                    + " has already been used for component " + fluid.dumpThat(that.pathToComponent[path]) + " - this is a circular instantiation or other oversight."
+                    + " Please clear the component using instantiator.clearComponent() before reusing the path.");
+            }
             that.pathToComponent[path] = component;          
         }
         that.recordRoot = function(component) {
@@ -212,6 +225,9 @@ var fluid_1_4 = fluid_1_4 || {};
         };
         that.clearComponent = function(component, name) {
             var child = component[name];
+            fluid.each(child.options.components, function(gchild, gchildname) {
+                that.clearComponent(child, gchildname);  
+            });
             var path = that.idToPath[child.id];
             delete that.idToPath[child.id];
             delete that.pathToComponent[path];
@@ -659,6 +675,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 that[name] = component;
             }
         });
+        fluid.log("Finished instantiation of component with name \"" + name + "\" as child of " + fluid.dumpThat(that));
     };
     
     // NON-API function
@@ -723,9 +740,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         for (var name in invokers) {
             var invokerec = invokers[name];
             var funcName = typeof(invokerec) === "string"? invokerec : null;
-            that[name] = fluid.withInstantiator(that, function(instantiator) { 
+            that[name] = fluid.withInstantiator(that, function(instantiator) {
+                fluid.log("Beginning instantiation of invoker with name \"" + name + "\" as child of " + fluid.dumpThat(that)); 
                 return fluid.makeInvoker(instantiator, that, funcName? null : invokerec, funcName);
             }); // jslint:ok
+            fluid.log("Finished instantiation of invoker with name \"" + name + "\" as child of " + fluid.dumpThat(that)); 
         }
     };
     
