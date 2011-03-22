@@ -65,7 +65,8 @@ var fluid_1_4 = fluid_1_4 || {};
             multiple = true;
         }
         if ("input" !== node.nodeName.toLowerCase() || ! /radio|checkbox/.test(node.type)) {
-            return $(node).val(newValue);
+            // resist changes to contract of jQuery.val() in jQuery 1.5.1 (see FLUID-4113)
+            return newValue === undefined? $(node).val() : $(node).val(newValue);
         }
         var name = node.name;
         if (name === undefined) {
