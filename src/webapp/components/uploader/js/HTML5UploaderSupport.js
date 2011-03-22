@@ -46,7 +46,7 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             
             remote: {
-                type: "fluid.uploader.remote",
+                type: "fluid.uploader.html5Strategy.remote",
                 options: {
                     queueSettings: "{multiFileUploader}.options.queueSettings",
                      events: {
@@ -188,13 +188,15 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.defaults("fluid.uploader.html5Strategy.remote", {
         gradeNames: ["fluid.eventedComponent"],
-        
+        argumentMap: {
+            options: 2  
+        },                
         invokers: {
             doUpload: "fluid.uploader.html5Strategy.doUpload"
         }
     });
     
-    fluid.demands("fluid.uploader.remote", "fluid.uploader.html5Strategy", {
+    fluid.demands("fluid.uploader.html5Strategy.remote", "fluid.uploader.html5Strategy", {
         funcName: "fluid.uploader.html5Strategy.remote",
         args: [
             "{multiFileUploader}.queue", 
