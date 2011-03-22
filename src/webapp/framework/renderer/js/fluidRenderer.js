@@ -265,9 +265,11 @@ fluid_1_4 = fluid_1_4 || {};
         form: "action",
         applet: "codebase", object: "codebase" //jslint:ok
     };
+    
+    renderer.decoratorComponentPrefix = "**-renderer-";
   
     renderer.IDtoComponentName = function(ID, num) {
-        return "**-renderer-" + ID.replace(/\./g, "") + "-" + num;
+        return renderer.decoratorComponentPrefix + ID.replace(/\./g, "") + "-" + num;
     };
     
     renderer.invokeFluidDecorator = function(func, args, ID, num, options) {

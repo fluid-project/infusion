@@ -115,45 +115,6 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
-    fluid.defaults("fluid.tests.reinstantiation", {
-        headValue: "headValue",
-        components: {
-            child1: {
-                type: "fluid.tests.reinsChild",
-                options: {
-                    components: {
-                        instantiator: "{instantiator}",
-                        child2: {
-                            type: "fluid.tests.reinsChild2",
-                            options: {
-                                value: "{reinstantiation}.options.headValue",
-                                components: {
-                                    child3: {
-                                        type: "fluid.tests.reinsChild2",
-                                        options: {
-                                            value: "{reinstantiation}.options.headValue"
-                                        }
-                                    }  
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    });
-    
-    fluid.demands("fluid.tests.reinsChild2", "fluid.tests.reinstantiation",
-       [fluid.COMPONENT_OPTIONS, "{reinstantiation}.options.headValue"] 
-    );
-    
-    fluid.tests.reinsChild2 = function(options, otherValue) {
-        var that = fluid.initLittleComponent("fluid.tests.reinsChild2", options);
-        fluid.initDependents(that);
-        that.otherValue = otherValue;
-        return that;
-    };
-
     fluid.makeComponents({
         "fluid.tests.testOrder":          "fluid.viewComponent", 
         "fluid.tests.subComponent":       "fluid.viewComponent",
@@ -635,6 +596,54 @@ fluid.registerNamespace("fluid.tests");
         });
         child.events.localEvent.fire(origArg0);
     });
+    
+    fluid.tests.reinsNonComponent = function() {
+        return {
+            key: "Non-component material"
+        };
+    };
+    
+    fluid.defaults("fluid.tests.reinstantiation", {
+        headValue: "headValue",
+        components: {
+            child1: {
+                type: "fluid.tests.reinsChild",
+                options: {
+                    components: {
+                        instantiator: "{instantiator}",
+                        child2: {
+                            type: "fluid.tests.reinsChild2",
+                            options: {
+                                value: "{reinstantiation}.options.headValue",
+                                components: {
+                                    child3: {
+                                        type: "fluid.tests.reinsChild2",
+                                        options: {
+                                            value: "{reinstantiation}.options.headValue"
+                                        }
+                                    },
+                                    child4: {
+                                        type: "fluid.tests.reinsNonComponent"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    fluid.demands("fluid.tests.reinsChild2", "fluid.tests.reinstantiation",
+       [fluid.COMPONENT_OPTIONS, "{reinstantiation}.options.headValue"] 
+    );
+    
+    fluid.tests.reinsChild2 = function(options, otherValue) {
+        var that = fluid.initLittleComponent("fluid.tests.reinsChild2", options);
+        fluid.initDependents(that);
+        that.otherValue = otherValue;
+        return that;
+    };
     
     function checkValue(message, root, value, paths) {
         fluid.each(paths, function(path) {

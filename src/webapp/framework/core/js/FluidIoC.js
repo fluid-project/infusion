@@ -31,7 +31,7 @@ var fluid_1_4 = fluid_1_4 || {};
         return component.options && component.options["fluid.visitComponents.fireBreak"];
     };
     
-    var findMatchingComponent = function(that, visitor, visited) {
+    fluid.visitComponentChildren = function(that, visitor, visited) {
         for (var name in that) {
             var component = that[name];
             //Every component *should* have an id, but some clients may not yet be compliant
@@ -40,11 +40,11 @@ var fluid_1_4 = fluid_1_4 || {};
             //}
             if (!component || !component.typeName || (component.id && visited[component.id])) {continue; }
             visited[component.id] = true;
-            if (visitor(component, name)) {
+            if (visitor(component, name, visited)) {
                 return true;
             }
             if (!fluid.isFireBreak(component)) {
-                findMatchingComponent(component, visitor, visited);
+                fluid.visitComponentChildren(component, visitor, visited);
             }
         }
     };
@@ -63,7 +63,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     return;
                 }
             }
-            if (findMatchingComponent(that, visitor, visited)) {
+            if (fluid.visitComponentChildren(that, visitor, visited)) {
                 return;
             }
         }
@@ -223,11 +223,12 @@ var fluid_1_4 = fluid_1_4 || {};
                 that.recordRoot(component);
             }
         };
-        that.clearComponent = function(component, name) {
+        that.clearComponent = function(component, name, visited) {
+            visited = visited || {};
             var child = component[name];
-            fluid.each(child.options.components, function(gchild, gchildname) {
-                that.clearComponent(child, gchildname);  
-            });
+            fluid.visitComponentChildren(child, function(gchild, gchildname, visited) {
+                that.clearComponent(child, gchildname, visited)
+            }, visited);
             var path = that.idToPath[child.id];
             delete that.idToPath[child.id];
             delete that.pathToComponent[path];

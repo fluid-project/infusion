@@ -194,6 +194,9 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Decorated text resolved from top level", parentValue, decorated.text());
             var child = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
             jqUnit.assertEquals("Located decorator with IoC-resolved value", parentValue, child.options.decoratorValue);
+            component.middle.refreshView();
+            var child2 = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
+            jqUnit.assertNotEquals("Rendering has produced new component", child, child2);
         });
         
         var compTests = jqUnit.testCase("Renderer component tests");
