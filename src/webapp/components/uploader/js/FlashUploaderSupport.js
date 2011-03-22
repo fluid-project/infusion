@@ -342,17 +342,9 @@ var fluid_1_4 = fluid_1_4 || {};
         events.onFileSuccess.addListener(manualModelUpdater);
     };
     
-    fluid.uploader.swfUploadStrategy.flash10EventBinder = function (model, events, local) {
+    fluid.uploader.swfUploadStrategy.flash10EventBinder = function (model, events) {
         unbindSWFUploadSelectFiles();      
               
-        events.onUploadStart.addListener(function () {
-            local.disableBrowseButton();
-        });
-        
-        events.afterUploadComplete.addListener(function () {
-            local.enableBrowseButton();            
-        });
-        
         fluid.uploader.swfUploadStrategy.bindFileEventListeners(model, events);
     };
     
@@ -363,8 +355,7 @@ var fluid_1_4 = fluid_1_4 || {};
         funcName: "fluid.uploader.swfUploadStrategy.flash10EventBinder",
         args: [
             "{multiFileUploader}.queue.files",
-            "{multiFileUploader}.events",
-            "{swfUploadStrategy}.local"
+            "{multiFileUploader}.events"
         ]
     });
 })(jQuery, fluid_1_4);
