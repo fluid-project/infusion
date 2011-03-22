@@ -15,7 +15,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global window, fluid_1_4:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
@@ -25,9 +25,11 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
     
+    fluid.setLogging(true);
+    
     var fileOrFiles = function (that, numFiles) {
         return (numFiles === 1) ? that.options.strings.progress.singleFile : 
-                                  that.options.strings.progress.pluralFiles;
+            that.options.strings.progress.pluralFiles;
     };
     
     var enableElement = function (that, elm) {
@@ -165,8 +167,7 @@ var fluid_1_4 = fluid_1_4 || {};
         
         if (that.queue.files.length === 0) {
             fileQueueTable.attr("summary", that.options.strings.queue.emptyQueue);
-        }
-        else {
+        } else {
             var queueSummary = fluid.stringTemplate(that.options.strings.queue.queueSummary, {
                 totalUploaded: that.queue.getUploadedFiles().length, 
                 totalInUploadQueue: that.queue.files.length - that.queue.getUploadedFiles().length
@@ -289,10 +290,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     var setupUploader = function (that) {
-        // Setup the environment appropriate if we're in demo mode.
-        if (that.options.demo) {
-            that.demo = fluid.typeTag("fluid.uploader.demo");
-        }
+        that.demo = fluid.typeTag(that.options.demo? "fluid.uploader.demo" : "fluid.uploader.live");
         
         fluid.initDependents(that);                 
 
@@ -314,37 +312,27 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} container the DOM element in which the Uploader lives
      * @param {Object} options configuration options for the component.
      */
-    fluid.uploader = function (container, options) {
-        var that = fluid.initLittleComponent("fluid.uploader");
+    fluid.uploader = function (container, uploaderOptions) {
+      // Do not try to expand uploaderOptions here or else our subcomponents will end up
+      // nested inside uploaderImpl
+        var that = fluid.initView("fluid.uploader", container);
+        that.uploaderOptions = uploaderOptions;
         fluid.initDependents(that);
-        // Set up the environment for progressive enhancement.
-        if (fluid.progressiveChecker) {
-            that.options.components.uploaderContext = that.options.deferredComponents.uploaderContext;
-            fluid.initDependent(that, "uploaderContext", that.instantiator);
-            fluid.staticEnvironment.uploaderContext = that.uploaderContext;
-        }
-        
-        // Invoke an Uploader implementation, which will be specifically resolved using IoC 
-        // based on the static environment configured by the progressiveChecker above.
-        that.options.deferredComponents.uploaderImpl.options = options;
-        that.options.deferredComponents.uploaderImpl.container = container;
-        that.options.components.uploaderImpl = that.options.deferredComponents.uploaderImpl;
-        fluid.initDependent(that, "uploaderImpl", that.instantiator);
         return that.uploaderImpl;
     };
     
     fluid.defaults("fluid.uploader", {
         components: {
-            instantiator: "{instantiator}"
-        },
-        deferredComponents: {
             uploaderContext: {
-                type: "fluid.progressiveChecker"
+                type: "fluid.progressiveChecker",
+                priority: "first"
             },
             uploaderImpl: {
-                type: "fluid.uploaderImpl"
+                type: "fluid.uploaderImpl",
+                container: "{uploader}.container",
+                options: "{uploader}.uploaderOptions"
             }
-        } 
+        }
     });
     
     fluid.demands("fluid.progressiveChecker", "fluid.uploader", {
@@ -424,6 +412,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.defaults("fluid.uploader.multiFileUploader", {
+        gradeNames: "fluid.viewComponent",
         components: {
             strategy: {
                 type: "fluid.uploader.progressiveStrategy"
@@ -433,8 +422,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uploader.fileQueueView",
                 options: {
                     model: "{multiFileUploader}.queue.files",
-                    uploaderContainer: "{multiFileUploader}.container",
-                    events: "{multiFileUploader}.events"
+                    uploaderContainer: "{multiFileUploader}.container"
                 }
             },
             
@@ -540,21 +528,13 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         
         mergePolicy: {
-            model: "preserve"
+            "fileQueueView.options.model": "preserve"
         }
-    });
-    
-    fluid.demands("uploaderImpl", "fluid.uploader", {
-        funcName: "fluid.uploader.multiFileUploader",
-        args: ["{uploader}.options.deferredComponents.uploaderImpl.container", fluid.COMPONENT_OPTIONS]
     });
     
     fluid.demands("fluid.uploader.totalProgressBar", "fluid.uploader.multiFileUploader", {
         funcName: "fluid.progress",
-        args: [
-            "{multiFileUploader}.container",
-            fluid.COMPONENT_OPTIONS
-        ]
+        container: "{multiFileUploader}.container"
     });
     
         
@@ -564,14 +544,13 @@ var fluid_1_4 = fluid_1_4 || {};
     * @param {Number} bytes the files size, specified as in number bytes.
     */
     fluid.uploader.formatFileSize = function (bytes) {
-        if (typeof(bytes) === "number") {
+        if (typeof (bytes) === "number") {
             if (bytes === 0) {
                 return "0.0 KB";
             } else if (bytes > 0) {
                 if (bytes < 1048576) {
                     return (Math.ceil(bytes / 1024 * 10) / 10).toFixed(1) + " KB";
-                }
-                else {
+                } else {
                     return (Math.ceil(bytes / 1048576 * 10) / 10).toFixed(1) + " MB";
                 }
             }
@@ -647,15 +626,6 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
 
-    // TODO: Need to resolve the issue of the gracefully degraded view being outside of the component's
-    // container. Perhaps we can embed a standard HTML 5 file input element right in the template, 
-    // and hide everything else?
-    var determineContainer = function (options) {
-        var defaults = fluid.defaults("fluid.uploader.singleFileStrategy");
-        return (options && options.container) ? options.container : defaults.container;
-    };
-
-
     /**
      * Single file Uploader implementation. Use fluid.uploader() for IoC-resolved, progressively
      * enhanceable Uploader, or call this directly if you only want a standard single file uploader.
@@ -672,14 +642,14 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.defaults("fluid.uploader.singleFileUploader", {
+        gradeNames: "fluid.viewComponent",
         selectors: {
             basicUpload: ".fl-progEnhance-basic"
         }
     });
 
     fluid.demands("uploaderImpl", ["fluid.uploader", "fluid.uploader.singleFile"], {
-        funcName: "fluid.uploader.singleFileUploader",
-        args: ["{uploader}.options.deferredComponents.uploaderImpl.container", fluid.COMPONENT_OPTIONS]
+        funcName: "fluid.uploader.singleFileUploader"
     });
     
 })(jQuery, fluid_1_4);

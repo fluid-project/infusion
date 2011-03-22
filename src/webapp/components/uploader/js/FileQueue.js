@@ -15,7 +15,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global fluid_1_4:true, jQuery, SWFUpload*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
@@ -62,8 +62,8 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.shouldUploadNextFile = function () {
             return !that.shouldStop && 
-                   that.isUploading && 
-                   that.currentBatch.numFilesCompleted < that.currentBatch.files.length;
+                that.isUploading && 
+                that.currentBatch.numFilesCompleted < that.currentBatch.files.length;
         };
         
         /*****************************

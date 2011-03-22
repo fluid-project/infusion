@@ -13,7 +13,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global FormData, fluid_1_4:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
@@ -22,8 +22,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uploader = fluid.uploader || {};
     
     fluid.demands("uploaderImpl", ["fluid.uploader", "fluid.uploader.html5"], {
-        funcName: "fluid.uploader.multiFileUploader",
-        args: ["{uploader}.options.deferredComponents.uploaderImpl.container", fluid.COMPONENT_OPTIONS]
+        funcName: "fluid.uploader.multiFileUploader"
     });
     
     fluid.uploader.html5Strategy = function (options) {
@@ -38,7 +37,11 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uploader.html5Strategy.local",
                 options: {
                     queueSettings: "{multiFileUploader}.options.queueSettings",
-                    events: "{multiFileUploader}.events"
+                    events: {
+                        afterFileDialog: "{multiFileUploader}.events.afterFileDialog",
+                        afterFileQueued: "{multiFileUploader}.events.afterFileQueued",
+                        onQueueError: "{multiFileUploader}.events.onQueueError"
+                   }
                 }
             },
             
@@ -46,15 +49,22 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uploader.remote",
                 options: {
                     queueSettings: "{multiFileUploader}.options.queueSettings",
-                    events: "{multiFileUploader}.events"
+                     events: {
+                         afterReady: "{multiFileUploader}.events.afterReady",
+                         onFileStart: "{multiFileUploader}.events.onFileStart",
+                         onFileProgress: "{multiFileUploader}.events.onFileProgress",
+                         onFileSuccess: "{multiFileUploader}.events.onFileSuccess",
+                         onFileError: "{multiFileUploader}.events.onFileError",
+                         onFileComplete: "{multiFileUploader}.events.onFileComplete"
+                    }
                 }
             }
         },
         
         // Used for browsers that rely on File.getAsBinary(), such as Firefox 3.6,
         // which load the entire file to be loaded into memory.
-        // Set this option to a sane limit so your users won't experience crashes or slowdowns (FLUID-3937).
-        legacyBrowserFileLimit: 100,
+        // Set this option to a sane limit (100MB) so your users won't experience crashes or slowdowns (FLUID-3937).
+        legacyBrowserFileLimit: 100000,
         
         mergePolicy: {
             "components.local.options.events": "preserve",
@@ -80,20 +90,26 @@ var fluid_1_4 = fluid_1_4 || {};
     // TODO: The following two or three functions probably ultimately belong on a that responsible for
     // coordinating with the XHR. A fileConnection object or something similar.
     
-    fluid.uploader.html5Strategy.fileSuccessHandler = function (file, events) {
-        events.onFileSuccess.fire(file);
+    fluid.uploader.html5Strategy.fileSuccessHandler = function (file, events, xhr) {
+        events.onFileSuccess.fire(file, xhr.responseText, xhr);
         events.onFileComplete.fire(file);
     };
     
-    fluid.uploader.html5Strategy.fileErrorHandler = function (file, events) {
+    fluid.uploader.html5Strategy.fileErrorHandler = function (file, events, xhr) {
         file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
-        events.onFileError.fire(file, fluid.uploader.errorConstants.UPLOAD_FAILED);
+        events.onFileError.fire(file, 
+                                fluid.uploader.errorConstants.UPLOAD_FAILED,
+                                xhr.status,
+                                xhr);
         events.onFileComplete.fire(file);
     };
     
-    fluid.uploader.html5Strategy.fileStopHandler = function (file, events) {
+    fluid.uploader.html5Strategy.fileStopHandler = function (file, events, xhr) {
         file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
-        events.onFileError.fire(file, fluid.uploader.errorConstants.UPLOAD_STOPPED);
+        events.onFileError.fire(file, 
+                                fluid.uploader.errorConstants.UPLOAD_STOPPED,
+                                xhr.status,
+                                xhr);
         events.onFileComplete.fire(file);
     };
     
@@ -119,11 +135,11 @@ var fluid_1_4 = fluid_1_4 || {};
                 var status = xhr.status;
                 // TODO: See a pattern here? Fix it.
                 if (status === 200) {
-                    fluid.uploader.html5Strategy.fileSuccessHandler(file, events);
+                    fluid.uploader.html5Strategy.fileSuccessHandler(file, events, xhr);
                 } else if (status === 0) {
-                    fluid.uploader.html5Strategy.fileStopHandler(file, events);
+                    fluid.uploader.html5Strategy.fileStopHandler(file, events, xhr);
                 } else {
-                    fluid.uploader.html5Strategy.fileErrorHandler(file, events);
+                    fluid.uploader.html5Strategy.fileErrorHandler(file, events, xhr);
                 }
             }
         };
@@ -147,7 +163,6 @@ var fluid_1_4 = fluid_1_4 || {};
         var that = fluid.initLittleComponent("fluid.uploader.html5Strategy.remote", options);
         that.queue = queue;
         that.queueSettings = that.options.queueSettings;
-        that.events = that.options.events;
         
         // Upload files in the current batch without exceeding the fileUploadLimit
         that.uploadNextFile = function () {
@@ -172,12 +187,16 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.defaults("fluid.uploader.html5Strategy.remote", {
+        gradeNames: ["fluid.eventedComponent"],
+        argumentMap: {
+            options: 2  
+        },                
         invokers: {
             doUpload: "fluid.uploader.html5Strategy.doUpload"
         }
     });
     
-    fluid.demands("fluid.uploader.remote", "fluid.uploader.html5Strategy", {
+    fluid.demands("fluid.uploader.remote", ["fluid.uploader.html5Strategy", "fluid.uploader.live"], {
         funcName: "fluid.uploader.html5Strategy.remote",
         args: [
             "{multiFileUploader}.queue", 
@@ -216,11 +235,11 @@ var fluid_1_4 = fluid_1_4 || {};
         var multipart = "";
         multipart += "--" + boundary + CRLF;
         multipart += "Content-Disposition: form-data;" +
-                     " name=\"fileData\";" + 
-                     " filename=\"" + file.name + 
-                     "\"" + CRLF;
+            " name=\"fileData\";" + 
+            " filename=\"" + file.name + 
+            "\"" + CRLF;
         multipart += "Content-Type: " + file.type + CRLF + CRLF;
-        multipart += file.getAsBinary(); // TODO: Ack, concatting binary data to JS String!
+        multipart += file.getAsBinary(); // Concatting binary data to JS String; yes, FF will handle it.
         multipart += CRLF + "--" + boundary + "--" + CRLF;
         return multipart;
     };
@@ -255,14 +274,13 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uploader.html5Strategy.local = function (queue, legacyBrowserFileLimit, options) {
         var that = fluid.initLittleComponent("fluid.uploader.html5Strategy.local", options);
         that.queue = queue;
-        that.events = that.options.events;
         that.queueSettings = that.options.queueSettings;
 
         // Add files to the file queue without exceeding the fileUploadLimit and the fileSizeLimit
-        // NOTE:  fileSizeLimit set to bytes for HTML5 Uploader (MB for SWF Uploader).  
+        // NOTE:  fileSizeLimit set to bytes for HTML5 Uploader (KB for SWF Uploader).  
         that.addFiles = function (files) {
             // TODO: These look like they should be part of a real model.
-            var sizeLimit = (legacyBrowserFileLimit || that.queueSettings.fileSizeLimit) * 1000000;
+            var sizeLimit = (legacyBrowserFileLimit || that.queueSettings.fileSizeLimit) * 1024;
             var fileLimit = that.queueSettings.fileUploadLimit;
             var uploaded = that.queue.getUploadedFiles().length;
             var queued = that.queue.getReadyFiles().length;
@@ -302,6 +320,11 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.defaults("fluid.uploader.html5Strategy.local", {
+        argumentMap: {
+            options: 2  
+        },
+        gradeNames: ["fluid.eventedComponent"],
+        
         components: {
             browseButtonView: {
                 type: "fluid.uploader.html5Strategy.browseButtonView",
@@ -311,7 +334,6 @@ var fluid_1_4 = fluid_1_4 || {};
                         browseButton: "{multiFileUploader}.selectors.browseButton"
                     },
                     listeners: {
-                        onBrowse: "{local}.events.onFileDialog.fire", // TODO: Craziness?
                         onFilesQueued: "{local}.addFiles"
                     }
                 }
@@ -367,8 +389,6 @@ var fluid_1_4 = fluid_1_4 || {};
     
     var renderMultiFileInput = function (that) {
         var multiFileInput = $(that.options.multiFileInputMarkup);
-        var fileTypes = (that.options.queueSettings.fileTypes).replace(/\;/g, ',');       
-        //multiFileInput.attr("accept", fileTypes);
         bindEventsToFileInput(that, multiFileInput);
         return multiFileInput;
     };
@@ -404,6 +424,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.defaults("fluid.uploader.html5Strategy.browseButtonView", {
+        gradeNames: "fluid.viewComponent",
         multiFileInputMarkup: "<input type='file' multiple='' class='flc-uploader-html5-input fl-hidden' />",
         
         queueSettings: {},
@@ -420,9 +441,14 @@ var fluid_1_4 = fluid_1_4 || {};
     });
 
     fluid.demands("fluid.uploader.html5Strategy.browseButtonView", "fluid.uploader.html5Strategy.local", {
-        args: [
-            "{multiFileUploader}.container",
-            fluid.COMPONENT_OPTIONS
-        ]
-    })
-})(jQuery, fluid_1_4);    
+        container: "{multiFileUploader}.container",
+        options: {
+            mergePaths: ["{options}", {
+                events: {
+                    onBrowse: "{local}.events.onFileDialog"
+                }
+            }]
+        }
+    });
+
+})(jQuery, fluid_1_4);

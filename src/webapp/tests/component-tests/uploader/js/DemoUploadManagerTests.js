@@ -15,7 +15,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global fluid, jqUnit, jQuery, start*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
     $(function () {
@@ -81,7 +81,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var emptyFunction = function () {};
             
             var listeners = {
-                onUploadStart: emptyFunction,
                 onFileStart: emptyFunction,
                 onFileProgress: emptyFunction,
                 onFileSuccess: emptyFunction,
@@ -102,20 +101,26 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         var uploadFilesAndTest = function (files, testBody) {
             var tracker = eventTracker(testBody);
-            fluid.mergeListeners(events, tracker.listeners);
             
             var queue = fluid.uploader.fileQueue();
             queue.files = files;     
             
-            var demoEngine = fluid.uploader.demoRemote(queue, events);
-            
-            // TODO: Major problem. This code is from the implementation of Uploader.start(), but is required
-            // before calling an engine's start() method.
+            var demo = fluid.uploader.demoRemote(queue, {
+                events: {
+                    onFileProgress: null,
+                    afterFileComplete: null,
+                    afterUploadComplete: null,
+                    onFileSuccess: null,
+                    onFileStart: null,
+                    onFileError: null,
+                    onUploadStop: null
+                },
+                
+                listeners: tracker.listeners
+            });
+
             queue.start();
-            events.onUploadStart.fire(queue.currentBatch.files); 
-            //
-            
-            demoEngine.uploadNextFile();
+            demo.uploadNextFile();
             
             tracker.transcript.files = files;
             return tracker.transcript;    
@@ -170,14 +175,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
         demoUploadTests.asyncTest("Simulated upload flow: sequence of events.", function () {
             // Test with just one file.
             uploadFirstFileAndTest(function (transcript) {
-                jqUnit.assertEquals("We should have received seven upload events.", 7, transcript.length);
-
-                jqUnit.assertEquals("The first event of a batch should be onUploadStart.",
-                                    "onUploadStart", transcript[0].name);
-                jqUnit.assertDeepEq("The argument to onUploadStart should be an array containing the current batch.",
-                                    transcript.files, transcript[0].args[0]);
-
-                checkEventSequenceForFile(transcript.slice(1, transcript.length - 1), file1);
+                jqUnit.assertEquals("We should have received seven upload events.", 6, transcript.length);
+                checkEventSequenceForFile(transcript.slice(0, transcript.length - 1), file1);
                 jqUnit.assertEquals("The last event of a batch should be afterUploadComplete.",
                              "afterUploadComplete", transcript[transcript.length - 1].name);
                 jqUnit.assertDeepEq("The argument to afterUploadComplete should be an array containing the current batch.",
@@ -190,20 +189,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
         demoUploadTests.asyncTest("Simulated upload flow: sequence of events for multiple files.", function () {
             // Upload three files.
             uploadAllFilesAndTest(function (transcript) {
-                jqUnit.assertEquals("We should have received twenty upload events.", 20, transcript.length);
-                jqUnit.assertEquals("The first event of a batch should be onUploadStart.",
-                                    "onUploadStart", transcript[0].name);
-                jqUnit.assertDeepEq("The argument to onUploadStart should be an array containing the current batch.",
-                                    transcript.files, transcript[0].args[0]);
+                jqUnit.assertEquals("We should have received nineteen upload events.", 19, transcript.length);
 
                 // The first file is 400000 bytes, so it should have 2 progress events, for a total of 5 events.
-                checkEventSequenceForFile(transcript.slice(1, 6), file1);
+                checkEventSequenceForFile(transcript.slice(0, 5), file1);
 
                 // The second file is 600000 bytes, so it should have 3 progress events, for a total of 6 events.
-                checkEventSequenceForFile(transcript.slice(6, 12), file2);
+                checkEventSequenceForFile(transcript.slice(5, 11), file2);
 
                 // The second file is 800000 bytes, so it should have 4 progress events, for a total of 7 events.
-                checkEventSequenceForFile(transcript.slice(12, 19), file3);
+                checkEventSequenceForFile(transcript.slice(11, transcript.length - 1), file3);
 
                 jqUnit.assertEquals("The last event of a batch should be afterUploadComplete.",
                                     "afterUploadComplete", transcript[transcript.length - 1].name);
@@ -217,13 +212,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             uploadFirstFileAndTest(function (transcript) {
                 // Check that we're getting valid progress data for the onFileProgress events.
                 jqUnit.assertEquals("The first onFileProgress event should have 200000 bytes complete.",
-                                    200000, transcript[2].args[1]);
+                                    200000, transcript[1].args[1]);
                 jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes in total.",
-                                    400000, transcript[2].args[2]);                    
+                                    400000, transcript[1].args[2]);                    
                 jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes complete.",
-                                    400000, transcript[3].args[1]);
+                                    400000, transcript[2].args[1]);
                 jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes in total.",
-                                    400000, transcript[3].args[2]);
+                                    400000, transcript[2].args[2]);
                 start();
             });
         });
@@ -232,9 +227,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             uploadSmallFileAndTest(function (transcript) {
                 // Check that we're getting valid progress data for the onFileProgress events.
                 jqUnit.assertEquals("The only onFileProgress event should have 165432 bytes complete.",
-                                    165432, transcript[2].args[1]);
+                                    165432, transcript[1].args[1]);
                 jqUnit.assertEquals("The only onFileProgress event should have 165432 bytes in total.",
-                                    165432, transcript[2].args[2]);
+                                    165432, transcript[1].args[2]);
                 jqUnit.assertNotEquals("There is only one onFileProgress event in the transcript.",
                                        "onFileProgress", transcript[3].name);
                 start();
@@ -245,15 +240,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
             uploadNotMultipleFileAndTest(function (transcript) {
                 // Check that we're getting valid progress data for the onFileProgress events.
                 jqUnit.assertEquals("The first onFileProgress event should have 200000 bytes complete.",
-                                    200000, transcript[2].args[1]);
+                                    200000, transcript[1].args[1]);
                 jqUnit.assertEquals("The second onFileProgress event should have 200000 more bytes complete.",
-                                    400000, transcript[3].args[1]);                    
+                                    400000, transcript[2].args[1]);                    
                 jqUnit.assertEquals("The third onFileProgress event should have 200000 more bytes complete.",
-                                    600000, transcript[4].args[1]);                    
+                                    600000, transcript[3].args[1]);                    
                 jqUnit.assertEquals("The fourth onFileProgress event should have 200000 more bytes complete.",
-                                    800000, transcript[5].args[1]);                    
+                                    800000, transcript[4].args[1]);                    
                 jqUnit.assertEquals("The last onFileProgress event should have 12345 more bytes complete.",
-                                    812345, transcript[6].args[1]);
+                                    812345, transcript[5].args[1]);
                 start();
             });
         });

@@ -16,7 +16,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global fluid_1_4:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
@@ -273,21 +273,6 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
     
-    var bindModelEvents = function (that) {
-        that.returnedOptions = {
-            listeners: {
-                afterFileQueued: that.addFile,
-                onUploadStart: that.prepareForUpload,
-                onFileStart: that.showFileProgress,
-                onFileProgress: that.updateFileProgress,
-                onFileSuccess: that.markFileComplete,
-                onFileError: that.showErrorForFile,
-                afterFileComplete: that.hideFileProgress,
-                afterUploadComplete: that.refreshAfterUpload
-            }
-        };
-    };
-    
     var addKeyboardNavigation = function (that) {
         fluid.tabbable(that.container);
         that.selectableContext = fluid.selectable(that.container, {
@@ -312,8 +297,7 @@ var fluid_1_4 = fluid_1_4 || {};
     var setupFileQueue = function (that) {
         fluid.initDependents(that);
         prepareTemplateElements(that);         
-        addKeyboardNavigation(that); 
-        bindModelEvents(that);
+        addKeyboardNavigation(that);
     };
     
     /**
@@ -323,11 +307,10 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {fileQueue} queue a file queue model instance
      * @param {Object} options configuration options for the view
      */
-    fluid.uploader.fileQueueView = function (container, events, options) {
+    fluid.uploader.fileQueueView = function (container, options) {
         var that = fluid.initView("fluid.uploader.fileQueueView", container, options);
         that.fileProgressors = {};
         that.model = that.options.model;
-        that.events = events;
         
         that.addFile = function (file) {
             addFile(that, file);
@@ -379,17 +362,19 @@ var fluid_1_4 = fluid_1_4 || {};
         funcName: "fluid.uploader.fileQueueView",
         args: [
             "{multiFileUploader}.dom.fileQueue",
-            {
-                onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
-            },
             fluid.COMPONENT_OPTIONS
         ]
     });
     
     fluid.defaults("fluid.uploader.fileQueueView", {
+        gradeNames: "fluid.viewComponent",
         components: {
             scroller: {
                 type: "fluid.scrollableTable"
+            },
+            
+            eventBinder: {
+                type: "fluid.uploader.fileQueueView.eventBinder"
             }
         },
         
@@ -440,12 +425,39 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         },
         
+        events: {
+            onFileRemoved: "{multiFileUploader}.events.onFileRemoved",
+        },
+        
         mergePolicy: {
-            model: "preserve",
-            events: "preserve"
+            model: "preserve"
         }
     });
     
+    /**
+     * EventBinder declaratively binds FileQueueView's methods as listeners to Uploader events using IoC.
+     */
+    fluid.defaults("fluid.uploader.fileQueueView.eventBinder", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"]
+    });
+    
+    fluid.demands("fluid.uploader.fileQueueView.eventBinder", [
+        "fluid.uploader.multiFileUploader",
+        "fluid.uploader.fileQueueView"
+    ], {
+        options: {
+            listeners: {
+                "{multiFileUploader}.events.afterFileQueued": "{fileQueueView}.addFile",
+                "{multiFileUploader}.events.onUploadStart": "{fileQueueView}.prepareForUpload",
+                "{multiFileUploader}.events.onFileStart": "{fileQueueView}.showFileProgress",
+                "{multiFileUploader}.events.onFileProgress": "{fileQueueView}.updateFileProgress",
+                "{multiFileUploader}.events.onFileSuccess": "{fileQueueView}.markFileComplete",
+                "{multiFileUploader}.events.onFileError": "{fileQueueView}.showErrorForFile",
+                "{multiFileUploader}.events.afterFileComplete": "{fileQueueView}.hideFileProgress",
+                "{multiFileUploader}.events.afterUploadComplete": "{fileQueueView}.refreshAfterUpload"
+            }
+        }
+    });
     
     /**************
      * Scrollable *
@@ -460,9 +472,8 @@ var fluid_1_4 = fluid_1_4 || {};
      * @return the scrollable component
      */
     fluid.scrollable = function (element, options) {
-        var that = fluid.initLittleComponent("fluid.scrollable", options);
-        element = fluid.container(element);
-        that.scrollable = that.options.makeScrollableFn(element, that.options);
+        var that = fluid.initView("fluid.scrollable", element, options);
+        that.scrollable = that.options.makeScrollableFn(that.container, that.options);
         that.maxHeight = that.scrollable.css("max-height");
 
         /**
@@ -519,6 +530,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.defaults("fluid.scrollableTable", {
+        gradeNames: "fluid.viewComponent",
         makeScrollableFn: fluid.scrollable.makeTable,
         wrapperMarkup: "<div class='fl-scrollable-scroller'><div class='fl-scrollable-inner'></div></div>"
     });    
