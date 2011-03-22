@@ -49,13 +49,13 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uploader.remote",
                 options: {
                     queueSettings: "{multiFileUploader}.options.queueSettings",
-                     events: {
-                         afterReady: "{multiFileUploader}.events.afterReady",
-                         onFileStart: "{multiFileUploader}.events.onFileStart",
-                         onFileProgress: "{multiFileUploader}.events.onFileProgress",
-                         onFileSuccess: "{multiFileUploader}.events.onFileSuccess",
-                         onFileError: "{multiFileUploader}.events.onFileError",
-                         onFileComplete: "{multiFileUploader}.events.onFileComplete"
+                    events: {
+                        afterReady: "{multiFileUploader}.events.afterReady",
+                        onFileStart: "{multiFileUploader}.events.onFileStart",
+                        onFileProgress: "{multiFileUploader}.events.onFileProgress",
+                        onFileSuccess: "{multiFileUploader}.events.onFileSuccess",
+                        onFileError: "{multiFileUploader}.events.onFileError",
+                        onFileComplete: "{multiFileUploader}.events.onFileComplete"
                     }
                 }
             }
