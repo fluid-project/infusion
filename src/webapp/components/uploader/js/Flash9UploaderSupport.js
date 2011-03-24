@@ -20,8 +20,7 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
-    fluid.uploader = fluid.uploader || {};
-    fluid.uploader.swfUploadStrategy = fluid.uploader.swfUploadStrategy || {};
+    fluid.registerNamespace("fluid.uploader.swfUploadStrategy");
     
     /**********************************************************************************
      * The functions in this file, which provide support for Flash 9 in the Uploader, *

@@ -205,7 +205,6 @@ fluid.registerNamespace("fluid.tests");
     fluid.demands("fluid.tests.multiResSub", ["fluid.tests.multiResolution", "fluid.tests.localFiles", "fluid.tests.localTest"],
         {
             funcName: "fluid.tests.multiResSub3",
-            parent: ["fluid.tests.multiResolution", "fluid.tests.localFiles"],
             args: [{
                 localKey1: "testValue1"
             }, null 
@@ -307,8 +306,7 @@ fluid.registerNamespace("fluid.tests");
             var type3 = "fluid.tests.multiResSub3";
             jqUnit.assertEquals("\"Test\" subcomponent", type3, that3.resSub.typeName);
             var expectedOptions = {
-                localKey1: "testValue1",
-                localKey2: "localValue2"
+                localKey1: "testValue1"
     //             targetTypeName: type3 // This floats about a bit as we change policy on "typeName"
             };
             jqUnit.assertDeepEq("\"Test\" subcomponent merged options", expectedOptions, that3.resSub.options);

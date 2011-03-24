@@ -19,8 +19,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
-    
-    fluid.browser = fluid.browser || {};
+    fluid.registerNamespace("fluid.browser");
     
     fluid.browser.binaryXHR = function () {
         var canSendBinary = window.FormData || 
@@ -48,6 +47,12 @@ var fluid_1_4 = fluid_1_4 || {};
         );
 
         return that;
+    };
+    
+    fluid.progressiveCheckerForComponent = function (options) {
+        var that = fluid.initLittleComponent("fluid.progressiveCheckerForComponent", options);
+        var defaults = fluid.defaults(that.options.componentName);
+        return fluid.progressiveChecker(fluid.expandOptions(defaults.progressiveCheckerOptions, that));  
     };
     
     fluid.defaults("fluid.progressiveChecker", {

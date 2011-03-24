@@ -322,9 +322,11 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.defaults("fluid.uploader", {
+        gradeNames: ["fluid.viewComponent"],
         components: {
             uploaderContext: {
-                type: "fluid.progressiveChecker",
+                type: "fluid.progressiveCheckerForComponent",
+                options: {componentName: "fluid.uploader"},
                 priority: "first"
             },
             uploaderImpl: {
@@ -332,12 +334,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{uploader}.container",
                 options: "{uploader}.uploaderOptions"
             }
-        }
-    });
-    
-    fluid.demands("fluid.progressiveChecker", "fluid.uploader", {
-        funcName: "fluid.progressiveChecker",
-        args: [{
+        },
+        progressiveCheckerOptions: {
             checks: [
                 {
                     feature: "{fluid.browser.supportsBinaryXHR}",
@@ -348,9 +346,13 @@ var fluid_1_4 = fluid_1_4 || {};
                     contextName: "fluid.uploader.swfUpload"
                 }
             ],
-
             defaultTypeTag: fluid.typeTag("fluid.uploader.singleFile")
-        }]
+        }
+    });
+    
+    // Ensure that for all uploaders created via IoC, we bypass the wrapper and directly create the concrete uploader
+    fluid.demands("fluid.uploader", [], {
+        funcName: "fluid.uploaderImpl"
     });
     
     // This method has been deprecated as of Infusion 1.3. Use fluid.uploader() instead, 
@@ -648,7 +650,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
 
-    fluid.demands("uploaderImpl", ["fluid.uploader", "fluid.uploader.singleFile"], {
+    fluid.demands("fluid.uploaderImpl", "fluid.uploader.singleFile", {
         funcName: "fluid.uploader.singleFileUploader"
     });
     

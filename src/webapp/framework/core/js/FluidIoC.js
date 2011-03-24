@@ -431,31 +431,22 @@ outer:  for (var i = 0; i < exist.length; ++i) {
      */
     fluid.determineDemands = function (instantiator, parentThat, funcNames) {
         funcNames = $.makeArray(funcNames);
-        var demandspec = fluid.locateDemands(instantiator, parentThat, funcNames);
-   
-        if (!demandspec) {
-            demandspec = {};
-        }
+        var demandspec = fluid.locateDemands(instantiator, parentThat, funcNames) || {};
         var newFuncName = funcNames[0];
+        
         if (demandspec.funcName) {
             newFuncName = demandspec.funcName;
-           /**    TODO: "redirects" disabled pending further thought
-            var demandspec2 = fluid.fetchDirectDemands(funcNames[0], that.typeName);
+            var demandspec2 = fluid.locateDemands(instantiator, parentThat, [newFuncName]);
             if (demandspec2) {
+                fluid.log("Followed redirect from function name " + demandspec.funcName);
                 demandspec = demandspec2; // follow just one redirect
-            } **/
-        }
-
-        var mergeArgs = [];
-        if (demandspec.parent) {
-            var parent = searchDemands(funcNames[0], $.makeArray(demandspec.parent).sort());
-            if (parent) {
-                mergeArgs = parent.args; // TODO: is this really a necessary feature?
+                if (demandspec.funcName) {
+                    newFuncName = demandspec.funcName;
+                }
             }
         }
-        var args = [];
-        fluid.merge(null, args, $.makeArray(mergeArgs), $.makeArray(demandspec.args)); // TODO: avoid so much copying
-        return $.extend({funcName: newFuncName, args: args}, fluid.censorKeys(demandspec, ["funcName", "args"]));
+        
+        return fluid.merge(null, {funcName: newFuncName, args: fluid.makeArray(demandspec.args)}, fluid.censorKeys(demandspec, ["funcName", "args"]));
     };
     
     fluid.resolveDemands = function(instantiator, parentThat, funcNames, initArgs, options) {
@@ -589,7 +580,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             var expandOptions = makeStackResolverOptions(instantiator, that, localRecord, outerExpandOptions);
             expandOptions.noCopy = true; // It is still possible a model may be fetched even though it is preserved
             var pres;
-            if (!fluid.isArrayable(args)) {
+            if (!fluid.isArrayable(args) && !fluid.isPrimitive(args)) {
                 pres = fluid.expander.preserveFromExpansion(args);
             }
             var expanded = fluid.expander.expandLight(args, expandOptions);

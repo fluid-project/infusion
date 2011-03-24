@@ -21,7 +21,7 @@ var fluid_1_4 = fluid_1_4 || {};
 
     fluid.uploader = fluid.uploader || {};
     
-    fluid.demands("uploaderImpl", ["fluid.uploader", "fluid.uploader.html5"], {
+    fluid.demands("fluid.uploaderImpl", "fluid.uploader.html5", {
         funcName: "fluid.uploader.multiFileUploader"
     });
     

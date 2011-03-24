@@ -42,8 +42,13 @@
             <!-- The Uploader's template will be injected via AJAX into this container. -->
         </div>
             
+        <input type="button" class="flc-uploaderDemo-concrete" value="Concrete Uploader"/>
+        <input type="button" class="flc-uploaderDemo-IoC" value="IoC-driven Uploader"/>    
+            
+            
         <script type="text/javascript">
-            demo.initUploader();
+            $(".flc-uploaderDemo-concrete").click(fluid.uploader.demo.initUploader);
+            $(".flc-uploaderDemo-IoC").click(fluid.uploader.demo.initIoCUploader);
         </script>         
          
     </body>
