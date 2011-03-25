@@ -5488,7 +5488,7 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 var fluid = fluid || {};
@@ -5686,7 +5686,7 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies.
@@ -7166,7 +7166,7 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 var fluid = fluid || {};
@@ -7228,7 +7228,7 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 var fluid = fluid || {};
@@ -7349,7 +7349,7 @@ var fluid = fluid || {};
  * Licenses.
  * 
  * You may obtain a copy of the ECL 2.0 License and BSD License at
- * https://source.fluidproject.org/svn/LICENSE.txt
+ * https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  * 
  * DOCUMENTATION
  * Technical documentation is available at: http://wiki.fluidproject.org/x/d4ck
