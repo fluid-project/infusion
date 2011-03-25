@@ -138,6 +138,17 @@ var fluid_1_4 = fluid_1_4 || {};
         }    
     };
    
+    // Implementation notes: The EL path manipulation utilities here are somewhat more thorough
+    // and expensive versions of those provided in Fluid.js - there is some duplication of 
+    // functionality. This is a tradeoff between stability and performance - the versions in
+    // Fluid.js are the most frequently used and do not implement escaping of characters .
+    // as \. and \ as \\ as the versions here. The implementations here are not quite complete
+    // or very performant and are left here partially as an implementation note. Problems will
+    // arise if clients manipulate JSON structures containing "." characters in keys as if they
+    // are models, treating these is best left until the cases where they occur. The now standard
+    // utilities fluid.path(), fluid.parseEL and fluid.composePath are the ones recommended for
+    // general users and their implementation can be upgraded if required.
+   
     fluid.pathUtil = {};
    
     var getPathSegmentImpl = function (accept, path, i) {

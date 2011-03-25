@@ -1302,7 +1302,7 @@ var fluid = fluid || fluid_1_4;
         return that;
     };
     
-    /** Expect that an output from the DOM binder has resulted in a non-empty set of 
+    /** Expect that jQuery selector query has resulted in a non-empty set of 
      * results. If none are found, this function will fail with a diagnostic message, 
      * with the supplied message prepended.
      */

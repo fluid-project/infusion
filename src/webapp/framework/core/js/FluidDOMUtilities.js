@@ -44,7 +44,13 @@ var fluid_1_4 = fluid_1_4 || {};
      * Walks the DOM, applying the specified acceptor function to each element.
      * There is a special case for the acceptor, allowing for quick deletion of elements and their children.
      * Return "delete" from your acceptor function if you want to delete the element in question.
-     * Return "stop" to terminate iteration.
+     * Return "stop" to terminate iteration. 
+     
+     * Implementation note - this utility exists mainly for performance reasons. It was last tested
+     * carefully some time ago (around jQuery 1.2) but at that time was around 3-4x faster at raw DOM
+     * filtration tasks than the jQuery equivalents, which was an important source of performance loss in the
+     * Reorderer component. General clients of the framework should use this method with caution if at all, and
+     * the performance issues should be reassessed when we have time. 
      * 
      * @param {Element} node the node to start walking from
      * @param {Function} acceptor the function to invoke with each DOM element
@@ -79,7 +85,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.dom.iterateDom.DOM_BAIL_DEPTH = 256;
     
     /**
-     * Checks if the sepcified container is actually the parent of containee.
+     * Checks if the specified container is actually the parent of containee.
      * 
      * @param {Element} container the potential parent
      * @param {Element} containee the child in question
@@ -93,16 +99,22 @@ var fluid_1_4 = fluid_1_4 || {};
         return false;
     };
        
-    /** Return the element text from the supplied DOM node as a single String */
-    fluid.dom.getElementText = function(element) {
+    /** Return the element text from the supplied DOM node as a single String.
+     * Implementation note - this is a special-purpose utility used in the framework in just one
+     * position in the Reorderer. It only performs a "shallow" traversal of the text and was intended
+     * as a quick and dirty means of extracting element labels where the user had not explicitly provided one.
+     * It should not be used by general users of the framework and its presence here needs to be 
+     * reassessed.
+     */
+    fluid.dom.getElementText = function (element) {
         var nodes = element.childNodes;
         var text = "";
-        for (var i = 0; i < nodes.length; ++ i) {
-          var child = nodes[i];
-          if (child.nodeType == 3) {
-            text = text + child.nodeValue;
+        for (var i = 0; i < nodes.length; ++i) {
+            var child = nodes[i];
+            if (child.nodeType === 3) {
+                text = text + child.nodeValue;
             }
-          }
+        }
         return text; 
     };
     
