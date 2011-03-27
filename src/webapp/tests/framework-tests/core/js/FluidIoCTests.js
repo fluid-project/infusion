@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, jQuery*/
+/*global fluid, jqUnit, jQuery*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -246,21 +246,21 @@ fluid.registerNamespace("fluid.tests");
     fluid.setLogging(true);
 
     fluidIoCTests.test("construct", function () {
-        expect(2);
+        jqUnit.expect(2);
         var that = fluid.tests.testComponent("#pager-top", {});
         jqUnit.assertValue("Constructed", that);
         jqUnit.assertEquals("Value transmitted", "testComponent value", that.test2.options.default1);
     });
 
     fluidIoCTests.test("crossConstruct", function () {
-        expect(2);
+        jqUnit.expect(2);
         var that = fluid.tests.testComponent2("#pager-top", {});
         jqUnit.assertValue("Constructed", that);
         jqUnit.assertEquals("Value transmitted", "Subcomponent 2 default", that.sub1.options.crossDefault);
     });
 
     fluidIoCTests.test("invokers", function () {
-        expect(2);
+        jqUnit.expect(2);
         var that = fluid.tests.invokerComponent();
         jqUnit.assertValue("Constructed", that);
         jqUnit.assertEquals("Rendered", "Every CATT has 4 Leg(s)", 
@@ -268,7 +268,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     fluidIoCTests.test("invokers with demands", function () {
-        expect(2);
+        jqUnit.expect(2);
         var that = fluid.tests.invokerComponent2();
         jqUnit.assertValue("Constructed", that);
         jqUnit.assertEquals("Rendered", "Every CATT has 4 Leg(s)", 
@@ -276,7 +276,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     fluidIoCTests.test("Aliasing expander test", function () {
-        expect(3);
+        jqUnit.expect(3);
         var model = {};
         var that = fluid.tests.dependentModel({model: model});
         jqUnit.assertValue("Constructed", that);
@@ -494,10 +494,8 @@ fluid.registerNamespace("fluid.tests");
     fluid.tests.deferredInvokeParent = fluid.littleComponent("fluid.tests.deferredInvokeParent");
     
     fluid.demands("fluid.tests.deferredInvoke", "fluid.tests.testContext", {
-        options: {
-            mergePaths: ["{options}", {
-                test: "test option from demands"
-            }]
+        mergeOptions: {
+            test: "test option from demands"
         }
     });
     
@@ -593,6 +591,44 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Injection of self via demands block", child, argChild);
         });
         child.events.localEvent.fire(origArg0);
+    });
+    
+    // Simpler demonstration matching docs, also using "scoped event binding"
+    fluid.defaults("fluid.tests.eventParent2", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            parentEvent: null
+        },
+        components: {
+            eventChild: {
+                type: "fluid.tests.eventChild2"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.eventChild2", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            parentEvent: null
+        }
+    });
+
+    fluid.demands("fluid.tests.eventChild2", "fluid.tests.eventParent2", {
+        mergeOptions: {
+            events: {
+                parentEvent: "{eventParent2}.events.parentEvent"
+            }
+        }
+    });
+    
+    fluidIoCTests.test("FLUID-4135 event injection with scope", function() {
+        var that = fluid.tests.eventParent2();
+        jqUnit.expect(1);
+        that.events.parentEvent.addListener(function() {
+            jqUnit.assert("Listener fired");  
+        });
+        that.eventChild.events.parentEvent.fire();
+        
     });
     
     fluid.tests.reinsNonComponent = function() {
@@ -723,7 +759,7 @@ fluid.registerNamespace("fluid.tests");
     
     fluid.demands("fluid.tests.mergePathsChild", "fluid.tests.mergePaths", {
         options: {
-            mergePaths: [
+            mergeAllOptions: [
                 "{options}", {childOption1: "demandValue1"}, {childOption3: "{mergePaths}.options.headOption"}
                 ]
         }
@@ -731,15 +767,14 @@ fluid.registerNamespace("fluid.tests");
     
     fluid.demands("fluid.tests.mergePathsViewChild", "fluid.tests.mergePaths", [
         "#pager-top", {
-            mergePaths: ["{options}", { 
+            mergeOptions: { 
                 model:   "{mergePaths}.model", 
                 applier: "{mergePaths}.options.applier" 
             }
-            ]
         }
     ]);
     
-    fluidIoCTests.test("FLUID-4130 mergePaths for demanded component options", function() {
+    fluidIoCTests.test("FLUID-4130 mergeOptions for demanded component options", function() {
         var model = {key: "Head model"};
         var mergePaths = fluid.tests.mergePaths({model: model});
         var expected = {
@@ -857,15 +892,14 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.littleComponent", "autoInit"],
         mergePolicy: {
             parent: "nomerge",
-            mergePaths: "nomerge" // TODO: This should not be necessary!!
+            mergeAllOptions: "nomerge" // TODO: This should not be necessary!!
         },
         finalInitFunction: "fluid.tests.guidedChildInit"
     });
     
-    fluid.demands("fluid.tests.guidedChild", "fluid.tests.guidedParent", 
-        {options: {mergePaths: [
-            "{options}", {parent: "{guidedParent}"}
-        ]}
+    fluid.demands("fluid.tests.guidedChild", "fluid.tests.guidedParent", {
+        mergeOptions:  {parent: "{guidedParent}"
+        }
     });
     
     fluid.tests.guidedChildInit = function(that) {
@@ -930,13 +964,13 @@ fluid.registerNamespace("fluid.tests");
                 var circular2 = fluid.tests.circularity();
             }
             catch (e) {
-                jqUnit.assertTrue("Exception caught in circular instantiation", true);
+                jqUnit.assert("Exception caught in circular instantiation");
             }
             try {
                 fluid.expandOptions(circular, circular);
             }
             catch (e) {
-                jqUnit.assertTrue("Exception caught in circular expansion", true);
+                jqUnit.assert("Exception caught in circular expansion");
             }
         }
         finally {
@@ -1015,7 +1049,7 @@ fluid.registerNamespace("fluid.tests");
             var comp = fluid.tests.circular.strategy();
         }
         catch (e) {
-            jqUnit.assertTrue("Circular construction guarded", true);  
+            jqUnit.assert("Circular construction guarded");  
         }
         finally {
             fluid.pushSoftFailure(-1);

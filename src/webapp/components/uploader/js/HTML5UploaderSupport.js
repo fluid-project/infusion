@@ -19,25 +19,23 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
-    fluid.uploader = fluid.uploader || {};
-    
     fluid.demands("fluid.uploaderImpl", "fluid.uploader.html5", {
         funcName: "fluid.uploader.multiFileUploader"
     });
     
-    fluid.uploader.html5Strategy = function (options) {
-        var that = fluid.initLittleComponent("fluid.uploader.html5Strategy", options);
-        fluid.initDependents(that);
-        return that;
-    };
+    fluid.demands("fluid.uploader.progressiveStrategy", "fluid.uploader.html5", {
+        funcName: "fluid.uploader.html5Strategy"
+    });
     
     fluid.defaults("fluid.uploader.html5Strategy", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             local: {
-                type: "fluid.uploader.html5Strategy.local",
+                type: "fluid.uploader.local",
                 options: {
                     queueSettings: "{multiFileUploader}.options.queueSettings",
                     events: {
+                        onFileDialog: "{multiFileUploader}.events.onFileDialog",
                         afterFileDialog: "{multiFileUploader}.events.afterFileDialog",
                         afterFileQueued: "{multiFileUploader}.events.afterFileQueued",
                         onQueueError: "{multiFileUploader}.events.onQueueError"
@@ -65,25 +63,7 @@ var fluid_1_4 = fluid_1_4 || {};
         // which load the entire file to be loaded into memory.
         // Set this option to a sane limit (100MB) so your users won't experience crashes or slowdowns (FLUID-3937).
         legacyBrowserFileLimit: 100000,
-        
-        mergePolicy: {
-            "components.local.options.events": "preserve",
-            "components.remote.options.events": "preserve"
-        }        
-    });
-
-    fluid.demands("fluid.uploader.html5Strategy", "fluid.multiFileUploader", {
-        funcName: "fluid.uploader.html5Strategy",
-        args: [
-            fluid.COMPONENT_OPTIONS
-        ]
-    });
     
-    fluid.demands("fluid.uploader.progressiveStrategy", "fluid.uploader.html5", {
-        funcName: "fluid.uploader.html5Strategy",
-        args: [
-            fluid.COMPONENT_OPTIONS
-        ]
     });
     
     
@@ -223,7 +203,7 @@ var fluid_1_4 = fluid_1_4 || {};
         xhr.send(formData);
     };
     
-    var generateMultipartBoundary = function () {
+    fluid.uploader.html5Strategy.generateMultipartBoundary = function () {
         var boundary = "---------------------------";
         boundary += Math.floor(Math.random() * 32768);
         boundary += Math.floor(Math.random() * 32768);
@@ -248,7 +228,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * Create the multipart/form-data content by hand to send the file
      */
     fluid.uploader.html5Strategy.doManualMultipartUpload = function (file, queueSettings, xhr) {
-        var boundary = generateMultipartBoundary();
+        var boundary =  fluid.uploader.html5Strategy.generateMultipartBoundary();
         var multipart = fluid.uploader.html5Strategy.generateMultiPartContent(boundary, file);
         
         xhr.open("POST", queueSettings.uploadURL, true);
@@ -341,16 +321,16 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.demands("fluid.uploader.html5Strategy.local", "fluid.uploader.html5Strategy", {
+    fluid.demands("fluid.uploader.local", "fluid.uploader.html5Strategy", {
         funcName: "fluid.uploader.html5Strategy.local",
         args: [
             "{multiFileUploader}.queue",
             "{html5Strategy}.options.legacyBrowserFileLimit",
-            fluid.COMPONENT_OPTIONS
+            "{options}"
         ]
     });
     
-    fluid.demands("fluid.uploader.html5Strategy.local", [
+    fluid.demands("fluid.uploader.local", [
         "fluid.uploader.html5Strategy",
         "fluid.browser.supportsFormData"
     ], {
@@ -358,7 +338,7 @@ var fluid_1_4 = fluid_1_4 || {};
         args: [
             "{multiFileUploader}.queue",
             undefined,
-            fluid.COMPONENT_OPTIONS
+            "{options}"
         ]
     });
     
@@ -442,12 +422,10 @@ var fluid_1_4 = fluid_1_4 || {};
 
     fluid.demands("fluid.uploader.html5Strategy.browseButtonView", "fluid.uploader.html5Strategy.local", {
         container: "{multiFileUploader}.container",
-        options: {
-            mergePaths: ["{options}", {
-                events: {
-                    onBrowse: "{local}.events.onFileDialog"
-                }
-            }]
+        mergeOptions: {
+            events: {
+                onBrowse: "{local}.events.onFileDialog"
+            }
         }
     });
 

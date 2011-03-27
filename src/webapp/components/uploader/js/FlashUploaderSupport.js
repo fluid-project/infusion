@@ -48,7 +48,7 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             
             local: {
-                type: "fluid.uploader.swfUploadStrategy.local"
+                type: "fluid.uploader.local"
             },
             
             remote: {
@@ -74,18 +74,8 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.demands("fluid.uploader.swfUploadStrategy", "fluid.uploader.multiFileUploader", {
-        funcName: "fluid.uploader.swfUploadStrategy",
-        args: [
-            fluid.COMPONENT_OPTIONS
-        ]
-    });
-    
     fluid.demands("fluid.uploader.progressiveStrategy", "fluid.uploader.swfUpload", {
-        funcName: "fluid.uploader.swfUploadStrategy",
-        args: [
-            fluid.COMPONENT_OPTIONS
-        ]
+        funcName: "fluid.uploader.swfUploadStrategy"
     });
     
     
@@ -113,7 +103,7 @@ var fluid_1_4 = fluid_1_4 || {};
         args: [
             "{engine}.swfUpload",
             "{multiFileUploader}.queue",
-            fluid.COMPONENT_OPTIONS
+            "{options}"
         ]
     });
 
@@ -145,11 +135,11 @@ var fluid_1_4 = fluid_1_4 || {};
         return that;
     };
     
-    fluid.demands("fluid.uploader.swfUploadStrategy.local", "fluid.uploader.multiFileUploader", {
+    fluid.demands("fluid.uploader.local", "fluid.uploader.swfUploadStrategy", {
         funcName: "fluid.uploader.swfUploadStrategy.local",
         args: [
             "{engine}.swfUpload",
-            fluid.COMPONENT_OPTIONS
+            "{options}"
         ]
     });
     

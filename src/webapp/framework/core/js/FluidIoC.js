@@ -259,6 +259,28 @@ var fluid_1_4 = fluid_1_4 || {};
         });
     };
     
+    function mergeToMergeAll(options) {
+        if (options && options.mergeOptions) {
+            options.mergeAllOptions = ["{options}"].concat(fluid.makeArray(options.mergeOptions));
+        }
+    }
+    
+    function upgradeMergeOptions(demandspec) {
+         mergeToMergeAll(demandspec);
+         if (demandspec.mergeAllOptions) {
+             if (demandspec.options) {
+                 fluid.fail("demandspec " + JSON.stringify(demandspec) 
+                 + " is invalid - cannot specify literal options together with mergeOptions or mergeAllOptions"); 
+             }
+             demandspec.options = {
+                 mergeAllOptions: demandspec.mergeAllOptions
+             };
+         }
+         if (demandspec.options) {
+             delete demandspec.options.mergeOptions;
+         }
+    }
+    
     /** Given a concrete argument list and/or options, determine the final concrete
      * "invocation specification" which is coded by the supplied demandspec in the 
      * environment "thatStack" - the return is a package of concrete global function name
@@ -266,6 +288,8 @@ var fluid_1_4 = fluid_1_4 || {};
      */
     fluid.embodyDemands = function(instantiator, parentThat, demandspec, initArgs, options) {
         options = options || {};
+        
+        upgradeMergeOptions(demandspec);
         options.componentRecord = $.extend(true, {}, options.componentRecord, 
             fluid.censorKeys(demandspec, ["args", "funcName"]));
         
@@ -301,6 +325,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 localRecord[name] = demandspec[name];
             }
         });
+        mergeToMergeAll(localRecord.options);
+        mergeToMergeAll(argMap && demands[argMap.options]);
         var upstreamLocalRecord = $.extend({}, localRecord);
         if (options.componentRecord.options !== undefined) {
             upstreamLocalRecord.options = options.componentRecord.options;
@@ -500,7 +526,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.event.resolveEvent = function(that, eventName, eventSpec) {
         return fluid.withInstantiator(that, function(instantiator) {
             if (typeof(eventSpec) === "string") {
-                return fluid.expandOptions(eventSpec, that);
+                var firer = fluid.expandOptions(eventSpec, that);
+                if (!firer) {
+                    fluid.fail("Error in fluid.event.resolveEvent - context path " + eventSpec + " could not be looked up to a valid event firer");
+                }
+                return firer;
             }
             else {
                 var event = eventSpec.event;
@@ -540,7 +570,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.expander.preserveFromExpansion = function(options) {
         var preserve = {};
-        var preserveList = ["mergePolicy", "mergePaths", "components", "invokers", "events"];
+        var preserveList = ["mergePolicy", "mergeAllOptions", "components", "invokers", "events"];
         fluid.each(options.mergePolicy, function(value, key) {
             if (fluid.mergePolicyIs(value, "noexpand")) {
                 preserveList.push(key);
@@ -615,8 +645,8 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             // is really what we properly call "directOptions".
             localRecord.options = userOptions;
         }
-        var mergePaths = (userOptions && userOptions.mergePaths) || ["{directOptions}"];
-        var togo = fluid.transform(mergePaths, function(path) {
+        var mergeOptions = (userOptions && userOptions.mergeAllOptions) || ["{directOptions}"];
+        var togo = fluid.transform(mergeOptions, function(path) {
             // Avoid use of expandOptions in simple case to avoid infinite recursion when constructing instantiator
             return path === "{directOptions}"? localRecord.directOptions : fluid.expandOptions(path, that, localRecord, {direct: true}); 
         });

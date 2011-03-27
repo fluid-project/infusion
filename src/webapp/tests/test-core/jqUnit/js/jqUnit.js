@@ -178,6 +178,10 @@ var jqUnit = jqUnit || {};
      ***********************/
     
     var jsUnitCompat = {
+        assert: function(msg) {
+            ok(true, msg);  
+        },
+        
         assertEquals: function (msg, expected, actual) {
             equals(actual, expected, msg);
         },
@@ -222,6 +226,10 @@ var jqUnit = jqUnit || {};
         assertDeepNeq: function (msg, unexpected, actual) {
             var diag = deepEqDiag(unexpected, actual);
             ok(diag !== null, msg);
+        },
+        // Namespaced version of "expect" for civilization
+        expect: function(number) {
+            expect(number);
         }
     };
 
