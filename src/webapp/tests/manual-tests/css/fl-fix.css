@@ -1,7 +1,9 @@
+.styledElement {
+	border: 1px solid blue;
+}
+
 strong {
     display: block;
-    margin: 4px;
-    margin-right: -4px;
 }
 
 .container {
@@ -10,7 +12,6 @@ strong {
 }
 
 .column {
-    border: 1px solid black;
     width: 50%;
     padding: 4px;
 }
@@ -20,6 +21,14 @@ strong {
     padding: 4px;
     font-style: italic;
 }
+ul li {
+	list-style: none;
+	width: 200px;
+	margin-right:5px;
+	float:left;
+}
+
+/* CLEARING SOLUTIONS */
 
 /* inline-block*/
 .inline-block-clearfix {
@@ -53,3 +62,4 @@ strong {
 	}
 * html .newClearfix             { zoom: 1; } /* IE6 */
 *:first-child+html .newClearfix { zoom: 1; } /* IE7 */
+

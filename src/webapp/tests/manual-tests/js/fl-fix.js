@@ -10,7 +10,8 @@ var demo = demo || {};
     
     var changeClass = function (that, className) {
         var styledElm = that.locate("styledElement");
-        styledElm.attr("class", that.initialClass);
+        //styledElm.attr("class", that.initialClass);
+        styledElm.attr("class", "styledElement");
         styledElm.addClass(className);
     };
     
