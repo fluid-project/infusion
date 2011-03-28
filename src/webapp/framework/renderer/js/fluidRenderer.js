@@ -8,7 +8,7 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
@@ -265,9 +265,11 @@ fluid_1_4 = fluid_1_4 || {};
         form: "action",
         applet: "codebase", object: "codebase" //jslint:ok
     };
+    
+    renderer.decoratorComponentPrefix = "**-renderer-";
   
     renderer.IDtoComponentName = function(ID, num) {
-        return "**-renderer-" + ID.replace(/\./g, "") + "-" + num;
+        return renderer.decoratorComponentPrefix + ID.replace(/\./g, "") + "-" + num;
     };
     
     renderer.invokeFluidDecorator = function(func, args, ID, num, options) {

@@ -7,7 +7,7 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
@@ -20,8 +20,7 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
-    fluid.uploader = fluid.uploader || {};
-    fluid.uploader.swfUploadStrategy = fluid.uploader.swfUploadStrategy || {};
+    fluid.registerNamespace("fluid.uploader.swfUploadStrategy");
     
     /**********************************************************************************
      * The functions in this file, which provide support for Flash 9 in the Uploader, *

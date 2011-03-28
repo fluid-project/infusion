@@ -19,7 +19,7 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
@@ -433,6 +433,7 @@ var fluid = fluid || fluid_1_4;
     
     /** Helpful alias for old-style API **/
     fluid.path = fluid.model.composeSegments;
+    fluid.composePath = fluid.model.composePath;
 
     /** Standard strategies for resolving path segments **/
     fluid.model.environmentStrategy = function (initEnvironment) {
@@ -1301,7 +1302,7 @@ var fluid = fluid || fluid_1_4;
         return that;
     };
     
-    /** Expect that an output from the DOM binder has resulted in a non-empty set of 
+    /** Expect that jQuery selector query has resulted in a non-empty set of 
      * results. If none are found, this function will fail with a diagnostic message, 
      * with the supplied message prepended.
      */

@@ -8,7 +8,7 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
@@ -24,9 +24,7 @@ fluid_1_4 = fluid_1_4 || {};
     if (!fluid.renderer) {
         fluid.fail("fluidRenderer.js is a necessary dependency of RendererUtilities");
         }
-  
-    fluid.registerNamespace("fluid.renderer.selection");
-    
+
     // TODO: rescued from kettleCouchDB.js - clean up in time
     fluid.expect = function (name, members, target) {
         fluid.transform($.makeArray(members), function (key) {
@@ -47,6 +45,14 @@ fluid_1_4 = fluid_1_4 || {};
             togo[togo.length] = first++;
         }
         return togo;
+    };
+
+    fluid.renderer.clearDecorators = function(instantiator, that) {
+        fluid.visitComponentChildren(that, function(component, name) {
+            if (name.indexOf(fluid.renderer.decoratorComponentPrefix) === 0) {
+                instantiator.clearComponent(that, name);
+            }
+        }, {});
     };
 
     // Utilities for coordinating options in renderer components - in theory this could
@@ -164,6 +170,9 @@ fluid_1_4 = fluid_1_4 || {};
 
         if (that.produceTree) {
             that.refreshView = renderer.refreshView = function () {
+                if (rendererOptions.instantiator && rendererOptions.parentComponent) {
+                    fluid.renderer.clearDecorators(rendererOptions.instantiator, rendererOptions.parentComponent);
+                }
                 renderer.render(that.produceTree(that));
             };
         }
@@ -224,6 +233,8 @@ fluid_1_4 = fluid_1_4 || {};
         return target;
     };
     
+    fluid.registerNamespace("fluid.renderer.selection");
+        
     /** Definition of expanders - firstly, "heavy" expanders **/
     
     fluid.renderer.selection.inputs = function (options, container, key, config) {
