@@ -78,15 +78,25 @@ https://source.fluidproject.org/svn/LICENSE.txt
             return local;
         };
         
-        var getRemoteUploader = function () {
+        var getRemoteUploader = function (tracker) {
             var queue = fluid.uploader.fileQueue();
             
             var remote = fluid.uploader.html5Strategy.remote(queue, {
                 queueSettings: {
                     uploadURL: "",
                     postParams: ""
-                }
+                },
+                events: {
+                    afterReady: null,
+                    onFileSuccess: null,
+                    onFileError: null,
+                    onFileComplete: null,
+                    onFileProgress: null
+                }, 
+                listeners: tracker.listeners
             });
+            
+            return remote;
         };
         
         /*********
@@ -110,58 +120,79 @@ https://source.fluidproject.org/svn/LICENSE.txt
             size: 200000
         };
         
-        var events = {
-            onFileSuccess: {
-                fire: function () {
-                        alert("hello")
-                    }
-            },
-            onFileComplete: {
-                fire: function () {
-                        alert("jello")
-                    }                
-            }
-        }
-        
         /******************************
          * fileSuccessHandler() Tests *
          ******************************/
         
-        html5UploaderTests.test("Event sequence for fileSucessHandler", function () {
+        html5UploaderTests.test("Ensure event sequence for fileSuccessHandler", function () {
             var xhr = {
-                status: 200      
+                status: 200, 
+                responseText: "testing"
             };
             
+            var files = [file1];
             var tracker = trackRemoteListeners();
             var transcript = tracker.transcript;
+            var remote = getRemoteUploader(tracker);
+            
+            fluid.uploader.html5Strategy.fileSuccessHandler(file1, remote.events, xhr);
+            
             var eventOrder = ["onFileSuccess", "onFileComplete"];
-            
-            fluid.uploader.html5Strategy.fileSuccessHandler(file1, events, xhr)
-            
-            
             var expectedNumEvents = eventOrder.length;
             jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", 
-                                expectedNumEvents, transcript.length);            
-            
+                                expectedNumEvents, transcript.length);      
+            checkEventOrderForFiles(eventOrder, files, transcript);
+            checkOnFileCompleteEvent(transcript);
         });
         
         /****************************
          * fileErorrHandler() Tests *
          ****************************/
         
-        html5UploaderTests.test("Event sequence for fileErrorHandler", function () {
+        html5UploaderTests.test("Ensure event sequence for fileErrorHandler", function () {
+            var xhr = {
+                status: 200, 
+                responseText: "testing"
+            };
+            
+            var files = [file2];
             var tracker = trackRemoteListeners();
+            var transcript = tracker.transcript;
+            var remote = getRemoteUploader(tracker);
+            
+            fluid.uploader.html5Strategy.fileErrorHandler(file2, remote.events, xhr);
+            
             var eventOrder = ["onFileError", "onFileComplete"];
+            var expectedNumEvents = eventOrder.length;
+            jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", 
+                                expectedNumEvents, transcript.length);      
+            checkEventOrderForFiles(eventOrder, files, transcript);
+            checkOnFileCompleteEvent(transcript);            
         });
         
         /***************************
          * fileStopHandler() Tests *
          ***************************/
         
-        html5UploaderTests.test("Event sequence for fileStopHandler", function () {
-            var tracker = trackRemoteListeners();
-            var eventOrder = ["onFileError", "onFileComplete"];
+        html5UploaderTests.test("Ensure event sequence for fileStopHandler", function () {
+            var xhr = {
+                status: 200, 
+                responseText: "testing"
+            };
             
+            var files = [file3];
+            var tracker = trackRemoteListeners();
+            var transcript = tracker.transcript;
+            var remote = getRemoteUploader(tracker);
+            
+            fluid.uploader.html5Strategy.fileStopHandler(file3, remote.events, xhr);
+            
+            var eventOrder = ["onFileError", "onFileComplete"];
+            var expectedNumEvents = eventOrder.length;
+            jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", 
+                                expectedNumEvents, transcript.length);      
+            checkEventOrderForFiles(eventOrder, files, transcript);
+            checkOnFileCompleteEvent(transcript);            
         });                
         
         /***************************
@@ -261,6 +292,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
             for (var i = 0; i < files.length; i++) {
                 checkEventForFile(eventOrder[i], files[i], transcript[i]);
             }
+        };
+        
+        var checkOnFileCompleteEvent = function (transcript) {
+            var lastTranscriptEntry = transcript[transcript.length -1];
+            jqUnit.assertEquals("The last event should be onFileComplete", 
+                                "onFileComplete", lastTranscriptEntry.name);
+            jqUnit.assertEquals("One argument should have been passed to onFileComplete", 
+                                1, lastTranscriptEntry.args.length);        
         };
         
         var checkAfterFileDialogEvent = function (expectedNumFiles, transcript) {
