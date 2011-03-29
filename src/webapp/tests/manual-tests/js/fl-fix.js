@@ -31,12 +31,17 @@ var demo = demo || {};
         });
     };
     
+    var initTabs = function (selector) {
+        $(selector).tabs();
+    };
+    
     var saveInitialClasses = function (that) {
         that.initialClass = that.locate("styledElement").attr("class");
     };
     
     var setup = function (that) {
         saveInitialClasses(that);
+        initTabs(that.options.selectors.tabs);
         bindEvents(that);
         that.locate("stylePicker").change();
     };
@@ -55,7 +60,8 @@ var demo = demo || {};
         selectors: {
             stylePicker: "#cssFixes",
             styledElement: ".styledElement",
-            styleDescription: ".demo-description"
+            styleDescription: ".demo-description",
+            tabs: "#tabs"
         },
         
         model: {
