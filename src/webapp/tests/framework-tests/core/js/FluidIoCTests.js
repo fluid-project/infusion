@@ -830,17 +830,20 @@ fluid.registerNamespace("fluid.tests");
         that.initFunctionRecord = [];
     };
     
-    fluid.tests.initRecordingComponent = function(that) {
+    // Test FLUID-4162 by creating namespace before component of the same name
+    fluid.registerNamespace("fluid.tests.initFunctions");
+    
+    fluid.tests.initFunctions.initRecordingComponent = function(that) {
         var parent = that.options.parent;
         parent.initFunctionRecord.push(that.options.name);
     };
     
-    fluid.defaults("fluid.tests.recordingComponent", {
+    fluid.defaults("fluid.tests.initFunctions.recordingComponent", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         mergePolicy: {
             parent: "nomerge"  
         },
-        postInitFunction: fluid.tests.initRecordingComponent
+        postInitFunction: "fluid.tests.initFunctions.initRecordingComponent"
         }
     );
     
@@ -857,14 +860,14 @@ fluid.registerNamespace("fluid.tests");
         },
         components: {
             initTimeComponent: {
-                 type: "fluid.tests.recordingComponent",
+                 type: "fluid.tests.initFunctions.recordingComponent",
                  options: {
                      parent: "{initFunctions}",
                      name: "initTimeComponent"
                  }
             },
             eventTimeComponent: {
-                type: "fluid.tests.recordingComponent",
+                type: "fluid.tests.initFunctions.recordingComponent",
                 createOnEvent: "mainEvent",
                 options: {
                     parent: "{initFunctions}",

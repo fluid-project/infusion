@@ -822,9 +822,14 @@ var fluid = fluid || fluid_1_4;
         if (!options.initFunction) {
             fluid.fail("Cannot autoInit component " + componentName + " which does not have an initFunction defined");
         }
-        fluid.setGlobalValue(componentName, function () {
+        var creator = function() {
             return fluid.initComponent(componentName, arguments);
-        });
+        };
+        var existing = fluid.getGlobalValue(componentName);
+        if (existing) {
+            $.extend(creator, existing);
+        }
+        fluid.setGlobalValue(componentName, creator);
     };
     
     fluid.defaults("fluid.littleComponent", {
