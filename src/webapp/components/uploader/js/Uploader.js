@@ -8,7 +8,7 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
@@ -322,9 +322,11 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.defaults("fluid.uploader", {
+        gradeNames: ["fluid.viewComponent"],
         components: {
             uploaderContext: {
-                type: "fluid.progressiveChecker",
+                type: "fluid.progressiveCheckerForComponent",
+                options: {componentName: "fluid.uploader"},
                 priority: "first"
             },
             uploaderImpl: {
@@ -332,12 +334,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{uploader}.container",
                 options: "{uploader}.uploaderOptions"
             }
-        }
-    });
-    
-    fluid.demands("fluid.progressiveChecker", "fluid.uploader", {
-        funcName: "fluid.progressiveChecker",
-        args: [{
+        },
+        progressiveCheckerOptions: {
             checks: [
                 {
                     feature: "{fluid.browser.supportsBinaryXHR}",
@@ -348,10 +346,12 @@ var fluid_1_4 = fluid_1_4 || {};
                     contextName: "fluid.uploader.swfUpload"
                 }
             ],
-
             defaultTypeTag: fluid.typeTag("fluid.uploader.singleFile")
-        }]
+        }
     });
+    
+    // Ensure that for all uploaders created via IoC, we bypass the wrapper and directly create the concrete uploader
+    fluid.alias("fluid.uploader", "fluid.uploaderImpl");
     
     // This method has been deprecated as of Infusion 1.3. Use fluid.uploader() instead, 
     // which now includes built-in support for progressive enhancement.
@@ -537,6 +537,34 @@ var fluid_1_4 = fluid_1_4 || {};
         container: "{multiFileUploader}.container"
     });
     
+    /** Demands blocks for binding to fileQueueView **/
+            
+    fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader.multiFileUploader", {
+        container: "{multiFileUploader}.dom.fileQueue",
+        options: {
+            events: {
+                onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
+            }
+        }
+    });
+        
+    fluid.demands("fluid.uploader.fileQueueView.eventBinder", [
+        "fluid.uploader.multiFileUploader",
+        "fluid.uploader.fileQueueView"
+    ], {
+        options: {
+            listeners: {
+                "{multiFileUploader}.events.afterFileQueued": "{fileQueueView}.addFile",
+                "{multiFileUploader}.events.onUploadStart": "{fileQueueView}.prepareForUpload",
+                "{multiFileUploader}.events.onFileStart": "{fileQueueView}.showFileProgress",
+                "{multiFileUploader}.events.onFileProgress": "{fileQueueView}.updateFileProgress",
+                "{multiFileUploader}.events.onFileSuccess": "{fileQueueView}.markFileComplete",
+                "{multiFileUploader}.events.onFileError": "{fileQueueView}.showErrorForFile",
+                "{multiFileUploader}.events.afterFileComplete": "{fileQueueView}.hideFileProgress",
+                "{multiFileUploader}.events.afterUploadComplete": "{fileQueueView}.refreshAfterUpload"
+            }
+        }
+    });
         
    /**
     * Pretty prints a file's size, converting from bytes to kilobytes or megabytes.
@@ -648,7 +676,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
 
-    fluid.demands("uploaderImpl", ["fluid.uploader", "fluid.uploader.singleFile"], {
+    fluid.demands("fluid.uploaderImpl", "fluid.uploader.singleFile", {
         funcName: "fluid.uploader.singleFileUploader"
     });
     
