@@ -375,6 +375,15 @@ var fluid_1_4 = fluid_1_4 || {};
         };
         return togo;
     };
+    
+    var aliasTable = {};
+    
+    fluid.alias = function(demandingName, aliasName) {
+        if (aliasName) {
+            aliasTable[demandingName] = aliasName;
+        }
+        else return aliasTable[demandingName];
+    };
    
     var dependentStore = {};
     
@@ -399,12 +408,23 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         else if (spec.length) {
             spec = {args: spec};
         }
+        if (fluid.getCallerInfo) {
+            var callerInfo = fluid.getCallerInfo(5);
+            if (callerInfo) {
+                spec.registeredFrom = callerInfo;
+            }
+        }
         var exist = dependentStore[demandingName];
         if (!exist) {
             exist = [];
             dependentStore[demandingName] = exist;
         }
         exist.push({contexts: contextNames, spec: spec});
+    };
+
+    fluid.compareDemands = function(speca, specb) {
+        var p1 = speca.uncess - specb.uncess;
+        return p1 === 0? specb.intersect - speca.intersect : p1;
     };
 
     fluid.locateDemands = function(instantiator, parentThat, demandingNames) {
@@ -440,10 +460,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 matches.push(record); 
             }
         }
-        matches.sort(function(speca, specb) {
-            var p1 = specb.intersect - speca.intersect; 
-            return p1 === 0? speca.uncess - specb.uncess : p1;
-        });
+        matches.sort(fluid.compareDemands);
         var demandspec = matches.length === 0 || matches[0].intersect === 0? null : matches[0].spec;
         if (demandLogging) {
             fluid.log(demandspec? "Located " + matches.length + " potential match" + (matches.length === 1? "" : "es") + ", selected best match with " + matches[0].intersect 
@@ -457,17 +474,27 @@ outer:  for (var i = 0; i < exist.length; ++i) {
      */
     fluid.determineDemands = function (instantiator, parentThat, funcNames) {
         funcNames = $.makeArray(funcNames);
-        var demandspec = fluid.locateDemands(instantiator, parentThat, funcNames) || {};
         var newFuncName = funcNames[0];
-        
+        var demandspec = fluid.locateDemands(instantiator, parentThat, funcNames) || {};
         if (demandspec.funcName) {
             newFuncName = demandspec.funcName;
-            var demandspec2 = fluid.locateDemands(instantiator, parentThat, [newFuncName]);
+        }
+        
+        var aliasTo = fluid.alias(newFuncName);
+        
+        if (aliasTo) {
+            fluid.log("Following redirect from function name " + newFuncName + " to " + aliasTo);
+            var demandspec2 = fluid.locateDemands(instantiator, parentThat, [aliasTo]);
             if (demandspec2) {
-                fluid.log("Followed redirect from function name " + demandspec.funcName);
-                demandspec = demandspec2; // follow just one redirect
-                if (demandspec.funcName) {
-                    newFuncName = demandspec.funcName;
+                fluid.each(demandspec2, function(value, key) {
+                    if (localRecordExpected.test(key)) {
+                        fluid.fail("Error in demands block " + JSON.stringify(demandspec2) + " - content with key \"" + key 
+                        + "\" is not supported since this demands block was resolved via an alias from \"" + newFuncName + "\"");
+                    }  
+                });
+                if (demandspec2.funcName) {
+                    newFuncName = demandspec2.funcName;
+                    fluid.log("Followed final inner demands to function name \"" + newFuncName + "\"");
                 }
             }
         }

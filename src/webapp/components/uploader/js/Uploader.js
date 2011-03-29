@@ -351,9 +351,7 @@ var fluid_1_4 = fluid_1_4 || {};
     });
     
     // Ensure that for all uploaders created via IoC, we bypass the wrapper and directly create the concrete uploader
-    fluid.demands("fluid.uploader", [], {
-        funcName: "fluid.uploaderImpl"
-    });
+    fluid.alias("fluid.uploader", "fluid.uploaderImpl");
     
     // This method has been deprecated as of Infusion 1.3. Use fluid.uploader() instead, 
     // which now includes built-in support for progressive enhancement.
@@ -539,6 +537,34 @@ var fluid_1_4 = fluid_1_4 || {};
         container: "{multiFileUploader}.container"
     });
     
+    /** Demands blocks for binding to fileQueueView **/
+            
+    fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader.multiFileUploader", {
+        container: "{multiFileUploader}.dom.fileQueue",
+        options: {
+            events: {
+                onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
+            }
+        }
+    });
+        
+    fluid.demands("fluid.uploader.fileQueueView.eventBinder", [
+        "fluid.uploader.multiFileUploader",
+        "fluid.uploader.fileQueueView"
+    ], {
+        options: {
+            listeners: {
+                "{multiFileUploader}.events.afterFileQueued": "{fileQueueView}.addFile",
+                "{multiFileUploader}.events.onUploadStart": "{fileQueueView}.prepareForUpload",
+                "{multiFileUploader}.events.onFileStart": "{fileQueueView}.showFileProgress",
+                "{multiFileUploader}.events.onFileProgress": "{fileQueueView}.updateFileProgress",
+                "{multiFileUploader}.events.onFileSuccess": "{fileQueueView}.markFileComplete",
+                "{multiFileUploader}.events.onFileError": "{fileQueueView}.showErrorForFile",
+                "{multiFileUploader}.events.afterFileComplete": "{fileQueueView}.hideFileProgress",
+                "{multiFileUploader}.events.afterUploadComplete": "{fileQueueView}.refreshAfterUpload"
+            }
+        }
+    });
         
    /**
     * Pretty prints a file's size, converting from bytes to kilobytes or megabytes.
