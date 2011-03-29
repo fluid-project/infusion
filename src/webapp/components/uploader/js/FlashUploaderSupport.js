@@ -8,14 +8,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
 /*global fluid_1_4:true, jQuery, swfobject, SWFUpload */
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
@@ -23,9 +23,8 @@ var fluid_1_4 = fluid_1_4 || {};
 
     fluid.uploader = fluid.uploader || {};
     
-    fluid.demands("uploaderImpl", ["fluid.uploader", "fluid.uploader.swfUpload"], {
-        funcName: "fluid.uploader.multiFileUploader",
-        args: ["{uploader}.options.deferredComponents.uploaderImpl.container", fluid.COMPONENT_OPTIONS]
+    fluid.demands("fluid.uploaderImpl", "fluid.uploader.swfUpload", {
+        funcName: "fluid.uploader.multiFileUploader"
     });
     
     /**********************
@@ -49,7 +48,7 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             
             local: {
-                type: "fluid.uploader.swfUploadStrategy.local"
+                type: "fluid.uploader.local"
             },
             
             remote: {
@@ -75,18 +74,8 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.demands("fluid.uploader.swfUploadStrategy", "fluid.uploader.multiFileUploader", {
-        funcName: "fluid.uploader.swfUploadStrategy",
-        args: [
-            fluid.COMPONENT_OPTIONS
-        ]
-    });
-    
     fluid.demands("fluid.uploader.progressiveStrategy", "fluid.uploader.swfUpload", {
-        funcName: "fluid.uploader.swfUploadStrategy",
-        args: [
-            fluid.COMPONENT_OPTIONS
-        ]
+        funcName: "fluid.uploader.swfUploadStrategy"
     });
     
     
@@ -114,7 +103,7 @@ var fluid_1_4 = fluid_1_4 || {};
         args: [
             "{engine}.swfUpload",
             "{multiFileUploader}.queue",
-            fluid.COMPONENT_OPTIONS
+            "{options}"
         ]
     });
 
@@ -146,11 +135,11 @@ var fluid_1_4 = fluid_1_4 || {};
         return that;
     };
     
-    fluid.demands("fluid.uploader.swfUploadStrategy.local", "fluid.uploader.multiFileUploader", {
+    fluid.demands("fluid.uploader.local", "fluid.uploader.swfUploadStrategy", {
         funcName: "fluid.uploader.swfUploadStrategy.local",
         args: [
             "{engine}.swfUpload",
-            fluid.COMPONENT_OPTIONS
+            "{options}"
         ]
     });
     
@@ -343,17 +332,9 @@ var fluid_1_4 = fluid_1_4 || {};
         events.onFileSuccess.addListener(manualModelUpdater);
     };
     
-    fluid.uploader.swfUploadStrategy.flash10EventBinder = function (model, events, local) {
+    fluid.uploader.swfUploadStrategy.flash10EventBinder = function (model, events) {
         unbindSWFUploadSelectFiles();      
               
-        events.onUploadStart.addListener(function () {
-            local.disableBrowseButton();
-        });
-        
-        events.afterUploadComplete.addListener(function () {
-            local.enableBrowseButton();            
-        });
-        
         fluid.uploader.swfUploadStrategy.bindFileEventListeners(model, events);
     };
     
@@ -364,8 +345,7 @@ var fluid_1_4 = fluid_1_4 || {};
         funcName: "fluid.uploader.swfUploadStrategy.flash10EventBinder",
         args: [
             "{multiFileUploader}.queue.files",
-            "{multiFileUploader}.events",
-            "{swfUploadStrategy}.local"
+            "{multiFileUploader}.events"
         ]
     });
 })(jQuery, fluid_1_4);

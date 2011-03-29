@@ -19,14 +19,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
 /*global console, window, fluid:true, fluid_1_4:true, jQuery, opera, YAHOO*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 var fluid = fluid || fluid_1_4;
@@ -64,8 +64,14 @@ var fluid = fluid || fluid_1_4;
             softFailure.shift();
         }
     };
-    
+
     // Logging
+        
+    /** Returns whether logging is enabled **/
+    fluid.isLogging = function() {
+        return logging;
+    };
+
     var logging;
     /** method to allow user to enable logging (off by default) */
     fluid.setLogging = function (enabled) {
@@ -427,6 +433,7 @@ var fluid = fluid || fluid_1_4;
     
     /** Helpful alias for old-style API **/
     fluid.path = fluid.model.composeSegments;
+    fluid.composePath = fluid.model.composePath;
 
     /** Standard strategies for resolving path segments **/
     fluid.model.environmentStrategy = function (initEnvironment) {
@@ -709,7 +716,9 @@ var fluid = fluid || fluid_1_4;
         // TODO: manual 2-phase instantiation since we have no GINGER WORLD
         initEvents(that, options.events, "flat"); 
         initEvents(that, options.events, "IoC");
-        fluid.mergeListeners(that, that.events, options.listeners);
+        // TODO: manually expand these late so that members attached to ourselves with preInitFunction can be detected
+        var listeners = fluid.expandOptions? fluid.expandOptions(options.listeners, that) : options.listeners;
+        fluid.mergeListeners(that, that.events, listeners);
     };
     
         
@@ -813,9 +822,14 @@ var fluid = fluid || fluid_1_4;
         if (!options.initFunction) {
             fluid.fail("Cannot autoInit component " + componentName + " which does not have an initFunction defined");
         }
-        fluid.setGlobalValue(componentName, function () {
+        var creator = function() {
             return fluid.initComponent(componentName, arguments);
-        });
+        };
+        var existing = fluid.getGlobalValue(componentName);
+        if (existing) {
+            $.extend(creator, existing);
+        }
+        fluid.setGlobalValue(componentName, creator);
     };
     
     fluid.defaults("fluid.littleComponent", {
@@ -826,7 +840,10 @@ var fluid = fluid || fluid_1_4;
     });
     
     fluid.defaults("fluid.eventedComponent", {
-        gradeNames: ["fluid.littleComponent"]  
+        gradeNames: ["fluid.littleComponent"],
+        mergePolicy: {
+            listeners: "noexpand"
+        }
     });
     
     fluid.defaults("fluid.modelComponent", {
@@ -1025,6 +1042,7 @@ var fluid = fluid || fluid_1_4;
         // TODO: nickName must be available earlier than other merged options so that component may resolve to itself
         that.nickName = options && options.nickName ? options.nickName : fluid.computeNickName(that.typeName);
         fluid.mergeComponentOptions(that, name, options);
+        fluid.invokeLifecycleFunctions(that, "preInitFunction");
         if (localOptions) {
             localOptions = fluid.resolveGrade({}, localOptions.gradeNames);
         }
@@ -1070,9 +1088,6 @@ var fluid = fluid || fluid_1_4;
             fluid.initDependents(that);
         }
         fluid.invokeLifecycleFunctions(that, "finalInitFunction");
-        if (that.options.finalInitFunction) {
-            fluid.invokeGlobalFunction(that.options.finalInitFunction, [that]);
-        }
         return that;
     };
 
@@ -1292,7 +1307,7 @@ var fluid = fluid || fluid_1_4;
         return that;
     };
     
-    /** Expect that an output from the DOM binder has resulted in a non-empty set of 
+    /** Expect that jQuery selector query has resulted in a non-empty set of 
      * results. If none are found, this function will fail with a diagnostic message, 
      * with the supplied message prepended.
      */
