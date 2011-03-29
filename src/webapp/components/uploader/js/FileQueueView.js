@@ -294,8 +294,10 @@ var fluid_1_4 = fluid_1_4 || {};
         that.rowProgressorTemplate = that.locate("rowProgressorTemplate", that.options.uploaderContainer).remove();
     };
     
-    var setupFileQueue = function (that) {
-        fluid.initDependents(that);
+    fluid.registerNamespace("fluid.uploader.fileQueueView");
+    
+    
+    fluid.uploader.fileQueueView.finalInit = function (that) {
         prepareTemplateElements(that);         
         addKeyboardNavigation(that);
     };
@@ -307,11 +309,9 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {fileQueue} queue a file queue model instance
      * @param {Object} options configuration options for the view
      */
-    fluid.uploader.fileQueueView = function (container, options) {
-        var that = fluid.initView("fluid.uploader.fileQueueView", container, options);
+    fluid.uploader.fileQueueView.preInit = function (that) {
         that.fileProgressors = {};
-        that.model = that.options.model;
-        
+
         that.addFile = function (file) {
             addFile(that, file);
         };
@@ -353,21 +353,13 @@ var fluid_1_4 = fluid_1_4 || {};
             that.selectableContext.refresh();
             that.scroller.refreshView();
         };
-        
-        setupFileQueue(that);     
-        return that;
     };
     
-    fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader.multiFileUploader", {
-        funcName: "fluid.uploader.fileQueueView",
-        args: [
-            "{multiFileUploader}.dom.fileQueue",
-            fluid.COMPONENT_OPTIONS
-        ]
-    });
-    
     fluid.defaults("fluid.uploader.fileQueueView", {
-        gradeNames: "fluid.viewComponent",
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        preInitFunction:   "fluid.uploader.fileQueueView.preInit",
+        finalInitFunction: "fluid.uploader.fileQueueView.finalInit",
+        
         components: {
             scroller: {
                 type: "fluid.scrollableTable"
@@ -424,9 +416,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 INVALID_FILETYPE: "One or more files were not added to the queue because they were of the wrong type."
             }
         },
-        
         events: {
-            onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
+            onFileRemoved: null
         },
         
         mergePolicy: {
@@ -441,24 +432,8 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
     
-    fluid.demands("fluid.uploader.fileQueueView.eventBinder", [
-        "fluid.uploader.multiFileUploader",
-        "fluid.uploader.fileQueueView"
-    ], {
-        options: {
-            listeners: {
-                "{multiFileUploader}.events.afterFileQueued": "{fileQueueView}.addFile",
-                "{multiFileUploader}.events.onUploadStart": "{fileQueueView}.prepareForUpload",
-                "{multiFileUploader}.events.onFileStart": "{fileQueueView}.showFileProgress",
-                "{multiFileUploader}.events.onFileProgress": "{fileQueueView}.updateFileProgress",
-                "{multiFileUploader}.events.onFileSuccess": "{fileQueueView}.markFileComplete",
-                "{multiFileUploader}.events.onFileError": "{fileQueueView}.showErrorForFile",
-                "{multiFileUploader}.events.afterFileComplete": "{fileQueueView}.hideFileProgress",
-                "{multiFileUploader}.events.afterUploadComplete": "{fileQueueView}.refreshAfterUpload"
-            }
-        }
-    });
-    
+    fluid.demands("fluid.uploader.fileQueueView.eventBinder", [], {} 
+    );
     /**************
      * Scrollable *
      **************/

@@ -45,14 +45,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader.tests.multiFileUploader", {
             type: "fluid.uploader.fileQueueView",
-            args: [
-                "#main .flc-uploader-queue",
-                "{options}"
-            ]
-        });
-        
-        fluid.demands("fluid.uploader.fileQueueView.eventBinder", "fluid.uploader.tests.multiFileUploader", {
-            options: {}
+            container: "#main .flc-uploader-queue",
+            options: {
+                events: {
+                    onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
+                }
+            }
         });
         
         var mountainTestFile = {
