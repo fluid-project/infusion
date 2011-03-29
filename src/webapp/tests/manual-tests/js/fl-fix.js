@@ -78,15 +78,15 @@ var demo = demo || {};
                 className: "ui-helper-clearfix"
             },
             "oldClearfix": {
-                description: "Old Clearfix: http://perishablepress.com/press/2009/12/06/new-clearfix-hack/",
+                description: "Old Clearfix",
                 className: "clearfix"
             },
             "newClearfix": {
-                description: "New Clearfix: http://perishablepress.com/press/2009/12/06/new-clearfix-hack/",
+                description: "New Clearfix",
                 className: "newClearfix"
             },
             "inline-block": {
-                description: "inline-block: suggested by heidi around 11:45 http://wiki.fluidproject.org/display/fluid/fluid-work+IRC+Logs-2011-03-14",
+                description: "inline-block",
                 className: "inline-block-clearfix"
             }
         }
