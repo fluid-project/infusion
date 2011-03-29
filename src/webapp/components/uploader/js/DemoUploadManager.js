@@ -8,17 +8,20 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, fluid_1_4:true*/
+// Declare dependencies
+/*global fluid_1_4:true, jQuery*/
+
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
     
     fluid.uploader = fluid.uploader || {};
-    fluid.uploader.swfUploadStrategy = fluid.uploader.swfUploadStrategy || {};
     
     var startUploading; // Define early due to subtle circular dependency.
     
@@ -111,27 +114,21 @@ var fluid_1_4 = fluid_1_4 || {};
     };
        
     /**
-     * The Demo Engine wraps a SWFUpload engine and simulates the upload process.
+     * The demo remote pretends to upload files to the server, firing all the appropriate events
+     * but without sending anything over the network or requiring a server to be running.
      * 
      * @param {FileQueue} queue the Uploader's file queue instance
      * @param {Object} the Uploader's bundle of event firers
-     * @param {Object} configuration options for SWFUpload (in its native dialect)
+     * @param {Object} configuration options
      */
-     // TODO: boil down events to only those we actually need.
-     // TODO: remove swfupload references and move into general namespace. Are there any real SWFUpload references here?
-    fluid.uploader.demoRemote = function (queue, events, options) {
+    fluid.uploader.demoRemote = function (queue, options) {
         var that = fluid.initLittleComponent("fluid.uploader.demoRemote", options);
         that.queue = queue;
-        that.events = events;
         
         that.uploadNextFile = function () {
             startUploading(that);   
         };
         
-        /**
-         * Cancels a simulated upload.
-         * This method overrides the default behaviour in SWFUploadManager.
-         */
         that.stop = function () {
             stopDemo(that);
         };
@@ -151,6 +148,22 @@ var fluid_1_4 = fluid_1_4 || {};
         var delay = Math.floor(Math.random() * 1000 + 100);
         setTimeout(fn, delay);
     };
+    
+    fluid.defaults("fluid.uploader.demoRemote", {
+        gradeNames: ["fluid.eventedComponent"],
+        argumentMap: {
+            options: 1  
+        },
+        events: {
+            onFileProgress: "{multiFileUploader}.events.onFileProgress",
+            afterFileComplete: "{multiFileUploader}.events.afterFileComplete",
+            afterUploadComplete: "{multiFileUploader}.events.afterUploadComplete",
+            onFileSuccess: "{multiFileUploader}.events.onFileSuccess",
+            onFileStart: "{multiFileUploader}.events.onFileStart",
+            onFileError: "{multiFileUploader}.events.onFileError",
+            onUploadStop: "{multiFileUploader}.events.onUploadStop"
+        }
+    });
     
     fluid.demands("fluid.uploader.remote", ["fluid.uploader.multiFileUploader", "fluid.uploader.demo"], {
         funcName: "fluid.uploader.demoRemote",

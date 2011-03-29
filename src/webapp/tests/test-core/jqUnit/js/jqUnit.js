@@ -9,10 +9,15 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global window, equals, ok, test, module, jQuery, deepEqDiag, asyncTest*/
+// Declare dependencies
+/*global window, jqUnit, asyncTest, equals, jQuery, module, ok, test*/
+
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+
 var jqUnit = jqUnit || {};
 
 // A function to load the testswarm agent if running in the testswarm environment
@@ -173,6 +178,10 @@ var jqUnit = jqUnit || {};
      ***********************/
     
     var jsUnitCompat = {
+        assert: function(msg) {
+            ok(true, msg);  
+        },
+        
         assertEquals: function (msg, expected, actual) {
             equals(actual, expected, msg);
         },
@@ -217,6 +226,10 @@ var jqUnit = jqUnit || {};
         assertDeepNeq: function (msg, unexpected, actual) {
             var diag = deepEqDiag(unexpected, actual);
             ok(diag !== null, msg);
+        },
+        // Namespaced version of "expect" for civilization
+        expect: function(number) {
+            expect(number);
         }
     };
 

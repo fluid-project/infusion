@@ -8,10 +8,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, fluid_1_4:true*/
+// Declare dependencies
+/*global fluid_1_4:true, jQuery*/
+
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
@@ -61,7 +65,8 @@ var fluid_1_4 = fluid_1_4 || {};
             multiple = true;
         }
         if ("input" !== node.nodeName.toLowerCase() || ! /radio|checkbox/.test(node.type)) {
-            return $(node).val(newValue);
+            // resist changes to contract of jQuery.val() in jQuery 1.5.1 (see FLUID-4113)
+            return newValue === undefined? $(node).val() : $(node).val(newValue);
         }
         var name = node.name;
         if (name === undefined) {
@@ -132,6 +137,17 @@ var fluid_1_4 = fluid_1_4 || {};
             fluid.set(root.data, EL, newValue);
         }    
     };
+   
+    // Implementation notes: The EL path manipulation utilities here are somewhat more thorough
+    // and expensive versions of those provided in Fluid.js - there is some duplication of 
+    // functionality. This is a tradeoff between stability and performance - the versions in
+    // Fluid.js are the most frequently used and do not implement escaping of characters .
+    // as \. and \ as \\ as the versions here. The implementations here are not quite complete
+    // or very performant and are left here partially as an implementation note. Problems will
+    // arise if clients manipulate JSON structures containing "." characters in keys as if they
+    // are models, treating these is best left until the cases where they occur. The now standard
+    // utilities fluid.path(), fluid.parseEL and fluid.composePath are the ones recommended for
+    // general users and their implementation can be upgraded if required.
    
     fluid.pathUtil = {};
    
@@ -248,7 +264,9 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.model.mergeModel = function (target, source, applier) {
         var copySource = fluid.copy(source);
         applier = applier || fluid.makeChangeApplier(source);
-        applier.fireChangeRequest({type: "ADD", path: "", value: target});
+        if (!fluid.isPrimitive(target)) {
+            applier.fireChangeRequest({type: "ADD", path: "", value: target});
+        }
         applier.fireChangeRequest({type: "MERGE", path: "", value: copySource});
         return source; 
     };
@@ -268,18 +286,18 @@ var fluid_1_4 = fluid_1_4 || {};
         var pen = fluid.model.getPenultimate(model, request.path, resolverSetConfig || fluid.model.defaultSetConfig);
         
         if (request.type === "ADD" || request.type === "MERGE") {
-            if (pen.last === "" || request.type === "MERGE") {
+            if (request.path === "" || request.type === "MERGE") {
                 if (request.type === "ADD") {
                     fluid.clear(pen.root);
                 }
-                $.extend(true, pen.last === "" ? pen.root: pen.root[pen.last], request.value);
+                $.extend(true, request.path === "" ? pen.root: pen.root[pen.last], request.value);
             }
             else {
                 pen.root[pen.last] = request.value;
             }
         }
         else if (request.type === "DELETE") {
-            if (pen.last === "") {
+            if (request.path === "") {
                 fluid.clear(pen.root);
             }
             else {

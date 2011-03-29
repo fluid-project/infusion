@@ -26,7 +26,6 @@
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.mouse.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.accordion.js"></script>        
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>        
         <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
 
@@ -46,15 +45,7 @@
         <script type="text/javascript">
             $().ready(function () {
                 fluid.uiEnhancer();
-                
-                var options = {
-                    listeners: {
-                        afterRender: function () {
-                            $('.fl-uiOptions .fl-col:eq(0)').accordion({header: 'h2', clearStyle: true, autoHeight: false});
-                        }
-                    }
-                };
-                fluid.uiOptions(".uiOptions", options);
+                fluid.uiOptions(".uiOptions");
             });
         </script>
     </head>
@@ -67,7 +58,7 @@
             <!-- column 1, options -->
             <div class="fl-col">
                     <h2>Easier to see</h2>
-                    <div class="fl-accordion-content">
+                    <div class="fl-uiOptions-controlGroup">
                         <ol class="fl-controls-right">
                             <li>
                                 <label for="text-font" class="fl-label">Font style:</label>
@@ -124,7 +115,7 @@
                     </div>
                 
                     <h2>Easier to find</h2>
-                    <div class="fl-accordion-content">
+                    <div class="fl-uiOptions-controlGroup">
                         <ol class="fl-controls-right">
                             <li>
                                 <span class="fl-label">Table of Contents:</span>
