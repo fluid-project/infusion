@@ -272,14 +272,15 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.events.onFileError.addListener(function (file, error) {
             if (error === fluid.uploader.errorConstants.UPLOAD_STOPPED) {
+                file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
                 that.queue.isUploading = false;
                 return;
-            }
-            
-            file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
-            if (that.queue.isUploading) {
-                that.queue.currentBatch.totalBytesUploaded += file.size;
-                that.queue.currentBatch.numFilesErrored++;
+            } else {
+                file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
+                if (that.queue.isUploading) {
+                    that.queue.currentBatch.totalBytesUploaded += file.size;
+                    that.queue.currentBatch.numFilesErrored++;
+                }
             }
         });
 

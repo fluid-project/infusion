@@ -35,6 +35,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
             return tracker;
         };
         
+        var trackRemoteListeners = function () {
+            var tracker = jqUnit.invocationTracker();
+            var emptyFn = function () {};
+            var listeners = {
+                onFileSuccess: emptyFn,
+                onFileError: emptyFn,
+                onFileComplete: emptyFn
+            };
+            tracker.interceptAll(listeners);
+            tracker.listeners = listeners;
+            return tracker;            
+        };
+        
         var getLocalUploader = function (fileUploadLimit, fileSizeLimit, legacyBrowserFileLimit, tracker) {
             var queue = fluid.uploader.fileQueue();
             
@@ -65,6 +78,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
             return local;
         };
         
+        var getRemoteUploader = function () {
+            var queue = fluid.uploader.fileQueue();
+            
+            var remote = fluid.uploader.html5Strategy.remote(queue, {
+                queueSettings: {
+                    uploadURL: "",
+                    postParams: ""
+                }
+            });
+        };
         
         /*********
          * Setup *
@@ -86,6 +109,79 @@ https://source.fluidproject.org/svn/LICENSE.txt
             id: "file3",
             size: 200000
         };
+        
+        var events = {
+            onFileSuccess: {
+                fire: function () {
+                        alert("hello")
+                    }
+            },
+            onFileComplete: {
+                fire: function () {
+                        alert("jello")
+                    }                
+            }
+        }
+        
+        /******************************
+         * fileSuccessHandler() Tests *
+         ******************************/
+        
+        html5UploaderTests.test("Event sequence for fileSucessHandler", function () {
+            var xhr = {
+                status: 200      
+            };
+            
+            var tracker = trackRemoteListeners();
+            var transcript = tracker.transcript;
+            var eventOrder = ["onFileSuccess", "onFileComplete"];
+            
+            fluid.uploader.html5Strategy.fileSuccessHandler(file1, events, xhr)
+            
+            
+            var expectedNumEvents = eventOrder.length;
+            jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", 
+                                expectedNumEvents, transcript.length);            
+            
+        });
+        
+        /****************************
+         * fileErorrHandler() Tests *
+         ****************************/
+        
+        html5UploaderTests.test("Event sequence for fileErrorHandler", function () {
+            var tracker = trackRemoteListeners();
+            var eventOrder = ["onFileError", "onFileComplete"];
+        });
+        
+        /***************************
+         * fileStopHandler() Tests *
+         ***************************/
+        
+        html5UploaderTests.test("Event sequence for fileStopHandler", function () {
+            var tracker = trackRemoteListeners();
+            var eventOrder = ["onFileError", "onFileComplete"];
+            
+        });                
+        
+        /***************************
+         * progressTracker() Tests *
+         ***************************/
+        
+        html5UploaderTests.test("Ensure loaded bytes are properly tracked", function () {
+            var progress = fluid.uploader.html5Strategy.progressTracker();    
+
+            var uploadProgress = progress.getChunkSize(100);
+            jqUnit.assertEquals("The chunk size should be", 100, uploadProgress);
+            jqUnit.assertEquals("100 bytes were previously uploaded", 100, progress.previousBytesLoaded);
+            
+            uploadProgress = progress.getChunkSize(250);
+            jqUnit.assertEquals("The chunk size should now be", 150, uploadProgress);
+        });
+        
+        /************************************
+         * generateMultiPartContent() Tests *
+         ************************************/
         
         html5UploaderTests.test("Ensure multipart content is correctly built", function () {
             var boundary = 1234567890123456789;
@@ -112,6 +208,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertTrue("The sixth line of the multipart content must also contain the boundary", parts[5].indexOf(boundary) !== -1);
         });
         
+        
+        /****************************
+         * browseButtonView() Tests *
+         ****************************/
+        
         html5UploaderTests.test("Uploader HTML5 browseHandler", function () {
             var browseButton = $("#browseButton");
             var browseButtonView = fluid.uploader.html5Strategy.browseButtonView("#browseButtonContainer", {
@@ -119,7 +220,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     fileTypes: ""
                 }
             });
-            
+
             var inputs = browseButton.children();
             jqUnit.assertEquals("There should be one multi-file input element at the start", 1, inputs.length);
             jqUnit.assertEquals("The multi-file input element should be visible and in the tab order to start", 
@@ -134,9 +235,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("The second multi-file input element should be visible and in the tab order", 
                 0, inputs.eq(1).attr("tabindex"));
             
+            browseButtonView.disable();
+            jqUnit.assertTrue("The browse browseButton has been disabled", inputs.eq(1).attr("disabled"));
+            browseButtonView.enable();
+            jqUnit.assertFalse("The browse browseButton has been enabled", inputs.eq(1).attr("disabled"));                      
             inputs.eq(1).focus();
             jqUnit.assertTrue("On focus, the browseButton input has the focus class", browseButton.hasClass("focus"));
-            
             inputs.eq(1).blur();
             jqUnit.assertFalse("On blur, the browseButton no longer has the focus class", browseButton.hasClass("focus"));
         });

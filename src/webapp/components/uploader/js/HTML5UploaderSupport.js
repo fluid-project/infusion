@@ -96,7 +96,6 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uploader.html5Strategy.fileErrorHandler = function (file, events, xhr) {
-        file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
         events.onFileError.fire(file, 
                                 fluid.uploader.errorConstants.UPLOAD_FAILED,
                                 xhr.status,
@@ -105,7 +104,6 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uploader.html5Strategy.fileStopHandler = function (file, events, xhr) {
-        file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
         events.onFileError.fire(file, 
                                 fluid.uploader.errorConstants.UPLOAD_STOPPED,
                                 xhr.status,
@@ -127,9 +125,12 @@ var fluid_1_4 = fluid_1_4 || {};
         return that;
     };
     
-    var createFileUploadXHR = function (file, events) {
+    var createFileUploadXHR = function () {
         var xhr = new XMLHttpRequest();
-
+        return xhr;
+    };
+    
+    var monitorFileUploadXHR = function (file, events, xhr) {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 var status = xhr.status;
@@ -148,8 +149,6 @@ var fluid_1_4 = fluid_1_4 || {};
         xhr.upload.onprogress = function (pe) {
             events.onFileProgress.fire(file, progressTracker.getChunkSize(pe.loaded), pe.total);
         };
-        
-        return xhr;
     };
     
     // Set additional POST parameters for xhr  
@@ -173,7 +172,8 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.uploadFile = function (file) {
             that.events.onFileStart.fire(file);
-            that.currentXHR = createFileUploadXHR(file, that.events);
+            that.currentXHR = createFileUploadXHR();
+            monitorFileUploadXHR(file, that.events, that.currentXHR)
             that.doUpload(file, that.queueSettings, that.currentXHR);            
         };
 
