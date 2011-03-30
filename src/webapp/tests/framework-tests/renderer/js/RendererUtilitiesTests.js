@@ -421,6 +421,27 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Message rendered", fluid.defaults("fluid.tests.paychequeRenderer").protoTree.message,
               message.text());
         });
+     
+        fluid.defaults("fluid.tests.FLUID4165Component", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                input: ".flc-renderUtils-test"
+            },
+            protoTree: {
+                input: "${value}"
+            }
+        });
+     
+        compTests.test("FLUID-4165 - ensure automatic creation of applier if none supplied", function() {
+            var model = {value: "Initial Value"};
+            var that = fluid.tests.FLUID4165Component(".FLUID-4165-test", {model: model});
+            that.refreshView();
+            var input = that.locate("input");
+            jqUnit.assertEquals("Initial value rendered", model.value, input.val());
+            input.val("New Value");
+            input.change();
+            jqUnit.assertEquals("Updated value read", "New Value", model.value);
+        });
     
         var protoTests = new jqUnit.TestCase("Protocomponent Expander Tests");
   
