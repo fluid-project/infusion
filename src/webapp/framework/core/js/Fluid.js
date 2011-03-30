@@ -762,7 +762,7 @@ var fluid = fluid || fluid_1_4;
         var mergeArgs = [defaults];
         if (gradeNames) {
             var gradeStruct = fluid.resolveGradeStructure(gradeNames);
-            mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs);
+            mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs).concat({gradeNames: gradeStruct.gradeChain});
         }
         mergeArgs = [{}, {}].concat(mergeArgs);
         var mergedDefaults = fluid.merge.apply(null, mergeArgs);
@@ -978,7 +978,7 @@ var fluid = fluid || fluid_1_4;
     fluid.mergeComponentOptions = function (that, componentName, userOptions, localOptions) {
         var defaults = fluid.defaults(componentName);
         var mergePolicy = $.extend({}, defaults ? defaults.mergePolicy : {});
-        var mergeArgs = [mergePolicy, {}, localOptions];
+        var mergeArgs = [mergePolicy, {}, defaults && defaults.gradeNames? {} : localOptions];
         var extraArgs;
         if (fluid.expandComponentOptions) {
             extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
