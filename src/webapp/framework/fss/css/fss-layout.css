@@ -5,6 +5,19 @@ Generic containers for columns and layouts
 
 /* Container Utilities*/
 .fl-fix {overflow: auto; zoom:1;}
+
+/* An alternate clearfix solution from http://perishablepress.com/press/2009/12/06/new-clearfix-hack/*/
+.fl-clearfix:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+	}
+* html .fl-clearfix             { zoom: 1; } /* IE6 */
+*:first-child+html .fl-clearfix { zoom: 1; } /* IE7 */
+
 .fl-push {clear:both;}
 
 /* Container alignment */

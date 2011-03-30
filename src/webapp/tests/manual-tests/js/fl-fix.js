@@ -69,10 +69,14 @@ var demo = demo || {};
                 description: "No Fix",
                 className: ""
             },
-            "fss": {
+            "fl-fix": {
                 description: "FSS: .fl-fix",
                 className: "fl-fix"
             },
+            "fl-clearfix": {
+                description: "FSS: .fl-clearfix",
+                className: "fl-clearfix"
+            },            
             "jquery": {
                 description: "jQuery: .ui-helper-clearfix",
                 className: "ui-helper-clearfix"
