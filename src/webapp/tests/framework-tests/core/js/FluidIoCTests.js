@@ -640,6 +640,9 @@ fluid.registerNamespace("fluid.tests");
     fluid.defaults("fluid.tests.reinstantiation", {
         headValue: "headValue",
         components: {
+            headChild: {
+                type: "fluid.tests.reinsChild"  
+            },
             child1: {
                 type: "fluid.tests.reinsChild",
                 options: {
@@ -658,7 +661,10 @@ fluid.registerNamespace("fluid.tests");
                                     },
                                     child4: {
                                         type: "fluid.tests.reinsNonComponent"
-                                    }
+                                    },
+                                    // This duplication tests FLUID-4166
+                                    child5: "{reinstantiation}.headChild",
+                                    child6: "{reinstantiation}.headChild"
                                 }
                             }
                         }
