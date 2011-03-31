@@ -1090,7 +1090,7 @@ var fluid = fluid || fluid_1_4;
             fluid.initDependents(that);
         }
         fluid.invokeLifecycleFunctions(that, "finalInitFunction");
-        return that;
+        return that.options.returnedPath? fluid.get(that, that.options.returnedPath) : that;
     };
 
     // The Model Events system.

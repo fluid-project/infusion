@@ -689,6 +689,16 @@ fluid.registerNamespace("fluid.tests");
         };
     };
     
+    fluid.defaults("fluid.tests.unexpectedReturn", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            gchild: {
+                type: "fluid.tests.reinsChild2"
+            }
+        },
+        returnedPath: "gchild"
+    });
+    
     fluid.defaults("fluid.tests.reinstantiation", {
         headValue: "headValue",
         components: {
@@ -716,7 +726,10 @@ fluid.registerNamespace("fluid.tests");
                                     },
                                     // This duplication tests FLUID-4166
                                     child5: "{reinstantiation}.headChild",
-                                    child6: "{reinstantiation}.headChild"
+                                    child6: "{reinstantiation}.headChild",
+                                    child7: {
+                                        type: "fluid.tests.unexpectedReturn"
+                                    }
                                 }
                             }
                         }
