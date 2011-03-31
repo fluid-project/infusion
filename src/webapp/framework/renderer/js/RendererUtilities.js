@@ -46,13 +46,27 @@ fluid_1_4 = fluid_1_4 || {};
         }
         return togo;
     };
-
-    fluid.renderer.clearDecorators = function(instantiator, that) {
+    
+    fluid.renderer.visitDecorators = function(that, visitor) {
         fluid.visitComponentChildren(that, function(component, name) {
             if (name.indexOf(fluid.renderer.decoratorComponentPrefix) === 0) {
-                instantiator.clearComponent(that, name);
+                visitor(component, name);
             }
-        }, {});
+        }, {});  
+    };
+
+    fluid.renderer.clearDecorators = function(instantiator, that) {
+        fluid.renderer.visitDecorators(that, function(component, name) {
+                instantiator.clearComponent(that, name);
+        });
+    };
+    
+    fluid.renderer.getDecoratorComponents = function(that) {
+        var togo = {};
+        fluid.renderer.visitDecorators(that, function(component, name) {
+            togo[name] = component;
+        });
+        return togo;
     };
 
     // Utilities for coordinating options in renderer components - this code is all pretty
@@ -114,13 +128,22 @@ fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-     // TODO: Integrate with FLUID-3681 branch
+    fluid.defaults("fluid.IoCRendererComponent", {
+        gradeNames: ["fluid.rendererComponent"]  
+    });
+    
     fluid.initRendererComponent = function (componentName, container, options) {
         var that = fluid.initView(componentName, container, options, {gradeNames: ["fluid.rendererComponent"]});
-
+        
         fluid.fetchResources(that.options.resources); // TODO: deal with asynchrony
         
         var rendererOptions = fluid.renderer.modeliseOptions(that.options.rendererOptions, null, that);
+        if (fluid.hasGrade(that.options, "fluid.IoCRendererComponent")) {
+            fluid.withInstantiator(that, function(currentInst) {
+                rendererOptions.instantiator = currentInst;
+                rendererOptions.parentComponent = that;
+            });
+        }
         var messageResolver;
         if (!rendererOptions.messageSource && that.options.strings) {
             messageResolver = fluid.messageResolver(

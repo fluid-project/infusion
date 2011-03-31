@@ -595,6 +595,53 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertDeepEq("Decorator expansion", expected, expanded);
         });
         
+        fluid.defaults("fluid.tests.repeatDecorator", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+        });
+        
+        fluid.defaults("fluid.tests.repeatHead", {
+            gradeNames: ["fluid.IoCRendererComponent", "autoInit"],
+            protoTree: {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    controlledBy: "vector",
+                    pathAs: "elementPath",
+                    valueAs: "element", 
+                    repeatID: "link",
+                    tree: {
+                        decorators: {
+                            type: "fluid",
+                            func: "fluid.tests.repeatDecorator",
+                            options: {
+                                model: {
+                                    value: "${{element}}"
+                                }  
+                            }
+                          
+                        }  
+                    }
+                }
+            }
+        });
+        
+        protoTests.test("FLUID-4168 test: decorator expansion reference to repetition variables", function() {
+            var model = {
+                vector: [1, 2, 3]
+            };
+            var head = fluid.tests.repeatHead(".repeater-leaf-test", {model: model});
+            head.refreshView();
+            var decorators = fluid.renderer.getDecoratorComponents(head);
+            var declist = [];
+            fluid.each(decorators, function(decorator, key) {
+                declist.push({key: key, decorator: decorator});
+            });
+            declist.sort(function(ea, eb) {return ea.key < eb.key? -1 : 1});
+            var decvals = fluid.transform(declist, function(dec) {
+                return dec.decorator.model.value;  
+            });
+            jqUnit.assertDeepEq("Model values recovered from decorators", model.vector, decvals);
+        });
+        
         protoTests.test("FLUID-3658 test: simple repetition expander", function () {
             var model = {
                 vector: [1, 2, 3]
