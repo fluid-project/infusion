@@ -8,7 +8,7 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
@@ -46,24 +46,38 @@ fluid_1_4 = fluid_1_4 || {};
         }
         return togo;
     };
-
-    fluid.renderer.clearDecorators = function(instantiator, that) {
+    
+    fluid.renderer.visitDecorators = function(that, visitor) {
         fluid.visitComponentChildren(that, function(component, name) {
             if (name.indexOf(fluid.renderer.decoratorComponentPrefix) === 0) {
-                instantiator.clearComponent(that, name);
+                visitor(component, name);
             }
-        }, {});
+        }, {});  
     };
 
-    // Utilities for coordinating options in renderer components - in theory this could
-    // be done with a suitably complex "mergePolicy" object
-    fluid.renderer.modeliseOptions = function (options, defaults, model) {
-        return $.extend({}, defaults, options, model ? {model: model} : null);
+    fluid.renderer.clearDecorators = function(instantiator, that) {
+        fluid.renderer.visitDecorators(that, function(component, name) {
+                instantiator.clearComponent(that, name);
+        });
+    };
+    
+    fluid.renderer.getDecoratorComponents = function(that) {
+        var togo = {};
+        fluid.renderer.visitDecorators(that, function(component, name) {
+            togo[name] = component;
+        });
+        return togo;
+    };
+
+    // Utilities for coordinating options in renderer components - this code is all pretty
+    // dreadful and needs to be organised as a suitable set of defaults and policies
+    fluid.renderer.modeliseOptions = function (options, defaults, baseOptions) {
+        return $.extend({}, defaults, options, fluid.filterKeys(baseOptions, ["model", "applier"]));
     };
     fluid.renderer.reverseMerge = function (target, source, names) {
         names = fluid.makeArray(names);
         fluid.each(names, function (name) {
-            if (!target[name]) {
+            if (target[name] === undefined && source[name] !== undefined) {
                 target[name] = source[name];
             }
         });
@@ -72,13 +86,13 @@ fluid_1_4 = fluid_1_4 || {};
     /** "Renderer component" infrastructure **/
   // TODO: fix this up with IoC and improved handling of templateSource as well as better 
   // options layout (model appears in both rOpts and eOpts)
-    fluid.renderer.createRendererFunction = function (container, selectors, options, model, fossils) {
+    fluid.renderer.createRendererFunction = function (container, selectors, options, baseObject, fossils) {
         options = options || {};
         var source = options.templateSource ? options.templateSource : {node: $(container)};
-        var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, model);
+        var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, baseObject);
         rendererOptions.fossils = fossils || {};
         
-        var expanderOptions = fluid.renderer.modeliseOptions(options.expanderOptions, {ELstyle: "${}"}, model);
+        var expanderOptions = fluid.renderer.modeliseOptions(options.expanderOptions, {ELstyle: "${}"}, baseObject);
         fluid.renderer.reverseMerge(expanderOptions, options, ["resolverGetConfig", "resolverSetConfig"]);
         var expander = options.noexpand ? null : fluid.renderer.makeProtoExpander(expanderOptions);
         
@@ -108,18 +122,28 @@ fluid_1_4 = fluid_1_4 || {};
         initFunction: "fluid.initRendererComponent",
         mergePolicy: {
             protoTree: "noexpand, replace"
-        }  
+        },
+        rendererOptions: {
+            autoBind: true
+        }
     });
     
-     // TODO: Integrate with FLUID-3681 branch
+    fluid.defaults("fluid.IoCRendererComponent", {
+        gradeNames: ["fluid.rendererComponent"]  
+    });
+    
     fluid.initRendererComponent = function (componentName, container, options) {
-        var that = fluid.initView(componentName, container, options);
-        that.model = that.options.model || {};
-        // TODO: construct applier as required by "model-bearing grade", pass through options
+        var that = fluid.initView(componentName, container, options, {gradeNames: ["fluid.rendererComponent"]});
         
         fluid.fetchResources(that.options.resources); // TODO: deal with asynchrony
         
-        var rendererOptions = that.options.rendererOptions || {};
+        var rendererOptions = fluid.renderer.modeliseOptions(that.options.rendererOptions, null, that);
+        if (fluid.hasGrade(that.options, "fluid.IoCRendererComponent")) {
+            fluid.withInstantiator(that, function(currentInst) {
+                rendererOptions.instantiator = currentInst;
+                rendererOptions.parentComponent = that;
+            });
+        }
         var messageResolver;
         if (!rendererOptions.messageSource && that.options.strings) {
             messageResolver = fluid.messageResolver(
@@ -160,7 +184,7 @@ fluid_1_4 = fluid_1_4 || {};
             container = function () {return that.dom.locate(rendererFnOptions.rendererTargetSelector); };
         }
        
-        var rendererFn = fluid.renderer.createRendererFunction(container, that.options.selectors, rendererFnOptions, that.model, renderer.fossils);
+        var rendererFn = fluid.renderer.createRendererFunction(container, that.options.selectors, rendererFnOptions, that, renderer.fossils);
         
         that.render = renderer.render = rendererFn;
         that.renderer = renderer;

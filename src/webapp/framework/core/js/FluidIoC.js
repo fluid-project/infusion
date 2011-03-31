@@ -7,7 +7,7 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
@@ -259,6 +259,28 @@ var fluid_1_4 = fluid_1_4 || {};
         });
     };
     
+    function mergeToMergeAll(options) {
+        if (options && options.mergeOptions) {
+            options.mergeAllOptions = ["{options}"].concat(fluid.makeArray(options.mergeOptions));
+        }
+    }
+    
+    function upgradeMergeOptions(demandspec) {
+         mergeToMergeAll(demandspec);
+         if (demandspec.mergeAllOptions) {
+             if (demandspec.options) {
+                 fluid.fail("demandspec " + JSON.stringify(demandspec) 
+                 + " is invalid - cannot specify literal options together with mergeOptions or mergeAllOptions"); 
+             }
+             demandspec.options = {
+                 mergeAllOptions: demandspec.mergeAllOptions
+             };
+         }
+         if (demandspec.options) {
+             delete demandspec.options.mergeOptions;
+         }
+    }
+    
     /** Given a concrete argument list and/or options, determine the final concrete
      * "invocation specification" which is coded by the supplied demandspec in the 
      * environment "thatStack" - the return is a package of concrete global function name
@@ -266,6 +288,8 @@ var fluid_1_4 = fluid_1_4 || {};
      */
     fluid.embodyDemands = function(instantiator, parentThat, demandspec, initArgs, options) {
         options = options || {};
+        
+        upgradeMergeOptions(demandspec);
         options.componentRecord = $.extend(true, {}, options.componentRecord, 
             fluid.censorKeys(demandspec, ["args", "funcName"]));
         
@@ -301,6 +325,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 localRecord[name] = demandspec[name];
             }
         });
+        mergeToMergeAll(localRecord.options);
+        mergeToMergeAll(argMap && demands[argMap.options]);
         var upstreamLocalRecord = $.extend({}, localRecord);
         if (options.componentRecord.options !== undefined) {
             upstreamLocalRecord.options = options.componentRecord.options;
@@ -349,6 +375,15 @@ var fluid_1_4 = fluid_1_4 || {};
         };
         return togo;
     };
+    
+    var aliasTable = {};
+    
+    fluid.alias = function(demandingName, aliasName) {
+        if (aliasName) {
+            aliasTable[demandingName] = aliasName;
+        }
+        else return aliasTable[demandingName];
+    };
    
     var dependentStore = {};
     
@@ -373,12 +408,23 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         else if (spec.length) {
             spec = {args: spec};
         }
+        if (fluid.getCallerInfo) {
+            var callerInfo = fluid.getCallerInfo(5);
+            if (callerInfo) {
+                spec.registeredFrom = callerInfo;
+            }
+        }
         var exist = dependentStore[demandingName];
         if (!exist) {
             exist = [];
             dependentStore[demandingName] = exist;
         }
         exist.push({contexts: contextNames, spec: spec});
+    };
+
+    fluid.compareDemands = function(speca, specb) {
+        var p1 = speca.uncess - specb.uncess;
+        return p1 === 0? specb.intersect - speca.intersect : p1;
     };
 
     fluid.locateDemands = function(instantiator, parentThat, demandingNames) {
@@ -414,10 +460,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 matches.push(record); 
             }
         }
-        matches.sort(function(speca, specb) {
-            var p1 = specb.intersect - speca.intersect; 
-            return p1 === 0? speca.uncess - specb.uncess : p1;
-        });
+        matches.sort(fluid.compareDemands);
         var demandspec = matches.length === 0 || matches[0].intersect === 0? null : matches[0].spec;
         if (demandLogging) {
             fluid.log(demandspec? "Located " + matches.length + " potential match" + (matches.length === 1? "" : "es") + ", selected best match with " + matches[0].intersect 
@@ -431,31 +474,32 @@ outer:  for (var i = 0; i < exist.length; ++i) {
      */
     fluid.determineDemands = function (instantiator, parentThat, funcNames) {
         funcNames = $.makeArray(funcNames);
-        var demandspec = fluid.locateDemands(instantiator, parentThat, funcNames);
-   
-        if (!demandspec) {
-            demandspec = {};
-        }
         var newFuncName = funcNames[0];
+        var demandspec = fluid.locateDemands(instantiator, parentThat, funcNames) || {};
         if (demandspec.funcName) {
             newFuncName = demandspec.funcName;
-           /**    TODO: "redirects" disabled pending further thought
-            var demandspec2 = fluid.fetchDirectDemands(funcNames[0], that.typeName);
-            if (demandspec2) {
-                demandspec = demandspec2; // follow just one redirect
-            } **/
         }
-
-        var mergeArgs = [];
-        if (demandspec.parent) {
-            var parent = searchDemands(funcNames[0], $.makeArray(demandspec.parent).sort());
-            if (parent) {
-                mergeArgs = parent.args; // TODO: is this really a necessary feature?
+        
+        var aliasTo = fluid.alias(newFuncName);
+        
+        if (aliasTo) {
+            fluid.log("Following redirect from function name " + newFuncName + " to " + aliasTo);
+            var demandspec2 = fluid.locateDemands(instantiator, parentThat, [aliasTo]);
+            if (demandspec2) {
+                fluid.each(demandspec2, function(value, key) {
+                    if (localRecordExpected.test(key)) {
+                        fluid.fail("Error in demands block " + JSON.stringify(demandspec2) + " - content with key \"" + key 
+                        + "\" is not supported since this demands block was resolved via an alias from \"" + newFuncName + "\"");
+                    }  
+                });
+                if (demandspec2.funcName) {
+                    newFuncName = demandspec2.funcName;
+                    fluid.log("Followed final inner demands to function name \"" + newFuncName + "\"");
+                }
             }
         }
-        var args = [];
-        fluid.merge(null, args, $.makeArray(mergeArgs), $.makeArray(demandspec.args)); // TODO: avoid so much copying
-        return $.extend({funcName: newFuncName, args: args}, fluid.censorKeys(demandspec, ["funcName", "args"]));
+        
+        return fluid.merge(null, {funcName: newFuncName, args: fluid.makeArray(demandspec.args)}, fluid.censorKeys(demandspec, ["funcName", "args"]));
     };
     
     fluid.resolveDemands = function(instantiator, parentThat, funcNames, initArgs, options) {
@@ -509,7 +553,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.event.resolveEvent = function(that, eventName, eventSpec) {
         return fluid.withInstantiator(that, function(instantiator) {
             if (typeof(eventSpec) === "string") {
-                return fluid.expandOptions(eventSpec, that);
+                var firer = fluid.expandOptions(eventSpec, that);
+                if (!firer) {
+                    fluid.fail("Error in fluid.event.resolveEvent - context path " + eventSpec + " could not be looked up to a valid event firer");
+                }
+                return firer;
             }
             else {
                 var event = eventSpec.event;
@@ -549,7 +597,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.expander.preserveFromExpansion = function(options) {
         var preserve = {};
-        var preserveList = ["mergePolicy", "mergePaths", "components", "invokers", "events"];
+        var preserveList = ["mergePolicy", "mergeAllOptions", "components", "invokers", "events"];
         fluid.each(options.mergePolicy, function(value, key) {
             if (fluid.mergePolicyIs(value, "noexpand")) {
                 preserveList.push(key);
@@ -589,7 +637,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             var expandOptions = makeStackResolverOptions(instantiator, that, localRecord, outerExpandOptions);
             expandOptions.noCopy = true; // It is still possible a model may be fetched even though it is preserved
             var pres;
-            if (!fluid.isArrayable(args)) {
+            if (!fluid.isArrayable(args) && !fluid.isPrimitive(args)) {
                 pres = fluid.expander.preserveFromExpansion(args);
             }
             var expanded = fluid.expander.expandLight(args, expandOptions);
@@ -624,8 +672,8 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             // is really what we properly call "directOptions".
             localRecord.options = userOptions;
         }
-        var mergePaths = (userOptions && userOptions.mergePaths) || ["{directOptions}"];
-        var togo = fluid.transform(mergePaths, function(path) {
+        var mergeOptions = (userOptions && userOptions.mergeAllOptions) || ["{directOptions}"];
+        var togo = fluid.transform(mergeOptions, function(path) {
             // Avoid use of expandOptions in simple case to avoid infinite recursion when constructing instantiator
             return path === "{directOptions}"? localRecord.directOptions : fluid.expandOptions(path, that, localRecord, {direct: true}); 
         });

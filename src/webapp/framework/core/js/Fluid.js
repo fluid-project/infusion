@@ -19,7 +19,7 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
@@ -762,7 +762,7 @@ var fluid = fluid || fluid_1_4;
         var mergeArgs = [defaults];
         if (gradeNames) {
             var gradeStruct = fluid.resolveGradeStructure(gradeNames);
-            mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs);
+            mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs).concat({gradeNames: gradeStruct.gradeChain});
         }
         mergeArgs = [{}, {}].concat(mergeArgs);
         var mergedDefaults = fluid.merge.apply(null, mergeArgs);
@@ -822,9 +822,14 @@ var fluid = fluid || fluid_1_4;
         if (!options.initFunction) {
             fluid.fail("Cannot autoInit component " + componentName + " which does not have an initFunction defined");
         }
-        fluid.setGlobalValue(componentName, function () {
+        var creator = function() {
             return fluid.initComponent(componentName, arguments);
-        });
+        };
+        var existing = fluid.getGlobalValue(componentName);
+        if (existing) {
+            $.extend(creator, existing);
+        }
+        fluid.setGlobalValue(componentName, creator);
     };
     
     fluid.defaults("fluid.littleComponent", {
@@ -841,10 +846,16 @@ var fluid = fluid || fluid_1_4;
         }
     });
     
+        
+    fluid.preInitModelComponent = function (that) {
+        that.model = that.options.model || {};
+        that.applier = that.options.applier || fluid.makeChangeApplier(that.model, that.options.changeApplierOptions);
+    };
+    
     fluid.defaults("fluid.modelComponent", {
         gradeNames: ["fluid.littleComponent"],
-        postInitFunction: {
-            postInitModelComponent: "fluid.postInitModelComponent"
+        preInitFunction: {
+            preInitModelComponent: "fluid.preInitModelComponent"
         },
         mergePolicy: {
             model: "preserve",
@@ -917,7 +928,7 @@ var fluid = fluid || fluid_1_4;
     
     /** Merge a collection of options structures onto a target, following an optional policy.
      * This function is typically called automatically, as a result of an invocation of
-     * <code>fluid.initView</code>. The behaviour of this function is explained more fully on
+     * <code>fluid.initLittleComponent</code>. The behaviour of this function is explained more fully on
      * the page http://wiki.fluidproject.org/display/fluid/Options+Merging+for+Fluid+Components .
      * @param policy {Object/String} A "policy object" specifiying the type of merge to be performed.
      * If policy is of type {String} it should take on the value "reverse" or "replace" representing
@@ -964,10 +975,10 @@ var fluid = fluid || fluid_1_4;
      * name of the component's creator function.
      * @param {Object} userOptions the user-specified configuration options for this component
      */
-    fluid.mergeComponentOptions = function (that, componentName, userOptions) {
+    fluid.mergeComponentOptions = function (that, componentName, userOptions, localOptions) {
         var defaults = fluid.defaults(componentName);
         var mergePolicy = $.extend({}, defaults ? defaults.mergePolicy : {});
-        var mergeArgs = [mergePolicy, {}];
+        var mergeArgs = [mergePolicy, {}, defaults && defaults.gradeNames? {} : localOptions];
         var extraArgs;
         if (fluid.expandComponentOptions) {
             extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
@@ -1036,20 +1047,16 @@ var fluid = fluid || fluid_1_4;
         var that = fluid.typeTag(name);
         // TODO: nickName must be available earlier than other merged options so that component may resolve to itself
         that.nickName = options && options.nickName ? options.nickName : fluid.computeNickName(that.typeName);
-        fluid.mergeComponentOptions(that, name, options);
-        fluid.invokeLifecycleFunctions(that, "preInitFunction");
         if (localOptions) {
             localOptions = fluid.resolveGrade({}, localOptions.gradeNames);
         }
-        if (fluid.hasGrade(that.options, "fluid.eventedComponent") || fluid.hasGrade(localOptions, "fluid.eventedComponent")) {
+        fluid.mergeComponentOptions(that, name, options, localOptions);
+        fluid.invokeLifecycleFunctions(that, "preInitFunction");
+
+        if (fluid.hasGrade(that.options, "fluid.eventedComponent")) {
             fluid.instantiateFirers(that, that.options);
         } 
         return that;
-    };
-    
-    fluid.postInitModelComponent = function (that) {
-        that.model = that.options.model || {};
-        that.applier = that.options.applier || fluid.makeChangeApplier(that.model, that.options.changeApplierOptions);
     };
     
     fluid.invokeLifecycleFunction = function (that, func) {
@@ -1302,7 +1309,7 @@ var fluid = fluid || fluid_1_4;
         return that;
     };
     
-    /** Expect that an output from the DOM binder has resulted in a non-empty set of 
+    /** Expect that jQuery selector query has resulted in a non-empty set of 
      * results. If none are found, this function will fail with a diagnostic message, 
      * with the supplied message prepended.
      */
@@ -1325,13 +1332,14 @@ var fluid = fluid || fluid_1_4;
      * DOM which will house all the markup for this component.
      * @param {Object} userOptions The configuration options for this component.
      */
-    fluid.initView = function (componentName, container, userOptions) {
+     // 4th argument is NOT SUPPORTED, see comments for initLittleComponent
+    fluid.initView = function (componentName, container, userOptions, localOptions) {
         fluid.expectFilledSelector(container, "Error instantiating component with name \"" + componentName);
         container = fluid.container(container, true);
         if (!container) {
             return null;
         }
-        var that = fluid.initLittleComponent(componentName, userOptions, {gradeNames: ["fluid.viewComponent"]}); 
+        var that = fluid.initLittleComponent(componentName, userOptions, localOptions || {gradeNames: ["fluid.viewComponent"]}); 
         that.container = container;
         fluid.initDomBinder(that);
 

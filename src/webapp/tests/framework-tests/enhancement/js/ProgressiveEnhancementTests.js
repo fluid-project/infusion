@@ -6,7 +6,7 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
@@ -24,21 +24,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
     };
     
     var invokeCheckerWithChecks = function (checks) {
-        checkerOptions.checks = checks;
-        
-        fluid.demands("fluid.progressiveChecker", "fluid.progressiveChecker.tests", {
-            funcName: "fluid.progressiveChecker",
-            args: [checkerOptions]
-        });
-        
-        return fluid.invoke("fluid.progressiveChecker", null, fluid.typeTag("fluid.progressiveChecker.tests"));
+        var options = fluid.expandOptions($.extend({}, checkerOptions, {checks: checks}), null);
+        return fluid.progressiveChecker(options).resolved.typeName;
     };
     
     peTests.test("progressiveChecker", function () {        
         // No checks at all
         var result = invokeCheckerWithChecks([]);
-        jqUnit.assertDeepEq("No checks, the default type tag should be returned.", 
-                            fluid.typeTag("food.carrots"), result);
+        jqUnit.assertEquals("No checks, the default type tag should be returned.",
+            "food.carrots", result);
         
         // Single specified context, and it should match.
         fluid.staticEnvironment.cat = fluid.typeTag("animal.cat");
@@ -46,8 +40,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             "feature": "{animal.cat}", 
             "contextName": "food.fancyFeast"
         }]);
-        jqUnit.assertDeepEq("One matching features, should return the correct context name.", 
-                            fluid.typeTag("food.fancyFeast"), result);
+        jqUnit.assertEquals("One matching features, should return the correct context name.", 
+                           "food.fancyFeast", result);
         
         // Two contexts, both match, first should be returned.
         fluid.staticEnvironment.dog = fluid.typeTag("animal.dog");
@@ -58,8 +52,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             "feature": "{animal.dog}", 
             "contextName": "food.iams"
         }]);
-        jqUnit.assertDeepEq("Both features match, so the first contextName should be returned.", 
-                            fluid.typeTag("food.fancyFeast"), result);
+        jqUnit.assertEquals("Both features match, so the first contextName should be returned.", 
+                            "food.fancyFeast", result);
         
         // Two contexts, second should match.
         result = invokeCheckerWithChecks([{
@@ -69,8 +63,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             "feature": "{animal.dog}", 
             "contextName": "food.iams"
         }]);
-        jqUnit.assertDeepEq("First feature doesn't match, second feature should match and return the correct context name.", 
-                            fluid.typeTag("food.iams"), result);
+        jqUnit.assertEquals("First feature doesn't match, second feature should match and return the correct context name.", 
+                            "food.iams", result);
         
         // Two contexts, none match.
         result = invokeCheckerWithChecks([{
@@ -80,8 +74,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             "feature": "{animal.crocodile}", 
             "contextName": "food.arm"
         }]);
-        jqUnit.assertDeepEq("Neither feature matches, default value should be returned.", 
-                            fluid.typeTag("food.carrots"), result);
+        jqUnit.assertEquals("Neither feature matches, default value should be returned.", 
+                            "food.carrots", result);
     });
 
 })(jQuery);
