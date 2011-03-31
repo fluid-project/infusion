@@ -134,9 +134,6 @@ fluid.registerNamespace("fluid.tests");
         "fluid.tests.thatStackTail":      "fluid.littleComponent",
         "fluid.tests.reinstantiation":    "fluid.littleComponent",
         "fluid.tests.reinsChild":         "fluid.littleComponent"
-        //"fluid.tests.reinsChild2":        "fluid.littleComponent",
-        // TODO: GRADES
-        //"fluid.tests.resultsPager":       "fluid.littleComponent"
     });
 
     fluid.defaults("fluid.tests.invokerComponent", {
@@ -347,6 +344,61 @@ fluid.registerNamespace("fluid.tests");
         finally {
             delete fluid.staticEnvironment.localEnvironment;
         }
+    });
+    
+    fluid.defaults("fluid.tests.autoGradedComponent", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        events: {
+            anEvent: null
+        }
+    });
+    
+    fluid.defaults("fluid.tests.gradedComponent", {
+        gradeNames: "fluid.viewComponent",
+        events: {
+            anEvent: null
+        }
+    });
+    
+    fluid.defaults("fluid.tests.ungradedComponent", {
+        events: {
+            anEvent: null
+        }
+    });
+    
+    fluid.tests.gradedComponent = function(container, options) {
+        var that = fluid.initView("fluid.tests.gradedComponent", container, options);
+        return that; 
+    }
+    
+    fluid.tests.ungradedComponent = function(container, options) {
+        var that = fluid.initView("fluid.tests.ungradedComponent", container, options);
+        return that; 
+    }
+    
+    fluid.defaults("fluid.tests.gradeResolutionParent", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        components: {
+            type: "fluid.tests.gradeResolutionChild",
+            container: "{gradeResolutionParent}.container"
+        }
+    });
+    
+    fluid.tests.gradeTestTypes = ["fluid.tests.gradedComponent", "fluid.tests.autoGradedComponent", "fluid.tests.ungradedComponent"];
+    
+    function testEvent(message, component) {
+        jqUnit.expect(1);
+        component.events.anEvent.addListener(function() {
+            jqUnit.assert("Event fired");
+        });
+        component.events.anEvent.fire();
+    }
+    
+    fluidIoCTests.test("Grade resolution test", function () {
+        fluid.each(fluid.tests.gradeTestTypes, function(typeName) {
+            var that = fluid.invokeGlobalFunction(typeName, ["#pager-top"]);
+            testEvent("Construction of " + typeName, that);
+        });
     });
 
     fluid.registerNamespace("fluid.tests.envTests");
@@ -640,6 +692,9 @@ fluid.registerNamespace("fluid.tests");
     fluid.defaults("fluid.tests.reinstantiation", {
         headValue: "headValue",
         components: {
+            headChild: {
+                type: "fluid.tests.reinsChild"  
+            },
             child1: {
                 type: "fluid.tests.reinsChild",
                 options: {
@@ -658,7 +713,10 @@ fluid.registerNamespace("fluid.tests");
                                     },
                                     child4: {
                                         type: "fluid.tests.reinsNonComponent"
-                                    }
+                                    },
+                                    // This duplication tests FLUID-4166
+                                    child5: "{reinstantiation}.headChild",
+                                    child6: "{reinstantiation}.headChild"
                                 }
                             }
                         }
