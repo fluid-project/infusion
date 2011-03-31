@@ -111,6 +111,5 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                                                         button);        
             checkTransparentSettings(config);
         });
-        
     });
 })(jQuery);
