@@ -120,13 +120,13 @@ fluid.registerNamespace("fluid.tests");
 
         // "whitebox" testing to assess failure in the presence and absence of IoC
         function expandOptionsCensorer(func) {
-            var expandOptions = fluid.expandOptions;
-            delete fluid.expandOptions;
+            var expandComponentOptions = fluid.expandComponentOptions;
+            delete fluid.expandComponentOptions;
             try {
                 func();
             }
             finally {
-                fluid.expandOptions = expandOptions;
+                fluid.expandComponentOptions = expandComponentOptions;
             }      
         }
          
