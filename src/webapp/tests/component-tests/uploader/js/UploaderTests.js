@@ -127,6 +127,56 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * Uploader Integration Tests *
          ******************************/
         
+        /*
+         * Instantiate an uploader as a subcomponent 
+         */
+        fluid.uploader.parent = function (options) {
+            var that = fluid.initLittleComponent("fluid.uploader.parent", options);
+            fluid.initDependents(that);
+            return that;
+        };
+        
+        /*
+         * Instantiate an uploader as a subcomponent with external demands
+         */
+        fluid.uploader.parent.loadDemands = function (options) {
+            var that = fluid.initLittleComponent("fluid.uploader.parent.loadDemands", options);
+            fluid.initDependents(that);
+            return that;
+        };        
+        
+        fluid.defaults("fluid.uploader.parent", {
+            gradeNames: ["fluid.littleComponent"],
+            components: {
+                uploader: {
+                    type: "fluid.uploader",
+                    container: ".flc-uploader"
+                }
+            }
+        });
+        
+        fluid.defaults("fluid.uploader.parent.loadDemands", {
+            gradeNames: ["fluid.littleComponent"],
+            components: {
+                uploader: {
+                    type: "fluid.uploader"
+                }
+            }
+        });
+
+        fluid.demands("fluid.uploader", "fluid.uploader.parent.loadDemands", {
+            container: ".flc-uploader"
+        });                
+        
+        uploaderTests.test("Ensure single-file Uploader is correctly instantiated", function () {
+            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.uploader.singleFile");
+            
+            var container = $(".flc-uploader");
+            var that = fluid.uploader(container);
+            
+            jqUnit.assertEquals("The single-file uploader is in fact the single-file version", "fluid.uploader.singleFileUploader", that.typeName);
+        });
+        
         uploaderTests.test("Ensure HTML5 uploader is correctly instantiated", function () {
             fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.browser.supportsBinaryXHR");
 
@@ -150,7 +200,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("The HTML5 uploader must have an argument map in its options", that.options.argumentMap);
             jqUnit.assertEquals("The argument map must identify the component container as the first argument in the arguments list", 0, that.options.argumentMap.container);
             jqUnit.assertEquals("The argument map must identify the component options as the second argument in the arguments list", 1, that.options.argumentMap.options);
-            jqUnit.assertEquals("The HTML5 uploader must have the correct IoC gradeNames value", "fluid.viewComponent", that.options.gradeNames);
         });        
         
         uploaderTests.test("Ensure Flash uploader is correctly instantiated", function () {
@@ -177,29 +226,114 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("The SWF uploader must have an argument map in its options", that.options.argumentMap);
         });    
 
-        fluid.uploader.parent = function (options) {
-            var that = fluid.initLittleComponent("fluid.uploader.parent", options);
-            fluid.initDependents(that);
-            return that;
-        };
-        
-        fluid.defaults("fluid.uploader.parent", {
-            gradeNames: ["fluid.littleComponent"],
-            components: {
-                uploader: {
-                    type: "fluid.uploader",
-                    container: ".flc-uploader"
-                }
-            }
+        uploaderTests.test("Ensure single-file Uploader is correctly instantiated as a subcomponent", function () {
+            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.uploader.singleFile");
+            
+            var that = fluid.uploader.parent();
+            
+            jqUnit.assertEquals("The single-file uploader is in fact the single-file version", "fluid.uploader.singleFileUploader", that.uploader.typeName);
         });
         
         uploaderTests.test("Ensure HTML5 uploader is correctly instantiated as a subcomponent", function () {
             fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.browser.supportsBinaryXHR");
 
             var that = fluid.uploader.parent();
-            that.uploader = that.options.components.uploader;
             
             jqUnit.assertEquals("The HTML5 uploader is in fact the HTML5 version", "fluid.uploader.html5Strategy", that.uploader.strategy.typeName);
+            jqUnit.assertTrue("The HTML5 strategy contains a local component", that.uploader.strategy.local);
+            jqUnit.assertTrue("The HTML5 strategy contains a remote component", that.uploader.strategy.remote);
+            jqUnit.assertTrue("The HTML5 uploader has a container", that.uploader.container);
+            jqUnit.assertEquals("The HTML5 container has the correct selector", ".flc-uploader", that.uploader.container.selector);            
+            jqUnit.assertTrue("The HTML5 uploader has a fileQueueView", that.uploader.fileQueueView);
+            jqUnit.assertTrue("The fileQueueView has a scroller component", that.uploader.fileQueueView.scroller);
+            jqUnit.assertTrue("The fileQueueView has an eventBinder component", that.uploader.fileQueueView.eventBinder);            
+            jqUnit.assertTrue("The fileQueueView's container is the file queue", that.uploader.fileQueueView.container.hasClass("fl-uploader-queue"));
+            jqUnit.assertTrue("The HTML5 uploader has a total progress component", that.uploader.totalProgress);
+            jqUnit.assertTrue("The total progress component has a progressBar", that.uploader.totalProgress.progressBar);
+            jqUnit.assertTrue("The HTML5 uploader has all the events", that.uploader.events);
+            jqUnit.assertTrue("The HTML5 uploader has a file queue", that.uploader.queue);
+            jqUnit.assertTrue("The HTML5 uploader must have queueSettings", that.uploader.options.queueSettings);
+            jqUnit.assertTrue("The HTML5 uploader must have an argument map in its options", that.uploader.options.argumentMap);
+            jqUnit.assertEquals("The argument map must identify the component container as the first argument in the arguments list", 0, that.uploader.options.argumentMap.container);
+            jqUnit.assertEquals("The argument map must identify the component options as the second argument in the arguments list", 1, that.uploader.options.argumentMap.options);            
         });
+        
+        uploaderTests.test("Ensure Flash uploader is correctly instantiated as a subcomponent", function () {
+            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.browser.supportsFlash");
+
+            var that = fluid.uploader.parent();       
+            
+            jqUnit.assertEquals("The SWF uploader is in fact the Flash version", "fluid.uploader.swfUploadStrategy", that.uploader.strategy.typeName);
+            jqUnit.assertTrue("The SWF strategy contains a local component", that.uploader.strategy.local);
+            jqUnit.assertTrue("The SWF strategy contains a remote component", that.uploader.strategy.remote);
+            jqUnit.assertTrue("The SWF strategy contains an engine component", that.uploader.strategy.engine);
+            jqUnit.assertTrue("The SWF uploader has a container", that.uploader.container);
+            jqUnit.assertEquals("The SWF container has the correct selector", ".flc-uploader", that.uploader.container.selector);            
+            jqUnit.assertTrue("The SWF uploader has a fileQueueView", that.uploader.fileQueueView);
+            jqUnit.assertTrue("The fileQueueView has a scroller component", that.uploader.fileQueueView.scroller);
+            jqUnit.assertTrue("The fileQueueView has an eventBinder component", that.uploader.fileQueueView.eventBinder);            
+            jqUnit.assertTrue("The fileQueueView's container is the file queue", that.uploader.fileQueueView.container.hasClass("fl-uploader-queue"));
+            jqUnit.assertTrue("The SWF uploader has a total progress component", that.uploader.totalProgress);
+            jqUnit.assertTrue("The total progress component has a progressBar", that.uploader.totalProgress.progressBar);
+            jqUnit.assertTrue("The SWF uploader has all the events", that.uploader.events);
+            jqUnit.assertTrue("The SWF uploader has a file queue", that.uploader.queue);
+            jqUnit.assertTrue("The SWF uploader must have queueSettings", that.uploader.options.queueSettings);
+            jqUnit.assertTrue("The SWF uploader must have an argument map in its options", that.uploader.options.argumentMap);
+        });  
+
+        uploaderTests.test("Ensure single-file Uploader is correctly instantiated as a subcomponent", function () {
+            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.uploader.singleFile");
+            
+            var that = fluid.uploader.parent.loadDemands();
+            
+            jqUnit.assertEquals("The single-file uploader is in fact the single-file version", "fluid.uploader.singleFileUploader", that.uploader.typeName);
+        });
+        
+        uploaderTests.test("Ensure HTML5 uploader is correctly instantiated as a subcomponent with external demands", function () {
+            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.browser.supportsBinaryXHR");
+            
+            var that = fluid.uploader.parent.loadDemands();
+            
+            jqUnit.assertEquals("The HTML5 uploader is in fact the HTML5 version", "fluid.uploader.html5Strategy", that.uploader.strategy.typeName);
+            jqUnit.assertTrue("The HTML5 strategy contains a local component", that.uploader.strategy.local);
+            jqUnit.assertTrue("The HTML5 strategy contains a remote component", that.uploader.strategy.remote);
+            jqUnit.assertTrue("The HTML5 uploader has a container", that.uploader.container);
+            jqUnit.assertEquals("The HTML5 container has the correct selector", ".flc-uploader", that.uploader.container.selector);            
+            jqUnit.assertTrue("The HTML5 uploader has a fileQueueView", that.uploader.fileQueueView);
+            jqUnit.assertTrue("The fileQueueView has a scroller component", that.uploader.fileQueueView.scroller);
+            jqUnit.assertTrue("The fileQueueView has an eventBinder component", that.uploader.fileQueueView.eventBinder);            
+            jqUnit.assertTrue("The fileQueueView's container is the file queue", that.uploader.fileQueueView.container.hasClass("fl-uploader-queue"));
+            jqUnit.assertTrue("The HTML5 uploader has a total progress component", that.uploader.totalProgress);
+            jqUnit.assertTrue("The total progress component has a progressBar", that.uploader.totalProgress.progressBar);
+            jqUnit.assertTrue("The HTML5 uploader has all the events", that.uploader.events);
+            jqUnit.assertTrue("The HTML5 uploader has a file queue", that.uploader.queue);
+            jqUnit.assertTrue("The HTML5 uploader must have queueSettings", that.uploader.options.queueSettings);
+            jqUnit.assertTrue("The HTML5 uploader must have an argument map in its options", that.uploader.options.argumentMap);
+            jqUnit.assertEquals("The argument map must identify the component container as the first argument in the arguments list", 0, that.uploader.options.argumentMap.container);
+            jqUnit.assertEquals("The argument map must identify the component options as the second argument in the arguments list", 1, that.uploader.options.argumentMap.options);            
+        }); 
+        
+        uploaderTests.test("Ensure Flash uploader is correctly instantiated as a subcomponent with external demands", function () {
+            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.browser.supportsFlash");
+
+            var that = fluid.uploader.parent.loadDemands();    
+            
+            jqUnit.assertEquals("The SWF uploader is in fact the Flash version", "fluid.uploader.swfUploadStrategy", that.uploader.strategy.typeName);
+            jqUnit.assertTrue("The SWF strategy contains a local component", that.uploader.strategy.local);
+            jqUnit.assertTrue("The SWF strategy contains a remote component", that.uploader.strategy.remote);
+            jqUnit.assertTrue("The SWF strategy contains an engine component", that.uploader.strategy.engine);
+            jqUnit.assertTrue("The SWF uploader has a container", that.uploader.container);
+            jqUnit.assertEquals("The SWF container has the correct selector", ".flc-uploader", that.uploader.container.selector);            
+            jqUnit.assertTrue("The SWF uploader has a fileQueueView", that.uploader.fileQueueView);
+            jqUnit.assertTrue("The fileQueueView has a scroller component", that.uploader.fileQueueView.scroller);
+            jqUnit.assertTrue("The fileQueueView has an eventBinder component", that.uploader.fileQueueView.eventBinder);            
+            jqUnit.assertTrue("The fileQueueView's container is the file queue", that.uploader.fileQueueView.container.hasClass("fl-uploader-queue"));
+            jqUnit.assertTrue("The SWF uploader has a total progress component", that.uploader.totalProgress);
+            jqUnit.assertTrue("The total progress component has a progressBar", that.uploader.totalProgress.progressBar);
+            jqUnit.assertTrue("The SWF uploader has all the events", that.uploader.events);
+            jqUnit.assertTrue("The SWF uploader has a file queue", that.uploader.queue);
+            jqUnit.assertTrue("The SWF uploader must have queueSettings", that.uploader.options.queueSettings);
+            jqUnit.assertTrue("The SWF uploader must have an argument map in its options", that.uploader.options.argumentMap);
+        });          
     });
 })(jQuery);
