@@ -166,9 +166,10 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             idToPath: {},
             pathToComponent: {},
-            stackCount: 0
+            stackCount: 0,
+            nickName: "instantiator"
         };
-        var that = fluid.initLittleComponent("fluid.instantiator");
+        var that = fluid.typeTag("fluid.instantiator");
         that = $.extend(that, preThat);
 
         that.stack = function(count) {
@@ -807,39 +808,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 fluid.log("Finished instantiation of invoker with name \"" + name + "\" as child of " + fluid.dumpThat(that)); 
             }
         });
-    };
-    
-    // Standard Fluid component types
-    
-    fluid.viewComponent = function(name) {
-        return function(container, options) {
-            var that = fluid.initView(name, container, options);
-            fluid.initDependents(that);
-            return that;
-        };
-    };
-    
-    // backwards compatibility with 1.3.x although this was probably never used/advertised
-    fluid.standardComponent = fluid.viewComponent; 
-    
-    fluid.littleComponent = function(name) {
-        return function(options) {
-            var that = fluid.initLittleComponent(name, options);
-            fluid.initDependents(that);
-            return that;
-        };
-    };
-    
-    fluid.makeComponents = function(components, env) {
-        if (!env) {
-            env = fluid.environment;
-        }
-        for (var name in components) {
-            fluid.setGlobalValue(name, 
-                fluid.invokeGlobalFunction(components[name], [name], env), env);
-        }
-    };
-    
+    };   
         
     fluid.staticEnvironment = fluid.typeTag("fluid.staticEnvironment");
     

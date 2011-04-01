@@ -210,6 +210,10 @@ var jqUnit = jqUnit || {};
             ok(value !== null && value !== undefined, msg);
         },
         
+        assertNoValue: function (msg, value) {
+            ok(value === null || value === undefined, msg);
+        },
+        
         assertNull: function (msg, value) {
             equals(value, null, msg);
         },
