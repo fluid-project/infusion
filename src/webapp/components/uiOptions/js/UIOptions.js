@@ -334,6 +334,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     var setupUIOptions = function (that) {
+        fluid.initDependents(that);
         that.applier.modelChanged.addListener("*",
             function (newModel, oldModel, changeRequest) {
                 that.events.modelChanged.fire(newModel, oldModel, changeRequest.source);
@@ -346,7 +347,6 @@ var fluid_1_4 = fluid_1_4 || {};
         that.events.afterRender.addListener(function () {
             initSliders(that);
             bindHandlers(that);
-            fluid.initDependents(that);
         });
         
         if (!that.options.templateUrl) {
@@ -439,7 +439,8 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.viewComponent"], 
         components: {
             preview: {
-                type: "fluid.uiOptions.preview"
+                type: "fluid.uiOptions.preview",
+                createOnEvent: "onReady"
             }
         },
         textMinSize: {
@@ -497,17 +498,15 @@ var fluid_1_4 = fluid_1_4 || {};
      **********************/
 
     var setupPreview = function (that) {
+        fluid.initDependents(that);
         // TODO: Break out iFrame assumptions from Preview.
         that.container.attr("src", that.options.templateUrl);        
 
         that.container.load(function () {
             that.previewFrameContents = that.container.contents();
-            that.options.components.enhancer = that.options.deferredComponents.enhancer;
-            fluid.initDependent(that, "enhancer", that.instantiator);
             that.events.onReady.fire();
         });
         
-        fluid.initDependents(that);
     };
     
     fluid.uiOptions.preview = function (container, options) {
@@ -530,18 +529,10 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.defaults("fluid.uiOptions.preview", {
         gradeNames: ["fluid.viewComponent"], 
-        
         components: {
-            instantiator: "{instantiator}", // TODO: Remove this when IoC formally supports deferredComponents
-
-            eventBinder: {
-                type: "fluid.uiOptions.preview.eventBinder"
-            }
-        },
-        
-        deferredComponents: {
             enhancer: {
                 type: "fluid.uiEnhancer",
+                createOnEvent: "onReady",
                 options: {
                     savedSettings: "{uiOptions}.model",
                     tableOfContents: "{uiOptions}.uiEnhancer.options.tableOfContents", // TODO: Tidy this up when the page's UI Enhancer is IoC-visible.
@@ -549,6 +540,10 @@ var fluid_1_4 = fluid_1_4 || {};
                         type: "fluid.uiEnhancer.tempStore"
                     }
                 }
+            },
+            eventBinder: {
+                type: "fluid.uiOptions.preview.eventBinder",
+                createOnEvent: "onReady"
             }
         },
         
