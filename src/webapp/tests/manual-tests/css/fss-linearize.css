@@ -6,6 +6,11 @@ h2 {
 	background-color: lightblue;
 }
 
+h3 {
+	clear: both;
+	background-color: lightgreen;	
+}
+
 .layout-demo {
 	margin-bottom:10px;
 }
