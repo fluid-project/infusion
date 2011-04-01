@@ -54,14 +54,12 @@ fluid.registerNamespace("fluid.tests");
 
 
     fluid.defaults("fluid.tests.modelComponent", {
-        gradeNames: "modelComponent",
-        mergePolicy: {
-            model: "preserve"
-        }
+        gradeNames: ["fluid.modelComponent", "autoInit"]
     });
 
 
     fluid.defaults("fluid.tests.dependentModel", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         mergePolicy: {
             model: "preserve"
         },
@@ -76,6 +74,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     fluid.defaults("fluid.tests.fluid3818head", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             child: {
                 type: "fluid.tests.fluid3818child",
@@ -87,6 +86,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     fluid.defaults("fluid.tests.thatStackHead", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         headValue: "headValue",
         components: {
             child1: {
@@ -118,25 +118,16 @@ fluid.registerNamespace("fluid.tests");
     fluid.makeComponents({
         "fluid.tests.testOrder":          "fluid.viewComponent", 
         "fluid.tests.subComponent":       "fluid.viewComponent",
-        "fluid.tests.invokerComponent":   "fluid.littleComponent",
-        "fluid.tests.invokerComponent2":  "fluid.littleComponent",
-        "fluid.tests.modelComponent":     "fluid.littleComponent",
-        "fluid.tests.dependentModel":     "fluid.littleComponent",
-        "fluid.tests.multiResolution":    "fluid.littleComponent",
         "fluid.tests.multiResSub":        "fluid.littleComponent",
         "fluid.tests.multiResSub2":       "fluid.littleComponent",
         "fluid.tests.multiResSub3":       "fluid.littleComponent",
-        "fluid.tests.defaultInteraction": "fluid.littleComponent",
-        "fluid.tests.popup":              "fluid.littleComponent",
-        "fluid.tests.fluid3818head":      "fluid.littleComponent",
         "fluid.tests.fluid3818child":     "fluid.littleComponent",
-        "fluid.tests.thatStackHead":      "fluid.littleComponent",
         "fluid.tests.thatStackTail":      "fluid.littleComponent",
-        "fluid.tests.reinstantiation":    "fluid.littleComponent",
         "fluid.tests.reinsChild":         "fluid.littleComponent"
     });
 
     fluid.defaults("fluid.tests.invokerComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         template: "Every {0} has {1} {2}(s)",
         invokers: {
             render: {
@@ -150,6 +141,7 @@ fluid.registerNamespace("fluid.tests");
     });
     
     fluid.defaults("fluid.tests.invokerComponent2", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         template: "Every {0} has {1} {2}(s)",
         invokers: {
             render: "stringRenderer"
@@ -173,6 +165,7 @@ fluid.registerNamespace("fluid.tests");
 
 
     fluid.defaults("fluid.tests.multiResolution", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             resSub: {
                 type: "fluid.tests.multiResSub"
@@ -209,6 +202,7 @@ fluid.registerNamespace("fluid.tests");
         });
     
     fluid.defaults("fluid.tests.defaultInteraction", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             popup: {
                 type: "fluid.tests.popup"
@@ -217,6 +211,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     fluid.defaults("fluid.tests.popup", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         resources: {
             template: {
                 forceCache: true,
@@ -295,7 +290,7 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("\"Local\" subcomponent", type2, that2.resSub.typeName);
             var localDemandOptions = $.extend({}, fluid.demands("fluid.tests.multiResSub", 
                 ["fluid.tests.multiResolution", "fluid.tests.localFiles"]).args, {targetTypeName: type2});
-            jqUnit.assertDeepEq("\"Local\" subcomponent options", localDemandOptions, that2.resSub.options);
+            fluid.testUtils.assertLeftHand("\"Local\" subcomponent options", localDemandOptions, that2.resSub.options);
         
             fluid.staticEnvironment.testEnvironment = fluid.typeTag("fluid.tests.localTest");
             var that3 = fluid.tests.multiResolution();
@@ -306,7 +301,7 @@ fluid.registerNamespace("fluid.tests");
                 localKey1: "testValue1"
     //             targetTypeName: type3 // This floats about a bit as we change policy on "typeName"
             };
-            jqUnit.assertDeepEq("\"Test\" subcomponent merged options", expectedOptions, that3.resSub.options);
+            fluid.testUtils.assertLeftHand("\"Test\" subcomponent merged options", expectedOptions, that3.resSub.options);
 
         }
         finally {
@@ -331,6 +326,7 @@ fluid.registerNamespace("fluid.tests");
         var that = fluid.tests.defaultInteraction();
         jqUnit.assertValue("Constructed", that);
         var standardDefaults = fluid.copy(fluid.defaults("fluid.tests.popup"));
+        fluid.clearLifecycleFunctions(standardDefaults);
         jqUnit.assertDeepEq("Default options", standardDefaults, that.popup.options);
     
         try {
@@ -531,7 +527,7 @@ fluid.registerNamespace("fluid.tests");
     });
     
     fluid.defaults("fluid.tests.deferredInvokeParent", {
-        gradeNames: ["fluid.littleComponent"],
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         child: {
             expander: {
                 type: "fluid.deferredInvokeCall",
@@ -542,8 +538,6 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
-    
-    fluid.tests.deferredInvokeParent = fluid.littleComponent("fluid.tests.deferredInvokeParent");
     
     fluid.demands("fluid.tests.deferredInvoke", "fluid.tests.testContext", {
         mergeOptions: {
@@ -689,7 +683,18 @@ fluid.registerNamespace("fluid.tests");
         };
     };
     
+    fluid.defaults("fluid.tests.unexpectedReturn", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            gchild: {
+                type: "fluid.tests.reinsChild2"
+            }
+        },
+        returnedPath: "gchild"
+    });
+    
     fluid.defaults("fluid.tests.reinstantiation", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         headValue: "headValue",
         components: {
             headChild: {
@@ -716,7 +721,10 @@ fluid.registerNamespace("fluid.tests");
                                     },
                                     // This duplication tests FLUID-4166
                                     child5: "{reinstantiation}.headChild",
-                                    child6: "{reinstantiation}.headChild"
+                                    child6: "{reinstantiation}.headChild",
+                                    child7: {
+                                        type: "fluid.tests.unexpectedReturn"
+                                    }
                                 }
                             }
                         }
@@ -948,6 +956,11 @@ fluid.registerNamespace("fluid.tests");
         ];
         jqUnit.assertDeepEq("Expected initialisation sequence", testComp.initFunctionRecord, expected); 
     });
+
+    fluid.tests.guidedChildInit = function(that) {
+       // awful, illegal, side-effect-laden init function :P
+        that.options.parent.constructRecord.push(that.options.index);
+    };
    
     fluid.defaults("fluid.tests.guidedChild", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
@@ -962,10 +975,9 @@ fluid.registerNamespace("fluid.tests");
         mergeOptions:  {parent: "{guidedParent}"
         }
     });
-    
-    fluid.tests.guidedChildInit = function(that) {
-       // awful, illegal, side-effect-laden init function :P
-        that.options.parent.constructRecord.push(that.options.index);
+
+    fluid.tests.guidedParentInit = function(that) {
+        that.constructRecord = [];  
     };
    
     fluid.defaults("fluid.tests.guidedParent", {
@@ -1001,10 +1013,6 @@ fluid.registerNamespace("fluid.tests");
         },
         preInitFunction: "fluid.tests.guidedParentInit"
     });
-    
-    fluid.tests.guidedParentInit = function(that) {
-        that.constructRecord = [];  
-    };
    
     fluidIoCTests.test("Guided instantiation test", function() {
         var testComp = fluid.tests.guidedParent();
