@@ -30,8 +30,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.compat.fluid_1_3.uploader.optionsRules = {
         "queueSettings.fileTypes": { 
             type: "fluid.uploader.fileTypeTransformer", 
-                path: "queueSettings.fileTypes"
-            }
+            path: "queueSettings.fileTypes"
         }
     };
     

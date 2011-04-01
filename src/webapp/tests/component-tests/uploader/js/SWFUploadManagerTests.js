@@ -112,5 +112,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkTransparentSettings(config);
         });
         
+        swfUploadSetupTests.test("Ensure SWFUpload is properly converted to fileTypes from MIME types", function () {
+            defaultQueueSettings.fileTypes = ["image/jpeg"];
+            var flashOptions = fluid.merge(null, {}, defaultFlashSettings, {
+                flashButtonAlwaysVisible: true,
+                transparentEvenInIE: false
+            }); 
+            var defaultConfig = $.extend({}, defaultQueueSettings, flashOptions);
+            var config = fluid.uploader.swfUploadStrategy.flash10SetupConfig(defaultConfig, 
+                    events, 
+                    flashContainer, 
+                    button);
+            var convertedConfig = fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload(
+                    flashContainer, config, events, defaultQueueSettings);
+            jqUnit.assertEquals("The converted accepted fileType is", "*.jpg;*.jpeg", convertedConfig.file_types);
+        });
     });
 })(jQuery);

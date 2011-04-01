@@ -19,29 +19,28 @@ var fluid_1_4 = fluid_1_4 || {};
     /*
      * Transform HTML5 MIME types into file types for SWFUpload.
      */
-    fluid.uploader.fileTypeTransformer = function (model, expandSpec, recurse) { 
+    fluid.uploader.fileTypeTransformer = function (model, expandSpec) { 
         var fileTypes = "";
         var val = fluid.get(model, expandSpec.path); 
         var mimeTypesMap = fluid.uploader.mimeTypeRegistry;
         
-        // If the fileTypes option provided is a string, do nothing.  
-        if (typeof(val) === 'string') {
+        // If the fileTypes option is null or undefined, accept all strings.
+        // If the fileTypes option provided is a string, do nothing.
+        if (val === null || val === undefined) {
+            return "*";
+        } else if (typeof(val) === 'string') {
             return val;
-        } else {
-            for (var i = 0; i < val.length; i++) {
-                var mimeType = val[i];
-                
-                for (var key in mimeTypesMap) {
-                    if (mimeTypesMap[key].extension === mimeType) {
-                        fileTypes = fileTypes + mimeTypesMap[key].fileTypeExtension + ";";
-                    }
-                }            
-            }
-            if (fileTypes.length === 0) {
-                return "*";
-            } else {
-                return fileTypes.substring(0, fileTypes.length - 1);
-            }
         }
+        for (var i = 0; i < val.length; i++) {
+            var mimeType = val[i];
+            
+            for (var key in mimeTypesMap) {
+                if (mimeTypesMap[key].type === mimeType) {
+                    fileTypes = fileTypes + mimeTypesMap[key].ext + ";";
+                }
+            }            
+        }
+        return fileTypes.length === 0 ? "*" : 
+            fileTypes.substring(0, fileTypes.length - 1);
     }
 })(jQuery, fluid_1_4);  

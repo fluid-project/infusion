@@ -19,64 +19,64 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uploader.mimeTypeRegistry = {
         JPG: {
-            extension: "image/jpeg",
-            fileTypeExtension: "*.jpg"                
+            type: "image/jpeg",
+            ext: "*.jpg"                
         },
         JPEG: {
-            extension: "image/jpeg",
-            fileTypeExtension: "*.jpeg"
+            type: "image/jpeg",
+            ext: "*.jpeg"
         },
         BMP: {
-            extension: "image/bmp",
-            fileTypeExtension: "*.bmp"
+            type: "image/bmp",
+            ext: "*.bmp"
         },
         PNG: {
-            extension: "image/png",
-            fileTypeExtension: "*.png"
+            type: "image/png",
+            ext: "*.png"
         },
         TIF: {
-            extension: "image/tiff",
-            fileTypeExtension: "*.tif"
+            type: "image/tiff",
+            ext: "*.tif"
         },
         TIFF: {
-            extension: "image/tiff",
-            fileTypeExtension: "*.tiff"            
+            type: "image/tiff",
+            ext: "*.tiff"            
         },
         MP3: {
-            extension: "audio/mpeg",
-            fileTypeExtension: "*.mp3"
+            type: "audio/mpeg",
+            ext: "*.mp3"
         },
         WAV: {
-            extension: "audio/x-wav",
-            fileTypeExtension: "*.wav"
+            type: "audio/x-wav",
+            ext: "*.wav"
         },        
         HTML: {
-            extension: "text/html",
-            fileTypeExtension: "*.html"
+            type: "text/html",
+            ext: "*.html"
         },
         HTM: {
-            extension: "text/html",
-            fileTypeExtension: "*.htm"
+            type: "text/html",
+            ext: "*.htm"
         },
         TXT: {
-            extension: "text/plain",
-            fileTypeExtension: "*.txt"
+            type: "text/plain",
+            ext: "*.txt"
         },
         MPG: {
-            extension: "video/mpeg",
-            fileTypeExtension: "*.mpg"
+            type: "video/mpeg",
+            ext: "*.mpg"
         },
         MPEG: {
-            extension: "video/mpeg",
-            fileTypeExtension: "*.mpeg"
+            type: "video/mpeg",
+            ext: "*.mpeg"
         },
         MOV: {
-            extension: "video/quicktime",
-            fileTypeExtension: "*.mov"
+            type: "video/quicktime",
+            ext: "*.mov"
         },
         AVI: {
-            extension: "video/x-msvideo",
-            fileTypeExtension: "*.avi"
+            type: "video/x-msvideo",
+            ext: "*.avi"
         }
     };    
 })(jQuery, fluid_1_4);        

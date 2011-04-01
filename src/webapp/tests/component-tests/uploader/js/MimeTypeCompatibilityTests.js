@@ -69,6 +69,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 }
             };            
             checkConvertedFileTypes(options, "*.jpg;image/png;*.txt");
-        });                
+        });
     });    
 })(jQuery);

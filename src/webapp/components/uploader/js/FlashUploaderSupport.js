@@ -275,10 +275,9 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload = function (flashContainer, config, events, queueSettings) {
         config.flashButtonPeerId = fluid.allocateSimpleId(flashContainer.children().eq(0));
         // Map the event and settings names to SWFUpload's expectations.
-        var convertedConfig = mapNames(swfUploadOptionsMap, config);
         // Convert HTML5 MIME types into SWFUpload file types
-        // TODO:  better place to do this?
-        convertedConfig.file_types = fluid.uploader.fileTypeTransformer(queueSettings, {path: "fileTypes"});
+        config.fileTypes = fluid.uploader.fileTypeTransformer(queueSettings, {path: "fileTypes"});
+        var convertedConfig = mapNames(swfUploadOptionsMap, config);
         return mapSWFUploadEvents(swfUploadEventMap, events, convertedConfig);
     };
     
