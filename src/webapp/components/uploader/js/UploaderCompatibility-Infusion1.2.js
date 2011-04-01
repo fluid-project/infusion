@@ -68,11 +68,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     }
                 ]
             }
-        },
-        "fileTypes": { 
-            type: "fluid.uploader.fileTypeTransformer", 
-            path: "queueSettings.fileTypes"
-        },        
+        },    
         "invokers": "invokers",
         "queueSettings": "uploadManager.options",
         "demo": "demo",
