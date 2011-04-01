@@ -1134,12 +1134,16 @@ var fluid = fluid || fluid_1_4;
      */
     fluid.mergeComponentOptions = function (that, componentName, userOptions, localOptions) {
         var defaults = fluid.defaults(componentName);
-        var mergePolicy = $.extend({}, defaults ? defaults.mergePolicy : {});
+        var mergePolicy = $.extend({}, fluid.rootMergePolicy, defaults ? defaults.mergePolicy : {});
         var defaultGrades = defaults && defaults.gradeNames;
+        var mergeArgs;
         if (!defaultGrades) {
             defaults = fluid.censorKeys(defaults, fluid.keys(fluid.lifecycleFunctions));
+            mergeArgs = [mergePolicy, localOptions];
         }
-        var mergeArgs = [mergePolicy, {}, defaultGrades? {} : localOptions];
+        else {
+            mergeArgs = [mergePolicy];
+        }
         var extraArgs;
         if (fluid.expandComponentOptions) {
             extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
