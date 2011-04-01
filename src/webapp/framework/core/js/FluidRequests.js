@@ -210,7 +210,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * This function is unsupported: It is not really intended for use by implementors.
      */
     fluid.fetchResources.composePolicy = function(target, source, key) {
-        target[key] = fluid.fetchResources.composeCallbacks(target[key], source[key]);
+        return fluid.fetchResources.composeCallbacks(target, source);
     };
     
     fluid.defaults("fluid.fetchResources.issueRequest", {

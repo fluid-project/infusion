@@ -88,6 +88,14 @@ fluid.testUtils.assertTree = function (message, expected, actual) {
     jqUnit.assertDeepEq(message, expected, actual);
 };
 
+fluid.testUtils.assertLeftHand = function(message, expected, actual) {
+    jqUnit.assertDeepEq(message, expected, fluid.filterKeys(actual, fluid.keys(expected)));  
+};
+
+fluid.testUtils.assertRightHand = function(message, expected, actual) {
+    jqUnit.assertDeepEq(message, fluid.filterKeys(expected, fluid.keys(actual)), actual);  
+};
+
 /** Condense a DOM node into a plain Javascript object, to facilitate testing against
  * a trial, with the use of assertDeepEq or similar
  */
