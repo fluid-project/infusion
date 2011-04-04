@@ -101,12 +101,15 @@ var fluid_1_4 = fluid_1_4 || {};
         };
     }
     
-    fluid.dumpThat = function(that) {
-        return "{ typeName: \"" + that.typeName + "\" id: " + that.id + "}";  
+    fluid.dumpThat = function(that, instantiator) {
+        return "{ typeName: \"" + that.typeName + "\" id: " + that.id + "}";
     };
     
-    fluid.dumpThatStack = function(thatStack) {
-        var togo = fluid.transform(thatStack, fluid.dumpThat);
+    fluid.dumpThatStack = function(thatStack, instantiator) {
+        var togo = fluid.transform(thatStack, function(that) {
+            var path = instantiator.idToPath[that.id];
+            return fluid.dumpThat(that) + (path? (" - path: " + path) : "");
+        });
         return togo.join("\n");
     };
 
@@ -138,7 +141,7 @@ var fluid_1_4 = fluid_1_4 || {};
             });
             if (!foundComponent && parsed.path !== "") {
                 var ref = fluid.renderContextReference(parsed);
-                fluid.log("Failed to resolve reference " + ref + ": thatStack contains\n" + fluid.dumpThatStack(thatStack));
+                fluid.log("Failed to resolve reference " + ref + ": thatStack contains\n" + fluid.dumpThatStack(thatStack, instantiator));
                 fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " 
                     + context + " from component root of type " + thatStack[0].typeName);
             }
@@ -163,9 +166,10 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             idToPath: {},
             pathToComponent: {},
-            stackCount: 0
+            stackCount: 0,
+            nickName: "instantiator"
         };
-        var that = fluid.initLittleComponent("fluid.instantiator");
+        var that = fluid.typeTag("fluid.instantiator");
         that = $.extend(that, preThat);
 
         that.stack = function(count) {
@@ -223,16 +227,18 @@ var fluid_1_4 = fluid_1_4 || {};
                 that.recordRoot(component);
             }
         };
-        that.clearComponent = function(component, name, visited) {
+        that.clearComponent = function(component, name, child, visited, noModTree) {
             visited = visited || {};
-            var child = component[name];
+            child = child || component[name];
             fluid.visitComponentChildren(child, function(gchild, gchildname, visited) {
-                that.clearComponent(child, gchildname, visited);
+                that.clearComponent(child, gchildname, null, visited, noModTree);
             }, visited);
             var path = that.idToPath[child.id];
             delete that.idToPath[child.id];
             delete that.pathToComponent[path];
-            delete component[name];
+            if (!noModTree) {
+                delete component[name];
+            }
         };
         that.recordKnownComponent = function(parent, component, name) {
             var parentPath = that.idToPath[parent.id] || "";
@@ -442,7 +448,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             visited.push(component);
         });
         if (demandLogging) {
-            fluid.log("Components in scope for resolution:\n" + fluid.dumpThatStack(visited));  
+            fluid.log("Components in scope for resolution:\n" + fluid.dumpThatStack(visited, instantiator));  
         }
         var matches = [];
         for (var i = 0; i < demandingNames.length; ++i) {
@@ -709,11 +715,17 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 try {
                     that[inCreationMarker] = true;
                     var instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
-                    if (instance) { // TODO: more fallibility
-                       // Interestingly, by the time we have actually recorded this component here, it is far too late
-                       // to have used it for resolution required by itself and subcomponents....
-                        that[name] = instance;
+                    // The existing instantiator record will be provisional, adjust it to take account of the true return
+                    // TODO: Instantiator contents are generally extremely incomplete
+                    var path = fluid.composePath(instantiator.idToPath[that.id] || "", name);
+                    var existing = instantiator.pathToComponent[path];
+                    if (existing) {
+                        instantiator.clearComponent(that, name, existing, {}, true);
                     }
+                    if (instance && instance.typeName && instance.id) {
+                        instantiator.recordKnownComponent(that, instance, name);
+                    }
+                    that[name] = instance;
                 }
                 finally {
                     delete that[inCreationMarker];
@@ -781,52 +793,22 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
         });
         var componentList = fluid.event.sortListeners(componentSort);
-        fluid.each(componentList, function(entry) {
-            fluid.initDependent(that, entry.key);  
+        fluid.withInstantiator(that, function(instantiator) {
+            fluid.each(componentList, function(entry) {
+                fluid.initDependent(that, entry.key);  
+            });
+            var invokers = options.invokers || {};
+            for (var name in invokers) {
+                var invokerec = invokers[name];
+                var funcName = typeof(invokerec) === "string"? invokerec : null;
+                that[name] = fluid.withInstantiator(that, function(instantiator) {
+                    fluid.log("Beginning instantiation of invoker with name \"" + name + "\" as child of " + fluid.dumpThat(that)); 
+                    return fluid.makeInvoker(instantiator, that, funcName? null : invokerec, funcName);
+                }); // jslint:ok
+                fluid.log("Finished instantiation of invoker with name \"" + name + "\" as child of " + fluid.dumpThat(that)); 
+            }
         });
-        var invokers = options.invokers || {};
-        for (var name in invokers) {
-            var invokerec = invokers[name];
-            var funcName = typeof(invokerec) === "string"? invokerec : null;
-            that[name] = fluid.withInstantiator(that, function(instantiator) {
-                fluid.log("Beginning instantiation of invoker with name \"" + name + "\" as child of " + fluid.dumpThat(that)); 
-                return fluid.makeInvoker(instantiator, that, funcName? null : invokerec, funcName);
-            }); // jslint:ok
-            fluid.log("Finished instantiation of invoker with name \"" + name + "\" as child of " + fluid.dumpThat(that)); 
-        }
-    };
-    
-    // Standard Fluid component types
-    
-    fluid.viewComponent = function(name) {
-        return function(container, options) {
-            var that = fluid.initView(name, container, options);
-            fluid.initDependents(that);
-            return that;
-        };
-    };
-    
-    // backwards compatibility with 1.3.x although this was probably never used/advertised
-    fluid.standardComponent = fluid.viewComponent; 
-    
-    fluid.littleComponent = function(name) {
-        return function(options) {
-            var that = fluid.initLittleComponent(name, options);
-            fluid.initDependents(that);
-            return that;
-        };
-    };
-    
-    fluid.makeComponents = function(components, env) {
-        if (!env) {
-            env = fluid.environment;
-        }
-        for (var name in components) {
-            fluid.setGlobalValue(name, 
-                fluid.invokeGlobalFunction(components[name], [name], env), env);
-        }
-    };
-    
+    };   
         
     fluid.staticEnvironment = fluid.typeTag("fluid.staticEnvironment");
     
@@ -1012,7 +994,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.resolveEnvironment = function(obj, directModel, userOptions) {
         directModel = directModel || {};
-        var options = fluid.merge(null, {}, fluid.defaults("fluid.resolveEnvironment"), userOptions);
+        var options = fluid.merge(null, fluid.defaults("fluid.resolveEnvironment"), userOptions);
         options.seenIds = {};
         if (!options.fetcher) {
             options.fetcher = fluid.environmentFetcher(directModel);
