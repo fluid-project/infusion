@@ -156,16 +156,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }, null, enhancerOpts);
         });
 
+
+        /*****************
+         * Preview tests *
+         *****************/
+         
         tests.asyncTest("Preview URL", function () {
             expect(1);
             
-            var myOpts = {        
-                previewTemplateUrl: "TestPreviewTemplate.html"
+            var templateUrl = "TestPreviewTemplate.html";
+            var myOpts = {
+                components: {
+                    preview: {
+                        options: {
+                            templateUrl: templateUrl
+                        }
+                    }
+                }        
             };
             
             testUIOptions(function (uiOptions) {
-                jqUnit.assertEquals("The preview iFrame is point to the specified markup",
-                    myOpts.previewTemplateUrl, uiOptions.locate("previewFrame").attr("src"));
+                jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
+                    templateUrl, uiOptions.preview.container.attr("src"));
             }, myOpts);
         });
     });

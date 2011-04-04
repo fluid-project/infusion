@@ -994,7 +994,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.resolveEnvironment = function(obj, directModel, userOptions) {
         directModel = directModel || {};
-        var options = fluid.merge(null, {}, fluid.defaults("fluid.resolveEnvironment"), userOptions);
+        var options = fluid.merge(null, fluid.defaults("fluid.resolveEnvironment"), userOptions);
         options.seenIds = {};
         if (!options.fetcher) {
             options.fetcher = fluid.environmentFetcher(directModel);
