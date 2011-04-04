@@ -7,7 +7,8 @@
  *         black     : #000000
 
  */
-.fl-theme-hc :focus,
+.fl-theme-hc .fl-focus:focus,
+.fl-theme-hc .fl-focus :focus,
 .fl-theme-hc .selectable  {
    /* themed focus indicator */
    outline: 0.2em solid #F00;
