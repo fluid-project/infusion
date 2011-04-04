@@ -939,9 +939,31 @@ fluid.registerNamespace("fluid.tests");
                     parent: "{initFunctions}",
                     name: "eventTimeComponent"  
                 } 
+            },
+            demandsInitComponent: {
+                type: "fluid.tests.initFunctions.demandsInitComponent",
+                options: {
+                    components: {
+                        parent: "{initFunctions}"
+                    }
+                }
             }
+            
         }
     });
+    
+    fluid.defaults("fluid.tests.initFunctions.demandsInitComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.tests.initFunctions.demandsInitComponent.finalInitFunction = function (that) {
+        that.parent.initFunctionRecord.push("finalInitFunctionSubcomponent");
+    };
+    fluid.demands("demandsInitComponent", "fluid.tests.initFunctions", {
+        options: {
+            finalInitFunction: fluid.tests.initFunctions.demandsInitComponent.finalInitFunction,
+        }
+    })
     
     fluidIoCTests.test("Component lifecycle test", function() {
         var testComp = fluid.tests.initFunctions();
@@ -950,6 +972,7 @@ fluid.registerNamespace("fluid.tests");
             "preInitFunction",
             "postInitFunction",
             "initTimeComponent",
+            "finalInitFunctionSubcomponent",
             "finalInitFunction",
             "mainEventListener",
             "eventTimeComponent"
