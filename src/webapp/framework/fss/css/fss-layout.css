@@ -144,16 +144,31 @@ Generic containers for columns and layouts
 /* 
  * Linearizes, !importants override specificity 
  */
- /* TODO: Things NOT to linearize */
-
 .fl-layout-linear * {
     clear: both !important; 
     float:none !important;
-    display:block !important;
     margin-left:0 !important;
     margin-right:0 !important;
-    width: 100% !important; 		/* make cols full width, backwards compat with 1.3.1. not good for abs positioned cols */
     overflow:visible !important;  	/* no scroll bars, backwards compat with 1.3.1 */
+}
+
+/* Override inline elements */
+.fl-layout-linear .fl-force-left, 
+.fl-layout-linear .fl-force-right,
+.fl-layout-linear .fl-col {
+	display:block !important; 
+}
+
+/* 
+ * Makes all block elements uniform width
+ */
+.fl-layout-width-100 div,
+.fl-layout-width-100 table,
+.fl-layout-width-100 h1, .fl-layout-width-100 h2, .fl-layout-width-100 h3, .fl-layout-width-100 h4, .fl-layout-width-100 h5,
+.fl-layout-width-100 p {
+    width: 100% !important; 
+	max-width: 960px;
+	min-width: 560px;
 }
 
 /* Deprecated */

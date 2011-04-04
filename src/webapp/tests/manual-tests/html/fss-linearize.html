@@ -21,6 +21,7 @@
 		
 		<div id="tabs"> 
 			<ul>
+				<li><a href="#website">sample website</a></li>				
 				<li><a href="#containers">containers</a></li>
 				<li><a href="#columns">columns</a></li>
 				<li><a href="#advanced">tabs, menus, widgets, buttons</a></li>
@@ -29,10 +30,78 @@
 				<li><a href="#absolute">absolute position</a></li>				
 			</ul>
 
-			<br /><button id="linearize">linear layout</button>  <button id="normal">column layout</button>
+			<br /><button id="normal">original layout</button> <button id="linearize">single col layout</button> <button id="linearize-width">single col layout, uniform width</button>
 
            <div id="container" class="fl-container-flex">          			
 
+			<div id="website">
+				<h2>Example website</h2>
+				<div class="fl-container-flex75">
+					<div id="header" class="fl-fix">
+						<a href="http://idrc.ocad.ca"><img src="http://idrc.ocad.ca/templates/idrc_theme/images/idilogo_blue.png" alt="IDRC Logo" class="fl-force-left" /></a>
+						<h1 class="fl-force-left"><a href="http://idrc.ocad.ca">Inclusive Design Research Centre</a></h1>				
+					</div>
+					<div id="main" class="fl-col-mixed-300 fl-push">
+						<div class="fl-col-fixed fl-force-left">
+							<ul class="fl-list-menu">
+						    	<li><a href="">Home</a></li>
+								<li><a href="">About</a></li>
+								<li><a href="">Research and Development</a></li>
+								<li><a href="">Resources</a></li>
+								<li><a href="">Education</a></li>
+								<li><a href="">Standards and Policy</a></li>
+								<li><a href="">Services</a></li>
+								<li><a href="">Site Map</a></li>
+							</ul>
+							
+							<div class="search">
+								<h3><label for="mod-search-searchword">Site Search</label></h3><input name="searchword" id="mod-search-searchword" maxlength="20"  class="inputbox" type="text" size="30" value=" Search idrc.ocad.ca"/><input type="submit" value="Go" class="button" />	<input type="hidden" name="task" value="search" />
+								<input type="hidden" name="option" value="com_search" />
+								<input type="hidden" name="Itemid" value="21" />						
+							</div>
+
+						</div>
+						<div class="fl-col-flex">
+							<h2>Welcome to the IDRC</h2>
+							<p>The IDRC is a research and development centre at OCAD University where an international community of open source developers, designers, researchers, advocates, and volunteers work together to ensure that  emerging  information technology and practices are designed inclusively. The group promotes inclusion in a full complement of activities:</p>
+							<ul>
+							<li>growing design and development practices</li>
+							<li>creating tools that others can use and contribute to</li>
+							<li>teaching the principles and techniques of inclusive design</li>
+							<li>advocating for inclusion in international standards</li>
+							<li>providing services that match solutions with individuals</li>
+							</ul>
+							<h3>What is Inclusive Design?</h3>
+							
+							<p>Inclusive design is design that is inclusive of the full range of human diversity with respect to ability, language, culture, gender, age and other forms of human difference.</p>
+							<p>Designing inclusively makes better experiences for everyone.</p>
+							
+							<table>
+								<caption>Table Caption</caption>
+								<tr>
+									<th>Title 1</th>
+									<th>Title 2</th>
+									<th>Title 3</th>									
+								</tr>
+								<tr>
+									<td>Some Data</td>
+									<td>Some Data</td>
+									<td>Some Data</td>									
+								</tr>
+								<tr>
+									<td>Some Data</td>
+									<td>Some Data</td>
+									<td>Some Data</td>									
+								</tr>
+							</table>
+						
+						</div>
+					</div>
+					<div id="footer" class="fl-text-align-center fl-font-size-80">
+						&copy; IDRC 2011. All Rights Reserved.
+					</div>
+				</div>
+			</div>
 			<div id="containers" class="layout-demo">
 				<h2>FSS container demo</h2>
 				<div class="fl-container">default</div>
@@ -198,20 +267,27 @@
 					<div class="fl-container-250" style="position: absolute; left:0px;">a</div>
 					<div class="fl-container-250" style="position: absolute; left:270px;">b</div>				
 				</div>			
-			</div>
+			</div>			
 		</div>
         </div>
         
         <script>
             (function ($) {
-            	$("#linearize").click(function() {
-            		$("#container").addClass("fl-layout-linear");
-            		$("#container").addClass("fl-layout-align-left");            		            		
-            	});
             	$("#normal").click(function() {
             		$("#container").removeClass("fl-layout-linear");
+            		$("#container").removeClass("fl-layout-width-100");            		            		            		
             		$("#container").removeClass("fl-layout-align-left");            		            		            		
-            	});            	            	
+            	});       
+            	$("#linearize").click(function() {
+            		$("#container").addClass("fl-layout-linear");
+            		$("#container").addClass("fl-layout-align-left");     
+            		$("#container").removeClass("fl-layout-width-100");   
+            	});
+            	$("#linearize-width").click(function() {
+            		$("#container").addClass("fl-layout-linear");
+            		$("#container").addClass("fl-layout-width-100");
+            		$("#container").addClass("fl-layout-align-left");            		            		
+            	});            	
             })(jQuery);
             
             $(document).ready(function() {
