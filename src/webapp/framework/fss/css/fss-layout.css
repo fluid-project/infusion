@@ -150,22 +150,23 @@ Generic containers for columns and layouts
     margin-left:0 !important;
     margin-right:0 !important;
     overflow:visible !important;  	/* no scroll bars, backwards compat with 1.3.1 */
+    text-align:left !important; 		/* default alignment */
 }
 
 /* Override inline elements */
 .fl-layout-linear .fl-force-left, 
 .fl-layout-linear .fl-force-right,
-.fl-layout-linear .fl-col {
+.fl-layout-linear .fl-col,
+.fl-layout-linear .fl-grid li {
 	display:block !important; 
 }
 
-/* 
- * Makes all block elements uniform width
- */
-.fl-layout-linear.fl-layout-width-100 div,
-.fl-layout-linear.fl-layout-width-100 table,
-.fl-layout-linear.fl-layout-width-100 h1, .fl-layout-linear.fl-layout-width-100 h2, .fl-layout-linear.fl-layout-width-100 h3, .fl-layout-linear.fl-layout-width-100 h4, .fl-layout-linear.fl-layout-width-100 h5,
-.fl-layout-linear.fl-layout-width-100 p {
+/* Make all block elements uniform width */
+.fl-layout-linear div,
+.fl-layout-linear table,
+.fl-layout-linear h1, .fl-layout-linear h2, .fl-layout-linear h3, .fl-layout-linear h4, .fl-layout-linear h5,
+.fl-layout-linear p,
+.fl-layout-linear form {
     width: 100% !important; 
 	max-width: 960px;
 	min-width: 560px;
@@ -175,17 +176,13 @@ Generic containers for columns and layouts
 .fl-layout-linearEnabled { width:100% !important; display:block;} 
 
 /*
- * Aligns all contents of a container. Best practice for linear layouts.
+ * Aligns containers and contents of a container. Best practice for linear layouts.
  */
-.fl-layout-align-left * {
-    text-align:left !important;
-}
-.fl-layout-align-right * {
+.fl-layout-linear.fl-layout-align-right * {
     text-align:right !important;
 }
-.fl-layout-align-center * {
-    margin-left: auto;
-    margin-right:auto;
+.fl-layout-linear.fl-layout-align-center * {
+    text-align:center !important;
 }
 
 /*
