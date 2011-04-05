@@ -162,10 +162,10 @@ Generic containers for columns and layouts
 /* 
  * Makes all block elements uniform width
  */
-.fl-layout-width-100 div,
-.fl-layout-width-100 table,
-.fl-layout-width-100 h1, .fl-layout-width-100 h2, .fl-layout-width-100 h3, .fl-layout-width-100 h4, .fl-layout-width-100 h5,
-.fl-layout-width-100 p {
+.fl-layout-linear.fl-layout-width-100 div,
+.fl-layout-linear.fl-layout-width-100 table,
+.fl-layout-linear.fl-layout-width-100 h1, .fl-layout-linear.fl-layout-width-100 h2, .fl-layout-linear.fl-layout-width-100 h3, .fl-layout-linear.fl-layout-width-100 h4, .fl-layout-linear.fl-layout-width-100 h5,
+.fl-layout-linear.fl-layout-width-100 p {
     width: 100% !important; 
 	max-width: 960px;
 	min-width: 560px;
@@ -184,7 +184,8 @@ Generic containers for columns and layouts
     text-align:right !important;
 }
 .fl-layout-align-center * {
-    text-align:center !important;
+    margin-left: auto;
+    margin-right:auto;
 }
 
 /*

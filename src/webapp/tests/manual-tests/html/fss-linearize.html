@@ -17,7 +17,18 @@
         <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
     </head>
     <body class="fl-theme-mist">
-    	<h1>Linearizing test for fss-layout</h1>        
+    	<h1>Linearizing test for fss-layout</h1>        	
+		<br />
+		<button id="normal">original layout</button> <button id="linearize">single col layout</button>
+		<div id="linear-choices" style="display:inline">
+			<label><input type="checkbox" name="layout" id="width-100" /> uniform width</label>
+			<label><input type="checkbox" name="layout" id="alignment" /> alignment:</label> 
+				<select id="align-choice">
+					<option value="fl-layout-align-left">left</option>
+					<option value="fl-layout-align-center">centre</option>
+					<option value="fl-layout-align-right">right</option>
+				</select>							
+		</div>
 		
 		<div id="tabs"> 
 			<ul>
@@ -28,9 +39,7 @@
 				<li><a href="#grid">grid</a></li>				
 				<li><a href="#forms">forms</a></li>				
 				<li><a href="#absolute">absolute position</a></li>				
-			</ul>
-
-			<br /><button id="normal">original layout</button> <button id="linearize">single col layout</button> <button id="linearize-width">single col layout, uniform width</button>
+			</ul>				
 
            <div id="container" class="fl-container-flex">          			
 
@@ -274,24 +283,46 @@
         <script>
             (function ($) {
             	$("#normal").click(function() {
-            		$("#container").removeClass("fl-layout-linear");
-            		$("#container").removeClass("fl-layout-width-100");            		            		            		
-            		$("#container").removeClass("fl-layout-align-left");            		            		            		
+    		    	$("#container").attr("class", "");      
+  				  	$("#linear-choices").hide();    		    	
             	});       
             	$("#linearize").click(function() {
+            		$("#container").attr("class", "");
             		$("#container").addClass("fl-layout-linear");
-            		$("#container").addClass("fl-layout-align-left");     
-            		$("#container").removeClass("fl-layout-width-100");   
+  				  	$("#linear-choices").show();
+  				  	
+  				  	if ($("#alignment").attr('checked') == true)
+	  				  	$("#container").addClass($("#align-choice").val());
+	  				if ($("#width-100").attr('checked') == true)
+	  					$("#container").addClass("fl-layout-width-100");
             	});
-            	$("#linearize-width").click(function() {
-            		$("#container").addClass("fl-layout-linear");
-            		$("#container").addClass("fl-layout-width-100");
-            		$("#container").addClass("fl-layout-align-left");            		            		
-            	});            	
+            	$("#width-100").change(function() {            	
+            		if ($("#width-100").attr('checked') == true) 
+	            		$("#container").addClass("fl-layout-width-100");
+	            		
+	            	if ($("#width-100").attr('checked') == false) 	
+	            		$("#container").removeClass("fl-layout-width-100");	            	
+            	}); 
+            	$("#alignment").change(function() {
+	            	if ($("#alignment").attr('checked') == true) {
+						$("#container").addClass($("#align-choice").val());
+					} else {
+						$("#container").removeClass($("#align-choice").val());
+					}
+            	});   
+            	
+            	$("#align-choice").change(function() {
+	            	$("#container").removeClass("fl-layout-align-left");
+	            	$("#container").removeClass("fl-layout-align-center");
+            		$("#container").removeClass("fl-layout-align-right");
+            		$("#container").addClass($("#align-choice").val());
+            	});
+           	
             })(jQuery);
             
             $(document).ready(function() {
 			  $("#tabs").tabs();
+			  $("#linear-choices").hide();
 			});
         </script>
     </body>

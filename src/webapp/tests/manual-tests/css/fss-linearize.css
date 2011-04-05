@@ -6,3 +6,7 @@
 .layout-demo div {
 	background-color: #ccc;
 }
+
+.fl-theme-mist :focus {
+	outline:0;
+}
