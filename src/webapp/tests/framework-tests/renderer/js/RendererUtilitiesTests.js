@@ -9,14 +9,19 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global fluid, jQuery, jqUnit*/
+// Declare dependencies
+/*global fluid, jqUnit, jQuery*/
+
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid.registerNamespace("fluid.tests");
 
 (function ($) {
+    fluid.setLogging(true);
 
     fluid.tests.testRendererUtilities = function () {
     
@@ -115,6 +120,84 @@ fluid.registerNamespace("fluid.tests");
                 jqUnit.assertEquals("Element " + index + " text", array[index], $(el).text());
             });
         }
+        
+        fluid.defaults("fluid.tests.rendererParent", {
+            components: {
+                middle: {
+                    type: "fluid.tests.rendererMiddle"
+                }
+            },
+            selectors: {
+                middle: ".middle-component"  
+            }
+        });
+        
+        fluid.tests.rendererParent = function(container, options) {
+            var that = fluid.initView("fluid.tests.rendererParent", container, options);
+            fluid.initDependents(that);
+            return that;  
+        };
+        
+        fluid.demands("fluid.tests.rendererMiddle", "fluid.tests.rendererParent",
+        ["{rendererParent}.dom.middle", fluid.COMPONENT_OPTIONS]);
+        
+        fluid.defaults("fluid.tests.rendererMiddle", {
+            mergePolicy: {
+                "rendererOptions.instantiator": "nomerge",
+                "rendererOptions.parentComponent": "nomerge"  
+            },
+            rendererOptions: {
+                instantiator: "{instantiator}",
+                parentComponent: "{rendererMiddle}"
+            },
+            selectors: {
+                decorated: ".decorated-component"
+            },
+            protoTree: {
+                decorated: {
+                    decorators: {
+                        type: "fluid",
+                        func: "fluid.tests.rendererChild",
+                        options: { decoratorValue: "{rendererParent}.options.parentValue"}
+                    }
+                }
+            }
+        });
+        
+        fluid.tests.rendererMiddle = function(container, options) {
+            var that = fluid.initRendererComponent("fluid.tests.rendererMiddle", container, options);
+            return that;
+        };
+
+        fluid.defaults("fluid.tests.rendererChild", {
+            value: "{rendererParent}.options.parentValue"  
+        });
+        
+        fluid.demands("fluid.tests.rendererChild", "fluid.tests.rendererMiddle", 
+           ["@0", fluid.COMPONENT_OPTIONS]);
+             
+        fluid.tests.rendererChild = function(container, options) {
+            var that = fluid.initView("fluid.tests.rendererChild", container, options);
+            $(container).text(that.options.value);
+            return that;
+        };
+        
+        var IoCTests = jqUnit.testCase("IoC Renderer tests");
+        
+        IoCTests.test("initDependent upgrade test", function() {
+            var parentValue = "parentValue";
+            var component = fluid.tests.rendererParent(".renderer-ioc-test", {parentValue: parentValue});
+            var middleNode = component.middle.container;
+            jqUnit.assertValue("Middle component constructed", middleNode);
+            component.middle.refreshView();
+            var decorated = component.middle.locate("decorated");
+            jqUnit.assertEquals("Decorated text resolved from top level", parentValue, decorated.text());
+            var child = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
+            jqUnit.assertEquals("Located decorator with IoC-resolved value", parentValue, child.options.decoratorValue);
+            component.middle.refreshView();
+            var child2 = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
+            jqUnit.assertNotEquals("Rendering has produced new component", child, child2);
+        });
         
         var compTests = jqUnit.testCase("Renderer component tests");
         
@@ -235,7 +318,7 @@ fluid.registerNamespace("fluid.tests");
         
         compTests.test("FLUID-3819 test: messagekey with no value", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test-repeat", {
-                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
+                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]},
                 model: {
                     recordlist: {
                         test: {
@@ -283,7 +366,7 @@ fluid.registerNamespace("fluid.tests");
         
         compTests.test("Renderer component with custom resolver", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
-                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)]
+                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]}
             });
             testFilteredRecords(that);
         });
@@ -298,13 +381,66 @@ fluid.registerNamespace("fluid.tests");
                 ]  
             };
             var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
-                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
+                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]},
                 protoTree: tree,
                 rendererFnOptions: {
                     noexpand: true
                 }
             });
             testFilteredRecords(that);
+        });
+        
+        fluid.defaults("fluid.tests.paychequeComponent", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+            selectors: {
+                child: ".flc-renderUtils-test"
+            },
+            components: {
+                renderChild: {
+                    type: "fluid.tests.paychequeRenderer",
+                    container: "{paychequeComponent}.dom.child"
+                }
+            }
+        });
+        
+        // For AC
+        fluid.defaults("fluid.tests.paychequeRenderer", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                message: ".flc-renderUtils-message"  
+            },
+            protoTree: {
+                message: "What, every Friday?"
+            }   
+        });
+        
+        compTests.test("Graded renderer component test", function() {
+            var that = fluid.tests.paychequeComponent(".flc-renderUtils-container");
+            that.renderChild.refreshView();
+            var message = that.renderChild.locate("message");
+            jqUnit.assertEquals("Message rendered", fluid.defaults("fluid.tests.paychequeRenderer").protoTree.message,
+              message.text());
+        });
+     
+        fluid.defaults("fluid.tests.FLUID4165Component", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                input: ".flc-renderUtils-test"
+            },
+            protoTree: {
+                input: "${value}"
+            }
+        });
+     
+        compTests.test("FLUID-4165 - ensure automatic creation of applier if none supplied", function() {
+            var model = {value: "Initial Value"};
+            var that = fluid.tests.FLUID4165Component(".FLUID-4165-test", {model: model});
+            that.refreshView();
+            var input = that.locate("input");
+            jqUnit.assertEquals("Initial value rendered", model.value, input.val());
+            input.val("New Value");
+            input.change();
+            jqUnit.assertEquals("Updated value read", "New Value", model.value);
         });
     
         var protoTests = new jqUnit.TestCase("Protocomponent Expander Tests");
@@ -457,6 +593,53 @@ fluid.registerNamespace("fluid.tests");
                     ]
                 };
             jqUnit.assertDeepEq("Decorator expansion", expected, expanded);
+        });
+        
+        fluid.defaults("fluid.tests.repeatDecorator", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+        });
+        
+        fluid.defaults("fluid.tests.repeatHead", {
+            gradeNames: ["fluid.IoCRendererComponent", "autoInit"],
+            protoTree: {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    controlledBy: "vector",
+                    pathAs: "elementPath",
+                    valueAs: "element", 
+                    repeatID: "link",
+                    tree: {
+                        decorators: {
+                            type: "fluid",
+                            func: "fluid.tests.repeatDecorator",
+                            options: {
+                                model: {
+                                    value: "${{element}}"
+                                }  
+                            }
+                          
+                        }  
+                    }
+                }
+            }
+        });
+        
+        protoTests.test("FLUID-4168 test: decorator expansion reference to repetition variables", function() {
+            var model = {
+                vector: [1, 2, 3]
+            };
+            var head = fluid.tests.repeatHead(".repeater-leaf-test", {model: model});
+            head.refreshView();
+            var decorators = fluid.renderer.getDecoratorComponents(head);
+            var declist = [];
+            fluid.each(decorators, function(decorator, key) {
+                declist.push({key: key, decorator: decorator});
+            });
+            declist.sort(function(ea, eb) {return ea.key < eb.key? -1 : 1});
+            var decvals = fluid.transform(declist, function(dec) {
+                return dec.decorator.model.value;  
+            });
+            jqUnit.assertDeepEq("Model values recovered from decorators", model.vector, decvals);
         });
         
         protoTests.test("FLUID-3658 test: simple repetition expander", function () {
@@ -790,6 +973,35 @@ fluid.registerNamespace("fluid.tests");
             return;
         });
         
+        protoTests.test("FLUID-4128 test: Literal booleans within repetition/condition expander", function() {
+            var model = {conditions: [true, false, true, true, false]};
+            var expander = fluid.renderer.makeProtoExpander({model: model});
+            var protoTree = {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    repeatID: "repeat-row:",
+                    pathAs: "row",
+                    valueAs: "rowValue",
+                    controlledBy: "conditions",
+                    tree: {
+                        expander: {
+                            type: "fluid.renderer.condition",
+                            condition: "{rowValue}",
+                            trueTree: {
+                                leafValue: "{rowValue}"
+                            }
+                        }
+                    }
+                }
+            }
+            var expanded = expander(protoTree);
+            jqUnit.assertEquals("Only three rows produced", 3, expanded.children.length);
+            var protoTree2 = fluid.copy(protoTree);
+            protoTree.expander.tree.expander.condition = "${{rowValue}}";
+            var expanded = expander(protoTree);
+            jqUnit.assertEquals("Only three rows produced - alternative reference style", 3, expanded.children.length);
+        });
+        
         protoTests.test("FLUID-3658 test: selection to inputs expander", function () {
             var model = { };
             var expopts = {ELstyle: "${}", model: model};
@@ -811,7 +1023,7 @@ fluid.registerNamespace("fluid.tests");
                             }
                         },
                         "permissions-record-type": "${fields.permissions.0.recordType}"
-                     }
+                    }
                     ]
                 }
             };

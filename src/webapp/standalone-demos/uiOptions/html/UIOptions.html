@@ -21,19 +21,14 @@
         <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/UIOptions.css" />
         <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/Slider.css" />
 
-        <link rel="stylesheet" type="text/css" href="../css/uiOptions.css" />
-
-
         <title>UI Options</title>
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.mouse.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>        
         <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
 
-        <script type="text/javascript" src="../../../framework/core/js/FluidDocument.js"></script>
-        <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>        
         <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidRequests.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
@@ -46,23 +41,22 @@
         <script type="text/javascript" src="../../../components/uiOptions/js/UIEnhancer.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
-        <script type="text/javascript" src="../../../components/undo/js/Undo.js"></script>
-                
-        <script type="text/javascript" src="../js/uiOptions.js"></script>
         
+        <script type="text/javascript">
+            $().ready(function () {
+                fluid.uiEnhancer();
+                fluid.uiOptions("#myUIOptions", {
+                    templateUrl: "../../../components/uiOptions/html/UIOptions.html"
+                });
+            });
+        </script>
     </head>
 
     <body>
-        <button class="myButton">Edit Appearance</button>
-        <!-- div that will contain the UI Options component -->
+
+        <h1>User Interface Options</h1>
+        
         <div id="myUIOptions"></div>
-        <h1>Some Sample Title</h1>
-        <p>Some content with <a id="myLink">a link</a> and<button>a button</button>. </p>
-
-        <script type="text/javascript">
-            demo.slidingUIOptions($("#myUIOptions"), $(".myButton"));
-        </script>
     </body>
-
 </html>
 
