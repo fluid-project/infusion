@@ -179,6 +179,34 @@ var fluid_1_4 = fluid_1_4 || {};
         ]
     });
     
+
+    /*
+     * Transform HTML5 MIME types into file types for SWFUpload.
+     */
+    fluid.uploader.swfUploadStrategy.fileTypeTransformer = function (model, expandSpec) { 
+        var fileTypes = "";
+        var val = fluid.get(model, expandSpec.path); 
+        var mimeTypesMap = fluid.uploader.mimeTypeRegistry;
+        
+        // If the fileTypes option is null or undefined, accept all strings.
+        // If the fileTypes option provided is a string, do nothing.
+        if (val === null || val === undefined) {
+            return "*";
+        } else if (typeof(val) === 'string') {
+            return val;
+        }
+        for (var i = 0; i < val.length; i++) {
+            var mimeType = val[i];
+            
+            for (var key in mimeTypesMap) {
+                if (mimeTypesMap[key].type === mimeType) {
+                    fileTypes = fileTypes + mimeTypesMap[key].ext + ";";
+                }
+            }            
+        }
+        return fileTypes.length === 0 ? "*" : 
+            fileTypes.substring(0, fileTypes.length - 1);
+    }
     
     /**********************
      * swfUpload.setupDOM *
@@ -276,7 +304,8 @@ var fluid_1_4 = fluid_1_4 || {};
         config.flashButtonPeerId = fluid.allocateSimpleId(flashContainer.children().eq(0));
         // Map the event and settings names to SWFUpload's expectations.
         // Convert HTML5 MIME types into SWFUpload file types
-        config.fileTypes = fluid.uploader.fileTypeTransformer(queueSettings, {path: "fileTypes"});
+        config.fileTypes = fluid.uploader.swfUploadStrategy.fileTypeTransformer(
+                queueSettings, {path: "fileTypes"});
         var convertedConfig = mapNames(swfUploadOptionsMap, config);
         return mapSWFUploadEvents(swfUploadEventMap, events, convertedConfig);
     };
