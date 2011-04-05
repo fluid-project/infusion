@@ -339,8 +339,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} options
      */
     fluid.uiEnhancer.cookieStore = function (options) {
-        var that = {};
-        fluid.mergeComponentOptions(that, "fluid.uiEnhancer.cookieStore", options);
+        var that = fluid.initLittleComponent("fluid.uiEnhancer.cookieStore", options);
         
         /**
          * Retrieve and return the value of the cookie

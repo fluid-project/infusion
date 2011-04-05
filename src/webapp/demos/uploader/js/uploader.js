@@ -21,6 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 fluid.registerNamespace("fluid.uploader.demo");
 
 (function ($, fluid) {
+  
     fluid.defaults("fluid.uploader.demo.demoLoader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         finalInitFunction: "fluid.uploader.demo.initDemoLoader",

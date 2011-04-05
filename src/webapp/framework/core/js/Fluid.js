@@ -487,6 +487,7 @@ var fluid = fluid || fluid_1_4;
         }
     };
     
+    // unsupported, NON-API function
     fluid.model.initStrategy = function (baseStrategy, index, oldStrategies) {
         return baseStrategy.init ? baseStrategy.init(oldStrategies ? oldStrategies[index] : undefined) : baseStrategy;
     };
@@ -661,6 +662,9 @@ var fluid = fluid || fluid_1_4;
     };
     
     fluid.event.identifyListener = function (listener) {
+        if (typeof(listener) === "string") {
+            return listener; 
+        }
         if (!listener.$$guid) {
             listener.$$guid = fluid.allocateGuid();
         }
@@ -703,6 +707,15 @@ var fluid = fluid || fluid_1_4;
             for (var i in listeners) {
                 var lisrec = listeners[i];
                 var listener = lisrec.listener;
+                if (typeof(listener) === "string") {
+                    listenerFunc = fluid.getGlobalValue(listener);
+                    if (!listenerFunc) {
+                        fluid.fail("Unable to look up name " + listener + " as a global function"); 
+                    }
+                    else {
+                        listener = lisrec.listener = listenerFunc;
+                    }
+                }
                 if (lisrec.predicate && !lisrec.predicate(listener, args)) {
                     continue;
                 }
@@ -722,15 +735,6 @@ var fluid = fluid || fluid_1_4;
             addListener: function (listener, namespace, predicate, priority) {
                 if (!listener) {
                     return;
-                }
-                if (typeof(listener) === "string") {
-                    listenerFunc = fluid.getGlobalValue(listener);
-                    if (!listenerFunc) {
-                        fluid.fail("Unable to look up name " + listener + " as a global function"); 
-                    }
-                    else {
-                        listener = listenerFunc;
-                    }
                 }
                 if (unicast) {
                     namespace = "unicast";
@@ -871,6 +875,7 @@ var fluid = fluid || fluid_1_4;
         return gs;
     };
     
+    // unsupported, NON-API function
     fluid.resolveGradeStructure = function (gradeNames) {
         var gradeStruct = {
             gradeChain: [],
@@ -885,7 +890,8 @@ var fluid = fluid || fluid_1_4;
         postInitFunction: true,
         finalInitFunction: true
     };
-
+    
+    // unsupported, NON-API function
     fluid.mergeLifecycleFunction = function(target, source) {
         fluid.event.addListenerToFirer(target, source);
         return target;
@@ -896,6 +902,7 @@ var fluid = fluid || fluid_1_4;
         }
     );
         
+    // unsupported, NON-API function
     fluid.makeLifecycleFirers = function() {
         return fluid.transform(fluid.lifecycleFunctions, function() {
             return fluid.event.getEventFirer()
@@ -903,7 +910,7 @@ var fluid = fluid || fluid_1_4;
         );
     };
     
-    
+    // unsupported, NON-API function
     fluid.resolveGrade = function (defaults, gradeNames) {
         var mergeArgs = [defaults];
         if (gradeNames) {
@@ -915,6 +922,7 @@ var fluid = fluid || fluid_1_4;
         return mergedDefaults;  
     };
 
+    // unsupported, NON-API function
     fluid.resolveGradedOptions = function (componentName) {
         var defaults = fluid.rawDefaults(componentName);
         if (!defaults) {
@@ -924,6 +932,7 @@ var fluid = fluid || fluid_1_4;
         }
     };
     
+    // unsupported, NON-API function
     fluid.rawDefaults = function (componentName, options) {
         if (options === undefined) {
             return defaultsStore[componentName];
@@ -1029,6 +1038,7 @@ var fluid = fluid || fluid_1_4;
         }
     });
     
+    // unsupported, NON-API function
     fluid.guardCircularity = function (seenIds, source, message1, message2) {
         if (source && source.id) {
             if (!seenIds[source.id]) {
@@ -1132,6 +1142,7 @@ var fluid = fluid || fluid_1_4;
      * name of the component's creator function.
      * @param {Object} userOptions the user-specified configuration options for this component
      */
+    // unsupported, NON-API function
     fluid.mergeComponentOptions = function (that, componentName, userOptions, localOptions) {
         var defaults = fluid.defaults(componentName);
         var mergePolicy = $.extend({}, fluid.rootMergePolicy, defaults ? defaults.mergePolicy : {});
@@ -1251,7 +1262,7 @@ var fluid = fluid || fluid_1_4;
         return that.options.returnedPath? fluid.get(that, that.options.returnedPath) : that;
     };
 
-    
+    // unsupported, NON-API function
     fluid.initSubcomponentImpl = function (that, entry, args) {
         var togo;
         if (typeof (entry) !== "function") {

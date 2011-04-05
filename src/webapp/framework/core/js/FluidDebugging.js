@@ -37,16 +37,23 @@ var fluid = fluid || fluid_1_4;
     // BSD licence, see header
     
     fluid.detectStackStyle = function (e) {
+        var style = "other";
+        var stackStyle = {
+            offset: 0  
+        };
         if (e["arguments"]) {
-            return "chrome";
+            style = "chrome";
         } else if (typeof window !== "undefined" && window.opera && e.stacktrace) {
-            return "opera10";
+            style = "opera10";
         } else if (e.stack) {
-            return "firefox";
+            style = "firefox";
+            // Detect FireFox 4-style stacks which are 1 level less deep
+            stackStyle.offset = e.stack.indexOf("Trace exception") === -1? 1 : 0;
         } else if (typeof window !== 'undefined' && window.opera && !('stacktrace' in e)) { //Opera 9-
-            return "opera";
+            style = "opera";
         }
-        return "other";
+        stackStyle.style = style;
+        return stackStyle;
     };
     
     fluid.obtainException = function() {
@@ -63,11 +70,11 @@ var fluid = fluid || fluid_1_4;
     fluid.registerNamespace("fluid.exceptionDecoders");
     
     fluid.decodeStack = function() {
-        if (stackStyle !== "firefox") {
+        if (stackStyle.style !== "firefox") {
             return null;
         }
         var e = fluid.obtainException();
-        return fluid.exceptionDecoders[stackStyle](e);
+        return fluid.exceptionDecoders[stackStyle.style](e);
     };
 
     fluid.exceptionDecoders.firefox = function(e) {
@@ -79,7 +86,7 @@ var fluid = fluid || fluid_1_4;
     };
     
     fluid.getCallerInfo = function(atDepth) {
-        atDepth = atDepth || 3;
+        atDepth = (atDepth || 3) - stackStyle.offset;
         var stack = fluid.decodeStack();
         return stack? stack[atDepth][0] : null;
     };
