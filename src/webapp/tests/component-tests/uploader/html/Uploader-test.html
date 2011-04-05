@@ -9,9 +9,11 @@
     
     <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
     <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
+    <script type="text/javascript" src="../../../../lib/jquery/plugins/scrollTo/js/jquery.scrollTo.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/FluidDocument.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
     <script type="text/javascript" src="../../../../framework/enhancement/js/ProgressiveEnhancement.js"></script>
@@ -53,16 +55,6 @@
         </form>
         
         <form class="flc-uploader fl-uploader fl-progEnhance-enhanced" method="get" enctype="multipart/form-data">
-            
-            <!-- File Queue, which is split up into two separate tables: one for the header and body -->
-            <table class="fl-uploader-header">
-                <tr>
-                    <th class="fl-uploader-file-name">File Name</th>
-                    <th class="fl-uploader-file-size">Size</th>
-                    <th class="fl-uploader-file-actions"></th>
-                </tr>
-            </table>
-            
             <!-- File Queue body, which is the default container for the FileQueueView component -->
             <table summary="The list of files" class="flc-uploader-queue fl-uploader-queue">
                 <caption>File Upload Queue:</caption>
@@ -83,14 +75,6 @@
                 </tbody>
             </table>
             
-            <!-- File progress bar template, used to generate progress bars for each file in the queue -->
-            <div class="flc-uploader-file-progressor-tmplt fl-uploader-file-progress"></div>            
-
-            <!-- Initial instructions -->
-            <div class="flc-uploader-browse-instructions fl-uploader-browse-instructions">
-                Choose <em>Browse files</em> to add files to the queue. 
-            </div>            
-
             <!-- Status footer -->
             <div class="flc-uploader-queue-footer fl-uploader-queue-footer fl-fix">
                 <div class="flc-uploader-total-progress-text fl-uploader-total-progress-text fl-force-left">
@@ -104,13 +88,6 @@
                 <!-- Total progress bar -->
                 <div class="flc-uploader-total-progress fl-uploader-total-progress-okay"></div>
             </div>
-            
-            <!-- Upload buttons -->
-            <div class="fl-uploader-buttons">
-                <button type="button" class="flc-uploader-button-pause fl-uploader-button-stop fl-uploader-hidden">Stop Upload</button>
-                <button type="button" class="flc-uploader-button-upload fl-uploader-button-upload fl-uploader-dim">Upload</button>
-            </div>
-            
             <div class="flc-uploader-status-region fl-offScreen-hidden"></div>
         </form>        
         

@@ -39,7 +39,7 @@ var fluid_1_4 = fluid_1_4 || {};
                         afterFileDialog: "{multiFileUploader}.events.afterFileDialog",
                         afterFileQueued: "{multiFileUploader}.events.afterFileQueued",
                         onQueueError: "{multiFileUploader}.events.onQueueError"
-                   }
+                    }
                 }
             },
             
@@ -62,8 +62,7 @@ var fluid_1_4 = fluid_1_4 || {};
         // Used for browsers that rely on File.getAsBinary(), such as Firefox 3.6,
         // which load the entire file to be loaded into memory.
         // Set this option to a sane limit (100MB) so your users won't experience crashes or slowdowns (FLUID-3937).
-        legacyBrowserFileLimit: 100000,
-    
+        legacyBrowserFileLimit: 100000
     });
     
     
@@ -153,11 +152,12 @@ var fluid_1_4 = fluid_1_4 || {};
         that.uploadFile = function (file) {
             that.events.onFileStart.fire(file);
             that.currentXHR = createFileUploadXHR();
-            monitorFileUploadXHR(file, that.events, that.currentXHR)
+            monitorFileUploadXHR(file, that.events, that.currentXHR);
             that.doUpload(file, that.queueSettings, that.currentXHR);            
         };
 
         that.stop = function () {
+            that.queue.isUploading = false;
             that.currentXHR.abort();         
         };
         
