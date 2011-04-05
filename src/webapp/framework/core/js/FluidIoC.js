@@ -31,7 +31,7 @@ var fluid_1_4 = fluid_1_4 || {};
         return component.options && component.options["fluid.visitComponents.fireBreak"];
     };
     
-    fluid.visitComponentChildren = function(that, visitor, visited) {
+    fluid.visitComponentChildren = function(that, visitor, visited, up, down) {
         for (var name in that) {
             var component = that[name];
             //Every component *should* have an id, but some clients may not yet be compliant
@@ -40,11 +40,11 @@ var fluid_1_4 = fluid_1_4 || {};
             //}
             if (!component || !component.typeName || (component.id && visited[component.id])) {continue; }
             visited[component.id] = true;
-            if (visitor(component, name, visited)) {
+            if (visitor(component, name, visited, up, down)) {
                 return true;
             }
             if (!fluid.isFireBreak(component)) {
-                fluid.visitComponentChildren(component, visitor, visited);
+                fluid.visitComponentChildren(component, visitor, visited, up, down + 1);
             }
         }
     };
@@ -52,6 +52,7 @@ var fluid_1_4 = fluid_1_4 || {};
     // thatStack contains an increasing list of MORE SPECIFIC thats.
     var visitComponents = function(thatStack, visitor, visited) {
         visited = visited || {};
+        var up = 0;
         for (var i = thatStack.length - 1; i >= 0; --i) {
             var that = thatStack[i];
             if (fluid.isFireBreak(that)) {
@@ -59,13 +60,14 @@ var fluid_1_4 = fluid_1_4 || {};
             }
             if (that.typeName) {
                 visited[that.id] = true;
-                if (visitor(that, "")) {
+                if (visitor(that, "", visited, 0, 0)) {
                     return;
                 }
             }
-            if (fluid.visitComponentChildren(that, visitor, visited)) {
+            if (fluid.visitComponentChildren(that, visitor, visited, up, 1)) {
                 return;
             }
+            ++up;
         }
     };
     
@@ -129,9 +131,12 @@ var fluid_1_4 = fluid_1_4 || {};
                 };
             }
             var foundComponent;
-            visitComponents(thatStack, function(component, name) {
+            visitComponents(thatStack, function(component, name, visited, up, down) {
                 if (context === name || context === component.typeName || context === component.nickName) {
                     foundComponent = component;
+                    if (down > 1) {
+                        fluid.log("***WARNING: value resolution for context " + context + " found at depth " + down + ": this may not be supported in future");   
+                    }
                     return true; // YOUR VISIT IS AT AN END!!
                 }
                 if (fluid.get(component, fluid.path("options", "components", context, "type")) && !component[context]) {
@@ -157,6 +162,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }); 
     }
     
+    // unsupported, non-API function
     fluid.instantiator = function(freeInstantiator) {
         // NB: We may not use the options merging framework itself here, since "withInstantiator" below
         // will blow up, as it tries to resolve the instantiator which we are instantiating *NOW*
@@ -250,7 +256,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.freeInstantiator = fluid.instantiator(true);
     
-    
+    // unsupported, non-API function
     fluid.argMapToDemands = function(argMap) {
         var togo = [];
         fluid.each(argMap, function(value, key) {
@@ -259,6 +265,7 @@ var fluid_1_4 = fluid_1_4 || {};
         return togo;
     };
     
+    // unsupported, non-API function
     fluid.makePassArgsSpec = function(initArgs) {
         return fluid.transform(initArgs, function(arg, index) {
             return "{arguments}." + index;
@@ -292,6 +299,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * environment "thatStack" - the return is a package of concrete global function name
      * and argument list which is suitable to be executed directly by fluid.invokeGlobalFunction.
      */
+    // unsupported, non-API function
     fluid.embodyDemands = function(instantiator, parentThat, demandspec, initArgs, options) {
         options = options || {};
         
@@ -428,11 +436,13 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         exist.push({contexts: contextNames, spec: spec});
     };
 
+    // unsupported, non-API function
     fluid.compareDemands = function(speca, specb) {
         var p1 = speca.uncess - specb.uncess;
         return p1 === 0? specb.intersect - speca.intersect : p1;
     };
 
+    // unsupported, non-API function
     fluid.locateDemands = function(instantiator, parentThat, demandingNames) {
         var demandLogging = fluid.isLogging() && demandingNames[0] !== "fluid.threadLocal";
         if (demandLogging) {
@@ -443,7 +453,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var contextNames = {};
         var visited = [];
         var thatStack = instantiator.getFullStack(parentThat);
-        visitComponents(thatStack, function(component) {
+        visitComponents(thatStack, function(component, xname, xvisited, up, down) {
             contextNames[component.typeName] = true;
             visited.push(component);
         });
@@ -478,6 +488,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     /** Determine the appropriate demand specification held in the fluid.demands environment 
      * relative to "thatStack" for the function name(s) funcNames.
      */
+    // unsupported, non-API function
     fluid.determineDemands = function (instantiator, parentThat, funcNames) {
         funcNames = $.makeArray(funcNames);
         var newFuncName = funcNames[0];
@@ -508,6 +519,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return fluid.merge(null, {funcName: newFuncName, args: fluid.makeArray(demandspec.args)}, fluid.censorKeys(demandspec, ["funcName", "args"]));
     };
     
+    // unsupported, non-API function
     fluid.resolveDemands = function(instantiator, parentThat, funcNames, initArgs, options) {
         var demandspec = fluid.determineDemands(instantiator, parentThat, funcNames);
         return fluid.embodyDemands(instantiator, parentThat, demandspec, initArgs, options);
@@ -545,6 +557,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         };
     };
     
+    // unsupported, non-API function
     fluid.event.dispatchListener = function(instantiator, that, listener, eventName, eventSpec) {
         return function() {
             var demandspec = fluid.determineDemands(instantiator, that, eventName);
@@ -556,6 +569,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }; 
     };
     
+    // unsupported, non-API function
     fluid.event.resolveEvent = function(that, eventName, eventSpec) {
         return fluid.withInstantiator(that, function(instantiator) {
             if (typeof(eventSpec) === "string") {
@@ -600,7 +614,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
      * options expansion via IoC - this initially consists of "components" and "mergePolicy" 
      * but will be expanded by the set of paths specified as "noexpand" within "mergePolicy" 
      */
-    
+    // unsupported, non-API function
     fluid.expander.preserveFromExpansion = function(options) {
         var preserve = {};
         var preserveList = ["mergePolicy", "mergeAllOptions", "components", "invokers", "events"];
@@ -654,6 +668,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         });
     };
     
+    // unsupported, non-API function
     fluid.expandComponentOptions = function(defaults, userOptions, that) {
         defaults = fluid.expandOptions(fluid.copy(defaults), that);
         var localRecord = {};
@@ -766,6 +781,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }              
     };
     
+    // unsupported, non-API function
     fluid.bindDeferredComponent = function(that, componentName, component) {
         fluid.withInstantiator(that, function(instantiator) {
             var events = fluid.makeArray(component.createOnEvent);
@@ -843,6 +859,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }
     };
     
+    // unsupported, non-API function  
     fluid.extractEL = function(string, options) {
         if (options.ELstyle === "ALL") {
             return string;
@@ -861,6 +878,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }
     };
     
+    // unsupported, non-API function
     fluid.extractELWithContext = function(string, options) {
         var EL = fluid.extractEL(string, options);
         if (EL && EL.charAt(0) === "{") {
@@ -877,7 +895,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
      * an EL path, or undefined if the string value supplied cannot be interpreted
      * as an EL path with respect to the supplied options.
      */
-        
+    // unsupported, non-API function
     fluid.extractContextualPath = function (string, options, env) {
         var parsed = fluid.extractELWithContext(string, options);
         if (parsed) {
@@ -920,6 +938,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return fluid.get(base, parsed.path);
     };
     
+    // unsupported, non-API function
     fluid.resolveContextValue = function(string, options) {
         if (options.bareContextRefs && string.charAt(0) === "{") {
             var parsed = fluid.parseContextReference(string, 0);
@@ -1027,6 +1046,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
   
     fluid.noexpand = fluid.expander.noexpand; // TODO: check naming and namespacing
   
+    // unsupported, non-API function
     fluid.expander.lightFilter = function (obj, recurse, options) {
         var togo;
         if (fluid.isArrayable(obj)) {
@@ -1052,6 +1072,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return options.noCopy? obj : togo;
     };
       
+    // unsupported, non-API function
     fluid.expander.expandLight = function (source, expandOptions) {
         var options = $.extend({}, expandOptions);
         options.filter = fluid.expander.lightFilter;
