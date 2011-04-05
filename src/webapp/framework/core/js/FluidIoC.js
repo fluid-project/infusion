@@ -31,7 +31,7 @@ var fluid_1_4 = fluid_1_4 || {};
         return component.options && component.options["fluid.visitComponents.fireBreak"];
     };
     
-    fluid.visitComponentChildren = function(that, visitor, visited) {
+    fluid.visitComponentChildren = function(that, visitor, visited, up, down) {
         for (var name in that) {
             var component = that[name];
             //Every component *should* have an id, but some clients may not yet be compliant
@@ -40,11 +40,11 @@ var fluid_1_4 = fluid_1_4 || {};
             //}
             if (!component || !component.typeName || (component.id && visited[component.id])) {continue; }
             visited[component.id] = true;
-            if (visitor(component, name, visited)) {
+            if (visitor(component, name, visited, up, down)) {
                 return true;
             }
             if (!fluid.isFireBreak(component)) {
-                fluid.visitComponentChildren(component, visitor, visited);
+                fluid.visitComponentChildren(component, visitor, visited, up, down + 1);
             }
         }
     };
@@ -52,6 +52,7 @@ var fluid_1_4 = fluid_1_4 || {};
     // thatStack contains an increasing list of MORE SPECIFIC thats.
     var visitComponents = function(thatStack, visitor, visited) {
         visited = visited || {};
+        var up = 0;
         for (var i = thatStack.length - 1; i >= 0; --i) {
             var that = thatStack[i];
             if (fluid.isFireBreak(that)) {
@@ -59,13 +60,14 @@ var fluid_1_4 = fluid_1_4 || {};
             }
             if (that.typeName) {
                 visited[that.id] = true;
-                if (visitor(that, "")) {
+                if (visitor(that, "", visited, 0, 0)) {
                     return;
                 }
             }
-            if (fluid.visitComponentChildren(that, visitor, visited)) {
+            if (fluid.visitComponentChildren(that, visitor, visited, up, 1)) {
                 return;
             }
+            ++up;
         }
     };
     
@@ -129,9 +131,12 @@ var fluid_1_4 = fluid_1_4 || {};
                 };
             }
             var foundComponent;
-            visitComponents(thatStack, function(component, name) {
+            visitComponents(thatStack, function(component, name, visited, up, down) {
                 if (context === name || context === component.typeName || context === component.nickName) {
                     foundComponent = component;
+                    if (down > 1) {
+                        fluid.log("***WARNING: value resolution for context " + context + " found at depth " + down + ": this may not be supported in future");   
+                    }
                     return true; // YOUR VISIT IS AT AN END!!
                 }
                 if (fluid.get(component, fluid.path("options", "components", context, "type")) && !component[context]) {
@@ -448,7 +453,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var contextNames = {};
         var visited = [];
         var thatStack = instantiator.getFullStack(parentThat);
-        visitComponents(thatStack, function(component) {
+        visitComponents(thatStack, function(component, xname, xvisited, up, down) {
             contextNames[component.typeName] = true;
             visited.push(component);
         });
