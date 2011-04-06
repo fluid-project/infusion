@@ -4,8 +4,7 @@
         "description": "Users customize their preferences and needs for viewing content.",
         "cssFiles": [
             "UIOptions.css",
-            "Slider.css",
-            "UIOptionsPreview.css"
+            "Slider.css"
         ],
         "files": [
             "UIEnhancer.js",
