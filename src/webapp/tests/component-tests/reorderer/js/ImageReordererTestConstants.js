@@ -7,16 +7,18 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery*/
-/*global fluid*/
+// Declare dependencies
+/*global altKeys, createAltKeystrokeLightbox, createLightbox, createLightboxWithNoOrderables, createMultiKeystrokeLightbox, createMultiOverlappingKeystrokeLightbox, defaultClass, draggingClass, fetchLightboxRoot, findNoOrderables, findOrderableByDivAndId, fluid, focusLightbox, imageIds, lightboxRootId, makeImageIds, makeOrderableIds, numOfImages, orderableBaseId, orderableIds, orderableIndices, selectByDivAndId, selectedClass, jQuery*/
+
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 /**
  * This file contains test constants and setup and teardown functions that are used when testing with the data in the Lightbox.html file.
  */
- 
 var numOfImages = 14;
 
 // The id of the root node of the lightbox

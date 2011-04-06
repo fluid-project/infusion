@@ -8,18 +8,22 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, fluid_1_3:true, SWFUpload, swfobject */
+// Declare dependencies
+/*global fluid_1_4:true, jQuery, swfobject, SWFUpload */
 
-var fluid_1_3 = fluid_1_3 || {};
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+
+var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
     fluid.uploader = fluid.uploader || {};
     
-    fluid.demands("fluid.uploader.impl", ["fluid.uploader", "fluid.uploader.swfUpload"], {
+    fluid.demands("fluid.uploaderImpl", "fluid.uploader.swfUpload", {
         funcName: "fluid.uploader.multiFileUploader"
     });
     
@@ -44,7 +48,7 @@ var fluid_1_3 = fluid_1_3 || {};
             },
             
             local: {
-                type: "fluid.uploader.swfUploadStrategy.local"
+                type: "fluid.uploader.local"
             },
             
             remote: {
@@ -70,18 +74,8 @@ var fluid_1_3 = fluid_1_3 || {};
         }
     });
     
-    fluid.demands("fluid.uploader.swfUploadStrategy", "fluid.uploader.multiFileUploader", {
-        funcName: "fluid.uploader.swfUploadStrategy",
-        args: [
-            fluid.COMPONENT_OPTIONS
-        ]
-    });
-    
     fluid.demands("fluid.uploader.progressiveStrategy", "fluid.uploader.swfUpload", {
-        funcName: "fluid.uploader.swfUploadStrategy",
-        args: [
-            fluid.COMPONENT_OPTIONS
-        ]
+        funcName: "fluid.uploader.swfUploadStrategy"
     });
     
     
@@ -109,7 +103,7 @@ var fluid_1_3 = fluid_1_3 || {};
         args: [
             "{engine}.swfUpload",
             "{multiFileUploader}.queue",
-            fluid.COMPONENT_OPTIONS
+            "{options}"
         ]
     });
 
@@ -141,11 +135,11 @@ var fluid_1_3 = fluid_1_3 || {};
         return that;
     };
     
-    fluid.demands("fluid.uploader.swfUploadStrategy.local", "fluid.uploader.multiFileUploader", {
+    fluid.demands("fluid.uploader.local", "fluid.uploader.swfUploadStrategy", {
         funcName: "fluid.uploader.swfUploadStrategy.local",
         args: [
             "{engine}.swfUpload",
-            fluid.COMPONENT_OPTIONS
+            "{options}"
         ]
     });
     
@@ -338,17 +332,9 @@ var fluid_1_3 = fluid_1_3 || {};
         events.onFileSuccess.addListener(manualModelUpdater);
     };
     
-    fluid.uploader.swfUploadStrategy.flash10EventBinder = function (model, events, local) {
+    fluid.uploader.swfUploadStrategy.flash10EventBinder = function (model, events) {
         unbindSWFUploadSelectFiles();      
               
-        events.onUploadStart.addListener(function () {
-            local.disableBrowseButton();
-        });
-        
-        events.afterUploadComplete.addListener(function () {
-            local.enableBrowseButton();            
-        });
-        
         fluid.uploader.swfUploadStrategy.bindFileEventListeners(model, events);
     };
     
@@ -359,8 +345,7 @@ var fluid_1_3 = fluid_1_3 || {};
         funcName: "fluid.uploader.swfUploadStrategy.flash10EventBinder",
         args: [
             "{multiFileUploader}.queue.files",
-            "{multiFileUploader}.events",
-            "{swfUploadStrategy}.local"
+            "{multiFileUploader}.events"
         ]
     });
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);

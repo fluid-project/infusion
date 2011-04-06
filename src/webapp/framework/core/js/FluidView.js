@@ -6,16 +6,19 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 /** This file contains functions which depend on the presence of a DOM document
  *  and which depend on the contents of Fluid.js **/
 
-// Declare dependencies.
-/*global jQuery*/
+// Declare dependencies
+/*global fluid_1_4:true, jQuery*/
 
-var fluid_1_3 = fluid_1_3 || {};
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+
+var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
@@ -129,4 +132,4 @@ var fluid_1_3 = fluid_1_3 || {};
         backDelay: 100
     });
     
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);

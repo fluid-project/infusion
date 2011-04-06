@@ -9,11 +9,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, fluid, jqUnit, expect*/
+// Declare dependencies
+/*global fluid, jqUnit, expect, jQuery*/
 
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
     $(document).ready(function () {
@@ -313,34 +316,47 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         fluidJSTests.test("Container: bind to an id", function () {
-            // Give it a valid id string.
-            var result = fluid.container("#main");
-            jqUnit.assertTrue("One element should be returned when specifying a selector",
-                              1, result.length);
-          
-            // Now try with a invalid string... a CSS selector matching two elements
             try {
-                result = fluid.container(".container");
-                jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
-            } catch (e) {
-                jqUnit.assertTrue("We should have received an exception", !!e);
+                fluid.pushSoftFailure(true);
+                expect(2);
+                // Give it a valid id string.
+                var result = fluid.container("#main");
+                jqUnit.assertTrue("One element should be returned when specifying a selector",
+                                  1, result.length);
+              
+                // Now try with a invalid string... a CSS selector matching two elements
+                try {
+                    result = fluid.container(".container");
+                } 
+                catch (e) {
+                    jqUnit.assertTrue("We should have received an exception", !!e);
+                }
+            }
+            finally {
+                fluid.pushSoftFailure(-1);  
             }
         });
     
         fluidJSTests.test("container(): bind to a single jQuery", function () {
-            // Try with a single-item jQuery.
-            var oneContainer = jQuery("#main");
-            var result = fluid.container(oneContainer);
-            jqUnit.assertEquals("If a single-element jQuery is used, it should be immediately returned.",
-                         oneContainer, result);
-             
-            // Now try with a two-element jQuery, which should cause an exception.
-            var twoContainers = jQuery(".container");
             try {
-                result = fluid.container(twoContainers);
-                jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
-            } catch (e) {
-                jqUnit.assertTrue("We should have received an exception", !!e);
+                fluid.pushSoftFailure(true);
+                expect(2);
+                // Try with a single-item jQuery.
+                var oneContainer = jQuery("#main");
+                var result = fluid.container(oneContainer);
+                jqUnit.assertEquals("If a single-element jQuery is used, it should be immediately returned.",
+                             oneContainer, result);
+                 
+                // Now try with a two-element jQuery, which should cause an exception.
+                var twoContainers = jQuery(".container");
+                try {
+                    result = fluid.container(twoContainers);
+                } catch (e) {
+                    jqUnit.assertTrue("We should have received an exception", !!e);
+                }
+            }
+            finally {
+                fluid.pushSoftFailure(-1);  
             }
         });
         
@@ -352,14 +368,21 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         fluidJSTests.test("container(): garbage object", function () {
-            // Random objects should fail.
-            var container = {foo: "bar"};
-
             try {
-                fluid.container(container);
-                jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
-            } catch (e) {
-                jqUnit.assertTrue("We should have received an exception", !!e);
+                fluid.pushSoftFailure(true);
+                expect(1);
+                // Random objects should fail.
+                var container = {foo: "bar"};
+    
+                try {
+                    fluid.container(container);
+                } 
+                catch (e) {
+                    jqUnit.assertTrue("We should have received an exception", !!e);
+                }
+            }
+            finally {
+                fluid.pushSoftFailure(-1);
             }
         });
         
@@ -399,54 +422,52 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // Assign a collection of defaults for the first time.
             fluid.defaults("test", testDefaults);
-            jqUnit.assertEquals("defaults() should return the specified defaults", 
-                                testDefaults, fluid.defaults("test"));
+            jqUnit.assertDeepEq("defaults() should return the specified defaults", 
+                                testDefaults, fluid.filterKeys(fluid.defaults("test"), ["foo"]));
             
             // Re-assign the defaults with a new collection.
             testDefaults = {
                 baz: "foo"
             };
             fluid.defaults("test", testDefaults);
-            jqUnit.assertEquals("defaults() should return the new defaults", 
-                                testDefaults, fluid.defaults("test"));
+            jqUnit.assertDeepEq("defaults() should return the new defaults", 
+                                testDefaults, fluid.filterKeys(fluid.defaults("test"), ["baz"]));
             jqUnit.assertEquals("Foo should no longer be a property of the tabs defaults.", 
                                 undefined, fluid.defaults("test").foo);
             
             // Nullify the defaults altogether.
             fluid.defaults("test", null);
-            jqUnit.assertNull("The test defaults should be null.", 
+            jqUnit.assertNoValue("The test defaults should be null.", 
                               fluid.defaults("test"));
             
             // Try to access defaults for a component that doesn't exist.
-            jqUnit.assertNull("The defaults for a nonexistent component should be null.", 
+            jqUnit.assertNoValue("The defaults for a nonexistent component should be null.", 
                               fluid.defaults("timemachine"));
         });
         
-        var defineTestComponent = function () {
-            fluid.tests = fluid.tests || {};
-            
-            fluid.tests.testComponent = function (container, options) {
-                var that = fluid.initView("fluid.tests.testComponent", container, options);
-                that.subcomponent = fluid.initSubcomponent(that, "subcomponent", [that.container, fluid.COMPONENT_OPTIONS]);
-                return that;
-            };
-            
-            fluid.tests.subcomponent = function (container, options) {
-                var that = fluid.initView("fluid.tests.subcomponent", container, options);
-                that.greeting = that.options.greeting;
-                return that;
-            };
-            
-            fluid.defaults("fluid.tests.testComponent", {
-                subcomponent: {
-                    type: "fluid.tests.subcomponent"
-                } 
-            });
-            
-            fluid.defaults("fluid.tests.subcomponent", {
-                greeting: "hello"
-            });
+        
+        fluid.tests.testComponent = function (container, options) {
+            var that = fluid.initView("fluid.tests.testComponent", container, options);
+            that.subcomponent = fluid.initSubcomponent(that, "subcomponent", [that.container, fluid.COMPONENT_OPTIONS]);
+            return that;
         };
+        
+        fluid.tests.subcomponent = function (container, options) {
+            var that = fluid.initView("fluid.tests.subcomponent", container, options);
+            that.greeting = that.options.greeting;
+            return that;
+        };
+        
+        fluid.defaults("fluid.tests.testComponent", {
+            subcomponent: {
+                type: "fluid.tests.subcomponent"
+            } 
+        });
+        
+        fluid.defaults("fluid.tests.subcomponent", {
+            greeting: "hello"
+        });
+        
         
         var componentWithOverridenSubcomponentOptions = function (greeting) {
             return fluid.tests.testComponent("#notmain", {
@@ -459,8 +480,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
         };
         
         fluidJSTests.test("initSubcomponents", function () {
-            defineTestComponent();
-           
             // First, let's check that the defaults are used if no other options are specified.
             var myComponent = fluid.tests.testComponent("#notmain");
             jqUnit.assertEquals("The subcomponent should have its default options.", 
@@ -473,8 +492,25 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                
         });
         
+        fluid.defaults("fluid.tests.testGradedView", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+            selectors: {
+                "page-link": ".page-link"
+            }
+        });
+        
+        fluidJSTests.test("Graded View Component", function() {
+            var model = {myKey: "myValue"};
+            var that = fluid.tests.testGradedView("#pager-top", {model: model});
+            jqUnit.assertValue("Constructed component", that);
+            jqUnit.assertEquals("Constructed functioning DOM binder", 3, that.locate("page-link").length);
+            jqUnit.assertEquals("View component correctly preserved model", that.model, model);   
+        });
+        
         fluidJSTests.test("set/getBeanValue", function () {
             var model = {"path3": "thing"};
+            jqUnit.assertEquals("Get simple value", "thing", fluid.get(model, "path3"));
+            jqUnit.assertDeepEq("Get root value", model, fluid.get(model, ""));
             jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path3.nonexistent"));
             jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path3.nonexistent.non3"));
             jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path1.nonexistent"));
@@ -494,10 +530,109 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         fluidJSTests.test("getBeanValue with custom strategy", function () {
             var model = {path3: "thing", path4: "otherThing"};
-            var value = fluid.get(model, "path3", [customStrategy, fluid.model.defaultFetchStrategy]);
+            var value = fluid.get(model, "path3", {strategies: [customStrategy, fluid.model.defaultFetchStrategy]});
             jqUnit.assertUndefined("path3 value censored", value);
-            var value2 = fluid.get(model, "path4", [customStrategy, fluid.model.defaultFetchStrategy]);
+            var value2 = fluid.get(model, "path4", {strategies: [customStrategy, fluid.model.defaultFetchStrategy]});
             jqUnit.assertEquals("path4 value uncensored", model.path4, value2);
+        });
+        
+        fluid.tests.childMatchResolver = function(options, trundler) {
+            trundler = trundler.trundle(options.queryPath);
+            return fluid.find(trundler.root, function(value, key) {
+                var trundleKey = trundler.trundle(key);
+                var trundleChild = trundleKey.trundle(options.childPath);
+                if (trundleChild.root === options.value) {
+                    return trundleKey;
+                } 
+            });
+        };
+        
+        fluid.tests.generateRepeatableThing = function(gens) {
+            var togo = [];
+            for (var i = 0; i < gens.length; i+= 3) {
+                togo.push({
+                    _primary: !!Number(gens.charAt(i)),
+                    value: {
+                        a: Number(gens.charAt(i + 1)),
+                        b: Number(gens.charAt(i + 2))
+                    }     
+                });
+            }
+            return togo;
+        };
+        
+        fluid.tests.basicResolverModel = {
+            fields: {  
+                repeatableThing: fluid.tests.generateRepeatableThing("001123")
+            }
+        };
+                
+        fluidJSTests.test("getBeanValue with resolver", function () {
+            var model = fluid.copy(fluid.tests.basicResolverModel);
+            var config = $.extend(true, fluid.model.defaultGetConfig, {
+                resolvers: {
+                    childMatch: fluid.tests.childMatchResolver
+                }
+            });
+            var el = {
+                type: "childMatch",
+                queryPath: "fields.repeatableThing",
+                childPath: "_primary",
+                value: true,
+                path: "value.a"
+            };
+            var resolved = fluid.get(model, el, config);
+            jqUnit.assertEquals("Queried resolved value", 2, resolved);
+            model.fields.repeatableThing = [{}];
+            el.path = "value";
+            resolved = fluid.get(model, el, config);
+            jqUnit.assertUndefined("Queried resolved value", resolved);
+        });
+
+        fluid.tests.repeatableModifyingStrategy = {
+           init: function(oldStrategy) {
+               var that = {};
+               that.path = oldStrategy? oldStrategy.path : "";
+               that.next = function(root, segment) {
+                   that.path = fluid.model.composePath(that.path, segment);
+                   return that.path === "fields.repeatableThing.1.value"?
+                       fluid.tests.generateRepeatableThing("145") : undefined;   
+               };
+               return that;
+           }
+        };
+
+        fluidJSTests.test("Complex resolving and strategising", function () {
+            var model = fluid.copy(fluid.tests.basicResolverModel);
+            model.fields.repeatableThing[1].value = fluid.tests.generateRepeatableThing("045167089");
+            var el = {
+                type: "childMatch",
+                queryPath: "fields.repeatableThing",
+                childPath: "_primary",
+                value: true,
+                path: {
+                    type: "childMatch",
+                    queryPath: "value",
+                    childPath: "_primary",
+                    value: true,
+                    path: "value.a"
+                }
+            };
+            var config = $.extend(true, {}, fluid.model.defaultGetConfig, {
+                resolvers: {
+                    childMatch: fluid.tests.childMatchResolver
+                }
+            });
+            var resolved = fluid.get(model, el, config);
+            jqUnit.assertEquals("Queried resolved value", 6, resolved);
+            var config2 = {
+                resolvers: {
+                    childMatch: fluid.tests.childMatchResolver
+                },
+                strategies: [fluid.tests.repeatableModifyingStrategy].concat(fluid.model.defaultGetConfig.strategies) 
+            };
+            var resolved2 = fluid.get(model, el, config2);
+            jqUnit.assertEquals("Queried resolved and strategised value", 4, resolved2)
         });
 
         fluidJSTests.test("Globals", function () {
@@ -572,7 +707,54 @@ https://source.fluidproject.org/svn/LICENSE.txt
             firer.fire(true);
 
             firer.removeListener(testListener);
-            firer.fire(false); //listener should not run and assertion should not 
+            firer.fire(false); //listener should not run and assertion should not execute 
         });
+        
+        fluid.tests.initLifecycle = function(that) {
+            that.initted = true;  
+        };
+        
+        fluid.defaults("fluid.tests.lifecycleTest", {
+            gradeNames: ["fluid.modelComponent", "autoInit"],
+            preInitFunction: "fluid.tests.initLifecycle"  
+        });
+        
+        fluidJSTests.test("Proper merging of lifecycle functions", function() {
+            var model = { value: 3 };
+            var that = fluid.tests.lifecycleTest({model: model});
+            jqUnit.assertEquals("Grade preInit function fired", model, that.model);
+            jqUnit.assertEquals("Custom preInit function fired", true, that.initted);
+        });
+        
+        fluid.tests.initLifecycle1 = function(that) {
+            that.initted = 1;  
+        };
+        
+        fluid.tests.initLifecycle2 = function(that) {
+            that.initted = 2;
+        };
+        
+        fluid.defaults("fluid.tests.lifecycleTest2", {
+            gradeNames: ["fluid.modelComponent", "autoInit"],
+            preInitFunction: [{
+                namespace: "preInitModelComponent",
+                listener: "fluid.identity"
+            }, {
+                priority: 2,
+                listener: "fluid.tests.initLifecycle2"
+            }, {
+                priority: 1,
+                listener: "fluid.tests.initLifecycle1"
+            }
+            ]
+        });
+        
+        fluidJSTests.test("Detailed interaction of priority and namespacing with lifecycle functions", function() {
+            var model = { value: 3 };
+            var that = fluid.tests.lifecycleTest2({model: model});
+            jqUnit.assertUndefined("Grade preInit function defeated", that.model);
+            jqUnit.assertEquals("Priority order respected", 1, that.initted);
+        });
+        
     });
 })(jQuery);

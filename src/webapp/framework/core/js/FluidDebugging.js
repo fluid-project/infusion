@@ -10,14 +10,17 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies.
-/*global jQuery, YAHOO, opera*/
+// Declare dependencies
+/*global fluid:true, fluid_1_4:true, jQuery*/
 
-var fluid_1_3 = fluid_1_3 || {};
-var fluid = fluid || fluid_1_3;
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+
+var fluid_1_4 = fluid_1_4 || {};
+var fluid = fluid || fluid_1_4;
 
 (function ($, fluid) {
        
@@ -28,6 +31,64 @@ var fluid = fluid || fluid_1_3;
              return "00000".substring(5 - width + numstr.length) + numstr;
              }
         return zeropad(date.getHours()) + ":" + zeropad(date.getMinutes()) + ":" + zeropad(date.getSeconds()) + "." + zeropad(date.getMilliseconds(), 3);
+    };
+
+    // Exception stripping code taken from https://github.com/emwendelin/javascript-stacktrace/blob/master/stacktrace.js
+    // BSD licence, see header
+    
+    fluid.detectStackStyle = function (e) {
+        var style = "other";
+        var stackStyle = {
+            offset: 0  
+        };
+        if (e["arguments"]) {
+            style = "chrome";
+        } else if (typeof window !== "undefined" && window.opera && e.stacktrace) {
+            style = "opera10";
+        } else if (e.stack) {
+            style = "firefox";
+            // Detect FireFox 4-style stacks which are 1 level less deep
+            stackStyle.offset = e.stack.indexOf("Trace exception") === -1? 1 : 0;
+        } else if (typeof window !== 'undefined' && window.opera && !('stacktrace' in e)) { //Opera 9-
+            style = "opera";
+        }
+        stackStyle.style = style;
+        return stackStyle;
+    };
+    
+    fluid.obtainException = function() {
+        try {
+            throw new Error("Trace exception");
+        }
+        catch (e) {
+            return e;
+        }
+    };
+    
+    var stackStyle = fluid.detectStackStyle(fluid.obtainException());
+
+    fluid.registerNamespace("fluid.exceptionDecoders");
+    
+    fluid.decodeStack = function() {
+        if (stackStyle.style !== "firefox") {
+            return null;
+        }
+        var e = fluid.obtainException();
+        return fluid.exceptionDecoders[stackStyle.style](e);
+    };
+
+    fluid.exceptionDecoders.firefox = function(e) {
+        var lines = e.stack.replace(/(?:\n@:0)?\s+$/m, '').replace(/^\(/gm, '{anonymous}(').split('\n');
+        return fluid.transform(lines, function(line) {
+            var atind = line.indexOf("@");
+            return atind === -1? [line] : [line.substring(atind + 1), line.substring(0, atind)];  
+        });
+    };
+    
+    fluid.getCallerInfo = function(atDepth) {
+        atDepth = (atDepth || 3) - stackStyle.offset;
+        var stack = fluid.decodeStack();
+        return stack? stack[atDepth][0] : null;
     };
     
     function generate(c, count) {
@@ -113,5 +174,5 @@ var fluid = fluid || fluid_1_3;
         return togo;
     };
         
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);
     

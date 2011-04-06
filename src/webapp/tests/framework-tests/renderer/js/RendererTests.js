@@ -8,9 +8,14 @@
  BSD license. You may not use this file except in compliance with one these
  Licenses.
  You may obtain a copy of the ECL 2.0 License and BSD License at
- https://source.fluidproject.org/svn/LICENSE.txt
+ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  */
+ 
+// Declare dependencies
 /*global fluid, jqUnit, jQuery*/
+
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid.registerNamespace("fluid.tests");
 
@@ -1467,7 +1472,13 @@ fluid.registerNamespace("fluid.tests");
             function callback() {
                 ++callbackCalled;
             }
-            fluid.fetchResources(resourceSpec2, callback);
+            try {
+                fluid.pushSoftFailure(true);
+                fluid.fetchResources(resourceSpec2, callback);
+            }
+            finally {
+                fluid.pushSoftFailure(-1);
+            }
             jqUnit.assertEquals("Two calls to destructive callback", 2, destructiveCalls);
             jqUnit.assertEquals("Call to overall callback", 1, callbackCalled);
         });

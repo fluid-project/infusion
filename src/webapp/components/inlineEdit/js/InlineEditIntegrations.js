@@ -8,14 +8,16 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global setTimeout*/
-/*global jQuery, fluid_1_3:true, fluid*/
-/*global tinyMCE, FCKeditor, FCKeditorAPI, CKEDITOR*/
+// Declare dependencies
+/*global fluid, fluid_1_4:true, CKEDITOR, jQuery, FCKeditor, FCKeditorAPI, FCKeditor_OnComplete, tinyMCE*/
 
-var fluid_1_3 = fluid_1_3 || {};
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+
+var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
@@ -500,7 +502,7 @@ var fluid_1_3 = fluid_1_3 || {};
         blurHandlerBinder: fluid.inlineEdit.dropdown.blurHandlerBinder,
         editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer
     });
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);
 
 
 // This must be written outside any scope as a result of the FCKEditor event model.

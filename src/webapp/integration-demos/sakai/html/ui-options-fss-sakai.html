@@ -33,7 +33,6 @@
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.position.js"></script> 
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.draggable.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.accordion.js"></script>
 
         <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidDocument.js"></script>
@@ -42,6 +41,7 @@
         <script type="text/javascript" src="../../../framework/core/js/FluidRequests.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
@@ -49,6 +49,7 @@
         <script type="text/javascript" src="../../../components/undo/js/Undo.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIEnhancer.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
+        <script type="text/javascript" src="../../../demos/uiOptions/js/uiOptions.js"></script>
         <script type="text/javascript" src="../js/sakai.js"></script>
 
         <title>Sakai</title>
@@ -64,7 +65,7 @@
         </div>
         
         <div class="ui_options"></div>
-
+        
         <div class="header fl-knockout">
             <h1>My Dashboard</h1>
             <p>Joe Instructor </p>
@@ -241,5 +242,10 @@
             <p>© 2004-2008 The Sakai Foundation <br />
             Portions of Sakai are copyrighted by other parties as described in the <a href="#">Acknowledgments screen</a></p>
         </div>
+        
+        <!-- Script block to instantiate UI Options when the necessary markup has loaded. -->
+        <script type="text/javascript">
+            demo.slidingUIOptions($(".ui_options"), $(".lookNfeel a"));
+        </script>
     </body>
 </html>

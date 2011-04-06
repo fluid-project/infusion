@@ -50,7 +50,13 @@ freely, subject to the following restrictions:
     distribution.
  */
 
-var fluid_1_3 = fluid_1_3 || {};
+// Declare dependencies
+/*global fluid_1_4:true, jQuery*/
+
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+
+var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
     
@@ -463,5 +469,5 @@ var fluid_1_3 = fluid_1_3 || {};
         return strD.substring(iB, iE).split(strF).join(strR);
         };
             
-})(jQuery, fluid_1_3);
+})(jQuery, fluid_1_4);
         

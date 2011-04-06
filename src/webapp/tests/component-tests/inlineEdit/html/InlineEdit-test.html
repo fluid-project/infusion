@@ -8,11 +8,16 @@
         <link rel="stylesheet" type="text/css" media="screen" href="../../../lib/qunit/css/qunit.css" />
 
         <!--  These are the required javascript modules for the Inline Edit -->
+
         <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.position.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/plugins/tooltip/js/jquery.ui.tooltip.js"></script> 
         <script type="text/javascript" src="../../../../framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../components/tooltip/js/Tooltip.js"></script>
         <script type="text/javascript" src="../../../../components/inlineEdit/js/InlineEdit.js"></script>
         <script type="text/javascript" src="../../../../components/undo/js/Undo.js"></script>
         
@@ -115,6 +120,41 @@
         <a class="flc-inlineEdit-textEditButton" href="http://fluidproject.org">button</a> and then... 
       </blockquote>
       
+      <!-- Test using inline edit to edit a table cell -->
+      <table id="inline-edit-table-cell">
+        <tr>
+            <td class="flc-inlineEditable">
+                <span class="flc-inlineEdit-text">This is an editable table cell.</span>
+                <div class="flc-inlineEdit-editContainer">
+                    <input type="text" class="flc-inlineEdit-edit" />
+                </div>
+            </td>
+            <td class="flc-inlineEditable">
+                <span class="flc-inlineEdit-text">This is another editable table cell.</span>
+                <div class="flc-inlineEdit-editContainer">
+                    <input type="text" class="flc-inlineEdit-edit" />
+                </div>
+            </td>
+        </tr>
+      </table>
+
+      <!-- Test two copies of multiple inline edits with undo - we need to make sure we cover containment 
+           within a group when using the multiple inline edit API -->
+      <p id="inline-multiple-edits">
+        <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">These edit fields</span></span>
+        <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">are all set up</span></span>.
+      </p>
+      <p id="inline-multiple-edits-2">
+        <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">These function call</span></span>
+        <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">and with</span></span>
+        <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">selectOnEdit true.</span>(2nd copy)</span>,
+        as well as each being individually undoable.
+      </p>    
+  
+      <!-- Test overriding the tooltip text -->	
+      <p id="inline-override-tooltip">
+        <span class="flc-inlineEdit-text" id="text1">This text has a tooltip with custom text.</span>
+      </p>
       </div>
     </body>
 </html>

@@ -17,9 +17,6 @@ Dynamic Reorderer  - this will be turned into a unit test
         4. move the item above the new div to below the new div
         5. move the new div to a different place in the list
         
-
-Inline Edit - once we have unit tests for two copies of of multi inline edits, overriding tooltip text and editable table cells this will be removed
-
         
 Renderer Component Types - once we have unit tests for nested list, joint container and script this will move to the simple demo area of the incubator
 
@@ -32,4 +29,4 @@ Versioning  - this will be turned into a unit test
         1. open versioning.html in a browser
         2. move an item in the first sortable list to another position in the list
         3. move an item in the second sortable list to another position in the list
-        4. in the console, ensure fluid !== fluid_1_3 (or what ever the current version is)j
+        4. in the console, ensure fluid !== fluid_1_4 (or what ever the current version is)j
