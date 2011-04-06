@@ -10,6 +10,7 @@ What's New in 1.4-SNAPSHOT?
 
     * FSS fixes and improvements
     * UI Options redesign
+    * jQuery UI library updated to 1.8.11
 
 What's in this Release?
 =======================
