@@ -734,10 +734,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                     // TODO: Instantiator contents are generally extremely incomplete
                     var path = fluid.composePath(instantiator.idToPath[that.id] || "", name);
                     var existing = instantiator.pathToComponent[path];
-                    if (existing) {
+                    if (existing && existing !== instance) {
                         instantiator.clearComponent(that, name, existing, {}, true);
                     }
-                    if (instance && instance.typeName && instance.id) {
+                    if (instance && instance.typeName && instance.id && instance !== existing) {
                         instantiator.recordKnownComponent(that, instance, name);
                     }
                     that[name] = instance;
