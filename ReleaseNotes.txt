@@ -20,7 +20,7 @@ This release is (will be) available in two ways:
            http://builder.fluidproject.org
     
     2) Alternatively, you can download a source code release from Github:
-           https://github.com/fluid-project/infusion/tree/infusion-1.4
+           https://github.com/fluid-project/infusion
        (this will include our tests)
     
 If you use the Infusion Builder, your download will include at the top level a single JavaScript file,
