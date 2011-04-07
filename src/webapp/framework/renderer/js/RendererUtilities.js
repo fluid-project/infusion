@@ -52,7 +52,7 @@ fluid_1_4 = fluid_1_4 || {};
             if (name.indexOf(fluid.renderer.decoratorComponentPrefix) === 0) {
                 visitor(component, name);
             }
-        }, {});  
+        }, {flat: true});  
     };
 
     fluid.renderer.clearDecorators = function(instantiator, that) {

@@ -40,13 +40,11 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.progressiveChecker = function (options) {
         var that = fluid.initLittleComponent("fluid.progressiveChecker", options);
-        that.resolved = fluid.find(that.options.checks, function(check) {
+        return fluid.find(that.options.checks, function(check) {
             if (check.feature) {
                 return fluid.typeTag(check.contextName);
             }}, that.options.defaultTypeTag
         );
-
-        return that;
     };
     
     fluid.progressiveCheckerForComponent = function (options) {
