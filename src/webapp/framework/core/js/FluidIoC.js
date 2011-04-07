@@ -239,12 +239,12 @@ var fluid_1_4 = fluid_1_4 || {};
                 that.recordRoot(component);
             }
         };
-        that.clearComponent = function(component, name, child, visited, noModTree) {
-            visited = visited || {};
+        that.clearComponent = function(component, name, child, options, noModTree) {
+            options = options || {visited: {}, flat: true};
             child = child || component[name];
-            fluid.visitComponentChildren(child, function(gchild, gchildname, visited) {
-                that.clearComponent(child, gchildname, null, visited, noModTree);
-            }, visited);
+            fluid.visitComponentChildren(child, function(gchild, gchildname) {
+                that.clearComponent(child, gchildname, null, options, noModTree);
+            }, options);
             var path = that.idToPath[child.id];
             delete that.idToPath[child.id];
             delete that.pathToComponent[path];
@@ -741,7 +741,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                     var path = fluid.composePath(instantiator.idToPath[that.id] || "", name);
                     var existing = instantiator.pathToComponent[path];
                     if (existing && existing !== instance) {
-                        instantiator.clearComponent(that, name, existing, {}, true);
+                        instantiator.clearComponent(that, name, existing, null, true);
                     }
                     if (instance && instance.typeName && instance.id && instance !== existing) {
                         instantiator.recordKnownComponent(that, instance, name);
