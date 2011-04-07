@@ -64,6 +64,7 @@
  */
 .fl-theme-rust .fl-focus:focus,
 .fl-theme-rust .fl-focus :focus,
+.fl-theme-rust.fl-focus :focus,
 .fl-theme-rust .selectable  {
    /* themed focus indicator */
    outline: 0.2em solid #662e0f;

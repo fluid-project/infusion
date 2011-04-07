@@ -14,6 +14,7 @@
 
 .fl-theme-mist .fl-focus:focus,
 .fl-theme-mist .fl-focus :focus,
+.fl-theme-mist.fl-focus :focus,
 .fl-theme-mist .selectable  {
    /* themed focus indicator */
    outline: 0.1em solid #F00;

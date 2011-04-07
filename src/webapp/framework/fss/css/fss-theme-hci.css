@@ -9,6 +9,7 @@
  */
 .fl-theme-hci .fl-focus:focus,
 .fl-theme-hci .fl-focus :focus,
+.fl-theme-hci.fl-focus :focus,
 .fl-theme-hci .selectable  {
    /* themed focus indicator */
    outline: 0.2em solid #F00;
