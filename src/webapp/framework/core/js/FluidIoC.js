@@ -31,27 +31,33 @@ var fluid_1_4 = fluid_1_4 || {};
         return component.options && component.options["fluid.visitComponents.fireBreak"];
     };
     
-    fluid.visitComponentChildren = function(that, visitor, visited, up, down) {
+    fluid.visitComponentChildren = function(that, visitor, options, up, down) {
+        options = options || {};
         for (var name in that) {
             var component = that[name];
             //Every component *should* have an id, but some clients may not yet be compliant
             //if (component && component.typeName && !component.id) {
             //    fluid.fail("No id");
             //}
-            if (!component || !component.typeName || (component.id && visited[component.id])) {continue; }
-            visited[component.id] = true;
-            if (visitor(component, name, visited, up, down)) {
+            if (!component || !component.typeName || (component.id && options.visited && options.visited[component.id])) {continue; }
+            if (options.visited) {
+                options.visited[component.id] = true;
+            }
+            if (visitor(component, name, options, up, down)) {
                 return true;
             }
-            if (!fluid.isFireBreak(component)) {
-                fluid.visitComponentChildren(component, visitor, visited, up, down + 1);
+            if (!fluid.isFireBreak(component) && !options.flat) {
+                fluid.visitComponentChildren(component, visitor, options, up, down + 1);
             }
         }
     };
     
     // thatStack contains an increasing list of MORE SPECIFIC thats.
-    var visitComponents = function(thatStack, visitor, visited) {
-        visited = visited || {};
+    var visitComponents = function(thatStack, visitor, options) {
+        options = options || {
+            visited: {},
+            flat: true
+        }
         var up = 0;
         for (var i = thatStack.length - 1; i >= 0; --i) {
             var that = thatStack[i];
@@ -59,12 +65,12 @@ var fluid_1_4 = fluid_1_4 || {};
                 return;
             }
             if (that.typeName) {
-                visited[that.id] = true;
-                if (visitor(that, "", visited, 0, 0)) {
+                options.visited[that.id] = true;
+                if (visitor(that, "", options, 0, 0)) {
                     return;
                 }
             }
-            if (fluid.visitComponentChildren(that, visitor, visited, up, 1)) {
+            if (fluid.visitComponentChildren(that, visitor, options, up, 1)) {
                 return;
             }
             ++up;
@@ -131,7 +137,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 };
             }
             var foundComponent;
-            visitComponents(thatStack, function(component, name, visited, up, down) {
+            visitComponents(thatStack, function(component, name, options, up, down) {
                 if (context === name || context === component.typeName || context === component.nickName) {
                     foundComponent = component;
                     if (down > 1) {
@@ -453,7 +459,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var contextNames = {};
         var visited = [];
         var thatStack = instantiator.getFullStack(parentThat);
-        visitComponents(thatStack, function(component, xname, xvisited, up, down) {
+        visitComponents(thatStack, function(component, xname, options, up, down) {
             contextNames[component.typeName] = true;
             visited.push(component);
         });
@@ -734,10 +740,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                     // TODO: Instantiator contents are generally extremely incomplete
                     var path = fluid.composePath(instantiator.idToPath[that.id] || "", name);
                     var existing = instantiator.pathToComponent[path];
-                    if (existing) {
+                    if (existing && existing !== instance) {
                         instantiator.clearComponent(that, name, existing, {}, true);
                     }
-                    if (instance && instance.typeName && instance.id) {
+                    if (instance && instance.typeName && instance.id && instance !== existing) {
                         instantiator.recordKnownComponent(that, instance, name);
                     }
                     that[name] = instance;
