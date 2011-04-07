@@ -1257,4 +1257,56 @@ fluid.registerNamespace("fluid.tests");
         });
     });
 
+    fluid.tests.invokerGrandParent = function (options) {
+        var that = fluid.initLittleComponent("fluid.tests.invokerGrandParent", options);
+        fluid.initDependents(that);
+        return that;
+    };
+    
+    fluid.defaults("fluid.tests.invokerGrandParent", {
+        gradeNames: "fluid.littleComponent",
+        components: {
+            invoker1: {
+                type: "fluid.tests.invokerParent"
+            },
+            invokerwrapper: {
+                type: "fluid.tests.invokerParentWrapper"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.invokerParent", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        model: {
+            testValue: 1
+        },
+        invokers: {
+            checkTestValue: "checkTestValue"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.invokerParentWrapper", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        components: {
+            invoker2: {
+                type: "fluid.tests.invokerParent"
+            }
+        }
+    });
+    fluid.demands("checkTestValue", "fluid.tests.invokerParent", {
+        funcName: "fluid.tests.checkTestValue",
+        args: "{invokerParent}.model"
+    });
+    fluid.tests.checkTestValue = function (model) {
+        return model.testValue;
+    };
+
+    fluidIoCTests.test("Invoker resolution tests", function() {
+        var that = fluid.tests.invokerGrandParent();
+        var newValue = 2;
+        that.invokerwrapper.invoker2.applier.requestChange("testValue", newValue);
+        jqUnit.assertEquals("The invoker for second subcomponent should return the value from its parent", 
+            newValue, that.invokerwrapper.invoker2.checkTestValue());
+    });
+
 })(jQuery); 
