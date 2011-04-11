@@ -7,6 +7,9 @@
 	background-color: #ccc;
 }
 
+.absolute-a { position:absolute; left: 0; }
+.absolute-b { position:absolute; left: 350px; }
+
 .fl-theme-mist :focus {
 	outline:0;
 }

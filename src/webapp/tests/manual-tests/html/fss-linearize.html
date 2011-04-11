@@ -265,8 +265,8 @@
 			<div id="absolute">
 				<h2>Absolute position</h2>
 				<div class="layout-demo fl-fix">				
-					<div class="fl-container-250" style="position: absolute; left:0px;">a</div>
-					<div class="fl-container-250" style="position: absolute; left:270px;">b</div>				
+					<div class="fl-container-250 absolute-a">a</div>
+					<div class="fl-container-250 absolute-b">b</div>				
 				</div>			
 			</div>			
 		</div>
@@ -285,16 +285,7 @@
   				  	
   				  	if ($("#alignment").attr('checked') == true)
 	  				  	$("#container").addClass($("#align-choice").val());
-	  				if ($("#width-100").attr('checked') == true)
-	  					$("#container").addClass("fl-layout-width-100");
             	});
-            	$("#width-100").change(function() {            	
-            		if ($("#width-100").attr('checked') == true) 
-	            		$("#container").addClass("fl-layout-width-100");
-	            		
-	            	if ($("#width-100").attr('checked') == false) 	
-	            		$("#container").removeClass("fl-layout-width-100");	            	
-            	}); 
             	$("#alignment").change(function() {
 	            	if ($("#alignment").attr('checked') == true) {
 						$("#container").addClass($("#align-choice").val());
