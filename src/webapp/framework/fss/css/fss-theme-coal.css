@@ -14,6 +14,7 @@
 
 .fl-theme-coal .fl-focus:focus,
 .fl-theme-coal .fl-focus :focus,
+.fl-theme-coal.fl-focus :focus,
 .fl-theme-coal .selectable  {
    /* themed focus indicator */
    outline: 0.1em solid #000;
