@@ -72,10 +72,10 @@
 .fl-theme-hc .fl-list-menu li a {font-weight:bold; color:#000000; background-color:#ffffff; border-color:#000000; text-decoration:none;}
 .fl-theme-hc .fl-listmenu a:hover, 
 .fl-theme-hc .fl-list-menu a:hover {background-color:#ffffff; color:#fff;}
-.fl-theme-hc .fl-listmenu .fl-activemenu, 
-.fl-theme-hc .fl-list-menu .fl-activemenu,
-.fl-theme-hc .fl-listmenu .fl-activemenu:hover, 
-.fl-theme-hc .fl-list-menu .fl-activemenu:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
+.fl-theme-hc .fl-listmenu .fl-activemenu a, 
+.fl-theme-hc .fl-list-menu .fl-activemenu a,
+.fl-theme-hc .fl-listmenu .fl-activemenu a:hover, 
+.fl-theme-hc .fl-list-menu .fl-activemenu a:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
 
 
 /* Helper: Thumbnail Grid */
