@@ -268,6 +268,16 @@ Layout Helpers
 .fl-listmenu a, /* <=== fl-listmenu is DEPRECATED! */
 .fl-list-menu a {padding:5px 5px; display:block; zoom:1; overflow:auto; outline:none;} /* list item needs layout (http://www.brunildo.org/test/IEWlispace.php) */
 
+.fl-list-menu a:hover, .fl-list-menu a:focus {
+    padding: 4px 4px; 
+    border: 1px solid black;
+}
+
+.fl-list-menu .fl-activemenu a {
+    background-color: #CCCCCC;
+    color: #000000;
+}
+
 /*
  * Picture Grid: a quick picture grid layout
  * Dependency: list-based markup
