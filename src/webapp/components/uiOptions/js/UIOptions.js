@@ -173,71 +173,93 @@ var fluid_1_4 = fluid_1_4 || {};
 //    - pull the strings out of the template and put them into the component?
 //    - should the accordian be part of the component by default?
 
-    var createSelectNode = function (id, selection, list, names) {
-        return {
-            ID: id,
-            selection: {
-                valuebinding: selection
-            },
-            optionlist: {
-                valuebinding: list
-            },
-            optionnames: {
-                valuebinding: names
+    /**************
+     * UI Options *
+     **************/
+
+    var initializeModel = function(that){
+        var tree ={};
+        var selections = [];
+        
+        for (var item in that.options.controlValues) {
+            tree[item+"-map"] = {
+                List: that.options.controlValues[item],
+                Names: that.options.strings[item],
+            };
+            selections[item] = that.options.controlValues[item][0];
+        }
+        tree["selections"] = selections;
+        tree["controlValues"] = that.options.controlValues;
+        
+        return tree;
+    };
+
+    /**
+     * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
+     * to allow users to set personal user interface preferences. The UI Options component provides a user 
+     * interface for setting and saving personal preferences, and the UI Enhancer component carries out the 
+     * work of applying those preferences to the user interface.
+     * 
+     * @param {Object} container
+     * @param {Object} options
+     */
+    fluid.uiOptions = function(container, options) {
+        var that = fluid.initView("fluid.uiOptions", container, options);
+        
+        that.model = initializeModel(that);
+        
+        fluid.fetchResources(that.options.resources, function () {
+            fluid.initDependents(that);
+            that.events.onReady.fire();
+        });
+        
+        return that;
+    };
+
+    fluid.defaults("fluid.uiOptions", {
+        gradeNames: ["fluid.viewComponent"], 
+        components: {
+            uiOptionsRenderer: {
+                type: "fluid.uiOptions.renderer",
+                createOnEvent: "onReady",
+                container: "{uiOptions}.container",
+                options: {
+                    resources: "{uiOptions}.options.resources",
+                    model: "{uiOptions}.model"
+                }
             }
-        };
-    };
-        
-    var createSimpleBindingNode = function (id, binding) {
-        return {
-            ID: id,
-            valuebinding: binding
-        };
-    };
-    
-    var generateTree = function (that, rendererModel) {
-        var children = [];
-        children.push(createSelectNode("text-font", "selections.textFont", "labelMap.textFont.values", "labelMap.textFont.names"));
-        children.push(createSelectNode("text-spacing", "selections.textSpacing", "labelMap.textSpacing.values", "labelMap.textSpacing.names"));
-        children.push(createSelectNode("theme", "selections.theme", "labelMap.theme.values", "labelMap.theme.names"));
+        },
+        strings: {
+            textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
+            textSpacing: ["Regular", "Wide", "Wider", "Widest"],
+            theme: ["Low Contrast", "Medium Contrast", "Medium Contrast Grey Scale", "High Contrast", "High Contrast Inverted"],
+            backgroundImages: ["Yes", "No"],
+            layout: ["Yes", "No"],
+            toc: ["Yes", "No"]
+        },
+        controlValues: { 
+            textFont: ["serif", "sansSerif", "arial", "verdana", "courier", "times"],
+            textSpacing: ["default", "wide1", "wide2", "wide3"],
+            theme: ["lowContrast", "default", "mediumContrast", "highContrast", "highContrastInverted"],
+            backgroundImages: ["true", "false"],
+            layout: ["simple", "default"],
+            toc: ["true", "false"]
+        },
+        events: {
+            onReady: null
+        },
+        resources: {
+            template: {
+                forceCache: true,
+                url: "../html/UIOptions-test.html"
+            }
+        }
+    });
 
-        var bgiExplodeOpts = {
-            selectID: "background-images",
-            rowID: "background-images-row:",
-            inputID: "background-images-choice",
-            labelID: "background-images-label"
-        };        
-        children.push(createSelectNode("background-images", "selections.backgroundImages", "labelMap.backgroundImages.values", "labelMap.backgroundImages.names"));
-        children = children.concat(fluid.explodeSelectionToInputs(that.options.controlValues.backgroundImages, bgiExplodeOpts));
-        
-        var layoutExplodeOpts = {
-            selectID: "layout",
-            rowID: "layout-row:",
-            inputID: "layout-choice",
-            labelID: "layout-label"
-        };        
-        children.push(createSelectNode("layout", "selections.layout", "labelMap.layout.values", "labelMap.layout.names"));
-        children = children.concat(fluid.explodeSelectionToInputs(that.options.controlValues.layout, layoutExplodeOpts));
+    /***********************
+     * UI Options Renderer *
+     ***********************/
 
-        var tocExplodeOpts = {
-            selectID: "toc",
-            rowID: "toc-row:",
-            inputID: "toc-choice",
-            labelID: "toc-label"
-        };        
-        children.push(createSelectNode("toc", "selections.toc", "labelMap.toc.values", "labelMap.toc.names"));
-        children = children.concat(fluid.explodeSelectionToInputs(that.options.controlValues.layout, tocExplodeOpts));
-
-        children.push(createSimpleBindingNode("links-underline", "selections.linksUnderline"));
-        children.push(createSimpleBindingNode("links-bold", "selections.linksBold"));
-        children.push(createSimpleBindingNode("links-larger", "selections.linksLarger"));
-        children.push(createSimpleBindingNode("inputs-larger", "selections.inputsLarger"));
-        
-        return {
-            children: children
-        };
-    };
-    
     var bindHandlers = function (that) {
         var saveButton = that.locate("save");
         saveButton.click(that.save);
@@ -249,39 +271,6 @@ var fluid_1_4 = fluid_1_4 || {};
         });
     };
         
-    var createLabelMap = function (options) {
-        var labelMap = {};
-        
-        for (var item in options.controlValues) {
-            labelMap[item] = {
-                names: options.strings[item],
-                values: options.controlValues[item]
-            };
-        }
-        
-        return labelMap;
-    };
-
-    var createRenderOptions = function (that) {
-        // Turn the boolean select values into strings so they can be properly bound and rendered
-        that.model.toc = String(that.model.toc);
-        that.model.backgroundImages = String(that.model.backgroundImages);
-        
-        var aggregateModel = fluid.assembleModel({
-            selections: {
-                model: that.model,
-                applier: that.applier
-            },
-            labelMap: {model: createLabelMap(that.options)}
-        });
-        
-        return {
-            model: aggregateModel.model,
-            applier: aggregateModel.applier,
-            autoBind: true
-        };
-    };
-    
     var initSliders = function (that) {
         var createOptions = function (settingName) {
             return {
@@ -304,35 +293,6 @@ var fluid_1_4 = fluid_1_4 || {};
         
     };
         
-    var mergeSiteDefaults = function (options, siteDefaults) {
-        for (var settingName in options.controlValues) {
-            var setting = String(siteDefaults[settingName]);
-            var settingValues = options.controlValues[settingName];
-            
-            if (setting) {
-                var index = $.inArray(setting, settingValues);
-                if (index === -1) {
-                    var defaultIndex = $.inArray("default", settingValues);
-                    if (defaultIndex === -1) {
-                        settingValues.push(setting);
-                    } else {
-                        settingValues[defaultIndex] = setting;
-                    }
-                }
-            }
-        }
-    };
-    
-    var firstRender = function (that) {
-        var rendererOptions = createRenderOptions(that);
-        var tree = generateTree(that, rendererOptions.model);
-        var source = {node: that.locate("controls")};
-        
-        that.templates = fluid.render(source, that.locate("controls"), tree, rendererOptions);
-        that.events.afterRender.fire();
-        that.events.onReady.fire();
-    };
-    
     var setupUIOptions = function (that) {
         fluid.initDependents(that);
         that.applier.modelChanged.addListener("*",
@@ -341,42 +301,53 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         );
             
-        mergeSiteDefaults(that.options, that.uiEnhancer.defaultSiteSettings);
-        
         // TODO: This stuff should already be in the renderer tree
-        that.events.afterRender.addListener(function () {
-            initSliders(that);
-            bindHandlers(that);
-        });
+//        that.events.afterRender.addListener(function () {
+//            initSliders(that);
+//            bindHandlers(that);
+//        });
         
-        if (!that.options.templateUrl) {
-            firstRender(that);
-        } else {
-            // Fetch UI Options' template and parse it on arrival.
-            fluid.fetchResources({
-                uiOptions: {
-                    href: that.options.templateUrl
+        that.refreshView();
+        that.events.onReady.fire();
+    };
+    
+    var mergeSiteDefaults = function (model, siteDefaults) {
+        var defaultSelections = [];
+        var defaultSettingValue = "default";
+        
+        for (var settingName in model.controlValues) {
+            var defaultSetting = String(siteDefaults[settingName]);
+            var settingValues = model.controlValues[settingName];
+            
+            if (defaultSetting) {
+                var index = $.inArray(defaultSetting, settingValues);
+                if (index === -1) {
+                    var defaultIndex = $.inArray(defaultSettingValue, settingValues);
+                    if (defaultIndex === -1) {
+                        defaultSelections[settingName] = model.controlValues[settingName];
+                    } else {
+                        defaultSelections[settingName] = defaultSettingValue;
+                    }
+                } else {
+                    defaultSelections[settingName] = defaultSetting;
                 }
-            }, function (spec) {
-                that.container.append(spec.uiOptions.resourceText);
-                firstRender(that);
-            });
+            }
         }
+        return defaultSelections;
     };
     
     /**
-     * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
-     * to allow users to set personal user interface preferences. The UI Options component provides a user 
-     * interface for setting and saving personal preferences, and the UI Enhancer component carries out the 
-     * work of applying those preferences to the user interface.
+     * A sub-component of fluid.uiOptions that renders the user interface. Its parent component fluid.uiOptions
+     * only fetches the template to ensure the template is loaded at page rendering.
      * 
      * @param {Object} container
      * @param {Object} options
      */
-    fluid.uiOptions = function (container, options) {
-        var that = fluid.initView("fluid.uiOptions", container, options);
+    fluid.uiOptions.renderer = function (container, options) {
+        var that = fluid.initRendererComponent("fluid.uiOptions.renderer", container, options);
         that.uiEnhancer = $(document).data("uiEnhancer");
-        that.model = fluid.copy(that.uiEnhancer.model);
+        that.model.selections = mergeSiteDefaults(that.model, fluid.copy(that.uiEnhancer.model));
+        that.model = $.extend({}, that.model, fluid.copy(that.uiEnhancer.model));
         that.applier = fluid.makeChangeApplier(that.model);
 
         // TODO: we shouldn't need the savedModel and should use the uiEnhancer.model instead
@@ -413,8 +384,10 @@ var fluid_1_4 = fluid_1_4 || {};
          * Rerenders the UI and fires afterRender
          */
         that.refreshView = function () {
-            var rendererOptions = createRenderOptions(that);
-            fluid.reRender(that.templates, that.locate("controls"), generateTree(that, rendererOptions.model), rendererOptions);
+            that.renderer.refreshView();
+            initSliders(that);
+            bindHandlers(that);
+
             that.events.afterRender.fire();
         };
         
@@ -435,8 +408,43 @@ var fluid_1_4 = fluid_1_4 || {};
         return that;   
     };
 
-    fluid.defaults("fluid.uiOptions", {
-        gradeNames: ["fluid.viewComponent"], 
+    var createRadioButtonNode = function(item) {
+        return {
+            type: "fluid.renderer.selection.inputs", 
+            inputID: item + "InputID",
+            tree: {
+                optionnames: "${" + item + "-map.Names}",
+                optionlist: "${" + item + "-map.List}",
+                selection: "${selections." + item + "}"
+            },
+            rowID: item + "RowID",
+            selectID: item,
+            labelID: item + "LabelID"
+        };
+    };
+    
+    fluid.uiOptions.renderer.produceTree = function (that) {
+        var tree = {};
+        var radiobuttons = [];
+        
+        for (var item in that.model) {
+            if (item === "backgroundImages" || item === "layout" || item === "toc") {
+                radiobuttons.push(createRadioButtonNode(item));
+            } else if (item === "textFont" || item === "textSpacing" || item === "theme"){
+                tree[item] = {
+                    optionnames: "${" + item + "-map.Names}",
+                    optionlist: "${" + item + "-map.List}",
+                    selection: "${selections." + item + "}"
+                };
+            }
+        }
+        tree["expander"] = radiobuttons;
+        
+        return tree;
+    };
+
+    fluid.defaults("fluid.uiOptions.renderer", {
+        gradeNames: ["fluid.rendererComponent"], 
         components: {
             preview: {
                 type: "fluid.uiOptions.preview",
@@ -458,7 +466,18 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         },
         selectors: {
-            controls: ".flc-uiOptions-controls",
+            textFont: ".flc-uiOptions-text-font",
+            textSpacing: ".flc-uiOptions-text-spacing",
+            theme: ".flc-uiOptions-theme",
+            "backgroundImagesRowID:": ".flc-uiOptions-background-images-row",
+            backgroundImagesInputID: ".flc-uiOptions-background-images-choice",
+            backgroundImagesLabelID: ".flc-uiOptions-background-images-label",
+            "layoutRowID:": ".flc-uiOptions-layout-row",
+            layoutInputID: ".flc-uiOptions-layout-choice",
+            layoutLabelID: ".flc-uiOptions-layout-label",
+            "tocRowID:": ".flc-uiOptions-toc-row",
+            tocInputID: ".flc-uiOptions-toc-choice",
+            tocLabelID: ".flc-uiOptions-toc-label",
             textMinSizeCtrl: ".flc-uiOptions-min-text-size",
             lineSpacingCtrl: ".flc-uiOptions-line-spacing",
             cancel: ".flc-uiOptions-cancel",
@@ -466,6 +485,7 @@ var fluid_1_4 = fluid_1_4 || {};
             save: ".flc-uiOptions-save",
             previewFrame : ".flc-uiOptions-preview-frame"
         },
+        selectorsToIgnore: ["textMinSizeCtrl", "lineSpacingCtrl", "cancel", "reset", "save", "previewFrame"],
         events: {
             onReady: null,
             afterRender: null,
@@ -474,23 +494,10 @@ var fluid_1_4 = fluid_1_4 || {};
             onCancel: null,
             onReset: null
         },
-        strings: {
-            textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
-            textSpacing: ["Regular", "Wide", "Wider", "Widest"],
-            theme: ["Low Contrast", "Medium Contrast", "Medium Contrast Grey Scale", "High Contrast", "High Contrast Inverted"],
-            backgroundImages: ["Yes", "No"],
-            layout: ["Yes", "No"],
-            toc: ["Yes", "No"]
+        rendererOptions: {
+            autoBind: true
         },
-        controlValues: { 
-            textFont: ["serif", "sansSerif", "arial", "verdana", "courier", "times"],
-            textSpacing: ["default", "wide1", "wide2", "wide3"],
-            theme: ["lowContrast", "default", "mediumContrast", "highContrast", "highContrastInverted"],
-            backgroundImages: ["true", "false"],
-            layout: ["simple", "default"],
-            toc: ["true", "false"]
-        },
-        templateUrl: "UIOptions.html"
+        produceTree: fluid.uiOptions.renderer.produceTree
     });
 
     /**********************
@@ -534,8 +541,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uiEnhancer",
                 createOnEvent: "onReady",
                 options: {
-                    savedSettings: "{uiOptions}.model",
-                    tableOfContents: "{uiOptions}.uiEnhancer.options.tableOfContents", // TODO: Tidy this up when the page's UI Enhancer is IoC-visible.
+                    savedSettings: "{renderer}.model",
+                    tableOfContents: "{renderer}.uiEnhancer.options.tableOfContents", // TODO: Tidy this up when the page's UI Enhancer is IoC-visible.
                     settingsStore: {
                         type: "fluid.uiEnhancer.tempStore"
                     }
@@ -554,9 +561,9 @@ var fluid_1_4 = fluid_1_4 || {};
         templateUrl: "UIOptionsPreview.html"
     });
     
-    fluid.demands("fluid.uiOptions.preview", "fluid.uiOptions", {
+    fluid.demands("fluid.uiOptions.preview", "fluid.uiOptions.renderer", {
         args: [
-            "{uiOptions}.dom.previewFrame",
+            "{renderer}.dom.previewFrame",
             "{options}"
         ]
     });
@@ -576,10 +583,10 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
     
-    fluid.demands("fluid.uiOptions.preview.eventBinder", ["fluid.uiOptions.preview", "fluid.uiOptions"], {
+    fluid.demands("fluid.uiOptions.preview.eventBinder", ["fluid.uiOptions.preview", "fluid.uiOptions.renderer"], {
         options: {
             listeners: {
-                "{uiOptions}.events.modelChanged": "{preview}.updateModel"
+                "{renderer}.events.modelChanged": "{preview}.updateModel"
             }
         }
     });
