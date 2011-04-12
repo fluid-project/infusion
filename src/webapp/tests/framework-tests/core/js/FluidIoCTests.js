@@ -766,6 +766,40 @@ fluid.registerNamespace("fluid.tests");
         checkValue("Changed value", reins, "headValue2", expectedPaths);
     });
     
+    fluid.defaults("fluid.tests.misclearTop", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            middle: {
+                type: "fluid.tests.misclearMiddle"
+            }  
+        }
+    });
+    
+    fluid.defaults("fluid.tests.misclearMiddle", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            leaf: {
+                type: "fluid.tests.misclearLeaf"
+            }  
+        },
+        returnedPath: "leaf"
+    });
+    
+    fluid.defaults("fluid.tests.misclearLeaf", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        preInitFunction: "fluid.tests.misclearLeaf.init"
+    });
+    
+    fluid.tests.misclearLeaf.init = function(that) {
+        that.uncreated = fluid.typeTag("uncreated");
+    }
+    
+    fluidIoCTests.test("FLUID-4179 unexpected material in clear test", function() {
+        jqUnit.expect(1);
+        var that = fluid.tests.misclearTop();
+        jqUnit.assertValue("Component successfully constructed", that);
+    });
+    
     fluid.defaults("fluid.tests.mergeChild", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         mergePolicy: {
