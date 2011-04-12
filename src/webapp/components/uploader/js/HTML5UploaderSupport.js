@@ -169,7 +169,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uploader.html5Strategy.remote", {
         gradeNames: ["fluid.eventedComponent"],
         argumentMap: {
-            options: 2  
+            options: 1  
         },                
         invokers: {
             doUpload: "fluid.uploader.html5Strategy.doUpload"
