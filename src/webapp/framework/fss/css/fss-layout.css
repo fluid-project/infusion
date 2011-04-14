@@ -355,5 +355,22 @@ input.fl-icon {padding-left:16px;}
 .fl-ProgEnhance-basic, /* << syntax breaks conventions and is Deprecated*/
 .fl-progEnhance-basic {}
 
-/* hide text for screen readers. */
+/* Hiding Content. The following styles are taken from http://html5boilerplate.com */
+
+/* Hide text for image replacement */
+.fl-hidden-ir { display: block; text-indent: -999em; overflow: hidden; background-repeat: no-repeat; text-align: left; direction: ltr; }
+
+/* Hide for both screenreaders and browsers */
+.fl-hidden { display: none; visibility: hidden; }
+
+/* Hide for both screenreaders and browsers but maintain layout */
+.fl-hidden-invisible { visibility: hidden; }
+
+/* Hide for browsers but available for screenreaders */
+.fl-hidden-visual { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
+/* Add focus for keyboard users */
+.fl-hidden-visual.fl-focus:active,
+.fl-hidden-visual.fl-focus:focus { clip: auto; height: auto; margin: 0; overflow: visible; position: static; width: auto; }
+
+/* DEPRECATED */
 .fl-offScreen-hidden {position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden;}
