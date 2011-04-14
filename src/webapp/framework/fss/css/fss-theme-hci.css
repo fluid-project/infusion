@@ -68,13 +68,13 @@
 .fl-theme-hci .fl-listmenu li, 
 .fl-theme-hci .fl-list-menu li,
 .fl-theme-hci .fl-listmenu li a, 
-.fl-theme-hci .fl-list-menu li a  {font-weight:bold; color:#ffffff; background-color:#dfefff; border-color:#ffffff; text-decoration:none;}
+.fl-theme-hci .fl-list-menu li a  {font-weight:bold; color:#ffffff; background-color:#000000; border-color:#ffffff; text-decoration:none;}
 .fl-theme-hci .fl-listmenu a:hover, 
-.fl-theme-hci .fl-list-menu a:hover {background-color:#5a95cf; color:#000000;}
+.fl-theme-hci .fl-list-menu a:hover {background-color:#ffffff; color:#000000;}
 .fl-theme-hci .fl-listmenu .fl-activemenu a, 
 .fl-theme-hci .fl-list-menu .fl-activemenu a,
 .fl-theme-hci .fl-listmenu .fl-activemenu a:hover, 
-.fl-theme-hci .fl-list-menu .fl-activemenu a:hover { background-color: #000000; border-bottom-color:#000000; color:#508cc9;}
+.fl-theme-hci .fl-list-menu .fl-activemenu a:hover { background-color: #ffffff; border-bottom-color:#000000; color: #000000;}
 
 /* Helper: Thumbnail Grid */
 .fl-theme-hci .fl-grid {}

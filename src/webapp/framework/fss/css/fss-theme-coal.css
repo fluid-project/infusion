@@ -73,7 +73,7 @@
 .fl-theme-coal .fl-listmenu .fl-activemenu a, 
 .fl-theme-coal .fl-list-menu .fl-activemenu a,
 .fl-theme-coal .fl-listmenu .fl-activemenu a:hover, 
-.fl-theme-coal .fl-list-menu .fl-activemenu a:hover { background-color: #ffffff; border-bottom-color:#999999; color:#d9d9d9;}
+.fl-theme-coal .fl-list-menu .fl-activemenu a:hover { background-color: #ffffff; border-bottom-color:#999999; color:#666;}
 
 /* Helper: Thumbnail Grid */
 .fl-theme-coal .fl-grid {border:2px solid #000000; background-color:#ccc;}
