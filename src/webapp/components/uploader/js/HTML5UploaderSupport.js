@@ -104,12 +104,12 @@ var fluid_1_4 = fluid_1_4 || {};
         return that;
     };
     
-    var createFileUploadXHR = function () {
+    fluid.uploader.html5Strategy.createFileUploadXHR = function () {
         var xhr = new XMLHttpRequest();
         return xhr;
     };
     
-    var monitorFileUploadXHR = function (file, events, xhr) {
+    fluid.uploader.html5Strategy.monitorFileUploadXHR = function (file, events, xhr) {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 var status = xhr.status;
@@ -128,6 +128,8 @@ var fluid_1_4 = fluid_1_4 || {};
         xhr.upload.onprogress = function (pe) {
             events.onFileProgress.fire(file, progressTracker.getChunkSize(pe.loaded), pe.total);
         };
+        
+        return xhr;
     };
     
     // Set additional POST parameters for xhr  
@@ -151,8 +153,8 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.uploadFile = function (file) {
             that.events.onFileStart.fire(file);
-            that.currentXHR = createFileUploadXHR();
-            monitorFileUploadXHR(file, that.events, that.currentXHR);
+            var xhr = fluid.uploader.html5Strategy.createFileUploadXHR();
+            that.currentXHR = fluid.uploader.html5Strategy.monitorFileUploadXHR(file, that.events, xhr);
             that.doUpload(file, that.queueSettings, that.currentXHR);            
         };
 
