@@ -203,30 +203,23 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} container
      * @param {Object} options
      */
-    fluid.uiOptions = function(container, options) {
-        var that = fluid.initView("fluid.uiOptions", container, options);
-        
-        that.model = initializeModel(that);
-        
-        fluid.fetchResources(that.options.resources, function () {
-            fluid.initDependents(that);
-            that.events.onReady.fire();
-        });
-        
-        return that;
-    };
-
     fluid.defaults("fluid.uiOptions", {
-        gradeNames: ["fluid.viewComponent"], 
+        gradeNames: ["fluid.viewComponent", "autoInit"], 
         components: {
-            uiOptionsRenderer: {
-                type: "fluid.uiOptions.renderer",
-                createOnEvent: "onReady",
+            uiOptionsControls: {
+                type: "fluid.uiOptions.controls",
+                priority: "first",
                 container: "{uiOptions}.container",
+                createOnEvent: "onReady",
                 options: {
                     resources: "{uiOptions}.options.resources",
-                    model: "{uiOptions}.model"
+                    model: "{uiOptions}.model",
+                    selectors: "{uiOptions}.options.selectors"
                 }
+            },
+            preview: {
+                type: "fluid.uiOptions.preview",
+                createOnEvent: "onReady"
             }
         },
         strings: {
@@ -245,9 +238,32 @@ var fluid_1_4 = fluid_1_4 || {};
             layout: ["simple", "default"],
             toc: ["true", "false"]
         },
+        selectors: {
+            controls: ".flc-uiOptions-controls",
+            textFont: ".flc-uiOptions-text-font",
+            textSpacing: ".flc-uiOptions-text-spacing",
+            theme: ".flc-uiOptions-theme",
+            "backgroundImagesRowID:": ".flc-uiOptions-background-images-row",
+            backgroundImagesInputID: ".flc-uiOptions-background-images-choice",
+            backgroundImagesLabelID: ".flc-uiOptions-background-images-label",
+            "layoutRowID:": ".flc-uiOptions-layout-row",
+            layoutInputID: ".flc-uiOptions-layout-choice",
+            layoutLabelID: ".flc-uiOptions-layout-label",
+            "tocRowID:": ".flc-uiOptions-toc-row",
+            tocInputID: ".flc-uiOptions-toc-choice",
+            tocLabelID: ".flc-uiOptions-toc-label",
+            textMinSizeCtrl: ".flc-uiOptions-min-text-size",
+            lineSpacingCtrl: ".flc-uiOptions-line-spacing",
+            cancel: ".flc-uiOptions-cancel",
+            reset: ".flc-uiOptions-reset",
+            save: ".flc-uiOptions-save",
+            previewFrame : ".flc-uiOptions-preview-frame"
+        },
         events: {
             onReady: null
         },
+        preInitFunction: "fluid.uiOptions.preInit",
+        finalInitFunction: "fluid.uiOptions.finalInit",
         resources: {
             template: {
                 forceCache: true,
@@ -255,9 +271,19 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
-
+    
+    fluid.uiOptions.preInit = function(that) {
+        that.model = initializeModel(that);
+    };
+    
+    fluid.uiOptions.finalInit = function(that) {
+        fluid.fetchResources(that.options.resources, function () {
+            that.events.onReady.fire();
+        });
+    };
+    
     /***********************
-     * UI Options Renderer *
+     * UI Options Controls *
      ***********************/
 
     var bindHandlers = function (that) {
@@ -311,31 +337,6 @@ var fluid_1_4 = fluid_1_4 || {};
         that.events.onReady.fire();
     };
     
-    var mergeSiteDefaults = function (model, siteDefaults) {
-        var defaultSelections = [];
-        var defaultSettingValue = "default";
-        
-        for (var settingName in model.controlValues) {
-            var defaultSetting = String(siteDefaults[settingName]);
-            var settingValues = model.controlValues[settingName];
-            
-            if (defaultSetting) {
-                var index = $.inArray(defaultSetting, settingValues);
-                if (index === -1) {
-                    var defaultIndex = $.inArray(defaultSettingValue, settingValues);
-                    if (defaultIndex === -1) {
-                        defaultSelections[settingName] = model.controlValues[settingName];
-                    } else {
-                        defaultSelections[settingName] = defaultSettingValue;
-                    }
-                } else {
-                    defaultSelections[settingName] = defaultSetting;
-                }
-            }
-        }
-        return defaultSelections;
-    };
-    
     /**
      * A sub-component of fluid.uiOptions that renders the user interface. Its parent component fluid.uiOptions
      * only fetches the template to ensure the template is loaded at page rendering.
@@ -343,11 +344,15 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} container
      * @param {Object} options
      */
-    fluid.uiOptions.renderer = function (container, options) {
-        var that = fluid.initRendererComponent("fluid.uiOptions.renderer", container, options);
+    fluid.uiOptions.controls = function (container, options) {
+        var that = fluid.initRendererComponent("fluid.uiOptions.controls", container, options);
         that.uiEnhancer = $(document).data("uiEnhancer");
-        that.model.selections = mergeSiteDefaults(that.model, fluid.copy(that.uiEnhancer.model));
-        that.model = $.extend({}, that.model, fluid.copy(that.uiEnhancer.model));
+        that.model.selections = fluid.copy(that.uiEnhancer.model);
+        
+        // Turn the boolean select values into strings so they can be properly bound and rendered
+        that.model.selections.toc = String(that.model.selections.toc);
+        that.model.selections.backgroundImages = String(that.model.selections.backgroundImages);
+        
         that.applier = fluid.makeChangeApplier(that.model);
 
         // TODO: we shouldn't need the savedModel and should use the uiEnhancer.model instead
@@ -423,11 +428,11 @@ var fluid_1_4 = fluid_1_4 || {};
         };
     };
     
-    fluid.uiOptions.renderer.produceTree = function (that) {
+    fluid.uiOptions.controls.produceTree = function (that) {
         var tree = {};
         var radiobuttons = [];
         
-        for (var item in that.model) {
+        for (var item in that.model.selections) {
             if (item === "backgroundImages" || item === "layout" || item === "toc") {
                 radiobuttons.push(createRadioButtonNode(item));
             } else if (item === "textFont" || item === "textSpacing" || item === "theme"){
@@ -443,14 +448,8 @@ var fluid_1_4 = fluid_1_4 || {};
         return tree;
     };
 
-    fluid.defaults("fluid.uiOptions.renderer", {
+    fluid.defaults("fluid.uiOptions.controls", {
         gradeNames: ["fluid.rendererComponent"], 
-        components: {
-            preview: {
-                type: "fluid.uiOptions.preview",
-                createOnEvent: "onReady"
-            }
-        },
         textMinSize: {
             type: "fluid.textfieldSlider",
             options: {
@@ -465,27 +464,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 max: 10
             }
         },
-        selectors: {
-            textFont: ".flc-uiOptions-text-font",
-            textSpacing: ".flc-uiOptions-text-spacing",
-            theme: ".flc-uiOptions-theme",
-            "backgroundImagesRowID:": ".flc-uiOptions-background-images-row",
-            backgroundImagesInputID: ".flc-uiOptions-background-images-choice",
-            backgroundImagesLabelID: ".flc-uiOptions-background-images-label",
-            "layoutRowID:": ".flc-uiOptions-layout-row",
-            layoutInputID: ".flc-uiOptions-layout-choice",
-            layoutLabelID: ".flc-uiOptions-layout-label",
-            "tocRowID:": ".flc-uiOptions-toc-row",
-            tocInputID: ".flc-uiOptions-toc-choice",
-            tocLabelID: ".flc-uiOptions-toc-label",
-            textMinSizeCtrl: ".flc-uiOptions-min-text-size",
-            lineSpacingCtrl: ".flc-uiOptions-line-spacing",
-            cancel: ".flc-uiOptions-cancel",
-            reset: ".flc-uiOptions-reset",
-            save: ".flc-uiOptions-save",
-            previewFrame : ".flc-uiOptions-preview-frame"
-        },
-        selectorsToIgnore: ["textMinSizeCtrl", "lineSpacingCtrl", "cancel", "reset", "save", "previewFrame"],
+        selectorsToIgnore: ["controls", "textMinSizeCtrl", "lineSpacingCtrl", "cancel", "reset", "save", "previewFrame"],
         events: {
             onReady: null,
             afterRender: null,
@@ -497,7 +476,7 @@ var fluid_1_4 = fluid_1_4 || {};
         rendererOptions: {
             autoBind: true
         },
-        produceTree: fluid.uiOptions.renderer.produceTree
+        produceTree: fluid.uiOptions.controls.produceTree
     });
 
     /**********************
@@ -541,8 +520,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uiEnhancer",
                 createOnEvent: "onReady",
                 options: {
-                    savedSettings: "{renderer}.model",
-                    tableOfContents: "{renderer}.uiEnhancer.options.tableOfContents", // TODO: Tidy this up when the page's UI Enhancer is IoC-visible.
+                    savedSettings: "{controls}.model",
+                    tableOfContents: "{controls}.uiEnhancer.options.tableOfContents", // TODO: Tidy this up when the page's UI Enhancer is IoC-visible.
                     settingsStore: {
                         type: "fluid.uiEnhancer.tempStore"
                     }
@@ -553,7 +532,6 @@ var fluid_1_4 = fluid_1_4 || {};
                 createOnEvent: "onReady"
             }
         },
-        
         events: {
             onReady: null
         },
@@ -561,9 +539,9 @@ var fluid_1_4 = fluid_1_4 || {};
         templateUrl: "UIOptionsPreview.html"
     });
     
-    fluid.demands("fluid.uiOptions.preview", "fluid.uiOptions.renderer", {
+    fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptions", "fluid.uiOptions.controls"], {
         args: [
-            "{renderer}.dom.previewFrame",
+            "{uiOptions}.dom.previewFrame",
             "{options}"
         ]
     });
@@ -583,10 +561,10 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
     
-    fluid.demands("fluid.uiOptions.preview.eventBinder", ["fluid.uiOptions.preview", "fluid.uiOptions.renderer"], {
+    fluid.demands("fluid.uiOptions.preview.eventBinder", ["fluid.uiOptions.preview", "fluid.uiOptions.controls"], {
         options: {
             listeners: {
-                "{renderer}.events.modelChanged": "{preview}.updateModel"
+                "{controls}.events.modelChanged": "{preview}.updateModel"
             }
         }
     });
