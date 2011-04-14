@@ -81,7 +81,7 @@ zlib/libpng License:
       (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
   
 BSD License:
-    * fluid.reset.css is based on YUI's CSS reset styling v2.5.2
+    * fss-reset.css is based on YUI's CSS reset styling v2.5.2
       see: http://developer.yahoo.com/yui/reset/
     * Sample markup and stylesheets from uPortal v2.6 (http://www.uportal.org/)
 
@@ -90,7 +90,8 @@ ECL 2.0:
 
 Other licenses:
     * Douglas Crockford's JSON.js (from 2007-11-06): http://www.json.org/ (Public Domain)
-    
+    * fss-layout.css borrow hidden styles from HTML5 Boilerplate 
+      https://github.com/paulirish/html5-boilerplate/blob/master/README.md (Public Domain)
 
 Documentation
 =============
