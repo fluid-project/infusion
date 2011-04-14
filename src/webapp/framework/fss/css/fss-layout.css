@@ -252,10 +252,10 @@ Layout Helpers
 .fl-list-menu {padding:0px; margin:0; border-bottom-width:1px; border-bottom-style:solid;}
 
 .fl-listmenu li, /* <=== fl-listmenu is DEPRECATED! */
-.fl-list-menu li {margin:0; padding:0; list-style-type:none; border-width:1px; border-style:solid; border-bottom:none; overflow:auto;}
+.fl-list-menu li {margin:0; padding:0; list-style-type:none; border-width:1px; border-style:solid; border-bottom:none;}
 
 .fl-listmenu a, /* <=== fl-listmenu is DEPRECATED! */
-.fl-list-menu a {padding:5px 5px; display:block; zoom:1; overflow:auto; outline:none;} /* list item needs layout (http://www.brunildo.org/test/IEWlispace.php) */
+.fl-list-menu a {padding:5px 5px; display:block; zoom:1; outline:none;} /* list item needs layout (http://www.brunildo.org/test/IEWlispace.php) */
 
 /*
  * Picture Grid: a quick picture grid layout
