@@ -19,14 +19,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
 /*global console, window, fluid:true, fluid_1_4:true, jQuery, opera, YAHOO*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 var fluid = fluid || fluid_1_4;
@@ -177,7 +177,7 @@ var fluid = fluid || fluid_1_4;
     };
     
             
-    /** Corrected version of jQuery makearray that returns an empty array on undefined rather than crashing **/
+    /** Corrected version of jQuery makeArray that returns an empty array on undefined rather than crashing **/
     fluid.makeArray = function (arg) {
         if (arg === null || arg === undefined) {
             return [];
@@ -333,6 +333,15 @@ var fluid = fluid || fluid_1_4;
         return fluid.filterKeys(toCensor, keys, true);
     };
     
+    /** Return the keys in the supplied object as an array **/
+    fluid.keys = function (obj) {
+        var togo = [];
+        fluid.each(obj, function(value, key) {
+            togo.push(key);
+        });
+        return togo;
+    };
+    
     /** 
      * Searches through the supplied object for the first value which matches the one supplied.
      * @param obj {Object} the Object to be searched through
@@ -433,6 +442,7 @@ var fluid = fluid || fluid_1_4;
     
     /** Helpful alias for old-style API **/
     fluid.path = fluid.model.composeSegments;
+    fluid.composePath = fluid.model.composePath;
 
     /** Standard strategies for resolving path segments **/
     fluid.model.environmentStrategy = function (initEnvironment) {
@@ -477,6 +487,7 @@ var fluid = fluid || fluid_1_4;
         }
     };
     
+    // unsupported, NON-API function
     fluid.model.initStrategy = function (baseStrategy, index, oldStrategies) {
         return baseStrategy.init ? baseStrategy.init(oldStrategies ? oldStrategies[index] : undefined) : baseStrategy;
     };
@@ -633,459 +644,14 @@ var fluid = fluid || fluid_1_4;
         return existing;
     };
     
-    fluid.registerNamespace("fluid.event");
-    
-    fluid.event.addListenerToFirer = function (firer, value, namespace) {
-        if (typeof (value) === "function") {
-            firer.addListener(value, namespace);
-        } else if (value && typeof (value) === "object") {
-            firer.addListener(value.listener, namespace, value.predicate, value.priority);
-        }
-    };
-    /**
-     * Attaches the user's listeners to a set of events.
-     * 
-     * @param {Object} events a collection of named event firers
-     * @param {Object} listeners optional listeners to add
-     */
-    fluid.mergeListeners = function (that, events, listeners) {
-        fluid.each(listeners, function (value, key) {
-            var firer, namespace;
-            if (key.charAt(0) === "{") {
-                if (!fluid.expandOptions) {
-                    fluid.fail("fluid.expandOptions could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor " + 
-                        key);
-                }
-                firer = fluid.expandOptions(key, that);
-            } else {
-                var keydot = key.indexOf(".");
-            
-                if (keydot !== -1) {
-                    namespace = key.substring(keydot + 1);
-                    key = key.substring(0, keydot);
-                }
-                if (!events[key]) {
-                    events[key] = fluid.event.getEventFirer();
-                }
-                firer = events[key];
-            }
-            if (fluid.isArrayable(value)) {
-                for (var i = 0; i < value.length; ++i) {
-                    fluid.event.addListenerToFirer(firer, value[i], namespace); 
-                }
-            } else {
-                fluid.event.addListenerToFirer(firer, value, namespace);
-            } 
-        });
-    };
-    
-    function initEvents(that, events, pass) {
-        fluid.each(events, function (eventSpec, eventKey) { 
-            var isIoCEvent = eventSpec && (typeof (eventSpec) !== "string" || eventSpec.charAt(0) === "{");
-            var event;
-            if (isIoCEvent && pass === "IoC") {
-                if (!fluid.event.resolveEvent) {
-                    fluid.fail("fluid.event.resolveEvent could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor " + 
-                        JSON.stringify(eventSpec));
-                } else {
-                    event = fluid.event.resolveEvent(that, eventKey, eventSpec);
-                }
-            } else if (pass === "flat") {
-                event = fluid.event.getEventFirer(eventSpec === "unicast", eventSpec === "preventable");
-            }
-            if (event) {
-                that.events[eventKey] = event;
-            } 
-        });
-    }
-    
-    /**
-     * Sets up a component's declared events.
-     * Events are specified in the options object by name. There are three different types of events that can be
-     * specified: 
-     * 1. an ordinary multicast event, specified by "null". 
-     * 2. a unicast event, which allows only one listener to be registered
-     * 3. a preventable event
-     * 
-     * @param {Object} that the component
-     * @param {Object} options the component's options structure, containing the declared event names and types
-     */
-    fluid.instantiateFirers = function (that, options) {
-        that.events = {};
-        // TODO: manual 2-phase instantiation since we have no GINGER WORLD
-        initEvents(that, options.events, "flat"); 
-        initEvents(that, options.events, "IoC");
-        // TODO: manually expand these late so that members attached to ourselves with preInitFunction can be detected
-        var listeners = fluid.expandOptions? fluid.expandOptions(options.listeners, that) : options.listeners;
-        fluid.mergeListeners(that, that.events, listeners);
-    };
-    
-        
     // stubs for two functions in FluidDebugging.js
     fluid.dumpEl = fluid.identity;
     fluid.renderTimestamp = fluid.identity;
     
-    /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
     
-    var defaultsStore = {};
-        
-    var resolveGradesImpl = function (gs, gradeNames) {
-        gradeNames = fluid.makeArray(gradeNames);
-        fluid.each(gradeNames, function (gradeName) {
-            var options = fluid.rawDefaults(gradeName);
-            if (!options) {
-                return;
-            }
-            gs.gradeHash[gradeName] = true;
-            gs.gradeChain.push(gradeName);
-            gs.optionsChain.push(options);
-            fluid.each(options.gradeNames, function (parent) {
-                if (!gs.gradeHash[parent]) {
-                    resolveGradesImpl(gs, parent);
-                }
-            });
-        });
-        return gs;
-    };
+    /*** The Model Events system. ***/
     
-    fluid.resolveGradeStructure = function (gradeNames) {
-        var gradeStruct = {
-            gradeChain: [],
-            gradeHash: {},
-            optionsChain: []
-        };
-        return resolveGradesImpl(gradeStruct, gradeNames);
-    };
-    
-    fluid.resolveGrade = function (defaults, gradeNames) {
-        var mergeArgs = [defaults];
-        if (gradeNames) {
-            var gradeStruct = fluid.resolveGradeStructure(gradeNames);
-            mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs);
-        }
-        mergeArgs = [{}, {}].concat(mergeArgs);
-        var mergedDefaults = fluid.merge.apply(null, mergeArgs);
-        return mergedDefaults;      
-    };
-
-    fluid.resolveGradedOptions = function (componentName) {
-        var defaults = fluid.rawDefaults(componentName);
-        if (!defaults) {
-            return defaults;
-        } else {
-            return fluid.resolveGrade(defaults, defaults.gradeNames);
-        }
-    };
-    
-    fluid.rawDefaults = function (componentName, options) {
-        if (options === undefined) {
-            return defaultsStore[componentName];
-        } else {
-            defaultsStore[componentName] = options;
-        }
-    };
-    
-        
-    fluid.hasGrade = function (options, gradeName) {
-        return !options || !options.gradeNames ? false : $.inArray(gradeName, options.gradeNames) !== -1;
-    };
-    
-     /**
-     * Retreives and stores a component's default settings centrally.
-     * @param {boolean} (options) if true, manipulate a global option (for the head
-     *   component) rather than instance options. NB - the use of "global options" 
-     *   is deprecated and will be removed from the framework in release 1.5 
-     * @param {String} componentName the name of the component
-     * @param {Object} (optional) an container of key/value pairs to set
-     * 
-     */
-     
-    fluid.defaults = function () {
-        var offset = 0;
-        if (typeof arguments[0] === "boolean") {
-            offset = 1;
-        }
-        var componentName = (offset === 0 ? "" : "*.global-") + arguments[offset];
-        var options = arguments[offset + 1];
-        if (options === undefined) {
-            return fluid.resolveGradedOptions(componentName);
-        } else {
-            fluid.rawDefaults(componentName, options);
-            if (fluid.hasGrade(options, "autoInit")) {
-                fluid.makeComponent(componentName, fluid.resolveGradedOptions(componentName));
-            }
-        }
-    };
-    
-    fluid.makeComponent = function (componentName, options) {
-        if (!options.initFunction) {
-            fluid.fail("Cannot autoInit component " + componentName + " which does not have an initFunction defined");
-        }
-        fluid.setGlobalValue(componentName, function () {
-            return fluid.initComponent(componentName, arguments);
-        });
-    };
-    
-    fluid.defaults("fluid.littleComponent", {
-        initFunction: "fluid.initLittleComponent",
-        argumentMap: {
-            options: 0
-        }
-    });
-    
-    fluid.defaults("fluid.eventedComponent", {
-        gradeNames: ["fluid.littleComponent"],
-        mergePolicy: {
-            listeners: "noexpand"
-        }
-    });
-    
-    fluid.defaults("fluid.modelComponent", {
-        gradeNames: ["fluid.littleComponent"],
-        postInitFunction: {
-            postInitModelComponent: "fluid.postInitModelComponent"
-        },
-        mergePolicy: {
-            model: "preserve",
-            applier: "nomerge"
-        }
-    });
-    
-    fluid.defaults("fluid.viewComponent", {
-        gradeNames: ["fluid.littleComponent", "fluid.modelComponent", "fluid.eventedComponent"],
-        initFunction: "fluid.initView",
-        argumentMap: {
-            container: 0,
-            options: 1
-        }
-    });
-    
-    fluid.guardCircularity = function (seenIds, source, message1, message2) {
-        if (source && source.id) {
-            if (!seenIds[source.id]) {
-                seenIds[source.id] = source;
-            } else if (seenIds[source.id] === source) {
-                fluid.fail("Circularity in options " + message1 + " - component with typename " + source.typeName + " and id " + source.id 
-                    + " has already been seen" + message2);  
-            }
-        }      
-    };
-                
-    fluid.mergePolicyIs = function (policy, test) {
-        return typeof (policy) === "string" && $.inArray(test, policy.split(/\s*,\s*/)) !== -1;
-    };
-    
-    function mergeImpl(policy, basePath, target, source, thisPolicy, rec) {
-        if (typeof (thisPolicy) === "function") {
-            thisPolicy.apply(null, target, source);
-            return target;
-        }
-        if (fluid.mergePolicyIs(thisPolicy, "replace")) {
-            fluid.clear(target);
-        }
-        fluid.guardCircularity(rec.seenIds, source, "merging", " when evaluating path " + basePath + " - please protect components from merging using the \"nomerge\" merge policy");
-      
-        for (var name in source) {
-            var path = (basePath ? basePath + "." : "") + name;
-            var newPolicy = policy && typeof (policy) !== "string" ? policy[path] : policy;
-            var thisTarget = target[name];
-            var thisSource = source[name];
-            var primitiveTarget = fluid.isPrimitive(thisTarget);
-    
-            if (thisSource !== undefined) {
-                if (thisSource !== null && typeof thisSource === 'object' &&
-                        !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
-                        !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "nomerge") && !fluid.mergePolicyIs(newPolicy, "noexpand")) {
-                    if (primitiveTarget) {
-                        target[name] = thisTarget = thisSource instanceof Array ? [] : {};
-                    }
-                    mergeImpl(policy, path, thisTarget, thisSource, newPolicy, rec);
-                } else {
-                    if (typeof (newPolicy) === "function") {
-                        newPolicy.call(null, target, source, name);
-                    } else if (!fluid.isValue(thisTarget) || !fluid.mergePolicyIs(newPolicy, "reverse")) {
-                        // TODO: When "grades" are implemented, grandfather in any paired applier to perform these operations
-                        // NB: mergePolicy of "preserve" now creates dependency on DataBinding.js
-                        target[name] = fluid.isValue(thisTarget) && fluid.mergePolicyIs(newPolicy, "preserve") ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
-                    }
-                }
-            }
-        }
-        return target;
-    }
-    
-    /** Merge a collection of options structures onto a target, following an optional policy.
-     * This function is typically called automatically, as a result of an invocation of
-     * <code>fluid.initView</code>. The behaviour of this function is explained more fully on
-     * the page http://wiki.fluidproject.org/display/fluid/Options+Merging+for+Fluid+Components .
-     * @param policy {Object/String} A "policy object" specifiying the type of merge to be performed.
-     * If policy is of type {String} it should take on the value "reverse" or "replace" representing
-     * a static policy. If it is an
-     * Object, it should contain a mapping of EL paths onto these String values, representing a
-     * fine-grained policy. If it is an Object, the values may also themselves be EL paths 
-     * representing that a default value is to be taken from that path.
-     * @param target {Object} The options structure which is to be modified by receiving the merge results.
-     * @param options1, options2, .... {Object} an arbitrary list of options structure which are to
-     * be merged "on top of" the <code>target</code>. These will not be modified.    
-     */
-    
-    fluid.merge = function (policy, target) {
-        var path = "";
-        
-        for (var i = 2; i < arguments.length; ++i) {
-            var source = arguments[i];
-            if (source !== null && source !== undefined) {
-                mergeImpl(policy, path, target, source, policy ? policy[""] : null, {seenIds: {}});
-            }
-        }
-        if (policy && typeof (policy) !== "string") {
-            for (var key in policy) {
-                var elrh = policy[key];
-                if (typeof (elrh) === "string" && elrh !== "replace" && elrh !== "preserve") {
-                    var oldValue = fluid.get(target, key);
-                    if (oldValue === null || oldValue === undefined) {
-                        var value = fluid.get(target, elrh);
-                        fluid.set(target, key, value);
-                    }
-                }
-            }
-        }
-        return target;     
-    };
-
-    /**
-     * Merges the component's declared defaults, as obtained from fluid.defaults(),
-     * with the user's specified overrides.
-     * 
-     * @param {Object} that the instance to attach the options to
-     * @param {String} componentName the unique "name" of the component, which will be used
-     * to fetch the default options from store. By recommendation, this should be the global
-     * name of the component's creator function.
-     * @param {Object} userOptions the user-specified configuration options for this component
-     */
-    fluid.mergeComponentOptions = function (that, componentName, userOptions) {
-        var defaults = fluid.defaults(componentName);
-        var mergePolicy = $.extend({}, defaults ? defaults.mergePolicy : {});
-        var mergeArgs = [mergePolicy, {}];
-        var extraArgs;
-        if (fluid.expandComponentOptions) {
-            extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
-        } else {
-            extraArgs = [defaults, userOptions];
-        }
-        mergeArgs = mergeArgs.concat(extraArgs);
-        that.options = fluid.merge.apply(null, mergeArgs);
-    };
-    
-        
-    /** A special "marker object" which is recognised as one of the arguments to 
-     * fluid.initSubcomponents. This object is recognised by reference equality - 
-     * where it is found, it is replaced in the actual argument position supplied
-     * to the specific subcomponent instance, with the particular options block
-     * for that instance attached to the overall "that" object.
-     * NOTE: The use of this marker has been deprecated as of the Fluid 1.4 release in 
-     * favour of the contextual EL path "{options}" - it will be removed in a future
-     * release of the framework.
-     */
-    fluid.COMPONENT_OPTIONS = {type: "fluid.marker", value: "COMPONENT_OPTIONS"};
-    
-    /** Construct a dummy or "placeholder" subcomponent, that optionally provides empty
-     * implementations for a set of methods.
-     */
-    fluid.emptySubcomponent = function (options) {
-        var that = {};
-        options = $.makeArray(options);
-        var empty = function () {};
-        for (var i = 0; i < options.length; ++i) {
-            that[options[i]] = empty;
-        }
-        return that;
-    };
-    
-    /** Compute a "nickname" given a fully qualified typename, by returning the last path
-     * segment.
-     */
-    
-    fluid.computeNickName = function (typeName) {
-        var segs = fluid.model.parseEL(typeName);
-        return segs[segs.length - 1];
-    };
-    
-    /** Create a "type tag" component with no state but simply a type name and id. The most 
-     *  minimal form of Fluid component */
-       
-    fluid.typeTag = function (name) {
-        return {
-            typeName: name,
-            id: fluid.allocateGuid()
-        };
-    };
-    
-    /**
-     * Creates a new "little component": a that-ist object with options merged into it by the framework.
-     * This method is a convenience for creating small objects that have options but don't require full
-     * View-like features such as the DOM Binder or events
-     * 
-     * @param {Object} name the name of the little component to create
-     * @param {Object} options user-supplied options to merge with the defaults
-     */
-    // NOTE: the 3rd argument localOptions is NOT to be advertised as part of the stable API, it is present
-    // just to allow backward compatibility whilst grade specifications are not mandatory
-    fluid.initLittleComponent = function (name, options, localOptions) {
-        var that = fluid.typeTag(name);
-        // TODO: nickName must be available earlier than other merged options so that component may resolve to itself
-        that.nickName = options && options.nickName ? options.nickName : fluid.computeNickName(that.typeName);
-        fluid.mergeComponentOptions(that, name, options);
-        fluid.invokeLifecycleFunctions(that, "preInitFunction");
-        if (localOptions) {
-            localOptions = fluid.resolveGrade({}, localOptions.gradeNames);
-        }
-        if (fluid.hasGrade(that.options, "fluid.eventedComponent") || fluid.hasGrade(localOptions, "fluid.eventedComponent")) {
-            fluid.instantiateFirers(that, that.options);
-        } 
-        return that;
-    };
-    
-    fluid.postInitModelComponent = function (that) {
-        that.model = that.options.model || {};
-        that.applier = that.options.applier || fluid.makeChangeApplier(that.model, that.options.changeApplierOptions);
-    };
-    
-    fluid.invokeLifecycleFunction = function (that, func) {
-        if (typeof (func) === "string") {
-            fluid.invokeGlobalFunction(func, [that]);
-        } else if (typeof (func) === "function") {
-            func.apply(null, [that]);
-        }
-    };
-    
-    fluid.invokeLifecycleFunctions = function (that, element) {
-        var el = fluid.get(that, fluid.path("options", element));
-        if (!fluid.isPrimitive(el)) {
-            fluid.each(el, function (elitem) {
-                fluid.invokeLifecycleFunction(that, elitem);
-            });
-        } else if (el) {
-            fluid.invokeLifecycleFunction(that, el);
-        }
-    };
-    
-    fluid.initComponent = function (componentName, initArgs) {
-        var options = fluid.defaults(componentName);
-        if (!options.gradeNames) {
-            fluid.fail("Cannot initialise component " + componentName + " which has no gradeName registered");
-        }
-        var args = [componentName].concat(fluid.makeArray(initArgs)); // TODO: support different initFunction variants
-        var that = fluid.invokeGlobalFunction(options.initFunction, args);
-        fluid.invokeLifecycleFunctions(that, "postInitFunction");
-        if (fluid.initDependents) {
-            fluid.initDependents(that);
-        }
-        fluid.invokeLifecycleFunctions(that, "finalInitFunction");
-        return that;
-    };
-
-    // The Model Events system.
+    fluid.registerNamespace("fluid.event");
     
     var fluid_guid = 1;
     
@@ -1096,6 +662,9 @@ var fluid = fluid || fluid_1_4;
     };
     
     fluid.event.identifyListener = function (listener) {
+        if (typeof(listener) === "string") {
+            return listener; 
+        }
         if (!listener.$$guid) {
             listener.$$guid = fluid.allocateGuid();
         }
@@ -1138,6 +707,15 @@ var fluid = fluid || fluid_1_4;
             for (var i in listeners) {
                 var lisrec = listeners[i];
                 var listener = lisrec.listener;
+                if (typeof(listener) === "string") {
+                    listenerFunc = fluid.getGlobalValue(listener);
+                    if (!listenerFunc) {
+                        fluid.fail("Unable to look up name " + listener + " as a global function"); 
+                    }
+                    else {
+                        listener = lisrec.listener = listenerFunc;
+                    }
+                }
                 if (lisrec.predicate && !lisrec.predicate(listener, args)) {
                     continue;
                 }
@@ -1190,6 +768,572 @@ var fluid = fluid || fluid_1_4;
             }
         };
     };
+    
+    fluid.event.addListenerToFirer = function (firer, value, namespace) {
+        if (fluid.isArrayable(value)) {
+            for (var i = 0; i < value.length; ++i) {
+                fluid.event.addListenerToFirer(firer, value[i], namespace); 
+            }
+        }
+        else if (typeof(value) === "function" || typeof(value) === "string") {
+            firer.addListener(value, namespace);
+        } 
+        else if (value && typeof(value) === "object") {
+            firer.addListener(value.listener, namespace || value.namespace, value.predicate, value.priority);
+        }
+    };
+    /**
+     * Attaches the user's listeners to a set of events.
+     * 
+     * @param {Object} events a collection of named event firers
+     * @param {Object} listeners optional listeners to add
+     */
+    fluid.mergeListeners = function (that, events, listeners) {
+        fluid.each(listeners, function (value, key) {
+            var firer, namespace;
+            if (key.charAt(0) === "{") {
+                if (!fluid.expandOptions) {
+                    fluid.fail("fluid.expandOptions could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor " + 
+                        key);
+                }
+                firer = fluid.expandOptions(key, that);
+            } else {
+                var keydot = key.indexOf(".");
+            
+                if (keydot !== -1) {
+                    namespace = key.substring(keydot + 1);
+                    key = key.substring(0, keydot);
+                }
+                if (!events[key]) {
+                    events[key] = fluid.event.getEventFirer();
+                }
+                firer = events[key];
+            }
+            fluid.event.addListenerToFirer(firer, value, namespace);
+        });
+    };
+    
+    function initEvents(that, events, pass) {
+        fluid.each(events, function (eventSpec, eventKey) { 
+            var isIoCEvent = eventSpec && (typeof (eventSpec) !== "string" || eventSpec.charAt(0) === "{");
+            var event;
+            if (isIoCEvent && pass === "IoC") {
+                if (!fluid.event.resolveEvent) {
+                    fluid.fail("fluid.event.resolveEvent could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor " + 
+                        JSON.stringify(eventSpec));
+                } else {
+                    event = fluid.event.resolveEvent(that, eventKey, eventSpec);
+                }
+            } else if (pass === "flat") {
+                event = fluid.event.getEventFirer(eventSpec === "unicast", eventSpec === "preventable");
+            }
+            if (event) {
+                that.events[eventKey] = event;
+            } 
+        });
+    }
+    
+    /**
+     * Sets up a component's declared events.
+     * Events are specified in the options object by name. There are three different types of events that can be
+     * specified: 
+     * 1. an ordinary multicast event, specified by "null". 
+     * 2. a unicast event, which allows only one listener to be registered
+     * 3. a preventable event
+     * 
+     * @param {Object} that the component
+     * @param {Object} options the component's options structure, containing the declared event names and types
+     */
+    fluid.instantiateFirers = function (that, options) {
+        that.events = {};
+        // TODO: manual 2-phase instantiation since we have no GINGER WORLD
+        initEvents(that, options.events, "flat"); 
+        initEvents(that, options.events, "IoC");
+        // TODO: manually expand these late so that members attached to ourselves with preInitFunction can be detected
+        var listeners = fluid.expandOptions? fluid.expandOptions(options.listeners, that) : options.listeners;
+        fluid.mergeListeners(that, that.events, listeners);
+    };
+    
+    
+    /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
+    
+    var defaultsStore = {};
+        
+    var resolveGradesImpl = function (gs, gradeNames) {
+        gradeNames = fluid.makeArray(gradeNames);
+        fluid.each(gradeNames, function (gradeName) {
+            var options = fluid.rawDefaults(gradeName) || {};
+            gs.gradeHash[gradeName] = true;
+            gs.gradeChain.push(gradeName);
+            gs.optionsChain.push(options);
+            fluid.each(options.gradeNames, function (parent) {
+                if (!gs.gradeHash[parent]) {
+                    resolveGradesImpl(gs, parent);
+                }
+            });
+        });
+        return gs;
+    };
+    
+    // unsupported, NON-API function
+    fluid.resolveGradeStructure = function (gradeNames) {
+        var gradeStruct = {
+            gradeChain: [],
+            gradeHash: {},
+            optionsChain: []
+        };
+        return resolveGradesImpl(gradeStruct, gradeNames);
+    };
+    
+    fluid.lifecycleFunctions = {
+        preInitFunction: true,
+        postInitFunction: true,
+        finalInitFunction: true
+    };
+    
+    // unsupported, NON-API function
+    fluid.mergeLifecycleFunction = function(target, source) {
+        fluid.event.addListenerToFirer(target, source);
+        return target;
+    };
+    
+    fluid.rootMergePolicy = fluid.transform(fluid.lifecycleFunctions, function() {
+            return fluid.mergeLifecycleFunction;
+        }
+    );
+        
+    // unsupported, NON-API function
+    fluid.makeLifecycleFirers = function() {
+        return fluid.transform(fluid.lifecycleFunctions, function() {
+            return fluid.event.getEventFirer()
+            }
+        );
+    };
+    
+    // unsupported, NON-API function
+    fluid.resolveGrade = function (defaults, gradeNames) {
+        var mergeArgs = [defaults];
+        if (gradeNames) {
+            var gradeStruct = fluid.resolveGradeStructure(gradeNames);
+            mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs).concat({gradeNames: gradeStruct.gradeChain});
+        }
+        mergeArgs = [fluid.rootMergePolicy, fluid.makeLifecycleFirers()].concat(mergeArgs);
+        var mergedDefaults = fluid.merge.apply(null, mergeArgs);
+        return mergedDefaults;  
+    };
+
+    // unsupported, NON-API function
+    fluid.resolveGradedOptions = function (componentName) {
+        var defaults = fluid.rawDefaults(componentName);
+        if (!defaults) {
+            return defaults;
+        } else {
+            return fluid.resolveGrade(defaults, defaults.gradeNames);
+        }
+    };
+    
+    // unsupported, NON-API function
+    fluid.rawDefaults = function (componentName, options) {
+        if (options === undefined) {
+            return defaultsStore[componentName];
+        } else {
+            defaultsStore[componentName] = options;
+        }
+    };
+    
+        
+    fluid.hasGrade = function (options, gradeName) {
+        return !options || !options.gradeNames ? false : $.inArray(gradeName, options.gradeNames) !== -1;
+    };
+    
+     /**
+     * Retrieves and stores a component's default settings centrally.
+     * @param {boolean} (options) if true, manipulate a global option (for the head
+     *   component) rather than instance options. NB - the use of "global options" 
+     *   is deprecated and will be removed from the framework in release 1.5 
+     * @param {String} componentName the name of the component
+     * @param {Object} (optional) an container of key/value pairs to set
+     */
+     
+    fluid.defaults = function () {
+        var offset = 0;
+        if (typeof arguments[0] === "boolean") {
+            offset = 1;
+        }
+        var componentName = (offset === 0 ? "" : "*.global-") + arguments[offset];
+        var options = arguments[offset + 1];
+        if (options === undefined) {
+            return fluid.resolveGradedOptions(componentName);
+        } else {
+            fluid.rawDefaults(componentName, options);
+            if (fluid.hasGrade(options, "autoInit")) {
+                fluid.makeComponent(componentName, fluid.resolveGradedOptions(componentName));
+            }
+        }
+    };
+    
+    fluid.makeComponent = function (componentName, options) {
+        if (!options.initFunction || !options.gradeNames) {
+            fluid.fail("Cannot autoInit component " + componentName + " which does not have an initFunction and gradeName defined");
+        }
+        var creator = function() {
+            return fluid.initComponent(componentName, arguments);
+        };
+        var existing = fluid.getGlobalValue(componentName);
+        if (existing) {
+            $.extend(creator, existing);
+        }
+        fluid.setGlobalValue(componentName, creator);
+    };
+        
+    fluid.makeComponents = function(components, env) {
+        fluid.each(components, function(value, key) {
+            var options = {
+                gradeNames: fluid.makeArray(value).concat(["autoInit"])
+            };
+            fluid.defaults(key, options);
+        });
+    };
+    
+    // The base system grade definitions
+    
+    fluid.defaults("fluid.littleComponent", {
+        initFunction: "fluid.initLittleComponent",
+        argumentMap: {
+            options: 0
+        }
+    });
+    
+    fluid.defaults("fluid.eventedComponent", {
+        gradeNames: ["fluid.littleComponent"],
+        mergePolicy: {
+            listeners: "noexpand"
+        }
+    });
+    
+        
+    fluid.preInitModelComponent = function (that) {
+        that.model = that.options.model || {};
+        that.applier = that.options.applier || fluid.makeChangeApplier(that.model, that.options.changeApplierOptions);
+    };
+    
+    fluid.defaults("fluid.modelComponent", {
+        gradeNames: ["fluid.littleComponent"],
+        preInitFunction: {
+            namespace: "preInitModelComponent",
+            listener: "fluid.preInitModelComponent"
+        },
+        mergePolicy: {
+            model: "preserve",
+            applier: "nomerge"
+        }
+    });
+    
+    fluid.defaults("fluid.viewComponent", {
+        gradeNames: ["fluid.littleComponent", "fluid.modelComponent", "fluid.eventedComponent"],
+        initFunction: "fluid.initView",
+        argumentMap: {
+            container: 0,
+            options: 1
+        }
+    });
+    
+    // unsupported, NON-API function
+    fluid.guardCircularity = function (seenIds, source, message1, message2) {
+        if (source && source.id) {
+            if (!seenIds[source.id]) {
+                seenIds[source.id] = source;
+            } else if (seenIds[source.id] === source) {
+                fluid.fail("Circularity in options " + message1 + " - component with typename " + source.typeName + " and id " + source.id 
+                    + " has already been seen" + message2);  
+            }
+        }      
+    };
+                
+    fluid.mergePolicyIs = function (policy, test) {
+        return typeof (policy) === "string" && $.inArray(test, policy.split(/\s*,\s*/)) !== -1;
+    };
+    
+    function mergeImpl(policy, basePath, target, source, thisPolicy, rec) {
+        if (typeof (thisPolicy) === "function") {
+            thisPolicy.call(null, target, source);
+            return target;
+        }
+        if (fluid.mergePolicyIs(thisPolicy, "replace")) {
+            fluid.clear(target);
+        }
+        fluid.guardCircularity(rec.seenIds, source, "merging", " when evaluating path " + basePath + " - please protect components from merging using the \"nomerge\" merge policy");
+      
+        for (var name in source) {
+            var path = (basePath ? basePath + "." : "") + name;
+            var newPolicy = policy && typeof(policy) !== "string" ? policy[path] : policy;
+            var thisTarget = target[name];
+            var thisSource = source[name];
+            var primitiveTarget = fluid.isPrimitive(thisTarget);
+    
+            if (thisSource !== undefined) {
+                if (thisSource !== null && typeof(thisSource) === "object" &&
+                        !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
+                        !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "nomerge") && !fluid.mergePolicyIs(newPolicy, "noexpand")) {
+                    if (primitiveTarget) {
+                        target[name] = thisTarget = thisSource instanceof Array ? [] : {};
+                    }
+                    mergeImpl(policy, path, thisTarget, thisSource, newPolicy, rec);
+                } else {
+                    if (typeof(newPolicy) === "function") {
+                        target[name] = newPolicy.call(null, thisTarget, thisSource, name);
+                    } else if (!fluid.isValue(thisTarget) || !fluid.mergePolicyIs(newPolicy, "reverse")) {
+                        // TODO: When "grades" are implemented, grandfather in any paired applier to perform these operations
+                        // NB: mergePolicy of "preserve" now creates dependency on DataBinding.js
+                        target[name] = fluid.isValue(thisTarget) && fluid.mergePolicyIs(newPolicy, "preserve") ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
+                    }
+                }
+            }
+        }
+        return target;
+    }
+    
+    /** Merge a collection of options structures onto a target, following an optional policy.
+     * This function is typically called automatically, as a result of an invocation of
+     * <code>fluid.initLittleComponent</code>. The behaviour of this function is explained more fully on
+     * the page http://wiki.fluidproject.org/display/fluid/Options+Merging+for+Fluid+Components .
+     * @param policy {Object/String} A "policy object" specifiying the type of merge to be performed.
+     * If policy is of type {String} it should take on the value "reverse" or "replace" representing
+     * a static policy. If it is an
+     * Object, it should contain a mapping of EL paths onto these String values, representing a
+     * fine-grained policy. If it is an Object, the values may also themselves be EL paths 
+     * representing that a default value is to be taken from that path.
+     * @param target {Object} The options structure which is to be modified by receiving the merge results.
+     * @param options1, options2, .... {Object} an arbitrary list of options structure which are to
+     * be merged "on top of" the <code>target</code>. These will not be modified.    
+     */
+    
+    fluid.merge = function (policy, target) {
+        var path = "";
+        
+        for (var i = 2; i < arguments.length; ++i) {
+            var source = arguments[i];
+            if (source !== null && source !== undefined) {
+                mergeImpl(policy, path, target, source, policy ? policy[""] : null, {seenIds: {}});
+            }
+        }
+        if (policy && typeof (policy) !== "string") {
+            for (var key in policy) {
+                var elrh = policy[key];
+                if (typeof (elrh) === "string" && elrh !== "replace" && elrh !== "preserve") {
+                    var oldValue = fluid.get(target, key);
+                    if (oldValue === null || oldValue === undefined) {
+                        var value = fluid.get(target, elrh);
+                        fluid.set(target, key, value);
+                    }
+                }
+            }
+        }
+        return target;     
+    };
+
+    /**
+     * Merges the component's declared defaults, as obtained from fluid.defaults(),
+     * with the user's specified overrides.
+     * 
+     * @param {Object} that the instance to attach the options to
+     * @param {String} componentName the unique "name" of the component, which will be used
+     * to fetch the default options from store. By recommendation, this should be the global
+     * name of the component's creator function.
+     * @param {Object} userOptions the user-specified configuration options for this component
+     */
+    // unsupported, NON-API function
+    fluid.mergeComponentOptions = function (that, componentName, userOptions, localOptions) {
+        var defaults = fluid.defaults(componentName);
+        var mergePolicy = $.extend({}, fluid.rootMergePolicy, defaults ? defaults.mergePolicy : {});
+        var defaultGrades = defaults && defaults.gradeNames;
+        var mergeArgs;
+        if (!defaultGrades) {
+            defaults = fluid.censorKeys(defaults, fluid.keys(fluid.lifecycleFunctions));
+            mergeArgs = [mergePolicy, localOptions];
+        }
+        else {
+            mergeArgs = [mergePolicy];
+        }
+        var extraArgs;
+        if (fluid.expandComponentOptions) {
+            extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
+        } else {
+            extraArgs = [defaults, userOptions];
+        }
+        mergeArgs = mergeArgs.concat(extraArgs);
+        that.options = fluid.merge.apply(null, mergeArgs);
+    };
+    
+    // The Fluid Component System proper   
+            
+    /** A special "marker object" which is recognised as one of the arguments to 
+     * fluid.initSubcomponents. This object is recognised by reference equality - 
+     * where it is found, it is replaced in the actual argument position supplied
+     * to the specific subcomponent instance, with the particular options block
+     * for that instance attached to the overall "that" object.
+     * NOTE: The use of this marker has been deprecated as of the Fluid 1.4 release in 
+     * favour of the contextual EL path "{options}" - it will be removed in a future
+     * release of the framework.
+     */
+    fluid.COMPONENT_OPTIONS = {type: "fluid.marker", value: "COMPONENT_OPTIONS"};
+    
+    /** Construct a dummy or "placeholder" subcomponent, that optionally provides empty
+     * implementations for a set of methods.
+     */
+    fluid.emptySubcomponent = function (options) {
+        var that = {};
+        options = $.makeArray(options);
+        var empty = function () {};
+        for (var i = 0; i < options.length; ++i) {
+            that[options[i]] = empty;
+        }
+        return that;
+    };
+    
+    /** Compute a "nickname" given a fully qualified typename, by returning the last path
+     * segment.
+     */
+    
+    fluid.computeNickName = function (typeName) {
+        var segs = fluid.model.parseEL(typeName);
+        return segs[segs.length - 1];
+    };
+        
+    /** Create a "type tag" component with no state but simply a type name and id. The most 
+     *  minimal form of Fluid component */
+       
+    fluid.typeTag = function (name) {
+        return {
+            typeName: name,
+            id: fluid.allocateGuid()
+        };
+    };
+    
+    /**
+     * Creates a new "little component": a that-ist object with options merged into it by the framework.
+     * This method is a convenience for creating small objects that have options but don't require full
+     * View-like features such as the DOM Binder or events
+     * 
+     * @param {Object} name the name of the little component to create
+     * @param {Object} options user-supplied options to merge with the defaults
+     */
+    // NOTE: the 3rd argument localOptions is NOT to be advertised as part of the stable API, it is present
+    // just to allow backward compatibility whilst grade specifications are not mandatory
+    fluid.initLittleComponent = function (name, options, localOptions) {
+        var that = fluid.typeTag(name);
+        // TODO: nickName must be available earlier than other merged options so that component may resolve to itself
+        that.nickName = options && options.nickName ? options.nickName : fluid.computeNickName(that.typeName);
+        localOptions = localOptions || {gradeNames: "fluid.littleComponent"};
+        localOptions = fluid.resolveGrade({}, localOptions.gradeNames);
+        
+        fluid.mergeComponentOptions(that, name, options, localOptions);
+        that.options.preInitFunction.fire(that);
+
+        if (fluid.hasGrade(that.options, "fluid.eventedComponent")) {
+            fluid.instantiateFirers(that, that.options);
+        }
+        if (!fluid.hasGrade(that.options, "autoInit")) {
+            fluid.clearLifecycleFunctions(that.options);
+        }
+        return that;
+    };
+    
+    fluid.clearLifecycleFunctions = function(options) {
+        fluid.each(fluid.lifecycleFunctions, function(value, key) {
+            delete options[key];
+        });
+        delete options.initFunction; 
+    };
+    
+    fluid.initComponent = function (componentName, initArgs) {
+        var options = fluid.defaults(componentName);
+        if (!options.gradeNames) {
+            fluid.fail("Cannot initialise component " + componentName + " which has no gradeName registered");
+        }
+        var args = [componentName].concat(fluid.makeArray(initArgs)); // TODO: support different initFunction variants
+        var that = fluid.invokeGlobalFunction(options.initFunction, args);
+        that.options.postInitFunction.fire(that);
+        if (fluid.initDependents) {
+            fluid.initDependents(that);
+        }
+        that.options.finalInitFunction.fire(that);
+        fluid.clearLifecycleFunctions(that.options);
+        return that.options.returnedPath? fluid.get(that, that.options.returnedPath) : that;
+    };
+
+    // unsupported, NON-API function
+    fluid.initSubcomponentImpl = function (that, entry, args) {
+        var togo;
+        if (typeof (entry) !== "function") {
+            var entryType = typeof (entry) === "string" ? entry : entry.type;
+            var globDef = fluid.defaults(true, entryType);
+            fluid.merge("reverse", that.options, globDef);
+            togo = entryType === "fluid.emptySubcomponent" ?
+                fluid.emptySubcomponent(entry.options) : 
+                fluid.invokeGlobalFunction(entryType, args);
+        } else {
+            togo = entry.apply(null, args);
+        }
+
+        var returnedOptions = togo ? togo.returnedOptions : null;
+        if (returnedOptions) {
+            fluid.merge(that.options.mergePolicy, that.options, returnedOptions);
+            if (returnedOptions.listeners) {
+                fluid.mergeListeners(that, that.events, returnedOptions.listeners);
+            }
+        }
+        return togo;
+    };
+    
+    /** Initialise all the "subcomponents" which are configured to be attached to 
+     * the supplied top-level component, which share a particular "class name".
+     * @param {Component} that The top-level component for which sub-components are
+     * to be instantiated. It contains specifications for these subcomponents in its
+     * <code>options</code> structure.
+     * @param {String} className The "class name" or "category" for the subcomponents to
+     * be instantiated. A class name specifies an overall "function" for a class of 
+     * subcomponents and represents a category which accept the same signature of
+     * instantiation arguments.
+     * @param {Array of Object} args The instantiation arguments to be passed to each 
+     * constructed subcomponent. These will typically be members derived from the
+     * top-level <code>that</code> or perhaps globally discovered from elsewhere. One
+     * of these arguments may be <code>fluid.COMPONENT_OPTIONS</code> in which case this
+     * placeholder argument will be replaced by instance-specific options configured
+     * into the member of the top-level <code>options</code> structure named for the
+     * <code>className</code>
+     * @return {Array of Object} The instantiated subcomponents, one for each member
+     * of <code>that.options[className]</code>.
+     */
+    
+    fluid.initSubcomponents = function (that, className, args) {
+        var entry = that.options[className];
+        if (!entry) {
+            return;
+        }
+        var entries = $.makeArray(entry);
+        var optindex = -1;
+        var togo = [];
+        args = $.makeArray(args);
+        for (var i = 0; i < args.length; ++i) {
+            if (args[i] === fluid.COMPONENT_OPTIONS) {
+                optindex = i;
+            }
+        }
+        for (i = 0; i < entries.length; ++i) {
+            entry = entries[i];
+            if (optindex !== -1) {
+                args[optindex] = entry.options;
+            }
+            togo[i] = fluid.initSubcomponentImpl(that, entry, args);
+        }
+        return togo;
+    };
+        
+    fluid.initSubcomponent = function (that, className, args) {
+        return fluid.initSubcomponents(that, className, args)[0];
+    };
+
 
   // **** VIEW-DEPENDENT DEFINITIONS BELOW HERE
 
@@ -1301,7 +1445,7 @@ var fluid = fluid || fluid_1_4;
         return that;
     };
     
-    /** Expect that an output from the DOM binder has resulted in a non-empty set of 
+    /** Expect that jQuery selector query has resulted in a non-empty set of 
      * results. If none are found, this function will fail with a diagnostic message, 
      * with the supplied message prepended.
      */
@@ -1324,89 +1468,18 @@ var fluid = fluid || fluid_1_4;
      * DOM which will house all the markup for this component.
      * @param {Object} userOptions The configuration options for this component.
      */
-    fluid.initView = function (componentName, container, userOptions) {
+     // 4th argument is NOT SUPPORTED, see comments for initLittleComponent
+    fluid.initView = function (componentName, container, userOptions, localOptions) {
         fluid.expectFilledSelector(container, "Error instantiating component with name \"" + componentName);
         container = fluid.container(container, true);
         if (!container) {
             return null;
         }
-        var that = fluid.initLittleComponent(componentName, userOptions, {gradeNames: ["fluid.viewComponent"]}); 
+        var that = fluid.initLittleComponent(componentName, userOptions, localOptions || {gradeNames: ["fluid.viewComponent"]}); 
         that.container = container;
         fluid.initDomBinder(that);
 
         return that;
-    };
-
-    
-    fluid.initSubcomponentImpl = function (that, entry, args) {
-        var togo;
-        if (typeof (entry) !== "function") {
-            var entryType = typeof (entry) === "string" ? entry : entry.type;
-            var globDef = fluid.defaults(true, entryType);
-            fluid.merge("reverse", that.options, globDef);
-            togo = entryType === "fluid.emptySubcomponent" ?
-                fluid.emptySubcomponent(entry.options) : 
-                fluid.invokeGlobalFunction(entryType, args);
-        } else {
-            togo = entry.apply(null, args);
-        }
-
-        var returnedOptions = togo ? togo.returnedOptions : null;
-        if (returnedOptions) {
-            fluid.merge(that.options.mergePolicy, that.options, returnedOptions);
-            if (returnedOptions.listeners) {
-                fluid.mergeListeners(that, that.events, returnedOptions.listeners);
-            }
-        }
-        return togo;
-    };
-    
-    /** Initialise all the "subcomponents" which are configured to be attached to 
-     * the supplied top-level component, which share a particular "class name".
-     * @param {Component} that The top-level component for which sub-components are
-     * to be instantiated. It contains specifications for these subcomponents in its
-     * <code>options</code> structure.
-     * @param {String} className The "class name" or "category" for the subcomponents to
-     * be instantiated. A class name specifies an overall "function" for a class of 
-     * subcomponents and represents a category which accept the same signature of
-     * instantiation arguments.
-     * @param {Array of Object} args The instantiation arguments to be passed to each 
-     * constructed subcomponent. These will typically be members derived from the
-     * top-level <code>that</code> or perhaps globally discovered from elsewhere. One
-     * of these arguments may be <code>fluid.COMPONENT_OPTIONS</code> in which case this
-     * placeholder argument will be replaced by instance-specific options configured
-     * into the member of the top-level <code>options</code> structure named for the
-     * <code>className</code>
-     * @return {Array of Object} The instantiated subcomponents, one for each member
-     * of <code>that.options[className]</code>.
-     */
-    
-    fluid.initSubcomponents = function (that, className, args) {
-        var entry = that.options[className];
-        if (!entry) {
-            return;
-        }
-        var entries = $.makeArray(entry);
-        var optindex = -1;
-        var togo = [];
-        args = $.makeArray(args);
-        for (var i = 0; i < args.length; ++i) {
-            if (args[i] === fluid.COMPONENT_OPTIONS) {
-                optindex = i;
-            }
-        }
-        for (i = 0; i < entries.length; ++i) {
-            entry = entries[i];
-            if (optindex !== -1) {
-                args[optindex] = entry.options;
-            }
-            togo[i] = fluid.initSubcomponentImpl(that, entry, args);
-        }
-        return togo;
-    };
-        
-    fluid.initSubcomponent = function (that, className, args) {
-        return fluid.initSubcomponents(that, className, args)[0];
     };
     
     /**
@@ -1418,8 +1491,6 @@ var fluid = fluid || fluid_1_4;
         that.dom = fluid.createDomBinder(that.container, that.options.selectors);
         that.locate = that.dom.locate;      
     };
-
-
 
     // DOM Utilities.
     
