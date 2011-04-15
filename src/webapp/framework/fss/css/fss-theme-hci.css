@@ -88,7 +88,6 @@
 .fl-theme-hci .fl-widget {background-color:#ffffff; border:1px solid #000000;}
 .fl-theme-hci .fl-widget ul {}
 .fl-theme-hci .fl-widget h2 {color:#000000; background-color:#ffffff;}
-.fl-theme-hci .fl-widget a {color:#ffffff;}
 .fl-theme-hci .fl-widget .fl-icon {color:#ffffff; background-image:none; background-color:#000000; text-indent:0; width:auto; height:auto; margin-left:0px; padding:0 2px; display:inline; font-weight:bold;}
         
 /* Widget titlebar */
@@ -98,7 +97,6 @@
 .fl-theme-hci .fl-widget .fl-widget-options {padding:0px;}
 .fl-theme-hci .fl-widget .fl-widget-options ul {} 
 .fl-theme-hci .fl-widget .fl-widget-options li {border-left:1px solid #000000;}
-.fl-theme-hci .fl-widget .fl-widget-options a {color:#000000;}
 .fl-theme-hci .fl-widget .fl-widget-options .icon {}
 .fl-theme-hci .fl-widget .fl-widget-options .viewOptions {}
 .fl-theme-hci .fl-widget .fl-widget-options .toggle {}
