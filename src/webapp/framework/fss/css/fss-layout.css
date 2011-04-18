@@ -366,7 +366,7 @@ input.fl-icon {padding-left:16px;}
 .fl-ProgEnhance-basic, /* << syntax breaks conventions and is Deprecated*/
 .fl-progEnhance-basic {}
 
-/* Hiding Content. The following styles are taken from http://html5boilerplate.com */
+/* Hiding Content. The following styles are based on css from http://html5boilerplate.com */
 
 /* Hide for both screenreaders and browsers */
 .fl-hidden { display: none; visibility: hidden; }
