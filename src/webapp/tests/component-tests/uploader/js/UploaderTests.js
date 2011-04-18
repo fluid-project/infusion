@@ -240,7 +240,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 send: function() {},
                 sendAsBinary: function() {},
                 open: function () {},
-                setRequestHeader: function () {}
+                setRequestHeader: function () {},
+                abort: function () {}
             };    
             return xhr;
         };
@@ -304,12 +305,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var files = [file1, file2];
             browseButtonView.events.onFilesQueued.fire(files);
             
+            checkUploadButtonIsEnabled(uploader);
             jqUnit.assertEquals("Files are added after the file dialog", 
                                 2, uploader.queue.files.length);
             jqUnit.assertNotEquals("Add files: update status region text",
                     initialStatusRegionText, statusRegion.text());     
-            
-            checkUploadButtonIsEnabled(uploader);
             
             // delete file, check status region update            
             var addFilesStatusRegionText = statusRegion.text();
@@ -328,12 +328,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // Will need to mock XHR to allow the ability to send files to a remote server
             // in 2 ways: 1) sendAsBinary(), 2) send(formData)
             uploader.locate("uploadButton").click();
-            
             checkBrowseButtonIsDisabled(uploader);
-            
             jqUnit.assertNotEquals("Upload complete:  update status region text", 
                     removeFileStatusRegionText, statusRegion.text());
             
+            // stop uploading files
+            uploader.locate("pauseButton").click();
+            checkUploadButtonIsEnabled(uploader);
+            jqUnit.assertFalse("Uploading has stopped", uploader.queue.isUploading);
         };
         
         uploaderTests.test("Single-file Uploader is instantiated", function () {
