@@ -177,23 +177,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * UI Options *
      **************/
 
-    var initializeModel = function(that){
-        var tree ={};
-        var selections = [];
         
-        for (var item in that.options.controlValues) {
-            tree[item+"-map"] = {
-                List: that.options.controlValues[item],
-                Names: that.options.strings[item],
-            };
-//            selections[item] = that.options.controlValues[item][0];
-        }
-//        tree["selections"] = selections;
-        tree["controlValues"] = that.options.controlValues;
-        
-        return tree;
-    };
-
     /**
      * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
      * to allow users to set personal user interface preferences. The UI Options component provides a user 
@@ -206,15 +190,16 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uiOptions", {
         gradeNames: ["fluid.viewComponent", "autoInit"], 
         components: {
-            uiOptionsControls: {
+            controls: {
                 type: "fluid.uiOptions.controls",
                 priority: "first",
-                container: "{uiOptions}.container",
+                container: "{uiOptions}.dom.controls",
                 createOnEvent: "onReady",
                 options: {
-                    resources: "{uiOptions}.options.resources",
-                    model: "{uiOptions}.model",
-                    selectors: "{uiOptions}.options.selectors"
+                    listeners: {
+                        afterRender: "{uiOptions}.bindHandlers"
+                    },
+                    uiEnhancer: "{uiOptions}.uiEnhancer"
                 }
             },
             preview: {
@@ -222,81 +207,93 @@ var fluid_1_4 = fluid_1_4 || {};
                 createOnEvent: "onReady"
             }
         },
-        strings: {
-            textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
-            textSpacing: ["Regular", "Wide", "Wider", "Widest"],
-            theme: ["Low Contrast", "Medium Contrast", "Medium Contrast Grey Scale", "High Contrast", "High Contrast Inverted"],
-            backgroundImages: ["Yes", "No"],
-            layout: ["Yes", "No"],
-            toc: ["Yes", "No"]
-        },
-        controlValues: { 
-            textFont: ["serif", "sansSerif", "arial", "verdana", "courier", "times"],
-            textSpacing: ["default", "wide1", "wide2", "wide3"],
-            theme: ["lowContrast", "default", "mediumContrast", "highContrast", "highContrastInverted"],
-            backgroundImages: ["true", "false"],
-            layout: ["simple", "default"],
-            toc: ["true", "false"]
-        },
         selectors: {
             controls: ".flc-uiOptions-controls",
-            textFont: ".flc-uiOptions-text-font",
-            textSpacing: ".flc-uiOptions-text-spacing",
-            theme: ".flc-uiOptions-theme",
-            "backgroundImagesRowID:": ".flc-uiOptions-background-images-row",
-            backgroundImagesInputID: ".flc-uiOptions-background-images-choice",
-            backgroundImagesLabelID: ".flc-uiOptions-background-images-label",
-            "layoutRowID:": ".flc-uiOptions-layout-row",
-            layoutInputID: ".flc-uiOptions-layout-choice",
-            layoutLabelID: ".flc-uiOptions-layout-label",
-            "tocRowID:": ".flc-uiOptions-toc-row",
-            tocInputID: ".flc-uiOptions-toc-choice",
-            tocLabelID: ".flc-uiOptions-toc-label",
-            textMinSizeCtrl: ".flc-uiOptions-min-text-size",
-            lineSpacingCtrl: ".flc-uiOptions-line-spacing",
             cancel: ".flc-uiOptions-cancel",
             reset: ".flc-uiOptions-reset",
             save: ".flc-uiOptions-save",
             previewFrame : ".flc-uiOptions-preview-frame"
         },
         events: {
-            onReady: null
+            onReady: null,
+            onSave: null,
+            onCancel: null,
+            onReset: null
         },
-        preInitFunction: "fluid.uiOptions.preInit",
         finalInitFunction: "fluid.uiOptions.finalInit",
         resources: {
             template: {
                 forceCache: true,
-                url: "../html/UIOptions-test.html"
+                url: "../html/UIOptions.html"
             }
         }
     });
     
-    fluid.uiOptions.preInit = function(that) {
-        that.model = initializeModel(that);
-    };
-    
     fluid.uiOptions.finalInit = function(that) {
+
+        that.bindHandlers = function () {
+            var saveButton = that.locate("save");
+            saveButton.click(that.save);
+            that.locate("reset").click(that.reset);
+            that.locate("cancel").click(that.cancel);
+            var form = fluid.findForm(saveButton);
+            $(form).submit(function(){
+                that.save();
+            });
+        };
+
+        that.uiEnhancer = $(document).data("uiEnhancer");
+        
+        var savedModel = that.uiEnhancer.model;
+ 
+        /**
+         * Saves the current model and fires onSave
+         */ 
+        that.save = function () {
+            that.events.onSave.fire(that.model);
+            savedModel = fluid.copy(that.model); 
+            that.uiEnhancer.updateModel(savedModel);
+        };
+
+        /**
+         * Resets the selections to the integrator's defaults and fires onReset
+         */
+        that.reset = function () {
+            that.events.onReset.fire();
+            that.updateModel(fluid.copy(that.uiEnhancer.defaultSiteSettings), that);
+            that.refreshView();
+        };
+        
+        /**
+         * Resets the selections to the last saved selections and fires onCancel
+         */
+        that.cancel = function () {
+            that.events.onCancel.fire();
+            that.updateModel(fluid.copy(savedModel), that);
+            that.refreshView();            
+        };
+        
         fluid.fetchResources(that.options.resources, function () {
+            that.container.append(that.options.resources.template.resourceText);
             that.events.onReady.fire();
         });
+
     };
     
     /***********************
      * UI Options Controls *
      ***********************/
 
-    var bindHandlers = function (that) {
-        var saveButton = that.locate("save");
-        saveButton.click(that.save);
-        that.locate("reset").click(that.reset);
-        that.locate("cancel").click(that.cancel);
-        var form = fluid.findForm(saveButton);
-        $(form).submit(function () {
-            that.save();
+    var initializeModel = function(that){
+        fluid.each(that.options.controlValues, function (item, key) {
+            that.applier.requestChange(key + "-map", {
+                List: that.options.controlValues[key],
+                Names: that.options.strings[key]
+            });
         });
+        that.applier.requestChange("controlValues", that.options.controlValues);
     };
-        
+
     var initSliders = function (that) {
         var createOptions = function (settingName) {
             return {
@@ -346,54 +343,23 @@ var fluid_1_4 = fluid_1_4 || {};
      */
     fluid.uiOptions.controls = function (container, options) {
         var that = fluid.initRendererComponent("fluid.uiOptions.controls", container, options);
+        
+        initializeModel(that);
+        
         that.uiEnhancer = $(document).data("uiEnhancer");
-//        that.model.selections = fluid.copy(that.uiEnhancer.model);
-//        that.model.selections.toc = String(that.model.selections.toc);
-//        that.model.selections.backgroundImages = String(that.model.selections.backgroundImages);
-//        that.applier = fluid.makeChangeApplier(that.model);
+        that.applier.requestChange("selections", fluid.copy(that.uiEnhancer.model));
         
         // Turn the boolean select values into strings so they can be properly bound and rendered
-        that.applier.requestChange("selections", fluid.copy(that.uiEnhancer.model));
         that.applier.requestChange("selections.toc", String(that.model.selections.toc));
         that.applier.requestChange("selections.backgroundImages", String(that.model.selections.backgroundImages));
 
-        // TODO: we shouldn't need the savedModel and should use the uiEnhancer.model instead
-        var savedModel = that.uiEnhancer.model;
- 
-        /**
-         * Saves the current model and fires onSave
-         */ 
-        that.save = function () {
-            that.events.onSave.fire(that.model);
-            savedModel = fluid.copy(that.model); 
-            that.uiEnhancer.updateModel(savedModel);
-        };
-
-        /**
-         * Resets the selections to the integrator's defaults and fires onReset
-         */
-        that.reset = function () {
-            that.events.onReset.fire();
-            that.updateModel(fluid.copy(that.uiEnhancer.defaultSiteSettings), that);
-            that.refreshView();
-        };
-        
-        /**
-         * Resets the selections to the last saved selections and fires onCancel
-         */
-        that.cancel = function () {
-            that.events.onCancel.fire();
-            that.updateModel(fluid.copy(savedModel), that);
-            that.refreshView();            
-        };
-        
         /**
          * Rerenders the UI and fires afterRender
          */
         that.refreshView = function () {
             that.renderer.refreshView();
             initSliders(that);
-            bindHandlers(that);
+//            bindHandlers(that);
 
             that.events.afterRender.fire();
         };
@@ -447,11 +413,10 @@ var fluid_1_4 = fluid_1_4 || {};
                 };
             } else {
                 // render check boxes
-                tree[item] = {
-                    selection: "${selections." + item + "}"
-                };
+                tree[item] = "${selections." + item + "}";
             }
         }
+        
         tree["expander"] = radiobuttons;
         
         return tree;
@@ -473,14 +438,47 @@ var fluid_1_4 = fluid_1_4 || {};
                 max: 10
             }
         },
-        selectorsToIgnore: ["controls", "textMinSizeCtrl", "lineSpacingCtrl", "cancel", "reset", "save", "previewFrame"],
+        strings: {
+            textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
+            textSpacing: ["Regular", "Wide", "Wider", "Widest"],
+            theme: ["Low Contrast", "Medium Contrast", "Medium Contrast Grey Scale", "High Contrast", "High Contrast Inverted"],
+            backgroundImages: ["Yes", "No"],
+            layout: ["Yes", "No"],
+            toc: ["Yes", "No"]
+        },
+        controlValues: { 
+            textFont: ["serif", "sansSerif", "arial", "verdana", "courier", "times"],
+            textSpacing: ["default", "wide1", "wide2", "wide3"],
+            theme: ["lowContrast", "default", "mediumContrast", "highContrast", "highContrastInverted"],
+            backgroundImages: ["true", "false"],
+            layout: ["simple", "default"],
+            toc: ["true", "false"]
+        },
+        selectors: {
+            textFont: ".flc-uiOptions-text-font",
+            textSpacing: ".flc-uiOptions-text-spacing",
+            theme: ".flc-uiOptions-theme",
+            "backgroundImagesRowID:": ".flc-uiOptions-background-images-row",
+            backgroundImagesInputID: ".flc-uiOptions-background-images-choice",
+            backgroundImagesLabelID: ".flc-uiOptions-background-images-label",
+            "layoutRowID:": ".flc-uiOptions-layout-row",
+            layoutInputID: ".flc-uiOptions-layout-choice",
+            layoutLabelID: ".flc-uiOptions-layout-label",
+            "tocRowID:": ".flc-uiOptions-toc-row",
+            tocInputID: ".flc-uiOptions-toc-choice",
+            tocLabelID: ".flc-uiOptions-toc-label",
+            textMinSizeCtrl: ".flc-uiOptions-min-text-size",
+            lineSpacingCtrl: ".flc-uiOptions-line-spacing",
+            linksUnderline: ".flc-uiOptions-links-underline",
+            linksBold: ".flc-uiOptions-links-bold",
+            linksLarger: ".flc-uiOptions-links-larger",
+            inputsLarger: ".flc-uiOptions-inputs-larger"
+        },
+        selectorsToIgnore: ["textMinSizeCtrl", "lineSpacingCtrl"],
         events: {
             onReady: null,
             afterRender: null,
-            modelChanged: null,
-            onSave: null,
-            onCancel: null,
-            onReset: null
+            modelChanged: null
         },
         rendererOptions: {
             autoBind: true
