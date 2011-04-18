@@ -246,6 +246,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return xhr;
         };
         
+        // TODO: Where should this test go?  Is this even necessary?
         var checkRemoteFileHandler = function (uploader) {
             var xhrStatus = [200, 0, 100];
             var fileStatus = [fluid.uploader.fileStatusConstants.COMPLETE,
