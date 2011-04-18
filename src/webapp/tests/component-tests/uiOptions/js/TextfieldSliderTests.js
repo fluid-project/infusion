@@ -24,7 +24,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var textfieldSlider = fluid.textfieldSlider(".fl-textfield-slider");
             jqUnit.assertEquals("Slider value is set to input value", 15, $(".flc-textfieldSlider-slider").slider("value"));
             jqUnit.assertEquals("Textfield value is set", 15, $(".flc-textfieldSlider-field").val());
-            jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model);
+            jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model.value);
             jqUnit.assertEquals("Min should be the default", 0, textfieldSlider.min);
             jqUnit.assertEquals("Max should be the default", 100, textfieldSlider.max);
             

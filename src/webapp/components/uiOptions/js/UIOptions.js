@@ -39,7 +39,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     var initSlider = function (that) {
         var sliderOptions = that.options.sliderOptions;
-        sliderOptions.value = that.model;
+        sliderOptions.value = that.model.value;
         sliderOptions.min = that.min;
         sliderOptions.max = that.max;
         
@@ -49,20 +49,18 @@ var fluid_1_4 = fluid_1_4 || {};
         return slider;           
     };
     
-    var bindSliderHandlers = function (that, textfield, slider) {
+    var bindSliderHandlers = function (that, slider) {
+        var textfield = that.locate("textfield");
+        
         slider.bind("slide", function (e, ui) {
             textfield.val(ui.value);
             that.updateModel(ui.value, slider);
         });       
     };
-    
-    var initTextfield = function (that, slider) {
+        
+    var bindTextfieldHandlers = function (that, slider) {
         var textfield = that.locate("textfield");
-        textfield.val(that.model);
-        return textfield;
-    };
-    
-    var bindTextfieldHandlers = function (that, textfield, slider) {
+        
         textfield.change(function () {
             if (that.isValid(this.value)) {
                 if (!that.isInRange(this.value)) {
@@ -72,7 +70,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 that.updateModel(this.value, this);
             } else {
                 // handle invalid entry
-                this.value = that.model;
+                this.value = that.model.value;
             }
         });
         
@@ -89,16 +87,15 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     var initTextfieldSlider = function (that) {
-        var slider = initSlider(that);
-        var textfield = initTextfield(that, slider);        
+ //       var slider = initSlider(that);
 
-        bindSliderHandlers(that, textfield, slider);
-        bindTextfieldHandlers(that, textfield, slider);
+ //       bindSliderHandlers(that, slider);
+ //       bindTextfieldHandlers(that, slider);
     };
     
 
     fluid.defaults("fluid.textfieldSlider", {
-        gradeNames: ["fluid.viewComponent", "autoInit"], 
+        gradeNames: ["fluid.rendererComponent", "autoInit"], 
         selectors: {
             textfield: ".flc-textfieldSlider-field",
             slider: ".flc-textfieldSlider-slider", 
@@ -107,7 +104,9 @@ var fluid_1_4 = fluid_1_4 || {};
         events: {
             modelChanged: null
         },
-        finalInitFunction: "fluid.textfieldSlider.init",
+        model: {
+            value: null
+        },
         invokers: {
             isInRange: {
                 funcName: "fluid.textfieldSlider.isInRange",
@@ -119,12 +118,21 @@ var fluid_1_4 = fluid_1_4 || {};
                 args: ["@0", "@1", "{textfieldSlider}"]
             }
         },
+        protoTree: {
+            textfield: "${value}", 
+            slider: {
+                decorators: [{
+                    type: "jQuery",
+                    func: "slider"
+                }]
+            }
+        },
+        finalInitFunction: "fluid.textfieldSlider.init",
         sliderOptions: {
             orientation: "horizontal"
         }, 
         min: 0,
-        max: 100,
-        value: null       
+        max: 100     
     });
 
     /**
@@ -152,14 +160,13 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.textfieldSlider.updateModel = function (newModel, source, that) {
         if (that.isInRange(newModel)) {
             that.events.modelChanged.fire(newModel, that.model, source);
-            that.model = newModel;
-            that.locate("thumb").attr("aria-valuenow", that.model);                
+            that.model.value = newModel;
+            that.locate("thumb").attr("aria-valuenow", that.model.value);                
         }
     };
 
     fluid.textfieldSlider.init = function (that) {
-        // TODO: can the model be moved into defaults?
-        that.model = that.options.value || that.locate("textfield").val();
+        that.model.value = that.model.value || that.locate("textfield").val();
         that.min = that.options.min;
         that.max = that.options.max;
                 
@@ -297,11 +304,11 @@ var fluid_1_4 = fluid_1_4 || {};
         var createOptions = function (settingName) {
             return {
                 listeners: {
-                    modelChanged: function (value) {
-                        that.applier.requestChange(settingName, value);
+                    modelChanged: function (model) {
+                        that.applier.requestChange(settingName, model.value);
                     }
                 },
-                value: that.model[settingName]
+                model: {value: that.model[settingName]}
             };    
         };
         
