@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2010 OCAD University
+Copyright 2010-2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -96,52 +96,9 @@ var fluid_1_4 = fluid_1_4 || {};
         bindTextfieldHandlers(that, textfield, slider);
     };
     
-    /**
-     * A component that relates a textfield and a jQuery UI slider
-     * @param {Object} container
-     * @param {Object} options
-     */
-    fluid.textfieldSlider = function (container, options) {
-        var that = fluid.initView("fluid.textfieldSlider", container, options);
-        that.model = that.options.value || that.locate("textfield").val();
-        that.min = that.options.min;
-        that.max = that.options.max;
-                
-        /**
-         * Tests if a value is within the min and max of the textfield slider
-         * @param {Object} value
-         */
-        that.isInRange = function (value) {
-            return (value >= that.min && value <= that.max);
-        };
-
-        /**
-         * Tests if a value is a valid number.
-         * @param {Object} value
-         */
-        that.isValid = function (value) {
-            return !(isNaN(parseInt(value, 10)) || isNaN(value));
-        };
-        
-        /**
-         * Updates the model if it is in range. Fires model changed
-         * @param {Object} model
-         * @param {Object} source
-         */
-        that.updateModel = function (model, source) {
-            if (that.isInRange(model)) {
-                that.events.modelChanged.fire(model, that.model, source);
-                that.model = model;
-                that.locate("thumb").attr("aria-valuenow", that.model);                
-            }
-        };
-
-        initTextfieldSlider(that);
-        
-        return that;
-    };
 
     fluid.defaults("fluid.textfieldSlider", {
+        gradeNames: ["fluid.viewComponent", "autoInit"], 
         selectors: {
             textfield: ".flc-textfieldSlider-field",
             slider: ".flc-textfieldSlider-slider", 
@@ -150,6 +107,18 @@ var fluid_1_4 = fluid_1_4 || {};
         events: {
             modelChanged: null
         },
+        finalInitFunction: "fluid.textfieldSlider.init",
+        invokers: {
+            isInRange: {
+                funcName: "fluid.textfieldSlider.isInRange",
+                args: ["@0", "{textfieldSlider}.min", "{textfieldSlider}.max"]
+            },
+            isValid: "fluid.textfieldSlider.isValid",
+            updateModel: {
+                funcName: "fluid.textfieldSlider.updateModel",
+                args: ["@0", "@1", "{textfieldSlider}"]
+            }
+        },
         sliderOptions: {
             orientation: "horizontal"
         }, 
@@ -157,7 +126,49 @@ var fluid_1_4 = fluid_1_4 || {};
         max: 100,
         value: null       
     });
+
+    /**
+     * Tests if a value is within the min and max
+     * @param {Object} value
+     */
+    fluid.textfieldSlider.isInRange = function (value, min, max) {
+        return (value >= min && value <= max);
+    };
     
+    /**
+     * Tests if a value is a valid number.
+     * @param {Object} value
+     */
+    fluid.textfieldSlider.isValid = function (value) {
+        return !(isNaN(parseInt(value, 10)) || isNaN(value));
+    };
+
+    /**
+     * Updates the model if it is in range. Fires model changed
+     * @param {Object} model
+     * @param {Object} source
+     */
+    // TODO: this should be simplified when we have a renderer component
+    fluid.textfieldSlider.updateModel = function (newModel, source, that) {
+        if (that.isInRange(newModel)) {
+            that.events.modelChanged.fire(newModel, that.model, source);
+            that.model = newModel;
+            that.locate("thumb").attr("aria-valuenow", that.model);                
+        }
+    };
+
+    fluid.textfieldSlider.init = function (that) {
+        // TODO: can the model be moved into defaults?
+        that.model = that.options.value || that.locate("textfield").val();
+        that.min = that.options.min;
+        that.max = that.options.max;
+                
+
+        initTextfieldSlider(that);
+        
+        return that;
+    };
+
 })(jQuery, fluid_1_4);
 
 
