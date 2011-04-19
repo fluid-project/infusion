@@ -155,4 +155,7 @@ html.fl-base {overflow:auto; font:13px/1.231 arial,helvetica,clean,sans-serif; *
 .fl-base input {*overflow:visible; *padding:0 1em;}
 
 /* custom default focus indicator - theme overwrites this */
-.fl-base :focus {outline: 2px solid black;}
+.fl-focus:focus,
+.fl-focus :focus{    
+   outline: 2px solid black;
+}
