@@ -229,7 +229,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.uiOptions.finalInit = function(that) {
+    fluid.uiOptions.finalInit = function (that) {
 
         that.bindHandlers = function () {
             var saveButton = that.locate("save");
@@ -237,7 +237,7 @@ var fluid_1_4 = fluid_1_4 || {};
             that.locate("reset").click(that.reset);
             that.locate("cancel").click(that.cancel);
             var form = fluid.findForm(saveButton);
-            $(form).submit(function(){
+            $(form).submit(function () {
                 that.save();
             });
         };
@@ -283,6 +283,10 @@ var fluid_1_4 = fluid_1_4 || {};
             that.controls.events.modelChanged.fire(newModel, that.controls.model.selections, source);
             fluid.clear(that.controls.model.selections);
             fluid.model.copyModel(that.controls.model.selections, newModel);
+            
+            // Turn the boolean select values into strings so they can be properly bound and rendered
+            that.controls.model.selections.toc = String(that.controls.model.selections.toc);
+            that.controls.model.selections.backgroundImages = String(that.controls.model.selections.backgroundImages);
         };
         
         fluid.fetchResources(that.options.resources, function () {
@@ -296,126 +300,10 @@ var fluid_1_4 = fluid_1_4 || {};
      * UI Options Controls *
      ***********************/
 
-    var initializeModel = function(that){
-        fluid.each(that.options.controlValues, function (item, key) {
-            that.applier.requestChange("labelMap." + key, {
-                values: that.options.controlValues[key],
-                names: that.options.strings[key]
-            });
-        });
-    };
-
-    var initSliders = function (that) {
-        var createOptions = function (settingName) {
-            return {
-                listeners: {
-                    modelChanged: function (value) {
-                        that.applier.requestChange(settingName, value);
-                    }
-                },
-                value: that.model[settingName]
-            };    
-        };
-        
-        var options = createOptions("textSize");
-        fluid.merge(null, options, that.options.textMinSize.options);
-        fluid.initSubcomponents(that, "textMinSize", [that.options.selectors.textMinSizeCtrl, options]);
-
-        options = createOptions("lineSpacing");
-        fluid.merge(null, options, that.options.lineSpacing.options);
-        fluid.initSubcomponents(that, "lineSpacing", [that.options.selectors.lineSpacingCtrl, options]);
-        
-    };
-    
-//    var setupUIOptions = function (that) {
-//        fluid.initDependents(that);
-//        that.applier.modelChanged.addListener("selections",
-//            function (newModel, oldModel, changeRequest) {
-//                that.events.modelChanged.fire(newModel, oldModel, changeRequest.source);
-//            }
-//        );
-//            
-//        that.refreshView();
-//        that.events.onReady.fire();
-//    };
-//    
-//    /**
-//     * A sub-component of fluid.uiOptions that renders the user interface. Its parent component fluid.uiOptions
-//     * only fetches the template to ensure the template is loaded at page rendering.
-//     * 
-//     * @param {Object} container
-//     * @param {Object} options
-//     */
-//    fluid.uiOptions.controls = function (container, options) {
-//        var that = fluid.initRendererComponent("fluid.uiOptions.controls", container, options);
-//        
-//        initializeModel(that);
-//        
-//        that.applier.requestChange("selections", fluid.copy(that.options.uiEnhancer.model));
-//        
-//        // Turn the boolean select values into strings so they can be properly bound and rendered
-//        that.applier.requestChange("selections.toc", String(that.model.selections.toc));
-//        that.applier.requestChange("selections.backgroundImages", String(that.model.selections.backgroundImages));
-//
-//        /**
-//         * Rerenders the UI and fires afterRender
-//         */
-//        that.refreshView = function () {
-//            that.renderer.refreshView();
-//            initSliders(that);
-//            that.events.afterRender.fire();
-//        };
-//        
-//        setupUIOptions(that);
-//
-//        return that;   
-//    };
-//
-//    var createRadioButtonNode = function(item) {
-//        return {
-//            type: "fluid.renderer.selection.inputs", 
-//            inputID: item + "InputID",
-//            tree: {
-//                optionnames: "${labelMap." + item + ".names}",
-//                optionlist: "${labelMap." + item + ".values}",
-//                selection: "${selections." + item + "}"
-//            },
-//            rowID: item + "RowID",
-//            selectID: item,
-//            labelID: item + "LabelID"
-//        };
-//    };
-//    
-//    fluid.uiOptions.controls.produceTree = function (that) {
-//        var tree = {};
-//        var radiobuttons = [];
-//        
-//        for (var item in that.model.selections) {
-//            if (item === "backgroundImages" || item === "layout" || item === "toc") {
-//                // render radio buttons
-//                radiobuttons.push(createRadioButtonNode(item));
-//            } else if (item === "textFont" || item === "textSpacing" || item === "theme"){
-//                // render drop down list box
-//                tree[item] = {
-//                    optionnames: "${labelMap." + item + ".names}",
-//                    optionlist: "${labelMap." + item + ".values}",
-//                    selection: "${selections." + item + "}"
-//                };
-//            } else {
-//                // render check boxes
-//                tree[item] = "${selections." + item + "}";
-//            }
-//        }
-//        
-//        tree["expander"] = radiobuttons;
-//        
-//        return tree;
-//    };
-//
-    fluid.registerNamespace("fluid.uiOptions.controls");
-    
+    /**
+     * An autoInit-ed sub-component of fluid.uiOptions that renders the user interface of all the controls.
+     */
     fluid.defaults("fluid.uiOptions.controls", {
-//        gradeNames: ["fluid.rendererComponent"], 
         gradeNames: ["fluid.rendererComponent", "autoInit"], 
         textMinSize: {
             type: "fluid.textfieldSlider",
@@ -475,17 +363,46 @@ var fluid_1_4 = fluid_1_4 || {};
         rendererOptions: {
             autoBind: true
         },
-        finalInitFunction: "fluid.uiOptions.controls.finalInit",
-        produceTree: fluid.uiOptions.controls.produceTree
+        preInitFunction: "fluid.uiOptions.controls.preInit",
+        finalInitFunction: "fluid.uiOptions.controls.finalInit"
     });
 
-    /**
-     * A sub-component of fluid.uiOptions that renders the user interface. Its parent component fluid.uiOptions
-     * only fetches the template to ensure the template is loaded at page rendering.
-     * 
-     * @param {Object} container
-     * @param {Object} options
-     */
+    var initializeModel = function (that) {
+        fluid.each(that.options.controlValues, function (item, key) {
+            that.applier.requestChange("labelMap." + key, {
+                values: that.options.controlValues[key],
+                names: that.options.strings[key]
+            });
+        });
+    };
+
+    var initSliders = function (that) {
+        var createOptions = function (settingName) {
+            return {
+                listeners: {
+                    modelChanged: function (value) {
+                        that.applier.requestChange(settingName, value);
+                    }
+                },
+                value: that.model[settingName]
+            };    
+        };
+        
+        var options = createOptions("textSize");
+        fluid.merge(null, options, that.options.textMinSize.options);
+        fluid.initSubcomponents(that, "textMinSize", [that.options.selectors.textMinSizeCtrl, options]);
+
+        options = createOptions("lineSpacing");
+        fluid.merge(null, options, that.options.lineSpacing.options);
+        fluid.initSubcomponents(that, "lineSpacing", [that.options.selectors.lineSpacingCtrl, options]);
+        
+    };
+    
+    fluid.uiOptions.controls.preInit = function (that) {
+        // A work-around for http://issues.fluidproject.org/browse/FLUID-4190
+        that.produceTree = fluid.uiOptions.controls.produceTree;
+    };
+
     fluid.uiOptions.controls.finalInit = function (that) {
         initializeModel(that);
         
@@ -513,7 +430,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.refreshView();
     };
 
-    var createRadioButtonNode = function(item) {
+    var createRadioButtonNode = function (item) {
         return {
             type: "fluid.renderer.selection.inputs", 
             inputID: item + "InputID",
@@ -536,7 +453,7 @@ var fluid_1_4 = fluid_1_4 || {};
             if (item === "backgroundImages" || item === "layout" || item === "toc") {
                 // render radio buttons
                 radiobuttons.push(createRadioButtonNode(item));
-            } else if (item === "textFont" || item === "textSpacing" || item === "theme"){
+            } else if (item === "textFont" || item === "textSpacing" || item === "theme") {
                 // render drop down list box
                 tree[item] = {
                     optionnames: "${labelMap." + item + ".names}",
@@ -549,7 +466,7 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
         
-        tree["expander"] = radiobuttons;
+        tree.expander = radiobuttons;
         
         return tree;
     };
@@ -565,7 +482,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uiEnhancer",
                 createOnEvent: "onReady",
                 options: {
-                    savedSettings: "{controls}.model",
+                    savedSettings: "{controls}.model.selections",
                     tableOfContents: "{controls}.options.uiEnhancer.options.tableOfContents", // TODO: Tidy this up when the page's UI Enhancer is IoC-visible.
                     settingsStore: {
                         type: "fluid.uiEnhancer.tempStore"
@@ -583,7 +500,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 args: [
                     "{preview}",
                     "{controls}.model.selections"
-                    ]
+                ]
             }
         },
         finalInitFunction: "fluid.uiOptions.preview.finalInit",
