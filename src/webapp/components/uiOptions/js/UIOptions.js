@@ -37,17 +37,6 @@ var fluid_1_4 = fluid_1_4 || {};
         thumb.attr(ariaDefaults);        
     };
     
-    var initSlider = function (that) {
-        var sliderOptions = that.options.sliderOptions;
-        sliderOptions.value = that.model.value;
-        sliderOptions.min = that.min;
-        sliderOptions.max = that.max;
-        
-        var slider = that.locate("slider").slider(sliderOptions);
-        initSliderAria(that.locate("thumb"), sliderOptions); 
-
-        return slider;           
-    };
     
     var bindSliderHandlers = function (that, slider) {
         var textfield = that.locate("textfield");
@@ -64,7 +53,7 @@ var fluid_1_4 = fluid_1_4 || {};
         textfield.change(function () {
             if (that.isValid(this.value)) {
                 if (!that.isInRange(this.value)) {
-                    this.value = (this.value < that.min) ? that.min : that.max;
+                    this.value = (this.value < that.model.min) ? that.model.min : that.model.max;
                 }
                 slider.slider("value", this.value);
                 that.updateModel(this.value, this);
@@ -86,16 +75,9 @@ var fluid_1_4 = fluid_1_4 || {};
         
     };
     
-    var initTextfieldSlider = function (that) {
- //       var slider = initSlider(that);
-
- //       bindSliderHandlers(that, slider);
- //       bindTextfieldHandlers(that, slider);
-    };
-    
 
     fluid.defaults("fluid.textfieldSlider", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"], 
+        gradeNames: ["fluid.IoCRendererComponent", "autoInit"], 
         selectors: {
             textfield: ".flc-textfieldSlider-field",
             slider: ".flc-textfieldSlider-slider", 
@@ -105,12 +87,14 @@ var fluid_1_4 = fluid_1_4 || {};
             modelChanged: null
         },
         model: {
-            value: null
+            value: null,
+            min: 0,
+            max: 100
         },
         invokers: {
             isInRange: {
                 funcName: "fluid.textfieldSlider.isInRange",
-                args: ["@0", "{textfieldSlider}.min", "{textfieldSlider}.max"]
+                args: ["@0", "{textfieldSlider}.model.min", "{textfieldSlider}.model.max"]
             },
             isValid: "fluid.textfieldSlider.isValid",
             updateModel: {
@@ -123,16 +107,12 @@ var fluid_1_4 = fluid_1_4 || {};
             slider: {
                 decorators: [{
                     type: "jQuery",
-                    func: "slider"
+                    func: "slider",
+                    args: ["{textfieldSlider}.model"]
                 }]
             }
         },
-        finalInitFunction: "fluid.textfieldSlider.init",
-        sliderOptions: {
-            orientation: "horizontal"
-        }, 
-        min: 0,
-        max: 100     
+        finalInitFunction: "fluid.textfieldSlider.init"
     });
 
     /**
@@ -166,16 +146,23 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.textfieldSlider.init = function (that) {
-        that.model.value = that.model.value || that.locate("textfield").val();
-        that.min = that.options.min;
-        that.max = that.options.max;
-                
+        that.refreshView();
+        initSliderAria(that.locate("thumb"), that.model); 
 
-        initTextfieldSlider(that);
-        
+        //       bindSliderHandlers(that, slider);
+        //       bindTextfieldHandlers(that, slider);
         return that;
     };
 
+    fluid.textfieldSlider.initSlider = function (that) {
+       
+        var slider = that.locate("slider").slider(that.model);
+
+        return slider;           
+    };
+
+    fluid.demands("fluid.textfieldSlider.initSlider", "fluid.textfieldSlider", ["{arguments}.0"]);
+    
 })(jQuery, fluid_1_4);
 
 
@@ -464,15 +451,19 @@ var fluid_1_4 = fluid_1_4 || {};
         textMinSize: {
             type: "fluid.textfieldSlider",
             options: {
-                min: 6,
-                max: 30
+                model: {
+                    min: 6,
+                    max: 30
+                }
             }
         },
         lineSpacing: {
             type: "fluid.textfieldSlider",
             options: {
-                min: 1,
-                max: 10
+                model: {
+                    min: 1,
+                    max: 10
+                }
             }
         },
         selectors: {
