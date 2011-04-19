@@ -18,6 +18,7 @@
 .fl-theme-hci {color:#fff !important; background-color:#000 !important;}
 .fl-theme-hci div, .fl-theme-hci input {color:#fff !important; background-color:#000 !important;}
 .fl-theme-hci .fl-knockout {background:transparent !important; color:#ffffff;} /* a granular method for basic reset of appearance */
+.fl-theme-hci .fl-icon {color:#ffffff; background-image:none; background-color:#000000; text-indent:0; width:auto; height:auto; margin-left:0px; padding:0 2px; display:inline; font-weight:bold;}
 
 /* Links */
 .fl-theme-hci a  {color: #ffffff !important; font-weight:bold; background-color:#000000 !important;}
@@ -91,7 +92,6 @@
 .fl-theme-hci .fl-widget ul {}
 .fl-theme-hci .fl-widget h2 {color:#000000; background-color:#ffffff;}
 .fl-theme-hci .fl-widget a {color:#ffffff;}
-.fl-theme-hci .fl-widget .fl-icon {color:#ffffff; background-image:none; background-color:#000000; text-indent:0; width:auto; height:auto; margin-left:0px; padding:0 2px; display:inline; font-weight:bold;}
         
 /* Widget titlebar */
 .fl-theme-hci .fl-widget .fl-widget-titlebar {margin-bottom:3px;}
