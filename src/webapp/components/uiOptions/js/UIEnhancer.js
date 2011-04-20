@@ -279,7 +279,7 @@ var fluid_1_4 = fluid_1_4 || {};
             "textFont": {
                 "serif": "fl-font-serif",
                 "sansSerif": "fl-font-sans",
-                "arial": "fl-font-arial",
+                "default": "fl-font-arial",
                 "verdana": "fl-font-verdana",
                 "monospace": "fl-font-monospace",
                 "courier": "fl-font-courier",
@@ -315,7 +315,7 @@ var fluid_1_4 = fluid_1_4 || {};
             "inputsLarger": "fl-text-larger"
         },
         defaultSiteSettings: {
-            textFont: "",                 // key from classname map
+            textFont: "default",          // key from classname map
             textSpacing: "",              // key from classname map
             theme: "default",             // key from classname map
             layout: "default",            // key from classname map

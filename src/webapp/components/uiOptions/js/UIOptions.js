@@ -173,11 +173,27 @@ var fluid_1_4 = fluid_1_4 || {};
 //    - pull the strings out of the template and put them into the component?
 //    - should the accordian be part of the component by default?
 
+    /**
+     * Update the change applier of sub-component fluid.uiOptions.controls to set 
+     * the value of "selections" array that is mapped with selections on user preferences.
+     * 
+     * This method is used by both fluid.uiOptions and fluid.uiOptions.controls
+     * 
+     * @param {Object} controls - fluid.uiOptions.controls
+     * @param {Object} model - an array of selections on user preferences
+     */
+    var setControlsChangeApplier = function (controls, model) {
+        controls.applier.requestChange("selections", model);
+    
+        // Turn the boolean select values into strings so they can be properly bound and rendered
+        controls.applier.requestChange("selections.toc", String(controls.model.selections.toc));
+        controls.applier.requestChange("selections.backgroundImages", String(controls.model.selections.backgroundImages));        
+    };
+    
     /**************
      * UI Options *
      **************/
 
-        
     /**
      * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
      * to allow users to set personal user interface preferences. The UI Options component provides a user 
@@ -274,19 +290,14 @@ var fluid_1_4 = fluid_1_4 || {};
         };
         
         /**
-         * Updates the model and fires modelChanged
+         * Updates the change applier and fires modelChanged on subcomponent fluid.uiOptions.controls
          * 
          * @param {Object} newModel
          * @param {Object} source
          */
-        that.updateControlsModel = function (newModel, source) {
-            that.controls.events.modelChanged.fire(newModel, that.controls.model.selections, source);
-            fluid.clear(that.controls.model.selections);
-            fluid.model.copyModel(that.controls.model.selections, newModel);
-            
-            // Turn the boolean select values into strings so they can be properly bound and rendered
-            that.controls.model.selections.toc = String(that.controls.model.selections.toc);
-            that.controls.model.selections.backgroundImages = String(that.controls.model.selections.backgroundImages);
+        that.updateControlsModel = function (newModel, controls) {
+            that.controls.events.modelChanged.fire(newModel, controls.model.selections, controls);
+            setControlsChangeApplier(controls, newModel);
         };
         
         fluid.fetchResources(that.options.resources, function () {
@@ -301,7 +312,7 @@ var fluid_1_4 = fluid_1_4 || {};
      ***********************/
 
     /**
-     * An autoInit-ed sub-component of fluid.uiOptions that renders the user interface of all the controls.
+     * A sub-component of fluid.uiOptions that renders the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.controls", {
         gradeNames: ["fluid.rendererComponent", "autoInit"], 
@@ -328,7 +339,7 @@ var fluid_1_4 = fluid_1_4 || {};
             toc: ["Yes", "No"]
         },
         controlValues: { 
-            textFont: ["serif", "sansSerif", "arial", "verdana", "courier", "times"],
+            textFont: ["serif", "sansSerif", "default", "verdana", "courier", "times"],
             textSpacing: ["default", "wide1", "wide2", "wide3"],
             theme: ["lowContrast", "default", "mediumContrast", "highContrast", "highContrastInverted"],
             backgroundImages: ["true", "false"],
@@ -367,7 +378,7 @@ var fluid_1_4 = fluid_1_4 || {};
         finalInitFunction: "fluid.uiOptions.controls.finalInit"
     });
 
-    var initializeModel = function (that) {
+    var initModel = function (that) {
         fluid.each(that.options.controlValues, function (item, key) {
             that.applier.requestChange("labelMap." + key, {
                 values: that.options.controlValues[key],
@@ -404,13 +415,8 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.uiOptions.controls.finalInit = function (that) {
-        initializeModel(that);
-        
-        that.applier.requestChange("selections", fluid.copy(that.options.uiEnhancer.model));
-        
-        // Turn the boolean select values into strings so they can be properly bound and rendered
-        that.applier.requestChange("selections.toc", String(that.model.selections.toc));
-        that.applier.requestChange("selections.backgroundImages", String(that.model.selections.backgroundImages));
+        initModel(that);
+        setControlsChangeApplier(that, fluid.copy(that.options.uiEnhancer.model));
 
         /**
          * Rerenders the UI and fires afterRender
