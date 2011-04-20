@@ -197,10 +197,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         });
-
+        
         fluid.demands("fluid.uploader", "fluid.uploader.parent.loadDemands", {
             container: container
         });             
+        
+        fluid.demands("fluid.uploader", ["fluid.uploader.parent.loadDemands", "fluid.uploader.testsDemo"], {
+            container: container,
+            options: {
+                demo: true
+            }            
+        });        
         
         fluid.demands("fluid.uploader.html5Strategy.createFileUploadXHR", 
                     ["fluid.uploader.html5Strategy.remote", "fluid.uploader.tests"], {
@@ -247,7 +254,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         var checkUploadButtonIsDisabled = function (uploader) {
             var uploadButton = uploader.locate("uploadButton");
-            jqUnit.assertTrue("The upload button is enabled", uploadButton.attr("disabled"));
+            jqUnit.assertTrue("The upload button is disabled", uploadButton.attr("disabled"));
         };                
         
         var checkUploaderArgumentMap = function (uploader, expectedLocal, expectedRemote) {
@@ -297,7 +304,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
         
-        var checkUploaderIntegration = function (uploader) {
+        var addFiles = function (uploader) {
+            var browseButtonView = uploader.strategy.local.browseButtonView;
+            var files = [file1, file2];
+            browseButtonView.events.onFilesQueued.fire(files);            
+        };
+        
+        // Mock the SWF effects of adding files 
+        var addFilesSWF = function (uploader) {
+            file1.filestatus = fluid.uploader.fileStatusConstants.QUEUED;
+            file2.filestatus = fluid.uploader.fileStatusConstants.QUEUED;
+            uploader.events.afterFileQueued.fire(file1);
+            uploader.events.afterFileQueued.fire(file2);
+            uploader.events.afterFileDialog.fire(uploader.queue.files.length);
+        };        
+        
+        // Mock the swfUploadStrategy local 
+        var mockSWFUploadLocal = function (local) {
+            local.browse = function () {
+            };
+
+            local.removeFile = function (file) {
+                var i = 1;
+            };
+            
+            local.enableBrowseButton = function () {
+                var i = 1;
+            };
+            
+            local.disableBrowseButton = function () {
+                var i = 1;
+            };                
+        }        
+        
+        var checkUploaderIntegration = function (uploader, addFilesFn) {
             var statusRegion = $(".flc-uploader-status-region");
             var initialStatusRegionText = statusRegion.text();
             
@@ -305,9 +345,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkUploadButtonIsDisabled(uploader);
             
             // add files, check status region update
-            var browseButtonView = uploader.strategy.local.browseButtonView;
-            var files = [file1, file2];
-            browseButtonView.events.onFilesQueued.fire(files);
+            addFilesFn(uploader);
             
             checkUploadButtonIsEnabled(uploader);
             jqUnit.assertEquals("Files are added after the file dialog", 
@@ -326,17 +364,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertNotEquals("Remove file: update status region text",
                     addFilesStatusRegionText, statusRegion.text());    
             
+            var removeFileStatusRegionText = statusRegion.text();
+            
             // upload files
             // Will need to mock XHR to allow the ability to send files to a remote server
             // in 2 ways: 1) sendAsBinary(), 2) send(formData)
             // Mock XHR set up will go into fluid.uploader.html5Strategy.createMockXHR
             uploader.locate("uploadButton").click();
             checkBrowseButtonIsDisabled(uploader);
+            jqUnit.assertTrue("Uploading has started", uploader.queue.isUploading);
             
             // stop uploading files
             uploader.locate("pauseButton").click();
             checkUploadButtonIsEnabled(uploader);
             jqUnit.assertFalse("Uploading has stopped", uploader.queue.isUploading);
+            
+//            uploader.locate("uploadButton").click();
+//            checkBrowseButtonIsDisabled(uploader);  
+//            jqUnit.assertTrue("Uploading has started", uploader.queue.isUploading);
+//            
+//            // upload complete, check status region update
+//            jqUnit.assertNotEquals("Upload complete:  update status region text", 
+//                    removeFileStatusRegionText, statusRegion.text());
+            
+            // Clear the queue for the next test
+            clearFileQueue(uploader);
         };
         
         uploaderTests.test("Single-file Uploader is instantiated", function () {
@@ -362,7 +414,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var that = fluid.uploader($(container));
             checkMultiFileUploaderOptions(that, "fluid.uploader.html5Strategy");
             checkUploaderArgumentMap(that, 2, 1);
-            checkUploaderIntegration(that);
+            checkUploaderIntegration(that, addFiles);
         });        
         
         uploaderTests.test("HTML5 uploader as a subcomponent", function () {
@@ -370,7 +422,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var that = fluid.uploader.parent();
             checkMultiFileUploaderOptions(that.uploader, "fluid.uploader.html5Strategy");
             checkUploaderArgumentMap(that.uploader, 2, 1);
-            checkUploaderIntegration(that.uploader);
+            checkUploaderIntegration(that.uploader, addFiles);
         });
         
         uploaderTests.test("HTML5 uploader as a subcomponent with external demands", function () {
@@ -378,52 +430,65 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var that = fluid.uploader.parent.loadDemands();
             checkMultiFileUploaderOptions(that.uploader, "fluid.uploader.html5Strategy");
             checkUploaderArgumentMap(that.uploader, 2, 1);
-            checkUploaderIntegration(that.uploader);
+            checkUploaderIntegration(that.uploader, addFiles);
         }); 
-
+        
+        // Register the demo namespace to use the demo remote strategy
         uploaderTests.test("Flash uploader is instantiated", function () {
             fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.browser.supportsFlash");
-            var that = fluid.uploader($(container));
+            var that = fluid.uploader($(container), {
+                demo: true
+            });
             checkMultiFileUploaderOptions(that, "fluid.uploader.swfUploadStrategy");            
             checkUploaderArgumentMap(that, 0, 0);
+            mockSWFUploadLocal(that.strategy.local);
+            //checkUploaderIntegration(that, addFilesSWF);            
         });    
         
         uploaderTests.test("Flash uploader as a subcomponent", function () {
             fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.browser.supportsFlash");
-            var that = fluid.uploader.parent();
+            var that = fluid.uploader.parent({
+                demo: true
+            });
             checkMultiFileUploaderOptions(that.uploader, "fluid.uploader.swfUploadStrategy");
             checkUploaderArgumentMap(that.uploader, 0, 0);
+            mockSWFUploadLocal(that.uploader.strategy.local);
+            //checkUploaderIntegration(that.uploader, addFilesSWF);
         });  
 
         uploaderTests.test("Flash uploader as a subcomponent with external demands", function () {
             fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.browser.supportsFlash");
+            fluid.staticEnvironment.demo = fluid.typeTag("fluid.uploader.testsDemo");
             var that = fluid.uploader.parent.loadDemands();
             checkMultiFileUploaderOptions(that.uploader, "fluid.uploader.swfUploadStrategy");
             checkUploaderArgumentMap(that.uploader, 0, 0);
+            mockSWFUploadLocal(that.uploader.strategy.local);
+            checkUploaderIntegration(that.uploader, addFilesSWF);                        
         });           
 
-        // Register the demo namespace to use the demo remote strategy
-        fluid.registerNamespace("fluid.uploader.demo");
-        
         uploaderTests.test("Demo HTML5 uploader is instantiated", function () {
             fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.browser.supportsBinaryXHR");
+            fluid.staticEnvironment.demo = fluid.typeTag("fluid.uploader.testsDemo");
 
             var that = fluid.uploader($(container), {
                 demo: true
             });
             checkMultiFileUploaderOptions(that, "fluid.uploader.html5Strategy");
             checkUploaderArgumentMap(that, 2, 1);
-            checkUploaderIntegration(that);
+            checkUploaderIntegration(that, addFiles);
         });
         
         uploaderTests.test("Demo Flash uploader is instantiated", function () {
             fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.browser.supportsFlash");
+            fluid.staticEnvironment.demo = fluid.typeTag("fluid.uploader.testsDemo");
             
             var that = fluid.uploader($(container), {
                 demo: true
             });
             checkMultiFileUploaderOptions(that, "fluid.uploader.swfUploadStrategy");
             checkUploaderArgumentMap(that, 0, 1);
-        });                        
+            mockSWFUploadLocal(that.strategy.local);
+            checkUploaderIntegration(that, addFilesSWF);
+        });                                                
     });
 })(jQuery);

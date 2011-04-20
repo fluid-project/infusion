@@ -193,7 +193,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 expectedNumEvents, transcript.length);      
             checkEventOrderForFiles(eventOrder, files, transcript);
             checkOnFileCompleteEvent(transcript);            
-        });                
+        });         
         
         /***************************
          * progressTracker() Tests *
