@@ -9,14 +9,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
 /*global fluid, jqUnit, expect, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
     $(function () {
@@ -45,14 +45,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
         fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader.tests.multiFileUploader", {
             type: "fluid.uploader.fileQueueView",
-            args: [
-                "#main .flc-uploader-queue",
-                "{options}"
-            ]
-        });
-        
-        fluid.demands("fluid.uploader.fileQueueView.eventBinder", "fluid.uploader.tests.multiFileUploader", {
-            options: {}
+            container: "#main .flc-uploader-queue",
+            options: {
+                events: {
+                    onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
+                }
+            }
         });
         
         var mountainTestFile = {

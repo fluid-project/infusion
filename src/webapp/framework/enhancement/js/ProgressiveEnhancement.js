@@ -7,20 +7,19 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
 /*global window, fluid_1_4:true, jQuery, swfobject*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
-    
-    fluid.browser = fluid.browser || {};
+    fluid.registerNamespace("fluid.browser");
     
     fluid.browser.binaryXHR = function () {
         var canSendBinary = window.FormData || 
@@ -40,17 +39,18 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.progressiveChecker = function (options) {
-        // TODO: Replace with fluid.makeArray() when merged into trunk.
-        var checks = options.checks ? $.makeArray(options.checks) : [];
-        for (var x = 0; x < checks.length; x++) {
-            var check = checks[x];
-                            
+        var that = fluid.initLittleComponent("fluid.progressiveChecker", options);
+        return fluid.find(that.options.checks, function(check) {
             if (check.feature) {
                 return fluid.typeTag(check.contextName);
-            }
-
-        }
-        return options.defaultTypeTag;
+            }}, that.options.defaultTypeTag
+        );
+    };
+    
+    fluid.progressiveCheckerForComponent = function (options) {
+        var that = fluid.initLittleComponent("fluid.progressiveCheckerForComponent", options);
+        var defaults = fluid.defaults(that.options.componentName);
+        return fluid.progressiveChecker(fluid.expandOptions(defaults.progressiveCheckerOptions, that));  
     };
     
     fluid.defaults("fluid.progressiveChecker", {
