@@ -506,6 +506,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var aliasTo = fluid.alias(newFuncName);
         
         if (aliasTo) {
+            newFuncName = aliasTo;
             fluid.log("Following redirect from function name " + newFuncName + " to " + aliasTo);
             var demandspec2 = fluid.locateDemands(instantiator, parentThat, [aliasTo]);
             if (demandspec2) {
