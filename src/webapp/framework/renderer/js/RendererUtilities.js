@@ -24,15 +24,6 @@ fluid_1_4 = fluid_1_4 || {};
     if (!fluid.renderer) {
         fluid.fail("fluidRenderer.js is a necessary dependency of RendererUtilities");
         }
-
-    // TODO: rescued from kettleCouchDB.js - clean up in time
-    fluid.expect = function (name, members, target) {
-        fluid.transform($.makeArray(members), function (key) {
-            if (typeof target[key] === "undefined") {
-                fluid.fail(name + " missing required parameter " + key);
-            }
-        });
-    };
     
     /** Returns an array of size count, filled with increasing integers, 
      *  starting at 0 or at the index specified by first. 
