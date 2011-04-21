@@ -447,10 +447,15 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var p1 = speca.uncess - specb.uncess;
         return p1 === 0? specb.intersect - speca.intersect : p1;
     };
-
+    
     // unsupported, non-API function
-    fluid.locateDemands = function(instantiator, parentThat, demandingNames) {
-        var demandLogging = fluid.isLogging() && demandingNames[0] !== "fluid.threadLocal";
+    fluid.isDemandLogging = function(demandingNames) {
+        fluid.isLogging() && demandingNames[0] !== "fluid.threadLocal";
+    };
+    
+    // unsupported, non-API function
+    fluid.locateAllDemands = function(instantiator, parentThat, demandingNames) {
+        var demandLogging = fluid.isDemandLogging(demandingNames);
         if (demandLogging) {
             fluid.log("Resolving demands for function names " + JSON.stringify(demandingNames) + " in context of " +
                 (parentThat? "component " + parentThat.typeName : "no component"));
@@ -471,7 +476,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             var rec = dependentStore[demandingNames[i]] || [];
             for (var j = 0; j < rec.length; ++j) {
                 var spec = rec[j];
-                var record = {spec: spec.spec, intersect: 0, uncess: 0};
+                var record = {spec: spec, intersect: 0, uncess: 0};
                 for (var k = 0; k < spec.contexts.length; ++k) {
                     record[contextNames[spec.contexts[k]]? "intersect" : "uncess"] += 2;
                 }
@@ -483,8 +488,14 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
         }
         matches.sort(fluid.compareDemands);
-        var demandspec = matches.length === 0 || matches[0].intersect === 0? null : matches[0].spec;
-        if (demandLogging) {
+        return matches;   
+    };
+
+    // unsupported, non-API function
+    fluid.locateDemands = function(instantiator, parentThat, demandingNames) {
+        var matches = fluid.locateAllDemands(instantiator, parentThat, demandingNames);
+        var demandspec = matches.length === 0 || matches[0].intersect === 0? null : matches[0].spec.spec;
+        if (fluid.isDemandLogging(demandingNames)) {
             fluid.log(demandspec? "Located " + matches.length + " potential match" + (matches.length === 1? "" : "es") + ", selected best match with " + matches[0].intersect 
                 + " matched context names: " + JSON.stringify(demandspec) : "No matches found for demands, using direct implementation");
         }  
@@ -675,6 +686,15 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         });
     };
     
+    fluid.locateTransformationRecord = function(that) {
+        return fluid.withInstantiator(that, function(instantiator) {
+            var matches = fluid.locateAllDemands(instantiator, that, ["fluid.transformOptions"]);
+            return fluid.find(matches, function(match) {
+                return match.uncess === 0 && $.inArray(that.typeName, match.spec.contexts) !== -1? match.spec.spec : undefined;
+            });
+        });
+    };
+    
     // unsupported, non-API function
     fluid.expandComponentOptions = function(defaults, userOptions, that) {
         defaults = fluid.expandOptions(fluid.copy(defaults), that);
@@ -705,6 +725,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             // Avoid use of expandOptions in simple case to avoid infinite recursion when constructing instantiator
             return path === "{directOptions}"? localRecord.directOptions : fluid.expandOptions(path, that, localRecord, {direct: true}); 
         });
+        var transRec = fluid.locateTransformationRecord(that);
+        if (transRec) {
+            togo[0].transformOptions = transRec.options;
+        }
         return [defaults].concat(togo);
     };
     
