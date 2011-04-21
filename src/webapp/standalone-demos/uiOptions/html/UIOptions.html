@@ -45,7 +45,15 @@
         
         <script type="text/javascript">
             $().ready(function () {
-                fluid.uiEnhancer();
+                fluid.uiEnhancer(document, {
+                    tableOfContents: {
+                        options: {
+                            templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
+                        }
+                    
+                    }
+                });
+                
                 fluid.uiOptions("#myUIOptions", {
                     resources: {
                         template: {
