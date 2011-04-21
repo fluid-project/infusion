@@ -64,6 +64,15 @@ var fluid = fluid || fluid_1_4;
             softFailure.shift();
         }
     };
+    
+    // TODO: rescued from kettleCouchDB.js - clean up in time
+    fluid.expect = function (name, members, target) {
+        fluid.transform($.makeArray(members), function (key) {
+            if (typeof target[key] === "undefined") {
+                fluid.fail(name + " missing required parameter " + key);
+            }
+        });
+    };
 
     // Logging
         
@@ -1132,6 +1141,17 @@ var fluid = fluid || fluid_1_4;
         return target;     
     };
 
+    // unsupported, NON-API function
+    fluid.transformOptions = function (mergeArgs) {
+        var transRec = mergeArgs[1].transformOptions;
+        fluid.expect("Options transformation record", ["transformer", "config"], transRec);
+        var transFunc = fluid.getGlobalValue(transRec.transformer);
+        var togo = fluid.transform(mergeArgs, function(value, key) {
+            return key === 0? value : transFunc.call(null, value, transRec.config);
+        });
+        return togo;
+    };
+
     /**
      * Merges the component's declared defaults, as obtained from fluid.defaults(),
      * with the user's specified overrides.
@@ -1160,6 +1180,9 @@ var fluid = fluid || fluid_1_4;
             extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
         } else {
             extraArgs = [defaults, userOptions];
+        }
+        if (extraArgs[1] && extraArgs[1].transformOptions) {
+            extraArgs = fluid.transformOptions(extraArgs);
         }
         mergeArgs = mergeArgs.concat(extraArgs);
         that.options = fluid.merge.apply(null, mergeArgs);

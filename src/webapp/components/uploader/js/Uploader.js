@@ -321,6 +321,11 @@ var fluid_1_4 = fluid_1_4 || {};
         return that.uploaderImpl;
     };
     
+    fluid.uploaderImpl = function () {
+        fluid.fail("Error creating uploader component - please make sure that a progressiveCheckerForComponent for \"fluid.uploader\" is registered either in the "
+          + "static environment or else is visible in the current component tree");
+    };
+    
     fluid.defaults("fluid.uploader", {
         gradeNames: ["fluid.viewComponent"],
         components: {
