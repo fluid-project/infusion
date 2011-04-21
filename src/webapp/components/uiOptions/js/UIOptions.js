@@ -339,7 +339,7 @@ var fluid_1_4 = fluid_1_4 || {};
             toc: ["Yes", "No"]
         },
         controlValues: { 
-            textFont: ["serif", "sansSerif", "default", "verdana", "courier", "times"],
+            textFont: ["serif", "sansSerif", "arial", "verdana", "courier", "times"],
             textSpacing: ["default", "wide1", "wide2", "wide3"],
             theme: ["lowContrast", "default", "mediumContrast", "highContrast", "highContrastInverted"],
             backgroundImages: ["true", "false"],
