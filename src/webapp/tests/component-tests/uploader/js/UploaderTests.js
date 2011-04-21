@@ -247,7 +247,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             local.disableBrowseButton = function () {
             };                
-        }        
+        };        
         
         /*
          * Override the component's actual XHR creator function
@@ -260,9 +260,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 readyState: 4, 
                 status: 200,
                 responseText: "",
-                upload: function() {},
-                send: function() {},
-                sendAsBinary: function() {},
+                upload: function () {},
+                send: function () {},
+                sendAsBinary: function () {},
                 open: function () {},
                 setRequestHeader: function () {},
                 abort: function () {}
@@ -277,7 +277,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 responseText: "",
                 upload: function () {},
                 send: function () {},
-                sendAsBinary: function() {},
+                sendAsBinary: function () {},
                 open: function () {},
                 setRequestHeader: function () {},
                 abort: function () {}
@@ -297,7 +297,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 addFiles(uploader);
                 var file = uploader.queue.getReadyFiles()[0]; 
                 var xhr = fluid.uploader.html5Strategy.monitorFileUploadXHR(
-                        file , uploader.events, createXHR(xhrStatus[i]));
+                        file, uploader.events, createXHR(xhrStatus[i]));
                 xhr.onreadystatechange();
                 jqUnit.assertEquals("The file status is updated", fileStatus[i], file.filestatus);
 
