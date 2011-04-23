@@ -14,7 +14,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*global fluid_1_4:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, elsecatch: true, operator: true, jslintok: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
@@ -57,7 +57,7 @@ var fluid_1_4 = fluid_1_4 || {};
         options = options || {
             visited: {},
             flat: true
-        }
+        };
         var up = 0;
         for (var i = thatStack.length - 1; i >= 0; --i) {
             var that = thatStack[i];
@@ -285,19 +285,19 @@ var fluid_1_4 = fluid_1_4 || {};
     }
     
     function upgradeMergeOptions(demandspec) {
-         mergeToMergeAll(demandspec);
-         if (demandspec.mergeAllOptions) {
-             if (demandspec.options) {
-                 fluid.fail("demandspec " + JSON.stringify(demandspec) 
-                 + " is invalid - cannot specify literal options together with mergeOptions or mergeAllOptions"); 
-             }
-             demandspec.options = {
-                 mergeAllOptions: demandspec.mergeAllOptions
-             };
-         }
-         if (demandspec.options) {
-             delete demandspec.options.mergeOptions;
-         }
+        mergeToMergeAll(demandspec);
+        if (demandspec.mergeAllOptions) {
+            if (demandspec.options) {
+                fluid.fail("demandspec " + JSON.stringify(demandspec) 
+                    + " is invalid - cannot specify literal options together with mergeOptions or mergeAllOptions"); 
+            }
+            demandspec.options = {
+                mergeAllOptions: demandspec.mergeAllOptions
+            };
+        }
+        if (demandspec.options) {
+            delete demandspec.options.mergeOptions;
+        }
     }
     
     /** Given a concrete argument list and/or options, determine the final concrete
@@ -402,7 +402,9 @@ var fluid_1_4 = fluid_1_4 || {};
         if (aliasName) {
             aliasTable[demandingName] = aliasName;
         }
-        else return aliasTable[demandingName];
+        else {
+            return aliasTable[demandingName];
+        }
     };
    
     var dependentStore = {};
@@ -450,7 +452,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     // unsupported, non-API function
     fluid.isDemandLogging = function(demandingNames) {
-        fluid.isLogging() && demandingNames[0] !== "fluid.threadLocal";
+        return fluid.isLogging() && demandingNames[0] !== "fluid.threadLocal";
     };
     
     // unsupported, non-API function
@@ -524,7 +526,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 fluid.each(demandspec2, function(value, key) {
                     if (localRecordExpected.test(key)) {
                         fluid.fail("Error in demands block " + JSON.stringify(demandspec2) + " - content with key \"" + key 
-                        + "\" is not supported since this demands block was resolved via an alias from \"" + newFuncName + "\"");
+                            + "\" is not supported since this demands block was resolved via an alias from \"" + newFuncName + "\"");
                     }  
                 });
                 if (demandspec2.funcName) {
@@ -612,7 +614,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 if (!origin) {
                     fluid.fail("Error in event specification - could not resolve base event reference " + event + " to an event firer");
                 }
-                var firer = {};
+                var firer = {}; // jslint:ok - already defined
                 fluid.each(["fire", "removeListener"], function(method) {
                     firer[method] = function() {origin[method].apply(null, arguments);};
                 });
@@ -690,7 +692,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return fluid.withInstantiator(that, function(instantiator) {
             var matches = fluid.locateAllDemands(instantiator, that, ["fluid.transformOptions"]);
             return fluid.find(matches, function(match) {
-                return match.uncess === 0 && $.inArray(that.typeName, match.spec.contexts) !== -1? match.spec.spec : undefined;
+                return match.uncess === 0 && fluid.contains(match.spec.contexts, that.typeName)? match.spec.spec : undefined;
             });
         });
     };
@@ -827,13 +829,21 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         });
     };
     
+    // unsupported, non-API function
+    fluid.priorityForComponent = function(component) {
+        return component.priority? component.priority : 
+            (component.type === "fluid.typeFount" || fluid.hasGrade(fluid.defaults(component.type), "fluid.typeFount"))?
+            "first" : undefined;  
+    };
+    
     fluid.initDependents = function(that) {
         var options = that.options;
         var components = options.components || {};
         var componentSort = {};
         fluid.each(components, function(component, name) {
             if (!component.createOnEvent) {
-                componentSort[name] = {key: name, priority: fluid.event.mapPriority(component.priority)};
+                var priority = fluid.priorityForComponent(component);
+                componentSort[name] = {key: name, priority: fluid.event.mapPriority(priority)};
             }
             else {
                 fluid.bindDeferredComponent(that, name, component);

@@ -20,12 +20,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var peTests = jqUnit.TestCase("Progressive Enhancement");
     
     var checkerOptions = {
-        defaultTypeTag: fluid.typeTag("food.carrots")
+        defaultContextName: "food.carrots"
     };
     
     var invokeCheckerWithChecks = function (checks) {
         var options = fluid.expandOptions($.extend({}, checkerOptions, {checks: checks}), null);
-        return fluid.progressiveChecker(options).resolved.typeName;
+        return fluid.progressiveChecker(options).typeName;
     };
     
     peTests.test("progressiveChecker", function () {        
