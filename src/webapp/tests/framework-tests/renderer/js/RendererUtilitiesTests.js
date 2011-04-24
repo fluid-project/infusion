@@ -95,7 +95,8 @@ fluid.registerNamespace("fluid.tests");
                     tree: { value: "${{elementPath}}" }
                 },
                 message: {
-                    messagekey: "message"
+                    messagekey: "message",
+                    decorators: {"addClass": "{styles}.applicableStyle"}
                 },
                 deffoltmessage: {
                     messagekey: "deffolt"
@@ -112,6 +113,9 @@ fluid.registerNamespace("fluid.tests");
             parentBundle: "{globalBundle}",
             strings: {
                 message: "A mess of messuage"          
+            },
+            styles: {
+                applicableStyle: ".fl-applicable-style"  
             }
         });
         
@@ -210,6 +214,8 @@ fluid.registerNamespace("fluid.tests");
             that.refreshView();
             var renderMess = that.locate("message").text();
             jqUnit.assertEquals("Rendered message from bundle", that.options.strings.message, renderMess);
+            jqUnit.assertTrue("Applied style using addClass decorator reference to styles block", 
+                that.locate("message").hasClass(that.options.styles.applicableStyle));
             var renderDeffoltMess = that.locate("deffoltmessage").text();
             jqUnit.assertEquals("Rendered message from global bundle", globalMessages.deffolt, renderDeffoltMess);
             jqUnit.assertEquals("Resolver global message using local resolver", globalMessages.deffolt, that.messageResolver.resolve("deffolt"));

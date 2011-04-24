@@ -887,17 +887,41 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return fluid.invokeGlobalFunction(demands.funcName, arguments);
     };
 
-    fluid.withEnvironment = function(envAdd, func) {
+    function applyLocalChange(applier, type, path, value) {
+        var change = {
+            type: type,
+            path: path,
+            value: value
+        };
+        applier.fireChangeRequest(change);
+    }
+
+    // unsupported, non-API function
+    fluid.withEnvironment = function(envAdd, func, prefix) {
         var root = fluid.threadLocal();
+        var applier = fluid.makeChangeApplier(root);
         try {
+            for (var key in envAdd) {
+                applyLocalChange(applier, "ADD", fluid.model.composePath(prefix, key), envAdd[key]);
+            }
             $.extend(root, envAdd);
             return func();
         }
         finally {
             for (var key in envAdd) {
-                delete root[key];
+              // TODO: This could be much better through i) refactoring the ChangeApplier so we could naturally use "rollback" semantics 
+              // and/or implementing this material using some form of "prototype chain"
+                applyLocalChange(applier, "DELETE", fluid.model.composePath(prefix, key));
             }
         }
+    };
+    
+    // unsupported, non-API function  
+    fluid.makeEnvironmentFetcher = function(prefix, directModel) {
+        return function(parsed) {
+            var env = fluid.get(fluid.threadLocal(), prefix);
+            return fluid.fetchContextReference(parsed, directModel, env);
+        };
     };
     
     // unsupported, non-API function  
@@ -926,31 +950,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             return fluid.parseContextReference(EL, 0);
         }
         return EL? {path: EL} : EL;
-    };
-
-    /* An EL extraction utility suitable for context expressions which occur in 
-     * expanding component trees. It assumes that any context expressions refer
-     * to EL paths that are to be referred to the "true (direct) model" - since
-     * the context during expansion may not agree with the context during rendering.
-     * It satisfies the same contract as fluid.extractEL, in that it will either return
-     * an EL path, or undefined if the string value supplied cannot be interpreted
-     * as an EL path with respect to the supplied options.
-     */
-    // unsupported, non-API function
-    fluid.extractContextualPath = function (string, options, env) {
-        var parsed = fluid.extractELWithContext(string, options);
-        if (parsed) {
-            if (parsed.context) {
-                var fetched = env[parsed.context];
-                if (typeof(fetched) !== "string") {
-                    fluid.fail("Could not look up context path named " + parsed.context + " to string value");
-                }
-                return fluid.model.composePath(fetched, parsed.path);
-            }
-            else {
-                return parsed.path;
-            }
-        }
     };
 
     fluid.parseContextReference = function(reference, index, delimiter) {
@@ -1045,20 +1044,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         bareContextRefs: true
     });
     
-    fluid.environmentFetcher = function(directModel) {
-        var env = fluid.threadLocal();
-        return function(parsed) {
-            return fluid.fetchContextReference(parsed, directModel, env);
-        };
-    };
-    
-    fluid.resolveEnvironment = function(obj, directModel, userOptions) {
-        directModel = directModel || {};
-        var options = fluid.merge(null, fluid.defaults("fluid.resolveEnvironment"), userOptions);
+    fluid.resolveEnvironment = function(obj, options) {
+        var options = fluid.merge(null, fluid.defaults("fluid.resolveEnvironment"), options);
         options.seenIds = {};
-        if (!options.fetcher) {
-            options.fetcher = fluid.environmentFetcher(directModel);
-        }
+        
         return resolveEnvironmentImpl(obj, options);
     };
 
@@ -1102,7 +1091,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 if (key === "expander" && !(options.expandOnly && options.expandOnly[value.type])) {
                     expander = fluid.getGlobalValue(value.type);  
                     if (expander) {
-                        return expander.call(null, togo, obj, recurse);
+                        return expander.call(null, togo, obj, recurse, options);
                     }
                 }
                 if (key !== "expander" || !expander) {
@@ -1117,7 +1106,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.expander.expandLight = function (source, expandOptions) {
         var options = $.extend({}, expandOptions);
         options.filter = fluid.expander.lightFilter;
-        return fluid.resolveEnvironment(source, options.model, options);       
+        return fluid.resolveEnvironment(source, options);       
     };
           
 })(jQuery, fluid_1_4);
