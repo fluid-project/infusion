@@ -50,6 +50,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
 
+    // make preview work
     
     
     fluid.defaults("fluid.textfieldSlider.textfield", {
@@ -69,6 +70,23 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.textfieldSlider.textfield.init = function (that) {
+        that.container.change(function () {
+            var value = this.value; 
+            var isValid = !(isNaN(parseInt(value, 10)) || isNaN(value));
+
+            if (isValid) {
+                if (value < that.model.min) {
+                    value = that.model.min;
+                } else if (value > that.model.max) {
+                    value = that.model.max;
+                }
+                
+                that.applier.requestChange("value", value);
+            } else {
+                that.container.val(that.applier.model.value);
+            }
+        });
+
         that.applier.modelChanged.addListener("value", that.refreshView);
 
         that.refreshView();
@@ -89,7 +107,7 @@ var fluid_1_4 = fluid_1_4 || {};
         invokers: {
             refreshView: {
                 funcName: "fluid.textfieldSlider.slider.refreshView",
-                args: ["{slider}.slider", "{slider}.model"]
+                args: ["{slider}.slider", "{textfieldSlider}.applier.model"]
             }
         },
         finalInitFunction: "fluid.textfieldSlider.slider.init"
@@ -106,6 +124,8 @@ var fluid_1_4 = fluid_1_4 || {};
             that.applier.requestChange("value", ui.value);
         });
         
+        that.applier.modelChanged.addListener("value", that.refreshView);
+
         return that;
     };
 
