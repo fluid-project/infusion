@@ -463,13 +463,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             config: fluid.tests.transform.transformRules  
         }
     });
-    
-    fluid.makeComponents({
-        "fluid.tests.transform.strategy":          "fluid.littleComponent",
-        // TODO: create usable syntax for defining type tags in options without requiring a concrete component 
-        "fluid.tests.transform.version.old":       "fluid.littleComponent"}
-    );
-    
+
     fluid.defaults("fluid.tests.transform.strategy", {
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
@@ -487,9 +481,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             versionTag: {
-                // TODO: Automate all these nutty "type fount" cases
-                priority: "first",
-                type: "fluid.tests.transform.version.old"  
+                type: "fluid.typeFount",
+                options: {
+                    targetTypeName: "fluid.tests.transform.version.old"
+                }  
             },
             transformable: {
                 type: "fluid.tests.testTransformableIoC",

@@ -331,8 +331,7 @@ var fluid_1_4 = fluid_1_4 || {};
         components: {
             uploaderContext: {
                 type: "fluid.progressiveCheckerForComponent",
-                options: {componentName: "fluid.uploader"},
-                priority: "first"
+                options: {componentName: "fluid.uploader"}
             },
             uploaderImpl: {
                 type: "fluid.uploaderImpl",
@@ -351,7 +350,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     contextName: "fluid.uploader.swfUpload"
                 }
             ],
-            defaultTypeTag: fluid.typeTag("fluid.uploader.singleFile")
+            defaultContextName: "fluid.uploader.singleFile"
         }
     });
     
