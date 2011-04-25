@@ -433,7 +433,7 @@ fluid.registerNamespace("fluid.tests");
             params: {db: "mccord"}, 
             config: fluid.tests.envTests.config
         }, function () {
-            var resolved = fluid.resolveEnvironment(urlBuilder);
+            var resolved = fluid.resolveEnvironment(urlBuilder, {fetcher: fluid.makeEnvironmentFetcher()});
             var required = {
                 type: "fluid.stringTemplate",
                 template: "http://titan.atrc.utoronto.ca:5984/%dbName/%view", 
@@ -1233,7 +1233,7 @@ fluid.registerNamespace("fluid.tests");
             resourceSpecCollector: resourceSpecs,
             pageBuilder: pageBuilder
         }, function () {
-            expanded = fluid.expander.expandLight(dependencies);
+            expanded = fluid.expander.expandLight(dependencies, {fetcher: fluid.makeEnvironmentFetcher()});
         });
     
         var func = function () {}; // dummy function to compare equality

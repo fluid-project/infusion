@@ -352,6 +352,18 @@ var fluid = fluid || fluid_1_4;
     };
     
     /** 
+     * Searches through the supplied object, and returns <code>true</code> if the supplied value
+     * can be found 
+     */
+    fluid.contains = function(obj, value) {
+        return obj? fluid.find(obj, function (thisValue, key) {
+            if (value === thisValue) {
+                return true;
+            }
+        }): undefined;
+    };
+    
+    /** 
      * Searches through the supplied object for the first value which matches the one supplied.
      * @param obj {Object} the Object to be searched through
      * @param value {Object} the value to be found. This will be compared against the object's
@@ -733,6 +745,9 @@ var fluid = fluid || fluid_1_4;
                     if (preventable && ret === false) {
                         return false;
                     }
+                    if (unicast) {
+                        return ret;
+                    }
                 } catch (e) {
                     fluid.log("FireEvent received exception " + e.message + " e " + e + " firing to listener " + i);
                     throw (e);       
@@ -814,6 +829,7 @@ var fluid = fluid || fluid_1_4;
                     key = key.substring(0, keydot);
                 }
                 if (!events[key]) {
+                    fluid.fail("Listener registered for event " + key + " which is not defined for this component");
                     events[key] = fluid.event.getEventFirer();
                 }
                 firer = events[key];
@@ -952,7 +968,7 @@ var fluid = fluid || fluid_1_4;
     
         
     fluid.hasGrade = function (options, gradeName) {
-        return !options || !options.gradeNames ? false : $.inArray(gradeName, options.gradeNames) !== -1;
+        return !options || !options.gradeNames ? false : fluid.contains(options.gradeNames, gradeName);
     };
     
      /**
@@ -1231,6 +1247,14 @@ var fluid = fluid || fluid_1_4;
             typeName: name,
             id: fluid.allocateGuid()
         };
+    };
+    
+    /** A combined "component and grade name" which allows type tags to be declaratively constructed
+     * from options material */
+    
+    fluid.typeFount = function (options) {
+        var that = fluid.initLittleComponent("fluid.typeFount", options);
+        return that.options.targetTypeName? fluid.typeTag(that.options.targetTypeName) : null;
     };
     
     /**
