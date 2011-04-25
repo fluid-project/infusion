@@ -745,6 +745,9 @@ var fluid = fluid || fluid_1_4;
                     if (preventable && ret === false) {
                         return false;
                     }
+                    if (unicast) {
+                        return ret;
+                    }
                 } catch (e) {
                     fluid.log("FireEvent received exception " + e.message + " e " + e + " firing to listener " + i);
                     throw (e);       
@@ -826,6 +829,7 @@ var fluid = fluid || fluid_1_4;
                     key = key.substring(0, keydot);
                 }
                 if (!events[key]) {
+                    fluid.fail("Listener registered for event " + key + " which is not defined for this component");
                     events[key] = fluid.event.getEventFirer();
                 }
                 firer = events[key];

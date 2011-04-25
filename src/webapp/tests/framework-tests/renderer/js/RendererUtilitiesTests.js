@@ -449,6 +449,51 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Updated value read", "New Value", model.value);
         });
     
+        fluid.defaults("fluid.tests.FLUID4189Component", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                input: ".flc-renderUtils-test",
+                input2: ".flc-renderUtils-test2"
+            },
+            produceTree: "fluid.tests.FLUID4189Component.produceTree"
+        });
+        
+        fluid.tests.FLUID4189Component.produceTree = function() {
+            return {
+                input: "${value}"
+            };
+        };
+        
+        compTests.test("FLUID-4189 - refined workflow for renderer component", function() {
+            function adjustModel(model, applier, that) {
+                model.path2 = "value2";
+            }
+            function adjustTree(that, tree) {
+                tree.children.push({
+                    ID: "input2",
+                    valuebinding: "path2"
+                });
+            }
+            function afterRender() {
+                jqUnit.assert("afterRender function called");  
+            }
+            var model = {value: "Initial Value"};
+            var that = fluid.tests.FLUID4189Component(".FLUID-4189-test", { 
+                model: model,
+                listeners: {
+                    prepareModelForRender: adjustModel,
+                    onRenderTree: adjustTree,
+                    afterRender: afterRender
+                }
+            });
+            that.refreshView();
+            jqUnit.expect(3);
+            var input = that.locate("input");
+            jqUnit.assertEquals("Field 1 rendered", model.value, input.val());
+            var input2 = that.locate("input2");
+            jqUnit.assertEquals("Field 2 rendered", "value2", input2.val());
+        });
+    
         var protoTests = new jqUnit.TestCase("Protocomponent Expander Tests");
   
         protoTests.test("makeProtoExpander Basic Tests", function () {

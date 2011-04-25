@@ -77,7 +77,7 @@ fluid_1_4 = fluid_1_4 || {};
     /** "Renderer component" infrastructure **/
   // TODO: fix this up with IoC and improved handling of templateSource as well as better 
   // options layout (model appears in both rOpts and eOpts)
-    fluid.renderer.createRendererFunction = function (container, selectors, options, baseObject, fossils) {
+    fluid.renderer.createRendererSubcomponent = function (container, selectors, options, baseObject, fossils) {
         options = options || {};
         var source = options.templateSource ? options.templateSource : {node: $(container)};
         var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, baseObject);
@@ -85,28 +85,29 @@ fluid_1_4 = fluid_1_4 || {};
         
         var expanderOptions = fluid.renderer.modeliseOptions(options.expanderOptions, {ELstyle: "${}"}, baseObject);
         fluid.renderer.reverseMerge(expanderOptions, options, ["resolverGetConfig", "resolverSetConfig"]);
-        var expander = options.noexpand ? null : fluid.renderer.makeProtoExpander(expanderOptions);
+        var that = {};
+        if (!options.noexpand) {
+            that.expander = fluid.renderer.makeProtoExpander(expanderOptions);
+        }
         
         var templates = null;
-        return function (tree) {
-            if (expander) {
-                tree = expander(tree);
-            }
+        that.render = function (tree) {
             var cutpointFn = options.cutpointGenerator || "fluid.renderer.selectorsToCutpoints";
             rendererOptions.cutpoints = rendererOptions.cutpoints || fluid.invokeGlobalFunction(cutpointFn, [selectors, options]);
-            container = typeof (container) === "function" ? container() : $(container);
+            container = typeof(container) === "function" ? container() : $(container);
               
             if (templates) {
                 fluid.clear(rendererOptions.fossils);
                 fluid.reRender(templates, container, tree, rendererOptions);
             } 
             else {
-                if (typeof (source) === "function") { // TODO: make a better attempt than this at asynchrony
+                if (typeof(source) === "function") { // TODO: make a better attempt than this at asynchrony
                     source = source();  
                 }
                 templates = fluid.render(source, container, tree, rendererOptions);
             }
         };
+        return that;
     };
     
     fluid.defaults("fluid.rendererComponent", {
@@ -117,6 +118,12 @@ fluid_1_4 = fluid_1_4 || {};
         },
         rendererOptions: {
             autoBind: true
+        },
+        events: {
+            prepareModelForRender: null,
+            onRenderTree: null,
+            afterRender: null,
+            produceTree: "unicast"
         }
     });
     
@@ -147,12 +154,6 @@ fluid_1_4 = fluid_1_4 || {};
         }
         fluid.renderer.reverseMerge(rendererOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
 
-        var renderer = {
-            fossils: {},
-            boundPathForNode: function (node) {
-                return fluid.boundPathForNode(node, renderer.fossils);
-            }
-        };
 
         var rendererFnOptions = $.extend({}, that.options.rendererFnOptions, { 
             rendererOptions: rendererOptions,
@@ -168,35 +169,48 @@ fluid_1_4 = fluid_1_4 || {};
                 return that.options.resources.template.resourceText;
             };
         }
+        var produceTree = that.events.produceTree;
+        produceTree.addListener( function() {
+            return that.options.protoTree;
+            }
+        );
+        
         if (that.options.produceTree) {
-            that.produceTree = that.options.produceTree;  
+            produceTree.addListener(that.options.produceTree);
         }
-        if (that.options.protoTree && !that.produceTree) {
-            that.produceTree = function () {
-                return that.options.protoTree;
-            };
-        }
+
         fluid.renderer.reverseMerge(rendererFnOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
         if (rendererFnOptions.rendererTargetSelector) {
             container = function () {return that.dom.locate(rendererFnOptions.rendererTargetSelector); };
         }
        
-        var rendererFn = fluid.renderer.createRendererFunction(container, that.options.selectors, rendererFnOptions, that, renderer.fossils);
+        var renderer = {
+            fossils: {},
+            boundPathForNode: function (node) {
+                return fluid.boundPathForNode(node, renderer.fossils);
+            }
+        };
+       
+        var rendererSub = fluid.renderer.createRendererSubcomponent(container, that.options.selectors, rendererFnOptions, that, renderer.fossils);
+        that.renderer = $.extend(renderer, rendererSub);
         
-        that.render = renderer.render = rendererFn;
-        that.renderer = renderer;
         if (messageResolver) {
             that.messageResolver = messageResolver;
         }
 
-        if (that.produceTree) {
-            that.refreshView = renderer.refreshView = function () {
-                if (rendererOptions.instantiator && rendererOptions.parentComponent) {
-                    fluid.renderer.clearDecorators(rendererOptions.instantiator, rendererOptions.parentComponent);
-                }
-                renderer.render(that.produceTree(that));
-            };
-        }
+        that.refreshView = renderer.refreshView = function () {
+            if (rendererOptions.instantiator && rendererOptions.parentComponent) {
+                fluid.renderer.clearDecorators(rendererOptions.instantiator, rendererOptions.parentComponent);
+            }
+            that.events.prepareModelForRender.fire(that.model, that.applier, that);
+            var tree = produceTree.fire(that);
+            if (that.renderer.expander) {
+                tree = that.renderer.expander(tree);
+            }
+            that.events.onRenderTree.fire(that, tree);
+            that.renderer.render(tree);
+            that.events.afterRender.fire(that);
+        };
         
         return that;
     };
