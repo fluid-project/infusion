@@ -24,64 +24,13 @@ var fluid_1_4 = fluid_1_4 || {};
  * Textfield Slider *
  ******************/
 
-(function ($, fluid) {
-    
-    // This will be removed once the jQuery UI slider has built in ARIA 
-    var initSliderAria = function (thumb, opts) {
-        var ariaDefaults = {
-            role: 'slider',
-            "aria-valuenow": opts.value,
-            "aria-valuemin": opts.min, 
-            "aria-valuemax": opts.max    
-        };
-        thumb.attr(ariaDefaults);        
-    };
-    
-    
-    var bindSliderHandlers = function (that, slider) {
-        var textfield = that.locate("textfield");
-        
-        slider.bind("slide", function (e, ui) {
-            textfield.val(ui.value);
-            that.updateModel(ui.value, slider);
-        });       
-    };
-        
-    var bindTextfieldHandlers = function (that, slider) {
-        var textfield = that.locate("textfield");
-        
-        textfield.change(function () {
-            if (that.isValid(this.value)) {
-                if (!that.isInRange(this.value)) {
-                    this.value = (this.value < that.model.min) ? that.model.min : that.model.max;
-                }
-                slider.slider("value", this.value);
-                that.updateModel(this.value, this);
-            } else {
-                // handle invalid entry
-                this.value = that.model.value;
-            }
-        });
-        
-        textfield.keypress(function (evt) {
-            if (evt.keyCode !== $.ui.keyCode.ENTER) {
-                return true;
-            } else {
-                $(evt.target).change();
-                $(fluid.findForm(evt.target)).submit();
-                return false;
-            }
-        });
-        
-    };
-    
+(function ($, fluid) {    
 
     fluid.defaults("fluid.textfieldSlider", {
-        gradeNames: ["fluid.IoCRendererComponent", "autoInit"], 
+        gradeNames: ["fluid.viewComponent", "autoInit"], 
         selectors: {
             textfield: ".flc-textfieldSlider-field",
-            slider: ".flc-textfieldSlider-slider", 
-            thumb: ".ui-slider-handle"
+            slider: ".flc-textfieldSlider-slider"
         },
         events: {
             modelChanged: null
@@ -91,77 +40,83 @@ var fluid_1_4 = fluid_1_4 || {};
             min: 0,
             max: 100
         },
-        invokers: {
-            isInRange: {
-                funcName: "fluid.textfieldSlider.isInRange",
-                args: ["@0", "{textfieldSlider}.model.min", "{textfieldSlider}.model.max"]
+        components: {
+            textfield: {
+                type: "fluid.textfieldSlider.textfield"
             },
-            isValid: "fluid.textfieldSlider.isValid",
-            updateModel: {
-                funcName: "fluid.textfieldSlider.updateModel",
-                args: ["@0", "@1", "{textfieldSlider}"]
-            }
-        },
-        protoTree: {
-            textfield: "${value}", 
             slider: {
-                decorators: [{
-                    type: "jQuery",
-                    func: "slider",
-                    args: ["{textfieldSlider}.model"]
-                }]
+                type: "fluid.textfieldSlider.slider"
             }
-        },
-        finalInitFunction: "fluid.textfieldSlider.init"
+        }
     });
 
-    /**
-     * Tests if a value is within the min and max
-     * @param {Object} value
-     */
-    fluid.textfieldSlider.isInRange = function (value, min, max) {
-        return (value >= min && value <= max);
+    
+    
+    fluid.defaults("fluid.textfieldSlider.textfield", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        invokers: {
+            refreshView: {
+                funcName: "fluid.textfieldSlider.textfield.refreshView",
+                args: ["{textfield}.container", "{textfieldSlider}.applier.model"]
+            }
+        },
+        finalInitFunction: "fluid.textfieldSlider.textfield.init"
+    });
+
+    fluid.textfieldSlider.textfield.refreshView = function (container, model) {
+        // Can I use autobinding here?
+        container.val(model.value);
     };
     
-    /**
-     * Tests if a value is a valid number.
-     * @param {Object} value
-     */
-    fluid.textfieldSlider.isValid = function (value) {
-        return !(isNaN(parseInt(value, 10)) || isNaN(value));
-    };
+    fluid.textfieldSlider.textfield.init = function (that) {
+        that.applier.modelChanged.addListener("value", that.refreshView);
 
-    /**
-     * Updates the model if it is in range. Fires model changed
-     * @param {Object} model
-     * @param {Object} source
-     */
-    // TODO: this should be simplified when we have a renderer component
-    fluid.textfieldSlider.updateModel = function (newModel, source, that) {
-        if (that.isInRange(newModel)) {
-            that.events.modelChanged.fire(newModel, that.model, source);
-            that.model.value = newModel;
-            that.locate("thumb").attr("aria-valuenow", that.model.value);                
-        }
-    };
-
-    fluid.textfieldSlider.init = function (that) {
         that.refreshView();
-        initSliderAria(that.locate("thumb"), that.model); 
+    };
 
-        //       bindSliderHandlers(that, slider);
-        //       bindTextfieldHandlers(that, slider);
+    fluid.demands("fluid.textfieldSlider.textfield", "fluid.textfieldSlider", {
+        container: "{textfieldSlider}.dom.textfield",
+        options: {
+            model: "{textfieldSlider}.model",
+            applier: "{textfieldSlider}.applier"
+        }
+    });
+
+
+    
+    fluid.defaults("fluid.textfieldSlider.slider", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        invokers: {
+            refreshView: {
+                funcName: "fluid.textfieldSlider.slider.refreshView",
+                args: ["{slider}.slider", "{slider}.model"]
+            }
+        },
+        finalInitFunction: "fluid.textfieldSlider.slider.init"
+    });
+    
+    fluid.textfieldSlider.slider.refreshView = function (slider, model) {
+        slider.slider("value", model.value);
+    };
+
+    fluid.textfieldSlider.slider.init = function (that) {       
+        that.slider = that.container.slider(that.model);
+        
+        that.slider.bind("slide", function (e, ui) {
+            that.applier.requestChange("value", ui.value);
+        });
+        
         return that;
     };
 
-    fluid.textfieldSlider.initSlider = function (that) {
-       
-        var slider = that.locate("slider").slider(that.model);
+    fluid.demands("fluid.textfieldSlider.slider", "fluid.textfieldSlider", {
+        container: "{textfieldSlider}.dom.slider",
+        options: {
+            model: "{textfieldSlider}.model",
+            applier: "{textfieldSlider}.applier"
+        }
+    });
 
-        return slider;           
-    };
-
-    fluid.demands("fluid.textfieldSlider.initSlider", "fluid.textfieldSlider", ["{arguments}.0"]);
     
 })(jQuery, fluid_1_4);
 
