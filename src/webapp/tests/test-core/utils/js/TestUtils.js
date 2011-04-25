@@ -88,9 +88,14 @@ fluid.testUtils.assertTree = function (message, expected, actual) {
     jqUnit.assertDeepEq(message, expected, actual);
 };
 
+/** Assert that the expected value object is a subset (considered in terms of shallow key coincidence) of the
+ * "actual" value object **/ 
+
 fluid.testUtils.assertLeftHand = function(message, expected, actual) {
     jqUnit.assertDeepEq(message, expected, fluid.filterKeys(actual, fluid.keys(expected)));  
 };
+
+/** Assert that the expected value object is a superset of the "actual" value object **/
 
 fluid.testUtils.assertRightHand = function(message, expected, actual) {
     jqUnit.assertDeepEq(message, fluid.filterKeys(expected, fluid.keys(actual)), actual);  
