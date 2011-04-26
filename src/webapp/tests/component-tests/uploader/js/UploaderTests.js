@@ -405,6 +405,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.staticEnvironment.uploaderConfig = fluid.progressiveCheckerForComponent({componentName: "fluid.uploader"});
         };
         
+        var setSingleFileStaticEnvironment = function () {
+            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.uploader.singleFile");
+        }
+        
         var checkFlashIntegration = function (uploader) {
             checkMultiFileUploaderOptions(uploader, "fluid.uploader.swfUploadStrategy");            
             checkUploaderArgumentMap(uploader, 0, 1);
@@ -420,59 +424,153 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };        
         
         uploaderTests.test("Single-file Uploader is instantiated", function () {
-            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.uploader.singleFile");
+            setSingleFileStaticEnvironment();
             var that = fluid.uploader($(container));
             checkSingleFileUploader(that);
         });
         
         uploaderTests.test("Single-file Uploader as a subcomponent", function () {
-            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.uploader.singleFile");
+            setSingleFileStaticEnvironment();
             var that = fluid.uploader.parent();
             checkSingleFileUploader(that.uploader);
         });        
         
         uploaderTests.test("Single-file Uploader as a subcomponent with external demands", function () {
-            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.uploader.singleFile");
+            setSingleFileStaticEnvironment();
             var that = fluid.uploader.parent.loadDemands();
             checkSingleFileUploader(that.uploader);
         });        
         
-        uploaderTests.test("HTML5 uploader is instantiated", function () {
-            setHTML5StaticEnvironment();
-            var that = fluid.uploader($(container));
-            checkHTML5Integration(that);
-        });        
+//        uploaderTests.test("HTML5 uploader is instantiated", function () {
+//            setHTML5StaticEnvironment();
+//            var that = fluid.uploader($(container));
+////            checkHTML5Integration(that);
+//        });        
+//        
+//        uploaderTests.test("HTML5 uploader as a subcomponent", function () {
+//            setHTML5StaticEnvironment();
+//            var that = fluid.uploader.parent();
+////            checkHTML5Integration(that.uploader);
+//        });
+//        
+//        uploaderTests.test("HTML5 uploader as a subcomponent with external demands", function () {
+//            setHTML5StaticEnvironment();
+//            var that = fluid.uploader.parent.loadDemands();
+////            checkHTML5Integration(that.uploader);
+//        }); 
+//        
+//        uploaderTests.test("Flash uploader is instantiated", function () {
+//            setFlashStaticEnvironment();
+//            var that = fluid.uploader($(container), {
+//                demo: true
+//            });
+////            checkFlashIntegration(that);
+//        });    
+//        
+//        uploaderTests.test("Flash uploader as a subcomponent", function () {
+//            setFlashStaticEnvironment();
+//            var that = fluid.uploader.parent();
+////            checkFlashIntegration(that.uploader);
+//        });  
+//
+//        uploaderTests.test("Flash uploader as a subcomponent with external demands", function () {
+//            setFlashStaticEnvironment();
+//            var that = fluid.uploader.parent.loadDemands();
+////            checkFlashIntegration(that.uploader);
+//        });      
         
-        uploaderTests.test("HTML5 uploader as a subcomponent", function () {
-            setHTML5StaticEnvironment();
-            var that = fluid.uploader.parent();
-            checkHTML5Integration(that.uploader);
-        });
         
-        uploaderTests.test("HTML5 uploader as a subcomponent with external demands", function () {
-            setHTML5StaticEnvironment();
-            var that = fluid.uploader.parent.loadDemands();
-            checkHTML5Integration(that.uploader);
-        }); 
+        var configurations = [];
+        var integrations = [checkHTML5Integration, checkFlashIntegration];
         
-        uploaderTests.test("Flash uploader is instantiated", function () {
-            setFlashStaticEnvironment();
-            var that = fluid.uploader($(container), {
-                demo: true
-            });
-            checkFlashIntegration(that);
-        });    
+        var setup1 = function () {
+            try {
+                setHTML5StaticEnvironment();
+                var that = fluid.uploader($(container));
+                configurations.push(that);
+            } finally {
+                delete fluid.staticEnvironment.supportsBinaryXHR;
+            }
+        };        
         
-        uploaderTests.test("Flash uploader as a subcomponent", function () {
-            setFlashStaticEnvironment();
-            var that = fluid.uploader.parent();
-            checkFlashIntegration(that.uploader);
-        });  
+        var setup2 = function () {
+            try {
+                setHTML5StaticEnvironment();
+                var that = fluid.uploader.parent();
+                configurations.push(that.uploader);
+            } finally {
+                delete fluid.staticEnvironment.supportsBinaryXHR;
+            }            
+        };
+        
+        var setup3 = function () {
+            try {
+                setHTML5StaticEnvironment();
+                var that = fluid.uploader.parent.loadDemands();
+                configurations.push(that.uploader);
+            } finally {
+                delete fluid.staticEnvironment.supportsBinaryXHR;
+            }            
+        }; 
+        
+        var setup4 = function () {
+            try {
+                setFlashStaticEnvironment();
+                var that = fluid.uploader($(container), {
+                    demo: true
+                });
+                configurations.push(that);
+            } finally {
+                delete fluid.staticEnvironment.supportsBinaryXHR;
+                delete fluid.staticEnvironment.demoRemote;
+            }                
+        };    
+        
+        var setup5 = function () {
+            try {
+                setFlashStaticEnvironment();
+                var that = fluid.uploader.parent();
+                configurations.push(that.uploader);
+            } finally {
+                delete fluid.staticEnvironment.supportsBinaryXHR;
+                delete fluid.staticEnvironment.demoRemote;
+            }                            
+        };  
 
-        uploaderTests.test("Flash uploader as a subcomponent with external demands", function () {
-            setFlashStaticEnvironment();
-            var that = fluid.uploader.parent.loadDemands();
-            checkFlashIntegration(that.uploader);
-        });           
+        var setup6 = function () {
+            try {
+                setFlashStaticEnvironment();
+                var that = fluid.uploader.parent.loadDemands();
+                configurations.push(that.uploader);
+            } finally {
+                delete fluid.staticEnvironment.supportsBinaryXHR;
+                delete fluid.staticEnvironment.demoRemote;
+            }                            
+        };      
+        
+        var setupConfigurations = function () {
+            setup1();
+//            setup2();
+//            setup3();
+            setup4();
+//            setup5();
+//            setup6();
+        }; 
+        
+        var checkIntegration = function (configuration) {
+            if (configuration.strategy.typeName === "fluid.uploader.html5Strategy") {
+                checkHTML5Integration(configuration)
+            } else {
+                checkFlashIntegration(configuration);
+            }
+        };
+        
+        uploaderTests.test("Uploader integration tests for all configurations", function () {
+            setupConfigurations();
+            
+            for (var i = 0; i < configurations.length; i++) {
+                checkIntegration(configurations[i]);
+            }
+        });
     });
 })(jQuery);
