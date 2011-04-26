@@ -480,96 +480,61 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 //        });      
         
         
-        var configurations = [];
-        var integrations = [checkHTML5Integration, checkFlashIntegration];
-        
-        var setup1 = function () {
-            try {
-                setHTML5StaticEnvironment();
-                var that = fluid.uploader($(container));
-                configurations.push(that);
-            } finally {
-                delete fluid.staticEnvironment.supportsBinaryXHR;
-            }
-        };        
-        
-        var setup2 = function () {
-            try {
-                setHTML5StaticEnvironment();
-                var that = fluid.uploader.parent();
-                configurations.push(that.uploader);
-            } finally {
-                delete fluid.staticEnvironment.supportsBinaryXHR;
-            }            
+        var configurations = [
+//                              {
+//                                  creator: "fluid.uploader"
+//                              }
+                              {
+                                  creator: fluid.uploader.parent
+                              },
+                              {
+                                  creator: fluid.uploader.parent.loadDemands
+                              }
+                              ];
+        var integrations = [
+                {
+                    environment: setHTML5StaticEnvironment,
+                    test: checkHTML5Integration
+                },
+                {
+                    environment: setFlashStaticEnvironment,
+                    test: checkFlashIntegration
+                }
+        ];
+                            
+        var setStaticEnvironment = function (integration) {
+            integration.environment();
         };
         
-        var setup3 = function () {
-            try {
-                setHTML5StaticEnvironment();
-                var that = fluid.uploader.parent.loadDemands();
-                configurations.push(that.uploader);
-            } finally {
-                delete fluid.staticEnvironment.supportsBinaryXHR;
-            }            
-        }; 
+        var constructUploader = function (configuration) {
+            var that = configuration.creator();
+            return that.uploader;
+        };
         
-        var setup4 = function () {
-            try {
-                setFlashStaticEnvironment();
-                var that = fluid.uploader($(container), {
-                    demo: true
-                });
-                configurations.push(that);
-            } finally {
-                delete fluid.staticEnvironment.supportsBinaryXHR;
-                delete fluid.staticEnvironment.demoRemote;
-            }                
-        };    
+        var performTests = function (that, integration) {
+            integration.test(that);
+        };        
         
-        var setup5 = function () {
-            try {
-                setFlashStaticEnvironment();
-                var that = fluid.uploader.parent();
-                configurations.push(that.uploader);
-            } finally {
-                delete fluid.staticEnvironment.supportsBinaryXHR;
-                delete fluid.staticEnvironment.demoRemote;
-            }                            
-        };  
-
-        var setup6 = function () {
-            try {
-                setFlashStaticEnvironment();
-                var that = fluid.uploader.parent.loadDemands();
-                configurations.push(that.uploader);
-            } finally {
-                delete fluid.staticEnvironment.supportsBinaryXHR;
-                delete fluid.staticEnvironment.demoRemote;
-            }                            
-        };      
+        var cleanupEnvironment = function () {
+            delete fluid.staticEnvironment.supportsBinaryXHR;
+            delete fluid.staticEnvironment.demoRemote;            
+        };
         
-        var setupConfigurations = function () {
-            setup1();
-//            setup2();
-//            setup3();
-            setup4();
-//            setup5();
-//            setup6();
-        }; 
-        
-        var checkIntegration = function (configuration) {
-            if (configuration.strategy.typeName === "fluid.uploader.html5Strategy") {
-                checkHTML5Integration(configuration)
-            } else {
-                checkFlashIntegration(configuration);
+        var setup = function (configuration, integration) {
+            try {
+                setStaticEnvironment(integration);
+                var that = constructUploader(configuration);
+                performTests(that, integration);
+            } finally {
+                cleanupEnvironment();
             }
         };
         
         uploaderTests.test("Uploader integration tests for all configurations", function () {
-            setupConfigurations();
-            
             for (var i = 0; i < configurations.length; i++) {
-                checkIntegration(configurations[i]);
+                for (var k = 0; k < integrations.length; k++) {
+                    setup(configurations[i], integrations[k]);    
+                }
             }
         });
     });
