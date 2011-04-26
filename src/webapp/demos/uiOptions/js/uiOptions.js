@@ -63,7 +63,11 @@ var demo = demo || {};
         
         // Next, start up UI Options
         var myUIOptions = fluid.uiOptions(container, {
-            templateUrl: "../../../components/uiOptions/html/UIOptions.html"
+            resources: {
+                template: {
+                    url: "../../../components/uiOptions/html/UIOptions.html"
+                }
+            }
         });
 
         // Put it in the sliding panel.

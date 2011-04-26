@@ -45,9 +45,21 @@
         
         <script type="text/javascript">
             $().ready(function () {
-                fluid.uiEnhancer();
+                fluid.uiEnhancer(document, {
+                    tableOfContents: {
+                        options: {
+                            templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
+                        }
+                    
+                    }
+                });
+                
                 fluid.uiOptions("#myUIOptions", {
-                    templateUrl: "../../../components/uiOptions/html/UIOptions.html"
+                    resources: {
+                        template: {
+                            url: "../../../components/uiOptions/html/UIOptions.html"
+                        }
+                    }
                 });
             });
         </script>
