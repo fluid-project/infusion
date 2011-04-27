@@ -51,10 +51,7 @@ var fluid_1_4 = fluid_1_4 || {};
         finalInitFunction: function () { 
             console.log("in final init"); 
             }
-    });
-
-    // make preview work
-    
+    });    
     
     fluid.defaults("fluid.textfieldSlider.textfield", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
@@ -296,7 +293,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * A sub-component of fluid.uiOptions that renders the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.controls", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"], 
+        gradeNames: ["fluid.IoCRendererComponent", "autoInit"], 
         strings: {
             textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
             textSpacing: ["Regular", "Wide", "Wider", "Widest"],
@@ -406,12 +403,11 @@ var fluid_1_4 = fluid_1_4 || {};
                 };
             } else if (item === "textSize" || item === "lineSpacing") {
                 // textfield sliders
-                // TODO: need to pass along options for setting textfield slider min and max
+                // TODO: We need to set the min and max for sliders
                 tree[item] = {
                     decorators: {
                         type: "fluid",
-                        func: "fluid.textfieldSlider",
-                        container: that.options.selectors[item]
+                        func: "fluid.textfieldSlider"
                     }
                 };                        
             } else {
@@ -425,6 +421,7 @@ var fluid_1_4 = fluid_1_4 || {};
         return tree;
     };
 
+    
     /**********************
      * UI Options Preview *
      **********************/
