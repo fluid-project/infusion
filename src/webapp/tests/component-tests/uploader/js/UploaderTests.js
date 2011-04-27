@@ -314,6 +314,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var checkSingleFileUploader = function (uploader) {
             jqUnit.assertEquals("The single-file uploader is in fact the single-file version", 
                                 "fluid.uploader.singleFileUploader", uploader.typeName);
+            start();
         };
         
         var checkMultiFileUploaderOptions = function (uploader, expectedStrategy) {
@@ -415,24 +416,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             start();
         };        
         
-        uploaderTests.test("Single-file Uploader is instantiated", function () {
-            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.uploader.singleFile");
-            var that = fluid.uploader($(container));
-            checkSingleFileUploader(that);
-        });
-        
-        uploaderTests.test("Single-file Uploader as a subcomponent", function () {
-            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.uploader.singleFile");
-            var that = fluid.uploader.parent();
-            checkSingleFileUploader(that);
-        });        
-        
-        uploaderTests.test("Single-file Uploader as a subcomponent with external demands", function () {
-            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag("fluid.uploader.singleFile");
-            var that = fluid.uploader.parent.loadDemands();
-            checkSingleFileUploader(that);
-        });        
-        
         var configurations = [
               {
                   type: fluid.uploader.noDemands
@@ -446,6 +429,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ];
         var integrations = [
             {
+                label: "Single-file integration tests",
+                supportsBinaryXHR: {
+                    type: "typeTag",
+                    typeName: "fluid.uploader.singleFile"
+                },          
+                test: checkSingleFileUploader,
+                demo: false
+            },                
+            {
+                label: "HTML5 integration tests",
                 supportsBinaryXHR: {
                     type: "typeTag",
                     typeName: "fluid.browser.supportsBinaryXHR"
@@ -458,6 +451,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 demo: false
             },
             {
+                label: "Flash integration tests",
                 supportsBinaryXHR: {
                     type: "typeTag",
                     typeName: "fluid.browser.supportsFlash"
@@ -477,9 +471,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             
         var setStaticEnvironment = function (integration) {
             fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag(integration.supportsBinaryXHR.typeName);
-            fluid.staticEnvironment.uploaderConfig = fluid.progressiveCheckerForComponent({
-                    componentName: integration.uploaderConfig.componentName});
             
+            if(integration.uploaderConfig) {
+                fluid.staticEnvironment.uploaderConfig = fluid.progressiveCheckerForComponent({
+                        componentName: integration.uploaderConfig.componentName});
+            }
             if(integration.demoRemote) {
                 fluid.staticEnvironment.demo = fluid.typeTag(integration.demoRemote.typeName);
             }
@@ -512,7 +508,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Run the integration tests individually to reset the markup
         fluid.each(configurations, function (config) {
             fluid.each(integrations, function (integration) {
-                uploaderTests.asyncTest("Uploader integration tests for all configurations", function () {
+                uploaderTests.asyncTest(integration.label, function () {
                     setupIntegration(config, integration);
                 });
             });
