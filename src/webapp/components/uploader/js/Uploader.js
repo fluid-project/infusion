@@ -321,13 +321,17 @@ var fluid_1_4 = fluid_1_4 || {};
         return that.uploaderImpl;
     };
     
+    fluid.uploaderImpl = function () {
+        fluid.fail("Error creating uploader component - please make sure that a progressiveCheckerForComponent for \"fluid.uploader\" is registered either in the "
+          + "static environment or else is visible in the current component tree");
+    };
+    
     fluid.defaults("fluid.uploader", {
         gradeNames: ["fluid.viewComponent"],
         components: {
             uploaderContext: {
                 type: "fluid.progressiveCheckerForComponent",
-                options: {componentName: "fluid.uploader"},
-                priority: "first"
+                options: {componentName: "fluid.uploader"}
             },
             uploaderImpl: {
                 type: "fluid.uploaderImpl",
@@ -346,7 +350,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     contextName: "fluid.uploader.swfUpload"
                 }
             ],
-            defaultTypeTag: fluid.typeTag("fluid.uploader.singleFile")
+            defaultContextName: "fluid.uploader.singleFile"
         }
     });
     

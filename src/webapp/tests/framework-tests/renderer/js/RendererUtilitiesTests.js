@@ -95,7 +95,8 @@ fluid.registerNamespace("fluid.tests");
                     tree: { value: "${{elementPath}}" }
                 },
                 message: {
-                    messagekey: "message"
+                    messagekey: "message",
+                    decorators: {"addClass": "{styles}.applicableStyle"}
                 },
                 deffoltmessage: {
                     messagekey: "deffolt"
@@ -112,6 +113,9 @@ fluid.registerNamespace("fluid.tests");
             parentBundle: "{globalBundle}",
             strings: {
                 message: "A mess of messuage"          
+            },
+            styles: {
+                applicableStyle: ".fl-applicable-style"  
             }
         });
         
@@ -210,6 +214,8 @@ fluid.registerNamespace("fluid.tests");
             that.refreshView();
             var renderMess = that.locate("message").text();
             jqUnit.assertEquals("Rendered message from bundle", that.options.strings.message, renderMess);
+            jqUnit.assertTrue("Applied style using addClass decorator reference to styles block", 
+                that.locate("message").hasClass(that.options.styles.applicableStyle));
             var renderDeffoltMess = that.locate("deffoltmessage").text();
             jqUnit.assertEquals("Rendered message from global bundle", globalMessages.deffolt, renderDeffoltMess);
             jqUnit.assertEquals("Resolver global message using local resolver", globalMessages.deffolt, that.messageResolver.resolve("deffolt"));
@@ -441,6 +447,51 @@ fluid.registerNamespace("fluid.tests");
             input.val("New Value");
             input.change();
             jqUnit.assertEquals("Updated value read", "New Value", model.value);
+        });
+    
+        fluid.defaults("fluid.tests.FLUID4189Component", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                input: ".flc-renderUtils-test",
+                input2: ".flc-renderUtils-test2"
+            },
+            produceTree: "fluid.tests.FLUID4189Component.produceTree"
+        });
+        
+        fluid.tests.FLUID4189Component.produceTree = function() {
+            return {
+                input: "${value}"
+            };
+        };
+        
+        compTests.test("FLUID-4189 - refined workflow for renderer component", function() {
+            function adjustModel(model, applier, that) {
+                model.path2 = "value2";
+            }
+            function adjustTree(that, tree) {
+                tree.children.push({
+                    ID: "input2",
+                    valuebinding: "path2"
+                });
+            }
+            function afterRender() {
+                jqUnit.assert("afterRender function called");  
+            }
+            var model = {value: "Initial Value"};
+            var that = fluid.tests.FLUID4189Component(".FLUID-4189-test", { 
+                model: model,
+                listeners: {
+                    prepareModelForRender: adjustModel,
+                    onRenderTree: adjustTree,
+                    afterRender: afterRender
+                }
+            });
+            that.refreshView();
+            jqUnit.expect(3);
+            var input = that.locate("input");
+            jqUnit.assertEquals("Field 1 rendered", model.value, input.val());
+            var input2 = that.locate("input2");
+            jqUnit.assertEquals("Field 2 rendered", "value2", input2.val());
         });
     
         var protoTests = new jqUnit.TestCase("Protocomponent Expander Tests");
