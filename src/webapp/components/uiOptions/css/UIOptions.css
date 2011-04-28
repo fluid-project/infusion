@@ -75,3 +75,14 @@
 	width: 100%;
 	border: 2px dotted black;
 }
+
+/* Theme Dropdown */
+select#theme { 
+	font-weight:bold; 
+	text-transform: uppercase;
+}
+option.bw { color: #000; background-color: #efefef;}
+option.bw { color: #fff; background-color: #000;}
+option.wb { color: #000; background-color: #fff;}
+option.by { color: #000; background-color: #ffee00;}
+option.yb { color: #ffee00; background-color: #000;}
