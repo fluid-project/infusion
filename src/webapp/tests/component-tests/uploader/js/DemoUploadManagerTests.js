@@ -19,7 +19,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(function () {
-        
         // Redefine SWFUploadStrategy's invokers in this testing context.
         fluid.staticEnvironment.uploaderTests = fluid.typeTag("fluid.uploader.tests");
         fluid.demands("fluid.uploader.swfUploadStrategy.setupDOM", ["fluid.uploader.tests"], {
