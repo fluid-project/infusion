@@ -161,16 +161,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             getAsBinary: function () {}
         };
         
-        fluid.uploader.noDemands = function (options) {
-            var that = fluid.uploader($(container), options);
+        fluid.registerNamespace("fluid.tests.uploader");
+        
+        fluid.tests.uploader.noIoC = function (options) {
+            var that = fluid.uploader(".flc-uploader", options);
             return that;
         }
         
         /*
          * Instantiate an uploader as a subcomponent 
          */
-        fluid.uploader.parent = function (options) {
-            var that = fluid.initLittleComponent("fluid.uploader.parent", options);
+        fluid.tests.uploader.parent = function (options) {
+            var that = fluid.initLittleComponent("fluid.tests.uploader.parent", options);
             fluid.initDependents(that);
             return that.uploader;
         };
@@ -178,23 +180,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /*
          * Instantiate an uploader as a subcomponent with external demands
          */
-        fluid.uploader.parent.loadDemands = function (options) {
-            var that = fluid.initLittleComponent("fluid.uploader.parent.loadDemands", options);
+        fluid.tests.uploader.parent.loadDemands = function (options) {
+            var that = fluid.initLittleComponent("fluid.tests.uploader.parent.loadDemands", options);
             fluid.initDependents(that);
             return that.uploader;
         };        
         
-        fluid.defaults("fluid.uploader.parent", {
+        fluid.defaults("fluid.tests.uploader.parent", {
             gradeNames: ["fluid.littleComponent"],
             components: {
                 uploader: {
                     type: "fluid.uploader",
-                    container: container
+                    container: ".flc-uploader"
                 }
             }
         });
         
-        fluid.defaults("fluid.uploader.parent.loadDemands", {
+        fluid.defaults("fluid.tests.uploader.parent.loadDemands", {
             gradeNames: ["fluid.littleComponent"],
             components: {
                 uploader: {
@@ -203,25 +205,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
         
-        fluid.demands("fluid.uploader", ["fluid.uploader.parent", "fluid.tests.demoRemote"], {
+        fluid.demands("fluid.uploader", ["fluid.tests.uploader.parent", "fluid.tests.demoRemote"], {
             options: {
                 demo: true
             }     
         });
         
-        fluid.demands("fluid.uploader", "fluid.uploader.parent.loadDemands", {
-            container: container
+        fluid.demands("fluid.uploader", "fluid.tests.uploader.parent.loadDemands", {
+            container: ".flc-uploader"
         });             
         
-        fluid.demands("fluid.uploader", ["fluid.uploader.parent.loadDemands", "fluid.tests.demoRemote"], {
-            container: container,
+        fluid.demands("fluid.uploader", ["fluid.tests.uploader.parent.loadDemands", "fluid.tests.demoRemote"], {
+            container: ".flc-uploader",
             options: {
                 demo: true
             }            
         });        
         
         fluid.demands("fluid.uploader.html5Strategy.createFileUploadXHR", ["fluid.uploader.html5Strategy.remote", "fluid.uploader.tests"], {
-            funcName: "fluid.uploader.html5Strategy.createMockXHR"
+            funcName: "fluid.tests.uploader.createMockXHR"
         });    
         
         var addFiles = function (uploader) {
@@ -241,39 +243,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         // Mock the swfUploadStrategy local 
         var mockSWFUploadLocal = function (local) {
-            local.browse = function () {
-            };
-
-            local.removeFile = function (file) {
-            };
-            
-            local.enableBrowseButton = function () {
-            };
-            
-            local.disableBrowseButton = function () {
-            };                
+            local.browse = fluid.identity;
+            local.removeFile = fluid.identity;
+            local.enableBrowseButton = fluid.identity;
+            local.disableBrowseButton = fluid.identity;
         };        
-        
-        /*
-         * Override the component's actual XHR creator function
-         * TODO:  A true XHR mock will need to be instantiated here with capabilities
-         *        of firing random progress events and send files to a remote server
-         *        in 2 ways: 1) sendAsBinary, 2) send(formData)   
-         */
-        fluid.uploader.html5Strategy.createMockXHR = function () {
-            var xhr = {
-                readyState: 4, 
-                status: 200,
-                responseText: "",
-                upload: function () {},
-                send: function () {},
-                sendAsBinary: function () {},
-                open: function () {},
-                setRequestHeader: function () {},
-                abort: function () {}
-            };    
-            return xhr;
-        };
 
         var createXHR = function (status) {
             var xhr = {
@@ -290,6 +264,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return xhr;
         };
         
+        /*
+         * Override the component's actual XHR creator function
+         * TODO:  A true XHR mock will need to be instantiated here with capabilities
+         *        of firing random progress events and send files to a remote server
+         *        in 2 ways: 1) sendAsBinary, 2) send(formData)   
+         */
+        fluid.tests.uploader.createMockXHR = function () {
+            return createXHR(200);
+        };
+
         var checkRemoteFileHandler = function (uploader) {
             var xhrStatus = [200, 0, 100];
             var fileStatus = [
@@ -335,25 +319,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("The uploader must have an argument map in its options", uploader.options.argumentMap);
         };
         
-        var checkBrowseButtonIsEnabled = function (uploader) {
-            var browseButton = uploader.locate("browseButton");
-            jqUnit.assertFalse("The browse button is enabled", browseButton.attr("disabled"));
+        var checkUploaderButton = function(uploader, buttonName, state) {
+            var button = uploader.locate(buttonName);
+            jqUnit.assertEquals("The " + buttonName + " is " + (state? "enabled" : "disabled"), state, !button.attr("disabled"));
         };
-        
-        var checkBrowseButtonIsDisabled = function (uploader) {
-            var browseButton = uploader.locate("browseButton");
-            jqUnit.assertTrue("The browse button is disabled", browseButton.attr("disabled"));
-        };
-        
-        var checkUploadButtonIsEnabled = function (uploader) {
-            var uploadButton = uploader.locate("uploadButton");
-            jqUnit.assertFalse("The upload button is enabled", uploadButton.attr("disabled"));
-        };
-        
-        var checkUploadButtonIsDisabled = function (uploader) {
-            var uploadButton = uploader.locate("uploadButton");
-            jqUnit.assertTrue("The upload button is disabled", uploadButton.attr("disabled"));
-        };                
         
         var checkUploaderArgumentMap = function (uploader, expectedLocal, expectedRemote) {
             jqUnit.assertEquals("Check local component argumentMap options value", 
@@ -366,13 +335,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var statusRegion = $(".flc-uploader-status-region");
             var initialStatusRegionText = statusRegion.text();
             
-            checkBrowseButtonIsEnabled(uploader);
-            checkUploadButtonIsDisabled(uploader);
+            checkUploaderButton(uploader, "browseButton", true);
+            checkUploaderButton(uploader, "uploadButton", false);
             
             // add files, check status region update
             addFilesFn(uploader);
             
-            checkUploadButtonIsEnabled(uploader);
+            checkUploaderButton(uploader, "uploadButton", true);
             jqUnit.assertEquals("Files are added after the file dialog", 
                                 2, uploader.queue.files.length);
             jqUnit.assertNotEquals("Add files: update status region text",
@@ -391,12 +360,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             // upload files
             uploader.locate("uploadButton").click();
-            checkBrowseButtonIsDisabled(uploader);
+            checkUploaderButton(uploader, "browseButton", false);
             jqUnit.assertTrue("Uploading has started", uploader.queue.isUploading);
             
             // stop uploading files
             uploader.locate("pauseButton").click();
-            checkUploadButtonIsEnabled(uploader);
+            checkUploaderButton(uploader, "uploadButton", true);
             jqUnit.assertFalse("Uploading has stopped", uploader.queue.isUploading);
         };
         
@@ -416,17 +385,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             start();
         };        
         
-        var configurations = [
-              {
-                  type: fluid.uploader.noDemands
-              },
-              {
-                  type: fluid.uploader.parent
-              },
-              {
-                  type: fluid.uploader.parent.loadDemands
-              }
+        var configurations = [ {
+            label: "Uploader with direct creator function",
+            type: fluid.tests.uploader.noIoC
+        }, {
+            label: "Uploader in an IoC tree",
+            type: fluid.tests.uploader.parent
+        },  {
+            label: "Uploader in an IoC tree with demands",
+            type: fluid.tests.uploader.parent.loadDemands
+        }
         ];
+        
         var integrations = [
             {
                 label: "Single-file integration tests",
@@ -472,11 +442,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var setStaticEnvironment = function (integration) {
             fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag(integration.supportsBinaryXHR.typeName);
             
-            if(integration.uploaderConfig) {
+            if (integration.uploaderConfig) {
                 fluid.staticEnvironment.uploaderConfig = fluid.progressiveCheckerForComponent({
                         componentName: integration.uploaderConfig.componentName});
             }
-            if(integration.demoRemote) {
+            if (integration.demoRemote) {
                 fluid.staticEnvironment.demo = fluid.typeTag(integration.demoRemote.typeName);
             }
         };
@@ -508,7 +478,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Run the integration tests individually to reset the markup
         fluid.each(configurations, function (config) {
             fluid.each(integrations, function (integration) {
-                uploaderTests.asyncTest(integration.label, function () {
+                uploaderTests.asyncTest(config.label + " - " + integration.label, function () {
                     setupIntegration(config, integration);
                 });
             });
