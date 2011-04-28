@@ -7,44 +7,46 @@
 	margin-left: 100px;
 	margin-right: 100px;	
 	max-width: 1280px;
-	min-width: 880px;
-	
+	min-width: 880px;	
 }
 
-/* form section headers */
+/* Section headers */
 .fl-uiOptions h2 {
 	font-size: 1.29em;
 	font-weight: bold;
 	clear:both;
+	border-top: 2px solid #ebebeb;
+	padding-top: 10px;
+	padding-bottom: 10px;	
+}
+.fl-uiOptions h2 img {
+	margin-bottom: -3px;
 }
 
-/* form lists */
+/* Form */
 .fl-uiOptions ul {
 	margin-left: 0px;
 }
 .fl-uiOptions ul li {
 	list-style: none;
 	clear:both;	
-	padding-bottom: 2em;
 }
 
-/* form paragraphs */
+/* Paragraphs */
 .fl-uiOptions p {
 	color: #4D4D4D;
 	margin-bottom: 0px;
+	padding-top: 5px;
 }
 
-/* form labels */
+/* Labels */
 .fl-uiOptions label {
 	text-transform: uppercase;
-	font-size: 1.14em;
+	font-size: 1em;
+	padding-bottom: 2em;
 }
 
-/* form tabular-layout */
-.fl-uiOptions .fl-uio-form li {
-	padding-bottom: 3.5em;
-}
-
+/* Text and display section */
 .fl-uiOptions .fl-uio-form label {
 	display: block;
 	float: left;
@@ -59,30 +61,51 @@
 	width:2em;
 }
 
-.fl-slider {
+/* Slider position. More slider styles in /css/Slider.css */
+.fl-uiOptions .fl-slider {
 	float:left;
 	margin-right: 10px;
 }
 
+/* Check boxes */
 .fl-uiOptions input[type="checkbox"] {
 	height: 2em;
 	width: 2em;
+	margin-right:10px;
+	margin-bottom: 2em;
+	border: 1px solid black;
 }
 
+/* Font Select box */
+.fl-uiOptions select {
+	border: 2px solid #ebebeb;
+}
+.fl-uiOptions option {
+	
+}
+
+.fl-uiOptions select#text-font { 
+	font-weight:bold; 
+}
+.fl-uiOptions select#text-font option.times { font-family: "Times New Roman"; }
+.fl-uiOptions select#text-font option.comic { font-family: "Comic Sans MS"; }
+.fl-uiOptions select#text-font option.arial { font-family: Arial; }
+.fl-uiOptions select#text-font option.verdana { font-family: Verdana; }
+
+/* Theme Select box */
+.fl-uiOptions select#theme { 
+	font-weight:bold; 
+	text-transform: uppercase;
+}
+.fl-uiOptions select#theme option.default { color: #000; background-color: #efefef;}
+.fl-uiOptions select#theme option.bw { color: #fff; background-color: #000;}
+.fl-uiOptions select#theme option.wb { color: #000; background-color: #fff;}
+.fl-uiOptions select#theme option.by { color: #000; background-color: #ffee00;}
+.fl-uiOptions select#theme option.yb { color: #ffee00; background-color: #000;}
+
 /* Preview Area */
-.fl-preview iframe {
+.fl-uiOptions .fl-preview iframe {
 	height: 300px;
 	width: 100%;
 	border: 2px dotted black;
 }
-
-/* Theme Dropdown */
-select#theme { 
-	font-weight:bold; 
-	text-transform: uppercase;
-}
-option.bw { color: #000; background-color: #efefef;}
-option.bw { color: #fff; background-color: #000;}
-option.wb { color: #000; background-color: #fff;}
-option.by { color: #000; background-color: #ffee00;}
-option.yb { color: #ffee00; background-color: #000;}

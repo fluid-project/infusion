@@ -1,5 +1,4 @@
 <form id="options" action="" class="fl-col-flex2 fl-uiOptions">    
-    <!-- column 1, options -->  
     <div class="flc-uiOptions-controls fl-col">
 		<h2><img src="../../../components/uiOptions/images/uio_icon_textanddisplay_18x18.png" alt="" /> Text and display</h2>
 		
@@ -13,7 +12,14 @@
 			</li>
 			<li>
 				<label for="text-font" class="fl-label">Text Style</label>
-				<select rsf:id="text-font" id="text-font" class="fl-inputs"></select>
+				<!-- select rsf:id="text-font" id="text-font" class="fl-inputs"></select -->
+				<select id="text-font" name="text-font">
+					<option value="default" class="default">Default</option>
+					<option value="times" class="times">Times New Roman</option>
+					<option value="comic" class="comic">Comic Sans</option>
+					<option value="arial" class="arial">Arial</option>
+					<option value="verdana" class="verdana">Verdana</option>					
+				</select> 				
 			</li>   
 			<li>
 				<label class="fl-label" for="theme">Colour & Contrast</label>
@@ -40,32 +46,40 @@
         <h2><img src="../../../components/uiOptions/images/uio_icon_layoutandnavigation_18x18.png" alt="" /> Layout and navigation</h2>        
 		<ul>
 			<li>                             
-				<input type="checkbox" id="layout-choice" />
-				<label for="layout-choice" class="fl-label">Simplify Layout</label>
-				<p>Converts a page to a single column layout</p>
+				<input type="checkbox" id="layout-choice" class="fl-force-left" />
+				<div class="fl-force-left">
+					<label for="layout-choice" class="fl-label">Simplify Layout</label>
+					<p>Converts a page to a single column layout</p>
+				</div>
 			</li>                
 			<li>
-				<input type="checkbox" id="toc-choice" />
-				<label for="toc-choice" class="fl-label">Show Table of Contents</label>
-				<p>Adds a table of contents to the top of the page</p>
+				<input type="checkbox" id="toc-choice" class="fl-force-left" />
+				<div class="fl-force-left">
+					<label for="toc-choice" class="fl-label">Show Table of Contents</label>
+					<p>Adds a table of contents to the top of the page</p>
+				</div>
 			</li>                            
 		</ul>
             
         <h2><img src="../../../components/uiOptions/images/uio_icon_linksandbuttons_18x18.png" alt="" /> Links and buttons</h2>
         <ul>
 			<li>
-				<input type="checkbox" id="links-choice" />
-				<label for="links-choice" class="fl-label">Emphasize Links</label>
-				<p>Makes links larger, bold, and underlined</p>
+				<input type="checkbox" id="links-choice"class="fl-force-left" />
+				<div class="fl-force-left">
+					<label for="links-choice" class="fl-label">Emphasize Links</label>
+					<p>Makes links larger, bold, and underlined</p>
+				</div>
 			</li>
 			<li>
-				<input type="checkbox" id="inputs-choice" />
-				<label for="inputs-choice" class="fl-label">Make Inputs Larger</label>
-				<p>Makes buttons, drop-down menus, text-fields, and other inputs larger</p>
+				<input type="checkbox" id="inputs-choice"class="fl-force-left" />
+				<div class="fl-force-left">
+					<label for="inputs-choice" class="fl-label">Make Inputs Larger</label>
+					<p>Makes buttons, drop-down menus, text-fields, and other inputs larger</p>
+				</div>
 			</li>        
         </ul>        
     </div>
-    <!-- column 2, preview -->
+
     <div class="fl-col">
         <div class="fl-preview">
             <h2>Preview your changes</h2>
