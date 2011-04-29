@@ -26,11 +26,36 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {    
 
+    // This will be removed once the jQuery UI slider has built in ARIA 
+    var initSliderAria = function (thumb, opts) {
+        var ariaDefaults = {
+            role: 'slider',
+            "aria-valuenow": opts.value,
+            "aria-valuemin": opts.min, 
+            "aria-valuemax": opts.max    
+        };
+        thumb.attr(ariaDefaults);        
+    };
+    
+    var updateControlsApplierAndAria = function (that, value, thumb) {
+        that.events.modelChanged.fire(value);
+        thumb.attr("aria-valuenow", value);
+    };
+    
     fluid.defaults("fluid.textfieldSlider", {
         gradeNames: ["fluid.viewComponent", "autoInit"], 
+        components: {
+            textfield: {
+                type: "fluid.textfieldSlider.textfield"
+            },
+            slider: {
+                type: "fluid.textfieldSlider.slider"
+            }
+        },
         selectors: {
             textfield: ".flc-textfieldSlider-field",
-            slider: ".flc-textfieldSlider-slider"
+            slider: ".flc-textfieldSlider-slider",
+            thumb: ".ui-slider-handle"
         },
         events: {
             modelChanged: null
@@ -40,36 +65,40 @@ var fluid_1_4 = fluid_1_4 || {};
             min: 0,
             max: 100
         },
-        components: {
-            textfield: {
-                type: "fluid.textfieldSlider.textfield"
-            },
-            slider: {
-                type: "fluid.textfieldSlider.slider"
-            }
-        },
-        finalInitFunction: function () { 
-            console.log("in final init"); 
-            }
+        sliderOptions: {
+            orientation: "horizontal"
+        }, 
+        finalInitFunction: "fluid.textfieldSlider.finalInit"
     });    
+    
+    fluid.textfieldSlider.finalInit = function (that) {
+        var sliderOptions = that.options.sliderOptions;
+        sliderOptions.value = that.model.value;
+        sliderOptions.min = that.model.min;
+        sliderOptions.max = that.model.max;
+        
+        var slider = that.locate("slider").slider(sliderOptions);
+        initSliderAria(that.locate("thumb"), sliderOptions);
+    };
     
     fluid.defaults("fluid.textfieldSlider.textfield", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         invokers: {
             refreshView: {
                 funcName: "fluid.textfieldSlider.textfield.refreshView",
-                args: ["{textfield}.container", "{textfieldSlider}.applier.model"]
+                args: ["{textfield}.container", "{textfieldSlider}"]
             }
         },
-        finalInitFunction: "fluid.textfieldSlider.textfield.init"
+        finalInitFunction: "fluid.textfieldSlider.textfield.finalInit"
     });
 
-    fluid.textfieldSlider.textfield.refreshView = function (container, model) {
-        // Can I use autobinding here?
-        container.val(model.value);
+    fluid.textfieldSlider.textfield.refreshView = function (container, textfieldSlider) {
+        container.val(textfieldSlider.applier.model.value);
+
+        updateControlsApplierAndAria(textfieldSlider, textfieldSlider.applier.model.value, textfieldSlider.dom.locate("thumb"));
     };
     
-    fluid.textfieldSlider.textfield.init = function (that) {
+    fluid.textfieldSlider.textfield.finalInit = function (that) {
         that.container.change(function () {
             var value = this.value; 
             var isValid = !(isNaN(parseInt(value, 10)) || isNaN(value));
@@ -107,17 +136,17 @@ var fluid_1_4 = fluid_1_4 || {};
         invokers: {
             refreshView: {
                 funcName: "fluid.textfieldSlider.slider.refreshView",
-                args: ["{slider}.slider", "{textfieldSlider}.applier.model"]
+                args: ["{slider}.slider", "{textfieldSlider}.applier.model", "{controls}"]
             }
         },
-        finalInitFunction: "fluid.textfieldSlider.slider.init"
+        finalInitFunction: "fluid.textfieldSlider.slider.finalInit"
     });
     
-    fluid.textfieldSlider.slider.refreshView = function (slider, model) {
+    fluid.textfieldSlider.slider.refreshView = function (slider, model, controls) {
         slider.slider("value", model.value);
     };
 
-    fluid.textfieldSlider.slider.init = function (that) {       
+    fluid.textfieldSlider.slider.finalInit = function (that) {       
         that.slider = that.container.slider(that.model);
         
         that.slider.bind("slide", function (e, ui) {
@@ -164,7 +193,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
         // Turn the boolean select values into strings so they can be properly bound and rendered
         controls.applier.requestChange("selections.toc", String(controls.model.selections.toc));
-        controls.applier.requestChange("selections.backgroundImages", String(controls.model.selections.backgroundImages));        
+        controls.applier.requestChange("selections.backgroundImages", String(controls.model.selections.backgroundImages));
     };
     
         
@@ -190,16 +219,23 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{uiOptions}.dom.controls",
                 createOnEvent: "onReady",
                 options: {
-                    listeners: {
-                        afterRender: "{uiOptions}.bindHandlers"
-                    },
-                    uiEnhancer: "{uiOptions}.uiEnhancer"
+                    uiEnhancer: "{uiOptions}.uiEnhancer",
+                    textSize: "{uiOptions}.options.textSize",
+                    lineSpacing: "{uiOptions}.options.lineSpacing"
                 }
             },
             preview: {
                 type: "fluid.uiOptions.preview",
                 createOnEvent: "onReady"
             }
+        },
+        textSize: {
+            min: 6,
+            max: 30
+        },
+        lineSpacing: {
+            min: 1,
+            max: 10
         },
         selectors: {
             controls: ".flc-uiOptions-controls",
@@ -224,17 +260,6 @@ var fluid_1_4 = fluid_1_4 || {};
     });
     
     fluid.uiOptions.finalInit = function (that) {
-
-        that.bindHandlers = function () {
-            var saveButton = that.locate("save");
-            saveButton.click(that.save);
-            that.locate("reset").click(that.reset);
-            that.locate("cancel").click(that.cancel);
-            var form = fluid.findForm(saveButton);
-            $(form).submit(function () {
-                that.save();
-            });
-        };
 
         that.uiEnhancer = $(document).data("uiEnhancer");
         
@@ -278,8 +303,20 @@ var fluid_1_4 = fluid_1_4 || {};
             setControlsChangeApplier(controls, newModel);
         };
         
+        var bindHandlers = function (that) {
+            var saveButton = that.locate("save");
+            saveButton.click(that.save);
+            that.locate("reset").click(that.reset);
+            that.locate("cancel").click(that.cancel);
+            var form = fluid.findForm(saveButton);
+            $(form).submit(function () {
+                that.save();
+            });
+        };
+        
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
+            bindHandlers(that);
             that.events.onReady.fire();
         });
 
@@ -293,7 +330,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * A sub-component of fluid.uiOptions that renders the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.controls", {
-        gradeNames: ["fluid.IoCRendererComponent", "autoInit"], 
+        gradeNames: ["fluid.rendererComponent", "autoInit"], 
         strings: {
             textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
             textSpacing: ["Regular", "Wide", "Wider", "Widest"],
@@ -386,6 +423,27 @@ var fluid_1_4 = fluid_1_4 || {};
         };
     };
     
+    var createSliderNode = function (that, item) {
+        return {
+            decorators: {
+                type: "fluid",
+                func: "fluid.textfieldSlider",
+                options: {
+                    listeners: {
+                        modelChanged: function(value){
+                            that.applier.requestChange("selections." + item, value);
+                        }
+                    },
+                    model: {
+                        min: that.options[item].min,
+                        max: that.options[item].max,
+                        value: that.model.selections[item]
+                    }
+                }
+            }
+        };
+    };
+    
     fluid.uiOptions.controls.produceTree = function (that) {
         var tree = {};
         var radiobuttons = [];
@@ -403,13 +461,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 };
             } else if (item === "textSize" || item === "lineSpacing") {
                 // textfield sliders
-                // TODO: We need to set the min and max for sliders
-                tree[item] = {
-                    decorators: {
-                        type: "fluid",
-                        func: "fluid.textfieldSlider"
-                    }
-                };                        
+                tree[item] = createSliderNode(that, item);                        
             } else {
                 // render check boxes
                 tree[item] = "${selections." + item + "}";
