@@ -29,9 +29,7 @@ div.demo-gridReorderer-dragging,
     opacity          : 0.75;
 }
 
-.demo-gridReorderer-alphabetGrid div :focus,
 .demo-gridReorderer-container  div.demo-gridReorderer-selected {
-    outline: 2px solid #000;
     cursor : move;
 }
 
