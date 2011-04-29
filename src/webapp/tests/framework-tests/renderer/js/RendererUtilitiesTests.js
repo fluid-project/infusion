@@ -651,7 +651,7 @@ fluid.registerNamespace("fluid.tests");
         });
         
         fluid.defaults("fluid.tests.repeatHead", {
-            gradeNames: ["fluid.IoCRendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
             protoTree: {
                 expander: {
                     type: "fluid.renderer.repeat",
