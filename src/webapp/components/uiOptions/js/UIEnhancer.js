@@ -338,9 +338,13 @@ var fluid_1_4 = fluid_1_4 || {};
      * SettingsStore Subcomponent that uses a cookie for persistence.
      * @param {Object} options
      */
-    fluid.uiEnhancer.cookieStore = function (options) {
-        var that = fluid.initLittleComponent("fluid.uiEnhancer.cookieStore", options);
-        
+    fluid.defaults("fluid.uiEnhancer.cookieStore", {
+        gradeNames: ["fluid.littleComponent", "autoInit"], 
+        cookieName: "fluid-ui-settings",
+        finalInitFunction: "fluid.uiEnhancer.cookieStore.finalInit"
+    });
+
+    fluid.uiEnhancer.cookieStore.finalInit = function (that) {
         /**
          * Retrieve and return the value of the cookie
          */
@@ -371,14 +375,8 @@ var fluid_1_4 = fluid_1_4 || {};
         that.save = function (settings) {
             document.cookie = that.options.cookieName + "=" +  encodeURIComponent(JSON.stringify(settings));
         };
-    
-        return that;
     };
     
-    fluid.defaults("fluid.uiEnhancer.cookieStore", {
-        cookieName: "fluid-ui-settings"
-    });
-
     /**************
      * Temp Store *
      **************/
