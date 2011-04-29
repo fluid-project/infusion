@@ -126,18 +126,14 @@ fluid_1_4 = fluid_1_4 || {};
             produceTree: "unicast"
         }
     });
-    
-    fluid.defaults("fluid.IoCRendererComponent", {
-        gradeNames: ["fluid.rendererComponent"]  
-    });
-    
+
     fluid.initRendererComponent = function (componentName, container, options) {
         var that = fluid.initView(componentName, container, options, {gradeNames: ["fluid.rendererComponent"]});
         
         fluid.fetchResources(that.options.resources); // TODO: deal with asynchrony
         
         var rendererOptions = fluid.renderer.modeliseOptions(that.options.rendererOptions, null, that);
-        if (fluid.hasGrade(that.options, "fluid.IoCRendererComponent")) {
+        if (!that.options.noUpgradeDecorators) {
             fluid.withInstantiator(that, function(currentInst) {
                 rendererOptions.instantiator = currentInst;
                 rendererOptions.parentComponent = that;
