@@ -710,31 +710,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             firer.fire(false); //listener should not run and assertion should not execute 
         });
         
-           
-        fluid.defaults("fluid.tests.listenerMerging", {
-            gradeNames: ["fluid.eventedComponent", "autoInit"],
-            listeners: {
-                eventOne: function () {},
-                eventTwo: function () {}
-            },
-            events: {
-                eventOne: null,
-                eventTwo: null,
-                eventThree: null
-            }
-        });
-    
-        fluidJSTests.test("Listener Merging Tests: FLUID-4196", function() {
-            var threeFired = true;
-            var that = fluid.tests.listenerMerging({
-                listeners: {
-                    eventThree: function () {threeFired = true;}
-                }
-            });
-            that.events.eventThree.fire();
-            jqUnit.assertTrue("Event three listener notified", threeFired);
-        });
-        
         fluid.tests.initLifecycle = function(that) {
             that.initted = true;  
         };
