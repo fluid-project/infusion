@@ -637,7 +637,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // unsupported, non-API function
     fluid.expander.preserveFromExpansion = function(options) {
         var preserve = {};
-        var preserveList = ["mergePolicy", "mergeAllOptions", "components", "invokers", "events"];
+        var preserveList = ["mergePolicy", "mergeAllOptions", "components", "invokers", "events", "listeners"];
         fluid.each(options.mergePolicy, function(value, key) {
             if (fluid.mergePolicyIs(value, "noexpand")) {
                 preserveList.push(key);
