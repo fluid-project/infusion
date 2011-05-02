@@ -22,16 +22,6 @@
     padding:0px;
 }
 
-:focus {
-    /* FLUID-3880: Fixes an issue with FSS focus in IE. */
-    outline: 0px;
-}
-
-.demo-pager-container a:focus {
-    /* FLUID-3880: Specify focus for elements. */
-    outline: 2px #000 solid;
-}
-
 /***********************************************
  * Styles for table formatting.
  */
