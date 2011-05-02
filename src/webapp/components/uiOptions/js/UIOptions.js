@@ -374,8 +374,8 @@ var fluid_1_4 = fluid_1_4 || {};
         rendererOptions: {
             autoBind: true
         },
-        preInitFunction: "fluid.uiOptions.controls.preInit",
-        finalInitFunction: "fluid.uiOptions.controls.finalInit"
+        finalInitFunction: "fluid.uiOptions.controls.finalInit",
+        produceTree: "fluid.uiOptions.controls.produceTree"
     });
 
     var initModel = function (that) {
@@ -409,11 +409,6 @@ var fluid_1_4 = fluid_1_4 || {};
         
     };
     
-    fluid.uiOptions.controls.preInit = function (that) {
-        // A work-around for http://issues.fluidproject.org/browse/FLUID-4190
-        that.produceTree = fluid.uiOptions.controls.produceTree;
-    };
-
     fluid.uiOptions.controls.finalInit = function (that) {
         initModel(that);
         setControlsChangeApplier(that, fluid.copy(that.options.uiEnhancer.model));

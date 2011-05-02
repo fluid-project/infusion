@@ -7,13 +7,12 @@
 				<label for="min-text-size" class="fl-label">Text Size</label>
 				<div class="fl-inputs">
 					<p class="flc-textfieldSlider-slider fl-slider fl-slider-horz"> </p>
-					<input id="min-text-size" class="flc-textfieldSlider-field" type="text" /> times                                
+					<input id="min-text-size" class="flc-textfieldSlider-field" type="text" /> times      
 				</div>
 			</li>
 			<li>
 				<label for="text-font" class="fl-label">Text Style</label>
-				<!-- select rsf:id="text-font" id="text-font" class="fl-inputs"></select -->
-				<select id="text-font" name="text-font">
+				<select class="flc-uiOptions-text-font" id="text-font">
 					<option value="default" class="default">Default</option>
 					<option value="times" class="times">Times New Roman</option>
 					<option value="comic" class="comic">Comic Sans</option>
@@ -23,10 +22,7 @@
 			</li>   
 			<li>
 				<label class="fl-label" for="theme">Colour & Contrast</label>
-				<!-- select rsf:id="theme" id="theme" class="fl-inputs">
-					<option>contrast here</option>
-				</select -->
-				<select id="theme" name="theme">
+				<select class="flc-uiOptions-theme" id="theme">
 					<option value="default" class="default">Default</option>
 					<option value="bw" class="bw">Black on white</option>
 					<option value="wb" class="wb">White on black</option>
@@ -46,14 +42,14 @@
         <h2><img src="../../../components/uiOptions/images/uio_icon_layoutandnavigation_18x18.png" alt="" /> Layout and navigation</h2>        
 		<ul>
 			<li>                             
-				<input type="checkbox" id="layout-choice" class="fl-force-left" />
+				<input type="checkbox" id="layout-choice" class="flc-uiOptions-layout fl-force-left" />
 				<div class="fl-force-left">
 					<label for="layout-choice" class="fl-label">Simplify Layout</label>
 					<p>Converts a page to a single column layout</p>
 				</div>
 			</li>                
 			<li>
-				<input type="checkbox" id="toc-choice" class="fl-force-left" />
+				<input type="checkbox" id="toc-choice" class="flc-uiOptions-toc fl-force-left" />
 				<div class="fl-force-left">
 					<label for="toc-choice" class="fl-label">Show Table of Contents</label>
 					<p>Adds a table of contents to the top of the page</p>
@@ -64,14 +60,14 @@
         <h2><img src="../../../components/uiOptions/images/uio_icon_linksandbuttons_18x18.png" alt="" /> Links and buttons</h2>
         <ul>
 			<li>
-				<input type="checkbox" id="links-choice"class="fl-force-left" />
+				<input type="checkbox" id="links-choice" class="flc-uiOptions-links-choice fl-force-left" />
 				<div class="fl-force-left">
 					<label for="links-choice" class="fl-label">Emphasize Links</label>
 					<p>Makes links larger, bold, and underlined</p>
 				</div>
 			</li>
 			<li>
-				<input type="checkbox" id="inputs-choice"class="fl-force-left" />
+				<input type="checkbox" id="inputs-choice"class="flc-uiOptions-inputs-choice fl-force-left" />
 				<div class="fl-force-left">
 					<label for="inputs-choice" class="fl-label">Make Inputs Larger</label>
 					<p>Makes buttons, drop-down menus, text-fields, and other inputs larger</p>
@@ -81,14 +77,14 @@
     </div>
 
     <div class="fl-col">
-        <div class="fl-preview">
+        <div class="fl-uio-preview">
             <h2>Preview your changes</h2>
             <iframe class="flc-uiOptions-preview-frame" src="" frameborder="0"></iframe>
         </div>
-        <div class="fl-text-align-center fl-subcomp-buttons">
+        <div class="fl-text-align-center fl-uio-buttons">
             <input class="flc-uiOptions-reset" type="button" value="Reset" />
-            <input class="flc-uiOptions-save" type="button" value="Save and apply" />
-            <input class="flc-uiOptions-cancel" type="button" value="Cancel" />
+            <input class="flc-uiOptions-save fl-uio-save" type="button" value="Save and apply" />
+            <input class="flc-uiOptions-cancel fl-uio-cancel" type="button" value="Cancel" />
         </div>                
     </div>
     

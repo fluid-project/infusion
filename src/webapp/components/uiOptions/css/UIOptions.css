@@ -104,8 +104,35 @@
 .fl-uiOptions select#theme option.yb { color: #ffee00; background-color: #000;}
 
 /* Preview Area */
-.fl-uiOptions .fl-preview iframe {
+.fl-uiOptions .fl-uio-preview iframe {
 	height: 300px;
 	width: 100%;
-	border: 2px dotted black;
+	border: 2px solid #d7d7d7;
+}
+
+/* Apply buttons */
+.fl-uiOptions .fl-uio-buttons {
+	margin-top: 1em;
+}
+
+.fl-uiOptions .fl-uio-buttons input {
+	text-transform: uppercase;
+	text-decoration: underline;
+	border: 2px solid #d7d7d7;	
+	background-color: #f0f0f0;		
+	padding: 5px;
+}
+
+.fl-uiOptions .fl-uio-buttons .fl-uio-save {
+	padding-left: 20px;
+	background-image: url("../../../components/uiOptions/images/uio_icon_linksandbuttons_18x18.png");
+	background-repeat: no-repeat;
+	background-position: 2px 5px;
+}
+
+.fl-uiOptions .fl-uio-buttons .fl-uio-cancel {
+	padding-left: 20px;
+	background-image: url("../../../components/uiOptions/images/uio_icon_linksandbuttons_18x18.png");
+	background-repeat: no-repeat;
+	background-position: 2px 5px;
 }
