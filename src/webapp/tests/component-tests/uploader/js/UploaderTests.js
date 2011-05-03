@@ -186,6 +186,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return that.uploader;
         };        
         
+        /*
+         * Override the HTML5 doFormDataUpload() function to avoid passing
+         * invalid values into the FormData.   FF4 restricts passing 
+         * JSON objects as the value in the FormData append() function
+         */
+        fluid.tests.uploader.doFormDataUpload = function () {
+            // DO NOTHING
+        }
+        
         fluid.defaults("fluid.tests.uploader.parent", {
             gradeNames: ["fluid.littleComponent"],
             components: {
@@ -225,6 +234,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.demands("fluid.uploader.html5Strategy.createFileUploadXHR", ["fluid.uploader.html5Strategy.remote", "fluid.uploader.tests"], {
             funcName: "fluid.tests.uploader.createMockXHR"
         });    
+        
+        fluid.demands("fluid.uploader.html5Strategy.doUpload", [
+            "fluid.uploader.html5Strategy.remote", 
+            "fluid.browser.supportsFormData",
+            "fluid.uploader.tests"
+        ], {
+            funcName: "fluid.tests.uploader.doFormDataUpload"
+        });
         
         var addFiles = function (uploader) {
             var browseButtonView = uploader.strategy.local.browseButtonView;
