@@ -1,0 +1,29 @@
+/* UI Options Fat Panel styles */
+
+/* Top bar and show button */
+
+#top-bar {
+	width: 100%;
+	height: 5px;
+	background-color: #fff;
+	border-bottom: 1px solid #ccc;	
+}
+
+.show-hide-button {
+	float:right;
+	text-transform: uppercase;
+	font-weight: bold;	
+	border: 0px;
+	background-color: white;	
+	padding: 5px;
+	margin-right: 10px;
+	border-radius: 8px;	
+	border-bottom: 1px solid #ccc;
+}
+
+.hide-button {
+	float:right;
+	text-transform: uppercase;
+}
+
+/* Tabs */
