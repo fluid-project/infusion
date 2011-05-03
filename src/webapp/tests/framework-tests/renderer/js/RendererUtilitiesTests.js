@@ -9,14 +9,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
 /*global fluid, jqUnit, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid.registerNamespace("fluid.tests");
 
@@ -95,7 +95,8 @@ fluid.registerNamespace("fluid.tests");
                     tree: { value: "${{elementPath}}" }
                 },
                 message: {
-                    messagekey: "message"
+                    messagekey: "message",
+                    decorators: {"addClass": "{styles}.applicableStyle"}
                 },
                 deffoltmessage: {
                     messagekey: "deffolt"
@@ -112,6 +113,9 @@ fluid.registerNamespace("fluid.tests");
             parentBundle: "{globalBundle}",
             strings: {
                 message: "A mess of messuage"          
+            },
+            styles: {
+                applicableStyle: ".fl-applicable-style"  
             }
         });
         
@@ -194,6 +198,9 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Decorated text resolved from top level", parentValue, decorated.text());
             var child = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
             jqUnit.assertEquals("Located decorator with IoC-resolved value", parentValue, child.options.decoratorValue);
+            component.middle.refreshView();
+            var child2 = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
+            jqUnit.assertNotEquals("Rendering has produced new component", child, child2);
         });
         
         var compTests = jqUnit.testCase("Renderer component tests");
@@ -207,6 +214,8 @@ fluid.registerNamespace("fluid.tests");
             that.refreshView();
             var renderMess = that.locate("message").text();
             jqUnit.assertEquals("Rendered message from bundle", that.options.strings.message, renderMess);
+            jqUnit.assertTrue("Applied style using addClass decorator reference to styles block", 
+                that.locate("message").hasClass(that.options.styles.applicableStyle));
             var renderDeffoltMess = that.locate("deffoltmessage").text();
             jqUnit.assertEquals("Rendered message from global bundle", globalMessages.deffolt, renderDeffoltMess);
             jqUnit.assertEquals("Resolver global message using local resolver", globalMessages.deffolt, that.messageResolver.resolve("deffolt"));
@@ -418,6 +427,72 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Message rendered", fluid.defaults("fluid.tests.paychequeRenderer").protoTree.message,
               message.text());
         });
+     
+        fluid.defaults("fluid.tests.FLUID4165Component", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                input: ".flc-renderUtils-test"
+            },
+            protoTree: {
+                input: "${value}"
+            }
+        });
+     
+        compTests.test("FLUID-4165 - ensure automatic creation of applier if none supplied", function() {
+            var model = {value: "Initial Value"};
+            var that = fluid.tests.FLUID4165Component(".FLUID-4165-test", {model: model});
+            that.refreshView();
+            var input = that.locate("input");
+            jqUnit.assertEquals("Initial value rendered", model.value, input.val());
+            input.val("New Value");
+            input.change();
+            jqUnit.assertEquals("Updated value read", "New Value", model.value);
+        });
+    
+        fluid.defaults("fluid.tests.FLUID4189Component", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                input: ".flc-renderUtils-test",
+                input2: ".flc-renderUtils-test2"
+            },
+            produceTree: "fluid.tests.FLUID4189Component.produceTree"
+        });
+        
+        fluid.tests.FLUID4189Component.produceTree = function() {
+            return {
+                input: "${value}"
+            };
+        };
+        
+        compTests.test("FLUID-4189 - refined workflow for renderer component", function() {
+            function adjustModel(model, applier, that) {
+                model.path2 = "value2";
+            }
+            function adjustTree(that, tree) {
+                tree.children.push({
+                    ID: "input2",
+                    valuebinding: "path2"
+                });
+            }
+            function afterRender() {
+                jqUnit.assert("afterRender function called");  
+            }
+            var model = {value: "Initial Value"};
+            var that = fluid.tests.FLUID4189Component(".FLUID-4189-test", { 
+                model: model,
+                listeners: {
+                    prepareModelForRender: adjustModel,
+                    onRenderTree: adjustTree,
+                    afterRender: afterRender
+                }
+            });
+            that.refreshView();
+            jqUnit.expect(3);
+            var input = that.locate("input");
+            jqUnit.assertEquals("Field 1 rendered", model.value, input.val());
+            var input2 = that.locate("input2");
+            jqUnit.assertEquals("Field 2 rendered", "value2", input2.val());
+        });
     
         var protoTests = new jqUnit.TestCase("Protocomponent Expander Tests");
   
@@ -569,6 +644,53 @@ fluid.registerNamespace("fluid.tests");
                     ]
                 };
             jqUnit.assertDeepEq("Decorator expansion", expected, expanded);
+        });
+        
+        fluid.defaults("fluid.tests.repeatDecorator", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+        });
+        
+        fluid.defaults("fluid.tests.repeatHead", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            protoTree: {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    controlledBy: "vector",
+                    pathAs: "elementPath",
+                    valueAs: "element", 
+                    repeatID: "link",
+                    tree: {
+                        decorators: {
+                            type: "fluid",
+                            func: "fluid.tests.repeatDecorator",
+                            options: {
+                                model: {
+                                    value: "${{element}}"
+                                }  
+                            }
+                          
+                        }  
+                    }
+                }
+            }
+        });
+        
+        protoTests.test("FLUID-4168 test: decorator expansion reference to repetition variables", function() {
+            var model = {
+                vector: [1, 2, 3]
+            };
+            var head = fluid.tests.repeatHead(".repeater-leaf-test", {model: model});
+            head.refreshView();
+            var decorators = fluid.renderer.getDecoratorComponents(head);
+            var declist = [];
+            fluid.each(decorators, function(decorator, key) {
+                declist.push({key: key, decorator: decorator});
+            });
+            declist.sort(function(ea, eb) {return ea.key < eb.key? -1 : 1});
+            var decvals = fluid.transform(declist, function(dec) {
+                return dec.decorator.model.value;  
+            });
+            jqUnit.assertDeepEq("Model values recovered from decorators", model.vector, decvals);
         });
         
         protoTests.test("FLUID-3658 test: simple repetition expander", function () {

@@ -12,7 +12,9 @@
 
 
 
-.fl-theme-coal :focus,
+.fl-theme-coal .fl-focus:focus,
+.fl-theme-coal .fl-focus :focus,
+.fl-theme-coal.fl-focus :focus,
 .fl-theme-coal .selectable  {
    /* themed focus indicator */
    outline: 0.1em solid #000;
@@ -23,31 +25,31 @@
 .fl-theme-coal a:hover {color: #999999;}
 .fl-theme-coal h1 {color:#000000; border-bottom-width:0.2em; border-bottom-style:solid;} 
 .fl-theme-coal h2 {color: #666666;}
-.fl-theme-coal th {border:0.1em solid #ffffff; background-color:#dfefff !important;}
-.fl-theme-coal td {border:0.1em solid #999999 !important;}
+.fl-theme-coal th {border:0.1em solid #ffffff; background-color:#dfefff;}
+.fl-theme-coal td {border:0.1em solid #999999;}
 .fl-theme-coal .fl-textfield,
 .fl-theme-coal .fl-textarea {background-color:#ffffff; border:1px solid #000000;}
 .fl-theme-coal .fl-icon {background-color:#666666}
 
 /* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
-.fl-theme-coal .fl-inlineEdit-edit {background-color:#ebebeb !important; border:0.1em solid #ffffff; margin:-0.1em;}
+.fl-theme-coal .fl-inlineEdit-edit {background-color:#ebebeb; border:0.1em solid #ffffff; margin:-0.1em;}
 
 /* Helper: buttons */
 .fl-theme-coal .fl-button-left, 
-.fl-theme-coal .fl-button-right {color:#FFFFFF !important; background-color:#333 !important;}
+.fl-theme-coal .fl-button-right {color:#FFFFFF; background-color:#333;}
 .fl-theme-coal .fl-button-left {background-image:url(../images/themes/coal/buttons-med-cap.png);}
 .fl-theme-coal .fl-button-right {background-image:url(../images/themes/coal/buttons-med-cap.png);}
 .fl-theme-coal .fl-button-inner {background-image:url(../images/themes/coal/buttons-med-bg.png);}
 
 .fl-theme-coal a.fl-button-left:hover,
-.fl-theme-coal a.fl-button-right:hover {color:#ffffff !important}
+.fl-theme-coal a.fl-button-right:hover {color:#ffffff}
 
 
 /* Helper: Tabs */
 .fl-theme-coal .fl-tabs {border-bottom-color:#333333;}
 .fl-theme-coal .fl-tabs li,
-.fl-theme-coal .fl-tabs li a  {font-weight:bold; color:#ffffff !important; border-color:#333333; border-bottom-color:#333333; background-color:#666666; text-decoration:none;}
-.fl-theme-coal .fl-tabs li a:hover {background-color:#333333; color:#fff !important;}
+.fl-theme-coal .fl-tabs li a  {font-weight:bold; color:#ffffff; border-color:#333333; border-bottom-color:#333333; background-color:#666666; text-decoration:none;}
+.fl-theme-coal .fl-tabs li a:hover {background-color:#333333; color:#fff;}
 /* Deprecated */
 .fl-theme-coal .fl-tabs li.fl-activeTab,
 .fl-theme-coal .fl-tabs li.fl-activeTab:hover,
@@ -56,7 +58,7 @@
 /* New syntax */
 .fl-theme-coal .fl-tabs li.fl-tabs-active,
 .fl-theme-coal .fl-tabs li.fl-tabs-active a,
-.fl-theme-coal .fl-tabs li.fl-tabs-active a:hover {background-color: #ebebeb; border-bottom-color:#ebebeb; color:#000 !important;}
+.fl-theme-coal .fl-tabs li.fl-tabs-active a:hover {background-color: #ebebeb; border-bottom-color:#ebebeb; color:#000;}
 .fl-theme-coal .fl-tabs-content {background-color:#ebebeb; color:#000; border:1px solid #999999; border-top:none;}
 
 /* Helper: Menu */
@@ -67,11 +69,11 @@
 .fl-theme-coal .fl-listmenu li a, 
 .fl-theme-coal .fl-list-menu li a  {font-weight:bold; background-color:#ebebeb; border-color:#333; text-decoration:none;}
 .fl-theme-coal .fl-listmenu a:hover, 
-.fl-theme-coal .fl-list-menu a:hover {background-color:#ffffff; color:#333333 !important;}
-.fl-theme-coal .fl-listmenu .fl-activemenu, 
-.fl-theme-coal .fl-list-menu .fl-activemenu,
-.fl-theme-coal .fl-listmenu .fl-activemenu:hover, 
-.fl-theme-coal .fl-list-menu .fl-activemenu:hover { background-color: #ffffff; border-bottom-color:#999999; color:#d9d9d9;}
+.fl-theme-coal .fl-list-menu a:hover {background-color:#ffffff; color:#333333;}
+.fl-theme-coal .fl-listmenu .fl-activemenu a, 
+.fl-theme-coal .fl-list-menu .fl-activemenu a,
+.fl-theme-coal .fl-listmenu .fl-activemenu a:hover, 
+.fl-theme-coal .fl-list-menu .fl-activemenu a:hover { background-color: #ffffff; border-bottom-color:#999999; color:#666;}
 
 /* Helper: Thumbnail Grid */
 .fl-theme-coal .fl-grid {border:2px solid #000000; background-color:#ccc;}
@@ -104,8 +106,8 @@
 .fl-theme-coal .fl-widget-options {}
 .fl-theme-coal .fl-widget-options ul {} 
 .fl-theme-coal .fl-widget-options li {border-left:1px solid #ccc;}
-.fl-theme-coal .fl-widget-options li a {color: #ebebeb !important;}
-.fl-theme-coal .fl-widget-options li a:hover {color: #ffffff !important;}
+.fl-theme-coal .fl-widget-options li a {color: #ebebeb;}
+.fl-theme-coal .fl-widget-options li a:hover {color: #ffffff;}
 .fl-theme-coal .fl-widget-options a.icon:hover {background-color:#ffffff; border-color:#000;}
 
 /* Widget content */
@@ -116,7 +118,7 @@
 .fl-theme-coal .fl-progress-fill {color:#ffffff; background-color:#999999;}
 
 /* States */
-.fl-theme-coal .fl-reorderer-dropMarker {background-color:#f00 !important;}
+.fl-theme-coal .fl-reorderer-dropMarker {background-color:#f00;}
 
 /* Enhaced Graphics Toggles */
 
@@ -143,7 +145,7 @@
     border:none;
     margin:0;
     padding:4px 16px 6px 0;
-    color:#ebebeb !important;
+    color:#ebebeb;
     *padding-bottom:4px;
 }
 .fl-theme-coal .fl-tabs-enhanced li.fl-tabs-active {
@@ -151,7 +153,7 @@
 }
 .fl-theme-coal .fl-tabs-enhanced li.fl-tabs-active a {
     background:transparent url(../images/themes/coal/tabs-med-active-bg.png) no-repeat scroll right top;
-    color:#ffffff !important;
+    color:#ffffff;
 }
 
 /* Widget Content Background */
@@ -177,7 +179,7 @@
     border:none;
     margin:0;
     padding:4px 16px 6px 0;
-    color:#ebebeb !important;
+    color:#ebebeb;
     *padding-bottom:4px;
 }
 .fl-theme-coal .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active {
@@ -185,5 +187,5 @@
 }
 .fl-theme-coal .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active a {
     background:transparent url(../images/themes/coal/tabs-light-active-bg.png) no-repeat scroll right top;
-    color:#ffffff !important;
+    color:#ffffff;
 }

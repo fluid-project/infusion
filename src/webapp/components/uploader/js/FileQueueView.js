@@ -9,14 +9,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
 /*global fluid_1_4:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
@@ -294,23 +294,12 @@ var fluid_1_4 = fluid_1_4 || {};
         that.rowProgressorTemplate = that.locate("rowProgressorTemplate", that.options.uploaderContainer).remove();
     };
     
-    // TODO: Delete this when we have a viable way of declaratively registering listeners.
-    var bindModelEvents = function (that) {
-        that.events.afterFileQueued.addListener(that.addFile);
-        that.events.onUploadStart.addListener(that.prepareForUpload);
-        that.events.onFileStart.addListener(that.showFileProgress);
-        that.events.onFileProgress.addListener(that.updateFileProgress);
-        that.events.onFileSuccess.addListener(that.markFileComplete);
-        that.events.onFileError.addListener(that.showErrorForFile);
-        that.events.afterFileComplete.addListener(that.hideFileProgress);
-        that.events.afterUploadComplete.addListener(that.refreshAfterUpload);
-    };
+    fluid.registerNamespace("fluid.uploader.fileQueueView");
     
-    var setupFileQueue = function (that) {
-        fluid.initDependents(that);
+    
+    fluid.uploader.fileQueueView.finalInit = function (that) {
         prepareTemplateElements(that);         
         addKeyboardNavigation(that);
-        bindModelEvents(that);
     };
     
     /**
@@ -320,11 +309,9 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {fileQueue} queue a file queue model instance
      * @param {Object} options configuration options for the view
      */
-    fluid.uploader.fileQueueView = function (container, options) {
-        var that = fluid.initView("fluid.uploader.fileQueueView", container, options);
+    fluid.uploader.fileQueueView.preInit = function (that) {
         that.fileProgressors = {};
-        that.model = that.options.model;
-        
+
         that.addFile = function (file) {
             addFile(that, file);
         };
@@ -366,23 +353,20 @@ var fluid_1_4 = fluid_1_4 || {};
             that.selectableContext.refresh();
             that.scroller.refreshView();
         };
-        
-        setupFileQueue(that);     
-        return that;
     };
     
-    fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader.multiFileUploader", {
-        funcName: "fluid.uploader.fileQueueView",
-        args: [
-            "{multiFileUploader}.dom.fileQueue",
-            fluid.COMPONENT_OPTIONS
-        ]
-    });
-    
     fluid.defaults("fluid.uploader.fileQueueView", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        preInitFunction:   "fluid.uploader.fileQueueView.preInit",
+        finalInitFunction: "fluid.uploader.fileQueueView.finalInit",
+        
         components: {
             scroller: {
                 type: "fluid.scrollableTable"
+            },
+            
+            eventBinder: {
+                type: "fluid.uploader.fileQueueView.eventBinder"
             }
         },
         
@@ -432,20 +416,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 INVALID_FILETYPE: "One or more files were not added to the queue because they were of the wrong type."
             }
         },
-        
         events: {
-            onFileRemoved: "{multiFileUploader}.events.onFileRemoved",
-            
-            // TODO: FileQueueView only listens for these events. Move them
-            // somewhere more sensible when such a place exists.
-            afterFileQueued: "{multiFileUploader}.events.afterFileQueued",
-            onUploadStart: "{multiFileUploader}.events.onUploadStart",
-            onFileStart: "{multiFileUploader}.events.onFileStart",
-            onFileProgress: "{multiFileUploader}.events.onFileProgress",
-            onFileSuccess: "{multiFileUploader}.events.onFileSuccess",
-            onFileError: "{multiFileUploader}.events.onFileError",
-            afterFileComplete: "{multiFileUploader}.events.afterFileComplete",
-            afterUploadComplete: "{multiFileUploader}.events.afterUploadComplete"
+            onFileRemoved: null
         },
         
         mergePolicy: {
@@ -453,7 +425,15 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
+    /**
+     * EventBinder declaratively binds FileQueueView's methods as listeners to Uploader events using IoC.
+     */
+    fluid.defaults("fluid.uploader.fileQueueView.eventBinder", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"]
+    });
     
+    fluid.demands("fluid.uploader.fileQueueView.eventBinder", [], {} 
+    );
     /**************
      * Scrollable *
      **************/
@@ -467,9 +447,8 @@ var fluid_1_4 = fluid_1_4 || {};
      * @return the scrollable component
      */
     fluid.scrollable = function (element, options) {
-        var that = fluid.initLittleComponent("fluid.scrollable", options);
-        element = fluid.container(element);
-        that.scrollable = that.options.makeScrollableFn(element, that.options);
+        var that = fluid.initView("fluid.scrollable", element, options);
+        that.scrollable = that.options.makeScrollableFn(that.container, that.options);
         that.maxHeight = that.scrollable.css("max-height");
 
         /**
@@ -526,6 +505,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.defaults("fluid.scrollableTable", {
+        gradeNames: "fluid.viewComponent",
         makeScrollableFn: fluid.scrollable.makeTable,
         wrapperMarkup: "<div class='fl-scrollable-scroller'><div class='fl-scrollable-inner'></div></div>"
     });    

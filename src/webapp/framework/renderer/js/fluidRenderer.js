@@ -8,14 +8,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
 /*global fluid_1_4:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid_1_4 = fluid_1_4 || {};
 
@@ -265,9 +265,11 @@ fluid_1_4 = fluid_1_4 || {};
         form: "action",
         applet: "codebase", object: "codebase" //jslint:ok
     };
+    
+    renderer.decoratorComponentPrefix = "**-renderer-";
   
     renderer.IDtoComponentName = function(ID, num) {
-        return "**-renderer-" + ID.replace(/\./g, "") + "-" + num;
+        return renderer.decoratorComponentPrefix + ID.replace(/\./g, "") + "-" + num;
     };
     
     renderer.invokeFluidDecorator = function(func, args, ID, num, options) {
@@ -311,6 +313,7 @@ fluid_1_4 = fluid_1_4 || {};
         var decoratorQueue = [];
         
         var renderedbindings = {}; // map of fullID to true for UISelects which have already had bindings written
+        var usedIDs = {};
         
         var that = {};
         
@@ -684,7 +687,7 @@ fluid_1_4 = fluid_1_4 || {};
             
             var count = 1;
             var baseid = attrcopy.id;
-            while (renderOptions.document.getElementById(attrcopy.id)) {
+            while (renderOptions.document.getElementById(attrcopy.id) || usedIDs[attrcopy.id]) {
                 attrcopy.id = baseid + "-" + (count++); 
             }
             component.finalID = attrcopy.id;
@@ -746,8 +749,11 @@ fluid_1_4 = fluid_1_4 || {};
                 if (type === "$") {type = decorator.type = "jQuery";}
                 if (type === "jQuery" || type === "event" || type === "fluid") {
                     var id = adjustForID(attrcopy, torender, true, finalID);
-                    decorator.id = id;
-                    decoratorQueue[decoratorQueue.length] = decorator;
+                    if (decorator.ids === undefined) {
+                        decorator.ids = [];
+                        decoratorQueue[decoratorQueue.length] = decorator; 
+                    }
+                    decorator.ids.push(id);
                 }
                 // honour these remaining types immediately
                 else if (type === "attrs") {
@@ -1020,6 +1026,9 @@ fluid_1_4 = fluid_1_4 || {};
                     out += rendered;
                     closeTag();
                 }
+            }
+            if (attrcopy.id !== undefined) {
+                usedIDs[attrcopy.id] = true;
             }
         }
              
@@ -1346,28 +1355,34 @@ fluid_1_4 = fluid_1_4 || {};
         function processDecoratorQueue() {
             for (var i = 0; i < decoratorQueue.length; ++i) {
                 var decorator = decoratorQueue[i];
-                var node = fluid.byId(decorator.id, renderOptions.document);
-                if (!node) {
-                    fluid.fail("Error during rendering - component with id " + decorator.id 
-                        + " which has a queued decorator was not found in the output markup");
-                }
-                if (decorator.type === "jQuery") {
-                    var jnode = $(node);
-                    jnode[decorator.func].apply(jnode, $.makeArray(decorator.args));
-                }
-                else if (decorator.type === "fluid") {
-                    var args = decorator.args;
-                    if (!args) {
-                        if (!decorator.container) {
-                            decorator.container = node;
-                        }
-                        args = [decorator.container, decorator.options];
+                for (var j = 0; j < decorator.ids.length; ++ j) {
+                    var id = decorator.ids[j];
+                    var node = fluid.byId(id, renderOptions.document);
+                    if (!node) {
+                        fluid.fail("Error during rendering - component with id " + id 
+                            + " which has a queued decorator was not found in the output markup");
                     }
-                    var that = renderer.invokeFluidDecorator(decorator.func, args, decorator.id, i, options);
-                    decorator.that = that;
-                }
-                else if (decorator.type === "event") {
-                    node[decorator.event] = decorator.handler; 
+                    if (decorator.type === "jQuery") {
+                        var jnode = $(node);
+                        jnode[decorator.func].apply(jnode, $.makeArray(decorator.args));
+                    }
+                    else if (decorator.type === "fluid") {
+                        var args = decorator.args;
+                        if (!args) {
+                            if (!decorator.container) {
+                                decorator.container = $(node);
+                            }
+                            else {
+                                decorator.container.push(node);
+                            }
+                            args = [node, decorator.options];
+                        }
+                        var that = renderer.invokeFluidDecorator(decorator.func, args, id, i, options);
+                        decorator.that = that;
+                    }
+                    else if (decorator.type === "event") {
+                        node[decorator.event] = decorator.handler; 
+                    }
                 }
             }
         }

@@ -6,14 +6,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, jQuery*/
+/*global fluid, jqUnit, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid.registerNamespace("fluid.tests");
 
@@ -53,20 +53,13 @@ fluid.registerNamespace("fluid.tests");
         ]);
 
 
-    // Somehow we sort of have to write this. Perhaps "component grading" will make it
-    // possible to guess instantiation signatures
-    //fluid.demands("fluid.tests.modelComponent", "fluid.tests.dependentModel",
-    //  [fluid.COMPONENT_OPTIONS]);
-
     fluid.defaults("fluid.tests.modelComponent", {
-        gradeNames: "modelComponent",
-        mergePolicy: {
-            model: "preserve"
-        }
+        gradeNames: ["fluid.modelComponent", "autoInit"]
     });
 
 
     fluid.defaults("fluid.tests.dependentModel", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         mergePolicy: {
             model: "preserve"
         },
@@ -81,6 +74,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     fluid.defaults("fluid.tests.fluid3818head", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             child: {
                 type: "fluid.tests.fluid3818child",
@@ -92,6 +86,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     fluid.defaults("fluid.tests.thatStackHead", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         headValue: "headValue",
         components: {
             child1: {
@@ -120,70 +115,19 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
-    fluid.defaults("fluid.tests.reinstantiation", {
-        headValue: "headValue",
-        components: {
-            child1: {
-                type: "fluid.tests.reinsChild",
-                options: {
-                    components: {
-                        instantiator: "{instantiator}",
-                        child2: {
-                            type: "fluid.tests.reinsChild2",
-                            options: {
-                                value: "{reinstantiation}.options.headValue",
-                                components: {
-                                    child3: {
-                                        type: "fluid.tests.reinsChild2",
-                                        options: {
-                                            value: "{reinstantiation}.options.headValue"
-                                        }
-                                    }  
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    });
-    
-    fluid.demands("fluid.tests.reinsChild2", "fluid.tests.reinstantiation",
-       [fluid.COMPONENT_OPTIONS, "{reinstantiation}.options.headValue"] 
-    );
-    
-    fluid.tests.reinsChild2 = function(options, otherValue) {
-        var that = fluid.initLittleComponent("fluid.tests.reinsChild2", options);
-        fluid.initDependents(that);
-        that.otherValue = otherValue;
-        return that;
-    };
-
     fluid.makeComponents({
         "fluid.tests.testOrder":          "fluid.viewComponent", 
         "fluid.tests.subComponent":       "fluid.viewComponent",
-        "fluid.tests.invokerComponent":   "fluid.littleComponent",
-        "fluid.tests.invokerComponent2":  "fluid.littleComponent",
-        "fluid.tests.modelComponent":     "fluid.littleComponent",
-        "fluid.tests.dependentModel":     "fluid.littleComponent",
-        "fluid.tests.multiResolution":    "fluid.littleComponent",
         "fluid.tests.multiResSub":        "fluid.littleComponent",
         "fluid.tests.multiResSub2":       "fluid.littleComponent",
         "fluid.tests.multiResSub3":       "fluid.littleComponent",
-        "fluid.tests.defaultInteraction": "fluid.littleComponent",
-        "fluid.tests.popup":              "fluid.littleComponent",
-        "fluid.tests.fluid3818head":      "fluid.littleComponent",
         "fluid.tests.fluid3818child":     "fluid.littleComponent",
-        "fluid.tests.thatStackHead":      "fluid.littleComponent",
         "fluid.tests.thatStackTail":      "fluid.littleComponent",
-        "fluid.tests.reinstantiation":    "fluid.littleComponent",
         "fluid.tests.reinsChild":         "fluid.littleComponent"
-        //"fluid.tests.reinsChild2":        "fluid.littleComponent",
-        // TODO: GRADES
-        //"fluid.tests.resultsPager":       "fluid.littleComponent"
     });
 
     fluid.defaults("fluid.tests.invokerComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         template: "Every {0} has {1} {2}(s)",
         invokers: {
             render: {
@@ -197,6 +141,7 @@ fluid.registerNamespace("fluid.tests");
     });
     
     fluid.defaults("fluid.tests.invokerComponent2", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         template: "Every {0} has {1} {2}(s)",
         invokers: {
             render: "stringRenderer"
@@ -212,14 +157,15 @@ fluid.registerNamespace("fluid.tests");
     });
 
     fluid.demands("sub1", "fluid.tests.testComponent2",
-    ["{testComponent2}.container", {"crossDefault": "{testComponent2}.sub2.options.value"}]
+        ["{testComponent2}.container", {"crossDefault": "{testComponent2}.sub2.options.value"}]
     );
 
     fluid.demands("sub2", "fluid.tests.testComponent2",
-    ["{testComponent2}.container", fluid.COMPONENT_OPTIONS]);
+        ["{testComponent2}.container", fluid.COMPONENT_OPTIONS]);
 
 
     fluid.defaults("fluid.tests.multiResolution", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             resSub: {
                 type: "fluid.tests.multiResSub"
@@ -249,7 +195,6 @@ fluid.registerNamespace("fluid.tests");
     fluid.demands("fluid.tests.multiResSub", ["fluid.tests.multiResolution", "fluid.tests.localFiles", "fluid.tests.localTest"],
         {
             funcName: "fluid.tests.multiResSub3",
-            parent: ["fluid.tests.multiResolution", "fluid.tests.localFiles"],
             args: [{
                 localKey1: "testValue1"
             }, null 
@@ -257,6 +202,7 @@ fluid.registerNamespace("fluid.tests");
         });
     
     fluid.defaults("fluid.tests.defaultInteraction", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             popup: {
                 type: "fluid.tests.popup"
@@ -265,6 +211,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     fluid.defaults("fluid.tests.popup", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         resources: {
             template: {
                 forceCache: true,
@@ -284,65 +231,28 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
-    fluid.defaults("fluid.tests.stackThroughInvoke", {
-        components: {
-            resultsPager: {
-                type: "fluid.tests.resultsPager",
-                options: {
-                    dataModel: "{stackThroughInvoke}.model",
-                    dataOffset: "results",
-                    modelFilter: {
-                        expander: {
-                            type: "fluid.deferredCall",
-                            func: "fluid.tests.makeModelFilter",
-                            args: ["{stackThroughInvoke}"]
-                        }
-                    }
-                }
-            }
-        }
-    });
 
-    fluid.tests.makeModelFilter = function (parentThat) {
-        return function () {
-            return {value: parentThat.model.value + 1};
-        };
-    };
-
-    fluid.tests.resultsPager = function (options) {
-        var that = fluid.initLittleComponent("fluid.tests.resultsPager", options);
-        fluid.initDependents(that);
-        return that;
-    };
-
-    fluid.tests.stackThroughInvoke = function (container, options) {
-        var that = fluid.initView(options.targetTypeName || "fluid.tests.stackThroughInvoke", container, options);
-        that.model = {value: 3};
-        that.testFluid3721 = null;
-        fluid.initDependents(that);
-        return that;
-    };
 
     var fluidIoCTests = new jqUnit.TestCase("Fluid IoC Tests");
 
     fluid.setLogging(true);
 
     fluidIoCTests.test("construct", function () {
-        expect(2);
+        jqUnit.expect(2);
         var that = fluid.tests.testComponent("#pager-top", {});
         jqUnit.assertValue("Constructed", that);
         jqUnit.assertEquals("Value transmitted", "testComponent value", that.test2.options.default1);
     });
 
     fluidIoCTests.test("crossConstruct", function () {
-        expect(2);
+        jqUnit.expect(2);
         var that = fluid.tests.testComponent2("#pager-top", {});
         jqUnit.assertValue("Constructed", that);
         jqUnit.assertEquals("Value transmitted", "Subcomponent 2 default", that.sub1.options.crossDefault);
     });
 
     fluidIoCTests.test("invokers", function () {
-        expect(2);
+        jqUnit.expect(2);
         var that = fluid.tests.invokerComponent();
         jqUnit.assertValue("Constructed", that);
         jqUnit.assertEquals("Rendered", "Every CATT has 4 Leg(s)", 
@@ -350,7 +260,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     fluidIoCTests.test("invokers with demands", function () {
-        expect(2);
+        jqUnit.expect(2);
         var that = fluid.tests.invokerComponent2();
         jqUnit.assertValue("Constructed", that);
         jqUnit.assertEquals("Rendered", "Every CATT has 4 Leg(s)", 
@@ -358,7 +268,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     fluidIoCTests.test("Aliasing expander test", function () {
-        expect(3);
+        jqUnit.expect(3);
         var model = {};
         var that = fluid.tests.dependentModel({model: model});
         jqUnit.assertValue("Constructed", that);
@@ -380,7 +290,7 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("\"Local\" subcomponent", type2, that2.resSub.typeName);
             var localDemandOptions = $.extend({}, fluid.demands("fluid.tests.multiResSub", 
                 ["fluid.tests.multiResolution", "fluid.tests.localFiles"]).args, {targetTypeName: type2});
-            jqUnit.assertDeepEq("\"Local\" subcomponent options", localDemandOptions, that2.resSub.options);
+            fluid.testUtils.assertLeftHand("\"Local\" subcomponent options", localDemandOptions, that2.resSub.options);
         
             fluid.staticEnvironment.testEnvironment = fluid.typeTag("fluid.tests.localTest");
             var that3 = fluid.tests.multiResolution();
@@ -388,11 +298,10 @@ fluid.registerNamespace("fluid.tests");
             var type3 = "fluid.tests.multiResSub3";
             jqUnit.assertEquals("\"Test\" subcomponent", type3, that3.resSub.typeName);
             var expectedOptions = {
-                localKey1: "testValue1",
-                localKey2: "localValue2"
+                localKey1: "testValue1"
     //             targetTypeName: type3 // This floats about a bit as we change policy on "typeName"
             };
-            jqUnit.assertDeepEq("\"Test\" subcomponent merged options", expectedOptions, that3.resSub.options);
+            fluid.testUtils.assertLeftHand("\"Test\" subcomponent merged options", expectedOptions, that3.resSub.options);
 
         }
         finally {
@@ -417,6 +326,7 @@ fluid.registerNamespace("fluid.tests");
         var that = fluid.tests.defaultInteraction();
         jqUnit.assertValue("Constructed", that);
         var standardDefaults = fluid.copy(fluid.defaults("fluid.tests.popup"));
+        fluid.clearLifecycleFunctions(standardDefaults);
         jqUnit.assertDeepEq("Default options", standardDefaults, that.popup.options);
     
         try {
@@ -431,6 +341,106 @@ fluid.registerNamespace("fluid.tests");
             delete fluid.staticEnvironment.localEnvironment;
         }
     });
+    
+    fluid.defaults("fluid.tests.autoGradedComponent", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        events: {
+            anEvent: null
+        }
+    });
+    
+    fluid.defaults("fluid.tests.gradedComponent", {
+        gradeNames: "fluid.viewComponent",
+        events: {
+            anEvent: null
+        }
+    });
+    
+    fluid.defaults("fluid.tests.ungradedComponent", {
+        events: {
+            anEvent: null
+        }
+    });
+    
+    fluid.tests.gradedComponent = function(container, options) {
+        var that = fluid.initView("fluid.tests.gradedComponent", container, options);
+        return that; 
+    }
+    
+    fluid.tests.ungradedComponent = function(container, options) {
+        var that = fluid.initView("fluid.tests.ungradedComponent", container, options);
+        return that; 
+    }
+    
+    fluid.defaults("fluid.tests.gradeResolutionParent", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        components: {
+            type: "fluid.tests.gradeResolutionChild",
+            container: "{gradeResolutionParent}.container"
+        }
+    });
+    
+    fluid.tests.gradeTestTypes = ["fluid.tests.gradedComponent", "fluid.tests.autoGradedComponent", "fluid.tests.ungradedComponent"];
+    
+    function testEvent(message, component) {
+        jqUnit.expect(1);
+        component.events.anEvent.addListener(function() {
+            jqUnit.assert("Event fired");
+        });
+        component.events.anEvent.fire();
+    }
+    
+    fluidIoCTests.test("Grade resolution test", function () {
+        fluid.each(fluid.tests.gradeTestTypes, function(typeName) {
+            var that = fluid.invokeGlobalFunction(typeName, ["#pager-top"]);
+            testEvent("Construction of " + typeName, that);
+        });
+    });
+
+    fluid.tests.listenerMergingPreInit = function (that) {
+        that.eventFired = function (eventName) {
+            that[eventName] = true;
+        };
+    };
+       
+    fluid.defaults("fluid.tests.listenerMerging", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        preInitFunction: "fluid.tests.listenerMergingPreInit",
+        listeners: {
+            eventOne: "{fluid.tests.listenerMerging}.eventFired",
+            eventTwo: "{fluid.tests.listenerMerging}.eventFired"
+        },
+        events: {
+            eventOne: null,
+            eventTwo: null,
+            eventThree: null
+        }
+    });
+
+    fluidIoCTests.test("Listener Merging Tests: FLUID-4196", function () {
+        var threeFired = false;
+        var that = fluid.tests.listenerMerging({
+            listeners: {
+                eventThree: function () {threeFired = true;}
+            }
+        });
+        
+        that.events.eventThree.fire();
+        jqUnit.assertTrue("Event three listener notified", threeFired);
+        
+        that.events.eventTwo.fire("twoFired");
+        jqUnit.assertTrue("Event two listener notified", that.twoFired);
+    });
+    
+    fluid.tests.initLifecycle = function(that) {
+        that.initted = true;  
+    };
+    
+    fluid.defaults("fluid.tests.lifecycleTest", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        preInitFunction: "fluid.tests.initLifecycle"  
+    });
+
 
     fluid.registerNamespace("fluid.tests.envTests");
 
@@ -468,7 +478,7 @@ fluid.registerNamespace("fluid.tests");
             params: {db: "mccord"}, 
             config: fluid.tests.envTests.config
         }, function () {
-            var resolved = fluid.resolveEnvironment(urlBuilder);
+            var resolved = fluid.resolveEnvironment(urlBuilder, {fetcher: fluid.makeEnvironmentFetcher()});
             var required = {
                 type: "fluid.stringTemplate",
                 template: "http://titan.atrc.utoronto.ca:5984/%dbName/%view", 
@@ -498,7 +508,7 @@ fluid.registerNamespace("fluid.tests");
             resultsPager: {
                 type: "fluid.tests.resultsPager",
                 options: {
-                    dataModel: "{stackThroughInvoke}.model",
+//                    dataModel: "{stackThroughInvoke}.model",
                     dataOffset: "results",
                     modelFilter: {
                         expander: {
@@ -511,6 +521,26 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
+
+    fluid.tests.makeModelFilter = function (parentThat) {
+        return function () {
+            return {value: parentThat.model.value + 1};
+        };
+    };
+
+    fluid.tests.resultsPager = function (options) {
+        var that = fluid.initLittleComponent("fluid.tests.resultsPager", options);
+        fluid.initDependents(that);
+        return that;
+    };
+
+    fluid.tests.stackThroughInvoke = function (container, options) {
+        var that = fluid.initView(options.targetTypeName || "fluid.tests.stackThroughInvoke", container, options);
+        that.model = {value: 3};
+        that.testFluid3721 = null;
+        fluid.initDependents(that);
+        return that;
+    };
 
     fluidIoCTests.test("thatStack through deferredCall Tests, proleptic ginger nicknames", function () {
         function test(compName) {
@@ -535,6 +565,40 @@ fluid.registerNamespace("fluid.tests");
         var component = fluid.tests.thatStackHead();
         var value = component.child1.getHeadValue();
         jqUnit.assertValue("Correctly resolved head value through invoker", fluid.defaults("fluid.tests.thatStackHead").headValue, value);
+    });
+
+    fluid.defaults("fluid.tests.deferredInvoke", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.defaults("fluid.tests.deferredInvokeParent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        child: {
+            expander: {
+                type: "fluid.deferredInvokeCall",
+                func: "fluid.tests.deferredInvoke",
+                args: {
+                    test: "test option"
+                }
+            }
+        }
+    });
+    
+    fluid.demands("fluid.tests.deferredInvoke", "fluid.tests.testContext", {
+        mergeOptions: {
+            test: "test option from demands"
+        }
+    });
+    
+    fluidIoCTests.test("Deferred invoked creator function", function() {
+        var parent = fluid.tests.deferredInvokeParent();
+        jqUnit.assertEquals("Child options are correctly applied", "test option", parent.options.child.options.test);
+    });
+    
+    fluidIoCTests.test("Deferred invoked creator function with demands", function() {
+        fluid.staticEnvironment.currentTestEnvironment = fluid.typeTag("fluid.tests.testContext");
+        var parent = fluid.tests.deferredInvokeParent();
+        jqUnit.assertEquals("Child options are correctly applied", "test option from demands", parent.options.child.options.test);
     });
 
 
@@ -620,6 +684,112 @@ fluid.registerNamespace("fluid.tests");
         child.events.localEvent.fire(origArg0);
     });
     
+    // Simpler demonstration matching docs, also using "scoped event binding"
+    fluid.defaults("fluid.tests.eventParent2", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            parentEvent: null
+        },
+        components: {
+            eventChild: {
+                type: "fluid.tests.eventChild2"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.eventChild2", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            parentEvent: null
+        }
+    });
+
+    fluid.demands("fluid.tests.eventChild2", "fluid.tests.eventParent2", {
+        mergeOptions: {
+            events: {
+                parentEvent: "{eventParent2}.events.parentEvent"
+            }
+        }
+    });
+    
+    fluidIoCTests.test("FLUID-4135 event injection with scope", function() {
+        var that = fluid.tests.eventParent2();
+        jqUnit.expect(1);
+        that.events.parentEvent.addListener(function() {
+            jqUnit.assert("Listener fired");  
+        });
+        that.eventChild.events.parentEvent.fire();
+        
+    });
+    
+    fluid.tests.reinsNonComponent = function() {
+        return {
+            key: "Non-component material"
+        };
+    };
+    
+    fluid.defaults("fluid.tests.unexpectedReturn", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            gchild: {
+                type: "fluid.tests.reinsChild2"
+            }
+        },
+        returnedPath: "gchild"
+    });
+    
+    fluid.defaults("fluid.tests.reinstantiation", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        headValue: "headValue",
+        components: {
+            headChild: {
+                type: "fluid.tests.reinsChild"  
+            },
+            child1: {
+                type: "fluid.tests.reinsChild",
+                options: {
+                    components: {
+                        instantiator: "{instantiator}",
+                        child2: {
+                            type: "fluid.tests.reinsChild2",
+                            options: {
+                                value: "{reinstantiation}.options.headValue",
+                                components: {
+                                    child3: {
+                                        type: "fluid.tests.reinsChild2",
+                                        options: {
+                                            value: "{reinstantiation}.options.headValue"
+                                        }
+                                    },
+                                    child4: {
+                                        type: "fluid.tests.reinsNonComponent"
+                                    },
+                                    // This duplication tests FLUID-4166
+                                    child5: "{reinstantiation}.headChild",
+                                    child6: "{reinstantiation}.headChild",
+                                    child7: {
+                                        type: "fluid.tests.unexpectedReturn"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    fluid.demands("fluid.tests.reinsChild2", "fluid.tests.reinstantiation",
+       [fluid.COMPONENT_OPTIONS, "{reinstantiation}.options.headValue"] 
+    );
+    
+    fluid.tests.reinsChild2 = function(options, otherValue) {
+        var that = fluid.initLittleComponent("fluid.tests.reinsChild2", options);
+        fluid.initDependents(that);
+        that.otherValue = otherValue;
+        return that;
+    };
+    
     function checkValue(message, root, value, paths) {
         fluid.each(paths, function(path) {
             jqUnit.assertEquals(message + " transmitted from root", value, fluid.get(root, path));
@@ -639,6 +809,40 @@ fluid.registerNamespace("fluid.tests");
         fluid.initDependent(reins.child1, "child2", instantiator);
         jqUnit.assertNotEquals("Child2 reinstantiated", origID, reins.child1.child2.id);
         checkValue("Changed value", reins, "headValue2", expectedPaths);
+    });
+    
+    fluid.defaults("fluid.tests.misclearTop", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            middle: {
+                type: "fluid.tests.misclearMiddle"
+            }  
+        }
+    });
+    
+    fluid.defaults("fluid.tests.misclearMiddle", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            leaf: {
+                type: "fluid.tests.misclearLeaf"
+            }  
+        },
+        returnedPath: "leaf"
+    });
+    
+    fluid.defaults("fluid.tests.misclearLeaf", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        preInitFunction: "fluid.tests.misclearLeaf.init"
+    });
+    
+    fluid.tests.misclearLeaf.init = function(that) {
+        that.uncreated = fluid.typeTag("uncreated");
+    }
+    
+    fluidIoCTests.test("FLUID-4179 unexpected material in clear test", function() {
+        jqUnit.expect(1);
+        var that = fluid.tests.misclearTop();
+        jqUnit.assertValue("Component successfully constructed", that);
     });
     
     fluid.defaults("fluid.tests.mergeChild", {
@@ -732,7 +936,7 @@ fluid.registerNamespace("fluid.tests");
     
     fluid.demands("fluid.tests.mergePathsChild", "fluid.tests.mergePaths", {
         options: {
-            mergePaths: [
+            mergeAllOptions: [
                 "{options}", {childOption1: "demandValue1"}, {childOption3: "{mergePaths}.options.headOption"}
                 ]
         }
@@ -740,15 +944,14 @@ fluid.registerNamespace("fluid.tests");
     
     fluid.demands("fluid.tests.mergePathsViewChild", "fluid.tests.mergePaths", [
         "#pager-top", {
-            mergePaths: ["{options}", { 
+            mergeOptions: { 
                 model:   "{mergePaths}.model", 
                 applier: "{mergePaths}.options.applier" 
             }
-            ]
         }
     ]);
     
-    fluidIoCTests.test("FLUID-4130 mergePaths for demanded component options", function() {
+    fluidIoCTests.test("FLUID-4130 mergeOptions for demanded component options", function() {
         var model = {key: "Head model"};
         var mergePaths = fluid.tests.mergePaths({model: model});
         var expected = {
@@ -791,6 +994,165 @@ fluid.registerNamespace("fluid.tests");
         }] 
     );
     
+    fluid.tests.makeInitFunction = function(name) {
+        return function(that) {
+            that.initFunctionRecord.push(name);
+        };
+    };
+    
+    fluid.tests.createInitFunctionsMembers = function(that) {
+        that.mainEventListener = function() {
+            that.initFunctionRecord.push("mainEventListener");
+        };
+        that.initFunctionRecord = [];
+    };
+    
+    // Test FLUID-4162 by creating namespace before component of the same name
+    fluid.registerNamespace("fluid.tests.initFunctions");
+    
+    fluid.tests.initFunctions.initRecordingComponent = function(that) {
+        var parent = that.options.parent;
+        parent.initFunctionRecord.push(that.options.name);
+    };
+    
+    fluid.defaults("fluid.tests.initFunctions.recordingComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        mergePolicy: {
+            parent: "nomerge"  
+        },
+        postInitFunction: "fluid.tests.initFunctions.initRecordingComponent"
+        }
+    );
+    
+    fluid.defaults("fluid.tests.initFunctions", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        preInitFunction: ["fluid.tests.createInitFunctionsMembers", fluid.tests.makeInitFunction("preInitFunction")],
+        postInitFunction: fluid.tests.makeInitFunction("postInitFunction"),
+        finalInitFunction: fluid.tests.makeInitFunction("finalInitFunction"),
+        events: {
+            mainEvent: null
+        },
+        listeners: {
+            mainEvent: "{initFunctions}.mainEventListener"
+        },
+        components: {
+            initTimeComponent: {
+                 type: "fluid.tests.initFunctions.recordingComponent",
+                 options: {
+                     parent: "{initFunctions}",
+                     name: "initTimeComponent"
+                 }
+            },
+            eventTimeComponent: {
+                type: "fluid.tests.initFunctions.recordingComponent",
+                createOnEvent: "mainEvent",
+                options: {
+                    parent: "{initFunctions}",
+                    name: "eventTimeComponent"  
+                } 
+            },
+            demandsInitComponent: {
+                type: "fluid.tests.initFunctions.demandsInitComponent",
+                options: {
+                    components: {
+                        parent: "{initFunctions}"
+                    }
+                }
+            }
+            
+        }
+    });
+    
+    fluid.defaults("fluid.tests.initFunctions.demandsInitComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.tests.initFunctions.demandsInitComponent.finalInitFunction = function (that) {
+        that.parent.initFunctionRecord.push("finalInitFunctionSubcomponent");
+    };
+    fluid.demands("demandsInitComponent", "fluid.tests.initFunctions", {
+        options: {
+            finalInitFunction: fluid.tests.initFunctions.demandsInitComponent.finalInitFunction,
+        }
+    })
+    
+    fluidIoCTests.test("Component lifecycle test", function() {
+        var testComp = fluid.tests.initFunctions();
+        testComp.events.mainEvent.fire();
+        var expected = [
+            "preInitFunction",
+            "postInitFunction",
+            "initTimeComponent",
+            "finalInitFunctionSubcomponent",
+            "finalInitFunction",
+            "mainEventListener",
+            "eventTimeComponent"
+        ];
+        jqUnit.assertDeepEq("Expected initialisation sequence", testComp.initFunctionRecord, expected); 
+    });
+
+    fluid.tests.guidedChildInit = function(that) {
+       // awful, illegal, side-effect-laden init function :P
+        that.options.parent.constructRecord.push(that.options.index);
+    };
+   
+    fluid.defaults("fluid.tests.guidedChild", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        mergePolicy: {
+            parent: "nomerge",
+            mergeAllOptions: "nomerge" // TODO: This should not be necessary!!
+        },
+        finalInitFunction: "fluid.tests.guidedChildInit"
+    });
+    
+    fluid.demands("fluid.tests.guidedChild", "fluid.tests.guidedParent", {
+        mergeOptions:  {parent: "{guidedParent}"
+        }
+    });
+
+    fluid.tests.guidedParentInit = function(that) {
+        that.constructRecord = [];  
+    };
+   
+    fluid.defaults("fluid.tests.guidedParent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            compn: {
+                type: "fluid.tests.guidedChild",
+                options: {
+                    index: 4
+                },
+                priority: "last"
+            },
+            comp5: {
+                type: "fluid.tests.guidedChild",
+                options: {
+                    index: 2
+                },
+                priority: 5
+            },
+            comp0: {
+                type: "fluid.tests.guidedChild",
+                options: {
+                    index: 3 
+                }
+            },
+            compf: {
+                type: "fluid.tests.guidedChild",
+                options: {
+                    index: 1  
+                },
+                priority: "first"
+            },
+        },
+        preInitFunction: "fluid.tests.guidedParentInit"
+    });
+   
+    fluidIoCTests.test("Guided instantiation test", function() {
+        var testComp = fluid.tests.guidedParent();
+        jqUnit.assertDeepEq("Children constructed in sort order", [1, 2, 3, 4], testComp.constructRecord);
+    });
+    
     fluidIoCTests.test("Tree circularity test", function() {
         try {
             fluid.pushSoftFailure(true);
@@ -805,17 +1167,95 @@ fluid.registerNamespace("fluid.tests");
                 var circular2 = fluid.tests.circularity();
             }
             catch (e) {
-                jqUnit.assertTrue("Exception caught in circular instantiation", true);
+                jqUnit.assert("Exception caught in circular instantiation");
             }
             try {
                 fluid.expandOptions(circular, circular);
             }
             catch (e) {
-                jqUnit.assertTrue("Exception caught in circular expansion", true);
+                jqUnit.assert("Exception caught in circular expansion");
             }
         }
         finally {
             fluid.pushSoftFailure(-1);  
+        }
+    });
+    
+    
+    /** This test case reproduces a circular reference condition found in the Flash
+     *  implementation of the uploader, which the framework did not properly detect */
+     
+    fluid.registerNamespace("fluid.tests.circular");
+    
+    fluid.defaults("fluid.tests.circular.strategy", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            local: {
+                type: "fluid.tests.circular.local"
+            },
+            engine: {
+                type: "fluid.tests.circular.engine"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.circular.swfUpload", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+    });
+    
+    fluid.tests.circular.initEngine = function(that) {
+      // This line, which is a somewhat illegal use of an invoker before construction is complete,
+      // will trigger failure
+      //  fluid.fail("Thing");
+        that.bindEvents();
+    };
+    
+    fluid.defaults("fluid.tests.circular.engine", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        finalInitFunction: "fluid.tests.circular.initEngine",
+        invokers: {            
+            bindEvents: "fluid.tests.circular.eventBinder"
+        },
+        components: {
+            swfUpload: {
+                type: "fluid.tests.circular.swfUpload"
+            }
+        }
+    });
+    
+    fluid.tests.circular.eventBinder = fluid.identity;
+    
+    fluid.demands("fluid.tests.circular.eventBinder", [
+        "fluid.tests.circular.engine"
+    ], {
+        args: [
+            "{strategy}.local"
+        ]
+    });
+
+    fluid.defaults("fluid.tests.circular.local", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.demands("fluid.tests.circular.local", "fluid.tests.circular.strategy", {
+        args: [
+            "{engine}.swfUpload",
+            fluid.COMPONENT_OPTIONS
+        ]
+    });
+    
+    fluidIoCTests.test("Advanced circularity test I", function() {
+        // If this test fails, it will bomb the browser with an infinite recursion
+        try {
+            fluid.pushSoftFailure(true);
+            expect(1);
+            var comp = fluid.tests.circular.strategy();
+        }
+        catch (e) {
+            jqUnit.assert("Circular construction guarded");  
+        }
+        finally {
+            fluid.pushSoftFailure(-1);
         }
     });
 
@@ -870,7 +1310,7 @@ fluid.registerNamespace("fluid.tests");
             resourceSpecCollector: resourceSpecs,
             pageBuilder: pageBuilder
         }, function () {
-            expanded = fluid.expander.expandLight(dependencies);
+            expanded = fluid.expander.expandLight(dependencies, {fetcher: fluid.makeEnvironmentFetcher()});
         });
     
         var func = function () {}; // dummy function to compare equality
@@ -926,6 +1366,58 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertValue("Request completed", resourceSpecs.objects.completeTime);
             jqUnit.assertDeepEq("Resolved model", expectedRes, expanded);
         });
+    });
+
+    fluid.tests.invokerGrandParent = function (options) {
+        var that = fluid.initLittleComponent("fluid.tests.invokerGrandParent", options);
+        fluid.initDependents(that);
+        return that;
+    };
+    
+    fluid.defaults("fluid.tests.invokerGrandParent", {
+        gradeNames: "fluid.littleComponent",
+        components: {
+            invoker1: {
+                type: "fluid.tests.invokerParent"
+            },
+            invokerwrapper: {
+                type: "fluid.tests.invokerParentWrapper"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.invokerParent", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        model: {
+            testValue: 1
+        },
+        invokers: {
+            checkTestValue: "checkTestValue"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.invokerParentWrapper", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        components: {
+            invoker2: {
+                type: "fluid.tests.invokerParent"
+            }
+        }
+    });
+    fluid.demands("checkTestValue", "fluid.tests.invokerParent", {
+        funcName: "fluid.tests.checkTestValue",
+        args: "{invokerParent}.model"
+    });
+    fluid.tests.checkTestValue = function (model) {
+        return model.testValue;
+    };
+
+    fluidIoCTests.test("Invoker resolution tests", function() {
+        var that = fluid.tests.invokerGrandParent();
+        var newValue = 2;
+        that.invokerwrapper.invoker2.applier.requestChange("testValue", newValue);
+        jqUnit.assertEquals("The invoker for second subcomponent should return the value from its parent", 
+            newValue, that.invokerwrapper.invoker2.checkTestValue());
     });
 
 })(jQuery); 

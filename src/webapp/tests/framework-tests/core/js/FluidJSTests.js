@@ -9,14 +9,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
 /*global fluid, jqUnit, expect, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
     $(document).ready(function () {
@@ -423,7 +423,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             // Assign a collection of defaults for the first time.
             fluid.defaults("test", testDefaults);
             jqUnit.assertDeepEq("defaults() should return the specified defaults", 
-                                testDefaults, fluid.defaults("test"));
+                                testDefaults, fluid.filterKeys(fluid.defaults("test"), ["foo"]));
             
             // Re-assign the defaults with a new collection.
             testDefaults = {
@@ -431,17 +431,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             fluid.defaults("test", testDefaults);
             jqUnit.assertDeepEq("defaults() should return the new defaults", 
-                                testDefaults, fluid.defaults("test"));
+                                testDefaults, fluid.filterKeys(fluid.defaults("test"), ["baz"]));
             jqUnit.assertEquals("Foo should no longer be a property of the tabs defaults.", 
                                 undefined, fluid.defaults("test").foo);
             
             // Nullify the defaults altogether.
             fluid.defaults("test", null);
-            jqUnit.assertNull("The test defaults should be null.", 
+            jqUnit.assertNoValue("The test defaults should be null.", 
                               fluid.defaults("test"));
             
             // Try to access defaults for a component that doesn't exist.
-            jqUnit.assertNull("The defaults for a nonexistent component should be null.", 
+            jqUnit.assertNoValue("The defaults for a nonexistent component should be null.", 
                               fluid.defaults("timemachine"));
         });
         
@@ -707,7 +707,54 @@ https://source.fluidproject.org/svn/LICENSE.txt
             firer.fire(true);
 
             firer.removeListener(testListener);
-            firer.fire(false); //listener should not run and assertion should not 
+            firer.fire(false); //listener should not run and assertion should not execute 
         });
+        
+        fluid.tests.initLifecycle = function(that) {
+            that.initted = true;  
+        };
+        
+        fluid.defaults("fluid.tests.lifecycleTest", {
+            gradeNames: ["fluid.modelComponent", "autoInit"],
+            preInitFunction: "fluid.tests.initLifecycle"  
+        });
+        
+        fluidJSTests.test("Proper merging of lifecycle functions", function() {
+            var model = { value: 3 };
+            var that = fluid.tests.lifecycleTest({model: model});
+            jqUnit.assertEquals("Grade preInit function fired", model, that.model);
+            jqUnit.assertEquals("Custom preInit function fired", true, that.initted);
+        });
+        
+        fluid.tests.initLifecycle1 = function(that) {
+            that.initted = 1;  
+        };
+        
+        fluid.tests.initLifecycle2 = function(that) {
+            that.initted = 2;
+        };
+        
+        fluid.defaults("fluid.tests.lifecycleTest2", {
+            gradeNames: ["fluid.modelComponent", "autoInit"],
+            preInitFunction: [{
+                namespace: "preInitModelComponent",
+                listener: "fluid.identity"
+            }, {
+                priority: 2,
+                listener: "fluid.tests.initLifecycle2"
+            }, {
+                priority: 1,
+                listener: "fluid.tests.initLifecycle1"
+            }
+            ]
+        });
+        
+        fluidJSTests.test("Detailed interaction of priority and namespacing with lifecycle functions", function() {
+            var model = { value: 3 };
+            var that = fluid.tests.lifecycleTest2({model: model});
+            jqUnit.assertUndefined("Grade preInit function defeated", that.model);
+            jqUnit.assertEquals("Priority order respected", 1, that.initted);
+        });
+        
     });
 })(jQuery);

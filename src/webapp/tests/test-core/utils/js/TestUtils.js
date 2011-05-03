@@ -8,14 +8,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
 /*global fluid, jqUnit, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid.registerNamespace("fluid.testUtils");
 
@@ -86,6 +86,19 @@ fluid.testUtils.assertTree = function (message, expected, actual) {
     fluid.testUtils.sortTree(expected);
     fluid.testUtils.sortTree(actual);
     jqUnit.assertDeepEq(message, expected, actual);
+};
+
+/** Assert that the expected value object is a subset (considered in terms of shallow key coincidence) of the
+ * "actual" value object **/ 
+
+fluid.testUtils.assertLeftHand = function(message, expected, actual) {
+    jqUnit.assertDeepEq(message, expected, fluid.filterKeys(actual, fluid.keys(expected)));  
+};
+
+/** Assert that the expected value object is a superset of the "actual" value object **/
+
+fluid.testUtils.assertRightHand = function(message, expected, actual) {
+    jqUnit.assertDeepEq(message, fluid.filterKeys(expected, fluid.keys(actual)), actual);  
 };
 
 /** Condense a DOM node into a plain Javascript object, to facilitate testing against
