@@ -63,11 +63,6 @@
     padding-top : 16px;	
 }
 
-/* :focus */
-:focus {
-    outline: none;
-}
-
 /* overrides fss-reset FLUID-3860 */
 p {
 	margin : 0px;
