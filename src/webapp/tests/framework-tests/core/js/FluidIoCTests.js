@@ -397,6 +397,51 @@ fluid.registerNamespace("fluid.tests");
         });
     });
 
+    fluid.tests.listenerMergingPreInit = function (that) {
+        that.eventFired = function (eventName) {
+            that[eventName] = true;
+        };
+    };
+       
+    fluid.defaults("fluid.tests.listenerMerging", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        preInitFunction: "fluid.tests.listenerMergingPreInit",
+        listeners: {
+            eventOne: "{fluid.tests.listenerMerging}.eventFired",
+            eventTwo: "{fluid.tests.listenerMerging}.eventFired"
+        },
+        events: {
+            eventOne: null,
+            eventTwo: null,
+            eventThree: null
+        }
+    });
+
+    fluidIoCTests.test("Listener Merging Tests: FLUID-4196", function () {
+        var threeFired = false;
+        var that = fluid.tests.listenerMerging({
+            listeners: {
+                eventThree: function () {threeFired = true;}
+            }
+        });
+        
+        that.events.eventThree.fire();
+        jqUnit.assertTrue("Event three listener notified", threeFired);
+        
+        that.events.eventTwo.fire("twoFired");
+        jqUnit.assertTrue("Event two listener notified", that.twoFired);
+    });
+    
+    fluid.tests.initLifecycle = function(that) {
+        that.initted = true;  
+    };
+    
+    fluid.defaults("fluid.tests.lifecycleTest", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        preInitFunction: "fluid.tests.initLifecycle"  
+    });
+
+
     fluid.registerNamespace("fluid.tests.envTests");
 
     fluid.tests.envTests.config = {

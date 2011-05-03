@@ -81,8 +81,11 @@ zlib/libpng License:
       (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
   
 BSD License:
-    * fss-reset.css is based on YUI's CSS reset styling v2.5.2
+    * fss-reset-global.css and fss-reset-contextual are based on YUI's CSS reset styling v2.5.2
       see: http://developer.yahoo.com/yui/reset/
+    * fss-base-global.css and fss-base-contextual are based on YUI's CSS base and fonts styling v2.5.2
+      see: http://developer.yahoo.com/yui/base/
+      see: http://developer.yahoo.com/yui/fonts/
     * Sample markup and stylesheets from uPortal v2.6 (http://www.uportal.org/)
 
 ECL 2.0:
