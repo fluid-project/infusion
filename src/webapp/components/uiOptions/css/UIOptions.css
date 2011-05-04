@@ -3,11 +3,11 @@
 /* Overall styles */
 .fl-uiOptions {
 	font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
-	font-size: 1em; 
-	margin-left: 100px;
-	margin-right: 100px;	
+	font-size: 1em;
+	margin-left: 40px;
+	margin-right: 40px;
 	max-width: 1280px;
-	min-width: 880px;	
+	min-width: 880px;
 }
 
 /* Section headers */
@@ -15,34 +15,37 @@
 	font-size: 1.29em;
 	font-weight: bold;
 	clear:both;
-	border-top: 2px solid #ebebeb;
+	border-top: 1px solid #999999;
 	padding-top: 10px;
 	padding-bottom: 10px;	
 }
 .fl-uiOptions h2 img {
 	margin-bottom: -3px;
+	padding-right: 5px;
 }
 
 /* Form */
 .fl-uiOptions ul {
 	margin-left: 0px;
 }
+
 .fl-uiOptions ul li {
 	list-style: none;
 	clear:both;	
+	padding-top: 12px;
 }
 
-/* Paragraphs */
-.fl-uiOptions p {
-/*	color: #4D4D4D;
+/* Descriptions */
+.fl-uio-option-description {
+	color: #4D4D4D;
 	margin-bottom: 0px;
-	padding-top: 5px;*/
+	padding-top: 5px;
 }
 
 /* Labels */
 .fl-uiOptions label {
 	text-transform: uppercase;
-	font-size: 1em;
+	font-size: 1.2em;
 	padding-bottom: 2em;
 }
 
@@ -50,7 +53,7 @@
 .fl-uiOptions .fl-uio-form label {
 	display: block;
 	float: left;
-	width: 50%;	
+	width: 35%;	
 }
 
 .fl-uiOptions .fl-uio-form .fl-inputs {
@@ -105,7 +108,7 @@
 
 /* Preview Area */
 .fl-uiOptions .fl-uio-preview iframe {
-	height: 300px;
+	height: 480px;
 	width: 100%;
 	border: 2px solid #d7d7d7;
 }
@@ -118,21 +121,28 @@
 .fl-uiOptions .fl-uio-buttons input {
 	text-transform: uppercase;
 	text-decoration: underline;
-	border: 2px solid #d7d7d7;	
+	border: 1px solid #d7d7d7;	
 	background-color: #f0f0f0;		
 	padding: 5px;
+	height: 32px;
 }
 
 .fl-uiOptions .fl-uio-buttons .fl-uio-save {
-	padding-left: 20px;
-	background-image: url("../../../components/uiOptions/images/uio_icon_linksandbuttons_18x18.png");
+	padding-left: 16px;
+	background-image: url("../../../components/uiOptions/images/uio_icon_save_13x13.png");
 	background-repeat: no-repeat;
-	background-position: 2px 5px;
+	background-position: 4px 6px;
 }
 
 .fl-uiOptions .fl-uio-buttons .fl-uio-cancel {
-	padding-left: 20px;
-	background-image: url("../../../components/uiOptions/images/uio_icon_linksandbuttons_18x18.png");
+	padding-left: 16px;
+	background-image: url("../../../components/uiOptions/images/uio_icon_cancel_13x13.png");
 	background-repeat: no-repeat;
-	background-position: 2px 5px;
+	background-position: 3px 6px;
+}
+
+.fl-uio-preview h2 {
+	font-weight: normal;
+	font-size: 1.8em;
+	color: #4D4D4D;
 }
