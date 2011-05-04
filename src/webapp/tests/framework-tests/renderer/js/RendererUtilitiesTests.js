@@ -448,7 +448,7 @@ fluid.registerNamespace("fluid.tests");
             };
         };
         
-        compTests.test("Renderer component with inifinite expansion (if there's an instantiator in the tree)", function () {
+        compTests.test("FLUID-4200 test: Renderer component with infinite expansion (if there's an instantiator in the tree)", function () {
             var that = fluid.tests.littleComponentWithInstantiator();
             jqUnit.assertTrue("That with subcomponents was created", true);
         });
