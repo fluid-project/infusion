@@ -377,6 +377,82 @@ fluid.registerNamespace("fluid.tests");
             testFilteredRecords(that);
         });
         
+        fluid.defaults("fluid.tests.littleComponentWithInstantiator", {
+            gradeNames: ["fluid.littleComponent", "autoInit"],
+            components: {
+                instantiator: "{instantiator}",
+                rendererComponent: {
+                    type: "fluid.tests.rendererComponentWithNoInstantiator",
+                    container: ".renderer-component-infRec"
+                }
+            }
+        });
+        
+        fluid.defaults("fluid.tests.rendererComponentWithNoInstantiator", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            produceTree: "fluid.tests.littleComponentWithInstantiator.produceTree",
+            finalInitFunction: "fluid.tests.littleComponentWithInstantiator.finalInitFunction",
+            selectors: {
+                text1: ".csc-footer-text1",
+                text2: ".csc-footer-text2",
+                currentRelease: ".csc-footer-currentRelease",
+                about: ".csc-footer-about",
+                feedback: ".csc-footer-feedback"
+            },
+            model: {
+                about: "http://www.collectionspace.org",
+                currentRelease: "http://www.collectionspace.org/current_release",
+                feedback: "http://wiki.collectionspace.org/display/collectionspace/Release+1.6+Feedback",
+                version: "1.6"
+            },
+            strings: {
+                text1: "2009 - 2011",
+                text2: "CollectionSpace",
+                currentRelease: "Release %version",
+                about: "About CollectionSpace",
+                feedback: "Leave Feedback"
+            }
+        });
+        
+        fluid.tests.littleComponentWithInstantiator.finalInitFunction = function (that) {
+            that.renderer.refreshView();
+        };
+        
+        fluid.tests.littleComponentWithInstantiator.produceTree = function () {
+            return {
+                text1: {
+                    messagekey: "text1"
+                },
+                text2: {
+                    messagekey: "text2"
+                },
+                currentRelease: {
+                    target: "${currentRelease}",
+                    linktext: {
+                        messagekey: "currentRelease",
+                        args: {version: "${version}"}
+                    }
+                },
+                about: {
+                    target: "${about}",
+                    linktext: {
+                        messagekey: "about"
+                    }
+                },
+                feedback: {
+                    target: "${feedback}",
+                    linktext: {
+                        messagekey: "feedback"
+                    }
+                }
+            };
+        };
+        
+        compTests.test("Renderer component with inifinite expansion (if there's an instantiator in the tree)", function () {
+            var that = fluid.tests.littleComponentWithInstantiator();
+            jqUnit.assertTrue("That with subcomponents was created", true);
+        });
+        
         compTests.test("Renderer component with custom resolver and renderer fixup", function () {
             var tree = {
                 children: [
