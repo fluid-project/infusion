@@ -1,8 +1,3 @@
-:focus{
-    /* FLUID-3880: Fixes an IE8 problem where focus lines appear around blocks */
-	outline: none;
-}
-
 .demo-gridReorderer-container {
 	padding-left:10px;   
 }
@@ -34,9 +29,7 @@ div.demo-gridReorderer-dragging,
     opacity          : 0.75;
 }
 
-.demo-gridReorderer-alphabetGrid div :focus,
 .demo-gridReorderer-container  div.demo-gridReorderer-selected {
-    outline: 2px solid #000;
     cursor : move;
 }
 
