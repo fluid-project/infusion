@@ -879,6 +879,13 @@ var fluid = fluid || fluid_1_4;
         fluid.mergeListeners(that, that.events, listeners);
     };
     
+    fluid.mergeListenersPolicy = function (target, source) {
+        var togo = target || {};
+        fluid.each(source, function(listeners, key) {
+            togo[key] = fluid.makeArray(source[key]).concat(fluid.makeArray(listeners));
+        });
+        return togo;
+    };
     
     /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
     
@@ -1032,7 +1039,7 @@ var fluid = fluid || fluid_1_4;
     fluid.defaults("fluid.eventedComponent", {
         gradeNames: ["fluid.littleComponent"],
         mergePolicy: {
-            listeners: "noexpand"
+            listeners: "fluid.mergeListenersPolicy"
         }
     });
     

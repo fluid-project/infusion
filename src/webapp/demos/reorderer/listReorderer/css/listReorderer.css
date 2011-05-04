@@ -19,11 +19,6 @@
 	border-right: none;
 }
 
-:focus{
-    /* FLUID-3880: Fixes an IE8 problem where focus lines appear around blocks */
-	outline: none;
-}
-
 .demo-listReorderer-container {
     width: 95%;
     margin: 0 auto;
@@ -35,6 +30,7 @@
 
 .demo-listReorderer-movable-hover, .demo-listReorderer-movable-selected{
     background-color: #fff;
+    outline: none;
     cursor: move;
     
     /* Change the left, top, and bottom borders on hover and select.
