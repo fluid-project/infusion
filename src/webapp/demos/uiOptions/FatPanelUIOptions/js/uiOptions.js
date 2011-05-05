@@ -55,16 +55,17 @@ var demo = demo || {};
     
     //Panel Tabs
 	var panelTabs = function (tabs) {
-		/*tabs.click(function() {
-			tabs.$("li").removeClass("active"); 
-			$(this).addClass("active"); 
+		tabs.click(function(e) {
+		alert(e.target);
+			$("li", tabs).removeClass("fl-tabs-active"); 
+			/*e.target.addClass("active"); 
 			
 			$(".tab").hide(); 
 	
-			var activeTab = $(this).find("a").attr("href"); 
-			$(activeTab).fadeIn(); 
+			var activeTab = e.target.find("a").attr("href"); 
+			$(activeTab).fadeIn(); */
 			return false;		
-		});*/
+		});
 				
 		$(".tab").hide();
 		$(".tab:first").show(); //make first tab active on load
@@ -83,6 +84,9 @@ var demo = demo || {};
         
         // Next, start up UI Options
         var myUIOptions = fluid.uiOptions(container, {
+			selectors: {
+				previewFrame: ""
+			},        
             resources: {
                 template: {
                     url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"

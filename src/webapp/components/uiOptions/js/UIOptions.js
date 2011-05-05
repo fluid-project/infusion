@@ -563,4 +563,34 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
+    
+    
+    
+    /**********************
+     * UI Options Live Preview *
+     **********************/    
+/*	fluid.defaults("fluid.uiOptions.livePreview", {
+        gradeNames: ["fluid.viewComponent", "autoInit"], 
+        components: {
+            eventBinder: {
+                type: "fluid.uiOptions.preview.eventBinder"
+            }
+        },
+        invokers: {
+            updateModel: {
+                funcName: "fluid.uiOptions.preview.updateModel",
+                args: [
+                    "{preview}",
+                    "{controls}.model.selections"
+                ]
+            }
+        },
+        finalInitFunction: "fluid.uiOptions.livePreview.finalInit",
+    });
+
+    fluid.uiOptions.livePreview.finalInit = function (that) {
+        that.uiEnhancer = $(document).data("uiEnhancer");
+    };
+*/
+     
 })(jQuery, fluid_1_4);
