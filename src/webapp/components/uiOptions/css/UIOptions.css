@@ -1,24 +1,42 @@
 /* UI Option default styles */
 
+/* An alternate clearfix solution from http://perishablepress.com/press/2009/12/06/new-clearfix-hack/*/
+.fl-clearfix:after {
+visibility: hidden;
+display: block;
+font-size: 0;
+content: " ";
+clear: both;
+height: 0;
+}
+* html .fl-clearfix { zoom: 1; } /* IE6 */
+*:first-child+html .fl-clearfix { zoom: 1; } /* IE7 */
+
 /* Overall styles */
 .fl-uiOptions {
 	font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
-	font-size: 1em;
-	margin-left: 40px;
-	margin-right: 40px;
-	max-width: 1280px;
-	min-width: 880px;
+    font-size: 0.85em;
 }
+
+.fl-uiOptions p {
+    font-size: 1.1em;
+}
+
+.fl-col-fixed-31em { width: 31em; }
+.fl-col-fixed-38em { width: 38em; }
+.fl-col-fixed-72em { width: 72em; }
 
 /* Section headers */
 .fl-uiOptions h2 {
 	font-size: 1.29em;
 	font-weight: bold;
-	clear:both;
-	border-top: 1px solid #999999;
-	padding-top: 10px;
-	padding-bottom: 10px;	
+	clear: both;
+	border-top: 2px solid #dddddd;
+	color: #444444;
+	padding-top: 14px;
+	padding-bottom: 22px;	
 }
+
 .fl-uiOptions h2 img {
 	margin-bottom: -3px;
 	padding-right: 5px;
@@ -30,9 +48,26 @@
 }
 
 .fl-uiOptions ul li {
-	list-style: none;
-	clear:both;	
-	padding-top: 12px;
+    list-style: none;
+    clear:both; 
+}
+
+/* Categories of options (e.g., Text & Display, Layout & Navigation) */
+.fl-uio-category {
+    padding-bottom: 48px; /* separation between categories */
+}
+
+/* Individual options (e.g., text size, simplify layout, emphasize links) */
+.fl-uio-option-2col {
+    padding-top: 40px;
+}
+
+.fl-uio-option-1col {
+    padding-top: 28px;
+}
+
+.fl-uio-option-first {
+    padding-top: 8px;
 }
 
 /* Descriptions */
@@ -46,14 +81,13 @@
 .fl-uiOptions label {
 	text-transform: uppercase;
 	font-size: 1.2em;
-	padding-bottom: 2em;
 }
 
 /* Text and display section */
 .fl-uiOptions .fl-uio-form label {
-	display: block;
-	float: left;
-	width: 35%;	
+    display: block;
+    float: left;
+	width: 14em;	
 }
 
 .fl-uiOptions .fl-uio-form .fl-inputs {
@@ -72,8 +106,6 @@
 
 /* Check boxes */
 .fl-uiOptions input[type="checkbox"] {
-	height: 2em;
-	width: 2em;
 	margin-right:10px;
 	margin-bottom: 2em;
 	border: 1px solid black;
@@ -83,9 +115,8 @@
 .fl-uiOptions select {
 	border: 2px solid #ebebeb;
 }
-.fl-uiOptions option {
-	
-}
+
+.fl-uiOptions option {}
 
 .fl-uiOptions select#text-font { 
 	font-weight:bold; 
@@ -116,15 +147,20 @@
 /* Apply buttons */
 .fl-uiOptions .fl-uio-buttons {
 	margin-top: 1em;
+	float: left;
 }
 
 .fl-uiOptions .fl-uio-buttons input {
 	text-transform: uppercase;
 	text-decoration: underline;
-	border: 1px solid #d7d7d7;	
-	background-color: #f0f0f0;		
-	padding: 5px;
+	font-weight: bold;
+	color: #333333;
+/*  border: 2px solid #d7d7d7;*/
+    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
+    padding: 5px;
 	height: 32px;
+	font-size: 1em;
+    margin-right: 3px;
 }
 
 .fl-uiOptions .fl-uio-buttons .fl-uio-save {
@@ -132,6 +168,7 @@
 	background-image: url("../../../components/uiOptions/images/uio_icon_save_13x13.png");
 	background-repeat: no-repeat;
 	background-position: 4px 6px;
+    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
 }
 
 .fl-uiOptions .fl-uio-buttons .fl-uio-cancel {
@@ -139,10 +176,13 @@
 	background-image: url("../../../components/uiOptions/images/uio_icon_cancel_13x13.png");
 	background-repeat: no-repeat;
 	background-position: 3px 6px;
+    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
 }
 
 .fl-uio-preview h2 {
-	font-weight: normal;
+	font-weight: lighter;
 	font-size: 1.8em;
 	color: #4D4D4D;
+	padding-top: 18px;
+	padding-bottom: 22px;
 }
