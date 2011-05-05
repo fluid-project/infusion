@@ -6,13 +6,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, fluid, jqUnit*/
+// Declare dependencies
+/*global fluid, jqUnit, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
     var source = {
@@ -308,124 +309,192 @@ https://source.fluidproject.org/svn/LICENSE.txt
         jqUnit.assertDeepEq("The model should transformed based on the specified rules", expected, result);
     });
     
-    testCase.test("fluid.model.transformWithRules(): options backwards compatibility", function () {
-        var dummyListener = function (file, serverData) {};
-        
-        var aTutorOldUploaderOptions = {
-            uploadManager: {
-                type: "fluid.swfUploadManager",
-                options: {
-                    uploadURL: "include/lib/upload.php",
-                    flashURL: "jscripts/infusion/lib/swfupload/flash/swfupload.swf"
-                }
-            },
+    fluid.registerNamespace("fluid.tests.transform");
+    
+    fluid.tests.transform.aTutorOldUploaderOptions = {
+        uploadManager: {
+            type: "fluid.swfUploadManager",
+            options: {
+                uploadURL: "include/lib/upload.php",
+                flashURL: "jscripts/infusion/lib/swfupload/flash/swfupload.swf"
+            }
+        },
 
-            listeners: {
-                onFileSuccess: dummyListener
-            },
+        listeners: {
+            onFileSuccess: fluid.identity
+        },
 
-            decorators: [{
-                type: "fluid.swfUploadSetupDecorator",
+        decorators: [{
+            type: "fluid.swfUploadSetupDecorator",
+            options: {
+                flashButtonImageURL: "jscripts/infusion/components/uploader/images/browse.png"
+            }
+        }]
+    };
+    
+    fluid.tests.transform.expectedNewOptions = {
+        components: {
+            strategy: {
                 options: {
-                    flashButtonImageURL: "jscripts/infusion/components/uploader/images/browse.png"
-                }
-            }]
-        };
-	     
-        var expectedNewOptions = {
-            components: {
-                strategy: {
-                    options: {
-                        flashMovieSettings: {
-                            flashURL: "jscripts/infusion/lib/swfupload/flash/swfupload.swf",
-                            flashButtonImageURL: "jscripts/infusion/components/uploader/images/browse.png"
-                        }
+                    flashMovieSettings: {
+                        flashURL: "jscripts/infusion/lib/swfupload/flash/swfupload.swf",
+                        flashButtonImageURL: "jscripts/infusion/components/uploader/images/browse.png"
                     }
                 }
-            },
-            
-            queueSettings: {
-                uploadURL: "include/lib/upload.php",
-                flashURL: "jscripts/infusion/lib/swfupload/flash/swfupload.swf" // Lazily moved over in rules.
-            },
-             
-            listeners: {
-                onFileSuccess: dummyListener
             }
-        };
-	    
-        var transformRules = {
-            "components": {
-                expander: {
-                    type: "fluid.model.transform.firstValue",
-                    values: [
-                        {
-                            expander: {
-                                type: "fluid.model.transform.value",
-                                path: "components"
-                            }
-                        },
-                        {
-                            expander: {
-                                type: "fluid.model.transform.value",
-                                value: {
-                                    "strategy": {
-                                        "options": {
-                                            "flashMovieSettings": {
-                                                expander: {
-                                                    type: "fluid.model.transform.value",
-                                                    value: {
-                                                        // Can I use cleverly use merge() here?
-                                                        "flashURL": "uploadManager.options.flashURL",
-                                                        "flashButtonPeerId": "decorators.0.options.flashButtonPeerId",
-                                                        "flashButtonAlwaysVisible": "decorators.0.options.flashButtonAlwaysVisible",
-                                                        "flashButtonTransparentEvenInIE": "decorators.0.options.flashButtonTransparentEvenInIE",
-                                                        "flashButtonImageURL": "decorators.0.options.flashButtonImageURL",
-                                                        "flashButtonCursorEffect": "decorators.0.options.flashButtonCursorEffect",
-                                                        "debug": "decorators.0.options.debug"
-                                                    }
+        },
+        
+        queueSettings: {
+            uploadURL: "include/lib/upload.php",
+            flashURL: "jscripts/infusion/lib/swfupload/flash/swfupload.swf" // Lazily moved over in rules.
+        },
+         
+        listeners: {
+            onFileSuccess: fluid.identity
+        }
+    };
+    
+    fluid.tests.transform.transformRules = {
+        components: {
+            expander: {
+                type: "fluid.model.transform.firstValue",
+                values: [
+                    {
+                        expander: {
+                            type: "fluid.model.transform.value",
+                            path: "components"
+                        }
+                    },
+                    {
+                        expander: {
+                            type: "fluid.model.transform.value",
+                            value: {
+                                "strategy": {
+                                    "options": {
+                                        "flashMovieSettings": {
+                                            expander: {
+                                                type: "fluid.model.transform.value",
+                                                value: {
+                                                    // Can I use cleverly use merge() here?
+                                                    "flashURL": "uploadManager.options.flashURL",
+                                                    "flashButtonPeerId": "decorators.0.options.flashButtonPeerId",
+                                                    "flashButtonAlwaysVisible": "decorators.0.options.flashButtonAlwaysVisible",
+                                                    "flashButtonTransparentEvenInIE": "decorators.0.options.flashButtonTransparentEvenInIE",
+                                                    "flashButtonImageURL": "decorators.0.options.flashButtonImageURL",
+                                                    "flashButtonCursorEffect": "decorators.0.options.flashButtonCursorEffect",
+                                                    "debug": "decorators.0.options.debug"
                                                 }
-                                            },
-                                            "styles": "decorators.0.options.styles"
-                                        }
-                                    },
-                                    "fileQueueView": "fileQueueView",
-                                    "totalProgressBar": "totalProgressBar"
-                                }
+                                            }
+                                        },
+                                        "styles": "decorators.0.options.styles"
+                                    }
+                                },
+                                "fileQueueView": "fileQueueView",
+                                "totalProgressBar": "totalProgressBar"
                             }
                         }
-                    ]
-                }
-            },
-            "invokers": "invokers",
-            "queueSettings": {
-                expander: {
-                    type: "fluid.model.transform.firstValue",
-                    values: ["queueSettings", "uploadManager.options"]
-                }
-            },
-            "demo": "demo",
-            "selectors": "selectors",
-            "focusWithEvent": "focusWithEvent",
-            "styles": "styles",
-            "listeners": "listeners",
-            "strings": "strings",
-            "mergePolicy": "mergePolicy"
-        };
-	     
-        var result = fluid.model.transformWithRules(aTutorOldUploaderOptions, transformRules);
+                    }
+                ]
+            }
+        },
+        "invokers": "invokers",
+        "queueSettings": {
+            expander: {
+                type: "fluid.model.transform.firstValue",
+                values: ["queueSettings", "uploadManager.options"]
+            }
+        },
+        "demo": "demo",
+        "selectors": "selectors",
+        "focusWithEvent": "focusWithEvent",
+        "styles": "styles",
+        "listeners": "listeners",
+        "strings": "strings",
+        "mergePolicy": "mergePolicy"
+    };
+    
+    testCase.test("fluid.model.transformWithRules(): options backwards compatibility", function () {
+        var result = fluid.model.transformWithRules(fluid.tests.transform.aTutorOldUploaderOptions, fluid.tests.transform.transformRules);
         jqUnit.assertDeepEq("Options should be transformed successfully based on the provided rules.", 
-                            expectedNewOptions, result);
+                            fluid.tests.transform.expectedNewOptions, result);
         
         // Test idempotency of the transform.
-        result = fluid.model.transformWithRules(fluid.copy(result), transformRules);
+        result = fluid.model.transformWithRules(fluid.copy(result), fluid.tests.transform.transformRules);
         jqUnit.assertDeepEq("Running the transform on the output of itself shouldn't mangle the result.",
-                            expectedNewOptions, result);
+                            fluid.tests.transform.expectedNewOptions, result);
                             
-        // Test that modern options aren't mangled by the transform.
-        result = fluid.model.transformWithRules(fluid.copy(expectedNewOptions), transformRules);
+        // Test that modern options aren't mangled by the transform (in this particular case)
+        result = fluid.model.transformWithRules(fluid.copy(fluid.tests.transform.expectedNewOptions), fluid.tests.transform.transformRules);
         jqUnit.assertDeepEq("Modern-style options shouldn't be mangled by being run through the transform",
-                            expectedNewOptions, result);
+                            fluid.tests.transform.expectedNewOptions, result);
     });
     
+    fluid.defaults("fluid.tests.testTransformable", {
+        components: {
+            fileQueueView: {
+                type: "fluid.uploader.fileQueueView"
+            }
+        }  
+    });
+    
+    fluid.tests.testTransformable = function(options) {
+        var that = fluid.initLittleComponent("fluid.tests.testTransformable", options);
+        return that;  
+    };
+    
+    fluid.tests.transform.assertTransformed = function(that) {
+        var expected = fluid.merge(null, fluid.copy(fluid.rawDefaults(that.typeName)), fluid.tests.transform.expectedNewOptions);
+        fluid.testUtils.assertLeftHand("Options sucessfully transformed", expected, that.options);      
+    }
+    
+    testCase.test("fluid.model.transformWithRules applied automatically to component options, without IoC", function() {
+        var options = fluid.copy(fluid.tests.transform.aTutorOldUploaderOptions);
+        options.transformOptions = {
+            transformer: "fluid.model.transformWithRules",
+            config: fluid.tests.transform.transformRules  
+        };
+        var that = fluid.tests.testTransformable(options);
+        fluid.tests.transform.assertTransformed(that);
+    });
+    
+    fluid.demands("fluid.transformOptions", ["fluid.tests.testTransformableIoC", "fluid.tests.transform.version.old"], {
+        options: {
+            transformer: "fluid.model.transformWithRules",
+            config: fluid.tests.transform.transformRules  
+        }
+    });
+
+    fluid.defaults("fluid.tests.transform.strategy", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.defaults("fluid.tests.testTransformableIoC", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            strategy: {
+                type: "fluid.tests.transform.strategy"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.transform.tip", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            versionTag: {
+                type: "fluid.typeFount",
+                options: {
+                    targetTypeName: "fluid.tests.transform.version.old"
+                }  
+            },
+            transformable: {
+                type: "fluid.tests.testTransformableIoC",
+                options: fluid.tests.transform.aTutorOldUploaderOptions
+            }  
+        }
+    });
+    
+    testCase.test("fluid.model.transformWithRules applied automatically to component options, with IoC", function() {
+        var that = fluid.tests.transform.tip();
+        fluid.tests.transform.assertTransformed(that.transformable);
+    });
 })(jQuery);

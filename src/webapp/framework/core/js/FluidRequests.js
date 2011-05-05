@@ -7,14 +7,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies.
-/*global jQuery*/
+// Declare dependencies
+/*global fluid_1_4:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
@@ -210,7 +210,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * This function is unsupported: It is not really intended for use by implementors.
      */
     fluid.fetchResources.composePolicy = function(target, source, key) {
-        target[key] = fluid.fetchResources.composeCallbacks(target[key], source[key]);
+        return fluid.fetchResources.composeCallbacks(target, source);
     };
     
     fluid.defaults("fluid.fetchResources.issueRequest", {
@@ -322,12 +322,12 @@ var fluid_1_4 = fluid_1_4 || {};
         }};
     };
     
-    fluid.expander.deferredFetcher = function(target, source) {
+    fluid.expander.deferredFetcher = function(target, source, recurse, expandOptions) {
         var expander = source.expander;
         var spec = fluid.copy(expander);
         // fetch the "global" collector specified in the external environment to receive
         // this resourceSpec
-        var collector = fluid.resolveEnvironment(expander.resourceSpecCollector);
+        var collector = fluid.resolveEnvironment(expander.resourceSpecCollector, expandOptions);
         delete spec.type;
         delete spec.resourceSpecCollector;
         delete spec.fetchKey;

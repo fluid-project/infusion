@@ -8,13 +8,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, fluid_1_4:true, window, swfobject*/
+// Declare dependencies
+/*global window, fluid_1_4:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
@@ -24,8 +25,11 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
     
+    fluid.setLogging(true);
+    
     var fileOrFiles = function (that, numFiles) {
-        return (numFiles === 1) ? that.options.strings.progress.singleFile : that.options.strings.progress.pluralFiles;
+        return (numFiles === 1) ? that.options.strings.progress.singleFile : 
+            that.options.strings.progress.pluralFiles;
     };
     
     var enableElement = function (that, elm) {
@@ -285,14 +289,14 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.events.onFileError.addListener(function (file, error) {
             if (error === fluid.uploader.errorConstants.UPLOAD_STOPPED) {
-                that.queue.isUploading = false;
+                file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
                 return;
-            }
-            
-            file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
-            if (that.queue.isUploading) {
-                that.queue.currentBatch.totalBytesUploaded += file.size;
-                that.queue.currentBatch.numFilesErrored++;
+            } else {
+                file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
+                if (that.queue.isUploading) {
+                    that.queue.currentBatch.totalBytesUploaded += file.size;
+                    that.queue.currentBatch.numFilesErrored++;
+                }
             }
         });
 
@@ -315,10 +319,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     var setupUploader = function (that) {
-        // Setup the environment appropriate if we're in demo mode.
-        if (that.options.demo) {
-            that.demo = fluid.typeTag("fluid.uploader.demo");
-        }
+        that.demo = fluid.typeTag(that.options.demo? "fluid.uploader.demo" : "fluid.uploader.live");
         
         fluid.initDependents(that);
 
@@ -340,23 +341,34 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} container the DOM element in which the Uploader lives
      * @param {Object} options configuration options for the component.
      */
-    fluid.uploader = function (container, options) {
-        var that = fluid.typeTag("fluid.uploader");
-        // Set up the environment for progressive enhancement.
-        if (fluid.progressiveChecker) {
-            fluid.staticEnvironment.uploaderContext = fluid.invoke("fluid.progressiveChecker", 
-                                                                   null, 
-                                                                   that);
-        }
-        
-        // Invoke an Uploader implementation, which will be specifically resolved using IoC 
-        // based on the static environment configured by the progressiveChecker above.
-        return fluid.invoke("fluid.uploader.impl", [container, options], that);
+    fluid.uploader = function (container, uploaderOptions) {
+      // Do not try to expand uploaderOptions here or else our subcomponents will end up
+      // nested inside uploaderImpl
+        var that = fluid.initView("fluid.uploader", container);
+        that.uploaderOptions = uploaderOptions;
+        fluid.initDependents(that);
+        return that.uploaderImpl;
     };
     
-    fluid.demands("fluid.progressiveChecker", "fluid.uploader", {
-        funcName: "fluid.progressiveChecker",
-        args: [{
+    fluid.uploaderImpl = function () {
+        fluid.fail("Error creating uploader component - please make sure that a progressiveCheckerForComponent for \"fluid.uploader\" is registered either in the "
+          + "static environment or else is visible in the current component tree");
+    };
+    
+    fluid.defaults("fluid.uploader", {
+        gradeNames: ["fluid.viewComponent"],
+        components: {
+            uploaderContext: {
+                type: "fluid.progressiveCheckerForComponent",
+                options: {componentName: "fluid.uploader"}
+            },
+            uploaderImpl: {
+                type: "fluid.uploaderImpl",
+                container: "{uploader}.container",
+                options: "{uploader}.uploaderOptions"
+            }
+        },
+        progressiveCheckerOptions: {
             checks: [
                 {
                     feature: "{fluid.browser.supportsBinaryXHR}",
@@ -367,10 +379,12 @@ var fluid_1_4 = fluid_1_4 || {};
                     contextName: "fluid.uploader.swfUpload"
                 }
             ],
-
-            defaultTypeTag: fluid.typeTag("fluid.uploader.singleFile")
-        }]
+            defaultContextName: "fluid.uploader.singleFile"
+        }
     });
+    
+    // Ensure that for all uploaders created via IoC, we bypass the wrapper and directly create the concrete uploader
+    fluid.alias("fluid.uploader", "fluid.uploaderImpl");
     
     // This method has been deprecated as of Infusion 1.3. Use fluid.uploader() instead, 
     // which now includes built-in support for progressive enhancement.
@@ -433,6 +447,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.defaults("fluid.uploader.multiFileUploader", {
+        gradeNames: "fluid.viewComponent",
         components: {
             strategy: {
                 type: "fluid.uploader.progressiveStrategy"
@@ -446,8 +461,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uploader.fileQueueView",
                 options: {
                     model: "{multiFileUploader}.queue.files",
-                    uploaderContainer: "{multiFileUploader}.container",
-                    events: "{multiFileUploader}.events"
+                    uploaderContainer: "{multiFileUploader}.container"
                 }
             },
             
@@ -556,22 +570,43 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         
         mergePolicy: {
-            model: "preserve"
+            "fileQueueView.options.model": "preserve"
         }
-    });
-    
-    fluid.demands("fluid.uploader.impl", "fluid.uploader", {
-        funcName: "fluid.uploader.multiFileUploader"
     });
     
     fluid.demands("fluid.uploader.totalProgressBar", "fluid.uploader.multiFileUploader", {
         funcName: "fluid.progress",
-        args: [
-            "{multiFileUploader}.container",
-            fluid.COMPONENT_OPTIONS
-        ]
+        container: "{multiFileUploader}.container"
     });
     
+    /** Demands blocks for binding to fileQueueView **/
+            
+    fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader.multiFileUploader", {
+        container: "{multiFileUploader}.dom.fileQueue",
+        options: {
+            events: {
+                onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
+            }
+        }
+    });
+        
+    fluid.demands("fluid.uploader.fileQueueView.eventBinder", [
+        "fluid.uploader.multiFileUploader",
+        "fluid.uploader.fileQueueView"
+    ], {
+        options: {
+            listeners: {
+                "{multiFileUploader}.events.afterFileQueued": "{fileQueueView}.addFile",
+                "{multiFileUploader}.events.onUploadStart": "{fileQueueView}.prepareForUpload",
+                "{multiFileUploader}.events.onFileStart": "{fileQueueView}.showFileProgress",
+                "{multiFileUploader}.events.onFileProgress": "{fileQueueView}.updateFileProgress",
+                "{multiFileUploader}.events.onFileSuccess": "{fileQueueView}.markFileComplete",
+                "{multiFileUploader}.events.onFileError": "{fileQueueView}.showErrorForFile",
+                "{multiFileUploader}.events.afterFileComplete": "{fileQueueView}.hideFileProgress",
+                "{multiFileUploader}.events.afterUploadComplete": "{fileQueueView}.refreshAfterUpload"
+            }
+        }
+    });
         
    /**
     * Pretty prints a file's size, converting from bytes to kilobytes or megabytes.
@@ -667,15 +702,6 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
 
-    // TODO: Need to resolve the issue of the gracefully degraded view being outside of the component's
-    // container. Perhaps we can embed a standard HTML 5 file input element right in the template, 
-    // and hide everything else?
-    var determineContainer = function (options) {
-        var defaults = fluid.defaults("fluid.uploader.singleFileStrategy");
-        return (options && options.container) ? options.container : defaults.container;
-    };
-
-
     /**
      * Single file Uploader implementation. Use fluid.uploader() for IoC-resolved, progressively
      * enhanceable Uploader, or call this directly if you only want a standard single file uploader.
@@ -692,12 +718,13 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.defaults("fluid.uploader.singleFileUploader", {
+        gradeNames: "fluid.viewComponent",
         selectors: {
             basicUpload: ".fl-progEnhance-basic"
         }
     });
 
-    fluid.demands("fluid.uploader.impl", ["fluid.uploader", "fluid.uploader.singleFile"], {
+    fluid.demands("fluid.uploaderImpl", "fluid.uploader.singleFile", {
         funcName: "fluid.uploader.singleFileUploader"
     });
     

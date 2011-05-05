@@ -7,7 +7,8 @@
 
         <title>Pager Demo</title>      
         
-        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-reset-global.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-base-global.css" />
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />        
         <link rel="stylesheet" type="text/css" href="../../../components/pager/css/Pager.css" media="all" />
         <link rel="stylesheet" type="text/css" href="../../../lib/jquery/plugins/tooltip/css/jquery.tooltip.css" media="all" />
@@ -46,7 +47,7 @@
         <div class="flc-pager-summary">Summary goes here</div>
 
         <div class="flc-pager-top">    
-            <ul class="demo-pager-bar fl-force-left">
+            <ul class="demo-pager-bar fl-force-left fl-focus">
                 <li class="flc-pager-previous demo-pager-previous"><a href="#" title="Previous Page">&lt; Previous</a></li>
                 <li>
                     <ul class="flc-pager-links demo-pager-links">
@@ -59,7 +60,7 @@
             </ul> 
         </div>
 
-        <div class="demo-pager-page-size fl-force-right">
+        <div class="demo-pager-page-size fl-force-right fl-focus">
             <label for="demo-pager-selector-page-size-top">Items per page:</label>
             <select id="demo-pager-selector-page-size-top" class="flc-pager-page-size">
                 <option value="10">10</option>
@@ -71,7 +72,7 @@
         <div id="membership-table" class="fl-container-flex demo-pager-table-data fl-pager-data">
            <table summary="Table of all students and teachers." xmlns:rsf="http://ponder.org.uk">
                 <thead>
-                    <tr rsf:id="header:">
+                    <tr rsf:id="header:" class="fl-focus">
                         <th class="flc-pager-sort-header demo-pager-head demo-pager-head-members"><a rsf:id="user-link" href="#">Members</a></th>
                         <th class="flc-pager-sort-header demo-pager-head demo-pager-head-email"><a rsf:id="user-email" href="#">Email</a></th>
                         <th class="flc-pager-sort-header demo-pager-head demo-pager-head-role"><a rsf:id="user-role" href="#">Role</a></th>
@@ -91,7 +92,7 @@
         </div>        
     
         <div class="flc-pager-bottom">    
-            <ul class="demo-pager-bar fl-force-left">
+            <ul class="demo-pager-bar fl-force-left fl-focus">
                 <li class="flc-pager-previous demo-pager-previous"><a href="#">&lt; Previous</a></li>
                 <li>
                     <ul class="flc-pager-links demo-pager-links">

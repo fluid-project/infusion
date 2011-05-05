@@ -8,13 +8,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global fluid, jQuery, jqUnit, expect*/
+// Declare dependencies
+/*global fluid, jqUnit, expect, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
     $(document).ready(function () {
@@ -97,6 +98,30 @@ https://source.fluidproject.org/svn/LICENSE.txt
            
             return fluid.pager(container, fluid.merge("replace", defaultSetupOptions, options));
         };
+        
+        /** Convenience strategy pager creator **/
+        var strategyRenderer = function (n, pageSize, pageList) {
+                var dataModel = {};
+                dataModel.pets = [];
+                for (var i = 0; i < n; i++) {
+                    dataModel.pets.push({animal: "cat_" + i});
+                }
+                
+                var opt = {
+                    dataModel : dataModel,
+                    model: {
+                        pageSize: pageSize
+                    },
+                    pagerBar: {
+                        type: "fluid.pager.pagerBar", 
+                        options: {
+                            pageList: pageList
+                        }
+                    }
+                };
+                var pager = renderedPager("#rendered", opt);
+                return pager;
+            };
         
         /** Convenience test functions **/
         var enabled = function (str, link) {
@@ -459,5 +484,167 @@ https://source.fluidproject.org/svn/LICENSE.txt
             }
         });
         
+        /** 
+         * Test everyPageStrategy Strategy
+         */
+        tests.test("Pager everyPageStrategy", function () {
+            /*
+             * Create n pages, check if number of pages = n
+             */    
+            var pageSize = 3;
+            var pageList = 20;
+            var everyPageStrategyPageList = {
+                type: "fluid.pager.renderedPageList",
+                options: {
+                    pageStrategy: fluid.pager.everyPageStrategy
+                }
+            };            
+            var expectedPages = Math.ceil(pageList / pageSize);
+            var pager = strategyRenderer(pageList, pageSize, everyPageStrategyPageList);
+            var pagerTopPageLinks = $(".flc-pager-top .flc-pager-pageLink", pager.container).length;
+            var pagerBottomPageLinks = $(".flc-pager-bottom .flc-pager-pageLink", pager.container).length;
+            jqUnit.assertEquals("Top pageLinks", expectedPages, pagerTopPageLinks);
+            jqUnit.assertEquals("Bottom pageLinks", expectedPages, pagerBottomPageLinks);
+        });
+        
+        /** 
+         * Test gappedPageStrategy Strategy
+         */
+        tests.test("Pager gappedPageStrategy", function () {
+            var pageSize = 3;
+            var pageList = 100;
+            var expectedPages = Math.ceil(pageList / pageSize);
+            var j = 3;
+            var m = 1;
+            var gappedPageStrategyPageList = function (j, m) {
+                return {
+                    type: "fluid.pager.renderedPageList",
+                    options: {
+                        pageStrategy: fluid.pager.gappedPageStrategy(j, m)
+                    }
+                };
+            };
+            var pager = strategyRenderer(pageList, pageSize, gappedPageStrategyPageList(j, m)); 
+            
+            /*
+             * Check if element is in the list when we clicked on "i"
+             */
+            var shouldExistInList = function (i, element) {
+                //manually retrieve ID
+                //todo: make this better?
+                var link = $(element).find('a');
+                var linkId = parseInt(link.attr('id').replace('page-link:link', ''), 10);
+                //if this link is within the leading linkCount
+                if (linkId <= j) {
+                    return true;
+                }
+                //if this link is within the trailing linkCount
+                if (linkId > expectedPages - j && linkId <= expectedPages) {
+                    return true;
+                }
+                //if this link is within the middle linkCount
+                if (i >= linkId - m && i <= linkId + m) {
+                    return true;
+                }
+                
+                //if all the above fails.
+                return false;
+            };
+            
+            var allPagesAfterClickedEachFn = function (index, element) {
+                    if (!$(element).hasClass("flc-pager-pageLink-skip")) {
+                        jqUnit.assertTrue("Clicked on [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
+                    }
+                };
+                
+            //Go through all pages 1 by 1 , and click click all page dynamically each time
+            for (var i = 1; i <= expectedPages; i++) {
+                var page = fluid.jById('page-link:link' + i);
+                page.click();     
+                var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
+                allPagesAfterClicked.each(allPagesAfterClickedEachFn);
+            } 
+        });
+        
+        /** 
+         * Test consistentGappedPageStrategy Strategy
+         */
+        tests.test("Pager consistentGappedPageStrategy", function () {            
+            /*
+             * Create n pages, check if number of pages = n
+             * consistentGappedPageStrategy(j, m) should look like this:
+             * ---j--- -m-[x]-m- ---j---
+             */             
+            var pageSize = 3;
+            var pageList = 100;
+            var expectedPages = Math.ceil(pageList / pageSize);
+            var j = 3;
+            var m = 1;
+            var consistentGappedPageStrategyPageList = function (j, m) {
+                return {
+                    type: "fluid.pager.renderedPageList",
+                    options: {
+                        pageStrategy: fluid.pager.consistentGappedPageStrategy(j, m)
+                    }
+                };
+            };
+            
+            /*
+             * Check if element is in the list when we clicked on "i"
+             */
+            var shouldExistInList = function (i, element) {
+                //manually retrieve ID
+                //todo: make this better?
+                var link = $(element).find('a');
+                var linkId = parseInt(link.attr('id').replace('page-link:link', ''), 10);
+                //if this link is within the leading linkCount
+                if (linkId <= j) {
+                    return true;
+                }
+                //if this link is within the trailing linkCount
+                if (linkId > expectedPages - j && linkId <= expectedPages) {
+                    return true;
+                }
+                //if this link is within the middle linkCount
+                if (i >= linkId - m && i <= linkId + m) {
+                    return true;
+                }
+                
+                //if this element is outside of leading linkCount but index
+                //is within leading linkCount
+                //i-m-2 because 1 2 3 ... 5 6 is pointless. it should be 1 2 3 4 5 6.
+                if ((i - m - 2) <= j && linkId <= (expectedPages - j - 1)) {
+                    return true;
+                }
+                
+                //if this element is outside of trailing linkCount but index
+                //is within leading linkCount
+                if (i + m + 2 >= expectedPages - j && linkId > expectedPages - (expectedPages - j - 1)) {
+                    return true;
+                }
+                
+                //if all the above fails.
+                return false;
+            };
+            
+            var pager = strategyRenderer(pageList, pageSize, consistentGappedPageStrategyPageList(j, m)); 
+            //total queue size allowed is current_page + 2 * (j + m) + self + 2 skipped_pages                        
+            var totalPages = 2 * (j + m) + 3;
+            var allPagesAfterClickedEachFn = function (index, element) {
+                    if (!$(element).hasClass("flc-pager-pageLink-skip")) {
+                        jqUnit.assertTrue("On [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
+                    }
+                };
+            
+            //Go through all pages 1 by 1 , and click all page dynamically each time
+            for (var i = 1; i <= expectedPages; i++) {
+                var page = fluid.jById('page-link:link' + i);
+                page.click();                
+                jqUnit.assertEquals("Verify number of top page links", totalPages, 
+                                    pager.pagerBar.locate("pageLinks").length + pager.pagerBar.locate("pageLinkSkip").length);                
+                var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
+                allPagesAfterClicked.each(allPagesAfterClickedEachFn);
+            }
+        });
     });
 })(jQuery);

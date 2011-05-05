@@ -9,25 +9,49 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, fluid, jqUnit, expect*/
+// Declare dependencies
+/*global fluid, jqUnit, expect, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
     $(function () {
         
         var removedFile = null;
-        var mockEvents = {
-            onFileRemoved: {
-                fire: function (file) {
+        fluid.defaults("fluid.uploader.tests.multiFileUploader", {
+            gradeNames: ["fluid.eventedComponent", "autoInit"],
+            components: {
+                fileQueueView: {
+                    type: "fluid.uploader.fileQueueView",
+                    options: {
+                        model: fluid.uploader.fileQueue().files,
+                        uploaderContainer: "#main"
+                    }
+                } 
+            },
+            events: {
+                onFileRemoved: null
+            },
+            listeners: {
+                onFileRemoved: function (file) {
                     removedFile = file;
                 }
             }
-        };
+        });
+
+        fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader.tests.multiFileUploader", {
+            type: "fluid.uploader.fileQueueView",
+            container: "#main .flc-uploader-queue",
+            options: {
+                events: {
+                    onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
+                }
+            }
+        });
         
         var mountainTestFile = {
             id : 0, // SWFUpload file id, used for starting or cancelling and upload 
@@ -42,12 +66,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             name : "Ocean.jpg", // The file name. The path is not included. 
             size : 950000000 // The file size in bytes        
         };
-        
-        var qEl;
-        
+                
         // Useful locate functions.
         var locateRows = function (q) {
-            return qEl.find(q.options.selectors.fileRows);   
+            return $("#main .flc-uploader-queue").find(q.options.selectors.fileRows);   
         };
         
         var nameForRow = function (q, rowEl) {
@@ -66,7 +88,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         // Reusable test functions
         var checkFileRow = function (q, file, row) {
             jqUnit.assertEquals("The added row should have the correct id attribute.",
-                                file.id, row.attr("id"));
+                                file.id, parseInt(row.attr("id"), 10));
             jqUnit.assertEquals("The added row should have the correct filename.",
                                 file.name, nameForRow(q, row));
             jqUnit.assertEquals("The added row should have the correct size.",
@@ -75,24 +97,20 @@ https://source.fluidproject.org/svn/LICENSE.txt
             checkARIA(file, row);
         };
       
-        var createFileQueue = function (qEl) {            
-            var q = fluid.uploader.fileQueueView(qEl, mockEvents, {
-                model: fluid.uploader.fileQueue().files,
-                uploaderContainer: $("#main")
-            });
-            return q;
+        var createFileQueue = function () {
+            var uploader = fluid.initComponent("fluid.uploader.tests.multiFileUploader");
+            return uploader.fileQueueView;
         };
         
         // File Queue test case
         var setupFunction = function () {
-            qEl = $("#main .flc-uploader-queue");
             jqUnit.subvertAnimations();
         };
         
         var fileQueueViewTests = new jqUnit.TestCase("FileQueueView Tests", setupFunction);
         
         fileQueueViewTests.test("Add file", function () {
-            var q = createFileQueue(qEl);
+            var q = createFileQueue();
             
             // Add one file.
             q.addFile(mountainTestFile);
@@ -111,7 +129,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         fileQueueViewTests.test("Remove file", function () {
-            var q = createFileQueue(qEl);
+            var q = createFileQueue();
             
             // Add a file, then remove it.
             q.addFile(mountainTestFile);
@@ -154,7 +172,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         fileQueueViewTests.test("Prepare for upload/ Refresh for upload", function () {
             expect(2);
 
-            var q = createFileQueue(qEl);
+            var q = createFileQueue();
             q.addFile(mountainTestFile);
             q.addFile(oceanTestFile);
 
@@ -172,7 +190,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         fileQueueViewTests.test("File Progress Percentage test", function () {
             expect(7);
 
-            var q = createFileQueue(qEl);
+            var q = createFileQueue();
             q.addFile(mountainTestFile);
 
             q.updateFileProgress(mountainTestFile, "33999.99", mountainTestFile.size); //33999.99/400000 = 8.4999975% ~ 8%            
@@ -208,7 +226,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         fileQueueViewTests.test("Mark file complete test", function () {
             expect(2);
 
-            var q = createFileQueue(qEl);
+            var q = createFileQueue();
             q.addFile(mountainTestFile);
             q.markFileComplete(mountainTestFile);
 
@@ -223,7 +241,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         fileQueueViewTests.test("Show error for files", function () {
             expect(2);
 
-            var q = createFileQueue(qEl);
+            var q = createFileQueue();
             mountainTestFile.filestatus = fluid.uploader.fileStatusConstants.ERROR; //manually add an error to the file
             q.addFile(mountainTestFile);
             q.showErrorForFile(mountainTestFile, -250); //fire a UPLOAD_FAILED error
@@ -239,7 +257,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         fileQueueViewTests.test("Hide file progress", function () {
             expect(1);
 
-            var q = createFileQueue(qEl);
+            var q = createFileQueue();
             mountainTestFile.filestatus = fluid.uploader.fileStatusConstants.COMPLETE; //manually set filestatus to complete
             q.addFile(mountainTestFile);
             q.hideFileProgress(mountainTestFile); 
@@ -249,11 +267,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
         fileQueueViewTests.test("Keyboard navigation", function () {
             // Setup the queue.
-            var q = createFileQueue(qEl);
+            var q = createFileQueue();
             q.addFile(mountainTestFile);
             q.addFile(oceanTestFile);
             
-            qEl.focus();
+            $("#main .flc-uploader-queue").focus();
             // Ensure that the first item is focussed.
             jqUnit.assertTrue("The first row should be selected.",
                                 locateRows(q).eq(0).hasClass(q.options.styles.selected));
@@ -266,11 +284,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                 locateRows(q).eq(0).hasClass(q.options.styles.selected));
         });
         
-        
         /********************
          * Scrollable tests *
          ********************/
-        
         fileQueueViewTests.test("fluid.scrollableTable", function () {
             var table = $("#scrollableTable");
 
@@ -283,6 +299,5 @@ https://source.fluidproject.org/svn/LICENSE.txt
                               table.parent().parent().hasClass("fl-scrollable-scroller"));
         });
     });
-    
     
 })(jQuery);

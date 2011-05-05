@@ -7,7 +7,7 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 /**
@@ -15,12 +15,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
  * testing with the data in the portlets.html file.
  */
 
-/*global jQuery*/
-/*global fluid*/
-/*global portalRootId*/ 
+// Declare dependencies
+/*global fluid, jQuery*/
  
  // JSLint options 
- /*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+ /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
  
 fluid.testUtils = fluid.testUtils || {};
 

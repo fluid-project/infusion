@@ -9,17 +9,19 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global fluid, jQuery, jqUnit*/
+// Declare dependencies
+/*global fluid, jqUnit, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid.registerNamespace("fluid.tests");
 
 (function ($) {
+    fluid.setLogging(true);
 
     fluid.tests.testRendererUtilities = function () {
     
@@ -93,7 +95,8 @@ fluid.registerNamespace("fluid.tests");
                     tree: { value: "${{elementPath}}" }
                 },
                 message: {
-                    messagekey: "message"
+                    messagekey: "message",
+                    decorators: {"addClass": "{styles}.applicableStyle"}
                 },
                 deffoltmessage: {
                     messagekey: "deffolt"
@@ -110,6 +113,9 @@ fluid.registerNamespace("fluid.tests");
             parentBundle: "{globalBundle}",
             strings: {
                 message: "A mess of messuage"          
+            },
+            styles: {
+                applicableStyle: ".fl-applicable-style"  
             }
         });
         
@@ -118,6 +124,84 @@ fluid.registerNamespace("fluid.tests");
                 jqUnit.assertEquals("Element " + index + " text", array[index], $(el).text());
             });
         }
+        
+        fluid.defaults("fluid.tests.rendererParent", {
+            components: {
+                middle: {
+                    type: "fluid.tests.rendererMiddle"
+                }
+            },
+            selectors: {
+                middle: ".middle-component"  
+            }
+        });
+        
+        fluid.tests.rendererParent = function(container, options) {
+            var that = fluid.initView("fluid.tests.rendererParent", container, options);
+            fluid.initDependents(that);
+            return that;  
+        };
+        
+        fluid.demands("fluid.tests.rendererMiddle", "fluid.tests.rendererParent",
+        ["{rendererParent}.dom.middle", fluid.COMPONENT_OPTIONS]);
+        
+        fluid.defaults("fluid.tests.rendererMiddle", {
+            mergePolicy: {
+                "rendererOptions.instantiator": "nomerge",
+                "rendererOptions.parentComponent": "nomerge"  
+            },
+            rendererOptions: {
+                instantiator: "{instantiator}",
+                parentComponent: "{rendererMiddle}"
+            },
+            selectors: {
+                decorated: ".decorated-component"
+            },
+            protoTree: {
+                decorated: {
+                    decorators: {
+                        type: "fluid",
+                        func: "fluid.tests.rendererChild",
+                        options: { decoratorValue: "{rendererParent}.options.parentValue"}
+                    }
+                }
+            }
+        });
+        
+        fluid.tests.rendererMiddle = function(container, options) {
+            var that = fluid.initRendererComponent("fluid.tests.rendererMiddle", container, options);
+            return that;
+        };
+
+        fluid.defaults("fluid.tests.rendererChild", {
+            value: "{rendererParent}.options.parentValue"  
+        });
+        
+        fluid.demands("fluid.tests.rendererChild", "fluid.tests.rendererMiddle", 
+           ["@0", fluid.COMPONENT_OPTIONS]);
+             
+        fluid.tests.rendererChild = function(container, options) {
+            var that = fluid.initView("fluid.tests.rendererChild", container, options);
+            $(container).text(that.options.value);
+            return that;
+        };
+        
+        var IoCTests = jqUnit.testCase("IoC Renderer tests");
+        
+        IoCTests.test("initDependent upgrade test", function() {
+            var parentValue = "parentValue";
+            var component = fluid.tests.rendererParent(".renderer-ioc-test", {parentValue: parentValue});
+            var middleNode = component.middle.container;
+            jqUnit.assertValue("Middle component constructed", middleNode);
+            component.middle.refreshView();
+            var decorated = component.middle.locate("decorated");
+            jqUnit.assertEquals("Decorated text resolved from top level", parentValue, decorated.text());
+            var child = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
+            jqUnit.assertEquals("Located decorator with IoC-resolved value", parentValue, child.options.decoratorValue);
+            component.middle.refreshView();
+            var child2 = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
+            jqUnit.assertNotEquals("Rendering has produced new component", child, child2);
+        });
         
         var compTests = jqUnit.testCase("Renderer component tests");
         
@@ -130,6 +214,8 @@ fluid.registerNamespace("fluid.tests");
             that.refreshView();
             var renderMess = that.locate("message").text();
             jqUnit.assertEquals("Rendered message from bundle", that.options.strings.message, renderMess);
+            jqUnit.assertTrue("Applied style using addClass decorator reference to styles block", 
+                that.locate("message").hasClass(that.options.styles.applicableStyle));
             var renderDeffoltMess = that.locate("deffoltmessage").text();
             jqUnit.assertEquals("Rendered message from global bundle", globalMessages.deffolt, renderDeffoltMess);
             jqUnit.assertEquals("Resolver global message using local resolver", globalMessages.deffolt, that.messageResolver.resolve("deffolt"));
@@ -238,7 +324,7 @@ fluid.registerNamespace("fluid.tests");
         
         compTests.test("FLUID-3819 test: messagekey with no value", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test-repeat", {
-                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
+                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]},
                 model: {
                     recordlist: {
                         test: {
@@ -286,9 +372,85 @@ fluid.registerNamespace("fluid.tests");
         
         compTests.test("Renderer component with custom resolver", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
-                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)]
+                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]}
             });
             testFilteredRecords(that);
+        });
+        
+        fluid.defaults("fluid.tests.littleComponentWithInstantiator", {
+            gradeNames: ["fluid.littleComponent", "autoInit"],
+            components: {
+                instantiator: "{instantiator}",
+                rendererComponent: {
+                    type: "fluid.tests.rendererComponentWithNoInstantiator",
+                    container: ".renderer-component-infRec"
+                }
+            }
+        });
+        
+        fluid.defaults("fluid.tests.rendererComponentWithNoInstantiator", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            produceTree: "fluid.tests.littleComponentWithInstantiator.produceTree",
+            finalInitFunction: "fluid.tests.littleComponentWithInstantiator.finalInitFunction",
+            selectors: {
+                text1: ".csc-footer-text1",
+                text2: ".csc-footer-text2",
+                currentRelease: ".csc-footer-currentRelease",
+                about: ".csc-footer-about",
+                feedback: ".csc-footer-feedback"
+            },
+            model: {
+                about: "http://www.collectionspace.org",
+                currentRelease: "http://www.collectionspace.org/current_release",
+                feedback: "http://wiki.collectionspace.org/display/collectionspace/Release+1.6+Feedback",
+                version: "1.6"
+            },
+            strings: {
+                text1: "2009 - 2011",
+                text2: "CollectionSpace",
+                currentRelease: "Release %version",
+                about: "About CollectionSpace",
+                feedback: "Leave Feedback"
+            }
+        });
+        
+        fluid.tests.littleComponentWithInstantiator.finalInitFunction = function (that) {
+            that.renderer.refreshView();
+        };
+        
+        fluid.tests.littleComponentWithInstantiator.produceTree = function () {
+            return {
+                text1: {
+                    messagekey: "text1"
+                },
+                text2: {
+                    messagekey: "text2"
+                },
+                currentRelease: {
+                    target: "${currentRelease}",
+                    linktext: {
+                        messagekey: "currentRelease",
+                        args: {version: "${version}"}
+                    }
+                },
+                about: {
+                    target: "${about}",
+                    linktext: {
+                        messagekey: "about"
+                    }
+                },
+                feedback: {
+                    target: "${feedback}",
+                    linktext: {
+                        messagekey: "feedback"
+                    }
+                }
+            };
+        };
+        
+        compTests.test("FLUID-4200 test: Renderer component with infinite expansion (if there's an instantiator in the tree)", function () {
+            var that = fluid.tests.littleComponentWithInstantiator();
+            jqUnit.assertTrue("That with subcomponents was created", true);
         });
         
         compTests.test("Renderer component with custom resolver and renderer fixup", function () {
@@ -301,13 +463,111 @@ fluid.registerNamespace("fluid.tests");
                 ]  
             };
             var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
-                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
+                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]},
                 protoTree: tree,
                 rendererFnOptions: {
                     noexpand: true
                 }
             });
             testFilteredRecords(that);
+        });
+        
+        fluid.defaults("fluid.tests.paychequeComponent", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+            selectors: {
+                child: ".flc-renderUtils-test"
+            },
+            components: {
+                renderChild: {
+                    type: "fluid.tests.paychequeRenderer",
+                    container: "{paychequeComponent}.dom.child"
+                }
+            }
+        });
+        
+        // For AC
+        fluid.defaults("fluid.tests.paychequeRenderer", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                message: ".flc-renderUtils-message"  
+            },
+            protoTree: {
+                message: "What, every Friday?"
+            }   
+        });
+        
+        compTests.test("Graded renderer component test", function() {
+            var that = fluid.tests.paychequeComponent(".flc-renderUtils-container");
+            that.renderChild.refreshView();
+            var message = that.renderChild.locate("message");
+            jqUnit.assertEquals("Message rendered", fluid.defaults("fluid.tests.paychequeRenderer").protoTree.message,
+              message.text());
+        });
+     
+        fluid.defaults("fluid.tests.FLUID4165Component", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                input: ".flc-renderUtils-test"
+            },
+            protoTree: {
+                input: "${value}"
+            }
+        });
+     
+        compTests.test("FLUID-4165 - ensure automatic creation of applier if none supplied", function() {
+            var model = {value: "Initial Value"};
+            var that = fluid.tests.FLUID4165Component(".FLUID-4165-test", {model: model});
+            that.refreshView();
+            var input = that.locate("input");
+            jqUnit.assertEquals("Initial value rendered", model.value, input.val());
+            input.val("New Value");
+            input.change();
+            jqUnit.assertEquals("Updated value read", "New Value", model.value);
+        });
+    
+        fluid.defaults("fluid.tests.FLUID4189Component", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                input: ".flc-renderUtils-test",
+                input2: ".flc-renderUtils-test2"
+            },
+            produceTree: "fluid.tests.FLUID4189Component.produceTree"
+        });
+        
+        fluid.tests.FLUID4189Component.produceTree = function() {
+            return {
+                input: "${value}"
+            };
+        };
+        
+        compTests.test("FLUID-4189 - refined workflow for renderer component", function() {
+            function adjustModel(model, applier, that) {
+                model.path2 = "value2";
+            }
+            function adjustTree(that, tree) {
+                tree.children.push({
+                    ID: "input2",
+                    valuebinding: "path2"
+                });
+            }
+            function afterRender() {
+                jqUnit.assert("afterRender function called");  
+            }
+            var model = {value: "Initial Value"};
+            var that = fluid.tests.FLUID4189Component(".FLUID-4189-test", { 
+                model: model,
+                listeners: {
+                    prepareModelForRender: adjustModel,
+                    onRenderTree: adjustTree,
+                    afterRender: afterRender
+                }
+            });
+            that.refreshView();
+            jqUnit.expect(3);
+            var input = that.locate("input");
+            jqUnit.assertEquals("Field 1 rendered", model.value, input.val());
+            var input2 = that.locate("input2");
+            jqUnit.assertEquals("Field 2 rendered", "value2", input2.val());
         });
     
         var protoTests = new jqUnit.TestCase("Protocomponent Expander Tests");
@@ -460,6 +720,53 @@ fluid.registerNamespace("fluid.tests");
                     ]
                 };
             jqUnit.assertDeepEq("Decorator expansion", expected, expanded);
+        });
+        
+        fluid.defaults("fluid.tests.repeatDecorator", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+        });
+        
+        fluid.defaults("fluid.tests.repeatHead", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            protoTree: {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    controlledBy: "vector",
+                    pathAs: "elementPath",
+                    valueAs: "element", 
+                    repeatID: "link",
+                    tree: {
+                        decorators: {
+                            type: "fluid",
+                            func: "fluid.tests.repeatDecorator",
+                            options: {
+                                model: {
+                                    value: "${{element}}"
+                                }  
+                            }
+                          
+                        }  
+                    }
+                }
+            }
+        });
+        
+        protoTests.test("FLUID-4168 test: decorator expansion reference to repetition variables", function() {
+            var model = {
+                vector: [1, 2, 3]
+            };
+            var head = fluid.tests.repeatHead(".repeater-leaf-test", {model: model});
+            head.refreshView();
+            var decorators = fluid.renderer.getDecoratorComponents(head);
+            var declist = [];
+            fluid.each(decorators, function(decorator, key) {
+                declist.push({key: key, decorator: decorator});
+            });
+            declist.sort(function(ea, eb) {return ea.key < eb.key? -1 : 1});
+            var decvals = fluid.transform(declist, function(dec) {
+                return dec.decorator.model.value;  
+            });
+            jqUnit.assertDeepEq("Model values recovered from decorators", model.vector, decvals);
         });
         
         protoTests.test("FLUID-3658 test: simple repetition expander", function () {

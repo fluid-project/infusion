@@ -6,13 +6,14 @@ BSD license. You may not use this file except in compliance with one these
 Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, fluid, jqUnit*/
+// Declare dependencies
+/*global fluid, jqUnit, jQuery*/
 
 // JSLint options 
-/*jslint white: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
     $(document).ready(function () {
@@ -20,25 +21,35 @@ https://source.fluidproject.org/svn/LICENSE.txt
         /************************************************
          * Utility Functions for setting up an Uploader *
          ************************************************/
-         
-        var makeUploaderEventFirers = function () {
-            var mockUploader = {};
-            fluid.instantiateFirers(mockUploader, fluid.defaults("fluid.uploader.multiFileUploader"));
-            return mockUploader.events;
-        };
         
-        var makeListeners = function () {
-            return {
-                afterFileQueued: function () {},
-                onQueueError: function () {},
-                afterFileDialog: function () {}
+        var trackLocalListeners = function () {
+            var tracker = jqUnit.invocationTracker();
+            var emptyFn = function () {};
+            var listeners = {
+                afterFileQueued: emptyFn,
+                onQueueError: emptyFn,
+                afterFileDialog: emptyFn
             };
+            tracker.interceptAll(listeners);
+            tracker.listeners = listeners;
+            return tracker;
         };
         
-        var getLocalUploader = function (fileUploadLimit, fileSizeLimit, listeners, legacyBrowserFileLimit) {
+        var trackRemoteListeners = function () {
+            var tracker = jqUnit.invocationTracker();
+            var emptyFn = function () {};
+            var listeners = {
+                onFileSuccess: emptyFn,
+                onFileError: emptyFn,
+                onFileComplete: emptyFn
+            };
+            tracker.interceptAll(listeners);
+            tracker.listeners = listeners;
+            return tracker;            
+        };
+        
+        var getLocalUploader = function (fileUploadLimit, fileSizeLimit, legacyBrowserFileLimit, tracker) {
             var queue = fluid.uploader.fileQueue();
-            var events = makeUploaderEventFirers();            
-            fluid.mergeListeners(events, listeners);
             
             var local = fluid.uploader.html5Strategy.local(queue, legacyBrowserFileLimit, {
                 components: {
@@ -51,7 +62,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     fileUploadLimit: fileUploadLimit, 
                     fileSizeLimit: fileSizeLimit
                 },
-                events: events
+                events: {
+                    afterFileQueued: null,
+                    onQueueError: null,
+                    afterFileDialog: null
+                },
+                listeners: tracker.listeners 
             });
             
             // TODO: This code is tragic. Refactor the FileQueue and it can go.
@@ -62,6 +78,26 @@ https://source.fluidproject.org/svn/LICENSE.txt
             return local;
         };
         
+        var getRemoteUploader = function (tracker) {
+            var queue = fluid.uploader.fileQueue();
+            
+            var remote = fluid.uploader.html5Strategy.remote(queue, {
+                queueSettings: {
+                    uploadURL: "",
+                    postParams: ""
+                },
+                events: {
+                    afterReady: null,
+                    onFileSuccess: null,
+                    onFileError: null,
+                    onFileComplete: null,
+                    onFileProgress: null
+                }, 
+                listeners: tracker.listeners
+            });
+            
+            return remote;
+        };
         
         /*********
          * Setup *
@@ -76,13 +112,107 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 
         var file2 =  {
             id: "file2",
-            size: 5000
+            size: 5
         };
 
         var file3 =  {
             id: "file3",
-            size: 1000001
+            size: 200000
         };
+        
+        /******************************
+         * fileSuccessHandler() Tests *
+         ******************************/
+        
+        html5UploaderTests.test("Ensure event sequence for fileSuccessHandler", function () {
+            var xhr = {
+                status: 200, 
+                responseText: "testing"
+            };
+            
+            var files = [file1];
+            var tracker = trackRemoteListeners();
+            var transcript = tracker.transcript;
+            var remote = getRemoteUploader(tracker);
+            
+            fluid.uploader.html5Strategy.fileSuccessHandler(file1, remote.events, xhr);
+            
+            var eventOrder = ["onFileSuccess", "onFileComplete"];
+            var expectedNumEvents = eventOrder.length;
+            jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", 
+                                expectedNumEvents, transcript.length);      
+            checkEventOrderForFiles(eventOrder, files, transcript);
+            checkOnFileCompleteEvent(transcript);
+        });
+        
+        /****************************
+         * fileErorrHandler() Tests *
+         ****************************/
+        
+        html5UploaderTests.test("Ensure event sequence for fileErrorHandler", function () {
+            var xhr = {
+                status: 200, 
+                responseText: "testing"
+            };
+            
+            var files = [file2];
+            var tracker = trackRemoteListeners();
+            var transcript = tracker.transcript;
+            var remote = getRemoteUploader(tracker);
+            
+            fluid.uploader.html5Strategy.fileErrorHandler(file2, remote.events, xhr);
+            
+            var eventOrder = ["onFileError", "onFileComplete"];
+            var expectedNumEvents = eventOrder.length;
+            jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", 
+                                expectedNumEvents, transcript.length);      
+            checkEventOrderForFiles(eventOrder, files, transcript);
+            checkOnFileCompleteEvent(transcript);            
+        });
+        
+        /***************************
+         * fileStopHandler() Tests *
+         ***************************/
+        
+        html5UploaderTests.test("Ensure event sequence for fileStopHandler", function () {
+            var xhr = {
+                status: 200, 
+                responseText: "testing"
+            };
+            
+            var files = [file3];
+            var tracker = trackRemoteListeners();
+            var transcript = tracker.transcript;
+            var remote = getRemoteUploader(tracker);
+            
+            fluid.uploader.html5Strategy.fileStopHandler(file3, remote.events, xhr);
+            
+            var eventOrder = ["onFileError", "onFileComplete"];
+            var expectedNumEvents = eventOrder.length;
+            jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", 
+                                expectedNumEvents, transcript.length);      
+            checkEventOrderForFiles(eventOrder, files, transcript);
+            checkOnFileCompleteEvent(transcript);            
+        });         
+        
+        /***************************
+         * progressTracker() Tests *
+         ***************************/
+        
+        html5UploaderTests.test("Ensure loaded bytes are properly tracked", function () {
+            var progress = fluid.uploader.html5Strategy.progressTracker();    
+
+            var uploadProgress = progress.getChunkSize(100);
+            jqUnit.assertEquals("The chunk size should be", 100, uploadProgress);
+            jqUnit.assertEquals("100 bytes were previously uploaded", 100, progress.previousBytesLoaded);
+            
+            uploadProgress = progress.getChunkSize(250);
+            jqUnit.assertEquals("The chunk size should now be", 150, uploadProgress);
+        });
+        
+        /************************************
+         * generateMultiPartContent() Tests *
+         ************************************/
         
         html5UploaderTests.test("Ensure multipart content is correctly built", function () {
             var boundary = 1234567890123456789;
@@ -109,6 +239,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertTrue("The sixth line of the multipart content must also contain the boundary", parts[5].indexOf(boundary) !== -1);
         });
         
+        
+        /****************************
+         * browseButtonView() Tests *
+         ****************************/
+        
         html5UploaderTests.test("Uploader HTML5 browseHandler", function () {
             var browseButton = $("#browseButton");
             var browseButtonView = fluid.uploader.html5Strategy.browseButtonView("#browseButtonContainer", {
@@ -116,7 +251,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     fileTypes: ""
                 }
             });
-            
+
             var inputs = browseButton.children();
             jqUnit.assertEquals("There should be one multi-file input element at the start", 1, inputs.length);
             jqUnit.assertEquals("The multi-file input element should be visible and in the tab order to start", 
@@ -131,9 +266,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("The second multi-file input element should be visible and in the tab order", 
                 0, inputs.eq(1).attr("tabindex"));
             
+            browseButtonView.disable();
+            jqUnit.assertTrue("The browse browseButton has been disabled", inputs.eq(1).attr("disabled"));
+            browseButtonView.enable();
+            jqUnit.assertFalse("The browse browseButton has been enabled", inputs.eq(1).attr("disabled"));                      
             inputs.eq(1).focus();
             jqUnit.assertTrue("On focus, the browseButton input has the focus class", browseButton.hasClass("focus"));
-            
             inputs.eq(1).blur();
             jqUnit.assertFalse("On blur, the browseButton no longer has the focus class", browseButton.hasClass("focus"));
         });
@@ -154,6 +292,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
             for (var i = 0; i < files.length; i++) {
                 checkEventForFile(eventOrder[i], files[i], transcript[i]);
             }
+        };
+        
+        var checkOnFileCompleteEvent = function (transcript) {
+            var lastTranscriptEntry = transcript[transcript.length -1];
+            jqUnit.assertEquals("The last event should be onFileComplete", 
+                                "onFileComplete", lastTranscriptEntry.name);
+            jqUnit.assertEquals("One argument should have been passed to onFileComplete", 
+                                1, lastTranscriptEntry.args.length);        
         };
         
         var checkAfterFileDialogEvent = function (expectedNumFiles, transcript) {
@@ -186,11 +332,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 file3
             ];
             
-            var tracker = jqUnit.invocationTracker();
-            var listeners = makeListeners();
-            tracker.interceptAll(listeners);
-            
-            var localUploader = getLocalUploader(3, 1, listeners, null);
+            var tracker = trackLocalListeners();            
+            var localUploader = getLocalUploader(3, 1, null, tracker);
             localUploader.addFiles(files);
             
             // Test #1: Two out of three files should have been added to the queue. The third is too large.
@@ -212,11 +355,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 file3
             ];
             
-            var tracker = jqUnit.invocationTracker();
-            var listeners = makeListeners();
-            tracker.interceptAll(listeners);
-            
-            var localUploader = getLocalUploader(1, 0, listeners, 1000);
+            var tracker = trackLocalListeners();
+            var localUploader = getLocalUploader(1, 0, 100000, tracker);
             localUploader.addFiles(files);
             
             // Test #1: One out of three files should have been added to the queue.
@@ -238,11 +378,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                  file3
              ];
              
-             var tracker = jqUnit.invocationTracker();
-             var listeners = makeListeners();
-             tracker.interceptAll(listeners);
-                                                  
-             var localUploader = getLocalUploader(0, 0, listeners, 1000);
+             var tracker = trackLocalListeners(); 
+             var localUploader = getLocalUploader(0, 0, 100000, tracker);
              localUploader.addFiles(files);
              
              // Test #1: All three files should have been added to the queue.
@@ -264,11 +401,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                  file3
              ];
              
-             var tracker = jqUnit.invocationTracker();
-             var listeners = makeListeners();
-             tracker.interceptAll(listeners);
-                                                  
-             var localUploader = getLocalUploader(null, 0, listeners, 1000);
+             var tracker = trackLocalListeners();
+             var localUploader = getLocalUploader(null, 0, 100000, tracker);
              localUploader.addFiles(files);
              
              // Test #1: All three files should have been added to the queue.
@@ -290,11 +424,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                  file3
              ];
              
-             var tracker = jqUnit.invocationTracker();
-             var listeners = makeListeners();
-             tracker.interceptAll(listeners);
-                                                  
-             var localUploader = getLocalUploader(undefined, 0, listeners, 1000);
+             var tracker = trackLocalListeners();
+             var localUploader = getLocalUploader(undefined, 0, 100000, tracker);
              localUploader.addFiles(files);
              
              // Test #1: All three files should have been added to the queue.
