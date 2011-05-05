@@ -55,7 +55,7 @@ var demo = demo || {};
             },
             tableOfContents: {
                 options: {
-                    templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
+                    templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
                 }
             
             }
@@ -65,7 +65,7 @@ var demo = demo || {};
         var myUIOptions = fluid.uiOptions(container, {
             resources: {
                 template: {
-                    url: "../../../components/uiOptions/html/UIOptions.html"
+                    url: "../../../../components/uiOptions/html/UIOptions.html"
                 }
             }
         });

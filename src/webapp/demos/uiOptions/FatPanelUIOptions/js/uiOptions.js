@@ -53,22 +53,37 @@ var demo = demo || {};
         uiOptions.container.hide();
     };
     
-    //Panel Tabs
-	var panelTabs = function (tabs) {
-		tabs.click(function(e) {
-		alert(e.target);
-			$("li", tabs).removeClass("fl-tabs-active"); 
-			/*e.target.addClass("active"); 
+    /* Panel Tabs
+     * inspired by http://www.sohtanaka.com/web-design/simple-tabs-w-css-jquery/
+     * and http://www.accessibleculture.org/research/aria-tabs/version-2b/
+     */
+	var panelTabs = function (tabs) {	
+		
+		$("li", tabs).click (function(e) {		
+			//unset current tab
+			$("li", tabs).removeClass("fl-tabs-active");
+			$("a", tabs).attr("tabindex", "-1");
+			$("a", tabs).attr("aria-selected", "false");
+
+			//set the active style on clicked tab			
+			$(this).addClass("fl-tabs-active"); 
+			$("a", this).attr("tabindex", "0");			
+			$("a", this).attr("aria-selected", "true");
 			
-			$(".tab").hide(); 
-	
-			var activeTab = e.target.find("a").attr("href"); 
-			$(activeTab).fadeIn(); */
-			return false;		
-		});
+			//show that tab page
+			$(".tab").hide();			
+			$(".tab").attr("aria-hidden", "true");			
+			
+			var activeTab = $($(this).find("a").attr("href"));
+			$(activeTab).fadeIn(); 
+			$(activeTab).attr("aria-hidden", "false");			
+						
+			return false;	
+		}); 		
 				
+		//show first tab on load				
 		$(".tab").hide();
-		$(".tab:first").show(); //make first tab active on load
+		$(".tab:first").show(); 
     };
     
     demo.slidingUIOptions = function (container, button) {
@@ -77,8 +92,7 @@ var demo = demo || {};
             tableOfContents: {
                 options: {
                     templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
-                }
-            
+                }            
             }
         });
         

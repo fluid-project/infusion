@@ -1,13 +1,19 @@
 <form id="options" action="" class="fl-uiOptions">    
     <div class="flc-uiOptions-controls">
     
-    	<ul id="fl-uiOptions-tabs" class="fl-tabs fl-tabs-left">
-    		<li class="fl-tabs-active"><a href="#tab1"><img src="../../../../components/uiOptions/images/uio_icon_textanddisplay_18x18.png" alt="" /> Text and display</a></li>
-			<li><a href="#tab2"><img src="../../../../components/uiOptions/images/uio_icon_layoutandnavigation_18x18.png" alt="" /> Layout and navigation</a></li>    		
-			<li><a href="#tab3"><img src="../../../../components/uiOptions/images/uio_icon_linksandbuttons_18x18.png" alt="" /> Links and buttons</a></li>
+    	<ul id="fl-uiOptions-tabs" class="fl-tabs fl-tabs-left" role="tablist">
+    		<li class="fl-tabs-active" role="presentation">
+    			<a id="tab-first" href="#tab1" role="tab" aria-selected="true" tabindex="0"><img src="../../../../components/uiOptions/images/uio_icon_textanddisplay_18x18.png" alt="" /> Text and display</a>
+    		</li>
+			<li role="presentation">
+				<a id="tab-second" href="#tab2" role="tab" aria-selected="false" tabindex="-1"><img src="../../../../components/uiOptions/images/uio_icon_layoutandnavigation_18x18.png" alt="" /> Layout and navigation</a>
+			</li>    		
+			<li role="presentation">
+				<a id="tab-third" href="#tab3" role="tab" aria-selected="false" tabindex="-1"><img src="../../../../components/uiOptions/images/uio_icon_linksandbuttons_18x18.png" alt="" /> Links and buttons</a>
+			</li>
     	</ul>
     
-    	<div id="tab1" class="tab">
+    	<div id="tab1" class="fl-clearfix tab" role="tabpanel" aria-hidden="false" aria-labelledby="tab-first">
 			<h2><img src="../../../components/uiOptions/images/uio_icon_textanddisplay_18x18.png" alt="" /> Text and display</h2>
 			
 			<ul class="fl-uio-form">
@@ -52,7 +58,7 @@
 			</ul>    
         </div>
                  
-    	<div id="tab2" class="tab">                 
+    	<div id="tab2" class="fl-clearfix tab" role="tabpanel" aria-hidden="true" aria-labelledby="tab-second">                 
 			<h2><img src="../../../components/uiOptions/images/uio_icon_layoutandnavigation_18x18.png" alt="" /> Layout and navigation</h2>        
 			<ul>
 				<li>                             
@@ -72,7 +78,7 @@
 			</ul>
         </div>
         
-    	<div id="tab3" class="tab">                         
+    	<div id="tab3" class="fl-clearfix tab" role="tabpanel" aria-hidden="true" aria-labelledby="tab-third">                         
 			<h2><img src="../../../components/uiOptions/images/uio_icon_linksandbuttons_18x18.png" alt="" /> Links and buttons</h2>
 			<ul>
 				<li>
@@ -93,10 +99,10 @@
 		</div>
     </div>
 
-		<div class="fl-text-align-center fl-uio-buttons">
+		<!-- div class="fl-text-align-center fl-uio-buttons">
             <input class="flc-uiOptions-reset" type="button" value="Reset" />
             <input class="flc-uiOptions-save fl-uio-save" type="button" value="Save and apply" />
             <input class="flc-uiOptions-cancel fl-uio-cancel" type="button" value="Cancel" />
-        </div>       
+        </div -->       
     
 </form>                
