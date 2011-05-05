@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         tests.test("Test Init", function () {
             expect(8);
-            var textfieldSlider = fluid.textfieldSlider(".fl-textfield-slider");
+            var textfieldSlider = fluid.textfieldSlider(".fl-textfield-slider", {model: {value: 15}});
             jqUnit.assertEquals("Slider value is set to input value", 15, $(".flc-textfieldSlider-slider").slider("value"));
             jqUnit.assertEquals("Textfield value is set", 15, $(".flc-textfieldSlider-field").val());
             jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model.value);
