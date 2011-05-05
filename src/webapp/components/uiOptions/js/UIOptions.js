@@ -24,7 +24,7 @@ var fluid_1_4 = fluid_1_4 || {};
  * Textfield Slider *
  ******************/
 
-(function ($, fluid) {    
+(function ($, fluid) {
 
     fluid.defaults("fluid.textfieldSlider", {
         gradeNames: ["fluid.viewComponent", "autoInit"], 
@@ -43,6 +43,9 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         events: {
             modelChanged: null
+        },
+        listener: {
+            modelChanged: "{textfieldSlider}.refreshView"
         },
         model: {
             value: null,
@@ -72,18 +75,12 @@ var fluid_1_4 = fluid_1_4 || {};
         thumb.attr(ariaDefaults);        
     };
     
-    var updateModelAndAria = function (that, value, thumb) {
-        that.events.modelChanged.fire(value);
-        thumb.attr("aria-valuenow", value);
-    };
-    
     fluid.textfieldSlider.refreshView = function (textfieldSlider, textfield, slider) {
         var val = textfieldSlider.model.value;
         
         textfield.container.val(val);
         slider.slider("value", val);
-
-        updateModelAndAria(textfieldSlider, val, textfieldSlider.dom.locate("thumb"));
+        textfieldSlider.dom.locate("thumb").attr("aria-valuenow", val);
     };
     
     fluid.textfieldSlider.finalInit = function (that) {
@@ -96,7 +93,14 @@ var fluid_1_4 = fluid_1_4 || {};
         var slider = that.locate("slider").slider(sliderOptions);
         initSliderAria(that.locate("thumb"), sliderOptions);
 
-        that.applier.modelChanged.addListener("value", that.refreshView);
+        that.applier.modelChanged.addListener("value", 
+            function (newModel, oldModel, changeRequest) {
+                // update preview window
+                that.events.modelChanged.fire(newModel.value);
+            }
+        );
+
+        that.events.modelChanged.addListener(that.refreshView);
 
         that.refreshView();
     };
