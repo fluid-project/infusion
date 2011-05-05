@@ -10,7 +10,7 @@
 .fl-slider .fl-handle, .fl-slider a {position:absolute; display:block; height:32px; width:32px; top:0; left:0;}
 .fl-slider a { background-image:url('../images/uio_icon_sliderhandle.png'); background-repeat:no-repeat; background-position:center center; bottom: 16px;}
 .fl-slider-vert .fl-handle, .fl-slider-vert a {margin-left:-0.2em; margin-top:-0.5em;}
-.fl-slider-horz .fl-handle, .fl-slider-horz a {margin-top:-1.2em; margin-left:-0.5em;}
+.fl-slider-horz .fl-handle, .fl-slider-horz a {margin-top:-14px; margin-left:-6px;}
 .fl-left-slider-image { padding-right: 8px; }
 .fl-right-slider-image { padding-left: 0px; padding-right: 10px;}
 

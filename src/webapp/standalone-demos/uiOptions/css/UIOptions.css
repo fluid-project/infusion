@@ -1,0 +1,12 @@
+body {
+	font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
+	margin-left: 64px;
+	margin-right: 64px;
+	margin-top: 64px;
+}
+
+h1 {
+    font-size: 1.4em;
+    margin-bottom: 1.4em;
+    font-weight: bold;
+}
