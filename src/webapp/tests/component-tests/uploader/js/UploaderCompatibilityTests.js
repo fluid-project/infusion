@@ -46,33 +46,6 @@
                 onFileSuccess: fluid.identity
             }
         };
-
-        var testComponents = function (uploader) {
-            var flashMovieSettings = uploader.options.components.strategy.options.flashMovieSettings;
-            jqUnit.assertEquals("The flashURL should have been correctly assigned to the strategy's options.",
-                oldOptions.uploadManager.options.flashURL,
-                flashMovieSettings.flashURL);
-            jqUnit.assertEquals("The flashButtonImageURL should have been assigned to the strategy's options.",
-                oldOptions.decorators[0].options.flashButtonImageURL,
-                flashMovieSettings.flashButtonImageURL);
-        };
-        
-        var testQueueSettings = function (uploader) {
-            var queueSettings = uploader.options.queueSettings;
-            jqUnit.assertEquals("The uploadURL should have been assigned to the queueSettings option.",
-                oldOptions.uploadManager.options.uploadURL,
-                queueSettings.uploadURL);
-            jqUnit.assertEquals("flashURL should also have been assigned to the queueSettings option.",
-                oldOptions.uploadManager.options.flashURL,
-                queueSettings.flashURL);  
-        };
-        
-        var testDefaults = function (uploader) {
-            // Ensure that one of the options we don't override is still set correctly.
-            jqUnit.assertEquals("The fileQueueView component option should still be set to the default.",
-                fluid.defaults("fluid.uploader.multiFileUploader").components.fileQueueView.type,
-                uploader.options.components.fileQueueView.type);
-        };
         
         fluid.defaults("fluid.tests.uploader.parent", {
             gradeNames: ["fluid.littleComponent", "autoInit"],
@@ -109,10 +82,32 @@
         var uploaderConfigs = [fluid.tests.uploader.noIoC, fluid.tests.uploader.ioc];
         var optionsTypes = [oldOptions, modernOptions];
         
+        
+        var testTransformation = function (spec, source, target) {
+            for (var sourcePath in spec) {
+                var targetPath = spec[sourcePath];
+                jqUnit.assertEquals(sourcePath + " should have been transformed to " + targetPath,
+                    fluid.get(source, sourcePath), fluid.get(target, targetPath));
+            }
+        };
+        
         var checkUploaderOptions = function (uploader) {
-            testComponents(uploader);
-            testQueueSettings(uploader);
-            testDefaults(uploader);
+            testTransformation({
+                // Flash Settings
+                "uploadManager.options.flashURL": "components.strategy.options.flashMovieSettings.flashURL",
+                "decorators.0.options.flashButtonImageURL": "components.strategy.options.flashMovieSettings.flashButtonImageURL",
+            
+                // Queue Settings
+                "uploadManager.options.uploadURL": "queueSettings.uploadURL",
+                
+                // Listeners: move as is.
+                "listeners.onFileSuccess": "listeners.onFileSuccess"
+            }, oldOptions, uploader.options);
+                
+            // Ensure that one of the options we don't override is still set correctly.
+            testTransformation({
+                "components.fileQueueView.type": "components.fileQueueView.type"
+            }, fluid.defaults("fluid.uploader.multiFileUploader"), uploader.options);
         };
         
         compatTests.test("Uploader 1.2 full options backwards compatibility", function () {
@@ -123,6 +118,5 @@
                 }
             }
         });
-
     });
 })(jQuery);
