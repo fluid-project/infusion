@@ -44,9 +44,6 @@ var fluid_1_4 = fluid_1_4 || {};
         events: {
             modelChanged: null
         },
-        listener: {
-            modelChanged: "{textfieldSlider}.refreshView"
-        },
         model: {
             value: null,
             min: 0,
@@ -99,6 +96,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 that.events.modelChanged.fire(newModel.value);
             }
         );
+
+        that.events.modelChanged.addListener(that.refreshView);
 
         that.refreshView();
     };
