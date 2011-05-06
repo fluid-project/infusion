@@ -100,8 +100,6 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         );
 
-        that.events.modelChanged.addListener(that.refreshView);
-
         that.refreshView();
     };
     
