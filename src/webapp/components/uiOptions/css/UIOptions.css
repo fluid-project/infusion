@@ -1,6 +1,8 @@
-/* UI Option default styles */
+/**
+ * Clearfix
+ * from http://perishablepress.com/press/2009/12/06/new-clearfix-hack
+ */
 
-/* An alternate clearfix solution from http://perishablepress.com/press/2009/12/06/new-clearfix-hack/*/
 .fl-clearfix:after {
 visibility: hidden;
 display: block;
@@ -12,177 +14,41 @@ height: 0;
 * html .fl-clearfix { zoom: 1; } /* IE6 */
 *:first-child+html .fl-clearfix { zoom: 1; } /* IE7 */
 
-/* Overall styles */
-.fl-uiOptions {
-	font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
-    font-size: 0.85em;
-}
+/**
+ * Sliders: basic slider structure
+ * requires an anchor for a drag handle
+ */
 
-.fl-uiOptions p {
-    font-size: 1.1em;
-}
+/* LAYOUT DATA */
+.fl-uiOptions .fl-slider-vert {height:10em; width:0.8em;}
+.fl-uiOptions .fl-slider-horz {width:140px; height:3px; -moz-border-radius: 100%; -webkit-border-radius: 100%;}
+.fl-uiOptions .fl-slider {position:relative; background-color:#555555; padding:0;}
+.fl-uiOptions .fl-slider .fl-handle, .fl-slider a {position:absolute; display:block; height:32px; width:32px; top:0; left:0;}
+.fl-uiOptions .fl-slider a { background-image:url('../images/uio_icon_sliderhandle.png'); background-repeat:no-repeat; background-position:center center; bottom: 16px;}
+.fl-uiOptions .fl-slider-vert .fl-handle, .fl-slider-vert a {margin-left:-0.2em; margin-top:-0.5em;}
+.fl-uiOptions .fl-slider-horz .fl-handle, .fl-slider-horz a {margin-top:-14px; margin-left:-6px;}
+.fl-uiOptions .fl-left-slider-image { padding-right: 8px; }
+.fl-uiOptions .fl-right-slider-image { padding-left: 0px; padding-right: 10px;}
 
-.fl-col-fixed-31em { width: 31em; }
-.fl-col-fixed-38em { width: 38em; }
-.fl-col-fixed-72em { width: 72em; }
+/* THEME DATA */
+.fl-uiOptions .fl-theme-hc .fl-slider {background-color:#000;}
+.fl-uiOptions .fl-theme-hc .fl-slider .fl-handle, 
+.fl-uiOptions .fl-theme-hc .fl-slider a,
+.fl-uiOptions .fl-theme-hc .fl-slider a:hover {border:1px solid #000 !important; background-color:#fff !important;}
 
-/* Section headers */
-.fl-uiOptions h2 {
-	font-size: 1.29em;
-	font-weight: bold;
-	clear: both;
-	border-top: 2px solid #dddddd;
-	color: #444444;
-	padding-top: 14px;
-	padding-bottom: 22px;	
-}
+.fl-uiOptions .fl-theme-hci .fl-slider {background-color:#fff;}
+.fl-uiOptions .fl-theme-hci .fl-slider .fl-handle, 
+.fl-uiOptions .fl-theme-hci .fl-slider a,
+.fl-uiOptions .fl-theme-hci .fl-slider a:hover {border:1px solid #fff !important; background-color:#000 !important;}
 
-.fl-uiOptions h2 img {
-	margin-bottom: -3px;
-	padding-right: 5px;
-}
+.fl-uiOptions .fl-theme-slate .fl-slider {background-color:#ccc;}
+.fl-uiOptions .fl-theme-slate .fl-slider .fl-handle, 
+.fl-uiOptions .fl-theme-slate .fl-slider a,
+.fl-uiOptions .fl-theme-slate .fl-slider a:hover {border:1px solid #000; background-color:#999;}
 
-/* Form */
-.fl-uiOptions ul {
-	margin-left: 0px;
-}
+.fl-uiOptions .fl-theme-coal .fl-slider {background-color:#ccc;}
+.fl-uiOptions .fl-theme-coal .fl-slider .fl-handle, 
+.fl-uiOptions .fl-theme-coal .fl-slider a,
+.fl-uiOptions .fl-theme-coal .fl-slider a:hover {border:1px solid #000; background-color:#999;}
 
-.fl-uiOptions ul li {
-    list-style: none;
-    clear:both; 
-}
-
-/* Categories of options (e.g., Text & Display, Layout & Navigation) */
-.fl-uio-category {
-    padding-bottom: 48px; /* separation between categories */
-}
-
-/* Individual options (e.g., text size, simplify layout, emphasize links) */
-.fl-uio-option-2col {
-    padding-top: 40px;
-}
-
-.fl-uio-option-1col {
-    padding-top: 28px;
-}
-
-.fl-uio-option-first {
-    padding-top: 8px;
-}
-
-/* Descriptions */
-.fl-uio-option-description {
-	color: #4D4D4D;
-	margin-bottom: 0px;
-	padding-top: 5px;
-}
-
-/* Labels */
-.fl-uiOptions label {
-	text-transform: uppercase;
-	font-size: 1.2em;
-}
-
-/* Text and display section */
-.fl-uiOptions .fl-uio-form label {
-    display: block;
-    float: left;
-	width: 14em;	
-}
-
-.fl-uiOptions .fl-uio-form .fl-inputs {
-	float: left;
-}
-
-.fl-uiOptions .fl-uio-form input[type="text"] {
-	width:2em;
-}
-
-/* Slider position. More slider styles in /css/Slider.css */
-.fl-uiOptions .fl-slider {
-	float:left;
-	margin-right: 10px;
-}
-
-/* Check boxes */
-.fl-uiOptions input[type="checkbox"] {
-	margin-right:10px;
-	margin-bottom: 2em;
-	border: 1px solid black;
-}
-
-/* Font Select box */
-.fl-uiOptions select {
-	border: 2px solid #ebebeb;
-}
-
-.fl-uiOptions option {}
-
-.fl-uiOptions select#text-font { 
-	font-weight:bold; 
-}
-.fl-uiOptions select#text-font option.times { font-family: "Times New Roman"; }
-.fl-uiOptions select#text-font option.comic { font-family: "Comic Sans MS"; }
-.fl-uiOptions select#text-font option.arial { font-family: Arial; }
-.fl-uiOptions select#text-font option.verdana { font-family: Verdana; }
-
-/* Theme Select box */
-.fl-uiOptions select#theme { 
-	font-weight:bold; 
-	text-transform: uppercase;
-}
-.fl-uiOptions select#theme option.default { color: #000; background-color: #efefef;}
-.fl-uiOptions select#theme option.bw { color: #fff; background-color: #000;}
-.fl-uiOptions select#theme option.wb { color: #000; background-color: #fff;}
-.fl-uiOptions select#theme option.by { color: #000; background-color: #ffee00;}
-.fl-uiOptions select#theme option.yb { color: #ffee00; background-color: #000;}
-
-/* Preview Area */
-.fl-uiOptions .fl-uio-preview iframe {
-	height: 480px;
-	width: 100%;
-	border: 2px solid #d7d7d7;
-}
-
-/* Apply buttons */
-.fl-uiOptions .fl-uio-buttons {
-	margin-top: 1em;
-	float: left;
-}
-
-.fl-uiOptions .fl-uio-buttons input {
-	text-transform: uppercase;
-	text-decoration: underline;
-	font-weight: bold;
-	color: #333333;
-/*  border: 2px solid #d7d7d7;*/
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
-    padding: 5px;
-	height: 32px;
-	font-size: 1em;
-    margin-right: 3px;
-}
-
-.fl-uiOptions .fl-uio-buttons .fl-uio-save {
-	padding-left: 16px;
-	background-image: url("../../../components/uiOptions/images/uio_icon_save_13x13.png");
-	background-repeat: no-repeat;
-	background-position: 4px 6px;
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
-}
-
-.fl-uiOptions .fl-uio-buttons .fl-uio-cancel {
-	padding-left: 16px;
-	background-image: url("../../../components/uiOptions/images/uio_icon_cancel_13x13.png");
-	background-repeat: no-repeat;
-	background-position: 3px 6px;
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
-}
-
-.fl-uio-preview h2 {
-	font-weight: lighter;
-	font-size: 1.8em;
-	color: #4D4D4D;
-	padding-top: 18px;
-	padding-bottom: 22px;
-}
+.fl-uiOptions .fl-theme-mist {}
