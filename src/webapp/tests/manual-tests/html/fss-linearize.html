@@ -21,15 +21,16 @@
     <body class="fl-theme-mist">
     	<h1>Linearizing test for fss-layout</h1>        	
 		<br />
-		<button id="normal">original layout</button> <button id="linearize">single col layout</button>
-		<div id="linear-choices" style="display:inline">
-			<!-- label><input type="checkbox" name="layout" id="width-100" /> uniform width</label -->
-			<label><input type="checkbox" name="layout" id="alignment" /> alignment:</label> 
-				<select id="align-choice">
-					<option value="fl-layout-align-left">left</option>
-					<option value="fl-layout-align-center">centre</option>
-					<option value="fl-layout-align-right">right</option>
-				</select>							
+		<div class="demo-linearize-options">
+		    <label>linearize: <input type="checkbox" name="linearize" id="linearize" /></label> 
+    		<span id="linear-choices">
+    		    | align:
+                <select id="align-choice">
+                    <option value="fl-layout-align-left">left</option>
+                    <option value="fl-layout-align-center">centre</option>
+    				<option value="fl-layout-align-right">right</option>
+    			</select>							
+    		</span>
 		</div>
 		
 		<div id="tabs"> 

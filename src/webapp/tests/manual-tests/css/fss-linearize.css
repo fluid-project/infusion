@@ -1,5 +1,14 @@
 /* FSS Linearize test */
 
+.demo-linearize-options {
+    border-radius: 4px;
+    background-color: #CCC;
+    margin: 0px 0px 5px 5px;
+    padding: 10px 5px;
+    height: auto;
+    width: 187px;
+}
+
 .layout-demo {
 	margin-bottom:10px;
 }
