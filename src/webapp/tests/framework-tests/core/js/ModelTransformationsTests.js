@@ -311,6 +311,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.registerNamespace("fluid.tests.transform");
     
+    // TODO: This is cut and pasted from UploaderCompatibilityTests.js.
     fluid.tests.transform.aTutorOldUploaderOptions = {
         uploadManager: {
             type: "fluid.swfUploadManager",

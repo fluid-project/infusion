@@ -69,8 +69,13 @@ var fluid_1_4 = fluid_1_4 || {};
                 ]
             }
         },
+        "queueSettings": {
+            expander: {
+                type: "fluid.model.transform.firstValue",
+                values: ["queueSettings", "uploadManager.options"]
+            }
+        },
         "invokers": "invokers",
-        "queueSettings": "uploadManager.options",
         "demo": "demo",
         "selectors": "selectors",
         "focusWithEvent": "focusWithEvent",
@@ -80,12 +85,15 @@ var fluid_1_4 = fluid_1_4 || {};
         "mergePolicy": "mergePolicy"
     };
     
-    // Monkey patch fluid.uploader with an options-chewing wrapper.
-    // TODO: Replace this with an IoC-resolved solution.
-    var multiFileImpl = fluid.uploader.multiFileUploader;
-    fluid.uploader.multiFileUploader = function (container, options) {
-        options = fluid.model.transformWithRules(options, fluid.compat.fluid_1_2.uploader.optionsRules);
-        return multiFileImpl(container, options);
-    };
-    
+    fluid.demands("fluid.uploader", "fluid.uploader.fluid_1_2", {
+        options: {
+            transformOptions: {
+                transformer: "fluid.model.transformWithRules",
+                config: fluid.compat.fluid_1_2.uploader.optionsRules
+            },
+            mergePolicy: {
+                transformOptions: "noexpand"
+            }
+        }
+    });
 })(jQuery, fluid_1_4);
