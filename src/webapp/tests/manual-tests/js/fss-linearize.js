@@ -97,8 +97,8 @@ var demo = demo || {};
             alignment: ".democ-linearize-alignment",
             alignmentChoice: ".democ-linearize-alignmentChoice",
             layout: ".democ-linearize-layoutLabel",
-            styled: "#container",
-            sections: "#tabs"
+            styled: ".democ-linearize-styled",
+            sections: ".democ-linearize-sections"
         },
         styles: {
             alignmentDisabled: "demo-linearize-alignmentDisabled",
