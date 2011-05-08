@@ -18,6 +18,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var demo = demo || {};
 
 (function ($) {
+    
+    /****************
+     * Tabs Wrapper *
+     ****************/
+    fluid.registerNamespace("demo.tabsWrapper");
+    
+    demo.tabsWrapper.finalInit = function (that) {
+        $(that.container).tabs();
+    };
+    
+    fluid.defaults("demo.tabsWrapper", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        finalInitFunction: "demo.tabsWrapper.finalInit"
+    });
+    
+    /*************
+     * linearize * 
+     *************/
     fluid.registerNamespace("demo.linearize");
     
     demo.linearize.finalInit = function (that) {
@@ -69,11 +87,18 @@ var demo = demo || {};
         gradeNames: ["fluid.viewComponent", "autoInit"],
         preInitFunction: "demo.linearize.preInit",
         finalInitFunction: "demo.linearize.finalInit",
+        components: {
+            divider: {
+                type: "demo.tabsWrapper",
+                container: "{demo.linearize}.dom.sections"
+            }
+        },
         selectors: {
             alignment: ".democ-linearize-alignment",
             alignmentChoice: ".democ-linearize-alignmentChoice",
             layout: ".democ-linearize-layoutLabel",
-            styled: "#container"
+            styled: "#container",
+            sections: "#tabs"
         },
         styles: {
             alignmentDisabled: "demo-linearize-alignmentDisabled",
@@ -88,9 +113,4 @@ var demo = demo || {};
             afterLayoutChanged: "{demo.linearize}.setLayout"
         }
     });
-    
-    demo.initLinearize = function () {
-        demo.linearize(".democ-linearize");
-        $("#tabs").tabs();
-    };
 })(jQuery);
