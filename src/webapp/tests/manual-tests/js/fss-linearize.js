@@ -1,34 +1,96 @@
-$(document).ready(function() {
-    (function ($) {
-        $("#normal").click(function() {
-        	$("#container").attr("class", "");      
-          	$("#linear-choices").hide();    		    	
-        });       
-        $("#linearize").click(function() {
-        	$("#container").attr("class", "");
-        	$("#container").addClass("fl-layout-linear");
-          	$("#linear-choices").show();
+/*
+Copyright 2011 OCAD University
 
-          	if ($("#alignment").attr('checked') == true)
-        	  	$("#container").addClass($("#align-choice").val());
-        });
-        $("#alignment").change(function() {
-        	if ($("#alignment").attr('checked') == true) {
-        		$("#container").addClass($("#align-choice").val());
-        	} else {
-        		$("#container").removeClass($("#align-choice").val());
-        	}
-        });   
+Licensed under the Educational Community License (ECL), Version 2.0 or the New
+BSD license. You may not use this file except in compliance with one these
+Licenses.
 
-        $("#align-choice").change(function() {
-        	$("#container").removeClass("fl-layout-align-left");
-        	$("#container").removeClass("fl-layout-align-center");
-        	$("#container").removeClass("fl-layout-align-right");
-        	$("#container").addClass($("#align-choice").val());
-        });
+You may obtain a copy of the ECL 2.0 License and BSD License at
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+*/
 
-    })(jQuery);    
+// Declare dependencies
+/*global demo:true, fluid, jQuery*/
+
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+
+var demo = demo || {};
+
+(function ($) {
+    fluid.registerNamespace("demo.linearize");
     
-    $("#tabs").tabs();
-    $("#linear-choices").hide();
-});
+    demo.linearize.finalInit = function (that) {
+        var layoutSelector = that.locate("layout");
+        
+        // bind event listener for layout checkbox
+        layoutSelector.change(function (e) {
+            that.events.afterLayoutChanged.fire(e.target.checked);
+        });
+        
+        // bind event listener for alignment selectbox
+        that.locate("alignmentChoice").change(function (e) {
+            that.events.afterAlignmentChanged.fire($(e.target).val(), that.currentAlignmnet);
+        });
+        
+        that.setLayout(layoutSelector.is(":checked"));
+    };
+    
+    demo.linearize.preInit = function (that) {
+        that.setAlignmnet = function (newAlignmnet, oldAlignmnet) {
+            var styledElm = that.locate("styled");
+            if (oldAlignmnet) {
+                styledElm.removeClass(oldAlignmnet);
+            }
+            
+            styledElm.addClass(newAlignmnet);
+            that.currentAlignmnet = newAlignmnet;
+        };
+        
+        that.addLinearization = function () {
+            that.locate("alignment").removeClass(that.options.styles.alignmentDisabled);
+            that.locate("styled").addClass(that.options.styles.linear);
+            that.locate("alignmentChoice").removeAttr("disabled");
+            that.setAlignmnet(that.locate("alignmentChoice").val());
+        };
+        
+        that.removeLinearization = function () {
+            that.locate("alignment").addClass(that.options.styles.alignmentDisabled);
+            that.locate("styled").removeClass(that.options.styles.linear);
+            that.locate("alignmentChoice").attr("disabled", true);
+        };
+        
+        that.setLayout = function (linearize) {
+            that[linearize ? "addLinearization" : "removeLinearization"]();
+        };
+    };
+    
+    fluid.defaults("demo.linearize", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        preInitFunction: "demo.linearize.preInit",
+        finalInitFunction: "demo.linearize.finalInit",
+        selectors: {
+            alignment: ".democ-linearize-alignment",
+            alignmentChoice: ".democ-linearize-alignmentChoice",
+            layout: ".democ-linearize-layoutLabel",
+            styled: "#container"
+        },
+        styles: {
+            alignmentDisabled: "demo-linearize-alignmentDisabled",
+            linear: "fl-layout-linear"
+        },
+        events: {
+            afterAlignmentChanged: null,
+            afterLayoutChanged: null
+        },
+        listeners: {
+            afterAlignmentChanged: "{demo.linearize}.setAlignmnet",
+            afterLayoutChanged: "{demo.linearize}.setLayout"
+        }
+    });
+    
+    demo.initLinearize = function () {
+        demo.linearize(".democ-linearize");
+        $("#tabs").tabs();
+    };
+})(jQuery);

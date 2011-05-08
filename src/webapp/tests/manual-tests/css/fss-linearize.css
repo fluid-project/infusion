@@ -9,6 +9,10 @@
     width: 187px;
 }
 
+.demo-linearize-alignmentDisabled {
+    color: gray;
+}
+
 .layout-demo {
 	margin-bottom:10px;
 }
