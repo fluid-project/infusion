@@ -38,7 +38,8 @@ var fluid_1_4 = fluid_1_4 || {};
                         onFileDialog: "{multiFileUploader}.events.onFileDialog",
                         afterFileDialog: "{multiFileUploader}.events.afterFileDialog",
                         afterFileQueued: "{multiFileUploader}.events.afterFileQueued",
-                        onQueueError: "{multiFileUploader}.events.onQueueError"
+                        onQueueError: "{multiFileUploader}.events.onQueueError",
+                        clearFileError: "{multiFileUploader}.events.clearFileError"
                     }
                 }
             },

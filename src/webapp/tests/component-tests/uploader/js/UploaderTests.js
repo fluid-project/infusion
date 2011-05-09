@@ -20,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
         var uploaderTests = new jqUnit.TestCase("Uploader Basic Tests");
-        var errorHandler = fluid.uploader.errorHandler(".uploader-total-errored");
+        var errorHandler = fluid.uploader.errorHandler(".flc-uploader-total-errored");
         var mountainTestFile = {
                 fileName : "Mountain.jpg", // The file name. The path is not included. 
                 size : 400000 // The file size in bytes     
@@ -170,7 +170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         uploaderTests.test("ErrorHandling tests - refreshView", function () {
             //use a new errorHandler
-            var errorHandler = fluid.uploader.errorHandler(".uploader-total-errored"); 
+            var errorHandler = fluid.uploader.errorHandler(".flc-uploader-total-errored"); 
             var fileLimitRow = errorHandler.locate("exceedsFileLimit");
             var uploadLimitRow = errorHandler.locate("exceedsUploadLimit");
             var testVisibility = function (element, state) {
@@ -207,7 +207,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         uploaderTests.test("ErrorHandling tests - toggle error message body", function () {
             //use a new errorHandler
-            var errorHandler = fluid.uploader.errorHandler(".uploader-total-errored"); 
+            var errorHandler = fluid.uploader.errorHandler(".flc-uploader-total-errored"); 
             var fileLimitRow = errorHandler.locate("exceedsFileLimit");
             var uploadLimitRow = errorHandler.locate("exceedsUploadLimit");
             var testVisibility = function (element, state) {

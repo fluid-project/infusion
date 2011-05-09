@@ -65,7 +65,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 events: {
                     afterFileQueued: null,
                     onQueueError: null,
-                    afterFileDialog: null
+                    afterFileDialog: null,
+                    clearFileError: null
                 },
                 listeners: tracker.listeners 
             });
