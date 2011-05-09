@@ -377,6 +377,82 @@ fluid.registerNamespace("fluid.tests");
             testFilteredRecords(that);
         });
         
+        fluid.defaults("fluid.tests.littleComponentWithInstantiator", {
+            gradeNames: ["fluid.littleComponent", "autoInit"],
+            components: {
+                instantiator: "{instantiator}",
+                rendererComponent: {
+                    type: "fluid.tests.rendererComponentWithNoInstantiator",
+                    container: ".renderer-component-infRec"
+                }
+            }
+        });
+        
+        fluid.defaults("fluid.tests.rendererComponentWithNoInstantiator", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            produceTree: "fluid.tests.littleComponentWithInstantiator.produceTree",
+            finalInitFunction: "fluid.tests.littleComponentWithInstantiator.finalInitFunction",
+            selectors: {
+                text1: ".csc-footer-text1",
+                text2: ".csc-footer-text2",
+                currentRelease: ".csc-footer-currentRelease",
+                about: ".csc-footer-about",
+                feedback: ".csc-footer-feedback"
+            },
+            model: {
+                about: "http://www.collectionspace.org",
+                currentRelease: "http://www.collectionspace.org/current_release",
+                feedback: "http://wiki.collectionspace.org/display/collectionspace/Release+1.6+Feedback",
+                version: "1.6"
+            },
+            strings: {
+                text1: "2009 - 2011",
+                text2: "CollectionSpace",
+                currentRelease: "Release %version",
+                about: "About CollectionSpace",
+                feedback: "Leave Feedback"
+            }
+        });
+        
+        fluid.tests.littleComponentWithInstantiator.finalInitFunction = function (that) {
+            that.renderer.refreshView();
+        };
+        
+        fluid.tests.littleComponentWithInstantiator.produceTree = function () {
+            return {
+                text1: {
+                    messagekey: "text1"
+                },
+                text2: {
+                    messagekey: "text2"
+                },
+                currentRelease: {
+                    target: "${currentRelease}",
+                    linktext: {
+                        messagekey: "currentRelease",
+                        args: {version: "${version}"}
+                    }
+                },
+                about: {
+                    target: "${about}",
+                    linktext: {
+                        messagekey: "about"
+                    }
+                },
+                feedback: {
+                    target: "${feedback}",
+                    linktext: {
+                        messagekey: "feedback"
+                    }
+                }
+            };
+        };
+        
+        compTests.test("FLUID-4200 test: Renderer component with infinite expansion (if there's an instantiator in the tree)", function () {
+            var that = fluid.tests.littleComponentWithInstantiator();
+            jqUnit.assertTrue("That with subcomponents was created", true);
+        });
+        
         compTests.test("Renderer component with custom resolver and renderer fixup", function () {
             var tree = {
                 children: [
@@ -436,6 +512,71 @@ fluid.registerNamespace("fluid.tests");
             protoTree: {
                 input: "${value}"
             }
+        });
+        
+        fluid.defaults("fluid.tests.decoratorParent", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            model: {
+                submodel: [{
+                    val: "TEST"
+                }]
+            },
+            selectors: {
+                row: ".flc-row",
+                val: ".flc-val"
+            },
+            repeatingSelectors: ["row"],
+            protoTree: {
+                expander: {
+                    repeatID: "row",
+                    type: "fluid.renderer.repeat",
+                    pathAs: "row",
+                    valueAs: "rowVal",
+                    controlledBy: "submodel",
+                    tree: {
+                        val: {
+                            decorators: {
+                                func: "fluid.tests.decoratorWithSubModel",
+                                type: "fluid",
+                                options: {
+                                    model: "{rowVal}"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        fluid.defaults("fluid.tests.decoratorWithSubModel", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            protoTree: {
+                val: "${val}"
+            },
+            selectors: {
+                val: ".flc-val-val"
+            },
+            finalInitFunction: "fluid.tests.decoratorWithSubModel.finalInitFunction"
+        });
+        
+        fluid.tests.decoratorWithSubModel.finalInitFunction = function (that) {
+            that.refreshView();
+        };
+        
+        fluid.demands("fluid.tests.decoratorWithSubModel", "fluid.tests.decoratorParent", {
+            container: "{arguments}.0"
+        });
+        
+        compTests.test("Decorator with sub model", function() {
+            var that = fluid.tests.decoratorParent("#main");
+            that.refreshView();
+            var decorator = that["**-renderer-row::val-0"];
+            jqUnit.assertEquals("Original value should be", "TEST", decorator.locate("val").val());
+            jqUnit.assertEquals("Original value in the model should be", "TEST", decorator.model.val);
+            decorator.locate("val").val("NEW VAL").change();
+            jqUnit.assertEquals("Original value should be", "NEW VAL", decorator.locate("val").val());
+            jqUnit.assertEquals("Original value in the model should be", "NEW VAL", decorator.model.val);
+            jqUnit.assertEquals("Original value in the model should be", "NEW VAL", that.model.submodel[0].val);
         });
      
         compTests.test("FLUID-4165 - ensure automatic creation of applier if none supplied", function() {
@@ -651,7 +792,7 @@ fluid.registerNamespace("fluid.tests");
         });
         
         fluid.defaults("fluid.tests.repeatHead", {
-            gradeNames: ["fluid.IoCRendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
             protoTree: {
                 expander: {
                     type: "fluid.renderer.repeat",
