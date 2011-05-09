@@ -259,7 +259,8 @@ var fluid_1_4 = fluid_1_4 || {};
         that.save = function () {
             that.events.onSave.fire(that.controls.model.selections);
             savedModel = fluid.copy(that.controls.model.selections); 
-            that.uiEnhancer.updateModel(savedModel);
+            that.uiEnhancer.applier.requestChange("", savedModel);
+            that.uiEnhancer.events.onSave.fire(savedModel);
         };
 
         /**
@@ -529,7 +530,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         setTimeout(function () {
             if (that.enhancer) {
-                that.enhancer.updateModel(selections);
+                that.enhancer.applier.requestChange("", selections);
             }
         }, 0);
     };
