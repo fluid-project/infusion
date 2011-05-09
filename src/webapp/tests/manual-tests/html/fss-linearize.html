@@ -34,7 +34,7 @@
     		    <input type="checkbox" name="linearize" id="linearize" class="democ-linearize-layoutLabel" />
         		<span class="democ-linearize-alignment">
         		    | 
-        		    <lable for="align-choice">align: <label>
+        		    <label for="align-choice">align: </label>
                     <select class="democ-linearize-alignmentChoice" id="align-choice">
                         <option value="fl-layout-align-left" selected="selected">left</option>
                         <option value="fl-layout-align-center">centre</option>
@@ -249,29 +249,35 @@
     			</div>
     			<div id="grid"> 
     				<ul class="fl-container-flex fl-grid fl-fix">
-    					<li><img src="../../framework-tests/fss/images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
-    					<li><img src="../../framework-tests/fss/images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
-    					<li><img src="../../framework-tests/fss/images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
-    					<li><img src="../../framework-tests/fss/images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
-    					<li><img src="../../framework-tests/fss/images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
-    					<li><img src="../../framework-tests/fss/images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
-    					<li><img src="../../framework-tests/fss/images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+    					<li><img src="../../framework-tests/fss/images/picture_150.png" alt="placeholder for test"> <a href="#" class="caption">A picture</a></li>
+    					<li><img src="../../framework-tests/fss/images/picture_150.png" alt="placeholder for test"> <a href="#" class="caption">A picture</a></li>
+    					<li><img src="../../framework-tests/fss/images/picture_150.png" alt="placeholder for test"> <a href="#" class="caption">A picture</a></li>
+    					<li><img src="../../framework-tests/fss/images/picture_150.png" alt="placeholder for test"> <a href="#" class="caption">A picture</a></li>
+    					<li><img src="../../framework-tests/fss/images/picture_150.png" alt="placeholder for test"> <a href="#" class="caption">A picture</a></li>
+    					<li><img src="../../framework-tests/fss/images/picture_150.png" alt="placeholder for test"> <a href="#" class="caption">A picture</a></li>
+    					<li><img src="../../framework-tests/fss/images/picture_150.png" alt="placeholder for test"> <a href="#" class="caption">A picture</a></li>
     				</ul>
                 </div>
 
     			<div id="forms">
-    				<form action="" method="post" class="fl-container-450 fl-centered fl-controls-left">                
-    					<li><label class="fl-label">Left aligned labels</label><input type="text" name="" value="" /></li>
-    					<li><strong class="fl-label">Left aligned labels</strong><label for="checkbox"><input id="checkbox" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+    				<form action="" method="post" class="fl-container-450 fl-centered fl-controls-left">
+    				    <ul>              
+    					    <li><label class="fl-label">Left aligned labels</label><input type="text" name="" value="" /></li>
+        					<li><strong class="fl-label">Left aligned labels</strong><label for="checkbox"><input id="checkbox" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+    					</ul>
     				</form>
 
     				<form action="" method="post" class="fl-container-450 fl-centered fl-controls-centered">
-    					<li><label class="fl-label">Center aligned labels</label><input type="text" name="" value="" /></li>
-    					<li><strong class="fl-label">Center aligned labels</strong><label for="checkbox2"><input id="checkbox2" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+    				    <ul>
+    					    <li><label class="fl-label">Center aligned labels</label><input type="text" name="" value="" /></li>
+        					<li><strong class="fl-label">Center aligned labels</strong><label for="checkbox2"><input id="checkbox2" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+    					</ul>
     				</form>
     				<form action="" method="post" class="fl-container-450 fl-centered fl-controls-right">
-    					<li><label class="fl-label">Right aligned labels</label><input type="text" name="" value="" /></li>
-    					<li><strong class="fl-label">Right aligned labels</strong><label for="checkbox3"><input id="checkbox3" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+    				    <ul>
+    					    <li><label class="fl-label">Right aligned labels</label><input type="text" name="" value="" /></li>
+        					<li><strong class="fl-label">Right aligned labels</strong><label for="checkbox3"><input id="checkbox3" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+    					</ul>
     				</form>            
             	</div>	
 		
@@ -285,7 +291,7 @@
         		</div>
             </div>
         </div>
-        <script>
+        <script type="text/javascript">
             demo.linearize(".democ-linearize");
         </script>
     </body>
