@@ -79,8 +79,8 @@
             return parent.uploader;
         };
         
-        var uploaderConfigs = [fluid.tests.uploader.noIoC, fluid.tests.uploader.ioc];
-        var optionsTypes = [oldOptions, modernOptions];
+        var uploaderConfigs = [{label: "no IoC", uploader: fluid.tests.uploader.noIoC}, {label: "ioc", uploader: fluid.tests.uploader.ioc}];
+        var optionsTypes = [{label: "old options", options: oldOptions}, {label: "modern options", options: modernOptions}];
         
         
         var testTransformation = function (spec, source, target) {
@@ -110,13 +110,13 @@
             }, fluid.defaults("fluid.uploader.multiFileUploader"), uploader.options);
         };
         
-        compatTests.test("Uploader 1.2 full options backwards compatibility", function () {
-            for (var i = 0; i < uploaderConfigs.length; i++) {
-                for (var j = 0; j < optionsTypes.length; j++) {
-                    var uploader = uploaderConfigs[i].apply(null, [optionsTypes[j]]);
+        fluid.each(uploaderConfigs, function(uploaderConfig) {
+            fluid.each(optionsTypes, function(optionsType) {
+                compatTests.test("Uploader 1.2 full options backwards compatibility " + uploaderConfig.label + " - " + optionsType.label, function() {
+                    var uploader = uploaderConfig.uploader.apply(null, [optionsType.options]);
                     checkUploaderOptions(uploader);
-                }
-            }
+                });
+            });
         });
     });
 })(jQuery);

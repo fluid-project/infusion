@@ -86,13 +86,10 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.demands("fluid.uploader", "fluid.uploader.fluid_1_2", {
-        options: {
+        mergeOptions: {
             transformOptions: {
                 transformer: "fluid.model.transformWithRules",
                 config: fluid.compat.fluid_1_2.uploader.optionsRules
-            },
-            mergePolicy: {
-                transformOptions: "noexpand"
             }
         }
     });
