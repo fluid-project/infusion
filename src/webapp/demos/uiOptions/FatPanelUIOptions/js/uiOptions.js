@@ -32,7 +32,8 @@ var demo = demo || {};
         
         // Bind listeners to show and hide the panel when tab is clicked
         button.click(function () {
-            panelTabs($("#fl-uiOptions-tabs"));
+            //panelTabs($("#fl-uiOptions-tabs"));
+             var myTabs = fluid.tabs(uiOptions.container, {});
 
             if (uiOptions.container.is(":hidden")) {
                 uiOptions.container.slideDown();    
@@ -53,7 +54,7 @@ var demo = demo || {};
      * inspired by http://www.sohtanaka.com/web-design/simple-tabs-w-css-jquery/
      * and http://www.accessibleculture.org/research/aria-tabs/version-2b/
      */
-	var panelTabs = function (tabs) {	
+	/*var panelTabs = function (tabs) {	
 		
 		$("li", tabs).click (function(e) {		
 			//unset current tab
@@ -80,7 +81,7 @@ var demo = demo || {};
 		//show first tab on load				
 		$(".tab").hide();
 		$(".tab:first").show(); 
-    };
+    };*/
     
     demo.slidingUIOptions = function (container, button) {
         // First, initialize a UIEnhancer for the page
