@@ -107,17 +107,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         var file1 = {
             id: "file1",
-            size: 0
+            size: 0,
+            getAsBinary: function () {}
         };
                 
         var file2 =  {
             id: "file2",
-            size: 5
+            size: 5,
+            getAsBinary: function () {}
         };
 
         var file3 =  {
             id: "file3",
-            size: 200000
+            size: 200000,
+            getAsBinary: function () {}
         };
         
         /******************************
@@ -438,6 +441,60 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
              eventOrder = ["afterFileQueued", "afterFileQueued", "afterFileQueued"];
              checkEventSequenceForAddedFiles(eventOrder, 3, files, tracker.transcript);
              jqUnit.assertEquals("Sanity check: the queue should contain 6 files", 6, localUploader.queue.files.length);
-        });                    
+        });                 
+        
+        html5UploaderTests.test("doFormDataUpload tests", function () {
+            var formData = {
+                append: function (key, value) {
+                    formData[key] = value;
+                }                    
+            };
+            var xhr = {
+                open: function (method, url, async) {
+                    xhr.method = method,
+                    xhr.url = url,
+                    xhr.async = async
+                },
+                send: function () {}
+            };
+            var queueSettings = {
+                uploadURL: "/home/Uploader",
+                postParams: {
+                    name: "HTML5",
+                    id: "8"
+                }
+            }; 
+            
+            fluid.uploader.html5Strategy.doFormDataUpload(file1, queueSettings, xhr, formData);
+            jqUnit.assertEquals("The correct file is appended", file1.id, formData.file.id);
+            jqUnit.assertEquals("postParam is correctly appended to FormData", "HTML5", formData.name);
+            jqUnit.assertEquals("postParam is correctly appended to FormData", 8, formData.id);
+            jqUnit.assertEquals("XHR receives the proper method", "POST", xhr.method);
+            jqUnit.assertEquals("XHR url is set", "/home/Uploader", xhr.url);
+            jqUnit.assertTrue("XHR to execute asynchronously", xhr.async);
+        });
+        
+        html5UploaderTests.test("doManualMultipartUpload tests", function () {
+            var xhr = {
+                open: function (method, url, async) {
+                    xhr.method = method,
+                    xhr.url = url,
+                    xhr.async = async
+                },
+                setRequestHeader: function (contentType) {
+                    xhr.contentType = contentType    
+                },
+                sendAsBinary: function () {}
+            };
+            var queueSettings = {
+                uploadURL: "/home/Uploader",
+            }; 
+
+            fluid.uploader.html5Strategy.doManualMultipartUpload(file1, queueSettings, xhr);
+            jqUnit.assertEquals("XHR receives the proper method", "POST", xhr.method);
+            jqUnit.assertEquals("XHR url is set", "/home/Uploader", xhr.url);
+            jqUnit.assertTrue("XHR to execute asynchronously", xhr.async);
+            jqUnit.assertTrue("XHR has the contentType set", xhr.contentType);
+        });        
     });
 })(jQuery);
