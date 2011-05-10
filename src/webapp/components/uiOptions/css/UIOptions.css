@@ -1,18 +1,75 @@
-/**
- * Clearfix
- * from http://perishablepress.com/press/2009/12/06/new-clearfix-hack
- */
+/* General UIOptions styles, used across all layouts */
 
-.fl-clearfix:after {
-visibility: hidden;
-display: block;
-font-size: 0;
-content: " ";
-clear: both;
-height: 0;
+.fl-uiOptions {
+	font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
+    font-size: 0.85em;
 }
-* html .fl-clearfix { zoom: 1; } /* IE6 */
-*:first-child+html .fl-clearfix { zoom: 1; } /* IE7 */
+
+.fl-uiOptions p {
+    font-size: 1.1em;
+}
+
+/* Form list */
+
+.fl-uiOptions ul {
+	margin-left: 0px;
+}
+
+.fl-uiOptions ul li {
+    list-style: none;
+}
+
+/* Text and display section */
+.fl-uiOptions .fl-uio-form label {
+    display: block;
+    float: left;
+	width: 14em;	
+}
+
+.fl-uiOptions .fl-uio-form .fl-inputs {
+	float: left;
+}
+
+.fl-uiOptions input[type="text"] {
+	width:2em;
+}
+
+/* Slider position. More slider styles in /css/Slider.css */
+.fl-uiOptions .fl-slider {
+	float:left;
+	margin-right: 10px;
+}
+
+/* Check boxes */
+.fl-uiOptions input[type="checkbox"] {
+	margin-right:10px;
+	margin-bottom: 2em;
+	border: 1px solid black;
+}
+
+/* Font Select box */
+.fl-uiOptions select {
+	border: 2px solid #ebebeb;
+}
+
+.fl-uiOptions select#text-font { 
+	font-weight:bold; 
+}
+.fl-uiOptions select#text-font option.times { font-family: "Times New Roman"; }
+.fl-uiOptions select#text-font option.comic { font-family: "Comic Sans MS"; }
+.fl-uiOptions select#text-font option.arial { font-family: Arial; }
+.fl-uiOptions select#text-font option.verdana { font-family: Verdana; }
+
+/* Theme Select box */
+.fl-uiOptions select#theme { 
+	font-weight:bold; 
+	text-transform: uppercase;
+}
+.fl-uiOptions select#theme option.default { color: #000; background-color: #efefef;}
+.fl-uiOptions select#theme option.bw { color: #fff; background-color: #000;}
+.fl-uiOptions select#theme option.wb { color: #000; background-color: #fff;}
+.fl-uiOptions select#theme option.by { color: #000; background-color: #ffee00;}
+.fl-uiOptions select#theme option.yb { color: #ffee00; background-color: #000;}
 
 /**
  * Sliders: basic slider structure

@@ -24,17 +24,13 @@ var demo = demo || {};
     var slidingPanel = function (uiOptions, button) {
         
         button.addClass("show-hide-button");                            
-		button.wrap('<div id="top-bar"></div>');
+		button.wrap('<div id="top-bar" class="fl-uiOptions-fatPanel"></div>');
         
         var slideUp = function () {
             uiOptions.container.slideUp();
         };
         
-        // Bind listeners to UIOptions save & cancel events, sliding the panel up.
-        uiOptions.events.onCancel.addListener(slideUp);
-        uiOptions.events.onSave.addListener(slideUp);
-        
-        // Bind listeners to show and hide the panel when the button is clicked.
+        // Bind listeners to show and hide the panel when tab is clicked
         button.click(function () {
             panelTabs($("#fl-uiOptions-tabs"));
 
@@ -50,7 +46,7 @@ var demo = demo || {};
         });
             
         // Hide the panel to start.
-        uiOptions.container.hide();
+       uiOptions.container.hide();
     };
     
     /* Panel Tabs
@@ -75,7 +71,7 @@ var demo = demo || {};
 			$(".tab").attr("aria-hidden", "true");			
 			
 			var activeTab = $($(this).find("a").attr("href"));
-			$(activeTab).fadeIn(); 
+			$(activeTab).show(); 
 			$(activeTab).attr("aria-hidden", "false");			
 						
 			return false;	
@@ -98,6 +94,11 @@ var demo = demo || {};
         
         // Next, start up UI Options
         var myUIOptions = fluid.uiOptions(container, {
+			components: {
+				preview: {
+					type: "fluid.uiOptions.livePreview",
+				}
+			},			
 			selectors: {
 				previewFrame: ""
 			},        
