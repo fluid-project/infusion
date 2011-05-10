@@ -1,5 +1,5 @@
-<form id="options" action="" class="fl-uiOptions fl-uiOptions-fullPreview fl-col-fixed-72em">    
-    <div class="flc-uiOptions-controls fl-col-fixed-54em fl-force-left">
+<form id="options" action="" class="fl-uiOptions fl-uiOptions-fullPreview fl-col-fixed-54em">    
+    <div class="flc-uiOptions-controls">
 	    <div class="fl-uio-category">
     		<h2><img src="../../../components/uiOptions/images/uio_icon_textanddisplay_18x18.png" alt="" /> Text and display</h2>
     		<ul class="fl-uio-form fl-clearfix">
@@ -22,15 +22,6 @@
     					<option value="verdana" class="verdana">Verdana</option>					
     				</select> 				
     			</li>   
-    			<li class="flc-uiOptions-line-spacing fl-uiOptions-line-spacing fl-uio-option fl-uio-option-2col">
-    				<label for="line-spacing" class="fl-label">Line Spacing</label>
-    				<div class="fl-inputs">
-    				    <img class="fl-force-left fl-left-slider-image" src="../../../components/uiOptions/images/uio_icon_linesNarrow_16x12.png" alt="" />
-    					<div class="fl-slider fl-slider-horz flc-textfieldSlider-slider"> </div>
-    					<span class="fl-force-right"><input id="line-spacing" class="flc-textfieldSlider-field" type="text" /> times</span>
-    					<img class="fl-force-right fl-right-slider-image" src="../../../components/uiOptions/images/uio_icon_linesWide_16x21.png" alt="" />
-    				</div>
-    			</li>			
     			<li class= "fl-uio-option fl-uio-option-2col">
     				<label class="fl-label" for="theme">Colour & Contrast</label>
     				<select class="flc-uiOptions-theme fl-inputs" id="theme">
@@ -41,6 +32,15 @@
     					<option value="yb" class="yb">Yellow on black</option>					
     				</select>  
     			</li>
+    			<li class="flc-uiOptions-line-spacing fl-uiOptions-line-spacing fl-uio-option fl-uio-option-2col">
+    				<label for="line-spacing" class="fl-label">Line Spacing</label>
+    				<div class="fl-inputs">
+    				    <img class="fl-force-left fl-left-slider-image" src="../../../components/uiOptions/images/uio_icon_linesNarrow_16x12.png" alt="" />
+    					<div class="fl-slider fl-slider-horz flc-textfieldSlider-slider"> </div>
+    					<span class="fl-force-right"><input id="line-spacing" class="flc-textfieldSlider-field" type="text" /> times</span>
+    					<img class="fl-force-right fl-right-slider-image" src="../../../components/uiOptions/images/uio_icon_linesWide_16x21.png" alt="" />
+    				</div>
+    			</li>			
             </ul>            
         </div>
         
@@ -84,17 +84,4 @@
             </ul>        
         </div>
     </div>
-
-    <div class="fl-col-fixed-31em fl-force-right">
-        <div class="fl-uio-preview">
-            <h2>Preview your changes</h2>
-            <iframe class="flc-uiOptions-preview-frame" src="" frameborder="0"></iframe>
-        </div>
-        <div class="fl-text-align-center fl-uio-buttons">
-            <input class="flc-uiOptions-save fl-uio-save" type="button" value="Save and apply" />
-            <input class="flc-uiOptions-reset" type="button" value="Reset" />
-            <input class="flc-uiOptions-cancel fl-uio-cancel" type="button" value="Cancel" />
-        </div>                
-    </div>
-    
 </form>                
