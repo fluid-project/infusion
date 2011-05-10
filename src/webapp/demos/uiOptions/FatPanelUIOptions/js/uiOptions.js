@@ -24,17 +24,13 @@ var demo = demo || {};
     var slidingPanel = function (uiOptions, button) {
         
         button.addClass("show-hide-button");                            
-		button.wrap('<div id="top-bar"></div>');
+		button.wrap('<div id="top-bar" class="fl-uiOptions-fatPanel"></div>');
         
         var slideUp = function () {
             uiOptions.container.slideUp();
         };
         
-        // Bind listeners to UIOptions save & cancel events, sliding the panel up.
-        uiOptions.events.onCancel.addListener(slideUp);
-        uiOptions.events.onSave.addListener(slideUp);
-        
-        // Bind listeners to show and hide the panel when the button is clicked.
+        // Bind listeners to show and hide the panel when tab is clicked
         button.click(function () {
             panelTabs($("#fl-uiOptions-tabs"));
 
@@ -50,24 +46,40 @@ var demo = demo || {};
         });
             
         // Hide the panel to start.
-        uiOptions.container.hide();
+       uiOptions.container.hide();
     };
     
-    //Panel Tabs
-	var panelTabs = function (tabs) {
-		/*tabs.click(function() {
-			tabs.$("li").removeClass("active"); 
-			$(this).addClass("active"); 
+    /* Panel Tabs
+     * inspired by http://www.sohtanaka.com/web-design/simple-tabs-w-css-jquery/
+     * and http://www.accessibleculture.org/research/aria-tabs/version-2b/
+     */
+	var panelTabs = function (tabs) {	
+		
+		$("li", tabs).click (function(e) {		
+			//unset current tab
+			$("li", tabs).removeClass("fl-tabs-active");
+			$("a", tabs).attr("tabindex", "-1");
+			$("a", tabs).attr("aria-selected", "false");
+
+			//set the active style on clicked tab			
+			$(this).addClass("fl-tabs-active"); 
+			$("a", this).attr("tabindex", "0");			
+			$("a", this).attr("aria-selected", "true");
 			
-			$(".tab").hide(); 
-	
-			var activeTab = $(this).find("a").attr("href"); 
-			$(activeTab).fadeIn(); 
-			return false;		
-		});*/
+			//show that tab page
+			$(".tab").hide();			
+			$(".tab").attr("aria-hidden", "true");			
+			
+			var activeTab = $($(this).find("a").attr("href"));
+			$(activeTab).show(); 
+			$(activeTab).attr("aria-hidden", "false");			
+						
+			return false;	
+		}); 		
 				
+		//show first tab on load				
 		$(".tab").hide();
-		$(".tab:first").show(); //make first tab active on load
+		$(".tab:first").show(); 
     };
     
     demo.slidingUIOptions = function (container, button) {
@@ -76,13 +88,20 @@ var demo = demo || {};
             tableOfContents: {
                 options: {
                     templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
-                }
-            
+                }            
             }
         });
         
         // Next, start up UI Options
         var myUIOptions = fluid.uiOptions(container, {
+			components: {
+				preview: {
+					type: "fluid.uiOptions.livePreview",
+				}
+			},			
+			selectors: {
+				previewFrame: ""
+			},        
             resources: {
                 template: {
                     url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"

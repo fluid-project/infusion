@@ -563,4 +563,32 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
+    
+    
+    /**********************
+     * UI Options Live Preview *
+     **********************/    
+    fluid.defaults("fluid.uiOptions.livePreview", {
+        gradeNames: ["fluid.viewComponent", "autoInit"], 
+        components: {
+            eventBinder: {
+                type: "fluid.uiOptions.preview.eventBinder"
+            }
+        },
+        finalInitFunction: "fluid.uiOptions.livePreview.finalInit",
+    });
+
+    fluid.uiOptions.livePreview.finalInit = function (that) {
+        that.uiEnhancer = $(document).data("uiEnhancer");
+    };
+
+    fluid.demands("fluid.uiOptions.preview.eventBinder", "fluid.uiOptions.livePreview", {
+        options: {
+            listeners: {
+                "{controls}.events.modelChanged": "{preview}.enhancer.updateModel"
+            }
+        }
+    });
+
+     
 })(jQuery, fluid_1_4);

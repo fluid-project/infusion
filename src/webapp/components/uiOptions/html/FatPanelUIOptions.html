@@ -1,59 +1,64 @@
-<form id="options" action="" class="fl-uiOptions">    
+<form id="options" action="" class="fl-uiOptions fl-uiOptions-fatPanel">    
     <div class="flc-uiOptions-controls">
     
-    	<ul id="fl-uiOptions-tabs" class="fl-tabs fl-tabs-left">
-    		<li class="fl-tabs-active"><a href="#tab1"><img src="../../../../components/uiOptions/images/uio_icon_textanddisplay_18x18.png" alt="" /> Text and display</a></li>
-			<li><a href="#tab2"><img src="../../../../components/uiOptions/images/uio_icon_layoutandnavigation_18x18.png" alt="" /> Layout and navigation</a></li>    		
-			<li><a href="#tab3"><img src="../../../../components/uiOptions/images/uio_icon_linksandbuttons_18x18.png" alt="" /> Links and buttons</a></li>
+    	<div class="fl-force-right">
+    		<a id="reset" href="">Reset All</a>
+    	</div>
+    
+    	<ul id="fl-uiOptions-tabs" class="fl-tabs fl-tabs-left" role="tablist">
+    		<li class="fl-tabs-active" role="presentation">
+    			<a id="tab-first" href="#tab1" role="tab" aria-selected="true" tabindex="0">Text and display</a>
+    		</li>
+			<li role="presentation">
+				<a id="tab-second" href="#tab2" role="tab" aria-selected="false" tabindex="-1">Layout and navigation</a>
+			</li>    		
+			<li role="presentation">
+				<a id="tab-third" href="#tab3" role="tab" aria-selected="false" tabindex="-1">Links and buttons</a>
+			</li>
     	</ul>
     
-    	<div id="tab1" class="tab">
-			<h2><img src="../../../components/uiOptions/images/uio_icon_textanddisplay_18x18.png" alt="" /> Text and display</h2>
-			
-			<ul class="fl-uio-form">
-				<li class="flc-uiOptions-min-text-size">
-					<label for="min-text-size" class="fl-label">Text Size</label>
-					<div class="fl-inputs">
-						<img class="fl-force-left fl-left-slider-image" src="../../../components/uiOptions/images/uio_icon_smallA_10x10.png" alt="" />
-						<p class="flc-textfieldSlider-slider fl-slider fl-slider-horz"> </p>
-						<span class="fl-force-right"><input id="min-text-size" class="flc-textfieldSlider-field" type="text" /> times</span>
-						<img class="fl-force-right fl-right-slider-image" src="../../../components/uiOptions/images/uio_icon_bigA_20x20.png" alt="" />
-					</div>
-				</li>
-				<li>
-					<label for="text-font" class="fl-label">Text Style</label>
-					<select class="flc-uiOptions-text-font" id="text-font">
-						<option value="default" class="default">Default</option>
-						<option value="times" class="times">Times New Roman</option>
-						<option value="comic" class="comic">Comic Sans</option>
-						<option value="arial" class="arial">Arial</option>
-						<option value="verdana" class="verdana">Verdana</option>					
-					</select> 				
-				</li>   
-				<li>
-					<label class="fl-label" for="theme">Colour & Contrast</label>
-					<select class="flc-uiOptions-theme" id="theme">
-						<option value="default" class="default">Default</option>
-						<option value="bw" class="bw">Black on white</option>
-						<option value="wb" class="wb">White on black</option>
-						<option value="by" class="by">Black on yellow</option>
-						<option value="yb" class="yb">Yellow on black</option>					
-					</select>  
-				</li>
-				<li class="flc-uiOptions-line-spacing fl-uiOptions-line-spacing">
-					<label for="line-spacing" class="fl-label">Line Spacing</label>
-					<div class="fl-inputs">
-						<img class="fl-force-left fl-left-slider-image" src="../../../components/uiOptions/images/uio_icon_linesNarrow_16x12.png" alt="" />
-						<p class="fl-slider fl-slider-horz flc-textfieldSlider-slider"> </p>
-						<span class="fl-force-right"><input id="line-spacing" class="flc-textfieldSlider-field" type="text" /> times</span>
-						<img class="fl-force-right fl-right-slider-image" src="../../../components/uiOptions/images/uio_icon_linesWide_16x21.png" alt="" />
-					</div>
-				</li>			
+    	<div id="tab1" class="fl-clearfix tab" role="tabpanel" aria-hidden="false" aria-labelledby="tab-first">			
+			<ul class="fl-pane">
+				<li class="flc-uiOptions-min-text-size fl-uio-option fl-uio-option-first fl-uio-option-2col">
+    				<label for="min-text-size" class="fl-label">Text Size</label>
+					<img class="fl-force-left fl-left-slider-image" src="../../../../components/uiOptions/images/uio_icon_smallA_10x10.png" alt="" />
+					<div class="flc-textfieldSlider-slider fl-slider fl-slider-horz"> </div>
+					<img class="fl-force-left fl-right-slider-image" src="../../../../components/uiOptions/images/uio_icon_bigA_20x20.png" alt="" />
+					
+					<div class="fl-clearfix"><input id="min-text-size" class="flc-textfieldSlider-field" type="text" /> times</div>
+    			</li>
+    			<li class= "fl-uio-option fl-uio-option-2col">
+    				<label for="text-font" class="fl-label">Text Style</label>
+    				<select class="flc-uiOptions-text-font fl-inputs" id="text-font">
+    					<option value="default" class="default">Default</option>
+    					<option value="times" class="times">Times New Roman</option>
+    					<option value="comic" class="comic">Comic Sans</option>
+    					<option value="arial" class="arial">Arial</option>
+    					<option value="verdana" class="verdana">Verdana</option>					
+    				</select> 				
+    			</li>   
+    			<li class="flc-uiOptions-line-spacing fl-uiOptions-line-spacing fl-uio-option fl-uio-option-2col">
+    				<label for="line-spacing" class="fl-label">Line Spacing</label>
+    				    <img class="fl-force-left fl-left-slider-image" src="../../../../components/uiOptions/images/uio_icon_linesNarrow_16x12.png" alt="" />
+    					<div class="fl-slider fl-slider-horz flc-textfieldSlider-slider"> </div>
+    					<img class="fl-force-left fl-right-slider-image" src="../../../../components/uiOptions/images/uio_icon_linesWide_16x21.png" alt="" />
+    					
+    					<div class="fl-clearfix"><input id="line-spacing" class="flc-textfieldSlider-field" type="text" /> times</div>
+    			</li>    			
+    			<li class= "fl-uio-option fl-uio-option-2col">
+    				<label class="fl-label" for="theme">Colour & Contrast</label>
+    				<select class="flc-uiOptions-theme fl-inputs" id="theme">
+    					<option value="default" class="default">Default</option>
+    					<option value="bw" class="bw">Black on white</option>
+    					<option value="wb" class="wb">White on black</option>
+    					<option value="by" class="by">Black on yellow</option>
+    					<option value="yb" class="yb">Yellow on black</option>					
+    				</select>  
+    			</li>		
 			</ul>    
         </div>
                  
-    	<div id="tab2" class="tab">                 
-			<h2><img src="../../../components/uiOptions/images/uio_icon_layoutandnavigation_18x18.png" alt="" /> Layout and navigation</h2>        
+    	<div id="tab2" class="fl-clearfix tab" role="tabpanel" aria-hidden="true" aria-labelledby="tab-second">                 
 			<ul>
 				<li>                             
 					<input type="checkbox" id="layout-choice" class="flc-uiOptions-layout fl-force-left" />
@@ -72,8 +77,7 @@
 			</ul>
         </div>
         
-    	<div id="tab3" class="tab">                         
-			<h2><img src="../../../components/uiOptions/images/uio_icon_linksandbuttons_18x18.png" alt="" /> Links and buttons</h2>
+    	<div id="tab3" class="fl-clearfix tab" role="tabpanel" aria-hidden="true" aria-labelledby="tab-third">                         
 			<ul>
 				<li>
 					<input type="checkbox" id="links-choice" class="flc-uiOptions-links-choice fl-force-left" />
