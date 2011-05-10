@@ -24,7 +24,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * Useful testing functions for the HTML5 version of the Uploader. *
          *******************************************************************/
          
-        fluid.tests.uploader.html5.makeMockFile = function (id, name, type, size) {
+        fluid.tests.uploader.html5.mockFile = function (id, name, type, size) {
             return {
                 id: id,
                 name: name,
@@ -52,22 +52,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("The file name should be 'test'", parts[1].indexOf(file.name) !== -1);
             jqUnit.assertTrue("The third line of the multipart content must contain the Content-Type", parts[2].indexOf('Content-Type') !== -1);
             jqUnit.assertTrue("The Content-Type should be 'image'", parts[2].indexOf(file.type) !== -1);
-        };
-        
-        fluid.tests.uploader.html5.mockFormData = function () {
-            var that = {
-                data: {}
-            };
-            
-            that.resetMock = function () {
-                that.data = {};
-            };
-            
-            that.append = function (key, value) {
-                that.data[key] = value;
-            };
-            
-            return that;
         };
         
         fluid.tests.uploader.html5.mockXHR = function () {
@@ -189,9 +173,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          
         var html5UploaderTests = new jqUnit.TestCase("Uploader Basic Tests");
 
-        var file1 = fluid.tests.uploader.html5.makeMockFile("file1", "emptyfile.zip", "application/zip", 0),
-            file2 = fluid.tests.uploader.html5.makeMockFile("file2", "tinyfile.jpg", "image/jpeg", 5),
-            file3 = fluid.tests.uploader.html5.makeMockFile("file3", "bigfile.rar", "application/x-rar-compressed", 200000);
+        var file1 = fluid.tests.uploader.html5.mockFile("file1", "emptyfile.zip", "application/zip", 0),
+            file2 = fluid.tests.uploader.html5.mockFile("file2", "tinyfile.jpg", "image/jpeg", 5),
+            file3 = fluid.tests.uploader.html5.mockFile("file3", "bigfile.rar", "application/x-rar-compressed", 200000);
             
         
         /******************************
@@ -513,7 +497,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }; 
             
             var xhr = fluid.tests.uploader.html5.mockXHR();
-            var formData = fluid.tests.uploader.html5.mockFormData();
+            var formData = fluid.tests.uploader.mockFormData();
             fluid.uploader.html5Strategy.doFormDataUpload(file1, queueSettings, xhr, formData);
             jqUnit.assertEquals("The correct file is appended", file1.id, formData.data.file.id);
             jqUnit.assertEquals("postParam is correctly appended to FormData", "HTML5", formData.data.name);

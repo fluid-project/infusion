@@ -186,15 +186,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return that.uploader;
         };        
         
-        /*
-         * Override the HTML5 FormData and XHR creators with mocks so we can verify the correct behaviour.
-         * FF4 restricts passing JSON objects as the value in the FormData append() function.
-         */
-        // TODO: We don't need to override doFormDataUpload() anymore, we can simply pass along a mock FormData creator.
-        fluid.tests.uploader.doFormDataUpload = function () {
-            // DO NOTHING
-        }
-        
         fluid.defaults("fluid.tests.uploader.parent", {
             gradeNames: ["fluid.littleComponent"],
             components: {
@@ -235,12 +226,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             funcName: "fluid.tests.uploader.createMockXHR"
         });    
         
-        fluid.demands("fluid.uploader.html5Strategy.doUpload", [
+        
+        /*
+         * Override the HTML5 FormData creators with mocks so we can verify the correct behaviour.
+         * FF4 restricts passing JSON objects as the value in the FormData append() function.
+         */
+        fluid.demands("fluid.uploader.html5Strategy.createFormData", [
             "fluid.uploader.html5Strategy.remote", 
             "fluid.browser.supportsFormData",
             "fluid.uploader.tests"
         ], {
-            funcName: "fluid.tests.uploader.doFormDataUpload"
+            funcName: "fluid.tests.uploader.mockFormData"
         });
         
         var addFiles = function (uploader) {
