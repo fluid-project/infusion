@@ -385,6 +385,17 @@ var fluid = fluid || fluid_1_4;
      */
     fluid.findKeyInObject = fluid.keyForValue;
     
+    /** Converts an array into an object whose keys are the elements of the array, each with the value "true"
+     */ 
+    
+    fluid.arrayToHash = function (array) {
+        var togo = {};
+        fluid.each(array, function (el) {
+            togo[el] = true;
+        });
+        return togo;
+    };
+    
     /** 
      * Clears an object or array of its contents. For objects, each property is deleted.
      * 
@@ -1165,14 +1176,22 @@ var fluid = fluid || fluid_1_4;
     };
 
     // unsupported, NON-API function
-    fluid.transformOptions = function (mergeArgs) {
-        var transRec = mergeArgs[1].transformOptions;
+    fluid.transformOptions = function (mergeArgs, transRec) {
         fluid.expect("Options transformation record", ["transformer", "config"], transRec);
         var transFunc = fluid.getGlobalValue(transRec.transformer);
         var togo = fluid.transform(mergeArgs, function(value, key) {
             return key === 0? value : transFunc.call(null, value, transRec.config);
         });
         return togo;
+    };
+    
+    // unsupporter, NON-API function
+    fluid.lastTransformationRecord = function(extraArgs) {
+        for (var i = extraArgs.length - 1; i >= 0; --i) {
+            if (extraArgs[i] && extraArgs[i].transformOptions) {
+                return extraArgs[i].transformOptions;
+            } 
+        }
     };
 
     /**
@@ -1204,8 +1223,9 @@ var fluid = fluid || fluid_1_4;
         } else {
             extraArgs = [defaults, userOptions];
         }
-        if (extraArgs[1] && extraArgs[1].transformOptions) {
-            extraArgs = fluid.transformOptions(extraArgs);
+        var transRec = fluid.lastTransformationRecord(extraArgs);
+        if (transRec) {
+            extraArgs = fluid.transformOptions(extraArgs, transRec);
         }
         mergeArgs = mergeArgs.concat(extraArgs);
         that.options = fluid.merge.apply(null, mergeArgs);
