@@ -48,8 +48,7 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         selectors: {
             textfield: ".flc-textfieldSlider-field",
-            slider: ".flc-textfieldSlider-slider",
-            thumb: ".ui-slider-handle"
+            slider: ".flc-textfieldSlider-slider"
         },
         events: {
             modelChanged: null
@@ -65,17 +64,6 @@ var fluid_1_4 = fluid_1_4 || {};
         finalInitFunction: "fluid.textfieldSlider.finalInit"
     });    
     
-    // This will be removed once the jQuery UI slider has built in ARIA 
-    var initSliderAria = function (thumb, opts) {
-        var ariaDefaults = {
-            role: 'slider',
-            "aria-valuenow": opts.value,
-            "aria-valuemin": opts.min, 
-            "aria-valuemax": opts.max    
-        };
-        thumb.attr(ariaDefaults);        
-    };
-    
     fluid.textfieldSlider.finalInit = function (that) {
         // initialize slider
         var sliderOptions = that.options.sliderOptions;
@@ -83,15 +71,13 @@ var fluid_1_4 = fluid_1_4 || {};
         sliderOptions.min = that.model.min;
         sliderOptions.max = that.model.max;
         
-        var slider = that.locate("slider").slider(sliderOptions);
-        initSliderAria(that.locate("thumb"), sliderOptions);
+        that.slider.initSlider(sliderOptions);
 
         that.refreshView = function () {
             var val = that.model.value;
             
             that.textfield.container.val(val);
-            that.slider.slider.slider("value", val);
-            that.dom.locate("thumb").attr("aria-valuenow", val);
+            that.slider.setSliderValueAndArial(val);
         };
         
         that.applier.modelChanged.addListener("value", 
@@ -112,8 +98,8 @@ var fluid_1_4 = fluid_1_4 || {};
     });
 
     fluid.textfieldSlider.textfield.finalInit = function (that) {
-        that.container.change(function () {
-            var value = that.value;
+        that.container.change(function (source) {
+            var value = source.target.value;
             var isValid = !isNaN(parseInt(value, 10));
 
             if (isValid) {
@@ -132,11 +118,35 @@ var fluid_1_4 = fluid_1_4 || {};
 
     fluid.defaults("fluid.textfieldSlider.slider", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        finalInitFunction: "fluid.textfieldSlider.slider.finalInit"
+        finalInitFunction: "fluid.textfieldSlider.slider.finalInit",
+        selectors: {
+            thumb: ".ui-slider-handle"
+        }
     });
+    
+    // This will be removed once the jQuery UI slider has built in ARIA 
+    var initSliderAria = function (thumb, opts) {
+        var ariaDefaults = {
+            role: 'slider',
+            "aria-valuenow": opts.value,
+            "aria-valuemin": opts.min,
+            "aria-valuemax": opts.max
+        };
+        thumb.attr(ariaDefaults);        
+    };
     
     fluid.textfieldSlider.slider.finalInit = function (that) {       
         that.slider = that.container.slider(that.model);
+        
+        that.initSlider = function (sliderOptions) {
+            var slider = that.slider.slider(sliderOptions);
+            initSliderAria(that.locate("thumb"), sliderOptions);
+        };
+        
+        that.setSliderValueAndArial = function (value) {
+            that.slider.slider("value", value);
+            that.locate("thumb").attr("aria-valuenow", value);
+        };
         
         that.slider.bind("slide", function (e, ui) {
             that.applier.requestChange("value", ui.value);
