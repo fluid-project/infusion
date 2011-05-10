@@ -885,15 +885,9 @@ var fluid_1_4 = fluid_1_4 || {};
         dataOffset: "",
         
         // strategy for generating a tree row, either "explode" or an array of columnDef objects
-        columnDefs: [
-            {
-                key: "column1",
-                valuebinding: "*.value1",  
-                sortable: true
-            }
-        ],
+        columnDefs: [], // [{key: "columnName", valuebinding: "*.valuePath", sortable: true}]
         
-        annotateColumnRange: "column1",
+        annotateColumnRange: undefined, // specify a "key" from the columnDefs
         
         tooltip: {
             type: "fluid.tooltip"
