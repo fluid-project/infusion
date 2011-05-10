@@ -898,8 +898,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
 
     // unsupported, non-API function
     fluid.withEnvironment = function(envAdd, func, prefix) {
+        prefix = prefix || "";
         var root = fluid.threadLocal();
-        var applier = fluid.makeChangeApplier(root);
+        var applier = fluid.makeChangeApplier(root, {thin: true});
         try {
             for (var key in envAdd) {
                 applyLocalChange(applier, "ADD", fluid.model.composePath(prefix, key), envAdd[key]);
