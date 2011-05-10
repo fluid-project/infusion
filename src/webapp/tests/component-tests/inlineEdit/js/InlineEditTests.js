@@ -198,13 +198,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var edit = inlineEditor.editField;
             inlineEditor.edit();
             jqUnit.assertEquals("After switching into edit mode, edit field should be empty: ", "", edit.val());
-            edit.attr("value", testText);
+            edit.prop("value", testText);
             inlineEditor.finish();
             jqUnit.assertEquals("After editing the field, display should have test text ", testText, display.text());
             jqUnit.assertFalse("Test text shouldn't have invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewStyle));
     
             inlineEditor.edit();
-            edit.attr("value", "");
+            edit.prop("value", "");
             inlineEditor.finish();
             jqUnit.assertEquals("After clearing the field, display should have invitation text again: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
             jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewStyle));
@@ -238,14 +238,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var edit = inlineEditor.editField;
             inlineEditor.edit();
             jqUnit.assertFalse("Upon entering edit mode, edit field should be fully empty", edit.attr("value"));
-            edit.attr("value", testText);
+            edit.prop("value", testText);
             inlineEditor.finish();
             jqUnit.assertEquals("After editing the field, display should have test text ", testText, display.text());
             jqUnit.assertEquals("The display field has no padding.", 0, parseFloat(display.css("padding-right")));
     
             inlineEditor.edit();
-            jqUnit.assertEquals("Upon entering edit mode but before clearing, edit field should be have test text", testText, edit.attr("value"));
-            edit.attr("value", "");
+            jqUnit.assertEquals("Upon entering edit mode but before clearing, edit field should be have test text", testText, edit.prop("value"));
+            edit.prop("value", "");
             inlineEditor.finish();
             jqUnit.assertEquals("After clearing the field, display should be empty again: ", "", display.text());
             jqUnit.assertEquals("The display field padding is ", fluid.defaults("inlineEdit").paddings.minimumView, parseFloat(display.css("padding-right")));
@@ -277,10 +277,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             inlineEditor.edit();
             jqUnit.notVisible("After edit, display field is hidden", "#display");
             jqUnit.isVisible("After edit, edit field is visible", "#edit-container");
-            jqUnit.assertEquals("After edit, edit field has the same text as display field", display.text(), edit.attr("value"));
+            jqUnit.assertEquals("After edit, edit field has the same text as display field", display.text(), edit.prop("value"));
     
             var testString = "This is new text.";
-            edit.attr("value", testString);
+            edit.prop("value", testString);
             inlineEditor.finish();
             jqUnit.isVisible("After finish, display field is visible", "#display");
             jqUnit.notVisible("After finish, edit field is hidden", "#edit-container");
@@ -328,11 +328,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.isVisible("After enter pressed, button is visible", button);
             button.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
                 
-            jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.attr("value"));
+            jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.prop("value"));
             jqUnit.notVisible("After enter pressed, button is hidden", button);
     
             var testString = "This is new text.";
-            edit.attr("value", testString);
+            edit.prop("value", testString);
             edit.simulate("keypress", {keyCode: $.ui.keyCode.ENTER});
     
             jqUnit.isVisible("After changing text and pressing enter, display field is visible", "#display");
@@ -374,7 +374,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.notVisible("After click, display field is hidden", display);
             jqUnit.notVisible("After click, textEditButton is hidden", button);
             jqUnit.isVisible("After click, edit field is visible", editContainer);
-            jqUnit.assertEquals("After click, edit field contains same text as display field", display.text(), edit.attr("value"));
+            jqUnit.assertEquals("After click, edit field contains same text as display field", display.text(), edit.prop("value"));
         };
         
         inlineEditTests.test("Click on display", function () {
@@ -413,7 +413,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             button.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
             jqUnit.notVisible("After enter pressed, display field is hidden", "#display");
             jqUnit.isVisible("After enter pressed, edit field is visible", "#edit-container");
-            jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.attr("value"));
+            jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.prop("value"));
     
             // note: this simulate works in FFX, but not IE7
             edit.simulate("keypress", {keyCode: $.ui.keyCode.LEFT});
@@ -451,7 +451,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.isVisible("Edit field is visible", "#edit-container");
             
             var testString = "Click me to edit...";
-            edit.attr("value", testString);
+            edit.prop("value", testString);
             edit.blur();
             jqUnit.notVisible("After blur, edit field is hidden", "#edit-container");
             jqUnit.assertEquals("Blur saves the edit", testString, display.text());
@@ -500,7 +500,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var testTableCellInlineEdit = function (inlineEditTableCell, initialExpectedValue, newExpectedValue) {
             inlineEditTableCell.edit();
             jqUnit.assertEquals("After switching into edit mode, the model should have initial value: ", initialExpectedValue, inlineEditTableCell.model.value);
-            inlineEditTableCell.editField.attr("value", newExpectedValue);
+            inlineEditTableCell.editField.prop("value", newExpectedValue);
             inlineEditTableCell.finish();
             jqUnit.assertNotEquals("After editing the field, the model value should change ", initialExpectedValue, inlineEditTableCell.model.value);
         };
@@ -660,7 +660,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 assertInEditMode(editor);
                 
                 jqUnit.assertEquals("The contents of the edit field should be the same as the view text.",
-                                    $(textSel).text(), editor.editField.attr("value"));
+                                    $(textSel).text(), editor.editField.prop("value"));
                 editor.finish();
                 assertInViewMode(editor);
             });
@@ -782,7 +782,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var editor = fluid.inlineEdit("#inline-edit");
                 editor.edit();
                 var text = "the brown dog";    
-                editor.locate("edit").attr("value", text);
+                editor.locate("edit").prop("value", text);
                 editor.finish();
                 
                 var button = editor.textEditButton;
