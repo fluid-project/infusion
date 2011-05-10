@@ -77,7 +77,8 @@ var fluid_1_4 = fluid_1_4 || {};
             var val = that.model.value;
             
             that.textfield.container.val(val);
-            that.slider.setSliderValueAndArial(val);
+            that.slider.setSliderValue(val);
+            that.slider.setSliderAria(val);
         };
         
         that.applier.modelChanged.addListener("value", 
@@ -143,8 +144,11 @@ var fluid_1_4 = fluid_1_4 || {};
             initSliderAria(that.locate("thumb"), sliderOptions);
         };
         
-        that.setSliderValueAndArial = function (value) {
+        that.setSliderValue = function (value) {
             that.slider.slider("value", value);
+        };
+        
+        that.setSliderAria = function (value) {
             that.locate("thumb").attr("aria-valuenow", value);
         };
         
