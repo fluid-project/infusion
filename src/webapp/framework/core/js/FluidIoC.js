@@ -310,8 +310,13 @@ var fluid_1_4 = fluid_1_4 || {};
         options = options || {};
         
         upgradeMergeOptions(demandspec);
+        var oldOptions = fluid.get(options, "componentRecord.options");
         options.componentRecord = $.extend(true, {}, options.componentRecord, 
             fluid.censorKeys(demandspec, ["args", "funcName"]));
+        var mergeAllZero = fluid.get(options, "componentRecord.options.mergeAllOptions.0");
+        if (mergeAllZero === "{options}") {
+            fluid.set(options, "componentRecord.options.mergeAllOptions.0", oldOptions);
+        }
         
         var demands = $.makeArray(demandspec.args);
         var upDefaults = fluid.defaults(demandspec.funcName); // I can SEE into TIME!!
@@ -637,13 +642,13 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // unsupported, non-API function
     fluid.expander.preserveFromExpansion = function(options) {
         var preserve = {};
-        var preserveList = ["mergePolicy", "mergeAllOptions", "components", "invokers", "events", "listeners"];
+        var preserveList = fluid.arrayToHash(["mergePolicy", "mergeAllOptions", "components", "invokers", "events", "listeners", "transformOptions"]);
         fluid.each(options.mergePolicy, function(value, key) {
             if (fluid.mergePolicyIs(value, "noexpand")) {
-                preserveList.push(key);
+                preserveList[key] = true;
             }
         });
-        fluid.each(preserveList, function(path) {
+        fluid.each(preserveList, function(value, path) {
             var pen = fluid.model.getPenultimate(options, path);
             var value = pen.root[pen.last];
             delete pen.root[pen.last];
@@ -651,7 +656,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         });
         return {
             restore: function(target) {
-                fluid.each(preserveList, function(path) {
+                fluid.each(preserveList, function(value, path) {
                     var preserved = fluid.get(preserve, path);
                     if (preserved !== undefined) {
                         fluid.set(target, path, preserved);
