@@ -64,6 +64,15 @@ var fluid = fluid || fluid_1_4;
             softFailure.shift();
         }
     };
+    
+    // TODO: rescued from kettleCouchDB.js - clean up in time
+    fluid.expect = function (name, members, target) {
+        fluid.transform($.makeArray(members), function (key) {
+            if (typeof target[key] === "undefined") {
+                fluid.fail(name + " missing required parameter " + key);
+            }
+        });
+    };
 
     // Logging
         
@@ -340,6 +349,18 @@ var fluid = fluid || fluid_1_4;
             togo.push(key);
         });
         return togo;
+    };
+    
+    /** 
+     * Searches through the supplied object, and returns <code>true</code> if the supplied value
+     * can be found 
+     */
+    fluid.contains = function(obj, value) {
+        return obj? fluid.find(obj, function (thisValue, key) {
+            if (value === thisValue) {
+                return true;
+            }
+        }): undefined;
     };
     
     /** 
@@ -724,6 +745,9 @@ var fluid = fluid || fluid_1_4;
                     if (preventable && ret === false) {
                         return false;
                     }
+                    if (unicast) {
+                        return ret;
+                    }
                 } catch (e) {
                     fluid.log("FireEvent received exception " + e.message + " e " + e + " firing to listener " + i);
                     throw (e);       
@@ -805,6 +829,7 @@ var fluid = fluid || fluid_1_4;
                     key = key.substring(0, keydot);
                 }
                 if (!events[key]) {
+                    fluid.fail("Listener registered for event " + key + " which is not defined for this component");
                     events[key] = fluid.event.getEventFirer();
                 }
                 firer = events[key];
@@ -854,6 +879,13 @@ var fluid = fluid || fluid_1_4;
         fluid.mergeListeners(that, that.events, listeners);
     };
     
+    fluid.mergeListenersPolicy = function (target, source) {
+        var togo = target || {};
+        fluid.each(source, function(listeners, key) {
+            togo[key] = fluid.makeArray(source[key]).concat(fluid.makeArray(listeners));
+        });
+        return togo;
+    };
     
     /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
     
@@ -943,7 +975,7 @@ var fluid = fluid || fluid_1_4;
     
         
     fluid.hasGrade = function (options, gradeName) {
-        return !options || !options.gradeNames ? false : $.inArray(gradeName, options.gradeNames) !== -1;
+        return !options || !options.gradeNames ? false : fluid.contains(options.gradeNames, gradeName);
     };
     
      /**
@@ -1007,7 +1039,7 @@ var fluid = fluid || fluid_1_4;
     fluid.defaults("fluid.eventedComponent", {
         gradeNames: ["fluid.littleComponent"],
         mergePolicy: {
-            listeners: "noexpand"
+            listeners: "fluid.mergeListenersPolicy"
         }
     });
     
@@ -1132,6 +1164,17 @@ var fluid = fluid || fluid_1_4;
         return target;     
     };
 
+    // unsupported, NON-API function
+    fluid.transformOptions = function (mergeArgs) {
+        var transRec = mergeArgs[1].transformOptions;
+        fluid.expect("Options transformation record", ["transformer", "config"], transRec);
+        var transFunc = fluid.getGlobalValue(transRec.transformer);
+        var togo = fluid.transform(mergeArgs, function(value, key) {
+            return key === 0? value : transFunc.call(null, value, transRec.config);
+        });
+        return togo;
+    };
+
     /**
      * Merges the component's declared defaults, as obtained from fluid.defaults(),
      * with the user's specified overrides.
@@ -1160,6 +1203,9 @@ var fluid = fluid || fluid_1_4;
             extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
         } else {
             extraArgs = [defaults, userOptions];
+        }
+        if (extraArgs[1] && extraArgs[1].transformOptions) {
+            extraArgs = fluid.transformOptions(extraArgs);
         }
         mergeArgs = mergeArgs.concat(extraArgs);
         that.options = fluid.merge.apply(null, mergeArgs);
@@ -1208,6 +1254,14 @@ var fluid = fluid || fluid_1_4;
             typeName: name,
             id: fluid.allocateGuid()
         };
+    };
+    
+    /** A combined "component and grade name" which allows type tags to be declaratively constructed
+     * from options material */
+    
+    fluid.typeFount = function (options) {
+        var that = fluid.initLittleComponent("fluid.typeFount", options);
+        return that.options.targetTypeName? fluid.typeTag(that.options.targetTypeName) : null;
     };
     
     /**

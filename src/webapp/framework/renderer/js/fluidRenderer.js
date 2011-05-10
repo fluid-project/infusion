@@ -279,11 +279,11 @@ fluid_1_4 = fluid_1_4 || {};
             var name = renderer.IDtoComponentName(ID, num);
             // TODO: The best we can do here without GRADES is to wildly guess 
             // that it is a view component with options in the 2nd place and container in first place
-            fluid.set(parent, fluid.path("options", "components", name), {type: func, options: args[1]});
+            fluid.set(parent, fluid.path("options", "components", name), {type: func});
             // This MIGHT really be a variant of fluid.invoke... only we often probably DO want the component
             // itself to be inserted into the that stack. This *ALSO* requires GRADES to resolve. A 
             // "function" is that which has no grade. The gradeless grade.
-            that = fluid.initDependent(options.parentComponent, name, options.instantiator, [args[0]]);
+            that = fluid.initDependent(options.parentComponent, name, options.instantiator, args);
         }
         else {
             that = fluid.invokeGlobalFunction(func, args);
@@ -313,6 +313,7 @@ fluid_1_4 = fluid_1_4 || {};
         var decoratorQueue = [];
         
         var renderedbindings = {}; // map of fullID to true for UISelects which have already had bindings written
+        var usedIDs = {};
         
         var that = {};
         
@@ -686,7 +687,7 @@ fluid_1_4 = fluid_1_4 || {};
             
             var count = 1;
             var baseid = attrcopy.id;
-            while (renderOptions.document.getElementById(attrcopy.id)) {
+            while (renderOptions.document.getElementById(attrcopy.id) || usedIDs[attrcopy.id]) {
                 attrcopy.id = baseid + "-" + (count++); 
             }
             component.finalID = attrcopy.id;
@@ -748,8 +749,11 @@ fluid_1_4 = fluid_1_4 || {};
                 if (type === "$") {type = decorator.type = "jQuery";}
                 if (type === "jQuery" || type === "event" || type === "fluid") {
                     var id = adjustForID(attrcopy, torender, true, finalID);
-                    decorator.id = id;
-                    decoratorQueue[decoratorQueue.length] = decorator;
+                    if (decorator.ids === undefined) {
+                        decorator.ids = [];
+                        decoratorQueue[decoratorQueue.length] = decorator; 
+                    }
+                    decorator.ids.push(id);
                 }
                 // honour these remaining types immediately
                 else if (type === "attrs") {
@@ -1022,6 +1026,9 @@ fluid_1_4 = fluid_1_4 || {};
                     out += rendered;
                     closeTag();
                 }
+            }
+            if (attrcopy.id !== undefined) {
+                usedIDs[attrcopy.id] = true;
             }
         }
              
@@ -1348,28 +1355,34 @@ fluid_1_4 = fluid_1_4 || {};
         function processDecoratorQueue() {
             for (var i = 0; i < decoratorQueue.length; ++i) {
                 var decorator = decoratorQueue[i];
-                var node = fluid.byId(decorator.id, renderOptions.document);
-                if (!node) {
-                    fluid.fail("Error during rendering - component with id " + decorator.id 
-                        + " which has a queued decorator was not found in the output markup");
-                }
-                if (decorator.type === "jQuery") {
-                    var jnode = $(node);
-                    jnode[decorator.func].apply(jnode, $.makeArray(decorator.args));
-                }
-                else if (decorator.type === "fluid") {
-                    var args = decorator.args;
-                    if (!args) {
-                        if (!decorator.container) {
-                            decorator.container = node;
-                        }
-                        args = [decorator.container, decorator.options];
+                for (var j = 0; j < decorator.ids.length; ++ j) {
+                    var id = decorator.ids[j];
+                    var node = fluid.byId(id, renderOptions.document);
+                    if (!node) {
+                        fluid.fail("Error during rendering - component with id " + id 
+                            + " which has a queued decorator was not found in the output markup");
                     }
-                    var that = renderer.invokeFluidDecorator(decorator.func, args, decorator.id, i, options);
-                    decorator.that = that;
-                }
-                else if (decorator.type === "event") {
-                    node[decorator.event] = decorator.handler; 
+                    if (decorator.type === "jQuery") {
+                        var jnode = $(node);
+                        jnode[decorator.func].apply(jnode, $.makeArray(decorator.args));
+                    }
+                    else if (decorator.type === "fluid") {
+                        var args = decorator.args;
+                        if (!args) {
+                            if (!decorator.container) {
+                                decorator.container = $(node);
+                            }
+                            else {
+                                decorator.container.push(node);
+                            }
+                            args = [node, decorator.options];
+                        }
+                        var that = renderer.invokeFluidDecorator(decorator.func, args, id, i, options);
+                        decorator.that = that;
+                    }
+                    else if (decorator.type === "event") {
+                        node[decorator.event] = decorator.handler; 
+                    }
                 }
             }
         }

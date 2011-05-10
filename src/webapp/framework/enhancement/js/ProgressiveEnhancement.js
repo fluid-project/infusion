@@ -40,24 +40,28 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.progressiveChecker = function (options) {
         var that = fluid.initLittleComponent("fluid.progressiveChecker", options);
-        return fluid.find(that.options.checks, function(check) {
+        return fluid.typeTag(fluid.find(that.options.checks, function(check) {
             if (check.feature) {
-                return fluid.typeTag(check.contextName);
-            }}, that.options.defaultTypeTag
-        );
+                return check.contextName;
+            }}, that.options.defaultContextName
+        ));
     };
+    
+    fluid.defaults("fluid.progressiveChecker", {
+        gradeNames: "fluid.typeFount",
+        checks: [], // [{"feature": "{IoC Expression}", "contextName": "context.name"}]
+        defaultContextName: undefined
+    });
     
     fluid.progressiveCheckerForComponent = function (options) {
         var that = fluid.initLittleComponent("fluid.progressiveCheckerForComponent", options);
         var defaults = fluid.defaults(that.options.componentName);
         return fluid.progressiveChecker(fluid.expandOptions(defaults.progressiveCheckerOptions, that));  
     };
-    
-    fluid.defaults("fluid.progressiveChecker", {
-        checks: [], // [{"feature": "{IoC Expression}", "contextName": "context.name"}]
-        defaultTypeTag: undefined
+
+    fluid.defaults("fluid.progressiveCheckerForComponent", {
+        gradeNames: "fluid.typeFount"
     });
-    
     
     /**********************************************************
      * This code runs immediately upon inclusion of this file *

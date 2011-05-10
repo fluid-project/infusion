@@ -39,7 +39,7 @@ var fluid_1_4 = fluid_1_4 || {};
                         afterFileDialog: "{multiFileUploader}.events.afterFileDialog",
                         afterFileQueued: "{multiFileUploader}.events.afterFileQueued",
                         onQueueError: "{multiFileUploader}.events.onQueueError"
-                   }
+                    }
                 }
             },
             
@@ -62,8 +62,7 @@ var fluid_1_4 = fluid_1_4 || {};
         // Used for browsers that rely on File.getAsBinary(), such as Firefox 3.6,
         // which load the entire file to be loaded into memory.
         // Set this option to a sane limit (100MB) so your users won't experience crashes or slowdowns (FLUID-3937).
-        legacyBrowserFileLimit: 100000,
-    
+        legacyBrowserFileLimit: 100000
     });
     
     
@@ -76,7 +75,6 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uploader.html5Strategy.fileErrorHandler = function (file, events, xhr) {
-        file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
         events.onFileError.fire(file, 
                                 fluid.uploader.errorConstants.UPLOAD_FAILED,
                                 xhr.status,
@@ -85,7 +83,6 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uploader.html5Strategy.fileStopHandler = function (file, events, xhr) {
-        file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
         events.onFileError.fire(file, 
                                 fluid.uploader.errorConstants.UPLOAD_STOPPED,
                                 xhr.status,
@@ -107,9 +104,12 @@ var fluid_1_4 = fluid_1_4 || {};
         return that;
     };
     
-    var createFileUploadXHR = function (file, events) {
+    fluid.uploader.html5Strategy.createFileUploadXHR = function () {
         var xhr = new XMLHttpRequest();
-
+        return xhr;
+    };
+    
+    fluid.uploader.html5Strategy.monitorFileUploadXHR = function (file, events, xhr) {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 var status = xhr.status;
@@ -153,11 +153,13 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.uploadFile = function (file) {
             that.events.onFileStart.fire(file);
-            that.currentXHR = createFileUploadXHR(file, that.events);
+            var xhr = that.createXHR();
+            that.currentXHR = fluid.uploader.html5Strategy.monitorFileUploadXHR(file, that.events, xhr);
             that.doUpload(file, that.queueSettings, that.currentXHR);            
         };
 
         that.stop = function () {
+            that.queue.isUploading = false;
             that.currentXHR.abort();         
         };
         
@@ -172,7 +174,8 @@ var fluid_1_4 = fluid_1_4 || {};
             options: 1  
         },                
         invokers: {
-            doUpload: "fluid.uploader.html5Strategy.doUpload"
+            doUpload: "fluid.uploader.html5Strategy.doUpload",
+            createXHR: "fluid.uploader.html5Strategy.createFileUploadXHR"
         }
     });
     
@@ -241,6 +244,10 @@ var fluid_1_4 = fluid_1_4 || {};
         funcName: "fluid.uploader.html5Strategy.doManualMultipartUpload",
         args: ["@0", "@1", "@2"]
     });
+    
+    fluid.demands("fluid.uploader.html5Strategy.createFileUploadXHR", "fluid.uploader.html5Strategy.remote", {
+        funcName: "fluid.uploader.html5Strategy.createFileUploadXHR"
+    });    
     
     // Configuration for FF4, Chrome, and Safari 4+, all of which support FormData correctly.
     fluid.demands("fluid.uploader.html5Strategy.doUpload", [
@@ -405,7 +412,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.defaults("fluid.uploader.html5Strategy.browseButtonView", {
         gradeNames: "fluid.viewComponent",
-        multiFileInputMarkup: "<input type='file' multiple='' class='flc-uploader-html5-input fl-hidden' />",
+        multiFileInputMarkup: "<input type='file' multiple='' class='flc-uploader-html5-input' />",
         
         queueSettings: {},
         
