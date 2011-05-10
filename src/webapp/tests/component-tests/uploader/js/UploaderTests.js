@@ -187,10 +187,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };        
         
         /*
-         * Override the HTML5 doFormDataUpload() function to avoid passing
-         * invalid values into the FormData.   FF4 restricts passing 
-         * JSON objects as the value in the FormData append() function
+         * Override the HTML5 FormData and XHR creators with mocks so we can verify the correct behaviour.
+         * FF4 restricts passing JSON objects as the value in the FormData append() function.
          */
+        // TODO: We don't need to override doFormDataUpload() anymore, we can simply pass along a mock FormData creator.
         fluid.tests.uploader.doFormDataUpload = function () {
             // DO NOTHING
         }
