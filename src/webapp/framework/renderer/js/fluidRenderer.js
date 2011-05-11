@@ -25,14 +25,6 @@ fluid_1_4 = fluid_1_4 || {};
         return "as child of " + (component.parent.fullID ? "component with full ID " + component.parent.fullID : "root");
     }
      
-    fluid.arrayToHash = function (array) {
-        var togo = {};
-        fluid.each(array, function (el) {
-            togo[el] = true;
-        });
-        return togo;
-    };
-  
     function computeFullID(component) {
         var togo = "";
         var move = component;
@@ -279,11 +271,11 @@ fluid_1_4 = fluid_1_4 || {};
             var name = renderer.IDtoComponentName(ID, num);
             // TODO: The best we can do here without GRADES is to wildly guess 
             // that it is a view component with options in the 2nd place and container in first place
-            fluid.set(parent, fluid.path("options", "components", name), {type: func, options: args[1]});
+            fluid.set(parent, fluid.path("options", "components", name), {type: func});
             // This MIGHT really be a variant of fluid.invoke... only we often probably DO want the component
             // itself to be inserted into the that stack. This *ALSO* requires GRADES to resolve. A 
             // "function" is that which has no grade. The gradeless grade.
-            that = fluid.initDependent(options.parentComponent, name, options.instantiator, [args[0]]);
+            that = fluid.initDependent(options.parentComponent, name, options.instantiator, args);
         }
         else {
             that = fluid.invokeGlobalFunction(func, args);
