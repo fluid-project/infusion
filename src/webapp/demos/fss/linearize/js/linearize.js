@@ -19,20 +19,6 @@ var demo = demo || {};
 
 (function ($) {
     
-    /****************
-     * Tabs Wrapper *
-     ****************/
-    fluid.registerNamespace("demo.tabsWrapper");
-    
-    demo.tabsWrapper.finalInit = function (that) {
-        $(that.container).tabs();
-    };
-    
-    fluid.defaults("demo.tabsWrapper", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        finalInitFunction: "demo.tabsWrapper.finalInit"
-    });
-    
     /*************
      * linearize * 
      *************/
@@ -107,6 +93,12 @@ var demo = demo || {};
             },
             alignmentLabel: {
                 messagekey: "alignmentLabel"
+            },
+            sections: {
+                decorators: {
+                    type: "jQuery",
+                    func: "tabs"
+                }
             }
         };
         
@@ -117,12 +109,6 @@ var demo = demo || {};
         gradeNames: ["fluid.rendererComponent", "autoInit"],
         preInitFunction: "demo.linearize.preInit",
         finalInitFunction: "demo.linearize.finalInit",
-        components: {
-            divider: {
-                type: "demo.tabsWrapper",
-                container: "{demo.linearize}.dom.sections"
-            }
-        },
         selectors: {
             alignment: ".democ-linearize-alignment",
             alignmentChoice: ".democ-linearize-alignmentChoice",
@@ -133,7 +119,7 @@ var demo = demo || {};
             styled: ".democ-linearize-styled",
             sections: ".democ-linearize-sections"
         },
-        selectorsToIgnore: ["alignment", "styled", "sections"],
+        selectorsToIgnore: ["alignment", "styled"],
         repeatingSelectors: ["layout"],
         styles: {
             alignmentDisabled: "demo-linearize-alignmentDisabled",
