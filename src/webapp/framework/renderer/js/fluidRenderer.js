@@ -25,14 +25,6 @@ fluid_1_4 = fluid_1_4 || {};
         return "as child of " + (component.parent.fullID ? "component with full ID " + component.parent.fullID : "root");
     }
      
-    fluid.arrayToHash = function (array) {
-        var togo = {};
-        fluid.each(array, function (el) {
-            togo[el] = true;
-        });
-        return togo;
-    };
-  
     function computeFullID(component) {
         var togo = "";
         var move = component;
