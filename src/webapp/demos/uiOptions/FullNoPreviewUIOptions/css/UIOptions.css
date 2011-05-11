@@ -1,8 +1,6 @@
 body {
 	font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
-	margin-left: 64px;
-	margin-right: 64px;
-	margin-top: 64px;
+	margin: 64px 64px 64px 64px;
 }
 
 h1 {

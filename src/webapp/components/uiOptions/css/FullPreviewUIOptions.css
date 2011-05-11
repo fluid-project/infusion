@@ -1,28 +1,8 @@
-/* UI Option default styles */
-
-/* Overall styles */
-
-.fl-uiOptions ul li {
-    clear:both; 
-}
-.fl-col-fixed-31em { width: 31em; }
-.fl-col-fixed-38em { width: 38em; }
-.fl-col-fixed-72em { width: 72em; }
+/* UI Option styles for full page w/ preview */
 
 /* Section headers */
 .fl-uiOptions-fullPreview h2 {
-	font-size: 1.29em;
-	font-weight: bold;
-	clear: both;
 	border-top: 2px solid #dddddd;
-	color: #444444;
-	padding-top: 14px;
-	padding-bottom: 22px;	
-}
-
-.fl-uiOptions-fullPreview h2 img {
-	margin-bottom: -3px;
-	padding-right: 5px;
 }
 
 /* Form */
@@ -45,6 +25,10 @@
     padding-top: 8px;
 }
 
+.fl-uiOptions ul li {
+    clear: both; 
+}
+
 /* Descriptions */
 .fl-uio-option-description {
 	color: #4D4D4D;
@@ -63,41 +47,6 @@
 	height: 480px;
 	width: 100%;
 	border: 2px solid #d7d7d7;
-}
-
-/* Apply buttons */
-.fl-uiOptions-fullPreview .fl-uio-buttons {
-	margin-top: 1em;
-	float: left;
-}
-
-.fl-uiOptions-fullPreview .fl-uio-buttons input {
-	text-transform: uppercase;
-	text-decoration: underline;
-	font-weight: bold;
-	color: #333333;
-/*  border: 2px solid #d7d7d7;*/
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
-    padding: 5px;
-	height: 32px;
-	font-size: 1em;
-    margin-right: 3px;
-}
-
-.fl-uiOptions-fullPreview .fl-uio-buttons .fl-uio-save {
-	padding-left: 16px;
-	background-image: url("../../../components/uiOptions/images/uio_icon_save_13x13.png");
-	background-repeat: no-repeat;
-	background-position: 4px 6px;
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
-}
-
-.fl-uiOptions-fullPreview .fl-uio-buttons .fl-uio-cancel {
-	padding-left: 16px;
-	background-image: url("../../../components/uiOptions/images/uio_icon_cancel_13x13.png");
-	background-repeat: no-repeat;
-	background-position: 3px 6px;
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
 }
 
 .fl-uio-preview h2 {
