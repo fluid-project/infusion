@@ -4,3 +4,69 @@
 .fl-col-fixed-38em { width: 38em; }
 .fl-col-fixed-54em { width: 54em; }
 .fl-col-fixed-72em { width: 72em; }
+
+/* Section headers */
+
+.fl-uiOptions h2 {
+	font-size: 1.29em;
+	font-weight: bold;
+	clear: both;
+	color: #444444;
+	padding-top: 14px;
+	padding-bottom: 22px;	
+}
+
+.fl-uiOptions h2 img {
+	margin-bottom: -3px;
+	padding-right: 5px;
+}
+
+/* Descriptions */
+.fl-uio-option-description {
+	color: #4D4D4D;
+	margin-bottom: 0px;
+	padding-top: 5px;
+}
+
+/* Labels */
+.fl-uiOptions-fullPreview label {
+	text-transform: uppercase;
+	font-size: 1.2em;
+}
+
+/* Save & apply, reset, cancel buttons */
+
+.fl-uiOptions .fl-uio-buttons {
+	margin-top: 1em;
+	float: left;
+}
+
+.fl-uiOptions .fl-uio-buttons input {
+	text-transform: uppercase;
+	text-decoration: underline;
+	font-weight: bold;
+	color: #333333;
+/*  border: 2px solid #d7d7d7;*/
+    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
+    padding: 5px;
+	height: 32px;
+	font-size: 1em;
+    margin-right: 3px;
+}
+
+.fl-uiOptions .fl-uio-buttons .fl-uio-save {
+	padding-left: 16px;
+	background-image: url("../../../../components/uiOptions/images/uio_icon_save_13x13.png");
+	background-repeat: no-repeat;
+	background-position: 4px 6px;
+    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
+}
+
+.fl-uiOptions .fl-uio-buttons .fl-uio-cancel {
+	padding-left: 16px;
+	background-image: url("../../../../components/uiOptions/images/uio_icon_cancel_13x13.png");
+	background-repeat: no-repeat;
+	background-position: 3px 6px;
+    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
+}
+

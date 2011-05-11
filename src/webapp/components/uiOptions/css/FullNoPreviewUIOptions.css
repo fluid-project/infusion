@@ -1,27 +1,5 @@
 /* UI Option styles for full page w/o preview */
 
-/* Overall styles */
-.fl-uiOptions-fullPreview p {
-    font-size: 1.1em;
-}
-
-
-/* Section headers */
-.fl-uiOptions-fullPreview h2 {
-	font-size: 1.29em;
-	font-weight: bold;
-	clear: both;
-	border-top: 2px solid #dddddd;
-	color: #444444;
-	padding-top: 14px;
-	padding-bottom: 22px;	
-}
-
-.fl-uiOptions-fullPreview h2 img {
-	margin-bottom: -3px;
-	padding-right: 5px;
-}
-
 /* Form */
 .fl-uiOptions-fullPreview ul {
 	margin-left: 0px;
@@ -48,19 +26,6 @@
 
 .fl-uio-option-first {
     padding-top: 8px;
-}
-
-/* Descriptions */
-.fl-uio-option-description {
-	color: #4D4D4D;
-	margin-bottom: 0px;
-	padding-top: 5px;
-}
-
-/* Labels */
-.fl-uiOptions-fullPreview label {
-	text-transform: uppercase;
-	font-size: 1.2em;
 }
 
 /* Text and display section */
@@ -91,78 +56,3 @@
 	border: 1px solid black;
 }
 
-/* Font Select box */
-.fl-uiOptions-fullPreview select {
-	border: 2px solid #ebebeb;
-}
-
-.fl-uiOptions-fullPreview option {}
-
-.fl-uiOptions-fullPreview select#text-font { 
-	font-weight:bold; 
-}
-.fl-uiOptions-fullPreview select#text-font option.times { font-family: "Times New Roman"; }
-.fl-uiOptions-fullPreview select#text-font option.comic { font-family: "Comic Sans MS"; }
-.fl-uiOptions-fullPreview select#text-font option.arial { font-family: Arial; }
-.fl-uiOptions-fullPreview select#text-font option.verdana { font-family: Verdana; }
-
-/* Theme Select box */
-.fl-uiOptions-fullPreview select#theme { 
-	font-weight:bold; 
-	text-transform: uppercase;
-}
-.fl-uiOptions-fullPreview select#theme option.default { color: #000; background-color: #efefef;}
-.fl-uiOptions-fullPreview select#theme option.bw { color: #fff; background-color: #000;}
-.fl-uiOptions-fullPreview select#theme option.wb { color: #000; background-color: #fff;}
-.fl-uiOptions-fullPreview select#theme option.by { color: #000; background-color: #ffee00;}
-.fl-uiOptions-fullPreview select#theme option.yb { color: #ffee00; background-color: #000;}
-
-/* Preview Area */
-.fl-uiOptions-fullPreview .fl-uio-preview iframe {
-	height: 480px;
-	width: 100%;
-	border: 2px solid #d7d7d7;
-}
-
-/* Apply buttons */
-.fl-uiOptions-fullPreview .fl-uio-buttons {
-	margin-top: 1em;
-	float: left;
-}
-
-.fl-uiOptions-fullPreview .fl-uio-buttons input {
-	text-transform: uppercase;
-	text-decoration: underline;
-	font-weight: bold;
-	color: #333333;
-/*  border: 2px solid #d7d7d7;*/
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
-    padding: 5px;
-	height: 32px;
-	font-size: 1em;
-    margin-right: 3px;
-}
-
-.fl-uiOptions-fullPreview .fl-uio-buttons .fl-uio-save {
-	padding-left: 16px;
-	background-image: url("../../../components/uiOptions/images/uio_icon_save_13x13.png");
-	background-repeat: no-repeat;
-	background-position: 4px 6px;
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
-}
-
-.fl-uiOptions-fullPreview .fl-uio-buttons .fl-uio-cancel {
-	padding-left: 16px;
-	background-image: url("../../../components/uiOptions/images/uio_icon_cancel_13x13.png");
-	background-repeat: no-repeat;
-	background-position: 3px 6px;
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
-}
-
-.fl-uio-preview h2 {
-	font-weight: lighter;
-	font-size: 1.8em;
-	color: #4D4D4D;
-	padding-top: 18px;
-	padding-bottom: 22px;
-}
