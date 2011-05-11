@@ -284,6 +284,13 @@
 		
         			<div id="absolute">
         				<h2>Absolute position</h2>
+        				
+        				<p>
+        				    In this example, Column A and B do not linearize because they are absolutely positioned. Currently the FSS's linearization strategy does not taking into account absolutely positioned elements. (See: 
+        				    <a href="http://issues.fluidproject.org/browse/FLUID-2396">FLUID-2396</a>
+        				    )
+        				</p>
+        				
         				<div class="layout-demo fl-fix">				
         					<div class="fl-container-250 absolute-a">a</div>
         					<div class="fl-container-250 absolute-b">b</div>				
