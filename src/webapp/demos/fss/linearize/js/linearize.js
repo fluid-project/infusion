@@ -92,7 +92,7 @@ var demo = demo || {};
                 "type": "fluid.renderer.selection.inputs",
                 "rowID": "layout",
                 "labelID": "layoutLabel",
-                "inputID": "layoutInput",
+                "inputID": "layoutChoice",
                 "selectID": "layout-checkbox",
                 "tree": {
                     "selection": "${layouts.selection}",
@@ -128,7 +128,7 @@ var demo = demo || {};
             alignmentChoice: ".democ-linearize-alignmentChoice",
             alignmentLabel: ".democ-linearize-alignmentLabel",
             layout: ".democ-linearize-layout",
-            layoutInput: ".democ-linearize-layoutInput",
+            layoutChoice: ".democ-linearize-layoutChoice",
             layoutLabel: ".democ-linearize-layoutLabel",
             styled: ".democ-linearize-styled",
             sections: ".democ-linearize-sections"
