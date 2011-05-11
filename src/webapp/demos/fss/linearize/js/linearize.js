@@ -104,6 +104,9 @@ var demo = demo || {};
                 "selection": "${alignments.selection}",
                 "optionlist": "${alignments.choices}",
                 "optionnames": "${alignments.names}"
+            },
+            alignmentLabel: {
+                messagekey: "alignmentLabel"
             }
         };
         
@@ -123,6 +126,7 @@ var demo = demo || {};
         selectors: {
             alignment: ".democ-linearize-alignment",
             alignmentChoice: ".democ-linearize-alignmentChoice",
+            alignmentLabel: ".democ-linearize-alignmentLabel",
             layout: ".democ-linearize-layout",
             layoutInput: ".democ-linearize-layoutInput",
             layoutLabel: ".democ-linearize-layoutLabel",
@@ -137,6 +141,9 @@ var demo = demo || {};
             left: "",
             centre: "fl-layout-align-center",
             right: "fl-layout-align-right"
+        },
+        strings: {
+            alignmentLabel: "align:"
         },
         events: {
             afterAlignmentChanged: null,
