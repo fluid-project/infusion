@@ -1,0 +1,28 @@
+/* FSS Linearize test */
+
+.demo-linearize-options {
+    border-radius: 4px;
+    background-color: #CCC;
+    margin: 0px 0px 5px 5px;
+    padding: 10px 5px;
+    height: auto;
+    width: 187px;
+}
+
+.demo-linearize-alignmentDisabled {
+    color: gray;
+}
+
+.layout-demo {
+	margin-bottom:10px;
+}
+.layout-demo div {
+	background-color: #ccc;
+}
+
+.absolute-a { position:absolute; left: 0; }
+.absolute-b { position:absolute; left: 350px; }
+
+.fl-theme-mist :focus {
+	outline:0;
+}
