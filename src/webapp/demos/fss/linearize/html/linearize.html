@@ -16,11 +16,14 @@
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.tabs.js"></script>        
         <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidRequests.js"></script>
         <script type="text/javascript" src="../../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../../framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/RendererUtilities.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../js/linearize.js"></script>
         
@@ -30,16 +33,14 @@
 		<br />
 		<div class="democ-linearize">
 	        <div class="demo-linearize-options fl-focus">
-    		    <label for="linearize">linearize: </label> 
-    		    <input type="checkbox" name="linearize" id="linearize" class="democ-linearize-layoutLabel" />
+	            <span class="democ-linearize-layout">
+    		        <label for="linearize" class="democ-linearize-layoutLabel">layout: </label> 
+        		    <input type="checkbox" name="linearize" id="linearize" class="democ-linearize-layoutInput" />
+    		    </span>
         		<span class="democ-linearize-alignment">
         		    | 
         		    <label for="align-choice">align: </label>
-                    <select class="democ-linearize-alignmentChoice" id="align-choice">
-                        <option value="fl-layout-align-left" selected="selected">left</option>
-                        <option value="fl-layout-align-center">centre</option>
-        				<option value="fl-layout-align-right">right</option>
-        			</select>							
+                    <select class="democ-linearize-alignmentChoice" id="align-choice"></select>							
         		</span>
     		</div>
 		

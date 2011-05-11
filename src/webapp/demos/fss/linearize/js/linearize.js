@@ -42,26 +42,29 @@ var demo = demo || {};
         var layoutSelector = that.locate("layout");
         
         // bind event listener for layout checkbox
-        layoutSelector.change(function (e) {
-            that.events.afterLayoutChanged.fire(e.target.checked);
+        that.applier.modelChanged.addListener("layouts.selection", function (newModel) {
+            that.events.afterLayoutChanged.fire(newModel.layouts.selection.length);
         });
         
         // bind event listener for alignment selectbox
-        that.locate("alignmentChoice").change(function (e) {
-            that.events.afterAlignmentChanged.fire($(e.target).val(), that.currentAlignmnet);
+        that.applier.modelChanged.addListener("alignments.selection", function (newModel, oldModel) {
+            that.events.afterAlignmentChanged.fire(newModel.alignments.selection, oldModel.alignments.selection);
         });
         
         that.setLayout(layoutSelector.is(":checked"));
+        that.refreshView();
     };
     
     demo.linearize.preInit = function (that) {
         that.setAlignmnet = function (newAlignmnet, oldAlignmnet) {
+            var styles = that.options.styles;
             var styledElm = that.locate("styled");
+            
             if (oldAlignmnet) {
-                styledElm.removeClass(oldAlignmnet);
+                styledElm.removeClass(styles[oldAlignmnet]);
             }
             
-            styledElm.addClass(newAlignmnet);
+            styledElm.addClass(styles[newAlignmnet]);
             that.currentAlignmnet = newAlignmnet;
         };
         
@@ -83,8 +86,32 @@ var demo = demo || {};
         };
     };
     
+    demo.linearize.produceTree = function (that) {
+        var tree = {
+            "expander": {
+                "type": "fluid.renderer.selection.inputs",
+                "rowID": "layout",
+                "labelID": "layoutLabel",
+                "inputID": "layoutInput",
+                "selectID": "layout-checkbox",
+                "tree": {
+                    "selection": "${layouts.selection}",
+                    "optionlist": "${layouts.choices}",
+                    "optionnames": "${layouts.names}"
+                }
+            },
+            alignmentChoice: {
+                "selection": "${alignments.selection}",
+                "optionlist": "${alignments.choices}",
+                "optionnames": "${alignments.names}"
+            }
+        };
+        
+        return tree;
+    };
+    
     fluid.defaults("demo.linearize", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.rendererComponent", "autoInit"],
         preInitFunction: "demo.linearize.preInit",
         finalInitFunction: "demo.linearize.finalInit",
         components: {
@@ -96,13 +123,20 @@ var demo = demo || {};
         selectors: {
             alignment: ".democ-linearize-alignment",
             alignmentChoice: ".democ-linearize-alignmentChoice",
-            layout: ".democ-linearize-layoutLabel",
+            layout: ".democ-linearize-layout",
+            layoutInput: ".democ-linearize-layoutInput",
+            layoutLabel: ".democ-linearize-layoutLabel",
             styled: ".democ-linearize-styled",
             sections: ".democ-linearize-sections"
         },
+        selectorsToIgnore: ["alignment", "styled", "sections"],
+        repeatingSelectors: ["layout"],
         styles: {
             alignmentDisabled: "demo-linearize-alignmentDisabled",
-            linear: "fl-layout-linear"
+            linear: "fl-layout-linear",
+            left: "",
+            centre: "fl-layout-align-center",
+            right: "fl-layout-align-right"
         },
         events: {
             afterAlignmentChanged: null,
@@ -111,6 +145,19 @@ var demo = demo || {};
         listeners: {
             afterAlignmentChanged: "{demo.linearize}.setAlignmnet",
             afterLayoutChanged: "{demo.linearize}.setLayout"
-        }
+        }, 
+        model: {
+            layouts: {
+                selection: [],
+                choices: ["linearize"],
+                names: ["linearize"]
+            },
+            alignments: {
+                selection: "left",
+                choices: ["left", "centre", "right"],
+                names: ["left", "centre", "right"]
+            }
+        },
+        produceTree: "demo.linearize.produceTree"
     });
 })(jQuery);
