@@ -1,13 +1,10 @@
-/* UI Option default styles */
+/* UI Option styles for full page w/ preview */
 
 /* Overall styles */
 
 .fl-uiOptions ul li {
     clear:both; 
 }
-.fl-col-fixed-31em { width: 31em; }
-.fl-col-fixed-38em { width: 38em; }
-.fl-col-fixed-72em { width: 72em; }
 
 /* Section headers */
 .fl-uiOptions-fullPreview h2 {
@@ -86,7 +83,7 @@
 
 .fl-uiOptions-fullPreview .fl-uio-buttons .fl-uio-save {
 	padding-left: 16px;
-	background-image: url("../../../components/uiOptions/images/uio_icon_save_13x13.png");
+	background-image: url("../../../../components/uiOptions/images/uio_icon_save_13x13.png");
 	background-repeat: no-repeat;
 	background-position: 4px 6px;
     background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
@@ -94,7 +91,7 @@
 
 .fl-uiOptions-fullPreview .fl-uio-buttons .fl-uio-cancel {
 	padding-left: 16px;
-	background-image: url("../../../components/uiOptions/images/uio_icon_cancel_13x13.png");
+	background-image: url("../../../../components/uiOptions/images/uio_icon_cancel_13x13.png");
 	background-repeat: no-repeat;
 	background-position: 3px 6px;
     background: -moz-linear-gradient(bottom, #e0e0e0, #fff);

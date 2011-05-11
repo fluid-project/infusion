@@ -1,16 +1,10 @@
-/* UI Option default styles */
+/* UI Option styles for full page w/o preview */
 
 /* Overall styles */
-.fl-uiOptions-fullPreview {
-	font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
-    font-size: 0.85em;
-}
-
 .fl-uiOptions-fullPreview p {
     font-size: 1.1em;
 }
 
-.fl-col-fixed-54em { width: 54em; }
 
 /* Section headers */
 .fl-uiOptions-fullPreview h2 {
