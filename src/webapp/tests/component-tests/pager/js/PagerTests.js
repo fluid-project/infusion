@@ -143,6 +143,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertFalse(str + " link is not selected", 
                 link.hasClass(fluid.defaults("fluid.pager.pagerBar").styles.currentPage));        
         };
+        
+        // Just tests that the pager will initialize with only a container, and dataModel passed in.
+        // The rest of the options are the defaults.
+        tests.test("Default Pager: FLUID-4213", function () {
+            jqUnit.assertTrue("The default pager initialized", fluid.pager("#rendered", {
+                dataModel: [{language: "javascript"}]
+            }));
+        });
     
         // This is a placeholder test. It knows too much about the implementation details. 
         // This will be replaced with a better test as the public API of the Pager is developed
