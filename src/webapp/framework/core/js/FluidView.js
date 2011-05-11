@@ -121,7 +121,8 @@ var fluid_1_4 = fluid_1_4 || {};
             fluid.each(exclusion, function (excludeEl) {
                 $(excludeEl).bind("focusin", that.canceller).
                     bind("fluid-focus", that.canceller).
-                    click(that.canceller);
+                    click(that.canceller).mousedown(that.canceller);
+    // Mousedown is added for FLUID-4212, as a result of Chrome bug 6759, 14204
             });
         });
         return that;
