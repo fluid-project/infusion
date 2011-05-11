@@ -66,10 +66,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.textfieldSlider.finalInit = function (that) {
         // initialize slider
-        var sliderOptions = that.options.sliderOptions;
-        sliderOptions.value = that.model.value;
-        sliderOptions.min = that.model.min;
-        sliderOptions.max = that.model.max;
+        var sliderOptions = $.extend(true, {}, that.options.sliderOptions, that.model);
         
         that.slider.initSlider(sliderOptions);
 
@@ -98,22 +95,30 @@ var fluid_1_4 = fluid_1_4 || {};
         finalInitFunction: "fluid.textfieldSlider.textfield.finalInit"
     });
 
-    fluid.textfieldSlider.textfield.finalInit = function (that) {
-        that.container.change(function (source) {
-            var value = source.target.value;
-            var isValid = !isNaN(parseInt(value, 10));
+    var validateValue = function (model, changeRequest, applier) {
+        var oldValue = model.value;
+        var newValue = changeRequest.value;
+        
+        var isValidNum = !isNaN(parseInt(newValue, 10));
 
-            if (isValid) {
-                if (value < that.model.min) {
-                    value = that.model.min;
-                } else if (value > that.model.max) {
-                    value = that.model.max;
-                }
-                
-                that.applier.requestChange("value", value);
-            } else {
-                that.container.val(that.model.value);
+        if (isValidNum) {
+            if (newValue < model.min) {
+                newValue = model.min;
+            } else if (newValue > model.max) {
+                newValue = model.max;
             }
+            
+            changeRequest.value = newValue;
+        } else {
+            changeRequest.value = oldValue;
+        }
+    };
+
+    fluid.textfieldSlider.textfield.finalInit = function (that) {
+        that.applier.guards.addListener({path: "value", transactional: true}, validateValue);
+        
+        that.container.change(function (source) {
+            that.applier.requestChange("value", source.target.value);
         });
     };
 
