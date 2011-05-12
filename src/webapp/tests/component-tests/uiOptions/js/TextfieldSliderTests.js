@@ -21,12 +21,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         tests.test("Test Init", function () {
             expect(8);
-            var textfieldSlider = fluid.textfieldSlider(".fl-textfield-slider");
+            var textfieldSlider = fluid.textfieldSlider(".fl-textfield-slider", {model: {value: 15}});
             jqUnit.assertEquals("Slider value is set to input value", 15, $(".flc-textfieldSlider-slider").slider("value"));
             jqUnit.assertEquals("Textfield value is set", 15, $(".flc-textfieldSlider-field").val());
-            jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model);
-            jqUnit.assertEquals("Min should be the default", 0, textfieldSlider.min);
-            jqUnit.assertEquals("Max should be the default", 100, textfieldSlider.max);
+            jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model.value);
+            jqUnit.assertEquals("Min should be the default", 0, textfieldSlider.model.min);
+            jqUnit.assertEquals("Max should be the default", 100, textfieldSlider.model.max);
             
             // Check ARIA defaults
             var thumb = $(".ui-slider-handle");
@@ -51,7 +51,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         tests.test("Test Min/Max Size", function () {
             expect(18);
-            var textfieldSlider = fluid.textfieldSlider(".fl-textfield-slider", {min: 5, max: 55});
+            var textfieldSlider = fluid.textfieldSlider(".fl-textfield-slider", {model: {min: 5, max: 55}});
             
             testSetting(56, 55);
             testSetting(55, 55);
@@ -63,7 +63,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         tests.test("Test Negative Scale", function () {
             expect(15);
-            fluid.textfieldSlider(".fl-textfield-slider", {min: -15, max: -5});
+            fluid.textfieldSlider(".fl-textfield-slider", {model: {min: -15, max: -5}});
             
             testSetting(56, -5);
             testSetting(-10, -10);
