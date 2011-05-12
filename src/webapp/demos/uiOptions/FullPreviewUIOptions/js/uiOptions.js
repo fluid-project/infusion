@@ -47,17 +47,11 @@ var demo = demo || {};
     
     demo.slidingUIOptions = function (container, button) {
         // First, initialize a UIEnhancer for the page
-        var pageEnhancer = fluid.uiEnhancer(document, {
+        fluid.uiEnhancer(document, {
             defaultSiteSettings: {
                 theme: "mist",
                 linksBold: true,
                 linksUnderline: true
-            },
-            tableOfContents: {
-                options: {
-                    templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
-                }
-            
             }
         });
         
@@ -67,6 +61,13 @@ var demo = demo || {};
                 template: {
                     url: "../../../../components/uiOptions/html/UIOptions.html"
                 }
+            }
+        });
+
+        // Supply the table of contents' template URL that is relative to the caller html
+        fluid.demands("fluid.tableOfContents", ["fluid.uiOptions", "fluid.uiEnhancer"], {
+            options: {
+                templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
             }
         });
 

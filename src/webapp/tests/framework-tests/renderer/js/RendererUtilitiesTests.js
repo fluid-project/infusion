@@ -788,7 +788,7 @@ fluid.registerNamespace("fluid.tests");
         });
         
         fluid.defaults("fluid.tests.repeatDecorator", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],
+            gradeNames: ["fluid.viewComponent", "autoInit"]
         });
         
         fluid.defaults("fluid.tests.repeatHead", {
@@ -827,7 +827,7 @@ fluid.registerNamespace("fluid.tests");
             fluid.each(decorators, function(decorator, key) {
                 declist.push({key: key, decorator: decorator});
             });
-            declist.sort(function(ea, eb) {return ea.key < eb.key? -1 : 1});
+            declist.sort(function(ea, eb) {return ea.key < eb.key? -1 : 1;});
             var decvals = fluid.transform(declist, function(dec) {
                 return dec.decorator.model.value;  
             });
@@ -1185,7 +1185,7 @@ fluid.registerNamespace("fluid.tests");
                         }
                     }
                 }
-            }
+            };
             var expanded = expander(protoTree);
             jqUnit.assertEquals("Only three rows produced", 3, expanded.children.length);
             var protoTree2 = fluid.copy(protoTree);

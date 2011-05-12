@@ -20,69 +20,54 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var demo = demo || {};
 (function ($, fluid) {
 
-    // Places UI Options into a sliding panel, which can be controlled by a button.
-    var slidingPanel = function (uiOptions, button) {
-        
-        button.addClass("show-hide-button");                            
-		button.wrap('<div id="top-bar" class="fl-uiOptions-fatPanel"></div>');
-        
-        var slideUp = function () {
-            uiOptions.container.slideUp();
-        };
-        
-        // Bind listeners to show and hide the panel when tab is clicked
-        button.click(function () {
-            //panelTabs($("#fl-uiOptions-tabs"));
-             var myTabs = fluid.tabs(uiOptions.container, {});
 
-            if (uiOptions.container.is(":hidden")) {
-                uiOptions.container.slideDown();    
-                button.text("- Hide");
-            } else {
-                uiOptions.container.slideUp();                           
-                uiOptions.cancel();
-                button.text("+ Show Display Preferences");                
-            }
-            return false;
-        });
-            
-        // Hide the panel to start.
-       uiOptions.container.hide();
-    };
-    
-    /* Panel Tabs
-     * inspired by http://www.sohtanaka.com/web-design/simple-tabs-w-css-jquery/
-     * and http://www.accessibleculture.org/research/aria-tabs/version-2b/
-     */
-	/*var panelTabs = function (tabs) {	
-		
-		$("li", tabs).click (function(e) {		
-			//unset current tab
-			$("li", tabs).removeClass("fl-tabs-active");
-			$("a", tabs).attr("tabindex", "-1");
-			$("a", tabs).attr("aria-selected", "false");
+	/*
+	 * Sliding Panel Component
+	 */
+	fluid.defaults("fluid.slidingPanel", {
+		gradeNames: ["fluid.viewComponent", "autoInit"], 	         
+		selectors: {
+			toggleButton: "flc-slidingPanel-toggleButton"
+		},
+		strings: {
+			showText: "+ Show Display Preferences",
+			hideText: "- Hide"
+		},
+		events: {
+			//open and close?
+		},   		
+		finalInitFunction: "fluid.slidingPanel.finalInit"             
+	});
+	
+	
+	fluid.slidingPanel.togglePanel = function () {
+		alert ("yo");
+		/*if (uiOptions.container.is(":hidden")) {                
+			//panelTabs($("#fl-uiOptions-tabs")); //set up tabs
+			var myTabs = fluid.tabs(uiOptions.container, {});
+					
+			uiOptions.container.slideDown();    
+			that.locate("toggleButton").text("- Hide");
+		} else {
+			uiOptions.container.slideUp();                           
+			uiOptions.cancel();
+			that.locate("toggleButton").text("+ Show Display Preferences");                
+		}*/
+		return false;		
+	};
+	
+	fluid.slidingPanel.finalInit = function (that) {
+	
+		//event binders
+		that.locate("toggleButton").click( that.togglePanel );	
+	
+		//hide panel
+		that.container.hide();
+	};
+	 
+	 	 
 
-			//set the active style on clicked tab			
-			$(this).addClass("fl-tabs-active"); 
-			$("a", this).attr("tabindex", "0");			
-			$("a", this).attr("aria-selected", "true");
-			
-			//show that tab page
-			$(".tab").hide();			
-			$(".tab").attr("aria-hidden", "true");			
-			
-			var activeTab = $($(this).find("a").attr("href"));
-			$(activeTab).show(); 
-			$(activeTab).attr("aria-hidden", "false");			
-						
-			return false;	
-		}); 		
-				
-		//show first tab on load				
-		$(".tab").hide();
-		$(".tab:first").show(); 
-    };*/
-    
+	/* Our demo script */   
     demo.slidingUIOptions = function (container, button) {
         // First, initialize a UIEnhancer for the page
         var pageEnhancer = fluid.uiEnhancer(document, {
@@ -111,7 +96,8 @@ var demo = demo || {};
         });
 
         // Put it in the sliding panel.
-        slidingPanel(myUIOptions, button);
+        //slidingPanel(myUIOptions, button);
+        fluid.slidingPanel($("#myUIOptions"), {});
     };
     
 })(jQuery, fluid);

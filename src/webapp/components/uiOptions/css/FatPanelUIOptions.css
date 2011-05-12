@@ -1,18 +1,18 @@
 /* UI Options Fat Panel styles */
 
-.fl-uiOptions-fatPanel {
+.fl-fatPanel {
 	min-width: 960px;
 }
 
 /* Top bar and show/hide button */
-.fl-uiOptions-fatPanel#top-bar {
+.fl-panelBar {
 	width: 100%;
 	height: 5px;
 	background-color: #fff;
 	border-bottom: 1px solid #ccc;	
 }
 
-.fl-uiOptions-fatPanel .show-hide-button {
+.fl-toggleButton {
 	float:right;
 	text-transform: uppercase;
 	font-weight: bold;	

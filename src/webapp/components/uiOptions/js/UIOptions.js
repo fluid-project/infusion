@@ -24,38 +24,31 @@ var fluid_1_4 = fluid_1_4 || {};
  * Textfield Slider *
  ******************/
 
-(function ($, fluid) {    
+(function ($, fluid) {
 
-    // This will be removed once the jQuery UI slider has built in ARIA 
-    var initSliderAria = function (thumb, opts) {
-        var ariaDefaults = {
-            role: 'slider',
-            "aria-valuenow": opts.value,
-            "aria-valuemin": opts.min, 
-            "aria-valuemax": opts.max    
-        };
-        thumb.attr(ariaDefaults);        
-    };
-    
-    var updateControlsApplierAndAria = function (that, value, thumb) {
-        that.events.modelChanged.fire(value);
-        thumb.attr("aria-valuenow", value);
-    };
-    
     fluid.defaults("fluid.textfieldSlider", {
         gradeNames: ["fluid.viewComponent", "autoInit"], 
         components: {
             textfield: {
-                type: "fluid.textfieldSlider.textfield"
+                type: "fluid.textfieldSlider.textfield",
+                container: "{textfieldSlider}.dom.textfield",
+                options: {
+                    model: "{textfieldSlider}.model",
+                    applier: "{textfieldSlider}.applier"
+                }
             },
             slider: {
-                type: "fluid.textfieldSlider.slider"
+                type: "fluid.textfieldSlider.slider",
+                container: "{textfieldSlider}.dom.slider",
+                options: {
+                    model: "{textfieldSlider}.model",
+                    applier: "{textfieldSlider}.applier"
+                }
             }
         },
         selectors: {
             textfield: ".flc-textfieldSlider-field",
-            slider: ".flc-textfieldSlider-slider",
-            thumb: ".ui-slider-handle"
+            slider: ".flc-textfieldSlider-slider"
         },
         events: {
             modelChanged: null
@@ -72,101 +65,103 @@ var fluid_1_4 = fluid_1_4 || {};
     });    
     
     fluid.textfieldSlider.finalInit = function (that) {
-        var sliderOptions = that.options.sliderOptions;
-        sliderOptions.value = that.model.value;
-        sliderOptions.min = that.model.min;
-        sliderOptions.max = that.model.max;
+        // initialize slider
+        var sliderOptions = $.extend(true, {}, that.options.sliderOptions, that.model);
         
-        var slider = that.locate("slider").slider(sliderOptions);
-        initSliderAria(that.locate("thumb"), sliderOptions);
+        that.slider.initSlider(sliderOptions);
+
+        that.refreshView = function () {
+            var val = that.model.value;
+            
+            that.textfield.container.val(val);
+            that.slider.setSliderValue(val);
+            that.slider.setSliderAria(val);
+        };
+        
+        that.applier.modelChanged.addListener("value", 
+            function (newModel) {
+                // update preview window
+                that.events.modelChanged.fire(newModel.value);
+            }
+        );
+
+        that.events.modelChanged.addListener(that.refreshView);
+
+        that.refreshView();
     };
     
     fluid.defaults("fluid.textfieldSlider.textfield", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        invokers: {
-            refreshView: {
-                funcName: "fluid.textfieldSlider.textfield.refreshView",
-                args: ["{textfield}.container", "{textfieldSlider}"]
-            }
-        },
         finalInitFunction: "fluid.textfieldSlider.textfield.finalInit"
     });
 
-    fluid.textfieldSlider.textfield.refreshView = function (container, textfieldSlider) {
-        container.val(textfieldSlider.applier.model.value);
+    var validateValue = function (model, changeRequest, applier) {
+        var oldValue = model.value;
+        var newValue = changeRequest.value;
+        
+        var isValidNum = !isNaN(parseInt(newValue, 10));
 
-        updateControlsApplierAndAria(textfieldSlider, textfieldSlider.applier.model.value, textfieldSlider.dom.locate("thumb"));
-    };
-    
-    fluid.textfieldSlider.textfield.finalInit = function (that) {
-        that.container.change(function () {
-            var value = this.value; 
-            var isValid = !(isNaN(parseInt(value, 10)) || isNaN(value));
-
-            if (isValid) {
-                if (value < that.model.min) {
-                    value = that.model.min;
-                } else if (value > that.model.max) {
-                    value = that.model.max;
-                }
-                
-                that.applier.requestChange("value", value);
-            } else {
-                that.container.val(that.applier.model.value);
+        if (isValidNum) {
+            if (newValue < model.min) {
+                newValue = model.min;
+            } else if (newValue > model.max) {
+                newValue = model.max;
             }
-        });
-
-        that.applier.modelChanged.addListener("value", that.refreshView);
-
-        that.refreshView();
+            
+            changeRequest.value = newValue;
+        } else {
+            changeRequest.value = oldValue;
+        }
     };
 
-    fluid.demands("fluid.textfieldSlider.textfield", "fluid.textfieldSlider", {
-        container: "{textfieldSlider}.dom.textfield",
-        options: {
-            model: "{textfieldSlider}.model",
-            applier: "{textfieldSlider}.applier"
-        }
-    });
+    fluid.textfieldSlider.textfield.finalInit = function (that) {
+        that.applier.guards.addListener({path: "value", transactional: true}, validateValue);
+        
+        that.container.change(function (source) {
+            that.applier.requestChange("value", source.target.value);
+        });
+    };
 
-
-    
     fluid.defaults("fluid.textfieldSlider.slider", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        invokers: {
-            refreshView: {
-                funcName: "fluid.textfieldSlider.slider.refreshView",
-                args: ["{slider}.slider", "{textfieldSlider}.applier.model", "{controls}"]
-            }
-        },
-        finalInitFunction: "fluid.textfieldSlider.slider.finalInit"
+        finalInitFunction: "fluid.textfieldSlider.slider.finalInit",
+        selectors: {
+            thumb: ".ui-slider-handle"
+        }
     });
     
-    fluid.textfieldSlider.slider.refreshView = function (slider, model, controls) {
-        slider.slider("value", model.value);
+    // This will be removed once the jQuery UI slider has built in ARIA 
+    var initSliderAria = function (thumb, opts) {
+        var ariaDefaults = {
+            role: 'slider',
+            "aria-valuenow": opts.value,
+            "aria-valuemin": opts.min,
+            "aria-valuemax": opts.max
+        };
+        thumb.attr(ariaDefaults);        
     };
-
+    
     fluid.textfieldSlider.slider.finalInit = function (that) {       
         that.slider = that.container.slider(that.model);
+        
+        that.initSlider = function (sliderOptions) {
+            var slider = that.slider.slider(sliderOptions);
+            initSliderAria(that.locate("thumb"), sliderOptions);
+        };
+        
+        that.setSliderValue = function (value) {
+            that.slider.slider("value", value);
+        };
+        
+        that.setSliderAria = function (value) {
+            that.locate("thumb").attr("aria-valuenow", value);
+        };
         
         that.slider.bind("slide", function (e, ui) {
             that.applier.requestChange("value", ui.value);
         });
-        
-        that.applier.modelChanged.addListener("value", that.refreshView);
-
-        return that;
     };
 
-    fluid.demands("fluid.textfieldSlider.slider", "fluid.textfieldSlider", {
-        container: "{textfieldSlider}.dom.slider",
-        options: {
-            model: "{textfieldSlider}.model",
-            applier: "{textfieldSlider}.applier"
-        }
-    });
-
-    
 })(jQuery, fluid_1_4);
 
 
@@ -271,7 +266,8 @@ var fluid_1_4 = fluid_1_4 || {};
         that.save = function () {
             that.events.onSave.fire(that.controls.model.selections);
             savedModel = fluid.copy(that.controls.model.selections); 
-            that.uiEnhancer.updateModel(savedModel);
+            that.uiEnhancer.applier.requestChange("", savedModel);
+            that.uiEnhancer.events.onSave.fire(savedModel);
         };
 
         /**
@@ -279,7 +275,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.reset = function () {
             that.events.onReset.fire();
-            that.updateControlsModel(fluid.copy(that.uiEnhancer.defaultSiteSettings), that.controls);
+            that.updateControlsModel(fluid.copy(that.uiEnhancer.defaultSiteSettings));
             that.controls.refreshView();
         };
         
@@ -288,7 +284,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.cancel = function () {
             that.events.onCancel.fire();
-            that.updateControlsModel(fluid.copy(savedModel), that.controls);
+            that.updateControlsModel(fluid.copy(savedModel));
             that.controls.refreshView();            
         };
         
@@ -298,9 +294,8 @@ var fluid_1_4 = fluid_1_4 || {};
          * @param {Object} newModel
          * @param {Object} source
          */
-        that.updateControlsModel = function (newModel, controls) {
-            that.controls.events.modelChanged.fire(newModel, controls.model.selections, controls);
-            setControlsChangeApplier(controls, newModel);
+        that.updateControlsModel = function (newModel) {
+            setControlsChangeApplier(that.controls, newModel);
         };
         
         var bindHandlers = function (that) {
@@ -378,7 +373,28 @@ var fluid_1_4 = fluid_1_4 || {};
         produceTree: "fluid.uiOptions.controls.produceTree"
     });
 
+    var mergeSiteDefaults = function (options, siteDefaults) {
+        for (var settingName in options.controlValues) {
+            var setting = String(siteDefaults[settingName]);
+            var settingValues = options.controlValues[settingName];
+            
+            if (setting) {
+                var index = $.inArray(setting, settingValues);
+                if (index === -1) {
+                    var defaultIndex = $.inArray("default", settingValues);
+                    if (defaultIndex === -1) {
+                        settingValues.push(setting);
+                    } else {
+                        settingValues[defaultIndex] = setting;
+                    }
+                }
+            }
+        }
+    };
+    
     var initModel = function (that) {
+        mergeSiteDefaults(that.options, that.options.uiEnhancer.defaultSiteSettings);
+        
         fluid.each(that.options.controlValues, function (item, key) {
             that.applier.requestChange("labelMap." + key, {
                 values: that.options.controlValues[key],
@@ -430,7 +446,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 func: "fluid.textfieldSlider",
                 options: {
                     listeners: {
-                        modelChanged: function(value){
+                        modelChanged: function (value) {
                             that.applier.requestChange("selections." + item, value);
                         }
                     },
@@ -520,7 +536,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         setTimeout(function () {
             if (that.enhancer) {
-                that.enhancer.updateModel(selections);
+                that.enhancer.applier.requestChange("", selections);
             }
         }, 0);
     };
