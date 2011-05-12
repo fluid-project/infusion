@@ -1,5 +1,5 @@
 /*
- * jQuery UI Draggable 1.8.11
+ * jQuery UI Draggable 1.8.12
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -461,7 +461,7 @@ $.widget("ui.draggable", $.ui.mouse, {
 });
 
 $.extend($.ui.draggable, {
-	version: "1.8.11"
+	version: "1.8.12"
 });
 
 $.ui.plugin.add("draggable", "connectToSortable", {
