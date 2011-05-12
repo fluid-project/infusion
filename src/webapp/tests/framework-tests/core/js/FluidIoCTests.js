@@ -365,12 +365,12 @@ fluid.registerNamespace("fluid.tests");
     fluid.tests.gradedComponent = function(container, options) {
         var that = fluid.initView("fluid.tests.gradedComponent", container, options);
         return that; 
-    }
+    };
     
     fluid.tests.ungradedComponent = function(container, options) {
         var that = fluid.initView("fluid.tests.ungradedComponent", container, options);
         return that; 
-    }
+    };
     
     fluid.defaults("fluid.tests.gradeResolutionParent", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
@@ -659,7 +659,7 @@ fluid.registerNamespace("fluid.tests");
     fluidIoCTests.test("FLUID-4135 event injection and boiling", function() {
         var that = fluid.tests.eventParent();
         var child = that.eventChild;
-        expect(9);
+        jqUnit.expect(9);
         jqUnit.assertValue("Child component constructed", child);
         var origArg0 = "Value";
 
@@ -676,7 +676,7 @@ fluid.registerNamespace("fluid.tests");
         
         child.events.localEvent.addListener(function(arg0) {
             jqUnit.assertEquals("Plain transmission of argument", origArg0, arg0);
-        })
+        });
         child.events.boiledLocal.addListener(function(arg0, argChild) {
             jqUnit.assertEquals("Transmission of original arg0", origArg0, arg0);
             jqUnit.assertEquals("Injection of self via demands block", child, argChild);
@@ -837,7 +837,7 @@ fluid.registerNamespace("fluid.tests");
     
     fluid.tests.misclearLeaf.init = function(that) {
         that.uncreated = fluid.typeTag("uncreated");
-    }
+    };
     
     fluidIoCTests.test("FLUID-4179 unexpected material in clear test", function() {
         jqUnit.expect(1);
@@ -934,7 +934,7 @@ fluid.registerNamespace("fluid.tests");
         var expected2 = {
             childOption1: "directValue1",
             childOption2: "headValue1"
-        }
+        };
         jqUnit.assertDeepEq("Options delivered from subcomponent defaults through mergePaths",
             expected2, fluid.filterKeys(mergePaths.viewChild.options, ["childOption1", "childOption2"]));
     });
@@ -1040,7 +1040,7 @@ fluid.registerNamespace("fluid.tests");
     };
     fluid.demands("demandsInitComponent", "fluid.tests.initFunctions", {
         options: {
-            finalInitFunction: fluid.tests.initFunctions.demandsInitComponent.finalInitFunction,
+            finalInitFunction: fluid.tests.initFunctions.demandsInitComponent.finalInitFunction
         }
     })
     
@@ -1111,7 +1111,7 @@ fluid.registerNamespace("fluid.tests");
                     index: 1  
                 },
                 priority: "first"
-            },
+            }
         },
         preInitFunction: "fluid.tests.guidedParentInit"
     });
@@ -1124,7 +1124,7 @@ fluid.registerNamespace("fluid.tests");
     fluidIoCTests.test("Tree circularity test", function() {
         try {
             fluid.pushSoftFailure(true);
-            expect(3);
+            jqUnit.expect(3);
             var circular = fluid.tests.circularity();
             // if this test fails, the browser will bomb with a stack overflow 
             jqUnit.assertValue("Circular test delivered instantiator", circular.child1.options.instantiator);
@@ -1168,7 +1168,7 @@ fluid.registerNamespace("fluid.tests");
     });
     
     fluid.defaults("fluid.tests.circular.swfUpload", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
     fluid.tests.circular.initEngine = function(that) {
@@ -1216,7 +1216,7 @@ fluid.registerNamespace("fluid.tests");
         // If this test fails, it will bomb the browser with an infinite recursion
         try {
             fluid.pushSoftFailure(true);
-            expect(1);
+            jqUnit.expect(1);
             var comp = fluid.tests.circular.strategy();
         }
         catch (e) {
