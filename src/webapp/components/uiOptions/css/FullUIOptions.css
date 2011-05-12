@@ -5,6 +5,23 @@
 .fl-col-fixed-54em { width: 54em; }
 .fl-col-fixed-72em { width: 72em; }
 
+/* Form */
+
+.fl-uiOptions ul {
+	margin-left: 0px;
+}
+
+.fl-uiOptions ul li {
+    list-style: none;
+    clear: both; 
+}
+
+/* Sections (e.g., Text & Display, Layout & Navigation) */
+
+.fl-uio-category {
+    padding-bottom: 48px; /* separation between categories */
+}
+
 /* Section headers */
 
 .fl-uiOptions h2 {
@@ -21,7 +38,22 @@
 	padding-right: 5px;
 }
 
+/* Individual options (e.g., text size, simplify layout, emphasize links) */
+
+.fl-uio-option-2col {
+    padding-top: 40px;
+}
+
+.fl-uio-option-1col {
+    padding-top: 28px;
+}
+
+.fl-uio-option-first {
+    padding-top: 8px;
+}
+
 /* Descriptions */
+
 .fl-uio-option-description {
 	color: #4D4D4D;
 	margin-bottom: 0px;
@@ -29,11 +61,27 @@
 }
 
 /* Labels */
-.fl-uiOptions-fullPreview label {
+
+.fl-uiOptions label {
 	text-transform: uppercase;
 	font-size: 1.2em;
 }
 
+/* Text and display section */
+
+.fl-uiOptions .fl-uio-form label {
+    display: block;
+    float: left;
+	width: 14em;
+}
+
+.fl-uiOptions .fl-uio-form .fl-inputs {
+	float: left;
+}
+
+.fl-uiOptions .fl-uio-form input[type="text"] {
+	width: 2em;
+}
 /* Save & apply, reset, cancel buttons */
 
 .fl-uiOptions .fl-uio-buttons {
@@ -68,5 +116,20 @@
 	background-repeat: no-repeat;
 	background-position: 3px 6px;
     background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
+}
+
+/* Slider position. More slider styles in /css/Slider.css */
+
+.fl-uiOptions .fl-slider {
+	float:left;
+	margin-right: 10px;
+}
+
+/* Check boxes */
+
+.fl-uiOptions input[type="checkbox"] {
+	margin-right:10px;
+	margin-bottom: 2em;
+	border: 1px solid black;
 }
 
