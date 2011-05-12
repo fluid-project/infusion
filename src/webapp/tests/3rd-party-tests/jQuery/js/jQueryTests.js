@@ -17,9 +17,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
     //set test case
         jQueryTests.test("Testing val return", function() {          
            var test_value = "abc"; 
-           jqUnit.assertEquals("Testing textbox value", test_value, $("#textbox-with-value").val());
-           jqUnit.assertEquals("Testing textbox value", test_value, $("#textbox-with-value").val(undefined));
-           jqUnit.assertEquals("Testing textbox value", test_value, $("#textbox-with-value").val(""));                    
+           jqUnit.assertEquals("Get the value from the markup", test_value, $("#textbox-with-value").val());
+           jqUnit.assertTrue("Element is returned by setting undefined val", test_value, $("#textbox-with-value").val(undefined).is("input"));
+           jqUnit.assertTrue("Element is returned by setting empty val", test_value, $("#textbox-with-value").val("").is("input"));                    
         });
         
         jQueryTests.test("Testing val set undefined", function() { 
@@ -29,10 +29,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             $("#textbox-without-value").val("")      
             jqUnit.assertEquals("Testing textbox value with .val(undefined)", "", $("#textbox-with-value").val());
             jqUnit.assertEquals("Testing textbox value with .val(/"/")", "", $("#textbox-without-value").val());
-       
         });        
-        
-        
      });
 })(jQuery);
 
