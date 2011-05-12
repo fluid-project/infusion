@@ -34,8 +34,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     saveCalled = true;
                 }
             },
-            templateUrl: "../../../../components/uiOptions/html/UIOptions.html",
-            previewTemplateUrl: "../../../../components/uiOptions/html/UIOptionsPreview.html"
+            resources: {
+                template: {
+                    url: "../../../../components/uiOptions/html/UIOptions.html"
+                }
+            }
         };
 
         var enhancerOptions = {
@@ -57,31 +60,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expect(15);
             
             testUIOptions(function (uiOptions) {
-                var model = uiOptions.model;
+                var model = uiOptions.controls.model;
                 jqUnit.assertNotNull("Model is not null", model);
                 jqUnit.assertNotUndefined("Model is not undefined", model);
                 jqUnit.assertFalse("Min text size is not set", !!model.textSize);
-                jqUnit.assertEquals("Text font is set", "", model.textFont);
-                jqUnit.assertEquals("Text spacing is set", "", model.textSpacing);
-                jqUnit.assertEquals("Colour scheme is set", "default", model.theme);
+                jqUnit.assertEquals("Text font is set", "arial", model.selections.textFont);
+                jqUnit.assertEquals("Text spacing is set", "", model.selections.textSpacing);
+                jqUnit.assertEquals("Colour scheme is set", "default", model.selections.theme);
 
-                var themeValues = uiOptions.options.controlValues.theme;
+                var themeValues = uiOptions.controls.options.controlValues.theme;
                 jqUnit.assertEquals("There are 5 themes in the control", 5, themeValues.length);
                 jqUnit.assertEquals("The second theme is default", "default", themeValues[1]);
 
-                var spacingValues = uiOptions.options.controlValues.textSpacing;
+                var spacingValues = uiOptions.controls.options.controlValues.textSpacing;
                 jqUnit.assertEquals("There are 4 text spacing values in the control", 4, spacingValues.length);
                 jqUnit.assertEquals("The first value is default", "default", spacingValues[0]);
 
-                var fontValues = uiOptions.options.controlValues.textFont;
+                var fontValues = uiOptions.controls.options.controlValues.textFont;
                 jqUnit.assertEquals("There are 6 font values in the control", 6, fontValues.length);
                 jqUnit.assertEquals("There is no default font value", -1, jQuery.inArray("default", fontValues));
 
-                var layoutValues = uiOptions.options.controlValues.layout;
+                var layoutValues = uiOptions.controls.options.controlValues.layout;
                 jqUnit.assertEquals("There are 2 layout values in the control", 2, layoutValues.length);
                 jqUnit.assertEquals("There is a default layout value", 1, jQuery.inArray("default", layoutValues));
 
-                var bgValues = uiOptions.options.controlValues.backgroundImages;
+                var bgValues = uiOptions.controls.options.controlValues.backgroundImages;
                 jqUnit.assertEquals("There are 2 back ground images values in the control", 2, bgValues.length);
             });            
         });
@@ -90,7 +93,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expect(4);
             
             testUIOptions(function (uiOptions) {
-                uiOptions.updateModel(hcSkin);
+                uiOptions.updateControlsModel(hcSkin);
 
                 jqUnit.assertFalse("Save hasn't been called", saveCalled);
                 uiOptions.save();
@@ -106,20 +109,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expect(6);
             
             testUIOptions(function (uiOptions) {
-                uiOptions.updateModel(hcSkin);
+                uiOptions.updateControlsModel(hcSkin);
 
-                jqUnit.assertEquals("hc setting was set in the model", hcSkin.theme, uiOptions.model.theme);
+                jqUnit.assertEquals("hc setting was set in the model", hcSkin.theme, uiOptions.controls.model.selections.theme);
                 jqUnit.assertEquals("hc setting was not saved", "default", uiOptions.uiEnhancer.model.theme);
 
-                uiOptions.refreshView();
+                uiOptions.controls.refreshView();
                 var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
                 var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val(); 
                 jqUnit.assertEquals("Small font size selected", "8", fontSizeSetting);
-                var fontStyleSelection = $(":selected", $("#text-font"));
+                var fontStyleSelection = $(":selected", $(".flc-uiOptions-text-font"));
                 jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
-                var textSpacingSelection = $(":selected", $("#text-spacing"));
+                var textSpacingSelection = $(":selected", $(".flc-uiOptions-text-spacing"));
                 jqUnit.assertEquals("Wider spacing is selected", "wide2", textSpacingSelection[0].value);
-                var contrastSelection = $(":selected", $("#theme"));
+                var contrastSelection = $(":selected", $(".flc-uiOptions-theme"));
                 jqUnit.assertEquals("High Contrast is selected", "highContrast", contrastSelection[0].value);
             
             });          
@@ -140,17 +143,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
         
             testUIOptions(function (uiOptions) {
-                var themeValues = uiOptions.options.controlValues.theme;
+                var themeValues = uiOptions.controls.options.controlValues.theme;
                 jqUnit.assertEquals("There are 5 themes in the control", 5, themeValues.length);
                 jqUnit.assertEquals("The second theme is mist", "mist", themeValues[1]);
                 jqUnit.assertEquals("default theme value is gone", -1, jQuery.inArray("default", themeValues));
 
-                var spacingValues = uiOptions.options.controlValues.textSpacing;
+                var spacingValues = uiOptions.controls.options.controlValues.textSpacing;
                 jqUnit.assertEquals("There are 4 text spacing values in the control", 4, spacingValues.length);
                 jqUnit.assertEquals("The first value is wide4", "wide4", spacingValues[0]);
                 jqUnit.assertEquals("default spacing value is gone", -1, jQuery.inArray("default", spacingValues));
 
-                var fontValues = uiOptions.options.controlValues.textFont;
+                var fontValues = uiOptions.controls.options.controlValues.textFont;
                 jqUnit.assertEquals("There are 7 font values in the control", 7, fontValues.length);
                 jqUnit.assertEquals("The last font value is monospace", "monospace", fontValues[6]);
             }, null, enhancerOpts);

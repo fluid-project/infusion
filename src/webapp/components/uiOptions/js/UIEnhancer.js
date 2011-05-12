@@ -78,8 +78,7 @@ var fluid_1_4 = fluid_1_4 || {};
             if (that.tableOfContents) {
                 that.tableOfContents.show();
             } else {
-                that.tableOfContents = fluid.initSubcomponent(that, "tableOfContents", 
-                        [that.container, fluid.COMPONENT_OPTIONS]);
+                that.events.onReady.fire();
             }
         } else {
             if (that.tableOfContents) {
@@ -172,12 +171,12 @@ var fluid_1_4 = fluid_1_4 || {};
     var initModel = function (that) {
         // First check for settings in the options
         if (that.options.savedSettings) {
-            that.model = that.options.savedSettings;
+            that.applier.requestChange("", that.options.savedSettings);
             return;
         }
   
         // Use the settingsStore or the defaultSiteSettings if there are no settings
-        that.model = that.settingsStore.fetch() || fluid.copy(that.defaultSiteSettings);        
+        that.applier.requestChange("", that.settingsStore.fetch() || fluid.copy(that.defaultSiteSettings));
     };
 
     /**
@@ -208,23 +207,23 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     var setupUIEnhancer = function (that) {
-        that.settingsStore = fluid.initSubcomponent(that, "settingsStore", [fluid.COMPONENT_OPTIONS]); 
+        fluid.initDependents(that);
+        that.events.onInitSettingStore.fire(); 
         initModel(that);
-        that.refreshView();        
     };
       
     /**
      * Component that works in conjunction with FSS to transform the interface based on settings. 
-     * @param {Object} doc
+     * @param {Object} container
      * @param {Object} options
      */
-    fluid.uiEnhancer = function (doc, options) {
-        doc = doc || document;
-        var that = fluid.initView("fluid.uiEnhancer", doc, options);
-        $(doc).data("uiEnhancer", that);
-        that.container = $("body", doc);
+    fluid.uiEnhancer = function (container, options) {
+        var originalContainer = container || document;
+        container = $("body", originalContainer);
+        var that = fluid.initView("fluid.uiEnhancer", container, options);
+        $(originalContainer).data("uiEnhancer", that);
         that.defaultSiteSettings = that.options.defaultSiteSettings;
-        
+
         var clashingClassnames;
         
         /**
@@ -246,13 +245,18 @@ var fluid_1_4 = fluid_1_4 || {};
          * @param {Object} newModel
          * @param {Object} source
          */
-        that.updateModel = function (newModel, source) {
-            that.events.modelChanged.fire(newModel, that.model, source);
-            fluid.clear(that.model);
-            fluid.model.copyModel(that.model, newModel);
-            that.settingsStore.save(that.model);
-            that.refreshView();
-        };
+        that.events.onSave.addListener(
+            function (newModel) {
+                that.settingsStore.save(that.model);
+            }
+        );
+
+        that.applier.modelChanged.addListener("",
+            function (newModel, oldModel, changeRequest) {
+                that.events.modelChanged.fire(newModel, oldModel, changeRequest);
+                that.refreshView();
+            }
+        );
 
         clashingClassnames = clearClashingClasses(that.container, that.options.classnameMap);
         setupUIEnhancer(that);
@@ -260,21 +264,28 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.defaults("fluid.uiEnhancer", {
-        tableOfContents: {
-            type: "fluid.tableOfContents",
-            options: {
-                templateUrl: "../../tableOfContents/html/TableOfContents.html"
+        gradeNames: "fluid.viewComponent",
+        components: {
+            tableOfContents: {
+                type: "fluid.tableOfContents",
+                container: "{uiEnhancer}.container",
+                createOnEvent: "onReady",
+                options: {
+                    templateUrl: "../../tableOfContents/html/TableOfContents.html"
+                }
+            },
+            settingsStore: {
+                type: "fluid.uiEnhancer.cookieStore",
+                container: "{uiEnhancer}.container",
+                createOnEvent: "onInitSettingStore"
             }
         },
-        
-        settingsStore: {
-            type: "fluid.uiEnhancer.cookieStore"
-        },
-        
         events: {
-            modelChanged: null
+            onReady: null,
+            onSave: null,
+            modelChanged: null,
+            onInitSettingStore: null
         },
-        
         classnameMap: {
             "textFont": {
                 "serif": "fl-font-serif",
@@ -315,7 +326,7 @@ var fluid_1_4 = fluid_1_4 || {};
             "inputsLarger": "fl-text-larger"
         },
         defaultSiteSettings: {
-            textFont: "",                 // key from classname map
+            textFont: "arial",            // key from classname map
             textSpacing: "",              // key from classname map
             theme: "default",             // key from classname map
             layout: "default",            // key from classname map
@@ -338,9 +349,13 @@ var fluid_1_4 = fluid_1_4 || {};
      * SettingsStore Subcomponent that uses a cookie for persistence.
      * @param {Object} options
      */
-    fluid.uiEnhancer.cookieStore = function (options) {
-        var that = fluid.initLittleComponent("fluid.uiEnhancer.cookieStore", options);
-        
+    fluid.defaults("fluid.uiEnhancer.cookieStore", {
+        gradeNames: ["fluid.littleComponent", "autoInit"], 
+        cookieName: "fluid-ui-settings",
+        finalInitFunction: "fluid.uiEnhancer.cookieStore.finalInit"
+    });
+
+    fluid.uiEnhancer.cookieStore.finalInit = function (that) {
         /**
          * Retrieve and return the value of the cookie
          */
@@ -371,14 +386,8 @@ var fluid_1_4 = fluid_1_4 || {};
         that.save = function (settings) {
             document.cookie = that.options.cookieName + "=" +  encodeURIComponent(JSON.stringify(settings));
         };
-    
-        return that;
     };
     
-    fluid.defaults("fluid.uiEnhancer.cookieStore", {
-        cookieName: "fluid-ui-settings"
-    });
-
     /**************
      * Temp Store *
      **************/
