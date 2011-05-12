@@ -18,6 +18,74 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
         
+        fluid.registerNamespace("fluid.tests.uploader.html5");
+        
+        /*******************************************************************
+         * Useful testing functions for the HTML5 version of the Uploader. *
+         *******************************************************************/
+         
+        fluid.tests.uploader.html5.mockFile = function (id, name, type, size) {
+            return {
+                id: id,
+                name: name,
+                type: type,
+                size: size,
+                getAsBinary: fluid.identity
+            };
+        };
+        
+        fluid.tests.uploader.html5.checkMultipartRequest = function (req, file, boundary) {
+            var parts = req.split('\r\n');
+            
+            // Check for the MIME multipart boundary, if we know what it is.
+            if (boundary) {
+                jqUnit.assertEquals("The first line of the multipart content must contain the boundary", 2, parts[0].indexOf(boundary));
+                jqUnit.assertTrue("The sixth line of the multipart content must also contain the boundary", parts[5].indexOf(boundary) !== -1);
+            }
+            
+            // Check the rest of the request.
+            jqUnit.assertEquals("The multipart content must contain 7 lines", 7, parts.length);
+            jqUnit.assertEquals("The first line of the multipart content should start with two dashes.", 0, parts[0].indexOf("--"));
+            jqUnit.assertTrue("The second line of the multipart content must contain the Content-Disposition", parts[1].indexOf('Content-Disposition') !== -1);
+            jqUnit.assertTrue("The second line of the multipart content must contain the name attribute with value of 'fileData'", parts[1].indexOf('name=\"fileData\"') !== -1);            
+            jqUnit.assertTrue("The second line of the multipart content must contain the file name", parts[1].indexOf('filename') !== -1);
+            jqUnit.assertTrue("The file name should be 'test'", parts[1].indexOf(file.name) !== -1);
+            jqUnit.assertTrue("The third line of the multipart content must contain the Content-Type", parts[2].indexOf('Content-Type') !== -1);
+            jqUnit.assertTrue("The Content-Type should be 'image'", parts[2].indexOf(file.type) !== -1);
+        };
+        
+        fluid.tests.uploader.html5.mockXHR = function () {
+            var that = {};
+            
+            that.resetMock = function () {
+                that.method = undefined;
+                that.url = undefined;
+                that.async = undefined;
+                that.contentType = undefined;
+                that.sent = undefined;
+            };
+            
+            that.open = function (method, url, async) {
+                that.method = method;
+                that.url = url;
+                that.async = async;
+            };
+            
+            that.setRequestHeader = function (contentType) {
+                that.contentType = contentType;
+            };
+            
+            that.sendAsBinary = function () {
+                that.sent = arguments;
+            };
+            
+            that.send = that.sendAsBinary;
+            
+            that.resetMock();
+            return that;
+        };
+        
+        
         /************************************************
          * Utility Functions for setting up an Uploader *
          ************************************************/
@@ -33,6 +101,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tracker.interceptAll(listeners);
             tracker.listeners = listeners;
             return tracker;
+        };
+        
+        var trackRemoteListeners = function () {
+            var tracker = jqUnit.invocationTracker();
+            var emptyFn = function () {};
+            var listeners = {
+                onFileSuccess: emptyFn,
+                onFileError: emptyFn,
+                onFileComplete: emptyFn
+            };
+            tracker.interceptAll(listeners);
+            tracker.listeners = listeners;
+            return tracker;            
         };
         
         var getLocalUploader = function (fileUploadLimit, fileSizeLimit, legacyBrowserFileLimit, tracker) {
@@ -65,28 +146,132 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return local;
         };
         
+        var getRemoteUploader = function (tracker) {
+            var queue = fluid.uploader.fileQueue();
+            
+            var remote = fluid.uploader.html5Strategy.remote(queue, {
+                queueSettings: {
+                    uploadURL: "",
+                    postParams: ""
+                },
+                events: {
+                    afterReady: null,
+                    onFileSuccess: null,
+                    onFileError: null,
+                    onFileComplete: null,
+                    onFileProgress: null
+                }, 
+                listeners: tracker.listeners
+            });
+            
+            return remote;
+        };
         
         /*********
          * Setup *
          *********/
          
         var html5UploaderTests = new jqUnit.TestCase("Uploader Basic Tests");
-        
-        var file1 = {
-            id: "file1",
-            size: 0
-        };
-                
-        var file2 =  {
-            id: "file2",
-            size: 5
-        };
 
-        var file3 =  {
-            id: "file3",
-            size: 200000
-        };
+        var file1 = fluid.tests.uploader.html5.mockFile("file1", "emptyfile.zip", "application/zip", 0),
+            file2 = fluid.tests.uploader.html5.mockFile("file2", "tinyfile.jpg", "image/jpeg", 5),
+            file3 = fluid.tests.uploader.html5.mockFile("file3", "bigfile.rar", "application/x-rar-compressed", 200000);
+            
         
+        /******************************
+         * fileSuccessHandler() Tests *
+         ******************************/
+        
+        html5UploaderTests.test("Ensure event sequence for fileSuccessHandler", function () {
+            var xhr = {
+                status: 200, 
+                responseText: "testing"
+            };
+            
+            var files = [file1];
+            var tracker = trackRemoteListeners();
+            var transcript = tracker.transcript;
+            var remote = getRemoteUploader(tracker);
+            
+            fluid.uploader.html5Strategy.fileSuccessHandler(file1, remote.events, xhr);
+            
+            var eventOrder = ["onFileSuccess", "onFileComplete"];
+            var expectedNumEvents = eventOrder.length;
+            jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", 
+                                expectedNumEvents, transcript.length);      
+            checkEventOrderForFiles(eventOrder, files, transcript);
+            checkOnFileCompleteEvent(transcript);
+        });
+        
+        /****************************
+         * fileErorrHandler() Tests *
+         ****************************/
+        
+        html5UploaderTests.test("Ensure event sequence for fileErrorHandler", function () {
+            var xhr = {
+                status: 200, 
+                responseText: "testing"
+            };
+            
+            var files = [file2];
+            var tracker = trackRemoteListeners();
+            var transcript = tracker.transcript;
+            var remote = getRemoteUploader(tracker);
+            
+            fluid.uploader.html5Strategy.fileErrorHandler(file2, remote.events, xhr);
+            
+            var eventOrder = ["onFileError", "onFileComplete"];
+            var expectedNumEvents = eventOrder.length;
+            jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", 
+                                expectedNumEvents, transcript.length);      
+            checkEventOrderForFiles(eventOrder, files, transcript);
+            checkOnFileCompleteEvent(transcript);            
+        });
+        
+        /***************************
+         * fileStopHandler() Tests *
+         ***************************/
+        
+        html5UploaderTests.test("Ensure event sequence for fileStopHandler", function () {
+            var xhr = {
+                status: 200, 
+                responseText: "testing"
+            };
+            
+            var files = [file3];
+            var tracker = trackRemoteListeners();
+            var transcript = tracker.transcript;
+            var remote = getRemoteUploader(tracker);
+            
+            fluid.uploader.html5Strategy.fileStopHandler(file3, remote.events, xhr);
+            
+            var eventOrder = ["onFileError", "onFileComplete"];
+            var expectedNumEvents = eventOrder.length;
+            jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", 
+                                expectedNumEvents, transcript.length);      
+            checkEventOrderForFiles(eventOrder, files, transcript);
+            checkOnFileCompleteEvent(transcript);            
+        });         
+        
+        /***************************
+         * progressTracker() Tests *
+         ***************************/
+        
+        html5UploaderTests.test("Ensure loaded bytes are properly tracked", function () {
+            var progress = fluid.uploader.html5Strategy.progressTracker();    
+
+            var uploadProgress = progress.getChunkSize(100);
+            jqUnit.assertEquals("The chunk size should be", 100, uploadProgress);
+            jqUnit.assertEquals("100 bytes were previously uploaded", 100, progress.previousBytesLoaded);
+            
+            uploadProgress = progress.getChunkSize(250);
+            jqUnit.assertEquals("The chunk size should now be", 150, uploadProgress);
+        });
+        
+        /************************************
+         * generateMultiPartContent() Tests *
+         ************************************/
+                
         html5UploaderTests.test("Ensure multipart content is correctly built", function () {
             var boundary = 1234567890123456789;
             var file = {
@@ -97,20 +282,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             };
             
-            var multipart = fluid.uploader.html5Strategy.generateMultiPartContent(boundary, file);
-            var parts = multipart.split('\r\n');
-            
-            jqUnit.assertEquals("The multipart content must contain 7 lines", 7, parts.length);
-            jqUnit.assertEquals("The first line of the multipart content should start with two dashes.", 0, parts[0].indexOf("--"));
-            jqUnit.assertEquals("The first line of the multipart content must contain the boundary", 2, parts[0].indexOf(boundary));
-            jqUnit.assertTrue("The second line of the multipart content must contain the Content-Disposition", parts[1].indexOf('Content-Disposition') !== -1);
-            jqUnit.assertTrue("The second line of the multipart content must contain the name attribute with value of 'fileData'", parts[1].indexOf('name=\"fileData\"') !== -1);            
-            jqUnit.assertTrue("The second line of the multipart content must contain the file name", parts[1].indexOf('filename') !== -1);
-            jqUnit.assertTrue("The file name should be 'test'", parts[1].indexOf(file.name) !== -1);
-            jqUnit.assertTrue("The third line of the multipart content must contain the Content-Type", parts[2].indexOf('Content-Type') !== -1);
-            jqUnit.assertTrue("The Content-Type should be 'image'", parts[2].indexOf(file.type) !== -1);
-            jqUnit.assertTrue("The sixth line of the multipart content must also contain the boundary", parts[5].indexOf(boundary) !== -1);
+            var req = fluid.uploader.html5Strategy.generateMultiPartContent(boundary, file);
+            fluid.tests.uploader.html5.checkMultipartRequest(req, file, boundary);
         });
+        
+        
+        /****************************
+         * browseButtonView() Tests *
+         ****************************/
         
         html5UploaderTests.test("Uploader HTML5 browseHandler", function () {
             var browseButton = $("#browseButton");
@@ -119,7 +298,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     fileTypes: []
                 }
             });
-            
+
             var inputs = browseButton.children();
             jqUnit.assertEquals("There should be one multi-file input element at the start", 1, inputs.length);
             jqUnit.assertEquals("The multi-file input element should be visible and in the tab order to start", 
@@ -134,9 +313,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The second multi-file input element should be visible and in the tab order", 
                 0, inputs.eq(1).attr("tabindex"));
             
+            browseButtonView.disable();
+            jqUnit.assertTrue("The browse browseButton has been disabled", inputs.eq(1).attr("disabled"));
+            browseButtonView.enable();
+            jqUnit.assertFalse("The browse browseButton has been enabled", inputs.eq(1).attr("disabled"));                      
             inputs.eq(1).focus();
             jqUnit.assertTrue("On focus, the browseButton input has the focus class", browseButton.hasClass("focus"));
-            
             inputs.eq(1).blur();
             jqUnit.assertFalse("On blur, the browseButton no longer has the focus class", browseButton.hasClass("focus"));
         });
@@ -157,6 +339,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             for (var i = 0; i < files.length; i++) {
                 checkEventForFile(eventOrder[i], files[i], transcript[i]);
             }
+        };
+        
+        var checkOnFileCompleteEvent = function (transcript) {
+            var lastTranscriptEntry = transcript[transcript.length -1];
+            jqUnit.assertEquals("The last event should be onFileComplete", 
+                                "onFileComplete", lastTranscriptEntry.name);
+            jqUnit.assertEquals("One argument should have been passed to onFileComplete", 
+                                1, lastTranscriptEntry.args.length);        
         };
         
         var checkAfterFileDialogEvent = function (expectedNumFiles, transcript) {
@@ -295,6 +485,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
              eventOrder = ["afterFileQueued", "afterFileQueued", "afterFileQueued"];
              checkEventSequenceForAddedFiles(eventOrder, 3, files, tracker.transcript);
              jqUnit.assertEquals("Sanity check: the queue should contain 6 files", 6, localUploader.queue.files.length);
-        });                    
+        });                 
+        
+        html5UploaderTests.test("doFormDataUpload tests", function () {
+            var queueSettings = {
+                uploadURL: "/home/Uploader",
+                postParams: {
+                    name: "HTML5",
+                    id: "8"
+                }
+            }; 
+            
+            var xhr = fluid.tests.uploader.html5.mockXHR();
+            var formData = fluid.tests.uploader.mockFormData();
+            fluid.uploader.html5Strategy.doFormDataUpload(file1, queueSettings, xhr, formData);
+            jqUnit.assertEquals("The correct file is appended", file1.id, formData.data.file.id);
+            jqUnit.assertEquals("postParam is correctly appended to FormData", "HTML5", formData.data.name);
+            jqUnit.assertEquals("postParam is correctly appended to FormData", 8, formData.data.id);
+            jqUnit.assertEquals("XHR receives the proper method", "POST", xhr.method);
+            jqUnit.assertEquals("XHR url is set", "/home/Uploader", xhr.url);
+            jqUnit.assertTrue("XHR to execute asynchronously", xhr.async);
+            jqUnit.assertEquals("XHR.sendAsBinary() received one argument", 1, xhr.sent.length);
+            jqUnit.assertEquals("The FormData instance was sent via XHR.sendAsBinary()", formData, xhr.sent[0]);
+        });
+        
+        html5UploaderTests.test("doManualMultipartUpload tests", function () {
+            var queueSettings = {
+                uploadURL: "/home/Uploader"
+            }; 
+
+            var xhr = fluid.tests.uploader.html5.mockXHR();
+            fluid.uploader.html5Strategy.doManualMultipartUpload(file1, queueSettings, xhr);
+            jqUnit.assertEquals("XHR receives the proper method", "POST", xhr.method);
+            jqUnit.assertEquals("XHR url is set", "/home/Uploader", xhr.url);
+            jqUnit.assertTrue("XHR to execute asynchronously", xhr.async);
+            jqUnit.assertTrue("XHR has the contentType set", xhr.contentType);
+            jqUnit.assertEquals("XHR.send() received one argument", 1, xhr.sent.length);
+            fluid.tests.uploader.html5.checkMultipartRequest(xhr.sent[0], file1);
+        });        
     });
 })(jQuery);

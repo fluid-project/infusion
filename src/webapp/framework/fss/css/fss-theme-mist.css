@@ -12,7 +12,9 @@
  *         black     : #000000
  */
 
-.fl-theme-mist :focus,
+.fl-theme-mist .fl-focus:focus,
+.fl-theme-mist .fl-focus :focus,
+.fl-theme-mist.fl-focus :focus,
 .fl-theme-mist .selectable  {
    /* themed focus indicator */
    outline: 0.1em solid #F00;
@@ -23,14 +25,14 @@
 .fl-theme-mist a:hover {color: #6DB5FB;}
 .fl-theme-mist h1 {color:#4070a1; border-bottom-width:0.2em; border-bottom-style:solid;} 
 .fl-theme-mist h2 {color: #5a95cf;}
-.fl-theme-mist th {border:0.1em solid #5a95cf; background-color:#dfefff !important;}
-.fl-theme-mist td {border:0.1em solid #999999 !important;}
+.fl-theme-mist th {border:0.1em solid #5a95cf; background-color:#dfefff;}
+.fl-theme-mist td {border:0.1em solid #999999;}
 .fl-theme-mist .fl-textfield,
 .fl-theme-mist .fl-textarea {border:1px solid #5a95cf; border-bottom-color:#5a95cf; border-right-color:#5a95cf; background-color:#dfefff;}
 .fl-theme-mist .fl-icon {background-color:#5a95cf}
 
 /* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
-.fl-theme-mist .fl-inlineEdit-edit {background-color:#dfefff !important; border:0.1em solid #5a95cf; margin:-0.1em;}
+.fl-theme-mist .fl-inlineEdit-edit {background-color:#dfefff; border:0.1em solid #5a95cf; margin:-0.1em;}
 
 /* Helper: Buttons */
 .fl-theme-mist .fl-button-left {background-image:url(../images/themes/mist/buttons-med-cap.png);}
@@ -41,7 +43,7 @@
 .fl-theme-mist .fl-tabs {border-bottom-color:#4070a1;}
 .fl-theme-mist .fl-tabs li,
 .fl-theme-mist .fl-tabs li a  {font-weight:bold; color:#4070a1; border-color:#4070a1; border-bottom-color:#4070a1; text-decoration:none; background-color:#dfefff;}
-.fl-theme-mist .fl-tabs li a:hover {background-color:#5a95cf; color:#fff !important;}
+.fl-theme-mist .fl-tabs li a:hover {background-color:#5a95cf; color:#fff;}
 /* Deprecated */
 .fl-theme-mist .fl-tabs li.fl-activeTab,
 .fl-theme-mist .fl-tabs li.fl-activeTab:hover,
@@ -50,7 +52,7 @@
 /* New syntax */
 .fl-theme-mist .fl-tabs li.fl-tabs-active,
 .fl-theme-mist .fl-tabs li.fl-tabs-active a,
-.fl-theme-mist .fl-tabs li.fl-tabs-active a:hover {background-color: #f4f4f4; border-bottom-color:#f4f4f4; color:#508cc9 !important;}
+.fl-theme-mist .fl-tabs li.fl-tabs-active a:hover {background-color: #f4f4f4; border-bottom-color:#f4f4f4; color:#508cc9;}
 .fl-theme-mist .fl-tabs-content {background-color:#f4f4f4; color:#000; border:1px solid #61c5ff; border-top:none; margin-top:-4px;}
 
 /* Helper: Menu */
@@ -61,11 +63,11 @@
 .fl-theme-mist .fl-listmenu li a, 
 .fl-theme-mist .fl-list-menu li a  {font-weight:bold; color:#4070a1; background-color:#dfefff; border-color:#4070a1; text-decoration:none;}
 .fl-theme-mist .fl-listmenu a:hover, 
-.fl-theme-mist .fl-list-menu a:hover {background-color:#5a95cf; color:#fff !important;}
-.fl-theme-mist .fl-listmenu .fl-activemenu, 
-.fl-theme-mist .fl-list-menu .fl-activemenu,
-.fl-theme-mist .fl-listmenu .fl-activemenu:hover, 
-.fl-theme-mist .fl-list-menu .fl-activemenu:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
+.fl-theme-mist .fl-list-menu a:hover {background-color:#5a95cf; color:#fff;}
+.fl-theme-mist .fl-listmenu .fl-activemenu a, 
+.fl-theme-mist .fl-list-menu .fl-activemenu a,
+.fl-theme-mist .fl-listmenu .fl-activemenu a:hover, 
+.fl-theme-mist .fl-list-menu .fl-activemenu a:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
 
 /* Helper: Thumbnail Grid */
 .fl-theme-mist .fl-grid {border:2px solid #4070a1; background-color:#fff;}
@@ -85,7 +87,7 @@
 .fl-theme-mist .fl-widget-titlebar .icon {background-position:center center;}
 .fl-theme-mist .fl-widget-titlebar .fl-button-right,
 .fl-theme-mist .fl-widget-titlebar .fl-button-left {
-    color:#4070a1 !important;
+    color:#4070a1;
     background-image:url(../images/themes/mist/buttons-titlebar-cap.png);
     text-decoration:none;
 }
@@ -108,7 +110,7 @@
 .fl-theme-mist .fl-progress-fill {color:#4070a1; background-color:#000;}
 
 /* States */
-.fl-theme-mist .fl-reorderer-dropMarker {background-color:#f00 !important;}
+.fl-theme-mist .fl-reorderer-dropMarker {background-color:#f00;}
 
 
 /* Regular Background */
@@ -130,7 +132,7 @@
     border:none;
     margin:0;
     padding:4px 16px 6px 0;
-    color:#666666 !important;
+    color:#666666;
     *padding-bottom:4px;
 }
 .fl-theme-mist .fl-tabs-enhanced li.fl-tabs-active {
@@ -138,7 +140,7 @@
 }
 .fl-theme-mist .fl-tabs-enhanced li.fl-tabs-active a {
     background:transparent url(../images/themes/mist/tabs-med-active-bg.png) no-repeat scroll right top;
-    color:#000000 !important;
+    color:#000000;
 }
 
 /* Widget Content Background */
@@ -160,7 +162,7 @@
     border:none;
     margin:0;
     padding:4px 16px 6px 0;
-    color:#666666 !important;
+    color:#666666;
     *padding-bottom:4px;
 }
 .fl-theme-mist .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active {
@@ -168,6 +170,6 @@
 }
 .fl-theme-mist .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active a {
     background:transparent url(../images/themes/mist/tabs-light-active-bg.png) no-repeat scroll right top;
-    color:#000000 !important;
+    color:#000000;
 }
 

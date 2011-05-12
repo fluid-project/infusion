@@ -1113,7 +1113,9 @@ fluid.registerNamespace("fluid.tests");
                     id: "select"
                 }]
             });
-            jqUnit.assertEquals("1 invocations of decorator expected", 1, registrar.length);
+            jqUnit.assertEquals("2 invocations of decorator expected", 2, registrar.length);
+            // This tests FLUID-4193
+            jqUnit.assertNotEquals("Different nodes decorated", registrar[0][0], registrar[1][0]);
         });
         
         renderTests.test("Attribute character support (FLUID-3364)", function () {

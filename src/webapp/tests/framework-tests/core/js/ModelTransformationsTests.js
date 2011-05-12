@@ -31,7 +31,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "baaa",
             "wooooool"
         ],
-        hippo: 0
+        hippo: 0,
+        polar: "grrr"
     };
     var cleanSource = fluid.copy(source);
     
@@ -259,7 +260,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     path: "cat"
                 }
             },
-            
+
             // Use a default value
             gerbil: {
                 expander: {
@@ -268,7 +269,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     value: "sold out"
                 }
             },
-            
+
             // Use a literal value
             kangaroo: {
                 expander: {
@@ -289,9 +290,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.model.transform.value",
                     path: "sheep"
                 }
-            } 
+            },
+
+            // First value
+            "bear": {
+                expander: {
+                    type: "fluid.model.transform.firstValue",
+                    values: [
+                        {
+                            expander: {
+                                type: "fluid.model.transform.value",
+                                path: "grizzly"
+                            }
+                        },
+                        {
+                            expander: {
+                                type: "fluid.model.transform.value",
+                                path: "polar"
+                            }
+                        }
+                    ]
+                }
+            }
         };
-        
+
         var expected = {
             feline: "meow", // prop rename
             gerbil: "sold out", // default value
@@ -302,131 +324,179 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "baaa",
                     "wooooool"
                 ]
-            }
+            },
+            bear: "grrr" // first value
         };
         
         var result = fluid.model.transformWithRules(source, rules);
         jqUnit.assertDeepEq("The model should transformed based on the specified rules", expected, result);
     });
     
-    testCase.test("fluid.model.transformWithRules(): options backwards compatibility", function () {
-        var dummyListener = function (file, serverData) {};
-        
-        var aTutorOldUploaderOptions = {
-            uploadManager: {
-                type: "fluid.swfUploadManager",
-                options: {
-                    uploadURL: "include/lib/upload.php",
-                    flashURL: "jscripts/infusion/lib/swfupload/flash/swfupload.swf"
-                }
-            },
-
-            listeners: {
-                onFileSuccess: dummyListener
-            },
-
-            decorators: [{
-                type: "fluid.swfUploadSetupDecorator",
-                options: {
-                    flashButtonImageURL: "jscripts/infusion/components/uploader/images/browse.png"
-                }
-            }]
-        };
-	     
-        var expectedNewOptions = {
-            components: {
-                strategy: {
-                    options: {
-                        flashMovieSettings: {
-                            flashURL: "jscripts/infusion/lib/swfupload/flash/swfupload.swf",
-                            flashButtonImageURL: "jscripts/infusion/components/uploader/images/browse.png"
-                        }
-                    }
-                }
-            },
-            
-            queueSettings: {
-                uploadURL: "include/lib/upload.php",
-                flashURL: "jscripts/infusion/lib/swfupload/flash/swfupload.swf" // Lazily moved over in rules.
-            },
-             
-            listeners: {
-                onFileSuccess: dummyListener
-            }
-        };
-	    
-        var transformRules = {
-            "components": {
+    testCase.test("fluid.model.transformWithRules() with idempotent rules", function () {
+        var idempotentRules = {
+            wheel: {
                 expander: {
                     type: "fluid.model.transform.firstValue",
                     values: [
                         {
                             expander: {
                                 type: "fluid.model.transform.value",
-                                path: "components"
+                                path: "wheel"
                             }
                         },
                         {
                             expander: {
                                 type: "fluid.model.transform.value",
-                                value: {
-                                    "strategy": {
-                                        "options": {
-                                            "flashMovieSettings": {
-                                                expander: {
-                                                    type: "fluid.model.transform.value",
-                                                    value: {
-                                                        // Can I use cleverly use merge() here?
-                                                        "flashURL": "uploadManager.options.flashURL",
-                                                        "flashButtonPeerId": "decorators.0.options.flashButtonPeerId",
-                                                        "flashButtonAlwaysVisible": "decorators.0.options.flashButtonAlwaysVisible",
-                                                        "flashButtonTransparentEvenInIE": "decorators.0.options.flashButtonTransparentEvenInIE",
-                                                        "flashButtonImageURL": "decorators.0.options.flashButtonImageURL",
-                                                        "flashButtonCursorEffect": "decorators.0.options.flashButtonCursorEffect",
-                                                        "debug": "decorators.0.options.debug"
-                                                    }
-                                                }
-                                            },
-                                            "styles": "decorators.0.options.styles"
-                                        }
-                                    },
-                                    "fileQueueView": "fileQueueView",
-                                    "totalProgressBar": "totalProgressBar"
-                                }
+                                path: "hamster.wheel"
                             }
                         }
                     ]
                 }
             },
-            "invokers": "invokers",
-            "queueSettings": {
+            "barn.cat": {
                 expander: {
                     type: "fluid.model.transform.firstValue",
-                    values: ["queueSettings", "uploadManager.options"]
+                    values: [
+                        {
+                            expander: {
+                                type: "fluid.model.transform.value",
+                                path: "barn.cat"
+                            }
+                        },
+                        {
+                            expander: {
+                                type: "fluid.model.transform.value",
+                                path: "cat"
+                            }
+                        }
+                    ]
                 }
-            },
-            "demo": "demo",
-            "selectors": "selectors",
-            "focusWithEvent": "focusWithEvent",
-            "styles": "styles",
-            "listeners": "listeners",
-            "strings": "strings",
-            "mergePolicy": "mergePolicy"
+            }
         };
-	     
-        var result = fluid.model.transformWithRules(aTutorOldUploaderOptions, transformRules);
-        jqUnit.assertDeepEq("Options should be transformed successfully based on the provided rules.", 
-                            expectedNewOptions, result);
         
-        // Test idempotency of the transform.
-        result = fluid.model.transformWithRules(fluid.copy(result), transformRules);
+        var expected = {
+            wheel: "spin",
+            barn: {
+                cat: "meow"
+            }
+        };
+        
+        var result = fluid.model.transformWithRules(source, idempotentRules);
+        
+        // Test idempotency of the transform (with these particular rules).
+        result = fluid.model.transformWithRules(fluid.copy(result), idempotentRules);
         jqUnit.assertDeepEq("Running the transform on the output of itself shouldn't mangle the result.",
-                            expectedNewOptions, result);
+                            expected, result);
                             
-        // Test that modern options aren't mangled by the transform.
-        result = fluid.model.transformWithRules(fluid.copy(expectedNewOptions), transformRules);
-        jqUnit.assertDeepEq("Modern-style options shouldn't be mangled by being run through the transform",
-                            expectedNewOptions, result);
+        // Test that a model that already matches the rules isn't mangled by the transform (with these particular rules).
+        result = fluid.model.transformWithRules(fluid.copy(expected), idempotentRules);
+        jqUnit.assertDeepEq("With the appropriate rules, a model that already matches the transformation rules should pass through successfully.",
+                            expected, result);
     });
     
+    var oldOptions = {
+        cat: {
+            type: "farm.cat"
+        },
+        numFish: 2
+    };
+    
+    var modernOptions = {
+        components: {
+            cat: {
+                type: "farm.cat"
+            },
+            fish: {
+                type: "bowl.fish",
+                options: {
+                    quantity: 2
+                }
+            }
+        }
+    };
+    
+    var transformRules = {
+        "components.cat": "cat",
+        "components.fish.type": {
+            expander: {
+                type: "fluid.model.transform.value",
+                value: "bowl.fish"
+            }
+        },
+        "components.fish.options.quantity": "numFish",
+        "food": "food"
+    };
+
+    var checkTransformedOptions = function (that) {
+        var expected = fluid.merge(null, fluid.copy(fluid.rawDefaults(that.typeName)), modernOptions);
+        fluid.testUtils.assertLeftHand("Options sucessfully transformed", expected, that.options);
+    };
+    
+    testCase.test("fluid.model.transformWithRules(): options backwards compatibility", function () {
+        var result = fluid.model.transformWithRules(oldOptions, transformRules);
+        deepEqual(result, modernOptions, "Options should be transformed successfully based on the provided rules.");
+    });
+    
+    fluid.registerNamespace("fluid.tests.transform");
+        
+    fluid.defaults("fluid.tests.testTransformable", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        food: "tofu"
+    });
+    
+    fluid.makeComponents({
+        "farm.cat": "fluid.littleComponent",
+        "bowl.fish": "fluid.littleComponent"
+    });
+    
+    testCase.test("fluid.model.transformWithRules applied automatically to component options, without IoC", function() {
+        var options = fluid.copy(oldOptions);
+        options.transformOptions = {
+            transformer: "fluid.model.transformWithRules",
+            config: transformRules  
+        };
+        var that = fluid.tests.testTransformable(options);
+        checkTransformedOptions(that);
+    });
+    
+    fluid.demands("fluid.transformOptions", ["fluid.tests.testTransformableIoC", "fluid.tests.transform.version.old"], {
+        options: {
+            transformer: "fluid.model.transformWithRules",
+            config: transformRules
+        }
+    });
+
+    fluid.defaults("fluid.tests.transform.strategy", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.defaults("fluid.tests.testTransformableIoC", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            strategy: {
+                type: "fluid.tests.transform.strategy"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.transform.tip", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            versionTag: {
+                type: "fluid.typeFount",
+                options: {
+                    targetTypeName: "fluid.tests.transform.version.old"
+                }  
+            },
+            transformable: {
+                type: "fluid.tests.testTransformableIoC",
+                options: oldOptions
+            }  
+        }
+    });
+    
+    testCase.test("fluid.model.transformWithRules applied automatically to component options, with IoC", function() {
+        var that = fluid.tests.transform.tip();
+        checkTransformedOptions(that.transformable);
+    });
 })(jQuery);

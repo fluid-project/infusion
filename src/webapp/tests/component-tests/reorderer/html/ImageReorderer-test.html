@@ -9,7 +9,8 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Fluid Image Reorderer Tests</title>
-    <link rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" href="../../../../framework/fss/css/fss-reset.css" />
+    <link rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" href="../../../../framework/fss/css/fss-reset-global.css" />
+    <link rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" href="../../../../framework/fss/css/fss-base-global.css" />
     <link rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" href="../../../../components/reorderer/css/ImageReorderer.css" />
     <link rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" href="../../../../components/reorderer/css/Reorderer.css" />
     
@@ -73,7 +74,7 @@
       The Lightbox uses hidden inputs as the strategy for posting the item order back 
       to the server, therefore the orderables need to be enclosed in a form.
     -->
-    <form id="reorder-form">
+    <form id="reorder-form" class="fl-focus">
 
       <!-- lightbox-parent is used for testing setup and teardown -->
       <div rsf:id="lightbox:" id="lightbox-parent" >

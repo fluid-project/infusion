@@ -34,11 +34,5 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
     
-    // Monkey patch fluid.uploader with an options-chewing wrapper.
-    // TODO: Replace this with an IoC-resolved solution.
-    var multiFileImpl = fluid.uploader.multiFileUploader;
-    fluid.uploader.multiFileUploader = function (container, options) {
-        options = fluid.model.transformWithRules(options, fluid.compat.fluid_1_3.uploader.optionsRules);
-        return multiFileImpl(container, options);
-    };
+    // TODO: Implement an IoC-resolved version.
 })(jQuery, fluid_1_4);

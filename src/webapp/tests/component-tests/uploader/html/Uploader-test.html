@@ -9,11 +9,14 @@
     
     <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
     <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
+    <script type="text/javascript" src="../../../../lib/jquery/plugins/scrollTo/js/jquery.scrollTo.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/FluidDocument.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
-    
     <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="../../../../framework/enhancement/js/ProgressiveEnhancement.js"></script>
     
     <script type="text/javascript" src="../../../../lib/swfobject/js/swfobject.js"></script>
     <script type="text/javascript" src="../../../../lib/swfupload/js/swfupload.js"></script>
@@ -23,7 +26,6 @@
     <script type="text/javascript" src="../../../../components/uploader/js/FlashUploaderSupport.js"></script>
     <script type="text/javascript" src="../../../../components/uploader/js/HTML5UploaderSupport.js"></script>    
     <script type="text/javascript" src="../../../../components/uploader/js/DemoUploadManager.js"></script>
-    <script type="text/javascript" src="../../../../components/uploader/js/Scroller.js"></script>
     <script type="text/javascript" src="../../../../components/progress/js/Progress.js"></script>
     <script type="text/javascript" src="../../../../components/uploader/js/FileQueueView.js"></script>
     
@@ -31,7 +33,9 @@
     <!--  These are the jqUnit test js files -->
     <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
     <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+    <script type="text/javascript" src="../js/UploaderTestUtilities.js"></script>
     <script type="text/javascript" src="../js/UploaderTests.js"></script>
+    <script type="text/javascript" src="../js/UploaderIntegrationTests.js"></script>
 </head>
 
 <body id="body">
@@ -51,6 +55,47 @@
             <div><input type="submit" value="Save"/></div>
         </form>
         
+        <form class="flc-uploader fl-uploader fl-progEnhance-enhanced" method="get" enctype="multipart/form-data">
+            <!-- File Queue body, which is the default container for the FileQueueView component -->
+            <table summary="The list of files" class="flc-uploader-queue fl-uploader-queue">
+                <caption>File Upload Queue:</caption>
+                <tbody>
+                    <!-- Template for file row -->
+                    <tr class="flc-uploader-file-tmplt flc-uploader-file">
+                        <td class="flc-uploader-file-name fl-uploader-file-name">File Name Placeholder</td>
+                        <td class="flc-uploader-file-size fl-uploader-file-size">0 KB</td>
+                        <td class="fl-uploader-file-actions">
+                            <button type="button" class="flc-uploader-file-action" tabindex="-1"></button>
+                        </td>
+                    </tr>
+                    
+                    <!-- Template for error info row -->
+                    <tr class="flc-uploader-file-error-tmplt fl-uploader-file-error">
+                        <td colspan="3" class="flc-uploader-file-error"></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- Status footer -->
+            <div class="flc-uploader-queue-footer fl-uploader-queue-footer fl-fix">
+                <div class="flc-uploader-total-progress-text fl-uploader-total-progress-text fl-force-left">
+                    Total: 0 files (0 KB)
+                </div>
+                <div class="fl-text-align-right fl-force-right">
+                    <span class="flc-uploader-button-browse fl-uploader-browse">
+                        <span class="flc-uploader-button-browse-text">Browse files</span>
+                    </span>
+                </div>
+                <!-- Total progress bar -->
+                <div class="flc-uploader-total-progress fl-uploader-total-progress-okay"></div>
+            </div>
+            <div class="fl-uploader-buttons">
+                <button type="button" class="flc-uploader-button-pause fl-uploader-button-stop fl-uploader-hidden">Stop Upload</button>
+                <button type="button" class="flc-uploader-button-upload fl-uploader-button-upload fl-uploader-dim">Upload</button>
+            </div>            
+            <div class="flc-uploader-status-region fl-offScreen-hidden"></div>
+        </form>        
+        
          <form id="single-inline-fluid-uploader" class="fl-uploader fl-progEnhance-enhanced" method="get" enctype="multipart/form-data">
             <div class="start">
                 <div>Upload a file</div>
@@ -59,6 +104,9 @@
                 <input type="submit">Submit</button>
             </div>
         </form>
+        <div id="browseButtonContainer">
+            <a href="#" id="browseButton" class="flc-uploader-button-browse">Browse Files...</a>
+        </div>
         
         <!-- status updater test markup -->
         <div id="totalFileStatusText">Here is the total file status text</div>

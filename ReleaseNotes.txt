@@ -10,6 +10,7 @@ What's New in 1.4-SNAPSHOT?
 
     * FSS fixes and improvements
     * UI Options redesign
+    * jQuery UI library updated to 1.8.12
 
 What's in this Release?
 =======================
@@ -67,7 +68,7 @@ categorized by license:
 
 MIT License:
     * jQuery javascript library v1.4.2: http://jquery.com/ 
-    * jQuery UI javascript widget library v1.8: http://ui.jquery.com/
+    * jQuery UI javascript widget library v1.8.12: http://ui.jquery.com/
     * jQuery UI tooltip (pre-release from jQuery 1.9 branch) https://github.com/jquery/jquery-ui/tree/tooltip
     * jQuery QUnit: http://docs.jquery.com/QUnit
     * jQuery Mockjax: https://github.com/appendto/jquery-mockjax
@@ -80,8 +81,11 @@ zlib/libpng License:
       (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
   
 BSD License:
-    * fluid.reset.css is based on YUI's CSS reset styling v2.5.2
+    * fss-reset-global.css and fss-reset-contextual are based on YUI's CSS reset styling v2.5.2
       see: http://developer.yahoo.com/yui/reset/
+    * fss-base-global.css and fss-base-contextual are based on YUI's CSS base and fonts styling v2.5.2
+      see: http://developer.yahoo.com/yui/base/
+      see: http://developer.yahoo.com/yui/fonts/
     * Sample markup and stylesheets from uPortal v2.6 (http://www.uportal.org/)
 
 ECL 2.0:
@@ -89,7 +93,8 @@ ECL 2.0:
 
 Other licenses:
     * Douglas Crockford's JSON.js (from 2007-11-06): http://www.json.org/ (Public Domain)
-    
+    * fss-layout.css uses some styles, related to hiding content, based on HTML5 Boilerplate v1.0
+      see: https://github.com/paulirish/html5-boilerplate/blob/master/README.md (Public Domain)
 
 Documentation
 =============

@@ -42,14 +42,20 @@ var fluid = fluid || fluid_1_4;
     
     var softFailure = [false];
     
+    // This function will be patched from FluidIoC.js in order to describe complex activities
+    fluid.describeActivity = function() {
+        return [];
+    };
+    
     /**
      * Causes an error message to be logged to the console and a real runtime error to be thrown.
      * 
      * @param {String|Error} message the error message to log
+     * @param ... Additional arguments
      */
-    fluid.fail = function (message) {
+    fluid.fail = function (message /*, ... */) {
         fluid.setLogging(true);
-        fluid.log(message.message ? message.message : message);
+        fluid.log.apply(null, ["ASSERTION FAILED: "].concat(fluid.makeArray(arguments)).concat(fluid.describeActivity()));
         if (softFailure[0]) {
             throw new Error(message);
         } else {
@@ -64,15 +70,54 @@ var fluid = fluid || fluid_1_4;
             softFailure.shift();
         }
     };
+    
+    fluid.notrycatch = false;
+    
+    // A wrapper for the try/catch/finally language feature, to aid debugging on environments
+    // such as IE, where any try will destroy stack information for errors
+    fluid.tryCatch = function(tryfun, catchfun, finallyfun) {
+        finallyfun = finallyfun || fluid.identity;
+        if (fluid.notrycatch) {
+            var togo = tryfun();
+            finallyfun();
+            return togo;
+        }
+        else {
+            try {
+                return tryfun();  
+            }
+            catch (e) {
+                if (catchfun) {
+                    catchfun(e);
+                }
+                else { 
+                    throw(e);
+                }
+            }
+            finally {
+                finallyfun();
+            }
+        }
+    };
+    
+    // TODO: rescued from kettleCouchDB.js - clean up in time
+    fluid.expect = function (name, members, target) {
+        fluid.transform(fluid.makeArray(members), function (key) {
+            if (typeof target[key] === "undefined") {
+                fluid.fail(name + " missing required parameter " + key);
+            }
+        });
+    };
 
     // Logging
+
+    var logging;
         
     /** Returns whether logging is enabled **/
     fluid.isLogging = function() {
         return logging;
     };
 
-    var logging;
     /** method to allow user to enable logging (off by default) */
     fluid.setLogging = function (enabled) {
         if (typeof enabled === "boolean") {
@@ -85,16 +130,20 @@ var fluid = fluid || fluid_1_4;
     /** Log a message to a suitable environmental console. If the standard "console" 
      * stream is available, the message will be sent there - otherwise either the
      * YAHOO logger or the Opera "postError" stream will be used. Logging must first
-     * be enabled with a call fo the fluid.setLogging(true) function.
+     * be enabled with a call to the fluid.setLogging(true) function.
      */
-    fluid.log = function (str) {
+    fluid.log = function (message /*, ... */) {
         if (logging) {
-            str = fluid.renderTimestamp(new Date()) + ":  " + str;
+            var arg0 = fluid.renderTimestamp(new Date()) + ":  "; 
+            var args = [arg0].concat(fluid.makeArray(arguments));
+            var str = args.join("");
             if (typeof (console) !== "undefined") {
                 if (console.debug) {
-                    console.debug(str);
+                    console.debug.apply(console, args);
+                } else if (typeof (console.log) === "function") {
+                    console.log.apply(console, args);
                 } else {
-                    console.log(str);
+                    console.log(str); // this branch executes on IE, console.log is synthetic
                 }
             } else if (typeof (YAHOO) !== "undefined") {
                 YAHOO.log(str);
@@ -343,6 +392,18 @@ var fluid = fluid || fluid_1_4;
     };
     
     /** 
+     * Searches through the supplied object, and returns <code>true</code> if the supplied value
+     * can be found 
+     */
+    fluid.contains = function(obj, value) {
+        return obj? fluid.find(obj, function (thisValue, key) {
+            if (value === thisValue) {
+                return true;
+            }
+        }) : undefined;
+    };
+    
+    /** 
      * Searches through the supplied object for the first value which matches the one supplied.
      * @param obj {Object} the Object to be searched through
      * @param value {Object} the value to be found. This will be compared against the object's
@@ -363,6 +424,17 @@ var fluid = fluid || fluid_1_4;
      * See fluid.keyForValue instead.
      */
     fluid.findKeyInObject = fluid.keyForValue;
+    
+    /** Converts an array into an object whose keys are the elements of the array, each with the value "true"
+     */ 
+    
+    fluid.arrayToHash = function (array) {
+        var togo = {};
+        fluid.each(array, function (el) {
+            togo[el] = true;
+        });
+        return togo;
+    };
     
     /** 
      * Clears an object or array of its contents. For objects, each property is deleted.
@@ -671,8 +743,8 @@ var fluid = fluid || fluid_1_4;
         return listener.$$guid;
     };
     
-    fluid.event.mapPriority = function (priority) {
-        return (priority === null || priority === undefined ? 0 : 
+    fluid.event.mapPriority = function (priority, count) {
+        return (priority === null || priority === undefined ? -count : 
            (priority === "last" ? -Number.MAX_VALUE :
               (priority === "first" ? Number.MAX_VALUE : priority)));
     };
@@ -708,7 +780,7 @@ var fluid = fluid || fluid_1_4;
                 var lisrec = listeners[i];
                 var listener = lisrec.listener;
                 if (typeof(listener) === "string") {
-                    listenerFunc = fluid.getGlobalValue(listener);
+                    var listenerFunc = fluid.getGlobalValue(listener);
                     if (!listenerFunc) {
                         fluid.fail("Unable to look up name " + listener + " as a global function"); 
                     }
@@ -719,14 +791,20 @@ var fluid = fluid || fluid_1_4;
                 if (lisrec.predicate && !lisrec.predicate(listener, args)) {
                     continue;
                 }
-                try {
+                var value = fluid.tryCatch(function() {
                     var ret = (wrapper ? wrapper(listener) : listener).apply(null, args);
                     if (preventable && ret === false) {
                         return false;
                     }
-                } catch (e) {
+                    if (unicast) {
+                        return ret;
+                    }
+                }, function (e) {
                     fluid.log("FireEvent received exception " + e.message + " e " + e + " firing to listener " + i);
                     throw (e);       
+                });
+                if (value !== undefined) {
+                    return value;
                 }
             }
         }
@@ -744,7 +822,7 @@ var fluid = fluid || fluid_1_4;
                 }
 
                 listeners[namespace] = {listener: listener, predicate: predicate, priority: 
-                    fluid.event.mapPriority(priority)};
+                    fluid.event.mapPriority(priority, sortedListeners.length)};
                 sortedListeners = fluid.event.sortListeners(listeners);
             },
 
@@ -805,6 +883,7 @@ var fluid = fluid || fluid_1_4;
                     key = key.substring(0, keydot);
                 }
                 if (!events[key]) {
+                    fluid.fail("Listener registered for event " + key + " which is not defined for this component");
                     events[key] = fluid.event.getEventFirer();
                 }
                 firer = events[key];
@@ -819,8 +898,8 @@ var fluid = fluid || fluid_1_4;
             var event;
             if (isIoCEvent && pass === "IoC") {
                 if (!fluid.event.resolveEvent) {
-                    fluid.fail("fluid.event.resolveEvent could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor " + 
-                        JSON.stringify(eventSpec));
+                    fluid.fail("fluid.event.resolveEvent could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor ", 
+                        eventSpec);
                 } else {
                     event = fluid.event.resolveEvent(that, eventKey, eventSpec);
                 }
@@ -854,6 +933,13 @@ var fluid = fluid || fluid_1_4;
         fluid.mergeListeners(that, that.events, listeners);
     };
     
+    fluid.mergeListenersPolicy = function (target, source) {
+        var togo = target || {};
+        fluid.each(source, function(listeners, key) {
+            togo[key] = fluid.makeArray(source[key]).concat(fluid.makeArray(listeners));
+        });
+        return togo;
+    };
     
     /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
     
@@ -898,16 +984,14 @@ var fluid = fluid || fluid_1_4;
     };
     
     fluid.rootMergePolicy = fluid.transform(fluid.lifecycleFunctions, function() {
-            return fluid.mergeLifecycleFunction;
-        }
-    );
+        return fluid.mergeLifecycleFunction;
+    });
         
     // unsupported, NON-API function
     fluid.makeLifecycleFirers = function() {
         return fluid.transform(fluid.lifecycleFunctions, function() {
-            return fluid.event.getEventFirer()
-            }
-        );
+            return fluid.event.getEventFirer();
+        });
     };
     
     // unsupported, NON-API function
@@ -943,7 +1027,7 @@ var fluid = fluid || fluid_1_4;
     
         
     fluid.hasGrade = function (options, gradeName) {
-        return !options || !options.gradeNames ? false : $.inArray(gradeName, options.gradeNames) !== -1;
+        return !options || !options.gradeNames ? false : fluid.contains(options.gradeNames, gradeName);
     };
     
      /**
@@ -1007,7 +1091,7 @@ var fluid = fluid || fluid_1_4;
     fluid.defaults("fluid.eventedComponent", {
         gradeNames: ["fluid.littleComponent"],
         mergePolicy: {
-            listeners: "noexpand"
+            listeners: "fluid.mergeListenersPolicy"
         }
     });
     
@@ -1132,6 +1216,25 @@ var fluid = fluid || fluid_1_4;
         return target;     
     };
 
+    // unsupported, NON-API function
+    fluid.transformOptions = function (mergeArgs, transRec) {
+        fluid.expect("Options transformation record", ["transformer", "config"], transRec);
+        var transFunc = fluid.getGlobalValue(transRec.transformer);
+        var togo = fluid.transform(mergeArgs, function(value, key) {
+            return key === 0? value : transFunc.call(null, value, transRec.config);
+        });
+        return togo;
+    };
+    
+    // unsupporter, NON-API function
+    fluid.lastTransformationRecord = function(extraArgs) {
+        for (var i = extraArgs.length - 1; i >= 0; --i) {
+            if (extraArgs[i] && extraArgs[i].transformOptions) {
+                return extraArgs[i].transformOptions;
+            } 
+        }
+    };
+
     /**
      * Merges the component's declared defaults, as obtained from fluid.defaults(),
      * with the user's specified overrides.
@@ -1160,6 +1263,10 @@ var fluid = fluid || fluid_1_4;
             extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
         } else {
             extraArgs = [defaults, userOptions];
+        }
+        var transRec = fluid.lastTransformationRecord(extraArgs);
+        if (transRec) {
+            extraArgs = fluid.transformOptions(extraArgs, transRec);
         }
         mergeArgs = mergeArgs.concat(extraArgs);
         that.options = fluid.merge.apply(null, mergeArgs);
@@ -1204,10 +1311,18 @@ var fluid = fluid || fluid_1_4;
      *  minimal form of Fluid component */
        
     fluid.typeTag = function (name) {
-        return {
+        return name ? {
             typeName: name,
             id: fluid.allocateGuid()
-        };
+        } : null;
+    };
+    
+    /** A combined "component and grade name" which allows type tags to be declaratively constructed
+     * from options material */
+    
+    fluid.typeFount = function (options) {
+        var that = fluid.initLittleComponent("fluid.typeFount", options);
+        return fluid.typeTag(that.options.targetTypeName);
     };
     
     /**
@@ -1337,6 +1452,14 @@ var fluid = fluid || fluid_1_4;
 
   // **** VIEW-DEPENDENT DEFINITIONS BELOW HERE
 
+    fluid.checkTryCatchParameter = function() {
+        var location = window.location || { search: "", protocol: "file:" };
+        var GETParams = location.search.slice(1).split('&');
+        return fluid.contains(GETParams, "notrycatch");
+    };
+    
+    fluid.notrycatch = fluid.checkTryCatchParameter();
+    
     /**
      * Fetches a single container element and returns it as a jQuery.
      * 
@@ -1358,8 +1481,8 @@ var fluid = fluid || fluid_1_4;
             var count = container.length !== undefined ? container.length : 0;
             fluid.fail({
                 name: "NotOne",
-                message: count > 1 ? "More than one (" + count + ") container elements were "
-                    : "No container element was found for selector " + containerSpec
+                message: (count > 1 ? "More than one (" + count + ") container elements were"
+                    : "No container element was") + " found for selector " + containerSpec
             });
         }
         if (!fluid.isDOMNode(container[0])) {

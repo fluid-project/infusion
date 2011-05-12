@@ -141,44 +141,55 @@ Generic containers for columns and layouts
 .fl-container-flex98 {width: 98%;}
 .fl-container-flex99 {width: 99%;}
 
-/* linearizable containers & columns */
-.fl-layout-linear *,
-.fl-layout-linear .fl-linearEnabled {
-    overflow:visible !important; 
+/* 
+ * Linearizes, !importants override specificity 
+ */
+.fl-layout-linear * {
     clear: both !important; 
     float:none !important;
-    margin-left:0 !important;  
+    margin-left:0 !important;
     margin-right:0 !important;
+    overflow:visible !important;  	/* no scroll bars, backwards compat with 1.3.1 */
+    text-align:left !important; 		/* default alignment */
 }
-.fl-layout-linear .fl-container,
-.fl-layout-linear .fl-container-100,
-.fl-layout-linear .fl-container-150,
-.fl-layout-linear .fl-container-200,
-.fl-layout-linear .fl-container-250,
-.fl-layout-linear .fl-container-300,
-.fl-layout-linear .fl-container-400,
-.fl-layout-linear .fl-container-750,
-.fl-layout-linear .fl-container-950,
-.fl-layout-linear .fl-container-auto, 
-.fl-layout-linear .fl-container-flex25, 
-.fl-layout-linear .fl-container-flex30, 
-.fl-layout-linear .fl-container-flex33, 
-.fl-layout-linear .fl-container-flex50,
-.fl-layout-linear .fl-col,
-.fl-layout-linear .fl-col-side,
-.fl-layout-linear .fl-col-flex,
-.fl-layout-linear .fl-col-main,
-.fl-layout-linear .fl-col-fixed,
-.fl-layout-linear .fl-col-justified {width:100% !important; margin:auto; padding:0 !important;}
 
+/* Override inline elements */
 .fl-layout-linear .fl-force-left, 
 .fl-layout-linear .fl-force-right,
-.fl-layout-linear li {display:block !important; float:none !important;}
+.fl-layout-linear .fl-col,
+.fl-layout-linear .fl-grid li {
+	display:block !important; 
+	width: auto !important;
+}
 
-.fl-layout-linear .fl-linearEnabled {width:100% !important; /*position:relative;*/ display:block;} /* linearization opt in for special cases */
+/* Make all block elements uniform width */
+.fl-layout-linear div,
+.fl-layout-linear table,
+.fl-layout-linear h1, .fl-layout-linear h2, .fl-layout-linear h3, .fl-layout-linear h4, .fl-layout-linear h5, .fl-layout-linear h6,
+.fl-layout-linear p,
+.fl-layout-linear form, .fl-layout-linear fieldset,
+.fl-layout-linear ul, .fl-layout-linear dl, .fl-layout-linear ol,
+.fl-layout-linear pre, .fl-layout-linear hr, .fl-layout-linear blockquote {
+    width: 100% !important; 
+	max-width: 960px;
+	min-width: 560px;
+	padding: 0 !important;
+}
 
-.fl-layout-linear .fl-button-left,
-.fl-layout-linear .fl-button-right {padding:1em;}
+/* Deprecated */
+.fl-layout-linear .fl-linearEnabled { width:100% !important; display:block;} 
+
+/*
+ * Aligns containers and contents of a container. Best practice for linear layouts.
+ */
+.fl-layout-linear.fl-layout-align-right *,
+.fl-layout-linear .fl-layout-align-right * {
+    text-align:right !important;
+}
+.fl-layout-linear.fl-layout-align-center *,
+.fl-layout-linear .fl-layout-align-center * {
+    text-align:center !important;
+}
 
 /*
 Layout Helpers
@@ -263,10 +274,20 @@ Layout Helpers
 .fl-list-menu {padding:0px; margin:0; border-bottom-width:1px; border-bottom-style:solid;}
 
 .fl-listmenu li, /* <=== fl-listmenu is DEPRECATED! */
-.fl-list-menu li {margin:0; padding:0; list-style-type:none; border-width:1px; border-style:solid; border-bottom:none; overflow:auto;}
+.fl-list-menu li {margin:0; padding:0; list-style-type:none; border-width:1px; border-style:solid; border-bottom:none;}
 
 .fl-listmenu a, /* <=== fl-listmenu is DEPRECATED! */
-.fl-list-menu a {padding:5px 5px; display:block; zoom:1; overflow:auto; outline:none;} /* list item needs layout (http://www.brunildo.org/test/IEWlispace.php) */
+.fl-list-menu a {padding:5px 5px; display:block; zoom:1; outline:none;} /* list item needs layout (http://www.brunildo.org/test/IEWlispace.php) */
+
+.fl-list-menu a:hover, .fl-list-menu a:focus {
+    padding: 4px 4px; 
+    border: 1px solid black;
+}
+
+.fl-list-menu .fl-activemenu a {
+    background-color: #CCCCCC;
+    color: #000000;
+}
 
 /*
  * Picture Grid: a quick picture grid layout
@@ -366,5 +387,23 @@ input.fl-icon {padding-left:16px;}
 .fl-ProgEnhance-basic, /* << syntax breaks conventions and is Deprecated*/
 .fl-progEnhance-basic {}
 
-/* hide text for screen readers. */
+/* Hiding Content. The following styles are based on css from http://html5boilerplate.com */
+
+/* Hide for both screenreaders and browsers */
+.fl-hidden { display: none; visibility: hidden; }
+
+/* Hide for both screenreaders and browsers but maintain layout */
+.fl-hidden-invisible { visibility: hidden; }
+
+/* Hide for browsers but available for screenreaders */
+.fl-hidden-accessible { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
+/* Add focus for keyboard users */
+.fl-hidden-accessible.fl-focus:active,
+.fl-hidden-accessible.fl-focus:focus { clip: auto; height: auto; margin: 0; overflow: visible; position: static; width: auto; }
+
+/* Hide text for image replacement */
+.fl-hidden-replace { display: block; text-indent: -999em; overflow: hidden; background-repeat: no-repeat; text-align: left; direction: ltr; }
+
+
+/* DEPRECATED */
 .fl-offScreen-hidden {position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden;}

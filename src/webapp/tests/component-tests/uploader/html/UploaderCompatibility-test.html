@@ -46,98 +46,54 @@
  
      <!-- Test HTML -->
     <div id="main">
-        <div id="uploader-content">
-        <!-- This form will be progressively enhanced by the Fluid Uploader component. -->
-        <form method="post" enctype="multipart/form-data" class="fl-uploader fl-progEnhance-basic" style="display:none;">
-            <p>Browse to upload a file.</p>
-            <input name="fileData" type="file" />
-            <div><input type="submit" value="Save"/></div>
-        </form>
-        
-        <form class="flc-uploader fl-uploader fl-progEnhance-enhanced" method="get" enctype="multipart/form-data">
-            
-            <!-- File Queue, which is split up into two separate tables: one for the header and body -->
-            <table class="fl-uploader-header">
-                <tr>
-                    <th class="fl-uploader-file-name">File Name</th>
-                    <th class="fl-uploader-file-size">Size</th>
-                    <th class="fl-uploader-file-actions"></th>
-                </tr>
-            </table>
-            
+        <form class="flc-uploader" method="get" enctype="multipart/form-data">            
             <!-- File Queue body, which is the default container for the FileQueueView component -->
-            <table summary="The list of files" class="flc-uploader-queue fl-uploader-queue">
+            <table summary="The list of files" class="flc-uploader-queue">
                 <caption>File Upload Queue:</caption>
                 <tbody>
                     <!-- Template for file row -->
                     <tr class="flc-uploader-file-tmplt flc-uploader-file">
-                        <td class="flc-uploader-file-name fl-uploader-file-name">File Name Placeholder</td>
-                        <td class="flc-uploader-file-size fl-uploader-file-size">0 KB</td>
-                        <td class="fl-uploader-file-actions">
+                        <td class="flc-uploader-file-name">File Name Placeholder</td>
+                        <td class="flc-uploader-file-size">0 KB</td>
+                        <td>
                             <button type="button" class="flc-uploader-file-action" tabindex="-1"></button>
                         </td>
                     </tr>
                     
                     <!-- Template for error info row -->
-                    <tr class="flc-uploader-file-error-tmplt fl-uploader-file-error">
+                    <tr class="flc-uploader-file-error-tmplt">
                         <td colspan="3" class="flc-uploader-file-error"></td>
                     </tr>
                 </tbody>
             </table>
             
             <!-- File progress bar template, used to generate progress bars for each file in the queue -->
-            <div class="flc-uploader-file-progressor-tmplt fl-uploader-file-progress"></div>            
+            <div class="flc-uploader-file-progressor-tmplt"></div>            
 
             <!-- Initial instructions -->
-            <div class="flc-uploader-browse-instructions fl-uploader-browse-instructions">
+            <div class="flc-uploader-browse-instructions">
                 Choose <em>Browse files</em> to add files to the queue. 
             </div>            
 
             <!-- Status footer -->
-            <div class="flc-uploader-queue-footer fl-uploader-queue-footer fl-fix">
-                <div class="flc-uploader-total-progress-text fl-uploader-total-progress-text fl-force-left">
+            <div class="flc-uploader-queue-footer">
+                <div class="flc-uploader-total-progress-text">
                     Total: 0 files (0 KB)
                 </div>
-                <div class="fl-text-align-right fl-force-right">
-                    <span class="flc-uploader-button-browse fl-uploader-browse">
-                        <span class="flc-uploader-button-browse-text">Browse files</span>
-                    </span>
-                </div>
+                <span class="flc-uploader-button-browse">
+                    <span class="flc-uploader-button-browse-text">Browse files</span>
+                </span>
+
                 <!-- Total progress bar -->
-                <div class="flc-uploader-total-progress fl-uploader-total-progress-okay"></div>
+                <div class="flc-uploader-total-progress"></div>
             </div>
             
             <!-- Upload buttons -->
-            <div class="fl-uploader-buttons">
-                <button type="button" class="flc-uploader-button-pause fl-uploader-button-stop fl-uploader-hidden">Stop Upload</button>
-                <button type="button" class="flc-uploader-button-upload fl-uploader-button-upload fl-uploader-dim">Upload</button>
-            </div>
+            <button type="button" class="flc-uploader-button-pause">Stop Upload</button>
+            <button type="button" class="flc-uploader-button-upload">Upload</button>
             
-            <div class="flc-uploader-status-region fl-offScreen-hidden"></div>
-        </form>        
-        
-         <form id="single-inline-fluid-uploader" class="fl-uploader fl-progEnhance-enhanced" method="get" enctype="multipart/form-data">
-            <div class="start">
-                <div>Upload a file</div>
-                <!-- the flash uploader content, taken out for simplicity -->
-                <!-- Action buttons -->
-                <input type="submit">Submit</button>
-            </div>
+            <div class="flc-uploader-status-region"></div>
         </form>
-        
-        <!-- status updater test markup -->
-        <div id="totalFileStatusText">Here is the total file status text</div>
-        <div id="statusRegion"></div>
-
-	    <div id="main">
-	        <div id="uploaderContainer">
-	            <button id="browseButton">Browse with ID</button>
-	            <button class="noId">Browse without ID</button>
-	            
-	            <div id="flashContainer">
-	            </div>
-	        </div>
-	    </div>        
      </div>
 </body>
 </html>
