@@ -18,57 +18,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var demo = demo || {};
-(function ($, fluid) {
-
-
-	/*
-	 * Sliding Panel Component
-	 */
-	fluid.defaults("fluid.slidingPanel", {
-		gradeNames: ["fluid.viewComponent", "autoInit"], 	         
-		selectors: {
-			toggleButton: "flc-slidingPanel-toggleButton"
-		},
-		strings: {
-			showText: "+ Show Display Preferences",
-			hideText: "- Hide"
-		},
-		events: {
-			//open and close?
-		},   		
-		finalInitFunction: "fluid.slidingPanel.finalInit"             
-	});
-	
-	
-	fluid.slidingPanel.togglePanel = function () {
-		alert ("yo");
-		/*if (uiOptions.container.is(":hidden")) {                
-			//panelTabs($("#fl-uiOptions-tabs")); //set up tabs
-			var myTabs = fluid.tabs(uiOptions.container, {});
-					
-			uiOptions.container.slideDown();    
-			that.locate("toggleButton").text("- Hide");
-		} else {
-			uiOptions.container.slideUp();                           
-			uiOptions.cancel();
-			that.locate("toggleButton").text("+ Show Display Preferences");                
-		}*/
-		return false;		
-	};
-	
-	fluid.slidingPanel.finalInit = function (that) {
-	
-		//event binders
-		that.locate("toggleButton").click( that.togglePanel );	
-	
-		//hide panel
-		that.container.hide();
-	};
-	 
-	 	 
+(function ($, fluid) {	 	 
 
 	/* Our demo script */   
-    demo.slidingUIOptions = function (container, button) {
+    demo.slidingUIOptions = function (container) {
         // First, initialize a UIEnhancer for the page
         var pageEnhancer = fluid.uiEnhancer(document, {
             tableOfContents: {
@@ -98,6 +51,7 @@ var demo = demo || {};
         // Put it in the sliding panel.
         //slidingPanel(myUIOptions, button);
         fluid.slidingPanel($("#myUIOptions"), {});
+        fluid.tabs("#myUIOptions", {}); 
     };
     
 })(jQuery, fluid);
