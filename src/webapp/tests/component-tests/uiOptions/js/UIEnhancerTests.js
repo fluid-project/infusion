@@ -52,7 +52,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("layout class is gone", 0, $(".fl-layout-linear").length);
             jqUnit.assertEquals("Fluid theme class is gone", 0, $(".fl-theme-mist").length);
             jqUnit.assertEquals("font sans class is gone", 0, $(".fl-font-sans").length);
-            jqUnit.assertEquals("arial class is gone", 0, $(".fl-font-arial").length);
+            jqUnit.assertEquals("arial class is set", 1, $(".fl-font-arial").length);
             jqUnit.assertEquals("text spacing class is gone", 0, $(".fl-text-spacing-3").length);
             jqUnit.assertEquals("no background images is gone", 0, $(".fl-noBackgroundImages").length);
             jqUnit.assertEquals("Things are still styled with 'first-class' ", 3, $(".first-class").length);

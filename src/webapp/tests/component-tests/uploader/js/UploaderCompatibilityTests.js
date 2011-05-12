@@ -47,13 +47,17 @@
             }
         };
         
+        // Choose html5 configuration for all tests since it will cause resolution of multiFileUpload
+        // and not complain about absence of SWF
+        fluid.staticEnvironment.uploaderConfig = fluid.typeTag("fluid.browser.supportsBinaryXHR");
+        
         fluid.defaults("fluid.tests.uploader.parent", {
             gradeNames: ["fluid.littleComponent", "autoInit"],
             components: {
                 uploaderContext: {
-                    type: "fluid.progressiveCheckerForComponent",
+                    type: "fluid.typeFount",
                     options: {
-                        componentName: "fluid.uploader"
+                        targetTypeName: "fluid.uploader.html5"
                     }
                 },
                 uploader: {

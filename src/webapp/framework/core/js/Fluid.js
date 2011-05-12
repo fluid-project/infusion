@@ -42,14 +42,20 @@ var fluid = fluid || fluid_1_4;
     
     var softFailure = [false];
     
+    // This function will be patched from FluidIoC.js in order to describe complex activities
+    fluid.describeActivity = function() {
+        return [];
+    };
+    
     /**
      * Causes an error message to be logged to the console and a real runtime error to be thrown.
      * 
      * @param {String|Error} message the error message to log
+     * @param ... Additional arguments
      */
-    fluid.fail = function (message) {
+    fluid.fail = function (message /*, ... */) {
         fluid.setLogging(true);
-        fluid.log(message.message ? message.message : message);
+        fluid.log.apply(null, ["ASSERTION FAILED: "].concat(fluid.makeArray(arguments)).concat(fluid.describeActivity()));
         if (softFailure[0]) {
             throw new Error(message);
         } else {
@@ -65,9 +71,38 @@ var fluid = fluid || fluid_1_4;
         }
     };
     
+    fluid.notrycatch = false;
+    
+    // A wrapper for the try/catch/finally language feature, to aid debugging on environments
+    // such as IE, where any try will destroy stack information for errors
+    fluid.tryCatch = function(tryfun, catchfun, finallyfun) {
+        finallyfun = finallyfun || fluid.identity;
+        if (fluid.notrycatch) {
+            var togo = tryfun();
+            finallyfun();
+            return togo;
+        }
+        else {
+            try {
+                return tryfun();  
+            }
+            catch (e) {
+                if (catchfun) {
+                    catchfun(e);
+                }
+                else { 
+                    throw(e);
+                }
+            }
+            finally {
+                finallyfun();
+            }
+        }
+    };
+    
     // TODO: rescued from kettleCouchDB.js - clean up in time
     fluid.expect = function (name, members, target) {
-        fluid.transform($.makeArray(members), function (key) {
+        fluid.transform(fluid.makeArray(members), function (key) {
             if (typeof target[key] === "undefined") {
                 fluid.fail(name + " missing required parameter " + key);
             }
@@ -75,13 +110,14 @@ var fluid = fluid || fluid_1_4;
     };
 
     // Logging
+
+    var logging;
         
     /** Returns whether logging is enabled **/
     fluid.isLogging = function() {
         return logging;
     };
 
-    var logging;
     /** method to allow user to enable logging (off by default) */
     fluid.setLogging = function (enabled) {
         if (typeof enabled === "boolean") {
@@ -94,16 +130,20 @@ var fluid = fluid || fluid_1_4;
     /** Log a message to a suitable environmental console. If the standard "console" 
      * stream is available, the message will be sent there - otherwise either the
      * YAHOO logger or the Opera "postError" stream will be used. Logging must first
-     * be enabled with a call fo the fluid.setLogging(true) function.
+     * be enabled with a call to the fluid.setLogging(true) function.
      */
-    fluid.log = function (str) {
+    fluid.log = function (message /*, ... */) {
         if (logging) {
-            str = fluid.renderTimestamp(new Date()) + ":  " + str;
+            var arg0 = fluid.renderTimestamp(new Date()) + ":  "; 
+            var args = [arg0].concat(fluid.makeArray(arguments));
+            var str = args.join("");
             if (typeof (console) !== "undefined") {
                 if (console.debug) {
-                    console.debug(str);
+                    console.debug.apply(console, args);
+                } else if (typeof (console.log) === "function") {
+                    console.log.apply(console, args);
                 } else {
-                    console.log(str);
+                    console.log(str); // this branch executes on IE, console.log is synthetic
                 }
             } else if (typeof (YAHOO) !== "undefined") {
                 YAHOO.log(str);
@@ -360,7 +400,7 @@ var fluid = fluid || fluid_1_4;
             if (value === thisValue) {
                 return true;
             }
-        }): undefined;
+        }) : undefined;
     };
     
     /** 
@@ -703,8 +743,8 @@ var fluid = fluid || fluid_1_4;
         return listener.$$guid;
     };
     
-    fluid.event.mapPriority = function (priority) {
-        return (priority === null || priority === undefined ? 0 : 
+    fluid.event.mapPriority = function (priority, count) {
+        return (priority === null || priority === undefined ? -count : 
            (priority === "last" ? -Number.MAX_VALUE :
               (priority === "first" ? Number.MAX_VALUE : priority)));
     };
@@ -740,7 +780,7 @@ var fluid = fluid || fluid_1_4;
                 var lisrec = listeners[i];
                 var listener = lisrec.listener;
                 if (typeof(listener) === "string") {
-                    listenerFunc = fluid.getGlobalValue(listener);
+                    var listenerFunc = fluid.getGlobalValue(listener);
                     if (!listenerFunc) {
                         fluid.fail("Unable to look up name " + listener + " as a global function"); 
                     }
@@ -751,7 +791,7 @@ var fluid = fluid || fluid_1_4;
                 if (lisrec.predicate && !lisrec.predicate(listener, args)) {
                     continue;
                 }
-                try {
+                var value = fluid.tryCatch(function() {
                     var ret = (wrapper ? wrapper(listener) : listener).apply(null, args);
                     if (preventable && ret === false) {
                         return false;
@@ -759,9 +799,12 @@ var fluid = fluid || fluid_1_4;
                     if (unicast) {
                         return ret;
                     }
-                } catch (e) {
+                }, function (e) {
                     fluid.log("FireEvent received exception " + e.message + " e " + e + " firing to listener " + i);
                     throw (e);       
+                });
+                if (value !== undefined) {
+                    return value;
                 }
             }
         }
@@ -779,7 +822,7 @@ var fluid = fluid || fluid_1_4;
                 }
 
                 listeners[namespace] = {listener: listener, predicate: predicate, priority: 
-                    fluid.event.mapPriority(priority)};
+                    fluid.event.mapPriority(priority, sortedListeners.length)};
                 sortedListeners = fluid.event.sortListeners(listeners);
             },
 
@@ -855,8 +898,8 @@ var fluid = fluid || fluid_1_4;
             var event;
             if (isIoCEvent && pass === "IoC") {
                 if (!fluid.event.resolveEvent) {
-                    fluid.fail("fluid.event.resolveEvent could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor " + 
-                        JSON.stringify(eventSpec));
+                    fluid.fail("fluid.event.resolveEvent could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor ", 
+                        eventSpec);
                 } else {
                     event = fluid.event.resolveEvent(that, eventKey, eventSpec);
                 }
@@ -941,16 +984,14 @@ var fluid = fluid || fluid_1_4;
     };
     
     fluid.rootMergePolicy = fluid.transform(fluid.lifecycleFunctions, function() {
-            return fluid.mergeLifecycleFunction;
-        }
-    );
+        return fluid.mergeLifecycleFunction;
+    });
         
     // unsupported, NON-API function
     fluid.makeLifecycleFirers = function() {
         return fluid.transform(fluid.lifecycleFunctions, function() {
-            return fluid.event.getEventFirer()
-            }
-        );
+            return fluid.event.getEventFirer();
+        });
     };
     
     // unsupported, NON-API function
@@ -1270,10 +1311,10 @@ var fluid = fluid || fluid_1_4;
      *  minimal form of Fluid component */
        
     fluid.typeTag = function (name) {
-        return {
+        return name ? {
             typeName: name,
             id: fluid.allocateGuid()
-        };
+        } : null;
     };
     
     /** A combined "component and grade name" which allows type tags to be declaratively constructed
@@ -1281,7 +1322,7 @@ var fluid = fluid || fluid_1_4;
     
     fluid.typeFount = function (options) {
         var that = fluid.initLittleComponent("fluid.typeFount", options);
-        return that.options.targetTypeName? fluid.typeTag(that.options.targetTypeName) : null;
+        return fluid.typeTag(that.options.targetTypeName);
     };
     
     /**
@@ -1411,6 +1452,14 @@ var fluid = fluid || fluid_1_4;
 
   // **** VIEW-DEPENDENT DEFINITIONS BELOW HERE
 
+    fluid.checkTryCatchParameter = function() {
+        var location = window.location || { search: "", protocol: "file:" };
+        var GETParams = location.search.slice(1).split('&');
+        return fluid.contains(GETParams, "notrycatch");
+    };
+    
+    fluid.notrycatch = fluid.checkTryCatchParameter();
+    
     /**
      * Fetches a single container element and returns it as a jQuery.
      * 
@@ -1432,8 +1481,8 @@ var fluid = fluid || fluid_1_4;
             var count = container.length !== undefined ? container.length : 0;
             fluid.fail({
                 name: "NotOne",
-                message: count > 1 ? "More than one (" + count + ") container elements were "
-                    : "No container element was found for selector " + containerSpec
+                message: (count > 1 ? "More than one (" + count + ") container elements were"
+                    : "No container element was") + " found for selector " + containerSpec
             });
         }
         if (!fluid.isDOMNode(container[0])) {
