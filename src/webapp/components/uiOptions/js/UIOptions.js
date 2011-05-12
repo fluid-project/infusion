@@ -590,5 +590,67 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
 
+
+    /**********************
+     * ARIA Tabs *
+     **********************/
+
+    fluid.defaults("fluid.tabs", {
+	    gradeNames: ["fluid.viewComponent", "autoInit"],
+		selectors: {
+			tabs: ".flc-uiOptions-tabs", 
+			tabPanel: ".fl-tab-panel",
+			firstTabPanel: ".fl-tab-panel:first"
+		},
+		styles: {
+			active: ".fl-tabs-active"					
+		},
+		events: {
+			onTabSelect: "setActiveTab"
+		},
+        finalInitFunction: "fluid.tabs.finalInit"
+    });
+    
+    fluid.tabs.setActiveTab = function (that, activeTab) {		
+		
+		//unset current tab
+		$("li", that.options.selectors.tabs).removeClass("fl-tabs-active");
+		$("a", that.options.selectors.tabs).attr("tabindex", "-1");
+		$("a", that.options.selectors.tabs).attr("aria-selected", "false");
+
+		//set the active style on clicked tab			
+		activeTab.addClass("fl-tabs-active"); 
+		
+		$("a", activeTab).attr("tabindex", "0");			
+		$("a", activeTab).attr("aria-selected", "true");
+		
+		//show the active tab panel
+		that.locate("tabPanel").hide();			
+		that.locate("tabPanel").attr("aria-hidden", "true");			
+		
+		var activeTabPanel = $(activeTab.find("a").attr("href"));
+		$(activeTabPanel).show(); 
+		$(activeTabPanel).attr("aria-hidden", "false");
+					
+		return false;	
+    };
+    
+    fluid.tabs.finalInit = function (that) {
+		//event binder
+		that.locate("li", that.locate("tabs")).click (function(e) {		
+			fluid.tabs.setActiveTab(that, this);
+		});		    
+    
+        //hide tabs, set first tab as active, show first tab panel
+		that.locate("tabPanel").hide();
+		that.locate("firstTabPanel").show();         
+    };
+
+    /*fluid.demands("fluid.uiOptions.tabs", ["fluid.uiOptions", "fluid.uiOptions.controls"], {
+        args: [
+            "{options}"
+        ]
+    });*/ 
+    
      
 })(jQuery, fluid_1_4);
