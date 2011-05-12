@@ -38,6 +38,7 @@
         <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/RendererUtilities.js"></script>
 
         <script type="text/javascript" src="../../../components/uiOptions/js/UIEnhancer.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
@@ -46,9 +47,21 @@
         <script type="text/javascript">
             $().ready(function () {
                 fluid.uiEnhancer();
+                
                 fluid.uiOptions("#myUIOptions", {
-                    templateUrl: "../../../components/uiOptions/html/UIOptions.html"
+                    resources: {
+                        template: {
+                            url: "../../../components/uiOptions/html/UIOptions.html"
+                        }
+                    }
                 });
+            });
+
+            // Supply the table of contents' template URL that is relative to the caller html
+            fluid.demands("fluid.tableOfContents", ["fluid.uiOptions", "fluid.uiEnhancer"], {
+                options: {
+                    templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
+                }
             });
         </script>
     </head>

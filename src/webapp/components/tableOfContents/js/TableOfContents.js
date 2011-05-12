@@ -161,7 +161,8 @@ var fluid_1_4 = fluid_1_4 || {};
         return that;
     };
     
-    fluid.defaults("fluid.tableOfContents", {  
+    fluid.defaults("fluid.tableOfContents", {
+        gradeNames: "fluid.viewComponent",
         selectors: {
             headings: ":header"
         },
