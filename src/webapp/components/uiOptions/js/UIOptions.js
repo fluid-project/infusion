@@ -565,9 +565,11 @@ var fluid_1_4 = fluid_1_4 || {};
         ]
     });
     
-    /***
-     * Event binder binds events between UI Options and the Preview
-     */
+    /***************************************************
+     * UI Options Event binder:                        *
+     * Binds events between UI Options and the Preview *
+     ***************************************************/
+     
     fluid.defaults("fluid.uiOptions.preview.eventBinder", {
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
@@ -581,27 +583,42 @@ var fluid_1_4 = fluid_1_4 || {};
     });
     
     
-    /**********************
+    /***************************
      * UI Options Live Preview *
-     **********************/    
+     ***************************/  
+       
     fluid.defaults("fluid.uiOptions.livePreview", {
-        gradeNames: ["fluid.viewComponent", "autoInit"], 
+        gradeNames: ["fluid.eventedComponent", "autoInit"], 
         components: {
             eventBinder: {
-                type: "fluid.uiOptions.preview.eventBinder"
+                type: "fluid.uiOptions.preview.eventBinder",
+                createOnEvent: "onReady"
+            }
+        },    
+        invokers: {
+            updateModel: {
+                funcName: "fluid.uiOptions.preview.updateModel",
+                args: [
+                    "{livePreview}",
+                    "{controls}.model.selections"
+                ]
             }
         },
-        finalInitFunction: "fluid.uiOptions.livePreview.finalInit",
+        events: {
+            onReady: null
+        },
+        finalInitFunction: "fluid.uiOptions.livePreview.finalInit"
     });
 
     fluid.uiOptions.livePreview.finalInit = function (that) {
-        that.uiEnhancer = $(document).data("uiEnhancer");
+        that.enhancer = $(document).data("uiEnhancer");
+        that.events.onReady.fire();
     };
 
     fluid.demands("fluid.uiOptions.preview.eventBinder", "fluid.uiOptions.livePreview", {
         options: {
             listeners: {
-                "{controls}.events.modelChanged": "{preview}.enhancer.updateModel"
+                "{controls}.events.modelChanged": "{livePreview}.updateModel"
             }
         }
     });
@@ -649,7 +666,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     
 		//event binder
-		that.locate("li", that.locate("tabs")).click (that.setActiveTab(that) );		    
+		that.locate("li", that.locate("tabs")).click (that.setActiveTab(that) );
     
         //hide tabs, set first tab as active, show first tab panel
 		that.locate("tabPanel").hide();

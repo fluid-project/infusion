@@ -35,7 +35,7 @@ var demo = demo || {};
         var myUIOptions = fluid.uiOptions(container, {
 			components: {
 				preview: {
-					type: "fluid.uiOptions.livePreview",
+					type: "fluid.uiOptions.livePreview"
 				}
 			},			
 			selectors: {
