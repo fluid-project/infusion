@@ -13,7 +13,8 @@
 
 .fl-uiOptions ul li {
     list-style: none;
-    clear: both; 
+	overflow: hidden;
+	width: 100%;
 }
 
 /* Sections (e.g., Text & Display, Layout & Navigation) */
@@ -30,7 +31,7 @@
 	clear: both;
 	color: #444444;
 	padding-top: 14px;
-	padding-bottom: 22px;	
+	padding-bottom: 22px;
 }
 
 .fl-uiOptions h2 img {
