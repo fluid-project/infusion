@@ -1,5 +1,5 @@
 /*!
- * jQuery JavaScript Library v1.6.1rc1
+ * jQuery JavaScript Library v1.6.1
  * http://jquery.com/
  *
  * Copyright 2011, John Resig
@@ -11,7 +11,7 @@
  * Copyright 2011, The Dojo Foundation
  * Released under the MIT, BSD, and GPL Licenses.
  *
- * Date: Tue May 10 13:50:35 2011 -0400
+ * Date: Thu May 12 15:04:36 2011 -0400
  */
 (function( window, undefined ) {
 
@@ -204,7 +204,7 @@ jQuery.fn = jQuery.prototype = {
 	selector: "",
 
 	// The current version of jQuery being used
-	jquery: "1.6.1rc1",
+	jquery: "1.6.1",
 
 	// The default length of a jQuery object is 0
 	length: 0,
@@ -5462,6 +5462,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 	rscriptType = /\/(java|ecma)script/i,
+	rcleanScript = /^\s*<!(?:\[CDATA\[|\-\-)/,
 	wrapMap = {
 		option: [ 1, "<select multiple='multiple'>", "</select>" ],
 		legend: [ 1, "<fieldset>", "</fieldset>" ],
@@ -5952,7 +5953,7 @@ jQuery.each({
 function getAll( elem ) {
 	if ( "getElementsByTagName" in elem ) {
 		return elem.getElementsByTagName( "*" );
-	
+
 	} else if ( "querySelectorAll" in elem ) {
 		return elem.querySelectorAll( "*" );
 
@@ -6190,7 +6191,7 @@ function evalScript( i, elem ) {
 			dataType: "script"
 		});
 	} else {
-		jQuery.globalEval( elem.text || elem.textContent || elem.innerHTML || "" );
+		jQuery.globalEval( ( elem.text || elem.textContent || elem.innerHTML || "" ).replace( rcleanScript, "/*$0*/" ) );
 	}
 
 	if ( elem.parentNode ) {
