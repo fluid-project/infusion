@@ -1,2 +1,14 @@
 /* UI Option styles for full page w/o preview */
 
+.fl-uiOptions-fullNoPreview .fl-uio-category {
+	border-top: 2px solid #dddddd;
+}
+
+.fl-uiOptions-fullNoPreview .fl-uio-category h2 {
+	padding-left: 0px;
+/*	padding-right: 4em;*/
+}
+
+.fl-uiOptions-fullNoPreview .fl-uio-category ul {
+	padding-top: 14px;
+}
