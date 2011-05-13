@@ -565,9 +565,11 @@ var fluid_1_4 = fluid_1_4 || {};
         ]
     });
     
-    /***
-     * Event binder binds events between UI Options and the Preview
-     */
+    /***************************************************
+     * UI Options Event binder:                        *
+     * Binds events between UI Options and the Preview *
+     ***************************************************/
+     
     fluid.defaults("fluid.uiOptions.preview.eventBinder", {
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
@@ -579,4 +581,91 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
+    
+    
+    /***************************
+     * UI Options Live Preview *
+     ***************************/  
+       
+    fluid.defaults("fluid.uiOptions.livePreview", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"], 
+        components: {
+            eventBinder: {
+                type: "fluid.uiOptions.preview.eventBinder",
+                createOnEvent: "onReady"
+            }
+        },    
+        invokers: {
+            updateModel: {
+                funcName: "fluid.uiOptions.preview.updateModel",
+                args: [
+                    "{livePreview}",
+                    "{controls}.model.selections"
+                ]
+            }
+        },
+        events: {
+            onReady: null
+        },
+        finalInitFunction: "fluid.uiOptions.livePreview.finalInit"
+    });
+
+    fluid.uiOptions.livePreview.finalInit = function (that) {
+        that.enhancer = $(document).data("uiEnhancer");
+        that.events.onReady.fire();
+    };
+
+    fluid.demands("fluid.uiOptions.preview.eventBinder", "fluid.uiOptions.livePreview", {
+        options: {
+            listeners: {
+                "{controls}.events.modelChanged": "{livePreview}.updateModel"
+            }
+        }
+    });
+
+
+    /**********************
+     * Sliding Panel *
+	 * TODO: replace class name with that.locate - refactor so button within container     
+     *********************/	 
+     
+	fluid.defaults("fluid.slidingPanel", {
+		gradeNames: ["fluid.viewComponent", "autoInit"], 	         
+		selectors: {
+			toggleButton: ".flc-slidingPanel-toggleButton"
+		},
+		strings: {
+			showText: "+ Show Display Preferences",
+			hideText: "- Hide"
+		},  		
+		finalInitFunction: "fluid.slidingPanel.finalInit"             
+	});
+	
+	
+	fluid.slidingPanel.finalInit = function (that) {
+	
+		that.togglePanel = function () {
+			if (that.container.is(":hidden")) {                						
+				that.container.slideDown();    
+				//that.locate("toggleButton").text(that.options.strings.hideText);
+				$('.flc-slidingPanel-toggleButton').text(that.options.strings.hideText);
+			} else {
+				that.container.slideUp();                           
+				//that.locate("toggleButton").text(that.options.strings.showText);                
+				$('.flc-slidingPanel-toggleButton').text(that.options.strings.showText);                
+			}
+		};	
+	
+	
+		//event binder
+		//that.locate("toggleButton").click(that.togglePanel);
+		$('.flc-slidingPanel-toggleButton').click(that.togglePanel);	
+			
+		//Start Up: hide panel
+		//that.locate("toggleButton").text(that.options.strings.showText); 
+		$('.flc-slidingPanel-toggleButton').text(that.options.strings.showText); 
+		that.container.hide();
+	};    
+    
+     
 })(jQuery, fluid_1_4);

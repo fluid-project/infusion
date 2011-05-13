@@ -1,0 +1,65 @@
+.styledElement {
+	border: 1px solid blue;
+}
+
+strong {
+    display: block;
+}
+
+.container {
+    width: 500px;
+    padding: 4px;
+}
+
+.column {
+    width: 50%;
+    padding: 4px;
+}
+
+.description {
+    width: 100px;
+    padding: 4px;
+    font-style: italic;
+}
+ul li {
+	list-style: none;
+	width: 200px;
+	margin-right:5px;
+	float:left;
+}
+
+/* CLEARING SOLUTIONS */
+
+/* inline-block*/
+.inline-block-clearfix {
+    display: inline-block;
+}
+
+/* old clearfix http://perishablepress.com/press/2009/12/06/new-clearfix-hack/ */
+.clearfix:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+	}
+.clearfix { display: inline-table; }
+/* Hides from IE-mac \*/
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }
+/* End hide from IE-mac */
+
+
+ /* new clearfix http://perishablepress.com/press/2009/12/06/new-clearfix-hack/*/
+.newClearfix:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+	}
+* html .newClearfix             { zoom: 1; } /* IE6 */
+*:first-child+html .newClearfix { zoom: 1; } /* IE7 */
+
