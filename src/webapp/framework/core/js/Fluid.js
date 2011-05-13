@@ -127,6 +127,19 @@ var fluid = fluid || fluid_1_4;
         }
     };
 
+    // On some dodgy environments (notably IE9 and recent alphas of Firebug 1.8), 
+    // console.log/debug are incomplete function objects and need to be operated via
+    // this trick: http://stackoverflow.com/questions/5472938/does-ie9-support-console-log-and-is-it-a-real-function
+    fluid.applyHostFunction = function(obj, func, args) {
+        if (func.apply) {
+            func.apply(obj, args);
+        }
+        else {
+            var applier = Function.prototype.bind.call(func, obj);
+            applier.apply(obj, args);
+        }
+    };
+
     /** Log a message to a suitable environmental console. If the standard "console" 
      * stream is available, the message will be sent there - otherwise either the
      * YAHOO logger or the Opera "postError" stream will be used. Logging must first
@@ -139,11 +152,11 @@ var fluid = fluid || fluid_1_4;
             var str = args.join("");
             if (typeof (console) !== "undefined") {
                 if (console.debug) {
-                    console.debug.apply(console, args);
+                    fluid.applyHostFunction(console, console.debug, args);
                 } else if (typeof (console.log) === "function") {
-                    console.log.apply(console, args);
+                    fluid.applyHostFunction(console, console.log, args);
                 } else {
-                    console.log(str); // this branch executes on IE, console.log is synthetic
+                    console.log(str); // this branch executes on old IE, fully synthetic console.log
                 }
             } else if (typeof (YAHOO) !== "undefined") {
                 YAHOO.log(str);

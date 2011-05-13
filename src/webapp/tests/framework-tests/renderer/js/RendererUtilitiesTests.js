@@ -188,6 +188,68 @@ fluid.registerNamespace("fluid.tests");
         
         var IoCTests = jqUnit.testCase("IoC Renderer tests");
         
+        fluid.defaults("fluid.tests.identicalComponentParent", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                identicalComponent1: ".identicalComponent1",
+                identicalComponent2: ".identicalComponent2"
+            },
+            finalInitFunction: "fluid.tests.identicalComponentParent.finalInitFunction",
+            produceTree: "fluid.tests.identicalComponentParent.produceTree"
+        });
+        fluid.tests.identicalComponentParent.produceTree = function (that) {
+            return {
+                identicalComponent1: {
+                    decorators: {
+                        type: "fluid",
+                        func: "fluid.tests.identicalComponent",
+                        options: {
+                            option: "OPTION1"
+                        }
+                    }
+                },
+                identicalComponent2: {
+                    decorators: {
+                        type: "fluid",
+                        func: "fluid.tests.identicalComponent",
+                        options: {
+                            option: "OPTION2"
+                        }
+                    }
+                }
+            };
+        };
+        fluid.tests.identicalComponentParent.finalInitFunction = function (that) {
+            that.renderer.refreshView();
+        };
+        
+        fluid.defaults("fluid.tests.identicalComponent", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+            components: {
+                subcomponent: {
+                    type: "fluid.tests.identicalSubComponent"
+                }
+            }
+        });
+        
+        fluid.defaults("fluid.tests.identicalSubComponent", {
+            gradeNames: ["fluid.littleComponent", "autoInit"]
+        });
+        
+        fluid.demands("fluid.tests.identicalSubComponent", "fluid.tests.identicalComponent", {
+            args: {
+                option: "{identicalComponent}.options.option"
+            }
+        });
+        fluid.demands("fluid.tests.identicalComponent", "fluid.tests.identicalComponentParent", {
+            container: "{arguments}.0"
+        });
+        IoCTests.test("Same level identical components with different options", function() {
+            var that = fluid.tests.identicalComponentParent(".identicalComponentParent");
+            jqUnit.assertEquals("First component's subcomponent option is", "OPTION1", that["**-renderer-identicalComponent1-0"].subcomponent.options.option);
+            jqUnit.assertEquals("Second component's subcomponent option is", "OPTION2", that["**-renderer-identicalComponent2-1"].subcomponent.options.option);
+        });
+        
         IoCTests.test("initDependent upgrade test", function() {
             var parentValue = "parentValue";
             var component = fluid.tests.rendererParent(".renderer-ioc-test", {parentValue: parentValue});
