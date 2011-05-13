@@ -16,6 +16,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
+    //px to pt conversion
+    var pxToPtConversion = function (pxValue) {
+        var ptValue = parseFloat(pxValue) * 0.75;     
+        return Math.round(ptValue) + "pt"; 
+    };
+
     $(document).ready(function () {
         var testSettings = {
             textSize: "18",
@@ -61,8 +67,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             var body = $("body");
             var uiEnhancer = fluid.uiEnhancer(null, options);
-
-            jqUnit.assertEquals("Large text size is set", "18pt", body.css("fontSize"));
+            
+            jqUnit.assertEquals("Large text size is set", "18pt", pxToPtConversion(body.css("fontSize")));
             jqUnit.assertTrue("Courier font is set", body.hasClass("fl-font-courier"));
             jqUnit.assertTrue("Wide text spacing is set", body.hasClass("fl-font-spacing-1"));
             jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-hc"));

@@ -348,19 +348,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         function testFocusBlur(initiator) {
             lightboxTests.test("ItemFocusBlur: with " + initiator, function () {
                 var lightbox = createLightbox();
-                var count = 0; // To test multiple selection issue FLUID-3388
-                var countListener = function () {
-                    ++count;
-                };
-                lightbox.events.onSelect.addListener(countListener);
                 var testItem = fluid.jById(orderableIds[0]);
                 
                 assertItemDefault("Before test item gets focus, it should be in default state", 0);
                 
                 testItem[initiator]();
                 assertItemFocused("After test item gets focus, it should be in selected state", 0);
-                jqUnit.assertEquals("onSelect listener should be called exactly 1 time", 1, count);
-            
                 testItem.blur();    
                 assertItemDefault("After test item gets blur, it should be in default state", 0);
             });
