@@ -50,8 +50,8 @@ var demo = demo || {};
 
         // Put it in the sliding panel.
         //slidingPanel(myUIOptions, button);
-        fluid.slidingPanel($("#myUIOptions"), {});
-        fluid.tabs("#myUIOptions", {}); 
+        fluid.slidingPanel($("#myUIOptions"));
+       //fluid.tabs("#myUIOptions"); 
     };
     
 })(jQuery, fluid);

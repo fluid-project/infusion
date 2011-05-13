@@ -606,66 +606,9 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
 
-
-    /**********************
-     * ARIA Tabs *
-     **********************/
-
-    fluid.defaults("fluid.tabs", {
-	    gradeNames: ["fluid.viewComponent", "autoInit"],
-		selectors: {
-			tabs: ".flc-uiOptions-tabs", 
-			tabPanels: ".fl-tab-panel",
-			firstTabPanel: ".fl-tab-panel:first"
-		},
-		styles: {
-			active: ".fl-tabs-active"					
-		},
-        finalInitFunction: "fluid.tabs.finalInit"
-    });
-    
-    fluid.tabs.finalInit = function (that) {
-		that.setActiveTab = function (that) {		
-			
-			//unset current tab
-			$("li", that.options.selectors.tabs).removeClass("fl-tabs-active");
-			$("a", that.options.selectors.tabs).attr("tabindex", "-1");
-			$("a", that.options.selectors.tabs).attr("aria-selected", "false");
-	
-			//set the active style on clicked tab			
-		/*	activeTab.addClass("fl-tabs-active"); 
-			
-			$("a", activeTab).attr("tabindex", "0");			
-			$("a", activeTab).attr("aria-selected", "true");
-			
-			//show the active tab panel
-			that.locate("tabPanels").hide();			
-			that.locate("tabPanels").attr("aria-hidden", "true");			
-			
-			var activeTabPanel = $(activeTab.find("a").attr("href"));
-			$(activeTabPanel).show(); 
-			$(activeTabPanel).attr("aria-hidden", "false");		*/				
-		};    
-    
-    
-		//event binder
-		that.locate("li", that.locate("tabs")).click (that.setActiveTab(that) );		    
-    
-        //hide tabs, set first tab as active, show first tab panel
-		that.locate("tabPanel").hide();
-		that.locate("firstTabPanel").show();         
-    };
-
-    /*fluid.demands("fluid.uiOptions.tabs", ["fluid.uiOptions", "fluid.uiOptions.controls"], {
-        args: [
-            "{options}"
-        ]
-    });*/ 
-    
-
     /**********************
      * Sliding Panel *
-	 * TODO: replace class name with that.locate - not working??     
+	 * TODO: replace class name with that.locate - refactor so button within container     
      *********************/	 
      
 	fluid.defaults("fluid.slidingPanel", {
