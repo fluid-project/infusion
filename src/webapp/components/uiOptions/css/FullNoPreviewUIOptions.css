@@ -1,58 +1,14 @@
 /* UI Option styles for full page w/o preview */
 
-/* Form */
-.fl-uiOptions-fullPreview ul {
-	margin-left: 0px;
+.fl-uiOptions-fullNoPreview .fl-uio-category {
+	border-top: 2px solid #dddddd;
 }
 
-.fl-uiOptions-fullPreview ul li {
-    list-style: none;
-    clear:both; 
+.fl-uiOptions-fullNoPreview .fl-uio-category h2 {
+	padding-left: 0px;
+/*	padding-right: 4em;*/
 }
 
-/* Categories of options (e.g., Text & Display, Layout & Navigation) */
-.fl-uio-category {
-    padding-bottom: 48px; /* separation between categories */
+.fl-uiOptions-fullNoPreview .fl-uio-category ul {
+	padding-top: 14px;
 }
-
-/* Individual options (e.g., text size, simplify layout, emphasize links) */
-.fl-uio-option-2col {
-    padding-top: 40px;
-}
-
-.fl-uio-option-1col {
-    padding-top: 28px;
-}
-
-.fl-uio-option-first {
-    padding-top: 8px;
-}
-
-/* Text and display section */
-.fl-uiOptions-fullPreview .fl-uio-form label {
-    display: block;
-    float: left;
-	width: 14em;	
-}
-
-.fl-uiOptions-fullPreview .fl-uio-form .fl-inputs {
-	float: left;
-}
-
-.fl-uiOptions-fullPreview .fl-uio-form input[type="text"] {
-	width:2em;
-}
-
-/* Slider position. More slider styles in /css/Slider.css */
-.fl-uiOptions-fullPreview .fl-slider {
-	float:left;
-	margin-right: 10px;
-}
-
-/* Check boxes */
-.fl-uiOptions-fullPreview input[type="checkbox"] {
-	margin-right:10px;
-	margin-bottom: 2em;
-	border: 1px solid black;
-}
-
