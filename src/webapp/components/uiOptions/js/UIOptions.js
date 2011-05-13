@@ -625,7 +625,7 @@ var fluid_1_4 = fluid_1_4 || {};
     });
     
     fluid.tabs.finalInit = function (that) {
-		that.setActiveTab = function (that, activeTab) {		
+		that.setActiveTab = function (that) {		
 			
 			//unset current tab
 			$("li", that.options.selectors.tabs).removeClass("fl-tabs-active");
@@ -633,7 +633,7 @@ var fluid_1_4 = fluid_1_4 || {};
 			$("a", that.options.selectors.tabs).attr("aria-selected", "false");
 	
 			//set the active style on clicked tab			
-			activeTab.addClass("fl-tabs-active"); 
+		/*	activeTab.addClass("fl-tabs-active"); 
 			
 			$("a", activeTab).attr("tabindex", "0");			
 			$("a", activeTab).attr("aria-selected", "true");
@@ -644,12 +644,12 @@ var fluid_1_4 = fluid_1_4 || {};
 			
 			var activeTabPanel = $(activeTab.find("a").attr("href"));
 			$(activeTabPanel).show(); 
-			$(activeTabPanel).attr("aria-hidden", "false");						
+			$(activeTabPanel).attr("aria-hidden", "false");		*/				
 		};    
     
     
 		//event binder
-		that.locate("li", that.locate("tabs")).click (that.setActiveTab(that, this) );		    
+		that.locate("li", that.locate("tabs")).click (that.setActiveTab(that) );		    
     
         //hide tabs, set first tab as active, show first tab panel
 		that.locate("tabPanel").hide();
