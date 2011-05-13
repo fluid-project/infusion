@@ -348,12 +348,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         function testFocusBlur(initiator) {
             lightboxTests.test("ItemFocusBlur: with " + initiator, function () {
                 var lightbox = createLightbox();
+                var selected = false;
+                var selectListener = function () {
+                    ++selected;
+                };
+                lightbox.events.onSelect.addListener(selectListener);
                 var testItem = fluid.jById(orderableIds[0]);
                 
                 assertItemDefault("Before test item gets focus, it should be in default state", 0);
                 
                 testItem[initiator]();
                 assertItemFocused("After test item gets focus, it should be in selected state", 0);
+                jqUnit.assertTrue("onSelect listener should be called ", selected);
+
                 testItem.blur();    
                 assertItemDefault("After test item gets blur, it should be in default state", 0);
             });

@@ -33,12 +33,12 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     var enableElement = function (that, elm) {
-        elm.removeProp("disabled");
+        elm.prop("disabled", false);
         elm.removeClass(that.options.styles.dim);
     };
     
     var disableElement = function (that, elm) {
-        elm.prop("disabled", "disabled");
+        elm.prop("disabled", true);
         elm.addClass(that.options.styles.dim);
     };
     
