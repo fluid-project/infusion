@@ -188,6 +188,110 @@ fluid.registerNamespace("fluid.tests");
         
         var IoCTests = jqUnit.testCase("IoC Renderer tests");
         
+        fluid.defaults("fluid.tests.identicalComponentParent", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                identicalComponent1: ".identicalComponent1",
+                identicalComponent2: ".identicalComponent2"
+            },
+            finalInitFunction: "fluid.tests.identicalComponentParent.finalInitFunction",
+            produceTree: "fluid.tests.identicalComponentParent.produceTree"
+        });
+        fluid.tests.identicalComponentParent.produceTree = function (that) {
+            return {
+                identicalComponent1: {
+                    decorators: {
+                        type: "fluid",
+                        func: "fluid.tests.identicalComponent",
+                        options: {
+                            option: "OPTION1"
+                        }
+                    }
+                },
+                identicalComponent2: {
+                    decorators: {
+                        type: "fluid",
+                        func: "fluid.tests.identicalComponent",
+                        options: {
+                            option: "OPTION2"
+                        }
+                    }
+                }
+            };
+        };
+        fluid.tests.identicalComponentParent.finalInitFunction = function (that) {
+            that.renderer.refreshView();
+        };
+        
+        fluid.defaults("fluid.tests.identicalComponent", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+            components: {
+                subcomponent: {
+                    type: "fluid.tests.identicalSubComponent"
+                }
+            }
+        });
+        
+        fluid.defaults("fluid.tests.identicalSubComponent", {
+            gradeNames: ["fluid.littleComponent", "autoInit"]
+        });
+        
+        fluid.demands("fluid.tests.identicalSubComponent", "fluid.tests.identicalComponent", {
+            args: {
+                option: "{identicalComponent}.options.option"
+            }
+        });
+        fluid.demands("fluid.tests.identicalComponent", "fluid.tests.identicalComponentParent", {
+            container: "{arguments}.0"
+        });
+        IoCTests.test("Same level identical components with different options", function() {
+            var that = fluid.tests.identicalComponentParent(".identicalComponentParent");
+            jqUnit.assertEquals("First component's subcomponent option is", "OPTION1", that["**-renderer-identicalComponent1-0"].subcomponent.options.option);
+            jqUnit.assertEquals("Second component's subcomponent option is", "OPTION2", that["**-renderer-identicalComponent2-1"].subcomponent.options.option);
+        });
+        
+        fluid.defaults("fluid.tests.mergeRenderParent", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                mergeComponent: ".mergeComponent"
+            },
+            model: {
+                test: "TEST"
+            },
+            finalInitFunction: "fluid.tests.mergeRenderParent.finalInitFunction",
+            produceTree: "fluid.tests.mergeRenderParent.produceTree"
+        });
+        fluid.tests.mergeRenderParent.produceTree = function (that) {
+            return {
+                mergeComponent: {
+                    decorators: {
+                        type: "fluid",
+                        func: "fluid.tests.mergeComponent",
+                        options: {
+                            option: "OPTION1"
+                        }
+                    }
+                }
+            };
+        };
+        fluid.tests.mergeRenderParent.finalInitFunction = function (that) {
+            that.renderer.refreshView();
+        };
+        fluid.defaults("fluid.tests.mergeComponent", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"]
+        });
+        fluid.demands("fluid.tests.mergeComponent", "fluid.tests.mergeRenderParent", {
+            container: "{arguments}.0",
+            mergeAllOptions: [{
+                model: "{mergeRenderParent}.model"
+            }, "{arguments}.1"]
+        });
+        IoCTests.test("Merging args and options", function() {
+            var that = fluid.tests.mergeRenderParent(".mergeRenderParent");
+            jqUnit.assertEquals("Subcomponent arg option is", "OPTION1", that["**-renderer-mergeComponent-0"].options.option);
+            jqUnit.assertEquals("Subcomponent option is", that.model, that["**-renderer-mergeComponent-0"].options.model);
+        });
+        
         IoCTests.test("initDependent upgrade test", function() {
             var parentValue = "parentValue";
             var component = fluid.tests.rendererParent(".renderer-ioc-test", {parentValue: parentValue});
@@ -788,7 +892,7 @@ fluid.registerNamespace("fluid.tests");
         });
         
         fluid.defaults("fluid.tests.repeatDecorator", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],
+            gradeNames: ["fluid.viewComponent", "autoInit"]
         });
         
         fluid.defaults("fluid.tests.repeatHead", {
@@ -827,7 +931,7 @@ fluid.registerNamespace("fluid.tests");
             fluid.each(decorators, function(decorator, key) {
                 declist.push({key: key, decorator: decorator});
             });
-            declist.sort(function(ea, eb) {return ea.key < eb.key? -1 : 1});
+            declist.sort(function(ea, eb) {return ea.key < eb.key? -1 : 1;});
             var decvals = fluid.transform(declist, function(dec) {
                 return dec.decorator.model.value;  
             });
@@ -1185,7 +1289,7 @@ fluid.registerNamespace("fluid.tests");
                         }
                     }
                 }
-            }
+            };
             var expanded = expander(protoTree);
             jqUnit.assertEquals("Only three rows produced", 3, expanded.children.length);
             var protoTree2 = fluid.copy(protoTree);

@@ -226,6 +226,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             funcName: "fluid.tests.uploader.createMockXHR"
         });    
         
+        
+        /*
+         * Override the HTML5 FormData creators with mocks so we can verify the correct behaviour.
+         * FF4 restricts passing JSON objects as the value in the FormData append() function.
+         */
+        fluid.demands("fluid.uploader.html5Strategy.createFormData", [
+            "fluid.uploader.html5Strategy.remote", 
+            "fluid.browser.supportsFormData",
+            "fluid.uploader.tests"
+        ], {
+            funcName: "fluid.tests.uploader.mockFormData"
+        });
+        
         var addFiles = function (uploader) {
             var browseButtonView = uploader.strategy.local.browseButtonView;
             var files = [file1, file2];
@@ -321,7 +334,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         var checkUploaderButton = function(uploader, buttonName, state) {
             var button = uploader.locate(buttonName);
-            jqUnit.assertEquals("The " + buttonName + " is " + (state? "enabled" : "disabled"), state, !button.attr("disabled"));
+            jqUnit.assertEquals("The " + buttonName + " is " + (state? "enabled" : "disabled"), state, !button.prop("disabled"));
         };
         
         var checkUploaderArgumentMap = function (uploader, expectedLocal, expectedRemote) {

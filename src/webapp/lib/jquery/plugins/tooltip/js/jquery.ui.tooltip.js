@@ -1,7 +1,7 @@
 /*
  * jQuery UI Tooltip @VERSION
  *
- * Copyright 2010, AUTHORS.txt
+ * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  *
@@ -117,8 +117,9 @@ $.widget("ui.tooltip", {
 		if (!this.current)
 			return;
 		
-		var current = this.current.attr("title", this.currentTitle);
+		var current = this.current;
 		this.current = null;
+		current.attr("title", this.currentTitle);
 		
 		if (this.options.disabled)
 			return;

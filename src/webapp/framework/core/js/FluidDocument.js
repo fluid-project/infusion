@@ -83,7 +83,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     fluid.setScopedData(this, ENABLEMENT_KEY, state);
                 }
                 else if (/select|textarea|input/i.test(this.nodeName)) {
-                    $(this).attr("disabled", !state);
+                    $(this).prop("disabled", !state);
                 }
             });
             fluid.setScopedData(target, ENABLEMENT_KEY, state);

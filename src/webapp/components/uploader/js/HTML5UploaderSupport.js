@@ -154,8 +154,9 @@ var fluid_1_4 = fluid_1_4 || {};
         that.uploadFile = function (file) {
             that.events.onFileStart.fire(file);
             var xhr = that.createXHR();
+            var formData = that.createFormData();
             that.currentXHR = fluid.uploader.html5Strategy.monitorFileUploadXHR(file, that.events, xhr);
-            that.doUpload(file, that.queueSettings, that.currentXHR);            
+            that.doUpload(file, that.queueSettings, that.currentXHR, formData);            
         };
 
         that.stop = function () {
@@ -175,7 +176,8 @@ var fluid_1_4 = fluid_1_4 || {};
         },                
         invokers: {
             doUpload: "fluid.uploader.html5Strategy.doUpload",
-            createXHR: "fluid.uploader.html5Strategy.createFileUploadXHR"
+            createXHR: "fluid.uploader.html5Strategy.createFileUploadXHR", 
+            createFormData: "fluid.uploader.html5Strategy.createFormData"
         }
     });
     
@@ -189,19 +191,20 @@ var fluid_1_4 = fluid_1_4 || {};
     
     var CRLF = "\r\n";
     
+    fluid.uploader.html5Strategy.createFormData = function () {
+        var formData = new FormData();
+        return formData;
+    };
+    
     /** 
      * Firefox 4  implementation.  FF4 has implemented a FormData function which
      * conveniently provides easy construct of set key/value pairs representing 
      * form fields and their values.  The FormData is then easily sent using the 
      * XMLHttpRequest send() method.  
      */
-    fluid.uploader.html5Strategy.doFormDataUpload = function (file, queueSettings, xhr) {
-        var formData = new FormData();
+    fluid.uploader.html5Strategy.doFormDataUpload = function (file, queueSettings, xhr, formData) {
         formData.append("file", file);
-        
         setPostParams(formData, queueSettings.postParams);
-        
-        // set post params here.
         xhr.open("POST", queueSettings.uploadURL, true);
         xhr.send(formData);
     };
@@ -255,7 +258,7 @@ var fluid_1_4 = fluid_1_4 || {};
         "fluid.browser.supportsFormData"
     ], {
         funcName: "fluid.uploader.html5Strategy.doFormDataUpload",
-        args: ["@0", "@1", "@2"]
+        args: ["@0", "@1", "@2", "@3"]
     });
     
     fluid.uploader.html5Strategy.local = function (queue, legacyBrowserFileLimit, options) {
@@ -376,6 +379,11 @@ var fluid_1_4 = fluid_1_4 || {};
     
     var renderMultiFileInput = function (that) {
         var multiFileInput = $(that.options.multiFileInputMarkup);
+        var fileTypes = that.options.queueSettings.fileTypes;
+        if (fluid.isArrayable(fileTypes)) {
+            fileTypes = fileTypes.join();
+            multiFileInput.attr("accept", fileTypes);
+        }
         bindEventsToFileInput(that, multiFileInput);
         return multiFileInput;
     };
@@ -399,11 +407,11 @@ var fluid_1_4 = fluid_1_4 || {};
         };
         
         that.enable = function () {
-            that.locate("fileInputs").removeAttr("disabled");
+            that.locate("fileInputs").prop("disabled", false);
         };
         
         that.disable = function () {
-            that.locate("fileInputs").attr("disabled", "disabled");
+            that.locate("fileInputs").prop("disabled", true);
         };
         
         setupBrowseButtonView(that);

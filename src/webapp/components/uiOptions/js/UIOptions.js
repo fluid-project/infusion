@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2010 OCAD University
+Copyright 2010-2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -25,139 +25,143 @@ var fluid_1_4 = fluid_1_4 || {};
  ******************/
 
 (function ($, fluid) {
+
+    fluid.defaults("fluid.textfieldSlider", {
+        gradeNames: ["fluid.viewComponent", "autoInit"], 
+        components: {
+            textfield: {
+                type: "fluid.textfieldSlider.textfield",
+                container: "{textfieldSlider}.dom.textfield",
+                options: {
+                    model: "{textfieldSlider}.model",
+                    applier: "{textfieldSlider}.applier"
+                }
+            },
+            slider: {
+                type: "fluid.textfieldSlider.slider",
+                container: "{textfieldSlider}.dom.slider",
+                options: {
+                    model: "{textfieldSlider}.model",
+                    applier: "{textfieldSlider}.applier"
+                }
+            }
+        },
+        selectors: {
+            textfield: ".flc-textfieldSlider-field",
+            slider: ".flc-textfieldSlider-slider"
+        },
+        events: {
+            modelChanged: null
+        },
+        model: {
+            value: null,
+            min: 0,
+            max: 100
+        },
+        sliderOptions: {
+            orientation: "horizontal"
+        }, 
+        finalInitFunction: "fluid.textfieldSlider.finalInit"
+    });    
+    
+    fluid.textfieldSlider.finalInit = function (that) {
+        // initialize slider
+        var sliderOptions = $.extend(true, {}, that.options.sliderOptions, that.model);
+        
+        that.slider.initSlider(sliderOptions);
+
+        that.refreshView = function () {
+            var val = that.model.value;
+            
+            that.textfield.container.val(val);
+            that.slider.setSliderValue(val);
+            that.slider.setSliderAria(val);
+        };
+        
+        that.applier.modelChanged.addListener("value", 
+            function (newModel) {
+                // update preview window
+                that.events.modelChanged.fire(newModel.value);
+            }
+        );
+
+        that.events.modelChanged.addListener(that.refreshView);
+
+        that.refreshView();
+    };
+    
+    fluid.defaults("fluid.textfieldSlider.textfield", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        finalInitFunction: "fluid.textfieldSlider.textfield.finalInit"
+    });
+
+    var validateValue = function (model, changeRequest, applier) {
+        var oldValue = model.value;
+        var newValue = changeRequest.value;
+        
+        var isValidNum = !isNaN(parseInt(newValue, 10));
+
+        if (isValidNum) {
+            if (newValue < model.min) {
+                newValue = model.min;
+            } else if (newValue > model.max) {
+                newValue = model.max;
+            }
+            
+            changeRequest.value = newValue;
+        } else {
+            changeRequest.value = oldValue;
+        }
+    };
+
+    fluid.textfieldSlider.textfield.finalInit = function (that) {
+        that.applier.guards.addListener({path: "value", transactional: true}, validateValue);
+        
+        that.container.change(function (source) {
+            that.applier.requestChange("value", source.target.value);
+        });
+    };
+
+    fluid.defaults("fluid.textfieldSlider.slider", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        finalInitFunction: "fluid.textfieldSlider.slider.finalInit",
+        selectors: {
+            thumb: ".ui-slider-handle"
+        }
+    });
     
     // This will be removed once the jQuery UI slider has built in ARIA 
     var initSliderAria = function (thumb, opts) {
         var ariaDefaults = {
             role: 'slider',
             "aria-valuenow": opts.value,
-            "aria-valuemin": opts.min, 
-            "aria-valuemax": opts.max    
+            "aria-valuemin": opts.min,
+            "aria-valuemax": opts.max
         };
         thumb.attr(ariaDefaults);        
     };
     
-    var initSlider = function (that) {
-        var sliderOptions = that.options.sliderOptions;
-        sliderOptions.value = that.model;
-        sliderOptions.min = that.min;
-        sliderOptions.max = that.max;
+    fluid.textfieldSlider.slider.finalInit = function (that) {       
+        that.slider = that.container.slider(that.model);
         
-        var slider = that.locate("slider").slider(sliderOptions);
-        initSliderAria(that.locate("thumb"), sliderOptions); 
-
-        return slider;           
-    };
-    
-    var bindSliderHandlers = function (that, textfield, slider) {
-        slider.bind("slide", function (e, ui) {
-            textfield.val(ui.value);
-            that.updateModel(ui.value, slider);
-        });       
-    };
-    
-    var initTextfield = function (that, slider) {
-        var textfield = that.locate("textfield");
-        textfield.val(that.model);
-        return textfield;
-    };
-    
-    var bindTextfieldHandlers = function (that, textfield, slider) {
-        textfield.change(function () {
-            if (that.isValid(this.value)) {
-                if (!that.isInRange(this.value)) {
-                    this.value = (this.value < that.min) ? that.min : that.max;
-                }
-                slider.slider("value", this.value);
-                that.updateModel(this.value, this);
-            } else {
-                // handle invalid entry
-                this.value = that.model;
-            }
+        that.initSlider = function (sliderOptions) {
+            var slider = that.slider.slider(sliderOptions);
+            initSliderAria(that.locate("thumb"), sliderOptions);
+        };
+        
+        that.setSliderValue = function (value) {
+            that.slider.slider("value", value);
+        };
+        
+        that.setSliderAria = function (value) {
+            that.locate("thumb").attr("aria-valuenow", value);
+        };
+        
+        that.slider.bind("slide", function (e, ui) {
+            that.applier.requestChange("value", ui.value);
         });
-        
-        textfield.keypress(function (evt) {
-            if (evt.keyCode !== $.ui.keyCode.ENTER) {
-                return true;
-            } else {
-                $(evt.target).change();
-                $(fluid.findForm(evt.target)).submit();
-                return false;
-            }
-        });
-        
-    };
-    
-    var initTextfieldSlider = function (that) {
-        var slider = initSlider(that);
-        var textfield = initTextfield(that, slider);        
-
-        bindSliderHandlers(that, textfield, slider);
-        bindTextfieldHandlers(that, textfield, slider);
-    };
-    
-    /**
-     * A component that relates a textfield and a jQuery UI slider
-     * @param {Object} container
-     * @param {Object} options
-     */
-    fluid.textfieldSlider = function (container, options) {
-        var that = fluid.initView("fluid.textfieldSlider", container, options);
-        that.model = that.options.value || that.locate("textfield").val();
-        that.min = that.options.min;
-        that.max = that.options.max;
-                
-        /**
-         * Tests if a value is within the min and max of the textfield slider
-         * @param {Object} value
-         */
-        that.isInRange = function (value) {
-            return (value >= that.min && value <= that.max);
-        };
-
-        /**
-         * Tests if a value is a valid number.
-         * @param {Object} value
-         */
-        that.isValid = function (value) {
-            return !(isNaN(parseInt(value, 10)) || isNaN(value));
-        };
-        
-        /**
-         * Updates the model if it is in range. Fires model changed
-         * @param {Object} model
-         * @param {Object} source
-         */
-        that.updateModel = function (model, source) {
-            if (that.isInRange(model)) {
-                that.events.modelChanged.fire(model, that.model, source);
-                that.model = model;
-                that.locate("thumb").attr("aria-valuenow", that.model);                
-            }
-        };
-
-        initTextfieldSlider(that);
-        
-        return that;
     };
 
-    fluid.defaults("fluid.textfieldSlider", {
-        selectors: {
-            textfield: ".flc-textfieldSlider-field",
-            slider: ".flc-textfieldSlider-slider", 
-            thumb: ".ui-slider-handle"
-        },
-        events: {
-            modelChanged: null
-        },
-        sliderOptions: {
-            orientation: "horizontal"
-        }, 
-        min: 0,
-        max: 100,
-        value: null       
-    });
-    
 })(jQuery, fluid_1_4);
 
 
@@ -168,10 +172,7 @@ var fluid_1_4 = fluid_1_4 || {};
 (function ($, fluid) {
 
 //    TODO
-//    - move the general renderer tree generation functions to the renderer
-//    - add the min font size textfieldSlider to the renderer tree
 //    - pull the strings out of the template and put them into the component?
-//    - should the accordian be part of the component by default?
 
     /**
      * Update the change applier of sub-component fluid.uiOptions.controls to set 
@@ -187,9 +188,10 @@ var fluid_1_4 = fluid_1_4 || {};
     
         // Turn the boolean select values into strings so they can be properly bound and rendered
         controls.applier.requestChange("selections.toc", String(controls.model.selections.toc));
-        controls.applier.requestChange("selections.backgroundImages", String(controls.model.selections.backgroundImages));        
+        controls.applier.requestChange("selections.backgroundImages", String(controls.model.selections.backgroundImages));
     };
     
+        
     /**************
      * UI Options *
      **************/
@@ -212,16 +214,23 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{uiOptions}.dom.controls",
                 createOnEvent: "onReady",
                 options: {
-                    listeners: {
-                        afterRender: "{uiOptions}.bindHandlers"
-                    },
-                    uiEnhancer: "{uiOptions}.uiEnhancer"
+                    uiEnhancer: "{uiOptions}.uiEnhancer",
+                    textSize: "{uiOptions}.options.textSize",
+                    lineSpacing: "{uiOptions}.options.lineSpacing"
                 }
             },
             preview: {
                 type: "fluid.uiOptions.preview",
                 createOnEvent: "onReady"
             }
+        },
+        textSize: {
+            min: 6,
+            max: 30
+        },
+        lineSpacing: {
+            min: 1,
+            max: 10
         },
         selectors: {
             controls: ".flc-uiOptions-controls",
@@ -247,17 +256,6 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uiOptions.finalInit = function (that) {
 
-        that.bindHandlers = function () {
-            var saveButton = that.locate("save");
-            saveButton.click(that.save);
-            that.locate("reset").click(that.reset);
-            that.locate("cancel").click(that.cancel);
-            var form = fluid.findForm(saveButton);
-            $(form).submit(function () {
-                that.save();
-            });
-        };
-
         that.uiEnhancer = $(document).data("uiEnhancer");
         
         var savedModel = that.uiEnhancer.model;
@@ -268,7 +266,8 @@ var fluid_1_4 = fluid_1_4 || {};
         that.save = function () {
             that.events.onSave.fire(that.controls.model.selections);
             savedModel = fluid.copy(that.controls.model.selections); 
-            that.uiEnhancer.updateModel(savedModel);
+            that.uiEnhancer.applier.requestChange("", savedModel);
+            that.uiEnhancer.events.onSave.fire(savedModel);
         };
 
         /**
@@ -276,7 +275,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.reset = function () {
             that.events.onReset.fire();
-            that.updateControlsModel(fluid.copy(that.uiEnhancer.defaultSiteSettings), that.controls);
+            that.updateControlsModel(fluid.copy(that.uiEnhancer.defaultSiteSettings));
             that.controls.refreshView();
         };
         
@@ -285,7 +284,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.cancel = function () {
             that.events.onCancel.fire();
-            that.updateControlsModel(fluid.copy(savedModel), that.controls);
+            that.updateControlsModel(fluid.copy(savedModel));
             that.controls.refreshView();            
         };
         
@@ -295,13 +294,24 @@ var fluid_1_4 = fluid_1_4 || {};
          * @param {Object} newModel
          * @param {Object} source
          */
-        that.updateControlsModel = function (newModel, controls) {
-            that.controls.events.modelChanged.fire(newModel, controls.model.selections, controls);
-            setControlsChangeApplier(controls, newModel);
+        that.updateControlsModel = function (newModel) {
+            setControlsChangeApplier(that.controls, newModel);
+        };
+        
+        var bindHandlers = function (that) {
+            var saveButton = that.locate("save");
+            saveButton.click(that.save);
+            that.locate("reset").click(that.reset);
+            that.locate("cancel").click(that.cancel);
+            var form = fluid.findForm(saveButton);
+            $(form).submit(function () {
+                that.save();
+            });
         };
         
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
+            bindHandlers(that);
             that.events.onReady.fire();
         });
 
@@ -316,20 +326,6 @@ var fluid_1_4 = fluid_1_4 || {};
      */
     fluid.defaults("fluid.uiOptions.controls", {
         gradeNames: ["fluid.rendererComponent", "autoInit"], 
-        textMinSize: {
-            type: "fluid.textfieldSlider",
-            options: {
-                min: 6,
-                max: 30
-            }
-        },
-        lineSpacing: {
-            type: "fluid.textfieldSlider",
-            options: {
-                min: 1,
-                max: 10
-            }
-        },
         strings: {
             textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
             textSpacing: ["Regular", "Wide", "Wider", "Widest"],
@@ -359,14 +355,13 @@ var fluid_1_4 = fluid_1_4 || {};
             "tocRowID:": ".flc-uiOptions-toc-row",
             tocInputID: ".flc-uiOptions-toc-choice",
             tocLabelID: ".flc-uiOptions-toc-label",
-            textMinSizeCtrl: ".flc-uiOptions-min-text-size",
-            lineSpacingCtrl: ".flc-uiOptions-line-spacing",
+            textSize: ".flc-uiOptions-min-text-size",
+            lineSpacing: ".flc-uiOptions-line-spacing",
             linksUnderline: ".flc-uiOptions-links-underline",
             linksBold: ".flc-uiOptions-links-bold",
             linksLarger: ".flc-uiOptions-links-larger",
             inputsLarger: ".flc-uiOptions-inputs-larger"
         },
-        selectorsToIgnore: ["textMinSizeCtrl", "lineSpacingCtrl"],
         events: {
             afterRender: null,
             modelChanged: null
@@ -374,11 +369,32 @@ var fluid_1_4 = fluid_1_4 || {};
         rendererOptions: {
             autoBind: true
         },
-        preInitFunction: "fluid.uiOptions.controls.preInit",
-        finalInitFunction: "fluid.uiOptions.controls.finalInit"
+        finalInitFunction: "fluid.uiOptions.controls.finalInit",
+        produceTree: "fluid.uiOptions.controls.produceTree"
     });
 
+    var mergeSiteDefaults = function (options, siteDefaults) {
+        for (var settingName in options.controlValues) {
+            var setting = String(siteDefaults[settingName]);
+            var settingValues = options.controlValues[settingName];
+            
+            if (setting) {
+                var index = $.inArray(setting, settingValues);
+                if (index === -1) {
+                    var defaultIndex = $.inArray("default", settingValues);
+                    if (defaultIndex === -1) {
+                        settingValues.push(setting);
+                    } else {
+                        settingValues[defaultIndex] = setting;
+                    }
+                }
+            }
+        }
+    };
+    
     var initModel = function (that) {
+        mergeSiteDefaults(that.options, that.options.uiEnhancer.defaultSiteSettings);
+        
         fluid.each(that.options.controlValues, function (item, key) {
             that.applier.requestChange("labelMap." + key, {
                 values: that.options.controlValues[key],
@@ -386,34 +402,7 @@ var fluid_1_4 = fluid_1_4 || {};
             });
         });
     };
-
-    var initSliders = function (that) {
-        var createOptions = function (settingName) {
-            return {
-                listeners: {
-                    modelChanged: function (value) {
-                        that.applier.requestChange(settingName, value);
-                    }
-                },
-                value: that.model[settingName]
-            };    
-        };
-        
-        var options = createOptions("textSize");
-        fluid.merge(null, options, that.options.textMinSize.options);
-        fluid.initSubcomponents(that, "textMinSize", [that.options.selectors.textMinSizeCtrl, options]);
-
-        options = createOptions("lineSpacing");
-        fluid.merge(null, options, that.options.lineSpacing.options);
-        fluid.initSubcomponents(that, "lineSpacing", [that.options.selectors.lineSpacingCtrl, options]);
-        
-    };
     
-    fluid.uiOptions.controls.preInit = function (that) {
-        // A work-around for http://issues.fluidproject.org/browse/FLUID-4190
-        that.produceTree = fluid.uiOptions.controls.produceTree;
-    };
-
     fluid.uiOptions.controls.finalInit = function (that) {
         initModel(that);
         setControlsChangeApplier(that, fluid.copy(that.options.uiEnhancer.model));
@@ -423,7 +412,6 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.refreshView = function () {
             that.renderer.refreshView();
-            initSliders(that);
             that.events.afterRender.fire();
         };
         
@@ -451,6 +439,27 @@ var fluid_1_4 = fluid_1_4 || {};
         };
     };
     
+    var createSliderNode = function (that, item) {
+        return {
+            decorators: {
+                type: "fluid",
+                func: "fluid.textfieldSlider",
+                options: {
+                    listeners: {
+                        modelChanged: function (value) {
+                            that.applier.requestChange("selections." + item, value);
+                        }
+                    },
+                    model: {
+                        min: that.options[item].min,
+                        max: that.options[item].max,
+                        value: that.model.selections[item]
+                    }
+                }
+            }
+        };
+    };
+    
     fluid.uiOptions.controls.produceTree = function (that) {
         var tree = {};
         var radiobuttons = [];
@@ -466,17 +475,21 @@ var fluid_1_4 = fluid_1_4 || {};
                     optionlist: "${labelMap." + item + ".values}",
                     selection: "${selections." + item + "}"
                 };
+            } else if (item === "textSize" || item === "lineSpacing") {
+                // textfield sliders
+                tree[item] = createSliderNode(that, item);                        
             } else {
                 // render check boxes
                 tree[item] = "${selections." + item + "}";
             }
         }
-        
+
         tree.expander = radiobuttons;
         
         return tree;
     };
 
+    
     /**********************
      * UI Options Preview *
      **********************/
@@ -523,7 +536,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         setTimeout(function () {
             if (that.enhancer) {
-                that.enhancer.updateModel(selections);
+                that.enhancer.applier.requestChange("", selections);
             }
         }, 0);
     };
