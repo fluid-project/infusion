@@ -73,10 +73,10 @@
             }
         });
 
-        fluid.tests.uploader.noIoC = function (options) {
+        fluid.tests.uploader.noIoC = function (options, rules) {
             options.transformOptions = {
                 transformer: "fluid.model.transformWithRules",
-                config: fluid.compat.fluid_1_2.uploader.optionsRules
+                config: rules
             };
             return fluid.uploader(".flc-uploader", options);
         };
@@ -89,8 +89,6 @@
         };
         
         var uploaderConfigs = [{label: "no IoC", uploader: fluid.tests.uploader.noIoC}, {label: "ioc", uploader: fluid.tests.uploader.ioc}];
-        var optionsTypes = [{label: "old options", options: oldOptions}, {label: "modern options", options: modernOptions}];
-        
         
         var testTransformation = function (spec, source, target) {
             for (var sourcePath in spec) {
@@ -119,53 +117,76 @@
             }, fluid.defaults("fluid.uploader.multiFileUploader"), uploader.options);
         };
         
-        fluid.each(uploaderConfigs, function(uploaderConfig) {
-            fluid.each(optionsTypes, function(optionsType) {
-                compatTests.test("Uploader 1.2 full options backwards compatibility " + uploaderConfig.label + " - " + optionsType.label, function() {
-                    var uploader = uploaderConfig.uploader.apply(null, [optionsType.options]);
-                    checkUploaderOptions(uploader);
+        var testUploaderConfigs = function (rules, optionsTypes, checkFn, msg) {
+            fluid.each(uploaderConfigs, function(uploaderConfig) {
+                fluid.each(optionsTypes, function(optionsType) {
+                    compatTests.test(msg + " " + uploaderConfig.label + " - " + optionsType.label, function() {
+                        var uploader = uploaderConfig.uploader.apply(null, [optionsType.options, rules]);
+                        checkFn(uploader);
+                    });
                 });
             });
-        });
+        };
         
-        
+        testUploaderConfigs(fluid.compat.fluid_1_2.uploader.optionsRules, [
+            {
+                label: "old options", 
+                options: oldOptions
+            }, 
+            {
+                label: "modern options", 
+                options: modernOptions
+            }
+        ], checkUploaderOptions, "Uploader 1.2->1.3 options backwards compatibility;");
+
+
         /****************************************
          * Infusion 1.3-1.4 Compatibility Tests *
          ****************************************/
-         
+        
         var oldImageTypes = "*.jpg;*.png";
         var modernImageTypes =  ["image/jpeg", "image/png"];
         
-        // Test old-style fileTypes in 1.3-compatible options.
-        compatTests.test("", function () {
-            var uploader = fluid.tests.uploader.noIoC({
-                queueSettings: {
-                    fileTypes: oldImageTypes
-                }
-            });
-            jqUnit.assertEquals("Old-style string fileTypes should be converted to an array of MIME types.", 
-                    uploader.options.queueSettings.fileTypes, modernImageTypes);
-            
-            // Test 1.4 options--fileTypes is already an array.
-            uploader = fluid.tests.uploader.noIoC({
-                queueSettings: {
-                    fileTypes: modernImageTypes
-                }
-            });
-            jqUnit.assertEquals("1.4-compatible fileTypes should not be transformed.", 
-                    uploader.options.queueSettings.fileTypes, modernImageTypes);
+        var checkUploaderFileTypes = function (uploader) {
+            jqUnit.assertDeepEq("File types should be an array of MIME types.", 
+                modernImageTypes, uploader.options.queueSettings.fileTypes);
+        };
 
-            // Test 1.2 options, where the user doesn't nest fileTypes inside queueSettings.
-            uploader = fluid.tests.uploader.noIoC({
-                uploadManager: {
-                    options: {
+        testUploaderConfigs(fluid.compat.fluid_1_3.uploader.optionsRules, [
+            {
+                label: "1.3-era options", 
+                options: {
+                    queueSettings: {
                         fileTypes: oldImageTypes
                     }
                 }
-            });
-            jqUnit.assertEquals("1.2-compatible fileTypes should be transformed.", 
-                    uploader.options.queueSettings.fileTypes, 
-                    modernImageTypes);        
-        });
+            }, 
+            {
+                label: "modern 1.4 options", 
+                options: {
+                    queueSettings: {
+                        fileTypes: modernImageTypes
+                    }
+                }
+            }
+        ], checkUploaderFileTypes, "Uploader 1.3->1.4 options backwards compatibility;");
+        
+        var rules1_2To1_4 = [
+            fluid.compat.fluid_1_2.uploader.optionsRules, 
+            fluid.compat.fluid_1_3.uploader.optionsRules
+        ];
+        
+        testUploaderConfigs(rules1_2To1_4, [
+            {
+                label: "1.2-era options",
+                options: {
+                    uploadManager: {
+                        options: {
+                            fileTypes: oldImageTypes
+                        }
+                    }
+                }
+            }
+        ], checkUploaderFileTypes, "Uploader 1.2->1.4 options backwards compatibility;");
     });
 })(jQuery);

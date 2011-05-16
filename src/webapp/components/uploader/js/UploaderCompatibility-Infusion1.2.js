@@ -25,7 +25,7 @@ var fluid_1_4 = fluid_1_4 || {};
 (function ($, fluid) {
     
     fluid.registerNamespace("fluid.compat.fluid_1_2.uploader");
-    fluid.staticEnvironment.uploaderCompatibility = fluid.typeTag("fluid.uploader.fluid_1_2");
+    fluid.staticEnvironment.uploader_1_2_Compatibility = fluid.typeTag("fluid.uploader.fluid_1_2");
 
     fluid.compat.fluid_1_2.uploader.optionsRules = {
         "components": {

@@ -184,29 +184,28 @@ var fluid_1_4 = fluid_1_4 || {};
      * Transform HTML5 MIME types into file types for SWFUpload.
      */
     fluid.uploader.swfUploadStrategy.fileTypeTransformer = function (model, expandSpec) { 
-        var fileTypes = "";
-        var val = fluid.get(model, expandSpec.path); 
+        var fileExts = "";
+        var mimeTypes = fluid.get(model, expandSpec.path); 
         var mimeTypesMap = fluid.uploader.mimeTypeRegistry;
         
         // If the fileTypes option is null or undefined, accept all strings.
         // If the fileTypes option provided is a string, do nothing.
-        if (val === null || val === undefined) {
+        if (!mimeTypes) {
             return "*";
-        } else if (typeof(val) === 'string') {
-            return val;
+        } else if (typeof(mimeTypes) === 'string') {
+            return mimeTypes;
         }
-        for (var i = 0; i < val.length; i++) {
-            var mimeType = val[i];
-            
-            for (var key in mimeTypesMap) {
-                if (mimeTypesMap[key].type === mimeType) {
-                    fileTypes = fileTypes + mimeTypesMap[key].ext + ";";
+        
+        fluid.each(mimeTypes, function (mimeType) {
+            fluid.each(mimeTypesMap, function (mimeTypeForExt, ext) {
+                if (mimeTypeForExt === mimeType) {
+                    fileExts += "*." + ext + ";";
                 }
-            }            
-        }
-        return fileTypes.length === 0 ? "*" : 
-            fileTypes.substring(0, fileTypes.length - 1);
-    }
+            });
+        });
+
+        return fileExts.length === 0 ? "*" : fileExts.substring(0, fileExts.length - 1);
+    };
     
     /**********************
      * swfUpload.setupDOM *

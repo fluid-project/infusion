@@ -18,65 +18,40 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uploader = fluid.uploader || {};
     
     fluid.uploader.mimeTypeRegistry = {
-        JPG: {
-            type: "image/jpeg",
-            ext: "*.jpg"                
-        },
-        JPEG: {
-            type: "image/jpeg",
-            ext: "*.jpeg"
-        },
-        BMP: {
-            type: "image/bmp",
-            ext: "*.bmp"
-        },
-        PNG: {
-            type: "image/png",
-            ext: "*.png"
-        },
-        TIF: {
-            type: "image/tiff",
-            ext: "*.tif"
-        },
-        TIFF: {
-            type: "image/tiff",
-            ext: "*.tiff"            
-        },
-        MP3: {
-            type: "audio/mpeg",
-            ext: "*.mp3"
-        },
-        WAV: {
-            type: "audio/x-wav",
-            ext: "*.wav"
-        },        
-        HTML: {
-            type: "text/html",
-            ext: "*.html"
-        },
-        HTM: {
-            type: "text/html",
-            ext: "*.htm"
-        },
-        TXT: {
-            type: "text/plain",
-            ext: "*.txt"
-        },
-        MPG: {
-            type: "video/mpeg",
-            ext: "*.mpg"
-        },
-        MPEG: {
-            type: "video/mpeg",
-            ext: "*.mpeg"
-        },
-        MOV: {
-            type: "video/quicktime",
-            ext: "*.mov"
-        },
-        AVI: {
-            type: "video/x-msvideo",
-            ext: "*.avi"
-        }
+        // Images
+        jpg: "image/jpeg",
+        jpeg: "image/jpeg",
+        bmp: "image/bmp",
+        png: "image/png",
+        tif: "image/tiff",
+        tiff: "image/tiff",
+        
+        // Audio
+        mp3: "audio/mpeg",
+        m4a: "audio/mp4a-latm",
+        ogg: "audio/ogg",
+        wav: "audio/x-wav",
+        aiff: "audio/x-aiff",
+        
+        // Video
+        mpg: "video/mpeg",
+        mpeg: "video/mpeg",
+        m4v: "video/x-m4v",
+        ogv: "video/ogg",
+        mov: "video/quicktime",
+        avi: "video/x-msvideo",
+        
+        // Text documents
+        html: "text/html",
+        htm: "text/html",
+        text: "text/plain",
+        
+        // Office Docs.
+        doc: "application/msword",
+        docx: "application/msword",
+        xls: "application/vnd.ms-excel",
+        xlsx: "application/vnd.ms-excel",
+        ppt: "application/vnd.ms-powerpoint",
+        pptx: "application/vnd.ms-powerpoint"
     };    
 })(jQuery, fluid_1_4);        
