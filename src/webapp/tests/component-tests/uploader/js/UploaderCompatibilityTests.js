@@ -74,10 +74,6 @@
         });
 
         fluid.tests.uploader.noIoC = function (options, rules) {
-            options.transformOptions = {
-                transformer: "fluid.model.transformWithRules",
-                config: rules
-            };
             return fluid.uploader(".flc-uploader", options);
         };
         

@@ -17,10 +17,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 var fluid_1_4 = fluid_1_4 || {};
 
-/*********************************************************************************************
- * Note: this file should not be included in any Infusion build.                             *
- * Instead, users can choose to add this file manually if they need backwards compatibility. *
- *********************************************************************************************/
+/**************************************************************************************
+ * Note: this file should not be included in the InfusionAll build.                   *
+ * Instead, users should add this file manually if backwards compatibility is needed. *
+ **************************************************************************************/
  
 (function ($, fluid) {
     
@@ -52,6 +52,20 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.compat.fluid_1_3.uploader.optionsRules = {
+        // TODO: Remove these when model transformation can handle additive transformations.
+        "gradeNames": "gradeNames",
+        "components": "components",
+        "invokers": "invokers",
+        "queueSettings": "queueSettings",
+        "demo": "demo",
+        "selectors": "selectors",
+        "focusWithEvent": "focusWithEvent",
+        "styles": "styles",
+        "events": "events",
+        "listeners": "listeners",
+        "strings": "strings",
+        "mergePolicy": "mergePolicy",
+        
         "queueSettings.fileTypes": {
             expander: {
                 type: "fluid.compat.fluid_1_3.uploader.fileTypeTransformer", 
@@ -77,4 +91,21 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
+    
+    fluid.uploader.transformOptions = function (options) {
+        if (!options) {
+            return;
+        }
+        
+        var rules = typeof (fluid.compat.fluid_1_2.uploader) !== "undefined" ? 
+            [fluid.compat.fluid_1_2.uploader.optionsRules, fluid.compat.fluid_1_3.uploader.optionsRules] :
+            fluid.compat.fluid_1_3.uploader.optionsRules;
+        
+        options.transformOptions = {
+            transformer: "fluid.model.transformWithRules",
+            config: rules
+        };
+        
+        return options;
+    };
 })(jQuery, fluid_1_4);

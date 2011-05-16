@@ -316,6 +316,12 @@ var fluid_1_4 = fluid_1_4 || {};
       // Do not try to expand uploaderOptions here or else our subcomponents will end up
       // nested inside uploaderImpl
         var that = fluid.initView("fluid.uploader", container);
+        
+        // Unsupported, non-API function fluid.uploader.transformOptions
+        if (fluid.uploader.transformOptions) {
+            uploaderOptions = fluid.uploader.transformOptions(uploaderOptions);
+        }
+
         that.uploaderOptions = uploaderOptions;
         fluid.initDependents(that);
         return that.uploaderImpl;

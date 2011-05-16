@@ -17,10 +17,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 var fluid_1_4 = fluid_1_4 || {};
 
-/*********************************************************************************************
- * Note: this file should not be included in any Infusion build.                             *
- * Instead, users can choose to add this file manually if they need backwards compatibility. *
- *********************************************************************************************/
+/**************************************************************************************
+ * Note: this file should not be included in the InfusionAll build.                   *
+ * Instead, users should add this file manually if backwards compatibility is needed. *
+ **************************************************************************************/
  
 (function ($, fluid) {
     
@@ -93,4 +93,17 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
+    
+    fluid.uploader.transformOptions = function (options) {
+        if (!options) {
+            return;
+        }
+        
+        options.transformOptions = {
+            transformer: "fluid.model.transformWithRules",
+            config: fluid.compat.fluid_1_2.uploader.optionsRules
+        };
+        
+        return options;
+    };
 })(jQuery, fluid_1_4);
