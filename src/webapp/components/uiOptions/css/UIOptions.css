@@ -1,45 +1,111 @@
-/* CSS Specifically for the UI Options dialog and Preview window */
-.fl-uiOptions {background-color:#fff;}
-.fl-uiOptions .fl-uiOptions-controlGroup {border: 1px solid}/*fixes an IE issue where the border of the content needs to be specified, only when jquery ui css isnt available*/
+/* General UIOptions styles, used across all layouts */
 
-/*default styling without jquery ui css*/
-.fl-uiOptions h2 {margin:0; padding:5px 5px 5px 24px; background-color:#f5f5f5}
-
-.fl-uiOptions fieldset {margin:0; padding:0;}
-.fl-uiOptions ol {margin:0; padding:15px 0 0 0;}
-.fl-uiOptions li {padding:6px 0; clear:both; list-style-type:none; line-height:1.6em;}
-.fl-uiOptions legend {text-indent:-500%; margin-bottom:-1.6em; visibility:hidden;}
-.fl-uiOptions .fl-uiOptions-buttons-refresher-5 {width:5em;}
-.fl-uiOptions .fl-uiOptions-buttons-refresher-10 {width:10em;}
-
-.fl-uiOptions .fl-uiOptions-controlGroup {zoom:1;}
-.fl-uiOptions .fl-uiOptions-controlGroup fieldset, .fl-uiOptions .fl-uiOptions-controlGroup span {display:inline;}
-
-.fl-uiOptions .fl-formLabels {text-align:right; padding-right:5px;}
-
-.fl-uiOptions .fl-uiOptions-min-text-size .fl-textfield,
-.fl-uiOptions .fl-uiOptions-line-spacing .fl-textfield {width:1.85em; height:1.2em; padding:0.1em;}
-
-.fl-uiOptions .fl-slider {
-    margin-bottom:0;
-    margin-top:5px;
+.fl-uiOptions {
+	font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
+    font-size: 0.85em;
 }
 
-.fl-uiOptions .fl-subcomp-preview {padding:0;border:3px solid;}
-.fl-uiOptions .fl-subcomp-preview h2 {font-weight:normal; margin:0; padding:5px;}
-.fl-uiOptions .fl-subcomp-preview iframe {width:100%; height:300px;}
+.fl-uiOptions p {
+    font-size: 1.1em;
+}
 
-/* Component Theme CSS */
-.fl-theme-mist .fl-uiOptions h2 {background-color:#ebebeb;}
-.fl-theme-mist .fl-uiOptions .fl-uiOptions-controlGroup {border-color:#ebebeb;}
-.fl-theme-mist .fl-uiOptions .fl-subcomp-preview {border-color:#ebebeb;}
+/* Form list */
 
-.fl-theme-slate .fl-uiOptions h2 {background-color:#666;}
-.fl-theme-slate .fl-uiOptions .fl-uiOptions-controlGroup {border-color:#666;}
-.fl-theme-slate .fl-uiOptions .fl-subcomp-preview {border-color:#666;}
+.fl-uiOptions ul {
+	margin-left: 0px;
+}
 
-.fl-theme-coal .fl-uiOptions h2 {background-color:#666; color:#fff;}
-.fl-theme-coal .fl-uiOptions .fl-uiOptions-controlGroup {border-color:#666;}
-.fl-theme-coal .fl-uiOptions .fl-subcomp-preview {border-color:#666;}
+.fl-uiOptions ul li {
+    list-style: none;
+}
 
-.fl-theme-hc .fl-uiOptions h2 {background-color:#666; color:#fff;}
+/* Text and display section */
+.fl-uiOptions .fl-uio-form label {
+    display: block;
+    float: left;
+	width: 14em;	
+}
+
+.fl-uiOptions .fl-uio-form .fl-inputs {
+	float: left;
+}
+
+.fl-uiOptions input[type="text"] {
+	width:2em;
+}
+
+/* Slider position. More slider styles in /css/Slider.css */
+.fl-uiOptions .fl-slider {
+	float:left;
+	margin-right: 10px;
+}
+
+/* Check boxes */
+.fl-uiOptions input[type="checkbox"] {
+	margin-right:10px;
+	margin-bottom: 2em;
+	border: 1px solid black;
+}
+
+/* Font Select box */
+.fl-uiOptions select {
+	border: 2px solid #ebebeb;
+}
+
+.fl-uiOptions select#text-font { 
+	font-weight:bold; 
+}
+.fl-uiOptions select#text-font option.times { font-family: "Times New Roman"; }
+.fl-uiOptions select#text-font option.comic { font-family: "Comic Sans MS"; }
+.fl-uiOptions select#text-font option.arial { font-family: Arial; }
+.fl-uiOptions select#text-font option.verdana { font-family: Verdana; }
+
+/* Theme Select box */
+.fl-uiOptions select#theme { 
+	font-weight:bold; 
+	text-transform: uppercase;
+}
+.fl-uiOptions select#theme option.default { color: #000; background-color: #efefef;}
+.fl-uiOptions select#theme option.bw { color: #fff; background-color: #000;}
+.fl-uiOptions select#theme option.wb { color: #000; background-color: #fff;}
+.fl-uiOptions select#theme option.by { color: #000; background-color: #ffee00;}
+.fl-uiOptions select#theme option.yb { color: #ffee00; background-color: #000;}
+
+/**
+ * Sliders: basic slider structure
+ * requires an anchor for a drag handle
+ */
+
+/* LAYOUT DATA */
+.fl-uiOptions .fl-slider-vert {height:10em; width:0.8em;}
+.fl-uiOptions .fl-slider-horz {width:140px; height:3px; -moz-border-radius: 100%; -webkit-border-radius: 100%;}
+.fl-uiOptions .fl-slider {position:relative; background-color:#555555; padding:0;}
+.fl-uiOptions .fl-slider .fl-handle, .fl-slider a {position:absolute; display:block; height:32px; width:32px; top:0; left:0;}
+.fl-uiOptions .fl-slider a { background-image:url('../images/uio_icon_sliderhandle.png'); background-repeat:no-repeat; background-position:center center; bottom: 16px;}
+.fl-uiOptions .fl-slider-vert .fl-handle, .fl-slider-vert a {margin-left:-0.2em; margin-top:-0.5em;}
+.fl-uiOptions .fl-slider-horz .fl-handle, .fl-slider-horz a {margin-top:-14px; margin-left:-6px;}
+.fl-uiOptions .fl-left-slider-image { padding-right: 8px; }
+.fl-uiOptions .fl-right-slider-image { padding-left: 0px; padding-right: 10px;}
+
+/* THEME DATA */
+.fl-uiOptions .fl-theme-hc .fl-slider {background-color:#000;}
+.fl-uiOptions .fl-theme-hc .fl-slider .fl-handle, 
+.fl-uiOptions .fl-theme-hc .fl-slider a,
+.fl-uiOptions .fl-theme-hc .fl-slider a:hover {border:1px solid #000 !important; background-color:#fff !important;}
+
+.fl-uiOptions .fl-theme-hci .fl-slider {background-color:#fff;}
+.fl-uiOptions .fl-theme-hci .fl-slider .fl-handle, 
+.fl-uiOptions .fl-theme-hci .fl-slider a,
+.fl-uiOptions .fl-theme-hci .fl-slider a:hover {border:1px solid #fff !important; background-color:#000 !important;}
+
+.fl-uiOptions .fl-theme-slate .fl-slider {background-color:#ccc;}
+.fl-uiOptions .fl-theme-slate .fl-slider .fl-handle, 
+.fl-uiOptions .fl-theme-slate .fl-slider a,
+.fl-uiOptions .fl-theme-slate .fl-slider a:hover {border:1px solid #000; background-color:#999;}
+
+.fl-uiOptions .fl-theme-coal .fl-slider {background-color:#ccc;}
+.fl-uiOptions .fl-theme-coal .fl-slider .fl-handle, 
+.fl-uiOptions .fl-theme-coal .fl-slider a,
+.fl-uiOptions .fl-theme-coal .fl-slider a:hover {border:1px solid #000; background-color:#999;}
+
+.fl-uiOptions .fl-theme-mist {}
