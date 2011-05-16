@@ -1479,11 +1479,8 @@ var fluid = fluid || fluid_1_4;
                 containerSpec = container.selector;
             }
             var count = container.length !== undefined ? container.length : 0;
-            fluid.fail({
-                name: "NotOne",
-                message: (count > 1 ? "More than one (" + count + ") container elements were"
-                    : "No container element was") + " found for selector " + containerSpec
-            });
+            fluid.fail((count > 1 ? "More than one (" + count + ") container elements were"
+                    : "No container element was") + " found for selector " + containerSpec);
         }
         if (!fluid.isDOMNode(container[0])) {
             fluid.fail("fluid.container was supplied a non-jQueryable element");  
