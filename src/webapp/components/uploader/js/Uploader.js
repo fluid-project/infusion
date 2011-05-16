@@ -290,7 +290,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     var setupUploader = function (that) {
-        that.demo = fluid.typeTag(that.options.demo? "fluid.uploader.demo" : "fluid.uploader.live");
+        that.demo = fluid.typeTag(that.options.demo ? "fluid.uploader.demo" : "fluid.uploader.live");
         
         fluid.initDependents(that);                 
 
@@ -328,8 +328,9 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uploaderImpl = function () {
-        fluid.fail("Error creating uploader component - please make sure that a progressiveCheckerForComponent for \"fluid.uploader\" is registered either in the "
-          + "static environment or else is visible in the current component tree");
+        fluid.fail("Error creating uploader component - please make sure that a " + 
+            "progressiveCheckerForComponent for \"fluid.uploader\" is registered either in the " + 
+            "static environment or else is visible in the current component tree");
     };
     
     fluid.defaults("fluid.uploader", {

@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid_1_4:true, jQuery*/
+/*global fluid_1_4:true*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -22,7 +22,7 @@ var fluid_1_4 = fluid_1_4 || {};
  * Instead, users should add this file manually if backwards compatibility is needed. *
  **************************************************************************************/
  
-(function ($, fluid) {
+(function (fluid) {
     
     fluid.registerNamespace("fluid.compat.fluid_1_3.uploader");
     fluid.staticEnvironment.uploader_1_3_Compatibility = fluid.typeTag("fluid.uploader.fluid_1_3");
@@ -108,4 +108,4 @@ var fluid_1_4 = fluid_1_4 || {};
         
         return options;
     };
-})(jQuery, fluid_1_4);
+})(fluid_1_4);

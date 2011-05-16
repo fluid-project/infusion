@@ -188,11 +188,9 @@ var fluid_1_4 = fluid_1_4 || {};
         var mimeTypes = fluid.get(model, expandSpec.path); 
         var mimeTypesMap = fluid.uploader.mimeTypeRegistry;
         
-        // If the fileTypes option is null or undefined, accept all strings.
-        // If the fileTypes option provided is a string, do nothing.
         if (!mimeTypes) {
             return "*";
-        } else if (typeof(mimeTypes) === 'string') {
+        } else if (typeof (mimeTypes) === "string") {
             return mimeTypes;
         }
         
@@ -303,8 +301,9 @@ var fluid_1_4 = fluid_1_4 || {};
         config.flashButtonPeerId = fluid.allocateSimpleId(flashContainer.children().eq(0));
         // Map the event and settings names to SWFUpload's expectations.
         // Convert HTML5 MIME types into SWFUpload file types
-        config.fileTypes = fluid.uploader.swfUploadStrategy.fileTypeTransformer(
-                queueSettings, {path: "fileTypes"});
+        config.fileTypes = fluid.uploader.swfUploadStrategy.fileTypeTransformer(queueSettings, {
+            path: "fileTypes"
+        });
         var convertedConfig = mapNames(swfUploadOptionsMap, config);
         return mapSWFUploadEvents(swfUploadEventMap, events, convertedConfig);
     };

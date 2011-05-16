@@ -432,8 +432,7 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
     
-    fluid.demands("fluid.uploader.fileQueueView.eventBinder", [], {} 
-    );
+    fluid.demands("fluid.uploader.fileQueueView.eventBinder", [], {});
     /**************
      * Scrollable *
      **************/

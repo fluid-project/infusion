@@ -9,11 +9,14 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery, fluid_1_4:true, window, swfobject*/
+/*global fluid_1_4:true*/
+
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
-(function ($, fluid) {
+(function (fluid) {
 
     fluid.uploader = fluid.uploader || {};
     
@@ -54,4 +57,4 @@ var fluid_1_4 = fluid_1_4 || {};
         ppt: "application/vnd.ms-powerpoint",
         pptx: "application/vnd.ms-powerpoint"
     };    
-})(jQuery, fluid_1_4);        
+})(fluid_1_4);
