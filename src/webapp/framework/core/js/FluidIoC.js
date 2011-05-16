@@ -205,7 +205,6 @@ var fluid_1_4 = fluid_1_4 || {};
      
     function makeStackResolverOptions(instantiator, parentThat, localRecord, expandOptions) {
         return $.extend({}, fluid.defaults("fluid.resolveEnvironment"), {
-            noCopy: true,
             fetcher: makeStackFetcher(instantiator, parentThat, localRecord, expandOptions)
         }); 
     }
@@ -425,7 +424,9 @@ var fluid_1_4 = fluid_1_4 || {};
                     if (arg && typeof(arg) === "object" && !arg.targetTypeName) {
                         arg.targetTypeName = demandspec.funcName;
                     }
-                    args[i] = {marker: fluid.EXPAND, value: arg, localRecord: upstreamLocalRecord};
+                    // ensure to copy the arg since it is an alias of the demand block material (FLUID-4223)
+                    // and will be destructively expanded
+                    args[i] = {marker: fluid.EXPAND, value: fluid.copy(arg), localRecord: upstreamLocalRecord};
                 }
                 if (args[i] && fluid.isMarker(args[i].marker, fluid.EXPAND_NOW)) {
                     args[i] = fluid.expander.expandLight(args[i].value, expandOptions);
