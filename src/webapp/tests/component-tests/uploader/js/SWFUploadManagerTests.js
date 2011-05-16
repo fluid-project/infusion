@@ -112,5 +112,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                                                         button);        
             checkTransparentSettings(config);
         });
+        
+        /******************************
+         * fileTypes conversion tests *
+         ******************************/
+        
+        var checkConvertedFileTypes = function (MIMETypes, convertedFileTypes) {
+            defaultQueueSettings.fileTypes = MIMETypes;
+            var flashOptions = fluid.merge(null, {}, defaultFlashSettings, {
+                flashButtonAlwaysVisible: true,
+                transparentEvenInIE: false
+            }); 
+            var defaultConfig = $.extend({}, defaultQueueSettings, flashOptions);
+            var config = fluid.uploader.swfUploadStrategy.flash10SetupConfig(defaultConfig, 
+                    events, 
+                    flashContainer, 
+                    button);
+            var convertedConfig = fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload(
+                    flashContainer, config, events, defaultQueueSettings);
+            jqUnit.assertEquals("The converted accepted fileType is", convertedFileTypes, convertedConfig.file_types);            
+        };
+        
+        swfUploadSetupTests.test("Ensure SWFUpload is properly converted to fileTypes from MIME types", function () {
+            checkConvertedFileTypes(["image/jpeg"], "*.jpg;*.jpeg");
+            checkConvertedFileTypes(["image/tiff", "image/png", "image/jpeg"], "*.tif;*.tiff;*.png;*.jpg;*.jpeg");
+            checkConvertedFileTypes(["*.jpg", "image/png", "*.html"], "*.png");
+            checkConvertedFileTypes(["*.jpg", "image/hello", "*.html"], "*");
+            checkConvertedFileTypes("*.jpg;image/png;*.txt", "*.jpg;image/png;*.txt");
+        });
     });
 })(jQuery);

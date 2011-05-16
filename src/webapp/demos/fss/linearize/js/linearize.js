@@ -57,14 +57,14 @@ var demo = demo || {};
         that.addLinearization = function () {
             that.locate("alignment").removeClass(that.options.styles.alignmentDisabled);
             that.locate("styled").addClass(that.options.styles.linear);
-            that.locate("alignmentChoice").removeAttr("disabled");
+            that.locate("alignmentChoice").prop("disabled", false);
             that.setAlignmnet(that.locate("alignmentChoice").val());
         };
         
         that.removeLinearization = function () {
             that.locate("alignment").addClass(that.options.styles.alignmentDisabled);
             that.locate("styled").removeClass(that.options.styles.linear);
-            that.locate("alignmentChoice").attr("disabled", true);
+            that.locate("alignmentChoice").prop("disabled", true);
         };
         
         that.setLayout = function (linearize) {

@@ -443,7 +443,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         var checkUploaderButton = function(uploader, buttonName, state) {
             var button = uploader.locate(buttonName);
-            jqUnit.assertEquals("The " + buttonName + " is " + (state? "enabled" : "disabled"), state, !button.attr("disabled"));
+            jqUnit.assertEquals("The " + buttonName + " is " + (state? "enabled" : "disabled"), state, !button.prop("disabled"));
         };
         
         var checkUploaderArgumentMap = function (uploader, expectedLocal, expectedRemote) {

@@ -182,6 +182,31 @@ var fluid_1_4 = fluid_1_4 || {};
         ]
     });
     
+
+    /*
+     * Transform HTML5 MIME types into file types for SWFUpload.
+     */
+    fluid.uploader.swfUploadStrategy.fileTypeTransformer = function (model, expandSpec) { 
+        var fileExts = "";
+        var mimeTypes = fluid.get(model, expandSpec.path); 
+        var mimeTypesMap = fluid.uploader.mimeTypeRegistry;
+        
+        if (!mimeTypes) {
+            return "*";
+        } else if (typeof (mimeTypes) === "string") {
+            return mimeTypes;
+        }
+        
+        fluid.each(mimeTypes, function (mimeType) {
+            fluid.each(mimeTypesMap, function (mimeTypeForExt, ext) {
+                if (mimeTypeForExt === mimeType) {
+                    fileExts += "*." + ext + ";";
+                }
+            });
+        });
+
+        return fileExts.length === 0 ? "*" : fileExts.substring(0, fileExts.length - 1);
+    };
     
     /**********************
      * swfUpload.setupDOM *
@@ -276,9 +301,13 @@ var fluid_1_4 = fluid_1_4 || {};
         return result;
     };
     
-    fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload = function (flashContainer, config, events) {
+    fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload = function (flashContainer, config, events, queueSettings) {
         config.flashButtonPeerId = fluid.allocateSimpleId(flashContainer.children().eq(0));
         // Map the event and settings names to SWFUpload's expectations.
+        // Convert HTML5 MIME types into SWFUpload file types
+        config.fileTypes = fluid.uploader.swfUploadStrategy.fileTypeTransformer(queueSettings, {
+            path: "fileTypes"
+        });
         var convertedConfig = mapNames(swfUploadOptionsMap, config);
         // TODO:  Same with the FLUID-3886 branch:  Can these declarations be done elsewhere?
         convertedConfig.file_upload_limit = 0;
@@ -286,13 +315,13 @@ var fluid_1_4 = fluid_1_4 || {};
         return mapSWFUploadEvents(swfUploadEventMap, events, convertedConfig);
     };
     
-    fluid.uploader.swfUploadStrategy.flash10SetupConfig = function (config, events, flashContainer, browseButton) {
+    fluid.uploader.swfUploadStrategy.flash10SetupConfig = function (config, events, flashContainer, browseButton, queueSettings) {
         var isTransparent = config.flashButtonAlwaysVisible ? false : (!$.browser.msie || config.flashButtonTransparentEvenInIE);
         config.flashButtonImageURL = isTransparent ? undefined : config.flashButtonImageURL;
         config.flashButtonHeight = config.flashButtonHeight || browseButton.outerHeight();
         config.flashButtonWidth = config.flashButtonWidth || browseButton.outerWidth();
         config.flashButtonWindowMode = isTransparent ? SWFUpload.WINDOW_MODE.TRANSPARENT : SWFUpload.WINDOW_MODE.OPAQUE;
-        return fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload(flashContainer, config, events);
+        return fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload(flashContainer, config, events, queueSettings);
     };
     
     fluid.demands("fluid.uploader.swfUploadStrategy.setupConfig", [
@@ -304,7 +333,8 @@ var fluid_1_4 = fluid_1_4 || {};
             "{engine}.config",
             "{multiFileUploader}.events",
             "{engine}.flashContainer",
-            "{multiFileUploader}.dom.browseButton"
+            "{multiFileUploader}.dom.browseButton",
+            "{multiFileUploader}.options.queueSettings"
         ]
     });
 
