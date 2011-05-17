@@ -622,50 +622,5 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
-
-
-    /**********************
-     * Sliding Panel *
-	 * TODO: replace class name with that.locate - refactor so button within container     
-     *********************/	 
-     
-	fluid.defaults("fluid.slidingPanel", {
-		gradeNames: ["fluid.viewComponent", "autoInit"], 	         
-		selectors: {
-			toggleButton: ".flc-slidingPanel-toggleButton"
-		},
-		strings: {
-			showText: "+ Show Display Preferences",
-			hideText: "- Hide"
-		},  		
-		finalInitFunction: "fluid.slidingPanel.finalInit"             
-	});
-	
-	
-	fluid.slidingPanel.finalInit = function (that) {
-	
-		that.togglePanel = function () {
-			if (that.container.is(":hidden")) {                						
-				that.container.slideDown();    
-				//that.locate("toggleButton").text(that.options.strings.hideText);
-				$('.flc-slidingPanel-toggleButton').text(that.options.strings.hideText);
-			} else {
-				that.container.slideUp();                           
-				//that.locate("toggleButton").text(that.options.strings.showText);                
-				$('.flc-slidingPanel-toggleButton').text(that.options.strings.showText);                
-			}
-		};	
-	
-	
-		//event binder
-		//that.locate("toggleButton").click(that.togglePanel);
-		$('.flc-slidingPanel-toggleButton').click(that.togglePanel);	
-			
-		//Start Up: hide panel
-		//that.locate("toggleButton").text(that.options.strings.showText); 
-		$('.flc-slidingPanel-toggleButton').text(that.options.strings.showText); 
-		that.container.hide();
-	};    
-    
      
 })(jQuery, fluid_1_4);

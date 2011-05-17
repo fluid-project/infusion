@@ -21,12 +21,11 @@ var fluid_1_4 = fluid_1_4 || {};
 (function ($, fluid) {
     /**********************
      * Sliding Panel *
-	 * TODO: that.locate not working for toggleButton because button is outside of container. refactor!     
-     *********************/	 
-     
+     *********************/	      
 	fluid.defaults("fluid.slidingPanel", {
 		gradeNames: ["fluid.viewComponent", "autoInit"], 	         
 		selectors: {
+			panel: "",
 			toggleButton: ".flc-slidingPanel-toggleButton"
 		},
 		strings: {
@@ -34,32 +33,34 @@ var fluid_1_4 = fluid_1_4 || {};
 			hideText: "- Hide"
 		},  		
 		finalInitFunction: "fluid.slidingPanel.finalInit"             
-	});
+	});		
 	
+	fluid.slidingPanel.finalInit = function (that) {		
 	
-	fluid.slidingPanel.finalInit = function (that) {
-	
-		that.togglePanel = function () {
-			if (that.container.is(":hidden")) {                						
-				that.container.slideDown();    
-				//that.locate("toggleButton").text(that.options.strings.hideText);
-				$('.flc-slidingPanel-toggleButton').text(that.options.strings.hideText);
-			} else {
-				that.container.slideUp();                           
-				//that.locate("toggleButton").text(that.options.strings.showText);                
-				$('.flc-slidingPanel-toggleButton').text(that.options.strings.showText);                
-			}
+		that.showPanel = function () {
+			that.locate("panel").slideDown();    
+			that.locate("toggleButton").text(that.options.strings.hideText);
 		};	
 	
+		that.hidePanel = function () {
+			that.locate("panel").slideUp();                           
+			that.locate("toggleButton").text(that.options.strings.showText);   		
+		};		
+		
+		that.togglePanel = function() {
+			if (that.locate("panel").is(":hidden")) {                						
+				that.showPanel();
+			} else {
+				that.hidePanel();             
+			}		
+		}
 	
-		//event binder
-		//that.locate("toggleButton").click(that.togglePanel);
-		$('.flc-slidingPanel-toggleButton').click(that.togglePanel);	
+		//Event binder
+		that.locate("toggleButton").click(that.togglePanel);
 			
-		//Start Up: hide panel
-		//that.locate("toggleButton").text(that.options.strings.showText); 
-		$('.flc-slidingPanel-toggleButton').text(that.options.strings.showText); 
-		that.container.hide();
+		//Start Up: set button text, hide panel
+		that.locate("toggleButton").text(that.options.strings.showText); 
+		that.locate("panel").hide();
 	};    
 
 })(jQuery, fluid_1_4);
