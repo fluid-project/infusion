@@ -250,6 +250,48 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Second component's subcomponent option is", "OPTION2", that["**-renderer-identicalComponent2-1"].subcomponent.options.option);
         });
         
+        fluid.defaults("fluid.tests.mergeRenderParent", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                mergeComponent: ".mergeComponent"
+            },
+            model: {
+                test: "TEST"
+            },
+            finalInitFunction: "fluid.tests.mergeRenderParent.finalInitFunction",
+            produceTree: "fluid.tests.mergeRenderParent.produceTree"
+        });
+        fluid.tests.mergeRenderParent.produceTree = function (that) {
+            return {
+                mergeComponent: {
+                    decorators: {
+                        type: "fluid",
+                        func: "fluid.tests.mergeComponent",
+                        options: {
+                            option: "OPTION1"
+                        }
+                    }
+                }
+            };
+        };
+        fluid.tests.mergeRenderParent.finalInitFunction = function (that) {
+            that.renderer.refreshView();
+        };
+        fluid.defaults("fluid.tests.mergeComponent", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"]
+        });
+        fluid.demands("fluid.tests.mergeComponent", "fluid.tests.mergeRenderParent", {
+            container: "{arguments}.0",
+            mergeAllOptions: [{
+                model: "{mergeRenderParent}.model"
+            }, "{arguments}.1"]
+        });
+        IoCTests.test("Merging args and options", function() {
+            var that = fluid.tests.mergeRenderParent(".mergeRenderParent");
+            jqUnit.assertEquals("Subcomponent arg option is", "OPTION1", that["**-renderer-mergeComponent-0"].options.option);
+            jqUnit.assertEquals("Subcomponent option is", that.model, that["**-renderer-mergeComponent-0"].options.model);
+        });
+        
         IoCTests.test("initDependent upgrade test", function() {
             var parentValue = "parentValue";
             var component = fluid.tests.rendererParent(".renderer-ioc-test", {parentValue: parentValue});
