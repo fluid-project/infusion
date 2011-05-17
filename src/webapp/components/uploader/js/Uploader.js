@@ -33,12 +33,12 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     var enableElement = function (that, elm) {
-        elm.removeAttr("disabled");
+        elm.prop("disabled", false);
         elm.removeClass(that.options.styles.dim);
     };
     
     var disableElement = function (that, elm) {
-        elm.attr("disabled", "disabled");
+        elm.prop("disabled", true);
         elm.addClass(that.options.styles.dim);
     };
     
@@ -290,7 +290,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     var setupUploader = function (that) {
-        that.demo = fluid.typeTag(that.options.demo? "fluid.uploader.demo" : "fluid.uploader.live");
+        that.demo = fluid.typeTag(that.options.demo ? "fluid.uploader.demo" : "fluid.uploader.live");
         
         fluid.initDependents(that);                 
 
@@ -316,14 +316,21 @@ var fluid_1_4 = fluid_1_4 || {};
       // Do not try to expand uploaderOptions here or else our subcomponents will end up
       // nested inside uploaderImpl
         var that = fluid.initView("fluid.uploader", container);
+        
+        // Unsupported, non-API function fluid.uploader.transformOptions
+        if (fluid.uploader.transformOptions) {
+            uploaderOptions = fluid.uploader.transformOptions(uploaderOptions);
+        }
+
         that.uploaderOptions = uploaderOptions;
         fluid.initDependents(that);
         return that.uploaderImpl;
     };
     
     fluid.uploaderImpl = function () {
-        fluid.fail("Error creating uploader component - please make sure that a progressiveCheckerForComponent for \"fluid.uploader\" is registered either in the "
-          + "static environment or else is visible in the current component tree");
+        fluid.fail("Error creating uploader component - please make sure that a " + 
+            "progressiveCheckerForComponent for \"fluid.uploader\" is registered either in the " + 
+            "static environment or else is visible in the current component tree");
     };
     
     fluid.defaults("fluid.uploader", {
@@ -452,7 +459,7 @@ var fluid_1_4 = fluid_1_4 || {};
             uploadURL: "",
             postParams: {},
             fileSizeLimit: "20480",
-            fileTypes: "*",
+            fileTypes: null,
             fileTypesDescription: null,
             fileUploadLimit: 0,
             fileQueueLimit: 0

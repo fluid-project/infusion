@@ -31,6 +31,7 @@ var fluid_1_4 = fluid_1_4 || {};
         return component.options && component.options["fluid.visitComponents.fireBreak"];
     };
     
+    // unsupported, non-API function
     fluid.visitComponentChildren = function(that, visitor, options, up, down) {
         options = options || {};
         for (var name in that) {
@@ -109,10 +110,12 @@ var fluid_1_4 = fluid_1_4 || {};
         };
     }
     
+    // unsupported, non-API function
     fluid.dumpThat = function(that, instantiator) {
         return "{ typeName: \"" + that.typeName + "\" id: " + that.id + "}";
     };
     
+        // unsupported, non-API function
     fluid.dumpThatStack = function(thatStack, instantiator) {
         var togo = fluid.transform(thatStack, function(that) {
             var path = instantiator.idToPath[that.id];
@@ -122,11 +125,13 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     // Return an array of objects describing the current activity
+    // unsupported, non-API function
     fluid.describeActivity = function() {
         return fluid.threadLocal().activityStack || [];
     };
     
     // Execute the supplied function with the specified activity description pushed onto the stack
+    // unsupported, non-API function
     fluid.pushActivity = function(func, message) {
         if (!message) {
             return func();
@@ -145,6 +150,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     // Return a function wrapped by the activity of describing its activity
+    // unsupported, non-API function
     fluid.wrapActivity = function(func, messageSpec) {
         return function() {
             var args = fluid.makeArray(arguments);
