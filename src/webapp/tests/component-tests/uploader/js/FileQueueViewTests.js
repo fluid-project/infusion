@@ -179,12 +179,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var rowButtons = q.locate("fileIconBtn", q.locate("fileRows"));
             q.prepareForUpload();
             jqUnit.assertTrue("Button should be disabled. ",
-                                rowButtons.attr("disabled"));
+                                rowButtons.prop("disabled"));
 
             //assume upload is done. call refreshAfterUpload
             q.refreshAfterUpload();
             jqUnit.assertFalse("Button should be disabled. ",
-                                rowButtons.attr("disabled"));
+                                rowButtons.prop("disabled"));
         });
 
         fileQueueViewTests.test("File Progress Percentage test", function () {

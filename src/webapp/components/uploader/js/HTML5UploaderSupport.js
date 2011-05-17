@@ -402,11 +402,11 @@ var fluid_1_4 = fluid_1_4 || {};
         };
         
         that.enable = function () {
-            that.locate("fileInputs").removeAttr("disabled");
+            that.locate("fileInputs").prop("disabled", false);
         };
         
         that.disable = function () {
-            that.locate("fileInputs").attr("disabled", "disabled");
+            that.locate("fileInputs").prop("disabled", true);
         };
         
         setupBrowseButtonView(that);

@@ -221,14 +221,14 @@ var fluid_1_4 = fluid_1_4 || {};
     
     var prepareForUpload = function (that) {
         var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
-        rowButtons.attr("disabled", "disabled");
+        rowButtons.prop("disabled", true);
         rowButtons.addClass(that.options.styles.dim);
         enableRows(that.locate("fileRows"), false);
     };
 
     var refreshAfterUpload = function (that) {
         var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
-        rowButtons.removeAttr("disabled");
+        rowButtons.prop("disabled", false);
         rowButtons.removeClass(that.options.styles.dim);
         enableRows(that.locate("fileRows"), true);        
     };
