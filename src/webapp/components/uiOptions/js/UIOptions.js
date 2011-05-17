@@ -418,15 +418,14 @@ var fluid_1_4 = fluid_1_4 || {};
         };
     };
     
-    var finalInitControlsComponent = function (that) {
+    fluid.uiOptions.controlsFinalInit = function (that) {
         initModel(that);
 
         /**
-         * Rerenders the UI and fires afterRender
+         * Rerenders the UI
          */
         that.refreshView = function () {
             that.renderer.refreshView();
-            that.events.afterRender.fire();
         };
         
         fluid.fetchResources(that.options.resources, function () {
@@ -467,7 +466,7 @@ var fluid_1_4 = fluid_1_4 || {};
         rendererOptions: {
             autoBind: true
         },
-        finalInitFunction: "fluid.uiOptions.textControls.finalInit",
+        finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.textControls.produceTree",
         resources: {
             template: {
@@ -476,10 +475,6 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
-
-    fluid.uiOptions.textControls.finalInit = function (that) {
-        finalInitControlsComponent(that);
-    };
 
     fluid.uiOptions.textControls.produceTree = function (that) {
         var tree = {};
@@ -538,7 +533,7 @@ var fluid_1_4 = fluid_1_4 || {};
         rendererOptions: {
             autoBind: true
         },
-        finalInitFunction: "fluid.uiOptions.layoutControls.finalInit",
+        finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.layoutControls.produceTree",
         resources: {
             template: {
@@ -547,10 +542,6 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
-
-    fluid.uiOptions.layoutControls.finalInit = function (that) {
-        finalInitControlsComponent(that);
-    };
 
     fluid.uiOptions.layoutControls.produceTree = function (that) {
         var tree = {};
@@ -590,7 +581,7 @@ var fluid_1_4 = fluid_1_4 || {};
         rendererOptions: {
             autoBind: true
         },
-        finalInitFunction: "fluid.uiOptions.linksControls.finalInit",
+        finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.linksControls.produceTree",
         resources: {
             template: {
@@ -599,10 +590,6 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
-
-    fluid.uiOptions.linksControls.finalInit = function (that) {
-        finalInitControlsComponent(that);
-    };
 
     fluid.uiOptions.linksControls.produceTree = function (that) {
         var tree = {};
