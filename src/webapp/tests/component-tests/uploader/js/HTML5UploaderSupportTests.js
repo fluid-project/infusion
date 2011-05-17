@@ -295,7 +295,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var browseButton = $("#browseButton");
             var browseButtonView = fluid.uploader.html5Strategy.browseButtonView("#browseButtonContainer", {
                 queueSettings: {
-                    fileTypes: ""
+                    fileTypes: []
                 }
             });
 
@@ -314,9 +314,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 0, inputs.eq(1).attr("tabindex"));
             
             browseButtonView.disable();
-            jqUnit.assertTrue("The browse browseButton has been disabled", inputs.eq(1).attr("disabled"));
+            jqUnit.assertTrue("The browse browseButton has been disabled", inputs.eq(1).prop("disabled"));
             browseButtonView.enable();
-            jqUnit.assertFalse("The browse browseButton has been enabled", inputs.eq(1).attr("disabled"));                      
+            jqUnit.assertFalse("The browse browseButton has been enabled", inputs.eq(1).prop("disabled"));                      
             inputs.eq(1).focus();
             jqUnit.assertTrue("On focus, the browseButton input has the focus class", browseButton.hasClass("focus"));
             inputs.eq(1).blur();

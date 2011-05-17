@@ -179,12 +179,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var rowButtons = q.locate("fileIconBtn", q.locate("fileRows"));
             q.prepareForUpload();
             jqUnit.assertTrue("Button should be disabled. ",
-                                rowButtons.attr("disabled"));
+                                rowButtons.prop("disabled"));
 
             //assume upload is done. call refreshAfterUpload
             q.refreshAfterUpload();
             jqUnit.assertFalse("Button should be disabled. ",
-                                rowButtons.attr("disabled"));
+                                rowButtons.prop("disabled"));
         });
 
         fileQueueViewTests.test("File Progress Percentage test", function () {
@@ -289,8 +289,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          ********************/
         fileQueueViewTests.test("fluid.scrollableTable", function () {
             var table = $("#scrollableTable");
-
-            var scroller = fluid.scrollableTable(table);
+            fluid.scrollableTable(table);
 
             jqUnit.assertTrue("The table's parent element is a div", table.parent().is("div"));
             jqUnit.assertTrue("The table's parent element has the fl-scrollable-inner class",

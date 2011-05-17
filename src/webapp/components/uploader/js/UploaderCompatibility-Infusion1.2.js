@@ -10,22 +10,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid_1_4:true, jQuery*/
+/*global fluid_1_4:true*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
-/*********************************************************************************************
- * Note: this file should not be included in any Infusion build.                             *
- * Instead, users can choose to add this file manually if they need backwards compatibility. *
- *********************************************************************************************/
+/**************************************************************************************
+ * Note: this file should not be included in the InfusionAll build.                   *
+ * Instead, users should add this file manually if backwards compatibility is needed. *
+ **************************************************************************************/
  
-(function ($, fluid) {
+(function (fluid) {
     
     fluid.registerNamespace("fluid.compat.fluid_1_2.uploader");
-    fluid.staticEnvironment.uploaderCompatibility = fluid.typeTag("fluid.uploader.fluid_1_2");
+    fluid.staticEnvironment.uploader_1_2_Compatibility = fluid.typeTag("fluid.uploader.fluid_1_2");
 
     fluid.compat.fluid_1_2.uploader.optionsRules = {
         "components": {
@@ -93,4 +93,17 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
-})(jQuery, fluid_1_4);
+    
+    fluid.uploader.transformOptions = function (options) {
+        if (!options) {
+            return;
+        }
+        
+        options.transformOptions = {
+            transformer: "fluid.model.transformWithRules",
+            config: fluid.compat.fluid_1_2.uploader.optionsRules
+        };
+        
+        return options;
+    };
+})(fluid_1_4);
