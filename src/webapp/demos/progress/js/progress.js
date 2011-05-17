@@ -133,7 +133,7 @@ var demo = demo || {};
             // disable the button
             submitButton.removeClass("enabled");
             submitButton.addClass("disabled");
-            submitButton.attr("disabled", "disabled");             
+            submitButton.prop("disabled", true);             
             
             // add area role to the progress title
             statusText.text(demo.initShoppingDemo.strings.progressTitle).show();            
