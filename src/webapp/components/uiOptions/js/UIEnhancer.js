@@ -313,6 +313,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 "highContrastInverted": "fl-theme-hci",
                 "lowContrast": "fl-theme-slate",
                 "mediumContrast": "fl-theme-coal",
+                "yellowBlack": "fl-theme-yellowBlack",
+                "blackYellow": "fl-theme-blackYellow",
                 "default": ""
             },
             "layout": {

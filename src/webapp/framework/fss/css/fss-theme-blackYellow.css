@@ -1,0 +1,129 @@
+/*
+              #000000 on #000000
+=============================================
+ * Color Schema:
+ *     DEFINITIONS:
+ *         yellow     : yellow
+ *         black      : #000000
+
+ */
+
+.fl-theme-blackYellow, .fl-theme-blackYellow * {
+    background-image:none !important;
+}
+.fl-theme-blackYellow .fl-icon {
+    text-indent:0 !important;
+    width:auto !important;
+    background-color:transparent !important;
+}
+
+.fl-theme-blackYellow .fl-focus:focus,
+.fl-theme-blackYellow .fl-focus :focus,
+.fl-theme-blackYellow.fl-focus :focus,
+.fl-theme-blackYellow .selectable  {
+   /* themed focus indicator */
+   outline: 0.2em solid #F00;
+}
+
+.fl-theme-blackYellow {color:#000000 !important; background-color:yellow !important;}
+.fl-theme-blackYellow div, .fl-theme-blackYellow input {color:#000000 !important; background-color:yellow !important;}
+.fl-theme-blackYellow .fl-knockout {background:transparent !important; color:#000000;} /* a granular method for basic reset of appearance */
+.fl-theme-blackYellow .fl-icon {color:#000000; background-image:none; background-color:yellow; text-indent:0; width:auto; height:auto; margin-left:0px; padding:0 2px; display:inline; font-weight:bold;}
+
+/* Links */
+.fl-theme-blackYellow a  {color: #000000; font-weight:bold; background-color:yellow;}
+.fl-theme-blackYellow a:hover {color: yellow; background-color:#000000;}
+.fl-theme-blackYellow a:hover * {color: yellow; background-color:#000000;}
+
+/* Headers */
+.fl-theme-blackYellow h1,
+.fl-theme-blackYellow h2,
+.fl-theme-blackYellow h3,
+.fl-theme-blackYellow h4,
+.fl-theme-blackYellow h5,
+.fl-theme-blackYellow h6 {color:#000000; background-color:yellow; border-color:#000000; border-bottom:0.1em dashed #000000;}
+
+/* Tables */
+.fl-theme-blackYellow th {border:0.1em solid #000000; background-color:#000000; color:yellow;}
+.fl-theme-blackYellow td {border:0.1em solid #000000;}
+.fl-theme-blackYellow .fl-textfield {}
+.fl-theme-blackYellow .fl-textarea {}
+
+/* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
+.fl-theme-blackYellow .fl-inlineEdit-edit {background-color:#000000; color:yellow; border: 0.1em solid yellow; padding:0.1em; margin:-0.1em;}
+
+/* Helper: Tabs */
+.fl-theme-blackYellow .fl-tabs {border-bottom-color:#000000;}
+.fl-theme-blackYellow .fl-tabs li,
+.fl-theme-blackYellow .fl-tabs li *  {border-color:#000000; border-bottom-color:#000000; }
+.fl-theme-blackYellow .fl-tabs li    {background-yellow;}
+.fl-theme-blackYellow .fl-tabs li *  {color:#000000; font-weight:bold; background-color:yellow;text-decoration:none;}
+
+.fl-theme-blackYellow .fl-tabs li:hover,
+.fl-theme-blackYellow .fl-tabs li:hover *,
+.fl-theme-blackYellow .fl-tabs li a:hover {color:#000000; background-color:yellow;}
+
+.fl-theme-blackYellow .fl-tabs li.fl-tabs-active,
+.fl-theme-blackYellow .fl-tabs li.fl-tabs-active a,
+.fl-theme-blackYellow .fl-tabs li.fl-tabs-active a:hover, 
+
+.fl-theme-blackYellow .fl-tabs li.fl-activeTab,
+.fl-theme-blackYellow .fl-tabs li.fl-activeTab:hover,
+.fl-theme-blackYellow .fl-tabs li.fl-activeTab a,
+.fl-theme-blackYellow .fl-tabs li.fl-activeTab a:hover {background-color: #000000; border-bottom-color:#000000; color:yellow;}
+.fl-theme-blackYellow .fl-tab-content {background-color:#000000; border:1px solid yellow; border-top:none; color:yellow;}
+
+/* Helper: Menu */
+.fl-theme-blackYellow .fl-listmenu, 
+.fl-theme-blackYellow .fl-list-menu {border:1px solid #000000; border-bottom-width:2px; background-color:yellow;}
+.fl-theme-blackYellow .fl-listmenu li, 
+.fl-theme-blackYellow .fl-list-menu li,
+.fl-theme-blackYellow .fl-listmenu li a, 
+.fl-theme-blackYellow .fl-list-menu li a  {font-weight:bold; color:#000000; background-color:yellow; border-color:#000000; text-decoration:none;}
+.fl-theme-blackYellow .fl-listmenu a:hover, 
+.fl-theme-blackYellow .fl-list-menu a:hover {background-color:#000000; color:yellow;}
+.fl-theme-blackYellow .fl-listmenu .fl-activemenu a, 
+.fl-theme-blackYellow .fl-list-menu .fl-activemenu a,
+.fl-theme-blackYellow .fl-listmenu .fl-activemenu a:hover, 
+.fl-theme-blackYellow .fl-list-menu .fl-activemenu a:hover { background-color: #000000; border-bottom-color:yellow; color: yellow;}
+
+/* Helper: Thumbnail Grid */
+.fl-theme-blackYellow .fl-grid {}
+.fl-theme-blackYellow .fl-grid li {}
+.fl-theme-blackYellow .fl-grid .fl-grid-caption {}
+
+/* Helper: buttons */
+.fl-theme-blackYellow .fl-button-right, 
+.fl-theme-blackYellow .fl-button-left, 
+.fl-theme-blackYellow .fl-button-inner {padding:0;}
+
+/* Widget core */
+.fl-theme-blackYellow .fl-widget {background-color:#000000; border:1px solid yellow;}
+.fl-theme-blackYellow .fl-widget ul {}
+.fl-theme-blackYellow .fl-widget h2 {color:yellow; background-color:#000000;}
+.fl-theme-blackYellow .fl-widget a {color:#000000;}
+        
+/* Widget titlebar */
+.fl-theme-blackYellow .fl-widget .fl-widget-titlebar {margin-bottom:3px;}
+
+/* Widget options */
+.fl-theme-blackYellow .fl-widget .fl-widget-options {padding:0px;}
+.fl-theme-blackYellow .fl-widget .fl-widget-options ul {} 
+.fl-theme-blackYellow .fl-widget .fl-widget-options li {border-left:1px solid yellow;}
+.fl-theme-blackYellow .fl-widget .fl-widget-options .icon {}
+.fl-theme-blackYellow .fl-widget .fl-widget-options .viewOptions {}
+.fl-theme-blackYellow .fl-widget .fl-widget-options .toggle {}
+    
+/* Widget content */
+.fl-theme-blackYellow .fl-widget .fl-widget-content {background-color:yellow;}
+
+
+
+/* Component: Progressor */
+.fl-theme-blackYellow .fl-progress-bounds {border-color:#000000; background-color:yellow;}
+.fl-theme-blackYellow .fl-progress-fill {color:yellow; background-color:#000000;}
+
+/* Component: Uploader */
+
+/* States */
+.fl-theme-blackYellow .fl-reorderer-dropMarker {background-color:#f00;}

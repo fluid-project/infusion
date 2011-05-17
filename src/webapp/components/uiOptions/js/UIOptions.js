@@ -329,7 +329,7 @@ var fluid_1_4 = fluid_1_4 || {};
         strings: {
             textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
             textSpacing: ["Regular", "Wide", "Wider", "Widest"],
-            theme: ["Low Contrast", "Medium Contrast", "Medium Contrast Grey Scale", "High Contrast", "High Contrast Inverted"],
+            theme: ["Low Contrast", "Medium Contrast", "Medium Contrast Grey Scale", "High Contrast", "High Contrast Inverted", "Yellow on Black", "Black on Yellow"],
             backgroundImages: ["Yes", "No"],
             layout: ["Yes", "No"],
             toc: ["Yes", "No"]
@@ -337,7 +337,7 @@ var fluid_1_4 = fluid_1_4 || {};
         controlValues: { 
             textFont: ["serif", "sansSerif", "arial", "verdana", "courier", "times"],
             textSpacing: ["default", "wide1", "wide2", "wide3"],
-            theme: ["lowContrast", "default", "mediumContrast", "highContrast", "highContrastInverted"],
+            theme: ["lowContrast", "default", "mediumContrast", "highContrast", "highContrastInverted", "yellowBlack", "blackYellow"],
             backgroundImages: ["true", "false"],
             layout: ["simple", "default"],
             toc: ["true", "false"]
