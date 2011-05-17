@@ -295,7 +295,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var browseButton = $("#browseButton");
             var browseButtonView = fluid.uploader.html5Strategy.browseButtonView("#browseButtonContainer", {
                 queueSettings: {
-                    fileTypes: ""
+                    fileTypes: []
                 }
             });
 

@@ -394,6 +394,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             expected, result);
     });
     
+    testCase.test("fluid.model.transformWithRules() with multiple rules", function () {
+        var ruleA = {
+            kitten: "cat"
+        };
+        
+        var ruleB = {
+            sirius: "kitten"
+        };
+        
+        var expected = {
+            sirius: "meow"
+        };
+        
+        var result = fluid.model.transformWithRules(source, [ruleA, ruleB]);
+        jqUnit.assertDeepEq("An array of rules should cause each to be applied in sequence.", expected, result);
+    });
+    
     var oldOptions = {
         cat: {
             type: "farm.cat"

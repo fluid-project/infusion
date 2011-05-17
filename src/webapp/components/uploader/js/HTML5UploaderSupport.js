@@ -379,6 +379,11 @@ var fluid_1_4 = fluid_1_4 || {};
     
     var renderMultiFileInput = function (that) {
         var multiFileInput = $(that.options.multiFileInputMarkup);
+        var fileTypes = that.options.queueSettings.fileTypes;
+        if (fluid.isArrayable(fileTypes)) {
+            fileTypes = fileTypes.join();
+            multiFileInput.attr("accept", fileTypes);
+        }
         bindEventsToFileInput(that, multiFileInput);
         return multiFileInput;
     };
