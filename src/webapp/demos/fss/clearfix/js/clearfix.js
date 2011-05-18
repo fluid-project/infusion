@@ -1,5 +1,8 @@
-
+// Declare dependencies
 /*global demo:true, fluid, jQuery*/
+
+// JSLint options 
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var demo = demo || {};
 
@@ -14,7 +17,7 @@ var demo = demo || {};
         };
         
         that.addFixStyle = function (fix) {
-            that.locate("fixContainer").addClass(opts.styles[fix])
+            that.locate("fixContainer").addClass(opts.styles[fix]);
         };
         
         that.removeOtherFixStyles = function (fix) {
