@@ -8,15 +8,23 @@
         <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
-        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.tabs.js"></script>  
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.tabs.js"></script>        
         <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../js/clearfix.js"></script>
     </head>
     <body>
         <div class="cssFixApplier">
-            <label for="cssFixes">CSS Fixes:</label>
+            <!--label for="cssFixes">CSS Fixes:</label>
             <select id="cssFixes" class="location-list" name="CSS Fixes">
                 <option value="none" selected="selected">none</option>
                 <option value="fl-fix">fl-fix</option>
@@ -25,9 +33,12 @@
                 <option value="oldClearfix">Old Clearfix Method</option>
                 <option value="newClearfix">New Clearfix Method</option>
                 <option value="inline-block">inline-block</option>
-            </select>
+            </select-->
             
-            <div id="tabs">
+            <label for="cssFixes" class="democ-cssFix-fixLabel">fixes: </label>
+            <select id="cssFixes" class="democ-cssFix-fixChoice"></select>
+            
+            <div class="democ-cssFix-sections">
                 
                 <ul>
                     <li><a href="#plainDIVs">Plain DIVs</a></li>
@@ -38,8 +49,8 @@
                 
                 <div id="plainDIVs">
                     <h2>Plain div</h2>
-            		<div class="styledElement">
-            			<span class="demo-description description">Fix Description</span>
+            		<div class="democ-cssFix-fixContainer">
+            			<span class="democ-cssFix-fixDescription description">Fix Description</span>
             			<p class="fl-force-left">
             				<strong>This text should be within the border</strong>
             				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque egestas risus malesuada sem consectetur eget congue massa ultricies. Ut dictum facilisis odio, nec rutrum diam ornare id. Integer eget placerat tellus.
@@ -47,8 +58,8 @@
             		</div>
         		               
                     <h2>Plain div: 100% width + padding</h2>
-            		<div class="styledElement">
-            			<span class="demo-description description">Fix Description</span>
+            		<div class="democ-cssFix-fixContainer">
+            			<span class="democ-cssFix-fixDescription description">Fix Description</span>
             			<p class="fl-force-left" style="width:100%; padding:10px">
             				<strong>This text should be within the border</strong>
             				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque egestas risus malesuada sem consectetur eget congue massa ultricies. Ut dictum facilisis odio, nec rutrum diam ornare id. Integer eget placerat tellus.
@@ -57,8 +68,8 @@
         		</div>
         		<div id="listFloats">
                     <h2 class="fl-push">List with floating items</h2>
-                	<div class="styledElement">
-            			<span class="demo-description description">Fix Description</span>
+                	<div class="democ-cssFix-fixContainer">
+            			<span class="democ-cssFix-fixDescription description">Fix Description</span>
         			    <ul>
             				<li>
             					<strong>This text should be within the border</strong>
@@ -85,8 +96,8 @@
             			    </p>
             			</div>
             			<div class="fl-col-flex">
-            				<div class="styledElement">
-                                <span class="demo-description description">Fix Description</span>
+            				<div class="democ-cssFix-fixContainer">
+                                <span class="democ-cssFix-fixDescription description">Fix Description</span>
             					<p class="fl-force-left">
             					    <strong>This text should be within the border</strong>
             					    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque egestas risus malesuada sem consectetur eget congue massa ultricies. 
@@ -111,8 +122,8 @@
             			    </p>
             			</div>
             			<div class="fl-col">
-            				<div class="styledElement">
-                                <span class="demo-description description">Fix Description</span>
+            				<div class="democ-cssFix-fixContainer">
+                                <span class="democ-cssFix-fixDescription description">Fix Description</span>
             					<p class="fl-force-left">
             					    <strong>This text should be within the border</strong>
             					    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 

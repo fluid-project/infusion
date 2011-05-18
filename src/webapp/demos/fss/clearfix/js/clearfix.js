@@ -4,48 +4,6 @@
 var demo = demo || {};
 
 (function ($) {
-    var updateDescription = function (that, description) {
-        that.locate("styleDescription").text(description);
-    };
-    
-    var changeClass = function (that, className) {
-        var styledElm = that.locate("styledElement");
-        //styledElm.attr("class", that.initialClass);
-        styledElm.attr("class", "styledElement");
-        styledElm.addClass(className);
-    };
-    
-    var getSelectedValue = function (that) {
-        return that.locate("stylePicker").children(":selected").attr("value");
-    };
-    
-    var changeCSSFix = function (that, eventObj) {
-        var styleModel = that.model[getSelectedValue(that)];
-        changeClass(that, styleModel.className);
-        updateDescription(that, styleModel.description);
-    };
-    
-    var bindEvents = function (that) {
-        that.locate("stylePicker").change(function (eventObj) {
-            changeCSSFix(that, eventObj);
-        });
-    };
-    
-    var initTabs = function (selector) {
-        $(selector).tabs();
-    };
-    
-    var saveInitialClasses = function (that) {
-        that.initialClass = that.locate("styledElement").attr("class");
-    };
-    
-    var setup = function (that) {
-        saveInitialClasses(that);
-        initTabs(that.options.selectors.tabs);
-        bindEvents(that);
-        that.locate("stylePicker").change();
-    };
-    
     demo.cssFixApplier = function (container, options) {
         var that = fluid.initView("demo.cssFixApplier", container, options);
         
@@ -56,43 +14,98 @@ var demo = demo || {};
         return that;
     };
     
-    fluid.defaults("demo.cssFixApplier", {
-        selectors: {
-            stylePicker: "#cssFixes",
-            styledElement: ".styledElement",
-            styleDescription: ".demo-description",
-            tabs: "#tabs"
-        },
+    fluid.registerNamespace("demo.cssFixApplier");
+    
+    demo.cssFixApplier.preInit = function (that) {
+        var opts = that.options;
         
-        model: {
-            "none": {
-                description: "No Fix",
-                className: ""
+        that.setFixDescription = function (fix) {
+            that.locate("fixDescription").text(opts.strings[fix] || "");
+        };
+        
+        that.addFixStyle = function (fix) {
+            that.locate("fixContainer").addClass(opts.styles[fix])
+        };
+        
+        that.removeOtherFixStyles = function (fix) {
+            fluid.each(opts.styles, function (style, fixType) {
+                if (fix !== fixType) {
+                    that.locate("fixContainer").removeClass(style);
+                }
+            });
+        };
+        
+        that.setFix = function (fix) {
+            that.removeOtherFixStyles(fix);
+            that.addFixStyle(fix);
+            that.setFixDescription(fix);
+        };
+    };
+    
+    demo.cssFixApplier.finalInit = function (that) {
+        // bind event listener for fix selectbox
+        that.applier.modelChanged.addListener("selection", function (newModel, oldModel) {
+            that.events.afterFixSelectionChanged.fire(newModel.selection, oldModel.selection);
+        });
+        
+        that.refreshView();
+        that.setFix(that.model.selection);
+    };
+    
+    demo.cssFixApplier.produceTree = function (that) {
+        var tree = {
+            fixChoice: {
+                "selection": "${selection}",
+                "optionlist": "${choices}",
+                "optionnames": "${names}"
             },
-            "fl-fix": {
-                description: "FSS: .fl-fix",
-                className: "fl-fix"
+            fixLabel: {
+                messagekey: "fixLabel"
             },
-            "fl-clearfix": {
-                description: "FSS: .fl-clearfix",
-                className: "fl-clearfix"
-            },            
-            "jquery": {
-                description: "jQuery: .ui-helper-clearfix",
-                className: "ui-helper-clearfix"
-            },
-            "oldClearfix": {
-                description: "Old Clearfix",
-                className: "clearfix"
-            },
-            "newClearfix": {
-                description: "New Clearfix",
-                className: "newClearfix"
-            },
-            "inline-block": {
-                description: "inline-block",
-                className: "inline-block-clearfix"
+            sections: {
+                decorators: {
+                    type: "jQuery",
+                    func: "tabs"
+                }
             }
+        };
+        
+        return tree;
+    };
+    
+    fluid.defaults("demo.cssFixApplier", {
+        gradeNames: ["fluid.rendererComponent", "autoInit"],
+        preInitFunction: "demo.cssFixApplier.preInit",
+        finalInitFunction: "demo.cssFixApplier.finalInit",
+        produceTree: "demo.cssFixApplier.produceTree",
+        selectors: {
+            fixLabel: ".democ-cssFix-fixLabel",
+            fixChoice: ".democ-cssFix-fixChoice",
+            fixContainer: ".democ-cssFix-fixContainer",
+            fixDescription: ".democ-cssFix-fixDescription",
+            sections: ".democ-cssFix-sections"
+        },
+        selectorsToIgnore: ["fixContainer", "fixDescription"],
+        styles: {
+            "fl-fix": "fl-fix",
+            "fl-clearfix": "fl-clearfix"
+        },
+        strings: {
+            fixLabel: "CSS Fixes:",
+            "fl-fix": "FSS: .fl-fix",
+            "fl-clearfix": "FSS: .fl-clearfix",
+            "none": "No Fix Applied"
+        },
+        events: {
+            afterFixSelectionChanged: null
+        },
+        listeners: {
+            afterFixSelectionChanged: "{demo.cssFixApplier}.setFix"
+        },
+        model: {
+            selection: "none",
+            choices: ["none", "fl-fix", "fl-clearfix"],
+            names: ["none", "fl-fix", "fl-clearfix"]
         }
     });
 })(jQuery);
