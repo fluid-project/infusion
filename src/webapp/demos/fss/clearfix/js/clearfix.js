@@ -4,16 +4,6 @@
 var demo = demo || {};
 
 (function ($) {
-    demo.cssFixApplier = function (container, options) {
-        var that = fluid.initView("demo.cssFixApplier", container, options);
-        
-        that.model = that.options.model;
-        
-        setup(that);
-        
-        return that;
-    };
-    
     fluid.registerNamespace("demo.cssFixApplier");
     
     demo.cssFixApplier.preInit = function (that) {
