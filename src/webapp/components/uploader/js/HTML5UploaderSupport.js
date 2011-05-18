@@ -259,12 +259,12 @@ var fluid_1_4 = fluid_1_4 || {};
         args: ["@0", "@1", "@2", {
             expander: {
                 type: "fluid.deferredInvokeCall",
-                func: "fluid.uploader.html5Strategy.provideFormData"
+                func: "fluid.uploader.html5Strategy.createFormData"
             }
         }]
     });
     
-    fluid.uploader.html5Strategy.provideFormData = function () {
+    fluid.uploader.html5Strategy.createFormData = function () {
         return new FormData();
     };
     
