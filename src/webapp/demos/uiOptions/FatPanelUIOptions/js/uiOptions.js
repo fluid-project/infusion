@@ -55,6 +55,7 @@ var demo = demo || {};
         		panel: uioptions
         	}
         });
+        
     };
     
 })(jQuery, fluid);

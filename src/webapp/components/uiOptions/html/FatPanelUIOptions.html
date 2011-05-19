@@ -4,20 +4,14 @@
     	<div class="fl-force-right">
     		<a id="reset" class="flc-uiOptions-reset" href="#">Reset All</a>
     	</div>
-    
-    	<ul id="fl-uiOptions-tabs" class="flc-uiOptions-tabs fl-tabs fl-tabs-left" role="tablist">
-    		<li class="fl-tabs-active" role="presentation">
-    			<a id="tab-first" href="#tab1" role="tab" aria-selected="true" tabindex="0">Text and display</a>
-    		</li>
-			<li role="presentation">
-				<a id="tab-second" href="#tab2" role="tab" aria-selected="false" tabindex="-1">Layout and navigation</a>
-			</li>    		
-			<li role="presentation">
-				<a id="tab-third" href="#tab3" role="tab" aria-selected="false" tabindex="-1">Links and buttons</a>
-			</li>
+<div id="fl-uiOptions-tabs">    
+    	<ul class="fl-tabs fl-tabs-left">
+    		<li><a href="#tab1">Text and display</a></li>
+			<li><a href="#tab2">Layout and navigation</a></li>    		
+			<li><a href="#tab3">Links and buttons</a></li>
     	</ul>
     
-    	<div id="tab1" class="fl-clearfix fl-tab-panel" role="tabpanel" aria-hidden="false" aria-labelledby="tab-first">			
+    	<div id="tab1" class="fl-clearfix">			
 			<ul class="fl-pane">
 				<li class="flc-uiOptions-min-text-size fl-uio-option fl-uio-option-first fl-uio-option-2col">
     				<label for="min-text-size" class="fl-label">Text Size</label>
@@ -58,7 +52,7 @@
 			</ul>    
         </div>
                  
-    	<div id="tab2" class="fl-clearfix fl-tab-panel" role="tabpanel" aria-hidden="true" aria-labelledby="tab-second">                 
+    	<div id="tab2" class="fl-clearfix">                 
 			<ul>
 				<li>                             
 					<input type="checkbox" id="layout-choice" class="flc-uiOptions-layout fl-force-left" />
@@ -77,7 +71,7 @@
 			</ul>
         </div>
         
-    	<div id="tab3" class="fl-clearfix fl-tab-panel" role="tabpanel" aria-hidden="true" aria-labelledby="tab-third">                         
+    	<div id="tab3" class="fl-clearfix">                         
 			<ul>
 				<li>
 					<input type="checkbox" id="links-choice" class="flc-uiOptions-links-choice fl-force-left" />
@@ -95,12 +89,7 @@
 				</li>        
 			</ul>  
 		</div>
-    </div>
-
-		<!-- div class="fl-text-align-center fl-uio-buttons">
-            <input class="flc-uiOptions-reset" type="button" value="Reset" />
-            <input class="flc-uiOptions-save fl-uio-save" type="button" value="Save and apply" />
-            <input class="flc-uiOptions-cancel fl-uio-cancel" type="button" value="Cancel" />
-        </div -->       
+</div>		
+    </div>    
     
 </form>                
