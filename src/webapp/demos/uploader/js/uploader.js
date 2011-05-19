@@ -50,46 +50,8 @@ fluid.registerNamespace("fluid.uploader.demo");
         });
     });          
 
-    fluid.defaults("fluid.uploader.demo.IoCLoader", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        components: {
-            uploader: {
-                type: "fluid.uploader",
-                container: "{IoCLoader}.container",
-                options: {
-                    demo: true
-                }
-            }
-        }
-    });
-    
-    fluid.defaults("fluid.uploader.demo.IoCLoaderDemands", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        components: {
-            uploader: {
-                type: "fluid.uploader"
-            }
-        }
-    });
-
-    fluid.demands("fluid.uploader", "fluid.uploader.demo.IoCLoaderDemands", {
-        container: "{IoCLoaderDemands}.container",
-        options: {
-            demo: true
-        }  
-    });
-
     // Demonstrate the user requesting that they want default configuration for all uploaders created in this session
     fluid.staticEnvironment.uploaderConfig = fluid.progressiveCheckerForComponent({componentName: "fluid.uploader"});
-
-    fluid.uploader.demo.initIoCUploader = fluid.uploader.demo.makeInitUploaderFunc( function() {
-        fluid.uploader.demo.IoCLoader(fluid.uploader.demo.defaultContainer);
-    });
-    
-    fluid.uploader.demo.initIoCUploaderDemands = fluid.uploader.demo.makeInitUploaderFunc( function() {
-        fluid.uploader.demo.IoCLoaderDemands(fluid.uploader.demo.defaultContainer);
-    });
-
 })(jQuery, fluid);
 
 
