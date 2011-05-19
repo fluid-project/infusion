@@ -221,7 +221,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var originalContainer = container || document;
         container = $("body", originalContainer);
         var that = fluid.initView("fluid.uiEnhancer", container, options);
-        $(originalContainer).data("uiEnhancer", that);
+        fluid.staticEnvironment.uiEnhancer = that;
         that.defaultSiteSettings = that.options.defaultSiteSettings;
 
         var clashingClassnames;

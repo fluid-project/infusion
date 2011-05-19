@@ -204,6 +204,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uiOptions", {
         gradeNames: ["fluid.viewComponent", "autoInit"], 
         components: {
+            uiEnhancer: "{uiEnhancer}",
             textControls: {
                 type: "fluid.uiOptions.textControls",
                 container: "{uiOptions}.dom.textControls",
@@ -277,7 +278,6 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uiOptions.finalInit = function (that) {
 
-        that.uiEnhancer = $(document).data("uiEnhancer");
         setChangeApplier(that, fluid.copy(that.uiEnhancer.model));
         
         var savedModel = that.uiEnhancer.model;
