@@ -18,7 +18,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        
+        fluid.setLogging(true);
+    
         var hcSkin = {
             textSize: "8",
             textFont: "verdana",
@@ -46,8 +47,42 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         var testUIOptions = function (testFn, uiOptionsTestOptions, enhancerTestOptions) {
+            // Supply the template URL of "text and display" panel on the user preferences interface
+            fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptions"], {
+                options: {
+                    resources: {
+                        template: {
+                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
+                        }
+                    }
+                }
+            });
+
+            // Supply the template URL of "layout and navigation" panel on the user preferences interface
+            fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptions"], {
+                options: {
+                    resources: {
+                        template: {
+                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
+                        }
+                    }
+                }
+            });
+
+            // Supply the template URL of "layout and navigation" panel on the user preferences interface
+            fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptions"], {
+                options: {
+                    resources: {
+                        template: {
+                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                        }
+                    }
+                }
+            });
+
             var uiEnhancer = fluid.uiEnhancer(document, fluid.merge(null, enhancerOptions, enhancerTestOptions));
             var uiOptions = fluid.uiOptions("#ui-options", fluid.merge(null, uiOptionsOptions, uiOptionsTestOptions));
+
             uiOptions.events.onReady.addListener(function () {
                 testFn(uiOptions, uiEnhancer);
                 start();
@@ -60,7 +95,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expect(15);
             
             testUIOptions(function (uiOptions) {
-                var model = uiOptions.controls.model;
+                var model = uiOptions.model;
                 jqUnit.assertNotNull("Model is not null", model);
                 jqUnit.assertNotUndefined("Model is not undefined", model);
                 jqUnit.assertFalse("Min text size is not set", !!model.textSize);
@@ -68,23 +103,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("Text spacing is set", "", model.selections.textSpacing);
                 jqUnit.assertEquals("Colour scheme is set", "default", model.selections.theme);
 
-                var themeValues = uiOptions.controls.options.controlValues.theme;
+                var themeValues = uiOptions.textControls.options.controlValues.theme;
                 jqUnit.assertEquals("There are 5 themes in the control", 5, themeValues.length);
                 jqUnit.assertEquals("The second theme is default", "default", themeValues[1]);
 
-                var spacingValues = uiOptions.controls.options.controlValues.textSpacing;
+                var spacingValues = uiOptions.textControls.options.controlValues.textSpacing;
                 jqUnit.assertEquals("There are 4 text spacing values in the control", 4, spacingValues.length);
                 jqUnit.assertEquals("The first value is default", "default", spacingValues[0]);
 
-                var fontValues = uiOptions.controls.options.controlValues.textFont;
+                var fontValues = uiOptions.textControls.options.controlValues.textFont;
                 jqUnit.assertEquals("There are 6 font values in the control", 6, fontValues.length);
                 jqUnit.assertEquals("There is no default font value", -1, jQuery.inArray("default", fontValues));
 
-                var layoutValues = uiOptions.controls.options.controlValues.layout;
+                var layoutValues = uiOptions.layoutControls.options.controlValues.layout;
                 jqUnit.assertEquals("There are 2 layout values in the control", 2, layoutValues.length);
                 jqUnit.assertEquals("There is a default layout value", 1, jQuery.inArray("default", layoutValues));
 
-                var bgValues = uiOptions.controls.options.controlValues.backgroundImages;
+                var bgValues = uiOptions.layoutControls.options.controlValues.backgroundImages;
                 jqUnit.assertEquals("There are 2 back ground images values in the control", 2, bgValues.length);
             });            
         });
@@ -93,7 +128,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expect(4);
             
             testUIOptions(function (uiOptions) {
-                uiOptions.updateControlsModel(hcSkin);
+                uiOptions.updateModel(hcSkin);
 
                 jqUnit.assertFalse("Save hasn't been called", saveCalled);
                 uiOptions.save();
@@ -109,12 +144,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expect(6);
             
             testUIOptions(function (uiOptions) {
-                uiOptions.updateControlsModel(hcSkin);
+                uiOptions.updateModel(hcSkin);
 
-                jqUnit.assertEquals("hc setting was set in the model", hcSkin.theme, uiOptions.controls.model.selections.theme);
+                jqUnit.assertEquals("hc setting was set in the model", hcSkin.theme, uiOptions.model.selections.theme);
                 jqUnit.assertEquals("hc setting was not saved", "default", uiOptions.uiEnhancer.model.theme);
 
-                uiOptions.controls.refreshView();
+                uiOptions.refreshControlsView();
                 var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
                 var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val(); 
                 jqUnit.assertEquals("Small font size selected", "8", fontSizeSetting);
@@ -143,17 +178,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
         
             testUIOptions(function (uiOptions) {
-                var themeValues = uiOptions.controls.options.controlValues.theme;
+                var themeValues = uiOptions.textControls.options.controlValues.theme;
                 jqUnit.assertEquals("There are 5 themes in the control", 5, themeValues.length);
                 jqUnit.assertEquals("The second theme is mist", "mist", themeValues[1]);
                 jqUnit.assertEquals("default theme value is gone", -1, jQuery.inArray("default", themeValues));
 
-                var spacingValues = uiOptions.controls.options.controlValues.textSpacing;
+                var spacingValues = uiOptions.textControls.options.controlValues.textSpacing;
                 jqUnit.assertEquals("There are 4 text spacing values in the control", 4, spacingValues.length);
                 jqUnit.assertEquals("The first value is wide4", "wide4", spacingValues[0]);
                 jqUnit.assertEquals("default spacing value is gone", -1, jQuery.inArray("default", spacingValues));
 
-                var fontValues = uiOptions.controls.options.controlValues.textFont;
+                var fontValues = uiOptions.textControls.options.controlValues.textFont;
                 jqUnit.assertEquals("There are 7 font values in the control", 7, fontValues.length);
                 jqUnit.assertEquals("The last font value is monospace", "monospace", fontValues[6]);
             }, null, enhancerOpts);
