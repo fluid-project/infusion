@@ -47,6 +47,53 @@ var demo = demo || {};
     
     demo.slidingUIOptions = function (container, button) {
         // First, initialize a UIEnhancer for the page
+        // Supply the table of contents' template URL
+        fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+            options: {
+                templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
+            }
+        });
+        
+        // Supply the template URL of "text and display" panel on the user preferences interface
+        fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptions"], {
+            options: {
+                resources: {
+                    template: {
+                        url: "../../../components/uiOptions/html/UIOptionsTemplate-text.html"
+                    }
+                }
+            }
+        });
+
+        // Supply the template URL of "layout and navigation" panel on the user preferences interface
+        fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptions"], {
+            options: {
+                resources: {
+                    template: {
+                        url: "../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
+                    }
+                }
+            }
+        });
+
+        // Supply the template URL of "layout and navigation" panel on the user preferences interface
+        fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptions"], {
+            options: {
+                resources: {
+                    template: {
+                        url: "../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                    }
+                }
+            }
+        });
+
+        // Supply the table of contents' template URL
+        fluid.demands("fluid.tableOfContents", ["fluid.uiOptions", "fluid.uiEnhancer"], {
+            options: {
+                templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
+            }
+        });
+
         fluid.uiEnhancer(document, {
             defaultSiteSettings: {
                 theme: "mist",
@@ -61,13 +108,6 @@ var demo = demo || {};
                 template: {
                     url: "../../../components/uiOptions/html/UIOptions.html"
                 }
-            }
-        });
-
-        // Supply the table of contents' template URL that is relative to the caller html
-        fluid.demands("fluid.tableOfContents", ["fluid.uiOptions", "fluid.uiEnhancer"], {
-            options: {
-                templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
             }
         });
 
