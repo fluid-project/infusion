@@ -1,10 +1,23 @@
 /*
 Generic containers for columns and layouts
 =============================================
- */
+*/
 
 /* Container Utilities*/
 .fl-fix {overflow: auto; zoom:1;}
+
+/* An alternate clearfix solution from http://perishablepress.com/press/2009/12/06/new-clearfix-hack/*/
+.fl-clearfix:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+	}
+* html .fl-clearfix             { zoom: 1; } /* IE6 */
+*:first-child+html .fl-clearfix { zoom: 1; } /* IE7 */
+
 .fl-push {clear:both;}
 
 /* Container alignment */
@@ -17,26 +30,26 @@ Generic containers for columns and layouts
 .fl-container {}
 
 /* Fixed width containers */
-.fl-container-50 {width: 50px;} 
-.fl-container-100 {width: 100px;} 
-.fl-container-150 {width: 150px;} 
-.fl-container-200 {width: 200px;} 
-.fl-container-250 {width: 250px;} 
-.fl-container-300 {width: 300px;} 
-.fl-container-350 {width: 350px;} 
-.fl-container-400 {width: 400px;} 
-.fl-container-450 {width: 450px;} 
-.fl-container-500 {width: 500px;} 
-.fl-container-550 {width: 550px;} 
-.fl-container-600 {width: 600px;} 
-.fl-container-650 {width: 650px;} 
-.fl-container-700 {width: 700px;} 
-.fl-container-750 {width: 750px;} 
-.fl-container-800 {width: 800px;} 
-.fl-container-850 {width: 850px;} 
-.fl-container-900 {width: 900px;} 
-.fl-container-950 {width: 950px;} 
-.fl-container-1000 {width: 1000px;} 
+.fl-container-50 {width: 50px;}
+.fl-container-100 {width: 100px;}
+.fl-container-150 {width: 150px;}
+.fl-container-200 {width: 200px;}
+.fl-container-250 {width: 250px;}
+.fl-container-300 {width: 300px;}
+.fl-container-350 {width: 350px;}
+.fl-container-400 {width: 400px;}
+.fl-container-450 {width: 450px;}
+.fl-container-500 {width: 500px;}
+.fl-container-550 {width: 550px;}
+.fl-container-600 {width: 600px;}
+.fl-container-650 {width: 650px;}
+.fl-container-700 {width: 700px;}
+.fl-container-750 {width: 750px;}
+.fl-container-800 {width: 800px;}
+.fl-container-850 {width: 850px;}
+.fl-container-900 {width: 900px;}
+.fl-container-950 {width: 950px;}
+.fl-container-1000 {width: 1000px;}
 
 /* Flex width containers */
 .fl-container-auto {width: auto;}
@@ -141,25 +154,25 @@ Generic containers for columns and layouts
 .fl-container-flex98 {width: 98%;}
 .fl-container-flex99 {width: 99%;}
 
-/* 
- * Linearizes, !importants override specificity 
- */
+/*
+* Linearizes, !importants override specificity
+*/
 .fl-layout-linear * {
-    clear: both !important; 
+    clear: both !important;
     float:none !important;
     margin-left:0 !important;
     margin-right:0 !important;
-    overflow:visible !important;  	/* no scroll bars, backwards compat with 1.3.1 */
-    text-align:left !important; 		/* default alignment */
+    overflow:visible !important; /* no scroll bars, backwards compat with 1.3.1 */
+    text-align:left !important; /* default alignment */
 }
 
 /* Override inline elements */
-.fl-layout-linear .fl-force-left, 
+.fl-layout-linear .fl-force-left,
 .fl-layout-linear .fl-force-right,
 .fl-layout-linear .fl-col,
 .fl-layout-linear .fl-grid li {
-	display:block !important; 
-	width: auto !important;
+display:block !important;
+width: auto !important;
 }
 
 /* Make all block elements uniform width */
@@ -170,18 +183,18 @@ Generic containers for columns and layouts
 .fl-layout-linear form, .fl-layout-linear fieldset,
 .fl-layout-linear ul, .fl-layout-linear dl, .fl-layout-linear ol,
 .fl-layout-linear pre, .fl-layout-linear hr, .fl-layout-linear blockquote {
-    width: 100% !important; 
-	max-width: 960px;
-	min-width: 560px;
-	padding: 0 !important;
+    width: 100% !important;
+max-width: 960px;
+min-width: 560px;
+padding: 0 !important;
 }
 
 /* Deprecated */
-.fl-layout-linear .fl-linearEnabled { width:100% !important; display:block;} 
+.fl-layout-linear .fl-linearEnabled { width:100% !important; display:block;}
 
 /*
- * Aligns containers and contents of a container. Best practice for linear layouts.
- */
+* Aligns containers and contents of a container. Best practice for linear layouts.
+*/
 .fl-layout-linear.fl-layout-align-right *,
 .fl-layout-linear .fl-layout-align-right * {
     text-align:right !important;
@@ -213,7 +226,7 @@ Layout Helpers
 
 /* Old System */
 .fl-col-mixed .fl-col-side {width:200px;}
-.fl-col-mixed .fl-col-side, 
+.fl-col-mixed .fl-col-side,
 .fl-col-mixed .fl-col-main {padding:0 10px;}
 
 .fl-col-mixed2 .fl-col-side {width:200px; padding:0 10px; float:left;}
@@ -244,9 +257,9 @@ Layout Helpers
 
 
 /*
- * Tabs: a quick tab system
- * Dependency: list-based markup ?
- */
+* Tabs: a quick tab system
+* Dependency: list-based markup ?
+*/
 .fl-tabs {margin:10px 0 0 0; border-bottom:1px solid #000; text-align:center; padding-bottom:2px;}
 .fl-tabs li {list-style-type:none; display:inline;}
 /* star hack to get IE 6+7 to behave perfectly */
@@ -258,18 +271,18 @@ Layout Helpers
 .fl-tabs .fl-reorderer-dropMarker {padding:0 3px; background-color:#c00;margin:0 5px 0 -5px; zoom:1;}
 .fl-tabs .fl-tabs-active a {padding:3px 16px; border-bottom:none; color:#000;}
 .fl-tabs-content {padding:5px;}
-/* get webkit to behave perfectly - 
- * unfortunately, Chrome gets caught in this too even though it applied the original padding values fine 
- */
+/* get webkit to behave perfectly -
+* unfortunately, Chrome gets caught in this too even though it applied the original padding values fine
+*/
 @media screen and (-webkit-min-device-pixel-ratio:0){
-    .fl-tabs li a {padding:3px 16px 3px;} 
+    .fl-tabs li a {padding:3px 16px 3px;}
     .fl-tabs .fl-tabs-active a {padding:3px 16px 4px;}
 }
 
 /*
- * Menus: quick horizontal and vertical menu
- * Requires list items with anchors
- */ 
+* Menus: quick horizontal and vertical menu
+* Requires list items with anchors
+*/
 .fl-listmenu, /* <=== fl-listmenu is DEPRECATED! */
 .fl-list-menu {padding:0px; margin:0; border-bottom-width:1px; border-bottom-style:solid;}
 
@@ -280,7 +293,7 @@ Layout Helpers
 .fl-list-menu a {padding:5px 5px; display:block; zoom:1; outline:none;} /* list item needs layout (http://www.brunildo.org/test/IEWlispace.php) */
 
 .fl-list-menu a:hover, .fl-list-menu a:focus {
-    padding: 4px 4px; 
+    padding: 4px 4px;
     border: 1px solid black;
 }
 
@@ -290,44 +303,44 @@ Layout Helpers
 }
 
 /*
- * Picture Grid: a quick picture grid layout
- * Dependency: list-based markup
- */
+* Picture Grid: a quick picture grid layout
+* Dependency: list-based markup
+*/
 ul.fl-grid, .fl-grid ul {padding:0; margin:0; overflow:auto;}
 .fl-grid li {list-style-type:none; display:inline;}
 .fl-grid li {float:left; width:19%; margin:0.5%; height:150px; overflow:hidden; position:relative; display:inline;}
 .fl-grid li img {display:block; margin:5px auto;}
-.fl-grid li .caption,  /*<=== DEPRECATED SYNTAX */
+.fl-grid li .caption, /*<=== DEPRECATED SYNTAX */
 .fl-grid li .fl-grid-caption {position:absolute; left:0px; bottom:0px; width:100%; text-align:center; height:1em; padding:3px 0;}
 
 /*
- * Icons: quick accessible icon helper
- */
+* Icons: quick accessible icon helper
+*/
 .fl-icon {
-    text-indent:-5000px; 
-    overflow:hidden; 
-    cursor:pointer; 
-    display:block; 
-    height:16px; 
-    width:16px; 
-    margin-left:5px; 
+    text-indent:-5000px;
+    overflow:hidden;
+    cursor:pointer;
+    display:block;
+    height:16px;
+    width:16px;
+    margin-left:5px;
     margin-right:5px;
-    background-position:center center; 
+    background-position:center center;
     background-repeat:no-repeat;
 }
 input.fl-icon {padding-left:16px;}
 
 /*
- * Buttons: quick sliding door buttons
- * requires a container with a sub container
- */
+* Buttons: quick sliding door buttons
+* requires a container with a sub container
+*/
 .fl-button-left {float:left; margin-right:10px; padding:0 0 0 16px; background-position:left center; background-repeat:no-repeat;}
-.fl-button-right {float:right;  margin-left:10px; padding:0 0 0 16px; background-position:left center; background-repeat:no-repeat;}
+.fl-button-right {float:right; margin-left:10px; padding:0 0 0 16px; background-position:left center; background-repeat:no-repeat;}
 .fl-button-inner {float:left; padding:5px 16px 5px 0; cursor:pointer; background-position:right center; background-repeat:no-repeat;}
 
 /*
- * Widgets: modelled after the mycamtools widget model
- */
+* Widgets: modelled after the mycamtools widget model
+*/
 .fl-widget {padding:5px; margin-bottom:10px;}
 .fl-widget .button {margin:0 5px;}
 .fl-grabbable .fl-widget-titlebar {background-position:center top; background-repeat:no-repeat; cursor:move;}
@@ -340,7 +353,7 @@ input.fl-icon {padding-left:16px;}
 }
 .fl-widget .fl-widget-controls {margin:-1.3em 0 1.5em 0;}
 .fl-widget .fl-widget-options {margin-top:5px; padding:0px 10px;}
-.fl-widget .fl-widget-options ul {margin:0; padding:0; overflow:hidden; zoom:1;} 
+.fl-widget .fl-widget-options ul {margin:0; padding:0; overflow:hidden; zoom:1;}
 .fl-widget .fl-widget-options li {list-style-type:none; float:left; display:inline; padding:0 5px 0 5px; margin-left:-5px;}
 .fl-widget .fl-widget-options a {margin-right:5px;}
 .fl-widget .fl-widget-content {zoom:1; margin:5px 0 0 0; overflow: auto;}
@@ -349,16 +362,16 @@ input.fl-icon {padding-left:16px;}
 
 
 /* Common widget sub-components */
-.fl-widget .menu    {margin:0;}
-.fl-widget .toggle  {width:32px;}
-.fl-widget .on      {background-position:left top;}
-.fl-widget .off     {background-position:left bottom;}
+.fl-widget .menu {margin:0;}
+.fl-widget .toggle {width:32px;}
+.fl-widget .on {background-position:left top;}
+.fl-widget .off {background-position:left bottom;}
 
 /*
- * Forms and Form Controls
- * Common arrangements for form inputs in a list
- * Alignment requires list of fl-label elements placed before the control 
- */
+* Forms and Form Controls
+* Common arrangements for form inputs in a list
+* Alignment requires list of fl-label elements placed before the control
+*/
 .fl-controls-left li {list-style-type:none; text-align:left;}
 .fl-controls-left .fl-label {float:left; text-align:left; width:50%; margin-right:5px;}
 
@@ -369,8 +382,8 @@ input.fl-icon {padding-left:16px;}
 .fl-controls-centered .fl-label {float:left; text-align:center; width:50%; margin-right:5px;}
 
 /**
- * Knockout Background Images
- */
+* Knockout Background Images
+*/
 .fl-noBackgroundImages, .fl-noBackgroundImages * {
     background-image:none !important;
 }
@@ -382,7 +395,7 @@ input.fl-icon {padding-left:16px;}
 
 /* Progressive Enhancement: JS will reverse the display setup if it is enabled */
 .fl-ProgEnhance-enhanced, /* << syntax breaks conventions and is Deprecated*/
-.fl-progEnhance-enhanced {display:none} 
+.fl-progEnhance-enhanced {display:none}
 
 .fl-ProgEnhance-basic, /* << syntax breaks conventions and is Deprecated*/
 .fl-progEnhance-basic {}

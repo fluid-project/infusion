@@ -171,23 +171,6 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
-    /**
-     * Update the change applier of sub-component fluid.uiOptions.controls to set 
-     * the value of "selections" array that is mapped with selections on user preferences.
-     * 
-     * This method is used by both fluid.uiOptions and fluid.uiOptions.controls
-     * 
-     * @param {Object} controls - fluid.uiOptions.controls
-     * @param {Object} model - an array of selections on user preferences
-     */
-    var setChangeApplier = function (that, model) {
-        that.applier.requestChange("selections", model);
-    
-        // Turn the boolean select values into strings so they can be properly bound and rendered
-        that.applier.requestChange("selections.toc", String(that.model.selections.toc));
-        that.applier.requestChange("selections.backgroundImages", String(that.model.selections.backgroundImages));
-    };
-    
     /**************
      * UI Options *
      **************/
@@ -278,7 +261,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uiOptions.finalInit = function (that) {
 
         that.uiEnhancer = $(document).data("uiEnhancer");
-        setChangeApplier(that, fluid.copy(that.uiEnhancer.model));
+        that.applier.requestChange("selections", fluid.copy(that.uiEnhancer.model));
         
         var savedModel = that.uiEnhancer.model;
  
@@ -317,7 +300,7 @@ var fluid_1_4 = fluid_1_4 || {};
          * @param {Object} source
          */
         that.updateModel = function (newModel) {
-            setChangeApplier(that, newModel);
+            that.applier.requestChange("selections", newModel);
         };
         
         that.refreshControlsView = function () {
@@ -421,13 +404,6 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uiOptions.controlsFinalInit = function (that) {
         initModel(that);
 
-        /**
-         * Rerenders the UI
-         */
-        that.refreshView = function () {
-            that.renderer.refreshView();
-        };
-        
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
             that.refreshView();
@@ -444,18 +420,15 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uiOptions.textControls", {
         gradeNames: ["fluid.rendererComponent", "autoInit"], 
         strings: {
-            textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
-            textSpacing: ["Regular", "Wide", "Wider", "Widest"],
-            theme: ["Low Contrast", "Medium Contrast", "Medium Contrast Grey Scale", "High Contrast", "High Contrast Inverted"]
+            textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"],
+            theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
         },
         controlValues: { 
-            textFont: ["serif", "sansSerif", "arial", "verdana", "courier", "times"],
-            textSpacing: ["default", "wide1", "wide2", "wide3"],
-            theme: ["lowContrast", "default", "mediumContrast", "highContrast", "highContrastInverted"]
+            textFont: ["default", "times", "comic", "arial", "verdana"],
+            theme: ["default", "bw", "wb", "by", "yb"]
         },
         selectors: {
             textFont: ".flc-uiOptions-text-font",
-            textSpacing: ".flc-uiOptions-text-spacing",
             theme: ".flc-uiOptions-theme",
             textSize: ".flc-uiOptions-min-text-size",
             lineSpacing: ".flc-uiOptions-line-spacing"
@@ -480,7 +453,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var tree = {};
         
         for (var item in that.model.selections) {
-            if (item === "textFont" || item === "textSpacing" || item === "theme") {
+            if (item === "textFont" || item === "theme") {
                 // render drop down list box
                 tree[item] = {
                     optionnames: "${labelMap." + item + ".names}",
@@ -506,26 +479,9 @@ var fluid_1_4 = fluid_1_4 || {};
      */
     fluid.defaults("fluid.uiOptions.layoutControls", {
         gradeNames: ["fluid.rendererComponent", "autoInit"], 
-        strings: {
-            backgroundImages: ["Yes", "No"],
-            layout: ["Yes", "No"],
-            toc: ["Yes", "No"]
-        },
-        controlValues: { 
-            backgroundImages: ["true", "false"],
-            layout: ["simple", "default"],
-            toc: ["true", "false"]
-        },
         selectors: {
-            "backgroundImagesRowID:": ".flc-uiOptions-background-images-row",
-            backgroundImagesInputID: ".flc-uiOptions-background-images-choice",
-            backgroundImagesLabelID: ".flc-uiOptions-background-images-label",
-            "layoutRowID:": ".flc-uiOptions-layout-row",
-            layoutInputID: ".flc-uiOptions-layout-choice",
-            layoutLabelID: ".flc-uiOptions-layout-label",
-            "tocRowID:": ".flc-uiOptions-toc-row",
-            tocInputID: ".flc-uiOptions-toc-choice",
-            tocLabelID: ".flc-uiOptions-toc-label"
+            layout: ".flc-uiOptions-layout",
+            toc: ".flc-uiOptions-toc"
         },
         events: {
             afterRender: null
@@ -545,16 +501,13 @@ var fluid_1_4 = fluid_1_4 || {};
 
     fluid.uiOptions.layoutControls.produceTree = function (that) {
         var tree = {};
-        var radiobuttons = [];
         
         for (var item in that.model.selections) {
-            if (item === "backgroundImages" || item === "layout" || item === "toc") {
+            if (item === "layout" || item === "toc") {
                 // render radio buttons
-                radiobuttons.push(createRadioButtonNode(item));
+                tree[item] = "${selections." + item + "}";
             }
         }
-        
-        tree.expander = radiobuttons;
         
         return tree;
     };
@@ -569,10 +522,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uiOptions.linksControls", {
         gradeNames: ["fluid.rendererComponent", "autoInit"], 
         selectors: {
-            lineSpacing: ".flc-uiOptions-line-spacing",
-            linksUnderline: ".flc-uiOptions-links-underline",
-            linksBold: ".flc-uiOptions-links-bold",
-            linksLarger: ".flc-uiOptions-links-larger",
+            links: ".flc-uiOptions-links",
             inputsLarger: ".flc-uiOptions-inputs-larger"
         },
         events: {
@@ -595,7 +545,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var tree = {};
         
         for (var item in that.model.selections) {
-            if (item === "linksUnderline" || item === "linksBold" || item === "linksLarger" || item === "inputsLarger") {
+            if (item === "links" || item === "inputsLarger") {
                 // render check boxes
                 tree[item] = "${selections." + item + "}";
             }
@@ -679,9 +629,11 @@ var fluid_1_4 = fluid_1_4 || {};
         ]
     });
     
-    /***
-     * Event binder binds events between UI Options and the Preview
-     */
+    /***************************************************
+     * UI Options Event binder:                        *
+     * Binds events between UI Options and the Preview *
+     ***************************************************/
+     
     fluid.defaults("fluid.uiOptions.preview.eventBinder", {
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
@@ -693,4 +645,86 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
+    
+    
+    /***************************
+     * UI Options Live Preview *
+     ***************************/  
+       
+    fluid.defaults("fluid.uiOptions.livePreview", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"], 
+        components: {
+            eventBinder: {
+                type: "fluid.uiOptions.preview.eventBinder",
+                createOnEvent: "onReady"
+            }
+        },    
+        invokers: {
+            updateModel: {
+                funcName: "fluid.uiOptions.preview.updateModel",
+                args: [
+                    "{livePreview}",
+                    "{controls}.model.selections"
+                ]
+            }
+        },
+        events: {
+            onReady: null
+        },
+        finalInitFunction: "fluid.uiOptions.livePreview.finalInit"
+    });
+
+    fluid.uiOptions.livePreview.finalInit = function (that) {
+        that.enhancer = $(document).data("uiEnhancer");
+        that.events.onReady.fire();
+    };
+
+    fluid.demands("fluid.uiOptions.preview.eventBinder", "fluid.uiOptions.livePreview", {
+        options: {
+            listeners: {
+                "{controls}.events.modelChanged": "{livePreview}.updateModel"
+            }
+        }
+    });
+
+    /**********************
+     * Sliding Panel *
+	 * TODO: replace class name with that.locate - refactor so button within container     
+     *********************/	 
+     
+	fluid.defaults("fluid.slidingPanel", {
+		gradeNames: ["fluid.viewComponent", "autoInit"], 	         
+		selectors: {
+			toggleButton: ".flc-slidingPanel-toggleButton"
+		},
+		strings: {
+			showText: "+ Show Display Preferences",
+			hideText: "- Hide"
+		},  		
+		finalInitFunction: "fluid.slidingPanel.finalInit"             
+	});
+	
+	fluid.slidingPanel.finalInit = function (that) {
+		that.togglePanel = function () {
+			if (that.container.is(":hidden")) {                						
+				that.container.slideDown();    
+				//that.locate("toggleButton").text(that.options.strings.hideText);
+				$('.flc-slidingPanel-toggleButton').text(that.options.strings.hideText);
+			} else {
+				that.container.slideUp();                           
+				//that.locate("toggleButton").text(that.options.strings.showText);                
+				$('.flc-slidingPanel-toggleButton').text(that.options.strings.showText);                
+			}
+		};	
+	
+		//event binder
+		//that.locate("toggleButton").click(that.togglePanel);
+		$('.flc-slidingPanel-toggleButton').click(that.togglePanel);	
+			
+		//Start Up: hide panel
+		//that.locate("toggleButton").text(that.options.strings.showText); 
+		$('.flc-slidingPanel-toggleButton').text(that.options.strings.showText); 
+		that.container.hide();
+	};
+        
 })(jQuery, fluid_1_4);

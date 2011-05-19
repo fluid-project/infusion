@@ -123,7 +123,6 @@ var fluid_1_4 = fluid_1_4 || {};
         addClassForSetting(container, "textFont", settings.textFont, classnameMap);
         addClassForSetting(container, "textSpacing", settings.textSpacing, classnameMap);
         addClassForSetting(container, "theme", settings.theme, classnameMap);
-        addClassForSetting(container, "layout", settings.layout, classnameMap);
     };
     
     /**
@@ -148,12 +147,19 @@ var fluid_1_4 = fluid_1_4 || {};
      */
     var styleLinks = function (container, settings, classnameMap) {
         var links = $("a", container);
-        // TODO: collect up the classnames and add or remove them all at once. 
-        styleElements(links, settings.linksUnderline, classnameMap.linksUnderline);
-        styleElements(links, settings.linksBold, classnameMap.linksBold);
-        styleElements(links, settings.linksLarger, classnameMap.linksLarger);
+        styleElements(links, settings.links, classnameMap.links);
     };
 
+    /**
+     * Style layout in the container according to the settings
+     * @param {Object} container
+     * @param {Object} settings
+     * @param {Object} classnameMap
+     */
+    var styleLayout = function (container, settings, classnameMap) {
+        styleElements(container, settings.layout, classnameMap.layout);
+    };
+     
     /**
      * Style inputs in the container according to the settings
      * @param {Object} container
@@ -237,6 +243,7 @@ var fluid_1_4 = fluid_1_4 || {};
             setLineSpacing(that.container, that.model.lineSpacing);
             setToc(that, that.model.toc);
             styleLinks(that.container, that.model, that.options.classnameMap);
+            styleLayout(that.container, that.model, that.options.classnameMap);
             styleInputs(that.container, that.model, that.options.classnameMap);
         };
         
@@ -288,55 +295,31 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         classnameMap: {
             "textFont": {
-                "serif": "fl-font-serif",
-                "sansSerif": "fl-font-sans",
-                "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana",
-                "monospace": "fl-font-monospace",
-                "courier": "fl-font-courier",
-                "times": "fl-font-times"
-            },
-            "textSpacing": {
                 "default": "",
-                "wide0": "fl-font-spacing-0",
-                "wide1": "fl-font-spacing-1",
-                "wide2": "fl-font-spacing-2",
-                "wide3": "fl-font-spacing-3",
-                "wide4": "fl-font-spacing-4",
-                "wide5": "fl-font-spacing-5",
-                "wide6": "fl-font-spacing-6"
+                "times": "fl-font-times",
+                "comic": "fl-font-sans",
+                "arial": "fl-font-arial",
+                "verdana": "fl-font-verdana"
             },
             "theme": {
-                "mist": "fl-theme-mist",
-                "rust": "fl-theme-rust",
-                "highContrast": "fl-theme-hc",
-                "highContrastInverted": "fl-theme-hci",
-                "lowContrast": "fl-theme-slate",
-                "mediumContrast": "fl-theme-coal",
-                "default": ""
+                "default": "",
+                "bw": "fl-theme-hc",
+                "wb": "fl-theme-hci",
+                "by": "",
+                "yb": ""
             },
-            "layout": {
-                "simple": "fl-layout-linear",
-                "default": ""
-            },
-            "noBackgroundImages": "fl-noBackgroundImages",
-            "linksUnderline": "fl-text-underline", 
-            "linksBold": "fl-text-bold", 
-            "linksLarger": "fl-text-larger", 
+            "layout": "fl-layout-linear",
+            "links": "fl-text-underline fl-text-bold fl-text-larger", 
             "inputsLarger": "fl-text-larger"
         },
         defaultSiteSettings: {
-            textFont: "arial",            // key from classname map
-            textSpacing: "",              // key from classname map
+            textFont: "default",          // key from classname map
             theme: "default",             // key from classname map
-            layout: "default",            // key from classname map
             textSize: "",                 // in points
             lineSpacing: "",              // in ems
-            backgroundImages: true,       // boolean
+            layout: false,                // boolean
             toc: false,                   // boolean
-            linksUnderline: false,        // boolean
-            linksBold: false,             // boolean
-            linksLarger: false,           // boolean
+            links: false,                 // boolean
             inputsLarger: false           // boolean
         }
     });

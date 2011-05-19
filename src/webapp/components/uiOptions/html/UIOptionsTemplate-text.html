@@ -1,35 +1,31 @@
-            <h2>Text and display</h2>
-            <div class="fl-uiOptions-controlGroup">
-                <ol class="fl-controls-right">
-                    <li>
-                        <label for="text-font" class="fl-label">Font style:</label>
-                        <select class="flc-uiOptions-text-font" id="text-font">
-                        </select>
-                    </li>
-                    
-                    <li class="flc-uiOptions-min-text-size fl-uiOptions-min-text-size">
-                        <label for="min-text-size" class="fl-label">Minimum text size:</label>
-                        <p class="flc-textfieldSlider-slider fl-slider fl-force-right fl-slider-horz"> </p>
-                        <input id="min-text-size" class="flc-textfieldSlider-field fl-textfield" type="text" />pt                                
-                    </li>
-
-                    <li>
-                        <label for="text-spacing" class="fl-label">Text Spacing:</label>
-                        <select class="flc-uiOptions-text-spacing" id="text-spacing" >
-                            <option>text-spacing here</option>
-                        </select>
-                    </li>
-                    <li class="flc-uiOptions-line-spacing fl-uiOptions-line-spacing">
-                        <label for="line-spacing" class="fl-label">Line Spacing:</label>
-                        <p class="flc-textfieldSlider-slider fl-slider fl-force-right fl-slider-horz"> </p>
-                        <input id="line-spacing" class="flc-textfieldSlider-field fl-textfield" type="text" />                             
-                    </li>
-                    <li>
-                        <label class="fl-label" for="theme">Contrast:</label>
-                        <select class="flc-uiOptions-theme" id="theme">
-                            <option>contrast here</option>
-                        </select>
-                    </li>
-                </ol>
-            </div>
-
+            <h2><img src="../../../../components/uiOptions/images/uio_icon_textanddisplay_18x18.png" alt="" /> Text and display</h2>
+            <ul class="fl-uio-form fl-clearfix">
+                <li class="flc-uiOptions-min-text-size fl-uio-option fl-uio-option-first fl-uio-option-2col">
+                    <label for="min-text-size" class="fl-label">Text Size</label>
+                    <div class="fl-inputs">
+                        <img class="fl-force-left fl-left-slider-image" src="../../../../components/uiOptions/images/uio_icon_smallA_10x10.png" alt="" />
+                        <div class="flc-textfieldSlider-slider fl-slider fl-slider-horz"> </div>
+                        <span class="fl-force-right"><input id="min-text-size" class="flc-textfieldSlider-field" type="text" /> times</span>
+                        <img class="fl-force-right fl-right-slider-image" src="../../../../components/uiOptions/images/uio_icon_bigA_20x20.png" alt="" />
+                    </div>
+                </li>
+                <li class= "fl-uio-option fl-uio-option-2col">
+                    <label for="text-font" class="fl-label">Text Style</label>
+                    <select class="flc-uiOptions-text-font fl-inputs" id="text-font">
+                    </select>               
+                </li>   
+                <li class="flc-uiOptions-line-spacing fl-uiOptions-line-spacing fl-uio-option fl-uio-option-2col">
+                    <label for="line-spacing" class="fl-label">Line Spacing</label>
+                    <div class="fl-inputs">
+                        <img class="fl-force-left fl-left-slider-image" src="../../../../components/uiOptions/images/uio_icon_linesNarrow_16x12.png" alt="" />
+                        <div class="fl-slider fl-slider-horz flc-textfieldSlider-slider"> </div>
+                        <span class="fl-force-right"><input id="line-spacing" class="flc-textfieldSlider-field" type="text" /> times</span>
+                        <img class="fl-force-right fl-right-slider-image" src="../../../../components/uiOptions/images/uio_icon_linesWide_16x21.png" alt="" />
+                    </div>
+                </li>           
+                <li class= "fl-uio-option fl-uio-option-2col">
+                    <label class="fl-label" for="theme">Colour & Contrast</label>
+                    <select class="flc-uiOptions-theme fl-inputs" id="theme">
+                    </select>  
+                </li>
+            </ul>            
