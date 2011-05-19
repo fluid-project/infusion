@@ -21,46 +21,51 @@ var fluid_1_4 = fluid_1_4 || {};
 (function ($, fluid) {
     /**********************
      * Sliding Panel *
-     *********************/	      
-	fluid.defaults("fluid.slidingPanel", {
-		gradeNames: ["fluid.viewComponent", "autoInit"], 	         
-		selectors: {
-			panel: "",
-			toggleButton: ".flc-slidingPanel-toggleButton"
-		},
-		strings: {
-			showText: "+ Show Display Preferences",
-			hideText: "- Hide"
-		},  		
-		finalInitFunction: "fluid.slidingPanel.finalInit"             
-	});		
-	
-	fluid.slidingPanel.finalInit = function (that) {		
-	
-		that.showPanel = function () {
-			that.locate("panel").slideDown();    
-			that.locate("toggleButton").text(that.options.strings.hideText);
-		};	
-	
-		that.hidePanel = function () {
-			that.locate("panel").slideUp();                           
-			that.locate("toggleButton").text(that.options.strings.showText);   		
-		};		
-		
-		that.togglePanel = function() {
-			if (that.locate("panel").is(":hidden")) {                						
-				that.showPanel();
-			} else {
-				that.hidePanel();             
-			}		
-		}
-	
-		//Event binder
-		that.locate("toggleButton").click(that.togglePanel);
-			
-		//Start Up: set button text, hide panel
-		that.locate("toggleButton").text(that.options.strings.showText); 
-		that.locate("panel").hide();
-	};    
+     *********************/       
+    fluid.defaults("fluid.slidingPanel", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],             
+        selectors: {
+            panel: "",
+            toggleButton: ".flc-slidingPanel-toggleButton"
+        },
+        strings: {
+            showText: "+ Show Display Preferences",
+            hideText: "- Hide"
+        },          
+        events: {
+        	afterPanelHidden: null,
+        	afterPanelShown: null
+        },
+        finalInitFunction: "fluid.slidingPanel.finalInit"             
+    });     
+    
+    fluid.slidingPanel.finalInit = function (that) {        
+    
+        that.showPanel = function () {
+            that.locate("panel").slideDown();    
+            that.locate("toggleButton").text(that.options.strings.hideText);
+			that.events.afterPanelShown.fire();
+        };  
+    
+        that.hidePanel = function () {
+            that.locate("panel").slideUp();                           
+            that.locate("toggleButton").text(that.options.strings.showText);        
+			that.events.afterPanelHidden.fire();            
+        };      
+        
+        that.togglePanel = function() {
+            if (that.locate("panel").is(":hidden")) {                                       
+                that.showPanel();
+            } else {
+                that.hidePanel();             
+            }       
+        }
+    
+        //Event binder
+        that.locate("toggleButton").click(that.togglePanel);		
+            
+        //Start Up: hide panel
+       that.hidePanel();
+    };    
 
 })(jQuery, fluid_1_4);

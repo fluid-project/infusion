@@ -21,9 +21,42 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         tests.test("Test Init", function () {
             expect(1);
-            var slidingPanel = fluid.SlidingPanel(".flc-slidingPanel", {selectors: {panel: "myPanel"}});                    
-            jqUnit.assertEquals("The area to hide/show is", "myPanel", fluid.options.selectors.panel);                      
+	        var slidingPanel = fluid.slidingPanel($(".flc-slidingPanel"), {selectors: {panel: "#myPanel"}});                    
+            jqUnit.assertEquals("The panel area to hide/show is", "#myPanel", slidingPanel.options.selectors.panel);                      
         });
+
+       tests.test("Show Panel", function () {
+            expect(2);
+	        var slidingPanel = fluid.slidingPanel($(".flc-slidingPanel"), {selectors: {panel: "#myPanel"}});                                
+            slidingPanel.showPanel();            
+            jqUnit.assertEquals("Show panel", "block", $("#myPanel").css("display"));                                                       
+            jqUnit.assertEquals("Show panel button text", "- Hide", $(".flc-slidingPanel-toggleButton").text());                      
+        });   
+        
+        tests.test("Hide Panel", function () {
+            expect(2);
+	        var slidingPanel = fluid.slidingPanel($(".flc-slidingPanel"), {selectors: {panel: "#myPanel"}});                    
+            slidingPanel.hidePanel();   
+            
+            slidingPanel.events.afterPanelHidden.addListener(function() {
+	            jqUnit.assertEquals("Hide panel", "none", $("#myPanel").css("display"));                      
+    	        jqUnit.assertEquals("Hide panel button text", "+ Show Display Preferences", $(".flc-slidingPanel-toggleButton").text());                      
+			});
+                     
+        });         
+              
+
+         tests.test("Toggle Panel", function () {
+            expect(2);
+	        var slidingPanel = fluid.slidingPanel($(".flc-slidingPanel"), {selectors: {panel: "#myPanel"}});         
+            
+            slidingPanel.togglePanel();            
+            jqUnit.assertEquals("Show panel", "block", $("#myPanel").css("display"));   	        
+            
+            slidingPanel.togglePanel();            
+            jqUnit.assertEquals("Hide panel via toggle", "none", $("#myPanel").css("display"));                                                                       
+        });    
+
     });
 })(jQuery);
 
