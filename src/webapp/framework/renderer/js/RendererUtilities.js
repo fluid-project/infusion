@@ -208,6 +208,10 @@ fluid_1_4 = fluid_1_4 || {};
             that.events.afterRender.fire(that);
         };
         
+        if (that.options.renderOnInit) {
+            that.refreshView();
+        }
+        
         return that;
     };
     
