@@ -182,23 +182,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
              * @param   int     the file size in each array element. 
              */
             var array_generator = function (mode, array_size, file_size) {
-                                    var generated_array = [];
-                                    if (mode === 1) {
-                                        file_size = array_size;
-                                    } else if (mode === 2) {
-                                        file_size = 1;
-                                    }
-                                    //create each file object 
-                                    for (var i = 0; i < array_size; i++) {
-                                        generated_array.push({size: file_size});
-                                        if (mode === 1) {
-                                            file_size--;
-                                        } else if (mode === 2) {
-                                            file_size++;
-                                        }
-                                    }
-                                    return generated_array;
-                                };
+                var generated_array = [];
+                if (mode === 1) {
+                    file_size = array_size;
+                } else if (mode === 2) {
+                    file_size = 1;
+                }
+                //create each file object 
+                for (var i = 0; i < array_size; i++) {
+                    generated_array.push({size: file_size});
+                    if (mode === 1) {
+                        file_size--;
+                    } else if (mode === 2) {
+                        file_size++;
+                    }
+                }
+                return generated_array;
+            };
 
 
             var filesize_1 = array_generator(0, 1, 10000);
@@ -211,8 +211,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var test_filesize = function (files, expected) {
                 testQueue.files = files;
                 jqUnit.assertEquals("testQueue uploaded files byte",
-                expected, 
-                testQueue.totalBytes());
+                    expected, testQueue.totalBytes());
             };
 
             test_filesize(filesize_1, 10000);

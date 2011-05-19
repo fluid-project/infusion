@@ -757,12 +757,12 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.inlineEdit.standardAccessor = function (element) {
         var nodeName = element.nodeName.toLowerCase();
-        var func = "input" === nodeName || "textarea" === nodeName ? "val" : "text";
-        return {
+        return { 
             value: function (newValue) {
-                return $(element)[func](newValue);
+                return "input" === nodeName || "textarea" === nodeName ? 
+                        fluid.value($(element), newValue) : $(element).text(newValue);
             }
-        };
+        };        
     };
     
     fluid.inlineEdit.standardDisplayView = function (viewEl) {

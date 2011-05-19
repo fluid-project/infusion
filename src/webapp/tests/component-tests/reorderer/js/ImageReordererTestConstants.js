@@ -45,7 +45,7 @@ var orderableIds = makeOrderableIds(orderableIndices);
 var imageIds = makeImageIds(orderableIndices);
 
 var orderableBaseId = "gallery:::gallery-thumbs:::lightbox-cell:";
-var selectByDivAndId = "div[id^=" + orderableBaseId + "]";
+var selectByDivAndId = "div[id=^" + orderableBaseId + "]";
 
 // CSS class names
 var defaultClass = "fl-reorderer-movable-default";
@@ -61,7 +61,8 @@ function focusLightbox() {
 }
 
 function findOrderableByDivAndId(containerEl) {
-    return jQuery(selectByDivAndId, containerEl);
+    //return jQuery(selectByDivAndId, containerEl);
+    return fluid.jById(lightboxRootId).children();
 }
 
 
@@ -130,7 +131,7 @@ function createMultiOverlappingKeystrokeLightbox() {
         left: fluid.reorderer.keys.LEFT
     };
     
-    return fluid.reorderImages("[id=" + lightboxRootId + "]", {
+    return fluid.reorderImages(fluid.jById(lightboxRootId), {
         keysets: [altKeys, altKeys2],
         selectors: {
             movables: findOrderableByDivAndId
