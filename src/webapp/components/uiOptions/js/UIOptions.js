@@ -250,6 +250,7 @@ var fluid_1_4 = fluid_1_4 || {};
             min: 1,
             max: 10
         },
+        defaultSiteSettings: "{uiEnhancer}.defaultSiteSettings",
         selectors: {
             textControls: ".flc-uiOptions-text-controls",
             layoutControls: ".flc-uiOptions-layout-controls",
@@ -297,7 +298,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.reset = function () {
             that.events.onReset.fire();
-            that.updateModel(fluid.copy(that.uiEnhancer.defaultSiteSettings));
+            that.updateModel(fluid.copy(that.options.defaultSiteSettings));
             that.refreshControlsView();
         };
         
@@ -372,7 +373,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     var initModel = function (that) {
-        mergeSiteDefaults(that.options, that.options.uiEnhancer.defaultSiteSettings);
+        mergeSiteDefaults(that.options, that.options.defaultSiteSettings);
         
         fluid.each(that.options.controlValues, function (item, key) {
             that.applier.requestChange("labelMap." + key, {
@@ -460,12 +461,6 @@ var fluid_1_4 = fluid_1_4 || {};
             textSize: ".flc-uiOptions-min-text-size",
             lineSpacing: ".flc-uiOptions-line-spacing"
         },
-        events: {
-            afterRender: null
-        },
-        rendererOptions: {
-            autoBind: true
-        },
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.textControls.produceTree",
         resources: {
@@ -473,7 +468,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 forceCache: true,
                 url: "../html/UIOptionsTemplate-text.html"
             }
-        }
+        },
+        defaultSiteSettings: "{uiOptions}.options.defaultSiteSettings"
     });
 
     fluid.uiOptions.textControls.produceTree = function (that) {
@@ -527,12 +523,6 @@ var fluid_1_4 = fluid_1_4 || {};
             tocInputID: ".flc-uiOptions-toc-choice",
             tocLabelID: ".flc-uiOptions-toc-label"
         },
-        events: {
-            afterRender: null
-        },
-        rendererOptions: {
-            autoBind: true
-        },
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.layoutControls.produceTree",
         resources: {
@@ -540,7 +530,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 forceCache: true,
                 url: "../html/UIOptionsTemplate-layout.html"
             }
-        }
+        },
+        defaultSiteSettings: "{uiOptions}.options.defaultSiteSettings"
     });
 
     fluid.uiOptions.layoutControls.produceTree = function (that) {
@@ -575,12 +566,6 @@ var fluid_1_4 = fluid_1_4 || {};
             linksLarger: ".flc-uiOptions-links-larger",
             inputsLarger: ".flc-uiOptions-inputs-larger"
         },
-        events: {
-            afterRender: null
-        },
-        rendererOptions: {
-            autoBind: true
-        },
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.linksControls.produceTree",
         resources: {
@@ -588,7 +573,9 @@ var fluid_1_4 = fluid_1_4 || {};
                 forceCache: true,
                 url: "../html/UIOptionsTemplate-links.html"
             }
-        }
+        },
+        defaultSiteSettings: "{uiOptions}.options.defaultSiteSettings"
+
     });
 
     fluid.uiOptions.linksControls.produceTree = function (that) {
