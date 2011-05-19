@@ -1,0 +1,23 @@
+/* UI Option styles for full page w/ preview */
+
+/* Section headers */
+
+.fl-uiOptions-fullPreview h2 {
+	border-top: 2px solid #dddddd;
+}
+
+/* Preview Area */
+
+.fl-uiOptions-fullPreview .fl-uio-preview iframe {
+	height: 480px;
+	width: 100%;
+	border: 2px solid #d7d7d7;
+}
+
+.fl-uiOptions-fullPreview .fl-uio-preview h2 {
+	font-weight: lighter;
+	font-size: 1.8em;
+	color: #4D4D4D;
+	padding-top: 18px;
+	padding-bottom: 22px;
+}
