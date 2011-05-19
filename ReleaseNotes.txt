@@ -11,6 +11,7 @@ What's New in 1.4-SNAPSHOT?
     * FSS fixes and improvements
     * UI Options redesign
     * jQuery UI library updated to 1.8.12
+    * jQuery UI accordion widget is no longer a dependency and will not be included in your bundle
 
 What's in this Release?
 =======================
@@ -68,7 +69,7 @@ categorized by license:
 
 MIT License:
     * jQuery javascript library v1.4.2: http://jquery.com/ 
-    * jQuery UI javascript widget library v1.8.12: http://ui.jquery.com/
+    * jQuery UI dialog, draggable, mouse, position, and slider javascript widgets v1.8.12: http://ui.jquery.com/
     * jQuery UI tooltip (pre-release from jQuery 1.9 branch) https://github.com/jquery/jquery-ui/tree/tooltip
     * jQuery QUnit: http://docs.jquery.com/QUnit
     * jQuery Mockjax: https://github.com/appendto/jquery-mockjax
