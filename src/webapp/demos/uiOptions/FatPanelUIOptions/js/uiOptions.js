@@ -22,14 +22,46 @@ var demo = demo || {};
 
 	/* Our demo script */   
     demo.slidingUIOptions = function (panel, uioptions) {
-        // First, initialize a UIEnhancer for the page
-        var pageEnhancer = fluid.uiEnhancer(document, {
-            tableOfContents: {
-                options: {
-                    templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
-                }            
-            }
-        });
+		// Supply the template URL of "text and display" panel on the user preferences interface
+		fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptions"], {
+			options: {
+				resources: {
+					template: {
+						url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
+					}
+				}
+			}
+		});
+
+		// Supply the template URL of "layout and navigation" panel on the user preferences interface
+		fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptions"], {
+			options: {
+				resources: {
+					template: {
+						url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
+					}
+				}
+			}
+		});
+
+		// Supply the template URL of "layout and navigation" panel on the user preferences interface
+		fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptions"], {
+			options: {
+				resources: {
+					template: {
+						url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+					}
+				}
+			}
+		});    
+		// Supply the table of contents' template URL
+		fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+			options: {
+				templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+			}
+		});
+
+		fluid.uiEnhancer();
         
         // Next, start up UI Options
         var myUIOptions = fluid.uiOptions(uioptions, {
@@ -37,10 +69,7 @@ var demo = demo || {};
 				preview: {
 					type: "fluid.uiOptions.livePreview"
 				}
-			},			
-			selectors: {
-				previewFrame: ""
-			},        
+			},			      
             resources: {
                 template: {
                     url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"
