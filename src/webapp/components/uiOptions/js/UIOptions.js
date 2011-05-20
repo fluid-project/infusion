@@ -603,7 +603,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 createOnEvent: "onReady",
                 options: {
                     savedSettings: "{uiOptions}.model.selections",
-                    tableOfContents: "{uiOptions}.uiEnhancer.options.tableOfContents", // TODO: Tidy this up when the page's UI Enhancer is IoC-visible.
+                    tableOfContents: "{uiEnhancer}.options.tableOfContents", 
                     settingsStore: {
                         type: "fluid.uiEnhancer.tempStore"
                     }
@@ -646,7 +646,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.container.attr("src", that.options.templateUrl);        
 
         that.container.load(function () {
-            that.previewFrameContents = that.container.contents();
+            that.enhancerContainer = $("body", that.container.contents());
             that.events.onReady.fire();
         });
     };
@@ -661,7 +661,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.demands("fluid.uiEnhancer", "fluid.uiOptions.preview", {
         funcName: "fluid.uiEnhancer",
         args: [
-            "{preview}.previewFrameContents",
+            "{preview}.enhancerContainer",
             "{options}"
         ]
     });
