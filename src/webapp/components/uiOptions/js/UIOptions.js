@@ -328,35 +328,14 @@ var fluid_1_4 = fluid_1_4 || {};
         
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
-            bindHandlers(that);
             that.events.onUIOptionsTemplateReady.fire();
+            bindHandlers(that);
             that.events.onReady.fire();
         });
 
     };
     
-    var mergeSiteDefaults = function (options, siteDefaults) {
-        for (var settingName in options.controlValues) {
-            var setting = String(siteDefaults[settingName]);
-            var settingValues = options.controlValues[settingName];
-            
-            if (setting) {
-                var index = $.inArray(setting, settingValues);
-                if (index === -1) {
-                    var defaultIndex = $.inArray("default", settingValues);
-                    if (defaultIndex === -1) {
-                        settingValues.push(setting);
-                    } else {
-                        settingValues[defaultIndex] = setting;
-                    }
-                }
-            }
-        }
-    };
-    
     var initModel = function (that) {
-        mergeSiteDefaults(that.options, that.options.uiEnhancer.defaultSiteSettings);
-        
         fluid.each(that.options.controlValues, function (item, key) {
             that.applier.requestChange("labelMap." + key, {
                 values: that.options.controlValues[key],
@@ -664,7 +643,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 funcName: "fluid.uiOptions.preview.updateModel",
                 args: [
                     "{livePreview}",
-                    "{controls}.model.selections"
+                    "{uiOptions}.model.selections"
                 ]
             }
         },
@@ -682,7 +661,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.demands("fluid.uiOptions.preview.eventBinder", "fluid.uiOptions.livePreview", {
         options: {
             listeners: {
-                "{controls}.events.modelChanged": "{livePreview}.updateModel"
+                "{uiOptions}.events.modelChanged": "{livePreview}.updateModel"
             }
         }
     });

@@ -193,18 +193,21 @@ var fluid_1_4 = fluid_1_4 || {};
      * @return {String} the classnames that were removed separated by spaces
      */
     var clearClashingClasses = function (container, classnameMap) {
-        var settingsWhichMayClash = ["textFont", "textSpacing", "theme", "layout"];  // + no background images
-        var classesToRemove =  "fl-noBackgroundImages";
-        var selector = ".fl-noBackgroundImages";
+        var settingsWhichMayClash = ["textFont", "textSpacing", "theme", "layout"];
+        var classesToRemove, selector;
         
         for (var i = 0; i < settingsWhichMayClash.length; i++) {
             var settingValues = classnameMap[settingsWhichMayClash[i]];
-            for (var val in settingValues) {
-                var classname = settingValues[val];
-                if (classname) {
-                    classesToRemove = classesToRemove + " " + classname;
-                    selector = selector + ",." + classname;
-                }
+            if (typeof settingValues === 'object') {
+                fluid.each(settingValues, function (className) {
+                    if (className) {
+                        classesToRemove = classesToRemove + " " + className;
+                        selector = selector + ",." + className;
+                    }
+                });
+            } else if (typeof settingValues === 'string'){
+                classesToRemove = classesToRemove + " " + settingValues;
+                selector = selector + ",." + settingValues;
             }
         }
         
