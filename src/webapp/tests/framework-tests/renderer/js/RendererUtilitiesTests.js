@@ -597,12 +597,12 @@ fluid.registerNamespace("fluid.tests");
             },
             protoTree: {
                 message: "What, every Friday?"
-            }   
+            },
+            renderOnInit: true
         });
         
         compTests.test("Graded renderer component test", function() {
             var that = fluid.tests.paychequeComponent(".flc-renderUtils-container");
-            that.renderChild.refreshView();
             var message = that.renderChild.locate("message");
             jqUnit.assertEquals("Message rendered", fluid.defaults("fluid.tests.paychequeRenderer").protoTree.message,
               message.text());
