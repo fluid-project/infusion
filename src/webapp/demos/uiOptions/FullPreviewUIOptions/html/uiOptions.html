@@ -49,14 +49,47 @@
         
         <script type="text/javascript">
             $().ready(function () {
-                fluid.uiEnhancer(document, {
-                    tableOfContents: {
-                        options: {
-                            templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+                // Supply the template URL of "text and display" panel on the user preferences interface
+                fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptions"], {
+                    options: {
+                        resources: {
+                            template: {
+                                url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
+                            }
                         }
-                    
                     }
                 });
+    
+                // Supply the template URL of "layout and navigation" panel on the user preferences interface
+                fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptions"], {
+                    options: {
+                        resources: {
+                            template: {
+                                url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
+                            }
+                        }
+                    }
+                });
+    
+                // Supply the template URL of "layout and navigation" panel on the user preferences interface
+                fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptions"], {
+                    options: {
+                        resources: {
+                            template: {
+                                url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                            }
+                        }
+                    }
+                });
+    
+                // Supply the table of contents' template URL
+                fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+                    options: {
+                        templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    }
+                });
+
+                fluid.uiEnhancer();
                 
                 fluid.uiOptions("#myUIOptions", {
                     resources: {

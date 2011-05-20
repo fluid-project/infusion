@@ -1,18 +1,18 @@
 /* UI Options Fat Panel styles */
 
-.fl-fatPanel {
+.fl-uiOptions-fatPanel {
 	min-width: 960px;
 }
 
 /* Top bar and show/hide button */
-.fl-panelBar {
+.fl-uiOptions-fatPanel.fl-panelBar {
 	width: 100%;
 	height: 5px;
 	background-color: #fff;
 	border-bottom: 1px solid #ccc;	
 }
 
-.fl-toggleButton {
+.fl-uiOptions-fatPanel .fl-toggleButton {
 	float:right;
 	text-transform: uppercase;
 	font-weight: bold;	
@@ -22,41 +22,6 @@
 	margin-right: 10px;
 	border-radius: 8px;	
 	border-bottom: 1px solid #ccc;
-}
-
-/* Form Labels */
-.fl-uiOptions-fatPanel label {
-	text-transform: uppercase;
-	font-size: 1.2em;
-	display:block;
-	padding-bottom: 15px;
-}
-
-/* Tabs */
-.fl-uiOptions-fatPanel .fl-tabs {
-	border-bottom: 0px;
-	padding: 10px;
-	margin: 0px;
-	
-	background-color: #333333;
-	color: #fff;		
-}	
-
-.fl-uiOptions-fatPanel .fl-tabs li:first { margin-left: -10px; } 
-
-.fl-uiOptions-fatPanel .fl-tabs li a {
-	background-color: #333333;
-	color: #fff;	
-	text-transform: uppercase;
-	font-weight: bold;
-	border: 0px;	
-	margin-right: 10px;
-	padding: 10px;
-}
-
-.fl-uiOptions-fatPanel .fl-tabs .fl-tabs-active a {
-	background-color: #fff;
-	color: #000;
 }
 
 .fl-uiOptions-fatPanel #reset {
@@ -69,19 +34,56 @@
 	display: block;
 }
 
-.fl-uiOptions-fatPanel #tab-first, .fl-uiOptions-fatPanel #tab-second, .fl-uiOptions-fatPanel #tab-third, .fl-uiOptions-fatPanel #reset {
-	background-repeat: no-repeat;
-	background-position: 2px 7px;
-	padding-left: 25px;
+/* Form Labels */
+.fl-uiOptions-fatPanel label {
+	text-transform: uppercase;
+	font-size: 1.2em;
+	display:block;
+	padding-bottom: 15px;
 }
-.fl-uiOptions-fatPanel #tab-first { background-image: url('../images/uio_icon_textanddisplay_inverted_16x16.png'); }
-.fl-uiOptions-fatPanel #tab-second { background-image: url('../images/uio_icon_layoutandnavigation_inverted_16x16.png'); }
-.fl-uiOptions-fatPanel #tab-third { background-image: url('../images/uio_icon_linksandbuttons_inverted_16x16.png'); }
 
-.fl-uiOptions-fatPanel .fl-tabs-active #tab-first { background-image: url('../images/uio_icon_textanddisplay_16x16.png'); }
-.fl-uiOptions-fatPanel .fl-tabs-active #tab-second { background-image: url('../images/uio_icon_layoutandnavigation_16x16.png'); }
-.fl-uiOptions-fatPanel .fl-tabs-active #tab-third { background-image: url('../images/uio_icon_linksandbuttons_16x16.png'); }
+/* Tabs */
+.fl-uiOptions-fatPanel ul.fl-tabs {	
+	background-color: #333333;
+	color: #fff;		
+	height: 2.35em	
+}	
+
+.fl-uiOptions-fatPanel .fl-tabs li a {
+	background-color: #333333;
+	color: #fff;	
+	text-transform: uppercase;
+	font-weight: bold;
+	border: 0px;	
+	margin-right: 10px;
+}
+
+.fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a {
+	background-color: #fff;
+	color: #000;
+}
+
+/* Tab images */
+.fl-uiOptions-fatPanel .fl-tab-text, .fl-uiOptions-fatPanel .fl-tab-layout, .fl-uiOptions-fatPanel .fl-tab-links, .fl-uiOptions-fatPanel #reset {
+	background-repeat: no-repeat;
+	background-position: 10px 5px;
+}
+.fl-uiOptions-fatPanel .fl-tab-text { background-image: url('../images/uio_icon_textanddisplay_inverted_16x16.png'); }
+.fl-uiOptions-fatPanel .fl-tab-layout { background-image: url('../images/uio_icon_layoutandnavigation_inverted_16x16.png'); }
+.fl-uiOptions-fatPanel .fl-tab-links { background-image: url('../images/uio_icon_linksandbuttons_inverted_16x16.png'); }
+
+.fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-text { background-image: url('../images/uio_icon_textanddisplay_16x16.png'); }
+.fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-layout { background-image: url('../images/uio_icon_layoutandnavigation_16x16.png'); }
+.fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-links { background-image: url('../images/uio_icon_linksandbuttons_16x16.png'); }
 .fl-uiOptions-fatPanel #reset { background-image: url('../images/uio_icon_reset_16x16.png'); }
+
+/* jQuery UI Tabs style overrides */
+.ui-corner-all { border: 0px; border-radius: 0px }
+.ui-widget-header { background: none; }
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { background: none; border: 0px; }
+.ui-tabs { padding: 0px; }
+.ui-tabs .ui-tabs-nav { padding: 0px; }
+.ui-tabs .ui-tabs-nav li a { padding: 0.5em 1em 0.5em 30px}
 
 /* Sliders */
 .fl-uiOptions-fatPanel .fl-slider a { background-image:url('../images/uio_icon_sliderhandle.png');}
