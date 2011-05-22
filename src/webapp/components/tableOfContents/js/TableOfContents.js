@@ -172,5 +172,84 @@ var fluid_1_4 = fluid_1_4 || {};
         templateUrl: "../html/TableOfContents.html",
         levels: ["H1", "H2", "H3", "H4", "H5", "H6"]
     });
+    
+    /*************
+    * ToC Levels *
+    **************/
+    fluid.registerNamespace("fluid.tableOfContents.levels");
+     
+    fluid.tableOfContents.levels.finalInit = function (that) {
+        fluid.fetchResources(that.options.resources, function () {
+            that.container.append(that.options.resources.template.resourceText);
+            that.refreshView();
+        });        
+    };
+
+    fluid.tableOfContents.levels.buildLevels = function (currentLevel, toLevel) {
+        var nextLevel = currentLevel + 1;
+        var repeatID = "level" + currentLevel + "s";
+        var valueAs = "heading" + currentLevel;
+        var pathAs = "heading" + currentLevel + "path";
+        var controlledBy = currentLevel > 1 ? "{heading" + (currentLevel - 1) + "path}.headings"  : "headings";
+        
+        var tree = {
+            expander: {
+                type: "fluid.renderer.repeat",
+                repeatID: repeatID,
+                controlledBy: controlledBy,
+                valueAs: valueAs,
+                pathAs: pathAs,
+                tree: {
+                    expander: [{
+                        type: "fluid.renderer.condition",
+                        condition: "{" + valueAs + "}.text",
+                        trueTree: {
+                            link: {
+                                target: "${{" + pathAs + "}.url}",
+                                linktext: "${{" + pathAs + "}.text}"
+                            }
+                        }
+                    }]
+                }
+            }
+        };
+        
+        if (nextLevel <= toLevel) {
+            var segment = fluid.tableOfContents.levels.buildLevels(nextLevel, toLevel);
+            tree.expander.tree.expander.push(segment.expander);
+        }
+        
+        return tree;
+    };
+     
+    fluid.tableOfContents.levels.produceTree = function (that) {
+        return fluid.tableOfContents.levels.buildLevels(1, 6);
+    };
+     
+    fluid.defaults("fluid.tableOfContents.levels", {
+        gradeNames: ["fluid.rendererComponent", "autoInit"],
+        finalInitFunction: "fluid.tableOfContents.levels.finalInit",
+        produceTree: "fluid.tableOfContents.levels.produceTree",
+        selectors: {
+            level1s: ".flc-toc-levels-level1s",
+            level2s: ".flc-toc-levels-level2s",
+            level3s: ".flc-toc-levels-level3s",
+            level4s: ".flc-toc-levels-level4s",
+            level5s: ".flc-toc-levels-level5s",
+            level6s: ".flc-toc-levels-level6s",
+            link: ".flc-toc-levels-link"
+        },
+        repeatingSelectors: ["level1s", "level2s", "level3s", "level4s", "level5s", "level6s"],
+        events: {},
+        model: {
+            headings: [] // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format]
+        },
+        resources: {
+            template: {
+                forceCache: true,
+                url: "../html/TableOfContents.html"
+            }
+        }
+    });
 
 })(jQuery, fluid_1_4);
