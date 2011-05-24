@@ -44,7 +44,9 @@ var fluid_1_4 = fluid_1_4 || {};
         that.showPanel = function () {
             that.locate("panel").slideDown();    
             that.locate("toggleButton").text(that.options.strings.hideText);
-                    $("#fl-uiOptions-tabs").tabs();
+                    
+            //TODO: Move this out        
+            $("#fl-uiOptions-tabs").tabs();
 
 			that.events.afterPanelShown.fire();
         };  
