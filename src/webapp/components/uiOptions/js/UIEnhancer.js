@@ -237,17 +237,6 @@ var fluid_1_4 = fluid_1_4 || {};
             styleInputs(that.container, that.model, that.options.classnameMap);
         };
         
-        /**
-         * Stores the new settings, refreshes the view to reflect the new settings and fires modelChanged.
-         * @param {Object} newModel
-         * @param {Object} source
-         */
-        that.events.onSave.addListener(
-            function (newModel) {
-                that.settingsStore.save(that.model);
-            }
-        );
-
         that.applier.modelChanged.addListener("",
             function (newModel, oldModel, changeRequest) {
                 that.events.modelChanged.fire(newModel, oldModel, changeRequest);
@@ -279,7 +268,6 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         events: {
             onReady: null,
-            onSave: null,
             modelChanged: null,
             onInitSettingStore: null
         },

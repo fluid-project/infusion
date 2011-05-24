@@ -180,10 +180,11 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} controls - fluid.uiOptions.controls
      * @param {Object} model - an array of selections on user preferences
      */
-    var setChangeApplier = function (that, model) {
+    var setSelections = function (that, model) {
         that.applier.requestChange("selections", model);
     
         // Turn the boolean select values into strings so they can be properly bound and rendered
+        // TODO: there must be a better way to do this
         that.applier.requestChange("selections.toc", String(that.model.selections.toc));
         that.applier.requestChange("selections.backgroundImages", String(that.model.selections.backgroundImages));
     };
@@ -251,6 +252,7 @@ var fluid_1_4 = fluid_1_4 || {};
             max: 10
         },
         defaultSiteSettings: "{uiEnhancer}.defaultSiteSettings",
+        settingsStore: "{uiEnhancer}.settingsStore",
         selectors: {
             textControls: ".flc-uiOptions-text-controls",
             layoutControls: ".flc-uiOptions-layout-controls",
@@ -279,18 +281,18 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uiOptions.finalInit = function (that) {
 
-        setChangeApplier(that, fluid.copy(that.uiEnhancer.model));
+        setSelections(that, fluid.copy(that.uiEnhancer.model));
         
-        var savedModel = that.uiEnhancer.model;
+        var savedSelections = that.uiEnhancer.model;
  
         /**
          * Saves the current model and fires onSave
          */ 
         that.save = function () {
             that.events.onSave.fire(that.model.selections);
-            savedModel = fluid.copy(that.model.selections); 
-            that.uiEnhancer.applier.requestChange("", savedModel);
-            that.uiEnhancer.events.onSave.fire(savedModel);
+            savedSelections = fluid.copy(that.model.selections); 
+            that.uiEnhancer.applier.requestChange("", savedSelections);
+            that.options.settingsStore.save(that.model.selections);
         };
 
         /**
@@ -307,7 +309,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.cancel = function () {
             that.events.onCancel.fire();
-            that.updateModel(fluid.copy(savedModel));
+            that.updateModel(fluid.copy(savedSelections));
             that.refreshControlsView();            
         };
         
@@ -317,8 +319,9 @@ var fluid_1_4 = fluid_1_4 || {};
          * @param {Object} newModel
          * @param {Object} source
          */
+        // TODO: this is badly named - it only updates the selections part of the model
         that.updateModel = function (newModel) {
-            setChangeApplier(that, newModel);
+            setSelections(that, newModel);
         };
         
         that.refreshControlsView = function () {
