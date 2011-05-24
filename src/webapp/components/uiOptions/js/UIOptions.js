@@ -211,7 +211,6 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{uiOptions}.dom.textControls",
                 createOnEvent: "onUIOptionsTemplateReady",
                 options: {
-                    uiEnhancer: "{uiOptions}.uiEnhancer",
                     textSize: "{uiOptions}.options.textSize",
                     lineSpacing: "{uiOptions}.options.lineSpacing",
                     model: "{uiOptions}.model",
@@ -223,7 +222,6 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{uiOptions}.dom.layoutControls",
                 createOnEvent: "onUIOptionsTemplateReady",
                 options: {
-                    uiEnhancer: "{uiOptions}.uiEnhancer",
                     model: "{uiOptions}.model",
                     applier: "{uiOptions}.applier"
                 }
@@ -233,7 +231,6 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{uiOptions}.dom.linksControls",
                 createOnEvent: "onUIOptionsTemplateReady",
                 options: {
-                    uiEnhancer: "{uiOptions}.uiEnhancer",
                     model: "{uiOptions}.model",
                     applier: "{uiOptions}.applier"
                 }
@@ -241,8 +238,11 @@ var fluid_1_4 = fluid_1_4 || {};
             preview: {
                 type: "fluid.uiOptions.preview",
                 createOnEvent: "onReady"
-            }
+            },
+            settingsStore: "{uiEnhancer}.settingsStore",
         },
+        defaultSiteSettings: "{uiEnhancer}.defaultSiteSettings",
+        savedSelections: "{uiEnhancer}.model",
         textSize: {
             min: 6,
             max: 30
@@ -251,8 +251,6 @@ var fluid_1_4 = fluid_1_4 || {};
             min: 1,
             max: 10
         },
-        defaultSiteSettings: "{uiEnhancer}.defaultSiteSettings",
-        settingsStore: "{uiEnhancer}.settingsStore",
         selectors: {
             textControls: ".flc-uiOptions-text-controls",
             layoutControls: ".flc-uiOptions-layout-controls",
@@ -281,18 +279,16 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uiOptions.finalInit = function (that) {
 
-        setSelections(that, fluid.copy(that.uiEnhancer.model));
-        
-        var savedSelections = that.uiEnhancer.model;
- 
+        setSelections(that, fluid.copy(that.options.savedSelections));
+         
         /**
          * Saves the current model and fires onSave
          */ 
         that.save = function () {
             that.events.onSave.fire(that.model.selections);
-            savedSelections = fluid.copy(that.model.selections); 
-            that.uiEnhancer.applier.requestChange("", savedSelections);
-            that.options.settingsStore.save(that.model.selections);
+            that.options.savedSelections = fluid.copy(that.model.selections); 
+            that.uiEnhancer.applier.requestChange("", that.options.savedSelections);
+            that.settingsStore.save(that.model.selections);
         };
 
         /**
@@ -309,7 +305,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.cancel = function () {
             that.events.onCancel.fire();
-            that.updateModel(fluid.copy(savedSelections));
+            that.updateModel(fluid.copy(that.options.savedSelections));
             that.refreshControlsView();            
         };
         
