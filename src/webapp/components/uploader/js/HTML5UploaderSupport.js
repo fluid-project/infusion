@@ -154,9 +154,8 @@ var fluid_1_4 = fluid_1_4 || {};
         that.uploadFile = function (file) {
             that.events.onFileStart.fire(file);
             var xhr = that.createXHR();
-            var formData = that.createFormData();
             that.currentXHR = fluid.uploader.html5Strategy.monitorFileUploadXHR(file, that.events, xhr);
-            that.doUpload(file, that.queueSettings, that.currentXHR, formData);            
+            that.doUpload(file, that.queueSettings, that.currentXHR);            
         };
 
         that.stop = function () {
@@ -176,8 +175,7 @@ var fluid_1_4 = fluid_1_4 || {};
         },                
         invokers: {
             doUpload: "fluid.uploader.html5Strategy.doUpload",
-            createXHR: "fluid.uploader.html5Strategy.createFileUploadXHR", 
-            createFormData: "fluid.uploader.html5Strategy.createFormData"
+            createXHR: "fluid.uploader.html5Strategy.createFileUploadXHR" 
         }
     });
     
@@ -191,10 +189,10 @@ var fluid_1_4 = fluid_1_4 || {};
     
     var CRLF = "\r\n";
     
-    fluid.uploader.html5Strategy.createFormData = function () {
-        var formData = new FormData();
-        return formData;
-    };
+//    var createFormData = function () {
+//        var formData = new FormData();
+//        return formData;
+//    };
     
     /** 
      * Firefox 4  implementation.  FF4 has implemented a FormData function which
@@ -258,8 +256,17 @@ var fluid_1_4 = fluid_1_4 || {};
         "fluid.browser.supportsFormData"
     ], {
         funcName: "fluid.uploader.html5Strategy.doFormDataUpload",
-        args: ["@0", "@1", "@2", "@3"]
+        args: ["@0", "@1", "@2", {
+            expander: {
+                type: "fluid.deferredInvokeCall",
+                func: "fluid.uploader.html5Strategy.createFormData"
+            }
+        }]
     });
+    
+    fluid.uploader.html5Strategy.createFormData = function () {
+        return new FormData();
+    };
     
     fluid.uploader.html5Strategy.local = function (queue, legacyBrowserFileLimit, options) {
         var that = fluid.initLittleComponent("fluid.uploader.html5Strategy.local", options);
