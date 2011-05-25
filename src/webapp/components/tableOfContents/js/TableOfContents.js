@@ -33,7 +33,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.tableOfContents.generateGUID = function (baseName) {
-        return baseName + "_toc_" + fluid.allocateGuid();
+        return "toc_" + baseName + "_" + fluid.allocateGuid();
     };
     
     fluid.tableOfContents.finalInit = function (that) {
@@ -41,7 +41,8 @@ var fluid_1_4 = fluid_1_4 || {};
         that.tocAnchors = [];
         
         fluid.each(headings, function (heading) {
-            var guid = that.generateGUID(heading.tagName);
+            var baseName = $(heading).text().replace(/\W/g, "-");
+            var guid = that.generateGUID(baseName);
             that.insertAnchor(guid, heading);
             that.tocAnchors.push("#" + guid);
         });
