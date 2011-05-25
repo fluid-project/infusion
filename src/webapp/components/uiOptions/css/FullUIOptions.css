@@ -73,7 +73,7 @@
 .fl-uiOptions .fl-uiOptions-form label {
     display: block;
     float: left;
-	width: 14em;
+	width: 100px;
 }
 
 .fl-uiOptions .fl-uiOptions-form .fl-inputs {

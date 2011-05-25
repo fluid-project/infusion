@@ -39,11 +39,11 @@
 .fl-uiOptions-fatPanel .fl-uiOptions-layout li, .fl-uiOptions-fatPanel .fl-uiOptions-links li {
 	clear: both;
 }
-
-.fl-uiOptions-fatPanel label {
+.fl-uiOptions-fatPanel .fl-uiOptions-form label {
 	text-transform: uppercase;
 	font-size: 1.2em;
 	padding-bottom: 15px;
+	width: 200px;
 }
 
 .fl-uiOptions-fatPanel .fl-inputs {
