@@ -25,7 +25,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.slidingPanel", {
         gradeNames: ["fluid.viewComponent", "autoInit"],             
         selectors: {
-            panel: "",
+            panel: ".flc-slidingPanel-panel",
             toggleButton: ".flc-slidingPanel-toggleButton"
         },
         strings: {
@@ -36,21 +36,20 @@ var fluid_1_4 = fluid_1_4 || {};
         	afterPanelHidden: null,
         	afterPanelShown: null
         },
-        finalInitFunction: "fluid.slidingPanel.finalInit"             
+        finalInitFunction: "fluid.slidingPanel.finalInit",
+        hideByDefault: true
     });     
     
     fluid.slidingPanel.finalInit = function (that) {        
     
         that.showPanel = function () {
-            that.locate("panel").slideDown();    
-            that.locate("toggleButton").text(that.options.strings.hideText);
-			that.events.afterPanelShown.fire();
+            that.locate("panel").slideDown('400', that.events.afterPanelShown.fire);    
+            that.locate("toggleButton").text(that.options.strings.hideText);			
         };  
     
         that.hidePanel = function () {
-            that.locate("panel").slideUp();                           
             that.locate("toggleButton").text(that.options.strings.showText);        
-			that.events.afterPanelHidden.fire();            
+            that.locate("panel").slideUp('400', that.events.afterPanelHidden.fire);                           
         };      
         
         that.togglePanel = function() {
@@ -59,13 +58,17 @@ var fluid_1_4 = fluid_1_4 || {};
             } else {
                 that.hidePanel();             
             }       
-        }
+        };
     
         //Event binder
         that.locate("toggleButton").click(that.togglePanel);		
             
         //Start Up: hide panel
-       that.hidePanel();
+        if (that.options.hideByDefault) {
+			//TODO: figure out how to remove duplicate code
+            that.locate("toggleButton").text(that.options.strings.showText);        
+            that.locate("panel").hide();
+       	}
     };    
 
 })(jQuery, fluid_1_4);
