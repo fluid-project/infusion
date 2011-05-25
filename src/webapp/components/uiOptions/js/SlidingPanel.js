@@ -22,16 +22,6 @@ var fluid_1_4 = fluid_1_4 || {};
     /**********************
      * Sliding Panel *
      *********************/
-    
-    fluid.registerNamespace("fluid.slidingPanel");
-    
-    fluid.slidingPanel.slideUp = function (element, callback, duration) {
-        $(element).slideUp(duration || "400", callback);
-    };
-    
-    fluid.slidingPanel.slideDown = function (element, callback, duration) {
-        $(element).slideDown(duration || "400", callback);
-    };
      
     fluid.defaults("fluid.slidingPanel", {
         gradeNames: ["fluid.viewComponent", "autoInit"],             
@@ -54,6 +44,14 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         hideByDefault: true
     });     
+    
+    fluid.slidingPanel.slideUp = function (element, callback, duration) {
+        $(element).slideUp(duration || "400", callback);
+    };
+    
+    fluid.slidingPanel.slideDown = function (element, callback, duration) {
+        $(element).slideDown(duration || "400", callback);
+    };    
     
     fluid.slidingPanel.finalInit = function (that) {        
     
