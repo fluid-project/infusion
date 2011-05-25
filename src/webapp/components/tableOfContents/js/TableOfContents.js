@@ -147,46 +147,57 @@ var fluid_1_4 = fluid_1_4 || {};
             that.refreshView();
         });        
     };
-
-    fluid.tableOfContents.levels.buildLevels = function (currentLevel, toLevel) {
-        var nextLevel = currentLevel + 1;
-        var repeatID = "level" + currentLevel + "s";
-        var valueAs = "heading" + currentLevel;
-        var pathAs = "heading" + currentLevel + "path";
-        var controlledBy = currentLevel > 1 ? "{heading" + (currentLevel - 1) + "path}.headings"  : "headings";
+    
+    fluid.tableOfContents.levels.generateTree = function (startLevel, endLevel) {
+        var tree = {};
+        var componentID = "level" + startLevel;
+        var parentLevel = startLevel - 1;
+        var childLevel = startLevel + 1;
+        var controlledBy = (parentLevel ? "{headingPath" + parentLevel + "}." : "") + "headings";
+        var value = "headingValue" + startLevel;
+        var path = "headingPath" + startLevel;
         
-        var tree = {
-            expander: {
-                type: "fluid.renderer.repeat",
-                repeatID: repeatID,
-                controlledBy: controlledBy,
-                valueAs: valueAs,
-                pathAs: pathAs,
-                tree: {
-                    expander: [{
-                        type: "fluid.renderer.condition",
-                        condition: "{" + valueAs + "}.text",
-                        trueTree: {
-                            link: {
-                                target: "${{" + pathAs + "}.url}",
-                                linktext: "${{" + pathAs + "}.text}"
-                            }
+        tree[componentID] = {
+            children: [
+                {
+                    expander: {
+                        type: "fluid.renderer.repeat",
+                        repeatID: "items:",
+                        controlledBy: controlledBy,
+                        valueAs: value,
+                        pathAs: path,
+                        tree: {
+                            expander: [
+                                {
+                                    type: "fluid.renderer.condition",
+                                    condition: "{" + value + "}.text",
+                                    trueTree: {
+                                        link: {
+                                            target: "${{" + path + "}.url}",
+                                            linktext: "${{" + path + "}.text}"
+                                        }
+                                    }
+                                }
+                            ]
                         }
-                    }]
+                    }
                 }
-            }
+            ]
         };
         
-        if (nextLevel <= toLevel) {
-            var segment = fluid.tableOfContents.levels.buildLevels(nextLevel, toLevel);
-            tree.expander.tree.expander.push(segment.expander);
+        if (childLevel <= endLevel) {
+            tree[componentID].children[0].expander.tree.expander.push({
+                type: "fluid.renderer.condition",
+                condition: "{" + value + "}.headings",
+                trueTree: fluid.tableOfContents.levels.generateTree(childLevel, endLevel)
+            });
         }
         
         return tree;
     };
-     
+ 
     fluid.tableOfContents.levels.produceTree = function (that) {
-        return fluid.tableOfContents.levels.buildLevels(1, 6);
+        return fluid.tableOfContents.levels.generateTree(1, 6);
     };
      
     fluid.defaults("fluid.tableOfContents.levels", {
@@ -194,15 +205,16 @@ var fluid_1_4 = fluid_1_4 || {};
         finalInitFunction: "fluid.tableOfContents.levels.finalInit",
         produceTree: "fluid.tableOfContents.levels.produceTree",
         selectors: {
-            level1s: ".flc-toc-levels-level1s",
-            level2s: ".flc-toc-levels-level2s",
-            level3s: ".flc-toc-levels-level3s",
-            level4s: ".flc-toc-levels-level4s",
-            level5s: ".flc-toc-levels-level5s",
-            level6s: ".flc-toc-levels-level6s",
+            level1: ".flc-toc-levels-level1",
+            level2: ".flc-toc-levels-level2",
+            level3: ".flc-toc-levels-level3",
+            level4: ".flc-toc-levels-level4",
+            level5: ".flc-toc-levels-level5",
+            level6: ".flc-toc-levels-level6",
+            items: ".flc-toc-levels-items",
             link: ".flc-toc-levels-link"
         },
-        repeatingSelectors: ["level1s", "level2s", "level3s", "level4s", "level5s", "level6s"],
+        repeatingSelectors: ["level1", "level2", "level3", "level4", "level5", "level6", "items"],
         events: {},
         model: {
             headings: [] // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format]
