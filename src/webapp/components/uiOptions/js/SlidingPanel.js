@@ -21,7 +21,18 @@ var fluid_1_4 = fluid_1_4 || {};
 (function ($, fluid) {
     /**********************
      * Sliding Panel *
-     *********************/       
+     *********************/
+    
+    fluid.registerNamespace("fluid.slidingPanel");
+    
+    fluid.slidingPanel.slideUp = function (element, callback, duration) {
+        $(element).slideUp(duration || "400", callback);
+    };
+    
+    fluid.slidingPanel.slideDown = function (element, callback, duration) {
+        $(element).slideDown(duration || "400", callback);
+    };
+     
     fluid.defaults("fluid.slidingPanel", {
         gradeNames: ["fluid.viewComponent", "autoInit"],             
         selectors: {
@@ -37,19 +48,25 @@ var fluid_1_4 = fluid_1_4 || {};
         	afterPanelShown: null
         },
         finalInitFunction: "fluid.slidingPanel.finalInit",
+        invokers: {
+            hide: "fluid.slidingPanel.slideUp",
+            show: "fluid.slidingPanel.slideDown"
+        },
         hideByDefault: true
     });     
     
     fluid.slidingPanel.finalInit = function (that) {        
     
         that.showPanel = function () {
-            that.locate("panel").slideDown('400', that.events.afterPanelShown.fire);    
-            that.locate("toggleButton").text(that.options.strings.hideText);			
+            // that.locate("panel").slideDown('400', that.events.afterPanelShown.fire);    
+            that.locate("toggleButton").text(that.options.strings.hideText);		
+            that.show(that.locate("panel"), that.events.afterPanelShown.fire);	
         };  
     
         that.hidePanel = function () {
             that.locate("toggleButton").text(that.options.strings.showText);        
-            that.locate("panel").slideUp('400', that.events.afterPanelHidden.fire);                           
+            that.hide(that.locate("panel"), that.events.afterPanelHidden.fire);
+            // that.locate("panel").slideUp('400', that.events.afterPanelHidden.fire);                           
         };      
         
         that.togglePanel = function() {
