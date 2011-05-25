@@ -101,7 +101,13 @@ var fluid_1_4 = fluid_1_4 || {};
             }
             
             if (currentHeadingLevel > currentLevel) {
-                model.push({headings: fluid.tableOfContents.modelBuilder.toModel(headings, anchors, levelFunc, currentLevel + 1)});
+                var subHeadings = fluid.tableOfContents.modelBuilder.toModel(headings, anchors, levelFunc, currentLevel + 1);
+                
+                if (model.length) {
+                    model[model.length - 1].headings = subHeadings;
+                } else {
+                    model.push({headings: subHeadings});
+                }
             }
             
             if (currentHeadingLevel === currentLevel) {
