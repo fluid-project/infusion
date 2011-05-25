@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, jQuery*/
+/*global fluid, jqUnit, expect, jQuery, start*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -21,59 +21,55 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         tests.test("Test Init", function () {
             expect(1);
-	        var slidingPanel = fluid.slidingPanel(".flc-slidingPanel");                    
+            var slidingPanel = fluid.slidingPanel(".flc-slidingPanel");                    
             jqUnit.assertTrue("The sliding panel is initialised", slidingPanel);                      
         });
 
-       tests.asyncTest("Show Panel", function () {
+        tests.asyncTest("Show Panel", function () {
             expect(2);
-	        var slidingPanel = fluid.slidingPanel(".flc-slidingPanel");  
+            var slidingPanel = fluid.slidingPanel(".flc-slidingPanel");  
             slidingPanel.events.afterPanelShown.addListener(function () {
-		            jqUnit.assertEquals("Show panel", "block", slidingPanel.locate("panel").css("display"));                                                       
-        		    jqUnit.assertEquals("Show panel button text", slidingPanel.options.strings.hideText, slidingPanel.locate("toggleButton").text());  
-        		    start();
-				}
-			);
+                jqUnit.assertEquals("Show panel", "block", slidingPanel.locate("panel").css("display"));                                                       
+                jqUnit.assertEquals("Show panel button text", slidingPanel.options.strings.hideText, slidingPanel.locate("toggleButton").text());  
+                start();
+            });
             slidingPanel.showPanel();                                 
         });   
         
         tests.asyncTest("Hide Panel", function () {
             expect(2);
-            var slidingPanel = fluid.slidingPanel(".flc-slidingPanel", {hideByDefault:false});
+            var slidingPanel = fluid.slidingPanel(".flc-slidingPanel", {hideByDefault: false});
             
             slidingPanel.events.afterPanelHidden.addListener(function () {
-					jqUnit.assertEquals("Hide panel", "none", slidingPanel.locate("panel").css("display"));                      
-					jqUnit.assertEquals("Hide panel button text", slidingPanel.options.strings.showText, slidingPanel.locate("toggleButton").text());    
-					start();
-				}            
-            );
+                jqUnit.assertEquals("Hide panel", "none", slidingPanel.locate("panel").css("display"));                      
+                jqUnit.assertEquals("Hide panel button text", slidingPanel.options.strings.showText, slidingPanel.locate("toggleButton").text());    
+                start();
+            });
             
             slidingPanel.hidePanel();              
         });         
               
 
-         tests.asyncTest("Toggle Panel Show", function () {
+        tests.asyncTest("Toggle Panel Show", function () {
             expect(1);
-	        var slidingPanel = fluid.slidingPanel(".flc-slidingPanel");     
-	        
+            var slidingPanel = fluid.slidingPanel(".flc-slidingPanel");     
+            
             slidingPanel.events.afterPanelShown.addListener(function () {
-		            jqUnit.assertEquals("Show panel via toggle", "block", slidingPanel.locate("panel").css("display"));   	                                                                             
-        			start();    		
-				}
-			);
+                jqUnit.assertEquals("Show panel via toggle", "block", slidingPanel.locate("panel").css("display"));                                                                                  
+                start();            
+            });
             
             slidingPanel.togglePanel();            
         });    
 
-         tests.asyncTest("Toggle Panel Hide", function () {
+        tests.asyncTest("Toggle Panel Hide", function () {
             expect(1);
-	        var slidingPanel = fluid.slidingPanel(".flc-slidingPanel", {hideByDefault:false});         
-	        
+            var slidingPanel = fluid.slidingPanel(".flc-slidingPanel", {hideByDefault: false});         
+            
             slidingPanel.events.afterPanelHidden.addListener(function () {
-		            jqUnit.assertEquals("Hide panel via toggle", "none",  slidingPanel.locate("panel").css("display"));                                                                       
-        			start();    
-				}
-			);
+                jqUnit.assertEquals("Hide panel via toggle", "none",  slidingPanel.locate("panel").css("display"));                                                                       
+                start();    
+            });
             
             slidingPanel.togglePanel();            
         });
