@@ -42,6 +42,12 @@
     <body>
 
         <div id="uploader-contents">
+	        <!-- Basic upload controls, used when JavaScript is unavailable -->
+	        <form method="post" enctype="multipart/form-data" class="fl-progEnhance-basic">
+	            <p>Use the Browse button to add a file, and the Save button to upload it.</p>
+	            <input name="fileData" type="file" />
+	            <input class="fl-uploader-basic-save" type="submit" value="Save"/>
+	        </form>        
             <!-- The Uploader's template will be injected via AJAX into this container. -->
         </div>
         
