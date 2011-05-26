@@ -102,37 +102,38 @@ var fluid_1_4 = fluid_1_4 || {};
     ********************/
     fluid.registerNamespace("fluid.tableOfContents.modelBuilder");
     
-    fluid.tableOfContents.modelBuilder.toModel = function (headings, anchorInfo, levelFunc, currentLevel) {
-        currentLevel = currentLevel || 1;
-        var model = [];
+    fluid.tableOfContents.modelBuilder.toModel = function (headingInfo) {
+        var headings = fluid.copy(headingInfo);
         
-        while (headings.length > 0) {
-            var currentHeading = headings[0];
-            var currentHeadingLevel = levelFunc(currentHeading);
+        var buildModelLevel = function (headings, level) {
+            var modelLevel = [];
             
-            if (currentHeadingLevel < currentLevel) {
-                break;
-            }
-            
-            if (currentHeadingLevel > currentLevel) {
-                var subHeadings = fluid.tableOfContents.modelBuilder.toModel(headings, anchorInfo, levelFunc, currentLevel + 1);
+            while (headings.length > 0) {
+                heading = headings.shift();
+                if (heading.level < level) {
+                    break;
+                }
                 
-                if (model.length) {
-                    model[model.length - 1].headings = subHeadings;
-                } else {
-                    model.push({headings: subHeadings});
+                if (heading.level > level) {
+                    headings.unshift(heading);
+                    var subHeadings = buildModelLevel(headings, level + 1);
+                    
+                    if (modelLevel.length > 0) {
+                        modelLevel[modelLevel.length - 1].headings = subHeadings;
+                    } else {
+                        modelLevel.push({headings: subHeadings});
+                    }
+                }
+                
+                if (heading.level === level) {
+                    modelLevel.push(heading);
                 }
             }
             
-            if (currentHeadingLevel === currentLevel) {
-                model.push({
-                    text: $(headings.shift()).text(),
-                    url: anchorInfo.shift().url
-                });
-            }
-        }
+            return modelLevel;
+        };
         
-        return model.length > 0 ? model : null;
+        return buildModelLevel(headings, 1);
     };
     
     fluid.tableOfContents.modelBuilder.headingLevel = function (heading, levels) {
@@ -141,10 +142,21 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.tableOfContents.modelBuilder.finalInit = function (that) {
+        
+        that.convertToHeadingObjects = function (headings, anchorInfo) {
+            headings = $(headings);
+            return fluid.transform(headings, function (heading, index) {
+                return {
+                    level: that.headingLevel(heading),
+                    text: $(heading).text(),
+                    url: anchorInfo[index].url
+                };
+            });
+        };
+        
         that.assembleModel = function (headings, anchorInfo) {
-            var headingsArray = $.makeArray(headings);
-            var anchorInfoCopy = fluid.copy(anchorInfo);
-            return that.toModel(headingsArray, anchorInfoCopy, that.headingLevel);
+            var headingInfo = that.convertToHeadingObjects(headings, anchorInfo);
+            return that.toModel(headingInfo);
         };
     };
     
