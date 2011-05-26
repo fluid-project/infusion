@@ -38,16 +38,15 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.tableOfContents.finalInit = function (that) {
         var headings = that.locate("headings");
-        that.tocAnchors = [];
         
-        fluid.each(headings, function (heading) {
+        that.tocAnchorURLs = fluid.transform(headings, function (heading) {
             var baseName = $(heading).text().replace(/\W/g, "-");
             var guid = that.generateGUID(baseName);
             that.insertAnchor(guid, heading);
-            that.tocAnchors.push("#" + guid);
+            return "#" + guid;
         });
         
-        that.model = that.modelBuilder.assembleModel(headings, that.tocAnchors);
+        that.model = that.modelBuilder.assembleModel(headings, that.tocAnchorURLs);
         that.events.onReady.fire();
     };
     
@@ -88,7 +87,7 @@ var fluid_1_4 = fluid_1_4 || {};
     ********************/
     fluid.registerNamespace("fluid.tableOfContents.modelBuilder");
     
-    fluid.tableOfContents.modelBuilder.toModel = function (headings, anchors, levelFunc, currentLevel) {
+    fluid.tableOfContents.modelBuilder.toModel = function (headings, anchorURLs, levelFunc, currentLevel) {
         currentLevel = currentLevel || 1;
         var model = [];
         
@@ -101,7 +100,7 @@ var fluid_1_4 = fluid_1_4 || {};
             }
             
             if (currentHeadingLevel > currentLevel) {
-                var subHeadings = fluid.tableOfContents.modelBuilder.toModel(headings, anchors, levelFunc, currentLevel + 1);
+                var subHeadings = fluid.tableOfContents.modelBuilder.toModel(headings, anchorURLs, levelFunc, currentLevel + 1);
                 
                 if (model.length) {
                     model[model.length - 1].headings = subHeadings;
@@ -113,7 +112,7 @@ var fluid_1_4 = fluid_1_4 || {};
             if (currentHeadingLevel === currentLevel) {
                 model.push({
                     text: $(headings.shift()).text(),
-                    url: anchors.shift()
+                    url: anchorURLs.shift()
                 });
             }
         }
@@ -127,10 +126,10 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.tableOfContents.modelBuilder.finalInit = function (that) {
-        that.assembleModel = function (headings, anchors) {
+        that.assembleModel = function (headings, anchorURLs) {
             var headingsArray = $.makeArray(headings);
-            var anchorsArray = fluid.copy(anchors);
-            return that.toModel(headingsArray, anchorsArray, that.headingLevel);
+            var anchorURLsCopy = fluid.copy(anchorURLs);
+            return that.toModel(headingsArray, anchorURLsCopy, that.headingLevel);
         };
     };
     
