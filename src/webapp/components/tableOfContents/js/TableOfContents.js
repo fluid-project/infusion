@@ -136,18 +136,13 @@ var fluid_1_4 = fluid_1_4 || {};
         return buildModelLevel(headings, 1);
     };
     
-    fluid.tableOfContents.modelBuilder.headingLevel = function (heading, levels) {
-        levels = levels || ["H1", "H2", "H3", "H4", "H5", "H6"];
-        return $.inArray(heading.tagName, levels) + 1;
-    };
-    
     fluid.tableOfContents.modelBuilder.finalInit = function (that) {
         
         that.convertToHeadingObjects = function (headings, anchorInfo) {
             headings = $(headings);
             return fluid.transform(headings, function (heading, index) {
                 return {
-                    level: that.headingLevel(heading),
+                    level: that.headingCalculator.getHeadingLevel(heading),
                     text: $(heading).text(),
                     url: anchorInfo[index].url
                 };
@@ -163,10 +158,31 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.tableOfContents.modelBuilder", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         finalInitFunction: "fluid.tableOfContents.modelBuilder.finalInit",
+        components: {
+            headingCalculator: {
+                type: "fluid.tableOfContents.modelBuilder.headingCalculator"
+            }
+        },
         invokers: {
-            toModel: "fluid.tableOfContents.modelBuilder.toModel",
-            headingLevel: "fluid.tableOfContents.modelBuilder.headingLevel"
+            toModel: "fluid.tableOfContents.modelBuilder.toModel"
         }
+    });
+    
+    /********************************
+    * ToC ModelBuilder headingLevel *
+    *********************************/
+    fluid.registerNamespace("fluid.tableOfContents.modelBuilder.headingCalculator");
+    
+    fluid.tableOfContents.modelBuilder.headingCalculator.finalInit = function (that) {
+        that.getHeadingLevel = function (heading) {
+            return $.inArray(heading.tagName, that.options.levels) + 1;
+        };
+    };
+    
+    fluid.defaults("fluid.tableOfContents.modelBuilder.headingCalculator", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        finalInitFunction: "fluid.tableOfContents.modelBuilder.headingCalculator.finalInit",
+        levels: ["H1", "H2", "H3", "H4", "H5", "H6"]
     });
     
     /*************
