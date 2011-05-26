@@ -109,13 +109,12 @@ var fluid_1_4 = fluid_1_4 || {};
             var modelLevel = [];
             
             while (headings.length > 0) {
-                var heading = headings.shift();
+                var heading = headings[0];
                 if (heading.level < level) {
                     break;
                 }
                 
                 if (heading.level > level) {
-                    headings.unshift(heading);
                     var subHeadings = buildModelLevel(headings, level + 1);
                     
                     if (modelLevel.length > 0) {
@@ -127,6 +126,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 
                 if (heading.level === level) {
                     modelLevel.push(heading);
+                    headings.shift();
                 }
             }
             
