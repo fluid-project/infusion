@@ -71,11 +71,11 @@ var fluid_1_4 = fluid_1_4 || {};
         components: {
             levels: {
                 type: "fluid.tableOfContents.levels",
-                container: "{fluid.tableOfContents}.dom.tocContainer",
+                container: "{tableOfContents}.dom.tocContainer",
                 createOnEvent: "onReady",
                 options: {
                     model: {
-                        headings: "{fluid.tableOfContents}.model"
+                        headings: "{tableOfContents}.model"
                     }
                 }
             },
