@@ -168,9 +168,9 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    /********************************
-    * ToC ModelBuilder headingLevel *
-    *********************************/
+    /*************************************
+    * ToC ModelBuilder headingCalculator *
+    **************************************/
     fluid.registerNamespace("fluid.tableOfContents.modelBuilder.headingCalculator");
     
     fluid.tableOfContents.modelBuilder.headingCalculator.finalInit = function (that) {
@@ -189,7 +189,7 @@ var fluid_1_4 = fluid_1_4 || {};
     * ToC Levels *
     **************/
     fluid.registerNamespace("fluid.tableOfContents.levels");
-     
+    
     fluid.tableOfContents.levels.finalInit = function (that) {
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
@@ -246,7 +246,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
  
     fluid.tableOfContents.levels.produceTree = function (that) {
-        return fluid.tableOfContents.levels.generateTree(1, 6);
+        return fluid.tableOfContents.levels.generateTree(1, that.options.maxLevel);
     };
      
     fluid.defaults("fluid.tableOfContents.levels", {
@@ -268,6 +268,7 @@ var fluid_1_4 = fluid_1_4 || {};
         model: {
             headings: [] // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format]
         },
+        maxLevel: 6,
         resources: {
             template: {
                 forceCache: true,
