@@ -109,7 +109,7 @@ var fluid_1_4 = fluid_1_4 || {};
             var modelLevel = [];
             
             while (headings.length > 0) {
-                heading = headings.shift();
+                var heading = headings.shift();
                 if (heading.level < level) {
                     break;
                 }
@@ -264,11 +264,10 @@ var fluid_1_4 = fluid_1_4 || {};
             link: ".flc-toc-levels-link"
         },
         repeatingSelectors: ["level1", "level2", "level3", "level4", "level5", "level6", "items"],
-        events: {},
         model: {
             headings: [] // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format]
         },
-        maxLevel: 6,
+        maxLevel: 6, // look into calculating this programattically.
         resources: {
             template: {
                 forceCache: true,
