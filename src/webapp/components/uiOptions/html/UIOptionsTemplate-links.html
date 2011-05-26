@@ -1,25 +1,16 @@
-            <div class="fl-uiOptions-controlGroup">
-                <ol class="fl-controls-right">
-                    <li>
-                        <span class="fl-label">Links:</span>
-                        <fieldset>
-                            <legend>Links</legend>
-                            <input class="flc-uiOptions-links-underline" id="links-underline" type="checkbox"/>
-                            <label for="links-underline">Underline</label><br />
-                            <input class="flc-uiOptions-links-bold" id="links-bold" type="checkbox"/>
-                            <label for="links-bold">Bold</label><br />
-                            <input class="flc-uiOptions-links-larger" id="links-larger" type="checkbox"/>
-                            <label for="links-larger">Larger</label>
-                        </fieldset>
-                    </li>
-                    <li>
-                        <span class="fl-label">Inputs:</span>
-                        <fieldset>
-                            <legend>Inputs</legend>
-                            <input class="flc-uiOptions-inputs-larger" id="inputs-larger" type="checkbox"/>
-                            <label for="inputs-larger">Larger</label>
-                        </fieldset>                                   
-                    </li>
-                </ol>
-            </div>
-        
+            <ul class="fl-clearfix">
+                <li class= "fl-uiOptions-option fl-uiOptions-option-first fl-uiOptions-option-1col">
+                    <input type="checkbox" id="links-choice" class="flc-uiOptions-links fl-force-left" />
+                    <div class="fl-force-left">
+                        <label for="links-choice" class="fl-label">Emphasize Links</label>
+                        <p class="fl-uiOptions-option-description">Makes links larger, bold, and underlined</p>
+                    </div>
+                </li>
+                <li class= "fl-uiOptions-option fl-uiOptions-option-1col">
+                    <input type="checkbox" id="inputs-choice"class="flc-uiOptions-inputs-larger fl-force-left" />
+                    <div class="fl-force-left">
+                        <label for="inputs-choice" class="fl-label">Make Inputs Larger</label>
+                        <p class="fl-uiOptions-option-description">Makes buttons, drop-down menus, text-fields, and other inputs larger</p>
+                    </div>
+                </li>        
+            </ul>        
