@@ -47,32 +47,18 @@
         <script type="text/javascript" src="../../../../components/uiOptions/js/UIOptions.js"></script>
         <script type="text/javascript" src="../../../../components/tableOfContents/js/TableOfContents.js"></script>
         
-        <script type="text/javascript">
-            $().ready(function () {
-                fluid.uiEnhancer(document, {
-                    tableOfContents: {
-                        options: {
-                            templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
-                        }
-                    
-                    }
-                });
-                
-                fluid.uiOptions("#myUIOptions", {
-                    resources: {
-                        template: {
-                            url: "../../../../components/uiOptions/html/FullNoPreviewUIOptions.html"
-                        }
-                    }
-                });
-            });
-        </script>
+        <script type="text/javascript" src="../js/uiOptions.js"></script>
+        
     </head>
 
     <body>
         <h1>User Interface Options</h1>
         
         <div id="myUIOptions"></div>
+        
+        <script type="text/javascript">
+			demo.fullUIOptions($("#myUIOptions"));
+        </script>        
     </body>
 </html>
 
