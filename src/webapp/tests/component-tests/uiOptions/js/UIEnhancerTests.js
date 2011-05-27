@@ -25,9 +25,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         var testSettings = {
             textSize: "18",
-            textFont: "courier",
-            textSpacing: "wide1",
-            theme: "highContrast"
+            textFont: "verdana",
+            theme: "bw",
+            layout: false
         };
         
         var options = {
@@ -38,29 +38,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var tests = new jqUnit.TestCase("UI Enhancer Tests");
         
         tests.test("Initialization", function () {
-            expect(16);
+            expect(13);
 
             jqUnit.assertEquals("Initially font size classes exist", 3, $(".fl-font-size-90").length);
             jqUnit.assertEquals("Initially layout class exists", 3, $(".fl-layout-linear").length);
-            jqUnit.assertEquals("Initially mist class exists", 1, $(".fl-theme-mist").length);
+            jqUnit.assertEquals("Initially mist class exists", 1, $(".fl-theme-hci").length);
             jqUnit.assertEquals("Initially font-sans class exists", 1, $(".fl-font-sans").length);
             jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
             jqUnit.assertEquals("Initially text-spacing class exists", 1, $(".fl-font-spacing-3").length);
-            jqUnit.assertEquals("Initially no-background-images class exists", 1, $(".fl-noBackgroundImages").length);
             var uiEnhancer = fluid.uiEnhancer(document, options);
             jqUnit.assertEquals("font size classes should not be removed", 3, $(".fl-font-size-90").length);
             jqUnit.assertEquals("layout class is gone", 0, $(".fl-layout-linear").length);
-            jqUnit.assertEquals("Fluid theme class is gone", 0, $(".fl-theme-mist").length);
+            jqUnit.assertEquals("Fluid theme class is gone", 0, $(".fl-theme-hci").length);
             jqUnit.assertEquals("font sans class is gone", 0, $(".fl-font-sans").length);
-            jqUnit.assertEquals("arial class is set", 1, $(".fl-font-arial").length);
-            jqUnit.assertEquals("text spacing class is gone", 0, $(".fl-text-spacing-3").length);
-            jqUnit.assertEquals("no background images is gone", 0, $(".fl-noBackgroundImages").length);
+            jqUnit.assertEquals("arial class is not set", 0, $(".fl-font-arial").length);
             jqUnit.assertEquals("Things are still styled with 'first-class' ", 3, $(".first-class").length);
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });
 
         tests.test("Settings", function () {
-            expect(4);
+            expect(3);
 
             var options = {
                 savedSettings: testSettings
@@ -69,8 +66,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var uiEnhancer = fluid.uiEnhancer(null, options);
             
             jqUnit.assertEquals("Large text size is set", "18pt", pxToPtConversion(body.css("fontSize")));
-            jqUnit.assertTrue("Courier font is set", body.hasClass("fl-font-courier"));
-            jqUnit.assertTrue("Wide text spacing is set", body.hasClass("fl-font-spacing-1"));
+            jqUnit.assertTrue("Courier font is set", body.hasClass("fl-font-verdana"));
             jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-hc"));
 
         });
@@ -118,7 +114,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             differentSettings.textSize = "32";
             store.save(differentSettings);
             jqUnit.assertEquals("Changed settings are saved correctly.", "32", store.fetch().textSize);
-            jqUnit.assertEquals("Theme was saved correctly.", "highContrast", store.fetch().theme);
+            jqUnit.assertEquals("Theme was saved correctly.", "bw", store.fetch().theme);
                                            
             // Now we can create a uiEnhancer and see that the theme is default not high contrast
             var enhancer = fluid.uiEnhancer();
