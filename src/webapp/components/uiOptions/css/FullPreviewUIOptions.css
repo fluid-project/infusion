@@ -21,3 +21,8 @@
 	padding-top: 18px;
 	padding-bottom: 22px;
 }
+
+.fl-uiOptions-fullPreview ul li {
+	clear: left;
+	height: 3em;
+}

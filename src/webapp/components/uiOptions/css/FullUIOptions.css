@@ -53,20 +53,6 @@
     padding-top: 8px;
 }
 
-/* Descriptions */
-
-.fl-uiOptions-option-description {
-	color: #4D4D4D;
-	margin-bottom: 0px;
-	padding-top: 5px;
-}
-
-/* Labels */
-
-.fl-uiOptions label {
-	text-transform: uppercase;
-	font-size: 1.2em;
-}
 
 /* Text and display section */
 
