@@ -1,0 +1,33 @@
+.demo-cssFix-options {
+    border-radius: 4px;
+    background-color: #CCC;
+    margin: 0px 0px 5px 5px;
+    padding: 10px 5px;
+    height: auto;
+    width: 187px;
+}
+
+.demo-cssFix-fixContainer {
+	border: 1px solid blue;
+}
+
+strong {
+    display: block;
+}
+
+.demo-cssFix-colContainer {
+    width: 500px;
+    padding: 4px;
+}
+
+.demo-cssFix-description {
+    width: 100px;
+    padding: 4px;
+    font-style: italic;
+}
+ul li {
+	list-style: none;
+	width: 200px;
+	margin-right:5px;
+	float:left;
+}

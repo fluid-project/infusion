@@ -1,27 +1,5 @@
 /* UI Option styles for full page w/ or w/o preview */
 
-.fl-col-fixed-31em { width: 31em; }
-.fl-col-fixed-38em { width: 38em; }
-.fl-col-fixed-54em { width: 54em; }
-.fl-col-fixed-72em { width: 72em; }
-
-/* Form */
-
-.fl-uiOptions ul {
-	margin-left: 0px;
-}
-
-.fl-uiOptions ul li {
-    list-style: none;
-	overflow: hidden;
-	width: 100%;
-}
-
-/* Sections (e.g., Text & Display, Layout & Navigation) */
-
-.fl-uiOptions-category {
-    padding-bottom: 48px; /* separation between categories */
-}
 
 /* Section headers */
 
@@ -32,6 +10,7 @@
 	color: #444444;
 	padding-top: 14px;
 	padding-bottom: 22px;
+	padding-left: 0px;	
 }
 
 .fl-uiOptions h2 img {
@@ -39,55 +18,13 @@
 	padding-right: 5px;
 }
 
-/* Individual options (e.g., text size, simplify layout, emphasize links) */
 
-.fl-uiOptions-option-2col {
-    padding-top: 40px;
-}
-
-.fl-uiOptions-option-1col {
-    padding-top: 28px;
-}
-
-.fl-uiOptions-option-first {
-    padding-top: 8px;
-}
-
-/* Descriptions */
-
-.fl-uiOptions-option-description {
-	color: #4D4D4D;
-	margin-bottom: 0px;
-	padding-top: 5px;
-}
-
-/* Labels */
-
-.fl-uiOptions label {
-	text-transform: uppercase;
-	font-size: 1.2em;
-}
-
-/* Text and display section */
-
-.fl-uiOptions .fl-uiOptions-form label {
-    display: block;
-    float: left;
-	width: 100px;
-}
-
-.fl-uiOptions .fl-uiOptions-form .fl-inputs {
-	float: left;
-}
-
-.fl-uiOptions .fl-uiOptions-form input[type="text"] {
-	width: 2em;
-}
 /* Save & apply, reset, cancel buttons */
 
 .fl-uiOptions .fl-uiOptions-buttons {
 	margin-top: 1em;
 	float: left;
+	width: 100%;
 }
 
 .fl-uiOptions .fl-uiOptions-buttons input {
@@ -117,13 +54,6 @@
 	background-repeat: no-repeat;
 	background-position: 3px 6px;
     background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
-}
-
-/* Slider position. More slider styles in /css/Slider.css */
-
-.fl-uiOptions .fl-slider {
-	float:left;
-	margin-right: 10px;
 }
 
 /* Check boxes */

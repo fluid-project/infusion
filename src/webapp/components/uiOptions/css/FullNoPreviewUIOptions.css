@@ -4,11 +4,13 @@
 	border-top: 2px solid #dddddd;
 }
 
-.fl-uiOptions-fullNoPreview .fl-uiOptions-category h2 {
-	padding-left: 0px;
-/*	padding-right: 4em;*/
+.fl-uiOptions-fullNoPreview .fl-uiOptions-category h2 img {
+	padding-top: 10px;
+	margin-bottom: -4px;
 }
 
-.fl-uiOptions-fullNoPreview .fl-uiOptions-category ul {
-	padding-top: 14px;
+.fl-uiOptions-fullNoPreview ul li {
+	clear: left;
+	height: 3.5em;
 }
+

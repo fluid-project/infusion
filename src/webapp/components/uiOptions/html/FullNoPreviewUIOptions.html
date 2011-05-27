@@ -1,93 +1,24 @@
 <form id="options" action="" class="fl-uiOptions fl-uiOptions-fullNoPreview fl-col-fixed-72em">    
     <div class="flc-uiOptions-controls">
-	    <div class="fl-uio-category fl-col-mixed-250">
-    		<h2 class="fl-col-fixed fl-force-left"><img src="../../../../components/uiOptions/images/uio_icon_textanddisplay_18x18.png" alt="" /> Text and display</h2>
-    		<ul class="fl-uio-form fl-clearfix fl-col-flex">
-    			<li class="flc-uiOptions-min-text-size fl-uio-option fl-uio-option-first fl-uio-option-2col">
-    				<label for="min-text-size" class="fl-label">Text Size</label>
-    				<div class="fl-inputs">
-    				    <img class="fl-force-left fl-left-slider-image" src="../../../../components/uiOptions/images/uio_icon_smallA_10x10.png" alt="" />
-    					<div class="flc-textfieldSlider-slider fl-slider fl-slider-horz"> </div>
-    					<span class="fl-force-right"><input id="min-text-size" class="flc-textfieldSlider-field" type="text" /> times</span>
-    					<img class="fl-force-right fl-right-slider-image" src="../../../../components/uiOptions/images/uio_icon_bigA_20x20.png" alt="" />
-    				</div>
-    			</li>
-    			<li class= "fl-uio-option fl-uio-option-2col">
-    				<label for="text-font" class="fl-label">Text Style</label>
-    				<select class="flc-uiOptions-text-font fl-inputs" id="text-font">
-    					<option value="default" class="default">Default</option>
-    					<option value="times" class="times">Times New Roman</option>
-    					<option value="comic" class="comic">Comic Sans</option>
-    					<option value="arial" class="arial">Arial</option>
-    					<option value="verdana" class="verdana">Verdana</option>					
-    				</select> 				
-    			</li>   
-    			<li class="flc-uiOptions-line-spacing fl-uiOptions-line-spacing fl-uio-option fl-uio-option-2col">
-    				<label for="line-spacing" class="fl-label">Line Spacing</label>
-    				<div class="fl-inputs">
-    				    <img class="fl-force-left fl-left-slider-image" src="../../../../components/uiOptions/images/uio_icon_linesNarrow_16x12.png" alt="" />
-    					<div class="fl-slider fl-slider-horz flc-textfieldSlider-slider"> </div>
-    					<span class="fl-force-right"><input id="line-spacing" class="flc-textfieldSlider-field" type="text" /> times</span>
-    					<img class="fl-force-right fl-right-slider-image" src="../../../../components/uiOptions/images/uio_icon_linesWide_16x21.png" alt="" />
-    				</div>
-    			</li>			
-    			<li class= "fl-uio-option fl-uio-option-2col">
-    				<label class="fl-label" for="theme">Colour & Contrast</label>
-    				<select class="flc-uiOptions-theme fl-inputs" id="theme">
-    					<option value="default" class="default">Default</option>
-    					<option value="bw" class="bw">Black on white</option>
-    					<option value="wb" class="wb">White on black</option>
-    					<option value="by" class="by">Black on yellow</option>
-    					<option value="yb" class="yb">Yellow on black</option>					
-    				</select>  
-    			</li>
-            </ul>            
-        </div>
+	    <div class="fl-uiOptions-category fl-col-mixed-250">    		
+			<h2 class="fl-col-fixed fl-force-left"><img src="../../../../components/uiOptions/images/uio_icon_textanddisplay_18x18.png" alt="" /> Text and display</h2>
+            <div class="flc-uiOptions-text-controls fl-uiOptions-text fl-col-flex"></div>                                       		    		
+    	</div>	    		    		
         
-	    <div class="fl-uio-category fl-col-mixed-250">
+	    <div class="fl-uiOptions-category fl-col-mixed-250">
             <h2 class="fl-col-fixed fl-force-left"><img src="../../../../components/uiOptions/images/uio_icon_layoutandnavigation_18x18.png" alt="" /> Layout and navigation</h2>        
-    		<ul class="fl-clearfix fl-col-flex">
-    			<li class= "fl-uio-option fl-uio-option-first fl-uio-option-1col">                             
-    				<input type="checkbox" id="layout-choice" class="flc-uiOptions-layout fl-force-left" />
-    				<div class="fl-force-left">
-    					<label for="layout-choice" class="fl-label">Simplify Layout</label>
-    					<p class="fl-uio-option-description">Converts a page to a single column layout</p>
-    				</div>
-    			</li>                
-    			<li class= "fl-uio-option fl-uio-option-1col">
-    				<input type="checkbox" id="toc-choice" class="flc-uiOptions-toc fl-force-left" />
-    				<div class="fl-force-left">
-    					<label for="toc-choice" class="fl-label">Show Table of Contents</label>
-    					<p class="fl-uio-option-description">Adds a table of contents to the top of the page</p>
-    				</div>
-    			</li>                            
-    		</ul>
+            <div class="flc-uiOptions-layout-controls fl-uiOptions-layout fl-col-flex"></div>                   		
         </div>
             
-	    <div class="fl-uio-category fl-col-mixed-250">
+	    <div class="fl-uiOptions-category fl-col-mixed-250">
             <h2 class="fl-col-fixed fl-force-left"><img src="../../../../components/uiOptions/images/uio_icon_linksandbuttons_18x18.png" alt="" /> Links and buttons</h2>
-            <ul class="fl-clearfix fl-col-flex">
-    			<li class= "fl-uio-option fl-uio-option-first fl-uio-option-1col">
-    				<input type="checkbox" id="links-choice" class="flc-uiOptions-links-choice fl-force-left" />
-    				<div class="fl-force-left">
-    					<label for="links-choice" class="fl-label">Emphasize Links</label>
-    					<p class="fl-uio-option-description">Makes links larger, bold, and underlined</p>
-    				</div>
-    			</li>
-    			<li class= "fl-uio-option fl-uio-option-1col">
-    				<input type="checkbox" id="inputs-choice"class="flc-uiOptions-inputs-choice fl-force-left" />
-    				<div class="fl-force-left">
-    					<label for="inputs-choice" class="fl-label">Make Inputs Larger</label>
-    					<p class="fl-uio-option-description">Makes buttons, drop-down menus, text-fields, and other inputs larger</p>
-    				</div>
-    			</li>        
-            </ul>        
+            <div class="flc-uiOptions-links-controls fl-uiOptions-links fl-col-flex"></div>      		
         </div>
     </div>
 
-    <div class="fl-text-align-center fl-uio-buttons">
-        <input class="flc-uiOptions-save fl-uio-save" type="button" value="Save and apply" />
+    <div class="fl-text-align-center fl-uiOptions-buttons">
+        <input class="flc-uiOptions-save fl-uiOptions-save" type="button" value="Save and apply" />
         <input class="flc-uiOptions-reset" type="button" value="Reset" />
-        <input class="flc-uiOptions-cancel fl-uio-cancel" type="button" value="Cancel" />
+        <input class="flc-uiOptions-cancel fl-uiOptions-cancel" type="button" value="Cancel" />
     </div>                
 </form>                

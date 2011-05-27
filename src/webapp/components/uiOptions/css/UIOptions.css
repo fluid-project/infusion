@@ -5,8 +5,9 @@
     font-size: 0.85em;
 }
 
-.fl-uiOptions p {
+.fl-uiOptions .fl-uiOptions-option-description {
     font-size: 1.1em;
+    padding-top: 5px;
 }
 
 /* Form list */
@@ -18,13 +19,24 @@
     list-style: none;
 }
 
-.fl-uiOptions .fl-uiOptions-form label {
+.fl-uiOptions label {
+	text-transform: uppercase;
+	font-size: 1.2em;
+}
+.fl-uiOptions-option-description {
+	color: #4D4D4D;
+	margin-bottom: 0px;
+	padding-top: 5px;
+}
+
+/* text and display section */
+.fl-uiOptions .fl-uiOptions-text label {
     display: block;
     float: left;
 	width: 14em;	
 }
 
-.fl-uiOptions .fl-uiOptions-form .fl-inputs {
+.fl-uiOptions .fl-uiOptions-text .fl-inputs {
 	float: left;
 }
 
