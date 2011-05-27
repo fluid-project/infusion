@@ -10,7 +10,6 @@
 }
 
 /* Form list */
-
 .fl-uiOptions ul {
 	margin-left: 0px;
 }
@@ -19,14 +18,13 @@
     list-style: none;
 }
 
-/* Text and display section */
-.fl-uiOptions .fl-uio-form label {
+.fl-uiOptions .fl-uiOptions-form label {
     display: block;
     float: left;
 	width: 14em;	
 }
 
-.fl-uiOptions .fl-uio-form .fl-inputs {
+.fl-uiOptions .fl-uiOptions-form .fl-inputs {
 	float: left;
 }
 
@@ -34,10 +32,14 @@
 	width:2em;
 }
 
-/* Slider position. More slider styles in /css/Slider.css */
+/* Slider position */
 .fl-uiOptions .fl-slider {
 	float:left;
 	margin-right: 10px;
+}
+
+.fl-uiOptions .fl-slider-input {
+	float: right;
 }
 
 /* Check boxes */
@@ -52,13 +54,13 @@
 	border: 2px solid #ebebeb;
 }
 
-.fl-uiOptions select#text-font { 
+.fl-uiOptions select#textFont { 
 	font-weight:bold; 
 }
-.fl-uiOptions select#text-font option.times { font-family: "Times New Roman"; }
-.fl-uiOptions select#text-font option.comic { font-family: "Comic Sans MS"; }
-.fl-uiOptions select#text-font option.arial { font-family: Arial; }
-.fl-uiOptions select#text-font option.verdana { font-family: Verdana; }
+.fl-uiOptions select#textFont option.times { font-family: "Times New Roman"; }
+.fl-uiOptions select#textFont option.comic { font-family: "Comic Sans MS"; }
+.fl-uiOptions select#textFont option.arial { font-family: Arial; }
+.fl-uiOptions select#textFont option.verdana { font-family: Verdana; }
 
 /* Theme Select box */
 .fl-uiOptions select#theme { 
@@ -107,5 +109,3 @@
 .fl-uiOptions .fl-theme-coal .fl-slider .fl-handle, 
 .fl-uiOptions .fl-theme-coal .fl-slider a,
 .fl-uiOptions .fl-theme-coal .fl-slider a:hover {border:1px solid #000; background-color:#999;}
-
-.fl-uiOptions .fl-theme-mist {}

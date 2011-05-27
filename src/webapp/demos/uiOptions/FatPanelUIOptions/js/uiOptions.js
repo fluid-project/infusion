@@ -21,26 +21,55 @@ var demo = demo || {};
 (function ($, fluid) {	 	 
 
 	/* Our demo script */   
-    demo.slidingUIOptions = function (container) {
-        // First, initialize a UIEnhancer for the page
-        var pageEnhancer = fluid.uiEnhancer(document, {
-            tableOfContents: {
-                options: {
-                    templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
-                }            
-            }
-        });
+    demo.slidingUIOptions = function (panel, uioptions) {
+		// Supply the template URL of "text and display" panel on the user preferences interface
+		fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptions"], {
+			options: {
+				resources: {
+					template: {
+						url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
+					}
+				}
+			}
+		});
+
+		// Supply the template URL of "layout and navigation" panel on the user preferences interface
+		fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptions"], {
+			options: {
+				resources: {
+					template: {
+						url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
+					}
+				}
+			}
+		});
+
+		// Supply the template URL of "layout and navigation" panel on the user preferences interface
+		fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptions"], {
+			options: {
+				resources: {
+					template: {
+						url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+					}
+				}
+			}
+		});    
+		// Supply the table of contents' template URL
+		fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+			options: {
+				templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+			}
+		});
+
+		fluid.uiEnhancer();
         
         // Next, start up UI Options
-        var myUIOptions = fluid.uiOptions(container, {
+        var myUIOptions = fluid.uiOptions(uioptions, {
 			components: {
 				preview: {
 					type: "fluid.uiOptions.livePreview"
 				}
-			},			
-			selectors: {
-				previewFrame: ""
-			},        
+			},			      
             resources: {
                 template: {
                     url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"
@@ -50,8 +79,12 @@ var demo = demo || {};
 
         // Put it in the sliding panel.
         //slidingPanel(myUIOptions, button);
-        fluid.slidingPanel($("#myUIOptions"));
-       //fluid.tabs("#myUIOptions"); 
+        fluid.slidingPanel(panel, {
+        	selectors: {
+        		panel: uioptions
+        	}
+        });
+        
     };
     
 })(jQuery, fluid);

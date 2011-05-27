@@ -19,7 +19,7 @@
 
 /* Sections (e.g., Text & Display, Layout & Navigation) */
 
-.fl-uio-category {
+.fl-uiOptions-category {
     padding-bottom: 48px; /* separation between categories */
 }
 
@@ -41,21 +41,21 @@
 
 /* Individual options (e.g., text size, simplify layout, emphasize links) */
 
-.fl-uio-option-2col {
+.fl-uiOptions-option-2col {
     padding-top: 40px;
 }
 
-.fl-uio-option-1col {
+.fl-uiOptions-option-1col {
     padding-top: 28px;
 }
 
-.fl-uio-option-first {
+.fl-uiOptions-option-first {
     padding-top: 8px;
 }
 
 /* Descriptions */
 
-.fl-uio-option-description {
+.fl-uiOptions-option-description {
 	color: #4D4D4D;
 	margin-bottom: 0px;
 	padding-top: 5px;
@@ -70,27 +70,27 @@
 
 /* Text and display section */
 
-.fl-uiOptions .fl-uio-form label {
+.fl-uiOptions .fl-uiOptions-form label {
     display: block;
     float: left;
-	width: 14em;
+	width: 100px;
 }
 
-.fl-uiOptions .fl-uio-form .fl-inputs {
+.fl-uiOptions .fl-uiOptions-form .fl-inputs {
 	float: left;
 }
 
-.fl-uiOptions .fl-uio-form input[type="text"] {
+.fl-uiOptions .fl-uiOptions-form input[type="text"] {
 	width: 2em;
 }
 /* Save & apply, reset, cancel buttons */
 
-.fl-uiOptions .fl-uio-buttons {
+.fl-uiOptions .fl-uiOptions-buttons {
 	margin-top: 1em;
 	float: left;
 }
 
-.fl-uiOptions .fl-uio-buttons input {
+.fl-uiOptions .fl-uiOptions-buttons input {
 	text-transform: uppercase;
 	text-decoration: underline;
 	font-weight: bold;
@@ -103,7 +103,7 @@
     margin-right: 3px;
 }
 
-.fl-uiOptions .fl-uio-buttons .fl-uio-save {
+.fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save {
 	padding-left: 16px;
 	background-image: url("../../../../components/uiOptions/images/uio_icon_save_13x13.png");
 	background-repeat: no-repeat;
@@ -111,7 +111,7 @@
     background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
 }
 
-.fl-uiOptions .fl-uio-buttons .fl-uio-cancel {
+.fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel {
 	padding-left: 16px;
 	background-image: url("../../../../components/uiOptions/images/uio_icon_cancel_13x13.png");
 	background-repeat: no-repeat;
