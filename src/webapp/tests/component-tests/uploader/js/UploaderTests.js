@@ -298,8 +298,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             for (var i = 0; i < xhrStatus.length; i++) {
                 addFiles(uploader);
                 var file = uploader.queue.getReadyFiles()[0]; 
-                var xhr = fluid.uploader.html5Strategy.monitorFileUploadXHR(
-                        file, uploader.events, createXHR(xhrStatus[i]));
+                var xhr = createXHR(xhrStatus[i]);
+                fluid.uploader.html5Strategy.monitorFileUploadXHR(file, uploader.events, xhr);
                 xhr.onreadystatechange();
                 jqUnit.assertEquals("The file status is updated", fileStatus[i], file.filestatus);
 
