@@ -14,7 +14,14 @@
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-theme-coal.css" />
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-theme-mist.css" />
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-theme-rust.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-coal/coal.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-mist/mist.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-slate/slate.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-hc/hc.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-hci/hci.css" />
+
         <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/UIOptions.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/FatPanelUIOptions.css" />
         <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/Slider.css" />
         <link rel="stylesheet" type="text/css" href="../css/SomeKindOfNews.css" />
 
@@ -24,8 +31,12 @@
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.mouse.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>        
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.tabs.js"></script>        
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.ariaTabs.js"></script>        
         <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
 
+        <script type="text/javascript" src="../../../framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidRequests.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
@@ -38,44 +49,25 @@
 
         <script type="text/javascript" src="../../../components/uiOptions/js/UIEnhancer.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/SlidingPanel.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
-        
-        <script type="text/javascript">
-            $().ready(function () {
-                fluid.uiEnhancer(document, {
-                    classnameMap: {
-                        theme: {
-                            "default": "skon-theme-basic"
-                        }
-                    }
-                });
-                fluid.uiOptions("#myUIOptions", {
-                    resources: {
-                        template: {
-                            url: "../../../components/uiOptions/html/UIOptions.html"
-                        }
-                    }
-                });
-            });
+        <script type="text/javascript" src="../../../components/undo/js/Undo.js"></script>
 
-            // Supply the table of contents' template URL that is relative to the caller html
-            fluid.demands("fluid.tableOfContents", ["fluid.uiOptions", "fluid.uiEnhancer"], {
-                options: {
-                    templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
-                }
-            });
-        </script>
+        <script type="text/javascript" src="../js/someKindOfNews.js"></script>
     </head>
 
     <body class="skon-theme-basic">
 
+        <div id="mySlidingPanel">        
+            <div id="myUIOptions"></div>     
+            
+            <div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel fl-panelBar">
+                <button class="flc-slidingPanel-toggleButton  fl-toggleButton">Show/Hide</button>
+            </div>
+        </div>  
+
         <div class="fl-container-900 fl-centered fl-fix skon-content">
             <div class="fl-fix skon-header">
-                <div class="fl-force-right">
-                    <a class="fl-button-left fl-linearEnabled" href="#_bottom">
-                        <span class="fl-button-inner"> Display Preferences </span>
-                    </a>
-                </div>
                 <h1>Some Kind Of News</h1>
                 <p class="fl-force-left skon-tagline">Stuff you don't really need (or want) to know...</p>
             </div>
@@ -211,10 +203,11 @@
             <div class="fl-push skon-footer">
                 <p class="fl-text-align-center">Brought to you by: Someone in the basement with too much time on their hands</p>
             </div>
-
-            <hr/>
-            <div id="myUIOptions" class="fl-focus"></div>
         </div>
+
+        <script type="text/javascript">
+            skon.slidingUIOptions($("#mySlidingPanel"), $("#myUIOptions"));            
+        </script>
 
     </body>
 </html>
