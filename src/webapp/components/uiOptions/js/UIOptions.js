@@ -329,7 +329,7 @@ var fluid_1_4 = fluid_1_4 || {};
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
             that.events.onUIOptionsTemplateReady.fire();
-           // bindHandlers(that);
+            bindHandlers(that);
             that.events.onReady.fire();
         });
 
