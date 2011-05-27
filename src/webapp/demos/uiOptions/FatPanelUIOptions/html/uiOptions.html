@@ -47,6 +47,8 @@
 
         <script type="text/javascript" src="../../../../components/uiOptions/js/UIEnhancer.js"></script>
         <script type="text/javascript" src="../../../../components/uiOptions/js/UIOptions.js"></script>
+        <script type="text/javascript" src="../../../../components/uiOptions/js/SlidingPanel.js"></script>
+
         <script type="text/javascript" src="../../../../components/tableOfContents/js/TableOfContents.js"></script>
         <script type="text/javascript" src="../../../../components/undo/js/Undo.js"></script>
                 
@@ -55,12 +57,14 @@
     </head>
 
     <body>
-        
-        <div id="myUIOptions"></div>     
-        
-        <div class="flc-uiOptions-fatPanel fl-fatPanel fl-panelBar">
-	        <button class="flc-slidingPanel-toggleButton  fl-toggleButton"></button>
-	    </div>
+
+		<div id="mySlidingPanel">        
+			<div id="myUIOptions"></div>     
+			
+			<div class="flc-uiOptions-fatPanel fl-fatPanel fl-panelBar">
+				<button class="flc-slidingPanel-toggleButton  fl-toggleButton">Show/Hide</button>
+			</div>
+		</div>	
         
 		<div id="main">    
 			<h1>Some Sample Title</h1>
@@ -68,7 +72,7 @@
 		</div>
 
         <script type="text/javascript">
-            demo.slidingUIOptions($("#myUIOptions"));            
+            demo.slidingUIOptions($("#mySlidingPanel"), $("#myUIOptions"));            
         </script>
     </body>
 

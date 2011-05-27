@@ -21,7 +21,7 @@ var demo = demo || {};
 (function ($, fluid) {	 	 
 
 	/* Our demo script */   
-    demo.slidingUIOptions = function (container) {
+    demo.slidingUIOptions = function (panel, uioptions) {
         // First, initialize a UIEnhancer for the page
         var pageEnhancer = fluid.uiEnhancer(document, {
             tableOfContents: {
@@ -32,7 +32,7 @@ var demo = demo || {};
         });
         
         // Next, start up UI Options
-        var myUIOptions = fluid.uiOptions(container, {
+        var myUIOptions = fluid.uiOptions(uioptions, {
 			components: {
 				preview: {
 					type: "fluid.uiOptions.livePreview"
@@ -50,8 +50,11 @@ var demo = demo || {};
 
         // Put it in the sliding panel.
         //slidingPanel(myUIOptions, button);
-        fluid.slidingPanel($("#myUIOptions"));
-       //fluid.tabs("#myUIOptions"); 
+        fluid.slidingPanel(panel, {
+        	selectors: {
+        		panel: uioptions
+        	}
+        });
     };
     
 })(jQuery, fluid);
