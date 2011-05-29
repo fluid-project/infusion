@@ -234,19 +234,19 @@ Layout Helpers
 
 .fl-col-mixed-150 .fl-col-fixed {width:150px;}
 .fl-col-mixed-150 .fl-col-flex {margin-left:170px;}
-.fl-col-mixed-100 .fl-col-flex-left {margin-right:170px;}
+.fl-col-mixed-150 .fl-col-flex-left {margin-right:170px;}
 
 .fl-col-mixed-200 .fl-col-fixed {width:200px;}
 .fl-col-mixed-200 .fl-col-flex {margin-left:220px;}
-.fl-col-mixed-100 .fl-col-flex-left {margin-right:220px;}
+.fl-col-mixed-200 .fl-col-flex-left {margin-right:220px;}
 
 .fl-col-mixed-250 .fl-col-fixed {width:250px;}
 .fl-col-mixed-250 .fl-col-flex {margin-left:270px;}
-.fl-col-mixed-100 .fl-col-flex-left {margin-right:270px;}
+.fl-col-mixed-250 .fl-col-flex-left {margin-right:270px;}
 
 .fl-col-mixed-300 .fl-col-fixed {width:300px;}
 .fl-col-mixed-300 .fl-col-flex {margin-left:320px;}
-.fl-col-mixed-100 .fl-col-flex-left {margin-right:320px;}
+.fl-col-mixed-300 .fl-col-flex-left {margin-right:320px;}
 
 
 /*
