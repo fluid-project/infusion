@@ -71,7 +71,7 @@ var fluid_1_4 = fluid_1_4 || {};
     var seekInputs = function (container, reorderform) {
         return seekNodesById(reorderform, 
                              "input", 
-                             "^" + deriveLightboxCellBase(container.attr("id"), "[^:]*") + "reorder-index$");
+                             "^" + deriveLightboxCellBase(container.prop("id"), "[^:]*") + "reorder-index$");
     };
     
     var mapIdsToNames = function (container, reorderform) {
@@ -137,7 +137,7 @@ var fluid_1_4 = fluid_1_4 || {};
         setDefaultValue(that, "options.listeners.afterMove", 
                         that.options.afterMoveCallback || createIDAfterMoveListener(that.container));
         setDefaultValue(that, "options.selectors.movables", 
-                        createImageCellFinder(that.container, that.container.attr("id")));
+                        createImageCellFinder(that.container, that.container.prop("id")));
         
         var reorderer = fluid.reorderer(that.container, that.options);
         

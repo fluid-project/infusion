@@ -1666,7 +1666,8 @@ var fluid = fluid || fluid_1_4;
         dokkument = dokkument && dokkument.nodeType === 9 ? dokkument : document;
         var el = dokkument.getElementById(id);
         if (el) {
-            if (el.getAttribute("id") !== id) {
+        // Use element id property here rather than attribute, to work around FLUID-3953
+            if (el.id !== id) {
                 fluid.fail("Problem in document structure - picked up element " +
                     fluid.dumpEl(el) + " for id " + id +
                     " without this id - most likely the element has a name which conflicts with this id");
@@ -1683,7 +1684,7 @@ var fluid = fluid || fluid_1_4;
      * @param {jQuery||Element} element the element to return the id attribute for
      */
     fluid.getId = function (element) {
-        return fluid.unwrap(element).getAttribute("id");
+        return fluid.unwrap(element).id;
     };
     
     /** 

@@ -40,7 +40,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var i;
         for (i = 0; i < files.length; i++) {
             var file = files[i];
-            if (file.id.toString() === row.attr("id")) {
+            if (file.id.toString() === row.prop("id")) {
                 return file;
             }
         }
@@ -170,7 +170,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.locate("fileName", row).text(fileName);
         that.locate("fileSize", row).text(fileSize);
         that.locate("fileIconBtn", row).addClass(that.options.styles.remove);
-        row.attr("id", file.id);
+        row.prop("id", file.id);
         row.addClass(that.options.styles.ready);
         bindRowHandlers(that, row);
         fluid.updateAriaLabel(row, fileName + " " + fileSize);
@@ -180,9 +180,9 @@ var fluid_1_4 = fluid_1_4 || {};
     var createProgressorFromTemplate = function (that, row) {
         // create a new progress bar for the row and position it
         var rowProgressor = that.rowProgressorTemplate.clone();
-        var rowId = row.attr("id");
+        var rowId = row.prop("id");
         var progressId = rowId + "_progress";
-        rowProgressor.attr("id", progressId);
+        rowProgressor.prop("id", progressId);
         rowProgressor.css("top", row.position().top);
         rowProgressor.height(row.height()).width(5);
         that.container.after(rowProgressor);
@@ -254,7 +254,7 @@ var fluid_1_4 = fluid_1_4 || {};
     var renderErrorInfoRowFromTemplate = function (that, fileRow, error) {
         // Render the row by cloning the template and binding its id to the file.
         var errorRow = that.errorInfoRowTemplate.clone();
-        errorRow.attr("id", fileRow.attr("id") + "_error");
+        errorRow.prop("id", fileRow.prop("id") + "_error");
         
         // Look up the error message and render it.
         var errorType = fluid.keyForValue(fluid.uploader.errorConstants, error);
