@@ -246,6 +246,7 @@ var fluid_1_4 = fluid_1_4 || {};
             onSave: null,
             onCancel: null,
             onReset: null,
+            onAutoSave: null,
             modelChanged: null,
             onUIOptionsTemplateReady: null
         },
@@ -255,7 +256,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 forceCache: true,
                 url: "../html/UIOptions.html"
             }
-        }
+        },
+        autoSave: false
     });
     
     fluid.uiOptions.finalInit = function (that) {
@@ -312,6 +314,9 @@ var fluid_1_4 = fluid_1_4 || {};
         that.applier.modelChanged.addListener("selections",
             function (newModel, oldModel, changeRequest) {
                 that.events.modelChanged.fire(newModel, oldModel, changeRequest.source);
+                if (that.options.autoSave) {
+                    that.events.onAutoSave.fire();
+                }
             }
         );
             
@@ -326,13 +331,19 @@ var fluid_1_4 = fluid_1_4 || {};
             });
         };
         
+        var bindEventHandlers = function (that) {
+            that.events.onAutoSave.addListener(function () {
+                that.save();    
+            });
+        };
+        
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
             that.events.onUIOptionsTemplateReady.fire();
             bindHandlers(that);
+            bindEventHandlers(that);
             that.events.onReady.fire();
         });
-
     };
     
     var initModel = function (that) {
