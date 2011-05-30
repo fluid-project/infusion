@@ -488,18 +488,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
              jqUnit.assertEquals("Sanity check: the queue should contain 6 files", 6, localUploader.queue.files.length);
         });                 
         
-        html5UploaderTests.test("doFormDataUpload tests", function () {
+        html5UploaderTests.test("formDataSender tests", function () {
             var queueSettings = {
                 uploadURL: "/home/Uploader",
                 postParams: {
                     name: "HTML5",
                     id: "8"
                 }
-            }; 
+            };
             
             var xhr = fluid.tests.uploader.html5.mockXHR();
-            var formData = fluid.tests.uploader.mockFormData();
-            fluid.uploader.html5Strategy.doFormDataUpload(file1, queueSettings, xhr, formData);
+            var sender = fluid.uploader.html5Strategy.formDataSender({
+                invokers: {
+                    createFormData: "fluid.tests.uploader.mockFormData"
+                }
+            });
+            
+            var formData = sender.send(file1, queueSettings, xhr);
             jqUnit.assertEquals("The correct file is appended", file1.id, formData.data.file.id);
             jqUnit.assertEquals("postParam is correctly appended to FormData", "HTML5", formData.data.name);
             jqUnit.assertEquals("postParam is correctly appended to FormData", 8, formData.data.id);
@@ -516,7 +521,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }; 
 
             var xhr = fluid.tests.uploader.html5.mockXHR();
-            fluid.uploader.html5Strategy.doManualMultipartUpload(file1, queueSettings, xhr);
+            var sender = fluid.uploader.html5Strategy.rawMIMESender();
+            sender.send(file1, queueSettings, xhr);
             jqUnit.assertEquals("XHR receives the proper method", "POST", xhr.method);
             jqUnit.assertEquals("XHR url is set", "/home/Uploader", xhr.url);
             jqUnit.assertTrue("XHR to execute asynchronously", xhr.async);
