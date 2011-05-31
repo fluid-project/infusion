@@ -92,9 +92,9 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} container
      * @param {Object} spacing
      */
-    var setLineSpacing = function (container, spacing) {
-        spacing = spacing && spacing > 0 ? spacing : 1; 
-        container.css("line-height", spacing + "em");
+    var setLineSpacing = function (container, times, initLineSpacing, textSizeTimes) {
+        var newLineSpacing = times === "" || times === 1 ? initLineSpacing : times * initLineSpacing * textSizeTimes;
+        container.css("line-height", newLineSpacing + "em");
     };
 
     /**
@@ -102,13 +102,14 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} container
      * @param {Object} size
      */
-    var setMinSize = function (container, size) {
+    var setMinSize = function (container, times, initFontSize) {
         // TODO: fss font size class prefix is hardcoded here
-        if (size && size > 0) {
-            container.css("font-size", size + "pt");
-            replaceClass(container, "[class*=fl-font-size-]", /\bfl-font-size-[0-9]{1,2}\s+/g, 'fl-font-size-100');
-        } else {
+        if (times == 1){
             container.css("font-size", ""); // empty is same effect as not being set
+        } else if (times && times > 0) {
+            newFontSize = initFontSize * times;
+            container.css("font-size", newFontSize + "px");
+            replaceClass(container, "[class*=fl-font-size-]", /\bfl-font-size-[0-9]{1,2}\s+/g, 'fl-font-size-100');
         }
     };
 
@@ -220,6 +221,29 @@ var fluid_1_4 = fluid_1_4 || {};
         that.events.onInitSettingStore.fire(); 
         initModel(that);
     };
+    
+    // Returns the value of css style "line-height" in em 
+    var getLineHeight = function (container) {
+        var lineHeight = container.css("lineHeight");
+        
+        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
+        if ($.browser.msie) {
+            var lineHeightInIE;
+            
+            // if unit is missing, assume the value is in "em"
+            lineHeightInIE = container[0].currentStyle.lineHeight;
+            
+            if (lineHeightInIE.match(/[0-9]$/)) {
+                return lineHeightInIE;
+            }
+        }
+        
+        // Needs a better solution. For now, "line-height" value "normal" is hardcodedly converted to 1em.
+        if (lineHeight === "normal") {
+            return 1;
+        }
+        return parseFloat(lineHeight) / 16;
+    };
       
     /**
      * Component that works in conjunction with FSS to transform the interface based on settings. 
@@ -235,6 +259,10 @@ var fluid_1_4 = fluid_1_4 || {};
 
         var clashingClassnames;
         
+        var initFontSize = parseFloat(container.css("font-size"));
+        
+        var initLineSpacing = getLineHeight(container);
+        
         /**
          * Transforms the interface based on the settings in that.model
          */
@@ -242,8 +270,8 @@ var fluid_1_4 = fluid_1_4 || {};
             that.container.removeClass(clashingClassnames);
             addStyles(that.container, that.model, that.options.classnameMap);
             styleElements(that.container, !isTrue(that.model.backgroundImages), that.options.classnameMap.noBackgroundImages);
-            setMinSize(that.container, that.model.textSize);
-            setLineSpacing(that.container, that.model.lineSpacing);
+            setMinSize(that.container, that.model.textSize, initFontSize);
+            setLineSpacing(that.container, that.model.lineSpacing, initLineSpacing, that.model.textSize);
             setToc(that, that.model.toc);
             styleLinks(that.container, that.model, that.options.classnameMap);
             styleLayout(that.container, that.model, that.options.classnameMap);
@@ -318,8 +346,8 @@ var fluid_1_4 = fluid_1_4 || {};
         defaultSiteSettings: {
             textFont: "default",          // key from classname map
             theme: "default",             // key from classname map
-            textSize: "",                 // in points
-            lineSpacing: "",              // in ems
+            textSize: 1,                  // in points
+            lineSpacing: 1,               // in ems
             layout: false,                // boolean
             toc: false,                   // boolean
             links: false,                 // boolean

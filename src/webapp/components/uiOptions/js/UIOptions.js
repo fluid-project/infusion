@@ -59,7 +59,8 @@ var fluid_1_4 = fluid_1_4 || {};
             max: 100
         },
         sliderOptions: {
-            orientation: "horizontal"
+            orientation: "horizontal",
+            step: 0.1
         }, 
         finalInitFunction: "fluid.textfieldSlider.finalInit"
     });    
@@ -225,12 +226,12 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         },
         textSize: {
-            min: 6,
-            max: 30
+            min: 1,
+            max: 2
         },
         lineSpacing: {
             min: 1,
-            max: 10
+            max: 2
         },
         selectors: {
             textControls: ".flc-uiOptions-text-controls",
