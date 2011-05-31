@@ -256,9 +256,9 @@ var fluid_1_4 = fluid_1_4 || {};
 
         var clashingClassnames;
         
-        var initFontSize = parseFloat(container.css("font-size"));
+        var initFontSize = parseFloat(that.container.css("font-size"));
         
-        var initLineSpacing = getLineHeight(container);
+        var initLineSpacing = getLineHeight(that.container);
         
         /**
          * Transforms the interface based on the settings in that.model
