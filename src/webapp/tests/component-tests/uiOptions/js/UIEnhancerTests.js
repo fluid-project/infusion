@@ -46,7 +46,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Initially font-sans class exists", 1, $(".fl-font-sans").length);
             jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
             jqUnit.assertEquals("Initially text-spacing class exists", 1, $(".fl-font-spacing-3").length);
-            var uiEnhancer = fluid.uiEnhancer(document, options);
+            fluid.pageEnhancer(options);
             jqUnit.assertEquals("font size classes should not be removed", 3, $(".fl-font-size-90").length);
             jqUnit.assertEquals("layout class is gone", 0, $(".fl-layout-linear").length);
             jqUnit.assertEquals("Fluid theme class is gone", 0, $(".fl-theme-hci").length);
@@ -63,7 +63,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 savedSettings: testSettings
             };
             var body = $("body");
-            var uiEnhancer = fluid.uiEnhancer(null, options);
+            fluid.pageEnhancer(options);
             
             jqUnit.assertEquals("Large text size is set", "18pt", pxToPtConversion(body.css("fontSize")));
             jqUnit.assertTrue("Courier font is set", body.hasClass("fl-font-verdana"));
@@ -93,7 +93,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                document.cookie.indexOf("32") > cookieNameIndex);
                                
             // Now we can create a uiEnhancer and see that the textSize is set to 32
-            var enhancer = fluid.uiEnhancer();
+            var enhancer = fluid.pageEnhancer().uiEnhancer;
             jqUnit.assertEquals("The uiEnhancer should have a textSize of 32", "32", enhancer.model.textSize);
             
             // Reset the cookie settings
@@ -117,7 +117,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Theme was saved correctly.", "bw", store.fetch().theme);
                                            
             // Now we can create a uiEnhancer and see that the theme is default not high contrast
-            var enhancer = fluid.uiEnhancer();
+            var enhancer = fluid.pageEnhancer().uiEnhancer;
             jqUnit.assertEquals("The uiEnhancer should have a default theme", "default", enhancer.model.theme);
             
         });
