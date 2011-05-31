@@ -289,12 +289,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         tests.test("Pager bodyRenderer: fluid.pager.selfRender with default columnDefs (FLUID-3793)", function () {
             // without a fix to FLUID-3793, pager creation will fail with the default selfRender configuration
-            expect(1);
+            jqUnit.expect(2);
+            var afterRenderThat;
+            var pager;
+            function afterRenderListener(overallThat) {
+                afterRenderThat = overallThat;
+            }
             var pager = markupPager("#plants", {
                 bodyRenderer: "fluid.pager.selfRender",
-                dataModel: {}
+                dataModel: {},
+                listeners: {
+                    afterRender: afterRenderListener
+                }
             });
             jqUnit.assertTrue("Pager has been successfully created", pager);
+            jqUnit.assertTrue("AfterRender event fired with pager", pager, afterRenderThat);
         });
 
         tests.test("Pager tooltip", function () {
