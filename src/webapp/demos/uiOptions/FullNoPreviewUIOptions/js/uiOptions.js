@@ -19,59 +19,65 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 var demo = demo || {};
 (function ($, fluid) {
-
-    // Places UI Options into a sliding panel, which can be controlled by a button.
-    var slidingPanel = function (uiOptions, button) {
-        var slideUp = function () {
-            uiOptions.container.slideUp();
-        };
-        
-        // Bind listeners to UIOptions save & cancel events, sliding the panel up.
-        uiOptions.events.onCancel.addListener(slideUp);
-        uiOptions.events.onSave.addListener(slideUp);
-        
-        // Bind listeners to show and hide the panel when the button is clicked.
-        button.click(function () {
-            if (uiOptions.container.is(":hidden")) {
-                uiOptions.container.slideDown();
-            } else {
-                uiOptions.container.slideUp();
-                uiOptions.cancel();
-            }
-            return false;
-        });
-            
-        // Hide the panel to start.
-        uiOptions.container.hide();
-    };
     
-    demo.slidingUIOptions = function (container, button) {
-        // First, initialize a UIEnhancer for the page
-        var pageEnhancer = fluid.uiEnhancer(document, {
-            defaultSiteSettings: {
-                theme: "mist",
-                linksBold: true,
-                linksUnderline: true
-            },
-            tableOfContents: {
-                options: {
-                    templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+    demo.fullUIOptions = function (container) {
+
+        // Supply the template URL of "text and display" panel on the user preferences interface
+        fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptions"], {
+            options: {
+                resources: {
+                    template: {
+                        url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
+                    }
                 }
-            
             }
         });
+
+        // Supply the template URL of "layout and navigation" panel on the user preferences interface
+        fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptions"], {
+            options: {
+                resources: {
+                    template: {
+                        url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
+                    }
+                }
+            }
+        });
+
+        // Supply the template URL of "layout and navigation" panel on the user preferences interface
+        fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptions"], {
+            options: {
+                resources: {
+                    template: {
+                        url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                    }
+                }
+            }
+        });   
+        
+		// Supply the table of contents' template URL
+		fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+			options: {
+				templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+			}
+		});
+
+		fluid.uiEnhancer();      
         
         // Next, start up UI Options
         var myUIOptions = fluid.uiOptions(container, {
+			components: {
+				preview: {
+					type: "fluid.emptySubcomponent"
+				}
+			},	                
             resources: {
                 template: {
-                    url: "../../../../components/uiOptions/html/UIOptions.html"
+                    url: "../../../../components/uiOptions/html/FullNoPreviewUIOptions.html"
                 }
             }
         });
 
-        // Put it in the sliding panel.
-        slidingPanel(myUIOptions, button);
     };
     
 })(jQuery, fluid);
