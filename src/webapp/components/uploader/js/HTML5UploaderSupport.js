@@ -104,11 +104,6 @@ var fluid_1_4 = fluid_1_4 || {};
         return that;
     };
     
-    fluid.uploader.html5Strategy.createFileUploadXHR = function () {
-        var xhr = new XMLHttpRequest();
-        return xhr;
-    };
-    
     fluid.uploader.html5Strategy.monitorFileUploadXHR = function (file, events, xhr) {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
@@ -128,17 +123,13 @@ var fluid_1_4 = fluid_1_4 || {};
         xhr.upload.onprogress = function (pe) {
             events.onFileProgress.fire(file, progressTracker.getChunkSize(pe.loaded), pe.total);
         };
-        
-        return xhr;
     };
     
-    // Set additional POST parameters for xhr  
-    var setPostParams =  function (formData, postParams) {
-        $.each(postParams,  function (key, value) {
-            formData.append(key, value);
-        });
-    };
     
+    /*************************************
+     * HTML5 Strategy's remote behaviour *
+     *************************************/
+     
     fluid.uploader.html5Strategy.remote = function (queue, options) {
         var that = fluid.initLittleComponent("fluid.uploader.html5Strategy.remote", options);
         that.queue = queue;
@@ -153,10 +144,9 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.uploadFile = function (file) {
             that.events.onFileStart.fire(file);
-            var xhr = that.createXHR();
-            var formData = that.createFormData();
-            that.currentXHR = fluid.uploader.html5Strategy.monitorFileUploadXHR(file, that.events, xhr);
-            that.doUpload(file, that.queueSettings, that.currentXHR, formData);            
+            that.currentXHR = that.createXHR();
+            fluid.uploader.html5Strategy.monitorFileUploadXHR(file, that.events, that.currentXHR);
+            that.fileSender.send(file, that.queueSettings, that.currentXHR);            
         };
 
         that.stop = function () {
@@ -174,10 +164,13 @@ var fluid_1_4 = fluid_1_4 || {};
         argumentMap: {
             options: 1  
         },                
+        components: {
+            fileSender: {
+                type: "fluid.uploader.html5Strategy.fileSender"
+            }
+        },
         invokers: {
-            doUpload: "fluid.uploader.html5Strategy.doUpload",
-            createXHR: "fluid.uploader.html5Strategy.createFileUploadXHR", 
-            createFormData: "fluid.uploader.html5Strategy.createFormData"
+            createXHR: "fluid.uploader.html5Strategy.createXHR"
         }
     });
     
@@ -188,27 +181,60 @@ var fluid_1_4 = fluid_1_4 || {};
             fluid.COMPONENT_OPTIONS
         ]
     });
-    
-    var CRLF = "\r\n";
+
+
+    fluid.uploader.html5Strategy.createXHR = function () {
+        return new XMLHttpRequest();
+    };
     
     fluid.uploader.html5Strategy.createFormData = function () {
-        var formData = new FormData();
-        return formData;
+        return new FormData();
     };
     
-    /** 
-     * Firefox 4  implementation.  FF4 has implemented a FormData function which
-     * conveniently provides easy construct of set key/value pairs representing 
-     * form fields and their values.  The FormData is then easily sent using the 
-     * XMLHttpRequest send() method.  
-     */
-    fluid.uploader.html5Strategy.doFormDataUpload = function (file, queueSettings, xhr, formData) {
-        formData.append("file", file);
-        setPostParams(formData, queueSettings.postParams);
-        xhr.open("POST", queueSettings.uploadURL, true);
-        xhr.send(formData);
+    // Set additional POST parameters for xhr  
+    var setPostParams =  function (formData, postParams) {
+        $.each(postParams,  function (key, value) {
+            formData.append(key, value);
+        });
     };
     
+    /*******************************************************
+     * HTML5 FormData Sender, used by most modern browsers *
+     *******************************************************/
+    
+    fluid.defaults("fluid.uploader.html5Strategy.formDataSender", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        finalInitFunction: "fluid.uploader.html5Strategy.formDataSender.init",
+        invokers: {
+            createFormData: "fluid.uploader.html5Strategy.createFormData"
+        }
+    });
+    
+    fluid.uploader.html5Strategy.formDataSender.init = function (that) {
+        /**
+         * Uploads the file using the HTML5 FormData object.
+         */
+        that.send = function (file, queueSettings, xhr) {
+            var formData = that.createFormData();
+            formData.append("file", file);
+            setPostParams(formData, queueSettings.postParams);
+            xhr.open("POST", queueSettings.uploadURL, true);
+            xhr.send(formData);
+            return formData;
+        };
+    };
+    
+    fluid.demands("fluid.uploader.html5Strategy.fileSender", [
+        "fluid.uploader.html5Strategy.remote", 
+        "fluid.browser.supportsFormData"
+    ], {
+        funcName: "fluid.uploader.html5Strategy.formDataSender"
+    });
+    
+    /********************************************
+     * Raw MIME Sender, required by Firefox 3.6 *
+     ********************************************/
+     
     fluid.uploader.html5Strategy.generateMultipartBoundary = function () {
         var boundary = "---------------------------";
         boundary += Math.floor(Math.random() * 32768);
@@ -218,6 +244,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uploader.html5Strategy.generateMultiPartContent = function (boundary, file) {
+        var CRLF = "\r\n";
         var multipart = "";
         multipart += "--" + boundary + CRLF;
         multipart += "Content-Disposition: form-data;" +
@@ -230,37 +257,34 @@ var fluid_1_4 = fluid_1_4 || {};
         return multipart;
     };
     
-    /*
-     * Create the multipart/form-data content by hand to send the file
-     */
-    fluid.uploader.html5Strategy.doManualMultipartUpload = function (file, queueSettings, xhr) {
-        var boundary =  fluid.uploader.html5Strategy.generateMultipartBoundary();
-        var multipart = fluid.uploader.html5Strategy.generateMultiPartContent(boundary, file);
-        
-        xhr.open("POST", queueSettings.uploadURL, true);
-        xhr.setRequestHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
-        xhr.sendAsBinary(multipart);
+    fluid.defaults("fluid.uploader.html5Strategy.rawMIMESender", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        finalInitFunction: "fluid.uploader.html5Strategy.rawMIMESender.init"
+    });
+    
+    fluid.uploader.html5Strategy.rawMIMESender.init = function (that) {
+        /**
+         * Uploads the file by manually creating the multipart/form-data request. Required by Firefox 3.6.
+         */
+        that.send = function (file, queueSettings, xhr) {
+            var boundary =  fluid.uploader.html5Strategy.generateMultipartBoundary();
+            var multipart = fluid.uploader.html5Strategy.generateMultiPartContent(boundary, file);
+            xhr.open("POST", queueSettings.uploadURL, true);
+            xhr.setRequestHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
+            xhr.sendAsBinary(multipart);
+            return multipart;
+        };
     };
     
-    // Default configuration for older browsers that don't support FormData
-    fluid.demands("fluid.uploader.html5Strategy.doUpload", "fluid.uploader.html5Strategy.remote", {
-        funcName: "fluid.uploader.html5Strategy.doManualMultipartUpload",
-        args: ["@0", "@1", "@2"]
+    fluid.demands("fluid.uploader.html5Strategy.fileSender", "fluid.uploader.html5Strategy.remote", {
+        funcName: "fluid.uploader.html5Strategy.rawMIMESender"
     });
-    
-    fluid.demands("fluid.uploader.html5Strategy.createFileUploadXHR", "fluid.uploader.html5Strategy.remote", {
-        funcName: "fluid.uploader.html5Strategy.createFileUploadXHR"
-    });    
-    
-    // Configuration for FF4, Chrome, and Safari 4+, all of which support FormData correctly.
-    fluid.demands("fluid.uploader.html5Strategy.doUpload", [
-        "fluid.uploader.html5Strategy.remote", 
-        "fluid.browser.supportsFormData"
-    ], {
-        funcName: "fluid.uploader.html5Strategy.doFormDataUpload",
-        args: ["@0", "@1", "@2", "@3"]
-    });
-    
+
+
+    /************************************
+     * HTML5 Strategy's Local Behaviour *
+     ************************************/
+     
     fluid.uploader.html5Strategy.local = function (queue, legacyBrowserFileLimit, options) {
         var that = fluid.initLittleComponent("fluid.uploader.html5Strategy.local", options);
         that.queue = queue;
