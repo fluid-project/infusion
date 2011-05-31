@@ -307,6 +307,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var invalidIdElement = fluid.jById("this-id-does-not-exitst");
             jqUnit.assertEquals("element not found", 0, invalidIdElement.length);
         });
+        
+        fluidJSTests.test("FLUID-3953 tests: confusion for namespaced attributes", function() {
+            jqUnit.expect(2);
+            var node = fluid.byId("FLUID-3953-test");
+            jqUnit.assertEquals("Plain DOM node fetched", "FLUID-3953-test", node.id);
+            var jNode = fluid.jById("FLUID-3953-test");
+            jqUnit.assertEquals("jQuery node fetched", "FLUID-3953-test", jNode.prop("id"));
+        });
 
         fluidJSTests.test("findAncestor", function () {
             var testFunc = function (elementOfArray, indexInArray) {
