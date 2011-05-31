@@ -94,7 +94,7 @@ var demo = demo || {};
             }
         });
 
-        fluid.uiEnhancer(document, {
+        fluid.pageEnhancer({
             defaultSiteSettings: {
                 theme: "mist",
                 linksBold: true,
