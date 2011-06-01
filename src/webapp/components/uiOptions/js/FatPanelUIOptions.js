@@ -41,7 +41,10 @@ var fluid_1_4 = fluid_1_4 || {};
         	uiOptions: {
         		type: "fluid.uiOptions",
         		container: ".flc-slidingPanel-panel"
-        	}      
+        	}/*,
+        	uiEnhancer: {
+        		type: "fluid.uiEnhancer"
+       		}  */       	
         },
         finalInitFunction: "fluid.fatPanelUIOptions.finalInit"        
 
@@ -49,12 +52,13 @@ var fluid_1_4 = fluid_1_4 || {};
     
      fluid.fatPanelUIOptions.finalInit = function (that) {        
 	    // Start an enhancer
-    	fluid.uiEnhancer(); 
+    	//fluid.uiEnhancer(); 
+    	
     };    
 
     
-    // Options for UIOptions
-    fluid.demands("fluid.fatPanelUIOptions", ["fluid.uiOptions"], {
+    // Options for UIOptions in fat panel mode
+    fluid.demands("fluid.uiOptions", ["fluid.fatPanelUIOptions"], {
         options: {
 			components: {
 			    preview: {
