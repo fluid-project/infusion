@@ -638,6 +638,7 @@ var fluid_1_4 = fluid_1_4 || {};
                         options.renderOptions = options.renderOptions || {};
                         options.renderOptions.model = expOpts.dataModel;
                         fluid.reRender(template, root, fullTree, options.renderOptions);
+                        overallThat.events.afterRender.fire(overallThat);
                         setModelSortHeaderClass(newModel, expOpts); // TODO, should this not be actually renderable?
                     }
                 }
@@ -923,7 +924,8 @@ var fluid_1_4 = fluid_1_4 || {};
             initiatePageChange: null,
             initiatePageSizeChange: null,
             onModelChange: null,
-            onRenderPageLinks: null
+            onRenderPageLinks: null,
+            afterRender: null
         },
         
         markup: {
