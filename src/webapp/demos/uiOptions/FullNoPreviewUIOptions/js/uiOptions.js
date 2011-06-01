@@ -62,7 +62,7 @@ var demo = demo || {};
 			}
 		});
 
-		fluid.uiEnhancer();      
+		fluid.pageEnhancer();      
         
         // Next, start up UI Options
         var myUIOptions = fluid.uiOptions(container, {

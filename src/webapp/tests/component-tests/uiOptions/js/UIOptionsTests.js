@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.setLogging(true);
     
         var bwSkin = {
-            textSize: "8",
+            textSize: "1.8",
             textFont: "verdana",
             theme: "bw"
         };
@@ -85,7 +85,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            var uiEnhancer = fluid.uiEnhancer(document, fluid.merge(null, enhancerOptions, enhancerTestOptions));
+            var uiEnhancer = fluid.pageEnhancer(fluid.merge(null, enhancerOptions, enhancerTestOptions)).uiEnhancer;
             var uiOptions = fluid.uiOptions("#ui-options", fluid.merge(null, uiOptionsOptions, uiOptionsTestOptions));
 
             uiOptions.events.onReady.addListener(function () {
@@ -165,7 +165,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 uiOptions.refreshControlsView();
                 var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
                 var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val(); 
-                jqUnit.assertEquals("Small font size selected", "8", fontSizeSetting);
+                jqUnit.assertEquals("Small font size selected", "1.8", fontSizeSetting);
                 var fontStyleSelection = $(":selected", $(".flc-uiOptions-text-font"));
                 jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
                 var contrastSelection = $(":selected", $(".flc-uiOptions-theme"));
@@ -188,7 +188,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
         
             testUIOptions(function (uiOptions) {
-                settings = uiOptions.uiEnhancer.defaultSiteSettings;
+                var settings = uiOptions.uiEnhancer.defaultSiteSettings;
                 
                 var themeValue = settings.theme;
                 jqUnit.assertEquals("The theme is is set to wb", "wb", themeValue);

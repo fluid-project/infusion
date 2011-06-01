@@ -92,9 +92,9 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} container
      * @param {Object} spacing
      */
-    var setLineSpacing = function (container, spacing) {
-        spacing = spacing && spacing > 0 ? spacing : 1; 
-        container.css("line-height", spacing + "em");
+    var setLineSpacing = function (container, times, initLineSpacing, textSizeTimes) {
+        var newLineSpacing = times === "" || times === 1 ? initLineSpacing : times * initLineSpacing * textSizeTimes;
+        container.css("line-height", newLineSpacing + "em");
     };
 
     /**
@@ -102,13 +102,15 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} container
      * @param {Object} size
      */
-    var setMinSize = function (container, size) {
-        // TODO: fss font size class prefix is hardcoded here
-        if (size && size > 0) {
-            container.css("font-size", size + "pt");
-            replaceClass(container, "[class*=fl-font-size-]", /\bfl-font-size-[0-9]{1,2}\s+/g, 'fl-font-size-100');
-        } else {
+    var setMinSize = function (container, times, initFontSize) {
+        if (times === 1){
             container.css("font-size", ""); // empty is same effect as not being set
+        } else if (times && times > 0) {
+            newFontSize = initFontSize * times;
+            container.css("font-size", newFontSize + "px");
+            
+            // TODO: fss font size class prefix is hardcoded here
+            replaceClass(container, "[class*=fl-font-size-]", /\bfl-font-size-[0-9]{1,2}\s+/g, 'fl-font-size-100');
         }
     };
 
@@ -220,6 +222,30 @@ var fluid_1_4 = fluid_1_4 || {};
         that.events.onInitSettingStore.fire(); 
         initModel(that);
     };
+    
+    // Returns the value of css style "line-height" in em 
+    var getLineHeight = function (container) {
+        var lineHeight = container.css("lineHeight");
+        
+        // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1em.
+        if (lineHeight === "normal") {
+            return 1;
+        }
+        
+        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
+        if ($.browser.msie) {
+            var lineHeightInIE;
+            
+            // if unit is missing, assume the value is in "em"
+            lineHeightInIE = container[0].currentStyle.lineHeight;
+            
+            if (lineHeightInIE.match(/[0-9]$/)) {
+                return lineHeightInIE;
+            }
+        }
+        
+        return parseFloat(lineHeight) / 16;
+    };
       
     /**
      * Component that works in conjunction with FSS to transform the interface based on settings. 
@@ -227,13 +253,14 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} options
      */
     fluid.uiEnhancer = function (container, options) {
-        var originalContainer = container || document;
-        container = $("body", originalContainer);
         var that = fluid.initView("fluid.uiEnhancer", container, options);
-        $(originalContainer).data("uiEnhancer", that);
         that.defaultSiteSettings = that.options.defaultSiteSettings;
 
         var clashingClassnames;
+        
+        var initFontSize = parseFloat(that.container.css("font-size"));
+        
+        var initLineSpacing = getLineHeight(that.container);
         
         /**
          * Transforms the interface based on the settings in that.model
@@ -242,25 +269,14 @@ var fluid_1_4 = fluid_1_4 || {};
             that.container.removeClass(clashingClassnames);
             addStyles(that.container, that.model, that.options.classnameMap);
             styleElements(that.container, !isTrue(that.model.backgroundImages), that.options.classnameMap.noBackgroundImages);
-            setMinSize(that.container, that.model.textSize);
-            setLineSpacing(that.container, that.model.lineSpacing);
+            setMinSize(that.container, that.model.textSize, initFontSize);
+            setLineSpacing(that.container, that.model.lineSpacing, initLineSpacing, that.model.textSize);
             setToc(that, that.model.toc);
             styleLinks(that.container, that.model, that.options.classnameMap);
             styleLayout(that.container, that.model, that.options.classnameMap);
             styleInputs(that.container, that.model, that.options.classnameMap);
         };
         
-        /**
-         * Stores the new settings, refreshes the view to reflect the new settings and fires modelChanged.
-         * @param {Object} newModel
-         * @param {Object} source
-         */
-        that.events.onSave.addListener(
-            function (newModel) {
-                that.settingsStore.save(that.model);
-            }
-        );
-
         that.applier.modelChanged.addListener("",
             function (newModel, oldModel, changeRequest) {
                 that.events.modelChanged.fire(newModel, oldModel, changeRequest);
@@ -292,7 +308,6 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         events: {
             onReady: null,
-            onSave: null,
             modelChanged: null,
             onInitSettingStore: null
         },
@@ -318,12 +333,31 @@ var fluid_1_4 = fluid_1_4 || {};
         defaultSiteSettings: {
             textFont: "default",          // key from classname map
             theme: "default",             // key from classname map
-            textSize: "",                 // in points
-            lineSpacing: "",              // in ems
+            textSize: 1,                  // in points
+            lineSpacing: 1,               // in ems
             layout: false,                // boolean
             toc: false,                   // boolean
             links: false,                 // boolean
             inputsLarger: false           // boolean
+        }
+    });
+
+    fluid.pageEnhancer = function (uiEnhancerOptions) {
+        var that = fluid.initLittleComponent("fluid.pageEnhancer");
+        that.uiEnhancerOptions = uiEnhancerOptions;
+        fluid.initDependents(that);
+        fluid.staticEnvironment.uiEnhancer = that.uiEnhancer;
+        return that;
+    };
+
+    fluid.defaults("fluid.pageEnhancer", {
+        gradeNames: ["fluid.littleComponent"],
+        components: {
+            uiEnhancer: {
+                type: "fluid.uiEnhancer",
+                container: "body",
+                options: "{pageEnhancer}.uiEnhancerOptions"
+            }
         }
     });
     
