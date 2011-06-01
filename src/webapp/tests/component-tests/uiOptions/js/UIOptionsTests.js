@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.setLogging(true);
     
         var bwSkin = {
-            textSize: "8",
+            textSize: "1.8",
             textFont: "verdana",
             theme: "bw"
         };
@@ -140,7 +140,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 uiOptions.refreshControlsView();
                 var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
                 var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val(); 
-                jqUnit.assertEquals("Small font size selected", "8", fontSizeSetting);
+                jqUnit.assertEquals("Small font size selected", "1.8", fontSizeSetting);
                 var fontStyleSelection = $(":selected", $(".flc-uiOptions-text-font"));
                 jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
                 var contrastSelection = $(":selected", $(".flc-uiOptions-theme"));

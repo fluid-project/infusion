@@ -103,12 +103,13 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} size
      */
     var setMinSize = function (container, times, initFontSize) {
-        // TODO: fss font size class prefix is hardcoded here
-        if (times == 1){
+        if (times === 1){
             container.css("font-size", ""); // empty is same effect as not being set
         } else if (times && times > 0) {
             newFontSize = initFontSize * times;
             container.css("font-size", newFontSize + "px");
+            
+            // TODO: fss font size class prefix is hardcoded here
             replaceClass(container, "[class*=fl-font-size-]", /\bfl-font-size-[0-9]{1,2}\s+/g, 'fl-font-size-100');
         }
     };
@@ -226,6 +227,11 @@ var fluid_1_4 = fluid_1_4 || {};
     var getLineHeight = function (container) {
         var lineHeight = container.css("lineHeight");
         
+        // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1em.
+        if (lineHeight === "normal") {
+            return 1;
+        }
+        
         // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
         if ($.browser.msie) {
             var lineHeightInIE;
@@ -238,10 +244,6 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
         
-        // Needs a better solution. For now, "line-height" value "normal" is hardcodedly converted to 1em.
-        if (lineHeight === "normal") {
-            return 1;
-        }
         return parseFloat(lineHeight) / 16;
     };
       

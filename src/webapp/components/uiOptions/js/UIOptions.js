@@ -197,7 +197,8 @@ var fluid_1_4 = fluid_1_4 || {};
                     textSize: "{uiOptions}.options.textSize",
                     lineSpacing: "{uiOptions}.options.lineSpacing",
                     model: "{uiOptions}.model",
-                    applier: "{uiOptions}.applier"
+                    applier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap"
                 }
             },
             layoutControls: {
@@ -206,7 +207,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 createOnEvent: "onUIOptionsTemplateReady",
                 options: {
                     model: "{uiOptions}.model",
-                    applier: "{uiOptions}.applier"
+                    applier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap"
                 }
             },
             linksControls: {
@@ -215,7 +217,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 createOnEvent: "onUIOptionsTemplateReady",
                 options: {
                     model: "{uiOptions}.model",
-                    applier: "{uiOptions}.applier"
+                    applier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap"
                 }
             },
             preview: {
@@ -348,7 +351,8 @@ var fluid_1_4 = fluid_1_4 || {};
         fluid.each(that.options.controlValues, function (item, key) {
             that.applier.requestChange("labelMap." + key, {
                 values: that.options.controlValues[key],
-                names: that.options.strings[key]
+                names: that.options.strings[key],
+                classes: that.options.classnameMap[key]
             });
         });
     };
@@ -440,7 +444,14 @@ var fluid_1_4 = fluid_1_4 || {};
                 tree[item] = {
                     optionnames: "${labelMap." + item + ".names}",
                     optionlist: "${labelMap." + item + ".values}",
-                    selection: "${selections." + item + "}"
+                    selection: "${selections." + item + "}",
+                    decorators: {
+                        type: "fluid",
+                        func: "fluid.uiOptions.selectDecorator",
+                        options: {
+                            styles: that.options.classnameMap[item]
+                        }
+                    }
                 };
             }
             else if (item === "textSize" || item === "lineSpacing") {
@@ -452,6 +463,28 @@ var fluid_1_4 = fluid_1_4 || {};
         return tree;
     };
 
+    /***********************************************
+     * UI Options Select Dropdown Options Decorator*
+     ***********************************************/
+
+    /**
+     * A sub-component that decorates the options on the select dropdown list box with the css style
+     */
+    fluid.demands("fluid.uiOptions.selectDecorator", "fluid.uiOptions", {
+        container: "{arguments}.0"
+    });
+    
+    fluid.defaults("fluid.uiOptions.selectDecorator", {
+        gradeNames: ["fluid.viewComponent", "autoInit"], 
+        finalInitFunction: "fluid.uiOptions.selectDecorator.finalInit",
+    });
+    
+    fluid.uiOptions.selectDecorator.finalInit = function (that) {
+        fluid.each($("option", that.container), function (option) {
+            option.className = that.options.styles[fluid.value(option)];
+        });
+    };
+    
     /******************************
      * UI Options Layout Controls *
      ******************************/
