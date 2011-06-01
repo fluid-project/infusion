@@ -35,71 +35,80 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.viewComponent", "autoInit"],            
         components: {
             slidingPanel: {
-                type: "fluid.slidingPanel"
-            }, 
-			preview: {
-				type: "fluid.uiOptions.livePreview"
-			}            
+                type: "fluid.slidingPanel",
+                container: "{fatPanelUIOptions}.container"
+            },          
+        	uiOptions: {
+        		type: "fluid.uiOptions",
+        		container: ".flc-slidingPanel-panel"
+        	}      
         },
-		resources: {
-			template: {
-				url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"
-			}
-		},
-		autoSave: true
+        finalInitFunction: "fluid.fatPanelUIOptions.finalInit"        
+
     });     
+    
+     fluid.fatPanelUIOptions.finalInit = function (that) {        
+	    // Start an enhancer
+    	fluid.uiEnhancer(); 
+    };    
+
+    
+    // Options for UIOptions
+    fluid.demands("fluid.fatPanelUIOptions", ["fluid.uiOptions"], {
+        options: {
+			components: {
+			    preview: {
+					type: "fluid.uiOptions.livePreview"
+				}       
+			},    
+			resources: {
+				template: {
+					url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"
+				}
+			},
+			autoSave: true
+        }
+    });      
      
     
-	// Supply the template URL of "text and display" panel on the user preferences interface
-	fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptions"], {
-		options: {
-			resources: {
-				template: {
-					url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
-				}
-			}
-		}
-	});
+    // Supply the template URL of "text and display" panel on the user preferences interface
+    fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptions"], {
+        options: {
+            resources: {
+                template: {
+                    url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
+                }
+            }
+        }
+    });
 
-	// Supply the template URL of "layout and navigation" panel on the user preferences interface
-	fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptions"], {
-		options: {
-			resources: {
-				template: {
-					url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
-				}
-			}
-		}
-	});
+    // Supply the template URL of "layout and navigation" panel on the user preferences interface
+    fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptions"], {
+        options: {
+            resources: {
+                template: {
+                    url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
+                }
+            }
+        }
+    });
 
-	// Supply the template URL of "layout and navigation" panel on the user preferences interface
-	fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptions"], {
-		options: {
-			resources: {
-				template: {
-					url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
-				}
-			}
-		}
-	});    
-	// Supply the table of contents' template URL
-	fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
-		options: {
-			templateUrl: "../../../../components/uiOptions/html/TableOfContents.html"
-		}
-	});
-
-	// Start an enhancer
-	fluid.uiEnhancer();
-	
-	// Supply UIOptions options
-/*	fluid.demands("fluid.fatPanelUIOptions", ["fluid.fatPanelUIOptions"], {
-		funcName: "fluid.uiOptions",
-		args: [
-			"{fatPanelUIOptions}.container",
-			"{fatPanelUIOptions}.options"
-		]		
-	});    */
-    
-
+    // Supply the template URL of "layout and navigation" panel on the user preferences interface
+    fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptions"], {
+        options: {
+            resources: {
+                template: {
+                    url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                }
+            }
+        }
+    });    
+    // Supply the table of contents' template URL
+    fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+        options: {
+            templateUrl: "../../../../components/uiOptions/html/TableOfContents.html"
+        }
+    });     
+  
+		
 })(jQuery, fluid_1_4);
