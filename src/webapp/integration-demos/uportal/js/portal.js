@@ -106,7 +106,7 @@ var demo = demo || {};
      * Initialization script for dynamically changing skins
      */
     var initSkinChange = function () {
-        var uiEnhancer = fluid.uiEnhancer(document);
+        var uiEnhancer = fluid.pageEnhancer().uiEnhancer;
         
         jQuery("#hc-skin").click(function () {
             uiEnhancer.updateModel(demo.hcLargeSettings);
@@ -141,7 +141,7 @@ var demo = demo || {};
 function testSpeeds() {
     var reps = 200;
     var time = new Date();
-    for (var i = 0; i < reps; ++ i) {
+    for (var i = 0; i < reps; ++i) {
         var it = fluid.jById("fluid.img.5");
     }
     var delay = (new Date() - time);
@@ -153,7 +153,7 @@ function testSpeeds() {
 function testSpeeds2() {
     var reps = 100000;
     var time = new Date();
-    for (var i = 0; i < reps; ++ i) {
+    for (var i = 0; i < reps; ++i) {
         var it = document.getElementById("fluid.img.5");
         if (it.getAttribute("id") !== "fluid.img.5") {
             it = fluid.jById("fluid.img.2");
@@ -169,7 +169,7 @@ function testSpeeds3() {
     var reps = 100000;
     var time = new Date();
     var el = document.getElementById("fluid.img.5");
-    for (var i = 0; i < reps; ++ i) {
+    for (var i = 0; i < reps; ++i) {
         var it = jQuery.data(el);
     }
     var delay = (new Date() - time);

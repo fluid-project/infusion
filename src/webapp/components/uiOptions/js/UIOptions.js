@@ -59,7 +59,8 @@ var fluid_1_4 = fluid_1_4 || {};
             max: 100
         },
         sliderOptions: {
-            orientation: "horizontal"
+            orientation: "horizontal",
+            step: 0.1
         }, 
         finalInitFunction: "fluid.textfieldSlider.finalInit"
     });    
@@ -187,12 +188,12 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uiOptions", {
         gradeNames: ["fluid.viewComponent", "autoInit"], 
         components: {
+            uiEnhancer: "{uiEnhancer}",
             textControls: {
                 type: "fluid.uiOptions.textControls",
                 container: "{uiOptions}.dom.textControls",
                 createOnEvent: "onUIOptionsTemplateReady",
                 options: {
-                    uiEnhancer: "{uiOptions}.uiEnhancer",
                     textSize: "{uiOptions}.options.textSize",
                     lineSpacing: "{uiOptions}.options.lineSpacing",
                     model: "{uiOptions}.model",
@@ -204,7 +205,6 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{uiOptions}.dom.layoutControls",
                 createOnEvent: "onUIOptionsTemplateReady",
                 options: {
-                    uiEnhancer: "{uiOptions}.uiEnhancer",
                     model: "{uiOptions}.model",
                     applier: "{uiOptions}.applier"
                 }
@@ -214,7 +214,6 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{uiOptions}.dom.linksControls",
                 createOnEvent: "onUIOptionsTemplateReady",
                 options: {
-                    uiEnhancer: "{uiOptions}.uiEnhancer",
                     model: "{uiOptions}.model",
                     applier: "{uiOptions}.applier"
                 }
@@ -222,15 +221,18 @@ var fluid_1_4 = fluid_1_4 || {};
             preview: {
                 type: "fluid.uiOptions.preview",
                 createOnEvent: "onReady"
-            }
+            },
+            settingsStore: "{uiEnhancer}.settingsStore"
         },
+        defaultSiteSettings: "{uiEnhancer}.defaultSiteSettings",
+        savedSelections: "{uiEnhancer}.model",
         textSize: {
-            min: 6,
-            max: 30
+            min: 1,
+            max: 2
         },
         lineSpacing: {
             min: 1,
-            max: 10
+            max: 2
         },
         selectors: {
             textControls: ".flc-uiOptions-text-controls",
@@ -261,20 +263,16 @@ var fluid_1_4 = fluid_1_4 || {};
     });
     
     fluid.uiOptions.finalInit = function (that) {
-
-        that.uiEnhancer = $(document).data("uiEnhancer");
         that.applier.requestChange("selections", fluid.copy(that.uiEnhancer.model));
-        
-        var savedModel = that.uiEnhancer.model;
  
         /**
          * Saves the current model and fires onSave
          */ 
         that.save = function () {
             that.events.onSave.fire(that.model.selections);
-            savedModel = fluid.copy(that.model.selections); 
-            that.uiEnhancer.applier.requestChange("", savedModel);
-            that.uiEnhancer.events.onSave.fire(savedModel);
+            that.options.savedSelections = fluid.copy(that.model.selections);
+            that.uiEnhancer.applier.requestChange("", that.options.savedSelections);
+            that.settingsStore.save(that.model.selections);
         };
 
         /**
@@ -282,7 +280,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.reset = function () {
             that.events.onReset.fire();
-            that.updateModel(fluid.copy(that.uiEnhancer.defaultSiteSettings));
+            that.updateModel(fluid.copy(that.options.defaultSiteSettings));
             that.refreshControlsView();
         };
         
@@ -291,7 +289,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.cancel = function () {
             that.events.onCancel.fire();
-            that.updateModel(fluid.copy(savedModel));
+            that.updateModel(fluid.copy(that.options.savedSelections));
             that.refreshControlsView();            
         };
         
@@ -423,12 +421,6 @@ var fluid_1_4 = fluid_1_4 || {};
             textSize: ".flc-uiOptions-min-text-size",
             lineSpacing: ".flc-uiOptions-line-spacing"
         },
-        events: {
-            afterRender: null
-        },
-        rendererOptions: {
-            autoBind: true
-        },
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.textControls.produceTree",
         resources: {
@@ -473,12 +465,6 @@ var fluid_1_4 = fluid_1_4 || {};
             layout: ".flc-uiOptions-layout",
             toc: ".flc-uiOptions-toc"
         },
-        events: {
-            afterRender: null
-        },
-        rendererOptions: {
-            autoBind: true
-        },
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.layoutControls.produceTree",
         resources: {
@@ -515,12 +501,6 @@ var fluid_1_4 = fluid_1_4 || {};
             links: ".flc-uiOptions-links",
             inputsLarger: ".flc-uiOptions-inputs-larger"
         },
-        events: {
-            afterRender: null
-        },
-        rendererOptions: {
-            autoBind: true
-        },
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.linksControls.produceTree",
         resources: {
@@ -556,7 +536,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 createOnEvent: "onReady",
                 options: {
                     savedSettings: "{uiOptions}.model.selections",
-                    tableOfContents: "{uiOptions}.uiEnhancer.options.tableOfContents", // TODO: Tidy this up when the page's UI Enhancer is IoC-visible.
+                    tableOfContents: "{uiEnhancer}.options.tableOfContents",
                     settingsStore: {
                         type: "fluid.uiEnhancer.tempStore"
                     }
@@ -599,7 +579,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.container.attr("src", that.options.templateUrl);        
 
         that.container.load(function () {
-            that.previewFrameContents = that.container.contents();
+            that.enhancerContainer = $("body", that.container.contents());
             that.events.onReady.fire();
         });
     };
@@ -614,7 +594,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.demands("fluid.uiEnhancer", "fluid.uiOptions.preview", {
         funcName: "fluid.uiEnhancer",
         args: [
-            "{preview}.previewFrameContents",
+            "{preview}.enhancerContainer",
             "{options}"
         ]
     });
