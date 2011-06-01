@@ -20,7 +20,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         var toc;
         var options = {
-            templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+            components: {
+                levels: {
+                    options: {
+                        resources: {
+                            template: {
+                                url: "../../../../components/tableOfContents/html/TableOfContents.html"
+                            }
+                        }
+                    }
+                }
+            }
         };
 
         var tests = jqUnit.testCase("Table of Contents Tests");

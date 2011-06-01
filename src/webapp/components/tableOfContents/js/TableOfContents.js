@@ -93,7 +93,16 @@ var fluid_1_4 = fluid_1_4 || {};
             tocContainer: ".flc-toc-tocContainer"
         },
         events: {
-            onReady: null
+            onReady: null,
+            afterRender: null
+        }
+    });
+    
+    fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
+        options: {
+            events: {
+                afterRender: "{tableOfContents}.events.afterRender"
+            }
         }
     });
     
