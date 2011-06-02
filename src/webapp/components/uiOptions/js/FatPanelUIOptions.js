@@ -48,30 +48,18 @@ var fluid_1_4 = fluid_1_4 || {};
         components: {
             uiOptions: {
                 type: "fluid.uiOptions",
-                priority: "first",
                 container: ".flc-slidingPanel-panel"
             },        
-            tabs: {
-                type: "fluid.tabs",
-                container: "{fatPanelUIOptions}.container"
-            }
-            /*slidingPanel: {
+            slidingPanel: {
                 type: "fluid.slidingPanel",
                 priority: "last",
                 container: "{fatPanelUIOptions}.container"
-            }          
+            }/*,          
             uiEnhancer: {
                 type: "fluid.uiEnhancer"
-            }  */                       
-        },
-        finalInitFunction: "fluid.fatPanelUIOptions.finalInit"        
-
-    });     
-    
-    fluid.fatPanelUIOptions.finalInit = function (that) {        
-  
-    };    
-
+            }  */                      
+        }
+    });       
     
     // Options for UIOptions in fat panel mode
     fluid.demands("fluid.uiOptions", ["fluid.fatPanelUIOptions"], {
@@ -79,7 +67,12 @@ var fluid_1_4 = fluid_1_4 || {};
             components: {
                 preview: {
                     type: "fluid.uiOptions.livePreview"
-                }       
+                },
+                tabs: {
+                    type: "fluid.tabs",
+                    container: "{fatPanelUIOptions}.container",      
+                    createOnEvent: "onReady"               
+                }               
             },    
             resources: {
                 template: {

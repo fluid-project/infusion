@@ -4,11 +4,12 @@
         "description": "Users customize their preferences and needs for viewing content.",
         "cssFiles": [
             "UIOptions.css",
-            "Slider.css"
+            "FatPanelUIOptions.css"
         ],
         "files": [
             "UIEnhancer.js",
-            "UIOptions.js"
+            "UIOptions.js",
+            "FatPanelUIOptions.js"
         ],
         "dependencies": [
             "fss",
