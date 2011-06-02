@@ -74,6 +74,7 @@ MIT License:
     * jQuery QUnit: http://docs.jquery.com/QUnit
     * jQuery Mockjax: https://github.com/appendto/jquery-mockjax
     * jQuery Chili code highlighter http://code.google.com/p/jquery-chili-js/ 
+    * Micro Clearfix http://nicolasgallagher.com/micro-clearfix-hack/
     * SWFUpload v2.2.0.1: http://swfupload.org/
     * SWFObject v2.2: http://code.google.com/p/swfobject/
 

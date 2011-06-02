@@ -21,9 +21,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.setLogging(true);
     
         var bwSkin = {
-            textSize: "8",
+            textSize: "1.8",
             textFont: "verdana",
             theme: "bw"
+        };
+        
+        var bwSkin2 = {
+            textSize: "11",
+            textFont: "italic",
+            theme: "bw"                
         };
             
         var saveCalled = false;
@@ -88,6 +94,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         };
         
+        var resetSaveCalled = function () {
+            saveCalled = false;    
+        };
+        
         var tests = jqUnit.testCase("UIOptions Tests");
 
         tests.asyncTest("Init Model and Controls", function () {
@@ -112,22 +122,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });            
         });
 
-        tests.asyncTest("Save", function () {
-            expect(4);
+        tests.asyncTest("UIOptions Save, Reset, and Cancel", function () {
+            expect(13);
             
             testUIOptions(function (uiOptions) {
                 uiOptions.updateModel(bwSkin);
-
+                
                 jqUnit.assertFalse("Save hasn't been called", saveCalled);
                 uiOptions.save();
                 var container = $("body");
                 jqUnit.assertTrue("Save has been called", saveCalled);
                 jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiOptions.uiEnhancer.model.theme);
                 jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-hc"));
+                jqUnit.assertEquals("Text size has been saved", bwSkin.textSize, uiOptions.model.selections.textSize);
+                jqUnit.assertEquals("Text font has been saved", bwSkin.textFont, uiOptions.model.selections.textFont);
+                jqUnit.assertEquals("Theme has been saved", bwSkin.theme, uiOptions.model.selections.theme);
                 
-            });
-        });
+                uiOptions.reset();
+                jqUnit.assertNotEquals("Reset model text size", bwSkin.textSize, uiOptions.options.textSize);
+                jqUnit.assertNotEquals("Reset model text font", bwSkin.textFont, uiOptions.options.textFont);
+                jqUnit.assertNotEquals("Reset model theme", bwSkin.theme, uiOptions.options.theme);
+                
+                uiOptions.updateModel(bwSkin);
+                uiOptions.updateModel(bwSkin2);
 
+                uiOptions.cancel();
+                jqUnit.assertEquals("Cancel text size change", bwSkin.textSize, uiOptions.model.selections.textSize);
+                jqUnit.assertEquals("Cancel text font change", bwSkin.textFont, uiOptions.model.selections.textFont);
+                jqUnit.assertEquals("Cancel theme change", bwSkin.theme, uiOptions.model.selections.theme);                
+            });        
+        });
+        
         tests.asyncTest("Refresh View", function () {
             expect(5);
             
@@ -140,7 +165,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 uiOptions.refreshControlsView();
                 var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
                 var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val(); 
-                jqUnit.assertEquals("Small font size selected", "8", fontSizeSetting);
+                jqUnit.assertEquals("Small font size selected", "1.8", fontSizeSetting);
                 var fontStyleSelection = $(":selected", $(".flc-uiOptions-text-font"));
                 jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
                 var contrastSelection = $(":selected", $(".flc-uiOptions-theme"));
@@ -197,6 +222,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
                     templateUrl, uiOptions.preview.container.attr("src"));
             }, myOpts);
+        });
+        
+        tests.asyncTest("UIOptions Auto-save", function () {
+            expect(2);
+            
+            var autoSaveOptions = {
+                autoSave: true
+            };
+
+            testUIOptions(function (uiOptions) {
+                resetSaveCalled();
+                uiOptions.updateModel(bwSkin);
+                jqUnit.assertTrue("Model has changed, auto-save changes", saveCalled);
+                jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiOptions.uiEnhancer.model.theme);
+                
+            }, autoSaveOptions);
+        });           
+        
+        var checkValidatedValue = function (changeRequestValue, expectedValue) {
+            var model = {
+                min: 2,
+                max: 10,
+                value: 5,
+            };
+            var changeRequest = {
+                value: changeRequestValue        
+            };
+
+            fluid.textfieldSlider.validateValue(model, changeRequest);
+            jqUnit.assertEquals("Validating value", expectedValue, changeRequest.value);
+        } 
+        
+        tests.test("textSlider validateValue() tests", function () {
+            checkValidatedValue(11, 10);
+            checkValidatedValue(1, 2);
+            checkValidatedValue(5, 5);
+            checkValidatedValue(-1, 2);
+            checkValidatedValue(undefined, 5);
+            checkValidatedValue(null, 5);
+            checkValidatedValue("", 5);
         });
     });
     

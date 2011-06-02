@@ -16,15 +16,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
-    //px to pt conversion
-    var pxToPtConversion = function (pxValue) {
-        var ptValue = parseFloat(pxValue) * 0.75;     
-        return Math.round(ptValue) + "pt"; 
-    };
-
     $(document).ready(function () {
         var testSettings = {
-            textSize: "18",
+            textSize: "1.5",
             textFont: "verdana",
             theme: "bw",
             layout: false
@@ -63,10 +57,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 savedSettings: testSettings
             };
             var body = $("body");
-            fluid.pageEnhancer(options);
+            var initFontSize = parseFloat(body.css("fontSize"));
             
-            jqUnit.assertEquals("Large text size is set", "18pt", pxToPtConversion(body.css("fontSize")));
-            jqUnit.assertTrue("Courier font is set", body.hasClass("fl-font-verdana"));
+            var uiEnhancer = fluid.pageEnhancer(options).uiEnhancer;
+            
+            jqUnit.assertEquals("Large text size is set", initFontSize * uiEnhancer.options.savedSettings.textSize + "px", body.css("fontSize"));
+            jqUnit.assertTrue("Verdana font is set", body.hasClass("fl-font-verdana"));
             jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-hc"));
 
         });
@@ -81,20 +77,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             // Change the results, save again. It should work again.
             var differentSettings = fluid.copy(testSettings);
-            differentSettings.textSize = "32";
+            differentSettings.textSize = "2";
             store.save(differentSettings);
-            jqUnit.assertEquals("Changed settings are saved correctly.", store.fetch().textSize, "32");
+            jqUnit.assertEquals("Changed settings are saved correctly.", store.fetch().textSize, "2");
             
             // Let's go check the cookie directly and make sure it's there.
             var cookieNameIndex = document.cookie.indexOf(store.options.cookieName);
             jqUnit.assertTrue("Our cookie should be floating somewhere in the browser.",
                                cookieNameIndex >= 0);
-            jqUnit.assertTrue("Our cookie should contain the textSize 32.",
-                               document.cookie.indexOf("32") > cookieNameIndex);
+            jqUnit.assertTrue("Our cookie should contain the textSize 2.",
+                               document.cookie.indexOf("2") > cookieNameIndex);
                                
-            // Now we can create a uiEnhancer and see that the textSize is set to 32
+            // Now we can create a uiEnhancer and see that the textSize is set to 2
             var enhancer = fluid.pageEnhancer().uiEnhancer;
-            jqUnit.assertEquals("The uiEnhancer should have a textSize of 32", "32", enhancer.model.textSize);
+            jqUnit.assertEquals("The uiEnhancer should have a textSize of 2", "2", enhancer.model.textSize);
             
             // Reset the cookie settings
             store.save(enhancer.options.defaultSiteSettings);
