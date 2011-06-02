@@ -67,56 +67,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         });
         
-        tests.test("Cookie", function () {
-            var store = fluid.uiEnhancer.cookieStore();
-            store.save(testSettings);
-            
-            // Check that we get back the test settings correctly.
-            var result = store.fetch();
-            jqUnit.assertDeepEq("The settings are saved and retrieved correctly.", testSettings, result);
-            
-            // Change the results, save again. It should work again.
-            var differentSettings = fluid.copy(testSettings);
-            differentSettings.textSize = "2";
-            store.save(differentSettings);
-            jqUnit.assertEquals("Changed settings are saved correctly.", store.fetch().textSize, "2");
-            
-            // Let's go check the cookie directly and make sure it's there.
-            var cookieNameIndex = document.cookie.indexOf(store.options.cookieName);
-            jqUnit.assertTrue("Our cookie should be floating somewhere in the browser.",
-                               cookieNameIndex >= 0);
-            jqUnit.assertTrue("Our cookie should contain the textSize 2.",
-                               document.cookie.indexOf("2") > cookieNameIndex);
-                               
-            // Now we can create a uiEnhancer and see that the textSize is set to 2
-            var enhancer = fluid.pageEnhancer().uiEnhancer;
-            jqUnit.assertEquals("The uiEnhancer should have a textSize of 2", "2", enhancer.model.textSize);
-            
-            // Reset the cookie settings
-            store.save(enhancer.options.defaultSiteSettings);
-            
-        });
-
-        tests.test("Temp store", function () {
-            var store = fluid.uiEnhancer.tempStore();
-            store.save(testSettings);
-            
-            // Check that we get back the test settings correctly.
-            var result = store.fetch();
-            jqUnit.assertDeepEq("The settings are saved and retrieved correctly.", testSettings, result);
-            
-            // Change the results, save again. It should work again.
-            var differentSettings = fluid.copy(testSettings);
-            differentSettings.textSize = "32";
-            store.save(differentSettings);
-            jqUnit.assertEquals("Changed settings are saved correctly.", "32", store.fetch().textSize);
-            jqUnit.assertEquals("Theme was saved correctly.", "bw", store.fetch().theme);
-                                           
-            // Now we can create a uiEnhancer and see that the theme is default not high contrast
-            var enhancer = fluid.pageEnhancer().uiEnhancer;
-            jqUnit.assertEquals("The uiEnhancer should have a default theme", "default", enhancer.model.theme);
-            
-        });
-
     });
 })(jQuery);

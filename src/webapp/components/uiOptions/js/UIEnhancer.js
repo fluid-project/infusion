@@ -343,4 +343,8 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
+    fluid.demands("settingsStore", ["fluid.uiEnhancer"], {
+        funcName: "fluid.cookieStore"
+    });
+
 })(jQuery, fluid_1_4);

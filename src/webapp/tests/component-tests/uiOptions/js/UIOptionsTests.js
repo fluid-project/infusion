@@ -19,7 +19,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
         fluid.setLogging(true);
-    
+        fluid.staticEnvironment.uiOptionsTests = fluid.typeTag("fluid.uiOptions.tests");
+
+        fluid.demands("settingsStore", ["fluid.uiEnhancer", "fluid.uiOptions.tests"], {
+            funcName: "fluid.tempStore"
+        });
+        
         var bwSkin = {
             textSize: "1.8",
             textFont: "verdana",
@@ -176,19 +181,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         tests.asyncTest("Init with site defaults different from UIOptions control values", function () {
             expect(2);
-            
+               
             var enhancerOpts = {
-                defaultSiteSettings: {
-                    theme: "wb",
-                    textFont: "times"
-                },
-                settingsStore: {
-                    type: "fluid.uiEnhancer.tempStore"
+                components: {
+                    settingsStore: {
+                        options: {
+                            defaultSiteSettings: {
+                                theme: "wb",
+                                textFont: "times"
+                            }
+                        }
+                    }
                 }
             };
-        
+            
             testUIOptions(function (uiOptions) {
-                var settings = uiOptions.uiEnhancer.defaultSiteSettings;
+                var settings = uiOptions.settingsStore.options.defaultSiteSettings;
                 
                 var themeValue = settings.theme;
                 jqUnit.assertEquals("The theme is is set to wb", "wb", themeValue);

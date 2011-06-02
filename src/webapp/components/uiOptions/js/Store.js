@@ -48,11 +48,11 @@ var fluid_1_4 = fluid_1_4 || {};
         invokers: {
             fetch: {
                 funcName: "fluid.cookieStore.fetch",
-                args: ["{cookieStore}.cookieName", "{cookieStore}.options.defaultSiteSettings"]
+                args: ["{cookieStore}.options.cookieName", "{cookieStore}.options.defaultSiteSettings"]
             },
             save: {
                 funcName: "fluid.cookieStore.save",
-                args: ["{arguments}.0", "{cookieStore}.cookieName"]
+                args: ["{arguments}.0", "{cookieStore}.options.cookieName"]
             }
         },
         cookieName: "fluid-ui-settings"
@@ -89,9 +89,6 @@ var fluid_1_4 = fluid_1_4 || {};
         document.cookie = cookieName + "=" +  encodeURIComponent(JSON.stringify(settings));
     };
     
-    fluid.demands("settingsStore", ["fluid.uiEnhancer"], {
-        funcName: "fluid.cookieStore"
-    });
 
     /**************
      * Temp Store *
@@ -120,7 +117,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.model = that.options.defaultSiteSettings;
     };
     
-    fluid.tempStorefetch = function (that) {
+    fluid.tempStore.fetch = function (that) {
         return that.model;
     };
 
