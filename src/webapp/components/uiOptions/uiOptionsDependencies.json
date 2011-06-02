@@ -19,7 +19,8 @@
             "renderer",
             "jQueryUIWidgets",
             "tableOfContents",
-            "json"
+            "json",
+            "jQueryAriaTabsPlugin"
         ]
     }
 }
