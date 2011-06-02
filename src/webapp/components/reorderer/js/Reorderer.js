@@ -33,7 +33,7 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         });
         
-        avatar.removeAttr("id");
+        avatar.removeProp("id");
         avatar.removeClass("ui-droppable");
         avatar.addClass(cssClass);
         
@@ -327,7 +327,7 @@ var fluid_1_4 = fluid_1_4 || {};
                         dropWarningEl = mouseDropWarning[0];
                     }
                     avatar = $(options.avatarCreator(item[0], styles.avatar, dropWarningEl));
-                    avatar.attr("id", createAvatarId(thatReorderer.container.id));
+                    avatar.prop("id", createAvatarId(thatReorderer.container.id));
                     return avatar;
                 },
                 start: function (e, ui) {

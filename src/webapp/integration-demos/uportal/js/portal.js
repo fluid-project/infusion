@@ -155,7 +155,7 @@ function testSpeeds2() {
     var time = new Date();
     for (var i = 0; i < reps; ++ i) {
         var it = document.getElementById("fluid.img.5");
-        if (it.getAttribute("id") !== "fluid.img.5") {
+        if (it.id !== "fluid.img.5") {
             it = fluid.jById("fluid.img.2");
         }
     }
