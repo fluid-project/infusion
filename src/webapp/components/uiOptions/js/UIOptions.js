@@ -319,14 +319,16 @@ var fluid_1_4 = fluid_1_4 || {};
         );
             
         var bindHandlers = function (that) {
-            var saveButton = that.locate("save");
-            saveButton.click(that.save);
+            var saveButton = that.locate("save");            
+            if (saveButton.length > 0) {
+	            saveButton.click(that.save);
+				var form = fluid.findForm(saveButton);
+				$(form).submit(function () {
+					that.save();
+				});
+	        }
             that.locate("reset").click(that.reset);
             that.locate("cancel").click(that.cancel);
-            var form = fluid.findForm(saveButton);
-            $(form).submit(function () {
-                that.save();
-            });
         };
         
         var bindEventHandlers = function (that) {
@@ -337,11 +339,9 @@ var fluid_1_4 = fluid_1_4 || {};
         
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
-            that.events.onUIOptionsTemplateReady.fire();
-            if (that.locate("save").length > 0) {
-                bindHandlers(that);
-                bindEventHandlers(that);
-            }
+            that.events.onUIOptionsTemplateReady.fire();            
+            bindHandlers(that);
+            bindEventHandlers(that);            
             that.events.onReady.fire();
         });
     };
