@@ -31,16 +31,16 @@ var demo = demo || {};
             that.locate("fixContainer").addClass(opts.styles[fix]);
         };
         
-        that.removeOtherFixStyles = function (fix) {
-            fluid.each(opts.styles, function (style, fixType) {
-                if (fix !== fixType) {
-                    that.locate("fixContainer").removeClass(style);
-                }
+        that.removeFixStyles = function (fix) {
+            var styles = [];
+            fluid.each(opts.styles, function (style) {
+                styles.push(style);
             });
+            that.locate("fixContainer").removeClass(styles.join(" "));
         };
         
         that.setFix = function (fix) {
-            that.removeOtherFixStyles(fix);
+            that.removeFixStyles(fix);
             that.addFixStyle(fix);
             that.setFixDescription(fix);
         };
@@ -52,7 +52,6 @@ var demo = demo || {};
             that.events.afterFixSelectionChanged.fire(newModel.selection, oldModel.selection);
         });
         
-        that.refreshView();
         that.setFix(that.model.selection);
     };
     
@@ -110,6 +109,7 @@ var demo = demo || {};
             selection: "none",
             choices: ["none", "fl-fix", "fl-clearfix"],
             names: ["none", "fl-fix", "fl-clearfix"]
-        }
+        },
+        renderOnInit: true
     });
 })(jQuery);
