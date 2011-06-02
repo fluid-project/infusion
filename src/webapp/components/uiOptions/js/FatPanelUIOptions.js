@@ -21,10 +21,22 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
+
+    /**********************
+     * Tabs *
+     *********************/
+     
+    fluid.defaults("fluid.tabs", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],             
+        selectors: {
+            tabList: ".flc-tabs"
+        },
+        finalInitFunction: "fluid.tabs.finalInit"
+    });          
     
-  /*  fluid.tabs = function (element, callback, duration) {
-        $(element).tabs();
-    };*/
+    fluid.tabs.finalInit = function (that) {
+        that.locate("tabList").tabs();  //jQuery UI Tabs
+    };
     
 
     /**********************
@@ -34,43 +46,47 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.fatPanelUIOptions", {
         gradeNames: ["fluid.viewComponent", "autoInit"],            
         components: {
-            slidingPanel: {
-                type: "fluid.slidingPanel",
+            uiOptions: {
+                type: "fluid.uiOptions",
+                priority: "first",
+                container: ".flc-slidingPanel-panel"
+            },        
+            tabs: {
+                type: "fluid.tabs",
                 container: "{fatPanelUIOptions}.container"
-            },          
-        	uiOptions: {
-        		type: "fluid.uiOptions",
-        		container: ".flc-slidingPanel-panel"
-        	}/*,
-        	uiEnhancer: {
-        		type: "fluid.uiEnhancer"
-       		}  */       	
+            }
+            /*slidingPanel: {
+                type: "fluid.slidingPanel",
+                priority: "last",
+                container: "{fatPanelUIOptions}.container"
+            }          
+            uiEnhancer: {
+                type: "fluid.uiEnhancer"
+            }  */                       
         },
         finalInitFunction: "fluid.fatPanelUIOptions.finalInit"        
 
     });     
     
-     fluid.fatPanelUIOptions.finalInit = function (that) {        
-	    // Start an enhancer
-    	//fluid.uiEnhancer(); 
-    	
+    fluid.fatPanelUIOptions.finalInit = function (that) {        
+  
     };    
 
     
     // Options for UIOptions in fat panel mode
     fluid.demands("fluid.uiOptions", ["fluid.fatPanelUIOptions"], {
         options: {
-			components: {
-			    preview: {
-					type: "fluid.uiOptions.livePreview"
-				}       
-			},    
-			resources: {
-				template: {
-					url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"
-				}
-			},
-			autoSave: true
+            components: {
+                preview: {
+                    type: "fluid.uiOptions.livePreview"
+                }       
+            },    
+            resources: {
+                template: {
+                    url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"
+                }
+            },
+            autoSave: true
         }
     });      
      
@@ -114,5 +130,5 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });     
   
-		
+        
 })(jQuery, fluid_1_4);

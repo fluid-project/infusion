@@ -187,6 +187,12 @@ var fluid_1_4 = fluid_1_4 || {};
      */
     fluid.defaults("fluid.uiOptions", {
         gradeNames: ["fluid.viewComponent", "autoInit"], 
+        amalgamateClasses: [
+        	"UIOptionsClass",
+            "textControls",
+            "layoutControls",
+            "linksControls"
+        ],        
         components: {
             uiEnhancer: "{uiEnhancer}",
             textControls: {
@@ -255,12 +261,15 @@ var fluid_1_4 = fluid_1_4 || {};
         finalInitFunction: "fluid.uiOptions.finalInit",
         resources: {
             template: {
+            	fetchClass: "UIOptionsClass",
                 forceCache: true,
                 url: "../html/UIOptions.html"
             }
         },
         autoSave: false
     });
+    
+    fluid.fetchResources.primeCacheFromResources("uiOptions");
     
     fluid.uiOptions.finalInit = function (that) {
         that.applier.requestChange("selections", fluid.copy(that.uiEnhancer.model));
@@ -338,8 +347,10 @@ var fluid_1_4 = fluid_1_4 || {};
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
             that.events.onUIOptionsTemplateReady.fire();
-            bindHandlers(that);
-            bindEventHandlers(that);
+            if (that.locate("save").length > 0) {
+                bindHandlers(that);
+                bindEventHandlers(that);
+            }
             that.events.onReady.fire();
         });
     };
@@ -395,7 +406,8 @@ var fluid_1_4 = fluid_1_4 || {};
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
             that.refreshView();
-        });        
+            that.container.tabs();
+        }, {amalgamateClasses: that.options.amalgamateClasses});                  
     };
     
     /****************************
@@ -425,6 +437,7 @@ var fluid_1_4 = fluid_1_4 || {};
         produceTree: "fluid.uiOptions.textControls.produceTree",
         resources: {
             template: {
+            	fetchClass: "textControls",
                 forceCache: true,
                 url: "../html/UIOptionsTemplate-text.html"
             }
@@ -469,6 +482,7 @@ var fluid_1_4 = fluid_1_4 || {};
         produceTree: "fluid.uiOptions.layoutControls.produceTree",
         resources: {
             template: {
+            	fetchClass: "layoutControls",            
                 forceCache: true,
                 url: "../html/UIOptionsTemplate-layout.html"
             }
@@ -505,6 +519,7 @@ var fluid_1_4 = fluid_1_4 || {};
         produceTree: "fluid.uiOptions.linksControls.produceTree",
         resources: {
             template: {
+            	fetchClass: "linksControls",            
                 forceCache: true,
                 url: "../html/UIOptionsTemplate-links.html"
             }
