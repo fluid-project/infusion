@@ -238,7 +238,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiOptions.uiEnhancer.model.theme);
                 
             }, autoSaveOptions);
-        });            
+        });           
+        
+        var checkValidatedValue = function (changeRequestValue, expectedValue) {
+            var model = {
+                min: 2,
+                max: 10,
+                value: 5,
+            };
+            var changeRequest = {
+                value: changeRequestValue        
+            };
+
+            fluid.textfieldSlider.validateValue(model, changeRequest);
+            jqUnit.assertEquals("Validating value", expectedValue, changeRequest.value);
+        } 
+        
+        tests.test("textSlider validateValue() tests", function () {
+            checkValidatedValue(11, 10);
+            checkValidatedValue(1, 2);
+            checkValidatedValue(5, 5);
+            checkValidatedValue(-1, 2);
+            checkValidatedValue(undefined, 5);
+            checkValidatedValue(null, 5);
+            checkValidatedValue("", 5);
+        });
     });
     
 })(jQuery);

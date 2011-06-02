@@ -96,7 +96,7 @@ var fluid_1_4 = fluid_1_4 || {};
         finalInitFunction: "fluid.textfieldSlider.textfield.finalInit"
     });
 
-    var validateValue = function (model, changeRequest, applier) {
+    fluid.textfieldSlider.validateValue = function (model, changeRequest, applier) {
         var oldValue = model.value;
         var newValue = changeRequest.value;
         
@@ -116,7 +116,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.textfieldSlider.textfield.finalInit = function (that) {
-        that.applier.guards.addListener({path: "value", transactional: true}, validateValue);
+        that.applier.guards.addListener({path: "value", transactional: true}, fluid.textfieldSlider.validateValue);
         
         that.container.change(function (source) {
             that.applier.requestChange("value", source.target.value);
