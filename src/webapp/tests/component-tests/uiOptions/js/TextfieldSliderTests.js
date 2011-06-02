@@ -19,9 +19,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         var tests = new jqUnit.TestCase("TextfieldSlider Tests");
         
+        var getTextfieldSlider = function (options) {
+            return fluid.textfieldSlider(".fl-textfield-slider", options);          
+        };
+        
         tests.test("Test Init", function () {
             expect(8);
-            var textfieldSlider = fluid.textfieldSlider(".fl-textfield-slider", {model: {value: 15}});
+            var textfieldSlider = getTextfieldSlider({model: {value: 15}}); 
             jqUnit.assertEquals("Slider value is set to input value", 15, $(".flc-textfieldSlider-slider").slider("value"));
             jqUnit.assertEquals("Textfield value is set", 15, $(".flc-textfieldSlider-field").val());
             jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model.value);
@@ -33,7 +37,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The ARIA value now should be 15", 15, thumb.attr("aria-valuenow"));          
             jqUnit.assertEquals("The ARIA max should be 100", 100, thumb.attr("aria-valuemax"));          
             jqUnit.assertEquals("The ARIA min should be 0", 0, thumb.attr("aria-valuemin"));          
-            
         });
 
         var testSetting = function (valToTest, expected) {
@@ -51,8 +54,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         tests.test("Test Min/Max Size", function () {
             expect(18);
-            var textfieldSlider = fluid.textfieldSlider(".fl-textfield-slider", {model: {min: 5, max: 55}});
-            
+
+            var textfieldSlider = getTextfieldSlider({model: {min: 5, max: 55}});
             testSetting(56, 55);
             testSetting(55, 55);
             testSetting(4, 5);
@@ -63,14 +66,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         tests.test("Test Negative Scale", function () {
             expect(15);
-            fluid.textfieldSlider(".fl-textfield-slider", {model: {min: -15, max: -5}});
             
+            var textfieldSlider = getTextfieldSlider({model: {min: -15, max: -5}});
             testSetting(56, -5);
             testSetting(-10, -10);
             testSetting(-16, -15);
             testSetting(-15, -15);
             testSetting(-5, -5);
-            
         });
         
         var checkValidatedValue = function (changeRequestValue, expectedValue) {
@@ -96,7 +98,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkValidatedValue(null, 5);
             checkValidatedValue("", 5);
         });        
-        
-
     });
 })(jQuery);
