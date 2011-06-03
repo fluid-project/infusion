@@ -251,6 +251,7 @@ var globalObj = this;
                         regExpStr += "|";
                     }
                     convertedStr = currentFiles[j].replace(/\./g, "\\."); //this is to escape the "." character which is a wildcard in ant regex.
+                    convertedStr = '\\/' + convertedStr;  //FLUID-4109: Allow only the exact component name with a URL separator prefix 
                     regExpStr += (regStart + convertedStr + regEnd);
                 }
             }
