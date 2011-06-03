@@ -172,6 +172,49 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
+    /********************************
+     * UI Options Resource Expander *
+     ********************************/
+    
+    fluid.defaults("fluid.specBuilderImpl", {
+        gradeNames: ["fluid.littleComponent"],
+        urlRenderer: {
+            expander: {
+                type: "fluid.deferredInvokeCall",
+                func: "fluid.uiOptionsTemplateLoader"
+            }
+        }  
+    });
+
+    fluid.specBuilderImpl = function (options) {
+        var that = fluid.initLittleComponent("fluid.specBuilderImpl", options);
+        if (that.options.urlRenderer) {
+            that.options.spec.url = that.options.urlRenderer(that.options.spec.url);
+        }
+        return that.options.spec;
+    };
+
+    fluid.specBuilder = function (options) {
+        return fluid.specBuilderImpl.apply(null, [{spec: options}]);
+    };
+
+    fluid.uiOptionsTemplateLoader = function (options) {
+        var that = fluid.initLittleComponent("fluid.uiOptionsTemplateLoader", options);
+        return function (url) {
+            return fluid.stringTemplate(url, that.options.templates);
+        };
+    };
+    
+    fluid.defaults("fluid.uiOptionsTemplateLoader", {
+        gradeNames: ["fluid.littleComponent"],
+        templates: {
+            uiOptions: "../html/UIOptions.html",
+            textControls: "../html/UIOptionsTemplate-text.html",
+            layoutControls: "../html/UIOptionsTemplate-layout.html",
+            linksControls: "../html/UIOptionsTemplate-links.html"
+        }  
+    });
+    
     /**************
      * UI Options *
      **************/
@@ -186,7 +229,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.uiOptions", {
-        gradeNames: ["fluid.viewComponent", "autoInit"], 
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             uiEnhancer: "{uiEnhancer}",
             textControls: {
@@ -198,7 +241,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     lineSpacing: "{uiOptions}.options.lineSpacing",
                     model: "{uiOptions}.model",
                     applier: "{uiOptions}.applier",
-                    classnameMap: "{uiEnhancer}.options.classnameMap"
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
                 }
             },
             layoutControls: {
@@ -254,16 +297,31 @@ var fluid_1_4 = fluid_1_4 || {};
             modelChanged: null,
             onUIOptionsTemplateReady: null
         },
+        preInitFunction: "fluid.uiOptions.preInit", 
         finalInitFunction: "fluid.uiOptions.finalInit",
         resources: {
             template: {
-                forceCache: true,
-                url: "../html/UIOptions.html"
+                expander: {
+                    type: "fluid.deferredInvokeCall",
+                    func: "fluid.specBuilder",
+                    args: {
+                        forceCache: true,
+                        url: "%uiOptions"
+                    }
+                }
             }
         },
         autoSave: false
     });
     
+    fluid.fetchResources.primeCacheFromResources("fluid.uiOptions");
+    
+    fluid.uiOptions.preInit = function () {
+        fluid.fetchResources.primeCacheFromResources("fluid.uiOptions.textControls");
+        fluid.fetchResources.primeCacheFromResources("fluid.uiOptions.layoutControls");
+        fluid.fetchResources.primeCacheFromResources("fluid.uiOptions.linksControls");
+    };
+
     fluid.uiOptions.finalInit = function (that) {
         that.applier.requestChange("selections", fluid.copy(that.uiEnhancer.model));
  
@@ -345,7 +403,7 @@ var fluid_1_4 = fluid_1_4 || {};
             bindHandlers(that);
             bindEventHandlers(that);            
             that.events.onReady.fire();
-        });
+        }, {amalgamateClasses: ["template"]});
     };
     
     var initModel = function (that) {
@@ -396,11 +454,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uiOptions.controlsFinalInit = function (that) {
         initModel(that);
-
-        fluid.fetchResources(that.options.resources, function () {
-            that.container.append(that.options.resources.template.resourceText);
-            that.refreshView();
-        });        
+        that.refreshView();        
     };
     
     /****************************
@@ -430,12 +484,19 @@ var fluid_1_4 = fluid_1_4 || {};
         produceTree: "fluid.uiOptions.textControls.produceTree",
         resources: {
             template: {
-                forceCache: true,
-                url: "../html/UIOptionsTemplate-text.html"
+                expander: {
+                    type: "fluid.deferredInvokeCall",
+                    func: "fluid.specBuilder",
+                    args: {
+                        forceCache: true,
+                        fetchClass: "template",
+                        url: "%textControls"
+                    }
+                }
             }
         }
     });
-
+    
     fluid.uiOptions.textControls.produceTree = function (that) {
         var tree = {};
         
@@ -503,8 +564,15 @@ var fluid_1_4 = fluid_1_4 || {};
         produceTree: "fluid.uiOptions.layoutControls.produceTree",
         resources: {
             template: {
-                forceCache: true,
-                url: "../html/UIOptionsTemplate-layout.html"
+                expander: {
+                    type: "fluid.deferredInvokeCall",
+                    func: "fluid.specBuilder",
+                    args: {
+                        forceCache: true,
+                        fetchClass: "template",
+                        url: "%layoutControls"
+                    }
+                }
             }
         }
     });
@@ -539,8 +607,15 @@ var fluid_1_4 = fluid_1_4 || {};
         produceTree: "fluid.uiOptions.linksControls.produceTree",
         resources: {
             template: {
-                forceCache: true,
-                url: "../html/UIOptionsTemplate-links.html"
+                expander: {
+                    type: "fluid.deferredInvokeCall",
+                    func: "fluid.specBuilder",
+                    args: {
+                        forceCache: true,
+                        fetchClass: "template",
+                        url: "%linksControls"
+                    }
+                }
             }
         }
     });

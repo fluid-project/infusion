@@ -44,11 +44,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 onSave: function () {
                     saveCalled = true;
                 }
-            },
-            resources: {
-                template: {
-                    url: "../../../../components/uiOptions/html/FullPreviewUIOptions.html"
-                }
             }
         };
 
@@ -57,35 +52,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         var testUIOptions = function (testFn, uiOptionsTestOptions, enhancerTestOptions) {
-            // Supply the template URL of "text and display" panel on the user preferences interface
-            fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptions"], {
+            // Supply the templates
+            fluid.staticEnvironment.uiOptionsDemo = fluid.typeTag("fluid.uiOptionsDemo");
+            fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsDemo", {
                 options: {
-                    resources: {
-                        template: {
-                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
-                        }
-                    }
-                }
-            });
-
-            // Supply the template URL of "layout and navigation" panel on the user preferences interface
-            fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptions"], {
-                options: {
-                    resources: {
-                        template: {
-                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
-                        }
-                    }
-                }
-            });
-
-            // Supply the template URL of "layout and navigation" panel on the user preferences interface
-            fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptions"], {
-                options: {
-                    resources: {
-                        template: {
-                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
-                        }
+                    templates: {
+                        uiOptions: "../../../../components/uiOptions/html/FullPreviewUIOptions.html",
+                        textControls: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html",
+                        layoutControls: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html",
+                        linksControls: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
                     }
                 }
             });
@@ -175,7 +150,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
                 var contrastSelection = $(":selected", $(".flc-uiOptions-theme"));
                 jqUnit.assertEquals("Black on white is selected", "bw", contrastSelection[0].value);
-            
             });          
         });
 
@@ -203,7 +177,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 var fontValue = settings.textFont;
                 jqUnit.assertEquals("The font is is set to times", "times", fontValue);
-                
             }, null, enhancerOpts);
         });
 
