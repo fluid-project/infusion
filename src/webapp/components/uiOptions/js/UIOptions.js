@@ -171,9 +171,6 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
-//    TODO
-//    - pull the strings out of the template and put them into the component?
-
     /**
      * Update the change applier of sub-component fluid.uiOptions.controls to set 
      * the value of "selections" array that is mapped with selections on user preferences.
@@ -183,15 +180,14 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} controls - fluid.uiOptions.controls
      * @param {Object} model - an array of selections on user preferences
      */
-    var setControlsChangeApplier = function (controls, model) {
-        controls.applier.requestChange("selections", model);
+    var setChangeApplier = function (that, model) {
+        that.applier.requestChange("selections", model);
     
         // Turn the boolean select values into strings so they can be properly bound and rendered
-        controls.applier.requestChange("selections.toc", String(controls.model.selections.toc));
-        controls.applier.requestChange("selections.backgroundImages", String(controls.model.selections.backgroundImages));
+        that.applier.requestChange("selections.toc", String(that.model.selections.toc));
+        that.applier.requestChange("selections.backgroundImages", String(that.model.selections.backgroundImages));
     };
     
-        
     /**************
      * UI Options *
      **************/
@@ -208,15 +204,36 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uiOptions", {
         gradeNames: ["fluid.viewComponent", "autoInit"], 
         components: {
-            controls: {
-                type: "fluid.uiOptions.controls",
-                priority: "first",
-                container: "{uiOptions}.dom.controls",
-                createOnEvent: "onReady",
+            textControls: {
+                type: "fluid.uiOptions.textControls",
+                container: "{uiOptions}.dom.textControls",
+                createOnEvent: "onUIOptionsTemplateReady",
                 options: {
                     uiEnhancer: "{uiOptions}.uiEnhancer",
                     textSize: "{uiOptions}.options.textSize",
-                    lineSpacing: "{uiOptions}.options.lineSpacing"
+                    lineSpacing: "{uiOptions}.options.lineSpacing",
+                    model: "{uiOptions}.model",
+                    applier: "{uiOptions}.applier"
+                }
+            },
+            layoutControls: {
+                type: "fluid.uiOptions.layoutControls",
+                container: "{uiOptions}.dom.layoutControls",
+                createOnEvent: "onUIOptionsTemplateReady",
+                options: {
+                    uiEnhancer: "{uiOptions}.uiEnhancer",
+                    model: "{uiOptions}.model",
+                    applier: "{uiOptions}.applier"
+                }
+            },
+            linksControls: {
+                type: "fluid.uiOptions.linksControls",
+                container: "{uiOptions}.dom.linksControls",
+                createOnEvent: "onUIOptionsTemplateReady",
+                options: {
+                    uiEnhancer: "{uiOptions}.uiEnhancer",
+                    model: "{uiOptions}.model",
+                    applier: "{uiOptions}.applier"
                 }
             },
             preview: {
@@ -233,7 +250,9 @@ var fluid_1_4 = fluid_1_4 || {};
             max: 10
         },
         selectors: {
-            controls: ".flc-uiOptions-controls",
+            textControls: ".flc-uiOptions-text-controls",
+            layoutControls: ".flc-uiOptions-layout-controls",
+            linksControls: ".flc-uiOptions-links-controls",
             cancel: ".flc-uiOptions-cancel",
             reset: ".flc-uiOptions-reset",
             save: ".flc-uiOptions-save",
@@ -243,7 +262,9 @@ var fluid_1_4 = fluid_1_4 || {};
             onReady: null,
             onSave: null,
             onCancel: null,
-            onReset: null
+            onReset: null,
+            modelChanged: null,
+            onUIOptionsTemplateReady: null
         },
         finalInitFunction: "fluid.uiOptions.finalInit",
         resources: {
@@ -257,6 +278,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uiOptions.finalInit = function (that) {
 
         that.uiEnhancer = $(document).data("uiEnhancer");
+        setChangeApplier(that, fluid.copy(that.uiEnhancer.model));
         
         var savedModel = that.uiEnhancer.model;
  
@@ -264,8 +286,8 @@ var fluid_1_4 = fluid_1_4 || {};
          * Saves the current model and fires onSave
          */ 
         that.save = function () {
-            that.events.onSave.fire(that.controls.model.selections);
-            savedModel = fluid.copy(that.controls.model.selections); 
+            that.events.onSave.fire(that.model.selections);
+            savedModel = fluid.copy(that.model.selections); 
             that.uiEnhancer.applier.requestChange("", savedModel);
             that.uiEnhancer.events.onSave.fire(savedModel);
         };
@@ -275,8 +297,8 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.reset = function () {
             that.events.onReset.fire();
-            that.updateControlsModel(fluid.copy(that.uiEnhancer.defaultSiteSettings));
-            that.controls.refreshView();
+            that.updateModel(fluid.copy(that.uiEnhancer.defaultSiteSettings));
+            that.refreshControlsView();
         };
         
         /**
@@ -284,8 +306,8 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.cancel = function () {
             that.events.onCancel.fire();
-            that.updateControlsModel(fluid.copy(savedModel));
-            that.controls.refreshView();            
+            that.updateModel(fluid.copy(savedModel));
+            that.refreshControlsView();            
         };
         
         /**
@@ -294,10 +316,22 @@ var fluid_1_4 = fluid_1_4 || {};
          * @param {Object} newModel
          * @param {Object} source
          */
-        that.updateControlsModel = function (newModel) {
-            setControlsChangeApplier(that.controls, newModel);
+        that.updateModel = function (newModel) {
+            setChangeApplier(that, newModel);
         };
         
+        that.refreshControlsView = function () {
+            that.textControls.refreshView();
+            that.layoutControls.refreshView();
+            that.linksControls.refreshView();
+        };
+        
+        that.applier.modelChanged.addListener("selections",
+            function (newModel, oldModel, changeRequest) {
+                that.events.modelChanged.fire(newModel, oldModel, changeRequest.source);
+            }
+        );
+            
         var bindHandlers = function (that) {
             var saveButton = that.locate("save");
             saveButton.click(that.save);
@@ -312,67 +346,12 @@ var fluid_1_4 = fluid_1_4 || {};
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
             bindHandlers(that);
+            that.events.onUIOptionsTemplateReady.fire();
             that.events.onReady.fire();
         });
 
     };
     
-    /***********************
-     * UI Options Controls *
-     ***********************/
-
-    /**
-     * A sub-component of fluid.uiOptions that renders the user preferences interface.
-     */
-    fluid.defaults("fluid.uiOptions.controls", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"], 
-        strings: {
-            textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
-            textSpacing: ["Regular", "Wide", "Wider", "Widest"],
-            theme: ["Low Contrast", "Medium Contrast", "Medium Contrast Grey Scale", "High Contrast", "High Contrast Inverted"],
-            backgroundImages: ["Yes", "No"],
-            layout: ["Yes", "No"],
-            toc: ["Yes", "No"]
-        },
-        controlValues: { 
-            textFont: ["serif", "sansSerif", "arial", "verdana", "courier", "times"],
-            textSpacing: ["default", "wide1", "wide2", "wide3"],
-            theme: ["lowContrast", "default", "mediumContrast", "highContrast", "highContrastInverted"],
-            backgroundImages: ["true", "false"],
-            layout: ["simple", "default"],
-            toc: ["true", "false"]
-        },
-        selectors: {
-            textFont: ".flc-uiOptions-text-font",
-            textSpacing: ".flc-uiOptions-text-spacing",
-            theme: ".flc-uiOptions-theme",
-            "backgroundImagesRowID:": ".flc-uiOptions-background-images-row",
-            backgroundImagesInputID: ".flc-uiOptions-background-images-choice",
-            backgroundImagesLabelID: ".flc-uiOptions-background-images-label",
-            "layoutRowID:": ".flc-uiOptions-layout-row",
-            layoutInputID: ".flc-uiOptions-layout-choice",
-            layoutLabelID: ".flc-uiOptions-layout-label",
-            "tocRowID:": ".flc-uiOptions-toc-row",
-            tocInputID: ".flc-uiOptions-toc-choice",
-            tocLabelID: ".flc-uiOptions-toc-label",
-            textSize: ".flc-uiOptions-min-text-size",
-            lineSpacing: ".flc-uiOptions-line-spacing",
-            linksUnderline: ".flc-uiOptions-links-underline",
-            linksBold: ".flc-uiOptions-links-bold",
-            linksLarger: ".flc-uiOptions-links-larger",
-            inputsLarger: ".flc-uiOptions-inputs-larger"
-        },
-        events: {
-            afterRender: null,
-            modelChanged: null
-        },
-        rendererOptions: {
-            autoBind: true
-        },
-        finalInitFunction: "fluid.uiOptions.controls.finalInit",
-        produceTree: "fluid.uiOptions.controls.produceTree"
-    });
-
     var mergeSiteDefaults = function (options, siteDefaults) {
         for (var settingName in options.controlValues) {
             var setting = String(siteDefaults[settingName]);
@@ -403,27 +382,6 @@ var fluid_1_4 = fluid_1_4 || {};
         });
     };
     
-    fluid.uiOptions.controls.finalInit = function (that) {
-        initModel(that);
-        setControlsChangeApplier(that, fluid.copy(that.options.uiEnhancer.model));
-
-        /**
-         * Rerenders the UI and fires afterRender
-         */
-        that.refreshView = function () {
-            that.renderer.refreshView();
-            that.events.afterRender.fire();
-        };
-        
-        that.applier.modelChanged.addListener("selections",
-            function (newModel, oldModel, changeRequest) {
-                that.events.modelChanged.fire(newModel, oldModel, changeRequest.source);
-            }
-        );
-            
-        that.refreshView();
-    };
-
     var createRadioButtonNode = function (item) {
         return {
             type: "fluid.renderer.selection.inputs", 
@@ -460,7 +418,132 @@ var fluid_1_4 = fluid_1_4 || {};
         };
     };
     
-    fluid.uiOptions.controls.produceTree = function (that) {
+    fluid.uiOptions.controlsFinalInit = function (that) {
+        initModel(that);
+
+        /**
+         * Rerenders the UI
+         */
+        that.refreshView = function () {
+            that.renderer.refreshView();
+        };
+        
+        fluid.fetchResources(that.options.resources, function () {
+            that.container.append(that.options.resources.template.resourceText);
+            that.refreshView();
+        });        
+    };
+    
+    /****************************
+     * UI Options Text Controls *
+     ****************************/
+
+    /**
+     * A sub-component of fluid.uiOptions that renders the "text and display" panel of the user preferences interface.
+     */
+    fluid.defaults("fluid.uiOptions.textControls", {
+        gradeNames: ["fluid.rendererComponent", "autoInit"], 
+        strings: {
+            textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
+            textSpacing: ["Regular", "Wide", "Wider", "Widest"],
+            theme: ["Low Contrast", "Medium Contrast", "Medium Contrast Grey Scale", "High Contrast", "High Contrast Inverted"]
+        },
+        controlValues: { 
+            textFont: ["serif", "sansSerif", "arial", "verdana", "courier", "times"],
+            textSpacing: ["default", "wide1", "wide2", "wide3"],
+            theme: ["lowContrast", "default", "mediumContrast", "highContrast", "highContrastInverted"]
+        },
+        selectors: {
+            textFont: ".flc-uiOptions-text-font",
+            textSpacing: ".flc-uiOptions-text-spacing",
+            theme: ".flc-uiOptions-theme",
+            textSize: ".flc-uiOptions-min-text-size",
+            lineSpacing: ".flc-uiOptions-line-spacing"
+        },
+        events: {
+            afterRender: null
+        },
+        rendererOptions: {
+            autoBind: true
+        },
+        finalInitFunction: "fluid.uiOptions.controlsFinalInit",
+        produceTree: "fluid.uiOptions.textControls.produceTree",
+        resources: {
+            template: {
+                forceCache: true,
+                url: "../html/UIOptionsTemplate-text.html"
+            }
+        }
+    });
+
+    fluid.uiOptions.textControls.produceTree = function (that) {
+        var tree = {};
+        
+        for (var item in that.model.selections) {
+            if (item === "textFont" || item === "textSpacing" || item === "theme") {
+                // render drop down list box
+                tree[item] = {
+                    optionnames: "${labelMap." + item + ".names}",
+                    optionlist: "${labelMap." + item + ".values}",
+                    selection: "${selections." + item + "}"
+                };
+            }
+            else if (item === "textSize" || item === "lineSpacing") {
+                    // textfield sliders
+                    tree[item] = createSliderNode(that, item);
+                }
+        }
+        
+        return tree;
+    };
+
+    /******************************
+     * UI Options Layout Controls *
+     ******************************/
+
+    /**
+     * A sub-component of fluid.uiOptions that renders the "layout and navigation" panel of the user preferences interface.
+     */
+    fluid.defaults("fluid.uiOptions.layoutControls", {
+        gradeNames: ["fluid.rendererComponent", "autoInit"], 
+        strings: {
+            backgroundImages: ["Yes", "No"],
+            layout: ["Yes", "No"],
+            toc: ["Yes", "No"]
+        },
+        controlValues: { 
+            backgroundImages: ["true", "false"],
+            layout: ["simple", "default"],
+            toc: ["true", "false"]
+        },
+        selectors: {
+            "backgroundImagesRowID:": ".flc-uiOptions-background-images-row",
+            backgroundImagesInputID: ".flc-uiOptions-background-images-choice",
+            backgroundImagesLabelID: ".flc-uiOptions-background-images-label",
+            "layoutRowID:": ".flc-uiOptions-layout-row",
+            layoutInputID: ".flc-uiOptions-layout-choice",
+            layoutLabelID: ".flc-uiOptions-layout-label",
+            "tocRowID:": ".flc-uiOptions-toc-row",
+            tocInputID: ".flc-uiOptions-toc-choice",
+            tocLabelID: ".flc-uiOptions-toc-label"
+        },
+        events: {
+            afterRender: null
+        },
+        rendererOptions: {
+            autoBind: true
+        },
+        finalInitFunction: "fluid.uiOptions.controlsFinalInit",
+        produceTree: "fluid.uiOptions.layoutControls.produceTree",
+        resources: {
+            template: {
+                forceCache: true,
+                url: "../html/UIOptionsTemplate-layout.html"
+            }
+        }
+    });
+
+    fluid.uiOptions.layoutControls.produceTree = function (that) {
         var tree = {};
         var radiobuttons = [];
         
@@ -468,28 +551,59 @@ var fluid_1_4 = fluid_1_4 || {};
             if (item === "backgroundImages" || item === "layout" || item === "toc") {
                 // render radio buttons
                 radiobuttons.push(createRadioButtonNode(item));
-            } else if (item === "textFont" || item === "textSpacing" || item === "theme") {
-                // render drop down list box
-                tree[item] = {
-                    optionnames: "${labelMap." + item + ".names}",
-                    optionlist: "${labelMap." + item + ".values}",
-                    selection: "${selections." + item + "}"
-                };
-            } else if (item === "textSize" || item === "lineSpacing") {
-                // textfield sliders
-                tree[item] = createSliderNode(that, item);                        
-            } else {
-                // render check boxes
-                tree[item] = "${selections." + item + "}";
             }
         }
-
+        
         tree.expander = radiobuttons;
         
         return tree;
     };
 
-    
+    /*****************************
+     * UI Options Links Controls *
+     *****************************/
+
+    /**
+     * A sub-component of fluid.uiOptions that renders the "links and buttons" panel of the user preferences interface.
+     */
+    fluid.defaults("fluid.uiOptions.linksControls", {
+        gradeNames: ["fluid.rendererComponent", "autoInit"], 
+        selectors: {
+            lineSpacing: ".flc-uiOptions-line-spacing",
+            linksUnderline: ".flc-uiOptions-links-underline",
+            linksBold: ".flc-uiOptions-links-bold",
+            linksLarger: ".flc-uiOptions-links-larger",
+            inputsLarger: ".flc-uiOptions-inputs-larger"
+        },
+        events: {
+            afterRender: null
+        },
+        rendererOptions: {
+            autoBind: true
+        },
+        finalInitFunction: "fluid.uiOptions.controlsFinalInit",
+        produceTree: "fluid.uiOptions.linksControls.produceTree",
+        resources: {
+            template: {
+                forceCache: true,
+                url: "../html/UIOptionsTemplate-links.html"
+            }
+        }
+    });
+
+    fluid.uiOptions.linksControls.produceTree = function (that) {
+        var tree = {};
+        
+        for (var item in that.model.selections) {
+            if (item === "linksUnderline" || item === "linksBold" || item === "linksLarger" || item === "inputsLarger") {
+                // render check boxes
+                tree[item] = "${selections." + item + "}";
+            }
+        }
+
+        return tree;
+    };
+
     /**********************
      * UI Options Preview *
      **********************/
@@ -501,8 +615,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uiEnhancer",
                 createOnEvent: "onReady",
                 options: {
-                    savedSettings: "{controls}.model.selections",
-                    tableOfContents: "{controls}.options.uiEnhancer.options.tableOfContents", // TODO: Tidy this up when the page's UI Enhancer is IoC-visible.
+                    savedSettings: "{uiOptions}.model.selections",
+                    tableOfContents: "{uiOptions}.uiEnhancer.options.tableOfContents", // TODO: Tidy this up when the page's UI Enhancer is IoC-visible.
                     settingsStore: {
                         type: "fluid.uiEnhancer.tempStore"
                     }
@@ -518,7 +632,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 funcName: "fluid.uiOptions.preview.updateModel",
                 args: [
                     "{preview}",
-                    "{controls}.model.selections"
+                    "{uiOptions}.model.selections"
                 ]
             }
         },
@@ -550,7 +664,7 @@ var fluid_1_4 = fluid_1_4 || {};
         });
     };
 
-    fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptions", "fluid.uiOptions.controls"], {
+    fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptions", "fluid.uiOptions.textControls"], {
         args: [
             "{uiOptions}.dom.previewFrame",
             "{options}"
@@ -572,10 +686,10 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
     
-    fluid.demands("fluid.uiOptions.preview.eventBinder", ["fluid.uiOptions.preview", "fluid.uiOptions.controls"], {
+    fluid.demands("fluid.uiOptions.preview.eventBinder", ["fluid.uiOptions.preview", "fluid.uiOptions.textControls"], {
         options: {
             listeners: {
-                "{controls}.events.modelChanged": "{preview}.updateModel"
+                "{uiOptions}.events.modelChanged": "{preview}.updateModel"
             }
         }
     });

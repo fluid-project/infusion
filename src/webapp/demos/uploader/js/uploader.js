@@ -18,79 +18,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
-fluid.registerNamespace("fluid.uploader.demo");
+var demo = demo || {};
 
 (function ($, fluid) {
   
-    fluid.defaults("fluid.uploader.demo.demoLoader", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        finalInitFunction: "fluid.uploader.demo.initDemoLoader",
-        templateURL: "../../../components/uploader/html/Uploader.html",
-        fragmentSelector: ".fl-uploader",
-        uploaderContainer: ".flc-uploader"
-    });
-    
-    fluid.uploader.demo.defaultContainer = "#uploader-contents";
-    
-    fluid.uploader.demo.initDemoLoader = function(that) {
-         var templateURLSelector = that.options.templateURL + " " + that.options.fragmentSelector;
-         // Load the Uploader's template via AJAX and inject it into this page.
-         that.container.load(templateURLSelector, null, that.options.callback);
-    };
-    
-    fluid.uploader.demo.makeInitUploaderFunc = function(callback) {
-        return function() {
-            fluid.uploader.demo.demoLoader(fluid.uploader.demo.defaultContainer, {callback: callback});
-        }
-    };
-    
-    fluid.uploader.demo.initUploader = fluid.uploader.demo.makeInitUploaderFunc( function() {
-        fluid.uploader(".flc-uploader", {
-            demo: true
+    demo.uploader = function () {
+        // Load the Uploader's markup via AJAX and inject it into this page.
+        // Since the template is actually a standalone Web page, we also need to 
+        // specify a selector that points to the part of the page we're interested in.
+        
+        var templateURL = "../../../components/uploader/html/Uploader.html";
+        var fragmentSelector = ".fl-uploader";
+        
+        $("#uploader-contents").load(templateURL + " " + fragmentSelector, function () {
+            
+            // Once the template has been loaded into the page, instantiate the Uploader.
+            fluid.uploader(".flc-uploader", {
+                demo: true
+            });
         });
-    });          
-
-    fluid.defaults("fluid.uploader.demo.IoCLoader", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        components: {
-            uploader: {
-                type: "fluid.uploader",
-                container: "{IoCLoader}.container",
-                options: {
-                    demo: true
-                }
-            }
-        }
-    });
-    
-    fluid.defaults("fluid.uploader.demo.IoCLoaderDemands", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        components: {
-            uploader: {
-                type: "fluid.uploader"
-            }
-        }
-    });
-
-    fluid.demands("fluid.uploader", "fluid.uploader.demo.IoCLoaderDemands", {
-        container: "{IoCLoaderDemands}.container",
-        options: {
-            demo: true
-        }  
-    });
-
-    // Demonstrate the user requesting that they want default configuration for all uploaders created in this session
-    fluid.staticEnvironment.uploaderConfig = fluid.progressiveCheckerForComponent({componentName: "fluid.uploader"});
-
-    fluid.uploader.demo.initIoCUploader = fluid.uploader.demo.makeInitUploaderFunc( function() {
-        fluid.uploader.demo.IoCLoader(fluid.uploader.demo.defaultContainer);
-    });
-    
-    fluid.uploader.demo.initIoCUploaderDemands = fluid.uploader.demo.makeInitUploaderFunc( function() {
-        fluid.uploader.demo.IoCLoaderDemands(fluid.uploader.demo.defaultContainer);
-    });
+    };
 
 })(jQuery, fluid);
-
-
-  

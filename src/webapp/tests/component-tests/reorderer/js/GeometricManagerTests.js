@@ -25,7 +25,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var all = $("#" + parentId + " div");
             var str = "";
             for (var i = 0; i < all.length; ++ i) {
-                var id = all[i].getAttribute("id");
+                var id = all[i].id;
                 var c = id.charAt(id.length - 1);
                 str += c;
             }
