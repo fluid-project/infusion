@@ -38,10 +38,10 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.demands("fluid.uiOptions", ["fluid.fullPreviewUIOptions"], {
         options: {
             components: {
-				preview: {
-                	type: "fluid.uiOptions.preview",
-               		createOnEvent: "onReady"
-            	},             
+                preview: {
+                    type: "fluid.uiOptions.preview",
+                    createOnEvent: "onReady"
+                }             
             },    
             resources: {
                 template: {
