@@ -64,7 +64,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 SWFUpload.WINDOW_MODE.TRANSPARENT,
                                 config.button_window_mode);
             jqUnit.assertNotEquals("The flashButtonPeerId should not be set to the button's id.",
-                                   button.attr("id"),
+                                   button.prop("id"),
                                    config.button_placeholder_id);
         };
         

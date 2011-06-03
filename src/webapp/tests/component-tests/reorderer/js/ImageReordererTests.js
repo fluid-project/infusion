@@ -623,7 +623,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var movables = lightbox.locate("movables");
             var draggingClass = lightbox.options.styles.dragging;
             var index = 0;
-            var movable = fluid.jById(movables.eq(index).attr("id"));
+            var movable = fluid.jById(movables.eq(index).prop("id"));
             
             jqUnit.assertEquals("There should be no movable elements with the dragging style", 0, numItemsWithClass(movables, draggingClass));
             
