@@ -269,6 +269,10 @@ var fluid_1_4 = fluid_1_4 || {};
             styleInputs(that.container, that.model, that.options.classnameMap);
         };
         
+        that.updateModel = function (newModel) {
+            that.applier.requestChange("", newModel);
+        };
+
         that.applier.modelChanged.addListener("",
             function (newModel, oldModel, changeRequest) {
                 that.events.modelChanged.fire(newModel, oldModel, changeRequest);
