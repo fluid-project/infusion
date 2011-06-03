@@ -165,8 +165,8 @@ var fluid = fluid || fluid_1_4;
         }
         element = $(element);
         togo = element.get(0).tagName;
-        if (element.attr("id")) {
-            togo += "#" + element.attr("id");
+        if (element.id) {
+            togo += "#" + element.id;
         }
         if (element.attr("class")) {
             togo += "." + element.attr("class");

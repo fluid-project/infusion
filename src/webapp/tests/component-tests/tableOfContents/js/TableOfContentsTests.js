@@ -78,7 +78,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("Name is Amphibians", "Amphibians", anchor.attr("name"));         
                 jqUnit.assertEquals("No text", "", anchor.text());
                 jqUnit.assertFalse("No href", !!anchor.attr("href"));
-                jqUnit.assertEquals("The next element in the DOM is the heading", "amphibians", anchor.next().attr("id"));
+                jqUnit.assertEquals("The next element in the DOM is the heading", "amphibians", anchor.next().prop("id"));
             });
         });
     });
