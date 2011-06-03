@@ -108,7 +108,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertNotNull("The Reorderer's domNode should not be null.", reorderer.container);
             jqUnit.assertEquals("The Reorderer's domNode should be the sortableSchedule element",
                          SchedulerTests.conferenceContainerId,
-                         reorderer.container.attr("id"));
+                         reorderer.container.prop("id"));
         
             // TODO: This test used to check whether parameters that are passed in are sucessfully set in the Reorderer. 
             // Now these parameters (layoutHandler, findMovables) are private and cannot be accessed directly from the test
