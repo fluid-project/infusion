@@ -69,44 +69,33 @@ var demo = demo || {};
      * Settings for high contrast, large font 
      */
     demo.hcLargeSettings = {
-        textSize: "16",
+        textSize: "1.8",
         textFont: "courier",
-        textSpacing: "wide",
-        theme: "highContrast",
-        layout: "default"
+        theme: "bw",
+        layout: false
     };
     
     /**
      * Settings for high contrast, simple layout
      */
     demo.hcSimpleLayoutSettings = {
-        textSpacing: "default",
-        theme: "highContrast",
-        layout: "simple"
+        theme: "bw",
+        layout: true
     };
 
     /**
      * Settings for mist, small font 
      */
-    demo.mistSmallSettings = {
-        textSize: "8",
-        textSpacing: "default",
-        theme: "mist",
-        layout: "default"
+    demo.smallSettings = {
+        textSize: ".8",
+        layout: false
     };
-    
-    /**
-     * Settings for table of contents
-     */
-    demo.tocSettings = {
-        toc: "On"
-    };
-    
+        
     /**
      * Initialization script for dynamically changing skins
      */
     var initSkinChange = function () {
-        var uiEnhancer = fluid.uiEnhancer(document);
+        var uiEnhancer = fluid.pageEnhancer().uiEnhancer;
         
         jQuery("#hc-skin").click(function () {
             uiEnhancer.updateModel(demo.hcLargeSettings);
@@ -116,16 +105,12 @@ var demo = demo || {};
             uiEnhancer.updateModel(demo.hcSimpleLayoutSettings);
         });  
 
-        jQuery("#mist-skin").click(function () {
-            uiEnhancer.updateModel(demo.mistSmallSettings);
-        });  
-
-        jQuery("#toc").click(function () {
-            uiEnhancer.updateModel(demo.tocSettings);
+        jQuery("#small-text").click(function () {
+            uiEnhancer.updateModel(demo.smallSettings);
         });  
 
         jQuery("#remove-skin").click(function () {
-            uiEnhancer.updateModel(uiEnhancer.defaultSiteSettings);
+            uiEnhancer.updateModel(uiEnhancer.settingsStore.options.defaultSiteSettings);
         });  
 
     };
@@ -141,7 +126,7 @@ var demo = demo || {};
 function testSpeeds() {
     var reps = 200;
     var time = new Date();
-    for (var i = 0; i < reps; ++ i) {
+    for (var i = 0; i < reps; ++i) {
         var it = fluid.jById("fluid.img.5");
     }
     var delay = (new Date() - time);
@@ -153,7 +138,7 @@ function testSpeeds() {
 function testSpeeds2() {
     var reps = 100000;
     var time = new Date();
-    for (var i = 0; i < reps; ++ i) {
+    for (var i = 0; i < reps; ++i) {
         var it = document.getElementById("fluid.img.5");
         if (it.id !== "fluid.img.5") {
             it = fluid.jById("fluid.img.2");
@@ -169,7 +154,7 @@ function testSpeeds3() {
     var reps = 100000;
     var time = new Date();
     var el = document.getElementById("fluid.img.5");
-    for (var i = 0; i < reps; ++ i) {
+    for (var i = 0; i < reps; ++i) {
         var it = jQuery.data(el);
     }
     var delay = (new Date() - time);
