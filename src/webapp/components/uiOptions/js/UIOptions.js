@@ -96,7 +96,7 @@ var fluid_1_4 = fluid_1_4 || {};
         finalInitFunction: "fluid.textfieldSlider.textfield.finalInit"
     });
 
-    var validateValue = function (model, changeRequest, applier) {
+    fluid.textfieldSlider.validateValue = function (model, changeRequest, applier) {
         var oldValue = model.value;
         var newValue = changeRequest.value;
         
@@ -116,7 +116,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.textfieldSlider.textfield.finalInit = function (that) {
-        that.applier.guards.addListener({path: "value", transactional: true}, validateValue);
+        that.applier.guards.addListener({path: "value", transactional: true}, fluid.textfieldSlider.validateValue);
         
         that.container.change(function (source) {
             that.applier.requestChange("value", source.target.value);
@@ -227,7 +227,6 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             settingsStore: "{uiEnhancer}.settingsStore"
         },
-        defaultSiteSettings: "{uiEnhancer}.defaultSiteSettings",
         savedSelections: "{uiEnhancer}.model",
         textSize: {
             min: 1,
@@ -283,7 +282,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.reset = function () {
             that.events.onReset.fire();
-            that.updateModel(fluid.copy(that.options.defaultSiteSettings));
+            that.updateModel(fluid.copy(that.settingsStore.options.defaultSiteSettings));
             that.refreshControlsView();
         };
         
@@ -322,14 +321,16 @@ var fluid_1_4 = fluid_1_4 || {};
         );
             
         var bindHandlers = function (that) {
-            var saveButton = that.locate("save");
-            saveButton.click(that.save);
+            var saveButton = that.locate("save");            
+            if (saveButton.length > 0) {
+	            saveButton.click(that.save);
+				var form = fluid.findForm(saveButton);
+				$(form).submit(function () {
+					that.save();
+				});
+	        }
             that.locate("reset").click(that.reset);
             that.locate("cancel").click(that.cancel);
-            var form = fluid.findForm(saveButton);
-            $(form).submit(function () {
-                that.save();
-            });
         };
         
         var bindEventHandlers = function (that) {
@@ -340,9 +341,9 @@ var fluid_1_4 = fluid_1_4 || {};
         
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
-            that.events.onUIOptionsTemplateReady.fire();
+            that.events.onUIOptionsTemplateReady.fire();            
             bindHandlers(that);
-            bindEventHandlers(that);
+            bindEventHandlers(that);            
             that.events.onReady.fire();
         });
     };

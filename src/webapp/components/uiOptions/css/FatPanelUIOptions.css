@@ -5,7 +5,7 @@
 }
 
 /* Top bar and show/hide button */
-.fl-uiOptions-fatPanel.fl-panelBar {
+.fl-uiOptions-fatPanel .fl-panelBar {
 	width: 100%;
 	height: 5px;
 	background-color: #fff;
