@@ -173,18 +173,11 @@ var fluid_1_4 = fluid_1_4 || {};
     };
      
     /**
-     * Initialize the model first looking at options.savedSettings, then in the settingsStore and finally in the options.defaultSiteSettings
+     * Initialize the model first looking at options.savedSettings
      * @param {Object} that
      */
     var initModel = function (that) {
-        // First check for settings in the options
-        if (that.options.savedSettings) {
-            that.applier.requestChange("", that.options.savedSettings);
-            return;
-        }
-  
-        // Use the settingsStore or the defaultSiteSettings if there are no settings
-        that.applier.requestChange("", that.settingsStore.fetch() || fluid.copy(that.defaultSiteSettings));
+        that.options.savedSettings ? that.applier.requestChange("", that.options.savedSettings) : that.applier.requestChange("", that.settingsStore.fetch());
     };
 
     /**
@@ -254,7 +247,6 @@ var fluid_1_4 = fluid_1_4 || {};
      */
     fluid.uiEnhancer = function (container, options) {
         var that = fluid.initView("fluid.uiEnhancer", container, options);
-        that.defaultSiteSettings = that.options.defaultSiteSettings;
 
         var clashingClassnames;
         
@@ -301,7 +293,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 }
             },
             settingsStore: {
-                type: "fluid.uiEnhancer.cookieStore",
+                type: "fluid.uiOptions.store",
                 container: "{uiEnhancer}.container",
                 createOnEvent: "onInitSettingStore"
             }
@@ -329,16 +321,6 @@ var fluid_1_4 = fluid_1_4 || {};
             "layout": "fl-layout-linear",
             "links": "fl-text-underline fl-text-bold fl-text-larger", 
             "inputsLarger": "fl-text-larger"
-        },
-        defaultSiteSettings: {
-            textFont: "default",          // key from classname map
-            theme: "default",             // key from classname map
-            textSize: 1,                  // in points
-            lineSpacing: 1,               // in ems
-            layout: false,                // boolean
-            toc: false,                   // boolean
-            links: false,                 // boolean
-            inputsLarger: false           // boolean
         }
     });
 
@@ -361,74 +343,8 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    /****************
-     * Cookie Store *
-     ****************/
-     
-    /**
-     * SettingsStore Subcomponent that uses a cookie for persistence.
-     * @param {Object} options
-     */
-    fluid.defaults("fluid.uiEnhancer.cookieStore", {
-        gradeNames: ["fluid.littleComponent", "autoInit"], 
-        cookieName: "fluid-ui-settings",
-        finalInitFunction: "fluid.uiEnhancer.cookieStore.finalInit"
+    fluid.demands("settingsStore", ["fluid.uiEnhancer"], {
+        funcName: "fluid.cookieStore"
     });
-
-    fluid.uiEnhancer.cookieStore.finalInit = function (that) {
-        /**
-         * Retrieve and return the value of the cookie
-         */
-        that.fetch = function () {
-            var cookie = document.cookie;
-            var cookiePrefix = that.options.cookieName + "=";
-            var retObj, startIndex, endIndex;
-            
-            if (cookie.length > 0) {
-                startIndex = cookie.indexOf(cookiePrefix);
-                if (startIndex > -1) { 
-                    startIndex = startIndex + cookiePrefix.length; 
-                    endIndex = cookie.indexOf(";", startIndex);
-                    if (endIndex < startIndex) {
-                        endIndex = cookie.length;
-                    }
-                    retObj = JSON.parse(decodeURIComponent(cookie.substring(startIndex, endIndex)));
-                } 
-            }
-            
-            return retObj;
-        };
-
-        /**
-         * Saves the settings into a cookie
-         * @param {Object} settings
-         */
-        that.save = function (settings) {
-            document.cookie = that.options.cookieName + "=" +  encodeURIComponent(JSON.stringify(settings));
-        };
-    };
-    
-    /**************
-     * Temp Store *
-     **************/
-
-    /**
-     * SettingsStore Subcomponent that doesn't do persistence.
-     * @param {Object} options
-     */
-    fluid.uiEnhancer.tempStore = function (options) {
-        var that = {};
-        that.model = null;
-         
-        that.fetch = function () {
-            return that.model;
-        };
-
-        that.save = function (settings) {
-            that.model = settings;
-        };
-    
-        return that;
-    };
 
 })(jQuery, fluid_1_4);

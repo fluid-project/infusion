@@ -227,7 +227,6 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             settingsStore: "{uiEnhancer}.settingsStore"
         },
-        defaultSiteSettings: "{uiEnhancer}.defaultSiteSettings",
         savedSelections: "{uiEnhancer}.model",
         textSize: {
             min: 1,
@@ -283,7 +282,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.reset = function () {
             that.events.onReset.fire();
-            that.updateModel(fluid.copy(that.options.defaultSiteSettings));
+            that.updateModel(fluid.copy(that.settingsStore.options.defaultSiteSettings));
             that.refreshControlsView();
         };
         

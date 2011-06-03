@@ -7,6 +7,7 @@
             "FatPanelUIOptions.css"
         ],
         "files": [
+            "Store.js",
             "UIEnhancer.js",
             "UIOptions.js",
             "FatPanelUIOptions.js"
