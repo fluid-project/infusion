@@ -568,7 +568,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 
                 var textFieldIds = [];
                 var finishedCallback = function (newValue, oldValue, formField) {
-                    textFieldIds.push($(formField).attr("id"));    
+                    textFieldIds.push($(formField).prop("id"));    
                 };
                 
                 var editors = instantiateInlineEdits(finishedCallback);
@@ -600,7 +600,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     var editor = editors[i];
                     var currentHasUndo = !!editor.decorators && editor.decorators[0].typeName === "undo";
                     jqUnit.assertEquals("Check whether or not editor has undo option", hasUndo, currentHasUndo);
-                    jqUnit.assertEquals("Belongs to container " + containerId, containerId, editor.container.parent().attr("id"));
+                    jqUnit.assertEquals("Belongs to container " + containerId, containerId, editor.container.parent().prop("id"));
                 }
             };
             

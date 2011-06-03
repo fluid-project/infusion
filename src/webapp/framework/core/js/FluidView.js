@@ -53,7 +53,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.ariaLabeller.generateLiveElement = function (that) {
         var liveEl = $(that.options.liveRegionMarkup);
-        liveEl.attr("id", that.options.liveRegionId);
+        liveEl.prop("id", that.options.liveRegionId);
         $("body").append(liveEl);
         return liveEl;
     };

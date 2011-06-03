@@ -49,7 +49,7 @@ fluid.Scheduler = (function () {
             // Create a simple data structure keyed by element id and with the ordinal number as value.
             var orderMap = {};
             jQuery.each(orderables, function (index, element) {
-                orderMap[jQuery(element).attr("id")] = index;
+                orderMap[jQuery(element).prop("id")] = index;
             });
 
             // Then serialize it to a JSON string.

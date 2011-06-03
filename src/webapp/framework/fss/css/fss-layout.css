@@ -5,6 +5,20 @@ Generic containers for columns and layouts
 
 /* Container Utilities*/
 .fl-fix {overflow: auto; zoom:1;}
+
+/* 
+* The Micro Clearfix solution from http://nicolasgallagher.com/micro-clearfix-hack/
+* Licensed under the MIT license
+*/
+
+/* For modern browsers */
+.fl-clearfix:before, .fl-clearfix:after {content:""; display:table;}
+.fl-clearfix:after {clear:both;}
+
+/* For IE 6/7 (trigger hasLayout) */
+.fl-clearfix {zoom:1;}
+
+
 .fl-push {clear:both;}
 
 /* Container alignment */
