@@ -88,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Reusable test functions
         var checkFileRow = function (q, file, row) {
             jqUnit.assertEquals("The added row should have the correct id attribute.",
-                                file.id, parseInt(row.attr("id"), 10));
+                                file.id, parseInt(row.prop("id"), 10));
             jqUnit.assertEquals("The added row should have the correct filename.",
                                 file.name, nameForRow(q, row));
             jqUnit.assertEquals("The added row should have the correct size.",

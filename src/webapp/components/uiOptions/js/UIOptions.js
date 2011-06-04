@@ -59,7 +59,8 @@ var fluid_1_4 = fluid_1_4 || {};
             max: 100
         },
         sliderOptions: {
-            orientation: "horizontal"
+            orientation: "horizontal",
+            step: 0.1
         }, 
         finalInitFunction: "fluid.textfieldSlider.finalInit"
     });    
@@ -95,7 +96,7 @@ var fluid_1_4 = fluid_1_4 || {};
         finalInitFunction: "fluid.textfieldSlider.textfield.finalInit"
     });
 
-    var validateValue = function (model, changeRequest, applier) {
+    fluid.textfieldSlider.validateValue = function (model, changeRequest, applier) {
         var oldValue = model.value;
         var newValue = changeRequest.value;
         
@@ -115,7 +116,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.textfieldSlider.textfield.finalInit = function (that) {
-        that.applier.guards.addListener({path: "value", transactional: true}, validateValue);
+        that.applier.guards.addListener({path: "value", transactional: true}, fluid.textfieldSlider.validateValue);
         
         that.container.change(function (source) {
             that.applier.requestChange("value", source.target.value);
@@ -171,22 +172,48 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
-    /**
-     * Update the change applier of sub-component fluid.uiOptions.controls to set 
-     * the value of "selections" array that is mapped with selections on user preferences.
-     * 
-     * This method is used by both fluid.uiOptions and fluid.uiOptions.controls
-     * 
-     * @param {Object} controls - fluid.uiOptions.controls
-     * @param {Object} model - an array of selections on user preferences
-     */
-    var setChangeApplier = function (that, model) {
-        that.applier.requestChange("selections", model);
+    /********************************
+     * UI Options Resource Expander *
+     ********************************/
     
-        // Turn the boolean select values into strings so they can be properly bound and rendered
-        that.applier.requestChange("selections.toc", String(that.model.selections.toc));
-        that.applier.requestChange("selections.backgroundImages", String(that.model.selections.backgroundImages));
+    fluid.defaults("fluid.specBuilderImpl", {
+        gradeNames: ["fluid.littleComponent"],
+        urlRenderer: {
+            expander: {
+                type: "fluid.deferredInvokeCall",
+                func: "fluid.uiOptionsTemplateLoader"
+            }
+        }  
+    });
+
+    fluid.specBuilderImpl = function (options) {
+        var that = fluid.initLittleComponent("fluid.specBuilderImpl", options);
+        if (that.options.urlRenderer) {
+            that.options.spec.url = that.options.urlRenderer(that.options.spec.url);
+        }
+        return that.options.spec;
     };
+
+    fluid.specBuilder = function (options) {
+        return fluid.specBuilderImpl.apply(null, [{spec: options}]);
+    };
+
+    fluid.uiOptionsTemplateLoader = function (options) {
+        var that = fluid.initLittleComponent("fluid.uiOptionsTemplateLoader", options);
+        return function (url) {
+            return fluid.stringTemplate(url, that.options.templates);
+        };
+    };
+    
+    fluid.defaults("fluid.uiOptionsTemplateLoader", {
+        gradeNames: ["fluid.littleComponent"],
+        templates: {
+            uiOptions: "../html/UIOptions.html",
+            textControls: "../html/UIOptionsTemplate-text.html",
+            layoutControls: "../html/UIOptionsTemplate-layout.html",
+            linksControls: "../html/UIOptionsTemplate-links.html"
+        }  
+    });
     
     /**************
      * UI Options *
@@ -202,18 +229,19 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.uiOptions", {
-        gradeNames: ["fluid.viewComponent", "autoInit"], 
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
+            uiEnhancer: "{uiEnhancer}",
             textControls: {
                 type: "fluid.uiOptions.textControls",
                 container: "{uiOptions}.dom.textControls",
                 createOnEvent: "onUIOptionsTemplateReady",
                 options: {
-                    uiEnhancer: "{uiOptions}.uiEnhancer",
                     textSize: "{uiOptions}.options.textSize",
                     lineSpacing: "{uiOptions}.options.lineSpacing",
                     model: "{uiOptions}.model",
-                    applier: "{uiOptions}.applier"
+                    applier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
                 }
             },
             layoutControls: {
@@ -221,9 +249,9 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{uiOptions}.dom.layoutControls",
                 createOnEvent: "onUIOptionsTemplateReady",
                 options: {
-                    uiEnhancer: "{uiOptions}.uiEnhancer",
                     model: "{uiOptions}.model",
-                    applier: "{uiOptions}.applier"
+                    applier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap"
                 }
             },
             linksControls: {
@@ -231,23 +259,25 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{uiOptions}.dom.linksControls",
                 createOnEvent: "onUIOptionsTemplateReady",
                 options: {
-                    uiEnhancer: "{uiOptions}.uiEnhancer",
                     model: "{uiOptions}.model",
-                    applier: "{uiOptions}.applier"
+                    applier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap"
                 }
             },
             preview: {
                 type: "fluid.uiOptions.preview",
                 createOnEvent: "onReady"
-            }
+            },
+            settingsStore: "{uiEnhancer}.settingsStore"
         },
+        savedSelections: "{uiEnhancer}.model",
         textSize: {
-            min: 6,
-            max: 30
+            min: 1,
+            max: 2
         },
         lineSpacing: {
             min: 1,
-            max: 10
+            max: 2
         },
         selectors: {
             textControls: ".flc-uiOptions-text-controls",
@@ -263,33 +293,46 @@ var fluid_1_4 = fluid_1_4 || {};
             onSave: null,
             onCancel: null,
             onReset: null,
+            onAutoSave: null,
             modelChanged: null,
             onUIOptionsTemplateReady: null
         },
+        preInitFunction: "fluid.uiOptions.preInit", 
         finalInitFunction: "fluid.uiOptions.finalInit",
         resources: {
             template: {
-                forceCache: true,
-                url: "../html/UIOptions.html"
+                expander: {
+                    type: "fluid.deferredInvokeCall",
+                    func: "fluid.specBuilder",
+                    args: {
+                        forceCache: true,
+                        url: "%uiOptions"
+                    }
+                }
             }
-        }
+        },
+        autoSave: false
     });
     
-    fluid.uiOptions.finalInit = function (that) {
+    fluid.fetchResources.primeCacheFromResources("fluid.uiOptions");
+    
+    fluid.uiOptions.preInit = function () {
+        fluid.fetchResources.primeCacheFromResources("fluid.uiOptions.textControls");
+        fluid.fetchResources.primeCacheFromResources("fluid.uiOptions.layoutControls");
+        fluid.fetchResources.primeCacheFromResources("fluid.uiOptions.linksControls");
+    };
 
-        that.uiEnhancer = $(document).data("uiEnhancer");
-        setChangeApplier(that, fluid.copy(that.uiEnhancer.model));
-        
-        var savedModel = that.uiEnhancer.model;
+    fluid.uiOptions.finalInit = function (that) {
+        that.applier.requestChange("selections", fluid.copy(that.uiEnhancer.model));
  
         /**
          * Saves the current model and fires onSave
          */ 
         that.save = function () {
             that.events.onSave.fire(that.model.selections);
-            savedModel = fluid.copy(that.model.selections); 
-            that.uiEnhancer.applier.requestChange("", savedModel);
-            that.uiEnhancer.events.onSave.fire(savedModel);
+            that.options.savedSelections = fluid.copy(that.model.selections);
+            that.uiEnhancer.applier.requestChange("", that.options.savedSelections);
+            that.settingsStore.save(that.model.selections);
         };
 
         /**
@@ -297,7 +340,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.reset = function () {
             that.events.onReset.fire();
-            that.updateModel(fluid.copy(that.uiEnhancer.defaultSiteSettings));
+            that.updateModel(fluid.copy(that.settingsStore.options.defaultSiteSettings));
             that.refreshControlsView();
         };
         
@@ -306,7 +349,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.cancel = function () {
             that.events.onCancel.fire();
-            that.updateModel(fluid.copy(savedModel));
+            that.updateModel(fluid.copy(that.options.savedSelections));
             that.refreshControlsView();            
         };
         
@@ -317,7 +360,7 @@ var fluid_1_4 = fluid_1_4 || {};
          * @param {Object} source
          */
         that.updateModel = function (newModel) {
-            setChangeApplier(that, newModel);
+            that.applier.requestChange("selections", newModel);
         };
         
         that.refreshControlsView = function () {
@@ -329,55 +372,46 @@ var fluid_1_4 = fluid_1_4 || {};
         that.applier.modelChanged.addListener("selections",
             function (newModel, oldModel, changeRequest) {
                 that.events.modelChanged.fire(newModel, oldModel, changeRequest.source);
+                if (that.options.autoSave) {
+                    that.events.onAutoSave.fire();
+                }
             }
         );
             
         var bindHandlers = function (that) {
-            var saveButton = that.locate("save");
-            saveButton.click(that.save);
+            var saveButton = that.locate("save");            
+            if (saveButton.length > 0) {
+	            saveButton.click(that.save);
+				var form = fluid.findForm(saveButton);
+				$(form).submit(function () {
+					that.save();
+				});
+	        }
             that.locate("reset").click(that.reset);
             that.locate("cancel").click(that.cancel);
-            var form = fluid.findForm(saveButton);
-            $(form).submit(function () {
-                that.save();
+        };
+        
+        var bindEventHandlers = function (that) {
+            that.events.onAutoSave.addListener(function () {
+                that.save();    
             });
         };
         
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
+            that.events.onUIOptionsTemplateReady.fire();            
             bindHandlers(that);
-            that.events.onUIOptionsTemplateReady.fire();
+            bindEventHandlers(that);            
             that.events.onReady.fire();
-        });
-
-    };
-    
-    var mergeSiteDefaults = function (options, siteDefaults) {
-        for (var settingName in options.controlValues) {
-            var setting = String(siteDefaults[settingName]);
-            var settingValues = options.controlValues[settingName];
-            
-            if (setting) {
-                var index = $.inArray(setting, settingValues);
-                if (index === -1) {
-                    var defaultIndex = $.inArray("default", settingValues);
-                    if (defaultIndex === -1) {
-                        settingValues.push(setting);
-                    } else {
-                        settingValues[defaultIndex] = setting;
-                    }
-                }
-            }
-        }
+        }, {amalgamateClasses: ["template"]});
     };
     
     var initModel = function (that) {
-        mergeSiteDefaults(that.options, that.options.uiEnhancer.defaultSiteSettings);
-        
         fluid.each(that.options.controlValues, function (item, key) {
             that.applier.requestChange("labelMap." + key, {
                 values: that.options.controlValues[key],
-                names: that.options.strings[key]
+                names: that.options.strings[key],
+                classes: that.options.classnameMap[key]
             });
         });
     };
@@ -420,18 +454,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uiOptions.controlsFinalInit = function (that) {
         initModel(that);
-
-        /**
-         * Rerenders the UI
-         */
-        that.refreshView = function () {
-            that.renderer.refreshView();
-        };
-        
-        fluid.fetchResources(that.options.resources, function () {
-            that.container.append(that.options.resources.template.resourceText);
-            that.refreshView();
-        });        
+        that.refreshView();        
     };
     
     /****************************
@@ -444,48 +467,53 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uiOptions.textControls", {
         gradeNames: ["fluid.rendererComponent", "autoInit"], 
         strings: {
-            textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
-            textSpacing: ["Regular", "Wide", "Wider", "Widest"],
-            theme: ["Low Contrast", "Medium Contrast", "Medium Contrast Grey Scale", "High Contrast", "High Contrast Inverted"]
+            textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"],
+            theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
         },
         controlValues: { 
-            textFont: ["serif", "sansSerif", "arial", "verdana", "courier", "times"],
-            textSpacing: ["default", "wide1", "wide2", "wide3"],
-            theme: ["lowContrast", "default", "mediumContrast", "highContrast", "highContrastInverted"]
+            textFont: ["default", "times", "comic", "arial", "verdana"],
+            theme: ["default", "bw", "wb", "by", "yb"]
         },
         selectors: {
             textFont: ".flc-uiOptions-text-font",
-            textSpacing: ".flc-uiOptions-text-spacing",
             theme: ".flc-uiOptions-theme",
             textSize: ".flc-uiOptions-min-text-size",
             lineSpacing: ".flc-uiOptions-line-spacing"
-        },
-        events: {
-            afterRender: null
-        },
-        rendererOptions: {
-            autoBind: true
         },
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.textControls.produceTree",
         resources: {
             template: {
-                forceCache: true,
-                url: "../html/UIOptionsTemplate-text.html"
+                expander: {
+                    type: "fluid.deferredInvokeCall",
+                    func: "fluid.specBuilder",
+                    args: {
+                        forceCache: true,
+                        fetchClass: "template",
+                        url: "%textControls"
+                    }
+                }
             }
         }
     });
-
+    
     fluid.uiOptions.textControls.produceTree = function (that) {
         var tree = {};
         
         for (var item in that.model.selections) {
-            if (item === "textFont" || item === "textSpacing" || item === "theme") {
+            if (item === "textFont" || item === "theme") {
                 // render drop down list box
                 tree[item] = {
                     optionnames: "${labelMap." + item + ".names}",
                     optionlist: "${labelMap." + item + ".values}",
-                    selection: "${selections." + item + "}"
+                    selection: "${selections." + item + "}",
+                    decorators: {
+                        type: "fluid",
+                        func: "fluid.uiOptions.selectDecorator",
+                        options: {
+                            styles: that.options.classnameMap[item]
+                        }
+                    }
                 };
             }
             else if (item === "textSize" || item === "lineSpacing") {
@@ -497,6 +525,28 @@ var fluid_1_4 = fluid_1_4 || {};
         return tree;
     };
 
+    /***********************************************
+     * UI Options Select Dropdown Options Decorator*
+     ***********************************************/
+
+    /**
+     * A sub-component that decorates the options on the select dropdown list box with the css style
+     */
+    fluid.demands("fluid.uiOptions.selectDecorator", "fluid.uiOptions", {
+        container: "{arguments}.0"
+    });
+    
+    fluid.defaults("fluid.uiOptions.selectDecorator", {
+        gradeNames: ["fluid.viewComponent", "autoInit"], 
+        finalInitFunction: "fluid.uiOptions.selectDecorator.finalInit",
+    });
+    
+    fluid.uiOptions.selectDecorator.finalInit = function (that) {
+        fluid.each($("option", that.container), function (option) {
+            option.className = that.options.styles[fluid.value(option)];
+        });
+    };
+    
     /******************************
      * UI Options Layout Controls *
      ******************************/
@@ -506,55 +556,36 @@ var fluid_1_4 = fluid_1_4 || {};
      */
     fluid.defaults("fluid.uiOptions.layoutControls", {
         gradeNames: ["fluid.rendererComponent", "autoInit"], 
-        strings: {
-            backgroundImages: ["Yes", "No"],
-            layout: ["Yes", "No"],
-            toc: ["Yes", "No"]
-        },
-        controlValues: { 
-            backgroundImages: ["true", "false"],
-            layout: ["simple", "default"],
-            toc: ["true", "false"]
-        },
         selectors: {
-            "backgroundImagesRowID:": ".flc-uiOptions-background-images-row",
-            backgroundImagesInputID: ".flc-uiOptions-background-images-choice",
-            backgroundImagesLabelID: ".flc-uiOptions-background-images-label",
-            "layoutRowID:": ".flc-uiOptions-layout-row",
-            layoutInputID: ".flc-uiOptions-layout-choice",
-            layoutLabelID: ".flc-uiOptions-layout-label",
-            "tocRowID:": ".flc-uiOptions-toc-row",
-            tocInputID: ".flc-uiOptions-toc-choice",
-            tocLabelID: ".flc-uiOptions-toc-label"
-        },
-        events: {
-            afterRender: null
-        },
-        rendererOptions: {
-            autoBind: true
+            layout: ".flc-uiOptions-layout",
+            toc: ".flc-uiOptions-toc"
         },
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.layoutControls.produceTree",
         resources: {
             template: {
-                forceCache: true,
-                url: "../html/UIOptionsTemplate-layout.html"
+                expander: {
+                    type: "fluid.deferredInvokeCall",
+                    func: "fluid.specBuilder",
+                    args: {
+                        forceCache: true,
+                        fetchClass: "template",
+                        url: "%layoutControls"
+                    }
+                }
             }
         }
     });
 
     fluid.uiOptions.layoutControls.produceTree = function (that) {
         var tree = {};
-        var radiobuttons = [];
         
         for (var item in that.model.selections) {
-            if (item === "backgroundImages" || item === "layout" || item === "toc") {
+            if (item === "layout" || item === "toc") {
                 // render radio buttons
-                radiobuttons.push(createRadioButtonNode(item));
+                tree[item] = "${selections." + item + "}";
             }
         }
-        
-        tree.expander = radiobuttons;
         
         return tree;
     };
@@ -569,24 +600,22 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uiOptions.linksControls", {
         gradeNames: ["fluid.rendererComponent", "autoInit"], 
         selectors: {
-            lineSpacing: ".flc-uiOptions-line-spacing",
-            linksUnderline: ".flc-uiOptions-links-underline",
-            linksBold: ".flc-uiOptions-links-bold",
-            linksLarger: ".flc-uiOptions-links-larger",
+            links: ".flc-uiOptions-links",
             inputsLarger: ".flc-uiOptions-inputs-larger"
-        },
-        events: {
-            afterRender: null
-        },
-        rendererOptions: {
-            autoBind: true
         },
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.linksControls.produceTree",
         resources: {
             template: {
-                forceCache: true,
-                url: "../html/UIOptionsTemplate-links.html"
+                expander: {
+                    type: "fluid.deferredInvokeCall",
+                    func: "fluid.specBuilder",
+                    args: {
+                        forceCache: true,
+                        fetchClass: "template",
+                        url: "%linksControls"
+                    }
+                }
             }
         }
     });
@@ -595,7 +624,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var tree = {};
         
         for (var item in that.model.selections) {
-            if (item === "linksUnderline" || item === "linksBold" || item === "linksLarger" || item === "inputsLarger") {
+            if (item === "links" || item === "inputsLarger") {
                 // render check boxes
                 tree[item] = "${selections." + item + "}";
             }
@@ -616,7 +645,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 createOnEvent: "onReady",
                 options: {
                     savedSettings: "{uiOptions}.model.selections",
-                    tableOfContents: "{uiOptions}.uiEnhancer.options.tableOfContents", // TODO: Tidy this up when the page's UI Enhancer is IoC-visible.
+                    tableOfContents: "{uiEnhancer}.options.tableOfContents",
                     settingsStore: {
                         type: "fluid.uiEnhancer.tempStore"
                     }
@@ -659,7 +688,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.container.attr("src", that.options.templateUrl);        
 
         that.container.load(function () {
-            that.previewFrameContents = that.container.contents();
+            that.enhancerContainer = $("body", that.container.contents());
             that.events.onReady.fire();
         });
     };
@@ -674,14 +703,16 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.demands("fluid.uiEnhancer", "fluid.uiOptions.preview", {
         funcName: "fluid.uiEnhancer",
         args: [
-            "{preview}.previewFrameContents",
+            "{preview}.enhancerContainer",
             "{options}"
         ]
     });
     
-    /***
-     * Event binder binds events between UI Options and the Preview
-     */
+    /***************************************************
+     * UI Options Event binder:                        *
+     * Binds events between UI Options and the Preview *
+     ***************************************************/
+     
     fluid.defaults("fluid.uiOptions.preview.eventBinder", {
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
@@ -693,4 +724,46 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
+    
+    
+    /***************************
+     * UI Options Live Preview *
+     ***************************/  
+       
+    fluid.defaults("fluid.uiOptions.livePreview", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"], 
+        components: {
+            eventBinder: {
+                type: "fluid.uiOptions.preview.eventBinder",
+                createOnEvent: "onReady"
+            }
+        },    
+        invokers: {
+            updateModel: {
+                funcName: "fluid.uiOptions.preview.updateModel",
+                args: [
+                    "{livePreview}",
+                    "{uiOptions}.model.selections"
+                ]
+            }
+        },
+        events: {
+            onReady: null
+        },
+        finalInitFunction: "fluid.uiOptions.livePreview.finalInit"
+    });
+
+    fluid.uiOptions.livePreview.finalInit = function (that) {
+        that.enhancer = $(document).data("uiEnhancer");
+        that.events.onReady.fire();
+    };
+
+    fluid.demands("fluid.uiOptions.preview.eventBinder", "fluid.uiOptions.livePreview", {
+        options: {
+            listeners: {
+                "{uiOptions}.events.modelChanged": "{livePreview}.updateModel"
+            }
+        }
+    });
+
 })(jQuery, fluid_1_4);

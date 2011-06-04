@@ -1,0 +1,56 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>SlidingPanel Tests</title>
+
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-layout.css" />
+        
+        <!--  This is the jqUnit test css file -->
+        <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.mouse.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>     
+        <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>         
+        <script type="text/javascript" src="../../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../../../components/uiOptions/js/SlidingPanel.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script type="text/javascript" src="../js/SlidingPanelTests.js"></script>
+
+    </head>
+    <body>
+    <h1 id="qunit-header">SlidingPanel Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <div id="main" class="container">
+
+		<div class="flc-slidingPanel">        
+			<div class="flc-slidingPanel-panel">Sliding Content to show and hide.</div>     
+			
+			<div class="fl-panelBar">
+				<button class="flc-slidingPanel-toggleButton"></button>
+			</div>
+		</div>	
+
+    </div>
+   
+    </body>
+</html>
