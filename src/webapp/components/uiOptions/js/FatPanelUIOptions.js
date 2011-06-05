@@ -78,8 +78,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });      
      
-    // Supply the templates
-    fluid.staticEnvironment.uiOptionsDemo = fluid.typeTag("fluid.uiOptionsDemo");
+    // Supply the templates for the demo
     fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsDemo", {
         options: {
             templates: {
