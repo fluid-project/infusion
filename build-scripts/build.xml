@@ -15,7 +15,7 @@
     <property name="base-dir" location=".." />
     <property file="build.properties"/>
     <!-- properties for URL rewriting - these should be moved to the build.properties file -->
-    <property name="regexStartJS" value="&lt;script{1,1}?.*" />
+    <property name="regexStartJS" value="&lt;script{1,1}?.*\/" />
     <property name="regexEndJS" value="{1,1}?.*script>" />
     <property name="replaceRegexStartJS" value="[\/-z]*" />
     <property name="replaceRegexEndJS" value="&quot;" />
