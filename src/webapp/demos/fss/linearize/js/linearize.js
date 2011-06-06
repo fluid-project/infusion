@@ -96,8 +96,8 @@ var demo = demo || {};
             },
             sections: {
                 decorators: {
-                    type: "jQuery",
-                    func: "tabs"
+                    type: "fluid",
+                    func: "fluid.tabs"
                 }
             }
         };
