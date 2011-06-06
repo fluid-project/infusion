@@ -5,7 +5,8 @@
         "files": [
             "jquery.ui.draggable.js",
             "jquery.ui.dialog.js",
-            "jquery.ui.slider.js"
+            "jquery.ui.slider.js",
+            "jquery.ui.tabs.js"            
         ],
         "dependencies": [
             "jQuery",

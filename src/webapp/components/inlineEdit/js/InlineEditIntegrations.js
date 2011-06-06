@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, fluid_1_4:true, CKEDITOR, jQuery, FCKeditor, FCKeditorAPI, FCKeditor_OnComplete, tinyMCE*/
+/*global fluid, fluid_1_4:true, CKEDITOR, jQuery, tinyMCE*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -38,8 +38,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     }
                     if (newValue) {
                         setValueFn(editField, editor, newValue);
-                    }
-                    else {
+                    } else {
                         return getValueFn(editor);
                     }
                 }
@@ -57,14 +56,14 @@ var fluid_1_4 = fluid_1_4 || {};
     
     var configureInlineEdit = function (configurationName, container, options) {
         var defaults = fluid.defaults(configurationName); 
-        var assembleOptions = fluid.merge(defaults ? defaults.mergePolicy: null, {}, defaults, options);
+        var assembleOptions = fluid.merge(defaults ? defaults.mergePolicy : null, {}, defaults, options);
         return fluid.inlineEdit(container, assembleOptions);
     };
 
     fluid.inlineEdit.normalizeHTML = function (value) {
         var togo = $.trim(value.replace(/\s+/g, " "));
         togo = togo.replace(/\s+<\//g, "</");
-        togo = togo.replace(/\<(\S+)[^\>\s]*\>/g, function (match) {
+        togo = togo.replace(/\<([a-z0-9A-Z\/]+)\>/g, function (match) {
             return match.toLowerCase();
         });
         return togo;
@@ -72,7 +71,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.inlineEdit.htmlComparator = function (el1, el2) {
         return fluid.inlineEdit.normalizeHTML(el1) ===
-           fluid.inlineEdit.normalizeHTML(el2);
+            fluid.inlineEdit.normalizeHTML(el2);
     };
     
     fluid.inlineEdit.bindRichTextHighlightHandler = function (element, displayModeRenderer, invitationStyle) {
@@ -93,7 +92,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var opts = that.options;
         var textEditButton = that.locate("textEditButton");
         
-        if  (textEditButton.length === 0) {
+        if (textEditButton.length === 0) {
             var markup = $("<a href='#_' class='flc-inlineEdit-textEditButton'></a>");
             markup.text(opts.strings.textEditButton);
             
@@ -188,7 +187,8 @@ var fluid_1_4 = fluid_1_4 || {};
             // NB - this section has no effect - on most browsers no focus events
             // are delivered to the actual body
             fluid.deadMansBlur(that.editField, 
-                {exclusions: {body: $(editorBody)}, 
+                {
+                    exclusions: {body: $(editorBody)}, 
                     handler: function () {
                         that.cancel();
                     }
@@ -250,118 +250,7 @@ var fluid_1_4 = fluid_1_4 || {};
         editModeRenderer: fluid.inlineEdit.tinyMCE.editModeRenderer
     });
     
-    
-    /*****************************
-     * FCKEditor 2.x Integration *
-     *****************************/
-         
-    /**
-     * Instantiate a rich-text InlineEdit component that uses an instance of FCKeditor.
-     * Support for FCKEditor 2.x is now deprecated. We recommend the use of the simpler and more
-     * accessible CKEditor 3 instead.
-     * 
-     * @param {Object} componentContainer the element containing the inline editors
-     * @param {Object} options configuration options for the components
-     */
-    fluid.inlineEdit.FCKEditor = function (container, options) {
-        return configureInlineEdit("fluid.inlineEdit.FCKEditor", container, options);
-    };
-    
-    fluid.inlineEdit.FCKEditor.getEditor = function (editField) {
-        var editor = typeof(FCKeditorAPI) === "undefined" ? null: FCKeditorAPI.GetInstance(editField.id);
-        return editor;
-    };
-    
-    fluid.inlineEdit.FCKEditor.complete = fluid.event.getEventFirer();
-    
-    fluid.inlineEdit.FCKEditor.complete.addListener(function (editor) {
-        var editField = editor.LinkedField;
-        var that = $.data(editField, "fluid.inlineEdit.FCKEditor");
-        if (that && that.events) {
-            that.events.afterInitEdit.fire(editor);
-        }
-    });
-    
-    fluid.inlineEdit.FCKEditor.blurHandlerBinder = function (that) {
-        function focusEditor(editor) {
-            editor.Focus(); 
-        }
-        
-        that.events.afterInitEdit.addListener(
-            function (editor) {
-                focusEditor(editor);
-            }
-        );
-        that.events.afterBeginEdit.addListener(function () {
-            var editor = fluid.inlineEdit.FCKEditor.getEditor(that.editField[0]);
-            if (editor) {
-                focusEditor(editor);
-            } 
-        });
 
-    };
-    
-    fluid.inlineEdit.FCKEditor.editModeRenderer = function (that) {
-        var id = fluid.allocateSimpleId(that.editField);
-        $.data(fluid.unwrap(that.editField), "fluid.inlineEdit.FCKEditor", that);
-        var oFCKeditor = new FCKeditor(id);
-        // The Config object and the FCKEditor object itself expose different configuration sets,
-        // which possess a member "BasePath" with different meanings. Solve FLUID-2452, FLUID-2438
-        // by auto-inferring the inner path for Config (method from http://drupal.org/node/344230 )
-        var opcopy = fluid.copy(that.options.FCKEditor);
-        opcopy.BasePath = opcopy.BasePath + "editor/";
-        $.extend(true, oFCKeditor.Config, opcopy);
-        // somehow, some properties like Width and Height are set on the object itself
-
-        $.extend(true, oFCKeditor, that.options.FCKEditor);
-        oFCKeditor.Config.fluidInstance = that;
-        oFCKeditor.ReplaceTextarea();
-    };
-
-    fluid.inlineEdit.FCKEditor.setValue = function (editField, editor, value) {
-        editor.SetHTML(value);
-    };
-    
-    fluid.inlineEdit.FCKEditor.getValue = function (editor) {
-        return editor.GetHTML();
-    };
-    
-    var flFCKEditor = fluid.inlineEdit.FCKEditor;
-    
-    flFCKEditor.viewAccessor = fluid.inlineEdit.makeViewAccessor(flFCKEditor.getEditor,
-                                                                 flFCKEditor.setValue,
-                                                                 flFCKEditor.getValue);
-    
-    fluid.defaults("fluid.inlineEdit.FCKEditor", {
-        selectors: {
-            edit: "textarea" 
-        },
-        styles: {
-            invitation: "fl-inlineEdit-richText-invitation",
-            displayView: "fl-inlineEdit-textContainer",
-            text: ""
-        },
-        strings: {
-            textEditButton: "Edit"
-        },        
-        displayAccessor: {
-            type: "fluid.inlineEdit.richTextViewAccessor"
-        },
-        editAccessor: {
-            type: "fluid.inlineEdit.FCKEditor.viewAccessor"
-        },
-        lazyEditView: true,
-        defaultViewText: "Click Edit",
-        modelComparator: fluid.inlineEdit.htmlComparator,
-        blurHandlerBinder: fluid.inlineEdit.FCKEditor.blurHandlerBinder,
-        displayModeRenderer: fluid.inlineEdit.richTextDisplayModeRenderer,
-        editModeRenderer: fluid.inlineEdit.FCKEditor.editModeRenderer,
-        FCKEditor: {
-            BasePath: "fckeditor/"    
-        }
-    });
-    
-    
     /****************************
      * CKEditor 3.x Integration *
      ****************************/
@@ -409,7 +298,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.inlineEdit.CKEditor.htmlComparator = function (el1, el2) {
         return fluid.inlineEdit.CKEditor.normalizeHTML(el1) ===
-           fluid.inlineEdit.CKEditor.normalizeHTML(el2);
+            fluid.inlineEdit.CKEditor.normalizeHTML(el2);
     };
                                     
     fluid.inlineEdit.CKEditor.blurHandlerBinder = function (that) {
@@ -503,11 +392,3 @@ var fluid_1_4 = fluid_1_4 || {};
         editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer
     });
 })(jQuery, fluid_1_4);
-
-
-// This must be written outside any scope as a result of the FCKEditor event model.
-// Do not overwrite this function, if you wish to add your own listener to FCK completion,
-// register it with the standard fluid event firer at fluid.inlineEdit.FCKEditor.complete
-function FCKeditor_OnComplete(editorInstance) {
-    fluid.inlineEdit.FCKEditor.complete.fire(editorInstance);
-}

@@ -1,0 +1,92 @@
+/* UI Option styles for full page w/ preview */
+
+/* Section headers */
+
+.fl-uiOptions-fullPreview h2 {
+	border-top: 2px solid #dddddd;
+}
+
+/* Preview Area */
+
+.fl-uiOptions-fullPreview .fl-uiOptions-preview iframe {
+	height: 480px;
+	width: 100%;
+	border: 2px solid #d7d7d7;
+}
+
+.fl-uiOptions-fullPreview .fl-uiOptions-preview h2 {
+	font-weight: lighter;
+	font-size: 1.8em;
+	color: #4D4D4D;
+	padding-top: 18px;
+	padding-bottom: 22px;
+}
+
+.fl-uiOptions-fullPreview ul li {
+	clear: left;
+	height: 3.5em;
+}
+
+
+/* Slider position */
+
+.fl-uiOptions .fl-slider {
+	float:left;
+	margin-right: 10px;
+}
+
+/* Individual options (e.g., text size, simplify layout, emphasize links) */
+
+.fl-uiOptions-option-2col {
+    padding-top: 40px;
+}
+
+.fl-uiOptions-option-1col {
+    padding-top: 28px;
+}
+
+.fl-uiOptions-option-first {
+    padding-top: 8px;
+}
+
+
+/* Text and display section */
+
+.fl-uiOptions label {
+    display: block;
+    float: left;
+	width: 14em;
+}
+
+.fl-uiOptions .fl-inputs {
+	float: left;
+	padding-top:10px;
+}
+
+.fl-uiOptions input[type="text"] {
+	width: 2em;
+}
+
+
+/* Sections (e.g., Text & Display, Layout & Navigation) */
+
+.fl-uiOptions-category {
+    padding-bottom: 48px; /* separation between categories */
+}
+
+.fl-col-fixed-31em { width: 31em; }
+.fl-col-fixed-38em { width: 38em; }
+.fl-col-fixed-54em { width: 54em; }
+.fl-col-fixed-72em { width: 72em; }
+
+/* Form */
+
+.fl-uiOptions ul {
+	margin-left: 0px;
+}
+
+.fl-uiOptions ul li {
+    list-style: none;
+	overflow: hidden;
+	width: 100%;
+}
