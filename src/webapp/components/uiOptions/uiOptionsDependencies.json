@@ -4,11 +4,13 @@
         "description": "Users customize their preferences and needs for viewing content.",
         "cssFiles": [
             "UIOptions.css",
-            "Slider.css"
+            "FatPanelUIOptions.css"
         ],
         "files": [
+            "Store.js",
             "UIEnhancer.js",
-            "UIOptions.js"
+            "UIOptions.js",
+            "FatPanelUIOptions.js"
         ],
         "dependencies": [
             "fss",
@@ -18,7 +20,8 @@
             "renderer",
             "jQueryUIWidgets",
             "tableOfContents",
-            "json"
+            "json",
+            "jQueryAriaTabsPlugin"
         ]
     }
 }

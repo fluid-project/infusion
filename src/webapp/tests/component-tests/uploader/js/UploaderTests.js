@@ -222,7 +222,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }            
         });        
         
-        fluid.demands("fluid.uploader.html5Strategy.createFileUploadXHR", ["fluid.uploader.html5Strategy.remote", "fluid.uploader.tests"], {
+        fluid.demands("fluid.uploader.html5Strategy.createXHR", ["fluid.uploader.html5Strategy.remote", "fluid.uploader.tests"], {
             funcName: "fluid.tests.uploader.createMockXHR"
         });    
         
