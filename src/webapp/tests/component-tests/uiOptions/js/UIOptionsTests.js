@@ -228,6 +228,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * ******************************
          */
 
+        var applierRequestChanges = function (uiOptions, selectionOptions) {
+            uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
+            uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
+            uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
+            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);            
+        };
+        
         var checkUIOComponents = function (uiOptions, uiEnhancer) {
             jqUnit.assertTrue("", uiOptions.options.components.uiEnhancer);
             jqUnit.assertTrue("", uiOptions.options.components.textControls);
@@ -239,54 +246,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("", uiEnhancer.options.components.settingsStore);
         };
         
-        var applierRequestChanges = function (uiOptions, selectionOptions) {
-            uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
-            uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
-            uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
-            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);            
+        var checkModelSelections = function (expectedSelections, actualSelections) {
+            jqUnit.assertEquals("", expectedSelections.textFont, actualSelections.textFont);
+            jqUnit.assertEquals("", expectedSelections.theme, actualSelections.theme);
+            jqUnit.assertEquals("", expectedSelections.textSize, actualSelections.textSize);
+            jqUnit.assertEquals("", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
         };
         
         tests.asyncTest("UIOptions Integration tests", function () {
             testUIOptions(function (uiOptions, uiEnhancer) {
                 checkUIOComponents(uiOptions, uiEnhancer);
                 
-                var modelSelections = uiOptions.model.selections;
-                var savedSelections = uiOptions.options.savedSelections;
-                var defaultSettings = uiOptions.settingsStore.options.defaultSiteSettings;
+                var saveButton = uiOptions.locate("save");
+                var cancelButton = uiOptions.locate("cancel");
+                var resetButton = uiOptions.locate("reset");
                 
                 applierRequestChanges(uiOptions, bwSkin);
-                
-                jqUnit.assertEquals("", bwSkin.textFont, modelSelections.textFont);
-                jqUnit.assertEquals("", bwSkin.theme, modelSelections.theme);
-                jqUnit.assertEquals("", bwSkin.textSize, modelSelections.textSize);
-                jqUnit.assertEquals("", bwSkin.lineSpacing, modelSelections.lineSpacing);
-                
-                var saveButton = uiOptions.locate("save");
+                checkModelSelections(bwSkin, uiOptions.model.selections);
                 saveButton.click();
-                
-                jqUnit.assertEquals("", bwSkin.textFont, savedSelections.textFont);
-                jqUnit.assertEquals("", bwSkin.theme, savedSelections.theme);
-                jqUnit.assertEquals("", bwSkin.textSize, savedSelections.textSize);
-                jqUnit.assertEquals("", bwSkin.lineSpacing, savedSelections.lineSpacing);                
-                
+                checkModelSelections(bwSkin, uiOptions.options.savedSelections);
                 applierRequestChanges(uiOptions, bwSkin2);
-                
-                var cancelButton = uiOptions.locate("cancel");
                 cancelButton.click();
-                
-                jqUnit.assertEquals("", bwSkin.textFont, savedSelections.textFont);
-                jqUnit.assertEquals("", bwSkin.theme, savedSelections.theme);
-                jqUnit.assertEquals("", bwSkin.textSize, savedSelections.textSize);
-                jqUnit.assertEquals("", bwSkin.lineSpacing, savedSelections.lineSpacing);                                
-                
-                var resetButton = uiOptions.locate("reset");
+                checkModelSelections(bwSkin, uiOptions.options.savedSelections);
                 resetButton.click();
-                
-                modelSelections = uiOptions.model.selections;
-                jqUnit.assertEquals("Reset model text font", modelSelections.textFont, defaultSettings.textFont);
-                jqUnit.assertEquals("Reset model theme", modelSelections.theme, defaultSettings.theme);          
-                jqUnit.assertEquals("Reset model text size", modelSelections.textSize, defaultSettings.textSize);
-                jqUnit.assertEquals("Reset model line spacing", modelSelections.lineSpacing, defaultSettings.lineSpacing);                          
+                checkModelSelections(uiOptions.model.selections, uiOptions.settingsStore.options.defaultSiteSettings);
             });
         });
     });
