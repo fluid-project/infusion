@@ -29,9 +29,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         tests.test("Aria added", function () {
-            expect(1);        
+            expect(3);        
             var myTabs = fluid.tabs("#main");            
-            jqUnit.assertEquals("Aria styles applied to list items", "presentation", $("li").attr("role"));                                                       
+            jqUnit.assertEquals("Aria applied to list items", "presentation", $("ul li").attr("role"));                                                       
+            jqUnit.assertEquals("Aria applied to tab links", "tab", $("li a").attr("role"));                                                           
+            jqUnit.assertEquals("Aria applied to tab panels", "tabpanel", $("#one").attr("role"));                                                           
 
         });
        
