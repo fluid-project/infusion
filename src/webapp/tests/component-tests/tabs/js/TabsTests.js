@@ -11,7 +11,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  */
 
 // Declare dependencies
-/*global fluid, jqUnit, jQuery, start*/
+/*global fluid, jqUnit, expect, jQuery, start*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -30,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         tests.test("Aria added", function () {
             expect(3);        
-            var myTabs = fluid.tabs("#main");            
+            fluid.tabs("#main");            
             jqUnit.assertEquals("Aria applied to list items", "presentation", $("ul li").attr("role"));                                                       
             jqUnit.assertEquals("Aria applied to tab links", "tab", $("li a").attr("role"));                                                           
             jqUnit.assertEquals("Aria applied to tab panels", "tabpanel", $("#one").attr("role"));                                                           
