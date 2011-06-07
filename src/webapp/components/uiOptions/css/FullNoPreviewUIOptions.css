@@ -1,0 +1,16 @@
+/* UI Option styles for full page w/o preview */
+
+.fl-uiOptions-fullNoPreview .fl-uiOptions-category {
+	border-top: 2px solid #dddddd;
+}
+
+.fl-uiOptions-fullNoPreview .fl-uiOptions-category h2 img {
+	padding-top: 10px;
+	margin-bottom: -4px;
+}
+
+.fl-uiOptions-fullNoPreview ul li {
+	clear: left;
+	height: 3.5em;
+}
+

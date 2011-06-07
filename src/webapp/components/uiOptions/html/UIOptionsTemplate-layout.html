@@ -1,37 +1,16 @@
-            <div class="fl-uiOptions-controlGroup">
-                <ol class="fl-controls-right">
-                    <li>
-                        <span class="fl-label">Background Images:</span>
-                        <fieldset>
-                            <legend>Background Images</legend>
-                            <span class="flc-uiOptions-background-images-row">
-                                <input class="flc-uiOptions-background-images-choice" id="background-images-choice" type="radio" />
-                                <label class="flc-uiOptions-background-images-label" for="background-images-choice">choice</label>
-                            </span>
-                        </fieldset>
-                    </li>
-
-                    <li>                             
-                        <span class="fl-label">Simplified Layout:</span>
-                        <fieldset>
-                            <legend>Simplified Layout</legend>
-                            <span class="flc-uiOptions-layout-row">
-                                <input class="flc-uiOptions-layout-choice" id="layout-choice" type="radio" />
-                                <label class="flc-uiOptions-layout-label" for="layout-choice">choice</label>
-                            </span>
-                        </fieldset>
-                    </li>
-                    
-                    <li>
-                        <span class="fl-label">Table of Contents:</span>
-                        <fieldset>
-                            <legend>Table of Contents</legend>
-                            <span class="flc-uiOptions-toc-row">
-                                <input class="flc-uiOptions-toc-choice fl-textfield" id="toc-choice" type="radio"/>
-                                <label class="flc-uiOptions-toc-label" for="toc-choice">choice</label>
-                            </span>
-                        </fieldset>
-                    </li>                            
-                </ol>
-            </div>
-        
+            <ul class="fl-clearfix">
+                <li>                             
+                    <input type="checkbox" id="layout-choice" class="flc-uiOptions-layout fl-force-left" />
+                    <div class="fl-force-left">
+                        <label for="layout-choice">Simplify Layout</label>
+                        <p class="fl-uiOptions-option-description">Converts a page to a single column layout</p>
+                    </div>
+                </li>                
+                <li>
+                    <input type="checkbox" id="toc-choice" class="flc-uiOptions-toc fl-force-left" />
+                    <div class="fl-force-left">
+                        <label for="toc-choice">Show Table of Contents</label>
+                        <p class="fl-uiOptions-option-description">Adds a table of contents to the top of the page</p>
+                    </div>
+                </li>                            
+            </ul>

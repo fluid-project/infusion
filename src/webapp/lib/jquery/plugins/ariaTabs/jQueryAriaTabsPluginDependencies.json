@@ -1,0 +1,13 @@
+{
+    "jQueryAriaTabsPlugin": {
+        "name": "jQuery ariaTabs Plugin",
+        "description": "Adds ARIA support to jQuery UI's tabs.",
+        "files": [
+            "ui.ariaTabs.js"
+        ],
+        "dependencies": [
+            "jQuery",
+            "jQueryUICore"
+        ]
+    }
+}
