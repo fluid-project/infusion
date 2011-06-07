@@ -236,21 +236,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         
         var checkUIOComponents = function (uiOptions, uiEnhancer) {
-            jqUnit.assertTrue("", uiOptions.options.components.uiEnhancer);
-            jqUnit.assertTrue("", uiOptions.options.components.textControls);
-            jqUnit.assertTrue("", uiOptions.options.components.layoutControls);
-            jqUnit.assertTrue("", uiOptions.options.components.linksControls);
-            jqUnit.assertTrue("", uiOptions.options.components.preview);
-            jqUnit.assertTrue("", uiOptions.options.components.settingsStore);
-            jqUnit.assertTrue("", uiEnhancer.options.components.tableOfContents);
-            jqUnit.assertTrue("", uiEnhancer.options.components.settingsStore);
+            jqUnit.assertTrue("Check that uiEnhancer is present", uiOptions.options.components.uiEnhancer);
+            jqUnit.assertTrue("Check that textControls sub-component is present", uiOptions.options.components.textControls);
+            jqUnit.assertTrue("Check that layoutControls sub-component is present", uiOptions.options.components.layoutControls);
+            jqUnit.assertTrue("Check that linkControls sub-component is present", uiOptions.options.components.linksControls);
+            jqUnit.assertTrue("Check that preview sub-component is present", uiOptions.options.components.preview);
+            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.options.components.settingsStore);
+            jqUnit.assertTrue("Check that tableOfContents sub-component is present", uiEnhancer.options.components.tableOfContents);
+            jqUnit.assertTrue("Check that store sub-component is present", uiEnhancer.options.components.settingsStore);
         };
         
         var checkModelSelections = function (expectedSelections, actualSelections) {
-            jqUnit.assertEquals("", expectedSelections.textFont, actualSelections.textFont);
-            jqUnit.assertEquals("", expectedSelections.theme, actualSelections.theme);
-            jqUnit.assertEquals("", expectedSelections.textSize, actualSelections.textSize);
-            jqUnit.assertEquals("", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
+            jqUnit.assertEquals("Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
+            jqUnit.assertEquals("Theme correctly updated", expectedSelections.theme, actualSelections.theme);
+            jqUnit.assertEquals("Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
+            jqUnit.assertEquals("Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
         };
         
         tests.asyncTest("UIOptions Integration tests", function () {
