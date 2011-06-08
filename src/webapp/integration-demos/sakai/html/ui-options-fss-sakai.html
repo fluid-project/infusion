@@ -32,6 +32,8 @@
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.mouse.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.tabs.js"></script>  
+        <script type="text/javascript" src="../../../lib/jquery/plugins/ariaTabs/js/ui.ariaTabs.js"></script>          
         <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
 
         <script type="text/javascript" src="../../../framework/core/js/FluidDocument.js"></script>
@@ -50,8 +52,9 @@
         <script type="text/javascript" src="../../../components/uiOptions/js/UIEnhancer.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
-        <script type="text/javascript" src="../../../demos/uiOptions/js/uiOptions.js"></script>
- 
+        <script type="text/javascript" src="../../../components/uiOptions/js/FatPanelUIOptions.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/SlidingPanel.js"></script>
+
         <title>Sakai</title>
 
        
@@ -59,12 +62,11 @@
 
     <body class="fl-theme-mist fl-focus">
 
-        <!-- LAYOUT AND APPEARANCE -->
-        <div class="lookNfeel fl-container">
-            <a href="#_bottom" class="skin_ fl-button-left fl-linearEnabled"> <strong class="fl-button-inner"> Edit Appearance </strong> </a>
+        <div class="lookNfeel fl-container flc-uiOptions-fatPanel">
+            <div class="ui_options flc-slidingPanel-panel"></div>
+
+            <a href="#_bottom" class="flc-slidingPanel-toggleButton skin_ fl-linearEnabled"></a>
         </div>
-        
-        <div class="ui_options"></div>
         
         <div class="header fl-knockout">
             <h1>My Dashboard</h1>
@@ -234,7 +236,6 @@
         <!-- LAYOUT AND APPEARANCE -->
         <div class="lookNfeel fl-container">
             <a href="#_bottom" class="addWidget_ fl-button-left fl-linearEnabled"> <strong class="fl-button-inner"> Add Widgets </strong> </a>
-            <a href="#_bottom" class="skin_ fl-button-left fl-linearEnabled"> <strong class="fl-button-inner"> Edit Appearance </strong> </a>
         </div>
 
         <!-- FOOTER -->
@@ -245,7 +246,29 @@
         
         <!-- Script block to instantiate UI Options when the necessary markup has loaded. -->
         <script type="text/javascript">
-            demo.slidingUIOptions($(".ui_options"), $(".lookNfeel a"));
+            // First, supply the UI Options templates
+            fluid.staticEnvironment.FssSakaiUIOptions = fluid.typeTag("fluid.FssSakaiUIOptions");
+            fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.FssSakaiUIOptions", {
+                options: {
+                    templates: {
+                        uiOptions: "../../../components/uiOptions/html/FatPanelUIOptions.html",
+                        textControls: "../../../components/uiOptions/html/UIOptionsTemplate-text.html",
+                        layoutControls: "../../../components/uiOptions/html/UIOptionsTemplate-layout.html",
+                        linksControls: "../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                    }
+                }
+            });
+        
+            // table of contents' template
+            fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+                options: {
+                    templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
+                }
+            });
+
+            // Next, instantiate UI Options
+            fluid.pageEnhancer();
+            fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");
         </script>
     </body>
 </html>
