@@ -98,11 +98,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents.unitTests", {
         options: {
             resources: {
-                    template: {
-                        url: "../../../../components/tableOfContents/html/TableOfContents.html"
-                    }
+                template: {
+                    forceCache: true,
+                    url: "../../../../components/tableOfContents/html/TableOfContents.html"
                 }
             }
+        }
     });
     
     var skippedHeadings = {
@@ -175,6 +176,99 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     };
     
+    var singleLevelTree = {
+        level1: {
+            children: [
+                {
+                    expander: {
+                        type: "fluid.renderer.repeat",
+                        repeatID: "items:",
+                        controlledBy: "headings",
+                        valueAs: "headingValue1",
+                        pathAs: "headingPath1",
+                        tree: {
+                            expander: [
+                                {
+                                    type: "fluid.renderer.condition",
+                                    condition: "{headingValue1}.text",
+                                    trueTree: {
+                                        link: {
+                                            target: "${{headingPath1}.url}",
+                                            linktext: "${{headingPath1}.text}"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    };
+    
+    var multiLevelTree = {
+        level1: {
+            children: [
+                {
+                    expander: {
+                        type: "fluid.renderer.repeat",
+                        repeatID: "items:",
+                        controlledBy: "headings",
+                        valueAs: "headingValue1",
+                        pathAs: "headingPath1",
+                        tree: {
+                            expander: [
+                                {
+                                    type: "fluid.renderer.condition",
+                                    condition: "{headingValue1}.text",
+                                    trueTree: {
+                                        link: {
+                                            target: "${{headingPath1}.url}",
+                                            linktext: "${{headingPath1}.text}"
+                                        }
+                                    }
+                                },
+                                {
+                                    type: "fluid.renderer.condition",
+                                    condition: "{headingValue1}.headings",
+                                    trueTree: {
+                                        level2: {
+                                            children: [
+                                                {
+                                                    expander: {
+                                                        type: "fluid.renderer.repeat",
+                                                        repeatID: "items:",
+                                                        controlledBy: "{headingPath1}.headings",
+                                                        valueAs: "headingValue2",
+                                                        pathAs: "headingPath2",
+                                                        tree: {
+                                                            expander: [
+                                                                {
+                                                                    type: "fluid.renderer.condition",
+                                                                    condition: "{headingValue2}.text",
+                                                                    trueTree: {
+                                                                        link: {
+                                                                            target: "${{headingPath2}.url}",
+                                                                            linktext: "${{headingPath2}.text}"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    };
+    
     var createElm = function (tagName) {
         return fluid.unwrap($("<" + tagName + "/>", {text: tagName}));
     }
@@ -198,6 +292,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var modelBuilder = fluid.tableOfContents.modelBuilder();
         var model = modelBuilder.assembleModel(headings, anchorInfo);
         jqUnit.assertDeepEq("model assembled correctly", expectedModel, model);
+    };
+    
+    var generateTreeTests = function (startLevel, endLevel, expectedTree) {
+        var tree = fluid.tableOfContents.levels.generateTree(startLevel, endLevel);
+        jqUnit.assertDeepEq("tree generated correctly", expectedTree, tree);
+    };
+    
+    var renderTOCTests = function (testHeadings) {
+        expect(1);
+        var container = $(".flc-toc-tocContainer");
+        var renderedTOC = fluid.tableOfContents.levels(container, {
+            model: {
+                headings: testHeadings.model
+            },
+            listeners: {
+                afterRender: function () {
+                    var tocLinks = $(that.options.link, container);
+                    jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
+                    start();
+                }
+            }
+        });
     };
     
     $(document).ready(function () {
@@ -237,6 +353,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tocMBTests.test("assembleModel: skipped headings", function () {
             assembleModelTests(createElms(skippedHeadings.headingTags), skippedHeadings.anchorInfo, skippedHeadings.model);
         });
+        
+        // "fluid.tableOfContents.levels" tests
+        
+        tocLevelsTests.test("generateTree: singleLevelTree", function () {
+            generateTreeTests(1, 1, singleLevelTree);
+        });
+        tocLevelsTests.test("generateTree: multiLevelTree", function () {
+            generateTreeTests(1, 2, multiLevelTree);
+        });
+        
+        // tocLevelsTests.asyncTest("Render toc: linear headings", function () {renderTOCTests(linearHeadings);});
+        // tocLevelsTests.asyncTest("Render toc: skipped headings", function () {renderTOCTests(skippedHeadings);});
 
     });
 })(jQuery);
