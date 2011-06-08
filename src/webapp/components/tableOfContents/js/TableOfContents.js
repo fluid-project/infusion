@@ -206,6 +206,9 @@ var fluid_1_4 = fluid_1_4 || {};
         });        
     };
     
+    // The current state of this tree generation code is a result of missing framework supports.
+    // In the future it is envisioned that it will be greatly simplified through the use of antigens.
+    // See FLUID-4261: http://issues.fluidproject.org/browse/FLUID-4261
     fluid.tableOfContents.levels.generateTree = function (startLevel, endLevel) {
         var tree = {};
         var componentID = "level" + startLevel;
