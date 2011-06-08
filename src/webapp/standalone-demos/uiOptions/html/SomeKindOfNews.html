@@ -14,6 +14,10 @@
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-theme-coal.css" />
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-theme-mist.css" />
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-theme-rust.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-theme-blackYellow.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-theme-yellowBlack.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-blackYellow/blackYellow.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-yellowBlack/yellowBlack.css" />
         <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-coal/coal.css" />
         <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-mist/mist.css" />
         <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-slate/slate.css" />
@@ -50,6 +54,7 @@
         <script type="text/javascript" src="../../../components/uiOptions/js/Store.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIEnhancer.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/FatPanelUIOptions.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/SlidingPanel.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
         <script type="text/javascript" src="../../../components/undo/js/Undo.js"></script>
@@ -59,13 +64,13 @@
 
     <body class="skon-theme-basic">
 
-        <div id="mySlidingPanel">        
-            <div id="myUIOptions"></div>     
-            
-            <div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel fl-panelBar">
-                <button class="flc-slidingPanel-toggleButton  fl-toggleButton">Show/Hide</button>
-            </div>
-        </div>  
+		<div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel">        
+			<div id="myUIOptions" class="flc-slidingPanel-panel"></div>     
+			
+			<div class="fl-panelBar">
+				<button class="flc-slidingPanel-toggleButton fl-toggleButton">Show/Hide</button>
+			</div>
+		</div>	
 
         <div class="fl-container-900 fl-centered fl-fix skon-content">
             <div class="fl-fix skon-header">
