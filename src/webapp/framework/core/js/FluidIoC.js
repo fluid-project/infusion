@@ -752,6 +752,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         });
     };
     
+    // unsupported, non-API function    
     fluid.locateTransformationRecord = function(that) {
         return fluid.withInstantiator(that, function(instantiator) {
             var matches = fluid.locateAllDemands(instantiator, that, ["fluid.transformOptions"]);
@@ -761,8 +762,38 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         });
     };
     
+    // 
+    fluid.hashToArray = function(hash) {
+        var togo = [];
+        fluid.each(hash, function(value, key) {
+            togo.push(key);
+        });
+        return togo;
+    }
+    
+    // unsupported, non-API function    
+    fluid.localRecordExpected = ["type", "options", "arguments", "mergeOptions",
+        "mergeAllOptions", "createOnEvent", "priority"];
+    // unsupported, non-API function    
+    fluid.checkComponentRecord = function(defaults, localRecord) {
+        var expected = fluid.arrayToHash(fluid.localRecordExpected);
+        fluid.each(defaults.argumentMap, function(value, key) {
+            expected[key] = true;
+        });
+        fluid.each(localRecord, function(value, key) {
+            if (!expected[key]) {
+                fluid.fail("Probable error in subcomponent record - key \"" + key + 
+                    "\" found, where the only legal options are " + 
+                    fluid.hashToArray(expected).join(", "));
+            }  
+        });
+    };
+    
     // unsupported, non-API function
     fluid.expandComponentOptions = function(defaults, userOptions, that) {
+        if (userOptions && userOptions.localRecord) {
+            fluid.checkComponentRecord(defaults, userOptions.localRecord);
+        }
         defaults = fluid.expandOptions(fluid.copy(defaults), that);
         var localRecord = {};
         if (userOptions && userOptions.marker === fluid.EXPAND) {
