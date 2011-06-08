@@ -311,7 +311,7 @@ var fluid_1_4 = fluid_1_4 || {};
             "textFont": {
                 "default": "",
                 "times": "fl-font-times",
-                "comic": "fl-font-sans",
+                "comic": "fl-font-comic-sans",
                 "arial": "fl-font-arial",
                 "verdana": "fl-font-verdana"
             },
