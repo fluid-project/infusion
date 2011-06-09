@@ -8,16 +8,13 @@
 	font-weight: bold;
 	clear: both;
 	color: #444444;
-	padding-top: 14px;
-	padding-bottom: 22px;
-	padding-left: 0px;	
+	padding: 14px 0px 22px 25px;
 }
 
 .fl-uiOptions h2 img {
 	margin-bottom: -3px;
 	padding-right: 5px;
 }
-
 
 /* Save & apply, reset, cancel buttons */
 
@@ -31,36 +28,57 @@
 	text-transform: uppercase;
 	text-decoration: underline;
 	font-weight: bold;
-	color: #333333;
-/*  border: 2px solid #d7d7d7;*/
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
-    padding: 5px;
-	height: 32px;
+  	border: 2px solid #cecece;
 	font-size: 1em;
+    padding: 5px;
+	height: 2.5em;
     margin-right: 3px;
 }
 
 .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save {
-	padding-left: 16px;
-	background-image: url("../../../../components/uiOptions/images/uio_icon_save_13x13.png");
+	padding-left: 20px;
+	/* background: -moz-linear-gradient(bottom, #e0e0e0, #fff;) */
+	background-image: url("../images/uio_icon_save_13x13.png");
 	background-repeat: no-repeat;
-	background-position: 4px 6px;
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
+	background-position: 5px 9px;
 }
 
 .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel {
-	padding-left: 16px;
-	background-image: url("../../../../components/uiOptions/images/uio_icon_cancel_13x13.png");
+	padding-left: 20px;
+	background-image: url("../images/uio_icon_cancel_13x13.png");
 	background-repeat: no-repeat;
-	background-position: 3px 6px;
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
+	background-position: 5px 9px;
 }
 
 /* Check boxes */
-
 .fl-uiOptions input[type="checkbox"] {
 	margin-right:10px;
 	margin-bottom: 2em;
 	border: 1px solid black;
 }
 
+/* header icons */
+.fl-uiOptions .fl-uiOptions-text-icon {
+	background-image: url("../images/uio_icon_textanddisplay_18x18.png");
+	background-repeat: no-repeat;
+	background-position: 0px 11px;
+}
+.fl-uiOptions .fl-uiOptions-layout-icon {
+	background-image: url("../images/uio_icon_layoutandnavigation_18x18.png");
+	background-repeat: no-repeat;
+	background-position: 0px 11px;	
+}
+.fl-uiOptions .fl-uiOptions-links-icon {
+	background-image: url("../images/uio_icon_linksandbuttons_18x18.png");
+	background-repeat: no-repeat;
+	background-position: 0px 11px;	
+}
+
+/* THEME DATA */
+.fl-theme-hci .fl-uiOptions .fl-uiOptions-text-icon { background-image: url("../images/hci/uio_icon_textanddisplay_white_18x18.png"); }
+.fl-theme-hci .fl-uiOptions .fl-uiOptions-layout-icon { background-image: url("../images/hci/uio_icon_layoutandnavigation_white_18x18.png"); }
+.fl-theme-hci .fl-uiOptions .fl-uiOptions-links-icon { background-image: url("../images/hci/uio_icon_linksandbuttons_white_18x18.png"); }
+
+.fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-text-icon { background-image: url("../images/yellowBlack/uio_icon_textanddisplay_yellow_18x18.png"); }
+.fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-layout-icon { background-image: url("../images/yellowBlack/uio_icon_layoutandnavigation_yellow_18x18.png"); }
+.fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-links-icon { background-image: url("../images/yellowBlack/uio_icon_linksandbuttons_yellow_18x18.png"); }
