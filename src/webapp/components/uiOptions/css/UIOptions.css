@@ -92,12 +92,12 @@
 
 /* LAYOUT DATA */
 .fl-uiOptions .fl-slider-vert {height:10em; width:0.8em;}
-.fl-uiOptions .fl-slider-horz {width:140px; height:3px; -moz-border-radius: 100%; -webkit-border-radius: 100%;}
+.fl-uiOptions .fl-slider-horz {width:140px; height:3px; -moz-border-radius: 65%; -webkit-border-radius: 65%;}
 .fl-uiOptions .fl-slider {position:relative; background-color:#555555; padding:0; margin-top:8px;}
 .fl-uiOptions .fl-slider .fl-handle, .fl-slider a {position:absolute; display:block; height:32px; width:32px; top:0; left:0;}
 .fl-uiOptions .fl-slider a { background-image:url('../images/uio_icon_sliderhandle.png'); background-repeat:no-repeat; background-position:center center; bottom: 16px;}
 .fl-uiOptions .fl-slider-vert .fl-handle, .fl-slider-vert a {margin-left:-0.2em; margin-top:-0.5em;}
-.fl-uiOptions .fl-slider-horz .fl-handle, .fl-slider-horz a {margin-top:-14px; margin-left:-6px;}
+.fl-uiOptions .fl-slider-horz .fl-handle, .fl-slider-horz a {margin-top:-14px; margin-left:-14px;}
 .fl-uiOptions .fl-text-slider-left { 
 	padding-right: 15px; 
 	background-image: url("../images/uio_icon_smallA_10x10.png");
@@ -108,6 +108,7 @@
 }
 .fl-uiOptions .fl-text-slider-right { 
 	padding-right: 15px; 
+	margin-left:8px;
 	background-image: url("../images/uio_icon_bigA_20x20.png");
 	background-repeat: no-repeat;
 	height: 20px;
@@ -123,6 +124,7 @@
 }
 .fl-uiOptions .fl-spacing-slider-right { 
 	padding-right: 15px; 
+	margin-left:8px;	
 	background-image: url("../images/uio_icon_linesWide_16x21.png");
 	background-repeat: no-repeat;
 	height: 21px;
@@ -151,10 +153,10 @@
 .fl-theme-hci .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/hci/uio_icon_save_white_13x13.png"); }
 .fl-theme-hci .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/hci/uio_icon_cancel_white_13x13.png"); }
 
-/*.fl-theme-yellowBlack .fl-uiOptions .fl-slider {background-color:#fff;}
+.fl-theme-yellowBlack .fl-uiOptions .fl-slider {background-color:#fff;}
 .fl-theme-yellowBlack .fl-uiOptions .fl-slider .fl-handle, 
 .fl-theme-yellowBlack .fl-uiOptions .fl-slider a,
-.fl-theme-yellowBlack .fl-uiOptions .fl-slider a:hover {border:1px solid #fff !important; background-color:#000 !important;}*/
+.fl-theme-yellowBlack .fl-uiOptions .fl-slider a:hover {border:1px solid #fff !important; background-color:#000 !important;}
 .fl-theme-yellowBlack .fl-uiOptions .fl-text-slider-left { background-image: url("../images/yellowBlack/uio_icon_smallA_yellow_10x10.png"); }
 .fl-theme-yellowBlack .fl-uiOptions .fl-text-slider-right { background-image: url("../images/yellowBlack/uio_icon_bigA_yellow_20x20.png"); }
 .fl-theme-yellowBlack .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/yellowBlack/uio_icon_linesNarrow_yellow_16x12.png"); }
