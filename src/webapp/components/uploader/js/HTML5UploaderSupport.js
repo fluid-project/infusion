@@ -38,8 +38,7 @@ var fluid_1_4 = fluid_1_4 || {};
                         onFileDialog: "{multiFileUploader}.events.onFileDialog",
                         afterFileDialog: "{multiFileUploader}.events.afterFileDialog",
                         afterFileQueued: "{multiFileUploader}.events.afterFileQueued",
-                        onQueueError: "{multiFileUploader}.events.onQueueError",
-                        clearFileError: "{multiFileUploader}.events.clearFileError"
+                        onQueueError: "{multiFileUploader}.events.onQueueError"
                     }
                 }
             },
@@ -301,12 +300,6 @@ var fluid_1_4 = fluid_1_4 || {};
             var queued = that.queue.getReadyFiles().length;
             var remainingUploadLimit = fileLimit - uploaded - queued;
             
-            // Clear the error queue when "User successfully added a file through the file dialog"
-            // that is LEQV to remainingUploadLimit > 0
-            if (remainingUploadLimit > 0) {
-                that.events.clearFileError.fire();
-            }
-             
             // Provide feedback to the user if the file size is too large and isn't added to the file queue
             var numFilesAdded = 0;
             for (var i = 0; i < files.length; i++) {
