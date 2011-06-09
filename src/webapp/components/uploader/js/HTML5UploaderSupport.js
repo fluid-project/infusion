@@ -36,6 +36,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     queueSettings: "{multiFileUploader}.options.queueSettings",
                     events: {
                         onFileDialog: "{multiFileUploader}.events.onFileDialog",
+                        onFilesSelected: "{multiFileUploader}.events.onFilesSelected",
                         afterFileDialog: "{multiFileUploader}.events.afterFileDialog",
                         afterFileQueued: "{multiFileUploader}.events.afterFileQueued",
                         onQueueError: "{multiFileUploader}.events.onQueueError"
@@ -299,6 +300,8 @@ var fluid_1_4 = fluid_1_4 || {};
             var uploaded = that.queue.getUploadedFiles().length;
             var queued = that.queue.getReadyFiles().length;
             var remainingUploadLimit = fileLimit - uploaded - queued;
+            
+            that.events.onFilesSelected.fire(files.length);
             
             // Provide feedback to the user if the file size is too large and isn't added to the file queue
             var numFilesAdded = 0;

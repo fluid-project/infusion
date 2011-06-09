@@ -93,10 +93,9 @@ var fluid_1_4 = fluid_1_4 || {};
 
         //if size is 0, then no errors -> hide the error box
         if (errorSize === 0) {
-            //Hide the error box
-            that.container.hide();
+            that.hideErrorsPanel();
         } else {
-            that.container.show();
+            that.showErrorsPanel();
         }
     };
     
@@ -133,13 +132,14 @@ var fluid_1_4 = fluid_1_4 || {};
         bindErrorHandlers(that, "exceedsUploadLimit");        
         that.locate("toggleErrorBodyButton").text(that.options.strings.errorTemplateWhichOnes);
         that.locate("errorBodyTogglable").hide();
-        that.container.hide();
+        that.hideErrorsPanel();
     };
     
     fluid.uploader.errorsView.preInit = function (that) {
         /**
          * A map that stores error messages toggle mode and its files. Mapped by the error name as key.
          */
+         // TODO: This should be a real model
         that.errorMsgs = {
             exceedsFileLimit: {
                 files: [],
@@ -151,6 +151,14 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }; 
 
+        that.showErrorsPanel = function () {
+            that.container.show();
+        };
+        
+        that.hideErrorsPanel = function () {
+            that.container.hide();
+        };
+        
         /**
          * Removes the specified error from the list of errors
          * 
@@ -172,30 +180,29 @@ var fluid_1_4 = fluid_1_4 || {};
                 "exceedsUploadLimit" : "exceedsFileLimit";
             that.errorMsgs[errorCode].files.push(file.name);
         };
-
-        that.refreshView = function () {
-            updateTotalError(that);
-        };
         
         that.clearErrors = function () {
             $.each(that.errorMsgs, function (errorCode, errObj) {
                 removeError(that, errorCode);
             });
             that.refreshView();
-        };
+        };  
         
-        // TODO: Make this part of refreshView when the component has a real model.
-        that.clearErrorsOnSuccessfulFileAdd = function (numFilesAdded) {
-            if (numFilesAdded > 0) {
-                that.clearErrors();
-            }
+        that.refreshView = function () {
+            updateTotalError(that);
         };
     };
 
     fluid.demands("fluid.uploader.errorsView", "fluid.uploader.multiFileUploader", {
         container: "{multiFileUploader}.options.selectors.errors", // TODO: Why can't I bind to {multiFileUploader}.dom.errors?
         options: {
+            model: {
+                queuedFiles: "{multiFileUploader}.queue.files",
+                errorMessages: {}
+            },
+            
             listeners: {
+                "{multiFileUploader}.events.onFilesSelected": "{errorsView}.clearErrors",
                 "{multiFileUploader}.events.afterFileDialog": "{errorsView}.refreshView",
                 "{multiFileUploader}.events.onQueueError": "{errorsView}.addError",
                 "{multiFileUploader}.events.onUploadStart": "{errorsView}.clearErrors"
