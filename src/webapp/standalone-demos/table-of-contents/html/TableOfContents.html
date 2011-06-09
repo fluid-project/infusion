@@ -99,10 +99,10 @@
                     }
                 }
             });
-            */
-            fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContents.demo");
-    
-            fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents.demo", {
+           */
+   
+            fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContentsDemo");   
+            fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "fluid.tableOfContentsDemo"], {
                 options: {
                     resources: {
                         template: {
@@ -112,6 +112,8 @@
                     }
                 }
             });
+                       
+            fluid.tableOfContents("body");
         </script>
     </body>
 </html>
