@@ -28,13 +28,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var bwSkin = {
             textSize: "1.8",
             textFont: "verdana",
-            theme: "bw"
+            theme: "bw",
+            lineSpacing: 2
         };
         
         var bwSkin2 = {
             textSize: "11",
             textFont: "italic",
-            theme: "bw"                
+            theme: "cw",
+            lineSpacing: 1
         };
             
         var saveCalled = false;
@@ -219,7 +221,61 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiOptions.uiEnhancer.model.theme);
                 
             }, autoSaveOptions);
-        });           
+        });    
+        
+        /********************************
+         * UI Options Integration tests *
+         * ******************************
+         */
+
+        var applierRequestChanges = function (uiOptions, selectionOptions) {
+            uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
+            uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
+            uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
+            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);            
+        };
+        
+        var checkUIOComponents = function (uiOptions, uiEnhancer) {
+            jqUnit.assertTrue("Check that uiEnhancer is present", uiOptions.options.components.uiEnhancer);
+            jqUnit.assertTrue("Check that textControls sub-component is present", uiOptions.options.components.textControls);
+            jqUnit.assertTrue("Check that layoutControls sub-component is present", uiOptions.options.components.layoutControls);
+            jqUnit.assertTrue("Check that linkControls sub-component is present", uiOptions.options.components.linksControls);
+            jqUnit.assertTrue("Check that preview sub-component is present", uiOptions.options.components.preview);
+            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.options.components.settingsStore);
+            jqUnit.assertTrue("Check that tableOfContents sub-component is present", uiEnhancer.options.components.tableOfContents);
+            jqUnit.assertTrue("Check that store sub-component is present", uiEnhancer.options.components.settingsStore);
+        };
+        
+        var checkModelSelections = function (expectedSelections, actualSelections) {
+            jqUnit.assertEquals("Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
+            jqUnit.assertEquals("Theme correctly updated", expectedSelections.theme, actualSelections.theme);
+            jqUnit.assertEquals("Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
+            jqUnit.assertEquals("Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
+        };
+        
+        tests.asyncTest("UIOptions Integration tests", function () {
+            var autoSaveOffOptions = {
+                autoSave: false
+            };
+
+            testUIOptions(function (uiOptions, uiEnhancer) {
+                checkUIOComponents(uiOptions, uiEnhancer);
+                
+                var saveButton = uiOptions.locate("save");
+                var cancelButton = uiOptions.locate("cancel");
+                var resetButton = uiOptions.locate("reset");
+                
+                applierRequestChanges(uiOptions, bwSkin);
+                checkModelSelections(bwSkin, uiOptions.model.selections);
+                saveButton.click();
+                checkModelSelections(bwSkin, uiOptions.options.savedSelections);
+                applierRequestChanges(uiOptions, bwSkin2);
+                cancelButton.click();
+                checkModelSelections(bwSkin, uiOptions.options.savedSelections);
+                resetButton.click();
+                checkModelSelections(uiOptions.model.selections, uiOptions.settingsStore.options.defaultSiteSettings);
+            }, autoSaveOffOptions);
+        });
     });
     
 })(jQuery);

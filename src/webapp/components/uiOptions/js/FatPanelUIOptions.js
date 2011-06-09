@@ -75,4 +75,23 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });      
      
+    // Supply the templates for the demo
+    fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsDemo", {
+        options: {
+            templates: {
+                uiOptions: "../../../../components/uiOptions/html/FatPanelUIOptions.html",
+                textControls: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html",
+                layoutControls: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html",
+                linksControls: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+            }
+        }
+    });
+
+    // Supply the table of contents' template URL
+    fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+        options: {
+            templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+        }
+    });     
+  
 })(jQuery, fluid_1_4);
