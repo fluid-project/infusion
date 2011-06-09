@@ -254,6 +254,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         
         tests.asyncTest("UIOptions Integration tests", function () {
+            var autoSaveOffOptions = {
+                autoSave: false
+            };
+
             testUIOptions(function (uiOptions, uiEnhancer) {
                 checkUIOComponents(uiOptions, uiEnhancer);
                 
@@ -270,7 +274,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 checkModelSelections(bwSkin, uiOptions.options.savedSelections);
                 resetButton.click();
                 checkModelSelections(uiOptions.model.selections, uiOptions.settingsStore.options.defaultSiteSettings);
-            });
+            }, autoSaveOffOptions);
         });
     });
     

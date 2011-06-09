@@ -54,10 +54,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.slidingPanel",
                 priority: "last",
                 container: "{fatPanelUIOptions}.container"
-            }/*,          
-            uiEnhancer: {
-                type: "fluid.uiEnhancer"
-            }  */                      
+            }
         }
     });       
     
@@ -97,5 +94,4 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });     
   
-        
 })(jQuery, fluid_1_4);
