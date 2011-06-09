@@ -1,7 +1,5 @@
 /*
-Copyright 2008-2009 University of Cambridge
-Copyright 2008-2010 University of Toronto
-Copyright 2008-2009 University of California, Berkeley
+Copyright 2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -20,70 +18,50 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var skon = skon || {};
 (function ($, fluid) {       
 
+    fluid.staticEnvironment.skonEnvironment = fluid.typeTag("skon.demo");
+
     /* Our demo script */   
     skon.slidingUIOptions = function (panel, uioptions) {
-        // Supply the template URL of "text and display" panel on the user preferences interface
-        fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptions"], {
+        fluid.demands("fluid.uiOptionsTemplateLoader", [ "skon.demo"], {
+            options: {
+                templates: {
+                    uiOptions: "../../../components/uiOptions/html/FatPanelUIOptions.html",
+                    textControls: "../../../components/uiOptions/html/UIOptionsTemplate-text.html",
+                    layoutControls: "../../../components/uiOptions/html/UIOptionsTemplate-layout.html",
+                    linksControls: "../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                }  
+            }
+        });
+
+/*
+        fluid.demands("fluid.uiOptions", ["fluid.fatPanelUIOptions", "skon.demo"], {
             options: {
                 resources: {
                     template: {
-                        url: "../../../components/uiOptions/html/UIOptionsTemplate-text.html"
+                        url: "../../../components/uiOptions/html/FatPanelUIOptions.html"
                     }
                 }
             }
         });
+*/
 
-        // Supply the template URL of "layout and navigation" panel on the user preferences interface
-        fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptions"], {
-            options: {
-                resources: {
-                    template: {
-                        url: "../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
-                    }
-                }
-            }
-        });
-
-        // Supply the template URL of "links" panel on the user preferences interface
-        fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptions"], {
-            options: {
-                resources: {
-                    template: {
-                        url: "../../../components/uiOptions/html/UIOptionsTemplate-links.html"
-                    }
-                }
-            }
-        });    
         // Supply the table of contents' template URL
-        fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+        fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer", "skon.demo"], {
             options: {
                 templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
             }
         });
 
-        fluid.pageEnhancer();
-        
-        // Next, start up UI Options
-        var myUIOptions = fluid.uiOptions(uioptions, {
-            components: {
-                preview: {
-                    type: "fluid.uiOptions.livePreview"
+        fluid.pageEnhancer({
+            classnameMap: {
+                theme: {
+                    "default": "skon-theme-basic"
                 }
-            },                
-            resources: {
-                template: {
-                    url: "../../../components/uiOptions/html/FatPanelUIOptions.html"
-                }
-            }
-        });
-
-        // Put it in the sliding panel.
-        fluid.slidingPanel(panel, {
-            selectors: {
-                panel: uioptions
             }
         });
         
+        // Next, start up UI Options
+        fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");            
     };
     
 })(jQuery, fluid);
