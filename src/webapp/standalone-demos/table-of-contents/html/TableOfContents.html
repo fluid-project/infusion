@@ -85,6 +85,7 @@
         </p>
         
         <script type="text/javascript">
+            /**
             fluid.tableOfContents("body", {
                 components: {
                     levels: {
@@ -94,6 +95,19 @@
                                     url: "../../../components/tableOfContents/html/TableOfContents.html"
                                 }
                             }
+                        }
+                    }
+                }
+            });
+            */
+            fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContents.demo");
+    
+            fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents.demo", {
+                options: {
+                    resources: {
+                        template: {
+                            forceCache: true,
+                            url: "../../../components/tableOfContents/html/TableOfContents.html"
                         }
                     }
                 }
