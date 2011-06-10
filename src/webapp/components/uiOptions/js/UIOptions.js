@@ -285,8 +285,8 @@ var fluid_1_4 = fluid_1_4 || {};
             settingsStore: {    // supplied by demands
                 type: "fluid.uiOptions.store"
             },
-            uiEnhancer: {    // supplied by demands
-                type: "fluid.uiEnhancer"
+            eventBinder: {    // supplied by demands
+                type: "fluid.uiOptions.saveEventBinder"
             }
         },
         textSize: {
@@ -348,7 +348,6 @@ var fluid_1_4 = fluid_1_4 || {};
             that.events.onSave.fire(that.model.selections);
             
             var savedSelections = fluid.copy(that.model.selections);
-            that.uiEnhancer.applier.requestChange("", savedSelections);
             that.settingsStore.save(savedSelections);
         };
 
@@ -422,7 +421,25 @@ var fluid_1_4 = fluid_1_4 || {};
             that.events.onReady.fire();
         }, {amalgamateClasses: ["template"]});
     };
+
+    /******************************************************
+     * UI Options Event binder:                           *
+     * Binds events between UI Options and the UIEnhancer *
+     ******************************************************/
+     
+    fluid.defaults("fluid.uiOptions.saveEventBinder", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"]
+    });
     
+    fluid.demands("fluid.uiOptions.saveEventBinder", ["fluid.uiOptions"], {
+        options: {
+            listeners: {
+                "{uiOptions}.events.onSave": "{uiEnhancer}.updateModel"
+            }
+        }
+    });
+    
+
     var initModel = function (that) {
         fluid.each(that.options.controlValues, function (item, key) {
             that.applier.requestChange("labelMap." + key, {
