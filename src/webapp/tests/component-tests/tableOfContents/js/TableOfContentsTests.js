@@ -332,6 +332,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
     
+    /**
+     * Returns a ToC Component with the predefined demand block
+     */
+    var renderTOCComponent = function () {
+        fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContentsDemo");
+        fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "fluid.tableOfContentsDemo"], {
+            options: {
+                resources: {
+                    template: {
+                        forceCache: true,
+                        url: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    }
+                }
+            }
+        });
+        return fluid.tableOfContents("body");
+    };
+
     $(document).ready(function () {
 
         var tocHeadingCalc = jqUnit.testCase("Table of Contents: Heading Calculator Tests");
@@ -382,5 +400,49 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tocLevelsTests.asyncTest("Render toc: linear headings", function () {renderTOCTests(linearHeadings);});
         tocLevelsTests.asyncTest("Render toc: skipped headings", function () {renderTOCTests(skippedHeadings);});
 
+        // fluid tableOfContents" tests
+
+        tocTests.test("insertAnchor", function () {
+            var tocTestAnchorName = 'tocTestAnchor';
+            var tocInsertAnchorElement = $('#tocInsertAnchor');
+            fluid.tableOfContents.insertAnchor(tocTestAnchorName, tocInsertAnchorElement);
+            // check if the anchor is inserted before the element, in that case, index 0 should be the anchor
+            // the first-child test below assumes that there is only 2 element in the wrapper, including the inserted anchor element.
+            var tocInsertAnchorWrapperFirstChild = $('#tocInsertAnchorWrapper :first-child');
+            jqUnit.assertEquals("ToC insert anchor correctly: id", tocTestAnchorName, tocInsertAnchorWrapperFirstChild.prop('id')); 
+            jqUnit.assertEquals("ToC insert anchor correctly: name", tocTestAnchorName, tocInsertAnchorWrapperFirstChild.attr('name'));
+        });
+        
+        tocTests.test("generateGUID", function() {
+            var GUID = fluid.tableOfContents.generateGUID('randomBaseName');
+            var GUID2 = fluid.tableOfContents.generateGUID('randomBaseName');
+            
+            jqUnit.assertNotEquals("GUID should not be the same with the same randomBaseName", GUID, GUID2);
+            jqUnit.assertNotEquals("Basename should remain in the GUID after generated", -1, GUID.indexOf('randomBaseName'));
+        });
+        
+        tocTests.test("sanitizeID", function() {
+            var tocTest = function (custom_msg, expected, input) {
+                var actual = fluid.tableOfContents.sanitizeID(input);
+                jqUnit.assertEquals("Test non-word string: " + custom_msg, expected, actual);
+            }
+            tocTest('alphabetes', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+            tocTest('numbers', '1234567890', '1234567890');
+            tocTest('dashes', '-', '-');
+            tocTest('underline', '_', '_');
+            tocTest('symbols', '------------------------', '`~|[];"\',.=+!@#$%^&*()\\/');
+            tocTest('i18n', 'I-t-rn-ti-n-liz-ti-n', 'Iñtërnâtiônàlizætiøn');
+        });
+        
+        tocTests.test("finalInit public function: headingTextToAnchor", function () {
+            // setup and init the ToC component
+            var tocBody = renderTOCComponent();
+            var baseName = fluid.tableOfContents.sanitizeID(tocBody.locate('headings').text());
+            var anchorInfo = tocBody.headingTextToAnchor(tocBody.locate('headings'));
+            
+            // test goes here
+            jqUnit.assertNotEquals("Basename should be reserved in the generated anchor", -1, anchorInfo.id.indexOf(baseName));
+            jqUnit.assertEquals("anchor url is the same as id except url has a '#' in front", anchorInfo.url, '#' + anchorInfo.id);
+        });
     });
 })(jQuery);
