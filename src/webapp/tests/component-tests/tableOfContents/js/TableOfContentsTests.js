@@ -299,6 +299,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("tree generated correctly", expectedTree, tree);
     };
     
+    var renderTOCTest = function (that, testHeadings) {
+        var tocLinks = that.locate("link");
+        jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
+        fluid.each(tocLinks, function (elm, idx) {
+            var hInfo = testHeadings.headingInfo[idx];
+            elm = $(elm);
+            
+            jqUnit.assertEquals("ToC text set correctly", fluid.get(hInfo, "text"), elm.text());
+            jqUnit.assertEquals("ToC anchor set correctly", fluid.get(hInfo, "url"), elm.attr("href"));
+        });
+        start();
+    };
+    
     var renderTOCTests = function (testHeadings) {
         var container = $(".flc-toc-tocContainer");
         var renderedTOC = fluid.tableOfContents.levels(container, {
@@ -307,16 +320,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             listeners: {
                 afterRender: function (that) {
-                    var tocLinks = that.locate("link");
-                    jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
-                    fluid.each(tocLinks, function (elm, idx) {
-                        var hInfo = testHeadings.headingInfo[idx];
-                        elm = $(elm);
-                        
-                        jqUnit.assertEquals("ToC text set correctly", fluid.get(hInfo, "text"), elm.text());
-                        jqUnit.assertEquals("ToC anchor set correctly", fluid.get(hInfo, "url"), elm.attr("href"));
-                    });
-                    start();
+                    renderTOCTest(that, testHeadings);
                 }
             },
             resources: {
