@@ -103,7 +103,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} size
      */
     var setMinSize = function (container, times, initFontSize) {
-        if (times === 1){
+        if (times === 1) {
             container.css("font-size", ""); // empty is same effect as not being set
         } else if (times && times > 0) {
             newFontSize = initFontSize * times;
@@ -200,7 +200,7 @@ var fluid_1_4 = fluid_1_4 || {};
                         selector = selector + ",." + className;
                     }
                 });
-            } else if (typeof settingValues === 'string'){
+            } else if (typeof settingValues === 'string') {
                 classesToRemove = classesToRemove + " " + settingValues;
                 selector = selector + ",." + settingValues;
             }
@@ -347,7 +347,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.demands("settingsStore", ["fluid.uiEnhancer"], {
+    fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer"], {
         funcName: "fluid.cookieStore"
     });
 
