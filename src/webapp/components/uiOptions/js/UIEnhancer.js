@@ -23,27 +23,6 @@ var fluid_1_4 = fluid_1_4 || {};
     /****************
      * UI Enhancer  *
      ****************/
-
-    /**
-     * Searches within the container for things that match the selector and then replaces the classes 
-     * that are matched by the regular expression with the new value. 
-     * 
-     * @param {Object} container
-     * @param {Object} selector
-     * @param {Object} regExp
-     * @param {Object} newVal
-     */
-    var replaceClass = function (container, selector, regExp, newVal) {
-        newVal = newVal || "";
-        $(selector, container).andSelf().each(function (i) {
-            var attr = ($.browser.msie === false) ? 'class' : 'className'; // TODO: does this need to happen inside the loop?
-            if (this.getAttribute(attr)) {
-                // The regular expression was required for speed
-                this.setAttribute(attr, this.getAttribute(attr).replace(regExp, newVal));
-            }
-        });
-        
-    };
     
     /**
      * Adds the class related to the setting to the element
@@ -95,23 +74,6 @@ var fluid_1_4 = fluid_1_4 || {};
     var setLineSpacing = function (container, times, initLineSpacing, textSizeTimes) {
         var newLineSpacing = times === "" || times === 1 ? initLineSpacing : times * initLineSpacing * textSizeTimes;
         container.css("line-height", newLineSpacing + "em");
-    };
-
-    /**
-     * Sets the font size on the container. Removes all fss classes that decrease font size. 
-     * @param {Object} container
-     * @param {Object} size
-     */
-    var setMinSize = function (container, times, initFontSize) {
-        if (times === 1){
-            container.css("font-size", ""); // empty is same effect as not being set
-        } else if (times && times > 0) {
-            newFontSize = initFontSize * times;
-            container.css("font-size", newFontSize + "px");
-            
-            // TODO: fss font size class prefix is hardcoded here
-            replaceClass(container, "[class*=fl-font-size-]", /\bfl-font-size-[0-9]{1,2}\s+/g, 'fl-font-size-100');
-        }
     };
 
     /**
@@ -200,7 +162,7 @@ var fluid_1_4 = fluid_1_4 || {};
                         selector = selector + ",." + className;
                     }
                 });
-            } else if (typeof settingValues === 'string'){
+            } else if (typeof settingValues === 'string') {
                 classesToRemove = classesToRemove + " " + settingValues;
                 selector = selector + ",." + settingValues;
             }
@@ -250,7 +212,7 @@ var fluid_1_4 = fluid_1_4 || {};
 
         var clashingClassnames;
         
-        var initFontSize = parseFloat(that.container.css("font-size"));
+        that.initFontSize = parseFloat(that.container.css("font-size"));
         
         var initLineSpacing = getLineHeight(that.container);
         
@@ -261,7 +223,7 @@ var fluid_1_4 = fluid_1_4 || {};
             that.container.removeClass(clashingClassnames);
             addStyles(that.container, that.model, that.options.classnameMap);
             styleElements(that.container, !isTrue(that.model.backgroundImages), that.options.classnameMap.noBackgroundImages);
-            setMinSize(that.container, that.model.textSize, initFontSize);
+            that.setTextSize(that.container, that.model.textSize, that.initFontSize);
             setLineSpacing(that.container, that.model.lineSpacing, initLineSpacing, that.model.textSize);
             setToc(that, that.model.toc);
             styleLinks(that.container, that.model, that.options.classnameMap);
@@ -302,6 +264,9 @@ var fluid_1_4 = fluid_1_4 || {};
                 createOnEvent: "onInitSettingStore"
             }
         },
+        invokers: {
+            setTextSize: "fluid.uiEnhancer.setTextSize"
+        },
         events: {
             onReady: null,
             modelChanged: null,
@@ -327,6 +292,19 @@ var fluid_1_4 = fluid_1_4 || {};
             "inputsLarger": "fl-text-larger"
         }
     });
+
+    /**
+     * Sets the font size on the container. Removes all fss classes that decrease font size. 
+     * @param {Object} container
+     * @param {Object} size
+     */
+    fluid.uiEnhancer.setTextSize = function (container, times, initFontSize) {
+        if (times === 1) {
+            container.css("font-size", ""); // empty is same effect as not being set
+        } else if (times && times > 0) {
+            container.css("font-size", initFontSize * times + "px");
+        }
+    };
 
     fluid.pageEnhancer = function (uiEnhancerOptions) {
         var that = fluid.initLittleComponent("fluid.pageEnhancer");
