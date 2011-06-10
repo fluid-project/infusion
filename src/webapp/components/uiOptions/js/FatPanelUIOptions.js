@@ -19,26 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 var fluid_1_4 = fluid_1_4 || {};
 
-(function ($, fluid) {
-
-
-    /**********************
-     * Tabs *
-     *********************/
-     
-    fluid.defaults("fluid.tabs", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],             
-        selectors: {
-            tabList: ".flc-tabs"
-        },
-        finalInitFunction: "fluid.tabs.finalInit"
-    });          
-    
-    fluid.tabs.finalInit = function (that) {
-        that.locate("tabList").tabs();  //jQuery UI Tabs
-    };
-    
-
+(function ($, fluid) {    
     /**********************
      * Fat Panel UI Options *
      *********************/
