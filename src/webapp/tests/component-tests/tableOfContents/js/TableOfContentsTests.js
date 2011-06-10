@@ -92,8 +92,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     //         });
     //     });
     // });
-    fluid.setLogging(true);
-    
+
     fluid.staticEnvironment.tocTests = fluid.typeTag("fluid.tableOfContents.unitTests");
     
     fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents.unitTests", {
@@ -301,7 +300,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     var renderTOCTests = function (testHeadings) {
-        expect(1);
         var container = $(".flc-toc-tocContainer");
         var renderedTOC = fluid.tableOfContents.levels(container, {
             model: {
@@ -311,6 +309,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 afterRender: function (that) {
                     var tocLinks = that.locate("link");
                     jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
+                    fluid.each(tocLinks, function (elm, idx) {
+                        var hInfo = testHeadings.headingInfo[idx];
+                        elm = $(elm);
+                        
+                        jqUnit.assertEquals("ToC text set correctly", fluid.get(hInfo, "text"), elm.text());
+                        jqUnit.assertEquals("ToC anchor set correctly", fluid.get(hInfo, "url"), elm.attr("href"));
+                    });
                     start();
                 }
             },
