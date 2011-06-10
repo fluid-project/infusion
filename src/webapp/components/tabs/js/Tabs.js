@@ -19,28 +19,19 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
     /**********************
-     * Full No Preview UI Options *
+     * Tabs *
      *********************/
      
-    fluid.defaults("fluid.fullNoPreviewUIOptions", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],            
-        components: {
-            uiOptions: {
-                type: "fluid.uiOptions",
-                container: "{fullNoPreviewUIOptions}.container"
-            }                     
-        }
-    });       
+    fluid.defaults("fluid.tabs", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],             
+        selectors: {
+            tabList: ".flc-tabs"
+        },
+        finalInitFunction: "fluid.tabs.finalInit"
+    });          
     
-    // Options for UIOptions in fat panel mode
-    fluid.demands("fluid.uiOptions", ["fluid.fullNoPreviewUIOptions"], {
-        options: {
-            components: {
-                preview: {
-                    type: "fluid.emptySubcomponent"
-                }            
-            }
-        }
-    });      
-     
+    fluid.tabs.finalInit = function (that) {
+        that.locate("tabList").tabs();  //jQuery UI Tabs
+    };
+
 })(jQuery, fluid_1_4);

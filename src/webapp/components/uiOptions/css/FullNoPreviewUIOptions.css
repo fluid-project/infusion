@@ -1,16 +1,51 @@
 /* UI Option styles for full page w/o preview */
 
-.fl-uiOptions-fullNoPreview .fl-uiOptions-category {
-	border-top: 2px solid #dddddd;
+body {
+	max-width: 960px;
 }
 
+/* category separator */
+.fl-uiOptions-fullNoPreview .fl-uiOptions-category {
+	border-top: 2px solid #dddddd;
+	clear:both;
+}
+
+/* header images */
 .fl-uiOptions-fullNoPreview .fl-uiOptions-category h2 img {
 	padding-top: 10px;
 	margin-bottom: -4px;
 }
 
+/* controls layout */
+.fl-uiOptions-fullNoPreview .fl-col-flex {
+	padding-top: 25px;
+}
+
+.fl-uiOptions-fullNoPreview ul {
+	float:left;
+}
+
 .fl-uiOptions-fullNoPreview ul li {
 	clear: left;
+}
+
+/* text controls */
+.fl-uiOptions-fullNoPreview .fl-uiOptions-text ul li {
+	clear: left;
 	height: 3.5em;
+}
+
+.fl-uiOptions-fullNoPreview label, .fl-uiOptions-fullNoPreview .fl-inputs  {
+	margin-bottom: 15px;		/* adds space between label, inputs when browser window is narrow */
+}
+
+/* layout and link controls */
+.fl-uiOptions-fullNoPreview .fl-uiOptions-layout li, .fl-uiOptions-fullNoPreview .fl-uiOptions-links li {
+	height: 4em;
+}
+
+/* save, reset, cancel buttons */
+.fl-uiOptions-fullNoPreview .fl-uiOptions-buttons {
+	text-align: right;
 }
 
