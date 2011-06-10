@@ -336,8 +336,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Returns a ToC Component with the predefined demand block
      */
     var renderTOCComponent = function () {
-        fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContentsDemo");
-        fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "fluid.tableOfContentsDemo"], {
+        fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContentsTest");
+        fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "fluid.tableOfContentsTest"], {
             options: {
                 resources: {
                     template: {
@@ -347,7 +347,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         });
-        return fluid.tableOfContents("body");
+        return fluid.tableOfContents("#main");
     };
 
     $(document).ready(function () {
@@ -437,8 +437,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tocTests.test("finalInit public function: headingTextToAnchor", function () {
             // setup and init the ToC component
             var tocBody = renderTOCComponent();
-            var baseName = fluid.tableOfContents.sanitizeID(tocBody.locate('headings').text());
-            var anchorInfo = tocBody.headingTextToAnchor(tocBody.locate('headings'));
+            var tocBodyHeading = $('#amphibians');
+            var baseName = tocBodyHeading.text();
+            var anchorInfo = tocBody.headingTextToAnchor(tocBodyHeading);
             
             // test goes here
             jqUnit.assertNotEquals("Basename should be reserved in the generated anchor", -1, anchorInfo.id.indexOf(baseName));
