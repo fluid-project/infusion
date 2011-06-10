@@ -92,6 +92,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     //         });
     //     });
     // });
+    fluid.setLogging(true);
     
     fluid.staticEnvironment.tocTests = fluid.typeTag("fluid.tableOfContents.unitTests");
     
@@ -271,7 +272,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     var createElm = function (tagName) {
         return fluid.unwrap($("<" + tagName + "/>", {text: tagName}));
-    }
+    };
     
     var createElms = function (tagArray) {
         return fluid.transform(tagArray, createElm);
@@ -307,10 +308,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 headings: testHeadings.model
             },
             listeners: {
-                afterRender: function () {
-                    var tocLinks = $(that.options.link, container);
+                afterRender: function (that) {
+                    var tocLinks = that.locate("link");
                     jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
                     start();
+                }
+            },
+            resources: {
+                template: {
+                    forceCache: true,
+                    url: "../../../../components/tableOfContents/html/TableOfContents.html"
                 }
             }
         });
@@ -363,8 +370,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             generateTreeTests(1, 2, multiLevelTree);
         });
         
-        // tocLevelsTests.asyncTest("Render toc: linear headings", function () {renderTOCTests(linearHeadings);});
-        // tocLevelsTests.asyncTest("Render toc: skipped headings", function () {renderTOCTests(skippedHeadings);});
+        tocLevelsTests.asyncTest("Render toc: linear headings", function () {renderTOCTests(linearHeadings);});
+        tocLevelsTests.asyncTest("Render toc: skipped headings", function () {renderTOCTests(skippedHeadings);});
 
     });
 })(jQuery);
