@@ -118,9 +118,8 @@
 
 /* jQuery UI Tabs style overrides */
 .ui-tabs { padding: 0px; }
-.ui-tabs .ui-tabs-nav li a, .fl-uiOptions-fatPanel #reset { padding: 0.75em 1em 0.75em 30px; line-height: 1;}
-.fl-theme-hc .ui-tabs .ui-tabs-nav li a { float: left; padding: 0.75em 1em 0.75em 30px; text-decoration: none; }
-.fl-theme-hci .ui-tabs .ui-tabs-nav li a { float: left; padding: 0.75em 1em 0.75em 30px; text-decoration: none; }
+.fl-theme-hc .ui-tabs .ui-tabs-nav li a,.fl-theme-hci .ui-tabs .ui-tabs-nav li a,.ui-tabs .ui-tabs-nav li a, .fl-uiOptions-fatPanel #reset { padding: 0.75em 1em 0.75em 30px; line-height: 1;}
+/*.fl-theme-hci .ui-tabs .ui-tabs-nav li a, .fl-theme-hc .ui-tabs .ui-tabs-nav li a { float: left; padding: 0.75em 1em 0.75em 30px; text-decoration: none; }*/
 .fl-theme-hc .ui-tabs .ui-tabs-panel, .fl-theme-hci .ui-tabs .ui-tabs-panel, .ui-tabs .ui-tabs-panel { padding: 10px; }
 
 .fl-theme-hc .ui-widget { font-size: 1em; } /* fix a jquery HC theme bug where font-size was set to 1.2em. */
@@ -133,11 +132,13 @@
 .fl-theme-hc .ui-corner-top, .fl-theme-hci .ui-corner-top { -moz-border-radius-topleft: 0px; -moz-border-radius-topright: 0px; }
 .fl-theme-hci .ui-corner-all , .fl-theme-hc .ui-corner-all { -moz-border-radius: 0px; border: 0px; }
 
-/* Override HC and HCI changes to tab header background color */
+/* Override HC and HCI changes to tab header */
 .fl-theme-hci .ui-widget-header { background: 0;}
 .fl-theme-hci .fl-uiOptions-fatPanel ul.fl-tabs  { background-color: #fff; }
 .fl-theme-hc .ui-widget-header { background: 0;}
 .fl-theme-hc .fl-uiOptions-fatPanel ul.fl-tabs { background-color: #000; }
+.fl-theme-hc .fl-tabs {border-bottom: 1px solid #000;}
+.fl-theme-hci .fl-tabs {border-bottom: 1px solid #FFF;}
 
 /* Override HC and HCI changes to tab color */
 .fl-theme-hci .fl-uiOptions-reset, .fl-theme-hci .fl-uiOptions-fatPanel .fl-tabs a { background-color: #fff; color: #000; }
@@ -154,6 +155,8 @@
     height: 3px;
 
 }
+
+ 
 
 .fl-theme-hc .fl-uiOptions .fl-slider {
     background-color: #000;
