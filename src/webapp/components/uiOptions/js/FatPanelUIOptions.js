@@ -54,10 +54,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.slidingPanel",
                 priority: "last",
                 container: "{fatPanelUIOptions}.container"
-            }/*,          
-            uiEnhancer: {
-                type: "fluid.uiEnhancer"
-            }  */                      
+            }
         }
     });       
     
@@ -78,8 +75,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });      
      
-    // Supply the templates
-    fluid.staticEnvironment.uiOptionsDemo = fluid.typeTag("fluid.uiOptionsDemo");
+    // Supply the templates for the demo
     fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsDemo", {
         options: {
             templates: {
@@ -98,5 +94,4 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });     
   
-        
 })(jQuery, fluid_1_4);

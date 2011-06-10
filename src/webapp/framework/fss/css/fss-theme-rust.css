@@ -71,7 +71,7 @@
 }
 
 .fl-theme-rust {color:#000000; background-color:#F2E0B6; border-color:#916535;}
-.fl-theme-rust .fl-knockout {background:transparent; color:#000;}
+.fl-theme-rust .fl-knockout {background:transparent !important; color:#000;} /* Deprecated: use .fl-noBackgroundImages */
 
 .fl-theme-rust a {color: #916535; /*font-weight:bold;*/}
 .fl-theme-rust a:hover {color: #914E38;}

@@ -13,11 +13,15 @@
         <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-coal.css" />
         <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-mist.css" />
         <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-rust.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-blackyellow.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-yellowBlack.css" />
         <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-coal/coal.css" />
         <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-mist/mist.css" />
         <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-slate/slate.css" />
         <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-hc/hc.css" />
         <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-hci/hci.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-blackyellow/blackyellow.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-yellowBlack/yellowBlack.css" />
 
         <link rel="stylesheet" type="text/css" href="../../../../components/uiOptions/css/UIOptions.css" />
         <link rel="stylesheet" type="text/css" href="../../../../components/uiOptions/css/FatPanelUIOptions.css" />
@@ -76,9 +80,29 @@
 
         <script type="text/javascript">
             $(document).ready(function() {
+                // Supply the templates
+                fluid.staticEnvironment.uiOptionsDemo = fluid.typeTag("fluid.uiOptionsDemo");
+                fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsDemo", {
+                    options: {
+                        templates: {
+                            uiOptions: "../../../../components/uiOptions/html/FatPanelUIOptions.html",
+                            textControls: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html",
+                            layoutControls: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html",
+                            linksControls: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                        }
+                    }
+                });
+            
+                // Supply the table of contents' template URL
+                fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+                    options: {
+                        templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    }
+                });
+
             	fluid.pageEnhancer();
-	            fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");            
-            });            			
+                fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");  
+            });
         </script>
     </body>
 
