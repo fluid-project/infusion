@@ -314,8 +314,6 @@ var fluid_1_4 = fluid_1_4 || {};
         autoSave: false
     });
     
-    fluid.fetchResources.primeCacheFromResources("fluid.uiOptions");
-    
     fluid.uiOptions.preInit = function () {
         fluid.fetchResources.primeCacheFromResources("fluid.uiOptions.textControls");
         fluid.fetchResources.primeCacheFromResources("fluid.uiOptions.layoutControls");

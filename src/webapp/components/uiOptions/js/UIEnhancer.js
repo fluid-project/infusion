@@ -311,7 +311,7 @@ var fluid_1_4 = fluid_1_4 || {};
             "textFont": {
                 "default": "",
                 "times": "fl-font-times",
-                "comic": "fl-font-sans",
+                "comic": "fl-font-comic-sans",
                 "arial": "fl-font-arial",
                 "verdana": "fl-font-verdana"
             },
@@ -319,8 +319,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 "default": "",
                 "bw": "fl-theme-hc",
                 "wb": "fl-theme-hci",
-                "by": "",
-                "yb": ""
+                "by": "fl-theme-blackYellow",
+                "yb": "fl-theme-yellowBlack"
             },
             "layout": "fl-layout-linear",
             "links": "fl-text-underline fl-text-bold fl-text-larger", 
