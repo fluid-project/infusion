@@ -280,7 +280,8 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             preview: {
                 type: "fluid.uiOptions.preview",
-                createOnEvent: "onReady"
+                createOnEvent: "onReady",
+                container: "{uiOptions}.dom.previewFrame"
             },
             settingsStore: {    // supplied by demands
                 type: "fluid.uiOptions.store"
@@ -709,13 +710,6 @@ var fluid_1_4 = fluid_1_4 || {};
         });
     };
 
-    fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptions", "fluid.uiOptions.textControls"], {
-        args: [
-            "{uiOptions}.dom.previewFrame",
-            "{options}"
-        ]
-    });
-    
     fluid.demands("fluid.uiEnhancer", "fluid.uiOptions.preview", {
         funcName: "fluid.uiEnhancer",
         args: [
@@ -733,7 +727,7 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
     
-    fluid.demands("fluid.uiOptions.preview.eventBinder", ["fluid.uiOptions.preview", "fluid.uiOptions.textControls"], {
+    fluid.demands("fluid.uiOptions.preview.eventBinder", ["fluid.uiOptions.preview", "fluid.uiOptions"], {
         options: {
             listeners: {
                 "{uiOptions}.events.modelChanged": "{preview}.updateModel"
