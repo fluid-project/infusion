@@ -42,7 +42,6 @@ var fluid_1_4 = fluid_1_4 || {};
                     type: "fluid.uiOptions.preview",
                     createOnEvent: "onReady"
                 },
-                uiEnhancer: "{uiEnhancer}",
                 settingsStore: "{uiEnhancer}.settingsStore"
             }
         }

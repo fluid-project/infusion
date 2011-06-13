@@ -695,7 +695,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         setTimeout(function () {
             if (that.enhancer) {
-                that.enhancer.applier.requestChange("", selections);
+                that.enhancer.updateModel(selections);
             }
         }, 0);
     };

@@ -50,7 +50,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests"], {
             options: {
                 components: {
-                    uiEnhancer: "{uiEnhancer}",
                     settingsStore: "{uiEnhancer}.settingsStore"
                 },
                 listeners: {
