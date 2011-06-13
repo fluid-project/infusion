@@ -286,7 +286,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uiOptions.store"
             },
             eventBinder: {    // supplied by demands
-                type: "fluid.uiOptions.saveEventBinder"
+                type: "fluid.uiOptions.eventBinder"
             }
         },
         textSize: {
@@ -365,8 +365,8 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.cancel = function () {
             that.events.onCancel.fire();
-            that.updateModel(fluid.copy(that.settingsStore.fetch()));
-            that.refreshControlsView();            
+            that.updateModel(that.settingsStore.fetch());
+            that.refreshControlsView();
         };
         
         /**
@@ -427,11 +427,11 @@ var fluid_1_4 = fluid_1_4 || {};
      * Binds events between UI Options and the UIEnhancer *
      ******************************************************/
      
-    fluid.defaults("fluid.uiOptions.saveEventBinder", {
+    fluid.defaults("fluid.uiOptions.eventBinder", {
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
     
-    fluid.demands("fluid.uiOptions.saveEventBinder", ["fluid.uiOptions"], {
+    fluid.demands("fluid.uiOptions.eventBinder", ["fluid.uiOptions"], {
         options: {
             listeners: {
                 "{uiOptions}.events.onSave": "{uiEnhancer}.updateModel"
