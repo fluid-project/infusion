@@ -23,14 +23,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
         tests.test("Initialisation", function () {
             expect(2);        
-            var myTabs = fluid.tabs("#main");
+            var myTabs = fluid.tabs(".flc-tabs");
             jqUnit.assertTrue("The tabs are initialised", myTabs); 
-            jqUnit.assertTrue("jQuery applied to tabs", myTabs.locate("tabList").hasClass("ui-tabs"));            
+            jqUnit.assertTrue("jQuery applied to tabs", myTabs.container.hasClass("ui-tabs"));            
         });
         
         tests.test("Aria added", function () {
             expect(3);        
-            fluid.tabs("#main");            
+            fluid.tabs(".flc-tabs");            
             jqUnit.assertEquals("Aria applied to list items", "presentation", $("ul li").attr("role"));                                                       
             jqUnit.assertEquals("Aria applied to tab links", "tab", $("li a").attr("role"));                                                           
             jqUnit.assertEquals("Aria applied to tab panels", "tabpanel", $("#one").attr("role"));                                                           
