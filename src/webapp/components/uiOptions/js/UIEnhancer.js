@@ -172,10 +172,6 @@ var fluid_1_4 = fluid_1_4 || {};
         styleElements($("input", container), settings.inputsLarger, classnameMap.inputsLarger);
     };
      
-    /**
-     * Initialize the model first looking at options.savedSettings
-     * @param {Object} that
-     */
     var initModel = function (that) {
         that.options.savedSettings ? that.applier.requestChange("", that.options.savedSettings) : that.applier.requestChange("", that.settingsStore.fetch());
     };
@@ -211,8 +207,6 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     var setupUIEnhancer = function (that) {
-        fluid.initDependents(that);
-        that.events.onInitSettingStore.fire(); 
         initModel(that);
     };
     
@@ -240,14 +234,55 @@ var fluid_1_4 = fluid_1_4 || {};
         return parseFloat(lineHeight) / 16;
     };
       
+
+    fluid.defaults("fluid.uiEnhancer", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        components: {
+            tableOfContents: {
+                type: "fluid.tableOfContents",
+                container: "{uiEnhancer}.container",
+                createOnEvent: "onReady",
+                options: {
+                    templateUrl: "../../tableOfContents/html/TableOfContents.html"
+                }
+            },
+            settingsStore: {
+                type: "fluid.uiOptions.store",
+                container: "{uiEnhancer}.container"
+            }
+        },
+        events: {
+            onReady: null,
+            modelChanged: null
+        },
+        classnameMap: {
+            "textFont": {
+                "default": "",
+                "times": "fl-font-times",
+                "comic": "fl-font-comic-sans",
+                "arial": "fl-font-arial",
+                "verdana": "fl-font-verdana"
+            },
+            "theme": {
+                "default": "",
+                "bw": "fl-theme-hc",
+                "wb": "fl-theme-hci",
+                "by": "fl-theme-blackYellow",
+                "yb": "fl-theme-yellowBlack"
+            },
+            "layout": "fl-layout-linear",
+            "links": "fl-text-underline fl-text-bold fl-text-larger", 
+            "inputsLarger": "fl-text-larger"
+        },
+        finalInitFunction: "fluid.uiEnhancer.finalInit"
+    });
+
     /**
      * Component that works in conjunction with FSS to transform the interface based on settings. 
      * @param {Object} container
      * @param {Object} options
      */
-    fluid.uiEnhancer = function (container, options) {
-        var that = fluid.initView("fluid.uiEnhancer", container, options);
-
+    fluid.uiEnhancer.finalInit = function (that) {
         var clashingClassnames;
         
         var initFontSize = parseFloat(that.container.css("font-size"));
@@ -284,49 +319,6 @@ var fluid_1_4 = fluid_1_4 || {};
         setupUIEnhancer(that);
         return that;
     };
-
-    fluid.defaults("fluid.uiEnhancer", {
-        gradeNames: "fluid.viewComponent",
-        components: {
-            tableOfContents: {
-                type: "fluid.tableOfContents",
-                container: "{uiEnhancer}.container",
-                createOnEvent: "onReady",
-                options: {
-                    templateUrl: "../../tableOfContents/html/TableOfContents.html"
-                }
-            },
-            settingsStore: {
-                type: "fluid.uiOptions.store",
-                container: "{uiEnhancer}.container",
-                createOnEvent: "onInitSettingStore"
-            }
-        },
-        events: {
-            onReady: null,
-            modelChanged: null,
-            onInitSettingStore: null
-        },
-        classnameMap: {
-            "textFont": {
-                "default": "",
-                "times": "fl-font-times",
-                "comic": "fl-font-comic-sans",
-                "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana"
-            },
-            "theme": {
-                "default": "",
-                "bw": "fl-theme-hc",
-                "wb": "fl-theme-hci",
-                "by": "fl-theme-blackYellow",
-                "yb": "fl-theme-yellowBlack"
-            },
-            "layout": "fl-layout-linear",
-            "links": "fl-text-underline fl-text-bold fl-text-larger", 
-            "inputsLarger": "fl-text-larger"
-        }
-    });
 
     fluid.pageEnhancer = function (uiEnhancerOptions) {
         var that = fluid.initLittleComponent("fluid.pageEnhancer");
