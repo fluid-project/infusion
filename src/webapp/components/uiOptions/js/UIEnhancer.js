@@ -134,10 +134,6 @@ var fluid_1_4 = fluid_1_4 || {};
         styleElements($("input", container), settings.inputsLarger, classnameMap.inputsLarger);
     };
      
-    var initModel = function (that) {
-        that.options.savedSettings ? that.applier.requestChange("", that.options.savedSettings) : that.applier.requestChange("", that.settingsStore.fetch());
-    };
-
     /**
      * Clears FSS classes from within the container that may clash with the current settings.
      * These are the classes from the classnameMap for settings where we work on the container rather
@@ -167,11 +163,7 @@ var fluid_1_4 = fluid_1_4 || {};
         $(selector, container).removeClass(classesToRemove);
         return classesToRemove;
     };
-    
-    var setupUIEnhancer = function (that) {
-        initModel(that);
-    };
-    
+        
     // Returns the value of css style "line-height" in em 
     var getLineHeight = function (container) {
         var lineHeight = container.css("lineHeight");
@@ -250,9 +242,8 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uiEnhancer.finalInit = function (that) {
         var clashingClassnames;
         
-        that.initFontSize = parseFloat(that.container.css("font-size"));
-        
-        var initLineSpacing = getLineHeight(that.container);
+        that.initialFontSize = parseFloat(that.container.css("font-size"));        
+        var initialLineSpacing = getLineHeight(that.container);
         
         /**
          * Transforms the interface based on the settings in that.model
@@ -261,8 +252,8 @@ var fluid_1_4 = fluid_1_4 || {};
             that.container.removeClass(clashingClassnames);
             addStyles(that.container, that.model, that.options.classnameMap);
             styleElements(that.container, !isTrue(that.model.backgroundImages), that.options.classnameMap.noBackgroundImages);
-            that.setTextSize(that.container, that.model.textSize, that.initFontSize);
-            setLineSpacing(that.container, that.model.lineSpacing, initLineSpacing, that.model.textSize);
+            that.setTextSize(that.container, that.model.textSize, that.initialFontSize);
+            setLineSpacing(that.container, that.model.lineSpacing, initialLineSpacing, that.model.textSize);
             setToc(that, that.model.toc);
             styleLinks(that.container, that.model, that.options.classnameMap);
             styleLayout(that.container, that.model, that.options.classnameMap);
@@ -281,7 +272,7 @@ var fluid_1_4 = fluid_1_4 || {};
         );
 
         clashingClassnames = clearClashingClasses(that.container, that.options.classnameMap);
-        setupUIEnhancer(that);
+        that.applier.requestChange("", that.settingsStore.fetch());
         return that;
     };
 
