@@ -64,12 +64,6 @@ var demo = demo || {};
             },
             fixLabel: {
                 messagekey: "fixLabel"
-            },
-            sections: {
-                decorators: {
-                    type: "jQuery",
-                    func: "tabs"
-                }
             }
         };
         
@@ -81,12 +75,17 @@ var demo = demo || {};
         preInitFunction: "demo.cssFixApplier.preInit",
         finalInitFunction: "demo.cssFixApplier.finalInit",
         produceTree: "demo.cssFixApplier.produceTree",
+        components: {
+            tabs: {
+                type: "fluid.tabs",
+                container: "{demo.cssFixApplier}.container"
+            }          
+        },        
         selectors: {
             fixLabel: ".democ-cssFix-fixLabel",
             fixChoice: ".democ-cssFix-fixChoice",
             fixContainer: ".democ-cssFix-fixContainer",
-            fixDescription: ".democ-cssFix-fixDescription",
-            sections: ".democ-cssFix-sections"
+            fixDescription: ".democ-cssFix-fixDescription"
         },
         selectorsToIgnore: ["fixContainer", "fixDescription"],
         styles: {
