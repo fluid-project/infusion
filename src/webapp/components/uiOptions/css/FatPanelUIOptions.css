@@ -1,4 +1,4 @@
-/* UI Options Fat Panel styles */
+/* UI Options Fat Panel styles */
 
 .fl-uiOptions-fatPanel {
 	min-width: 960px;
@@ -41,6 +41,10 @@
 	color: #000;	
 }
 
+.fl-theme-blackYellow .fl-uiOptions-fatPanel #reset {
+	background-color: #000;
+	color: #ffff00;	
+}
 
 /* Form */
 .fl-uiOptions-fatPanel .fl-uiOptions-text li {
@@ -114,7 +118,6 @@
 /* jQuery UI Tabs style overrides */
 .fl-uiOptions-fatPanel  .ui-tabs .ui-tabs-nav { margin: 0; padding: .2em .2em 0; }
 .fl-uiOptions-fatPanel  .ui-tabs .ui-tabs-nav li { list-style: none; float: left; position: relative; top: 1px; margin: 0 .2em 1px 0; border-bottom: 0 !important; padding: 0; white-space: nowrap; }
-/*.fl-theme-hc .ui-widget, .fl-theme-hci .ui-widget, .fl-theme-blackYellow .ui-widget { font-family: "Myriad Pro",Helvetica,Arial,sans-serif; }*/
 .fl-uiOptions-fatPanel .ui-widget { font-family: "Myriad Pro",Helvetica,Arial,sans-serif; }
 
 .ui-tabs { padding: 0px; }
@@ -143,7 +146,7 @@
 .fl-theme-hci .fl-tabs {border-bottom: 1px solid #FFF;}
 
 .fl-theme-blackYellow .ui-widget-header { background: #fff;}
-.fl-theme-blackYellow .fl-uiOptions-fatPanel ul.fl-tabs  { background-color: #ffff00; }
+.fl-theme-blackYellow .fl-uiOptions-fatPanel ul.fl-tabs  { background-color: #000; }
 .fl-theme-blackYellow .fl-tabs {border-bottom: 1px solid #000;}
 
 
@@ -151,10 +154,11 @@
 .fl-theme-hci .fl-uiOptions-reset, .fl-theme-hci .fl-uiOptions-fatPanel .fl-tabs a { background-color: #fff; color: #000; }
 .fl-theme-hci .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #000; color: #fff; }
 
-.fl-theme-blackYellow .fl-uiOptions-reset, .fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-tabs a { background-color: #ffff00; color: #000; }
-.fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #000; color: #fff; }
-.fl-theme-blackYellow .ui-widget-header .ui-state-default {background: none no-repeat scroll 0% 0% #ffff00; }
-.fl-theme-blackYellow .ui-tabs .fl-tabs li {background-color: #ffff00; }
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-uiOptions-reset  { background-color: #000; color: #ffff00; }
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-uiOptions-reset, .fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-tabs a { background-color: #000; color: #ffff00; }
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #ffff00; color: #000; }
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .ui-widget-header .ui-state-default {background: none no-repeat scroll 0% 0% #000; }
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .ui-tabs .fl-tabs li {background-color: #000; }
 
 .fl-theme-blackYellow .ui-widget-header .ui-state-default {
 border-width:0px;
