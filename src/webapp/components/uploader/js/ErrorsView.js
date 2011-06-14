@@ -27,7 +27,7 @@ var fluid_1_4 = fluid_1_4 || {};
         finalInitFunction: "fluid.uploader.errorsView.finalInit",
         
         components: {
-            // TODO: This won't scale nicely to more types of errors. 
+            // TODO: This won't scale nicely with more types of errors. 
             fileSizeErrorSection: {
                 type: "fluid.uploader.errorsView.section",
                 container: "{errorsView}.dom.fileSizeErrorSection",
@@ -44,7 +44,7 @@ var fluid_1_4 = fluid_1_4 || {};
             
             numFilesErrorSection: {
                 type: "fluid.uploader.errorsView.section",
-                container: "{errorsView}.dom.numFilesErorSection",
+                container: "{errorsView}.dom.numFilesErrorSection",
                 options: {
                     model: {
                         errorCode: fluid.uploader.queueErrorConstants.QUEUE_LIMIT_EXCEEDED
@@ -58,13 +58,13 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         
         selectors: {
-            errorHeader: ".flc-uploader-erroredHeader",
-            numFilesErorSection: ".flc-uploader-exceededFileLimit-template",
+            header: ".flc-uploader-erroredHeader",
+            numFilesErrorSection: ".flc-uploader-exceededFileLimit-template",
             fileSizeErrorSection: ".flc-uploader-exceededUploadLimit-template"
         },
         
         strings: {
-            errorTemplateHeader: "Warning(s)",
+            headerText: "Warning(s)",
             exceedsNumFilesLimit: "Too many files were selected. %numFiles were not added to the queue.",
             exceedsFileSize: "%numFiles files were too large and were not added to the queue."
         }
@@ -87,7 +87,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uploader.errorsView.finalInit = function (that) {
         that.sections = [that.fileSizeErrorSection, that.numFilesErrorSection];
-        that.locate("errorHeader").text(that.options.strings.errorTemplateHeader);
+        that.locate("header").text(that.options.strings.headerText);
         that.container.hide();
     };
 
@@ -112,19 +112,22 @@ var fluid_1_4 = fluid_1_4 || {};
             showingDetails: false
         },
         
+        events: {
+            afterErrorsCleared: null
+        },
+        
         selectors: {
             deleteErrorButton: ".flc-uploader-erroredButton",
-            toggleErrorBodyButton: ".flc-uploader-errored-bodyButton",
-            errorBodyTogglable: ".flc-uploader-erroredBody-togglable",
+            showHideFilesToggle: ".flc-uploader-errored-bodyButton",
+            errorDetails: ".flc-uploader-erroredBody-togglable",
             errorTitle: ".flc-uploader-erroredTitle",
             erroredFiles: ".flc-uploader-erroredFiles"
         },
         
         strings: {
-            errorTemplateButtonSpan: "Remove error",
-            errorTemplateHideThisList: "Hide files",
-            errorTemplateWhichOnes: "Show files",
-            errorTemplateFilesListing: "%files, "
+            hideFiles: "Hide files",
+            showFiles: "Show files",
+            fileListDelimiter: ", "
         }
     });
     
@@ -135,14 +138,14 @@ var fluid_1_4 = fluid_1_4 || {};
         };
         
         that.showDetails = function () {
-            that.locate("errorBodyTogglable").show();
-            that.locate("toggleErrorBodyButton").text(that.options.strings.errorTemplateHideThisList);
+            that.locate("errorDetails").show();
+            that.locate("showHideFilesToggle").text(that.options.strings.hideFiles);
             that.model.showingDetails = true;
         };
         
         that.hideDetails = function () {
-            that.locate("errorBodyTogglable").hide();
-            that.locate("toggleErrorBodyButton").text(that.options.strings.errorTemplateWhichOnes);
+            that.locate("errorDetails").hide();
+            that.locate("showHideFilesToggle").text(that.options.strings.showFiles);
             that.model.showingDetails = false;
         };
         
@@ -155,6 +158,8 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.clear = function () {
             that.model.files = [];
+            that.refreshView();
+            that.events.afterErrorsCleared.fire();
         };
         
         that.refreshView = function () {
@@ -172,10 +177,10 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uploader.errorsView.section.finalInit = function (that) {        
         // Bind delete button
-        that.locate("deleteErrorButton").click(that.clear); // TODO: This isn't working
+        that.locate("deleteErrorButton").click(that.clear);
 
         // Bind hide/show error details link
-        that.locate("toggleErrorBodyButton").click(that.toggleDetails);
+        that.locate("showHideFilesToggle").click(that.toggleDetails);
         
         // Sections should be hidden on startup.
         that.refreshView();
@@ -190,8 +195,8 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uploader.errorsView.section.renderDetailsToggle = function (that) {
-        that.locate("toggleErrorBodyButton").text(that.options.strings.errorTemplateWhichOnes);
-        that.locate("errorBodyTogglable").hide();
+        that.locate("showHideFilesToggle").text(that.options.strings.showFiles);
+        that.locate("errorDetails").hide();
     };
     
     fluid.uploader.errorsView.section.renderErrorBody = function (that) {
@@ -202,18 +207,22 @@ var fluid_1_4 = fluid_1_4 || {};
         var filesList = "";        
         for (var i = 0; i < that.model.files.length - 1; i++) {
             var file = that.model.files[i];
-            filesList += file + ", ";
+            filesList += file + that.options.strings.fileListDelimiter;
         }
         filesList += that.model.files[that.model.files.length - 1];
 
         that.locate("erroredFiles").text(filesList);
     };
     
-    fluid.demands("fluid.uploader.errorsView.section", "fluid.uploader.multiFileUploader", {
+    fluid.demands("fluid.uploader.errorsView.section", [
+        "fluid.uploader.errorsView", 
+        "fluid.uploader.multiFileUploader"
+    ], {
         options: {
             listeners: {                
                 "{multiFileUploader}.events.onQueueError": "{section}.addFile",
-                "{multiFileUploader}.events.onFilesSelected": "{section}.clear" // TODO: Not working 
+                "{multiFileUploader}.events.onFilesSelected": "{section}.clear",
+                "{section}.events.afterErrorsCleared": "{errorsView}.refreshView"
             }
         }
     });
