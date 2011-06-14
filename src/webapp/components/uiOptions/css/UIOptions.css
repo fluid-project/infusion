@@ -5,10 +5,6 @@
     font-size: 0.85em;
 }
 
-.fl-uiOptions .fl-uiOptions-option-description {
-    font-size: 1.1em;
-    padding-top: 5px;
-}
 
 /* Form list */
 .fl-uiOptions ul {
@@ -23,10 +19,11 @@
 	text-transform: uppercase;
 	font-size: 1.2em;
 }
-.fl-uiOptions-option-description {
+.fl-uiOptions .fl-uiOptions-option-description {
 	color: #4D4D4D;
 	margin-bottom: 0px;
 	padding-top: 5px;
+    font-size: 1.1em;
 }
 
 /* text and display section */
@@ -137,15 +134,15 @@
 .fl-theme-blackYellow .ui-slider-horizontal .ui-slider-handle,
 .fl-theme-yellowBlack .ui-slider-horizontal .ui-slider-handle { margin-top: -5px; }
 
-.fl-theme-hc .fl-uiOptions .fl-slider {background-color:#000;}
+.fl-theme-hc .fl-uiOptions .fl-slider { background: none; background-color:#000;}
 .fl-theme-hc .fl-uiOptions .fl-slider .fl-handle, 
 .fl-theme-hc .fl-uiOptions .fl-slider a,
-.fl-theme-hc .fl-uiOptions .fl-slider a:hover {border:1px solid #000 !important; background-color:#fff !important;}
+.fl-theme-hc .fl-uiOptions .fl-slider a:hover {border:1px solid #000; background-color:#fff;}
 
-.fl-theme-hci .fl-uiOptions .fl-slider {background-color:#fff;}
+.fl-theme-hci .fl-uiOptions .fl-slider { background: none; background-color:#fff;}
 .fl-theme-hci .fl-uiOptions .fl-slider .fl-handle, 
 .fl-theme-hci .fl-uiOptions .fl-slider a,
-.fl-theme-hci .fl-uiOptions .fl-slider a:hover {border:1px solid #fff !important; background-color:#000 !important;}
+.fl-theme-hci .fl-uiOptions .fl-slider a:hover {border:1px solid #fff; background-color:#000;}
 .fl-theme-hci .fl-uiOptions .fl-text-slider-left { background-image: url("../images/hci/uio_icon_smallA_white_10x10.png"); }
 .fl-theme-hci .fl-uiOptions .fl-text-slider-right { background-image: url("../images/hci/uio_icon_bigA_white_20x20.png"); }
 .fl-theme-hci .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/hci/uio_icon_linesNarrow_white_16x12.png"); }
@@ -153,10 +150,10 @@
 .fl-theme-hci .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/hci/uio_icon_save_white_13x13.png"); }
 .fl-theme-hci .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/hci/uio_icon_cancel_white_13x13.png"); }
 
-.fl-theme-yellowBlack .fl-uiOptions .fl-slider {background-color:#fff;}
+.fl-theme-yellowBlack .fl-uiOptions .fl-slider {background: none; background-color:#fff;}
 .fl-theme-yellowBlack .fl-uiOptions .fl-slider .fl-handle, 
 .fl-theme-yellowBlack .fl-uiOptions .fl-slider a,
-.fl-theme-yellowBlack .fl-uiOptions .fl-slider a:hover {border:1px solid #fff !important; background-color:#000 !important;}
+.fl-theme-yellowBlack .fl-uiOptions .fl-slider a:hover {border:1px solid #fff; background-color:#000;}
 .fl-theme-yellowBlack .fl-uiOptions .fl-text-slider-left { background-image: url("../images/yellowBlack/uio_icon_smallA_yellow_10x10.png"); }
 .fl-theme-yellowBlack .fl-uiOptions .fl-text-slider-right { background-image: url("../images/yellowBlack/uio_icon_bigA_yellow_20x20.png"); }
 .fl-theme-yellowBlack .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/yellowBlack/uio_icon_linesNarrow_yellow_16x12.png"); }
