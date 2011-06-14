@@ -768,12 +768,12 @@ var fluid_1_4 = fluid_1_4 || {};
         that.events.onReady.fire();
     };
 
-    fluid.demands("fluid.uiOptions.preview.eventBinder", "fluid.uiOptions.livePreview", {
-        options: {
-            listeners: {
-                "{uiOptions}.events.modelChanged": "{livePreview}.updateModel"
-            }
-        }
-    });
+    // fluid.demands("fluid.uiOptions.preview.eventBinder", "fluid.uiOptions.livePreview", {
+    //     options: {
+    //         listeners: {
+    //             "{uiOptions}.events.modelChanged": "{livePreview}.updateModel"
+    //         }
+    //     }
+    // });
 
 })(jQuery, fluid_1_4);
