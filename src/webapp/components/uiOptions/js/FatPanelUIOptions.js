@@ -50,7 +50,8 @@ var fluid_1_4 = fluid_1_4 || {};
                     type: "fluid.tabs",
                     container: "{fatPanelUIOptions}.container",      
                     createOnEvent: "onReady"               
-                }               
+                },
+                settingsStore: "{uiEnhancer}.settingsStore"
             },    
             autoSave: true
         }
