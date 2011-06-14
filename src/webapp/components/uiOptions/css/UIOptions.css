@@ -35,10 +35,12 @@
 
 .fl-uiOptions .fl-uiOptions-text .fl-inputs {
 	float: left;
+	font-size: 1em;
 }
 
 .fl-uiOptions input[type="text"] {
 	width:2em;
+	font-size: 1em;
 }
 
 /* Slider position */
@@ -93,6 +95,7 @@
 .fl-uiOptions .fl-slider {position:relative; background-color:#555555; padding:0; margin-top:8px;}
 .fl-uiOptions .fl-slider .fl-handle, .fl-slider a {position:absolute; display:block; height:32px; width:32px; top:0; left:0;}
 .fl-uiOptions .fl-slider a { background-image:url('../images/uio_icon_sliderhandle.png'); background-repeat:no-repeat; background-position:center center; bottom: 16px;}
+.fl-uiOptions .fl-slider a:active { outline: none; }
 .fl-uiOptions .fl-slider-vert .fl-handle, .fl-slider-vert a {margin-left:-0.2em; margin-top:-0.5em;}
 .fl-uiOptions .fl-slider-horz .fl-handle, .fl-slider-horz a {margin-top:-14px; margin-left:-14px;}
 .fl-uiOptions .fl-text-slider-left { 

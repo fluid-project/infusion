@@ -33,6 +33,7 @@
     padding: 5px;
 	height: 2.5em;
     margin-right: 3px;
+    background-color: #F0F0F0;
 }
 
 .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save {
@@ -40,31 +41,31 @@
 	/* background: -moz-linear-gradient(bottom, #e0e0e0, #fff;) */
 	background-image: url("../images/uio_icon_save_13x13.png");
 	background-repeat: no-repeat;
-	background-position: 5px 9px;
+	background-position: 0.4em 0.75em;
 }
 
 .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel {
 	padding-left: 20px;
 	background-image: url("../images/uio_icon_cancel_13x13.png");
 	background-repeat: no-repeat;
-	background-position: 5px 9px;
+	background-position: 0.4em 0.75em;
 }
 
 /* header icons */
 .fl-uiOptions .fl-uiOptions-text-icon {
 	background-image: url("../images/uio_icon_textanddisplay_18x18.png");
 	background-repeat: no-repeat;
-	background-position: 0px 13px;
+	background-position: 0px 0.7em;
 }
 .fl-uiOptions .fl-uiOptions-layout-icon {
 	background-image: url("../images/uio_icon_layoutandnavigation_18x18.png");
 	background-repeat: no-repeat;
-	background-position: 0px 13px;	
+	background-position: 0px 0.7em;	
 }
 .fl-uiOptions .fl-uiOptions-links-icon {
 	background-image: url("../images/uio_icon_linksandbuttons_18x18.png");
 	background-repeat: no-repeat;
-	background-position: 0px 13px;	
+	background-position: 0px 0.7em;	
 }
 
 /* THEME DATA */
