@@ -27,21 +27,29 @@ var fluid_1_4 = fluid_1_4 || {};
         finalInitFunction: "fluid.uploader.errorsView.finalInit",
         
         components: {
-            // TODO: This won't scale to more errors. Error types themselves need to be part of a model.
-            fileSizeErrorPanel: {
-                type: "fluid.uploader.errorsView.panel",
-                container: "{errorsView}.dom.fileSizeErrorPanel",
+            // TODO: This won't scale nicely to more types of errors. 
+            fileSizeErrorSection: {
+                type: "fluid.uploader.errorsView.section",
+                container: "{errorsView}.dom.fileSizeErrorSection",
                 options: {
+                    model: {
+                        errorCode: fluid.uploader.queueErrorConstants.FILE_EXCEEDS_SIZE_LIMIT
+                    },
+                    
                     strings: {
                         header: "{errorsView}.options.strings.exceedsFileSize"
                     }
                 }
             },
             
-            numFilesErrorPanel: {
-                type: "fluid.uploader.errorsView.panel",
-                container: "{errorsView}.dom.numFilesErorPanel",
+            numFilesErrorSection: {
+                type: "fluid.uploader.errorsView.section",
+                container: "{errorsView}.dom.numFilesErorSection",
                 options: {
+                    model: {
+                        errorCode: fluid.uploader.queueErrorConstants.QUEUE_LIMIT_EXCEEDED
+                    },
+                    
                     strings: {
                         header: "{errorsView}.options.strings.exceedsNumFilesLimit"
                     }
@@ -51,8 +59,8 @@ var fluid_1_4 = fluid_1_4 || {};
         
         selectors: {
             errorHeader: ".flc-uploader-erroredHeader",
-            numFilesErorPanel: ".flc-uploader-exceededFileLimit-template",
-            fileSizeErrorPanel: ".flc-uploader-exceededUploadLimit-template"
+            numFilesErorSection: ".flc-uploader-exceededFileLimit-template",
+            fileSizeErrorSection: ".flc-uploader-exceededUploadLimit-template"
         },
         
         strings: {
@@ -63,43 +71,12 @@ var fluid_1_4 = fluid_1_4 || {};
     });
 
     fluid.uploader.errorsView.preInit = function (that) {
-        that.showPanels = function () {
-            fluid.each(that.panels, function (panel) {
-                panel.show();
-            });
-        };
-        
-        that.hidePanels = function () {
-            fluid.each(that.panels, function (panel) {
-                panel.hide();
-            });
-        };
-        
-        /**
-         * Add the specified error to the list of errors
-         * @param (string)   The filename of the file which introduced the error.
-         * @param (string) The ID of the error box. 
-         */
-        that.addError = function (file, error) {
-            // TODO: Won't scale with more error types.
-            var panelForError = error === fluid.uploader.queueErrorConstants.FILE_EXCEEDS_SIZE_LIMIT ?
-                that.fileSizeErrorPanel : that.numFilesErrorPanel;
-            panelForError.addFile(file);
-        };
-        
-        that.clearAllErrors = function () {
-            fluid.each(that.panels, function (panel) {
-                panel.clear();
-            });
-            that.refreshView();
-        };  
-        
         that.refreshView = function () {
-            // TODO: This is pretty snarly.
             var hasErrors = false;
-            fluid.each(that.panels, function (panel) {
-                hasErrors = (panel.model.files.length > 0);
+            fluid.each(that.sections, function (section) {
+                hasErrors = (section.model.files.length > 0);
             });
+            
             if (hasErrors) {
                 that.container.show();
             } else {
@@ -109,9 +86,8 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uploader.errorsView.finalInit = function (that) {
-        that.panels = [that.fileSizeErrorPanel, that.numFilesErrorPanel];
+        that.sections = [that.fileSizeErrorSection, that.numFilesErrorSection];
         that.locate("errorHeader").text(that.options.strings.errorTemplateHeader);
-        that.hidePanels();
         that.container.hide();
     };
 
@@ -119,20 +95,19 @@ var fluid_1_4 = fluid_1_4 || {};
         container: "{multiFileUploader}.options.selectors.errors", // TODO: Why can't I bind to {multiFileUploader}.dom.errors?
         options: {            
             listeners: {
-                "{multiFileUploader}.events.onFilesSelected": "{errorsView}.clearAllErrors",
                 "{multiFileUploader}.events.afterFileDialog": "{errorsView}.refreshView",
-                "{multiFileUploader}.events.onQueueError": "{errorsView}.addError",
                 "{multiFileUploader}.events.onUploadStart": "{errorsView}.clearAllErrors"
             }
         }
     });
     
-    fluid.defaults("fluid.uploader.errorsView.panel", {
+    fluid.defaults("fluid.uploader.errorsView.section", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        preInitFunction: "fluid.uploader.errorsView.panel.preInit",
-        finalInitFunction: "fluid.uploader.errorsView.panel.finalInit",
+        preInitFunction: "fluid.uploader.errorsView.section.preInit",
+        finalInitFunction: "fluid.uploader.errorsView.section.finalInit",
         
         model: {
+            errorCode: undefined,
             files: [],
             showingDetails: false
         },
@@ -153,15 +128,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.uploader.errorsView.panel.preInit = function (that) {
-        that.show = function () {
-            that.container.show();
-        };
-        
-        that.hide = function () {
-            that.container.hide();
-        };
-        
+    fluid.uploader.errorsView.section.preInit = function (that) {
         that.toggleDetails = function () {
             var detailsAction = that.model.showingDetails ? that.hideDetails : that.showDetails;
             detailsAction();
@@ -179,9 +146,11 @@ var fluid_1_4 = fluid_1_4 || {};
             that.model.showingDetails = false;
         };
         
-        that.addFile = function (file) {
-            that.model.files.push(file.name);
-            that.refreshView();
+        that.addFile = function (file, errorCode) {
+            if (errorCode === that.model.errorCode) {
+                that.model.files.push(file.name);
+                that.refreshView();
+            }
         };
         
         that.clear = function () {
@@ -190,26 +159,29 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.refreshView = function () {
             if (that.model.files.length <= 0) {
-                that.hide();
+                that.container.hide();
                 return;
             }
             
-            fluid.uploader.errorsView.panel.renderHeader(that);
-            fluid.uploader.errorsView.panel.renderErrorBody(that);
-            fluid.uploader.errorsView.panel.renderDetailsToggle(that);
-            that.show();
+            fluid.uploader.errorsView.section.renderHeader(that);
+            fluid.uploader.errorsView.section.renderErrorBody(that);
+            fluid.uploader.errorsView.section.renderDetailsToggle(that);
+            that.container.show();
         };
     };
     
-    fluid.uploader.errorsView.panel.finalInit = function (that) {        
+    fluid.uploader.errorsView.section.finalInit = function (that) {        
         // Bind delete button
-        that.locate("deleteErrorButton").click(that.clear);
+        that.locate("deleteErrorButton").click(that.clear); // TODO: This isn't working
 
         // Bind hide/show error details link
         that.locate("toggleErrorBodyButton").click(that.toggleDetails);
+        
+        // Sections should be hidden on startup.
+        that.refreshView();
     };
     
-    fluid.uploader.errorsView.panel.renderHeader = function (that) {
+    fluid.uploader.errorsView.section.renderHeader = function (that) {
         var errorTitle = fluid.stringTemplate(that.options.strings.header, {
             numFiles: that.model.files.length
         });
@@ -217,22 +189,32 @@ var fluid_1_4 = fluid_1_4 || {};
         that.locate("errorTitle").text(errorTitle);         
     };
     
-    fluid.uploader.errorsView.panel.renderDetailsToggle = function (that) {
+    fluid.uploader.errorsView.section.renderDetailsToggle = function (that) {
         that.locate("toggleErrorBodyButton").text(that.options.strings.errorTemplateWhichOnes);
         that.locate("errorBodyTogglable").hide();
     };
     
-    fluid.uploader.errorsView.panel.renderErrorBody = function (that) {
-        var errorStr = "";
-        fluid.each(that.model.files, function (fileName, idx) {
-            // TODO: Why are we string templating this?
-            errorStr = fluid.stringTemplate(that.options.strings.errorTemplateFilesListing, {
-                files: errorStr + fileName
-            });
-        });
-        // Take out the extra comma and the space
-        // TODO: Umm?
-        that.locate("erroredFiles").text(errorStr.substring(0, errorStr.length - 2));
+    fluid.uploader.errorsView.section.renderErrorBody = function (that) {
+        if (that.model.files.length === 0) {
+            return;
+        }
+        
+        var filesList = "";        
+        for (var i = 0; i < that.model.files.length - 1; i++) {
+            var file = that.model.files[i];
+            filesList += file + ", ";
+        }
+        filesList += that.model.files[that.model.files.length - 1];
+
+        that.locate("erroredFiles").text(filesList);
     };
     
+    fluid.demands("fluid.uploader.errorsView.section", "fluid.uploader.multiFileUploader", {
+        options: {
+            listeners: {                
+                "{multiFileUploader}.events.onQueueError": "{section}.addFile",
+                "{multiFileUploader}.events.onFilesSelected": "{section}.clear" // TODO: Not working 
+            }
+        }
+    });
 })(jQuery, fluid_1_4);
