@@ -94,6 +94,8 @@
 	background-repeat: no-repeat;
 	background-position: 10px 5px;
 }
+
+/* Tab images - default */
 .fl-uiOptions-fatPanel .fl-tab-text { background-image: url('../images/uio_icon_textanddisplay_inverted_16x16.png'); }
 .fl-uiOptions-fatPanel .fl-tab-layout { background-image: url('../images/uio_icon_layoutandnavigation_inverted_16x16.png'); }
 .fl-uiOptions-fatPanel .fl-tab-links { background-image: url('../images/uio_icon_linksandbuttons_inverted_16x16.png'); }
@@ -102,6 +104,47 @@
 .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-layout { background-image: url('../images/uio_icon_layoutandnavigation_16x16.png'); }
 .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-links { background-image: url('../images/uio_icon_linksandbuttons_16x16.png'); }
 .fl-uiOptions-fatPanel #reset { background-image: url('../images/uio_icon_reset_16x16.png'); }
+
+/* Tab images - yellow-black */
+.fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-tab-text { background-image: url('../images/yellowBlack/uio_icon_textanddisplay_black_18x18.png'); }
+.fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-tab-layout { background-image: url('../images/yellowBlack/uio_icon_layoutandnavigation_black_18x18.png'); }
+.fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-tab-links { background-image: url('../images/yellowBlack/uio_icon_linksandbuttons_black_18x18.png'); }
+.fl-theme-yellowBlack .fl-uiOptions-fatPanel #reset { background-image: url('../images/yellowBlack/uio_icon_reset_black_16x16.png'); }
+
+.fl-theme-yellowBlack .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-text { background-image: url('../images/yellowBlack/uio_icon_textanddisplay_yellow_18x18.png'); }
+.fl-theme-yellowBlack .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-layout { background-image: url('../images/yellowBlack/uio_icon_layoutandnavigation_yellow_18x18.png'); }
+.fl-theme-yellowBlack .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-links { background-image: url('../images/yellowBlack/uio_icon_linksandbuttons_yellow_18x18.png'); }
+
+/* Tab images - black-yellow */
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-tab-text { background-image: url('../images/blackYellow/uio_icon_textanddisplay_yellow_18x18.png'); }
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-tab-layout { background-image: url('../images/blackYellow/uio_icon_layoutandnavigation_yellow_18x18.png'); }
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-tab-links { background-image: url('../images/blackYellow/uio_icon_linksandbuttons_yellow_18x18.png'); }
+.fl-theme-blackYellow .fl-uiOptions-fatPanel #reset { background-image: url('../images/blackYellow/uio_icon_reset_yellow_16x16.png'); }
+
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-text { background-image: url('../images/blackYellow/uio_icon_textanddisplay_black_18x18.png'); }
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-layout { background-image: url('../images/blackYellow/uio_icon_layoutandnavigation_black_18x18.png'); }
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-links { background-image: url('../images/blackYellow/uio_icon_linksandbuttons_black_18x18.png'); }
+
+/* Tab images - white on black */
+.fl-theme-hci .fl-uiOptions-fatPanel .fl-tab-text { background-image: url('../images/hci/uio_icon_textanddisplay_black_18x18.png'); }
+.fl-theme-hci .fl-uiOptions-fatPanel .fl-tab-layout { background-image: url('../images/hci/uio_icon_layoutandnavigation_black_18x18.png'); }
+.fl-theme-hci .fl-uiOptions-fatPanel .fl-tab-links { background-image: url('../images/hci/uio_icon_linksandbuttons_black_18x18.png'); }
+.fl-theme-hci .fl-uiOptions-fatPanel #reset { background-image: url('../images/hci/uio_icon_reset_black_16x16.png'); }
+
+.fl-theme-hci .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-text { background-image: url('../images/hci/uio_icon_textanddisplay_white_18x18.png'); }
+.fl-theme-hci .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-layout { background-image: url('../images/hci/uio_icon_layoutandnavigation_white_18x18.png'); }
+.fl-theme-hci .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-links { background-image: url('../images/hci/uio_icon_linksandbuttons_white_18x18.png'); }
+
+/* Tab images - black on white */
+.fl-theme-hc .fl-uiOptions-fatPanel .fl-tab-text { background-image: url('../images/hc/uio_icon_textanddisplay_white_18x18.png'); }
+.fl-theme-hc .fl-uiOptions-fatPanel .fl-tab-layout { background-image: url('../images/hc/uio_icon_layoutandnavigation_white_18x18.png'); }
+.fl-theme-hc .fl-uiOptions-fatPanel .fl-tab-links { background-image: url('../images/hc/uio_icon_linksandbuttons_white_18x18.png'); }
+.fl-theme-hc .fl-uiOptions-fatPanel #reset { background-image: url('../images/hc/uio_icon_reset_white_16x16.png'); }
+
+.fl-theme-hc .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-text { background-image: url('../images/hc/uio_icon_textanddisplay_black_18x18.png'); }
+.fl-theme-hc .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-layout { background-image: url('../images/hc/uio_icon_layoutandnavigation_black_18x18.png'); }
+.fl-theme-hc .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-links { background-image: url('../images/hc/uio_icon_linksandbuttons_black_18x18.png'); }
+
 
 /
  * jQuery UI Tabs 1.8.12
@@ -162,6 +205,8 @@
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #ffff00; color: #000; }
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .ui-widget-header .ui-state-default {background: none no-repeat scroll 0% 0% #000; }
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .ui-tabs .fl-tabs li {background-color: #000; }
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .ui-widget-content { background:0; color: #000;}
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-slider {background-color: #000;}
 
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel  ul.fl-tabs  { background-color: #ffff00; }
@@ -170,6 +215,9 @@
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #000; color: #ffff00 }
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .ui-widget-header .ui-state-default {background: none no-repeat scroll 0% 0% #ffff00; }
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .ui-tabs .fl-tabs li {background-color: #ffff00; }
+.fl-theme-yellowBlack .fl-uiOptions-fatPanel .ui-widget-content { background:0; color: #ffff00;}
+.fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider .fl-handle, .fl-theme-yellowBlack  .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider a { border: 1px solid #ffff00;}
+.fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-slider {background-color: #ffff00;}
 
 /* Sliders */
 .fl-uiOptions-fatPanel .fl-slider a { background-image:url('../images/uio_icon_sliderhandle.png');}
