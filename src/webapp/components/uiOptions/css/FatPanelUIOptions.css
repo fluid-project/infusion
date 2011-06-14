@@ -1,4 +1,4 @@
-/* UI Options Fat Panel styles */
+/* UI Options Fat Panel styles */
 
 .fl-uiOptions-fatPanel {
 	min-width: 960px;
@@ -73,7 +73,6 @@
 	text-transform: uppercase;
 	font-weight: bold;
 	border: 0px;	
-	margin-right: 10px;
 }
 
 .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a {
