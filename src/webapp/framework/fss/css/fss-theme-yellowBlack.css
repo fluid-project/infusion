@@ -1,0 +1,119 @@
+/*
+              Yellow on Black
+=============================================
+ * Color Schema:
+ *     DEFINITIONS:
+ *         yellow     : #ffff00
+ *         black     : #000000
+
+ */
+.fl-theme-yellowBlack .fl-focus:focus,
+.fl-theme-yellowBlack .fl-focus :focus,
+.fl-theme-yellowBlack.fl-focus :focus,
+.fl-theme-yellowBlack .selectable  {
+   /* themed focus indicator */
+   outline: 0.2em solid #F00;
+}
+
+.fl-theme-yellowBlack {color:#ff0; background-color:#000;}
+.fl-theme-yellowBlack div, .fl-theme-yellowBlack input {color:#ff0; background-color:#000;}
+.fl-theme-yellowBlack .fl-knockout {background:transparent !important; color:#ffff00;} /* a granular method for basic reset of appearance */
+.fl-theme-yellowBlack .fl-icon {color:#ffff00; background-image:none; background-color:#000000; text-indent:0; width:auto; height:auto; margin-left:0px; padding:0 2px; display:inline; font-weight:bold;}
+
+/* Links */
+.fl-theme-yellowBlack a  {color: #ffff00; font-weight:bold; background-color:#000000;}
+.fl-theme-yellowBlack a:hover {color: #000000; background-color:#ffff00;}
+.fl-theme-yellowBlack a:hover * {color: #000000; background-color:#ffff00;}
+
+/* Headers */
+.fl-theme-yellowBlack h1,
+.fl-theme-yellowBlack h2,
+.fl-theme-yellowBlack h3,
+.fl-theme-yellowBlack h4,
+.fl-theme-yellowBlack h5,
+.fl-theme-yellowBlack h6 {color:#ffff00; background-color:#000000; border-color:#ffff00; border-bottom:0.1em dashed #ffff00;}
+
+/* Tables */
+.fl-theme-yellowBlack th {border:0.1em solid #ffff00; background-color:#ffff00; color:#000000;}
+.fl-theme-yellowBlack td {border:0.1em solid #ffff00;}
+.fl-theme-yellowBlack .fl-textfield {}
+.fl-theme-yellowBlack .fl-textarea {}
+
+/* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
+.fl-theme-yellowBlack .fl-inlineEdit-edit {background-color:#ffff00; color:#000000; border: 0.1em solid #000000; padding:0.1em; margin:-0.1em;}
+
+/* Helper: Tabs */
+.fl-theme-yellowBlack .fl-tabs {border-bottom-color:#ffff00;}
+.fl-theme-yellowBlack .fl-tabs li,
+.fl-theme-yellowBlack .fl-tabs li *  {border-color:#ffff00; border-bottom-color:#ffff00; }
+.fl-theme-yellowBlack .fl-tabs li    {background-color:#ffff00;}
+.fl-theme-yellowBlack .fl-tabs li *  {color:#000000; font-weight:bold; background-color:#ffff00;text-decoration:none;}
+
+.fl-theme-yellowBlack .fl-tabs li:hover,
+.fl-theme-yellowBlack .fl-tabs li:hover *,
+.fl-theme-yellowBlack .fl-tabs li a:hover {color:#ffff00; background-color:#000000;}
+
+.fl-theme-yellowBlack .fl-tabs li.fl-tabs-active,
+.fl-theme-yellowBlack .fl-tabs li.fl-tabs-active a,
+.fl-theme-yellowBlack .fl-tabs li.fl-tabs-active a:hover, 
+
+.fl-theme-yellowBlack .fl-tabs li.fl-activeTab,
+.fl-theme-yellowBlack .fl-tabs li.fl-activeTab:hover,
+.fl-theme-yellowBlack .fl-tabs li.fl-activeTab a,
+.fl-theme-yellowBlack .fl-tabs li.fl-activeTab a:hover {background-color: #000000; border-bottom-color:#000000; color:#ffff00;}
+.fl-theme-yellowBlack .fl-tab-content {background-color:#000000; border:1px solid #ff0; border-top:none; color:#ffff00;}
+
+/* Helper: Menu */
+.fl-theme-yellowBlack .fl-listmenu, 
+.fl-theme-yellowBlack .fl-list-menu {border:1px solid #ffff00; border-bottom-width:2px; background-color:#000000;}
+.fl-theme-yellowBlack .fl-listmenu li, 
+.fl-theme-yellowBlack .fl-list-menu li,
+.fl-theme-yellowBlack .fl-listmenu li a, 
+.fl-theme-yellowBlack .fl-list-menu li a  {font-weight:bold; color:#ffff00; background-color:#000000; border-color:#ffff00; text-decoration:none;}
+.fl-theme-yellowBlack .fl-listmenu a:hover, 
+.fl-theme-yellowBlack .fl-list-menu a:hover {background-color:#ffff00; color:#000000;}
+.fl-theme-yellowBlack .fl-listmenu .fl-activemenu a, 
+.fl-theme-yellowBlack .fl-list-menu .fl-activemenu a,
+.fl-theme-yellowBlack .fl-listmenu .fl-activemenu a:hover, 
+.fl-theme-yellowBlack .fl-list-menu .fl-activemenu a:hover { background-color: #ffff00; border-bottom-color:#000000; color: #000000;}
+
+/* Helper: Thumbnail Grid */
+.fl-theme-yellowBlack .fl-grid {}
+.fl-theme-yellowBlack .fl-grid li {}
+.fl-theme-yellowBlack .fl-grid .fl-grid-caption {}
+
+/* Helper: buttons */
+.fl-theme-yellowBlack .fl-button-right, 
+.fl-theme-yellowBlack .fl-button-left, 
+.fl-theme-yellowBlack .fl-button-inner {padding:0;}
+
+/* Widget core */
+.fl-theme-yellowBlack .fl-widget {background-color:#ffff00; border:1px solid #000000;}
+.fl-theme-yellowBlack .fl-widget ul {}
+.fl-theme-yellowBlack .fl-widget h2 {color:#ffff00; background-color:#000000;}
+.fl-theme-yellowBlack .fl-widget a {color:#ffff00;}
+        
+/* Widget titlebar */
+.fl-theme-yellowBlack .fl-widget .fl-widget-titlebar {margin-bottom:3px;}
+
+/* Widget options */
+.fl-theme-yellowBlack .fl-widget .fl-widget-options {padding:0px;}
+.fl-theme-yellowBlack .fl-widget .fl-widget-options ul {} 
+.fl-theme-yellowBlack .fl-widget .fl-widget-options li {border-left:1px solid #000000;}
+.fl-theme-yellowBlack .fl-widget .fl-widget-options .icon {}
+.fl-theme-yellowBlack .fl-widget .fl-widget-options .viewOptions {}
+.fl-theme-yellowBlack .fl-widget .fl-widget-options .toggle {}
+    
+/* Widget content */
+.fl-theme-yellowBlack .fl-widget .fl-widget-content {background-color:#000000;}
+
+
+
+/* Component: Progressor */
+.fl-theme-yellowBlack .fl-progress-bounds {border-color:#ffff00; background-color:#000000;}
+.fl-theme-yellowBlack .fl-progress-fill {color:#000000; background-color:#ffff00;}
+
+/* Component: Uploader */
+
+/* States */
+.fl-theme-yellowBlack .fl-reorderer-dropMarker {background-color:#f00;}

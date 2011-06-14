@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Tabs Test Suite</title>
+
+        <!--  This is the jqUnit test css file -->
+        <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/demo-theme/jquery.ui.theme.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <!--  These are the required javascript modules for the Tabs -->
+        <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.tabs.js"></script>        
+        <script type="text/javascript" src="../../../../lib/jquery/plugins/ariaTabs/js/ui.ariaTabs.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
+        
+        <script type="text/javascript" src="../../../../components/tabs/js/Tabs.js"></script>
+
+        <!--  These are the jqUnit test framework js files -->
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>       
+
+        <!--  These are tests that have been written using this page as data and test supports -->
+        <script type="text/javascript" src="../js/TabsTests.js"></script>
+
+    </head>
+    <body>
+    <!-- This is the markup that jqUnit will look for when running tests and displaying the results -->
+    <h1 id="qunit-header">Tabs Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="main" class="container">      
+        <div class="flc-tabs">                
+            <ul>
+                <li><a href="#one">Tab One</a></li>
+                <li><a href="#two">Tab Two</a></li>
+                <li><a href="#three">Tab Three</a></li>
+            </ul>
+            <div id="one">
+                <h2>Tab One</h2>            
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque egestas risus malesuada sem consectetur eget congue massa ultricies. Ut dictum facilisis odio, nec rutrum diam ornare id. Integer eget placerat tellus.</p>                    
+            </div>
+            <div id="two">
+                <h2>Tab Two</h2>            
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque egestas risus malesuada sem consectetur eget congue massa ultricies. Ut dictum facilisis odio, nec rutrum diam ornare id. Integer eget placerat tellus.</p>                    
+            </div>
+            <div id="three">
+                <h2>Tab Three</h2>          
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque egestas risus malesuada sem consectetur eget congue massa ultricies. Ut dictum facilisis odio, nec rutrum diam ornare id. Integer eget placerat tellus.</p>                    
+            </div>          
+        </div>
+    </div>
+    </body>
+</html>

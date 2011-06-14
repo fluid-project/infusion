@@ -19,26 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 var fluid_1_4 = fluid_1_4 || {};
 
-(function ($, fluid) {
-
-
-    /**********************
-     * Tabs *
-     *********************/
-     
-    fluid.defaults("fluid.tabs", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],             
-        selectors: {
-            tabList: ".flc-tabs"
-        },
-        finalInitFunction: "fluid.tabs.finalInit"
-    });          
-    
-    fluid.tabs.finalInit = function (that) {
-        that.locate("tabList").tabs();  //jQuery UI Tabs
-    };
-    
-
+(function ($, fluid) {    
     /**********************
      * Fat Panel UI Options *
      *********************/
@@ -54,10 +35,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.slidingPanel",
                 priority: "last",
                 container: "{fatPanelUIOptions}.container"
-            }/*,          
-            uiEnhancer: {
-                type: "fluid.uiEnhancer"
-            }  */                      
+            }
         }
     });       
     
@@ -72,14 +50,14 @@ var fluid_1_4 = fluid_1_4 || {};
                     type: "fluid.tabs",
                     container: "{fatPanelUIOptions}.container",      
                     createOnEvent: "onReady"               
-                }               
+                },
+                settingsStore: "{uiEnhancer}.settingsStore"
             },    
             autoSave: true
         }
     });      
      
-    // Supply the templates
-    fluid.staticEnvironment.uiOptionsDemo = fluid.typeTag("fluid.uiOptionsDemo");
+    // Supply the templates for the demo
     fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsDemo", {
         options: {
             templates: {
@@ -98,5 +76,4 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });     
   
-        
 })(jQuery, fluid_1_4);

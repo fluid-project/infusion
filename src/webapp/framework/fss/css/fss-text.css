@@ -105,6 +105,7 @@
 .fl-font-verdana, .fl-font-verdana * {font-family: "Verdana";}
 .fl-font-times, .fl-font-times *   {font-family: Georgia, Times, "Times New Roman", serif;}
 .fl-font-courier, .fl-font-courier * {font-family: "Courier New", Courier, monospace;}
+.fl-font-comic-sans, .fl-font-comic-sans * {font-family: "Comic Sans MS", sans-serif;}
 
 .fl-text-align-left {
     text-align:left;

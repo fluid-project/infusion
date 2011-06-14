@@ -21,52 +21,66 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.setLogging(true);
         fluid.staticEnvironment.uiOptionsTests = fluid.typeTag("fluid.uiOptions.tests");
 
-        fluid.demands("settingsStore", ["fluid.uiEnhancer", "fluid.uiOptions.tests"], {
+        fluid.defaults("fluid.uiOptionsTests", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],            
+            components: {
+                uiOptions: {
+                    type: "fluid.uiOptions",
+                    container: "{uiOptionsTests}.container",
+                    options: "{uiOptionsTests}.options"
+                }
+            }
+        });       
+        
+        // Supply the templates
+        fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptions.tests", {
+            options: {
+                templates: {
+                    uiOptions: "../../../../components/uiOptions/html/FullPreviewUIOptions.html",
+                    textControls: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html",
+                    layoutControls: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html",
+                    linksControls: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                }
+            }
+        });
+
+        // Options for UIOptions
+        var saveCalled = false;
+
+        fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests"], {
+            options: {
+                components: {
+                    settingsStore: "{uiEnhancer}.settingsStore"
+                },
+                listeners: {
+                    onSave: function () {
+                        saveCalled = true;
+                    }
+                }
+            }
+        });
+     
+        fluid.demands("fluid.uiOptions.store", ["fluid.uiOptions.tests", "fluid.uiEnhancer"], {
             funcName: "fluid.tempStore"
         });
         
         var bwSkin = {
             textSize: "1.8",
             textFont: "verdana",
-            theme: "bw"
+            theme: "bw",
+            lineSpacing: 2
         };
         
         var bwSkin2 = {
-            textSize: "11",
+            textSize: "1.1",
             textFont: "italic",
-            theme: "bw"                
+            theme: "cw",
+            lineSpacing: 1
         };
             
-        var saveCalled = false;
-
-        var uiOptionsOptions = {
-            listeners: {
-                onSave: function () {
-                    saveCalled = true;
-                }
-            }
-        };
-
-        var enhancerOptions = {
-            savedSettings: fluid.defaults("fluid.uiEnhancer").defaultSiteSettings
-        };
-
-        var testUIOptions = function (testFn, uiOptionsTestOptions, enhancerTestOptions) {
-            // Supply the templates
-            fluid.staticEnvironment.uiOptionsDemo = fluid.typeTag("fluid.uiOptionsDemo");
-            fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsDemo", {
-                options: {
-                    templates: {
-                        uiOptions: "../../../../components/uiOptions/html/FullPreviewUIOptions.html",
-                        textControls: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html",
-                        layoutControls: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html",
-                        linksControls: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
-                    }
-                }
-            });
-
-            var uiEnhancer = fluid.pageEnhancer(fluid.merge(null, enhancerOptions, enhancerTestOptions)).uiEnhancer;
-            var uiOptions = fluid.uiOptions("#ui-options", fluid.merge(null, uiOptionsOptions, uiOptionsTestOptions));
+        var testUIOptions = function (testFn, enhancerTestOptions) {
+            var uiEnhancer = fluid.pageEnhancer(fluid.merge(null, enhancerTestOptions)).uiEnhancer;
+            var uiOptions = fluid.uiOptionsTests("#ui-options").uiOptions;
 
             uiOptions.events.onReady.addListener(function () {
                 testFn(uiOptions, uiEnhancer);
@@ -112,7 +126,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 uiOptions.save();
                 var container = $("body");
                 jqUnit.assertTrue("Save has been called", saveCalled);
-                jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiOptions.uiEnhancer.model.theme);
+                
+                var uiEnhancerSettings = uiOptions.settingsStore.fetch();
+                jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
                 jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-hc"));
                 jqUnit.assertEquals("Text size has been saved", bwSkin.textSize, uiOptions.model.selections.textSize);
                 jqUnit.assertEquals("Text font has been saved", bwSkin.textFont, uiOptions.model.selections.textFont);
@@ -140,7 +156,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 uiOptions.updateModel(bwSkin);
 
                 jqUnit.assertEquals("hc setting was set in the model", bwSkin.theme, uiOptions.model.selections.theme);
-                jqUnit.assertEquals("hc setting was not saved", "default", uiOptions.uiEnhancer.model.theme);
+
+                var uiEnhancerSettings = uiOptions.settingsStore.fetch();
+                jqUnit.assertEquals("hc setting was not saved", "default", uiEnhancerSettings.theme);
 
                 uiOptions.refreshControlsView();
                 var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
@@ -173,11 +191,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var settings = uiOptions.settingsStore.options.defaultSiteSettings;
                 
                 var themeValue = settings.theme;
-                jqUnit.assertEquals("The theme is is set to wb", "wb", themeValue);
+                jqUnit.assertEquals("The theme is set to wb", "wb", themeValue);
 
                 var fontValue = settings.textFont;
-                jqUnit.assertEquals("The font is is set to times", "times", fontValue);
-            }, null, enhancerOpts);
+                jqUnit.assertEquals("The font is set to times", "times", fontValue);
+            }, enhancerOpts);
         });
 
 
@@ -188,38 +206,125 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tests.asyncTest("Preview URL", function () {
             expect(1);
             
-            var templateUrl = "TestPreviewTemplate.html";
-            var myOpts = {
-                components: {
-                    preview: {
-                        options: {
-                            templateUrl: templateUrl
-                        }
-                    }
-                }        
-            };
+            fluid.staticEnvironment.uiOptionsTestsPreview = fluid.typeTag("fluid.uiOptions.testsPreview");
             
+            var templateUrl = "TestPreviewTemplate.html";
+            fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptions.tests", "fluid.uiOptions", "fluid.uiOptions.textControls"], {
+                container: "{uiOptions}.dom.previewFrame",
+                options: {
+                    templateUrl: templateUrl
+                }
+            });     
+    
             testUIOptions(function (uiOptions) {
                 jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
                     templateUrl, uiOptions.preview.container.attr("src"));
-            }, myOpts);
+            });
+            
+            delete fluid.staticEnvironment.uiOptionsTestsPreview;
         });
         
         tests.asyncTest("UIOptions Auto-save", function () {
             expect(2);
+                
+            fluid.staticEnvironment.uiOptionsTestsAutoSave = fluid.typeTag("fluid.uiOptions.testsAutoSave");
             
-            var autoSaveOptions = {
-                autoSave: true
-            };
-
+            fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsAutoSave", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
+                options: {
+                    components: {
+                        uiEnhancer: "{uiEnhancer}",
+                        settingsStore: "{uiEnhancer}.settingsStore"
+                    },
+                    listeners: {
+                        onSave: function () {
+                            saveCalled = true;
+                        }
+                    },
+                    autoSave: true
+                }
+            });
+     
             testUIOptions(function (uiOptions) {
                 resetSaveCalled();
                 uiOptions.updateModel(bwSkin);
                 jqUnit.assertTrue("Model has changed, auto-save changes", saveCalled);
-                jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiOptions.uiEnhancer.model.theme);
                 
-            }, autoSaveOptions);
-        });           
+                var uiEnhancerSettings = uiOptions.settingsStore.fetch();
+                jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
+                
+            });
+            
+            delete fluid.staticEnvironment.uiOptionsTestsAutoSave;
+        });    
+        
+        /********************************
+         * UI Options Integration tests *
+         * ******************************
+         */
+
+        var applierRequestChanges = function (uiOptions, selectionOptions) {
+            uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
+            uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
+            uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
+            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);            
+        };
+        
+        var checkUIOComponents = function (uiOptions, uiEnhancer) {
+            jqUnit.assertTrue("Check that uiEnhancer is present", uiOptions.options.components.uiEnhancer);
+            jqUnit.assertTrue("Check that textControls sub-component is present", uiOptions.options.components.textControls);
+            jqUnit.assertTrue("Check that layoutControls sub-component is present", uiOptions.options.components.layoutControls);
+            jqUnit.assertTrue("Check that linkControls sub-component is present", uiOptions.options.components.linksControls);
+            jqUnit.assertTrue("Check that preview sub-component is present", uiOptions.options.components.preview);
+            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.options.components.settingsStore);
+            jqUnit.assertTrue("Check that tableOfContents sub-component is present", uiEnhancer.options.components.tableOfContents);
+            jqUnit.assertTrue("Check that store sub-component is present", uiEnhancer.options.components.settingsStore);
+        };
+        
+        var checkModelSelections = function (expectedSelections, actualSelections) {
+            jqUnit.assertEquals("Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
+            jqUnit.assertEquals("Theme correctly updated", expectedSelections.theme, actualSelections.theme);
+            jqUnit.assertEquals("Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
+            jqUnit.assertEquals("Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
+        };
+        
+        tests.asyncTest("UIOptions Integration tests", function () {
+            fluid.staticEnvironment.uiOptionsTestsIntegration = fluid.typeTag("fluid.uiOptions.testsIntegration");
+            
+            fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsIntegration", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
+                options: {
+                    components: {
+                        uiEnhancer: "{uiEnhancer}",
+                        settingsStore: "{uiEnhancer}.settingsStore"
+                    },
+                    listeners: {
+                        onSave: function () {
+                            saveCalled = true;
+                        }
+                    },
+                    autoSave: false
+                }
+            });
+     
+            testUIOptions(function (uiOptions, uiEnhancer) {
+                checkUIOComponents(uiOptions, uiEnhancer);
+                
+                var saveButton = uiOptions.locate("save");
+                var cancelButton = uiOptions.locate("cancel");
+                var resetButton = uiOptions.locate("reset");
+                
+                applierRequestChanges(uiOptions, bwSkin);
+                checkModelSelections(bwSkin, uiOptions.model.selections);
+                saveButton.click();
+                checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
+                applierRequestChanges(uiOptions, bwSkin2);
+                cancelButton.click();
+                checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
+                resetButton.click();
+                checkModelSelections(uiOptions.model.selections, uiOptions.settingsStore.options.defaultSiteSettings);
+            });
+            
+            delete fluid.staticEnvironment.uiOptionsTestsIntegration;
+        });
     });
     
 })(jQuery);
