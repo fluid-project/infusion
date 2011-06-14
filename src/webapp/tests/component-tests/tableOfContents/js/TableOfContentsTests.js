@@ -93,9 +93,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     //     });
     // });
 
-    fluid.staticEnvironment.tocTests = fluid.typeTag("fluid.tableOfContents.unitTests");
-    
-    fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents.unitTests", {
+    fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContentsTest");
+    fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "fluid.tableOfContentsTest"], {
         options: {
             resources: {
                 template: {
@@ -336,18 +335,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Returns a ToC Component with the predefined demand block
      */
     var renderTOCComponent = function () {
-        fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContentsTest");
-        fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "fluid.tableOfContentsTest"], {
-            options: {
-                resources: {
-                    template: {
-                        forceCache: true,
-                        url: "../../../../components/tableOfContents/html/TableOfContents.html"
-                    }
-                }
-            }
-        });
-        return fluid.tableOfContents("#main");
+        return fluid.tableOfContents("#flc-toc");
     };
 
     $(document).ready(function () {
@@ -425,7 +413,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var tocTest = function (custom_msg, expected, input) {
                 var actual = fluid.tableOfContents.sanitizeID(input);
                 jqUnit.assertEquals("Test non-word string: " + custom_msg, expected, actual);
-            }
+            };
             tocTest('alphabetes', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
             tocTest('numbers', '1234567890', '1234567890');
             tocTest('dashes', '-', '-');
@@ -445,5 +433,63 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertNotEquals("Basename should be reserved in the generated anchor", -1, anchorInfo.id.indexOf(baseName));
             jqUnit.assertEquals("anchor url is the same as id except url has a '#' in front", anchorInfo.url, '#' + anchorInfo.id);
         });
+        
+        
+        /* 
+         * check the headers(h1-h6) are in sync before and after. 
+         * 1. If there was x elements, then it should have x elements after rendered
+         * 2. The elements should be in the same order before and after
+         * 3. After rendered, the level of the ul and li should be correct based on the header.
+         */
+          
+        // macro to serialize heading elements, level, text, url into Object form.
+        var serializeHeading = function (level, text, url) {
+            return {'level': level, 'text': text, 'url' : url};
+        };
+        
+        /** 
+         * convert tocComponent.levels.model to headings for "Component test heading"
+         * This function converts multi-level model back to linear array.
+         * @param   Array   Stores the {level, text, url} objects
+         * @param   Object  contains headings information
+         */
+        var convertModelToHeadings = function (resultHeadings, headings) {
+            for (var i = 0; i < headings.length; i++) {
+                headings = headings[i];
+                if (headings.level !== undefined && headings.text !== undefined && headings.url !== undefined) {
+                    // first, store level, text, url if exist.
+                    resultHeadings.push(serializeHeading(headings.level, headings.text, headings.url));
+                }
+                // recursion here
+                if (headings.headings === undefined) {
+                    // end state.
+                    return resultHeadings;
+                } else {
+                    return convertModelToHeadings(resultHeadings, headings.headings);
+                }
+            }
+            return resultHeadings;
+        }; 
+        tocTests.asyncTest("Component test headings", function () {
+            var tocComponent = renderTOCComponent();
+            componentHeadings = tocComponent;
+            componentHeadings.headingInfo = convertModelToHeadings([], tocComponent.model);
+            
+            componentHeadings.headerTags = $('#flc-toc :header');
+            componentHeadings.headingInfo = [
+                {level: 1, text: "Amphibians", url: "#toc_Amphibians_14"},
+                {level: 2, text: "Toads", url: "#toc_Toads_15"},
+                {level: 3, text: "Natterjack Toads", url: "#toc_Natterjack-Toads_16"},
+                {level: 2, text: "Salamander", url: "#toc_Salamander_17"},
+                {level: 2, text: "Newt", url: "#toc_Newt_18"},
+                {level: 1, text: "Birds", url: "#toc_Birds_19"},
+                {level: 2, text: "Anseriformes", url: "#toc_Anseriformes_20"},
+                {level: 3, text: "Ducks", url: "#toc_Ducks_21"},
+                {level: 1, text: "Mammals", url: "#toc_Mammals_22"},
+                {level: 3, text: "CATT", url: "#toc_CATT_23"}
+            ];
+            renderTOCTests(componentHeadings);
+        });
+      
     });
 })(jQuery);
