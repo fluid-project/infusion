@@ -80,3 +80,9 @@
 .fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-text-icon { background-image: url("../images/yellowBlack/uio_icon_textanddisplay_yellow_18x18.png"); }
 .fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-layout-icon { background-image: url("../images/yellowBlack/uio_icon_layoutandnavigation_yellow_18x18.png"); }
 .fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-links-icon { background-image: url("../images/yellowBlack/uio_icon_linksandbuttons_yellow_18x18.png"); }
+
+/* Linearization tweaks */
+.fl-layout-linear .fl-uiOptions .fl-uiOptions-text-icon, .fl-layout-linear .fl-uiOptions .fl-uiOptions-layout-icon, .fl-layout-linear .fl-uiOptions .fl-uiOptions-links-icon {
+	padding-left: 20px !important;
+	background-position: 0px 0px;
+}
