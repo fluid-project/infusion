@@ -169,8 +169,8 @@ var fluid_1_4 = fluid_1_4 || {};
             }
             
             fluid.uploader.errorsView.section.renderHeader(that);
-            fluid.uploader.errorsView.section.renderErrorBody(that);
-            fluid.uploader.errorsView.section.renderDetailsToggle(that);
+            fluid.uploader.errorsView.section.renderErrorDetails(that);
+            that.hideDetails();
             that.container.show();
         };
     };
@@ -194,12 +194,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.locate("errorTitle").text(errorTitle);         
     };
     
-    fluid.uploader.errorsView.section.renderDetailsToggle = function (that) {
-        that.locate("showHideFilesToggle").text(that.options.strings.showFiles);
-        that.locate("errorDetails").hide();
-    };
-    
-    fluid.uploader.errorsView.section.renderErrorBody = function (that) {
+    fluid.uploader.errorsView.section.renderErrorDetails = function (that) {
         if (that.model.files.length === 0) {
             return;
         }
