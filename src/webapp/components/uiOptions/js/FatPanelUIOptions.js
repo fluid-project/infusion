@@ -19,26 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 var fluid_1_4 = fluid_1_4 || {};
 
-(function ($, fluid) {
-
-
-    /**********************
-     * Tabs *
-     *********************/
-     
-    fluid.defaults("fluid.tabs", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],             
-        selectors: {
-            tabList: ".flc-tabs"
-        },
-        finalInitFunction: "fluid.tabs.finalInit"
-    });          
-    
-    fluid.tabs.finalInit = function (that) {
-        that.locate("tabList").tabs();  //jQuery UI Tabs
-    };
-    
-
+(function ($, fluid) {    
     /**********************
      * Fat Panel UI Options *
      *********************/
@@ -69,29 +50,11 @@ var fluid_1_4 = fluid_1_4 || {};
                     type: "fluid.tabs",
                     container: "{fatPanelUIOptions}.container",      
                     createOnEvent: "onReady"               
-                }               
+                },
+                settingsStore: "{uiEnhancer}.settingsStore"
             },    
             autoSave: true
         }
     });      
      
-    // Supply the templates for the demo
-    fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsDemo", {
-        options: {
-            templates: {
-                uiOptions: "../../../../components/uiOptions/html/FatPanelUIOptions.html",
-                textControls: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html",
-                layoutControls: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html",
-                linksControls: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
-            }
-        }
-    });
-
-    // Supply the table of contents' template URL
-    fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
-        options: {
-            templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
-        }
-    });     
-  
 })(jQuery, fluid_1_4);
