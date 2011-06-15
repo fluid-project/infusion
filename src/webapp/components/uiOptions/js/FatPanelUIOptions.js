@@ -45,7 +45,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{fatPanelUIOPtionsImp}.dom.iframe"
             },
             uiEnhancer: {
-                type: "fluid.pageEnhancer",
+                type: "fluid.pageEnhancer"
             },
             eventBinder: {
                 type: "fluid.uiOptionsEventBinder",
@@ -116,7 +116,7 @@ var fluid_1_4 = fluid_1_4 || {};
             afterRender: null
         },
         markupProps: {
-            class: "flc-iframe",
+            "class": "flc-iframe",
             src: "./uiOptionsIframe.html"
         }
     });
