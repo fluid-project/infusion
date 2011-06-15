@@ -1,5 +1,12 @@
 This directory contains tests that are run manually. 
 
+UI Options:
+    To run this test:
+        1. open SomeKindOfNews.html in a browser
+        2. activate the "Show Display Preferences" button in the top right corner of the screen
+        3. experiment with the various UI Options settings and verify that the window
+           contents are styles correctly.
+
 Dropdown
     To run this test:
         1. open dropdown.html in a browser

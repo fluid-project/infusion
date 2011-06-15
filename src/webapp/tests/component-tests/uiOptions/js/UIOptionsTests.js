@@ -19,181 +19,190 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
         fluid.setLogging(true);
-    
-        var hcSkin = {
-            textSize: "8",
-            textFont: "verdana",
-            textSpacing: "wide2",
-            theme: "highContrast"
-        };
-            
-        var saveCalled = false;
+        fluid.staticEnvironment.uiOptionsTests = fluid.typeTag("fluid.uiOptions.tests");
 
-        var uiOptionsOptions = {
-            listeners: {
-                onSave: function () {
-                    saveCalled = true;
-                }
-            },
-            resources: {
-                template: {
-                    url: "../../../../components/uiOptions/html/UIOptions.html"
+        fluid.defaults("fluid.uiOptionsTests", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],            
+            components: {
+                uiOptions: {
+                    type: "fluid.uiOptions",
+                    container: "{uiOptionsTests}.container",
+                    options: "{uiOptionsTests}.options"
                 }
             }
+        });       
+        
+        // Supply the templates
+        fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptions.tests", {
+            options: {
+                templates: {
+                    uiOptions: "../../../../components/uiOptions/html/FullPreviewUIOptions.html",
+                    textControls: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html",
+                    layoutControls: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html",
+                    linksControls: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                }
+            }
+        });
+
+        // Options for UIOptions
+        var saveCalled = false;
+
+        fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests"], {
+            options: {
+                components: {
+                    settingsStore: "{uiEnhancer}.settingsStore"
+                },
+                listeners: {
+                    onSave: function () {
+                        saveCalled = true;
+                    },
+                    onReady: "fluid.uiOptionsTests.testFn"
+                }
+            }
+        });
+     
+        fluid.demands("fluid.uiOptions.store", ["fluid.uiOptions.tests", "fluid.uiEnhancer"], {
+            funcName: "fluid.tempStore"
+        });
+        
+        var bwSkin = {
+            textSize: "1.8",
+            textFont: "verdana",
+            theme: "bw",
+            lineSpacing: 2
         };
-
-        var enhancerOptions = {
-            savedSettings: fluid.defaults("fluid.uiEnhancer").defaultSiteSettings
+        
+        var bwSkin2 = {
+            textSize: "1.1",
+            textFont: "italic",
+            theme: "cw",
+            lineSpacing: 1
         };
+            
+        var testUIOptions = function (testFn, enhancerTestOptions) {
+            fluid.uiOptionsTests.testFn = testFn;
 
-        var testUIOptions = function (testFn, uiOptionsTestOptions, enhancerTestOptions) {
-            // Supply the template URL of "text and display" panel on the user preferences interface
-            fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptions"], {
-                options: {
-                    resources: {
-                        template: {
-                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
-                        }
-                    }
-                }
-            });
-
-            // Supply the template URL of "layout and navigation" panel on the user preferences interface
-            fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptions"], {
-                options: {
-                    resources: {
-                        template: {
-                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
-                        }
-                    }
-                }
-            });
-
-            // Supply the template URL of "layout and navigation" panel on the user preferences interface
-            fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptions"], {
-                options: {
-                    resources: {
-                        template: {
-                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
-                        }
-                    }
-                }
-            });
-
-            var uiEnhancer = fluid.uiEnhancer(document, fluid.merge(null, enhancerOptions, enhancerTestOptions));
-            var uiOptions = fluid.uiOptions("#ui-options", fluid.merge(null, uiOptionsOptions, uiOptionsTestOptions));
-
-            uiOptions.events.onReady.addListener(function () {
-                testFn(uiOptions, uiEnhancer);
-                start();
-            });
+            var uiEnhancer = fluid.pageEnhancer(fluid.merge(null, enhancerTestOptions)).uiEnhancer;
+            var uiOptions = fluid.uiOptionsTests("#ui-options").uiOptions;
+        };
+        
+        var resetSaveCalled = function () {
+            saveCalled = false;    
         };
         
         var tests = jqUnit.testCase("UIOptions Tests");
 
         tests.asyncTest("Init Model and Controls", function () {
-            expect(15);
+            expect(10);
             
             testUIOptions(function (uiOptions) {
                 var model = uiOptions.model;
                 jqUnit.assertNotNull("Model is not null", model);
                 jqUnit.assertNotUndefined("Model is not undefined", model);
                 jqUnit.assertFalse("Min text size is not set", !!model.textSize);
-                jqUnit.assertEquals("Text font is set", "arial", model.selections.textFont);
-                jqUnit.assertEquals("Text spacing is set", "", model.selections.textSpacing);
+                jqUnit.assertEquals("Text font is set", "default", model.selections.textFont);
                 jqUnit.assertEquals("Colour scheme is set", "default", model.selections.theme);
+                jqUnit.assertEquals("Layout value is set", false, model.selections.layout);
 
                 var themeValues = uiOptions.textControls.options.controlValues.theme;
                 jqUnit.assertEquals("There are 5 themes in the control", 5, themeValues.length);
-                jqUnit.assertEquals("The second theme is default", "default", themeValues[1]);
-
-                var spacingValues = uiOptions.textControls.options.controlValues.textSpacing;
-                jqUnit.assertEquals("There are 4 text spacing values in the control", 4, spacingValues.length);
-                jqUnit.assertEquals("The first value is default", "default", spacingValues[0]);
+                jqUnit.assertEquals("The first theme is default", "default", themeValues[0]);
 
                 var fontValues = uiOptions.textControls.options.controlValues.textFont;
-                jqUnit.assertEquals("There are 6 font values in the control", 6, fontValues.length);
-                jqUnit.assertEquals("There is no default font value", -1, jQuery.inArray("default", fontValues));
-
-                var layoutValues = uiOptions.layoutControls.options.controlValues.layout;
-                jqUnit.assertEquals("There are 2 layout values in the control", 2, layoutValues.length);
-                jqUnit.assertEquals("There is a default layout value", 1, jQuery.inArray("default", layoutValues));
-
-                var bgValues = uiOptions.layoutControls.options.controlValues.backgroundImages;
-                jqUnit.assertEquals("There are 2 back ground images values in the control", 2, bgValues.length);
-            });            
+                jqUnit.assertEquals("There are 5 font values in the control", 5, fontValues.length);
+                jqUnit.assertEquals("There is default font value", 0, jQuery.inArray("default", fontValues));
+                
+                start();
+            });
         });
 
-        tests.asyncTest("Save", function () {
-            expect(4);
+        tests.asyncTest("UIOptions Save, Reset, and Cancel", function () {
+            expect(13);
             
             testUIOptions(function (uiOptions) {
-                uiOptions.updateModel(hcSkin);
-
+                uiOptions.updateModel(bwSkin);
+                
                 jqUnit.assertFalse("Save hasn't been called", saveCalled);
                 uiOptions.save();
                 var container = $("body");
                 jqUnit.assertTrue("Save has been called", saveCalled);
-                jqUnit.assertDeepEq("hc setting was saved", hcSkin.theme, uiOptions.uiEnhancer.model.theme);
-                jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-hc"));
                 
-            });
-        });
+                var uiEnhancerSettings = uiOptions.settingsStore.fetch();
+                jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
+                jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-hc"));
+                jqUnit.assertEquals("Text size has been saved", bwSkin.textSize, uiOptions.model.selections.textSize);
+                jqUnit.assertEquals("Text font has been saved", bwSkin.textFont, uiOptions.model.selections.textFont);
+                jqUnit.assertEquals("Theme has been saved", bwSkin.theme, uiOptions.model.selections.theme);
+                
+                uiOptions.reset();
+                jqUnit.assertNotEquals("Reset model text size", bwSkin.textSize, uiOptions.options.textSize);
+                jqUnit.assertNotEquals("Reset model text font", bwSkin.textFont, uiOptions.options.textFont);
+                jqUnit.assertNotEquals("Reset model theme", bwSkin.theme, uiOptions.options.theme);
+                
+                uiOptions.updateModel(bwSkin);
+                uiOptions.updateModel(bwSkin2);
 
+                uiOptions.cancel();
+                jqUnit.assertEquals("Cancel text size change", bwSkin.textSize, uiOptions.model.selections.textSize);
+                jqUnit.assertEquals("Cancel text font change", bwSkin.textFont, uiOptions.model.selections.textFont);
+                jqUnit.assertEquals("Cancel theme change", bwSkin.theme, uiOptions.model.selections.theme);
+                
+                start();
+            });        
+        });
+        
         tests.asyncTest("Refresh View", function () {
-            expect(6);
+            expect(5);
             
             testUIOptions(function (uiOptions) {
-                uiOptions.updateModel(hcSkin);
+                uiOptions.updateModel(bwSkin);
 
-                jqUnit.assertEquals("hc setting was set in the model", hcSkin.theme, uiOptions.model.selections.theme);
-                jqUnit.assertEquals("hc setting was not saved", "default", uiOptions.uiEnhancer.model.theme);
+                jqUnit.assertEquals("hc setting was set in the model", bwSkin.theme, uiOptions.model.selections.theme);
+
+                var uiEnhancerSettings = uiOptions.settingsStore.fetch();
+                jqUnit.assertEquals("hc setting was not saved", "default", uiEnhancerSettings.theme);
 
                 uiOptions.refreshControlsView();
                 var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
                 var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val(); 
-                jqUnit.assertEquals("Small font size selected", "8", fontSizeSetting);
+                jqUnit.assertEquals("Small font size selected", "1.8", fontSizeSetting);
                 var fontStyleSelection = $(":selected", $(".flc-uiOptions-text-font"));
                 jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
-                var textSpacingSelection = $(":selected", $(".flc-uiOptions-text-spacing"));
-                jqUnit.assertEquals("Wider spacing is selected", "wide2", textSpacingSelection[0].value);
                 var contrastSelection = $(":selected", $(".flc-uiOptions-theme"));
-                jqUnit.assertEquals("High Contrast is selected", "highContrast", contrastSelection[0].value);
-            
+                jqUnit.assertEquals("Black on white is selected", "bw", contrastSelection[0].value);
+                
+                start();
             });          
         });
 
         tests.asyncTest("Init with site defaults different from UIOptions control values", function () {
-            expect(8);
-            
+            expect(2);
+               
             var enhancerOpts = {
-                defaultSiteSettings: {
-                    theme: "mist",
-                    textSpacing: "wide4",
-                    textFont: "monospace"
-                },
-                settingsStore: {
-                    type: "fluid.uiEnhancer.tempStore"
+                components: {
+                    settingsStore: {
+                        options: {
+                            defaultSiteSettings: {
+                                theme: "wb",
+                                textFont: "times"
+                            }
+                        }
+                    }
                 }
             };
-        
+            
             testUIOptions(function (uiOptions) {
-                var themeValues = uiOptions.textControls.options.controlValues.theme;
-                jqUnit.assertEquals("There are 5 themes in the control", 5, themeValues.length);
-                jqUnit.assertEquals("The second theme is mist", "mist", themeValues[1]);
-                jqUnit.assertEquals("default theme value is gone", -1, jQuery.inArray("default", themeValues));
+                var settings = uiOptions.settingsStore.options.defaultSiteSettings;
+                
+                var themeValue = settings.theme;
+                jqUnit.assertEquals("The theme is set to wb", "wb", themeValue);
 
-                var spacingValues = uiOptions.textControls.options.controlValues.textSpacing;
-                jqUnit.assertEquals("There are 4 text spacing values in the control", 4, spacingValues.length);
-                jqUnit.assertEquals("The first value is wide4", "wide4", spacingValues[0]);
-                jqUnit.assertEquals("default spacing value is gone", -1, jQuery.inArray("default", spacingValues));
-
-                var fontValues = uiOptions.textControls.options.controlValues.textFont;
-                jqUnit.assertEquals("There are 7 font values in the control", 7, fontValues.length);
-                jqUnit.assertEquals("The last font value is monospace", "monospace", fontValues[6]);
-            }, null, enhancerOpts);
+                var fontValue = settings.textFont;
+                jqUnit.assertEquals("The font is set to times", "times", fontValue);
+                
+                start();
+            }, enhancerOpts);
         });
-
 
         /*****************
          * Preview tests *
@@ -202,21 +211,132 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tests.asyncTest("Preview URL", function () {
             expect(1);
             
-            var templateUrl = "TestPreviewTemplate.html";
-            var myOpts = {
-                components: {
-                    preview: {
-                        options: {
-                            templateUrl: templateUrl
-                        }
-                    }
-                }        
-            };
+            fluid.staticEnvironment.uiOptionsTestsPreview = fluid.typeTag("fluid.uiOptions.testsPreview");
             
+            var templateUrl = "TestPreviewTemplate.html";
+            fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptions.tests", "fluid.uiOptions"], {
+                container: "{uiOptions}.dom.previewFrame",
+                options: {
+                    templateUrl: templateUrl
+                }
+            });     
+    
             testUIOptions(function (uiOptions) {
                 jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
                     templateUrl, uiOptions.preview.container.attr("src"));
-            }, myOpts);
+                
+                start();
+            });
+            
+            delete fluid.staticEnvironment.uiOptionsTestsPreview;
+        });
+        
+        tests.asyncTest("UIOptions Auto-save", function () {
+            expect(2);
+                
+            fluid.staticEnvironment.uiOptionsTestsAutoSave = fluid.typeTag("fluid.uiOptions.testsAutoSave");
+            
+            fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsAutoSave", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
+                options: {
+                    components: {
+                        settingsStore: "{uiEnhancer}.settingsStore"
+                    },
+                    listeners: {
+                        onSave: function () {
+                            saveCalled = true;
+                        },
+                        onReady: "fluid.uiOptionsTests.testFn"
+                    },
+                    autoSave: true
+                }
+            });
+     
+            testUIOptions(function (uiOptions) {
+                resetSaveCalled();
+                uiOptions.updateModel(bwSkin);
+                jqUnit.assertTrue("Model has changed, auto-save changes", saveCalled);
+                
+                var uiEnhancerSettings = uiOptions.settingsStore.fetch();
+                jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
+                
+                start();
+            });
+            
+            delete fluid.staticEnvironment.uiOptionsTestsAutoSave;
+        });
+        
+        /********************************
+         * UI Options Integration tests *
+         * ******************************
+         */
+
+        var applierRequestChanges = function (uiOptions, selectionOptions) {
+            uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
+            uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
+            uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
+            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);            
+        };
+        
+        var checkUIOComponents = function (uiOptions) {
+            jqUnit.assertTrue("Check that uiEnhancer is present", uiOptions.uiEnhancer);
+            jqUnit.assertTrue("Check that textControls sub-component is present", uiOptions.options.components.textControls);
+            jqUnit.assertTrue("Check that layoutControls sub-component is present", uiOptions.options.components.layoutControls);
+            jqUnit.assertTrue("Check that linkControls sub-component is present", uiOptions.options.components.linksControls);
+            jqUnit.assertTrue("Check that preview sub-component is present", uiOptions.options.components.preview);
+            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.options.components.settingsStore);
+            jqUnit.assertTrue("Check that tableOfContents sub-component is present", uiOptions.uiEnhancer.options.components.tableOfContents);
+            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.uiEnhancer.options.components.settingsStore);
+        };
+        
+        var checkModelSelections = function (expectedSelections, actualSelections) {
+            jqUnit.assertEquals("Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
+            jqUnit.assertEquals("Theme correctly updated", expectedSelections.theme, actualSelections.theme);
+            jqUnit.assertEquals("Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
+            jqUnit.assertEquals("Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
+        };
+        
+        tests.asyncTest("UIOptions Integration tests", function () {
+            fluid.staticEnvironment.uiOptionsTestsIntegration = fluid.typeTag("fluid.uiOptions.testsIntegration");
+            
+            fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsIntegration", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
+                options: {
+                    components: {
+                        uiEnhancer: "{uiEnhancer}",
+                        settingsStore: "{uiEnhancer}.settingsStore"
+                    },
+                    listeners: {
+                        onSave: function () {
+                            saveCalled = true;
+                        },
+                        onReady: "fluid.uiOptionsTests.testFn"
+                    },
+                    autoSave: false
+                }
+            });
+     
+            testUIOptions(function (uiOptions) {
+                checkUIOComponents(uiOptions);
+                
+                var saveButton = uiOptions.locate("save");
+                var cancelButton = uiOptions.locate("cancel");
+                var resetButton = uiOptions.locate("reset");
+                
+                applierRequestChanges(uiOptions, bwSkin);
+                checkModelSelections(bwSkin, uiOptions.model.selections);
+                saveButton.click();
+                checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
+                applierRequestChanges(uiOptions, bwSkin2);
+                cancelButton.click();
+                checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
+                resetButton.click();
+                checkModelSelections(uiOptions.model.selections, uiOptions.settingsStore.options.defaultSiteSettings);
+                
+                saveButton.click(); // apply the reset settings to make the test result page more readable
+                
+                start();
+            });
+            
+            delete fluid.staticEnvironment.uiOptionsTestsIntegration;
         });
     });
     
