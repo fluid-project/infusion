@@ -471,6 +471,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             componentHeadings.headingInfo = convertModelToHeadings([], tocComponent.model);
             componentHeadings.headerTags = $('#flc-toc :header');
             /*
+            * the following is to demonstrated what the headingInfo should be like
+            * should remove this once code reviewed.
+            *
             componentHeadings.headingInfo = [
                 {level: 1, text: "Amphibians", url: "#toc_Amphibians_14"},
                 {level: 2, text: "Toads", url: "#toc_Toads_15"},
