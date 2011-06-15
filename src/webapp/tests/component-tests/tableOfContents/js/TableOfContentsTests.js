@@ -455,17 +455,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          */
         var convertModelToHeadings = function (resultHeadings, headings) {
             for (var i = 0; i < headings.length; i++) {
-                headings = headings[i];
-                if (headings.level !== undefined && headings.text !== undefined && headings.url !== undefined) {
+                heading = headings[i];
+                if (heading.level !== undefined && heading.text !== undefined && heading.url !== undefined) {
                     // first, store level, text, url if exist.
-                    resultHeadings.push(serializeHeading(headings.level, headings.text, headings.url));
+                    resultHeadings.push(serializeHeading(heading.level, heading.text, heading.url));
                 }
                 // recursion here
-                if (headings.headings === undefined) {
+                if (heading.headings === undefined) {
                     // end state.
-                    return resultHeadings;
+                    
                 } else {
-                    return convertModelToHeadings(resultHeadings, headings.headings);
+                    convertModelToHeadings(resultHeadings, heading.headings);
                 }
             }
             return resultHeadings;
@@ -476,6 +476,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             componentHeadings.headingInfo = convertModelToHeadings([], tocComponent.model);
             
             componentHeadings.headerTags = $('#flc-toc :header');
+            /*
             componentHeadings.headingInfo = [
                 {level: 1, text: "Amphibians", url: "#toc_Amphibians_14"},
                 {level: 2, text: "Toads", url: "#toc_Toads_15"},
@@ -488,6 +489,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {level: 1, text: "Mammals", url: "#toc_Mammals_22"},
                 {level: 3, text: "CATT", url: "#toc_CATT_23"}
             ];
+            */
             renderTOCTests(componentHeadings);
         });
       
