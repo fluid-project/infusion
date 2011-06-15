@@ -92,7 +92,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.demands("fluid.uploader.errorsView", "fluid.uploader.multiFileUploader", {
-        container: "{multiFileUploader}.options.selectors.errors", // TODO: Why can't I bind to {multiFileUploader}.dom.errors?
+        container: "{multiFileUploader}.options.selectors.errorsPanel", // TODO: Why can't I bind to {multiFileUploader}.dom.errors?
         options: {            
             listeners: {
                 "{multiFileUploader}.events.afterFileDialog": "{errorsView}.refreshView",
