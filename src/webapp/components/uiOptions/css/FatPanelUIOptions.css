@@ -69,6 +69,11 @@
 	clear:both;
 }
 
+.fl-uiOptions-fatPanel .ui-widget input, .fl-uiOptions-fatPanel .ui-widget select, .fl-uiOptions-fatPanel .ui-widget textarea, .fl-uiOptions-fatPanel .ui-widget button {
+    font-family: inherit;
+    font-size: inherit;
+}
+
 /* Tabs */
 .fl-uiOptions-fatPanel ul.fl-tabs {	
 	background-color: #333333;
