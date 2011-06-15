@@ -24,20 +24,6 @@ var fluid_1_4 = fluid_1_4 || {};
      * UI Enhancer  *
      ****************/
     
-    /**
-     * Adds the class related to the setting to the element
-     * @param {jQuery} element
-     * @param {String} settingName
-     * @param {String} value
-     * @param {Object} classnameMap
-     */
-    var addClassForSetting = function (element, settingName, value, classnameMap) {
-        var settingValues = classnameMap[settingName] || {}; 
-        var className = settingValues[value];
-        if (className) {
-            element.addClass(className);
-        }
-    };
 
     /**
      * Returns true if the value is true or the string "true", false otherwise
@@ -76,18 +62,6 @@ var fluid_1_4 = fluid_1_4 || {};
         container.css("line-height", newLineSpacing + "em");
     };
 
-    /**
-     * Styles the container based on the settings passed in
-     * 
-     * @param {Object} container
-     * @param {Object} settings
-     * @param {Object} classnameMap
-     */
-    var addStyles = function (container, settings, classnameMap) {
-        addClassForSetting(container, "textFont", settings.textFont, classnameMap);
-        addClassForSetting(container, "textSpacing", settings.textSpacing, classnameMap);
-        addClassForSetting(container, "theme", settings.theme, classnameMap);
-    };
     
     /**
      * Adds or removes the classname to/from the elements based upon the setting.
@@ -206,7 +180,12 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         },
         invokers: {
-            setTextSize: "fluid.uiEnhancer.setTextSize"
+            setTextSize: "fluid.uiEnhancer.setTextSize",
+            updateModel: {
+                funcName: "fluid.uiEnhancer.updateModel",
+                args: ["@0", "{uiEnhancer}.applier"]
+            },
+            setContainerClass: "fluid.uiEnhancer.setContainerClass"
         },
         events: {
             onReady: null,
@@ -250,7 +229,10 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.refreshView = function () {
             that.container.removeClass(clashingClassnames);
-            addStyles(that.container, that.model, that.options.classnameMap);
+
+            // TODO: ants refactoring will result in this being replaced with telling all the ants to do their work
+            that.setContainerClass(that, "textFont");
+            that.setContainerClass(that, "theme");
             styleElements(that.container, !isTrue(that.model.backgroundImages), that.options.classnameMap.noBackgroundImages);
             that.setTextSize(that.container, that.model.textSize, that.initialFontSize);
             setLineSpacing(that.container, that.model.lineSpacing, initialLineSpacing, that.model.textSize);
@@ -260,9 +242,6 @@ var fluid_1_4 = fluid_1_4 || {};
             styleInputs(that.container, that.model, that.options.classnameMap);
         };
         
-        that.updateModel = function (newModel) {
-            that.applier.requestChange("", newModel);
-        };
 
         that.applier.modelChanged.addListener("",
             function (newModel, oldModel, changeRequest) {
@@ -274,6 +253,10 @@ var fluid_1_4 = fluid_1_4 || {};
         clashingClassnames = clearClashingClasses(that.container, that.options.classnameMap);
         that.applier.requestChange("", that.settingsStore.fetch());
         return that;
+    };
+
+    fluid.uiEnhancer.updateModel = function (newModel, applier) {
+        applier.requestChange("", newModel);
     };
 
     /**
@@ -289,7 +272,16 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
 
+    fluid.uiEnhancer.setContainerClass = function (that, setting) {
+        var val = that.model[setting];
+        var className = that.options.classnameMap[setting][val];
+        
+        if (className) {
+            that.container.addClass(className);
+        }
+    };
 
+    
     fluid.pageEnhancer = function (uiEnhancerOptions) {
         var that = fluid.initLittleComponent("fluid.pageEnhancer");
         that.uiEnhancerOptions = uiEnhancerOptions;
