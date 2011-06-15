@@ -496,7 +496,7 @@ var fluid_1_4 = fluid_1_4 || {};
             totalFileStatusText: ".flc-uploader-total-progress-text",
             instructions: ".flc-uploader-browse-instructions",
             statusRegion: ".flc-uploader-status-region",
-            errorsPanel: ".flc-uploader-total-errored"
+            errorsPanel: ".flc-uploader-errorsPanel"
         },
 
         // Specifies a selector name to move keyboard focus to when a particular event fires.

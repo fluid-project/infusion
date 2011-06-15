@@ -72,16 +72,14 @@ var fluid_1_4 = fluid_1_4 || {};
 
     fluid.uploader.errorsView.preInit = function (that) {
         that.refreshView = function () {
-            var hasErrors = false;
-            fluid.each(that.sections, function (section) {
-                hasErrors = (section.model.files.length > 0);
-            });
-            
-            if (hasErrors) {
-                that.container.show();
-            } else {
-                that.container.hide();
-            }
+            for (var i = 0; i < that.sections.length; i++) {
+                if (that.sections[i].model.files.length > 0) {
+                    // One of the sections has errors. Show them and bail immediately.
+                    that.container.show();
+                    return;
+                }
+            }            
+            that.container.hide();
         };
     };
     
