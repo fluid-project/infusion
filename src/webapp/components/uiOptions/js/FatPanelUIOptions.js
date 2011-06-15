@@ -42,7 +42,12 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             markupRenderer: {
                 type: "fluid.renderIframe",
-                container: "{fatPanelUIOPtionsImp}.dom.iframe"
+                container: "{fatPanelUIOPtionsImp}.dom.iframe",
+                options: {
+                    events: {
+                        afterRender: "{fatPanelUIOPtionsImp}.events.afterRender"
+                    }
+                }
             },
             uiEnhancer: {
                 type: "fluid.pageEnhancer"
@@ -60,9 +65,60 @@ var fluid_1_4 = fluid_1_4 || {};
                     components: {
                         uiEnhancer: {
                             type: "fluid.pageEnhancer"
+                        },
+                        preview: {
+                            type: "fluid.emptySubcomponent"
+                        },
+                        tabs: {
+                            type: "fluid.tabs",
+                            container: "{fatPanelUIOptions}.container",      
+                            createOnEvent: "onReady"               
+                        },
+                        settingsStore: "{uiEnhancer}.settingsStore",
+                        textControls: {
+                            resources: {
+                                template: {
+                                    expander: {
+                                        args: {
+                                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        layoutControls: {
+                            resources: {
+                                template: {
+                                    expander: {
+                                        args: {
+                                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        linkControls: {
+                            resources: {
+                                template: {
+                                    expander: {
+                                        args: {
+                                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
-                }, 
+                },
+                resources: {
+                    template: {
+                        expander: {
+                            args: {
+                                url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"
+                            }
+                        }
+                    }
+                },
                 createOnEvent: "afterRender"
             }
         },
@@ -74,13 +130,13 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.demands("fluid.renderIframe", ["fluid.fatPanelUIOPtionsImp"], {
-        options: {
-            events: {
-                afterRender: "{fatPanelUIOPtionsImp}.events.afterRender"
-            }
-        }
-    });
+    // fluid.demands("fluid.renderIframe", ["fluid.fatPanelUIOPtionsImp"], {
+    //     options: {
+    //         events: {
+    //             afterRender: "{fatPanelUIOPtionsImp}.events.afterRender"
+    //         }
+    //     }
+    // });
     
     // fluid.uiOptionsEventBinder = function (enhancer, uiOptions) {
     //     uiOptions.events.modelChanged.addListener(enhancer.updateModel);
@@ -195,59 +251,6 @@ var fluid_1_4 = fluid_1_4 || {};
     };  
     
     fluid.defaults("fluid.fatPanelUIOptions", {
-        gradeNames: ["fluid.viewComponent"],
-        components: {
-            preview: {
-                type: "fluid.emptySubcomponent"
-            },
-            tabs: {
-                type: "fluid.tabs",
-                container: "{fatPanelUIOptions}.container",      
-                createOnEvent: "onReady"               
-            },
-            settingsStore: "{uiEnhancer}.settingsStore",
-            textControls: {
-                resources: {
-                    template: {
-                        expander: {
-                            args: {
-                                url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
-                            }
-                        }
-                    }
-                }
-            },
-            layoutControls: {
-                resources: {
-                    template: {
-                        expander: {
-                            args: {
-                                url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
-                            }
-                        }
-                    }
-                }
-            },
-            linkControls: {
-                resources: {
-                    template: {
-                        expander: {
-                            args: {
-                                url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        resources: {
-            template: {
-                expander: {
-                    args: {
-                        url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"
-                    }
-                }
-            }
-        }
+        gradeNames: ["fluid.viewComponent"]
     });     
 })(jQuery, fluid_1_4);
