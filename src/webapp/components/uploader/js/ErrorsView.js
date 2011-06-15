@@ -198,14 +198,7 @@ var fluid_1_4 = fluid_1_4 || {};
         if (that.model.files.length === 0) {
             return;
         }
-        
-        var filesList = "";        
-        for (var i = 0; i < that.model.files.length - 1; i++) {
-            var file = that.model.files[i];
-            filesList += file + that.options.strings.fileListDelimiter;
-        }
-        filesList += that.model.files[that.model.files.length - 1];
-
+        var filesList = that.model.files.join(that.options.strings.fileListDelimiter);
         that.locate("erroredFiles").text(filesList);
     };
     
