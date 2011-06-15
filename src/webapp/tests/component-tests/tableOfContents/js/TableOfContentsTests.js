@@ -435,13 +435,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         
-        /* 
-         * check the headers(h1-h6) are in sync before and after. 
-         * 1. If there was x elements, then it should have x elements after rendered
-         * 2. The elements should be in the same order before and after
-         * 3. After rendered, the level of the ul and li should be correct based on the header.
-         */
-          
         // macro to serialize heading elements, level, text, url into Object form.
         var serializeHeading = function (level, text, url) {
             return {'level': level, 'text': text, 'url' : url};
@@ -454,27 +447,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * @param   Object  contains headings information
          */
         var convertModelToHeadings = function (resultHeadings, headings) {
+            // loop through all the nodes on this level.
             for (var i = 0; i < headings.length; i++) {
                 heading = headings[i];
+                // store level, text, url if and only if it exists.
                 if (heading.level !== undefined && heading.text !== undefined && heading.url !== undefined) {
-                    // first, store level, text, url if exist.
                     resultHeadings.push(serializeHeading(heading.level, heading.text, heading.url));
                 }
-                // recursion here
-                if (heading.headings === undefined) {
-                    // end state.
-                    
-                } else {
+                // recursively goes into the model as long as there is heading defined
+                if (heading.headings !== undefined) {
                     convertModelToHeadings(resultHeadings, heading.headings);
                 }
             }
             return resultHeadings;
         }; 
+        /**
+         * Test component and make sure the number of links, text and anchors are set correctly.
+         */
         tocTests.asyncTest("Component test headings", function () {
             var tocComponent = renderTOCComponent();
             componentHeadings = tocComponent;
+            // craft headingInfo and headerTags so renderTOCTest() can use it
             componentHeadings.headingInfo = convertModelToHeadings([], tocComponent.model);
-            
             componentHeadings.headerTags = $('#flc-toc :header');
             /*
             componentHeadings.headingInfo = [
@@ -492,6 +486,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             */
             renderTOCTests(componentHeadings);
         });
-      
     });
 })(jQuery);
