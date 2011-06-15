@@ -166,3 +166,14 @@
 .fl-theme-yellowBlack .fl-uiOptions .fl-spacing-slider-right { background-image: url("../images/yellowBlack/uio_icon_linesWide_yellowBlack_16x21.png"); }
 .fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/yellowBlack/uio_icon_save_yellowBlack_13x13.png"); }
 .fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/yellowBlack/uio_icon_cancel_yellowBlack_13x13.png"); }
+
+.fl-theme-blackYellow .fl-uiOptions .fl-slider {background: none; background-color:#fff;}
+.fl-theme-blackYellow .fl-uiOptions .fl-slider .fl-handle, 
+.fl-theme-blackYellow .fl-uiOptions .fl-slider a,
+.fl-theme-blackYellow .fl-uiOptions .fl-slider a:hover {border:1px solid #000; background-color:#000;}
+.fl-theme-blackYellow .fl-uiOptions .fl-text-slider-left { background-image: url("../images/blackYellow/uio_icon_smallA_blackYellow_10x10.png"); }
+.fl-theme-blackYellow .fl-uiOptions .fl-text-slider-right { background-image: url("../images/blackYellow/uio_icon_bigA_blackYellow_20x20.png"); }
+.fl-theme-blackYellow .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/blackYellow/uio_icon_linesNarrow_blackYellow_16x12.png"); }
+.fl-theme-blackYellow .fl-uiOptions .fl-spacing-slider-right { background-image: url("../images/blackYellow/uio_icon_linesWide_blackYellow_16x21.png"); }
+.fl-theme-blackYellow .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/blackYellow/uio_icon_save_blackYellow_13x13.png"); }
+.fl-theme-blackYellow .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/blackYellow/uio_icon_cancel_blackYellow_13x13.png"); }

@@ -99,7 +99,7 @@
 .fl-uiOptions-fatPanel .fl-tab-text { background-image: url('../images/default/uio_icon_textanddisplay_defaultInverted_16x16.png'); }
 .fl-uiOptions-fatPanel .fl-tab-layout { background-image: url('../images/default/uio_icon_layoutandnavigation_defaultInverted_16x16.png'); }
 .fl-uiOptions-fatPanel .fl-tab-links { background-image: url('../images/default/uio_icon_linksandbuttons_defaultInverted_16x16.png'); }
-.fl-uiOptions-fatPanel #reset { background-image: url('../images/default/uio_icon_reset_defaultInverted_default_16x16.png'); }
+.fl-uiOptions-fatPanel #reset { background-image: url('../images/default/uio_icon_reset_defaultInverted_16x16.png'); }
 
 .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-text { background-image: url('../images/default/uio_icon_textanddisplay_default_16x16.png'); }
 .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-layout { background-image: url('../images/default/uio_icon_layoutandnavigation_default_16x16.png'); }
