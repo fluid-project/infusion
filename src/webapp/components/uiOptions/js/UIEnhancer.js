@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
+Copyright 2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -25,13 +26,6 @@ var fluid_1_4 = fluid_1_4 || {};
      ****************/
     
 
-    /**
-     * Returns true if the value is true or the string "true", false otherwise
-     * @param {Object} val
-     */
-    var isTrue = function (val) {
-        return val && (val === true || val === "true");
-    };
     
     /**
      * Shows the table of contents when tocSetting is "On". Hides the table of contents otherwise.
@@ -39,7 +33,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} tocSetting
      */
     var setToc = function (that, tocSetting) {
-        if (isTrue(tocSetting)) {
+        if (that.isTrue(tocSetting)) {
             if (that.tableOfContents) {
                 that.tableOfContents.show();
             } else {
@@ -52,116 +46,9 @@ var fluid_1_4 = fluid_1_4 || {};
         }        
     };
     
-    /**
-     * Sets the line spacing on the container.  
-     * @param {Object} container
-     * @param {Object} spacing
-     */
-    var setLineSpacing = function (container, times, initLineSpacing, textSizeTimes) {
-        var newLineSpacing = times === "" || times === 1 ? initLineSpacing : times * initLineSpacing * textSizeTimes;
-        container.css("line-height", newLineSpacing + "em");
-    };
-
     
-    /**
-     * Adds or removes the classname to/from the elements based upon the setting.
-     * @param {Object} elements
-     * @param {Object} setting
-     * @param {Object} classname
-     */
-    var styleElements = function (elements, setting, classname) {
-        if (setting) {
-            elements.addClass(classname);
-        } else {
-            elements.removeClass(classname);
-        }        
-    };
-    
-    /**
-     * Style links in the container according to the settings
-     * @param {Object} container
-     * @param {Object} settings
-     * @param {Object} classnameMap
-     */
-    var styleLinks = function (container, settings, classnameMap) {
-        var links = $("a", container);
-        styleElements(links, settings.links, classnameMap.links);
-    };
 
-    /**
-     * Style layout in the container according to the settings
-     * @param {Object} container
-     * @param {Object} settings
-     * @param {Object} classnameMap
-     */
-    var styleLayout = function (container, settings, classnameMap) {
-        styleElements(container, settings.layout, classnameMap.layout);
-    };
-     
-    /**
-     * Style inputs in the container according to the settings
-     * @param {Object} container
-     * @param {Object} settings
-     * @param {Object} classnameMap
-     */
-    var styleInputs = function (container, settings, classnameMap) {
-        styleElements($("input", container), settings.inputsLarger, classnameMap.inputsLarger);
-    };
-     
-    /**
-     * Clears FSS classes from within the container that may clash with the current settings.
-     * These are the classes from the classnameMap for settings where we work on the container rather
-     * then on individual elements.
-     * @param {Object} that
-     * @return {String} the classnames that were removed separated by spaces
-     */
-    var clearClashingClasses = function (container, classnameMap) {
-        var settingsWhichMayClash = ["textFont", "textSpacing", "theme", "layout"];
-        var classesToRemove, selector;
-        
-        for (var i = 0; i < settingsWhichMayClash.length; i++) {
-            var settingValues = classnameMap[settingsWhichMayClash[i]];
-            if (typeof settingValues === 'object') {
-                fluid.each(settingValues, function (className) {
-                    if (className) {
-                        classesToRemove = classesToRemove + " " + className;
-                        selector = selector + ",." + className;
-                    }
-                });
-            } else if (typeof settingValues === 'string') {
-                classesToRemove = classesToRemove + " " + settingValues;
-                selector = selector + ",." + settingValues;
-            }
-        }
-        
-        $(selector, container).removeClass(classesToRemove);
-        return classesToRemove;
-    };
-        
-    // Returns the value of css style "line-height" in em 
-    var getLineHeight = function (container) {
-        var lineHeight = container.css("lineHeight");
-        
-        // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1em.
-        if (lineHeight === "normal") {
-            return 1;
-        }
-        
-        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
-        if ($.browser.msie) {
-            var lineHeightInIE;
-            
-            // if unit is missing, assume the value is in "em"
-            lineHeightInIE = container[0].currentStyle.lineHeight;
-            
-            if (lineHeightInIE.match(/[0-9]$/)) {
-                return lineHeightInIE;
-            }
-        }
-        
-        return parseFloat(lineHeight) / 16;
-    };
-      
+              
 
     fluid.defaults("fluid.uiEnhancer", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
@@ -185,7 +72,15 @@ var fluid_1_4 = fluid_1_4 || {};
                 funcName: "fluid.uiEnhancer.updateModel",
                 args: ["@0", "{uiEnhancer}.applier"]
             },
-            setContainerClass: "fluid.uiEnhancer.setContainerClass"
+            setContainerClass: "fluid.uiEnhancer.setContainerClass",
+            setLineSpacing: "fluid.uiEnhancer.setLineSpacing",
+            getLineHeight: "fluid.uiEnhancer.getLineHeight",
+            styleElements: "fluid.uiEnhancer.styleElements",
+            styleLinks: "fluid.uiEnhancer.styleLinks",
+            styleInputs: "fluid.uiEnhancer.styleInputs",
+            setLayout: "fluid.uiEnhancer.setLayout",
+            isTrue: "fluid.uiEnhancer.isTrue",
+            refreshView: "fluid.uiEnhancer.refreshView"
         },
         events: {
             onReady: null,
@@ -222,41 +117,40 @@ var fluid_1_4 = fluid_1_4 || {};
         var clashingClassnames;
         
         that.initialFontSize = parseFloat(that.container.css("font-size"));        
-        var initialLineSpacing = getLineHeight(that.container);
+        that.initialLineSpacing = that.getLineHeight(that.container);
         
-        /**
-         * Transforms the interface based on the settings in that.model
-         */
-        that.refreshView = function () {
-            that.container.removeClass(clashingClassnames);
-
-            // TODO: ants refactoring will result in this being replaced with telling all the ants to do their work
-            that.setContainerClass(that, "textFont");
-            that.setContainerClass(that, "theme");
-            styleElements(that.container, !isTrue(that.model.backgroundImages), that.options.classnameMap.noBackgroundImages);
-            that.setTextSize(that.container, that.model.textSize, that.initialFontSize);
-            setLineSpacing(that.container, that.model.lineSpacing, initialLineSpacing, that.model.textSize);
-            setToc(that, that.model.toc);
-            styleLinks(that.container, that.model, that.options.classnameMap);
-            styleLayout(that.container, that.model, that.options.classnameMap);
-            styleInputs(that.container, that.model, that.options.classnameMap);
-        };
-        
-
         that.applier.modelChanged.addListener("",
             function (newModel, oldModel, changeRequest) {
                 that.events.modelChanged.fire(newModel, oldModel, changeRequest);
-                that.refreshView();
+                that.refreshView(that);
             }
         );
 
-        clashingClassnames = clearClashingClasses(that.container, that.options.classnameMap);
+     //   clashingClassnames = clearClashingClasses(that.container, that.options.classnameMap);
         that.applier.requestChange("", that.settingsStore.fetch());
         return that;
     };
 
     fluid.uiEnhancer.updateModel = function (newModel, applier) {
         applier.requestChange("", newModel);
+    };
+
+    /**
+     * Transforms the interface based on the settings in that.model
+     */
+    fluid.uiEnhancer.refreshView = function (that) {
+   //     that.container.removeClass(clashingClassnames);
+
+  //      that.setContainerClass(that, "textFont");
+  //      that.setContainerClass(that, "theme");
+        that.setTextSize(that.container, that.model.textSize, that.initialFontSize);
+        that.setLineSpacing(that);
+        
+        setToc(that, that.model.toc);
+        that.styleElements(that.container, !that.isTrue(that.model.backgroundImages), that.options.classnameMap.noBackgroundImages);
+        that.styleLinks(that);
+        that.setLayout(that);
+        that.styleInputs(that);
     };
 
     /**
@@ -272,15 +166,170 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
 
-    fluid.uiEnhancer.setContainerClass = function (that, setting) {
-        var val = that.model[setting];
-        var className = that.options.classnameMap[setting][val];
+    /**
+     * Clears FSS classes from within the container that may clash with the current settings.
+     * These are the classes from the classnameMap for settings where we work on the container rather
+     * then on individual elements.
+     * @param {Object} that
+     * @return {String} the classnames that were removed separated by spaces
+     */
+    var clearClashingClasses = function (container, classnameMap) {
+        var settingsWhichMayClash = ["textFont", "textSpacing", "theme", "layout"];
+        var classesToRemove, selector;
         
-        if (className) {
-            that.container.addClass(className);
+        for (var i = 0; i < settingsWhichMayClash.length; i++) {
+            var settingValues = classnameMap[settingsWhichMayClash[i]];
+            if (typeof settingValues === 'object') {
+                fluid.each(settingValues, function (className) {
+                    if (className) {
+                        classesToRemove = classesToRemove + " " + className;
+                        selector = selector + ",." + className;
+                    }
+                });
+            } else if (typeof settingValues === 'string') {
+                classesToRemove = classesToRemove + " " + settingValues;
+                selector = selector + ",." + settingValues;
+            }
         }
+        
+        $(selector, container).removeClass(classesToRemove);
+        return classesToRemove;
     };
 
+
+    // Returns the value of css style "line-height" in em 
+    fluid.uiEnhancer.getLineHeight = function (container) {
+        var lineHeight = container.css("lineHeight");
+        
+        // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1em.
+        if (lineHeight === "normal") {
+            return 1;
+        }
+        
+        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
+        if ($.browser.msie) {
+            var lineHeightInIE;
+            
+            // if unit is missing, assume the value is in "em"
+            lineHeightInIE = container[0].currentStyle.lineHeight;
+            
+            if (lineHeightInIE.match(/[0-9]$/)) {
+                return lineHeightInIE;
+            }
+        }
+        
+        return parseFloat(lineHeight) / 16;
+    };
+
+    /**
+     * Sets the line spacing on the container.  
+     * @param {Object} container
+     * @param {Object} spacing
+     */
+    fluid.uiEnhancer.setLineSpacing = function (that) {
+        var times = that.model.lineSpacing;
+        var newLineSpacing = times === "" || times === 1 ? that.initialLineSpacing : times * that.initialLineSpacing * that.model.textSize;
+        that.container.css("line-height", newLineSpacing + "em");
+    };
+
+    /**
+     * Adds or removes the classname to/from the elements based upon the setting.
+     * @param {Object} elements
+     * @param {Object} setting
+     * @param {Object} classname
+     */
+    fluid.uiEnhancer.styleElements = function (elements, setting, classname) {
+        if (setting) {
+            elements.addClass(classname);
+        } else {
+            elements.removeClass(classname);
+        }        
+    };
+    
+    /**
+     * Style links in the container according to the settings
+     * @param {Object} container
+     * @param {Object} settings
+     * @param {Object} classnameMap
+     */
+    fluid.uiEnhancer.styleLinks = function (that) {
+        var links = $("a", that.container);
+        that.styleElements(links, that.model.links, that.options.classnameMap.links);
+    };
+
+    /**
+     * Style layout in the container according to the settings
+     * @param {Object} container
+     * @param {Object} settings
+     * @param {Object} classnameMap
+     */
+    fluid.uiEnhancer.setLayout = function (that) {
+        that.styleElements(that.container, that.model.layout, that.options.classnameMap.layout);
+    };
+     
+    /**
+     * Style inputs in the container according to the settings
+     * @param {Object} container
+     * @param {Object} settings
+     * @param {Object} classnameMap
+     */
+    fluid.uiEnhancer.styleInputs = function (that) {
+        that.styleElements($("input", that.container), that.model.inputsLarger, that.options.classnameMap.inputsLarger);
+    };
+     
+    /**
+     * Returns true if the value is true or the string "true", false otherwise
+     * @param {Object} val
+     */
+    fluid.uiEnhancer.isTrue = function (val) {
+        return val && (val === true || val === "true");
+    };
+
+    
+    
+    
+    
+    fluid.defaults("fluid.uiEnhancer.classSwapper", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        invokers: {
+            clearClasses: {
+                funcName: "fluid.uiEnhancer.classSwapper.clearClasses",
+                args: ["{classSwapper}"]
+            },
+            swap: {
+                funcName: "fluid.uiEnhancer.classSwapper.swap",
+                args: ["@0", "{classSwapper}"]
+            }
+        },
+        classes: {},
+        finalInitFunction: "fluid.uiEnhancer.classSwapper.finalInit"
+    });
+    
+    fluid.uiEnhancer.classSwapper.finalInit = function (that) {
+        that.classSelector = "";
+        that.classStr = "";
+        
+        fluid.each(that.options.classes, function (className) {
+            if (className) {
+                that.classSelector += that.classSelector ? ", ." + className : "." + className;
+                that.classStr += that.classStr ? " " + className : className;
+            }
+        });
+    };
+    
+    fluid.uiEnhancer.classSwapper.clearClasses = function (that) {
+        $(that.classSelector, that.container).add(that.container).removeClass(that.classes);
+    };
+    
+    fluid.uiEnhancer.classSwapper.swap = function (classname, that) {
+        that.clearClasses(that);
+        that.container.addClass(that.options.classes[classname]);
+    };
+
+    
+    
+    
+    
     
     fluid.pageEnhancer = function (uiEnhancerOptions) {
         var that = fluid.initLittleComponent("fluid.pageEnhancer");

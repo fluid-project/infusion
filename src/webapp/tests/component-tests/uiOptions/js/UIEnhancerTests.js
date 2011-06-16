@@ -67,5 +67,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         });
         
+        tests.test("Class Swapper", function () {
+            var opts = {
+                classes: {
+                    "default": "",
+                    "times": "fl-font-times",
+                    "comic": "fl-font-comic-sans",
+                    "arial": "fl-font-arial",
+                    "verdana": "fl-font-verdana"
+                }
+            };
+            var swapper = fluid.uiEnhancer.classSwapper(".flt-classSwapper", opts);
+            
+            jqUnit.assertEquals("There should be four classes", 4, swapper.classStr.split(" ").length);
+            jqUnit.assertEquals("There should be four class selectors", 4, swapper.classSelector.split(", ").length);
+            
+            fluid.each(opts.classes, function (classname) {
+                jqUnit.assertTrue("All class selectors should be in the combined selector, checking " + classname, swapper.classSelector.indexOf("." + classname) > -1);
+                jqUnit.assertTrue("All classes should be in the classes string, checking " + classname, swapper.classStr.indexOf(classname) > -1);
+            });
+           
+            jqUnit.assertTrue("The container has a font setting", swapper.container.is(swapper.classSelector));
+            jqUnit.assertEquals("There is a font setting in the container", 1, $(swapper.classSelector, swapper.container).length);
+            
+            swapper.clearClasses();
+            jqUnit.assertFalse("The container's font setting was removed", swapper.container.is(swapper.classSelector));
+            jqUnit.assertEquals("There is no font setting in the container", 0, $(swapper.classSelector, swapper.container).length);
+            
+            swapper.swap("times");
+            jqUnit.assertTrue("The container has a font setting of times", swapper.container.hasClass(opts.classes.times));
+            jqUnit.assertEquals("There is no font setting in the container", 0, $(swapper.classSelector, swapper.container).length);
+            
+        });
+        
     });
 })(jQuery);
