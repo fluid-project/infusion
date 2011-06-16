@@ -60,60 +60,63 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             uiOptionsBridge: {
                 type: "fluid.uiOptionsBridge",
-                uiOptionsOptions: { // needs a better name
-                    components: {
-                        uiEnhancer: {
-                            type: "fluid.pageEnhancer"
-                        },
-                        preview: {
-                            type: "fluid.emptySubcomponent"
-                        },
-                        tabs: {
-                            type: "fluid.tabs",
-                            container: "{fatPanelUIOptions}.container",      
-                            createOnEvent: "onReady"               
-                        },
-                        settingsStore: "{uiEnhancer}.settingsStore",
-                        textControls: {
-                            resources: {
-                                template: {
-                                    expander: {
-                                        args: {
-                                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
+                options: {
+                    uiOptionsOptions: { // needs a better name
+                        iframe: "{fatPanelUIOPtionsImp}.markupRenderer.iframe",
+                        components: {
+                            uiEnhancer: {
+                                type: "fluid.pageEnhancer"
+                            },
+                            preview: {
+                                type: "fluid.emptySubcomponent"
+                            },
+                            tabs: {
+                                type: "fluid.tabs",
+                                container: "{fatPanelUIOptions}.container",      
+                                createOnEvent: "onReady"               
+                            },
+                            settingsStore: "{uiEnhancer}.settingsStore",
+                            textControls: {
+                                resources: {
+                                    template: {
+                                        expander: {
+                                            args: {
+                                                url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        },
-                        layoutControls: {
-                            resources: {
-                                template: {
-                                    expander: {
-                                        args: {
-                                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
+                            },
+                            layoutControls: {
+                                resources: {
+                                    template: {
+                                        expander: {
+                                            args: {
+                                                url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        },
-                        linkControls: {
-                            resources: {
-                                template: {
-                                    expander: {
-                                        args: {
-                                            url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                            },
+                            linkControls: {
+                                resources: {
+                                    template: {
+                                        expander: {
+                                            args: {
+                                                url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
-                },
-                resources: {
-                    template: {
-                        expander: {
-                            args: {
-                                url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"
+                    },
+                    resources: {
+                        template: {
+                            expander: {
+                                args: {
+                                    url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"
+                                }
                             }
                         }
                     }
