@@ -61,6 +61,20 @@ var fluid_1_4 = fluid_1_4 || {};
                     templateUrl: "../../tableOfContents/html/TableOfContents.html"
                 }
             },
+            textFont: {
+                type: "fluid.uiEnhancer.classSwapper",
+                container: "{uiEnhancer}.container",
+                options: {
+                    classes: "{uiEnhancer}.options.classnameMap.textFont"
+                }
+            },
+            theme: {
+                type: "fluid.uiEnhancer.classSwapper",
+                container: "{uiEnhancer}.container",
+                options: {
+                    classes: "{uiEnhancer}.options.classnameMap.theme"
+                }
+            },
             settingsStore: {
                 type: "fluid.uiOptions.store",
                 container: "{uiEnhancer}.container"
@@ -114,7 +128,6 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} options
      */
     fluid.uiEnhancer.finalInit = function (that) {
-        var clashingClassnames;
         
         that.initialFontSize = parseFloat(that.container.css("font-size"));        
         that.initialLineSpacing = that.getLineHeight(that.container);
@@ -126,7 +139,6 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         );
 
-     //   clashingClassnames = clearClashingClasses(that.container, that.options.classnameMap);
         that.applier.requestChange("", that.settingsStore.fetch());
         return that;
     };
@@ -139,13 +151,10 @@ var fluid_1_4 = fluid_1_4 || {};
      * Transforms the interface based on the settings in that.model
      */
     fluid.uiEnhancer.refreshView = function (that) {
-   //     that.container.removeClass(clashingClassnames);
-
-  //      that.setContainerClass(that, "textFont");
-  //      that.setContainerClass(that, "theme");
+        that.textFont.swap(that.model.textFont);
+        that.theme.swap(that.model.theme);
         that.setTextSize(that.container, that.model.textSize, that.initialFontSize);
         that.setLineSpacing(that);
-        
         setToc(that, that.model.toc);
         that.styleElements(that.container, !that.isTrue(that.model.backgroundImages), that.options.classnameMap.noBackgroundImages);
         that.styleLinks(that);
@@ -165,37 +174,6 @@ var fluid_1_4 = fluid_1_4 || {};
             container.css("font-size", initFontSize * times + "px");
         }
     };
-
-    /**
-     * Clears FSS classes from within the container that may clash with the current settings.
-     * These are the classes from the classnameMap for settings where we work on the container rather
-     * then on individual elements.
-     * @param {Object} that
-     * @return {String} the classnames that were removed separated by spaces
-     */
-    var clearClashingClasses = function (container, classnameMap) {
-        var settingsWhichMayClash = ["textFont", "textSpacing", "theme", "layout"];
-        var classesToRemove, selector;
-        
-        for (var i = 0; i < settingsWhichMayClash.length; i++) {
-            var settingValues = classnameMap[settingsWhichMayClash[i]];
-            if (typeof settingValues === 'object') {
-                fluid.each(settingValues, function (className) {
-                    if (className) {
-                        classesToRemove = classesToRemove + " " + className;
-                        selector = selector + ",." + className;
-                    }
-                });
-            } else if (typeof settingValues === 'string') {
-                classesToRemove = classesToRemove + " " + settingValues;
-                selector = selector + ",." + settingValues;
-            }
-        }
-        
-        $(selector, container).removeClass(classesToRemove);
-        return classesToRemove;
-    };
-
 
     // Returns the value of css style "line-height" in em 
     fluid.uiEnhancer.getLineHeight = function (container) {
@@ -242,7 +220,7 @@ var fluid_1_4 = fluid_1_4 || {};
         if (setting) {
             elements.addClass(classname);
         } else {
-            elements.removeClass(classname);
+            $("." + classname, elements).andSelf().removeClass(classname);
         }        
     };
     
@@ -318,7 +296,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uiEnhancer.classSwapper.clearClasses = function (that) {
-        $(that.classSelector, that.container).add(that.container).removeClass(that.classes);
+        $(that.classSelector, that.container).add(that.container).removeClass(that.classStr);
     };
     
     fluid.uiEnhancer.classSwapper.swap = function (classname, that) {
