@@ -48,8 +48,9 @@ var fluid_1_4 = fluid_1_4 || {};
                     }
                 }
             },
-            uiEnhancer: {
-                type: "fluid.pageEnhancer"
+            pageEnhancer: {
+                type: "fluid.pageEnhancer", 
+                priority: "first"
             },
             eventBinder: {
                 type: "fluid.uiOptionsEventBinder",
@@ -145,7 +146,7 @@ var fluid_1_4 = fluid_1_4 || {};
     });
     
     fluid.uiOptionsEventBinder.finalInit = function (that) {
-        that.uiOptions.events.modelChanged.addListener(that.uiEnhancer.updateModel);
+        that.uiOptions.events.modelChanged.addListener(that.pageEnhancer.uiEnhancer.updateModel);
         that.slidingPanel.events.afterPanelHidden.addListener(that.uiOptions.save);
     };
     
@@ -160,7 +161,7 @@ var fluid_1_4 = fluid_1_4 || {};
             afterRender: null
         },
         markupProps: {
-            "class": "flc-iframe",
+            "class": "flc-iframe fl-container-flex",
             src: "./uiOptionsIframe.html"
         }
     });
@@ -204,7 +205,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var newOpts = {};
         var iframeSelector = fluid.get(options, "selectors.iframe");
         var slidingPanel = fluid.get(options, "components.slidingPanel");
-        var uiEnhancer = fluid.get(options, "components.uiEnhancer");
+        var pageEnhancer = fluid.get(options, "components.pageEnhancer");
         var preview = fluid.get(options, "components.preview");
         var markupRenderer = fluid.get(options, "component.markupRenderer");
         
@@ -223,8 +224,8 @@ var fluid_1_4 = fluid_1_4 || {};
             delete options.components.preview;
         }
         
-        if (uiEnhancer) {
-            fluid.set(newOpts, "components.uiEnhancer", uiEnhancer);
+        if (pageEnhancer) {
+            fluid.set(newOpts, "components.pageEnhancer", pageEnhancer);
             // don't delete this one, it is needed by both the inner and outer components
         }
         

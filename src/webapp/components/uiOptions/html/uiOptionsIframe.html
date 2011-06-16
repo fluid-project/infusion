@@ -44,6 +44,7 @@
         <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../../framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../../components/tabs/js/Tabs.js"></script>
 
         <script type="text/javascript" src="../js/Store.js"></script>
         <script type="text/javascript" src="../js/UIEnhancer.js"></script>
@@ -75,6 +76,24 @@
                 fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
                     options: {
                         templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    }
+                });
+                
+                fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
+                    options: {
+                        classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
+                    }
+                });
+                
+                fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
+                    options: {
+                        classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
+                    }
+                });
+
+                fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
+                    options: {
+                        classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
                     }
                 });
         </script>
