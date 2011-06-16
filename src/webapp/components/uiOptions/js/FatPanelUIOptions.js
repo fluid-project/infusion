@@ -53,9 +53,11 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             eventBinder: {
                 type: "fluid.uiOptionsEventBinder",
-                uiEnhancer: "{fatPanelUIOptionsImp}.uiEnhancer",
-                uiOptions: "{fatPanelUIOptionsImp}.uiOptionsBridge",
-                slidingPanel: "{fatPanelUIOptionsImp}.slidingPanel",
+                options: {
+                    uiEnhancer: "{fatPanelUIOptionsImp}.uiEnhancer",
+                    uiOptions: "{fatPanelUIOptionsImp}.uiOptionsBridge",
+                    slidingPanel: "{fatPanelUIOptionsImp}.slidingPanel"
+                },
                 createOnEvent: "afterRender",
                 priority: "last"
             },
