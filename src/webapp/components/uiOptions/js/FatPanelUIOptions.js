@@ -28,7 +28,6 @@ var fluid_1_4 = fluid_1_4 || {};
      
     fluid.defaults("fluid.fatPanelUIOPtionsImp", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        // finalInitFunction: "fluid.fatPanelUIOPtionsImp.finalInit",
         selectors: {
             iframe: ".flc-uiOptions-iframe"
         },       
@@ -122,29 +121,10 @@ var fluid_1_4 = fluid_1_4 || {};
                 createOnEvent: "afterRender"
             }
         },
-        //         invokers: {
-        //             eventBinder: "fluid.uiOptionsEventBinder"
-        //         },
         events: {
             afterRender: null
         }
     });
-    
-    // fluid.demands("fluid.renderIframe", ["fluid.fatPanelUIOPtionsImp"], {
-    //     options: {
-    //         events: {
-    //             afterRender: "{fatPanelUIOPtionsImp}.events.afterRender"
-    //         }
-    //     }
-    // });
-    
-    // fluid.uiOptionsEventBinder = function (enhancer, uiOptions) {
-    //     uiOptions.events.modelChanged.addListener(enhancer.updateModel);
-    // };
-    // 
-    // fluid.fatPanelUIOPtionsImp.finalInit = function (that) {
-    //     that.eventBinder(that.uiEnhancer, that.uiOptionsBridge.uiOptions);
-    // };
     
     /******************************
      * fluid.uiOptionsEventBinder *
