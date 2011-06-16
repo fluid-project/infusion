@@ -24,12 +24,13 @@ var skon = skon || {};
     skon.slidingUIOptions = function (panel, uioptions) {
         fluid.demands("fluid.uiOptionsTemplateLoader", [ "skon.demo"], {
             options: {
+                prefix: "../../../components/uiOptions/html/",
                 templates: {
-                    uiOptions: "../../../components/uiOptions/html/FatPanelUIOptions.html",
-                    textControls: "../../../components/uiOptions/html/UIOptionsTemplate-text.html",
-                    layoutControls: "../../../components/uiOptions/html/UIOptionsTemplate-layout.html",
-                    linksControls: "../../../components/uiOptions/html/UIOptionsTemplate-links.html"
-                }  
+                    uiOptions: "%prefixFatPanelUIOptions.html",
+                    textControls: "%prefixUIOptionsTemplate-text.html",
+                    layoutControls: "%prefixUIOptionsTemplate-layout.html",
+                    linksControls: "%prefixUIOptionsTemplate-links.html"
+                }
             }
         });
 

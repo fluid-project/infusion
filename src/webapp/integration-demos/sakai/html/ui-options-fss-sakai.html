@@ -253,11 +253,12 @@
             fluid.staticEnvironment.FssSakaiUIOptions = fluid.typeTag("fluid.FssSakaiUIOptions");
             fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.FssSakaiUIOptions", {
                 options: {
+                    prefix: "../../../components/uiOptions/html/",
                     templates: {
-                        uiOptions: "../../../components/uiOptions/html/FatPanelUIOptions.html",
-                        textControls: "../../../components/uiOptions/html/UIOptionsTemplate-text.html",
-                        layoutControls: "../../../components/uiOptions/html/UIOptionsTemplate-layout.html",
-                        linksControls: "../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                        uiOptions: "%prefixFatPanelUIOptions.html",
+                        textControls: "%prefixUIOptionsTemplate-text.html",
+                        layoutControls: "%prefixUIOptionsTemplate-layout.html",
+                        linksControls: "%prefixUIOptionsTemplate-links.html"
                     }
                 }
             });

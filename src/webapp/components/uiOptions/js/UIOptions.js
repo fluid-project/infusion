@@ -200,6 +200,11 @@ var fluid_1_4 = fluid_1_4 || {};
 
     fluid.uiOptionsTemplateLoader = function (options) {
         var that = fluid.initLittleComponent("fluid.uiOptionsTemplateLoader", options);
+
+        fluid.each(that.options.templates, function (item, key) {
+            that.options.templates[key] = fluid.stringTemplate(item, that.options);
+        });
+        
         return function (url) {
             return fluid.stringTemplate(url, that.options.templates);
         };
@@ -207,11 +212,12 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.defaults("fluid.uiOptionsTemplateLoader", {
         gradeNames: ["fluid.littleComponent"],
+        prefix: "../html/",
         templates: {
-            uiOptions: "../html/UIOptions.html",
-            textControls: "../html/UIOptionsTemplate-text.html",
-            layoutControls: "../html/UIOptionsTemplate-layout.html",
-            linksControls: "../html/UIOptionsTemplate-links.html"
+            uiOptions: "$prefixUIOptions.html",
+            textControls: "%prefixUIOptionsTemplate-text.html",
+            layoutControls: "%prefixUIOptionsTemplate-layout.html",
+            linksControls: "%prefixUIOptionsTemplate-links.html"
         }  
     });
     
