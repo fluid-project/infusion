@@ -55,7 +55,7 @@ var fluid_1_4 = fluid_1_4 || {};
             eventBinder: {
                 type: "fluid.uiOptionsEventBinder",
                 options: {
-                    uiEnhancer: "{fatPanelUIOptionsImp}.uiEnhancer",
+                    pageEnhancer: "{fatPanelUIOptionsImp}.pageEnhancer",
                     uiOptions: "{fatPanelUIOptionsImp}.uiOptionsBridge",
                     slidingPanel: "{fatPanelUIOptionsImp}.slidingPanel"
                 },
@@ -140,14 +140,14 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uiOptionsEventBinder", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         finalInitFunction: "fluid.uiOptionsEventBinder.finalInit",
-        uiEnhancer: null,
+        pageEnhancer: null,
         uiOptions: null,
         slidingPanel: null
     });
     
     fluid.uiOptionsEventBinder.finalInit = function (that) {
-        that.uiOptions.events.modelChanged.addListener(that.pageEnhancer.uiEnhancer.updateModel);
-        that.slidingPanel.events.afterPanelHidden.addListener(that.uiOptions.save);
+        that.options.uiOptions.events.modelChanged.addListener(that.options.pageEnhancer.uiEnhancer.updateModel);
+        that.options.slidingPanel.events.afterPanelHidden.addListener(that.options.uiOptions.save);
     };
     
     /**********************
