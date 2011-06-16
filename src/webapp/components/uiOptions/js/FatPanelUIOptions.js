@@ -146,7 +146,9 @@ var fluid_1_4 = fluid_1_4 || {};
     });
     
     fluid.uiOptionsEventBinder.finalInit = function (that) {
-        that.options.uiOptions.events.modelChanged.addListener(that.options.pageEnhancer.uiEnhancer.updateModel);
+        that.options.uiOptions.events.modelChanged.addListener(function (model) {
+            that.options.pageEnhancer.uiEnhancer.updateModel(model.selections);
+        });
         that.options.slidingPanel.events.afterPanelHidden.addListener(that.options.uiOptions.save);
     };
     
