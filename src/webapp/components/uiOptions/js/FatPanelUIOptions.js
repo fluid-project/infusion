@@ -66,7 +66,8 @@ var fluid_1_4 = fluid_1_4 || {};
                     uiOptionsOptions: { // needs a better name
                         components: {
                             uiEnhancer: {
-                                type: "fluid.pageEnhancer"
+                                type: "fluid.pageEnhancer",
+                                priority: "first"
                             },
                             preview: {
                                 type: "fluid.emptySubcomponent"
@@ -76,7 +77,6 @@ var fluid_1_4 = fluid_1_4 || {};
                                 container: "body",      
                                 createOnEvent: "onReady"               
                             },
-                            settingsStore: "{uiEnhancer}.settingsStore",
                             textControls: {
                                 resources: {
                                     template: {
@@ -186,7 +186,10 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.defaults("fluid.uiOptionsBridge", {
         gradeNames: ["fluid.littleComponent"],
-        iframe: null
+        iframe: null, 
+         mergePolicy: {
+            uiOptionsOptions: "noexpand"  
+        }
     });
     
     /************************
