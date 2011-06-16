@@ -84,5 +84,4 @@
 /* Linearization tweaks */
 .fl-layout-linear .fl-uiOptions .fl-uiOptions-text-icon, .fl-layout-linear .fl-uiOptions .fl-uiOptions-layout-icon, .fl-layout-linear .fl-uiOptions .fl-uiOptions-links-icon {
 	padding-left: 20px !important;
-	background-position: 0px 0px;
 }

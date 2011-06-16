@@ -188,21 +188,33 @@
 .fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/yellowBlack/uio_icon_cancel_yellow_13x13.png"); }
 
 /* Custom linearizing tweaks */
-.fl-layout-linear .fl-uiOptions li {
-	height: auto !important;
-}
 
+/* preserve slider layout */
+.fl-layout-linear .fl-uiOptions .fl-slider-horz,
+.fl-layout-linear .fl-uiOptions .fl-text-slider-left, .fl-layout-linear .fl-uiOptions .fl-spacing-slider-left,
+.fl-layout-linear .fl-uiOptions .fl-text-slider-right, .fl-layout-linear .fl-uiOptions .fl-spacing-slider-right {
+	min-width: 0 !important;
+	clear: none !important;	
+}
+.fl-layout-linear .fl-uiOptions .fl-slider-horz {
+	width: 140px !important;
+	float: left !important;
+}
 .fl-layout-linear .fl-uiOptions .fl-text-slider-left, .fl-layout-linear .fl-uiOptions .fl-spacing-slider-left {
 	float:left !important;
-	clear: none !important;	
+	width: 16px !important;
 }
 .fl-layout-linear .fl-uiOptions .fl-text-slider-right, .fl-layout-linear .fl-uiOptions .fl-spacing-slider-right  {
 	float:right !important;
-	clear: none !important;	
+	width: 20px !important;
+}
+.fl-layout-linear .fl-uiOptions .fl-uiOptions-text .fl-force-left {
+	float:left !important;
+	min-width: 0 !important;	
 }
 
-.fl-layout-linear .fl-uiOptions .fl-slider-horz {
-	width: 140px !important;
-	min-width: 0 !important;
-	float: left !important;
+/* reset heights of lis */
+.fl-layout-linear .fl-uiOptions li {
+	height: auto !important;
+	padding-bottom: 20px;
 }
