@@ -103,8 +103,7 @@ var fluid_1_4 = fluid_1_4 || {};
         container: "{multiFileUploader}.options.selectors.errorsPanel", // TODO: Why can't I bind to {multiFileUploader}.dom.errors?
         options: {            
             listeners: {
-                "{multiFileUploader}.events.afterFileDialog": "{errorsView}.refreshView",
-                "{multiFileUploader}.events.onUploadStart": "{errorsView}.clearAllErrors"
+                "{multiFileUploader}.events.afterFileDialog": "{errorsView}.refreshView"
             }
         }
     });
@@ -171,15 +170,15 @@ var fluid_1_4 = fluid_1_4 || {};
         };
         
         that.refreshView = function () {
-            if (that.model.files.length <= 0) {
-                that.container.hide();
-                return;
-            }
-            
             fluid.uploader.errorsView.section.renderHeader(that);
             fluid.uploader.errorsView.section.renderErrorDetails(that);
             that.hideDetails();
-            that.container.show();
+            
+            if (that.model.files.length <= 0) {
+                that.container.hide();
+            } else {
+                that.container.show();
+            }
         };
     };
     
@@ -190,8 +189,6 @@ var fluid_1_4 = fluid_1_4 || {};
         // Bind hide/show error details link
         that.locate("showHideFilesToggle").click(that.toggleDetails);
         
-        // Sections should be hidden on startup.
-        that.hideDetails();
         that.refreshView();
     };
     
@@ -204,10 +201,8 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uploader.errorsView.section.renderErrorDetails = function (that) {
-        if (that.model.files.length === 0) {
-            return;
-        }
-        var filesList = that.model.files.join(that.options.strings.fileListDelimiter);
+        var files = that.model.files;
+        var filesList = files.length > 0 ? files.join(that.options.strings.fileListDelimiter) : "";
         that.locate("erroredFiles").text(filesList);
     };
     
