@@ -50,13 +50,6 @@
 	background-position: 5px 9px;
 }
 
-/* Check boxes */
-.fl-uiOptions input[type="checkbox"] {
-	margin-right:10px;
-	margin-bottom: 2em;
-	border: 1px solid black;
-}
-
 /* header icons */
 .fl-uiOptions .fl-uiOptions-text-icon {
 	background-image: url("../images/uio_icon_textanddisplay_18x18.png");
