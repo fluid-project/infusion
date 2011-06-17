@@ -59,7 +59,7 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             textSize: {
-                type: "fluid.uiEnhancer.textSizeSetter",
+                type: "fluid.uiEnhancer.textSizer",
                 container: "{uiEnhancer}.container"
             },
             tableOfContents: {
@@ -76,6 +76,10 @@ var fluid_1_4 = fluid_1_4 || {};
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.textFont"
                 }
+            },
+            lineSpacing: {
+                type: "fluid.uiEnhancer.lineSpacer",
+                container: "{uiEnhancer}.container"
             },
             theme: {
                 type: "fluid.uiEnhancer.classSwapper",
@@ -95,12 +99,9 @@ var fluid_1_4 = fluid_1_4 || {};
                 args: ["@0", "{uiEnhancer}.applier"]
             },
             refreshView: "fluid.uiEnhancer.refreshView",
-            
-            getLineHeight: "fluid.uiEnhancer.getLineHeight",
             styleElements: "fluid.uiEnhancer.styleElements",
             
             // NOTE: when we do the ants refactoring each of these will be half an ant
-            setLineSpacing: "fluid.uiEnhancer.setLineSpacing",
             setLayout: "fluid.uiEnhancer.setLayout",
             styleLinks: "fluid.uiEnhancer.styleLinks",
             styleInputs: "fluid.uiEnhancer.styleInputs"
@@ -132,8 +133,6 @@ var fluid_1_4 = fluid_1_4 || {};
     });
 
     fluid.uiEnhancer.finalInit = function (that) {        
-        that.initialLineSpacing = that.getLineHeight(that.container);
-        
         that.applier.modelChanged.addListener("",
             function (newModel, oldModel, changeRequest) {
                 that.events.modelChanged.fire(newModel, oldModel, changeRequest);
@@ -154,7 +153,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uiEnhancer.refreshView = function (that) {
         that.textSize.set(that.model.textSize);
         that.textFont.swap(that.model.textFont);
-        that.setLineSpacing(that);
+        that.lineSpacing.set(that.model.lineSpacing);
         that.theme.swap(that.model.theme);
         that.setLayout(that);
         setToc(that, that.model.toc);
@@ -162,29 +161,6 @@ var fluid_1_4 = fluid_1_4 || {};
         that.styleInputs(that);
     };
 
-    // Returns the value of css style "line-height" in em 
-    fluid.uiEnhancer.getLineHeight = function (container) {
-        var lineHeight = container.css("lineHeight");
-        
-        // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1em.
-        if (lineHeight === "normal") {
-            return 1;
-        }
-        
-        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
-        if ($.browser.msie) {
-            var lineHeightInIE;
-            
-            // if unit is missing, assume the value is in "em"
-            lineHeightInIE = container[0].currentStyle.lineHeight;
-            
-            if (lineHeightInIE.match(/[0-9]$/)) {
-                return lineHeightInIE;
-            }
-        }
-        
-        return parseFloat(lineHeight) / 16;
-    };
 
     /**
      * Adds or removes the classname to/from the elements based upon the setting.
@@ -198,16 +174,6 @@ var fluid_1_4 = fluid_1_4 || {};
         } else {
             $("." + classname, elements).andSelf().removeClass(classname);
         }        
-    };
-
-    /**
-     * Sets the line spacing on the container.  
-     * @param {Object} that - the uiEnhancer
-     */
-    fluid.uiEnhancer.setLineSpacing = function (that) {
-        var times = that.model.lineSpacing;
-        var newLineSpacing = times === "" || times === 1 ? that.initialLineSpacing : times * that.initialLineSpacing * that.model.textSize;
-        that.container.css("line-height", newLineSpacing + "em");
     };
 
     /**
@@ -235,31 +201,34 @@ var fluid_1_4 = fluid_1_4 || {};
         that.styleElements($("input", that.container), that.model.inputsLarger, that.options.classnameMap.inputsLarger);
     };
 
+    fluid.uiEnhancer.getTextSize = function (container) {
+        return parseFloat(container.css("font-size"));        
+    };
 
 
 
     /*******************************************************************************
-     * TextSizeSetter                                                              *
+     * TextSizer                                                              *
      *                                                                             *
      * Sets the text size on the container to the multiple provided.               *
      * Note: This will become half an ant                                          *
      *******************************************************************************/
     
-    fluid.defaults("fluid.uiEnhancer.textSizeSetter", {
+    fluid.defaults("fluid.uiEnhancer.textSizer", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         invokers: {
             set: {
-                funcName: "fluid.uiEnhancer.textSizeSetter.set",
-                args: ["@0", "{textSizeSetter}"]
+                funcName: "fluid.uiEnhancer.textSizer.set",
+                args: ["@0", "{textSizer}"]
             },
             calcInitSize: {
-                funcName: "fluid.uiEnhancer.textSizeSetter.calcInitSize",
-                args: ["{textSizeSetter}"]
+                funcName: "fluid.uiEnhancer.textSizer.calcInitSize",
+                args: ["{textSizer}"]
             }
         }
     });
        
-    fluid.uiEnhancer.textSizeSetter.set = function (times, that) {
+    fluid.uiEnhancer.textSizer.set = function (times, that) {
         if (!that.initialSize) {
             that.calcInitSize();
         }
@@ -271,9 +240,10 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
     
-    fluid.uiEnhancer.textSizeSetter.calcInitSize = function (that) {
-        that.initialSize = parseFloat(that.container.css("font-size"));        
+    fluid.uiEnhancer.textSizer.calcInitSize = function (that) {
+        that.initialSize = fluid.uiEnhancer.getTextSize(that.container);     
     };
+    
 
 
 
@@ -323,9 +293,69 @@ var fluid_1_4 = fluid_1_4 || {};
         that.container.addClass(that.options.classes[classname]);
     };
 
+
+
     
+    /*******************************************************************************
+     * LineSpacer                                                                  *
+     *                                                                             *
+     * Sets the line spacing on the container to the multiple provided.            *
+     * Note: This will become half an ant                                          *
+     *******************************************************************************/
     
+    fluid.defaults("fluid.uiEnhancer.lineSpacer", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        invokers: {
+            set: {
+                funcName: "fluid.uiEnhancer.lineSpacer.set",
+                args: ["@0", "{lineSpacer}"]
+            },
+            calcInitSize: {
+                funcName: "fluid.uiEnhancer.lineSpacer.calcInitSize",
+                args: ["{lineSpacer}"]
+            }
+        }
+    });
     
+    // TODO: this might be almost the same as textSize setting - can we share?
+    fluid.uiEnhancer.lineSpacer.set = function (times, that) {
+        var textSize = fluid.uiEnhancer.getTextSize(that.container);
+        
+        if (!that.initialSize) {
+            that.calcInitSize();
+        }
+        
+        var newLineSpacing = times === "" || times === 1 ? that.initialSize : times * that.initialSize * textSize;
+        that.container.css("line-height", newLineSpacing + "em");
+    };
+    
+    // Returns the value of css style "line-height" in em 
+    fluid.uiEnhancer.lineSpacer.calcInitSize = function (that) {
+        var lineHeight = that.container.css("lineHeight");
+        
+        // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1em.
+        if (lineHeight === "normal") {
+            return 1;
+        }
+        
+        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
+        if ($.browser.msie) {
+            var lineHeightInIE;
+            
+            // if unit is missing, assume the value is in "em"
+            lineHeightInIE = that.container[0].currentStyle.lineHeight;
+            
+            if (lineHeightInIE.match(/[0-9]$/)) {
+                return lineHeightInIE;
+            }
+        }
+        
+        that.initialSize = Math.round(parseFloat(lineHeight) / fluid.uiEnhancer.getTextSize(that.container) * 100) / 100;
+    };
+
+
+
+
     /*******************************************************************************
      * PageEnhancer                                                                *
      *                                                                             *

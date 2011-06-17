@@ -1,5 +1,6 @@
 /*
 Copyright 2008-2009 University of Toronto
+Copyright 2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -65,14 +66,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         });
         
-        tests.test("TextSizeSetter", function () {
-            var textSizeSetter = fluid.uiEnhancer.textSizeSetter(".flt-textSizeSetter");
+        tests.test("TextSizer", function () {
+            var textSizer = fluid.uiEnhancer.textSizer(".flt-textSizer");
             
-            jqUnit.assertTrue("Make sure initalSize is not set upon creation since we want to trigger the setting lazily.", !textSizeSetter.initialSize);
-            textSizeSetter.calcInitSize();
-            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 8, textSizeSetter.initialSize);
-            textSizeSetter.set(2);
-            jqUnit.assertEquals("The size should be doubled", "16px", textSizeSetter.container.css("fontSize"));
+            jqUnit.assertTrue("Make sure initalSize is not set upon creation since we want to trigger the setting lazily.", !textSizer.initialSize);
+            textSizer.calcInitSize();
+            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 8, textSizer.initialSize);
+            textSizer.set(2);
+            jqUnit.assertEquals("The size should be doubled", "16px", textSizer.container.css("fontSize"));
         
         });
         
@@ -108,6 +109,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("There is no font setting in the container", 0, $(swapper.classSelector, swapper.container).length);
             
         });
+
+        tests.test("LineSpacer", function () {
+            var lineSpacer = fluid.uiEnhancer.lineSpacer(".flt-lineSpacer");
+            
+            jqUnit.assertTrue("Make sure initalSize is not set upon creation since we want to trigger the setting lazily.", !lineSpacer.initialSize);
+            lineSpacer.calcInitSize();
+            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 1.5, lineSpacer.initialSize);
+            jqUnit.assertEquals("Check the line spacing size in pixels", "15px", lineSpacer.container.css("lineHeight"));
+            lineSpacer.set(2);
+            jqUnit.assertEquals("The size should be doubled", "30px", lineSpacer.container.css("lineHeight"));
         
+        });
     });
 })(jQuery);
