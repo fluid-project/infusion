@@ -191,6 +191,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.locate("showHideFilesToggle").click(that.toggleDetails);
         
         // Sections should be hidden on startup.
+        that.hideDetails();
         that.refreshView();
     };
     
