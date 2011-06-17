@@ -64,68 +64,73 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             uiOptionsBridge: {
                 type: "fluid.uiOptionsBridge",
+                createOnEvent: "afterRender",
                 options: {
                     iframe: "{fatPanelUIOptionsImp}.markupRenderer.iframe",
-                    uiOptionsOptions: { // needs a better name
-                        components: {
-                            pageEnhancer: {
-                                type: "fluid.pageEnhancer",
-                                priority: "first"
-                            },
-                            preview: {
-                                type: "fluid.emptySubcomponent"
-                            },
-                            tabs: {
-                                type: "fluid.tabs",
-                                container: "body",      
-                                createOnEvent: "onReady"               
-                            },
-                            textControls: {
-                                resources: {
-                                    template: {
-                                        expander: {
-                                            args: {
-                                                url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
+                    components: {
+                        uiOptions: {
+                            type: "fluid.uiOptions",
+                            options: {
+                                components: {
+                                    pageEnhancer: {
+                                        type: "fluid.pageEnhancer",
+                                        priority: "first"
+                                    },
+                                    preview: {
+                                        type: "fluid.emptySubcomponent"
+                                    },
+                                    tabs: {
+                                        type: "fluid.tabs",
+                                        container: "body",      
+                                        createOnEvent: "onReady"               
+                                    },
+                                    textControls: {
+                                        resources: {
+                                            template: {
+                                                expander: {
+                                                    args: {
+                                                        url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    layoutControls: {
+                                        resources: {
+                                            template: {
+                                                expander: {
+                                                    args: {
+                                                        url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    linkControls: {
+                                        resources: {
+                                            template: {
+                                                expander: {
+                                                    args: {
+                                                        url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                                                    }
+                                                }
                                             }
                                         }
                                     }
                                 }
                             },
-                            layoutControls: {
-                                resources: {
-                                    template: {
-                                        expander: {
-                                            args: {
-                                                url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
-                                            }
+                            resources: {
+                                template: {
+                                    expander: {
+                                        args: {
+                                            url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"
                                         }
                                     }
-                                }
-                            },
-                            linkControls: {
-                                resources: {
-                                    template: {
-                                        expander: {
-                                            args: {
-                                                url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    resources: {
-                        template: {
-                            expander: {
-                                args: {
-                                    url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"
                                 }
                             }
                         }
                     }
-                },
-                createOnEvent: "afterRender"
+                }
             }
         },
         events: {
@@ -189,7 +194,8 @@ var fluid_1_4 = fluid_1_4 || {};
         var iframeDoc = iframe.contents();
         var iframeWin = iframe[0].contentWindow;
         
-        return iframeWin.fluid.uiOptions($("body", iframeDoc), that.options.uiOptionsOptions);
+        var uiOptions = fluid.get(iframeWin, that.options.components.uiOptions.type);
+        return uiOptions($("body", iframeDoc), that.options.components.uiOptions.options);
     };
     
     fluid.defaults("fluid.uiOptionsBridge", {
@@ -239,7 +245,7 @@ var fluid_1_4 = fluid_1_4 || {};
             delete options.components.markupRenderer;
         }
         
-        fluid.set(newOpts, "components.uiOptionsBridge.options.uiOptionsOptions", options);
+        fluid.set(newOpts, "components.uiOptionsBridge.options.components.uiOptions.options", options);
             
         return newOpts;
     };
