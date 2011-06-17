@@ -23,15 +23,13 @@ var fluid_1_4 = fluid_1_4 || {};
      *********************/
      
     fluid.defaults("fluid.tabs", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],             
-        selectors: {
-            tabList: ".flc-tabs"
-        },
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        tabOptions: {},
         finalInitFunction: "fluid.tabs.finalInit"
     });          
     
     fluid.tabs.finalInit = function (that) {
-        that.locate("tabList").tabs();  //jQuery UI Tabs
+        that.container.tabs(that.options.tabOptions);  //jQuery UI Tabs
     };
 
 })(jQuery, fluid_1_4);

@@ -114,6 +114,30 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
+    
+    fluid.defaults("fluid.tests.parentView", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        components: {
+            defaultedChildView: {
+                type: "fluid.tests.subComponent",
+                container: "{parentView}.dom.defaultedChildContainer"
+            },
+            demandedChildView: {
+                type: "fluid.tests.childView"
+            }
+        },
+        selectors: {
+            defaultedChildContainer: ".flc-tests-parentView-defaultedChildContainer",
+            demandedChildContainer: ".flc-tests-parentView-demandedChildContainer"
+        }
+    });
+    
+    fluid.demands("fluid.tests.childView", "fluid.tests.parentView", {
+        container: "{parentView}.dom.demandedChildContainer",
+        options: {
+            cat: "meow"
+        }
+    });
 
     fluid.makeComponents({
         "fluid.tests.testOrder":          "fluid.viewComponent", 
@@ -123,7 +147,8 @@ fluid.registerNamespace("fluid.tests");
         "fluid.tests.multiResSub3":       "fluid.littleComponent",
         "fluid.tests.fluid3818child":     "fluid.littleComponent",
         "fluid.tests.thatStackTail":      "fluid.littleComponent",
-        "fluid.tests.reinsChild":         "fluid.littleComponent"
+        "fluid.tests.reinsChild":         "fluid.littleComponent",
+        "fluid.tests.childView":          "fluid.viewComponent"
     });
 
     fluid.defaults("fluid.tests.invokerComponent", {
@@ -1386,6 +1411,22 @@ fluid.registerNamespace("fluid.tests");
         that.invokerwrapper.invoker2.applier.requestChange("testValue", newValue);
         jqUnit.assertEquals("The invoker for second subcomponent should return the value from its parent", 
             newValue, that.invokerwrapper.invoker2.checkTestValue());
+    });
+
+
+    /************************************
+     * DOM Binder IoC Resolution Tests. *
+     ************************************/
+     
+    var checkChildContainer = function (parent, child, containerName, configName) {
+        jqUnit.assertEquals("The child component should have the correct container sourced from the parent's DOM Binder when configured in " + configName,
+            parent.locate(containerName)[0], child.container[0]);
+    };
+    
+    fluidIoCTests.test("Child view's container resolved by IoC from parent's DOM Binder", function () {
+        var parent = fluid.tests.parentView(".flc-tests-parentView-container");
+        checkChildContainer(parent, parent.defaultedChildView, "defaultedChildContainer", "defaults");
+        checkChildContainer(parent, parent.demandedChildView, "demandedChildContainer", "demands");
     });
 
 })(jQuery); 

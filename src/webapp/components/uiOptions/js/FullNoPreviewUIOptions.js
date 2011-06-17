@@ -38,7 +38,8 @@ var fluid_1_4 = fluid_1_4 || {};
             components: {
                 preview: {
                     type: "fluid.emptySubcomponent"
-                }            
+                },
+                settingsStore: "{uiEnhancer}.settingsStore"
             }
         }
     });      
