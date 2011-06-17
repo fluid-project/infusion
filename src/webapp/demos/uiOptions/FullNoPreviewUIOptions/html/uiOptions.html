@@ -59,11 +59,9 @@
                 fluid.staticEnvironment.uiOptionsDemo = fluid.typeTag("fluid.uiOptionsDemo");
                 fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsDemo", {
                     options: {
+                        prefix: "../../../../components/uiOptions/html/",
                         templates: {
-                            uiOptions: "../../../../components/uiOptions/html/FullNoPreviewUIOptions.html",
-                            textControls: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html",
-                            layoutControls: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html",
-                            linksControls: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                            uiOptions: "%prefixFullNoPreviewUIOptions.html"
                         }
                     }
                 });
