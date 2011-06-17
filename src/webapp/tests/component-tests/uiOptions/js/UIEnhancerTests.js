@@ -65,7 +65,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         });
         
-        tests.test("Class Swapper", function () {
+        tests.test("TextSizeSetter", function () {
+            var textSizeSetter = fluid.uiEnhancer.textSizeSetter(".flt-textSizeSetter");
+            
+            jqUnit.assertTrue("Make sure initalSize is not set upon creation since we want to trigger the setting lazily.", !textSizeSetter.initialSize);
+            textSizeSetter.calcInitSize();
+            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 8, textSizeSetter.initialSize);
+            textSizeSetter.set(2);
+            jqUnit.assertEquals("The size should be doubled", "16px", textSizeSetter.container.css("fontSize"));
+        
+        });
+        
+        tests.test("ClassSwapper", function () {
             var opts = {
                 classes: {
                     "default": "",

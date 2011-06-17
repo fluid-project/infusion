@@ -58,6 +58,10 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uiEnhancer", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
+            textSize: {
+                type: "fluid.uiEnhancer.textSizeSetter",
+                container: "{uiEnhancer}.container"
+            },
             tableOfContents: {
                 type: "fluid.tableOfContents",
                 container: "{uiEnhancer}.container",
@@ -96,7 +100,6 @@ var fluid_1_4 = fluid_1_4 || {};
             styleElements: "fluid.uiEnhancer.styleElements",
             
             // NOTE: when we do the ants refactoring each of these will be half an ant
-            setTextSize: "fluid.uiEnhancer.setTextSize",            
             setLineSpacing: "fluid.uiEnhancer.setLineSpacing",
             setLayout: "fluid.uiEnhancer.setLayout",
             styleLinks: "fluid.uiEnhancer.styleLinks",
@@ -129,15 +132,13 @@ var fluid_1_4 = fluid_1_4 || {};
     });
 
     fluid.uiEnhancer.finalInit = function (that) {        
-        that.initialFontSize = parseFloat(that.container.css("font-size"));        
         that.initialLineSpacing = that.getLineHeight(that.container);
         
         that.applier.modelChanged.addListener("",
             function (newModel, oldModel, changeRequest) {
                 that.events.modelChanged.fire(newModel, oldModel, changeRequest);
-                that.refreshView(that);
-            }
-        );
+                that.refreshView(that);   
+            });
 
         that.applier.requestChange("", that.settingsStore.fetch());
         return that;
@@ -151,7 +152,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * Transforms the interface based on the settings in that.model
      */
     fluid.uiEnhancer.refreshView = function (that) {
-        that.setTextSize(that.container, that.model.textSize, that.initialFontSize);
+        that.textSize.set(that.model.textSize);
         that.textFont.swap(that.model.textFont);
         that.setLineSpacing(that);
         that.theme.swap(that.model.theme);
@@ -200,20 +201,6 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     /**
-     * Sets the font size on the container. 
-     * @param {Object} container
-     * @param {Object} times - the multiplication factor to increate the size by
-     * @param {Object} initialFontSize - the initial font size in pixels
-     */
-    fluid.uiEnhancer.setTextSize = function (container, times, initialFontSize) {
-        if (times === 1) {
-            container.css("font-size", ""); // empty is same effect as not being set
-        } else if (times && times > 0) {
-            container.css("font-size", initialFontSize * times + "px");
-        }
-    };
-
-    /**
      * Sets the line spacing on the container.  
      * @param {Object} that - the uiEnhancer
      */
@@ -223,7 +210,6 @@ var fluid_1_4 = fluid_1_4 || {};
         that.container.css("line-height", newLineSpacing + "em");
     };
 
-    
     /**
      * Style layout in the container according to the settings
      * @param {Object} that - the uiEnhancer
@@ -232,7 +218,6 @@ var fluid_1_4 = fluid_1_4 || {};
         that.styleElements(that.container, that.model.layout, that.options.classnameMap.layout);
     };
 
-    
     /**
      * Style links in the container according to the settings
      * @param {Object} that - the uiEnhancer
@@ -249,12 +234,52 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uiEnhancer.styleInputs = function (that) {
         that.styleElements($("input", that.container), that.model.inputsLarger, that.options.classnameMap.inputsLarger);
     };
-     
 
-    
-    
+
+
+
     /*******************************************************************************
-     * Class Swapper                                                               *
+     * TextSizeSetter                                                              *
+     *                                                                             *
+     * Sets the text size on the container to the multiple provided.               *
+     * Note: This will become half an ant                                          *
+     *******************************************************************************/
+    
+    fluid.defaults("fluid.uiEnhancer.textSizeSetter", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        invokers: {
+            set: {
+                funcName: "fluid.uiEnhancer.textSizeSetter.set",
+                args: ["@0", "{textSizeSetter}"]
+            },
+            calcInitSize: {
+                funcName: "fluid.uiEnhancer.textSizeSetter.calcInitSize",
+                args: ["{textSizeSetter}"]
+            }
+        }
+    });
+       
+    fluid.uiEnhancer.textSizeSetter.set = function (times, that) {
+        if (!that.initialSize) {
+            that.calcInitSize();
+        }
+        
+        if (times === 1) {
+            that.container.css("font-size", ""); // empty is same effect as not being set
+        } else if (times && times > 0) {
+            that.container.css("font-size", that.initialSize * times + "px");
+        }
+    };
+    
+    fluid.uiEnhancer.textSizeSetter.calcInitSize = function (that) {
+        that.initialSize = parseFloat(that.container.css("font-size"));        
+    };
+
+
+
+
+    /*******************************************************************************
+     * ClassSwapper                                                                *
      *                                                                             *
      * Has a hash of classes it cares about and will remove all those classes from *
      * its container before setting the new class.                                 *
@@ -302,7 +327,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     
     /*******************************************************************************
-     * Page Enhancer                                                               *
+     * PageEnhancer                                                                *
      *                                                                             *
      * A UIEnhancer wrapper that concerns itself with the entire page.             *
      *******************************************************************************/    
