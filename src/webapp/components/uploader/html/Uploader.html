@@ -99,36 +99,25 @@
                 <!-- Total progress bar -->
                 <div class="flc-uploader-total-progress fl-uploader-total-progress-okay"></div>
                 <div class="flc-uploader-errorsPanel fl-uploader-errorsPanel">
-                     <div class="fl-uploader-erroredHeader"><span class="flc-uploader-erroredHeader">Warnings:</span></div>
+                     <div class="fl-uploader-errorsPanel-header"><span class="flc-uploader-errorPanel-header">Warnings:</span></div>
     
-                     <!-- Templates error for exceeeding files limit -->
-                     <div class="flc-uploader-exceededFileLimit-template fl-uploader-hidden-templates">
-                         <div class="fl-uploader-errored-wrapper">
-                             <div class="fl-uploader-erroredTitle flc-uploader-erroredTitle">Error summary placeholder</div>
-                             <div class="fl-uploader-erroredBody">
-                                 <p class="flc-uploader-erroredBody-togglable">The following files were not added:</p>
-                                 <p class="flc-uploader-erroredFiles flc-uploader-erroredBody-togglable">file_1, file_2, file_3, file_4, file_5 </p>
-                                 <button type="button" class="flc-uploader-errored-bodyButton fl-uploader-erroredBodyButton">Hide this list</button>
-                             </div>
+                     <!-- The markup for each error section will be rendered into these containers. -->
+                     <div class="flc-uploader-errorPanel-section-fileSize"></div>
+                     <div class="flc-uploader-errorPanel-section-numFiles"></div>
+                     
+                     <!-- Error section template.-->
+                     <div class="flc-uploader-errorPanel-section-tmplt fl-uploader-hidden-templates">
+                         <div class="flc-uploader-errorPanel-section-title fl-uploader-errorPanel-section-title">
+                             x files were too y and were not added to the queue.
                          </div>
-                         <button type="button" class="flc-uploader-erroredButton fl-uploader-erroredButton">
-                             <span class="flc-uploader-erroredButton-text fl-uploader-hidden">Remove error</span>
-                         </button>
-                     </div>
-    
-                    <!-- Templates error for exceeeding file size limit 
-                          TODO: This is nearly identical to the template above and should be refactored. -->
- 
-                     <div class="flc-uploader-exceededUploadLimit-template fl-uploader-errorRow-template fl-uploader-hidden-templates">
-                         <div class="fl-uploader-errored-wrapper">
-                             <div class="fl-uploader-erroredTitle flc-uploader-erroredTitle">Error summary placeholder</div>
-                             <div class="fl-uploader-erroredBody">
-                                 <p class="flc-uploader-erroredBody-togglable">The following files were not added:</p>
-                                 <p class="flc-uploader-erroredFiles flc-uploader-erroredBody-togglable">file_1, file_2, file_3, file_4, file_5 </p>
-                                 <button type="button" class="flc-uploader-errored-bodyButton fl-uploader-erroredBodyButton">Toggle Text placeholder</button>
-                             </div>
+                         
+                         <div class="flc-uploader-errorPanel-section-details fl-uploader-errorPanel-section-details">
+                             <p>The following files were not added:</p>
+                             <p class="flc-uploader-errorPanel-section-files">file_1, file_2, file_3, file_4, file_5 </p>
                          </div>
-                         <button type="button" class="flc-uploader-erroredButton fl-uploader-erroredButton">
+                         
+                         <button type="button" class="flc-uploader-errorPanel-section-toggleDetails fl-uploader-errorPanel-section-toggleDetails">Hide this list</button>
+                         <button type="button" class="flc-uploader-errorPanel-section-removeButton fl-uploader-errorPanel-section-removeButton">
                              <span class="flc-uploader-erroredButton-text fl-uploader-hidden">Remove error</span>
                          </button>
                      </div>

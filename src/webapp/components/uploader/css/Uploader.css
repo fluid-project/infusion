@@ -384,7 +384,7 @@ html>body .fl-uploader span.fl-uploader-browse {
     margin-top: 0.5em;
 }
 
-.fl-uploader-errorsPanel .fl-uploader-erroredHeader {
+.fl-uploader-errorsPanel-header {
     background-image: url("../images/error.png");
     background-position: 1px center;
     background-repeat: no-repeat;
@@ -392,19 +392,19 @@ html>body .fl-uploader span.fl-uploader-browse {
     padding-bottom: 6px;
 }
 
-.fl-uploader-erroredHeader span {
+.fl-uploader-errorsPanel-header span {
     padding-left: 25px;
     font-size: 1.1em;
     font-weight: bolder;
     color: #000000;
 }
 
-.fl-uploader-errored-wrapper {
+.fl-uploader-errorPanel-section-wrapper {
     float: left;
     width: 90%;
 }
 
-.fl-uploader-errorsPanel .fl-uploader-erroredButton {
+.fl-uploader-errorPanel-section-removeButton {
     background-image: url("../images/grey-4d4d4d-x-button.png");
     background-position: center;
     background-repeat: no-repeat;
@@ -417,11 +417,11 @@ html>body .fl-uploader span.fl-uploader-browse {
     float: right;
 }
 
-.fl-uploader-errorsPanel .fl-uploader-erroredButton:hover{
+.fl-uploader-errorPanel-section-removeButton:hover {
     background-image: url("../images/grey-999999-x-button.png");
 }
 
-.fl-uploader-erroredBody .fl-uploader-erroredBodyButton {
+.fl-uploader-errorPanel-section-toggleDetails {
     background-color: #e6e6e6;
     border: none;
     padding: 0em;
@@ -433,15 +433,15 @@ html>body .fl-uploader span.fl-uploader-browse {
     margin: 0em;
 }
 
-.fl-uploader-erroredBody .fl-uploader-erroredBodyButton:hover{
+.fl-uploader-errorPanel-section-toggleDetails:hover {
     background-color: #e6e6e6;
 }
 
-.fl-uploader-errored-wrapper .fl-uploader-erroredTitle {
+.fl-uploader-errorPanel-section-title {
     font-size: 0.9em;
 }
 
-.fl-uploader-errored-wrapper .fl-uploader-erroredBody {
+.fl-uploader-errorPanel-section-details {
     font-size: 0.9em;
     color: #666;
     font-weight: normal;

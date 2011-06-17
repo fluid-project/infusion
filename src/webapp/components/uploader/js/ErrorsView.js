@@ -24,6 +24,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uploader.errorsView", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         preInitFunction: "fluid.uploader.errorsView.preInit",
+        postInitFunction: "fluid.uploader.errorsView.renderSectionTemplates",
         finalInitFunction: "fluid.uploader.errorsView.finalInit",
         
         components: {
@@ -58,15 +59,20 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         
         selectors: {
-            header: ".flc-uploader-erroredHeader",
-            numFilesErrorSection: ".flc-uploader-exceededFileLimit-template",
-            fileSizeErrorSection: ".flc-uploader-exceededUploadLimit-template"
+            header: ".flc-uploader-errorPanel-header",
+            sectionTemplate: ".flc-uploader-errorPanel-section-tmplt",
+            fileSizeErrorSection: ".flc-uploader-errorPanel-section-fileSize",
+            numFilesErrorSection: ".flc-uploader-errorPanel-section-numFiles"
         },
         
         strings: {
             headerText: "Warning(s)",
             exceedsNumFilesLimit: "Too many files were selected. %numFiles were not added to the queue.",
             exceedsFileSize: "%numFiles files were too large and were not added to the queue."
+        },
+        
+        styles: {
+            hiddenTemplate: "fl-hidden-templates"
         }
     });
 
@@ -81,6 +87,13 @@ var fluid_1_4 = fluid_1_4 || {};
             }            
             that.container.hide();
         };
+    };
+    
+    fluid.uploader.errorsView.renderSectionTemplates = function (that) {
+        // Render base templates for each section.
+        var sectionTmpl = that.locate("sectionTemplate").remove().removeClass(that.options.styles.hiddenTemplate);
+        that.locate("fileSizeErrorSection").append(sectionTmpl.clone());
+        that.locate("numFilesErrorSection").append(sectionTmpl.clone());
     };
     
     fluid.uploader.errorsView.finalInit = function (that) {
@@ -115,11 +128,11 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         
         selectors: {
-            deleteErrorButton: ".flc-uploader-erroredButton",
-            showHideFilesToggle: ".flc-uploader-errored-bodyButton",
-            errorDetails: ".flc-uploader-erroredBody-togglable",
-            errorTitle: ".flc-uploader-erroredTitle",
-            erroredFiles: ".flc-uploader-erroredFiles"
+            errorTitle: ".fl-uploader-errorPanel-section-title",
+            deleteErrorButton: ".flc-uploader-errorPanel-section-removeButton",
+            errorDetails: ".flc-uploader-errorPanel-section-details",
+            erroredFiles: ".flc-uploader-errorPanel-section-files",
+            showHideFilesToggle: ".flc-uploader-errorPanel-section-toggleDetails"
         },
         
         strings: {
