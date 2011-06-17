@@ -36,7 +36,6 @@ var fluid_1_4 = fluid_1_4 || {};
                     model: {
                         errorCode: fluid.uploader.queueErrorConstants.FILE_EXCEEDS_SIZE_LIMIT
                     },
-                    
                     strings: {
                         header: "{errorsView}.options.strings.exceedsFileSize"
                     }
@@ -50,7 +49,6 @@ var fluid_1_4 = fluid_1_4 || {};
                     model: {
                         errorCode: fluid.uploader.queueErrorConstants.QUEUE_LIMIT_EXCEEDED
                     },
-                    
                     strings: {
                         header: "{errorsView}.options.strings.exceedsNumFilesLimit"
                     }
@@ -90,7 +88,6 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uploader.errorsView.renderSectionTemplates = function (that) {
-        // Render base templates for each section.
         var sectionTmpl = that.locate("sectionTemplate").remove().removeClass(that.options.styles.hiddenTemplate);
         that.locate("fileSizeErrorSection").append(sectionTmpl.clone());
         that.locate("numFilesErrorSection").append(sectionTmpl.clone());
