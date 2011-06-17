@@ -24,27 +24,9 @@ var skon = skon || {};
     skon.slidingUIOptions = function (panel, uioptions) {
         fluid.demands("fluid.uiOptionsTemplateLoader", [ "skon.demo"], {
             options: {
-                prefix: "../../../components/uiOptions/html/",
-                templates: {
-                    uiOptions: "%prefixFatPanelUIOptions.html",
-                    textControls: "%prefixUIOptionsTemplate-text.html",
-                    layoutControls: "%prefixUIOptionsTemplate-layout.html",
-                    linksControls: "%prefixUIOptionsTemplate-links.html"
-                }
+                prefix: "../../../components/uiOptions/html/"
             }
         });
-
-/*
-        fluid.demands("fluid.uiOptions", ["fluid.fatPanelUIOptions", "skon.demo"], {
-            options: {
-                resources: {
-                    template: {
-                        url: "../../../components/uiOptions/html/FatPanelUIOptions.html"
-                    }
-                }
-            }
-        });
-*/
 
         // Supply the table of contents' template URL
         fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer", "skon.demo"], {

@@ -214,7 +214,7 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.littleComponent"],
         prefix: "../html/",
         templates: {
-            uiOptions: "$prefixUIOptions.html",
+            uiOptions: "%prefixFatPanelUIOptions.html",
             textControls: "%prefixUIOptionsTemplate-text.html",
             layoutControls: "%prefixUIOptionsTemplate-layout.html",
             linksControls: "%prefixUIOptionsTemplate-links.html"

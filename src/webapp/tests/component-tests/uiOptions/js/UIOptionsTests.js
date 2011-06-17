@@ -38,9 +38,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 prefix: "../../../../components/uiOptions/html/",
                 templates: {
                     uiOptions: "%prefixFullPreviewUIOptions.html",
-                    textControls: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html",
-                    layoutControls: "%prefixUIOptionsTemplate-layout.html",
-                    linksControls: "%prefixUIOptionsTemplate-links.html"
+                    textControls: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
                 }
             }
         });
