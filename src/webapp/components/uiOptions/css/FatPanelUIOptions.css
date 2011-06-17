@@ -1,5 +1,9 @@
 /* UI Options Fat Panel styles */
 
+body {
+    background-color: #fff;
+}
+
 .fl-uiOptions-fatPanel {
 	min-width: 960px;
 }
