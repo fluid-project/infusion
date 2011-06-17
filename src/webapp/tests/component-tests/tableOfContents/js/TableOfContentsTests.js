@@ -317,7 +317,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("ToC text set correctly", fluid.get(hInfo, "text"), elm.text());
             jqUnit.assertEquals("ToC anchor set correctly", fluid.get(hInfo, "url"), elm.attr("href"));
         });
-        start();
     };
        
     var renderTOCTests = function (testHeadings) {
@@ -329,6 +328,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             listeners: {
                 afterRender: function (that) {
                     renderTOCTest(that, testHeadings);
+                    start();
                 }
             },
             resources: {
@@ -464,6 +464,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listeners: {
                     afterRender: function (that) {
                         renderTOCTest(that, testHeadings);
+                        start();
                     }
                 },
             });
