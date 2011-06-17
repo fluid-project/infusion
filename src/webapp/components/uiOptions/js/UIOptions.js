@@ -280,7 +280,7 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             preview: {
                 type: "fluid.uiOptions.preview",
-                createOnEvent: "onReady",
+                createOnEvent: "onUIOptionsTemplateReady",
                 container: "{uiOptions}.dom.previewFrame"
             },
             settingsStore: {    // supplied by demands
@@ -419,7 +419,7 @@ var fluid_1_4 = fluid_1_4 || {};
             that.events.onUIOptionsTemplateReady.fire();            
             bindHandlers(that);
             bindEventHandlers(that);            
-            that.events.onReady.fire();
+            that.events.onReady.fire(that);
         }, {amalgamateClasses: ["template"]});
     };
 
