@@ -76,6 +76,9 @@ var fluid_1_4 = fluid_1_4 || {};
                 options: {
                     model: {
                         headings: "{tableOfContents}.model"
+                    }, 
+                    events: {
+                        afterRender: "{tableOfContents}.events.afterRender"
                     }
                 }
             },
@@ -98,13 +101,6 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
-        options: {
-            events: {
-                afterRender: "{tableOfContents}.events.afterRender"
-            }
-        }
-    });
     
     /*******************
     * ToC ModelBuilder *
