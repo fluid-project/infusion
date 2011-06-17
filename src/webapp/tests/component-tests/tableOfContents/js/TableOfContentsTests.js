@@ -106,7 +106,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.tableOfContents.generateGUIDMock = function (baseName) {
-        return "link";
+        return 'test' + baseName;
     };
     
     // Use our custom GUID for testing purposes.
@@ -442,6 +442,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertNotEquals("Basename should be reserved in the generated anchor", -1, anchorInfo.id.indexOf(baseName));
             jqUnit.assertEquals("anchor url is the same as id except url has a '#' in front", anchorInfo.url.substr(1), anchorInfo.id);
         });
+            
+        /**
+          * Test anchor links created by TOC.  Check if the heading table a href link maps to the correct header
+          * @precondition   Must be rendered
+          */
+        var renderTOCAnchorTest = function () {
+            var anchorLinks = $('.flc-toc-levels-link');
+            anchorLinks.each(function (anchorIndex, anchorValue) {
+                var anchorHref = anchorLinks.eq(anchorIndex).attr('href');
+                jqUnit.assertNotEquals("Component test headings: TOC anchors should map to the headers correctly - " + anchorHref, $(anchorHref).length, 0);
+            });
+        };
         
         /**
          * Test component and make sure the number of links, text and anchors are set correctly.
@@ -456,14 +468,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // macro to serialize heading elements, level, text, url into Object form.
                 return {'level': level, 'text': text, 'url' : url};
             };
-            headings.each(function(headingsIndex, headingsInfo) {
+            headings.each(function (headingsIndex, headingsInfo) {
                 var currLink = headings.eq(headingsIndex);
-                testHeadings.headingInfo.push(serializeHeading(currLink.prop('tagName').substr(-1), currLink.text(), '#link'));
+                testHeadings.headingInfo.push(serializeHeading(
+                    currLink.prop('tagName').substr(-1), 
+                    currLink.text(), 
+                    '#test' + fluid.tableOfContents.sanitizeID(currLink.text())
+                ));
             });
             var tocComponent = renderTOCComponent({
                 listeners: {
                     afterRender: function (that) {
                         renderTOCTest(that, testHeadings);
+                        renderTOCAnchorTest();
                         start();
                     }
                 },
