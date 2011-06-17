@@ -134,7 +134,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     afterFileQueued: null,
                     onQueueError: null,
                     afterFileDialog: null,
-                    clearFileError: null
+                    onFilesSelected: null
                 },
                 listeners: tracker.listeners 
             });
