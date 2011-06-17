@@ -57,6 +57,7 @@
         <script type="text/javascript" src="../../../components/uiOptions/js/FatPanelUIOptions.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/SlidingPanel.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
+        <script type="text/javascript" src="../../../components/tabs/js/Tabs.js"></script>
         <script type="text/javascript" src="../../../components/undo/js/Undo.js"></script>
 
         <script type="text/javascript" src="../js/someKindOfNews.js"></script>
@@ -64,8 +65,8 @@
 
     <body class="skon-theme-basic">
 
-		<div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel">        
-			<div id="myUIOptions" class="flc-slidingPanel-panel"></div>     
+		<div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel">
+			<div id="myUIOptions" class="flc-slidingPanel-panel"></div>
 			
 			<div class="fl-panelBar">
 				<button class="flc-slidingPanel-toggleButton fl-toggleButton">Show/Hide</button>
@@ -116,16 +117,40 @@
 
                     <div class="skon-newsletter-signup">
                         <p>Get all the news, right in your in-box! Sign up for our newsletter:</p>
-                        <ul class="fl-controls-right">
-                            <li>
-                                <label class="fl-label">Name</label>
-                                <input type="text" value="John Smith">
-                            </li>
-                            <li>
-                                <label class="fl-label">Email Address</label>
-                                <input type="text" value="john@smith.com">
-                            </li>
-                        </ul>
+                        <div class="fl-container-flex100 fl-centered">
+                            <div class="fl-col-flex2">
+                                <div class="fl-col">
+                                    <ul class="fl-controls-left">
+                                        <li>
+                                            <label class="fl-label">Name</label>
+                                            <input type="text" value="John Smith">
+                                        </li>
+                                        <li>
+                                            <label class="fl-label">Email Address</label>
+                                            <input type="text" value="john@smith.com">
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="fl-col">
+                                    <ul class="fl-controls-right">
+                                        <li>
+                                            <label class="fl-label">Language</label>
+                                            <select>
+                                                <option>English</option>
+                                                <option>Esperanto</option>
+                                                <option>Pig Latin</option>
+                                            </select>
+                                        </li>
+                                        <li>
+                                            <label class="fl-label">Format</label>
+                                            <input type="radio" value="html">HTML</input>
+                                            <input type="radio" value="html">plain text</input>
+                                        </li>
+                                    </ul>
+                                    <button>Click me, it tickles!</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="fl-container-flex95 fl-centered">
