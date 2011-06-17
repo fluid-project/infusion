@@ -53,19 +53,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tests.test("Settings", function () {
             expect(3);
 
-            var options = {
-                settingsStore: {
-                    options: {
-                        defaultSiteSettings: testSettings
-                    }
-                }
-            };
             var body = $("body");
-            var initFontSize = parseFloat(body.css("fontSize"));
+            var initialFontSize = parseFloat(body.css("fontSize"));
             
             var uiEnhancer = fluid.pageEnhancer(options).uiEnhancer;
+            uiEnhancer.updateModel(testSettings);
             
-            jqUnit.assertEquals("Large text size is set", initFontSize * testSettings.textSize + "px", body.css("fontSize"));
+            jqUnit.assertEquals("Large text size is set", initialFontSize * testSettings.textSize + "px", body.css("fontSize"));
             jqUnit.assertTrue("Verdana font is set", body.hasClass("fl-font-verdana"));
             jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-hc"));
 
