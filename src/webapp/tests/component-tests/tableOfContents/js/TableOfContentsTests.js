@@ -442,6 +442,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertNotEquals("Basename should be reserved in the generated anchor", -1, anchorInfo.id.indexOf(baseName));
             jqUnit.assertEquals("anchor url is the same as id except url has a '#' in front", anchorInfo.url.substr(1), anchorInfo.id);
         });
+        
+        tocTests.test("finalInit public function: show/hide component", function () {
+            
+        });
             
         /**
           * Test anchor links created by TOC.  Check if the heading table a href link maps to the correct header
@@ -451,7 +455,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var anchorLinks = $('.flc-toc-levels-link');
             anchorLinks.each(function (anchorIndex, anchorValue) {
                 var anchorHref = anchorLinks.eq(anchorIndex).attr('href');
-                jqUnit.assertNotEquals("Component test headings: TOC anchors should map to the headers correctly - " + anchorHref, $(anchorHref).length, 0);
+                jqUnit.assertTrue("Component test headings: TOC anchors should map to the headers correctly - " + anchorHref, $(anchorHref)[0]);
             });
         };
         
