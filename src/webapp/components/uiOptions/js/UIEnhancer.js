@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
+Copyright 2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -20,25 +21,13 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
-    /****************
-     * UI Enhancer  *
-     ****************/
+    /*******************************************************************************
+     * UI Enhancer                                                                 *
+     *                                                                             *
+     * Works in conjunction with FSS to transform the page based on user settings. *
+     *******************************************************************************/
     
-    /**
-     * Adds the class related to the setting to the element
-     * @param {jQuery} element
-     * @param {String} settingName
-     * @param {String} value
-     * @param {Object} classnameMap
-     */
-    var addClassForSetting = function (element, settingName, value, classnameMap) {
-        var settingValues = classnameMap[settingName] || {}; 
-        var className = settingValues[value];
-        if (className) {
-            element.addClass(className);
-        }
-    };
-
+    // TODO: These are left here since toc refactoring has been carried out in another branch.
     /**
      * Returns true if the value is true or the string "true", false otherwise
      * @param {Object} val
@@ -46,7 +35,7 @@ var fluid_1_4 = fluid_1_4 || {};
     var isTrue = function (val) {
         return val && (val === true || val === "true");
     };
-    
+
     /**
      * Shows the table of contents when tocSetting is "On". Hides the table of contents otherwise.
      * @param {Object} that
@@ -66,190 +55,13 @@ var fluid_1_4 = fluid_1_4 || {};
         }        
     };
     
-    /**
-     * Sets the line spacing on the container.  
-     * @param {Object} container
-     * @param {Object} spacing
-     */
-    var setLineSpacing = function (container, times, initLineSpacing, textSizeTimes) {
-        var newLineSpacing = times === "" || times === 1 ? initLineSpacing : times * initLineSpacing * textSizeTimes;
-        container.css("line-height", newLineSpacing + "em");
-    };
-
-    /**
-     * Styles the container based on the settings passed in
-     * 
-     * @param {Object} container
-     * @param {Object} settings
-     * @param {Object} classnameMap
-     */
-    var addStyles = function (container, settings, classnameMap) {
-        addClassForSetting(container, "textFont", settings.textFont, classnameMap);
-        addClassForSetting(container, "textSpacing", settings.textSpacing, classnameMap);
-        addClassForSetting(container, "theme", settings.theme, classnameMap);
-    };
-    
-    /**
-     * Adds or removes the classname to/from the elements based upon the setting.
-     * @param {Object} elements
-     * @param {Object} setting
-     * @param {Object} classname
-     */
-    var styleElements = function (elements, setting, classname) {
-        if (setting) {
-            elements.addClass(classname);
-        } else {
-            elements.removeClass(classname);
-        }        
-    };
-    
-    /**
-     * Style links in the container according to the settings
-     * @param {Object} container
-     * @param {Object} settings
-     * @param {Object} classnameMap
-     */
-    var styleLinks = function (container, settings, classnameMap) {
-        var links = $("a", container);
-        styleElements(links, settings.links, classnameMap.links);
-    };
-
-    /**
-     * Style layout in the container according to the settings
-     * @param {Object} container
-     * @param {Object} settings
-     * @param {Object} classnameMap
-     */
-    var styleLayout = function (container, settings, classnameMap) {
-        styleElements(container, settings.layout, classnameMap.layout);
-    };
-     
-    /**
-     * Style inputs in the container according to the settings
-     * @param {Object} container
-     * @param {Object} settings
-     * @param {Object} classnameMap
-     */
-    var styleInputs = function (container, settings, classnameMap) {
-        styleElements($("input", container), settings.inputsLarger, classnameMap.inputsLarger);
-    };
-     
-    /**
-     * Initialize the model first looking at options.savedSettings
-     * @param {Object} that
-     */
-    var initModel = function (that) {
-        that.options.savedSettings ? that.applier.requestChange("", that.options.savedSettings) : that.applier.requestChange("", that.settingsStore.fetch());
-    };
-
-    /**
-     * Clears FSS classes from within the container that may clash with the current settings.
-     * These are the classes from the classnameMap for settings where we work on the container rather
-     * then on individual elements.
-     * @param {Object} that
-     * @return {String} the classnames that were removed separated by spaces
-     */
-    var clearClashingClasses = function (container, classnameMap) {
-        var settingsWhichMayClash = ["textFont", "textSpacing", "theme", "layout"];
-        var classesToRemove, selector;
-        
-        for (var i = 0; i < settingsWhichMayClash.length; i++) {
-            var settingValues = classnameMap[settingsWhichMayClash[i]];
-            if (typeof settingValues === 'object') {
-                fluid.each(settingValues, function (className) {
-                    if (className) {
-                        classesToRemove = classesToRemove + " " + className;
-                        selector = selector + ",." + className;
-                    }
-                });
-            } else if (typeof settingValues === 'string') {
-                classesToRemove = classesToRemove + " " + settingValues;
-                selector = selector + ",." + settingValues;
-            }
-        }
-        
-        $(selector, container).removeClass(classesToRemove);
-        return classesToRemove;
-    };
-    
-    var setupUIEnhancer = function (that) {
-        fluid.initDependents(that);
-        that.events.onInitSettingStore.fire(); 
-        initModel(that);
-    };
-    
-    // Returns the value of css style "line-height" in em 
-    var getLineHeight = function (container) {
-        var lineHeight = container.css("lineHeight");
-        
-        // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1em.
-        if (lineHeight === "normal") {
-            return 1;
-        }
-        
-        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
-        if ($.browser.msie) {
-            var lineHeightInIE;
-            
-            // if unit is missing, assume the value is in "em"
-            lineHeightInIE = container[0].currentStyle.lineHeight;
-            
-            if (lineHeightInIE.match(/[0-9]$/)) {
-                return lineHeightInIE;
-            }
-        }
-        
-        return parseFloat(lineHeight) / 16;
-    };
-      
-    /**
-     * Component that works in conjunction with FSS to transform the interface based on settings. 
-     * @param {Object} container
-     * @param {Object} options
-     */
-    fluid.uiEnhancer = function (container, options) {
-        var that = fluid.initView("fluid.uiEnhancer", container, options);
-
-        var clashingClassnames;
-        
-        that.initFontSize = parseFloat(that.container.css("font-size"));
-        
-        var initLineSpacing = getLineHeight(that.container);
-        
-        /**
-         * Transforms the interface based on the settings in that.model
-         */
-        that.refreshView = function () {
-            that.container.removeClass(clashingClassnames);
-            addStyles(that.container, that.model, that.options.classnameMap);
-            styleElements(that.container, !isTrue(that.model.backgroundImages), that.options.classnameMap.noBackgroundImages);
-            that.setTextSize(that.container, that.model.textSize, that.initFontSize);
-            setLineSpacing(that.container, that.model.lineSpacing, initLineSpacing, that.model.textSize);
-            setToc(that, that.model.toc);
-            styleLinks(that.container, that.model, that.options.classnameMap);
-            styleLayout(that.container, that.model, that.options.classnameMap);
-            styleInputs(that.container, that.model, that.options.classnameMap);
-        };
-        
-        that.updateModel = function (newModel) {
-            that.applier.requestChange("", newModel);
-        };
-
-        that.applier.modelChanged.addListener("",
-            function (newModel, oldModel, changeRequest) {
-                that.events.modelChanged.fire(newModel, oldModel, changeRequest);
-                that.refreshView();
-            }
-        );
-
-        clashingClassnames = clearClashingClasses(that.container, that.options.classnameMap);
-        setupUIEnhancer(that);
-        return that;
-    };
-
     fluid.defaults("fluid.uiEnhancer", {
-        gradeNames: "fluid.viewComponent",
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
+            textSize: {
+                type: "fluid.uiEnhancer.textSizer",
+                container: "{uiEnhancer}.container"
+            },
             tableOfContents: {
                 type: "fluid.tableOfContents",
                 container: "{uiEnhancer}.container",
@@ -258,19 +70,45 @@ var fluid_1_4 = fluid_1_4 || {};
                     templateUrl: "../../tableOfContents/html/TableOfContents.html"
                 }
             },
+            textFont: {
+                type: "fluid.uiEnhancer.classSwapper",
+                container: "{uiEnhancer}.container",
+                options: {
+                    classes: "{uiEnhancer}.options.classnameMap.textFont"
+                }
+            },
+            lineSpacing: {
+                type: "fluid.uiEnhancer.lineSpacer",
+                container: "{uiEnhancer}.container"
+            },
+            theme: {
+                type: "fluid.uiEnhancer.classSwapper",
+                container: "{uiEnhancer}.container",
+                options: {
+                    classes: "{uiEnhancer}.options.classnameMap.theme"
+                }
+            },
             settingsStore: {
                 type: "fluid.uiOptions.store",
-                container: "{uiEnhancer}.container",
-                createOnEvent: "onInitSettingStore"
+                container: "{uiEnhancer}.container"
             }
         },
         invokers: {
-            setTextSize: "fluid.uiEnhancer.setTextSize"
+            updateModel: {
+                funcName: "fluid.uiEnhancer.updateModel",
+                args: ["@0", "{uiEnhancer}.applier"]
+            },
+            refreshView: "fluid.uiEnhancer.refreshView",
+            styleElements: "fluid.uiEnhancer.styleElements",
+            
+            // NOTE: when we do the ants refactoring each of these will be half an ant
+            setLayout: "fluid.uiEnhancer.setLayout",
+            styleLinks: "fluid.uiEnhancer.styleLinks",
+            styleInputs: "fluid.uiEnhancer.styleInputs"
         },
         events: {
             onReady: null,
-            modelChanged: null,
-            onInitSettingStore: null
+            modelChanged: null
         },
         classnameMap: {
             "textFont": {
@@ -290,22 +128,240 @@ var fluid_1_4 = fluid_1_4 || {};
             "layout": "fl-layout-linear",
             "links": "fl-text-underline fl-text-bold fl-text-larger", 
             "inputsLarger": "fl-text-larger"
-        }
+        },
+        finalInitFunction: "fluid.uiEnhancer.finalInit"
     });
 
-    /**
-     * Sets the font size on the container. Removes all fss classes that decrease font size. 
-     * @param {Object} container
-     * @param {Object} size
-     */
-    fluid.uiEnhancer.setTextSize = function (container, times, initFontSize) {
-        if (times === 1) {
-            container.css("font-size", ""); // empty is same effect as not being set
-        } else if (times && times > 0) {
-            container.css("font-size", initFontSize * times + "px");
-        }
+    fluid.uiEnhancer.finalInit = function (that) {        
+        that.applier.modelChanged.addListener("",
+            function (newModel, oldModel, changeRequest) {
+                that.events.modelChanged.fire(newModel, oldModel, changeRequest);
+                that.refreshView(that);   
+            });
+
+        that.applier.requestChange("", that.settingsStore.fetch());
+        return that;
     };
 
+    fluid.uiEnhancer.updateModel = function (newModel, applier) {
+        applier.requestChange("", newModel);
+    };
+
+    /**
+     * Transforms the interface based on the settings in that.model
+     */
+    fluid.uiEnhancer.refreshView = function (that) {
+        that.textSize.set(that.model.textSize);
+        that.textFont.swap(that.model.textFont);
+        that.lineSpacing.set(that.model.lineSpacing);
+        that.theme.swap(that.model.theme);
+        that.setLayout(that);
+        setToc(that, that.model.toc);
+        that.styleLinks(that);
+        that.styleInputs(that);
+    };
+
+
+    /**
+     * Adds or removes the classname to/from the elements based upon the setting.
+     * @param {Object} elements
+     * @param {Object} setting
+     * @param {Object} classname
+     */
+    fluid.uiEnhancer.styleElements = function (elements, setting, classname) {
+        if (setting) {
+            elements.addClass(classname);
+        } else {
+            $("." + classname, elements).andSelf().removeClass(classname);
+        }        
+    };
+
+    /**
+     * Style layout in the container according to the settings
+     * @param {Object} that - the uiEnhancer
+     */
+    fluid.uiEnhancer.setLayout = function (that) {
+        that.styleElements(that.container, that.model.layout, that.options.classnameMap.layout);
+    };
+
+    /**
+     * Style links in the container according to the settings
+     * @param {Object} that - the uiEnhancer
+     */
+    fluid.uiEnhancer.styleLinks = function (that) {
+        var links = $("a", that.container);
+        that.styleElements(links, that.model.links, that.options.classnameMap.links);
+    };
+
+    /**
+     * Style inputs in the container according to the settings
+     * @param {Object} that - the uiEnhancer
+     */
+    fluid.uiEnhancer.styleInputs = function (that) {
+        that.styleElements($("input", that.container), that.model.inputsLarger, that.options.classnameMap.inputsLarger);
+    };
+
+    fluid.uiEnhancer.getTextSize = function (container) {
+        return parseFloat(container.css("font-size"));        
+    };
+
+
+
+    /*******************************************************************************
+     * TextSizer                                                              *
+     *                                                                             *
+     * Sets the text size on the container to the multiple provided.               *
+     * Note: This will become half an ant                                          *
+     *******************************************************************************/
+    
+    fluid.defaults("fluid.uiEnhancer.textSizer", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        invokers: {
+            set: {
+                funcName: "fluid.uiEnhancer.textSizer.set",
+                args: ["@0", "{textSizer}"]
+            },
+            calcInitSize: {
+                funcName: "fluid.uiEnhancer.textSizer.calcInitSize",
+                args: ["{textSizer}"]
+            }
+        }
+    });
+       
+    fluid.uiEnhancer.textSizer.set = function (times, that) {
+        if (!that.initialSize) {
+            that.calcInitSize();
+        }
+        
+        if (times === 1) {
+            that.container.css("font-size", ""); // empty is same effect as not being set
+        } else if (times && times > 0) {
+            that.container.css("font-size", that.initialSize * times + "px");
+        }
+    };
+    
+    fluid.uiEnhancer.textSizer.calcInitSize = function (that) {
+        that.initialSize = fluid.uiEnhancer.getTextSize(that.container);     
+    };
+    
+
+
+
+
+    /*******************************************************************************
+     * ClassSwapper                                                                *
+     *                                                                             *
+     * Has a hash of classes it cares about and will remove all those classes from *
+     * its container before setting the new class.                                 *
+     * Note: This will become half an ant                                          *
+     *******************************************************************************/
+    
+    fluid.defaults("fluid.uiEnhancer.classSwapper", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        invokers: {
+            clearClasses: {
+                funcName: "fluid.uiEnhancer.classSwapper.clearClasses",
+                args: ["{classSwapper}"]
+            },
+            swap: {
+                funcName: "fluid.uiEnhancer.classSwapper.swap",
+                args: ["@0", "{classSwapper}"]
+            }
+        },
+        classes: {},
+        finalInitFunction: "fluid.uiEnhancer.classSwapper.finalInit"
+    });
+    
+    fluid.uiEnhancer.classSwapper.finalInit = function (that) {
+        that.classSelector = "";
+        that.classStr = "";
+        
+        fluid.each(that.options.classes, function (className) {
+            if (className) {
+                that.classSelector += that.classSelector ? ", ." + className : "." + className;
+                that.classStr += that.classStr ? " " + className : className;
+            }
+        });
+    };
+    
+    fluid.uiEnhancer.classSwapper.clearClasses = function (that) {
+        $(that.classSelector, that.container).add(that.container).removeClass(that.classStr);
+    };
+    
+    fluid.uiEnhancer.classSwapper.swap = function (classname, that) {
+        that.clearClasses(that);
+        that.container.addClass(that.options.classes[classname]);
+    };
+
+
+
+    
+    /*******************************************************************************
+     * LineSpacer                                                                  *
+     *                                                                             *
+     * Sets the line spacing on the container to the multiple provided.            *
+     * Note: This will become half an ant                                          *
+     *******************************************************************************/
+    
+    fluid.defaults("fluid.uiEnhancer.lineSpacer", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        invokers: {
+            set: {
+                funcName: "fluid.uiEnhancer.lineSpacer.set",
+                args: ["@0", "{lineSpacer}"]
+            },
+            calcInitSize: {
+                funcName: "fluid.uiEnhancer.lineSpacer.calcInitSize",
+                args: ["{lineSpacer}"]
+            }
+        }
+    });
+    
+    // TODO: this might be almost the same as textSize setting - can we share?
+    fluid.uiEnhancer.lineSpacer.set = function (times, that) {
+        var textSize = fluid.uiEnhancer.getTextSize(that.container);
+        
+        if (!that.initialSize) {
+            that.calcInitSize();
+        }
+        
+        var newLineSpacing = times === "" || times === 1 ? that.initialSize : times * that.initialSize * textSize;
+        that.container.css("line-height", newLineSpacing + "em");
+    };
+    
+    // Returns the value of css style "line-height" in em 
+    fluid.uiEnhancer.lineSpacer.calcInitSize = function (that) {
+        var lineHeight = that.container.css("lineHeight");
+        
+        // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1em.
+        if (lineHeight === "normal") {
+            return 1;
+        }
+        
+        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
+        if ($.browser.msie) {
+            var lineHeightInIE;
+            
+            // if unit is missing, assume the value is in "em"
+            lineHeightInIE = that.container[0].currentStyle.lineHeight;
+            
+            if (lineHeightInIE.match(/[0-9]$/)) {
+                return lineHeightInIE;
+            }
+        }
+        
+        that.initialSize = Math.round(parseFloat(lineHeight) / fluid.uiEnhancer.getTextSize(that.container) * 100) / 100;
+    };
+
+
+
+
+    /*******************************************************************************
+     * PageEnhancer                                                                *
+     *                                                                             *
+     * A UIEnhancer wrapper that concerns itself with the entire page.             *
+     *******************************************************************************/    
+    
     fluid.pageEnhancer = function (uiEnhancerOptions) {
         var that = fluid.initLittleComponent("fluid.pageEnhancer");
         that.uiEnhancerOptions = uiEnhancerOptions;
