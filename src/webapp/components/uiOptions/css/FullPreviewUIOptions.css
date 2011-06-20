@@ -1,9 +1,13 @@
 /* UI Option styles for full page w/ preview */
 
+.fl-uiOptions-fullPreview {
+	min-width: 800px;
+}
+
 /* Section headers */
 .fl-uiOptions-fullPreview h2 {
 	border-top: 2px solid #dddddd;
-	margin-bottom: 15px;
+	margin-bottom: 20px;
 }
 
 /* Preview Area */

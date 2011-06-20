@@ -5,7 +5,6 @@
     font-size: 0.85em;
 }
 
-
 /* Form list */
 .fl-uiOptions ul {
 	margin-left: 0px;
@@ -35,10 +34,12 @@
 
 .fl-uiOptions .fl-uiOptions-text .fl-inputs {
 	float: left;
+	font-size: 1em;
 }
 
 .fl-uiOptions input[type="text"] {
 	width:2em;
+	font-size: 1em;
 }
 
 /* Slider position */
@@ -88,13 +89,37 @@
  */
 
 /* LAYOUT DATA */
-.fl-uiOptions .fl-slider-vert {height:10em; width:0.8em;}
-.fl-uiOptions .fl-slider-horz {width:140px; height:3px; -moz-border-radius: 65%; -webkit-border-radius: 65%;}
-.fl-uiOptions .fl-slider {position:relative; background-color:#555555; padding:0; margin-top:8px;}
-.fl-uiOptions .fl-slider .fl-handle, .fl-slider a {position:absolute; display:block; height:32px; width:32px; top:0; left:0;}
-.fl-uiOptions .fl-slider a { background-image:url('../images/default/uio_icon_sliderhandle.png'); background-repeat:no-repeat; background-position:center center; bottom: 16px;}
-.fl-uiOptions .fl-slider-vert .fl-handle, .fl-slider-vert a {margin-left:-0.2em; margin-top:-0.5em;}
-.fl-uiOptions .fl-slider-horz .fl-handle, .fl-slider-horz a {margin-top:-14px; margin-left:-14px;}
+.fl-uiOptions .fl-slider-horz {
+	width:140px; 
+	height:3px; 
+	-moz-border-radius: 65%; 
+	-webkit-border-radius: 65%;
+}
+.fl-uiOptions .fl-slider {
+	position:relative; 
+	background-color:#555555; 
+	padding:0; 
+	margin-top:8px;
+}
+.fl-uiOptions .fl-slider .fl-handle, .fl-slider a {
+	position:absolute; 
+	display:block; 
+	height:32px; 
+	width:32px; 
+	top:0; 
+	left:0;
+}
+.fl-uiOptions .fl-slider a { 
+	background-image:url('../images/uio_icon_sliderhandle.png'); 
+	background-repeat:no-repeat; 
+	background-position:center center; 
+	bottom: 16px;
+}
+.fl-uiOptions .fl-slider a:active { outline: none; }
+.fl-uiOptions .fl-slider-horz .fl-handle, .fl-slider-horz a {
+	margin-top:-14px; 
+	margin-left:-14px;
+}
 .fl-uiOptions .fl-text-slider-left { 
 	padding-right: 15px; 
 	background-image: url("../images/default/uio_icon_smallA_default_10x10.png");
@@ -159,21 +184,42 @@
 .fl-theme-yellowBlack .fl-uiOptions .fl-slider {background: none; background-color:#fff;}
 .fl-theme-yellowBlack .fl-uiOptions .fl-slider .fl-handle, 
 .fl-theme-yellowBlack .fl-uiOptions .fl-slider a,
-.fl-theme-yellowBlack .fl-uiOptions .fl-slider a:hover {border:1px solid #fff; background-color:#000;}
-.fl-theme-yellowBlack .fl-uiOptions .fl-text-slider-left { background-image: url("../images/yellowBlack/uio_icon_smallA_yellowBlack_10x10.png"); }
-.fl-theme-yellowBlack .fl-uiOptions .fl-text-slider-right { background-image: url("../images/yellowBlack/uio_icon_bigA_yellowBlack_20x20.png"); }
-.fl-theme-yellowBlack .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/yellowBlack/uio_icon_linesNarrow_yellowBlack_16x12.png"); }
-.fl-theme-yellowBlack .fl-uiOptions .fl-spacing-slider-right { background-image: url("../images/yellowBlack/uio_icon_linesWide_yellowBlack_16x21.png"); }
-.fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/yellowBlack/uio_icon_save_yellowBlack_13x13.png"); }
-.fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/yellowBlack/uio_icon_cancel_yellowBlack_13x13.png"); }
+.fl-theme-yellowBlack .fl-uiOptions .fl-slider a:hover {border:1px solid #fff !important; background-color:#000 !important;}
+.fl-theme-yellowBlack .fl-uiOptions .fl-text-slider-left { background-image: url("../images/yellowBlack/uio_icon_smallA_yellow_10x10.png"); }
+.fl-theme-yellowBlack .fl-uiOptions .fl-text-slider-right { background-image: url("../images/yellowBlack/uio_icon_bigA_yellow_20x20.png"); }
+.fl-theme-yellowBlack .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/yellowBlack/uio_icon_linesNarrow_yellow_16x12.png"); }
+.fl-theme-yellowBlack .fl-uiOptions .fl-spacing-slider-right { background-image: url("../images/yellowBlack/uio_icon_linesWide_yellow_16x21.png"); }
+.fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/yellowBlack/uio_icon_save_yellow_13x13.png"); }
+.fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/yellowBlack/uio_icon_cancel_yellow_13x13.png"); }
 
-.fl-theme-blackYellow .fl-uiOptions .fl-slider {background: none; background-color:#fff;}
-.fl-theme-blackYellow .fl-uiOptions .fl-slider .fl-handle, 
-.fl-theme-blackYellow .fl-uiOptions .fl-slider a,
-.fl-theme-blackYellow .fl-uiOptions .fl-slider a:hover {border:1px solid #000; background-color:#000;}
-.fl-theme-blackYellow .fl-uiOptions .fl-text-slider-left { background-image: url("../images/blackYellow/uio_icon_smallA_blackYellow_10x10.png"); }
-.fl-theme-blackYellow .fl-uiOptions .fl-text-slider-right { background-image: url("../images/blackYellow/uio_icon_bigA_blackYellow_20x20.png"); }
-.fl-theme-blackYellow .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/blackYellow/uio_icon_linesNarrow_blackYellow_16x12.png"); }
-.fl-theme-blackYellow .fl-uiOptions .fl-spacing-slider-right { background-image: url("../images/blackYellow/uio_icon_linesWide_blackYellow_16x21.png"); }
-.fl-theme-blackYellow .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/blackYellow/uio_icon_save_blackYellow_13x13.png"); }
-.fl-theme-blackYellow .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/blackYellow/uio_icon_cancel_blackYellow_13x13.png"); }
+/* Custom linearizing tweaks */
+
+/* preserve slider layout */
+.fl-layout-linear .fl-uiOptions .fl-slider-horz,
+.fl-layout-linear .fl-uiOptions .fl-text-slider-left, .fl-layout-linear .fl-uiOptions .fl-spacing-slider-left,
+.fl-layout-linear .fl-uiOptions .fl-text-slider-right, .fl-layout-linear .fl-uiOptions .fl-spacing-slider-right {
+	min-width: 0 !important;
+	clear: none !important;	
+}
+.fl-layout-linear .fl-uiOptions .fl-slider-horz {
+	width: 140px !important;
+	float: left !important;
+}
+.fl-layout-linear .fl-uiOptions .fl-text-slider-left, .fl-layout-linear .fl-uiOptions .fl-spacing-slider-left {
+	float:left !important;
+	width: 16px !important;
+}
+.fl-layout-linear .fl-uiOptions .fl-text-slider-right, .fl-layout-linear .fl-uiOptions .fl-spacing-slider-right  {
+	float:right !important;
+	width: 20px !important;
+}
+.fl-layout-linear .fl-uiOptions .fl-uiOptions-text .fl-force-left {
+	float:left !important;
+	min-width: 0 !important;	
+}
+
+/* reset heights of lis */
+.fl-layout-linear .fl-uiOptions li {
+	height: auto !important;
+	padding-bottom: 20px;
+}
