@@ -433,10 +433,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         tocTests.test("finalInit public function: headingTextToAnchor", function () {
             // setup and init the ToC component
-            var tocBody = renderTOCComponent();
+            var toc = renderTOCComponent();
             var tocBodyHeading = $('#amphibians');
             var baseName = tocBodyHeading.text();
-            var anchorInfo = tocBody.headingTextToAnchor(tocBodyHeading);
+            var anchorInfo = toc.headingTextToAnchor(tocBodyHeading);
             
             // test goes here
             jqUnit.assertNotEquals("Basename should be reserved in the generated anchor", -1, anchorInfo.id.indexOf(baseName));
@@ -444,7 +444,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         tocTests.test("finalInit public function: show/hide component", function () {
-            
+            //setup and init the ToC component
+            var toc = renderTOCComponent();
+            jqUnit.isVisible("Initially the component is visible.", toc);
+            toc.hide();
+            //verify toc is hidden.
+            jqUnit.isVisible("After calling hide, the component is invisible.", toc);
+            toc.show();
+            //verify toc is visible again
+            jqUnit.isVisible("After calling show, the component is visible.", toc);
         });
             
         /**
