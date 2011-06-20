@@ -156,7 +156,6 @@ var fluid_1_4 = fluid_1_4 || {};
         });
         that.options.slidingPanel.events.afterPanelHidden.addListener(function () {
             that.options.uiOptions.save();
-            that.options.uiOptions.pageEnhancer.uiEnhancer.refreshView();
         });
     };
     
