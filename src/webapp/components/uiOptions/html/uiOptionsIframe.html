@@ -66,14 +66,10 @@
         <script type="text/javascript">
                 // Supply the templates
                 fluid.staticEnvironment.uiOptionsIframe = fluid.typeTag("fluid.uiOptionsIframe");
+                
                 fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsIframe", {
                     options: {
-                        templates: {
-                            uiOptions: "./FatPanelUIOptions.html",
-                            textControls: "./UIOptionsTemplate-text.html",
-                            layoutControls: "./UIOptionsTemplate-layout.html",
-                            linksControls: "./UIOptionsTemplate-links.html"
-                        }
+                        prefix: "./"
                     }
                 });
             
