@@ -71,15 +71,11 @@ var fluid_1_4 = fluid_1_4 || {};
         
         // TODO: is it weird to have hide and show on a component?
         that.hide = function () {
-            if (that.tocContainer) {
-                that.tocContainer.hide();
-            }
+            that.locate("tocContainer").hide();
         };
         
         that.show = function () {
-            if (that.tocContainer) {
-                that.tocContainer.show();
-            }
+            that.locate("tocContainer").show();
         };
         
         that.model = that.modelBuilder.assembleModel(headings, that.anchorInfo);

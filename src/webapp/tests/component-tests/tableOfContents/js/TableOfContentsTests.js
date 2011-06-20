@@ -455,14 +455,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         tocTests.test("finalInit public function: show/hide component", function () {
             //setup and init the ToC component
-            var toc = renderTOCComponent();
-            jqUnit.isVisible("Initially the component is visible.", toc);
-            toc.hide();
+            var tocContainer = renderTOCComponent().locate("tocContainer");
+            jqUnit.isVisible("Initially the component is visible.", tocContainer);
+            tocContainer.hide();
             //verify toc is hidden.
-            jqUnit.isVisible("After calling hide, the component is invisible.", toc);
-            toc.show();
+            jqUnit.notVisible("After calling hide, the component is invisible.", tocContainer);
+            tocContainer.show();
             //verify toc is visible again
-            jqUnit.isVisible("After calling show, the component is visible.", toc);
+            jqUnit.isVisible("After calling show, the component is visible.", tocContainer);
         });
             
         /**
