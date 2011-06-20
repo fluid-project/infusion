@@ -2,6 +2,7 @@
 
 body {
 	max-width: 960px;
+	min-width: 900px;
 }
 
 /* category separator */
@@ -18,7 +19,7 @@ body {
 
 /* controls layout */
 .fl-uiOptions-fullNoPreview .fl-col-flex {
-	padding-top: 25px;
+	padding-top: 15px;
 }
 
 .fl-uiOptions-fullNoPreview ul {

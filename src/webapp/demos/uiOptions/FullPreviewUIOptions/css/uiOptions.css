@@ -8,3 +8,7 @@ h1 {
     margin-bottom: 1em;
     font-weight: bold;
 }
+
+#toc {
+	margin-bottom: 25px;
+}
