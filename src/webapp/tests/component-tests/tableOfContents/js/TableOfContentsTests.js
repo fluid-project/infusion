@@ -431,6 +431,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tocTest('i18n', 'I-t-rn-ti-n-liz-ti-n', 'Iñtërnâtiônàlizætiøn');
         });
         
+        tocTests.test("filterHeadings", function () {
+            var allHeadings = $('#tocFilterHeadings :header');
+            var expectedHeadings = allHeadings.not(":hidden"); 
+            var filteredHeadings = fluid.tableOfContents.filterHeadings(allHeadings);
+            jqUnit.assertEquals("The size of headings should be exactly 1 less from the original", allHeadings.size() - 1, filteredHeadings.size());
+            jqUnit.assertEquals("The size of headings should be exactly the same as a sliced clone of the original", expectedHeadings.size(), filteredHeadings.size());
+            jqUnit.assertDeepEq("The headings object array should be identical between the filtered headings and the sliced clone", 
+                expectedHeadings.toArray(), filteredHeadings.toArray());
+        });
+        
         tocTests.test("finalInit public function: headingTextToAnchor", function () {
             // setup and init the ToC component
             var toc = renderTOCComponent();
