@@ -83,48 +83,6 @@ var fluid_1_4 = fluid_1_4 || {};
                                         type: "fluid.tabs",
                                         container: "body",      
                                         createOnEvent: "onReady"               
-                                    },
-                                    textControls: {
-                                        resources: {
-                                            template: {
-                                                expander: {
-                                                    args: {
-                                                        url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                    layoutControls: {
-                                        resources: {
-                                            template: {
-                                                expander: {
-                                                    args: {
-                                                        url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                    linkControls: {
-                                        resources: {
-                                            template: {
-                                                expander: {
-                                                    args: {
-                                                        url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            resources: {
-                                template: {
-                                    expander: {
-                                        args: {
-                                            url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"
-                                        }
                                     }
                                 }
                             }
