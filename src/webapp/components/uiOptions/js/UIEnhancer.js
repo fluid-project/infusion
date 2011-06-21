@@ -98,8 +98,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 funcName: "fluid.uiEnhancer.updateModel",
                 args: ["@0", "{uiEnhancer}.applier"]
             },
-            updateFromSettingStore: {
-                funcName: "fluid.uiEnhancer.updateFromSettingStore",
+            updateFromSettingsStore: {
+                funcName: "fluid.uiEnhancer.updateFromSettingsStore",
                 args: ["{uiEnhancer}"]
             },
             refreshView: {
@@ -146,11 +146,11 @@ var fluid_1_4 = fluid_1_4 || {};
                 that.refreshView();   
             });
 
-        that.updateFromSettingStore();
+        that.updateFromSettingsStore();
         return that;
     };
     
-    fluid.uiEnhancer.updateFromSettingStore = function (that) {
+    fluid.uiEnhancer.updateFromSettingsStore = function (that) {
         that.updateModel(that.settingsStore.fetch());
     };
 
