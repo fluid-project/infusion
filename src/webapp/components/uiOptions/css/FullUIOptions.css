@@ -41,14 +41,14 @@
 	/* background: -moz-linear-gradient(bottom, #e0e0e0, #fff;) */
 	background-image: url("../images/default/uio_icon_save_default_13x13.png");
 	background-repeat: no-repeat;
-	background-position: 0.4em 0.75em;
+	background-position: 0.2em 0.5em;
 }
 
 .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel {
 	padding-left: 20px;
 	background-image: url("../images/default/uio_icon_cancel_default_13x13.png");
 	background-repeat: no-repeat;
-	background-position: 0.4em 0.75em;
+	background-position: 0.2em 0.5em;
 }
 
 /* header icons */

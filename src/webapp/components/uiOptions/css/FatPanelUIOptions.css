@@ -8,7 +8,6 @@
 .fl-uiOptions-fatPanel .fl-panelBar {
 	width: 100%;
 	height: 5px;
-	background-color: #fff;
 	border-bottom: 1px solid #ccc;	
 }
 
@@ -22,33 +21,6 @@
 	margin-right: 10px;
 	border-radius: 8px;	
 	border-bottom: 1px solid #ccc;
-}
-
-.fl-uiOptions-fatPanel #reset {
-	background-color: #333333;
-	color: #fff;	
-	text-transform: uppercase;
-	font-weight: bold;
-	display: block;
-}
-
-.fl-theme-hc .fl-uiOptions-fatPanel #reset {
-	background-color: #000;
-}
-
-.fl-theme-hci .fl-uiOptions-fatPanel #reset {
-	background-color: #fff;
-	color: #000;	
-}
-
-.fl-theme-blackYellow .fl-uiOptions-fatPanel #reset {
-	background-color: #000;
-	color: #ffff00;	
-}
-
-.fl-theme-yellowBlack .fl-uiOptions-fatPanel #reset {
-	background-color: #ffff00;
-	color: #000;	
 }
 
 /* Form */
@@ -74,11 +46,22 @@
     font-size: inherit;
 }
 
+/* Reset button */
+.fl-uiOptions-fatPanel #reset {
+	background-color: #333333;
+	color: #fff;	
+	text-transform: uppercase;
+	font-weight: bold;
+	display: block;
+	padding: 0.75em 1.5em 0.7em 3em;
+}
+
 /* Tabs */
 .fl-uiOptions-fatPanel ul.fl-tabs {	
 	background-color: #333333;
 	color: #fff;		
 	height: 2.5em;	
+	margin-top: 0px;
 }	
 
 .fl-uiOptions-fatPanel .fl-tabs li a {
@@ -94,10 +77,14 @@
 	color: #000;
 }
 
+.fl-uiOptions-fatPanel ul.fl-tabs li:first-child a {
+	margin-left: -10px;
+}
+
 /* Tab images */
 .fl-uiOptions-fatPanel .fl-tab-text, .fl-uiOptions-fatPanel .fl-tab-layout, .fl-uiOptions-fatPanel .fl-tab-links, .fl-uiOptions-fatPanel #reset {
 	background-repeat: no-repeat;
-	background-position: 10px 5px;
+	background-position: 1.1em 0.6em;
 }
 
 /* Tab images - default */
@@ -120,7 +107,7 @@
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-layout { background-image: url('../images/yellowBlack/uio_icon_layoutandnavigation_yellowBlack_16x16.png'); }
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-links { background-image: url('../images/yellowBlack/uio_icon_linksandbuttons_yellowBlack_16x16.png'); }
 
-/* Tab images - black-yellow */
+/* Tab images - black on yellow */
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-tab-text { background-image: url('../images/blackYellow/uio_icon_textanddisplay_blackYellowInverted_16x16.png'); }
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-tab-layout { background-image: url('../images/blackYellow/uio_icon_layoutandnavigation_blackYellowInverted_16x16.png'); }
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-tab-links { background-image: url('../images/blackYellow/uio_icon_linksandbuttons_blackYellowInverted_16x16.png'); }
@@ -151,39 +138,21 @@
 .fl-theme-hc .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-links { background-image: url('../images/hc/uio_icon_linksandbuttons_hc_16x16.png'); }
 
 
-/
- * jQuery UI Tabs 1.8.12
- *
- * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
- * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
- *
- * http://docs.jquery.com/UI/Tabs#theming
- */
-.fl-uiOptions-fatPanel .ui-tabs { position: relative; padding: .2em; zoom: 1; } /* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
-.ui-tabs .ui-tabs-nav li a { float: left; padding: .5em 1em; text-decoration: none; }
-.fl-uiOptions-fatPanel .ui-tabs .ui-tabs-nav li.ui-tabs-selected { margin-bottom: 0; padding-bottom: 0px; }
-.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; }
-.ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
-.ui-tabs .ui-tabs-panel { display: block; border-width: 0; padding: 1em 1.4em; background: none; }
-.ui-tabs .ui-tabs-hide { display: none !important; }
+/* jQuery UI Tabs styles & overrides */
 
-/* jQuery UI Tabs style overrides */
-
-/* positioning fixes */
-.fl-uiOptions-fatPanel .ui-tabs .ui-tabs-nav { margin: 0; padding: .2em .2em 0; }
-.fl-uiOptions-fatPanel .ui-tabs .ui-tabs-nav li { list-style: none; float: left; position: relative; top: 1px; margin: 0 .2em 1px 0; border-bottom: 0 !important; padding: 0; white-space: nowrap; }
-.fl-uiOptions-fatPanel .ui-tabs { padding: 0px; }
-.fl-uiOptions-fatPanel .ui-tabs .ui-tabs-nav li a, .fl-uiOptions-fatPanel #reset { padding: 0.75em 1em 0.75em 30px; line-height: 1;}
-.fl-uiOptions-fatPanel .ui-tabs .ui-tabs-nav li a { padding: 0.75em 1em 0.75em 30px; line-height: 1;}
-.fl-uiOptions-fatPanel .ui-tabs .ui-tabs-panel { padding: 10px; }
-.fl-uiOptions-fatPanel .ui-widget-header .ui-state-default  { border: 0; } /* remove border added by contrast themes */
-.fl-uiOptions-fatPanel .ui-tabs  { padding: 0; } /* remove extra padding used contrast themes */
-.fl-uiOptions-fatPanel .ui-tabs { position: inherit; } /* Override so Reset button reappears properly. */
+.fl-uiOptions-fatPanel.ui-tabs { position: relative; zoom: 1; padding:0px; } /* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
+.fl-uiOptions-fatPanel.ui-tabs .ui-tabs-panel { display: block; border-width: 0; padding: 1em 1.4em; background: none; }
+.fl-uiOptions-fatPanel.ui-tabs .ui-tabs-hide { display: none !important; }
+.fl-uiOptions-fatPanel.ui-tabs .ui-tabs-nav { padding: 0px; }
+.fl-uiOptions-fatPanel.ui-tabs .ui-tabs-nav li { top: 0px; margin: 0px; }
+.fl-uiOptions-fatPanel.ui-tabs .ui-tabs-nav li a { float: left; padding: 0.9em 1.5em 0.7em 3em; }
+.fl-uiOptions-fatPanel.ui-tabs .ui-state-default { border: none; }
+.fl-uiOptions-fatPanel.ui-tabs .ui-helper-reset { line-height: 1em; }
+.fl-uiOptions-fatPanel.ui-tabs .ui-tabs-nav li.ui-tabs-selected { padding-bottom: 0px; }
 
 /* Font fixes */
-.fl-uiOptions-fatPanel .ui-widget { font-family: "Myriad Pro",Helvetica,Arial,sans-serif; }
-.fl-uiOptions-fatPanel .ui-widget { font-size: 1em; } /* fix a jquery theme bugs where font-size was set to 1.1em or 1.2em. */
+.fl-uiOptions-fatPanel.ui-widget { font-family: "Myriad Pro",Helvetica,Arial,sans-serif; font-size: 1em; } /* fix a jquery theme bugs where font-size was set to 1.1em or 1.2em. */
+.fl-uiOptions-fatPanel.ui-widget-content { border: none; }
 
 /* Override theme tab rounding */
 .fl-uiOptions-fatPanel .ui-corner-top { -moz-border-radius-topleft: 0px; -moz-border-radius-topright: 0px; }
@@ -196,12 +165,17 @@
 .fl-theme-hc .fl-uiOptions-fatPanel .fl-tabs a  { background-color: #000; color: #fff;}
 .fl-theme-hc .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #fff;	color: #000; }
 .fl-theme-hc .fl-uiOptions-fatPanel .ui-widget-header .ui-state-active { background: none no-repeat scroll 0% 0% #fff; } /* Override a background image that was making the tab larger than necessary. */
+.fl-theme-hc .fl-uiOptions-fatPanel #reset { background-color: #000; }
+.fl-theme-hc .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #fff; border-color: #000; }
+
 
 .fl-theme-hci .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-hci .fl-uiOptions-fatPanel ul.fl-tabs  { background-color: #fff; }
 .fl-theme-hci .fl-uiOptions-fatPanel .fl-tabs {border-bottom: 1px solid #FFF;}
 .fl-theme-hci .fl-uiOptions-fatPanel .fl-tabs a { background-color: #fff; color: #000; }
 .fl-theme-hci .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #000; color: #fff; }
+.fl-theme-hci .fl-uiOptions-fatPanel #reset { background-color: #fff; color: #000; }
+.fl-theme-hci .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #000; border-color: #fff; color: #fff; }
 
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-blackYellow .fl-uiOptions-fatPanel  ul.fl-tabs  { background-color: #000; }
@@ -211,8 +185,10 @@
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .ui-widget-header .ui-state-default {background: none no-repeat scroll 0% 0% #000; }
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .ui-tabs .fl-tabs li {background-color: #000; }
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .ui-widget-content { background:0; color: #000;}
-.fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider .fl-handle, .fl-theme-yellowBlack  .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider a { border: 1px solid #000;}
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider .fl-handle, .fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider a { border: 1px solid #000;}
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-slider {background-color: #000;}
+.fl-theme-blackYellow .fl-uiOptions-fatPanel #reset { background-color: #000; color: #ffff00; }
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #FFFF00; border-color: #000; }
 
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel  ul.fl-tabs  { background-color: #ffff00; }
@@ -224,6 +200,8 @@
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .ui-widget-content { background:0; color: #ffff00;}
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider .fl-handle, .fl-theme-yellowBlack  .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider a { border: 1px solid #ffff00;}
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-slider {background-color: #ffff00;}
+.fl-theme-yellowBlack .fl-uiOptions-fatPanel #reset { background-color: #ffff00; color: #000; }
+.fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #000; border-color: #ffff00; color: #ffff00 }
 
 /* Sliders */
 
