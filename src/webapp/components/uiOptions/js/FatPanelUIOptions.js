@@ -202,10 +202,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.defaults("fluid.uiOptionsBridge", {
         gradeNames: ["fluid.littleComponent"],
-        iframe: null, 
-         mergePolicy: {
-            uiOptionsOptions: "noexpand"  
-        }
+        iframe: null
     });
     
     /************************
