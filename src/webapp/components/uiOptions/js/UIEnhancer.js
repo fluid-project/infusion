@@ -319,13 +319,11 @@ var fluid_1_4 = fluid_1_4 || {};
     
     // TODO: this might be almost the same as textSize setting - can we share?
     fluid.uiEnhancer.lineSpacer.set = function (times, that) {
-        var textSize = fluid.uiEnhancer.getTextSize(that.container);
-        
         if (!that.initialSize) {
             that.calcInitSize();
         }
         
-        var newLineSpacing = times === "" || times === 1 ? that.initialSize : times * that.initialSize * textSize;
+        var newLineSpacing = times === "" || times === 1 ? that.initialSize : times * that.initialSize;
         that.container.css("line-height", newLineSpacing + "em");
     };
     
