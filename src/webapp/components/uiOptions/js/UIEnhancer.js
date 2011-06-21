@@ -98,6 +98,10 @@ var fluid_1_4 = fluid_1_4 || {};
                 funcName: "fluid.uiEnhancer.updateModel",
                 args: ["@0", "{uiEnhancer}.applier"]
             },
+            updateFromSettingStore: {
+                funcName: "fluid.uiEnhancer.updateFromSettingStore",
+                args: ["{uiEnhancer}"]
+            },
             refreshView: "fluid.uiEnhancer.refreshView",
             styleElements: "fluid.uiEnhancer.styleElements",
             
@@ -139,8 +143,12 @@ var fluid_1_4 = fluid_1_4 || {};
                 that.refreshView(that);   
             });
 
-        that.applier.requestChange("", that.settingsStore.fetch());
+        that.updateFromSettingStore();
         return that;
+    };
+    
+    fluid.uiEnhancer.updateFromSettingStore = function (that) {
+        that.updateModel(that.settingsStore.fetch());
     };
 
     fluid.uiEnhancer.updateModel = function (newModel, applier) {
