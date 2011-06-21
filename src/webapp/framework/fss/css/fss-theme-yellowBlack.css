@@ -18,12 +18,10 @@
 .fl-theme-yellowBlack {color:#ff0; background-color:#000;}
 .fl-theme-yellowBlack div, .fl-theme-yellowBlack input {color:#ff0; background-color:#000;}
 .fl-theme-yellowBlack .fl-knockout {background:transparent !important; color:#ffff00;} /* a granular method for basic reset of appearance */
-.fl-theme-yellowBlack .fl-icon {color:#ffff00; background-image:none; background-color:#000000; text-indent:0; width:auto; height:auto; margin-left:0px; padding:0 2px; display:inline; font-weight:bold;}
+.fl-theme-yellowBlack .fl-icon {background-color:#000000;}
 
 /* Links */
 .fl-theme-yellowBlack a  {color: #ffff00; font-weight:bold; background-color:#000000;}
-.fl-theme-yellowBlack a:hover {color: #000000; background-color:#ffff00;}
-.fl-theme-yellowBlack a:hover * {color: #000000; background-color:#ffff00;}
 
 /* Headers */
 .fl-theme-yellowBlack h1,
@@ -83,18 +81,31 @@
 .fl-theme-yellowBlack .fl-grid .fl-grid-caption {}
 
 /* Helper: buttons */
-.fl-theme-yellowBlack .fl-button-right, 
-.fl-theme-yellowBlack .fl-button-left, 
-.fl-theme-yellowBlack .fl-button-inner {padding:0;}
+.fl-theme-yellowBlack .fl-button-left {background-image:url(../images/themes/yellowBlack/buttons-med-cap.png);}
+.fl-theme-yellowBlack .fl-button-right {background-image:url(../images/themes/yellowBlack/buttons-med-cap.png);}
+.fl-theme-yellowBlack .fl-button-inner {background-image:url(../images/themes/yellowBlack/buttons-med-bg.png);}
 
 /* Widget core */
 .fl-theme-yellowBlack .fl-widget {background-color:#ffff00; border:1px solid #000000;}
 .fl-theme-yellowBlack .fl-widget ul {}
 .fl-theme-yellowBlack .fl-widget h2 {color:#ffff00; background-color:#000000;}
 .fl-theme-yellowBlack .fl-widget a {color:#ffff00;}
+.fl-theme-yellowBlack .fl-widget .fl-icon-more  {background-image:url('../images/themes/yellowBlack/icon-widget-More.png'); margin-left:0px;}
+.fl-theme-yellowBlack .fl-widget .fl-icon-close {background-image:url('../images/themes/yellowBlack/icon-widget-Close.png'); margin-right:0px;}
         
 /* Widget titlebar */
 .fl-theme-yellowBlack .fl-widget .fl-widget-titlebar {margin-bottom:3px;}
+.fl-theme-yellowBlack .fl-grabbable .fl-widget-titlebar {background-image:url('../images/themes/yellowBlack/icon-widget-gripper.png');}
+.fl-theme-yellowBlack .fl-widget-titlebar .icon {background-position:center center;}
+.fl-theme-yellowBlack .fl-widget-titlebar .fl-button-right,
+.fl-theme-yellowBlack .fl-widget-titlebar .fl-button-left {
+    color:#ffff00;
+    background-image:url(../images/themes/yellowBlack/buttons-titlebar-cap.png);
+    text-decoration:none;
+}
+.fl-theme-yellowBlack .fl-widget-titlebar .fl-button-inner {
+    background-image:url(../images/themes/yellowBlack/buttons-titlebar-bg.png);
+}
 
 /* Widget options */
 .fl-theme-yellowBlack .fl-widget .fl-widget-options {padding:0px;}
@@ -106,8 +117,6 @@
     
 /* Widget content */
 .fl-theme-yellowBlack .fl-widget .fl-widget-content {background-color:#000000;}
-
-
 
 /* Component: Progressor */
 .fl-theme-yellowBlack .fl-progress-bounds {border-color:#ffff00; background-color:#000000;}
