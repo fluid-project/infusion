@@ -102,7 +102,10 @@ var fluid_1_4 = fluid_1_4 || {};
                 funcName: "fluid.uiEnhancer.updateFromSettingStore",
                 args: ["{uiEnhancer}"]
             },
-            refreshView: "fluid.uiEnhancer.refreshView",
+            refreshView: {
+                funcName: "fluid.uiEnhancer.refreshView",
+                args: ["{uiEnhancer}"]
+            },
             styleElements: "fluid.uiEnhancer.styleElements",
             
             // NOTE: when we do the ants refactoring each of these will be half an ant
@@ -140,7 +143,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.applier.modelChanged.addListener("",
             function (newModel, oldModel, changeRequest) {
                 that.events.modelChanged.fire(newModel, oldModel, changeRequest);
-                that.refreshView(that);   
+                that.refreshView();   
             });
 
         that.updateFromSettingStore();
