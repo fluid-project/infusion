@@ -98,7 +98,14 @@ var fluid_1_4 = fluid_1_4 || {};
                 funcName: "fluid.uiEnhancer.updateModel",
                 args: ["@0", "{uiEnhancer}.applier"]
             },
-            refreshView: "fluid.uiEnhancer.refreshView",
+            updateFromSettingsStore: {
+                funcName: "fluid.uiEnhancer.updateFromSettingsStore",
+                args: ["{uiEnhancer}"]
+            },
+            refreshView: {
+                funcName: "fluid.uiEnhancer.refreshView",
+                args: ["{uiEnhancer}"]
+            },
             styleElements: "fluid.uiEnhancer.styleElements",
             
             // NOTE: when we do the ants refactoring each of these will be half an ant
@@ -136,11 +143,15 @@ var fluid_1_4 = fluid_1_4 || {};
         that.applier.modelChanged.addListener("",
             function (newModel, oldModel, changeRequest) {
                 that.events.modelChanged.fire(newModel, oldModel, changeRequest);
-                that.refreshView(that);   
+                that.refreshView();   
             });
 
-        that.applier.requestChange("", that.settingsStore.fetch());
+        that.updateFromSettingsStore();
         return that;
+    };
+    
+    fluid.uiEnhancer.updateFromSettingsStore = function (that) {
+        that.updateModel(that.settingsStore.fetch());
     };
 
     fluid.uiEnhancer.updateModel = function (newModel, applier) {
@@ -319,13 +330,11 @@ var fluid_1_4 = fluid_1_4 || {};
     
     // TODO: this might be almost the same as textSize setting - can we share?
     fluid.uiEnhancer.lineSpacer.set = function (times, that) {
-        var textSize = fluid.uiEnhancer.getTextSize(that.container);
-        
         if (!that.initialSize) {
             that.calcInitSize();
         }
         
-        var newLineSpacing = times === "" || times === 1 ? that.initialSize : times * that.initialSize * textSize;
+        var newLineSpacing = times === "" || times === 1 ? that.initialSize : times * that.initialSize;
         that.container.css("line-height", newLineSpacing + "em");
     };
     

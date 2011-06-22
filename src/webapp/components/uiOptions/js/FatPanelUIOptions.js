@@ -83,48 +83,6 @@ var fluid_1_4 = fluid_1_4 || {};
                                         type: "fluid.tabs",
                                         container: "body",      
                                         createOnEvent: "onReady"               
-                                    },
-                                    textControls: {
-                                        resources: {
-                                            template: {
-                                                expander: {
-                                                    args: {
-                                                        url: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                    layoutControls: {
-                                        resources: {
-                                            template: {
-                                                expander: {
-                                                    args: {
-                                                        url: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                    linkControls: {
-                                        resources: {
-                                            template: {
-                                                expander: {
-                                                    args: {
-                                                        url: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            resources: {
-                                template: {
-                                    expander: {
-                                        args: {
-                                            url: "../../../../components/uiOptions/html/FatPanelUIOptions.html"
-                                        }
                                     }
                                 }
                             }
@@ -156,6 +114,9 @@ var fluid_1_4 = fluid_1_4 || {};
         });
         that.options.slidingPanel.events.afterPanelHidden.addListener(function () {
             that.options.uiOptions.save();
+        });
+        that.options.slidingPanel.events.afterPanelShown.addListener(function () {
+            that.options.uiOptions.pageEnhancer.uiEnhancer.updateFromSettingsStore();
         });
     };
     
@@ -199,10 +160,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.defaults("fluid.uiOptionsBridge", {
         gradeNames: ["fluid.littleComponent"],
-        iframe: null, 
-         mergePolicy: {
-            uiOptionsOptions: "noexpand"  
-        }
+        iframe: null
     });
     
     /************************
