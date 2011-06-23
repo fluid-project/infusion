@@ -214,6 +214,7 @@ var fluid_1_4 = fluid_1_4 || {};
             listeners: {                
                 "{multiFileUploader}.events.onQueueError": "{section}.addFile",
                 "{multiFileUploader}.events.onFilesSelected": "{section}.clear",
+                "{multiFileUploader}.events.onUploadStart": "{section}.clear",
                 "{section}.events.afterErrorsCleared": "{errorPanel}.refreshView"
             }
         }
