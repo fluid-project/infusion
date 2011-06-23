@@ -35,11 +35,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Supply the templates
         fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptions.tests", {
             options: {
+                prefix: "../../../../components/uiOptions/html/",
                 templates: {
-                    uiOptions: "../../../../components/uiOptions/html/FullPreviewUIOptions.html",
-                    textControls: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html",
-                    layoutControls: "../../../../components/uiOptions/html/UIOptionsTemplate-layout.html",
-                    linksControls: "../../../../components/uiOptions/html/UIOptionsTemplate-links.html"
+                    uiOptions: "%prefixFullPreviewUIOptions.html",
+                    textControls: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
                 }
             }
         });

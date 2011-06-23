@@ -24,26 +24,9 @@ var skon = skon || {};
     skon.slidingUIOptions = function (panel, uioptions) {
         fluid.demands("fluid.uiOptionsTemplateLoader", [ "skon.demo"], {
             options: {
-                templates: {
-                    uiOptions: "../../../components/uiOptions/html/FatPanelUIOptions.html",
-                    textControls: "../../../components/uiOptions/html/UIOptionsTemplate-text.html",
-                    layoutControls: "../../../components/uiOptions/html/UIOptionsTemplate-layout.html",
-                    linksControls: "../../../components/uiOptions/html/UIOptionsTemplate-links.html"
-                }  
+                prefix: "../../../components/uiOptions/html/"
             }
         });
-
-/*
-        fluid.demands("fluid.uiOptions", ["fluid.fatPanelUIOptions", "skon.demo"], {
-            options: {
-                resources: {
-                    template: {
-                        url: "../../../components/uiOptions/html/FatPanelUIOptions.html"
-                    }
-                }
-            }
-        });
-*/
 
         // Supply the table of contents' template URL
         fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer", "skon.demo"], {
