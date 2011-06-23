@@ -60,10 +60,12 @@ var fluid_1_4 = fluid_1_4 || {};
             eventBinder: {
                 type: "fluid.uiOptionsEventBinder",
                 options: {
-                    pageEnhancer: "{fatPanelUIOptionsImp}.pageEnhancer",
-                    uiOptions: "{fatPanelUIOptionsImp}.uiOptionsBridge.uiOptions",
-                    slidingPanel: "{fatPanelUIOptionsImp}.slidingPanel",
-                    markupRenderer: "{fatPanelUIOptionsImp}.markupRenderer"
+                    components: {
+                        pageEnhancer: "{fatPanelUIOptionsImp}.pageEnhancer",
+                        uiOptions: "{fatPanelUIOptionsImp}.uiOptionsBridge.uiOptions",
+                        slidingPanel: "{fatPanelUIOptionsImp}.slidingPanel",
+                        markupRenderer: "{fatPanelUIOptionsImp}.markupRenderer"
+                    }
                 },
                 createOnEvent: "afterRender",
                 priority: "last"
@@ -103,14 +105,14 @@ var fluid_1_4 = fluid_1_4 || {};
     });
     
     fluid.uiOptionsEventBinder.finalInit = function (that) {
-        that.options.uiOptions.events.modelChanged.addListener(function (model) {
-            that.options.pageEnhancer.uiEnhancer.updateModel(model.selections);
+        that.uiOptions.events.modelChanged.addListener(function (model) {
+            that.pageEnhancer.uiEnhancer.updateModel(model.selections);
         });
-        that.options.slidingPanel.events.afterPanelHidden.addListener(function () {
-            that.options.uiOptions.save();
+        that.slidingPanel.events.afterPanelHidden.addListener(function () {
+            that.uiOptions.save();
         });
-        that.options.slidingPanel.events.afterPanelShown.addListener(function () {
-            that.options.uiOptions.pageEnhancer.uiEnhancer.updateFromSettingsStore();
+        that.slidingPanel.events.afterPanelShown.addListener(function () {
+            that.uiOptions.pageEnhancer.uiEnhancer.updateFromSettingsStore();
         });
     };
     
@@ -181,8 +183,8 @@ var fluid_1_4 = fluid_1_4 || {};
         var iframeDoc = iframe.contents();
         var iframeWin = iframe[0].contentWindow;
         
-        //var uiOptions = fluid.get(iframeWin, that.options.components.uiOptions.type);
-        that.uiOptions = fluid.invokeGlobalFunction(that.options.uiOptions.type, [$("body", iframeDoc), that.options.uiOptions.options], iframeWin);            
+        that.uiOptions = fluid.invokeGlobalFunction(that.options.uiOptions.type, 
+                [$("body", iframeDoc), that.options.uiOptions.options], iframeWin);            
     };
     
     /************************
