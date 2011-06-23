@@ -41,7 +41,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Changed settings are saved correctly.", store.fetch().textSize, "2");
             
             // Let's go check the cookie directly and make sure it's there.
-            var cookieNameIndex = document.cookie.indexOf(store.options.cookieName);
+            var cookieNameIndex = document.cookie.indexOf(store.options.cookie.name);
             jqUnit.assertTrue("Our cookie should be floating somewhere in the browser.",
                                cookieNameIndex >= 0);
             jqUnit.assertTrue("Our cookie should contain the textSize 2.",
