@@ -34,7 +34,8 @@ var fluid_1_4 = fluid_1_4 || {};
         components: {      
             slidingPanel: {
                 type: "fluid.slidingPanel",
-                container: "{fatPanelUIOptionsImp}.container"
+                container: "{fatPanelUIOptionsImp}.container",
+                createOnEvent: "afterRender"
             },
             preview: {
                 type: "fluid.uiOptions.livePreview"
@@ -45,6 +46,10 @@ var fluid_1_4 = fluid_1_4 || {};
                 options: {
                     events: {
                         afterRender: "{fatPanelUIOptionsImp}.events.afterRender"
+                    },
+                    styles: {
+                        offScreen: "fl-offScreen-hidden",
+                        container: "fl-container-flex"
                     }
                 }
             },
@@ -57,7 +62,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 options: {
                     pageEnhancer: "{fatPanelUIOptionsImp}.pageEnhancer",
                     uiOptions: "{fatPanelUIOptionsImp}.uiOptionsBridge",
-                    slidingPanel: "{fatPanelUIOptionsImp}.slidingPanel"
+                    slidingPanel: "{fatPanelUIOptionsImp}.slidingPanel",
+                    markupRenderer: "{fatPanelUIOptionsImp}.markupRenderer"
                 },
                 createOnEvent: "afterRender",
                 priority: "last"
@@ -65,8 +71,9 @@ var fluid_1_4 = fluid_1_4 || {};
             uiOptionsBridge: {
                 type: "fluid.uiOptionsBridge",
                 createOnEvent: "afterRender",
+                priority: "first",
                 options: {
-                    iframe: "{fatPanelUIOptionsImp}.markupRenderer.iframe",
+                    markupRenderer: "{fatPanelUIOptionsImp}.markupRenderer",
                     components: {
                         uiOptions: {
                             type: "fluid.uiOptions",
@@ -93,6 +100,14 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         events: {
             afterRender: null
+        }
+    });
+    
+    fluid.demands("fluid.uiEnhancer", ["fluid.fatPanelUIOptionsImp", "fluid.uiOptionsBridge"], {
+        options: {
+            listeners: {
+                modelChanged: "{fatPanelUIOptionsImp}.markupRenderer.makeVisible"
+            }
         }
     });
     
@@ -131,17 +146,25 @@ var fluid_1_4 = fluid_1_4 || {};
             afterRender: null
         },
         markupProps: {
-            "class": "flc-iframe fl-container-flex",
+            "class": "flc-iframe",
             src: "./uiOptionsIframe.html"
         }
     });
     
     fluid.renderIframe.finalInit = function (that) {
+        var styles = that.options.styles;
+        
         //create iframe and append to container
         $("<iframe/>", that.options.markupProps).appendTo(that.container);
         
         that.iframe = $(".flc-iframe", that.container);
+        that.iframe.addClass(styles.container);
+        that.iframe.addClass(styles.offScreen);
         that.iframe.load(that.events.afterRender.fire);
+        
+        that.makeVisible = function () {
+            that.iframe.removeClass(styles.offScreen);
+        }
     };
     
     /*************************
@@ -150,7 +173,9 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uiOptionsBridge = function (options) {
         var that = fluid.initLittleComponent("fluid.uiOptionsBridge", options);
-        var iframe = that.options.iframe;
+        
+        var markupRenderer = that.options.markupRenderer;
+        var iframe = markupRenderer.iframe;
         var iframeDoc = iframe.contents();
         var iframeWin = iframe[0].contentWindow;
         
