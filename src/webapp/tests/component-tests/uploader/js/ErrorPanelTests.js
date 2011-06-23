@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(function () {
-        var errorsViewTests = jqUnit.testCase("Uploader ErrorsView Tests");
+        var errorPanelTests = jqUnit.testCase("Uploader errorPanel Tests");
         
         var testFiles = [
             {
@@ -38,11 +38,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         
         /****************************
-         * ErrorsView.Section Tests *
+         * errorPanel.Section Tests *
          ****************************/
          
         var makeSection = function () {
-            return fluid.uploader.errorsView.section(".flc-uploader-errorPanel-section", {
+            return fluid.uploader.errorPanel.section(".flc-uploader-errorPanel-section", {
                 model: {
                     errorCode: 0 // Mock error code.
                 },
@@ -59,7 +59,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expectedIdx, $.inArray(file.name, section.model.files));
         };
         
-        errorsViewTests.test("ErrorsView.section.addFile()", function () {
+        errorPanelTests.test("errorPanel.section.addFile()", function () {
             var section = makeSection();
             
             // Add the first file.
@@ -75,7 +75,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkAddedFiles(section, 2, testFiles[3], -1);
         });
         
-        errorsViewTests.test("ErrorsView.section.clear()", function () {
+        errorPanelTests.test("errorPanel.section.clear()", function () {
             var section = makeSection();
             section.addFile(testFiles[0], 0);
             section.addFile(testFiles[1], 0);
@@ -111,7 +111,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkDetailsVisibility(section, true);
         };
         
-        errorsViewTests.test("ErrorsView.section details visibility", function () {
+        errorPanelTests.test("errorPanel.section details visibility", function () {
             var section = makeSection();
             checkDetailsAreHidden(section); // By default, the error details should be hidden.
             
@@ -155,7 +155,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkSection(section, filesList, true);
         };
         
-        errorsViewTests.test("ErrorsView.section.refreshView()", function () {
+        errorPanelTests.test("errorPanel.section.refreshView()", function () {
             var section = makeSection();
             checkSectionWithHiddenDetails(section, "");
             
@@ -172,9 +172,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkSectionWithVisibleDetails(section, testFiles[0].name);
         });
         
-        errorsViewTests.test("errorsView.section.renderErrorDetails", function () {
+        errorPanelTests.test("errorPanel.section.renderErrorDetails", function () {
             var section = makeSection();
-            fluid.uploader.errorsView.section.renderErrorDetails(section);
+            fluid.uploader.errorPanel.section.renderErrorDetails(section);
             
             // No files.
             checkFilesList(section, "");
@@ -189,7 +189,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkFilesList(section, "PictureOfACat.jpg, Dog.jpg, Sailboat.png");
         });
         
-        errorsViewTests.test("errorsView.section clear errors button", function () {
+        errorPanelTests.test("errorPanel.section clear errors button", function () {
             var section = makeSection();
             section.addFile(testFiles[0], 0);
             section.showDetails();
@@ -203,53 +203,53 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         /********************
-         * ErrorsView Tests *
+         * errorPanel Tests *
          ********************/
          
         fluid.staticEnvironment.uploader = fluid.typeTag("fluid.uploader.tests");
         
-        fluid.demands("fluid.uploader.errorsView.section", ["fluid.uploader.errorsView", "fluid.uploader.tests"], {
+        fluid.demands("fluid.uploader.errorPanel.section", ["fluid.uploader.errorPanel", "fluid.uploader.tests"], {
             // Empty demands block for tests in isolation from the Uploader.
             options: {}
         });
         
-        var addFileAndRefresh = function (errorsView, section, file) {
+        var addFileAndRefresh = function (errorPanel, section, file) {
             section.addFile(file, section.model.errorCode);
-            errorsView.refreshView();  
+            errorPanel.refreshView();  
         };
         
-        var clearAndRefresh = function (errorsView, section) {
+        var clearAndRefresh = function (errorPanel, section) {
             section.clear();
-            errorsView.refreshView();
+            errorPanel.refreshView();
         };
         
-        errorsViewTests.test("ErrorsView.refreshView()", function () {
-            var errorsView = fluid.uploader.errorsView(".flc-uploader-errorsPanel");
-            jqUnit.notVisible("On initialization, the error panel should be hidden.", errorsView.container);
+        errorPanelTests.test("errorPanel.refreshView()", function () {
+            var errorPanel = fluid.uploader.errorPanel(".flc-uploader-errorsPanel");
+            jqUnit.notVisible("On initialization, the error panel should be hidden.", errorPanel.container);
             
-            addFileAndRefresh(errorsView, errorsView.fileSizeErrorSection, testFiles[0]);
+            addFileAndRefresh(errorPanel, errorPanel.fileSizeErrorSection, testFiles[0]);
             jqUnit.isVisible("After a file has been added to a section, the error panel should be visible.", 
-                errorsView.container);
+                errorPanel.container);
             
-            clearAndRefresh(errorsView, errorsView.fileSizeErrorSection);
+            clearAndRefresh(errorPanel, errorPanel.fileSizeErrorSection);
             jqUnit.notVisible("When the errors have been cleared, the error panel should be hidden again.", 
-                errorsView.container);
+                errorPanel.container);
             
-            addFileAndRefresh(errorsView, errorsView.numFilesErrorSection, testFiles[1]);
+            addFileAndRefresh(errorPanel, errorPanel.numFilesErrorSection, testFiles[1]);
             jqUnit.isVisible("After a file has been added to a section, the error panel should be visible.", 
-                    errorsView.container);
+                    errorPanel.container);
                
-            addFileAndRefresh(errorsView, errorsView.fileSizeErrorSection, testFiles[0]);
+            addFileAndRefresh(errorPanel, errorPanel.fileSizeErrorSection, testFiles[0]);
             jqUnit.isVisible("After a file has been added to the other section, the error panel should still be visible.", 
-                    errorsView.container);
+                    errorPanel.container);
             
-            clearAndRefresh(errorsView, errorsView.fileSizeErrorSection);
+            clearAndRefresh(errorPanel, errorPanel.fileSizeErrorSection);
             jqUnit.isVisible("When one section has been cleared but the other still has errors, the container should still be visible.", 
-                    errorsView.container);
+                    errorPanel.container);
             
-            clearAndRefresh(errorsView, errorsView.numFilesErrorSection);
+            clearAndRefresh(errorPanel, errorPanel.numFilesErrorSection);
             jqUnit.notVisible("When all sections have been cleared, the error panel should be hidden again.", 
-                errorsView.container);
+                errorPanel.container);
         });
         
     });

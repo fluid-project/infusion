@@ -445,8 +445,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uploader.progressiveStrategy"
             },
 
-            errorsView: {
-                type: "fluid.uploader.errorsView"
+            errorPanel: {
+                type: "fluid.uploader.errorPanel"
             },
 
             fileQueueView: {

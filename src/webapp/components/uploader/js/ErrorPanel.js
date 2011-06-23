@@ -21,36 +21,36 @@ var fluid_1_4 = fluid_1_4 || {};
 
     fluid.uploader = fluid.uploader || {};
     
-    fluid.defaults("fluid.uploader.errorsView", {
+    fluid.defaults("fluid.uploader.errorPanel", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        preInitFunction: "fluid.uploader.errorsView.preInit",
-        postInitFunction: "fluid.uploader.errorsView.renderSectionTemplates",
-        finalInitFunction: "fluid.uploader.errorsView.finalInit",
+        preInitFunction: "fluid.uploader.errorPanel.preInit",
+        postInitFunction: "fluid.uploader.errorPanel.renderSectionTemplates",
+        finalInitFunction: "fluid.uploader.errorPanel.finalInit",
         
         components: {
             // TODO: This won't scale nicely with more types of errors. 
             fileSizeErrorSection: {
-                type: "fluid.uploader.errorsView.section",
-                container: "{errorsView}.dom.fileSizeErrorSection",
+                type: "fluid.uploader.errorPanel.section",
+                container: "{errorPanel}.dom.fileSizeErrorSection",
                 options: {
                     model: {
                         errorCode: fluid.uploader.queueErrorConstants.FILE_EXCEEDS_SIZE_LIMIT
                     },
                     strings: {
-                        header: "{errorsView}.options.strings.exceedsFileSize"
+                        header: "{errorPanel}.options.strings.exceedsFileSize"
                     }
                 }
             },
             
             numFilesErrorSection: {
-                type: "fluid.uploader.errorsView.section",
-                container: "{errorsView}.dom.numFilesErrorSection",
+                type: "fluid.uploader.errorPanel.section",
+                container: "{errorPanel}.dom.numFilesErrorSection",
                 options: {
                     model: {
                         errorCode: fluid.uploader.queueErrorConstants.QUEUE_LIMIT_EXCEEDED
                     },
                     strings: {
-                        header: "{errorsView}.options.strings.exceedsNumFilesLimit"
+                        header: "{errorPanel}.options.strings.exceedsNumFilesLimit"
                     }
                 }
             }
@@ -74,7 +74,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
 
-    fluid.uploader.errorsView.preInit = function (that) {
+    fluid.uploader.errorPanel.preInit = function (that) {
         that.refreshView = function () {
             for (var i = 0; i < that.sections.length; i++) {
                 if (that.sections[i].model.files.length > 0) {
@@ -87,31 +87,31 @@ var fluid_1_4 = fluid_1_4 || {};
         };
     };
     
-    fluid.uploader.errorsView.renderSectionTemplates = function (that) {
+    fluid.uploader.errorPanel.renderSectionTemplates = function (that) {
         var sectionTmpl = that.locate("sectionTemplate").remove().removeClass(that.options.styles.hiddenTemplate);
         that.locate("fileSizeErrorSection").append(sectionTmpl.clone());
         that.locate("numFilesErrorSection").append(sectionTmpl.clone());
     };
     
-    fluid.uploader.errorsView.finalInit = function (that) {
+    fluid.uploader.errorPanel.finalInit = function (that) {
         that.sections = [that.fileSizeErrorSection, that.numFilesErrorSection];
         that.locate("header").text(that.options.strings.headerText);
         that.container.hide();
     };
 
-    fluid.demands("fluid.uploader.errorsView", "fluid.uploader.multiFileUploader", {
-        container: "{multiFileUploader}.options.selectors.errorsPanel", // TODO: Why can't I bind to {multiFileUploader}.dom.errors?
+    fluid.demands("fluid.uploader.errorPanel", "fluid.uploader.multiFileUploader", {
+        container: "{multiFileUploader}.dom.errorsPanel",
         options: {            
             listeners: {
-                "{multiFileUploader}.events.afterFileDialog": "{errorsView}.refreshView"
+                "{multiFileUploader}.events.afterFileDialog": "{errorPanel}.refreshView"
             }
         }
     });
     
-    fluid.defaults("fluid.uploader.errorsView.section", {
+    fluid.defaults("fluid.uploader.errorPanel.section", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        preInitFunction: "fluid.uploader.errorsView.section.preInit",
-        finalInitFunction: "fluid.uploader.errorsView.section.finalInit",
+        preInitFunction: "fluid.uploader.errorPanel.section.preInit",
+        finalInitFunction: "fluid.uploader.errorPanel.section.finalInit",
         
         model: {
             errorCode: undefined,
@@ -138,7 +138,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.uploader.errorsView.section.preInit = function (that) {
+    fluid.uploader.errorPanel.section.preInit = function (that) {
         that.toggleDetails = function () {
             var detailsAction = that.model.showingDetails ? that.hideDetails : that.showDetails;
             detailsAction();
@@ -170,8 +170,8 @@ var fluid_1_4 = fluid_1_4 || {};
         };
         
         that.refreshView = function () {
-            fluid.uploader.errorsView.section.renderHeader(that);
-            fluid.uploader.errorsView.section.renderErrorDetails(that);
+            fluid.uploader.errorPanel.section.renderHeader(that);
+            fluid.uploader.errorPanel.section.renderErrorDetails(that);
             that.hideDetails();
             
             if (that.model.files.length <= 0) {
@@ -182,7 +182,7 @@ var fluid_1_4 = fluid_1_4 || {};
         };
     };
     
-    fluid.uploader.errorsView.section.finalInit = function (that) {        
+    fluid.uploader.errorPanel.section.finalInit = function (that) {        
         // Bind delete button
         that.locate("deleteErrorButton").click(that.clear);
 
@@ -192,7 +192,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.refreshView();
     };
     
-    fluid.uploader.errorsView.section.renderHeader = function (that) {
+    fluid.uploader.errorPanel.section.renderHeader = function (that) {
         var errorTitle = fluid.stringTemplate(that.options.strings.header, {
             numFiles: that.model.files.length
         });
@@ -200,21 +200,21 @@ var fluid_1_4 = fluid_1_4 || {};
         that.locate("errorTitle").text(errorTitle);         
     };
     
-    fluid.uploader.errorsView.section.renderErrorDetails = function (that) {
+    fluid.uploader.errorPanel.section.renderErrorDetails = function (that) {
         var files = that.model.files;
         var filesList = files.length > 0 ? files.join(that.options.strings.fileListDelimiter) : "";
         that.locate("erroredFiles").text(filesList);
     };
     
-    fluid.demands("fluid.uploader.errorsView.section", [
-        "fluid.uploader.errorsView", 
+    fluid.demands("fluid.uploader.errorPanel.section", [
+        "fluid.uploader.errorPanel", 
         "fluid.uploader.multiFileUploader"
     ], {
         options: {
             listeners: {                
                 "{multiFileUploader}.events.onQueueError": "{section}.addFile",
                 "{multiFileUploader}.events.onFilesSelected": "{section}.clear",
-                "{section}.events.afterErrorsCleared": "{errorsView}.refreshView"
+                "{section}.events.afterErrorsCleared": "{errorPanel}.refreshView"
             }
         }
     });
