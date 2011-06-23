@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr" id="html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Uploader errorPanel Tests</title>
+    
+    <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+    
+    <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/FluidDocument.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
+    <script type="text/javascript" src="../../../../components/uploader/js/Uploader.js"></script>
+    <script type="text/javascript" src="../../../../components/uploader/js/ErrorPanel.js"></script>
+    <script type="text/javascript" src="../js/ErrorPanelTests.js"></script>
+</head>
+
+<body id="body">
+    <h1 id="qunit-header">Uploader errorPanel Tests</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <div id="main">       
+        <div class="flc-uploader-errorsPanel fl-uploader-errorsPanel">
+             <div class="fl-uploader-errorsPanel-header"><span class="flc-uploader-errorPanel-header">Warnings:</span></div>
+
+             <div class="flc-uploader-errorPanel-section-fileSize"></div>
+             <div class="flc-uploader-errorPanel-section-numFiles"></div>
+             
+             <div class="flc-uploader-errorPanel-section-tmplt fl-uploader-hidden-templates">
+                 <div class="flc-uploader-errorPanel-section-title fl-uploader-errorPanel-section-title">
+                     x files were too y and were not added to the queue.
+                 </div>
+                 
+                 <div class="flc-uploader-errorPanel-section-details fl-uploader-errorPanel-section-details">
+                     <p>The following files were not added:</p>
+                     <p class="flc-uploader-errorPanel-section-files">file_1, file_2, file_3, file_4, file_5 </p>
+                 </div>
+                 
+                 <button type="button" class="flc-uploader-errorPanel-section-toggleDetails fl-uploader-errorPanel-section-toggleDetails">Hide this list</button>
+                 <button type="button" class="flc-uploader-errorPanel-section-removeButton fl-uploader-errorPanel-section-removeButton">
+                     <span class="flc-uploader-erroredButton-text fl-uploader-hidden">Remove error</span>
+                 </button>
+             </div>
+         </div>
+         
+         <!-- Rendered section test markup.-->
+         <div class="flc-uploader-errorPanel-section">
+             <div class="flc-uploader-errorPanel-section-title fl-uploader-errorPanel-section-title">
+                 x files were too y and were not added to the queue.
+             </div>
+             
+             <div class="flc-uploader-errorPanel-section-details fl-uploader-errorPanel-section-details">
+                 <p>The following files were not added:</p>
+                 <p class="flc-uploader-errorPanel-section-files">file_1, file_2, file_3, file_4, file_5 </p>
+             </div>
+             
+             <button type="button" class="flc-uploader-errorPanel-section-toggleDetails fl-uploader-errorPanel-section-toggleDetails">Hide this list</button>
+             <button type="button" class="flc-uploader-errorPanel-section-removeButton fl-uploader-errorPanel-section-removeButton">
+                 <span class="flc-uploader-erroredButton-text fl-uploader-hidden">Remove error</span>
+             </button>
+         </div>
+    </div>
+</body>
+</html>
