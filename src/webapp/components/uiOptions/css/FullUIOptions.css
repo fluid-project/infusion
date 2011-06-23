@@ -1,74 +1,71 @@
-/* UI Option styles for full page w/ or w/o preview */
+/* UI Option styles for full page layouts both with and without preview */
 
-
-/* Section headers */
-
+/* Control section headers */
 .fl-uiOptions h2 {
-	font-size: 1.29em;
-	font-weight: bold;
-	clear: both;
-	color: #444444;
-	padding: 14px 0px 5px 25px;
+    font-size: 1.29em;
+    font-weight: bold;
+    clear: both;
+    color: #444444;
+    padding: 14px 0px 5px 25px;
 }
 
-.fl-uiOptions h2 img {
-	margin-bottom: -3px;
-	padding-right: 5px;
-}
-
-/* Save & apply, reset, cancel buttons */
-
+/* Save, reset, cancel buttons */
 .fl-uiOptions .fl-uiOptions-buttons {
-	margin-top: 1em;
-	float: left;
-	width: 100%;
+    margin-top: 1em;
+    float: left;
+    width: 100%;
 }
 
 .fl-uiOptions .fl-uiOptions-buttons input {
-	text-transform: uppercase;
-	text-decoration: underline;
-	font-weight: bold;
-  	border: 2px solid #cecece;
-	font-size: 1em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    font-weight: bold;
+    border: 2px solid #cecece;
+    font-size: 1em;
     padding: 5px;
-	height: 2.5em;
+    height: 2.5em;
     margin-right: 3px;
     background-color: #F0F0F0;
 }
 
 .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save {
-	padding-left: 20px;
-	/* background: -moz-linear-gradient(bottom, #e0e0e0, #fff;) */
-	background-image: url("../images/default/uio_icon_save_default_13x13.png");
-	background-repeat: no-repeat;
-	background-position: 0.2em 0.5em;
+    padding-left: 20px;
+    /* background: -moz-linear-gradient(bottom, #e0e0e0, #fff;) */
+    background-image: url("../images/default/uio_icon_save_default_13x13.png");
+    background-repeat: no-repeat;
+    background-position: 0.2em 0.5em;
 }
 
 .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel {
-	padding-left: 20px;
-	background-image: url("../images/default/uio_icon_cancel_default_13x13.png");
-	background-repeat: no-repeat;
-	background-position: 0.2em 0.5em;
+    padding-left: 20px;
+    background-image: url("../images/default/uio_icon_cancel_default_13x13.png");
+    background-repeat: no-repeat;
+    background-position: 0.2em 0.5em;
 }
 
-/* header icons */
-.fl-uiOptions .fl-uiOptions-text-icon {
-	background-image: url("../images/default/uio_icon_textanddisplay_default_18x18.png");
-	background-repeat: no-repeat;
-	background-position: 0px 0.7em;
-}
-.fl-uiOptions .fl-uiOptions-layout-icon {
-	background-image: url("../images/default/uio_icon_layoutandnavigation_default_18x18.png");
-	background-repeat: no-repeat;
-	background-position: 0px 0.7em;	
-}
-.fl-uiOptions .fl-uiOptions-links-icon {
-	background-image: url("../images/default/uio_icon_linksandbuttons_default_18x18.png");
-	background-repeat: no-repeat;
-	background-position: 0px 0.7em;	
+/* Section header icons */
+.fl-uiOptions h2 img {
+    margin-bottom: -3px;
+    padding-right: 5px;
 }
 
-/* THEME DATA */
+.fl-uiOptions h2.fl-uiOptions-text-icon {
+    background-image: url("../images/default/uio_icon_textanddisplay_default_18x18.png");
+    background-repeat: no-repeat;
+    background-position: 0px 0.7em;
+}
+.fl-uiOptions h2.fl-uiOptions-layout-icon {
+    background-image: url("../images/default/uio_icon_layoutandnavigation_default_18x18.png");
+    background-repeat: no-repeat;
+    background-position: 0px 0.7em; 
+}
+.fl-uiOptions h2.fl-uiOptions-links-icon {
+    background-image: url("../images/default/uio_icon_linksandbuttons_default_18x18.png");
+    background-repeat: no-repeat;
+    background-position: 0px 0.7em; 
+}
+
+/* Theming */
 .fl-theme-hc .fl-uiOptions .fl-uiOptions-text-icon { background-image: url("../images/hc/uio_icon_textanddisplay_hc_18x18.png"); }
 .fl-theme-hc .fl-uiOptions .fl-uiOptions-layout-icon { background-image: url("../images/hc/uio_icon_layoutandnavigation_hc_18x18.png"); }
 .fl-theme-hc .fl-uiOptions .fl-uiOptions-links-icon { background-image: url("../images/hc/uio_icon_linksandbuttons_hc_18x18.png"); }
@@ -87,5 +84,5 @@
 
 /* Linearization tweaks */
 .fl-layout-linear .fl-uiOptions .fl-uiOptions-text-icon, .fl-layout-linear .fl-uiOptions .fl-uiOptions-layout-icon, .fl-layout-linear .fl-uiOptions .fl-uiOptions-links-icon {
-	padding-left: 20px !important;
+    padding-left: 20px !important;
 }

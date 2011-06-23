@@ -1,52 +1,53 @@
-/* UI Option styles for full page w/o preview */
+/* UI Option styles for Full page without preview */
 
 body {
-	max-width: 960px;
-	min-width: 900px;
+    max-width: 960px;
+    min-width: 900px;
 }
 
-/* category separator */
+/* Category separator */
 .fl-uiOptions-fullNoPreview .fl-uiOptions-category {
-	border-top: 2px solid #dddddd;
-	clear:both;
+    border-top: 2px solid #dddddd;
+    clear:both;
 }
 
-/* header images */
+/* Section header icons */
 .fl-uiOptions-fullNoPreview .fl-uiOptions-category h2 img {
-	padding-top: 10px;
-	margin-bottom: -4px;
+    padding-top: 10px;
+    margin-bottom: -4px;
 }
 
-/* controls layout */
+/* Save, reset, cancel buttons */
+.fl-uiOptions-fullNoPreview .fl-uiOptions-buttons {
+    text-align: right;
+}
+
+/* Controls */
 .fl-uiOptions-fullNoPreview .fl-col-flex {
-	padding-top: 15px;
+    padding-top: 15px;
 }
 
 .fl-uiOptions-fullNoPreview ul {
-	float:left;
+    float:left;
 }
 
 .fl-uiOptions-fullNoPreview ul li {
-	clear: left;
+    clear: left;
 }
 
-/* text controls */
+.fl-uiOptions-fullNoPreview label, 
+.fl-uiOptions-fullNoPreview .fl-inputs  {
+    margin-bottom: 15px;        /* adds space between label, inputs when browser window is narrow */
+}
+
+/* Text controls */
 .fl-uiOptions-fullNoPreview .fl-uiOptions-text ul li {
-	clear: left;
-	height: 3.5em;
+    clear: left;
+    height: 3.5em;
 }
 
-.fl-uiOptions-fullNoPreview label, .fl-uiOptions-fullNoPreview .fl-inputs  {
-	margin-bottom: 15px;		/* adds space between label, inputs when browser window is narrow */
+/* Layout and link controls */
+.fl-uiOptions-fullNoPreview .fl-uiOptions-layout li, 
+.fl-uiOptions-fullNoPreview .fl-uiOptions-links li {
+    height: 4em;
 }
-
-/* layout and link controls */
-.fl-uiOptions-fullNoPreview .fl-uiOptions-layout li, .fl-uiOptions-fullNoPreview .fl-uiOptions-links li {
-	height: 4em;
-}
-
-/* save, reset, cancel buttons */
-.fl-uiOptions-fullNoPreview .fl-uiOptions-buttons {
-	text-align: right;
-}
-
