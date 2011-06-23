@@ -61,7 +61,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uiOptionsEventBinder",
                 options: {
                     pageEnhancer: "{fatPanelUIOptionsImp}.pageEnhancer",
-                    uiOptions: "{fatPanelUIOptionsImp}.uiOptionsBridge",
+                    uiOptions: "{fatPanelUIOptionsImp}.uiOptionsBridge.uiOptions",
                     slidingPanel: "{fatPanelUIOptionsImp}.slidingPanel",
                     markupRenderer: "{fatPanelUIOptionsImp}.markupRenderer"
                 },
@@ -73,28 +73,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 createOnEvent: "afterRender",
                 priority: "first",
                 options: {
-                    markupRenderer: "{fatPanelUIOptionsImp}.markupRenderer",
-                    components: {
-                        uiOptions: {
-                            type: "fluid.uiOptions",
-                            options: {
-                                components: {
-                                    pageEnhancer: {
-                                        type: "fluid.pageEnhancer",
-                                        priority: "first"
-                                    },
-                                    preview: {
-                                        type: "fluid.emptySubcomponent"
-                                    },
-                                    tabs: {
-                                        type: "fluid.tabs",
-                                        container: "body",      
-                                        createOnEvent: "onReady"               
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    markupRenderer: "{fatPanelUIOptionsImp}.markupRenderer"
                 }
             }
         },
@@ -164,29 +143,47 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.makeVisible = function () {
             that.iframe.removeClass(styles.offScreen);
-        }
+        };
     };
     
     /*************************
      * fluid.uiOptionsBridge *
      *************************/
     
-    fluid.uiOptionsBridge = function (options) {
-        var that = fluid.initLittleComponent("fluid.uiOptionsBridge", options);
-        
+    fluid.defaults("fluid.uiOptionsBridge", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        finalInitFunction: "fluid.uiOptionsBridge.finalInit",
+        uiOptions: {
+            type: "fluid.uiOptions",
+            options: {
+                components: {
+                    pageEnhancer: {
+                        type: "fluid.pageEnhancer",
+                        priority: "first"
+                    },
+                    preview: {
+                        type: "fluid.emptySubcomponent"
+                    },
+                    tabs: {
+                        type: "fluid.tabs",
+                        container: "body",      
+                        createOnEvent: "onReady"               
+                    }
+                }
+            }
+        },        
+        iframe: null
+    });
+    
+    fluid.uiOptionsBridge.finalInit = function (that) {
         var markupRenderer = that.options.markupRenderer;
         var iframe = markupRenderer.iframe;
         var iframeDoc = iframe.contents();
         var iframeWin = iframe[0].contentWindow;
         
-        var uiOptions = fluid.get(iframeWin, that.options.components.uiOptions.type);
-        return uiOptions($("body", iframeDoc), that.options.components.uiOptions.options);
+        //var uiOptions = fluid.get(iframeWin, that.options.components.uiOptions.type);
+        that.uiOptions = fluid.invokeGlobalFunction(that.options.uiOptions.type, [$("body", iframeDoc), that.options.uiOptions.options], iframeWin);            
     };
-    
-    fluid.defaults("fluid.uiOptionsBridge", {
-        gradeNames: ["fluid.littleComponent"],
-        iframe: null
-    });
     
     /************************
      * Fat Panel UI Options *
