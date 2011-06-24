@@ -19,7 +19,6 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) { 
     
-    fluid.setLogging(true);   
     /****************************
      * Fat Panel UI Options Imp *
      ****************************/ 
