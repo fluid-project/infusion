@@ -24,7 +24,7 @@
         <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-yellowBlack/yellowBlack.css" />
 
         <link rel="stylesheet" type="text/css" href="../../../../components/uiOptions/css/UIOptions.css" />
-        <link rel="stylesheet" type="text/css" href="../../../../components/uiOptions/css/FatPanelUIOptions.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../components/uiOptions/css/FatPanelSlidingPanel.css" />
         <link rel="stylesheet" type="text/css" href="../../../../components/uiOptions/css/Slider.css" />
 
         <link rel="stylesheet" type="text/css" href="../css/uiOptions.css" />
@@ -67,7 +67,7 @@
     <body>
 
 		<div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel">        
-			<div id="myUIOptions" class="flc-slidingPanel-panel"></div>     
+			<div id="myUIOptions" class="flc-slidingPanel-panel flc-uiOptions-iframe"></div>     
 			
 			<div class="fl-panelBar">
 				<button class="flc-slidingPanel-toggleButton fl-toggleButton">Show/Hide</button>
@@ -88,6 +88,14 @@
                         prefix: "../../../../components/uiOptions/html/"
                     }
                 });
+                
+                fluid.demands("fluid.renderIframe", ["fluid.uiOptionsDemo"], {
+                    options: {
+                        markupProps: {
+                            src: "../../../../components/uiOptions/html/uiOptionsIframe.html"
+                        }
+                    }
+                });
             
                 // Supply the table of contents' template URL
                 fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
@@ -96,7 +104,7 @@
                     }
                 });
 
-            	fluid.pageEnhancer();
+                // fluid.pageEnhancer();
                 fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");  
             });
         </script>
