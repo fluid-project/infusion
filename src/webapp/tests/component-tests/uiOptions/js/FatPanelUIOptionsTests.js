@@ -25,12 +25,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var 
         });
         
-//        fluid.uiOptionsEventBinder.finalInit
-//        fluid.renderIframe.finalInit
-//        fluid.uiOptionsBridge.finalInit
-//        fluid.fatPanelUIOptions.moveOptions
-//        fluid.fatPanelUIOptions.mapOptions
-        
         /***************************************
          * FatPanelUIOptions integration tests *
          ***************************************/
