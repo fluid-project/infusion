@@ -82,7 +82,7 @@
 
 /* Widget core */
 .fl-theme-hci .fl-widget {background-color:#ffffff; border:1px solid #000000;}
-.fl-theme-hci .fl-widget h2 {color:#ffffff0; background-color:#00000;}
+.fl-theme-hci .fl-widget h2 {color:#ffffff0; background-color:#00000;display:inline;}
 .fl-theme-hci .fl-widget a {color:#ffffff;}
 .fl-theme-hci .fl-widget .fl-icon-more  {background-image:url('../images/themes/hci/icon-widget-More.png'); margin-left:0px;}
 .fl-theme-hci .fl-widget .fl-icon-close {background-image:url('../images/themes/hci/icon-widget-Close.png'); margin-right:0px;}

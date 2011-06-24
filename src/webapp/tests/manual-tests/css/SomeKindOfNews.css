@@ -68,6 +68,8 @@
 }
 .skon-theme-basic .fl-widget .fl-icon-more  {background-image:url('../images/themes/skon/icon-widget-More.png'); margin-left:0px;}
 .skon-theme-basic .fl-widget .fl-icon-close {background-image:url('../images/themes/skon/icon-widget-Close.png'); margin-right:0px;}
+.skon-theme-basic .fl-grabbable .fl-widget-titlebar {background-image:url('../images/themes/skon/icon-widget-gripper.png');}
+.skon-theme-basic .fl-widget h2 {display:inline;}
 
 /*
 .skon-theme-basic .fl-widget-options {
