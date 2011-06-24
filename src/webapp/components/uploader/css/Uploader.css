@@ -10,27 +10,37 @@
 /* Header table */
 table.fl-uploader-header {
     width: 434px;
-    margin-bottom: 0px;
-    border-bottom: 1px solid #999;      
-}
-
-.fl-uploader-header tr { 
-    width: 100%;
-    color: #666;    
+    margin-bottom: 0px; /* override FSS 1em margin on bottom */
+    border-bottom: 1px solid #999;
+    color: #333;    
+    font-size: 0.9em;
+    font-weight: bold;
 }
 
 .fl-uploader-header th { 
     text-align: left;
-    font-size: 0.94em;
-    font-weight: normal;
+    border: none;
+}
+
+.fl-uploader-header th.fl-uploader-file-name {
+    width:23cem;
+}
+
+.fl-uploader-header .fl-uploader-file-size {
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* Initial instructions */
+.fl-uploader-browse-instructions {
+    background-color: #F0F9FF;
+    color: #666;
+    text-align: center;
     padding: 6px;
 }
 
-/*
- * Scrollable file queue table
- */
- 
-.fl-scrollable-scroller {
+/* Scrollable file queue table */
+ .fl-scrollable-scroller {
     display: block;
     position: relative;  
     overflow: auto;
@@ -45,16 +55,11 @@ table.fl-uploader-header {
     overflow: hidden;
 }
 
-/* File queue table general */
+/* File queue table */
 table.fl-uploader-queue {
     margin: 0;
-    color: #333;
 }
 
-.fl-uploader-queue td, .fl-uploader-header th {
-    border: none;
-    margin: 0px;
-}
 
 .fl-uploader-queue tr.fl-uploader-dim {
     color: #666;
@@ -64,10 +69,8 @@ table.fl-uploader-queue {
     display: none;
 }
 
-/* Table body */
 .fl-uploader-queue tbody {
     z-index: 6;
-    border-right: 1px solid #999;    
     display:block;
     font-size: 0.9em;
 }
@@ -76,30 +79,26 @@ table.fl-uploader-queue {
     background-color: #FFF9DC;
 }
 
-/* Table columns */
-.fl-uploader-queue td { 
+.fl-uploader-queue td {
+    border: none;
+    border-bottom: 1px solid #BBCFDC;
+    margin: 0px;
     text-align: left;
     padding: 3px 6px;
-    border-bottom: 1px solid #BBCFDC;
 }
 
-/* file name */
 .fl-uploader-queue td.fl-uploader-file-name {
-    width: 29em;
+    width: 27em;
     overflow: hidden;
-    font-weight:bold;    
-}
-.fl-uploader-header th.fl-uploader-file-name {
-    width:26.5em;
+    font-weight:normal;   
 }
 
-/* file size */
-.fl-uploader-queue .fl-uploader-file-size, .fl-uploader-header .fl-uploader-file-size {
+.fl-uploader-queue .fl-uploader-file-size {
     text-align: right;
     white-space: nowrap;
 }
 
-/* action */
+/* file queue action column */
 .fl-uploader-queue .fl-uploader-file-actions, .fl-uploader-header .fl-uploader-file-actions {
     padding-right:15px;
     white-space: nowrap;
@@ -111,10 +110,6 @@ table.fl-uploader-queue {
     cursor: auto;
 }
 
-/* 
- * Action buttons: remove or uploaded 
- */
- 
 /* general action buttons */
 .fl-uploader-file-actions button {
     border: 1px solid transparent;
@@ -149,29 +144,17 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
     color: #5E7A5E;
 }
 
-/*
- * Instructions 
- */
-.fl-uploader-browse-instructions {
-    background-color: #F0F9FF;
-    color: #666;
-    text-align: center;
-    border-left: 1px solid #999;
-    border-right: 1px solid #999;
-    padding: 6px;
-}
-
 /* 
  * Status footer 
  */
 .fl-uploader-queue-footer {
     z-index:6;
     position: relative;
-    background-color: #E6E6E6;
-    border: 1px solid #999;    
+    background-color: #F7F7F7;
+    border-top: 1px solid #999;    
     color:#666666;
     font-size:1.07em;
-    font-weight:bolder;
+    font-weight:bold;
     padding:8px 6px;
     vertical-align:middle;  
 }
@@ -181,11 +164,12 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
     background-attachment: scroll;
     background-repeat: no-repeat;
     background-position: 6px 6px;
-    padding: 5px 5px 0px 22px;
+    padding: 5px 5px 0px 26px;
     border: none;
     white-space: nowrap;
-    color: #427ABE;
-    font-weight: normal;
+    color: #005ebc;
+    font-weight: bold;
+    text-decoration:underline;
 }
 
 .fl-uploader-queue-footer .fl-uploader-total-progress-text {
@@ -276,12 +260,10 @@ html>body .fl-uploader span.fl-uploader-browse {
 .fl-uploader-buttons button {
     border-width: 1px;
     border-style: solid;
-    font-weight: bolder;
-    font-size: 1.06em;
+    font-weight: bold;
     color: #FFF;
     height: 32px;
     padding:0px;
-    margin-right: 1em;
     outline: none;
     cursor: pointer;
     width: 8.4em;
@@ -342,20 +324,7 @@ html>body .fl-uploader span.fl-uploader-browse {
     border-right: 1px solid #9FCE7F;
 }
 
-/* overall progress */
-.fl-uploader-total-progress-okay {
-    background-image: url('../images/gradient-total-green.png');
-    border-right: 1px solid #9FCE7F;
-    background-color: #BDBFC1;
-}
-
-.fl-uploader-total-progress-errored {
-    background-image: url('../images/gradient-total-yellow.png');
-    border-right: 1px solid #E8C81C;
-    background-color: #F6ECA0;
-}
-
-/* ERRORS */
+/* Upload Queue errors */
 .fl-uploader-queue .fl-uploader-file-state-error th {
     border-left: 4px solid #F5E392;
     background-color: #FCFBE6;
@@ -377,25 +346,28 @@ html>body .fl-uploader span.fl-uploader-browse {
     padding-left: 32px;
 }
 
+/* Error feedback messages */
 .fl-uploader-errorsPanel {
     float: left;
-    background-color: #E6E6E6;
     width: 100%;
     margin-top: 0.5em;
+    border-top: 1px solid #aaa;
+    font-size: 0.9em;
+    color: #3da6e5;    
 }
 
 .fl-uploader-errorsPanel-header {
     background-image: url("../images/error.png");
     background-position: 1px center;
     background-repeat: no-repeat;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding: 6px 0 6px 0;
+    margin-bottom: 10px;
 }
 
 .fl-uploader-errorsPanel-header span {
     padding-left: 25px;
     font-size: 1.1em;
-    font-weight: bolder;
+    font-weight: bold;
     color: #000000;
 }
 
@@ -404,47 +376,51 @@ html>body .fl-uploader span.fl-uploader-browse {
     width: 90%;
 }
 
+.fl-uploader-errorPanel-section-title {
+    width:90%; /* set a width so that the text wraps properly in the container */
+    color: #3f3f3f;
+}
+
+/* Remove error message button */
 .fl-uploader-errorPanel-section-removeButton {
     background-image: url("../images/grey-4d4d4d-x-button.png");
     background-position: center;
     background-repeat: no-repeat;
-    background-color: #e6e6e6;
     border-width: 0px;
     width: 16px;
     height: 16px;
     padding: 0px;
     margin-right: 9px;
-    float: right;
 }
 
 .fl-uploader-errorPanel-section-removeButton:hover {
     background-image: url("../images/grey-999999-x-button.png");
 }
 
+/* Show Hide Error Details */
 .fl-uploader-errorPanel-section-toggleDetails {
-    background-color: #e6e6e6;
     border: none;
     padding: 0em;
-    color: #3da6e5;
-    font-weight: normal;
     text-decoration: underline;
     cursor: pointer;
-    height: 2em;
-    margin: 0em;
+    height: 1em;
+    margin: 0 0 1.5em 0;
+    position:relative;
+    left: -3px;
+    color: #008be0;
 }
 
-.fl-uploader-errorPanel-section-toggleDetails:hover {
-    background-color: #e6e6e6;
-}
-
-.fl-uploader-errorPanel-section-title {
-    font-size: 0.9em;
-}
+/* Error Details */
 
 .fl-uploader-errorPanel-section-details {
-    font-size: 0.9em;
     color: #666;
     font-weight: normal;
+    clear:both;
+}
+
+.fl-uploader-errorPanel-section-details  p{
+    margin-bottom:0;
+    margin-top:0.5em;
 }
 
 /*
