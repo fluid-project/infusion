@@ -1058,6 +1058,46 @@ fluid.registerNamespace("fluid.tests");
         ];
         jqUnit.assertDeepEq("Expected initialisation sequence", testComp.initFunctionRecord, expected); 
     });
+    
+    fluid.defaults("fluid.tests.createOnEvent", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            afterRender: null  
+        },
+        components: {
+            markupRenderer: {
+                type: "fluid.tests.createOnEvent.iframe",
+                options: {
+                    events: {
+                        afterRender: "{createOnEvent}.events.afterRender"  
+                    }
+                }
+            },
+            uiOptionsBridge: {
+                type: "fluid.tests.createOnEvent.uiOptionsBridge",
+                createOnEvent: "afterRender"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.createOnEvent.iframe", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        finalInitFunction: "fluid.tests.createOnEvent.iframe.finalInit"  
+    });
+    
+    fluid.tests.createOnEvent.iframe.finalInit = function(that) {
+        that.events.afterRender.fire();
+    };
+    
+    fluid.defaults("fluid.tests.createOnEvent.uiOptionsBridge", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluidIoCTests.test("FLUID-4290 test: createOnEvent sequence corruption", function() {
+        jqUnit.expect(1);
+        var testComp = fluid.tests.createOnEvent();
+        jqUnit.assert("Component successfully constructed");
+    });
 
     fluid.tests.guidedChildInit = function(that) {
        // awful, illegal, side-effect-laden init function :P
