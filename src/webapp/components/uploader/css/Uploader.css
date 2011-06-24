@@ -17,13 +17,19 @@ table.fl-uploader-header {
     font-weight: bold;
 }
 
+.fl-uploader-header tr { 
+    width: 100%;
+    color: #666;    
+}
+
 .fl-uploader-header th { 
     text-align: left;
     border: none;
 }
 
+
 .fl-uploader-header th.fl-uploader-file-name {
-    width:23cem;
+    width:23em;
 }
 
 .fl-uploader-header .fl-uploader-file-size {
@@ -163,8 +169,8 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
     background-image: url(../images/add.png);
     background-attachment: scroll;
     background-repeat: no-repeat;
-    background-position: 6px 6px;
-    padding: 5px 5px 0px 26px;
+    background-position: 4px 6px;
+    padding: 5px 5px 0px 24px;
     border: none;
     white-space: nowrap;
     color: #005ebc;
