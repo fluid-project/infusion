@@ -1,7 +1,5 @@
 /*
-Copyright 2008-2009 University of Cambridge
-Copyright 2008-2009 University of Toronto
-Copyright 2010-2011 OCAD University
+Copyright 2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -37,9 +35,6 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{fatPanelUIOptionsImp}.container",
                 createOnEvent: "afterRender"
             },
-            preview: {
-                type: "fluid.uiOptions.livePreview"
-            },
             markupRenderer: {
                 type: "fluid.renderIframe",
                 container: "{fatPanelUIOptionsImp}.dom.iframe",
@@ -74,7 +69,9 @@ var fluid_1_4 = fluid_1_4 || {};
                 createOnEvent: "afterRender",
                 priority: "first",
                 options: {
-                    markupRenderer: "{fatPanelUIOptionsImp}.markupRenderer"
+                    components: { 
+                        markupRenderer: "{fatPanelUIOptionsImp}.markupRenderer"
+                    }
                 }
             }
         },
@@ -185,8 +182,7 @@ var fluid_1_4 = fluid_1_4 || {};
     });
     
     fluid.uiOptionsBridge.finalInit = function (that) {
-        var markupRenderer = that.options.markupRenderer;
-        var iframe = markupRenderer.iframe;
+        var iframe = that.markupRenderer.iframe;
         var iframeDoc = iframe.contents();
         var iframeWin = iframe[0].contentWindow;
         
@@ -194,51 +190,57 @@ var fluid_1_4 = fluid_1_4 || {};
                 [$("body", iframeDoc), that.options.uiOptions.options], iframeWin);            
     };
     
-    var moveOptions = function (source, destination, defaultLocation, map) {
-        fluid.each(source, function (value, key) {
-            var location = map && map[key] || defaultLocation || "";
-            fluid.set(destination, location+"."+key, value);
-        });
-    };
-    
     /************************
      * Fat Panel UI Options *
      ************************/
     
-    // this should be replaced with proper model transformation code
-    var mapOptions = function (options) {
-        var newOpts = {};
-        
-        var fatPanelComponentMapping = {
-            slidingPanel: "components",
-            preview: "components",
-            pageEnhancer: "components",
-            markupRenderer: "components",
-            eventBinder: "components"
-        };
-        var selectorMapping = {
-            iframe: "selectors"
-        }
-        
-        var defaultLocation = "components.uiOptionsBridge.options.components.uiOptions.options";
-        fluid.each(options, function(key, value) {
-            if(key === "components") {
-                moveOptions(options, newOpts, defaultLocation, fatPanelComponentMapping);
-            } else if (key === "selectors") {
-                moveOptions(options, newOpts, defaultLocation, selectorMapping);
-            } else {
-                moveOptions(options, newOpts, defaultLocation);
-            }
-        });
-            
-        return newOpts;
-    };
-    
+    fluid.registerNamespace("fluid.fatPanelUIOptions");
+
     fluid.fatPanelUIOptions = function (container, options) {
-        return fluid.fatPanelUIOptionsImp(container, mapOptions(options));
+        return fluid.fatPanelUIOptionsImp(container, 
+                fluid.fatPanelUIOptions.mapOptions(options));
     };  
     
     fluid.defaults("fluid.fatPanelUIOptions", {
         gradeNames: ["fluid.viewComponent"]
     });     
+    
+    fluid.fatPanelUIOptions.moveOptions = function (source, destination, defaultLocation, map) {
+        fluid.each(source, function (value, key) {
+            var location = (map && map[key]) || defaultLocation || "";
+            fluid.set(destination, location + "." + key, value);
+        });
+    };    
+    
+    // TODO: Maybe we need a framework function for model transformation to
+    //       replace the code below? 
+    fluid.fatPanelUIOptions.mapOptions = function (options) {
+        var newOpts = {};
+        
+        var fatPanelComponentMapping = {
+            slidingPanel: "components",
+            pageEnhancer: "components",
+            preview: "components",
+            markupRenderer: "components",
+            eventBinder: "components"
+        };
+        var selectorMapping = {
+            iframe: "selectors"
+        };
+        
+        var defaultLocation = "components.uiOptionsBridge.options.components.uiOptions.options";
+        fluid.each (options, function(key, value) {
+            if (key === "components") {
+                fluid.fatPanelUIOptions.moveOptions(options, newOpts, 
+                        defaultLocation, fatPanelComponentMapping);
+            } else if (key === "selectors") {
+                fluid.fatPanelUIOptions.moveOptions(options, newOpts, 
+                        defaultLocation, selectorMapping);
+            } else {
+                fluid.fatPanelUIOptions.moveOptions(options, newOpts, defaultLocation);
+            }
+        });
+            
+        return newOpts;
+    };
 })(jQuery, fluid_1_4);
