@@ -98,9 +98,17 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uiOptionsEventBinder", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         finalInitFunction: "fluid.uiOptionsEventBinder.finalInit",
-        pageEnhancer: null,
-        uiOptions: null,
-        slidingPanel: null
+        components: {
+            pageEnhancer: {
+                type: "fluid.pageEnhancer"
+            },
+            uiOptions: {
+                type: "fluid.uiOptions"
+            },
+            slidingPanel: {
+                type: "fluid.slidingPanel"
+            }
+        }
     });
     
     fluid.uiOptionsEventBinder.finalInit = function (that) {
