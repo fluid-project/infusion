@@ -1111,13 +1111,14 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.defaults("fluid.resolveEnvironment", {
         ELstyle:     "${}",
+        seenIds:     {},
         bareContextRefs: true
     });
     
     fluid.resolveEnvironment = function(obj, options) {
-        options = fluid.merge(null, fluid.defaults("fluid.resolveEnvironment"), options);
-        options.seenIds = {};
-        
+        // Don't create a component here since this function is itself used in the 
+        // component expansion pathway - avoid all expansion in any case to head off FLUID-4301
+        var options = $.extend(true, {}, fluid.rawDefaults("fluid.resolveEnvironment"), options);
         return resolveEnvironmentImpl(obj, options);
     };
 
