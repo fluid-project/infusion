@@ -194,46 +194,42 @@ var fluid_1_4 = fluid_1_4 || {};
                 [$("body", iframeDoc), that.options.uiOptions.options], iframeWin);            
     };
     
+    var moveOptions = function (source, destination, defaultLocation, map) {
+        fluid.each(source, function (value, key) {
+            var location = map && map[key] || defaultLocation || "";
+            fluid.set(destination, location+"."+key, value);
+        });
+    };
+    
     /************************
      * Fat Panel UI Options *
      ************************/
     
     // this should be replaced with proper model transformation code
     var mapOptions = function (options) {
-        options = fluid.copy(options);
         var newOpts = {};
-        var iframeSelector = fluid.get(options, "selectors.iframe");
-        var slidingPanel = fluid.get(options, "components.slidingPanel");
-        var pageEnhancer = fluid.get(options, "components.pageEnhancer");
-        var preview = fluid.get(options, "components.preview");
-        var markupRenderer = fluid.get(options, "component.markupRenderer");
         
-        if (iframeSelector) {
-            fluid.set(newOpts, "selectors.iframe", iframeSelector);
-            delete options.selectors.iframe;
+        var fatPanelComponentMapping = {
+            slidingPanel: "components",
+            preview: "components",
+            pageEnhancer: "components",
+            markupRenderer: "components",
+            eventBinder: "components"
+        };
+        var selectorMapping = {
+            iframe: "selectors"
         }
         
-        if (slidingPanel) {
-            fluid.set(newOpts, "components.slidingPanel", slidingPanel);
-            delete options.components.slidingPanel;
-        }
-        
-        if (preview) {
-            fluid.set(newOpts, "components.preview", preview);
-            delete options.components.preview;
-        }
-        
-        if (pageEnhancer) {
-            fluid.set(newOpts, "components.pageEnhancer", pageEnhancer);
-            // don't delete this one, it is needed by both the inner and outer components
-        }
-        
-        if (markupRenderer) {
-            fluid.set(newOpts, "components.markupRenderer", markupRenderer);
-            delete options.components.markupRenderer;
-        }
-        
-        fluid.set(newOpts, "components.uiOptionsBridge.options.components.uiOptions.options", options);
+        var defaultLocation = "components.uiOptionsBridge.options.components.uiOptions.options";
+        fluid.each(options, function(key, value) {
+            if(key === "components") {
+                moveOptions(options, newOpts, defaultLocation, fatPanelComponentMapping);
+            } else if (key === "selectors") {
+                moveOptions(options, newOpts, defaultLocation, selectorMapping);
+            } else {
+                moveOptions(options, newOpts, defaultLocation);
+            }
+        });
             
         return newOpts;
     };
