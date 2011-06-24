@@ -1,92 +1,74 @@
-/* UI Option styles for full page w/ preview */
+/* UI Option styles for full page layout with preview */
 
-/* Section headers */
-
-.fl-uiOptions-fullPreview h2 {
-	border-top: 2px solid #dddddd;
-}
-
-/* Preview Area */
-
-.fl-uiOptions-fullPreview .fl-uiOptions-preview iframe {
-	height: 480px;
-	width: 100%;
-	border: 2px solid #d7d7d7;
-}
-
-.fl-uiOptions-fullPreview .fl-uiOptions-preview h2 {
-	font-weight: lighter;
-	font-size: 1.8em;
-	color: #4D4D4D;
-	padding-top: 18px;
-	padding-bottom: 22px;
+.fl-uiOptions-fullPreview {
+    min-width: 800px;
 }
 
 .fl-uiOptions-fullPreview ul li {
-	clear: left;
-	height: 3.5em;
+    clear: left;
+    height: 3.5em;
 }
 
-
-/* Slider position */
-
-.fl-uiOptions .fl-slider {
-	float:left;
-	margin-right: 10px;
+/* Control section headers */
+.fl-uiOptions-fullPreview h2 {
+    border-top: 2px solid #dddddd;
+    margin-bottom: 20px;
 }
 
-/* Individual options (e.g., text size, simplify layout, emphasize links) */
-
-.fl-uiOptions-option-2col {
-    padding-top: 40px;
+.fl-uiOptions-fullPreview .fl-uiOptions-category {
+    padding-bottom: 20px; 
 }
 
-.fl-uiOptions-option-1col {
-    padding-top: 28px;
+/* Controls */
+.fl-uiOptions-fullPreview ul {
+    margin-left: 0px;
 }
 
-.fl-uiOptions-option-first {
-    padding-top: 8px;
+.fl-uiOptions-fullPreview ul li {
+    list-style: none;
+    width: 100%;
 }
 
-
-/* Text and display section */
-
-.fl-uiOptions label {
-    display: block;
-    float: left;
-	width: 14em;
+.fl-uiOptions-fullPreview .fl-uiOptions-option-description {
+    clear: both;
 }
 
 .fl-uiOptions .fl-inputs {
-	float: left;
-	padding-top:10px;
+    float: left;
 }
 
 .fl-uiOptions input[type="text"] {
-	width: 2em;
+    width: 2em;
 }
 
-
-/* Sections (e.g., Text & Display, Layout & Navigation) */
-
-.fl-uiOptions-category {
-    padding-bottom: 48px; /* separation between categories */
+/* Slider */
+.fl-uiOptions-fullPreview .fl-slider {
+    float:left;
+    margin-right: 10px;
 }
 
-.fl-col-fixed-31em { width: 31em; }
-.fl-col-fixed-38em { width: 38em; }
-.fl-col-fixed-54em { width: 54em; }
-.fl-col-fixed-72em { width: 72em; }
-
-/* Form */
-
-.fl-uiOptions ul {
-	margin-left: 0px;
+/* Text controls */
+.fl-uiOptions-fullPreview label {
+    display: block;
+    float: left;
+    width: 14em;
 }
 
-.fl-uiOptions ul li {
-    list-style: none;
-	overflow: hidden;
-	width: 100%;
+/* Layout and link controls */
+.fl-uiOptions-fullPreview .fl-uiOptions-layout li, .fl-uiOptions-fullPreview .fl-uiOptions-links li {
+    padding-bottom: 10px;
+}
+
+/* Preview Area */
+.fl-uiOptions-fullPreview .fl-uiOptions-preview iframe {
+    height: 480px;
+    width: 100%;
+    border: 2px solid #d7d7d7;
+}
+
+.fl-uiOptions-fullPreview .fl-uiOptions-preview h2 {
+    font-weight: lighter;
+    font-size: 1.8em;
+    color: #4D4D4D;
+    padding: 18px 0px 0px 0px;
 }
