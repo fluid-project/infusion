@@ -34,8 +34,6 @@
 /* Tables */
 .fl-theme-hci th {border:0.1em solid #ffffff; background-color:#ffffff; color:#000000;}
 .fl-theme-hci td {border:0.1em solid #ffffff;}
-.fl-theme-hci .fl-textfield {}
-.fl-theme-hci .fl-textarea {}
 
 /* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
 .fl-theme-hci .fl-inlineEdit-edit {background-color:#ffffff; color:#000000; border: 0.1em solid #000000; padding:0.1em; margin:-0.1em;}
@@ -75,21 +73,15 @@
 .fl-theme-hci .fl-listmenu .fl-activemenu a:hover, 
 .fl-theme-hci .fl-list-menu .fl-activemenu a:hover { background-color: #ffffff; border-bottom-color:#000000; color: #000000;}
 
-/* Helper: Thumbnail Grid */
-.fl-theme-hci .fl-grid {}
-.fl-theme-hci .fl-grid li {}
-.fl-theme-hci .fl-grid .fl-grid-caption {}
-
 /* Helper: buttons */
 .fl-theme-hci .fl-button-left,
 .fl-theme-hci .fl-button-right {color:#ffffff; background-color:#000000;}
-.fl-theme-hci .fl-button-left {background-image:url(../images/themes/hci/buttons-med-cap.png);}
+.fl-theme-hci .fl-button-left,
 .fl-theme-hci .fl-button-right {background-image:url(../images/themes/hci/buttons-med-cap.png);}
 .fl-theme-hci .fl-button-inner {background-image:url(../images/themes/hci/buttons-med-bg.png);}
 
 /* Widget core */
 .fl-theme-hci .fl-widget {background-color:#ffffff; border:1px solid #000000;}
-.fl-theme-hci .fl-widget ul {}
 .fl-theme-hci .fl-widget h2 {color:#ffffff0; background-color:#00000;}
 .fl-theme-hci .fl-widget a {color:#ffffff;}
 .fl-theme-hci .fl-widget .fl-icon-more  {background-image:url('../images/themes/hci/icon-widget-More.png'); margin-left:0px;}
@@ -114,11 +106,7 @@
 
 /* Widget options */
 .fl-theme-hci .fl-widget .fl-widget-options {padding:0px;}
-.fl-theme-hci .fl-widget .fl-widget-options ul {} 
 .fl-theme-hci .fl-widget .fl-widget-options li {border-left:1px solid #000000;}
-.fl-theme-hci .fl-widget .fl-widget-options .icon {}
-.fl-theme-hci .fl-widget .fl-widget-options .viewOptions {}
-.fl-theme-hci .fl-widget .fl-widget-options .toggle {}
     
 /* Widget content */
 .fl-theme-hci .fl-widget .fl-widget-content {background-color:#000000;}
