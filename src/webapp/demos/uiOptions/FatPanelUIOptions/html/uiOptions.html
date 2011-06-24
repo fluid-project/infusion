@@ -13,22 +13,18 @@
         <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-coal.css" />
         <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-mist.css" />
         <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-rust.css" />
-        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-blackyellow.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-blackYellow.css" />
         <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-yellowBlack.css" />
         <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-coal/coal.css" />
         <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-mist/mist.css" />
         <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-slate/slate.css" />
         <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-hc/hc.css" />
         <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-hci/hci.css" />
-        <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-blackyellow/blackyellow.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-blackYellow/blackYellow.css" />
         <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-yellowBlack/yellowBlack.css" />
 
         <link rel="stylesheet" type="text/css" href="../../../../components/uiOptions/css/UIOptions.css" />
         <link rel="stylesheet" type="text/css" href="../../../../components/uiOptions/css/FatPanelUIOptions.css" />
-        <link rel="stylesheet" type="text/css" href="../../../../components/uiOptions/css/Slider.css" />
-
-        <link rel="stylesheet" type="text/css" href="../css/uiOptions.css" />
-
 
         <title>UI Options</title>
         <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
@@ -66,18 +62,18 @@
 
     <body>
 
-		<div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel">        
-			<div id="myUIOptions" class="flc-slidingPanel-panel"></div>     
-			
-			<div class="fl-panelBar">
-				<button class="flc-slidingPanel-toggleButton fl-toggleButton">Show/Hide</button>
-			</div>
-		</div>	
+        <div id="myFatPanel" class="fl-uiOptions-fatPanel">        
+            <div id="myUIOptions" class="flc-slidingPanel-panel"></div>     
+            
+            <div class="fl-panelBar">
+                <button class="flc-slidingPanel-toggleButton fl-toggleButton">Show/Hide</button>
+            </div>
+        </div>  
         
-		<div id="main">    
-			<h1>Some Sample Title</h1>
-			<p>Some content with <a id="myLink">a link</a> and <button>a button</button>. </p>
-		</div>
+        <div id="main">    
+            <h1>Some Sample Title</h1>
+            <p>Some content with <a id="myLink">a link</a> and <button>a button</button>. </p>
+        </div>
 
         <script type="text/javascript">
             $(document).ready(function() {
@@ -96,8 +92,8 @@
                     }
                 });
 
-            	fluid.pageEnhancer();
-                fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");  
+                fluid.pageEnhancer();
+                fluid.fatPanelUIOptions("#myFatPanel");  
             });
         </script>
     </body>
