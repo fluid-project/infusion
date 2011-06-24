@@ -97,6 +97,18 @@ var fluid_1_4 = fluid_1_4 || {};
         enableElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("pauseButton"));
         that.locate(that.options.focusWithEvent.afterUploadStart).focus();
+    };
+
+    var setStateFull = function (that) {        
+        that.locate("browseButtonText").text(that.options.strings.buttons.addMore);
+        that.locate("browseButton").addClass(that.options.styles.browseButton);
+        hideElement(that, that.locate("pauseButton"));
+        showElement(that, that.locate("uploadButton"));
+        enableElement(that, that.locate("uploadButton"));
+        disableElement(that, that.locate("browseButton"));        
+        that.strategy.local.disableBrowseButton();
+        hideElement(that, that.locate("instructions"));
+        that.totalProgress.hide();
     };    
     
     var renderUploadTotalMessage = function (that) {
@@ -104,7 +116,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var numReadyFiles = that.queue.getReadyFiles().length;
         var bytesReadyFiles = that.queue.sizeOfReadyFiles();
         var fileLabelStr = fileOrFiles(that, numReadyFiles);
-                                                   
+
         var totalStateStr = fluid.stringTemplate(that.options.strings.progress.toUploadLabel, {
             fileCount: numReadyFiles, 
             fileLabel: fileLabelStr, 
@@ -133,7 +145,6 @@ var fluid_1_4 = fluid_1_4 || {};
         var numErroredFiles = that.queue.getErroredFiles().length;
         var numTotalFiles = that.queue.files.length;
         var fileLabelStr = fileOrFiles(that, numTotalFiles);
-        
         var errorStr = "";
         
         // if there are errors then change the total progress bar
@@ -163,16 +174,14 @@ var fluid_1_4 = fluid_1_4 || {};
      * Summarizes the status of all the files in the file queue.  
      */
     var updateQueueSummaryText = function (that) {
-        var fileQueueTable = that.locate("fileQueue");
-        
+        var fileQueueTable = that.locate("fileQueue");        
         if (that.queue.files.length === 0) {
             fileQueueTable.attr("summary", that.options.strings.queue.emptyQueue);
         } else {
             var queueSummary = fluid.stringTemplate(that.options.strings.queue.queueSummary, {
                 totalUploaded: that.queue.getUploadedFiles().length, 
                 totalInUploadQueue: that.queue.files.length - that.queue.getUploadedFiles().length
-            });        
-            
+            });
             fileQueueTable.attr("summary", queueSummary);
         }
     };
@@ -188,8 +197,13 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     var updateStateAfterFileDialog = function (that) {
-        if (that.queue.getReadyFiles().length > 0) {
-            setStateLoaded(that);
+        var queueLength = that.queue.getReadyFiles().length;
+        if (queueLength > 0) {
+            if (queueLength === that.options.queueSettings.fileUploadLimit) {
+                setStateFull(that);
+            } else {
+                setStateLoaded(that);
+            }
             renderUploadTotalMessage(that);
             that.locate(that.options.focusWithEvent.afterFileDialog).focus();
             updateQueueSummaryText(that);
@@ -199,6 +213,8 @@ var fluid_1_4 = fluid_1_4 || {};
     var updateStateAfterFileRemoval = function (that) {
         if (that.queue.getReadyFiles().length === 0) {
             setStateEmpty(that);
+        } else {
+            setStateLoaded(that);
         }
         renderUploadTotalMessage(that);
         updateQueueSummaryText(that);
@@ -214,7 +230,7 @@ var fluid_1_4 = fluid_1_4 || {};
         updateQueueSummaryText(that);
     }; 
     
-    var bindEvents = function (that) {       
+    var bindEvents = function (that) {
         that.events.afterFileDialog.addListener(function () {
             updateStateAfterFileDialog(that);
         });
@@ -292,7 +308,7 @@ var fluid_1_4 = fluid_1_4 || {};
     var setupUploader = function (that) {
         that.demo = fluid.typeTag(that.options.demo ? "fluid.uploader.demo" : "fluid.uploader.live");
         
-        fluid.initDependents(that);                 
+        fluid.initDependents(that);
 
         // Upload button should not be enabled until there are files to upload
         disableElement(that, that.locate("uploadButton"));
@@ -406,7 +422,7 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.start = function () {
             that.queue.start();
-            that.events.onUploadStart.fire(that.queue.currentBatch.files); 
+            that.events.onUploadStart.fire(that.queue.currentBatch.files);           
             that.strategy.remote.uploadNextFile();
         };
         
@@ -428,7 +444,11 @@ var fluid_1_4 = fluid_1_4 || {};
             strategy: {
                 type: "fluid.uploader.progressiveStrategy"
             },
-            
+
+            errorPanel: {
+                type: "fluid.uploader.errorPanel"
+            },
+
             fileQueueView: {
                 type: "fluid.uploader.fileQueueView",
                 options: {
@@ -461,7 +481,7 @@ var fluid_1_4 = fluid_1_4 || {};
             fileSizeLimit: "20480",
             fileTypes: null,
             fileTypesDescription: null,
-            fileUploadLimit: 0,
+            fileUploadLimit: 3,
             fileQueueLimit: 0
         },
 
@@ -475,7 +495,8 @@ var fluid_1_4 = fluid_1_4 || {};
             pauseButton: ".flc-uploader-button-pause",
             totalFileStatusText: ".flc-uploader-total-progress-text",
             instructions: ".flc-uploader-browse-instructions",
-            statusRegion: ".flc-uploader-status-region"
+            statusRegion: ".flc-uploader-status-region",
+            errorsPanel: ".flc-uploader-errorsPanel"
         },
 
         // Specifies a selector name to move keyboard focus to when a particular event fires.
@@ -498,16 +519,18 @@ var fluid_1_4 = fluid_1_4 || {};
         events: {
             afterReady: null,
             onFileDialog: null,
+            onFilesSelected: null,
+            onFileQueued: null,
             afterFileQueued: null,
             onFileRemoved: null,
             afterFileRemoved: null,
-            onQueueError: null,
             afterFileDialog: null,
             onUploadStart: null,
             onUploadStop: null,
             onFileStart: null,
             onFileProgress: null,
             onFileError: null,
+            onQueueError: null,
             onFileSuccess: null,
             onFileComplete: null,
             afterFileComplete: null,
@@ -632,6 +655,13 @@ var fluid_1_4 = fluid_1_4 || {};
      * TODO: These are SWFUpload-specific error codes *
      **************************************************/
      
+    fluid.uploader.queueErrorConstants = {
+        QUEUE_LIMIT_EXCEEDED: -100,
+        FILE_EXCEEDS_SIZE_LIMIT: -110,
+        ZERO_BYTE_FILE: -120,
+        INVALID_FILETYPE: -130
+    };
+    
     fluid.uploader.errorConstants = {
         HTTP_ERROR: -200,
         MISSING_UPLOAD_URL: -210,
@@ -652,7 +682,6 @@ var fluid_1_4 = fluid_1_4 || {};
         COMPLETE: -4,
         CANCELLED: -5
     };
-
 
     var toggleVisibility = function (toShow, toHide) {
         // For FLUID-2789: hide() doesn't work in Opera
