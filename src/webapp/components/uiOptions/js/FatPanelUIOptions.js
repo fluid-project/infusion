@@ -63,8 +63,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     components: {
                         pageEnhancer: "{fatPanelUIOptionsImp}.pageEnhancer",
                         uiOptions: "{fatPanelUIOptionsImp}.uiOptionsBridge.uiOptions",
-                        slidingPanel: "{fatPanelUIOptionsImp}.slidingPanel",
-                        markupRenderer: "{fatPanelUIOptionsImp}.markupRenderer"
+                        slidingPanel: "{fatPanelUIOptionsImp}.slidingPanel"
                     }
                 },
                 createOnEvent: "afterRender",
