@@ -142,12 +142,67 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             moveOptionsTest(expected);
         });
         
+        tests.test("mapOptionsTest ", function () {
+            var options = {
+                selectors: {
+                    iframe: ".iframe",
+                    textfield: ".textfield",
+                    slider: ".slider"
+                },       
+                components: {      
+                    slidingPanel: "slidingPanel",
+                    markupRenderer: "markupRenderer",
+                    pageEnhancer: "pageEnhancer",
+                    eventBinder: "eventBinder",
+                    textfield: "textField",
+                    slider: "slider"
+                },
+                model: {
+                    value: null,
+                    min: 0,
+                    max: 100
+                }
+            };
+            
+            var expectedOpts = {
+                selectors: {
+                    iframe: ".iframe"
+                },       
+                components: {      
+                    slidingPanel: "slidingPanel",
+                    markupRenderer: "markupRenderer",
+                    pageEnhancer: "pageEnhancer",
+                    eventBinder: "eventBinder",
+                    uiOptionsBridge: {
+                        uiOptions: {
+                            options: {
+                                selectors: {
+                                    textfield: ".textfield",
+                                    slider: ".slider"
+                                },
+                                components: { 
+                                    textfield: "textField",
+                                    slider: "slider"
+                                },
+                                model: {
+                                    value: null,
+                                    min: 0,
+                                    max: 100
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            var mappedOpts = fluid.fatPanelUIOptions.mapOptions(options);
+            jqUnit.assertDeepEq("The options were mapped correctly", expectedOpts, mappedOpts);
+        });
+        
         
 //        fluid.uiOptionsEventBinder.finalInit
 //        fluid.renderIframe.finalInit
 //        fluid.uiOptionsBridge.finalInit
-//        fluid.fatPanelUIOptions.moveOptions
-//        fluid.fatPanelUIOptions.mapOptions
         
         /***************************************
          * FatPanelUIOptions integration tests *
