@@ -882,17 +882,15 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
     
     // unsupported, non-API function
-    fluid.bindDeferredComponent = function(that, componentName, component) {
-        fluid.withInstantiator(that, function(instantiator) {
-            var events = fluid.makeArray(component.createOnEvent);
-            fluid.each(events, function(eventName) {
-                that.events[eventName].addListener(function() {
-                    if (that[componentName]) {
-                        instantiator.clearComponent(that, componentName);
-                    }
-                    fluid.initDependent(that, componentName, instantiator);
-                }, null, null, component.priority);
-            });
+    fluid.bindDeferredComponent = function(that, componentName, component, instantiator) {
+        var events = fluid.makeArray(component.createOnEvent);
+        fluid.each(events, function(eventName) {
+            that.events[eventName].addListener(function() {
+                if (that[componentName]) {
+                    instantiator.clearComponent(that, componentName);
+                }
+                fluid.initDependent(that, componentName, instantiator);
+            }, null, null, component.priority);
         });
     };
     
@@ -907,17 +905,17 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var options = that.options;
         var components = options.components || {};
         var componentSort = {};
-        fluid.each(components, function(component, name) {
-            if (!component.createOnEvent) {
-                var priority = fluid.priorityForComponent(component);
-                componentSort[name] = {key: name, priority: fluid.event.mapPriority(priority, 0)};
-            }
-            else {
-                fluid.bindDeferredComponent(that, name, component);
-            }
-        });
-        var componentList = fluid.event.sortListeners(componentSort);
         fluid.withInstantiator(that, function(instantiator) {
+            fluid.each(components, function(component, name) {
+                if (!component.createOnEvent) {
+                    var priority = fluid.priorityForComponent(component);
+                    componentSort[name] = {key: name, priority: fluid.event.mapPriority(priority, 0)};
+                }
+                else {
+                    fluid.bindDeferredComponent(that, name, component, instantiator);
+                }
+            });
+            var componentList = fluid.event.sortListeners(componentSort);
             fluid.each(componentList, function(entry) {
                 fluid.initDependent(that, entry.key);  
             });
