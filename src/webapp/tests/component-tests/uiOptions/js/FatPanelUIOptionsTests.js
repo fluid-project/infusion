@@ -48,9 +48,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Test functions *
      ******************/
      
-    moveOptionsTest = function (expected, map, defaultLocation, testOptions) {
+    var moveOptionsTest = function (expected, map, defaultLocation, testOptions) {
         var actual = {};
-        var testOptions = testOptions || {
+        testOptions = testOptions || {
             opt1: "option1",
             opt2: "option2"
         };
@@ -128,10 +128,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     opt1: "option1",
                     opt2: "option2"
                 }
-            };
-            
-            var map = {
-                opt1: "new1"
             };
             
             moveOptionsTest(expected, null, "new");
