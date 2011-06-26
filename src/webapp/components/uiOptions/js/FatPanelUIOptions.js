@@ -205,10 +205,16 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.viewComponent"]
     });     
     
+    /**
+    * @param {Object} source, original object
+    * @param {Object} destination, object to copy options to
+    * @param {String} defaultLocation, default path to move options location
+    * @param {Object} map, move instructions format {key: location}
+    */
     fluid.fatPanelUIOptions.moveOptions = function (source, destination, defaultLocation, map) {
         fluid.each(source, function (value, key) {
             var location = (map && map[key]) || defaultLocation || "";
-            fluid.set(destination, location + "." + key, value);
+            fluid.set(destination, (location ? location + "." : "") + key, value);
         });
     };    
     
