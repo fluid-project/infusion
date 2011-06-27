@@ -205,39 +205,49 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.viewComponent"]
     });     
     
+    /**
+    * @param {Object} source, original object
+    * @param {Object} destination, object to copy options to
+    * @param {String} defaultLocation, default path to move options location
+    * @param {Object} map, move instructions format {key: location}
+    */
     fluid.fatPanelUIOptions.moveOptions = function (source, destination, defaultLocation, map) {
         fluid.each(source, function (value, key) {
             var location = (map && map[key]) || defaultLocation || "";
-            fluid.set(destination, location + "." + key, value);
+            fluid.set(destination, (location ? location + "." : "") + key, value);
         });
     };    
     
     // TODO: Maybe we need a framework function for model transformation to
     //       replace the code below? 
+    /**
+    * @param {Object} options, top level options to be mapped
+    */
     fluid.fatPanelUIOptions.mapOptions = function (options) {
         var newOpts = {};
+        var componentPath = "components";
+        var selectorPath = "selectors";
+        var defaultBasePath = "components.uiOptionsBridge.uiOptions.options";
         
         var fatPanelComponentMapping = {
-            slidingPanel: "components",
-            pageEnhancer: "components",
-            preview: "components",
-            markupRenderer: "components",
-            eventBinder: "components"
+            slidingPanel: componentPath,
+            pageEnhancer: componentPath,
+            preview: componentPath,
+            markupRenderer: componentPath,
+            eventBinder: componentPath
         };
         var selectorMapping = {
-            iframe: "selectors"
+            iframe: selectorPath
         };
         
-        var defaultLocation = "components.uiOptionsBridge.options.components.uiOptions.options";
-        fluid.each (options, function(key, value) {
+        fluid.each(options, function (value, key) {
+            var defaultPath = defaultBasePath + "." + key;
             if (key === "components") {
-                fluid.fatPanelUIOptions.moveOptions(options, newOpts, 
-                        defaultLocation, fatPanelComponentMapping);
+                fluid.fatPanelUIOptions.moveOptions(value, newOpts, defaultPath, fatPanelComponentMapping);
             } else if (key === "selectors") {
-                fluid.fatPanelUIOptions.moveOptions(options, newOpts, 
-                        defaultLocation, selectorMapping);
+                fluid.fatPanelUIOptions.moveOptions(value, newOpts, defaultPath, selectorMapping);
             } else {
-                fluid.fatPanelUIOptions.moveOptions(options, newOpts, defaultLocation);
+                fluid.fatPanelUIOptions.moveOptions(value, newOpts, defaultPath);
             }
         });
             
