@@ -48,14 +48,19 @@ var fluid_1_4 = fluid_1_4 || {};
         invokers: {
             fetch: {
                 funcName: "fluid.cookieStore.fetch",
-                args: ["{cookieStore}.options.cookieName", "{cookieStore}.options.defaultSiteSettings"]
+                args: ["{cookieStore}.options.cookie.name", "{cookieStore}.options.defaultSiteSettings"]
             },
             save: {
                 funcName: "fluid.cookieStore.save",
-                args: ["{arguments}.0", "{cookieStore}.options.cookieName"]
+                args: ["{arguments}.0", "{cookieStore}.options.cookie"]
             }
         },
-        cookieName: "fluid-ui-settings"
+        cookie: {
+            template: "%name=%data; expires=%expires; path=%path",
+            name: "fluid-ui-settings",
+            path: "/",
+            expires: ""
+        }
     });
 
     /**
@@ -84,9 +89,11 @@ var fluid_1_4 = fluid_1_4 || {};
     /**
      * Saves the settings into a cookie
      * @param {Object} settings
+     * @param {Object} cookieOptions
      */
-    fluid.cookieStore.save = function (settings, cookieName) {
-        document.cookie = cookieName + "=" +  encodeURIComponent(JSON.stringify(settings));
+    fluid.cookieStore.save = function (settings, cookieOptions) {
+        cookieOptions.data = encodeURIComponent(JSON.stringify(settings));
+        document.cookie = fluid.stringTemplate(cookieOptions.template, cookieOptions);
     };
     
 

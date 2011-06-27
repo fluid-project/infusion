@@ -149,30 +149,6 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
     color: #5E7A5E;
 }
 
-/* 
- * Errors: displayed in file queue
- */
-.fl-uploader-queue .fl-uploader-file-state-error th {
-    border-left: 4px solid #F5E392;
-    background-color: #FCFBE6;
-    border-bottom-width: 0;
-}
-
-.fl-uploader-queue .fl-uploader-file-state-error td {
-    background-color: #FCFBE6;
-    border-bottom-width: 0;
-}
-
-.fl-uploader-queue .fl-uploader-file-error td {
-    background-color: #FCFBE6;
-    border-left: 4px solid #F5E392;
-    background-image: url(../images/error.png);
-    background-position: 8px 2px;
-    background-repeat: no-repeat;
-    padding-bottom: 8px;
-    padding-left: 32px;
-}
-
 /*
  * Instructions 
  */
@@ -277,8 +253,8 @@ html>body .fl-uploader span.fl-uploader-browse {
 
 .fl-uploader-browse-overlay {
     position: absolute;
-    bottom: 50px;
-    left: 325px;
+    top: 8px;
+    left: 320px;
     z-index: 7;
 }
 
@@ -377,6 +353,98 @@ html>body .fl-uploader span.fl-uploader-browse {
     background-image: url('../images/gradient-total-yellow.png');
     border-right: 1px solid #E8C81C;
     background-color: #F6ECA0;
+}
+
+/* ERRORS */
+.fl-uploader-queue .fl-uploader-file-state-error th {
+    border-left: 4px solid #F5E392;
+    background-color: #FCFBE6;
+    border-bottom-width: 0;
+}
+
+.fl-uploader-queue .fl-uploader-file-state-error td {
+    background-color: #FCFBE6;
+    border-bottom-width: 0;
+}
+
+.fl-uploader-queue .fl-uploader-file-error td {
+    background-color: #FCFBE6;
+    border-left: 4px solid #F5E392;
+    background-image: url(../images/error.png);
+    background-position: 8px 2px;
+    background-repeat: no-repeat;
+    padding-bottom: 8px;
+    padding-left: 32px;
+}
+
+.fl-uploader-errorsPanel {
+    float: left;
+    background-color: #E6E6E6;
+    width: 100%;
+    margin-top: 0.5em;
+}
+
+.fl-uploader-errorsPanel-header {
+    background-image: url("../images/error.png");
+    background-position: 1px center;
+    background-repeat: no-repeat;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.fl-uploader-errorsPanel-header span {
+    padding-left: 25px;
+    font-size: 1.1em;
+    font-weight: bolder;
+    color: #000000;
+}
+
+.fl-uploader-errorPanel-section-wrapper {
+    float: left;
+    width: 90%;
+}
+
+.fl-uploader-errorPanel-section-removeButton {
+    background-image: url("../images/grey-4d4d4d-x-button.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #e6e6e6;
+    border-width: 0px;
+    width: 16px;
+    height: 16px;
+    padding: 0px;
+    margin-right: 9px;
+    float: right;
+}
+
+.fl-uploader-errorPanel-section-removeButton:hover {
+    background-image: url("../images/grey-999999-x-button.png");
+}
+
+.fl-uploader-errorPanel-section-toggleDetails {
+    background-color: #e6e6e6;
+    border: none;
+    padding: 0em;
+    color: #3da6e5;
+    font-weight: normal;
+    text-decoration: underline;
+    cursor: pointer;
+    height: 2em;
+    margin: 0em;
+}
+
+.fl-uploader-errorPanel-section-toggleDetails:hover {
+    background-color: #e6e6e6;
+}
+
+.fl-uploader-errorPanel-section-title {
+    font-size: 0.9em;
+}
+
+.fl-uploader-errorPanel-section-details {
+    font-size: 0.9em;
+    color: #666;
+    font-weight: normal;
 }
 
 /*
