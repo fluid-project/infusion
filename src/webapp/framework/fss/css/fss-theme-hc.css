@@ -85,7 +85,7 @@
 
 /* Widget core */
 .fl-theme-hc .fl-widget {background-color:#000; border:1px solid #fff;}
-.fl-theme-hc .fl-widget h2 {color:#000;display:inline;}
+.fl-theme-hc .fl-widget h2 {display:inline;}
 .fl-theme-hc .fl-widget a {color:#000;}
 .fl-theme-hc .fl-widget .fl-icon-more  {background-image:url('../images/themes/hc/icon-widget-More.png'); margin-left:0px;}
 .fl-theme-hc .fl-widget .fl-icon-close {background-image:url('../images/themes/hc/icon-widget-Close.png'); margin-right:0px;}
@@ -93,6 +93,7 @@
 /* Widget titlebar */
 .fl-theme-hc .fl-widget .fl-widget-titlebar {margin-bottom:3px;}
 .fl-theme-hc .fl-grabbable .fl-widget-titlebar {background-image:url('../images/themes/hc/icon-widget-gripper.png');}
+.fl-theme-hc .fl-grabbable .fl-widget-titlebar h2 {display:inline;}
 .fl-theme-hc .fl-widget-titlebar .icon {background-position:center center;}
 .fl-theme-hc .fl-widget-titlebar .fl-button-right,
 .fl-theme-hc .fl-widget-titlebar .fl-button-left {
