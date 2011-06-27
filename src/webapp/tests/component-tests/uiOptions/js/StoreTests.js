@@ -24,10 +24,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             layout: false
         };
         
+        var cookieName = "fluid-cookieStore-test";
+        
+        var dropCookie = function (cookieName) {
+            var date = new Date();
+            document.cookie = cookieName + "=; expires=" + date.toGMTString() + "; path=/";
+        };
+        
         var tests = new jqUnit.TestCase("Store Tests");
                 
         tests.test("Cookie", function () {
-            var store = fluid.cookieStore();
+            var store = fluid.cookieStore({
+                cookie: {
+                    name: cookieName
+                }
+            });
             store.save(testSettings);
             
             // Check that we get back the test settings correctly.
@@ -47,9 +58,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Our cookie should contain the textSize 2.",
                                document.cookie.indexOf("2") > cookieNameIndex);
                                            
-            // Reset the cookie settings
-            store.save(store.options.defaultSiteSettings);
-            
+            // Remove test cookie
+            dropCookie(store.options.cookie.name);
         });
 
         tests.test("Temp store", function () {
