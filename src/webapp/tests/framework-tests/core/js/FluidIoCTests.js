@@ -1452,6 +1452,35 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("The invoker for second subcomponent should return the value from its parent", 
             newValue, that.invokerwrapper.invoker2.checkTestValue());
     });
+    
+    fluid.defaults("fluid.tests.news.parent", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        model: { test: "test" },
+        components: {
+            child: {
+                type: "fluid.tests.news.child",
+                model: "{parent}.model"
+            }
+          }
+      });
+
+      fluid.defaults("fluid.tests.news.child", {
+          gradeNames: ["fluid.modelComponent", "autoInit"],
+      });
+      
+      fluidIoCTests.test("FLUID-4285 test - prevent unencoded options", function() {
+          try {
+              jqUnit.expect(1);
+              fluid.pushSoftFailure(true);
+              var parent = fluid.tests.news.parent();
+          }
+          catch (e) {
+              jqUnit.assert("Caught exception in constructing stray options component");
+          }
+          finally {
+              fluid.pushSoftFailure(-1);  
+          }
+      });
 
 
     /************************************

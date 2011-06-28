@@ -260,7 +260,6 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             settingsStore: {
                 type: "fluid.uiOptions.store",
-                container: "{uiEnhancer}.container",
                 createOnEvent: "onInitSettingStore"
             }
         },
