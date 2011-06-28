@@ -221,20 +221,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var that = fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");
             
             checkUIOComponents(that);
-
-//            that.events.afterRender.addListener(function () {
-                that.slidingPanel.showPanel();
+                
+            setTimeout(function() {
+                that.slidingPanel.events.afterPanelShown.fire();
                 applierRequestChanges(that.uiOptionsBridge.uiOptions, bwSkin);
                 checkModelSelections(bwSkin, that.pageEnhancer.uiEnhancer.model);
-                that.slidingPanel.hidePanel();
+                that.slidingPanel.events.afterPanelHidden.fire();
                 checkModelSelections(bwSkin, that.uiOptionsBridge.uiOptions.pageEnhancer.uiEnhancer.model);
-//            });
-            
-            // Verify that both uiEnhancers have the same settings applied to them
-            //checkModelSelections(that.pageEnhancer.uiEnhancer.model, that.uiOptionsBridge.uiOptions.pageEnhancer.uiEnhancer.model);
-            
-            //click on reset all and run tests again
-            start();
+                checkModelSelections(that.pageEnhancer.uiEnhancer.model, that.uiOptionsBridge.uiOptions.pageEnhancer.uiEnhancer.model);
+                that.uiOptionsBridge.uiOptions.locate("reset").click();
+                checkModelSelections(that.pageEnhancer.uiEnhancer.model, that.pageEnhancer.uiEnhancer.settingsStore.options.defaultSiteSettings);
+                var hello;
+                start();
+                
+            }, 1000);
         });        
     });
 })(jQuery);        
