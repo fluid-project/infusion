@@ -452,6 +452,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertNoValue("The defaults for a nonexistent component should be null.", 
                               fluid.defaults("timemachine"));
         });
+               
+        fluidJSTests.test("FLUID-4285 test - prevent 'double options'", function() {
+          try {
+              jqUnit.expect(1);
+              fluid.pushSoftFailure(true);
+              fluid.defaults("news.parent", {
+                  gradeNames: ["fluid.littleComponent", "autoInit"],
+                  options: {
+                      test: "test"
+                  }
+              });
+          }
+          catch (e) {
+              jqUnit.assert("Caught exception in constructing double options component");
+          }
+          finally {
+              fluid.pushSoftFailure(-1);  
+          }
+      });
         
         
         fluid.tests.testComponent = function (container, options) {
@@ -475,7 +494,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.defaults("fluid.tests.subcomponent", {
             greeting: "hello"
         });
-        
         
         var componentWithOverridenSubcomponentOptions = function (greeting) {
             return fluid.tests.testComponent("#notmain", {
