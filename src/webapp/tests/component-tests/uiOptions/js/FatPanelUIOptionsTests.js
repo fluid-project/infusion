@@ -64,10 +64,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var tests = jqUnit.testCase("FatPanelUIOptions Tests");
         
-        // tests.test("", function () {
-        //            var 
-        //        });
-        
         /*********************************
          * fluid.fatPanelUIOptions tests *
          *********************************/
@@ -186,7 +182,59 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * FatPanelUIOptions integration tests *
          ***************************************/
         
-        // integration tests here
+        var applierRequestChanges = function (uiOptions, selectionOptions) {
+            uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
+            uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
+            uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
+            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);            
+        };
+        
+        var checkUIOComponents = function (uio) {
+            var components = uio.options.components;
+            var eventBinderComponents = components.eventBinder.options.components; 
+            jqUnit.assertTrue("slidingPanel is present", components.slidingPanel);
+            jqUnit.assertTrue("markupRenderer is present", components.markupRenderer);
+            jqUnit.assertTrue("pageEnhancer is preset", components.pageEnhancer);
+            jqUnit.assertTrue("eventBinder is present", components.eventBinder);
+            jqUnit.assertTrue("uiOptionsBridge is present", components.uiOptionsBridge);
+            jqUnit.assertTrue("pageEnhancer is present as an eventBinder sub-component", eventBinderComponents.pageEnhancer);
+            jqUnit.assertTrue("uiOptions is present as an eventBinder sub-component", eventBinderComponents.uiOptions);
+            jqUnit.assertTrue("slidingPanel is present as an eventBinder sub-component", eventBinderComponents.slidingPanel);
+            jqUnit.assertTrue("markupRenderer is present as an uiOptionsBridge sub-component", components.uiOptionsBridge.options.components.markupRenderer);
+        };        
+        
+        var checkModelSelections = function (expectedSelections, actualSelections) {
+            jqUnit.assertEquals("Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
+            jqUnit.assertEquals("Theme correctly updated", expectedSelections.theme, actualSelections.theme);
+            jqUnit.assertEquals("Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
+            jqUnit.assertEquals("Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
+        };
+        
+        var bwSkin = {
+            textSize: "1.8",
+            textFont: "verdana",
+            theme: "bw",
+            lineSpacing: 2
+        };
+        
+        tests.asyncTest("Fat Panel UIOptions Integration tests", function () {
+            var that = fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");
+            
+            checkUIOComponents(that);
 
+//            that.events.afterRender.addListener(function () {
+                that.slidingPanel.showPanel();
+                applierRequestChanges(that.uiOptionsBridge.uiOptions, bwSkin);
+                checkModelSelections(bwSkin, that.pageEnhancer.uiEnhancer.model);
+                that.slidingPanel.hidePanel();
+                checkModelSelections(bwSkin, that.uiOptionsBridge.uiOptions.pageEnhancer.uiEnhancer.model);
+//            });
+            
+            // Verify that both uiEnhancers have the same settings applied to them
+            //checkModelSelections(that.pageEnhancer.uiEnhancer.model, that.uiOptionsBridge.uiOptions.pageEnhancer.uiEnhancer.model);
+            
+            //click on reset all and run tests again
+            start();
+        });        
     });
 })(jQuery);        
