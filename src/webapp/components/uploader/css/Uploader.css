@@ -29,7 +29,7 @@ table.fl-uploader-header {
 
 
 .fl-uploader-header th.fl-uploader-file-name {
-    width:23em;
+    width:27em;
 }
 
 .fl-uploader-header .fl-uploader-file-size {
@@ -87,14 +87,14 @@ table.fl-uploader-queue {
 
 .fl-uploader-queue td {
     border: none;
-    border-bottom: 1px solid #BBCFDC;
+    border-bottom: 1px solid #999;
     margin: 0px;
     text-align: left;
     padding: 3px 6px;
 }
 
 .fl-uploader-queue td.fl-uploader-file-name {
-    width: 27em;
+    width: 26em;
     overflow: hidden;
     font-weight:normal;   
 }
@@ -102,6 +102,7 @@ table.fl-uploader-queue {
 .fl-uploader-queue .fl-uploader-file-size {
     text-align: right;
     white-space: nowrap;
+    width: 6em;
 }
 
 /* file queue action column */
