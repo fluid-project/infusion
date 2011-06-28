@@ -359,7 +359,7 @@ var fluid_1_4 = fluid_1_4 || {};
         upgradeMergeOptions(demandspec);
         var oldOptions = fluid.get(options, "componentRecord.options");
         options.componentRecord = $.extend(true, {}, options.componentRecord, 
-            fluid.censorKeys(demandspec, ["args", "funcName"]));
+            fluid.censorKeys(demandspec, ["args", "funcName", "registeredFrom"]));
         var mergeAllZero = fluid.get(options, "componentRecord.options.mergeAllOptions.0");
         if (mergeAllZero === "{options}") {
             fluid.set(options, "componentRecord.options.mergeAllOptions.0", oldOptions);
