@@ -17,82 +17,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
 
-    // $(document).ready(function () {
-    //     var toc;
-    //     var options = {
-    //         components: {
-    //             levels: {
-    //                 options: {
-    //                     resources: {
-    //                         template: {
-    //                             url: "../../../../components/tableOfContents/html/TableOfContents.html"
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     };
-    // 
-    //     var tests = jqUnit.testCase("Table of Contents Tests");
-    //      
-    //     var testAfterRender = function (testFn) {
-    //         var toc;
-    //         
-    //         options.listeners = {
-    //             afterRender: function () {
-    //                 testFn(toc);
-    //                 start();
-    //             }
-    //         };
-    //         
-    //         toc = fluid.tableOfContents("#main", options);
-    //     };
-    //     
-    //     var testTocItem = function (item, name) {
-    //         var a = $("a", item);
-    //         jqUnit.assertEquals(name + " has text", name, a.text());
-    //         jqUnit.assertTrue(name + " has href", a.attr("href").indexOf("#" + name) > -1);            
-    //     };
-    //     
-    //     tests.asyncTest("TOC Creation", function () {
-    //         testAfterRender(function (toc) {
-    //             expect(22);
-    // 
-    //             var tocEl = $("#main").children().eq(0);
-    //             jqUnit.isVisible("Table of contents should be visible", tocEl);
-    //         
-    //             var items = $("li", tocEl);
-    //             jqUnit.assertEquals("10 headings", 10, items.length);
-    //         
-    //             testTocItem(items[0], "Amphibians");
-    //             testTocItem(items[1], "Toads");
-    //             testTocItem(items[2], "Natterjack Toads");
-    //             testTocItem(items[3], "Salamander");
-    //             testTocItem(items[4], "Newt");
-    //             testTocItem(items[5], "Birds");
-    //             testTocItem(items[6], "Anseriformes");
-    //             testTocItem(items[7], "Ducks");
-    //             testTocItem(items[8], "Mammals");
-    //             testTocItem(items[9], "CATT");
-    //         });            
-    //     });
-    //            
-    //     tests.asyncTest("Anchor insertion", function () {
-    //         testAfterRender(function (toc) {
-    //             expect(5);
-    // 
-    //             var anchors = $("a", "#amphibians-div");
-    //             jqUnit.assertEquals("5 headings in the amphibians section", 5, anchors.length);
-    // 
-    //             var anchor = anchors.eq(0);
-    //             jqUnit.assertEquals("Name is Amphibians", "Amphibians", anchor.attr("name"));         
-    //             jqUnit.assertEquals("No text", "", anchor.text());
-    //             jqUnit.assertFalse("No href", !!anchor.attr("href"));
-    //             jqUnit.assertEquals("The next element in the DOM is the heading", "amphibians", anchor.next().prop("id"));
-    //         });
-    //     });
-    // });
-
     fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContentsTest");
     fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "fluid.tableOfContentsTest"], {
         options: {
@@ -321,7 +245,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
        
     var renderTOCTests = function (testHeadings) {
         var container = $(".flc-toc-tocContainer");
-        var renderedTOC = fluid.tableOfContents.levels(container, {
+        fluid.tableOfContents.levels(container, {
             model: {
                 headings: testHeadings.model
             },
@@ -410,7 +334,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("ToC insert anchor correctly: name", tocTestAnchorName, tocInsertAnchorWrapperFirstChild.attr('name'));
         });
         
-        tocTests.test("generateGUID", function() {
+        tocTests.test("generateGUID", function () {
             var GUID = fluid.tableOfContents.generateGUID('randomBaseName');
             var GUID2 = fluid.tableOfContents.generateGUID('randomBaseName');
             
@@ -418,7 +342,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertNotEquals("Basename should remain in the GUID after generated", -1, GUID.indexOf('randomBaseName'));
         });
         
-        tocTests.test("sanitizeID", function() {
+        tocTests.test("sanitizeID", function () {
             var tocTest = function (custom_msg, expected, input) {
                 var actual = fluid.tableOfContents.sanitizeID(input);
                 jqUnit.assertEquals("Test non-word string: " + custom_msg, expected, actual);
@@ -498,14 +422,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     '#test' + fluid.tableOfContents.sanitizeID(currLink.text())
                 ));
             });
-            var tocComponent = renderTOCComponent({
+            renderTOCComponent({
                 listeners: {
                     afterRender: function (that) {
                         renderTOCTest(that, testHeadings);
                         renderTOCAnchorTest();
                         start();
                     }
-                },
+                }
             });
             
             /*
