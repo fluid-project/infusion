@@ -44,6 +44,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
     
+    fluid.demands("fluid.cookieStore", ["fluid.fatPanelUIOptionsTests"], {
+        options: {
+            cookieName: "fluid-ui-settings-test"
+        }
+    });    
+    
     /******************
      * Test functions *
      ******************/
@@ -221,19 +227,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var that = fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");
             
             checkUIOComponents(that);
+            
+            /*
+             * TODO: There have been talks about implementing a Framework event that fires 
+             *       once a component and all of it's subcomponents have finished resolving.
+             *       Once that is in, we can remove the hacky timeout call and listen for
+             *       the framework event to tell us that the component is fully resolved.
+             */
+            setTimeout(function () {
+                var defaultSiteSettings = that.pageEnhancer.uiEnhancer.settingsStore.options.defaultSiteSettings;
+                var pageModel = that.pageEnhancer.uiEnhancer.model;
+                var panelModel = that.uiOptionsBridge.uiOptions.pageEnhancer.uiEnhancer.model;
                 
-            setTimeout(function() {
+                var settingsStoreOptions = that.pageEnhancer.uiEnhancer.settingsStore.options;
+                
+                // Open the Fat Panel, apply changes, and close the panel
                 that.slidingPanel.events.afterPanelShown.fire();
                 applierRequestChanges(that.uiOptionsBridge.uiOptions, bwSkin);
-                checkModelSelections(bwSkin, that.pageEnhancer.uiEnhancer.model);
+                checkModelSelections(bwSkin, pageModel);
                 that.slidingPanel.events.afterPanelHidden.fire();
-                checkModelSelections(bwSkin, that.uiOptionsBridge.uiOptions.pageEnhancer.uiEnhancer.model);
-                checkModelSelections(that.pageEnhancer.uiEnhancer.model, that.uiOptionsBridge.uiOptions.pageEnhancer.uiEnhancer.model);
-                that.uiOptionsBridge.uiOptions.locate("reset").click();
-                checkModelSelections(that.pageEnhancer.uiEnhancer.model, that.pageEnhancer.uiEnhancer.settingsStore.options.defaultSiteSettings);
-                var hello;
-                start();
+                checkModelSelections(bwSkin, panelModel);
+                checkModelSelections(pageModel, panelModel);
                 
+                // Open the Fat Panel, click "Reset All", and close the panel
+                that.slidingPanel.events.afterPanelShown.fire();
+                that.uiOptionsBridge.uiOptions.locate("reset").click();
+                checkModelSelections(pageModel, defaultSiteSettings);
+                that.slidingPanel.events.afterPanelHidden.fire();
+                checkModelSelections(panelModel, defaultSiteSettings);
+                checkModelSelections(pageModel, panelModel);
+                start();
             }, 1000);
         });        
     });
