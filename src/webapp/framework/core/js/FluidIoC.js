@@ -359,7 +359,7 @@ var fluid_1_4 = fluid_1_4 || {};
         upgradeMergeOptions(demandspec);
         var oldOptions = fluid.get(options, "componentRecord.options");
         options.componentRecord = $.extend(true, {}, options.componentRecord, 
-            fluid.censorKeys(demandspec, ["args", "funcName"]));
+            fluid.censorKeys(demandspec, ["args", "funcName", "registeredFrom"]));
         var mergeAllZero = fluid.get(options, "componentRecord.options.mergeAllOptions.0");
         if (mergeAllZero === "{options}") {
             fluid.set(options, "componentRecord.options.mergeAllOptions.0", oldOptions);
@@ -752,6 +752,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         });
     };
     
+    // unsupported, non-API function    
     fluid.locateTransformationRecord = function(that) {
         return fluid.withInstantiator(that, function(instantiator) {
             var matches = fluid.locateAllDemands(instantiator, that, ["fluid.transformOptions"]);
@@ -761,8 +762,38 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         });
     };
     
+    // 
+    fluid.hashToArray = function(hash) {
+        var togo = [];
+        fluid.each(hash, function(value, key) {
+            togo.push(key);
+        });
+        return togo;
+    }
+    
+    // unsupported, non-API function    
+    fluid.localRecordExpected = ["type", "options", "arguments", "mergeOptions",
+        "mergeAllOptions", "createOnEvent", "priority"];
+    // unsupported, non-API function    
+    fluid.checkComponentRecord = function(defaults, localRecord) {
+        var expected = fluid.arrayToHash(fluid.localRecordExpected);
+        fluid.each(defaults.argumentMap, function(value, key) {
+            expected[key] = true;
+        });
+        fluid.each(localRecord, function(value, key) {
+            if (!expected[key]) {
+                fluid.fail("Probable error in subcomponent record - key \"" + key + 
+                    "\" found, where the only legal options are " + 
+                    fluid.hashToArray(expected).join(", "));
+            }  
+        });
+    };
+    
     // unsupported, non-API function
     fluid.expandComponentOptions = function(defaults, userOptions, that) {
+        if (userOptions && userOptions.localRecord) {
+            fluid.checkComponentRecord(defaults, userOptions.localRecord);
+        }
         defaults = fluid.expandOptions(fluid.copy(defaults), that);
         var localRecord = {};
         if (userOptions && userOptions.marker === fluid.EXPAND) {
@@ -882,17 +913,15 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
     
     // unsupported, non-API function
-    fluid.bindDeferredComponent = function(that, componentName, component) {
-        fluid.withInstantiator(that, function(instantiator) {
-            var events = fluid.makeArray(component.createOnEvent);
-            fluid.each(events, function(eventName) {
-                that.events[eventName].addListener(function() {
-                    if (that[componentName]) {
-                        instantiator.clearComponent(that, componentName);
-                    }
-                    fluid.initDependent(that, componentName, instantiator);
-                }, null, null, component.priority);
-            });
+    fluid.bindDeferredComponent = function(that, componentName, component, instantiator) {
+        var events = fluid.makeArray(component.createOnEvent);
+        fluid.each(events, function(eventName) {
+            that.events[eventName].addListener(function() {
+                if (that[componentName]) {
+                    instantiator.clearComponent(that, componentName);
+                }
+                fluid.initDependent(that, componentName, instantiator);
+            }, null, null, component.priority);
         });
     };
     
@@ -907,17 +936,17 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var options = that.options;
         var components = options.components || {};
         var componentSort = {};
-        fluid.each(components, function(component, name) {
-            if (!component.createOnEvent) {
-                var priority = fluid.priorityForComponent(component);
-                componentSort[name] = {key: name, priority: fluid.event.mapPriority(priority, 0)};
-            }
-            else {
-                fluid.bindDeferredComponent(that, name, component);
-            }
-        });
-        var componentList = fluid.event.sortListeners(componentSort);
         fluid.withInstantiator(that, function(instantiator) {
+            fluid.each(components, function(component, name) {
+                if (!component.createOnEvent) {
+                    var priority = fluid.priorityForComponent(component);
+                    componentSort[name] = {key: name, priority: fluid.event.mapPriority(priority, 0)};
+                }
+                else {
+                    fluid.bindDeferredComponent(that, name, component, instantiator);
+                }
+            });
+            var componentList = fluid.event.sortListeners(componentSort);
             fluid.each(componentList, function(entry) {
                 fluid.initDependent(that, entry.key);  
             });
@@ -1111,13 +1140,14 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.defaults("fluid.resolveEnvironment", {
         ELstyle:     "${}",
+        seenIds:     {},
         bareContextRefs: true
     });
     
     fluid.resolveEnvironment = function(obj, options) {
-        options = fluid.merge(null, fluid.defaults("fluid.resolveEnvironment"), options);
-        options.seenIds = {};
-        
+        // Don't create a component here since this function is itself used in the 
+        // component expansion pathway - avoid all expansion in any case to head off FLUID-4301
+        var options = $.extend(true, {}, fluid.rawDefaults("fluid.resolveEnvironment"), options);
         return resolveEnvironmentImpl(obj, options);
     };
 

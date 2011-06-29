@@ -1,66 +1,88 @@
-/* UI Option styles for full page w/ or w/o preview */
+/* UI Option styles for full page layouts both with and without preview */
 
-
-/* Section headers */
-
+/* Control section headers */
 .fl-uiOptions h2 {
-	font-size: 1.29em;
-	font-weight: bold;
-	clear: both;
-	color: #444444;
-	padding-top: 14px;
-	padding-bottom: 22px;
-	padding-left: 0px;	
+    font-size: 1.29em;
+    font-weight: bold;
+    clear: both;
+    color: #444444;
+    padding: 14px 0px 5px 25px;
 }
 
-.fl-uiOptions h2 img {
-	margin-bottom: -3px;
-	padding-right: 5px;
-}
-
-
-/* Save & apply, reset, cancel buttons */
-
+/* Save, reset, cancel buttons */
 .fl-uiOptions .fl-uiOptions-buttons {
-	margin-top: 1em;
-	float: left;
-	width: 100%;
+    margin-top: 1em;
+    float: left;
+    width: 100%;
 }
 
 .fl-uiOptions .fl-uiOptions-buttons input {
-	text-transform: uppercase;
-	text-decoration: underline;
-	font-weight: bold;
-	color: #333333;
-/*  border: 2px solid #d7d7d7;*/
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
+    text-transform: uppercase;
+    text-decoration: underline;
+    font-weight: bold;
+    border: 2px solid #cecece;
+    font-size: 1em;
     padding: 5px;
-	height: 32px;
-	font-size: 1em;
+    height: 2.5em;
     margin-right: 3px;
+    background-color: #F0F0F0;
 }
 
 .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save {
-	padding-left: 16px;
-	background-image: url("../../../../components/uiOptions/images/uio_icon_save_13x13.png");
-	background-repeat: no-repeat;
-	background-position: 4px 6px;
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
+    padding-left: 20px;
+    /* background: -moz-linear-gradient(bottom, #e0e0e0, #fff;) */
+    background-image: url("../images/default/uio_icon_save_default_13x13.png");
+    background-repeat: no-repeat;
+    background-position: 0.2em 0.5em;
 }
 
 .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel {
-	padding-left: 16px;
-	background-image: url("../../../../components/uiOptions/images/uio_icon_cancel_13x13.png");
-	background-repeat: no-repeat;
-	background-position: 3px 6px;
-    background: -moz-linear-gradient(bottom, #e0e0e0, #fff);
+    padding-left: 20px;
+    background-image: url("../images/default/uio_icon_cancel_default_13x13.png");
+    background-repeat: no-repeat;
+    background-position: 0.2em 0.5em;
 }
 
-/* Check boxes */
-
-.fl-uiOptions input[type="checkbox"] {
-	margin-right:10px;
-	margin-bottom: 2em;
-	border: 1px solid black;
+/* Section header icons */
+.fl-uiOptions h2 img {
+    margin-bottom: -3px;
+    padding-right: 5px;
 }
 
+.fl-uiOptions h2.fl-uiOptions-text-icon {
+    background-image: url("../images/default/uio_icon_textanddisplay_default_18x18.png");
+    background-repeat: no-repeat;
+    background-position: 0px 0.7em;
+}
+.fl-uiOptions h2.fl-uiOptions-layout-icon {
+    background-image: url("../images/default/uio_icon_layoutandnavigation_default_18x18.png");
+    background-repeat: no-repeat;
+    background-position: 0px 0.7em; 
+}
+.fl-uiOptions h2.fl-uiOptions-links-icon {
+    background-image: url("../images/default/uio_icon_linksandbuttons_default_18x18.png");
+    background-repeat: no-repeat;
+    background-position: 0px 0.7em; 
+}
+
+/* Theming */
+.fl-theme-hc .fl-uiOptions .fl-uiOptions-text-icon { background-image: url("../images/hc/uio_icon_textanddisplay_hc_18x18.png"); }
+.fl-theme-hc .fl-uiOptions .fl-uiOptions-layout-icon { background-image: url("../images/hc/uio_icon_layoutandnavigation_hc_18x18.png"); }
+.fl-theme-hc .fl-uiOptions .fl-uiOptions-links-icon { background-image: url("../images/hc/uio_icon_linksandbuttons_hc_18x18.png"); }
+
+.fl-theme-hci .fl-uiOptions .fl-uiOptions-text-icon { background-image: url("../images/hci/uio_icon_textanddisplay_hci_18x18.png"); }
+.fl-theme-hci .fl-uiOptions .fl-uiOptions-layout-icon { background-image: url("../images/hci/uio_icon_layoutandnavigation_hci_18x18.png"); }
+.fl-theme-hci .fl-uiOptions .fl-uiOptions-links-icon { background-image: url("../images/hci/uio_icon_linksandbuttons_hci_18x18.png"); }
+
+.fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-text-icon { background-image: url("../images/yellowBlack/uio_icon_textanddisplay_yellowBlack_18x18.png"); }
+.fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-layout-icon { background-image: url("../images/yellowBlack/uio_icon_layoutandnavigation_yellowBlack_18x18.png"); }
+.fl-theme-yellowBlack .fl-uiOptions .fl-uiOptions-links-icon { background-image: url("../images/yellowBlack/uio_icon_linksandbuttons_yellowBlack_18x18.png"); }
+
+.fl-theme-blackYellow .fl-uiOptions .fl-uiOptions-text-icon { background-image: url("../images/blackYellow/uio_icon_textanddisplay_blackYellow_18x18.png"); }
+.fl-theme-blackYellow .fl-uiOptions .fl-uiOptions-layout-icon { background-image: url("../images/blackYellow/uio_icon_layoutandnavigation_blackYellow_18x18.png"); }
+.fl-theme-blackYellow .fl-uiOptions .fl-uiOptions-links-icon { background-image: url("../images/blackYellow/uio_icon_linksandbuttons_blackYellow_18x18.png"); }
+
+/* Linearization tweaks */
+.fl-layout-linear .fl-uiOptions .fl-uiOptions-text-icon, .fl-layout-linear .fl-uiOptions .fl-uiOptions-layout-icon, .fl-layout-linear .fl-uiOptions .fl-uiOptions-links-icon {
+    padding-left: 20px !important;
+}

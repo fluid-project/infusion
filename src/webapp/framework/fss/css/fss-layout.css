@@ -172,8 +172,8 @@ Generic containers for columns and layouts
 .fl-layout-linear .fl-force-right,
 .fl-layout-linear .fl-col,
 .fl-layout-linear .fl-grid li {
-display:block !important;
-width: auto !important;
+	display:block !important;
+	width: auto !important;
 }
 
 /* Make all block elements uniform width */
@@ -185,9 +185,13 @@ width: auto !important;
 .fl-layout-linear ul, .fl-layout-linear dl, .fl-layout-linear ol,
 .fl-layout-linear pre, .fl-layout-linear hr, .fl-layout-linear blockquote {
     width: 100% !important;
-max-width: 960px;
-min-width: 560px;
-padding: 0 !important;
+	max-width: 960px;
+	min-width: 560px;
+	/*padding: 0 !important;  a problem when bg images, and padding to give space for it */
+}
+
+.fl-layout-linear .fl-hidden-accessible {
+	overflow: hidden !important;
 }
 
 /* Deprecated */
