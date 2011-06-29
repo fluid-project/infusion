@@ -1356,10 +1356,15 @@ fluid.registerNamespace("fluid.tests");
                     here: {
                         href: "#here",
                         name: "messagekey"
-                    }
+                    },
+                    "FLUID-4301": [ 
+                        { id: 1 },
+                        { id: 1 }  
+                    ]
                 }
             };
-            var expopts = {ELstyle: "${}", model: model};
+            var applier = fluid.makeChangeApplier(model);
+            var expopts = {ELstyle: "${}", model: model, applier: applier};
             var expander = fluid.renderer.makeProtoExpander(expopts);
             var protoTree = {
                 expander: {

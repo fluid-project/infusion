@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../../../../components/uploader/js/DemoUploadManager.js"></script>
     <script type="text/javascript" src="../../../../components/progress/js/Progress.js"></script>
     <script type="text/javascript" src="../../../../components/uploader/js/FileQueueView.js"></script>
-    
+    <script type="text/javascript" src="../../../../components/uploader/js/ErrorPanel.js"></script>
     
     <!--  These are the jqUnit test js files -->
     <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
@@ -88,12 +88,36 @@
                 </div>
                 <!-- Total progress bar -->
                 <div class="flc-uploader-total-progress fl-uploader-total-progress-okay"></div>
+                <div class="flc-uploader-errorsPanel fl-uploader-errorsPanel">
+                     <div class="fl-uploader-errorsPanel-header"><span class="flc-uploader-errorPanel-header">Warnings:</span></div>
+    
+                     <!-- The markup for each error section will be rendered into these containers. -->
+                     <div class="flc-uploader-errorPanel-section-fileSize"></div>
+                     <div class="flc-uploader-errorPanel-section-numFiles"></div>
+                     
+                     <!-- Error section template.-->
+                     <div class="flc-uploader-errorPanel-section-tmplt fl-uploader-hidden-templates">
+                         <div class="flc-uploader-errorPanel-section-title fl-uploader-errorPanel-section-title">
+                             x files were too y and were not added to the queue.
+                         </div>
+                         
+                         <div class="flc-uploader-errorPanel-section-details fl-uploader-errorPanel-section-details">
+                             <p>The following files were not added:</p>
+                             <p class="flc-uploader-errorPanel-section-files">file_1, file_2, file_3, file_4, file_5 </p>
+                         </div>
+                         
+                         <button type="button" class="flc-uploader-errorPanel-section-toggleDetails fl-uploader-errorPanel-section-toggleDetails">Hide this list</button>
+                         <button type="button" class="flc-uploader-errorPanel-section-removeButton fl-uploader-errorPanel-section-removeButton">
+                             <span class="flc-uploader-erroredButton-text fl-uploader-hidden">Remove error</span>
+                         </button>
+                     </div>
+                 </div>
             </div>
             <div class="fl-uploader-buttons">
                 <button type="button" class="flc-uploader-button-pause fl-uploader-button-stop fl-uploader-hidden">Stop Upload</button>
                 <button type="button" class="flc-uploader-button-upload fl-uploader-button-upload fl-uploader-dim">Upload</button>
             </div>            
-            <div class="flc-uploader-status-region fl-offScreen-hidden"></div>
+            <div class="flc-uploader-status-region fl-offScreen-hidden"></div>          
         </form>        
         
          <form id="single-inline-fluid-uploader" class="fl-uploader fl-progEnhance-enhanced" method="get" enctype="multipart/form-data">

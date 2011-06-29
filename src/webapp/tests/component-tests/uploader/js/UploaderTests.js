@@ -20,7 +20,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
         var uploaderTests = new jqUnit.TestCase("Uploader Basic Tests");
-        
+        var mountainTestFile = {
+                fileName : "Mountain.jpg", // The file name. The path is not included. 
+                size : 400000 // The file size in bytes     
+            };            
+        var oceanTestFile = {
+            fileName : "Ocean.jpg", // The file name. The path is not included. 
+            size : 950000000 // The file size in bytes        
+        };
+
         fluid.staticEnvironment.uploader = fluid.typeTag("fluid.uploader.tests");
         
         var container = ".flc-uploader";
@@ -133,8 +141,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 "", status.text());
             
             checkStatusAfterFiringEvent("cat", "afterFileDialog");
-            checkStatusAfterFiringEvent("dog", "afterFileRemoved");       
-            checkStatusAfterFiringEvent("shark", "afterUploadComplete");           
+            checkStatusAfterFiringEvent("dog", "afterFileRemoved");
+            checkStatusAfterFiringEvent("shark", "afterUploadComplete");
         });
         
         /*************************************************************
