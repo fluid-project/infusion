@@ -226,19 +226,27 @@ var fluid_1_4 = fluid_1_4 || {};
     // See FLUID-4261: http://issues.fluidproject.org/browse/FLUID-4261
     fluid.tableOfContents.levels.generateTree = function (startLevel, endLevel) {
         var tree = {};
+        var trueTree = {};
         var componentID = "level" + startLevel;
+        var linkID = "link" + startLevel;
+        var itemID = "items" + startLevel;
         var parentLevel = startLevel - 1;
         var childLevel = startLevel + 1;
         var controlledBy = (parentLevel ? "{headingPath" + parentLevel + "}." : "") + "headings";
         var value = "headingValue" + startLevel;
         var path = "headingPath" + startLevel;
         
+        trueTree[linkID] = {
+            target: "${{" + path + "}.url}",
+            linktext: "${{" + path + "}.text}"
+        };
+        
         tree[componentID] = {
             children: [
                 {
                     expander: {
                         type: "fluid.renderer.repeat",
-                        repeatID: "items:",
+                        repeatID: itemID,
                         controlledBy: controlledBy,
                         valueAs: value,
                         pathAs: path,
@@ -247,12 +255,7 @@ var fluid_1_4 = fluid_1_4 || {};
                                 {
                                     type: "fluid.renderer.condition",
                                     condition: "{" + value + "}.text",
-                                    trueTree: {
-                                        link: {
-                                            target: "${{" + path + "}.url}",
-                                            linktext: "${{" + path + "}.text}"
-                                        }
-                                    }
+                                    trueTree: trueTree
                                 }
                             ]
                         }
@@ -287,10 +290,20 @@ var fluid_1_4 = fluid_1_4 || {};
             level4: ".flc-toc-levels-level4",
             level5: ".flc-toc-levels-level5",
             level6: ".flc-toc-levels-level6",
-            items: ".flc-toc-levels-items",
-            link: ".flc-toc-levels-link"
+            items1: ".flc-toc-levels-items1",
+            items2: ".flc-toc-levels-items2",
+            items3: ".flc-toc-levels-items3",
+            items4: ".flc-toc-levels-items4",
+            items5: ".flc-toc-levels-items5",
+            items6: ".flc-toc-levels-items6",
+            link1: ".flc-toc-levels-link1",
+            link2: ".flc-toc-levels-link2",
+            link3: ".flc-toc-levels-link3",
+            link4: ".flc-toc-levels-link4",
+            link5: ".flc-toc-levels-link5",
+            link6: ".flc-toc-levels-link6"            
         },
-        repeatingSelectors: ["level1", "level2", "level3", "level4", "level5", "level6", "items"],
+        repeatingSelectors: ["level1", "level2", "level3", "level4", "level5", "level6", "items1", "items2", "items3", "items4", "items5", "items6"],
         model: {
             headings: [] // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format]
         },
