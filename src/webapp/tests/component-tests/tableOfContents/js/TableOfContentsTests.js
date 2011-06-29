@@ -114,7 +114,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {
                     expander: {
                         type: "fluid.renderer.repeat",
-                        repeatID: "items:",
+                        repeatID: "items1",
                         controlledBy: "headings",
                         valueAs: "headingValue1",
                         pathAs: "headingPath1",
@@ -124,7 +124,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     type: "fluid.renderer.condition",
                                     condition: "{headingValue1}.text",
                                     trueTree: {
-                                        link: {
+                                        link1: {
                                             target: "${{headingPath1}.url}",
                                             linktext: "${{headingPath1}.text}"
                                         }
@@ -144,7 +144,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {
                     expander: {
                         type: "fluid.renderer.repeat",
-                        repeatID: "items:",
+                        repeatID: "items1",
                         controlledBy: "headings",
                         valueAs: "headingValue1",
                         pathAs: "headingPath1",
@@ -154,7 +154,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     type: "fluid.renderer.condition",
                                     condition: "{headingValue1}.text",
                                     trueTree: {
-                                        link: {
+                                        link1: {
                                             target: "${{headingPath1}.url}",
                                             linktext: "${{headingPath1}.text}"
                                         }
@@ -169,7 +169,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                                 {
                                                     expander: {
                                                         type: "fluid.renderer.repeat",
-                                                        repeatID: "items:",
+                                                        repeatID: "items2",
                                                         controlledBy: "{headingPath1}.headings",
                                                         valueAs: "headingValue2",
                                                         pathAs: "headingPath2",
@@ -179,7 +179,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                                                     type: "fluid.renderer.condition",
                                                                     condition: "{headingValue2}.text",
                                                                     trueTree: {
-                                                                        link: {
+                                                                        link2: {
                                                                             target: "${{headingPath2}.url}",
                                                                             linktext: "${{headingPath2}.text}"
                                                                         }
@@ -231,8 +231,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("tree generated correctly", expectedTree, tree);
     };
     
+    /**
+      * Retrieve a jquery that's associated with all the selectorNames
+      * @param  Array   Array of selector names
+      */
+    var locateSet = function (that, selectorNames) {
+        var set = $();  //Creates an empty jQuery object.
+        fluid.each(selectorNames, function (selectorName) {
+            set = set.add(that.locate(selectorName));
+        });
+        return set;
+    };
+    
     var renderTOCTest = function (that, testHeadings) {
-        var tocLinks = that.locate("link");
+        var tocLinks = locateSet(that, ["link1", "link2", "link3", "link4", "link5", "link6"]);
         jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
         fluid.each(tocLinks, function (elm, idx) {
             var hInfo = testHeadings.headingInfo[idx];
