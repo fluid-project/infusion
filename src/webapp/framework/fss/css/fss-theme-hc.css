@@ -106,9 +106,7 @@
     text-decoration:none;
 }
 .fl-theme-hc .fl-widget-titlebar .fl-button-inner {
-    background-image:url('../images/themes/hc/buttons-titlebar-bg.png');
-    padding-bottom:0.3em;
-    padding-top:0;
+    background-image:url(../images/themes/hc/buttons-titlebar-bg.png);
 }
 
 /* Widget options */
