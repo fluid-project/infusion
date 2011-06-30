@@ -18,13 +18,10 @@
 .fl-theme-blackYellow {color:#000000; background-color:#ffff00;}
 .fl-theme-blackYellow div, .fl-theme-blackYellow input {color:#000000; background-color:#ffff00; border-color:#000;}
 .fl-theme-blackYellow .fl-knockout {background:transparent !important; color:#000;} /* a granular method for basic reset of appearance */
-.fl-theme-blackYellow .fl-icon {color:#000; background-image:none; background-color:#ff0; text-indent:0; width:auto; height:auto; margin-left:0px; padding:0 2px; display:inline; font-weight:bold;}
-
+.fl-theme-blackYellow .fl-icon {background-color:#ffff00;}
 
 /* Links */
 .fl-theme-blackYellow a  {color: #000; font-weight:bold; background-color:#ff0;}
-.fl-theme-blackYellow a:hover {color: #ff0; background-color:#000;}
-.fl-theme-blackYellow a:hover * {color: #ff0; background-color:#000;}
 
 /* Headers */
 .fl-theme-blackYellow h1,
@@ -34,12 +31,9 @@
 .fl-theme-blackYellow h5,
 .fl-theme-blackYellow h6 {color:#000; background-color:#ff0; border-color:#000; border-bottom:0.1em dashed #000000;}
 
-
 /* Tables */
 .fl-theme-blackYellow th {border:0.1em solid #000; background-color:#000; color:#ff0;}
 .fl-theme-blackYellow td {border:0.1em solid #000;}
-.fl-theme-blackYellow .fl-textfield {}
-.fl-theme-blackYellow .fl-textarea {}
 
 /* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
 .fl-theme-blackYellow .fl-inlineEdit-edit {background-color:#000; color:#ff0; border: 0.1em solid #ff0; padding:0.1em; margin:-0.1em;}
@@ -79,34 +73,37 @@
 .fl-theme-blackYellow .fl-listmenu .fl-activemenu a:hover, 
 .fl-theme-blackYellow .fl-list-menu .fl-activemenu a:hover { background-color: #000000; border-bottom-color:#ff0; color:#ffff00;}
 
-
-/* Helper: Thumbnail Grid */
-.fl-theme-blackYellow .fl-grid {}
-.fl-theme-blackYellow .fl-grid li {}
-.fl-theme-blackYellow .fl-grid .fl-grid-caption {}
-
 /* Helper: buttons */
-.fl-theme-blackYellow .fl-button-right, 
-.fl-theme-blackYellow .fl-button-left, 
-.fl-theme-blackYellow .fl-button-inner {padding:0;}
+.fl-theme-blackYellow .fl-button-left,
+.fl-theme-blackYellow .fl-button-right {background-image:url(../images/themes/blackYellow/buttons-med-cap.png);}
+.fl-theme-blackYellow .fl-button-inner {background-image:url(../images/themes/blackYellow/buttons-med-bg.png);}
 
 
 /* Widget core */
 .fl-theme-blackYellow .fl-widget {background-color:#000; border:1px solid #ff0;}
-.fl-theme-blackYellow .fl-widget ul {}
 .fl-theme-blackYellow .fl-widget h2 {color:#000;}
 .fl-theme-blackYellow .fl-widget a {color:#000;}
+.fl-theme-blackYellow .fl-widget .fl-icon-more  {background-image:url('../images/themes/blackYellow/icon-widget-More.png'); margin-left:0px;}
+.fl-theme-blackYellow .fl-widget .fl-icon-close {background-image:url('../images/themes/blackYellow/icon-widget-Close.png'); margin-right:0px;}
         
 /* Widget titlebar */
 .fl-theme-blackYellow .fl-widget .fl-widget-titlebar {margin-bottom:3px;}
+.fl-theme-blackYellow .fl-grabbable .fl-widget-titlebar {background-image:url('../images/themes/blackYellow/icon-widget-gripper.png');}
+.fl-theme-blackYellow .fl-grabbable .fl-widget-titlebar h2 {display:inline;}
+.fl-theme-blackYellow .fl-widget-titlebar .icon {background-position:center center;}
+.fl-theme-blackYellow .fl-widget-titlebar .fl-button-right,
+.fl-theme-blackYellow .fl-widget-titlebar .fl-button-left {
+    color:#000000;
+    background-image:url(../images/themes/blackYellow/buttons-titlebar-cap.png);
+    text-decoration:none;
+}
+.fl-theme-blackYellow .fl-widget-titlebar .fl-button-inner {
+    background-image:url(../images/themes/blackYellow/buttons-titlebar-bg.png);
+}
 
 /* Widget options */
 .fl-theme-blackYellow .fl-widget .fl-widget-options {padding:0px;}
-.fl-theme-blackYellow .fl-widget .fl-widget-options ul {} 
 .fl-theme-blackYellow .fl-widget .fl-widget-options li {border-left:1px solid #ff0;}
-.fl-theme-blackYellow .fl-widget .fl-widget-options .icon {}
-.fl-theme-blackYellow .fl-widget .fl-widget-options .viewOptions {}
-.fl-theme-blackYellow .fl-widget .fl-widget-options .toggle {}
     
 /* Widget content */
 .fl-theme-blackYellow .fl-widget .fl-widget-content {background-color:#ff0;}

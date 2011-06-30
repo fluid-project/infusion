@@ -89,8 +89,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 }
             },
             settingsStore: {
-                type: "fluid.uiOptions.store",
-                container: "{uiEnhancer}.container"
+                type: "fluid.uiOptions.store"
             }
         },
         invokers: {
@@ -361,9 +360,6 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.initialSize = Math.round(parseFloat(lineHeight) / fluid.uiEnhancer.getTextSize(that.container) * 100) / 100;
     };
-
-
-
 
     /*******************************************************************************
      * PageEnhancer                                                                *

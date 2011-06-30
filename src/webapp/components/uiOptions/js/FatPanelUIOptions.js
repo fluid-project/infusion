@@ -44,7 +44,8 @@ var fluid_1_4 = fluid_1_4 || {};
                     },
                     styles: {
                         offScreen: "fl-offScreen-hidden",
-                        container: "fl-container-flex"
+                        containerFlex: "fl-container-flex",
+                        container: "fl-uiOptions-fatPanel"
                     }
                 }
             },
@@ -143,6 +144,7 @@ var fluid_1_4 = fluid_1_4 || {};
         $("<iframe/>", that.options.markupProps).appendTo(that.container);
         
         that.iframe = $(".flc-iframe", that.container);
+        that.iframe.addClass(styles.containerFlex);
         that.iframe.addClass(styles.container);
         that.iframe.addClass(styles.offScreen);
         that.iframe.load(that.events.afterRender.fire);
@@ -185,6 +187,8 @@ var fluid_1_4 = fluid_1_4 || {};
         var iframe = that.markupRenderer.iframe;
         var iframeDoc = iframe.contents();
         var iframeWin = iframe[0].contentWindow;
+        var body = $("body", iframeDoc);      
+        $("body", iframeDoc).addClass(that.markupRenderer.options.styles.container);        
         
         that.uiOptions = fluid.invokeGlobalFunction(that.options.uiOptions.type, 
                 [$("body", iframeDoc), that.options.uiOptions.options], iframeWin);            
