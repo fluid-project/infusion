@@ -126,7 +126,7 @@ var fluid_1_4 = fluid_1_4 || {};
     ********************/
     fluid.registerNamespace("fluid.tableOfContents.modelBuilder");
     
-    fluid.tableOfContents.modelBuilder.toModel = function (headingInfo) {
+    fluid.tableOfContents.modelBuilder.toGradualIndentationModel = function (headingInfo) {
         var headings = fluid.copy(headingInfo);
         
         var buildModelLevel = function (headings, level) {
@@ -160,8 +160,8 @@ var fluid_1_4 = fluid_1_4 || {};
         return buildModelLevel(headings, 1);
     };
     
-    /**
-    fluid.tableOfContents.modelBuilder.toModel = function (headingInfo) {
+
+    fluid.tableOfContents.modelBuilder.toSkippedIndentationModel = function (headingInfo) {
         var headings = fluid.copy(headingInfo);
         
         var buildModelLevel = function (headings, level) {
@@ -194,7 +194,7 @@ var fluid_1_4 = fluid_1_4 || {};
         
         return buildModelLevel(headings, 1);
     };
-    */
+
     
     fluid.tableOfContents.modelBuilder.finalInit = function (that) {
         
@@ -224,7 +224,7 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         },
         invokers: {
-            toModel: "fluid.tableOfContents.modelBuilder.toModel"
+            toModel: "fluid.tableOfContents.modelBuilder.toGradualIndentationModel"
         }
     });
     
