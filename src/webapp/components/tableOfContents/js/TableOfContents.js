@@ -161,7 +161,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.tableOfContents.modelBuilder.toGradualIndentationModel = function (headingInfo) {
-        var modelLevelFn = function(modelLevel, subHeadings) {
+        var modelLevelFn = function (modelLevel, subHeadings) {
             return subHeadings;
         };
         return fluid.tableOfContents.modelBuilder.toModel(headingInfo, modelLevelFn);
@@ -169,7 +169,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
 
     fluid.tableOfContents.modelBuilder.toSkippedIndentationModel = function (headingInfo) {
-        var modelLevelFn = function(modelLevel, subHeadings) {
+        var modelLevelFn = function (modelLevel, subHeadings) {
             modelLevel.push({headings: subHeadings});
             return modelLevel;
         };

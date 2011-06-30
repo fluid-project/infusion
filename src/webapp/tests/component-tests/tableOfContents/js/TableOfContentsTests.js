@@ -228,12 +228,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return fluid.transform(tagArray, createElm);
     };
     
-    var toModelTests = function (headingInfo, expectedModel) {
-        // test all the toModel 
-        toGradualIndentationModelTests(headingInfo, expectedModel);
-        toSkippedIndentationModelTests(headingInfo, expectedModel);
-    };
-    
     var toGradualIndentationModelTests = function (headingInfo, expectedModel) {
         var model = fluid.tableOfContents.modelBuilder.toGradualIndentationModel(headingInfo);
         jqUnit.assertDeepEq("headingInfo converted to GradualIndentationModel correctly", expectedModel, model);
@@ -242,7 +236,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var toSkippedIndentationModelTests = function (headingInfo, expectedModel) {
         var model = fluid.tableOfContents.modelBuilder.toSkippedIndentationModel(headingInfo);
         jqUnit.assertDeepEq("headingInfo converted to SkippedIndentationModel correctly", expectedModel, model);
-    };    
+    };
     
     var convertToHeadingObjectsTests = function (headings, anchorInfo, expectedHeadingInfo) {
         var modelBuilder = fluid.tableOfContents.modelBuilder();
