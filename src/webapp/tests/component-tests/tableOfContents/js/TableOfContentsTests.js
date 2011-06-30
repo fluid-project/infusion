@@ -38,6 +38,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         funcName: 'fluid.tableOfContents.generateGUIDMock'
     });
     
+    /* TODO: Might want to rename this and "skippedHeadingsForGradualIndentationModel" */
     var skippedHeadingsForSkippedIndentationModel = {
         headingTags: ["h1", "h6"],
         anchorInfo: [{url: "#h1"}, {url: "#h6"}],
@@ -65,6 +66,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     };
     
+    /* TODO: Might want to rename this and "skippedHeadingsForSkippedIndentationModel" */
     var skippedHeadingsForGradualIndentationModel = {
         headingTags: ["h1", "h6"],
         anchorInfo: [{url: "#h1"}, {url: "#h6"}],
@@ -228,14 +230,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return fluid.transform(tagArray, createElm);
     };
     
-    var toGradualIndentationModelTests = function (headingInfo, expectedModel) {
-        var model = fluid.tableOfContents.modelBuilder.toGradualIndentationModel(headingInfo);
-        jqUnit.assertDeepEq("headingInfo converted to GradualIndentationModel correctly", expectedModel, model);
-    };
-    
-    var toSkippedIndentationModelTests = function (headingInfo, expectedModel) {
-        var model = fluid.tableOfContents.modelBuilder.toSkippedIndentationModel(headingInfo);
-        jqUnit.assertDeepEq("headingInfo converted to SkippedIndentationModel correctly", expectedModel, model);
+    var toModelTests = function (headingInfo, expectedModel, modelLevelFn) {
+        var model = fluid.tableOfContents.modelBuilder.toModel(headingInfo, modelLevelFn);
+        jqUnit.assertDeepEq("headingInfo converted to toModel correctly", expectedModel, model);
     };
     
     var convertToHeadingObjectsTests = function (headings, anchorInfo, expectedHeadingInfo) {
@@ -328,15 +325,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         // "fluid.tableOfContents.modelBuilder" tests
         
-        tocMBTests.test("toModel: linear headings", function () {
-            // the indentation is the same for both models if it is linear headings
-            toSkippedIndentationModelTests(linearHeadings.headingInfo, linearHeadings.model);
-            toGradualIndentationModelTests(linearHeadings.headingInfo, linearHeadings.model);
+        tocMBTests.test("toModel: linear headings with gradual indentation models", function () {
+            toModelTests(linearHeadings.headingInfo, linearHeadings.model, fluid.tableOfContents.modelBuilder.gradualModelLevelFn);
         });
-        tocMBTests.test("toModel: skipped headings", function () {
-            // the indentation are different if it is skipped headings
-            toSkippedIndentationModelTests(skippedHeadingsForSkippedIndentationModel.headingInfo, skippedHeadingsForSkippedIndentationModel.model);
-            toGradualIndentationModelTests(skippedHeadingsForGradualIndentationModel.headingInfo, skippedHeadingsForGradualIndentationModel.model);
+        tocMBTests.test("toModel: linear headings with skipped indentation models", function () {
+            toModelTests(linearHeadings.headingInfo, linearHeadings.model, fluid.tableOfContents.modelBuilder.skippedModelLevelFn);
+        });
+        tocMBTests.test("toModel: skipped headings with gradual indentation models", function () {
+            toModelTests(skippedHeadingsForGradualIndentationModel.headingInfo, skippedHeadingsForGradualIndentationModel.model,
+                fluid.tableOfContents.modelBuilder.gradualModelLevelFn);
+        });
+        tocMBTests.test("toModel: skipped headings with skipped indentation models", function () {
+            toModelTests(skippedHeadingsForSkippedIndentationModel.headingInfo, skippedHeadingsForSkippedIndentationModel.model,  
+                fluid.tableOfContents.modelBuilder.skippedModelLevelFn);
         });
         
         tocMBTests.test("convertToHeadingObjects: linear headings", function () {
@@ -357,6 +358,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assembleModelTests(createElms(skippedHeadingsForGradualIndentationModel.headingTags), 
                 skippedHeadingsForGradualIndentationModel.anchorInfo, skippedHeadingsForGradualIndentationModel.model);
         });
+        
+        tocMBTests.test("Test gradualModelLevelFn",function () {
+            var modelLevel = ['level1', 'level2'];
+            var subHeadings = ['subHeading1', 'subHeading2'];
+            var gradualIndentationModel = fluid.tableOfContents.modelBuilder.gradualModelLevelFn(modelLevel, subHeadings);
+            jqUnit.assertEquals("gradual indentation model should always returns the subHeadings.", subHeadings, gradualIndentationModel);
+        }); 
+        
+        tocMBTests.test("Test skippedModelLevelFn",function () {
+            var modelLevel = ['level1', 'level2', {headings:['subHeading1', 'subHeading2']}];
+            var modelLevelClone = fluid.copy(modelLevel);
+            var subHeadings = modelLevelClone.pop();
+            var skippedIndentationModel = fluid.tableOfContents.modelBuilder.skippedModelLevelFn(modelLevelClone, subHeadings.headings);
+            jqUnit.assertDeepEq("skipped indentation model should always return the modelLevel with subHeadings as a child.", modelLevel, skippedIndentationModel);
+        }); 
         
         // "fluid.tableOfContents.levels" tests
         
@@ -480,7 +496,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listeners: {
                     afterRender: function (that) {
                         renderTOCTest(that, testHeadings);
-                        renderTOCAnchorTest();
+                        renderTOCAnchorTest();                        
                         start();
                     }
                 }

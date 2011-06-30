@@ -159,23 +159,15 @@ var fluid_1_4 = fluid_1_4 || {};
         
         return buildModelLevel(headings, 1);
     };
-    
-    fluid.tableOfContents.modelBuilder.toGradualIndentationModel = function (headingInfo) {
-        var modelLevelFn = function (modelLevel, subHeadings) {
-            return subHeadings;
-        };
-        return fluid.tableOfContents.modelBuilder.toModel(headingInfo, modelLevelFn);
-    };
-    
-
-    fluid.tableOfContents.modelBuilder.toSkippedIndentationModel = function (headingInfo) {
-        var modelLevelFn = function (modelLevel, subHeadings) {
-            modelLevel.push({headings: subHeadings});
-            return modelLevel;
-        };
-        return fluid.tableOfContents.modelBuilder.toModel(headingInfo, modelLevelFn);
+       
+    fluid.tableOfContents.modelBuilder.gradualModelLevelFn = function (modelLevel, subHeadings) {
+        return subHeadings;
     };
 
+    fluid.tableOfContents.modelBuilder.skippedModelLevelFn = function (modelLevel, subHeadings) {
+        modelLevel.push({headings: subHeadings});
+        return modelLevel;
+    };
     
     fluid.tableOfContents.modelBuilder.finalInit = function (that) {
         
@@ -205,7 +197,11 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         },
         invokers: {
-            toModel: "fluid.tableOfContents.modelBuilder.toGradualIndentationModel"
+            toModel: {
+                funcName: "fluid.tableOfContents.modelBuilder.toModel",
+                args: ["{arguments}.0", "{modelBuilder}.modelLevelFn"]
+            },
+            modelLevelFn: "fluid.tableOfContents.modelBuilder.gradualModelLevelFn"
         }
     });
     
