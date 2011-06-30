@@ -124,6 +124,16 @@ var fluid_1_4 = fluid_1_4 || {};
         });
         that.locate("totalFileStatusText").html(totalStateStr);
     };
+    
+    var renderFileUploadLimit = function (that) {
+        if (that.options.queueSettings.fileUploadLimit > 0) {
+            var fileUploadLimitText = fluid.stringTemplate(that.options.strings.progress.fileUploadLimitLabel, {
+                fileUploadLimit: that.options.queueSettings.fileUploadLimit, 
+                fileLabel: fileOrFiles(that, that.options.queueSettings.fileUploadLimit) 
+            });
+            that.locate("fileUploadLimitText").html(fileUploadLimitText);
+        }
+    };
         
     var updateTotalProgress = function (that) {
         var batch = that.queue.currentBatch;
@@ -317,6 +327,7 @@ var fluid_1_4 = fluid_1_4 || {};
         
         updateQueueSummaryText(that);
         that.statusUpdater();
+        renderFileUploadLimit(that);
         
         // Uploader uses application-style keyboard conventions, so give it a suitable role.
         that.container.attr("role", "application");
@@ -481,7 +492,7 @@ var fluid_1_4 = fluid_1_4 || {};
             fileSizeLimit: "20480",
             fileTypes: null,
             fileTypesDescription: null,
-            fileUploadLimit: 0,
+            fileUploadLimit: 3,
             fileQueueLimit: 0
         },
 
@@ -494,6 +505,7 @@ var fluid_1_4 = fluid_1_4 || {};
             uploadButton: ".flc-uploader-button-upload",
             pauseButton: ".flc-uploader-button-pause",
             totalFileStatusText: ".flc-uploader-total-progress-text",
+            fileUploadLimitText: ".flc-uploader-upload-limit-text",
             instructions: ".flc-uploader-browse-instructions",
             statusRegion: ".flc-uploader-status-region",
             errorsPanel: ".flc-uploader-errorsPanel"
@@ -539,6 +551,7 @@ var fluid_1_4 = fluid_1_4 || {};
 
         strings: {
             progress: {
+                fileUploadLimitLabel: "%fileUploadLimit %fileLabel maximum",
                 toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)", 
                 totalProgressLabel: "Uploading: %curFileN of %totalFilesN %fileLabel (%currBytes of %totalBytes)", 
                 completedLabel: "Uploaded: %curFileN of %totalFilesN %fileLabel (%totalCurrBytes)%errorString",
