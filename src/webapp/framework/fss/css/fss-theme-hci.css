@@ -1,24 +1,19 @@
 /*
-              High Contrast
+   High Contrast Inverted (white on black)
 =============================================
- * Color Schema:
- *     DEFINITIONS:
- *         white     : #ffffff
- *         black     : #000000
-
+ * Color Scheme:
+ *     white: #ffffff
+ *     black: #000000
  */
-.fl-theme-hci .fl-focus:focus,
-.fl-theme-hci .fl-focus :focus,
-.fl-theme-hci.fl-focus :focus,
-.fl-theme-hci .selectable  {
-   /* themed focus indicator */
-   outline: 0.2em solid #F00;
-}
-
+ 
+/* 
+ * General Styling
+ */
+  
 .fl-theme-hci {color:#fff; background-color:#000;}
+
+/* Divs, inputs */
 .fl-theme-hci div, .fl-theme-hci input {color:#fff; background-color:#000;}
-.fl-theme-hci .fl-knockout {background:transparent !important; color:#ffffff;} /* Deprecated: use .fl-noBackgroundImages */
-.fl-theme-hci .fl-icon {background-color:#000000;}
 
 /* Links */
 .fl-theme-hci a  {color: #ffffff; font-weight:bold; background-color:#000000;}
@@ -35,10 +30,22 @@
 .fl-theme-hci th {border:0.1em solid #ffffff; background-color:#ffffff; color:#000000;}
 .fl-theme-hci td {border:0.1em solid #ffffff;}
 
-/* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
-.fl-theme-hci .fl-inlineEdit-edit {background-color:#ffffff; color:#000000; border: 0.1em solid #000000; padding:0.1em; margin:-0.1em;}
+/* 
+ * FSS Elements
+ */
+ 
+/* Focus */
+.fl-theme-hci .fl-focus:focus,
+.fl-theme-hci .fl-focus :focus,
+.fl-theme-hci.fl-focus :focus,
+.fl-theme-hci .selectable  {outline: 0.2em solid #F00;}
+ 
+.fl-theme-hci .fl-knockout {background:transparent !important; color:#ffffff;} /* Deprecated: use .fl-noBackgroundImages */
 
-/* Helper: Tabs */
+/* Icons */
+.fl-theme-hci .fl-icon {background-color:#000000;}
+
+/* Tabs */
 .fl-theme-hci .fl-tabs {border-bottom-color:#ffffff;}
 .fl-theme-hci .fl-tabs li,
 .fl-theme-hci .fl-tabs li *  {border-color:#ffffff; border-bottom-color:#ffffff; }
@@ -59,7 +66,7 @@
 .fl-theme-hci .fl-tabs li.fl-activeTab a:hover {background-color: #000000; border-bottom-color:#000000; color:#ffffff;}
 .fl-theme-hci .fl-tab-content {background-color:#000000; border:1px solid #fff; border-top:none; color:#ffffff;}
 
-/* Helper: Menu */
+/* Menu */
 .fl-theme-hci .fl-listmenu, 
 .fl-theme-hci .fl-list-menu {border:1px solid #ffffff; border-bottom-width:2px; background-color:#000000;}
 .fl-theme-hci .fl-listmenu li, 
@@ -73,14 +80,14 @@
 .fl-theme-hci .fl-listmenu .fl-activemenu a:hover, 
 .fl-theme-hci .fl-list-menu .fl-activemenu a:hover { background-color: #ffffff; border-bottom-color:#000000; color: #000000;}
 
-/* Helper: buttons */
+/* Buttons */
 .fl-theme-hci .fl-button-left,
 .fl-theme-hci .fl-button-right {color:#ffffff; background-color:#000000;}
 .fl-theme-hci .fl-button-left,
-.fl-theme-hci .fl-button-right {background-image:url(../images/themes/hci/buttons-med-cap.png);}
-.fl-theme-hci .fl-button-inner {background-image:url(../images/themes/hci/buttons-med-bg.png);}
+.fl-theme-hci .fl-button-right {background-image:url('../images/themes/hci/buttons-med-cap.png');}
+.fl-theme-hci .fl-button-inner {background-image:url('../images/themes/hci/buttons-med-bg.png');}
 
-/* Widget core */
+/* Widgets */
 .fl-theme-hci .fl-widget {background-color:#ffffff; border:1px solid #000000;}
 .fl-theme-hci .fl-widget h2 {color:#ffffff0; background-color:#00000;}
 .fl-theme-hci .fl-widget a {color:#ffffff;}
@@ -95,15 +102,14 @@
 .fl-theme-hci .fl-widget-titlebar .fl-button-right,
 .fl-theme-hci .fl-widget-titlebar .fl-button-left {
     color:#fff;
-    background-image:url(../images/themes/hci/buttons-titlebar-cap.png);
+    background-image:url('../images/themes/hci/buttons-titlebar-cap.png');
     text-decoration:none;
 }
 .fl-theme-hci .fl-widget-titlebar .fl-button-inner {
-    background-image:url(../images/themes/hci/buttons-titlebar-bg.png);
+    background-image:url('../images/themes/hci/buttons-titlebar-bg.png');
     padding-bottom:0.3em;
     padding-top:0;
 }
-
 
 /* Widget options */
 .fl-theme-hci .fl-widget .fl-widget-options {padding:0px;}
@@ -112,13 +118,16 @@
 /* Widget content */
 .fl-theme-hci .fl-widget .fl-widget-content {background-color:#000000;}
 
+/* 
+ * Infusion Components
+ */
 
-
-/* Component: Progressor */
+/* Progress */
 .fl-theme-hci .fl-progress-bounds {border-color:#ffffff; background-color:#000000;}
 .fl-theme-hci .fl-progress-fill {color:#000000; background-color:#ffffff;}
 
-/* Component: Uploader */
-
-/* States */
+/* Reorderer */
 .fl-theme-hci .fl-reorderer-dropMarker {background-color:#f00;}
+
+/* Inline Edit */
+.fl-theme-hci .fl-inlineEdit-edit {background-color:#ffffff; color:#000000; border: 0.1em solid #000000; padding:0.1em; margin:-0.1em;}

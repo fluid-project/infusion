@@ -1,24 +1,19 @@
 /*
-              Yellow on Black
-=============================================
- * Color Schema:
- *     DEFINITIONS:
- *         yellow     : #ffff00
- *         black     : #000000
-
+            Yellow on Black
+========================================
+ * Color Scheme:
+ *     yellow     : #ffff00
+ *     black     : #000000
  */
-.fl-theme-yellowBlack .fl-focus:focus,
-.fl-theme-yellowBlack .fl-focus :focus,
-.fl-theme-yellowBlack.fl-focus :focus,
-.fl-theme-yellowBlack .selectable  {
-   /* themed focus indicator */
-   outline: 0.2em solid #F00;
-}
+ 
+/* 
+ * General Styling
+ */
 
-.fl-theme-yellowBlack {color:#ff0; background-color:#000;}
+.fl-theme-yellowBlack {color:#ff0; background-color:#000;}  
+
+/* Divs, inputs */
 .fl-theme-yellowBlack div, .fl-theme-yellowBlack input {color:#ff0; background-color:#000;}
-.fl-theme-yellowBlack .fl-knockout {background:transparent !important; color:#ffff00;} /* a granular method for basic reset of appearance */
-.fl-theme-yellowBlack .fl-icon {background-color:#000000;}
 
 /* Links */
 .fl-theme-yellowBlack a  {color: #ffff00; font-weight:bold; background-color:#000000;}
@@ -35,10 +30,22 @@
 .fl-theme-yellowBlack th {border:0.1em solid #ffff00; background-color:#ffff00; color:#000000;}
 .fl-theme-yellowBlack td {border:0.1em solid #ffff00;}
 
-/* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
-.fl-theme-yellowBlack .fl-inlineEdit-edit {background-color:#ffff00; color:#000000; border: 0.1em solid #000000; padding:0.1em; margin:-0.1em;}
+/* 
+ * FSS Elements
+ */
+ 
+/* Focus */
+.fl-theme-yellowBlack .fl-focus:focus,
+.fl-theme-yellowBlack .fl-focus :focus,
+.fl-theme-yellowBlack.fl-focus :focus,
+.fl-theme-yellowBlack .selectable  {outline: 0.2em solid #F00;}
+ 
+.fl-theme-yellowBlack .fl-knockout {background:transparent !important; color:#ffff00;} /* Deprecated: use .fl-noBackgroundImages */
 
-/* Helper: Tabs */
+/* Icons */
+.fl-theme-yellowBlack .fl-icon {background-color:#000000;}
+
+/* Tabs */
 .fl-theme-yellowBlack .fl-tabs {border-bottom-color:#ffff00;}
 .fl-theme-yellowBlack .fl-tabs li,
 .fl-theme-yellowBlack .fl-tabs li *  {border-color:#ffff00; border-bottom-color:#ffff00; }
@@ -59,7 +66,7 @@
 .fl-theme-yellowBlack .fl-tabs li.fl-activeTab a:hover {background-color: #000000; border-bottom-color:#000000; color:#ffff00;}
 .fl-theme-yellowBlack .fl-tab-content {background-color:#000000; border:1px solid #ff0; border-top:none; color:#ffff00;}
 
-/* Helper: Menu */
+/* Menu */
 .fl-theme-yellowBlack .fl-listmenu, 
 .fl-theme-yellowBlack .fl-list-menu {border:1px solid #ffff00; border-bottom-width:2px; background-color:#000000;}
 .fl-theme-yellowBlack .fl-listmenu li, 
@@ -73,12 +80,12 @@
 .fl-theme-yellowBlack .fl-listmenu .fl-activemenu a:hover, 
 .fl-theme-yellowBlack .fl-list-menu .fl-activemenu a:hover { background-color: #ffff00; border-bottom-color:#000000; color: #000000;}
 
-/* Helper: buttons */
+/* Buttons */
 .fl-theme-yellowBlack .fl-button-left,
-.fl-theme-yellowBlack .fl-button-right {background-image:url(../images/themes/yellowBlack/buttons-med-cap.png);}
-.fl-theme-yellowBlack .fl-button-inner {background-image:url(../images/themes/yellowBlack/buttons-med-bg.png);}
+.fl-theme-yellowBlack .fl-button-right {background-image:url('../images/themes/yellowBlack/buttons-med-cap.png');}
+.fl-theme-yellowBlack .fl-button-inner {background-image:url('../images/themes/yellowBlack/buttons-med-bg.png');}
 
-/* Widget core */
+/* Widgets */
 .fl-theme-yellowBlack .fl-widget {background-color:#ffff00; border:1px solid #000000;}
 .fl-theme-yellowBlack .fl-widget h2 {color:#ffff00; background-color:#000000;}
 .fl-theme-yellowBlack .fl-widget a {color:#ffff00;}
@@ -93,11 +100,11 @@
 .fl-theme-yellowBlack .fl-widget-titlebar .fl-button-right,
 .fl-theme-yellowBlack .fl-widget-titlebar .fl-button-left {
     color:#ffff00;
-    background-image:url(../images/themes/yellowBlack/buttons-titlebar-cap.png);
+    background-image:url('../images/themes/yellowBlack/buttons-titlebar-cap.png');
     text-decoration:none;
 }
 .fl-theme-yellowBlack .fl-widget-titlebar .fl-button-inner {
-    background-image:url(../images/themes/yellowBlack/buttons-titlebar-bg.png);
+    background-image:url('../images/themes/yellowBlack/buttons-titlebar-bg.png');
 }
 
 /* Widget options */
@@ -107,11 +114,16 @@
 /* Widget content */
 .fl-theme-yellowBlack .fl-widget .fl-widget-content {background-color:#000000;}
 
-/* Component: Progressor */
+/* 
+ * Infusion Components
+ */
+
+/* Progress */
 .fl-theme-yellowBlack .fl-progress-bounds {border-color:#ffff00; background-color:#000000;}
 .fl-theme-yellowBlack .fl-progress-fill {color:#000000; background-color:#ffff00;}
 
-/* Component: Uploader */
-
-/* States */
+/* Reorderer */
 .fl-theme-yellowBlack .fl-reorderer-dropMarker {background-color:#f00;}
+
+/* Inline Edit */
+.fl-theme-yellowBlack .fl-inlineEdit-edit {background-color:#ffff00; color:#000000; border: 0.1em solid #000000; padding:0.1em; margin:-0.1em;}
