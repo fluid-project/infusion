@@ -126,7 +126,7 @@ var fluid_1_4 = fluid_1_4 || {};
     ********************/
     fluid.registerNamespace("fluid.tableOfContents.modelBuilder");
     
-    fluid.tableOfContents.modelBuilder.toGradualIndentationModel = function (headingInfo) {
+    fluid.tableOfContents.modelBuilder.toModel = function (headingInfo, modelLevelFn) {
         var headings = fluid.copy(headingInfo);
         
         var buildModelLevel = function (headings, level) {
@@ -144,7 +144,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     if (modelLevel.length > 0) {
                         modelLevel[modelLevel.length - 1].headings = subHeadings;
                     } else {
-                        modelLevel = subHeadings;
+                        modelLevel = modelLevelFn(modelLevel, subHeadings);
                     }
                 }
                 
@@ -160,39 +160,20 @@ var fluid_1_4 = fluid_1_4 || {};
         return buildModelLevel(headings, 1);
     };
     
+    fluid.tableOfContents.modelBuilder.toGradualIndentationModel = function (headingInfo) {
+        var modelLevelFn = function(modelLevel, subHeadings) {
+            return subHeadings;
+        };
+        return fluid.tableOfContents.modelBuilder.toModel(headingInfo, modelLevelFn);
+    };
+    
 
     fluid.tableOfContents.modelBuilder.toSkippedIndentationModel = function (headingInfo) {
-        var headings = fluid.copy(headingInfo);
-        
-        var buildModelLevel = function (headings, level) {
-            var modelLevel = [];
-            
-            while (headings.length > 0) {
-                var heading = headings[0];
-                if (heading.level < level) {
-                    break;
-                }
-                
-                if (heading.level > level) {
-                    var subHeadings = buildModelLevel(headings, level + 1);
-                    
-                    if (modelLevel.length > 0) {
-                        modelLevel[modelLevel.length - 1].headings = subHeadings;
-                    } else {
-                        modelLevel.push({headings: subHeadings});
-                    }
-                }
-                
-                if (heading.level === level) {
-                    modelLevel.push(heading);
-                    headings.shift();
-                }
-            }
-            
+        var modelLevelFn = function(modelLevel, subHeadings) {
+            modelLevel.push({headings: subHeadings});
             return modelLevel;
         };
-        
-        return buildModelLevel(headings, 1);
+        return fluid.tableOfContents.modelBuilder.toModel(headingInfo, modelLevelFn);
     };
 
     
