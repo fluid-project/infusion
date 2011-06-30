@@ -144,6 +144,41 @@ var fluid_1_4 = fluid_1_4 || {};
                     if (modelLevel.length > 0) {
                         modelLevel[modelLevel.length - 1].headings = subHeadings;
                     } else {
+                        modelLevel = subHeadings;
+                    }
+                }
+                
+                if (heading.level === level) {
+                    modelLevel.push(heading);
+                    headings.shift();
+                }
+            }
+            
+            return modelLevel;
+        };
+        
+        return buildModelLevel(headings, 1);
+    };
+    
+    /**
+    fluid.tableOfContents.modelBuilder.toModel = function (headingInfo) {
+        var headings = fluid.copy(headingInfo);
+        
+        var buildModelLevel = function (headings, level) {
+            var modelLevel = [];
+            
+            while (headings.length > 0) {
+                var heading = headings[0];
+                if (heading.level < level) {
+                    break;
+                }
+                
+                if (heading.level > level) {
+                    var subHeadings = buildModelLevel(headings, level + 1);
+                    
+                    if (modelLevel.length > 0) {
+                        modelLevel[modelLevel.length - 1].headings = subHeadings;
+                    } else {
                         modelLevel.push({headings: subHeadings});
                     }
                 }
@@ -159,6 +194,7 @@ var fluid_1_4 = fluid_1_4 || {};
         
         return buildModelLevel(headings, 1);
     };
+    */
     
     fluid.tableOfContents.modelBuilder.finalInit = function (that) {
         
