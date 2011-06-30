@@ -38,7 +38,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         funcName: 'fluid.tableOfContents.generateGUIDMock'
     });
     
-    var skippedHeadings = {
+    var skippedHeadingsForSkippedIndentationModel = {
         headingTags: ["h1", "h6"],
         anchorInfo: [{url: "#h1"}, {url: "#h6"}],
         headingInfo: [
@@ -61,6 +61,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }]
                     }]
                 }]
+            }]
+        }]
+    };
+    
+    var skippedHeadingsForGradualIndentationModel = {
+        headingTags: ["h1", "h6"],
+        anchorInfo: [{url: "#h1"}, {url: "#h6"}],
+        headingInfo: [
+            {level: 1, text: "h1", url: "#h1"},
+            {level: 6, text: "h6", url: "#h6"}
+        ],
+        model: [{
+            level: 1, 
+            text: "h1", 
+            url: "#h1",
+            headings: [{
+                level: 6, 
+                text: "h6", 
+                url: "#h6"
             }]
         }]
     };
@@ -210,9 +229,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     var toModelTests = function (headingInfo, expectedModel) {
-        var model = fluid.tableOfContents.modelBuilder.toModel(headingInfo);
-        jqUnit.assertDeepEq("headingInfo converted to model correctly", expectedModel, model);
+        // test all the toModel 
+        toGradualIndentationModelTests(headingInfo, expectedModel);
+        toSkippedIndentationModelTests(headingInfo, expectedModel);
     };
+    
+    var toGradualIndentationModelTests = function (headingInfo, expectedModel) {
+        var model = fluid.tableOfContents.modelBuilder.toGradualIndentationModel(headingInfo);
+        jqUnit.assertDeepEq("headingInfo converted to GradualIndentationModel correctly", expectedModel, model);
+    };
+    
+    var toSkippedIndentationModelTests = function (headingInfo, expectedModel) {
+        var model = fluid.tableOfContents.modelBuilder.toSkippedIndentationModel(headingInfo);
+        jqUnit.assertDeepEq("headingInfo converted to SkippedIndentationModel correctly", expectedModel, model);
+    };    
     
     var convertToHeadingObjectsTests = function (headings, anchorInfo, expectedHeadingInfo) {
         var modelBuilder = fluid.tableOfContents.modelBuilder();
@@ -304,21 +334,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         // "fluid.tableOfContents.modelBuilder" tests
         
-        tocMBTests.test("toModel: linear headings", function () {toModelTests(linearHeadings.headingInfo, linearHeadings.model);});
-        tocMBTests.test("toModel: skipped headings", function () {toModelTests(skippedHeadings.headingInfo, skippedHeadings.model);});
+        tocMBTests.test("toModel: linear headings", function () {
+            // the indentation is the same for both models if it is linear headings
+            toSkippedIndentationModelTests(linearHeadings.headingInfo, linearHeadings.model);
+            toGradualIndentationModelTests(linearHeadings.headingInfo, linearHeadings.model);
+        });
+        tocMBTests.test("toModel: skipped headings", function () {
+            // the indentation are different if it is skipped headings
+            toSkippedIndentationModelTests(skippedHeadingsForSkippedIndentationModel.headingInfo, skippedHeadingsForSkippedIndentationModel.model);
+            toGradualIndentationModelTests(skippedHeadingsForGradualIndentationModel.headingInfo, skippedHeadingsForGradualIndentationModel.model);
+        });
         
         tocMBTests.test("convertToHeadingObjects: linear headings", function () {
             convertToHeadingObjectsTests(createElms(linearHeadings.headingTags), linearHeadings.anchorInfo, linearHeadings.headingInfo);
         });
         tocMBTests.test("convertToHeadingObjects: skipped headings", function () {
-            convertToHeadingObjectsTests(createElms(skippedHeadings.headingTags), skippedHeadings.anchorInfo, skippedHeadings.headingInfo);
+            convertToHeadingObjectsTests(createElms(skippedHeadingsForSkippedIndentationModel.headingTags), 
+                skippedHeadingsForSkippedIndentationModel.anchorInfo, skippedHeadingsForSkippedIndentationModel.headingInfo);
+            convertToHeadingObjectsTests(createElms(skippedHeadingsForGradualIndentationModel.headingTags), 
+                skippedHeadingsForGradualIndentationModel.anchorInfo, skippedHeadingsForGradualIndentationModel.headingInfo);
         });
         
         tocMBTests.test("assembleModel: linear headings", function () {
             assembleModelTests(createElms(linearHeadings.headingTags), linearHeadings.anchorInfo, linearHeadings.model);
         });
         tocMBTests.test("assembleModel: skipped headings", function () {
-            assembleModelTests(createElms(skippedHeadings.headingTags), skippedHeadings.anchorInfo, skippedHeadings.model);
+            // test assembleModel with default toModel invoker - skippedHeadingsForGradualIndentationModel
+            assembleModelTests(createElms(skippedHeadingsForGradualIndentationModel.headingTags), 
+                skippedHeadingsForGradualIndentationModel.anchorInfo, skippedHeadingsForGradualIndentationModel.model);
         });
         
         // "fluid.tableOfContents.levels" tests
@@ -330,8 +373,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             generateTreeTests(1, 2, multiLevelTree);
         });
         
-        tocLevelsTests.asyncTest("Render toc: linear headings", function () {renderTOCTests(linearHeadings);});
-        tocLevelsTests.asyncTest("Render toc: skipped headings", function () {renderTOCTests(skippedHeadings);});
+        tocLevelsTests.asyncTest("Render toc: linear headings", function () {
+            renderTOCTests(linearHeadings);
+        });
+        tocLevelsTests.asyncTest("Render toc: skipped headings", function () {
+            renderTOCTests(skippedHeadingsForSkippedIndentationModel);
+            renderTOCTests(skippedHeadingsForGradualIndentationModel);
+        });
 
         // fluid tableOfContents" tests
 
