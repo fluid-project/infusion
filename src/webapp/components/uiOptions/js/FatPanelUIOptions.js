@@ -188,10 +188,10 @@ var fluid_1_4 = fluid_1_4 || {};
         var iframeDoc = iframe.contents();
         var iframeWin = iframe[0].contentWindow;
         var body = $("body", iframeDoc);      
-        $("body", iframeDoc).addClass(that.markupRenderer.options.styles.container);        
+        body.addClass(that.markupRenderer.options.styles.container);        
         
         that.uiOptions = fluid.invokeGlobalFunction(that.options.uiOptions.type, 
-                [$("body", iframeDoc), that.options.uiOptions.options], iframeWin);            
+                [body, that.options.uiOptions.options], iframeWin);            
     };
     
     /************************
