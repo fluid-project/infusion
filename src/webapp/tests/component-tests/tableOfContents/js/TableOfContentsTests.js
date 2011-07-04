@@ -386,8 +386,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tocLevelsTests.asyncTest("Render toc: linear headings", function () {
             renderTOCTests(linearHeadings);
         });
-        tocLevelsTests.asyncTest("Render toc: skipped headings", function () {
+        tocLevelsTests.asyncTest("Render toc: skipped headings for skipped indentation model", function () {
             renderTOCTests(skippedHeadingsForSkippedIndentationModel);
+        });
+        tocLevelsTests.asyncTest("Render toc: skipped headings for gradual indentation model", function () {
             renderTOCTests(skippedHeadingsForGradualIndentationModel);
         });
 
