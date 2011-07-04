@@ -51,7 +51,8 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     var maxFilesUploaded = function (that) {
-        return (that.queue.getUploadedFiles() === that.options.queueSettings.fileUploadLimit);
+        var fileUploadLimit = that.queue.getUploadedFiles().length + that.queue.getReadyFiles().length;
+        return (fileUploadLimit === that.options.queueSettings.fileUploadLimit);
     };    
     
     var setTotalProgressStyle = function (that, didError) {
@@ -77,12 +78,11 @@ var fluid_1_4 = fluid_1_4 || {};
         hideElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("uploadButton"));
         
-        if(maxFilesUploaded) {
-            that.strategy.local.disableBrowseButton();
-            //disableElement(that, that.locate("browseButton"));
-        } else {
+        // Only enable the browse button if the fileUploadLimit 
+        // has not been reached
+        if(!maxFilesUploaded(that)) {
             enableElement(that, that.locate("browseButton"));
-            that.strategy.local.enableBrowseButton();
+            that.strategy.local.enableBrowseButton();            
         }
     };
 
