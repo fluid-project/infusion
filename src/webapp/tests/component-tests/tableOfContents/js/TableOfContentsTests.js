@@ -359,15 +359,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 skippedHeadingsForGradualIndentationModel.anchorInfo, skippedHeadingsForGradualIndentationModel.model);
         });
         
-        tocMBTests.test("Test gradualModelLevelFn",function () {
+        tocMBTests.test("Test gradualModelLevelFn", function () {
             var modelLevel = ['level1', 'level2'];
             var subHeadings = ['subHeading1', 'subHeading2'];
             var gradualIndentationModel = fluid.tableOfContents.modelBuilder.gradualModelLevelFn(modelLevel, subHeadings);
             jqUnit.assertEquals("gradual indentation model should always returns the subHeadings.", subHeadings, gradualIndentationModel);
         }); 
         
-        tocMBTests.test("Test skippedModelLevelFn",function () {
-            var modelLevel = ['level1', 'level2', {headings:['subHeading1', 'subHeading2']}];
+        tocMBTests.test("Test skippedModelLevelFn", function () {
+            var modelLevel = ['level1', 'level2', {headings: ['subHeading1', 'subHeading2']}];
             var modelLevelClone = fluid.copy(modelLevel);
             var subHeadings = modelLevelClone.pop();
             var skippedIndentationModel = fluid.tableOfContents.modelBuilder.skippedModelLevelFn(modelLevelClone, subHeadings.headings);
