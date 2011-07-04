@@ -491,7 +491,7 @@ var fluid_1_4 = fluid_1_4 || {};
             fileSizeLimit: "20480",
             fileTypes: null,
             fileTypesDescription: null,
-            fileUploadLimit: 2,
+            fileUploadLimit: 0,
             fileQueueLimit: 0
         },
 
