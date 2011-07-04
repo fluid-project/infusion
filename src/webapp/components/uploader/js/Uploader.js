@@ -50,6 +50,10 @@ var fluid_1_4 = fluid_1_4 || {};
         elm.addClass(that.options.styles.hidden);
     };
     
+    var maxFilesUploaded = function (that) {
+        return (that.queue.getUploadedFiles() === that.options.queueSettings.fileUploadLimit);
+    };    
+    
     var setTotalProgressStyle = function (that, didError) {
         didError = didError || false;
         var indicator = that.totalProgress.indicator;
@@ -70,10 +74,16 @@ var fluid_1_4 = fluid_1_4 || {};
     
     var setStateDone = function (that) {
         disableElement(that, that.locate("uploadButton"));
-        enableElement(that, that.locate("browseButton"));
-        that.strategy.local.enableBrowseButton();
         hideElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("uploadButton"));
+        
+        if(maxFilesUploaded) {
+            that.strategy.local.disableBrowseButton();
+            //disableElement(that, that.locate("browseButton"));
+        } else {
+            enableElement(that, that.locate("browseButton"));
+            that.strategy.local.enableBrowseButton();
+        }
     };
 
     var setStateLoaded = function (that) {
@@ -481,7 +491,7 @@ var fluid_1_4 = fluid_1_4 || {};
             fileSizeLimit: "20480",
             fileTypes: null,
             fileTypesDescription: null,
-            fileUploadLimit: 0,
+            fileUploadLimit: 2,
             fileQueueLimit: 0
         },
 
