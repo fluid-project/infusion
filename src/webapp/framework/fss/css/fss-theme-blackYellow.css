@@ -1,24 +1,19 @@
 /*
               Black on Yellow
 =============================================
- * Color Schema:
- *     DEFINITIONS:
- *         yellow     : #ffff00
- *         black     : #000000
-
+ * Color Scheme:
+ *     yellow     : #ffff00
+ *     black     : #000000
  */
-.fl-theme-blackYellow .fl-focus:focus,
-.fl-theme-blackYellow .fl-focus :focus,
-.fl-theme-blackYellow.fl-focus :focus,
-.fl-theme-blackYellow .selectable  {
-   /* themed focus indicator */
-   outline: 0.2em solid #F00;
-}
+ 
+/* 
+ * General Styling
+ */
 
 .fl-theme-blackYellow {color:#000000; background-color:#ffff00;}
+
+/* Divs, inputs */
 .fl-theme-blackYellow div, .fl-theme-blackYellow input {color:#000000; background-color:#ffff00; border-color:#000;}
-.fl-theme-blackYellow .fl-knockout {background:transparent !important; color:#000;} /* a granular method for basic reset of appearance */
-.fl-theme-blackYellow .fl-icon {background-color:#ffff00;}
 
 /* Links */
 .fl-theme-blackYellow a  {color: #000; font-weight:bold; background-color:#ff0;}
@@ -35,10 +30,22 @@
 .fl-theme-blackYellow th {border:0.1em solid #000; background-color:#000; color:#ff0;}
 .fl-theme-blackYellow td {border:0.1em solid #000;}
 
-/* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
-.fl-theme-blackYellow .fl-inlineEdit-edit {background-color:#000; color:#ff0; border: 0.1em solid #ff0; padding:0.1em; margin:-0.1em;}
+/* 
+ * FSS Elements
+ */
+ 
+/* Focus */
+.fl-theme-blackYellow .fl-focus:focus,
+.fl-theme-blackYellow .fl-focus :focus,
+.fl-theme-blackYellow.fl-focus :focus,
+.fl-theme-blackYellow .selectable  {outline: 0.2em solid #F00;}
 
-/* Helper: Tabs */
+.fl-theme-blackYellow .fl-knockout {background:transparent !important; color:#000;} /* Deprecated: use .fl-noBackgroundImages */
+
+/* Icons */
+.fl-theme-blackYellow .fl-icon {background-color:#ffff00;}
+
+/* Tabs */
 .fl-theme-blackYellow .fl-tabs {border-bottom-color:#000;}
 .fl-theme-blackYellow .fl-tabs li,
 .fl-theme-blackYellow .fl-tabs li *  {border-color:#000; border-bottom-color:#000; }
@@ -59,7 +66,7 @@
 .fl-theme-blackYellow .fl-tabs li.fl-activeTab a:hover {background-color: #ff0; border-bottom-color:#ff0; color:#000;}
 .fl-theme-blackYellow .fl-tab-content {background-color:#ffff00; color:#000;}
 
-/* Helper: Menu */
+/* Menu */
 .fl-theme-blackYellow .fl-listmenu, 
 .fl-theme-blackYellow .fl-list-menu {border:1px solid #000; border-bottom-width:2px; background-color:#ff0;}
 .fl-theme-blackYellow .fl-listmenu li, 
@@ -73,11 +80,10 @@
 .fl-theme-blackYellow .fl-listmenu .fl-activemenu a:hover, 
 .fl-theme-blackYellow .fl-list-menu .fl-activemenu a:hover { background-color: #000000; border-bottom-color:#ff0; color:#ffff00;}
 
-/* Helper: buttons */
+/* Buttons */
 .fl-theme-blackYellow .fl-button-left,
 .fl-theme-blackYellow .fl-button-right {background-image:url(../images/themes/blackYellow/buttons-med-cap.png);}
 .fl-theme-blackYellow .fl-button-inner {background-image:url(../images/themes/blackYellow/buttons-med-bg.png);}
-
 
 /* Widget core */
 .fl-theme-blackYellow .fl-widget {background-color:#000; border:1px solid #ff0;}
@@ -94,11 +100,11 @@
 .fl-theme-blackYellow .fl-widget-titlebar .fl-button-right,
 .fl-theme-blackYellow .fl-widget-titlebar .fl-button-left {
     color:#000000;
-    background-image:url(../images/themes/blackYellow/buttons-titlebar-cap.png);
+    background-image:url('../images/themes/blackYellow/buttons-titlebar-cap.png');
     text-decoration:none;
 }
 .fl-theme-blackYellow .fl-widget-titlebar .fl-button-inner {
-    background-image:url(../images/themes/blackYellow/buttons-titlebar-bg.png);
+    background-image:url('../images/themes/blackYellow/buttons-titlebar-bg.png');
 }
 
 /* Widget options */
@@ -108,11 +114,16 @@
 /* Widget content */
 .fl-theme-blackYellow .fl-widget .fl-widget-content {background-color:#ff0;}
 
-/* Component: Progressor */
+/* 
+ * Infusion Components
+ */
+
+/* Progress */
 .fl-theme-blackYellow .fl-progress-bounds {border-color:#000; background-color:#ff0;}
 .fl-theme-blackYellow .fl-progress-fill {color:#ff0; background-color:#000;}
 
-/* Component: Uploader */
-
-/* States */
+/* Reorderer */
 .fl-theme-blackYellow .fl-reorderer-dropMarker {background-color:#f00;}
+
+/* Inline Edit */
+.fl-theme-blackYellow .fl-inlineEdit-edit {background-color:#000; color:#ff0; border: 0.1em solid #ff0; padding:0.1em; margin:-0.1em;}
