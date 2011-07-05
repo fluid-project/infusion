@@ -416,6 +416,8 @@ html>body .fl-uploader span.fl-uploader-browse {
     position:relative;
     color: #008be0;
     background-color: #F7F7F7;
+    /* left: -3px; This would make "Show files" flush to rest of text in FF, but causes
+    it to be misaligned in Safari-Mac. */
 }
 
 /* Error Details */
