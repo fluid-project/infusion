@@ -19,25 +19,76 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(function () {
         var tests = new jqUnit.TestCase("CSSGenerator Tests");
         
-        tests.test("Prioritize one CSS property", function () {
+        var testStylesheetForPrioritySpec = function (prioritySpec, expected, msg) {
             var tg = build.cssGenerator({
                 sheetStore: build.cssGenerator.browserSheetStore($("#testTheme"))
             });
-            tg.prioritize("background-color");
+            tg.prioritize(prioritySpec);
+            
+            var actual = tg.generate();
+            jqUnit.assertEquals(msg, expected, actual);
+        };
+        
+        tests.test("Prioritize one CSS property for all rules", function () {
+            var priorities = {
+                "fluid-cssGenerator-allRules": "background-color"
+            };
             
             var expected = "/* Comment */" + 
             "\n" +
             "table {" + "\n" +
             "  background-color: #dddddd !important;" + "\n" +
+            "  font-size: 16px;" + "\n" +
             "}" + "\n" +
             ".cat {" + "\n" +
             "  background-image: url(\"cats.png\");" + "\n" +
+            "  font-size: 24px;" + "\n" +
             "}" + "\n";
-            var actual = tg.generate();
-            jqUnit.assertEquals("The generated style sheet should have !important added to all background colors.",
-                expected, actual);
+            
+            testStylesheetForPrioritySpec(priorities, expected, 
+                "The generated style sheet should have !important added to all background colors.");
         });
+        
+        
+        tests.test("Prioritize multiple CSS properties for all rules", function () {
+            var priorities = {
+                "fluid-cssGenerator-allRules": ["background-color", "font-size"]
+            };
 
+            var expected = "/* Comment */" + 
+            "\n" +
+            "table {" + "\n" +
+            "  background-color: #dddddd !important;" + "\n" +
+            "  font-size: 16px !important;" + "\n" +
+            "}" + "\n" +
+            ".cat {" + "\n" +
+            "  background-image: url(\"cats.png\");" + "\n" +
+            "  font-size: 24px !important;" + "\n" +
+            "}" + "\n";
+            
+            testStylesheetForPrioritySpec(priorities, expected, 
+                "The generated style sheet should have !important added to all background colors and font sizes.");
+        });
+        
+        tests.test("Prioritize one CSS property for a specific selector", function () {
+            var priorities = {
+                ".cat": "font-size"
+            };
+            
+            var expected = "/* Comment */" + 
+            "\n" +
+            "table {" + "\n" +
+            "  background-color: #dddddd;" + "\n" +
+            "  font-size: 16px;" + "\n" +
+            "}" + "\n" +
+            ".cat {" + "\n" +
+            "  background-image: url(\"cats.png\");" + "\n" +
+            "  font-size: 24px !important;" + "\n" +
+            "}" + "\n";
+            
+            testStylesheetForPrioritySpec(priorities, expected, 
+                "The generated style sheet should have !important added only to the .cat rule.");
+        });
     });
     
 })(jQuery);

@@ -18,6 +18,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var build = build || {};
 
 (function () {
+                
+    var prioritiesForRule = function (prioritySpec, rule) {
+        var priorities = prioritySpec["fluid-cssGenerator-allRules"] || [];
+        var prioritiesForRule = prioritySpec[rule.selectorText()];
+        if (prioritiesForRule) {
+            priorities = priorities.concat(prioritiesForRule);
+        }
+        return priorities;
+    };
     
     var setupCSSGenerator = function (that) {
         that.cssText = that.options.sheetStore.load();
@@ -30,30 +39,32 @@ var build = build || {};
             options: options
         };
         
-        that.prioritize = function (properties) {
-            if (typeof (properties) === "string") {
-                properties = [properties];
-            }
+        that.prioritize = function (prioritySpec) {
+            build.cssGenerator.expandRuleSpec(prioritySpec);
             
-            // Bail right away if we have no rules to process or no properties specified by the user.
-            if (!that.stylesheet.cssRules || that.stylesheet.cssRules.length < 1 || 
-                !properties || properties.length < 1) {
+            // Bail right away if we have no rules to process.
+            if (!that.stylesheet.cssRules || that.stylesheet.cssRules.length < 1) {
                 return;
             }
             
             for (var i = 0; i < that.stylesheet.cssRules.length; i++) {
                 var rule = that.stylesheet.cssRules[i];
                 
-                // If this rule doesn't have any declarations, keep on trucking.
+                // If this rule doesn't have any declarations or priorities, keep on trucking.
                 if (!rule.declarations || rule.declarations.length < 1) {
+                    continue;
+                }
+                
+                var priorities = prioritiesForRule(prioritySpec, rule);
+                if (!priorities || priorities.length < 1) {
                     continue;
                 }
                 
                 // Whip through each declaration's properties and see if they match one of our priorities.
                 for (var j = 0; j < rule.declarations.length; j++) {
                     var declaration = rule.declarations[j];
-                    for (var k = 0; k < properties.length; k++) {
-                        var property = properties[k];
+                    for (var k = 0; k < priorities.length; k++) {
+                        var property = priorities[k];
                         if (declaration.property === property) {
                             declaration.priority = true; // Prioritize this declaration as !important.
                         }
@@ -68,6 +79,13 @@ var build = build || {};
 
         setupCSSGenerator(that);
         return that;
+    };
+    
+    build.cssGenerator.expandRuleSpec = function (spec) {
+        for (var selector in spec) {
+            var priorities = spec[selector];
+            spec[selector] = typeof(priorities) === "string" ? [priorities] : priorities;
+        }
     };
     
     /**********************************************

@@ -1,9 +1,11 @@
 /* Comment */
 
 table {
-    background-color: #dddddd;
+  background-color: #dddddd;
+  font-size: 16px;
 }
 
 .cat {
-    background-image:url("cats.png");
+  background-image:url("cats.png");
+  font-size: 24px;
 }
