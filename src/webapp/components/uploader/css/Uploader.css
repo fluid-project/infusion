@@ -158,7 +158,7 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
     position: relative;
     background-color: #F7F7F7;
     border-top: 1px solid #999;    
-    color:#C5C5C5;
+    color:#4d4d4d;
     font-size:1.07em;
     font-weight:bold;
     padding:8px 6px;
@@ -414,7 +414,6 @@ html>body .fl-uploader span.fl-uploader-browse {
     height: 1em;
     margin: 0 0 1.5em 0;
     position:relative;
-    left: -3px;
     color: #008be0;
     background-color: #F7F7F7;
 }
