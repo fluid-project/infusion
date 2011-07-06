@@ -32,12 +32,10 @@ a {
 .fl-col-mixed-300 .p_framework {
     padding-left:0; 
     padding-right:20px;
-/*    border-right:2px solid #ccc;*/
 }
 .fl-col-mixed-300 .p_integration {
     padding-left:20px;
     padding-right:0px;
-    /*border-left:2px solid #ccc;*/
 }
 .fl-col-mixed-300 .p_components {
     margin:0 320px;
