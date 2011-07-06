@@ -18,8 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) { 
-    
-    fluid.setLogging(true);   
+
     /****************************
      * Fat Panel UI Options Imp *
      ****************************/ 
