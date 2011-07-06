@@ -57,12 +57,9 @@
             $().ready(function () {
                 // Supply the templates
                 fluid.staticEnvironment.uiOptionsDemo = fluid.typeTag("fluid.uiOptionsDemo");
-                fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsDemo", {
+                fluid.demands("fluid.uiOptionsTemplatePath", "fluid.uiOptionsDemo", {
                     options: {
-                        prefix: "../../../../components/uiOptions/html/",
-                        templates: {
-                            uiOptions: "%prefixFullNoPreviewUIOptions.html"
-                        }
+                        prefix: "../../../../components/uiOptions/html/"
                     }
                 });
             

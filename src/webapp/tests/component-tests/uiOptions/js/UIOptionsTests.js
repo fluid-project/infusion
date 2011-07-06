@@ -33,9 +33,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });       
         
         // Supply the templates
-        fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptions.tests", {
+        fluid.demands("fluid.uiOptionsTemplatePath", "fluid.uiOptions.tests", {
             options: {
                 prefix: "../../../../components/uiOptions/html/",
+                templates: {
+                    uiOptions: "%prefixFullPreviewUIOptions.html",
+                    textControls: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
+                }
+            }
+        });
+
+        fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptions.tests", {
+            options: {
                 templates: {
                     uiOptions: "%prefixFullPreviewUIOptions.html",
                     textControls: "../../../../components/uiOptions/html/UIOptionsTemplate-text.html"
@@ -329,8 +338,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
                 resetButton.click();
                 checkModelSelections(uiOptions.model.selections, uiOptions.settingsStore.options.defaultSiteSettings);
+                cancelButton.click();
+                checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
                 
-                saveButton.click(); // apply the reset settings to make the test result page more readable
+                // apply the reset settings to make the test result page more readable
+                resetButton.click();
+                saveButton.click();
                 
                 start();
             });

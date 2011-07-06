@@ -176,6 +176,14 @@ var fluid_1_4 = fluid_1_4 || {};
      * UI Options Resource Expander *
      ********************************/
     
+    /**
+     * A component that works in conjunction with fluid.uiOptionsTemplateLoader to generate the template 
+     * URLs that are used by the UI Options controls components. This component is used by UI Options
+     * controls components.
+     * 
+     * @param {Object} options
+     */
+
     fluid.defaults("fluid.specBuilderImpl", {
         gradeNames: ["fluid.littleComponent"],
         urlRenderer: {
@@ -198,6 +206,18 @@ var fluid_1_4 = fluid_1_4 || {};
         return fluid.specBuilderImpl.apply(null, [{spec: options}]);
     };
 
+    /******************************
+     * UI Options Template Loader *
+     ******************************/
+    
+    /**
+     * A configurable component that works in conjunction with or without the UI Options template path  
+     * component (fluid.uiOptionsTemplatePath) to allow users to set either the location of their own 
+     * templates or the templates that are relative to the path defined in the UI Options template path 
+     * component.
+     * 
+     * @param {Object} options
+     */
     fluid.uiOptionsTemplateLoader = function (options) {
         var that = fluid.initLittleComponent("fluid.uiOptionsTemplateLoader", options);
 
@@ -212,13 +232,38 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.defaults("fluid.uiOptionsTemplateLoader", {
         gradeNames: ["fluid.littleComponent"],
-        prefix: "../html/",
         templates: {
             uiOptions: "%prefixFatPanelUIOptions.html",
             textControls: "%prefixUIOptionsTemplate-text.html",
             layoutControls: "%prefixUIOptionsTemplate-layout.html",
             linksControls: "%prefixUIOptionsTemplate-links.html"
+        },
+        // Unsupported, non-API option
+        prefix: {
+            expander: {
+                type: "fluid.deferredInvokeCall",
+                func: "fluid.uiOptionsTemplatePath"
+            }
         }  
+    });
+    
+    /**************************************
+     * UI Options Template Path Specifier *
+     **************************************/
+    
+    /**
+     * A configurable component that defines the relative path from the html to UI Options templates.
+     * 
+     * @param {Object} options
+     */
+    fluid.uiOptionsTemplatePath = function (options) {
+        var that = fluid.initLittleComponent("fluid.uiOptionsTemplatePath", options);
+        return that.options.prefix;
+    };
+    
+    fluid.defaults("fluid.uiOptionsTemplatePath", {
+        gradeNames: ["fluid.littleComponent"],
+        prefix: "../html/"
     });
     
     /**************

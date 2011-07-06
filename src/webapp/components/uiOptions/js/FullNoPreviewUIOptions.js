@@ -44,4 +44,13 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });      
      
+    fluid.staticEnvironment.fullNoPreviewUIOptions = fluid.typeTag("fluid.fullNoPreviewUIOptions");
+    fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.fullNoPreviewUIOptions", {
+        options: {
+            templates: {
+                uiOptions: "%prefixFullNoPreviewUIOptions.html"
+            }
+        }
+    });
+    
 })(jQuery, fluid_1_4);

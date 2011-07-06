@@ -22,7 +22,7 @@ var skon = skon || {};
 
     /* Our demo script */   
     skon.slidingUIOptions = function (panel, uioptions) {
-        fluid.demands("fluid.uiOptionsTemplateLoader", [ "skon.demo"], {
+        fluid.demands("fluid.uiOptionsTemplatePath", [ "skon.demo"], {
             options: {
                 prefix: "../../../components/uiOptions/html/"
             }

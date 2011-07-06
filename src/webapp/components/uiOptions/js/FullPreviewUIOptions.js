@@ -46,5 +46,14 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });      
-     
+    
+    fluid.staticEnvironment.fullPreviewUIOptions = fluid.typeTag("fluid.fullPreviewUIOptions");
+    fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.fullPreviewUIOptions", {
+        options: {
+            templates: {
+                uiOptions: "%prefixFullPreviewUIOptions.html"
+            }
+        }
+    });
+    
 })(jQuery, fluid_1_4);
