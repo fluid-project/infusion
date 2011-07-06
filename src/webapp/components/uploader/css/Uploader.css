@@ -451,7 +451,7 @@ html>body .fl-uploader span.fl-uploader-browse {
 }
 
 /* dimmed */
-.fl-uploader span.fl-uploader-browse.focus.fl-uploader-dim  {
+.fl-uploader span.fl-uploader-browse.fl-uploader-dim  {
     outline:none;
     background-color:#F7F7F7;
     color: #d2d2d2;
