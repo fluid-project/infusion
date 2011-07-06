@@ -32,12 +32,10 @@ a {
 .fl-col-mixed-300 .p_framework {
     padding-left:0; 
     padding-right:20px;
-    border-right:2px solid #ccc;
 }
 .fl-col-mixed-300 .p_integration {
     padding-left:20px;
     padding-right:0px;
-    border-left:2px solid #ccc;
 }
 .fl-col-mixed-300 .p_components {
     margin:0 320px;
@@ -54,11 +52,11 @@ a {
 }
 
 .demo {
-    width:203px;
-    height:150px;
+    width:280px;
+    height:165px;
     overflow:hidden;
     border:2px solid #ccc;
-    padding:5px 5px 5px 78px;    
+    padding:5px;   
     margin:2px;
     color:#666;
     float:left;
@@ -66,66 +64,70 @@ a {
 }
 /********************************************/
 .comingSoon {
-    background:#fff url(../images/comingSoon.png) no-repeat 5px 5px;
+    background:#fff url(../images/comingSoon.png) no-repeat 0px 0px;
 }
 .layoutReorderer {
-    background:#fff url(../images/reorderer-layout.png) no-repeat 5px 5px;
+    background:#fff url(../images/reorderer-layout.png) no-repeat 0px 0px;
 }
 .gridReorderer {
-    background:#fff url(../images/reorderer-grid.png) no-repeat 5px 5px;
+    background:#fff url(../images/reorderer-grid.png) no-repeat 0px 0px;
 }
 .listReorderer {
-    background:#fff url(../images/reorderer-list.png) no-repeat 5px 5px;
+    background:#fff url(../images/reorderer-list.png) no-repeat 0px 0px;
 }
 .imageReorderer {
-    background:#fff url(../images/reorderer-image.png) no-repeat 5px 5px;
+    background:#fff url(../images/reorderer-image.png) no-repeat 0px 0px;
 }
 .progress {
-    background:#fff url(../images/progress.png) no-repeat 5px 5px;
+    background:#fff url(../images/progress.png) no-repeat 0px 0px;
 }
 .pager {
-    background:#fff url(../images/pager.png) no-repeat 5px 5px;
+    background:#fff url(../images/pager.png) no-repeat 0px 0px;
 }
 .uiOptions {
-    background:#fff url(../images/uiOptions.png) no-repeat 5px 5px;
+    background:#fff url(../images/uiOptions.png) no-repeat 0px 0px;
 }
 .fss {
-    background:#fff url(../images/fss.png) no-repeat 5px 5px;
+    background:#fff url(../images/fss.png) no-repeat 0px 0px;
 }
 .renderer {
-    background:#fff url(../images/renderer.png) no-repeat 5px 5px;
+    background:#fff url(../images/renderer.png) no-repeat 0px 0px;
 }
 .simpleEdit {
-    background:#fff url(../images/inlineEdit-simple.png) no-repeat 5px 5px;
+    background:#fff url(../images/inlineEdit-simple.png) no-repeat 0px 0px;
 }
 .richEdit {
-    background:#fff url(../images/inlineEdit-rich.png) no-repeat 5px 5px;
+    background:#fff url(../images/inlineEdit-rich.png) no-repeat 0px 0px;
 }
 .uploader {
-    background:#fff url(../images/uploader.png) no-repeat 5px 5px;
+    background:#fff url(../images/uploader.png) no-repeat 0px 0px;
 }
 
 /********************************************/
 
 
-.demo h4 {font:normal 1.35em Arial, Helvetica, sans-serif;}
-.demo a {font-size:1.1em;}
-.demo .description {
-    font-size:.85em; 
-    margin:0 0 0 -73px;
-    padding-top:30px;
-    zoom:1;
-}
-.demo .showcase ~ .description {
-    padding-top:5px;
+.demo .demoHeader {
+    height: 70px;
 }
 
-.demo .showcase {
-    font-size:0.85em;
+.demo .demoHeader.fss {
+    height: 100px;
 }
-.demo .showcase strong {
-    color:#ccc;
-    display:block;
+
+.demo .demoHeader h4 {
+    font:bold 1.1em Arial, Helvetica, sans-serif;
+    margin-left:73px;    
+}
+
+.demo .demoHeader a , .demo .demoHeader strong{
+    margin-left:73px;
+    font-size: .85em;
+}
+
+.demo .description {
+    font-size:.85em;
+    padding-top: 4px;
+    zoom:1;
 }
 
 .production, .preview, .sneak {
@@ -152,4 +154,16 @@ a {
     background-color:#ccc;
 }
 
+/* FSS demo specific styles */
+.demo .demoHeader.fss .fl-fss-demos {
+    margin-left:73px;
+}
+
+.demo .demoHeader.fss  a{
+    margin-left:0px;
+}
+
+.demo .demoHeader.fss .fl-col-flex2 .fl-col  {
+    width: 36%;
+}
 
