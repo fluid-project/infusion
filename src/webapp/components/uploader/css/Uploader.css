@@ -169,7 +169,7 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
     background-image: url(../images/add.png);
     background-attachment: scroll;
     background-repeat: no-repeat;
-    background-position: 4px 5px;
+    background-position: 0px 5px;
     padding: 5px 5px 0px 24px;
     border: none;
     white-space: nowrap;
@@ -391,6 +391,7 @@ html>body .fl-uploader span.fl-uploader-browse {
 
 /* Remove error message button */
 .fl-uploader-errorPanel-section-removeButton {
+    background-color: inherit;
     background-image: url("../images/grey-4d4d4d-x-button.png");
     background-position: center;
     background-repeat: no-repeat;
