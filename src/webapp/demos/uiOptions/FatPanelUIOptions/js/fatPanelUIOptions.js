@@ -27,7 +27,7 @@ var demo = demo || {};
     fluid.demands("fluid.renderIframe", ["fluid.uiOptionsDemo"], {
         options: {
             markupProps: {
-                src: "../../../../components/uiOptions/html/uiOptionsIframe.html"
+                src: "../../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
             }
         }
     });

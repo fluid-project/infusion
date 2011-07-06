@@ -32,7 +32,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.demands("fluid.renderIframe", ["fluid.fatPanelUIOptionsTests"], {
         options: {
             markupProps: {
-                src: "../../../../components/uiOptions/html/uiOptionsIframe.html"
+                src: "../../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
             }
         }
     });
