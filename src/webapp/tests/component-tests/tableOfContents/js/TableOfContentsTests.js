@@ -272,7 +272,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             elm = $(elm);
             
             jqUnit.assertEquals("ToC text set correctly", fluid.get(hInfo, "text"), elm.text());
-            jqUnit.assertEquals("ToC anchor set correctly", fluid.get(hInfo, "url"), elm.attr("href"));
+            // To address IE7 problem, http://bugs.jquery.com/ticket/7117
+            // To fix, strip it URI if the windows.location is in href. Otherwise, do nothing.
+            var eleHref = elm.attr("href").replace($(location).attr('href'), '');
+            jqUnit.assertEquals("ToC anchor set correctly", fluid.get(hInfo, "url"), eleHref);
         });
     };
        
