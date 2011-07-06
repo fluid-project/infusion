@@ -260,5 +260,11 @@
         <jslint dir="${lint}" excludes="${excludeFromJSLint}" options="browser,eqeqeq,nomen,undef">
         </jslint>
     </target>    
-    
+	
+    <target name="cssGenerator" description="Concatenate all dependent files ">
+        <concat destfile="uiOptions/js/CSSGeneratorAll.js" append="true">
+            <filelist dir="lib/jscssp/js" files="cssParser.js"/>
+            <filelist dir="uiOptions/js" files="CSSGenerator.js, fileHandler.js"/>
+        </concat>       
+    </target>	
 </project>
