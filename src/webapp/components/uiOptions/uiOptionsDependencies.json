@@ -4,13 +4,19 @@
         "description": "Users customize their preferences and needs for viewing content.",
         "cssFiles": [
             "UIOptions.css",
-            "FatPanelUIOptions.css"
+            "FatPanelUIOptions.css",
+            "FullNoPreviewUIOptions.css",
+            "FullPreviewUIOptions.css",
+            "FullUIOptions.css"
         ],
         "files": [
             "Store.js",
             "UIEnhancer.js",
             "UIOptions.js",
-            "FatPanelUIOptions.js"
+            "FatPanelUIOptions.js",
+            "FullNoPreviewUIOptions.js",
+            "FullPreviewUIOptions.js",
+            "SlidingPanel.js"
         ],
         "dependencies": [
             "fss",
