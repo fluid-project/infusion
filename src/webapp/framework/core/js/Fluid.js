@@ -5,7 +5,7 @@
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
  *
  * For information on copyright, see the individual Infusion source code files: 
- * https://source.fluidproject.org/svn/fluid/infusion/
+ * https://github.com/fluid-project/infusion/
  */
 
 /*
