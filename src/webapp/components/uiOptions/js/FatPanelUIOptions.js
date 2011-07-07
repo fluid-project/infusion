@@ -191,7 +191,7 @@ var fluid_1_4 = fluid_1_4 || {};
         body.addClass(that.markupRenderer.options.styles.container);        
         
         that.uiOptions = innerFluid.invokeGlobalFunction(that.options.uiOptions.type, 
-                [body, that.options.uiOptions.options], innerFluid);            
+                [body, that.options.uiOptions.options]);  
     };
     
     /************************

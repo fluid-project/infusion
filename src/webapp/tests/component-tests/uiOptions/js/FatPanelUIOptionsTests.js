@@ -257,7 +257,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 checkModelSelections(panelModel, defaultSiteSettings);
                 checkModelSelections(pageModel, panelModel);
                 start();
-            }, 1000);
+            }, 1500);
         });        
     });
 })(jQuery);        
