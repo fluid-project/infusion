@@ -39,14 +39,14 @@ Alternatively, you can download a source code release from Github:
 What Are You Working On Now?
 ============================
 
-Our plans for our next release, 1.4, include:
+Our plans for our next release, 1.5, include:
 
-    * Improvements to the Fluid Skinning System (FSS)
-    * Updates to UI Options
+    * Improvements to the Framework
+    * Improvements to the Infusion Builder
     
 For more information, please see the Infusion Roadmap:
 
-    http://wiki.fluidproject.org/display/fluid/Infusion+Roadmap+1.3.1+-+1.4
+    http://wiki.fluidproject.org/display/fluid/Infusion+Roadmap+1.5
 
 
 Who Makes Infusion, and How Can I Help?
