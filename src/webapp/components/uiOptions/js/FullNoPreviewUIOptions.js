@@ -18,9 +18,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
-    /**********************
+    /******************************
      * Full No Preview UI Options *
-     *********************/
+     ******************************/
      
     fluid.defaults("fluid.fullNoPreviewUIOptions", {
         gradeNames: ["fluid.viewComponent", "autoInit"],            
@@ -40,8 +40,13 @@ var fluid_1_4 = fluid_1_4 || {};
                     type: "fluid.emptySubcomponent"
                 },
                 settingsStore: "{uiEnhancer}.settingsStore"
+            },
+            listeners: {
+                onReset: function (uiOptions) {
+                    uiOptions.save();
+                }
             }
         }
-    });      
-     
+    });
+
 })(jQuery, fluid_1_4);
