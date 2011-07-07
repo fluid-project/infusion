@@ -25,6 +25,7 @@
             "framework",
             "renderer",
             "jQueryUIWidgets",
+            "tabs",
             "tableOfContents",
             "json",
             "jQueryAriaTabsPlugin"
