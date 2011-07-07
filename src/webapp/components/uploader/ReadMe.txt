@@ -34,8 +34,9 @@ introduction of HTML 5 support. The API is expected to fully stabilize to a prod
 Infusion 1.4.
 
 Uploader includes automatic backwards compatibility for Infusion 1.2-era options, which can be enabled
-simply by including the UploaderCompatibility-Infusion1.2.js file your page. If you're not using a 
-custom build of Infusion, you will also need to include the framework's ModelTransformations.js file.
+simply by including the following files in your page:
+    ModelTransformations.js
+    UploaderCompatibility-Infusion1.2.js
 
 --------------------------------------
 
