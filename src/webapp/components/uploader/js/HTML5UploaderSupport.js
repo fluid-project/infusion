@@ -393,8 +393,8 @@ var fluid_1_4 = fluid_1_4 || {};
         
         fileInput.change(function () {
             var files = fileInput[0].files;
-            that.events.onFilesQueued.fire(files);
             that.renderFreshMultiFileInput();
+            that.events.onFilesQueued.fire(files);
         });
         
         fileInput.focus(function () {
