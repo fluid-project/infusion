@@ -62,12 +62,12 @@
         <script type="text/javascript">
             $().ready(function () {
                 // Supply the templates
-                fluid.staticEnvironment.uiOptionsDemo = fluid.typeTag("fluid.uiOptionsDemo");
-                fluid.demands("fluid.uiOptionsTemplatePath", "fluid.uiOptionsDemo", {
-                    options: {
-                        prefix: "../../../../components/uiOptions/html/"
-                    }
-                });
+//                fluid.staticEnvironment.uiOptionsDemo = fluid.typeTag("fluid.uiOptionsDemo");
+//                fluid.demands("fluid.uiOptionsTemplatePath", "fluid.uiOptionsDemo", {
+//                    options: {
+//                        prefix: "../../../../components/uiOptions/html/"
+//                    }
+//                });
             
                 // Supply the table of contents' template URL
                 fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
@@ -77,7 +77,9 @@
                 });     
   
                 fluid.pageEnhancer();                
-                fluid.fullPreviewUIOptions("#myUIOptions");
+                fluid.fullPreviewUIOptions("#myUIOptions", {
+                    prefix: "../../../../components/uiOptions/html/"
+                });
             });
         </script>
     </body>

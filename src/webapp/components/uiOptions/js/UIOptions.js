@@ -172,44 +172,10 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
-    /********************************
-     * UI Options Resource Expander *
-     ********************************/
-    
-    /**
-     * A component that works in conjunction with fluid.uiOptionsTemplateLoader to generate the template 
-     * URLs that are used by the UI Options controls components. This component is used by UI Options
-     * controls components.
-     * 
-     * @param {Object} options
-     */
-
-    fluid.defaults("fluid.specBuilderImpl", {
-        gradeNames: ["fluid.littleComponent"],
-        urlRenderer: {
-            expander: {
-                type: "fluid.deferredInvokeCall",
-                func: "fluid.uiOptionsTemplateLoader"
-            }
-        }  
-    });
-
-    fluid.specBuilderImpl = function (options) {
-        var that = fluid.initLittleComponent("fluid.specBuilderImpl", options);
-        if (that.options.urlRenderer) {
-            that.options.spec.url = that.options.urlRenderer(that.options.spec.url);
-        }
-        return that.options.spec;
-    };
-
-    fluid.specBuilder = function (options) {
-        return fluid.specBuilderImpl.apply(null, [{spec: options}]);
-    };
-
     /******************************
      * UI Options Template Loader *
      ******************************/
-    
+
     /**
      * A configurable component that works in conjunction with or without the UI Options template path  
      * component (fluid.uiOptionsTemplatePath) to allow users to set either the location of their own 
@@ -217,35 +183,37 @@ var fluid_1_4 = fluid_1_4 || {};
      * component.
      * 
      * @param {Object} options
-     */
-    fluid.uiOptionsTemplateLoader = function (options) {
-        var that = fluid.initLittleComponent("fluid.uiOptionsTemplateLoader", options);
-
-        fluid.each(that.options.templates, function (item, key) {
-            that.options.templates[key] = fluid.stringTemplate(item, that.options);
-        });
-        
-        return function (url) {
-            return fluid.stringTemplate(url, that.options.templates);
-        };
-    };
-    
-    fluid.defaults("fluid.uiOptionsTemplateLoader", {
-        gradeNames: ["fluid.littleComponent"],
+     */    
+       
+    fluid.defaults("fluid.uiOptions.templateLoader", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        finalInitFunction: "fluid.uiOptions.templateLoader.fetchTemplates",
         templates: {
             uiOptions: "%prefixFatPanelUIOptions.html",
             textControls: "%prefixUIOptionsTemplate-text.html",
             layoutControls: "%prefixUIOptionsTemplate-layout.html",
             linksControls: "%prefixUIOptionsTemplate-links.html"
         },
+        events: {
+            onUIOptionsTemplateReady: null
+        },
         // Unsupported, non-API option
-        prefix: {
-            expander: {
-                type: "fluid.deferredInvokeCall",
-                func: "fluid.uiOptionsTemplatePath"
+        components: {
+            templatePath: {
+                type: "fluid.uiOptions.templatePath"
             }
-        }  
+        }
     });
+    
+    fluid.uiOptions.templateLoader.fetchTemplates = function (that) {
+        that.resources = fluid.transform(that.options.templates, function (item, key) {
+            var url = fluid.stringTemplate(item, {
+                    prefix: that.templatePath.options.value
+                });
+            return {url: url, forceCache: true};
+        });
+        fluid.fetchResources(that.resources, function() {that.events.onUIOptionsTemplateReady.fire()});
+    };
     
     /**************************************
      * UI Options Template Path Specifier *
@@ -256,14 +224,10 @@ var fluid_1_4 = fluid_1_4 || {};
      * 
      * @param {Object} options
      */
-    fluid.uiOptionsTemplatePath = function (options) {
-        var that = fluid.initLittleComponent("fluid.uiOptionsTemplatePath", options);
-        return that.options.prefix;
-    };
     
-    fluid.defaults("fluid.uiOptionsTemplatePath", {
-        gradeNames: ["fluid.littleComponent"],
-        prefix: "../html/"
+    fluid.defaults("fluid.uiOptions.templatePath", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        value: "../html/"
     });
     
     /**************
@@ -288,6 +252,64 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
+    fluid.defaults("fluid.uiOptions.loader", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        events: {
+            onUIOptionsTemplateReady: "{templateLoader}.events.onUIOptionsTemplateReady",
+            onUIOptionsComponentReady: null,
+         },
+        components: {
+            uiOptions: {
+                type: "fluid.uiOptions",
+                container: "{loader}.container",
+                createOnEvent: "onUIOptionsTemplateReady",
+                options: {
+                    events: {
+                        "onUIOptionsComponentReady": "{loader}.events.onUIOptionsComponentReady"
+                    }
+                }
+            },
+            textControls: {
+                type: "fluid.uiOptions.textControls",
+                container: "{uiOptions}.dom.textControls",
+                createOnEvent: "onUIOptionsComponentReady",
+                options: {
+                    textSize: "{uiOptions}.options.textSize",
+                    lineSpacing: "{uiOptions}.options.lineSpacing",
+                    model: "{uiOptions}.model",
+                    applier: "{uiOptions}.applier",
+                    events: {
+                        onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
+                    }
+                }
+            },
+            layoutControls: {
+                type: "fluid.uiOptions.layoutControls",
+                container: "{uiOptions}.dom.layoutControls",
+                createOnEvent: "onUIOptionsComponentReady",
+                options: {
+                    model: "{uiOptions}.model",
+                    applier: "{uiOptions}.applier",
+                    events: {
+                        onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
+                    }
+                }
+            },
+            linksControls: {
+                type: "fluid.uiOptions.linksControls",
+                container: "{uiOptions}.dom.linksControls",
+                createOnEvent: "onUIOptionsComponentReady",
+                options: {
+                    model: "{uiOptions}.model",
+                    applier: "{uiOptions}.applier",
+                    events: {
+                        onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
+                    }
+                }
+            }
+        }
+    });
+
     /**
      * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
      * to allow users to set personal user interface preferences. The UI Options component provides a user 
@@ -300,35 +322,6 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uiOptions", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
-            textControls: {
-                type: "fluid.uiOptions.textControls",
-                container: "{uiOptions}.dom.textControls",
-                createOnEvent: "onUIOptionsTemplateReady",
-                options: {
-                    textSize: "{uiOptions}.options.textSize",
-                    lineSpacing: "{uiOptions}.options.lineSpacing",
-                    model: "{uiOptions}.model",
-                    applier: "{uiOptions}.applier"
-                }
-            },
-            layoutControls: {
-                type: "fluid.uiOptions.layoutControls",
-                container: "{uiOptions}.dom.layoutControls",
-                createOnEvent: "onUIOptionsTemplateReady",
-                options: {
-                    model: "{uiOptions}.model",
-                    applier: "{uiOptions}.applier"
-                }
-            },
-            linksControls: {
-                type: "fluid.uiOptions.linksControls",
-                container: "{uiOptions}.dom.linksControls",
-                createOnEvent: "onUIOptionsTemplateReady",
-                options: {
-                    model: "{uiOptions}.model",
-                    applier: "{uiOptions}.applier"
-                }
-            },
             preview: {
                 type: "fluid.uiOptions.preview",
                 createOnEvent: "onUIOptionsTemplateReady",
@@ -365,30 +358,16 @@ var fluid_1_4 = fluid_1_4 || {};
             onReset: null,
             onAutoSave: null,
             modelChanged: null,
-            onUIOptionsTemplateReady: null
+            onUIOptionsRefresh: null,
+            onUIOptionsComponentReady: null
         },
-        preInitFunction: "fluid.uiOptions.preInit", 
         finalInitFunction: "fluid.uiOptions.finalInit",
         resources: {
-            template: {
-                expander: {
-                    type: "fluid.deferredInvokeCall",
-                    func: "fluid.specBuilder",
-                    args: {
-                        forceCache: true,
-                        url: "%uiOptions"
-                    }
-                }
-            }
+            template: "{templateLoader}.resources.uiOptions"
         },
         autoSave: false
     });
-    
-    fluid.uiOptions.preInit = function () {
-        fluid.fetchResources.primeCacheFromResources("fluid.uiOptions.textControls");
-        fluid.fetchResources.primeCacheFromResources("fluid.uiOptions.layoutControls");
-        fluid.fetchResources.primeCacheFromResources("fluid.uiOptions.linksControls");
-    };
+
 
     fluid.uiOptions.finalInit = function (that) {
         that.applier.requestChange("selections", fluid.copy(that.settingsStore.fetch()));
@@ -409,7 +388,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.reset = function () {
             that.events.onReset.fire();
             that.updateModel(fluid.copy(that.settingsStore.options.defaultSiteSettings));
-            that.refreshControlsView();
+            that.events.onUIOptionsRefresh.fire();
         };
         
         /**
@@ -418,7 +397,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.cancel = function () {
             that.events.onCancel.fire();
             that.updateModel(that.settingsStore.fetch());
-            that.refreshControlsView();
+            that.events.onUIOptionsRefresh.fire();
         };
         
         /**
@@ -429,12 +408,6 @@ var fluid_1_4 = fluid_1_4 || {};
          */
         that.updateModel = function (newModel) {
             that.applier.requestChange("selections", newModel);
-        };
-        
-        that.refreshControlsView = function () {
-            that.textControls.refreshView();
-            that.layoutControls.refreshView();
-            that.linksControls.refreshView();
         };
         
         that.applier.modelChanged.addListener("selections",
@@ -467,11 +440,11 @@ var fluid_1_4 = fluid_1_4 || {};
         
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
-            that.events.onUIOptionsTemplateReady.fire();            
             bindHandlers(that);
-            bindEventHandlers(that);            
+            bindEventHandlers(that);
+            that.events.onUIOptionsComponentReady.fire();
             that.events.onReady.fire(that);
-        }, {amalgamateClasses: ["template"]});
+        });
     };
 
     /******************************************************
@@ -551,20 +524,16 @@ var fluid_1_4 = fluid_1_4 || {};
             textSize: ".flc-uiOptions-min-text-size",
             lineSpacing: ".flc-uiOptions-line-spacing"
         },
+        events: {
+            onUIOptionsRefresh: null    
+        },
+        listeners: {
+            onUIOptionsRefresh: "{textControls}.refreshView"     
+        },
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.textControls.produceTree",
         resources: {
-            template: {
-                expander: {
-                    type: "fluid.deferredInvokeCall",
-                    func: "fluid.specBuilder",
-                    args: {
-                        forceCache: true,
-                        fetchClass: "template",
-                        url: "%textControls"
-                    }
-                }
-            }
+            template: "{templateLoader}.resources.textControls"
         }
     });
     
@@ -630,20 +599,16 @@ var fluid_1_4 = fluid_1_4 || {};
             layout: ".flc-uiOptions-layout",
             toc: ".flc-uiOptions-toc"
         },
+        events: {
+            onUIOptionsRefresh: null    
+        },
+        listeners: {
+            onUIOptionsRefresh: "{layoutControls}.refreshView"     
+        },
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.layoutControls.produceTree",
-        resources: {
-            template: {
-                expander: {
-                    type: "fluid.deferredInvokeCall",
-                    func: "fluid.specBuilder",
-                    args: {
-                        forceCache: true,
-                        fetchClass: "template",
-                        url: "%layoutControls"
-                    }
-                }
-            }
+        resources: {                    
+             template: "{templateLoader}.resources.layoutControls"
         }
     });
 
@@ -673,20 +638,16 @@ var fluid_1_4 = fluid_1_4 || {};
             links: ".flc-uiOptions-links",
             inputsLarger: ".flc-uiOptions-inputs-larger"
         },
+        events: {
+            onUIOptionsRefresh: null    
+        },
+        listeners: {
+            onUIOptionsRefresh: "{linksControls}.refreshView"     
+        },
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.linksControls.produceTree",
-        resources: {
-            template: {
-                expander: {
-                    type: "fluid.deferredInvokeCall",
-                    func: "fluid.specBuilder",
-                    args: {
-                        forceCache: true,
-                        fetchClass: "template",
-                        url: "%linksControls"
-                    }
-                }
-            }
+        resources: {                    
+              template: "{templateLoader}.resources.linksControls"
         }
     });
 

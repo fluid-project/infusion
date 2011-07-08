@@ -23,13 +23,33 @@ var fluid_1_4 = fluid_1_4 || {};
     /**********************
      * Full Preview UI Options *
      *********************/
-     
+    fluid.setLogging(true);
+    
+    fluid.staticEnvironment.fullPreviewUIOptions = fluid.typeTag("fluid.fullPreviewUIOptions");
+    fluid.demands("fluid.uiOptions.templateLoader", "fluid.fullPreviewUIOptions", {
+        options: {
+            templates: {
+                uiOptions: "%prefixFullPreviewUIOptions.html"
+            }
+        }
+    });
+    
+    fluid.demands("fluid.uiOptions.templatePath", ["fluid.uiOptions.fullPreviewUIOptions", "fluid.fullPreviewUIOptions"], {
+        options: {
+            value: "{fullPreviewUIOptions}.options.prefix"
+        }
+    });
+    
     fluid.defaults("fluid.fullPreviewUIOptions", {
         gradeNames: ["fluid.viewComponent", "autoInit"],            
         components: {
-            uiOptions: {
-                type: "fluid.uiOptions",
+            uiOptionsLoader: {
+                type: "fluid.uiOptions.loader",
                 container: "{fullPreviewUIOptions}.container"
+            },
+            templateLoader: {
+                priority: "first",
+                type: "fluid.uiOptions.templateLoader"
             }                     
         }
     });       
@@ -46,14 +66,5 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });      
-    
-    fluid.staticEnvironment.fullPreviewUIOptions = fluid.typeTag("fluid.fullPreviewUIOptions");
-    fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.fullPreviewUIOptions", {
-        options: {
-            templates: {
-                uiOptions: "%prefixFullPreviewUIOptions.html"
-            }
-        }
-    });
     
 })(jQuery, fluid_1_4);
