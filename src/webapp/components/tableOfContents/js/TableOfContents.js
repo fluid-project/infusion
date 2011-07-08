@@ -201,7 +201,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 funcName: "fluid.tableOfContents.modelBuilder.toModel",
                 args: ["{arguments}.0", "{modelBuilder}.modelLevelFn"]
             },
-            modelLevelFn: "fluid.tableOfContents.modelBuilder.gradualModelLevelFn"
+            modelLevelFn: "fluid.tableOfContents.modelBuilder.skippedModelLevelFn"
         }
     });
     
@@ -237,7 +237,7 @@ var fluid_1_4 = fluid_1_4 || {};
     // The current state of this tree generation code is a result of missing framework supports.
     // In the future it is envisioned that it will be greatly simplified through the use of antigens.
     // See FLUID-4261: http://issues.fluidproject.org/browse/FLUID-4261
-    fluid.tableOfContents.levels.generateTree = function (startLevel, endLevel) {
+    fluid.tableOfContents.levels.generateTree2 = function (startLevel, endLevel) {
         var tree = {};
         var trueTree = {};
         var componentID = "level" + startLevel;
@@ -287,9 +287,48 @@ var fluid_1_4 = fluid_1_4 || {};
         
         return tree;
     };
+    
+    fluid.tableOfContents.levels.generateTree = function (topModel) {
+        var children = {};
+        var tree = {};
+        var subtree = {};
+        
+        //base case = no more sub headings, then this is where we set the anchor info.
+        if (!topModel.headings) {
+            return {ID: "link" + topModel.level, target: topModel.url, linktext: topModel.text};            
+        }
+                
+        // model headings comes as an Array, loop through them
+        $.each (topModel.headings, function (index, model) {
+            console.log(model);
+            var currentLevel = model.level; 
+            var childrenObj = {};
+            
+            // if currentLevel is not set, then this is the skipped node, add decorator to it
+            if (!currentLevel) {
+                currentLevel = topModel.level + 1;
+                childrenObj.decorators = [
+                    {
+                        type: "addClass",
+                        classes: "fl-tableOfContents-hide-bullet"
+                    }
+                ];
+            } 
+            childrenObj.ID = "items" + currentLevel;
+            childrenObj.children = fluid.tableOfContents.levels.generateTree(model);
+            
+            tree[index] = {
+                ID: "level" + currentLevel,
+                children: childrenObj
+            };
+            
+        });
+        return tree;
+    };
  
     fluid.tableOfContents.levels.produceTree = function (that) {
-        return fluid.tableOfContents.levels.generateTree(1, that.options.maxLevel);
+    console.log(fluid.tableOfContents.levels.generateTree(that.model));
+//        return fluid.tableOfContents.levels.generateTree(that.model);
     };
      
     fluid.defaults("fluid.tableOfContents.levels", {
