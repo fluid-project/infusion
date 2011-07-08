@@ -1,7 +1,10 @@
 /* UI Options Fat Panel styles */
 
+.fl-uiOptions-fatPanel-iframe {
+    border: 0;
+}
+
 .fl-uiOptions-fatPanel {
-	border: 0;
 	min-width: 960px;
     background-color: #fff;
 }

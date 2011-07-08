@@ -128,7 +128,7 @@ var fluid_1_4 = fluid_1_4 || {};
         styles: {
             offScreen: "fl-offScreen-hidden",
             containerFlex: "fl-container-flex",
-            container: "fl-uiOptions-fatPanel"
+            container: "fl-uiOptions-fatPanel-iframe"
         },
         markupProps: {
             "class": "flc-iframe",
@@ -181,7 +181,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     },
                     tabs: {
                         type: "fluid.tabs",
-                        container: "body",      
+                        container: ".flc-uiOptions-fatPanel-tabs",   
                         createOnEvent: "onReady"               
                     }
                 }
