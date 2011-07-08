@@ -2,7 +2,8 @@
 Copyright 2008-2010 University of Cambridge
 Copyright 2008-2009 University of Toronto
 Copyright 2008-2009 University of California, Berkeley
-Copyright 2010 Lucendo Development Ltd.
+Copyright 2010-2011 Lucendo Development Ltd.
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
