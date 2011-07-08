@@ -52,6 +52,11 @@
         <script type="text/javascript" src="../../../../components/uiOptions/js/UIOptions.js"></script>
         <script type="text/javascript" src="../../../../components/uiOptions/js/FullNoPreviewUIOptions.js"></script>
         <script type="text/javascript" src="../../../../components/tableOfContents/js/TableOfContents.js"></script>                
+    </head>
+
+    <body>
+        <h1>User Interface Options</h1>        
+        <div id="myUIOptions"></div>      
 
         <script type="text/javascript">
             $().ready(function () {
@@ -71,14 +76,9 @@
                 });     
                     
                 fluid.pageEnhancer();                
-				fluid.fullNoPreviewUIOptions("#myUIOptions");
+                fluid.fullNoPreviewUIOptions("#myUIOptions");
             });
         </script>        
-    </head>
-
-    <body>
-        <h1>User Interface Options</h1>        
-        <div id="myUIOptions"></div>      
     </body>
 </html>
 

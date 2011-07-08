@@ -785,46 +785,4 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
-    
-    
-    /***************************
-     * UI Options Live Preview *
-     ***************************/  
-       
-    fluid.defaults("fluid.uiOptions.livePreview", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"], 
-        components: {
-            eventBinder: {
-                type: "fluid.uiOptions.preview.eventBinder",
-                createOnEvent: "onReady"
-            }
-        },    
-        invokers: {
-            updateModel: {
-                funcName: "fluid.uiOptions.preview.updateModel",
-                args: [
-                    "{livePreview}",
-                    "{uiOptions}.model.selections"
-                ]
-            }
-        },
-        events: {
-            onReady: null
-        },
-        finalInitFunction: "fluid.uiOptions.livePreview.finalInit"
-    });
-
-    fluid.uiOptions.livePreview.finalInit = function (that) {
-        that.enhancer = $(document).data("uiEnhancer");
-        that.events.onReady.fire();
-    };
-
-    fluid.demands("fluid.uiOptions.preview.eventBinder", "fluid.uiOptions.livePreview", {
-        options: {
-            listeners: {
-                "{uiOptions}.events.modelChanged": "{livePreview}.updateModel"
-            }
-        }
-    });
-
 })(jQuery, fluid_1_4);
