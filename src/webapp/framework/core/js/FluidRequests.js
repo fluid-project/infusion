@@ -1,6 +1,5 @@
 /*
-Copyright 2007-2010 University of Cambridge
-Copyright 2007-2009 University of Toronto
+Copyright 2010-2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
