@@ -50,6 +50,11 @@ var fluid_1_4 = fluid_1_4 || {};
         elm.addClass(that.options.styles.hidden);
     };
     
+    var maxFilesUploaded = function (that) {
+        var fileUploadLimit = that.queue.getUploadedFiles().length + that.queue.getReadyFiles().length;
+        return (fileUploadLimit === that.options.queueSettings.fileUploadLimit);
+    };    
+    
     var setTotalProgressStyle = function (that, didError) {
         didError = didError || false;
         var indicator = that.totalProgress.indicator;
@@ -68,12 +73,20 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
     
+    // Only enable the browse button if the fileUploadLimit 
+    // has not been reached
+    var enableBrowseButton = function (that) {
+        if(!maxFilesUploaded(that)) {
+            enableElement(that, that.locate("browseButton"));
+            that.strategy.local.enableBrowseButton();            
+        }
+    }    
+    
     var setStateDone = function (that) {
         disableElement(that, that.locate("uploadButton"));
-        enableElement(that, that.locate("browseButton"));
-        that.strategy.local.enableBrowseButton();
         hideElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("uploadButton"));
+        enableBrowseButton(that);
     };
 
     var setStateLoaded = function (that) {
@@ -82,10 +95,9 @@ var fluid_1_4 = fluid_1_4 || {};
         hideElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("uploadButton"));
         enableElement(that, that.locate("uploadButton"));
-        enableElement(that, that.locate("browseButton"));
-        that.strategy.local.enableBrowseButton();
         hideElement(that, that.locate("instructions"));
         that.totalProgress.hide();
+        enableBrowseButton(that);
     };
     
     var setStateUploading = function (that) {
