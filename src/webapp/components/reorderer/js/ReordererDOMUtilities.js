@@ -44,7 +44,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var cleansed = $.data(element, fluid.dom.cleanseScripts.MARKER);
         if (!cleansed) {
             fluid.dom.iterateDom(element, function (node) {
-                return node.tagName.toLowerCase() === "script"? "delete" : null;
+                return node.tagName.toLowerCase() === "script" ? "delete" : null;
             });
             $.data(element, fluid.dom.cleanseScripts.MARKER, true);
         }
@@ -60,8 +60,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var nextSib = refChild.nextSibling;
         if (!nextSib) {
             refChild.parentNode.appendChild(newChild);
-        }
-        else {
+        } else {
             refChild.parentNode.insertBefore(newChild, nextSib);
         }
     };
@@ -91,7 +90,7 @@ var fluid_1_4 = fluid_1_4 || {};
      */
     fluid.dom.isIgnorableNode = function (node) {
         return (node.nodeType === 8) || // A comment node
-         ((node.nodeType === 3) && fluid.dom.isWhitespaceNode(node)); // a text node, all ws
+            ((node.nodeType === 3) && fluid.dom.isWhitespaceNode(node)); // a text node, all ws
     };
 
 })(jQuery, fluid_1_4);
