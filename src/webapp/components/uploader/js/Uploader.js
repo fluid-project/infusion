@@ -73,17 +73,20 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
     
-    var setStateDone = function (that) {
-        disableElement(that, that.locate("uploadButton"));
-        hideElement(that, that.locate("pauseButton"));
-        showElement(that, that.locate("uploadButton"));
-        
-        // Only enable the browse button if the fileUploadLimit 
-        // has not been reached
+    // Only enable the browse button if the fileUploadLimit 
+    // has not been reached
+    var enableBrowseButton = function (that) {
         if(!maxFilesUploaded(that)) {
             enableElement(that, that.locate("browseButton"));
             that.strategy.local.enableBrowseButton();            
         }
+    }    
+    
+    var setStateDone = function (that) {
+        disableElement(that, that.locate("uploadButton"));
+        hideElement(that, that.locate("pauseButton"));
+        showElement(that, that.locate("uploadButton"));
+        enableBrowseButton(that);
     };
 
     var setStateLoaded = function (that) {
@@ -92,10 +95,9 @@ var fluid_1_4 = fluid_1_4 || {};
         hideElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("uploadButton"));
         enableElement(that, that.locate("uploadButton"));
-        enableElement(that, that.locate("browseButton"));
-        that.strategy.local.enableBrowseButton();
         hideElement(that, that.locate("instructions"));
         that.totalProgress.hide();
+        enableBrowseButton(that);
     };
     
     var setStateUploading = function (that) {
@@ -491,7 +493,7 @@ var fluid_1_4 = fluid_1_4 || {};
             fileSizeLimit: "20480",
             fileTypes: null,
             fileTypesDescription: null,
-            fileUploadLimit: 0,
+            fileUploadLimit: 1,
             fileQueueLimit: 0
         },
 
