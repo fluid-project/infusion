@@ -170,7 +170,7 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
     background-attachment: scroll;
     background-repeat: no-repeat;
     background-position: 0px 5px;
-    padding: 5px 5px 0px 24px;
+    padding: 5px 5px 0px 22px;
     border: none;
     white-space: nowrap;
     color: #005ebc;
@@ -198,15 +198,15 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
 .fl-uploader-browse {
     display: block;
     overflow: hidden;
-    width: 82px;
-    height: 24px;
+    height: 1.65em;
+    width: 5.7em;
     cursor: default;
 }
 
 /* Fake add files button wrapper ("Add more")
  * Same as above, but width-adjusted for shorter text */
 .fl-uploader-browse.fl-uploader-browseMore {
-    width: 65px;
+   width: 4.5em;
 }
 
 /* Actual, real add files button (invisible) */
@@ -216,11 +216,11 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
     float: right;
 
     /* Make the real button big enough to cover the fake button */
-    height: 40px;
+    height: 3em;
+    bottom: 2em;
     letter-spacing: 5px;
-    bottom: 28px;
     left: 10px;
-
+    
     /* Make the button invisible */
     opacity: 0;
     -moz-opacity: 0;
