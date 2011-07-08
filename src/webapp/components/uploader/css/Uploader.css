@@ -226,10 +226,8 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
     float: right;
 
     /* Make the real button big enough to cover the fake button */
-   /* height: 40px;
-       bottom: 28px;*/
-	height: 3em;
-	bottom: 2em;
+    height: 3em;
+    bottom: 2em;
     letter-spacing: 5px;
     left: 10px;
     
