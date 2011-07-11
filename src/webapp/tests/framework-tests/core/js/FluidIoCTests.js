@@ -676,8 +676,10 @@ fluid.registerNamespace("fluid.tests");
         }
     });
     
-    fluid.demands("boiledLocal", "fluid.tests.eventChild", 
-      ["{arguments}.0", "{eventChild}"]);
+    fluid.demands("boiledLocal", "fluid.tests.eventChild", [
+        "{arguments}.0",
+        "{eventChild}"
+    ]);
     
     fluidIoCTests.test("FLUID-4135 event injection and boiling", function () {
         var that = fluid.tests.eventParent();
@@ -802,9 +804,10 @@ fluid.registerNamespace("fluid.tests");
         }
     });
     
-    fluid.demands("fluid.tests.reinsChild2", "fluid.tests.reinstantiation",
-       [fluid.COMPONENT_OPTIONS, "{reinstantiation}.options.headValue"] 
-    );
+    fluid.demands("fluid.tests.reinsChild2", "fluid.tests.reinstantiation", [
+        fluid.COMPONENT_OPTIONS,
+        "{reinstantiation}.options.headValue" 
+    ]);
     
     fluid.tests.reinsChild2 = function (options, otherValue) {
         var that = fluid.initLittleComponent("fluid.tests.reinsChild2", options);
@@ -824,7 +827,7 @@ fluid.registerNamespace("fluid.tests");
         var origID = reins.child1.child2.id;
         var instantiator = reins.child1.instantiator;
         var expectedPaths = ["child1.child2.options.value", "child1.child2.otherValue", 
-            "child1.child2.child3.options.value", "child1.child2.child3.otherValue"]
+            "child1.child2.child3.options.value", "child1.child2.child3.otherValue"];
         checkValue("Original value", reins, reins.options.headValue, expectedPaths);
         reins.options.headValue = "headValue2"; // in poor style, modify options to verify reexpansion
         reins.child1.options.components.child2 = fluid.copy(fluid.defaults("fluid.tests.reinstantiation").components.child1.options.components.child2);
@@ -929,7 +932,7 @@ fluid.registerNamespace("fluid.tests");
         options: {
             mergeAllOptions: [
                 "{options}", {childOption1: "demandValue1"}, {childOption3: "{mergePaths}.options.headOption"}
-                ]
+            ]
         }
     });
     
@@ -951,7 +954,7 @@ fluid.registerNamespace("fluid.tests");
             childOption3: "headValue1"
         };
         jqUnit.assertDeepEq("Direct options overriden by demands", 
-           expected, fluid.filterKeys(mergePaths.child.options, ["childOption1", "childOption2", "childOption3"]));
+            expected, fluid.filterKeys(mergePaths.child.options, ["childOption1", "childOption2", "childOption3"]));
         jqUnit.assertEquals("Model delivered directly through mergePaths in demands block for full args (FLUID-4142)", 
             mergePaths.model, mergePaths.viewChild.model);
         var expected2 = {
@@ -981,9 +984,8 @@ fluid.registerNamespace("fluid.tests");
     
     fluid.demands("fluid.tests.circChild", "fluid.tests.circularity",
         [{
-        instantiator: "{circularity}.instantiator"  
-        }] 
-    );
+            instantiator: "{circularity}.instantiator"  
+        }]);
     
     fluid.tests.makeInitFunction = function (name) {
         return function (that) {
@@ -1012,8 +1014,7 @@ fluid.registerNamespace("fluid.tests");
             parent: "nomerge"  
         },
         postInitFunction: "fluid.tests.initFunctions.initRecordingComponent"
-        }
-    );
+    });
     
     fluid.defaults("fluid.tests.initFunctions", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
@@ -1028,11 +1029,11 @@ fluid.registerNamespace("fluid.tests");
         },
         components: {
             initTimeComponent: {
-                 type: "fluid.tests.initFunctions.recordingComponent",
-                 options: {
-                     parent: "{initFunctions}",
-                     name: "initTimeComponent"
-                 }
+                type: "fluid.tests.initFunctions.recordingComponent",
+                options: {
+                    parent: "{initFunctions}",
+                    name: "initTimeComponent"
+                }
             },
             eventTimeComponent: {
                 type: "fluid.tests.initFunctions.recordingComponent",
@@ -1065,7 +1066,7 @@ fluid.registerNamespace("fluid.tests");
         options: {
             finalInitFunction: fluid.tests.initFunctions.demandsInitComponent.finalInitFunction
         }
-    })
+    });
     
     fluidIoCTests.test("Component lifecycle test", function () {
         var testComp = fluid.tests.initFunctions();
@@ -1137,8 +1138,7 @@ fluid.registerNamespace("fluid.tests");
     });
     
     fluid.demands("fluid.tests.guidedChild", "fluid.tests.guidedParent", {
-        mergeOptions:  {parent: "{guidedParent}"
-        }
+        mergeOptions:  {parent: "{guidedParent}"}
     });
 
     fluid.tests.guidedParentInit = function (that) {
@@ -1196,18 +1196,15 @@ fluid.registerNamespace("fluid.tests");
             delete rawDefaults.mergePolicy;
             try {
                 var circular2 = fluid.tests.circularity();
-            }
-            catch (e) {
+            } catch (e) {
                 jqUnit.assert("Exception caught in circular instantiation");
             }
             try {
                 fluid.expandOptions(circular, circular);
-            }
-            catch (e) {
+            } catch (e2) {
                 jqUnit.assert("Exception caught in circular expansion");
             }
-        }
-        finally {
+        } finally {
             fluid.pushSoftFailure(-1);  
         }
     });
@@ -1281,11 +1278,9 @@ fluid.registerNamespace("fluid.tests");
             fluid.pushSoftFailure(true);
             jqUnit.expect(1);
             var comp = fluid.tests.circular.strategy();
-        }
-        catch (e) {
+        } catch (e) {
             jqUnit.assert("Circular construction guarded");  
-        }
-        finally {
+        } finally {
             fluid.pushSoftFailure(-1);
         }
     });
@@ -1459,26 +1454,24 @@ fluid.registerNamespace("fluid.tests");
                 type: "fluid.tests.news.child",
                 model: "{parent}.model"
             }
-          }
-      });
+        }
+    });
 
-      fluid.defaults("fluid.tests.news.child", {
-          gradeNames: ["fluid.modelComponent", "autoInit"],
-      });
+    fluid.defaults("fluid.tests.news.child", {
+        gradeNames: ["fluid.modelComponent", "autoInit"]
+    });
       
-      fluidIoCTests.test("FLUID-4285 test - prevent unencoded options", function () {
-          try {
-              jqUnit.expect(1);
-              fluid.pushSoftFailure(true);
-              var parent = fluid.tests.news.parent();
-          }
-          catch (e) {
-              jqUnit.assert("Caught exception in constructing stray options component");
-          }
-          finally {
-              fluid.pushSoftFailure(-1);  
-          }
-      });
+    fluidIoCTests.test("FLUID-4285 test - prevent unencoded options", function () {
+        try {
+            jqUnit.expect(1);
+            fluid.pushSoftFailure(true);
+            var parent = fluid.tests.news.parent();
+        } catch (e) {
+            jqUnit.assert("Caught exception in constructing stray options component");
+        } finally {
+            fluid.pushSoftFailure(-1);  
+        }
+    });
 
 
     /************************************
