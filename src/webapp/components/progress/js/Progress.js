@@ -34,7 +34,7 @@ var fluid_1_4 = fluid_1_4 || {};
             width: width,
             queue: false
         }, 
-        speed);
+            speed);
     };
     
     var showProgress = function (that, animation) {
@@ -81,7 +81,7 @@ var fluid_1_4 = fluid_1_4 || {};
         return Math.round((Math.min(percent, 100) * that.progressBar.innerWidth()) / 100);
     };
     
-    var refreshRelativeWidth = function (that)  {
+    var refreshRelativeWidth = function (that) {
         var pixels = Math.max(percentToPixels(that, parseFloat(that.storedPercent)), that.options.minWidth);
         updateWidth(that, pixels, true);
     };

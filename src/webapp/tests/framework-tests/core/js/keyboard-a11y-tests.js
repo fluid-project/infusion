@@ -81,7 +81,7 @@ if (!fluid.unwrap) {
         menuContainer.fluid("tabbable");
         // Mix in any additional options.
         var mergedOptions = jQuery.extend(selectionOptions, additionalOptions, setupHandlers(),
-          {selectableElements: menuItems});
+                {selectableElements: menuItems});
         
         menuContainer.fluid("selectable", mergedOptions);
 
@@ -519,14 +519,14 @@ if (!fluid.unwrap) {
             // Test that the down arrow works.
             simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.DOWN);
             jqUnit.assertEquals("The menu should " + (enabled ? "" : " not ") + 
-                " have been activated by the down arrow key.", enabled ? true: undefined, menu.wasActivated);
+                " have been activated by the down arrow key.", enabled ? true : undefined, menu.wasActivated);
     
             // Reset and try the other key map.
             menu.wasActivated = false;
             simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.UP, $.ui.keyCode.CTRL);
             
             jqUnit.assertEquals("The menu should " + (enabled ? "" : " not ") + 
-                " have been activated by the ctrl key.", enabled ? "foo": false, menu.wasActivated);
+                " have been activated by the ctrl key.", enabled ? "foo" : false, menu.wasActivated);
         });
     }
     
@@ -546,7 +546,7 @@ if (!fluid.unwrap) {
     keyboardA11y.test("destructibleList and refresh()", function () {
         var menuContainer = $(MENU_SEL);
         var selThat = $(MENU_SEL).fluid("selectable", 
-          $.extend({selectableSelector: MENU_ITEM_SEL}, setupHandlers())).that();
+                $.extend({selectableSelector: MENU_ITEM_SEL}, setupHandlers())).that();
         menuContainer.focus();
         var firstMenuItem = getFirstMenuItem();
         keyboardA11y.assertSelected(firstMenuItem);

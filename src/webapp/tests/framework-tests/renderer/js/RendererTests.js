@@ -1476,8 +1476,7 @@ fluid.registerNamespace("fluid.tests");
             try {
                 fluid.pushSoftFailure(true);
                 fluid.fetchResources(resourceSpec2, callback);
-            }
-            finally {
+            } finally {
                 fluid.pushSoftFailure(-1);
             }
             jqUnit.assertEquals("Two calls to destructive callback", 2, destructiveCalls);

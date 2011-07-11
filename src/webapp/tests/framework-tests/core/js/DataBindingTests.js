@@ -129,42 +129,41 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         function makeTransTest(trans, thin) {
             DataBindingTests.test("Transactional ChangeApplier - Transactional: " + 
                 trans + " Thin: " + thin, function () {
-                var model = {
-                    outerProperty: false,
-                    transWorld: {
-                        innerPath1: 3,
-                        innerPath2: 4
+                    var model = {
+                        outerProperty: false,
+                        transWorld: {
+                            innerPath1: 3,
+                            innerPath2: 4
+                        }
+                    };
+                    
+                    var modelChangedCheck = [];
+                    var guard1check = 0;
+                    
+                    function modelChanged(newModel, oldModel, changes) {
+                        if (trans) {
+                            jqUnit.assertEquals("Changes after guard", 1, guard1check);
+                        } else {
+                            jqUnit.assertEquals("Changes wrt guard", modelChangedCheck.length, guard1check);
+                        }
+                        modelChangedCheck = modelChangedCheck.concat(changes);
                     }
-                };
-                
-                var modelChangedCheck = [];
-                var guard1check = 0;
-                
-                function modelChanged(newModel, oldModel, changes) {
-                    if (trans) {
-                        jqUnit.assertEquals("Changes after guard", 1, guard1check);
+                                
+                    function transGuard1(innerModel, changeRequest, applier) {
+                        applier.requestChange("transWorld.innerPath2", 5);
+                        jqUnit.assertEquals("Change wrt transaction", trans && !thin ? 4 : 5, model.transWorld.innerPath2);
+                        jqUnit.assertEquals("ModelChanged count", trans ? 0 : 1, modelChangedCheck.length);
+                        guard1check++;
                     }
-                    else {
-                        jqUnit.assertEquals("Changes wrt guard", modelChangedCheck.length, guard1check);
-                    }
-                    modelChangedCheck = modelChangedCheck.concat(changes);
+                    var applier = fluid.makeChangeApplier(model, {thin: thin});
+                    applier.guards.addListener((trans ? "!" : "") + "transWorld", transGuard1);
+                    applier.modelChanged.addListener("*", modelChanged);
+                    applier.requestChange("transWorld.innerPath1", 4);
+                    jqUnit.assertEquals("Guard 1 executed", 1, guard1check);
+                    jqUnit.assertDeepEq("Final model state", {innerPath1: 4, innerPath2: 5}, model.transWorld);
+                    jqUnit.assertEquals("2 changes received", 2, modelChangedCheck.length);
                 }
-                            
-                function transGuard1(innerModel, changeRequest, applier) {
-                    applier.requestChange("transWorld.innerPath2", 5);
-                    jqUnit.assertEquals("Change wrt transaction", trans && !thin ? 4 : 5, model.transWorld.innerPath2);
-                    jqUnit.assertEquals("ModelChanged count", trans ? 0 : 1, modelChangedCheck.length);
-                    guard1check++;
-                }
-                var applier = fluid.makeChangeApplier(model, {thin: thin});
-                applier.guards.addListener((trans ? "!" : "") + "transWorld", transGuard1);
-                applier.modelChanged.addListener("*", modelChanged);
-                applier.requestChange("transWorld.innerPath1", 4);
-                jqUnit.assertEquals("Guard 1 executed", 1, guard1check);
-                jqUnit.assertDeepEq("Final model state", {innerPath1: 4, innerPath2: 5}, model.transWorld);
-                jqUnit.assertEquals("2 changes received", 2, modelChangedCheck.length);
-            }
-            );
+                );
         }
         makeTransTest(true, false);
         makeTransTest(false, false);
