@@ -5,7 +5,7 @@ Infusion is a different kind of JavaScript framework. Our approach is to leave y
 it's your interface, using your markup, your way. Infusion is accessible and very, very configurable.
 
 Infusion includes:
-    * an application framework for developing flexible stuff with JavaScript and jQuery,
+    * an application framework for developing flexible interfaces with JavaScript and jQuery,
     * a growing collection of user interface components, and
     * a lightweight CSS framework.
 
