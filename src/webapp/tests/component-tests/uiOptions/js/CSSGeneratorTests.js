@@ -20,8 +20,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var tests = new jqUnit.TestCase("CSSGenerator Tests");
         
         var testStylesheetForPrioritySpec = function (prioritySpec, expected, msg) {
-            var tg = build.cssGenerator({
-                sheetStore: build.cssGenerator.browserSheetStore($("#testTheme"))
+            var tg = fluid.build.cssGenerator({
+                sheetStore: fluid.build.cssGenerator.browserSheetStore($("#testTheme"))
             });
             tg.prioritize(prioritySpec);
             

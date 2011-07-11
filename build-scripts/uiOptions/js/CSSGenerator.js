@@ -15,7 +15,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
-var build = build || {};
+var fluid = {
+    build: {}
+};
+
 
 (function () {
                 
@@ -29,27 +32,29 @@ var build = build || {};
     };
     
     var setupCSSGenerator = function (that) {
-        that.cssText = that.options.sheetStore.load();
+        // Concatenate an empty string with the file contents to ensure 
+        // that we are passing in a Javascript string rather than a Java string
+        that.cssText = "" + that.options.sheetStore.load();
         that.parser = new CSSParser();
         that.stylesheet = that.parser.parse(that.cssText, false, true);
     };
     
-    build.cssGenerator = function (options) {
+    fluid.build.cssGenerator = function (options) {
         var that = {
             options: options
         };
         
         that.prioritize = function (prioritySpec) {
-            build.cssGenerator.expandRuleSpec(prioritySpec);
-            
+            fluid.build.cssGenerator.expandRuleSpec(prioritySpec);
+
             // Bail right away if we have no rules to process.
             if (!that.stylesheet.cssRules || that.stylesheet.cssRules.length < 1) {
                 return;
             }
-            
+
             for (var i = 0; i < that.stylesheet.cssRules.length; i++) {
                 var rule = that.stylesheet.cssRules[i];
-                
+            
                 // If this rule doesn't have any declarations or priorities, keep on trucking.
                 if (!rule.declarations || rule.declarations.length < 1) {
                     continue;
@@ -81,67 +86,10 @@ var build = build || {};
         return that;
     };
     
-    build.cssGenerator.expandRuleSpec = function (spec) {
+    fluid.build.cssGenerator.expandRuleSpec = function (spec) {
         for (var selector in spec) {
             var priorities = spec[selector];
             spec[selector] = typeof(priorities) === "string" ? [priorities] : priorities;
         }
     };
-    
-    /**********************************************
-     * Browser-based strategy for loading styles. *
-     **********************************************/
-
-    build.cssGenerator.browserSheetStore = function (stylesheetLinkEl) {
-        var that = {
-            sheetEl: stylesheetLinkEl
-        };
-        
-        that.load = function () {
-            return build.cssGenerator.browserSheetStore.syncLoadStylesheetURL(that.sheetEl.attr("href"));
-        };
-        
-        that.save = function () {
-            // No-op for the browser for now.
-        };
-        
-        return that;
-    };
-    
-    build.cssGenerator.browserSheetStore.syncLoadStylesheetURL = function (url) {
-        var cssText;
-        jQuery.ajax({
-            url: url,
-            dataType: "text",
-            async: false,
-            success: function (response) {
-                cssText = response;
-            },
-            error: function () {
-                cssText = null;
-            }
-        });
-        return cssText;
-    };
-    
-    /*******************************************
-     * Rhino-based strategy for loading styles *
-     *******************************************/
-     
-     build.cssGenerator.rhinoSheetStore = function (stylesheetPath) {
-         var that = {
-             path: stylesheetPath
-         };
-
-         that.load = function () {
-
-         };
-
-         that.save = function () {
-             
-         };
-
-         return that;
-     };
-
 })();

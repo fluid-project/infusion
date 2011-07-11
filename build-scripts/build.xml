@@ -260,11 +260,16 @@
         <jslint dir="${lint}" excludes="${excludeFromJSLint}" options="browser,eqeqeq,nomen,undef">
         </jslint>
     </target>    
-	
-    <target name="cssGenerator" description="Concatenate all dependent files ">
-        <concat destfile="uiOptions/js/CSSGeneratorAll.js" append="true">
-            <filelist dir="lib/jscssp/js" files="cssParser.js"/>
-            <filelist dir="uiOptions/js" files="CSSGenerator.js, fileHandler.js"/>
+
+    <target name="combineCSSGenerators" description="Concatenate all dependent files ">
+    	<delete file="${base-dir}/build-scripts/uiOptions/js/CSSGeneratorAll.js"/>
+        <concat destfile="${base-dir}/build-scripts/uiOptions/js/CSSGeneratorAll.js" append="true">
+            <filelist dir="${base-dir}/build-scripts/lib/jscssp/js" files="cssParser.js"/>
+            <filelist dir="${base-dir}/build-scripts/uiOptions/js" files="CSSGenerator.js, RhinoStylesheetHandler.js, StylesheetImportant.js"/>
         </concat>       
-    </target>	
+    </target>   
+    	
+	<target name="cssGeneration" depends="combineCSSGenerators" description="Inject !important into the stylesheets">
+		<script language="javascript" src="${base-dir}/build-scripts/uiOptions/js/CSSGeneratorAll.js" />
+    </target>
 </project>
