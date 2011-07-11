@@ -23,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
         function assertItemsInOrder(message, expectOrder) {
             return fluid.testUtils.reorderer.assertItemsInOrder(message, expectOrder, 
-               $("li", $("#list1")), "list1item");
+                $("li", $("#list1")), "list1item");
         }        
         
         var k = fluid.testUtils.reorderer.bindReorderer(itemIds);
@@ -96,7 +96,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
         function assertItemsInOrder2(message, expectOrder) {
             return fluid.testUtils.reorderer.assertItemsInOrder(message, expectOrder, 
-               $("li", $("#list2")), "list2item");
+                $("li", $("#list2")), "list2item");
         }    
     
         var k2 = fluid.testUtils.reorderer.bindReorderer(itemIds2);

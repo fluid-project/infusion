@@ -147,5 +147,5 @@ fluid.registerNamespace("fluid.tests");
             });
             jqUnit.assertEquals("The live region should be updated", target.attr("aria-label"), region.text());
         });
-   };
+    };
 })(jQuery); 

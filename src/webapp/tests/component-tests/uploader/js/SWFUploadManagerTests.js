@@ -129,7 +129,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     flashContainer, 
                     button);
             var convertedConfig = fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload(
-                    flashContainer, config, events, defaultQueueSettings);
+                    flashContainer,
+                    config,
+                    events,
+                    defaultQueueSettings
+                );
             jqUnit.assertEquals("The converted accepted fileType is", convertedFileTypes, convertedConfig.file_types);            
         };
         

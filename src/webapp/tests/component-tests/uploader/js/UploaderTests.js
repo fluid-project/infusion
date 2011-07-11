@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, jQuery*/
+/*global fluid, jqUnit, jQuery, start*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -174,7 +174,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.uploader.noIoC = function (options) {
             var that = fluid.uploader(".flc-uploader", options);
             return that;
-        }
+        };
         
         /*
          * Instantiate an uploader as a subcomponent 
@@ -340,9 +340,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("The uploader must have an argument map in its options", uploader.options.argumentMap);
         };
         
-        var checkUploaderButton = function(uploader, buttonName, state) {
+        var checkUploaderButton = function (uploader, buttonName, state) {
             var button = uploader.locate(buttonName);
-            jqUnit.assertEquals("The " + buttonName + " is " + (state? "enabled" : "disabled"), state, !button.prop("disabled"));
+            jqUnit.assertEquals("The " + buttonName + " is " + (state ? "enabled" : "disabled"), state, !button.prop("disabled"));
         };
         
         var checkUploaderArgumentMap = function (uploader, expectedLocal, expectedRemote) {
@@ -406,16 +406,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             start();
         };        
         
-        var configurations = [ {
-            label: "Uploader with direct creator function",
-            type: fluid.tests.uploader.noIoC
-        }, {
-            label: "Uploader in an IoC tree",
-            type: fluid.tests.uploader.parent
-        },  {
-            label: "Uploader in an IoC tree with demands",
-            type: fluid.tests.uploader.parent.loadDemands
-        }
+        var configurations = [
+            {
+                label: "Uploader with direct creator function",
+                type: fluid.tests.uploader.noIoC
+            }, {
+                label: "Uploader in an IoC tree",
+                type: fluid.tests.uploader.parent
+            },  {
+                label: "Uploader in an IoC tree with demands",
+                type: fluid.tests.uploader.parent.loadDemands
+            }
         ];
         
         var integrations = [
@@ -465,7 +466,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             if (integration.uploaderConfig) {
                 fluid.staticEnvironment.uploaderConfig = fluid.progressiveCheckerForComponent({
-                        componentName: integration.uploaderConfig.componentName});
+                    componentName: integration.uploaderConfig.componentName
+                });
             }
             if (integration.demoRemote) {
                 fluid.staticEnvironment.demo = fluid.typeTag(integration.demoRemote.typeName);

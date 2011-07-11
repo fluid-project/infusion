@@ -102,24 +102,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var bit2 = {prop2: "thing2"};
             var bits = {prop1: "thing1", prop2: "thing2"};
             jqUnit.assertDeepEq("Simple merge 1",
-               bits, fluid.merge({}, {}, bit1, null, bit2));
+                bits, fluid.merge({}, {}, bit1, null, bit2));
             jqUnit.assertDeepEq("Simple merge 2",
-               bits, fluid.merge({}, {}, bit2, bit1, undefined));
+                bits, fluid.merge({}, {}, bit2, bit1, undefined));
             jqUnit.assertDeepEq("Simple merge 3",
-               bits, fluid.merge({}, {}, {}, bit1, bit2));
+                bits, fluid.merge({}, {}, {}, bit1, bit2));
             jqUnit.assertDeepEq("Simple merge 4",
-               bits, fluid.merge({}, {}, {}, bit2, bit1));
+                bits, fluid.merge({}, {}, {}, bit2, bit1));
                
             jqUnit.assertDeepNeq("Anticorruption check", bit1, bit2);
             
             jqUnit.assertDeepEq("Replace 1", 
-              bit1, fluid.merge({"": "replace"}, {}, bits, bit1));
+                bit1, fluid.merge({"": "replace"}, {}, bits, bit1));
               
             jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
-              fluid.merge([], [], [bit1, bit2], null, [bit2, bit1, bits]));
+                fluid.merge([], [], [bit1, bit2], null, [bit2, bit1, bits]));
             
             jqUnit.assertDeepEq("Value fetch", [bits, bits], 
-              fluid.merge({"0.prop1": "1.prop1",
+                fluid.merge({"0.prop1": "1.prop1",
                            "1.prop2": "0.prop2"}, [], [bit2, bit1], []));  
             
         });
@@ -309,7 +309,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("element not found", 0, invalidIdElement.length);
         });
         
-        fluidJSTests.test("FLUID-3953 tests: confusion for namespaced attributes", function() {
+        fluidJSTests.test("FLUID-3953 tests: confusion for namespaced attributes", function () {
             jqUnit.expect(2);
             var node = fluid.byId("FLUID-3953-test");
             jqUnit.assertEquals("Plain DOM node fetched", "FLUID-3953-test", node.id);
@@ -336,12 +336,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // Now try with a invalid string... a CSS selector matching two elements
                 try {
                     result = fluid.container(".container");
-                } 
-                catch (e) {
+                } catch (e) {
                     jqUnit.assertTrue("We should have received an exception", !!e);
                 }
-            }
-            finally {
+            } finally {
                 fluid.pushSoftFailure(-1);  
             }
         });
@@ -363,8 +361,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 } catch (e) {
                     jqUnit.assertTrue("We should have received an exception", !!e);
                 }
-            }
-            finally {
+            } finally {
                 fluid.pushSoftFailure(-1);  
             }
         });
@@ -385,12 +382,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
                 try {
                     fluid.container(container);
-                } 
-                catch (e) {
+                } catch (e) {
                     jqUnit.assertTrue("We should have received an exception", !!e);
                 }
-            }
-            finally {
+            } finally {
                 fluid.pushSoftFailure(-1);
             }
         });
@@ -406,7 +401,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var pageLinks = binder.locate("page-link");
             jqUnit.assertEquals("Find 3 links", 3, pageLinks.length);
             function testSublocate(method) {
-                for (var i = 0; i < 3; ++ i) {
+                for (var i = 0; i < 3; ++i) {
                     var scoped = binder[method]("inner-link", pageLinks[i]);
                     jqUnit.assertNotNull("Find inner link: " + method + "(" + i + ")", scoped);
                     jqUnit.assertEquals("Found second link: " + method + "(" + i + ")", scoped[0].id, "page-link-" + (i + 1));
@@ -454,24 +449,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                               fluid.defaults("timemachine"));
         });
                
-        fluidJSTests.test("FLUID-4285 test - prevent 'double options'", function() {
-          try {
-              jqUnit.expect(1);
-              fluid.pushSoftFailure(true);
-              fluid.defaults("news.parent", {
-                  gradeNames: ["fluid.littleComponent", "autoInit"],
-                  options: {
-                      test: "test"
-                  }
-              });
-          }
-          catch (e) {
-              jqUnit.assert("Caught exception in constructing double options component");
-          }
-          finally {
-              fluid.pushSoftFailure(-1);  
-          }
-      });
+        fluidJSTests.test("FLUID-4285 test - prevent 'double options'", function () {
+            try {
+                jqUnit.expect(1);
+                fluid.pushSoftFailure(true);
+                fluid.defaults("news.parent", {
+                    gradeNames: ["fluid.littleComponent", "autoInit"],
+                    options: {
+                        test: "test"
+                    }
+                });
+            } catch (e) {
+                jqUnit.assert("Caught exception in constructing double options component");
+            } finally {
+                fluid.pushSoftFailure(-1);  
+            }
+        });
         
         
         fluid.tests.testComponent = function (container, options) {
@@ -526,7 +519,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
         
-        fluidJSTests.test("Graded View Component", function() {
+        fluidJSTests.test("Graded View Component", function () {
             var model = {myKey: "myValue"};
             var that = fluid.tests.testGradedView("#pager-top", {model: model});
             jqUnit.assertValue("Constructed component", that);
@@ -563,9 +556,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("path4 value uncensored", model.path4, value2);
         });
         
-        fluid.tests.childMatchResolver = function(options, trundler) {
+        fluid.tests.childMatchResolver = function (options, trundler) {
             trundler = trundler.trundle(options.queryPath);
-            return fluid.find(trundler.root, function(value, key) {
+            return fluid.find(trundler.root, function (value, key) {
                 var trundleKey = trundler.trundle(key);
                 var trundleChild = trundleKey.trundle(options.childPath);
                 if (trundleChild.root === options.value) {
@@ -574,9 +567,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         };
         
-        fluid.tests.generateRepeatableThing = function(gens) {
+        fluid.tests.generateRepeatableThing = function (gens) {
             var togo = [];
-            for (var i = 0; i < gens.length; i+= 3) {
+            for (var i = 0; i < gens.length; i += 3) {
                 togo.push({
                     _primary: !!Number(gens.charAt(i)),
                     value: {
@@ -617,16 +610,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.tests.repeatableModifyingStrategy = {
-           init: function(oldStrategy) {
-               var that = {};
-               that.path = oldStrategy? oldStrategy.path : "";
-               that.next = function(root, segment) {
-                   that.path = fluid.model.composePath(that.path, segment);
-                   return that.path === "fields.repeatableThing.1.value"?
-                       fluid.tests.generateRepeatableThing("145") : undefined;   
-               };
-               return that;
-           }
+            init: function (oldStrategy) {
+                var that = {};
+                that.path = oldStrategy ? oldStrategy.path : "";
+                that.next = function (root, segment) {
+                    that.path = fluid.model.composePath(that.path, segment);
+                    return that.path === "fields.repeatableThing.1.value" ?
+                        fluid.tests.generateRepeatableThing("145") : undefined;   
+                };
+                return that;
+            }
         };
 
         fluidJSTests.test("Complex resolving and strategising", function () {
@@ -659,7 +652,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 strategies: [fluid.tests.repeatableModifyingStrategy].concat(fluid.model.defaultGetConfig.strategies) 
             };
             var resolved2 = fluid.get(model, el, config2);
-            jqUnit.assertEquals("Queried resolved and strategised value", 4, resolved2)
+            jqUnit.assertEquals("Queried resolved and strategised value", 4, resolved2);
         });
 
         fluidJSTests.test("Globals", function () {
@@ -701,7 +694,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             fluid.each(requiredLook, function (value, key) {
                 var looked = resolver.lookup([key]);
-                jqUnit.assertEquals("Resolve key " + key, value, looked ? looked.template: looked);
+                jqUnit.assertEquals("Resolve key " + key, value, looked ? looked.template : looked);
             });
             jqUnit.assertEquals("Local fallback",  bundleb.key1, resolver.resolve(["key2", "key1"]));
             jqUnit.assertEquals("Global fallback", bundlea.key2, resolver.resolve(["key4", "key2"]));
@@ -737,7 +730,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             firer.fire(false); //listener should not run and assertion should not execute 
         });
         
-        fluid.tests.initLifecycle = function(that) {
+        fluid.tests.initLifecycle = function (that) {
             that.initted = true;  
         };
         
@@ -746,18 +739,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             preInitFunction: "fluid.tests.initLifecycle"  
         });
         
-        fluidJSTests.test("Proper merging of lifecycle functions", function() {
+        fluidJSTests.test("Proper merging of lifecycle functions", function () {
             var model = { value: 3 };
             var that = fluid.tests.lifecycleTest({model: model});
             jqUnit.assertEquals("Grade preInit function fired", model, that.model);
             jqUnit.assertEquals("Custom preInit function fired", true, that.initted);
         });
         
-        fluid.tests.initLifecycle1 = function(that) {
+        fluid.tests.initLifecycle1 = function (that) {
             that.initted = 1;  
         };
         
-        fluid.tests.initLifecycle2 = function(that) {
+        fluid.tests.initLifecycle2 = function (that) {
             that.initted = 2;
         };
         
@@ -772,11 +765,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }, {
                 priority: 1,
                 listener: "fluid.tests.initLifecycle1"
-            }
-            ]
+            }]
         });
         
-        fluidJSTests.test("Detailed interaction of priority and namespacing with lifecycle functions", function() {
+        fluidJSTests.test("Detailed interaction of priority and namespacing with lifecycle functions", function () {
             var model = { value: 3 };
             var that = fluid.tests.lifecycleTest2({model: model});
             jqUnit.assertUndefined("Grade preInit function defeated", that.model);

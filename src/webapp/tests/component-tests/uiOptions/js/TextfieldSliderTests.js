@@ -80,7 +80,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var model = {
                 min: 2,
                 max: 10,
-                value: 5,
+                value: 5
             };
             var changeRequest = {
                 value: changeRequestValue        
@@ -88,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.textfieldSlider.validateValue(model, changeRequest);
             jqUnit.assertEquals("Validating value", expectedValue, changeRequest.value);
-        } 
+        };
         
         tests.test("validateValue() tests", function () {
             checkValidatedValue(11, 10);

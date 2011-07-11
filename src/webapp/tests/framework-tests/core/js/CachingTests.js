@@ -125,8 +125,7 @@ fluid.registerNamespace("fluid.tests");
             delete fluid.expandComponentOptions;
             try {
                 func();
-            }
-            finally {
+            } finally {
                 fluid.expandComponentOptions = expandComponentOptions;
             }      
         }
