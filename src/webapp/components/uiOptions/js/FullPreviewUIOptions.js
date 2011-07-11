@@ -18,9 +18,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
-    /**********************
+    /***************************
      * Full Preview UI Options *
-     *********************/
+     ***************************/
     fluid.setLogging(true);
     
     fluid.staticEnvironment.fullPreviewUIOptions = fluid.typeTag("fluid.fullPreviewUIOptions");

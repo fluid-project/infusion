@@ -80,12 +80,6 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.demands("fluid.uiOptions.templatePath", ["fluid.uiOptions.fatPanelUIOptions"], {
-        options: {
-            value: "{fatPanelUIOptions}.options.prefix"
-        }
-    });
-    
     fluid.demands("fluid.uiEnhancer", ["fluid.fatPanelUIOptionsImpl", "fluid.uiOptionsBridge"], {
         options: {
             listeners: {

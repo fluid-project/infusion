@@ -212,7 +212,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 });
             return {url: url, forceCache: true};
         });
-        fluid.fetchResources(that.resources, function() {that.events.onUIOptionsTemplateReady.fire()});
+        fluid.fetchResources(that.resources, function () {that.events.onUIOptionsTemplateReady.fire();});
     };
     
     /**************************************
@@ -256,8 +256,8 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.viewComponent", "autoInit"],
         events: {
             onUIOptionsTemplateReady: "{templateLoader}.events.onUIOptionsTemplateReady",
-            onUIOptionsComponentReady: null,
-         },
+            onUIOptionsComponentReady: null
+        },
         components: {
             uiOptions: {
                 type: "fluid.uiOptions",
@@ -367,7 +367,6 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         autoSave: false
     });
-
 
     fluid.uiOptions.finalInit = function (that) {
         that.applier.requestChange("selections", fluid.copy(that.settingsStore.fetch()));
@@ -501,6 +500,15 @@ var fluid_1_4 = fluid_1_4 || {};
         that.refreshView();        
     };
     
+    // This function compensates for a framework deficiency that due to lack of gingerness, the "refreshView"
+    // function synthesized by rendererComponent is not available during listener registration which only 
+    // occurs after component init functions have completed (http://issues.fluidproject.org/browse/FLUID-4334)
+    fluid.uiOptions.lateRefreshViewBinder = function (that) {
+        that.refreshView = function () {
+            that.renderer.refreshView();
+        };
+    };
+
     /****************************
      * UI Options Text Controls *
      ****************************/
@@ -530,6 +538,7 @@ var fluid_1_4 = fluid_1_4 || {};
         listeners: {
             onUIOptionsRefresh: "{textControls}.refreshView"     
         },
+        preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.textControls.produceTree",
         resources: {
@@ -605,10 +614,11 @@ var fluid_1_4 = fluid_1_4 || {};
         listeners: {
             onUIOptionsRefresh: "{layoutControls}.refreshView"     
         },
+        preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.layoutControls.produceTree",
         resources: {                    
-             template: "{templateLoader}.resources.layoutControls"
+            template: "{templateLoader}.resources.layoutControls"
         }
     });
 
@@ -628,7 +638,6 @@ var fluid_1_4 = fluid_1_4 || {};
     /*****************************
      * UI Options Links Controls *
      *****************************/
-
     /**
      * A sub-component of fluid.uiOptions that renders the "links and buttons" panel of the user preferences interface.
      */
@@ -644,10 +653,11 @@ var fluid_1_4 = fluid_1_4 || {};
         listeners: {
             onUIOptionsRefresh: "{linksControls}.refreshView"     
         },
+        preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.linksControls.produceTree",
         resources: {                    
-              template: "{templateLoader}.resources.linksControls"
+            template: "{templateLoader}.resources.linksControls"
         }
     });
 
