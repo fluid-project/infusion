@@ -79,6 +79,8 @@ var fluid = {
         };
         
         that.generate = function () {
+            java.lang.System.out.println("***************stylesheet"+that.stylesheet);      
+            java.lang.System.out.println("***************CSSText"+that.stylesheet.cssText());                  
             return that.stylesheet.cssText();
         };
 
