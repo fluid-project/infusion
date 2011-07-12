@@ -290,7 +290,9 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.tableOfContents.levels.generateTree = function (topModel) {
         var children = [];
-        var tree = [];
+        var tree = {};
+        var subtree = [];
+        var currentLevel;
         
         //base case = no more sub headings, then this is where we set the anchor info.
         if (!topModel.headings) {
@@ -300,7 +302,7 @@ var fluid_1_4 = fluid_1_4 || {};
         // model headings comes as an Array, loop through them
         $.each (topModel.headings, function (index, model) {
 //            console.log(model);
-            var currentLevel = model.level; 
+            currentLevel = model.level; 
             var childrenObj = {};
             childrenObj.children = [];
 console.log(model);            
@@ -319,18 +321,21 @@ console.log(model);
                 childrenObj.children.push({ID: "link" + model.level, target: model.url, linktext: model.text});
             } 
             childrenObj.children.push(fluid.tableOfContents.levels.generateTree(model));
-            tree[index] = {
-                ID: "level" + currentLevel + ":",
-                children: childrenObj
-            };
-        });       
+            subtree.push(childrenObj);
+        });
+
+        tree.ID = "level" + currentLevel + ":";
+
+        tree.children = subtree;
 console.log('TREE', tree);
         return tree;
     };
  
     fluid.tableOfContents.levels.produceTree = function (that) {
-//    console.log('FINAL', fluid.tableOfContents.levels.generateTree(that.model));        
-        return {children: fluid.tableOfContents.levels.generateTree(that.model)};
+    console.log('BEGIN', that.model);
+        var tree = fluid.tableOfContents.levels.generateTree(that.model);
+//    console.log({ID: "level1:", children: tree.children});
+        return {children:[{ID: "level1:", children: tree.children}]};
     };
      
     fluid.defaults("fluid.tableOfContents.levels", {
@@ -361,19 +366,21 @@ console.log('TREE', tree);
         model: {
             headings: [] // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format]
         },
-        maxLevel: 6, // look into calculating this programattically.
         resources: {
             template: {
                 forceCache: true,
                 url: "../html/TableOfContents.html"
             }
-        }, 
+        }
+
+        , 
         rendererFnOptions: {
             noexpand: true
         },
         rendererOptions: {
-            debugMode: true
+            debugMode: false
         }
+
     });
 
 })(jQuery, fluid_1_4);
