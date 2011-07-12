@@ -27,12 +27,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
         function assertItemsInOriginalPosition(desc) {
             return fluid.testUtils.reorderer.assertItemsInOriginalPosition(desc, 
-               findImagesInLightbox(), imageIds);
+                findImagesInLightbox(), imageIds);
         }
             
         function assertItemsInOrder(message, assertItemsInOrder2) {
             return fluid.testUtils.reorderer.assertItemsInOrder(message, assertItemsInOrder2, 
-               findImagesInLightbox(), "fluid.img.");
+                findImagesInLightbox(), "fluid.img.");
         }
        
         function assertItemDefault(message, index) {
@@ -49,17 +49,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         function compositeKey(reorderer, event, targetIndex, keepModifierPressed) {
             return fluid.testUtils.reorderer.compositeKey(reorderer, event, 
-               fluid.byId(orderableIds[targetIndex]), keepModifierPressed);
+                fluid.byId(orderableIds[targetIndex]), keepModifierPressed);
         }
         
         function keyDown(reorderer, event, targetIndex) {
             return fluid.testUtils.reorderer.keyDown(reorderer, event, 
-               fluid.byId(orderableIds[targetIndex]));
+                fluid.byId(orderableIds[targetIndex]));
         }
         
         function keyUp(reorderer, event, targetIndex) {
             return fluid.testUtils.reorderer.keyUp(reorderer, event, 
-               fluid.byId(orderableIds[targetIndex]));
+                fluid.byId(orderableIds[targetIndex]));
         }
           
         function verticalNavigationTest(lightbox, upEvt, downEvt) {
@@ -122,7 +122,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertItemDefault("After right ", 0);
         
             // Test: right arrow to the last image
-            for (focusPosition = 2; focusPosition < numOfImages; focusPosition++) {
+            for (var focusPosition = 2; focusPosition < numOfImages; focusPosition++) {
                 keyDown(lightbox, rightEvt, focusPosition - 1);
             }
             assertItemFocused("Right to last ", 13);

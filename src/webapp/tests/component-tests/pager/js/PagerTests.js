@@ -291,7 +291,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // without a fix to FLUID-3793, pager creation will fail with the default selfRender configuration
             jqUnit.expect(2);
             var afterRenderThat;
-            var pager;
             function afterRenderListener(overallThat) {
                 afterRenderThat = overallThat;
             }

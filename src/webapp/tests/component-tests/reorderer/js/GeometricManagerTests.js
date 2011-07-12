@@ -24,7 +24,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         function assertOrder(message, parentId, required) {
             var all = $("#" + parentId + " div");
             var str = "";
-            for (var i = 0; i < all.length; ++ i) {
+            for (var i = 0; i < all.length; ++i) {
                 var id = all[i].id;
                 var c = id.charAt(id.length - 1);
                 str += c;
@@ -96,22 +96,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var rect = {left: -1, right: 5, top: -1, bottom : 1};
             
             jqUnit.assertEquals("Inside", 0, 
-            fluid.geom.minPointRectangle(0, 0, rect));
+                fluid.geom.minPointRectangle(0, 0, rect));
             
             jqUnit.assertEquals("Inside", 0, 
-            fluid.geom.minPointRectangle(0.5, 0.5, rect));
+                fluid.geom.minPointRectangle(0.5, 0.5, rect));
             
             jqUnit.assertEquals("InsideEdge", 0, 
-            fluid.geom.minPointRectangle(0, -1, rect));
+                fluid.geom.minPointRectangle(0, -1, rect));
             
             jqUnit.assertEquals("LTDist", 2, 
-            fluid.geom.minPointRectangle(-2, -2, rect));
+                fluid.geom.minPointRectangle(-2, -2, rect));
             
             jqUnit.assertEquals("TDist", 4, 
-            fluid.geom.minPointRectangle(0, -3, rect));
+                fluid.geom.minPointRectangle(0, -3, rect));
             
             jqUnit.assertEquals("RDist", 25, 
-            fluid.geom.minPointRectangle(10, 0, rect));
+                fluid.geom.minPointRectangle(10, 0, rect));
           
         });
         
