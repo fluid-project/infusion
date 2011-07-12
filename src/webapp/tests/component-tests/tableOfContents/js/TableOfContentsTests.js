@@ -129,97 +129,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     };
     
-    var singleLevelTree = {
-        level1: {
-            children: [
+    var skippedHeadingsForSkippedIndentationTree = {
+        children: [{   
+            ID: level1, 
+            children: [{
+                ID: items1,
+                children: [{
+                    ID: links1m
+                    target: '#h1',
+                    textlink: 'h1'
+                },
                 {
-                    expander: {
-                        type: "fluid.renderer.repeat",
-                        repeatID: "items1",
-                        controlledBy: "headings",
-                        valueAs: "headingValue1",
-                        pathAs: "headingPath1",
-                        tree: {
-                            expander: [
-                                {
-                                    type: "fluid.renderer.condition",
-                                    condition: "{headingValue1}.text",
-                                    trueTree: {
-                                        link1: {
-                                            target: "${{headingPath1}.url}",
-                                            linktext: "${{headingPath1}.text}"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
+                    ID: level2,
+                    children: [{
+                        ID: items2,
+                        children: []
                 }
-            ]
-        }
-    };
-    
-    var multiLevelTree = {
-        level1: {
-            children: [
-                {
-                    expander: {
-                        type: "fluid.renderer.repeat",
-                        repeatID: "items1",
-                        controlledBy: "headings",
-                        valueAs: "headingValue1",
-                        pathAs: "headingPath1",
-                        tree: {
-                            expander: [
-                                {
-                                    type: "fluid.renderer.condition",
-                                    condition: "{headingValue1}.text",
-                                    trueTree: {
-                                        link1: {
-                                            target: "${{headingPath1}.url}",
-                                            linktext: "${{headingPath1}.text}"
-                                        }
-                                    }
-                                },
-                                {
-                                    type: "fluid.renderer.condition",
-                                    condition: "{headingValue1}.headings",
-                                    trueTree: {
-                                        level2: {
-                                            children: [
-                                                {
-                                                    expander: {
-                                                        type: "fluid.renderer.repeat",
-                                                        repeatID: "items2",
-                                                        controlledBy: "{headingPath1}.headings",
-                                                        valueAs: "headingValue2",
-                                                        pathAs: "headingPath2",
-                                                        tree: {
-                                                            expander: [
-                                                                {
-                                                                    type: "fluid.renderer.condition",
-                                                                    condition: "{headingValue2}.text",
-                                                                    trueTree: {
-                                                                        link2: {
-                                                                            target: "${{headingPath2}.url}",
-                                                                            linktext: "${{headingPath2}.text}"
-                                                                        }
-                                                                    }
-                                                                }
-                                                            ]
-                                                        }
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            ]
-        }
+        }]
     };
     
     var createElm = function (tagName) {
@@ -247,8 +173,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("model assembled correctly", expectedModel, model);
     };
     
-    var generateTreeTests = function (startLevel, endLevel, expectedTree) {
-        var tree = fluid.tableOfContents.levels.generateTree(startLevel, endLevel);
+    var generateTreeTests = function (model, expectedTree) {
+        var tree = fluid.tableOfContents.levels.generateTree(model);
         jqUnit.assertDeepEq("tree generated correctly", expectedTree, tree);
     };
     
