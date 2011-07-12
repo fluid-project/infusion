@@ -289,21 +289,21 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.tableOfContents.levels.generateTree = function (topModel) {
-        var children = {};
-        var tree = {};
-        var subtree = {};
+        var children = [];
+        var tree = [];
         
         //base case = no more sub headings, then this is where we set the anchor info.
         if (!topModel.headings) {
-            return {ID: "link" + topModel.level, target: topModel.url, linktext: topModel.text};            
+            return {ID: "link" + topModel.level, target: topModel.url, linktext: topModel.text};
         }
                 
         // model headings comes as an Array, loop through them
         $.each (topModel.headings, function (index, model) {
-            console.log(model);
+//            console.log(model);
             var currentLevel = model.level; 
             var childrenObj = {};
-            
+            childrenObj.children = [];
+console.log(model);            
             // if currentLevel is not set, then this is the skipped node, add decorator to it
             if (!currentLevel) {
                 currentLevel = topModel.level + 1;
@@ -314,21 +314,23 @@ var fluid_1_4 = fluid_1_4 || {};
                     }
                 ];
             } 
-            childrenObj.ID = "items" + currentLevel;
-            childrenObj.children = fluid.tableOfContents.levels.generateTree(model);
-            
+            childrenObj.ID = "items" + currentLevel + ":";
+            if (model.headings && model.level) {
+                childrenObj.children.push({ID: "link" + model.level, target: model.url, linktext: model.text});
+            } 
+            childrenObj.children.push(fluid.tableOfContents.levels.generateTree(model));
             tree[index] = {
-                ID: "level" + currentLevel,
+                ID: "level" + currentLevel + ":",
                 children: childrenObj
             };
-            
-        });
+        });       
+console.log('TREE', tree);
         return tree;
     };
  
     fluid.tableOfContents.levels.produceTree = function (that) {
-    console.log(fluid.tableOfContents.levels.generateTree(that.model));
-//        return fluid.tableOfContents.levels.generateTree(that.model);
+//    console.log('FINAL', fluid.tableOfContents.levels.generateTree(that.model));        
+        return {children: fluid.tableOfContents.levels.generateTree(that.model)};
     };
      
     fluid.defaults("fluid.tableOfContents.levels", {
@@ -365,6 +367,12 @@ var fluid_1_4 = fluid_1_4 || {};
                 forceCache: true,
                 url: "../html/TableOfContents.html"
             }
+        }, 
+        rendererFnOptions: {
+            noexpand: true
+        },
+        rendererOptions: {
+            debugMode: true
         }
     });
 
