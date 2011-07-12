@@ -21,9 +21,6 @@ var fluid_1_4 = fluid_1_4 || {};
     /***************************
      * Full Preview UI Options *
      ***************************/
-    fluid.setLogging(true);
-    
-    fluid.staticEnvironment.fullPreviewUIOptions = fluid.typeTag("fluid.fullPreviewUIOptions");
     fluid.demands("fluid.uiOptions.templateLoader", "fluid.fullPreviewUIOptions", {
         options: {
             templates: {
@@ -32,7 +29,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.demands("fluid.uiOptions.templatePath", ["fluid.uiOptions.fullPreviewUIOptions", "fluid.fullPreviewUIOptions"], {
+    fluid.demands("fluid.uiOptions.templatePath", "fluid.fullPreviewUIOptions", {
         options: {
             value: "{fullPreviewUIOptions}.options.prefix"
         }
@@ -52,14 +49,10 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });       
     
-    // Options for UIOptions in fat panel mode
+    // Options for UIOptions in full with preview mode
     fluid.demands("fluid.uiOptions", ["fluid.fullPreviewUIOptions"], {
         options: {
             components: {
-                preview: {
-                    type: "fluid.uiOptions.preview",
-                    createOnEvent: "onReady"
-                },
                 settingsStore: "{uiEnhancer}.settingsStore"
             }
         }

@@ -49,45 +49,46 @@
         <script type="text/javascript" src="../js/UIEnhancer.js"></script>
         <script type="text/javascript" src="../js/UIOptions.js"></script>
         <script type="text/javascript" src="../js/SlidingPanel.js"></script>
+        <script type="text/javascript" src="../js/FatPanelUIOptions.js"></script>
 
         <script type="text/javascript" src="../../tableOfContents/js/TableOfContents.js"></script>
     </head>
 
     <body>
         <script type="text/javascript">
-                // Supply the templates
-                fluid.staticEnvironment.uiOptionsIframe = fluid.typeTag("fluid.uiOptionsIframe");
-                
-                fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsIframe", {
-                    options: {
-                        prefix: "./"
-                    }
-                });
+            // Supply the templates
+            fluid.staticEnvironment.uiOptionsIframe = fluid.typeTag("fluid.uiOptionsIframe");
             
-                // Supply the table of contents' template URL
-                fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
-                    options: {
-                        templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
-                    }
-                });
-                
-                fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
-                    options: {
-                        classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
-                    }
-                });
-                
-                fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
-                    options: {
-                        classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
-                    }
-                });
+            fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsIframe", {
+                options: {
+                    prefix: "./"
+                }
+            });
+        
+            // Supply the table of contents' template URL
+            fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+                options: {
+                    templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+                }
+            });
+            
+            fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
+                options: {
+                    classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
+                }
+            });
+            
+            fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
+                options: {
+                    classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
+                }
+            });
 
-                fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
-                    options: {
-                        classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
-                    }
-                });
+            fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
+                options: {
+                    classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
+                }
+            });
         </script>
     </body>
 

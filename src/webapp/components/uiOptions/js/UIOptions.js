@@ -324,7 +324,7 @@ var fluid_1_4 = fluid_1_4 || {};
         components: {
             preview: {
                 type: "fluid.uiOptions.preview",
-                createOnEvent: "onUIOptionsTemplateReady",
+                createOnEvent: "onUIOptionsComponentReady",
                 container: "{uiOptions}.dom.previewFrame"
             },
             settingsStore: {    // supplied by demands
