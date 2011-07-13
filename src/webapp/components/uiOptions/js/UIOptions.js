@@ -252,11 +252,31 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
+    fluid.uiOptions.onReadyFirer = function (uiOptionsLoader) {
+        uiOptionsLoader.events.onReady.fire(uiOptionsLoader);
+    };
+    
     fluid.defaults("fluid.uiOptions.loader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         events: {
+            // These three are events private to uiOptions
             onUIOptionsTemplateReady: "{templateLoader}.events.onUIOptionsTemplateReady",
-            onUIOptionsComponentReady: null
+            onUIOptionsComponentReady: null,
+            // This extra event is required because of framework bug FLUID-4337 and also the lack of "boiled listeners"
+            onUIOptionsReadyBridge: {
+                event: "onUIOptionsComponentReady",
+                args: ["{fluid.uiOptions.loader}"]
+            },
+            // This is a public event which users outside the component can subscribe to - the argument
+            // supplied is UIOptions.loader itself
+            onReady: null
+        },
+        listeners: {
+            onUIOptionsReadyBridge: {
+                // Literal use of listener function again due to FLUID-4337
+                listener: fluid.uiOptions.onReadyFirer,
+                priority: "last"
+            }
         },
         components: {
             uiOptions: {
@@ -352,7 +372,6 @@ var fluid_1_4 = fluid_1_4 || {};
             previewFrame : ".flc-uiOptions-preview-frame"
         },
         events: {
-            onReady: null,
             onSave: null,
             onCancel: null,
             onReset: null,
@@ -442,7 +461,6 @@ var fluid_1_4 = fluid_1_4 || {};
             bindHandlers(that);
             bindEventHandlers(that);
             that.events.onUIOptionsComponentReady.fire();
-            that.events.onReady.fire(that);
         });
     };
 
