@@ -46,24 +46,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {level: 1, text: "h1", url: "#h1"},
             {level: 6, text: "h6", url: "#h6"}
         ],
-        model: [{
-            level: 1, 
-            text: "h1", 
-            url: "#h1",
+        model: {
             headings: [{
+                level: 1, 
+                text: "h1", 
+                url: "#h1",
                 headings: [{
                     headings: [{
                         headings: [{
                             headings: [{
-                                level: 6, 
-                                text: "h6", 
-                                url: "#h6"
+                                headings: [{
+                                    level: 6, 
+                                    text: "h6", 
+                                    url: "#h6"
+                                }]
                             }]
                         }]
                     }]
                 }]
             }]
-        }]
+        }
     };
     
     /* TODO: Might want to rename this and "skippedHeadingsForSkippedIndentationModel" */
@@ -74,16 +76,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {level: 1, text: "h1", url: "#h1"},
             {level: 6, text: "h6", url: "#h6"}
         ],
-        model: [{
-            level: 1, 
-            text: "h1", 
-            url: "#h1",
+        model: {
             headings: [{
-                level: 6, 
-                text: "h6", 
-                url: "#h6"
+                level: 1, 
+                text: "h1", 
+                url: "#h1",
+                headings: [{
+                    level: 6, 
+                    text: "h6", 
+                    url: "#h6"
+                }]
             }]
-        }]
+        }
     };
     
     var linearHeadings = {
@@ -131,22 +135,157 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     var skippedHeadingsForSkippedIndentationTree = {
         children: [{   
-            ID: level1, 
+            ID: "level1:", 
             children: [{
-                ID: items1,
+                ID: "items1:",
                 children: [{
-                    ID: links1m
-                    target: '#h1',
-                    textlink: 'h1'
+                    ID: "link1",
+                    target: "#h1",
+                    linktext: "h1"
                 },
                 {
-                    ID: level2,
+                    ID: "level2:",
                     children: [{
-                        ID: items2,
-                        children: []
-                }
+                        ID: "items2:",
+                        children: [
+                        {
+                            ID: "level3:",
+                            children: [{
+                                ID: "items3:",
+                                children: [
+                                {
+                                    ID: "level4:",
+                                    children: [
+                                    {
+                                        ID: "items4:",
+                                        children: [
+                                        {
+                                            ID: "level5:",
+                                            children: [{
+                                                ID: "items5:",
+                                                children: [
+                                                {
+                                                    ID: "level6:",
+                                                    children: [{
+                                                        ID: "items6:",
+                                                        children: [{
+                                                            ID: "link6",
+                                                            target: "#h6",
+                                                            linktext: "h6"
+                                                        }]
+                                                    }]
+                                                }]
+                                            }]
+                                        }]
+                                    }]
+                                }]
+                            }]
+                        }]
+                    }]
+                }]
+            }]
         }]
     };
+    
+    var skippedHeadingsForGradualIndentationTree = {
+        children: [{   
+            ID: "level1:", 
+            children: [{
+                ID: "items1:",
+                children: [{
+                    ID: "link1",
+                    target: "#h1",
+                    linktext: "h1"
+                },
+                {
+                    ID: "level2:",
+                    children: [{
+                        ID: "items2:",
+                        children: [{
+                            ID: "link6",
+                            target: "#h6",
+                            linktext: "h6"
+                        }]
+                    }]
+                }]
+            }]
+        }]
+    };
+    
+    /**
+     * The entire tree of a level1-6 model
+     * This is just a reference for the other 2 test trees, remove it if not needed.
+     *
+    var fullTestTree = {
+        children: [{   
+            ID: "level1", 
+            children: [{
+                ID: "items1",
+                children: [{
+                    ID: "link1",
+                    target: "#h1",
+                    linktext: "h1"
+                },
+                {
+                    ID: "level2",
+                    children: [{
+                        ID: "items2",
+                        children: [{
+                            ID: "link2",
+                            target: "#h2",
+                            linktext: "h2"
+                        },
+                        {
+                            ID: "level3",
+                            children: [{
+                                ID: "items3",
+                                children: [{
+                                    ID: "link3",
+                                    target: "#h3",
+                                    linktext: "h3"
+                                },
+                                {
+                                    ID: "level4",
+                                    children: [
+                                    {
+                                        ID: "items4",
+                                        children: [{
+                                            ID: "link4",
+                                            target: "#h4",
+                                            linktext: "h4"
+                                        },
+                                        {
+                                            ID: "level5",
+                                            children: [{
+                                                ID: "items5",
+                                                children: [{
+                                                    ID: "link5",
+                                                    target: "#h5",
+                                                    linktext: "h5"
+                                                },
+                                                {
+                                                    ID: "level6",
+                                                    children: [{
+                                                        ID: "items6",
+                                                        children: [{
+                                                            ID: "link6",
+                                                            target: "#h6"
+                                                            linktext: "h6"
+                                                        }]
+                                                    }]
+                                                }]
+                                            ]}
+                                        }]
+                                    ]}
+                                }]
+                            }]
+                        }]
+                    }]
+                }]
+            }]
+        }]
+    };
+    */
     
     var createElm = function (tagName) {
         return fluid.unwrap($("<" + tagName + "/>", {text: tagName}));
@@ -174,8 +313,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     var generateTreeTests = function (model, expectedTree) {
+console.log('MODEL', model);    
         var tree = fluid.tableOfContents.levels.generateTree(model);
-        jqUnit.assertDeepEq("tree generated correctly", expectedTree, tree);
+console.log('TREE', tree);
+console.log('EXPECTED TREE', expectedTree);
+        deepEqual(tree, expectedTree, "tree generated correctly");
     };
     
     /**
@@ -305,11 +447,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         // "fluid.tableOfContents.levels" tests
         
-        tocLevelsTests.test("generateTree: singleLevelTree", function () {
-            generateTreeTests(1, 1, singleLevelTree);
+        tocLevelsTests.test("generateTree: skipped indentation tree, [h1, '', '', '', '', h6]", function () {
+                console.log(skippedHeadingsForGradualIndentationTree);
+            generateTreeTests(skippedHeadingsForSkippedIndentationModel.model, skippedHeadingsForSkippedIndentationTree);
         });
-        tocLevelsTests.test("generateTree: multiLevelTree", function () {
-            generateTreeTests(1, 2, multiLevelTree);
+        tocLevelsTests.test("generateTree: gradual indentation tree, [h1, h6]", function () {
+            generateTreeTests(skippedHeadingsForGradualIndentationModel.model, skippedHeadingsForGradualIndentationTree);
         });
         
         tocLevelsTests.asyncTest("Render toc: linear headings", function () {

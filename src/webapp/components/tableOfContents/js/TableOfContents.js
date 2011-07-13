@@ -288,11 +288,11 @@ var fluid_1_4 = fluid_1_4 || {};
         return tree;
     };
     
-    fluid.tableOfContents.levels.generateTree = function (topModel) {
+    fluid.tableOfContents.levels.generateTree = function (topModel, currentLevel) {
         var children = [];
         var tree = {};
         var subtree = [];
-        var currentLevel;
+        currentLevel = currentLevel || 1;
         
         //base case = no more sub headings, then this is where we set the anchor info.
         if (!topModel.headings) {
@@ -302,13 +302,11 @@ var fluid_1_4 = fluid_1_4 || {};
         // model headings comes as an Array, loop through them
         $.each (topModel.headings, function (index, model) {
 //            console.log(model);
-            currentLevel = model.level; 
             var childrenObj = {};
             childrenObj.children = [];
 console.log(model);            
             // if currentLevel is not set, then this is the skipped node, add decorator to it
             if (!currentLevel) {
-                currentLevel = topModel.level + 1;
                 childrenObj.decorators = [
                     {
                         type: "addClass",
@@ -320,22 +318,23 @@ console.log(model);
             if (model.headings && model.level) {
                 childrenObj.children.push({ID: "link" + model.level, target: model.url, linktext: model.text});
             } 
-            childrenObj.children.push(fluid.tableOfContents.levels.generateTree(model));
+            childrenObj.children.push(fluid.tableOfContents.levels.generateTree(model, currentLevel + 1));
             subtree.push(childrenObj);
         });
 
         tree.ID = "level" + currentLevel + ":";
-
         tree.children = subtree;
 console.log('TREE', tree);
+        //refractor this?
+        if (currentLevel === 1) {
+            return {children: [tree]};
+        }
         return tree;
     };
  
     fluid.tableOfContents.levels.produceTree = function (that) {
     console.log('BEGIN', that.model);
-        var tree = fluid.tableOfContents.levels.generateTree(that.model);
-//    console.log({ID: "level1:", children: tree.children});
-        return {children:[{ID: "level1:", children: tree.children}]};
+        return fluid.tableOfContents.levels.generateTree(that.model);
     };
      
     fluid.defaults("fluid.tableOfContents.levels", {
