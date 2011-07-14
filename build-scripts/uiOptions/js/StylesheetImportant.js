@@ -16,10 +16,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function () {
-    var injectImportant = function () {
-        var fullPath = "../src/webapp/framework/fss/css/fss-theme-coal.css";
+    var injectImportant = function (path) {
         var tg = fluid.build.cssGenerator({
-            sheetStore: fluid.build.cssGenerator.rhinoSheetStore(fullPath)
+            sheetStore: fluid.build.cssGenerator.rhinoSheetStore(path)
         });
         var priorities = {
             "fluid-cssGenerator-allRules": "background-color"
@@ -32,5 +31,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tg.options.sheetStore.save(modifiedStylesheet);
     }
     
-    injectImportant();
+    var fileNames = cssFileNames.split(" ");
+    
+    for (var i = 0; i < fileNames.length; i++) {
+        var path = cssBasePath + fileNames[i];
+        injectImportant(path);
+    }
+    
+    
 })();
