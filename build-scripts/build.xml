@@ -68,6 +68,19 @@
         </not>
         </condition>
     </target>
+    
+    <!-- UI Options style sheet creation / !important injection -->
+    <target name="combineCSSGenerators" description="Concatenate all dependent files ">
+        <delete file="${base-dir}/build-scripts/uiOptions/js/CSSGeneratorAll.js"/>
+        <concat destfile="${base-dir}/build-scripts/uiOptions/js/CSSGeneratorAll.js" append="true">
+            <filelist dir="${base-dir}/build-scripts/lib/jscssp/js" files="cssParser.js"/>
+            <filelist dir="${base-dir}/build-scripts/uiOptions/js" files="CSSGenerator.js, RhinoStylesheetHandler.js, StylesheetImportant.js"/>
+        </concat>       
+    </target>   
+
+    <target name="cssGeneration" depends="combineCSSGenerators" description="Inject !important into the stylesheets">
+        <script language="javascript" src="${base-dir}/build-scripts/uiOptions/js/CSSGeneratorAll.js" />
+    </target>
 
     <!-- This is the setup necessary for minifying the core files -->
     <target name="copyCoreToWorkingAndSeedPretreated">
@@ -211,25 +224,25 @@
 
     <!-- Top level targets -->
 
-    <target name="customBuild" depends="clean, init, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assemble, buildCoreWAR, zip" 
+    <target name="customBuild" depends="clean, cssGeneration, init, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assemble, buildCoreWAR, zip" 
         description="Builds a custom package of Infusion containing the modules specified as command line arguments.">
     </target>
 
-    <target name="pretreatMinify" depends="clean, init, alwaysMinify"
+    <target name="pretreatMinify" depends="clean, cssGeneration, init, alwaysMinify"
         description="Minifies everything to prepare for builds done from pretreated source">
     </target>
     
-    <target name="builderBuild" depends="cleanExceptPretreat, init, setPretreat, setSourceDir, resolveDependencies, assemble, buildCoreWAR, zip" 
+    <target name="builderBuild" depends="cleanExceptPretreat, cssGeneration, init, setPretreat, setSourceDir, resolveDependencies, assemble, buildCoreWAR, zip" 
         description="Builds a custom package of Infusion containing the modules specified by the builder - expects pretreatMinify to have been run before.">
     </target>
 
     <!-- Although we don't have dependencies we use resolveDependencies because it creates a list of all the files to concatenate. -->
-    <target name="dailyBuild" depends="clean, init, setSourceDir, resolveDependencies, assembleFull, buildFullWAR"
+    <target name="dailyBuild" depends="clean, cssGeneration, init, setSourceDir, resolveDependencies, assembleFull, buildFullWAR"
         description="Builds a WAR of Infusion along with tests and sample code, suitable for development testing or a daily build.">
         <copy file="${assembled}/${warfile}" todir="${products}" />
     </target>
 
-    <target name="releaseBuild" depends="cleanExceptProducts, init, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assembleFull, buildCoreWAR, zip"
+    <target name="releaseBuild" depends="cleanExceptProducts, cssGeneration, init, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assembleFull, buildCoreWAR, zip"
         description="Builds and packages a release bundle of Infusion"/>
 
     <target name="releaseBuilds" depends="clean" 
@@ -260,16 +273,4 @@
         <jslint dir="${lint}" excludes="${excludeFromJSLint}" options="browser,eqeqeq,nomen,undef">
         </jslint>
     </target>    
-
-    <target name="combineCSSGenerators" description="Concatenate all dependent files ">
-    	<delete file="${base-dir}/build-scripts/uiOptions/js/CSSGeneratorAll.js"/>
-        <concat destfile="${base-dir}/build-scripts/uiOptions/js/CSSGeneratorAll.js" append="true">
-            <filelist dir="${base-dir}/build-scripts/lib/jscssp/js" files="cssParser.js"/>
-            <filelist dir="${base-dir}/build-scripts/uiOptions/js" files="CSSGenerator.js, RhinoStylesheetHandler.js, StylesheetImportant.js"/>
-        </concat>       
-    </target>   
-    	
-	<target name="cssGeneration" depends="combineCSSGenerators" description="Inject !important into the stylesheets">
-		<script language="javascript" src="${base-dir}/build-scripts/uiOptions/js/CSSGeneratorAll.js" />
-    </target>
 </project>
