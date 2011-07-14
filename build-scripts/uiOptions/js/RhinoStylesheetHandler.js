@@ -48,8 +48,9 @@ importClass(java.lang.System);
              return cssText.toString();
          };
 
-         that.save = function (prioritizedStylesheet) {
-             var writer = new BufferedWriter(new FileWriter(that.path));
+         that.save = function (prioritizedStylesheet, writePath) {
+             var writePath = writePath || that.path;
+             var writer = new BufferedWriter(new FileWriter(writePath));
              writer.write(prioritizedStylesheet);
              writer.close();
          };

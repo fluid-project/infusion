@@ -16,9 +16,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function () {
-    var injectImportant = function (path) {
+    var injectImportant = function (readPath, writePath) {
         var tg = fluid.build.cssGenerator({
-            sheetStore: fluid.build.cssGenerator.rhinoSheetStore(path)
+            sheetStore: fluid.build.cssGenerator.rhinoSheetStore(readPath)
         });
         var priorities = {
             "fluid-cssGenerator-allRules": "background-color"
@@ -28,15 +28,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Now that the stylesheet has been prioritized, generate
         // the new stylesheet and write the contents out to a file
         var modifiedStylesheet = tg.generate();
-        tg.options.sheetStore.save(modifiedStylesheet);
+        tg.options.sheetStore.save(modifiedStylesheet, writePath);
     }
     
     var fileNames = cssFileNames.split(" ");
     
     for (var i = 0; i < fileNames.length; i++) {
-        var path = cssBasePath + fileNames[i];
-        injectImportant(path);
+        var readPath = cssBasePath + fileNames[i];
+        var writePath = readPath.replace(".css", "-uio.css");
+        injectImportant(readPath, writePath);
     }
-    
-    
 })();
