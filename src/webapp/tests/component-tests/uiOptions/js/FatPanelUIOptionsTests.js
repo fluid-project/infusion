@@ -159,8 +159,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     pageEnhancer: "pageEnhancer",
                     eventBinder: "eventBinder",
                     uiOptionsBridge: {
-                        uiOptions: {
-                            options: {
+                        options: {
+	                        uiOptionsOptions: {
                                 selectors: {
                                     textfield: ".textfield",
                                     slider: ".slider"
@@ -174,7 +174,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     min: 0,
                                     max: 100
                                 }
-                            }
+	                        }
                         }
                     }
                 }
@@ -204,7 +204,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("eventBinder is present", components.eventBinder);
             jqUnit.assertTrue("uiOptionsBridge is present", components.uiOptionsBridge);
             jqUnit.assertTrue("pageEnhancer is present as an eventBinder sub-component", eventBinderComponents.pageEnhancer);
-            jqUnit.assertTrue("uiOptions is present as an eventBinder sub-component", eventBinderComponents.uiOptions);
+            jqUnit.assertTrue("uiOptionsLoader is present as an eventBinder sub-component", eventBinderComponents.uiOptionsLoader);
             jqUnit.assertTrue("slidingPanel is present as an eventBinder sub-component", eventBinderComponents.slidingPanel);
             jqUnit.assertTrue("markupRenderer is present as an uiOptionsBridge sub-component", components.uiOptionsBridge.options.components.markupRenderer);
         };        
@@ -227,7 +227,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var that = fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");
             
             checkUIOComponents(that);
-            
+
             /*
              * TODO: There have been talks about implementing a Framework event that fires 
              *       once a component and all of it's subcomponents have finished resolving.
@@ -237,13 +237,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             setTimeout(function () {
                 var defaultSiteSettings = that.pageEnhancer.uiEnhancer.settingsStore.options.defaultSiteSettings;
                 var pageModel = that.pageEnhancer.uiEnhancer.model;
-                var panelModel = that.uiOptionsBridge.uiOptions.pageEnhancer.uiEnhancer.model;
+                var panelModel = that.uiOptionsBridge.uiOptionsLoader.uiOptions.pageEnhancer.uiEnhancer.model;
                 
                 var settingsStoreOptions = that.pageEnhancer.uiEnhancer.settingsStore.options;
                 
                 // Open the Fat Panel, apply changes, and close the panel
                 that.slidingPanel.events.afterPanelShown.fire();
-                applierRequestChanges(that.uiOptionsBridge.uiOptions, bwSkin);
+                applierRequestChanges(that.uiOptionsBridge.uiOptionsLoader.uiOptions, bwSkin);
                 checkModelSelections(bwSkin, pageModel);
                 that.slidingPanel.events.afterPanelHidden.fire();
                 checkModelSelections(bwSkin, panelModel);
@@ -251,13 +251,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 
                 // Open the Fat Panel, click "Reset All", and close the panel
                 that.slidingPanel.events.afterPanelShown.fire();
-                that.uiOptionsBridge.uiOptions.locate("reset").click();
+                that.uiOptionsBridge.uiOptionsLoader.uiOptions.locate("reset").click();
                 checkModelSelections(pageModel, defaultSiteSettings);
                 that.slidingPanel.events.afterPanelHidden.fire();
                 checkModelSelections(panelModel, defaultSiteSettings);
                 checkModelSelections(pageModel, panelModel);
                 start();
             }, 1500);
-        });        
+        });
     });
-})(jQuery);        
+})(jQuery);
