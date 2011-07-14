@@ -1,7 +1,6 @@
 /* UI Options Fat Panel styles */
 .fl-uiOptions-fatPanel {
 	min-width: 960px;
-	height: 100%;
     background-color: #fff;
 }
 
@@ -57,7 +56,7 @@
 
 .fl-uiOptions-fatPanel.ui-tabs .ui-tabs-panel ul {
 	margin: 0em;
-	padding-top: 1em;
+	padding-top: 1.5em;
 }
 
 /* Tab images */
@@ -89,10 +88,8 @@ ul.fl-pane li {
     clear: both;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions label {
-    text-transform: uppercase;
-    padding-bottom: 15px;
-    width: 200px;
+.fl-uiOptions-fatPanel label {
+    padding-bottom: 0.5em;
 }
 
 .fl-uiOptions-fatPanel .fl-inputs {
@@ -172,14 +169,12 @@ ul.fl-pane li {
 .fl-theme-hc .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #fff;  color: #000; }
 .fl-theme-hc .fl-uiOptions-fatPanel .ui-widget-header .ui-state-active { background: none no-repeat scroll 0% 0% #fff; } /* Override a background image that was making the tab larger than necessary. */
 .fl-theme-hc .fl-uiOptions-fatPanel #reset { background-color: #000; }
-.fl-theme-hc .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #fff; border-color: #000; }
 
 .fl-theme-hci .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-hci .fl-uiOptions-fatPanel ul.fl-tabs  { background-color: #fff; }
 .fl-theme-hci .fl-uiOptions-fatPanel .fl-tabs a { background-color: #fff; color: #000; }
 .fl-theme-hci .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #000; color: #fff; }
 .fl-theme-hci .fl-uiOptions-fatPanel #reset { background-color: #fff; color: #000; }
-.fl-theme-hci .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #000; border-color: #fff; color: #fff; }
 
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-blackYellow .fl-uiOptions-fatPanel  ul.fl-tabs  { background-color: #000; }
@@ -191,7 +186,6 @@ ul.fl-pane li {
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider .fl-handle, .fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider a { border: 1px solid #000;}
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-slider {background-color: #000;}
 .fl-theme-blackYellow .fl-uiOptions-fatPanel #reset { background-color: #000; color: #ffff00; }
-.fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #FFFF00; border-color: #000; }
 
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel  ul.fl-tabs  { background-color: #ffff00; }
@@ -203,4 +197,3 @@ ul.fl-pane li {
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider .fl-handle, .fl-theme-yellowBlack  .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider a { border: 1px solid #ffff00;}
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-slider {background-color: #ffff00;}
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel #reset { background-color: #ffff00; color: #000; }
-.fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #000; border-color: #ffff00; color: #ffff00 }
