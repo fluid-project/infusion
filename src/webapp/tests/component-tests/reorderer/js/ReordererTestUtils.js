@@ -75,7 +75,7 @@ var fluid = fluid || fluid_1_4;
     fluid.testUtils.reorderer.compositeKey = function (reorderer, event, target, keepModifierPressed) {
         target = fluid.unwrap(target);
         var modifierEvent = $.extend(true, {}, event);
-        var modifier = event.ctrlKey ? "CTRL": event.shiftKey ? "SHIFT": event.altKey ? "ALT": "";
+        var modifier = event.ctrlKey ? "CTRL" : event.shiftKey ? "SHIFT" : event.altKey ? "ALT" : "";
         modifierEvent.keyCode = $.ui.keyCode[modifier];
         fluid.testUtils.reorderer.keyDown(reorderer, modifierEvent, target);
         fluid.testUtils.reorderer.keyDown(reorderer, event, target);
@@ -99,15 +99,15 @@ var fluid = fluid || fluid_1_4;
         return {
             compositeKey: function (reorderer, event, targetIndex) {
                 return fluid.testUtils.reorderer.compositeKey(reorderer, event, 
-                   fluid.byId(ids[targetIndex]));
+                    fluid.byId(ids[targetIndex]));
             },
             keyUp: function (reorderer, event, targetIndex) {
                 return fluid.testUtils.reorderer.keyUp(reorderer, event, 
-                   fluid.byId(ids[targetIndex]));
+                    fluid.byId(ids[targetIndex]));
             },
             keyDown: function (reorderer, event, targetIndex) {
                 return fluid.testUtils.reorderer.keyDown(reorderer, event, 
-                   fluid.byId(ids[targetIndex]));
+                    fluid.byId(ids[targetIndex]));
             }
         };
     };   
@@ -162,7 +162,7 @@ var fluid = fluid || fluid_1_4;
             var focusItem = $(options.itemSelector).focus();
             var expectedOrder = options.expectedOrderArrays[i];
             jqUnit.assertTrue("focus on item " + focusItem.selector, focusItem.hasClass("fl-reorderer-movable-selected"));   
-            options.reordererOptions.key(that, fluid.testUtils.ctrlKeyEvent(options.direction), options.itemIndex ? options.itemIndex: options.itemSelector);                
+            options.reordererOptions.key(that, fluid.testUtils.ctrlKeyEvent(options.direction), options.itemIndex ? options.itemIndex : options.itemSelector);                
             options.reordererOptions.expectOrderFn("after ctrl-" + options.direction.toLowerCase() + " the order is " + expectedOrder, expectedOrder, 
                     $(options.reordererOptions.thumbArray, that.container), options.reordererOptions.prefix);           
         }

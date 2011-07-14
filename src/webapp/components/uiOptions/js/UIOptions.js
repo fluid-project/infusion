@@ -84,7 +84,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 // update preview window
                 that.events.modelChanged.fire(newModel.value);
             }
-        );
+            );
 
         that.events.modelChanged.addListener(that.refreshView);
 
@@ -399,7 +399,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     that.events.onAutoSave.fire();
                 }
             }
-        );
+            );
             
         var bindHandlers = function (that) {
             var saveButton = that.locate("save");            

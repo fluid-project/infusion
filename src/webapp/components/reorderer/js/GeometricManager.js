@@ -61,7 +61,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.directionSign = function (direction) {
         return direction === fluid.direction.UP || direction === fluid.direction.LEFT ? 
-             fluid.direction.PREVIOUS : fluid.direction.NEXT;
+            fluid.direction.PREVIOUS : fluid.direction.NEXT;
     };
     
     fluid.directionAxis = function (direction) {
@@ -89,9 +89,8 @@ var fluid_1_4 = fluid_1_4 || {};
         // fluid.log("moveDom source " + fluid.dumpEl(source) + " target " + fluid.dumpEl(target) + " position " + position);     
         if (position === fluid.position.INSIDE) {
             target.appendChild(source);
-        }
-        else if (position === fluid.position.BEFORE) {
-            for (scan = target.previousSibling; ; scan = scan.previousSibling) {
+        } else if (position === fluid.position.BEFORE) {
+            for (scan = target.previousSibling;; scan = scan.previousSibling) {
                 if (!scan || !fluid.dom.isIgnorableNode(scan)) {
                     if (scan !== source) {
                         fluid.dom.cleanseScripts(source);
@@ -100,9 +99,8 @@ var fluid_1_4 = fluid_1_4 || {};
                     break;
                 }
             }
-        }
-        else if (position === fluid.position.AFTER) {
-            for (scan = target.nextSibling; ; scan = scan.nextSibling) {
+        } else if (position === fluid.position.AFTER) {
+            for (scan = target.nextSibling;; scan = scan.nextSibling) {
                 if (!scan || !fluid.dom.isIgnorableNode(scan)) {
                     if (scan !== source) {
                         fluid.dom.cleanseScripts(source);
@@ -111,8 +109,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     break;
                 }
             }
-        }
-        else {
+        } else {
             fluid.fail("Unrecognised position supplied to fluid.moveDom: " + position);
         }
     };
@@ -121,7 +118,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.normalisePosition = function (position, samespan, targeti, sourcei) {
         // convert a REPLACE into a primitive BEFORE/AFTER
         if (position === fluid.position.REPLACE) {
-            position = samespan && targeti >= sourcei ? fluid.position.AFTER: fluid.position.BEFORE;
+            position = samespan && targeti >= sourcei ? fluid.position.AFTER : fluid.position.BEFORE;
         }
         return position;
     };
@@ -150,14 +147,14 @@ var fluid_1_4 = fluid_1_4 || {};
         fluid.moveDom(sourceelements[sourcei], targetelements[targeti], position);
         
         // perform the leftward-moving, AFTER shift
-        var frontlimit = samespan ? targeti - 1: sourceelements.length - 2;
+        var frontlimit = samespan ? targeti - 1 : sourceelements.length - 2;
         var i;
         if (position === fluid.position.BEFORE && samespan) { 
             // we cannot do skip processing if the element was "fused against the grain" 
             frontlimit--;
         }
         if (!samespan || targeti > sourcei) {
-            for (i = frontlimit; i > sourcei; -- i) {
+            for (i = frontlimit; i > sourcei; --i) {
                 fluid.moveDom(sourceelements[i + 1], sourceelements[i], fluid.position.AFTER);
             }
             if (sourcei + 1 < sourceelements.length) {
@@ -165,13 +162,13 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
         // perform the rightward-moving, BEFORE shift
-        var backlimit = samespan ? sourcei - 1: targetelements.length - 1;
+        var backlimit = samespan ? sourcei - 1 : targetelements.length - 1;
         if (position === fluid.position.AFTER) { 
             // we cannot do skip processing if the element was "fused against the grain" 
             targeti++;
         }
         if (!samespan || targeti < sourcei) {
-            for (i = targeti; i < backlimit; ++ i) {
+            for (i = targeti; i < backlimit; ++i) {
                 fluid.moveDom(targetelements[i], targetelements[i + 1], fluid.position.BEFORE);
             }
             if (backlimit >= 0 && backlimit < targetelements.length - 1) {
@@ -183,7 +180,7 @@ var fluid_1_4 = fluid_1_4 || {};
   
     var curCss = function (a, name) {
         return window.getComputedStyle ? window.getComputedStyle(a, null).getPropertyValue(name) : 
-          a.currentStyle[name];
+            a.currentStyle[name];
     };
     
     var isAttached = function (node) {
@@ -235,9 +232,9 @@ var fluid_1_4 = fluid_1_4 || {};
             return "null";
         } else {
             return dumprect(cacheelem.rect) + " position: " +
-            cacheelem.position +
-            " for " +
-            fluid.dumpEl(cacheelem.element);
+                cacheelem.position +
+                " for " +
+                fluid.dumpEl(cacheelem.element);
         }
     }
     
@@ -257,7 +254,7 @@ var fluid_1_4 = fluid_1_4 || {};
             targets = [];
             cache = {};
             var mapper = geometricInfo.elementMapper;
-            for (var i = 0; i < geometricInfo.extents.length; ++ i) {
+            for (var i = 0; i < geometricInfo.extents.length; ++i) {
                 var thisInfo = geometricInfo.extents[i];
                 var orientation = thisInfo.orientation;
                 var sides = fluid.rectSides[orientation];
@@ -273,8 +270,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     var frontClass = fluid.dropManager.getRelativeClass(thisInfo.elements, j, fluid.position.AFTER, cacheelem.clazz, mapper); 
                     if (disposition === fluid.position.INSIDE) {
                         targets[targets.length] = cacheelem;
-                    }
-                    else {
+                    } else {
                         fluid.dropManager.splitElement(targets, sides, cacheelem, disposition, backClass, frontClass);
                     }
                     // deal with sentinel blocks by creating near-copies of the end elements
@@ -289,7 +285,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 };
                 
                 var allHidden = true;
-                for (var j = 0; j < thisInfo.elements.length; ++ j) {
+                for (var j = 0; j < thisInfo.elements.length; ++j) {
                     var element = thisInfo.elements[j];
                     var cacheelem = processElement(element, j === 0, j === thisInfo.elements.length - 1, 
                             fluid.position.INTERLEAVED, j);
@@ -348,7 +344,7 @@ var fluid_1_4 = fluid_1_4 || {};
             var minelem = blankHolder;
             var minlockeddistance = Number.MAX_VALUE;
             var minlockedelem = blankHolder;
-            for (var i = 0; i < targets.length; ++ i) {
+            for (var i = 0; i < targets.length; ++i) {
                 var cacheelem = targets[i];
                 if (cacheelem.clazz === "hidden") {
                     continue;
@@ -379,9 +375,9 @@ var fluid_1_4 = fluid_1_4 || {};
             //   fluid.dumpEl(minelem.element) + " minlockeddistance " + minlockeddistance
             //    + " locked elem " + dumpelem(minlockedelem));
             if (lastClosest && lastClosest.position === minelem.position &&
-                fluid.unwrap(lastClosest.element) === fluid.unwrap(minelem.element) &&
-                fluid.unwrap(lastClosest.lockedelem) === fluid.unwrap(minlockedelem.element)
-                ) {
+                    fluid.unwrap(lastClosest.element) === fluid.unwrap(minelem.element) &&
+                    fluid.unwrap(lastClosest.lockedelem) === fluid.unwrap(minlockedelem.element)
+                    ) {
                 return fluid.dropManager.NO_CHANGE;
             }
             //fluid.log("mindistance " + mindistance + " minlockeddistance " + minlockeddistance);
@@ -464,10 +460,10 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.dropManager.sentinelizeElement = function (targets, sides, cacheelem, fc, disposition, clazz) {
         var elemCopy = $.extend(true, {}, cacheelem);
-        elemCopy.rect[sides[fc]] = elemCopy.rect[sides[1 - fc]] + (fc ? 1: -1);
+        elemCopy.rect[sides[fc]] = elemCopy.rect[sides[1 - fc]] + (fc ? 1 : -1);
         elemCopy.rect[sides[1 - fc]] = (fc ? -1 : 1) * SENTINEL_DIMENSION;
         elemCopy.position = disposition === fluid.position.INSIDE ?
-           disposition : (fc ? fluid.position.BEFORE : fluid.position.AFTER);
+            disposition : (fc ? fluid.position.BEFORE : fluid.position.AFTER);
         elemCopy.clazz = clazz;
         targets[targets.length] = elemCopy;
     };
@@ -538,9 +534,9 @@ var fluid_1_4 = fluid_1_4 || {};
     /** Returns the minimum squared distance between two rectangles **/
     fluid.geom.minRectRect = function (rect1, rect2) {
         var dx = rect1.right < rect2.left ? rect2.left - rect1.right : 
-                 rect2.right < rect1.left ? rect1.left - rect2.right :0;
+                 rect2.right < rect1.left ? rect1.left - rect2.right : 0;
         var dy = rect1.bottom < rect2.top ? rect2.top - rect1.bottom : 
-                 rect2.bottom < rect1.top ? rect1.top - rect2.bottom :0;
+                 rect2.bottom < rect1.top ? rect1.top - rect2.bottom : 0;
         return dx * dx + dy * dy;
     };
     
@@ -578,8 +574,8 @@ var fluid_1_4 = fluid_1_4 || {};
         function accPen(collect, cacheelem, backSign) {
             var thisrect = cacheelem.rect;
             var pdist = fluid.geom.minRectRect(penrect, thisrect);
-            var rdist = -dirSign * backSign * (baserect[backSign === 1 ? frontSide:backSide] - 
-                                                thisrect[backSign === 1 ? backSide:frontSide]);
+            var rdist = -dirSign * backSign * (baserect[backSign === 1 ? frontSide : backSide] - 
+                                                thisrect[backSign === 1 ? backSide : frontSide]);
             // fluid.log("pdist: " + pdist + " rdist: " + rdist);
             // the oddity in the rdist comparison is intended to express "half-open"-ness of rectangles
             // (backSign === 1 ? 0 : 1) - this is now gone - must be possible to move to perpendicularly abutting regions
@@ -596,16 +592,14 @@ var fluid_1_4 = fluid_1_4 || {};
         var backcollect = makePenCollect();
         var lockedcollect = makePenCollect();
 
-        for (var i = 0; i < targets.length; ++ i) {
+        for (var i = 0; i < targets.length; ++i) {
             var elem = targets[i];
             var isPure = elem.owner && elem.element === elem.owner.parentElement;
-            if (elem.clazz === "hidden" || forSelection && isPure) {
+            if (elem.clazz === "hidden" || (forSelection && isPure)) {
                 continue;
-            }
-            else if (!forSelection && elem.clazz === "locked") {
+            } else if (!forSelection && elem.clazz === "locked") {
                 accPen(lockedcollect, elem, 1);
-            }
-            else {
+            } else {
                 accPen(collect, elem, 1);
                 accPen(backcollect, elem, -1);
             }
@@ -616,7 +610,7 @@ var fluid_1_4 = fluid_1_4 || {};
         // disable wrap
         wrap = wrap && !disableWrap;       
                 
-        var mincollect = wrap ? backcollect: collect;        
+        var mincollect = wrap ? backcollect : collect;        
         
         var togo = {
             wrapped: wrap,
