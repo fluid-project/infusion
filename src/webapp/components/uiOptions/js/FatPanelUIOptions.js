@@ -145,7 +145,7 @@ var fluid_1_4 = fluid_1_4 || {};
         // find the correct iframe
         $("iframe").each(function (idx, iframeElm) {
             var iframe = $(iframeElm);
-            if(iframe.hasClass(that.options.markupProps.class)) {
+            if(iframe.hasClass(that.options.markupProps["class"])) {
                 that.iframe = iframe;
                 return false;
             }

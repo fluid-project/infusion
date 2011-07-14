@@ -22,11 +22,17 @@
 .fl-uiOptions-fatPanel-iframe {
     border: 0;
     background-color: #fff;
-    height:12.5em;
 }
 
 /* Theming */
+.fl-theme-hc .fl-uiOptions-fatPanel .fl-panelBar, 
 .fl-theme-hc .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #fff; border-color: #000; }
+
+.fl-theme-hci .fl-uiOptions-fatPanel .fl-panelBar, 
 .fl-theme-hci .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #000; border-color: #fff; color: #fff; }
+
+.fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-panelBar, 
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #FFFF00; border-color: #000; }
+
+.fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-panelBar, 
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #000; border-color: #ffff00; color: #ffff00 }
