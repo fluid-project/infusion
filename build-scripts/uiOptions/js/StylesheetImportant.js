@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function () {
     var injectImportant = function () {
-        var fullPath = "./uiOptions/js/css" + File.separator + "fss-theme-coal.css";
+        var fullPath = "../src/webapp/framework/fss/css/fss-theme-coal.css";
         var tg = fluid.build.cssGenerator({
             sheetStore: fluid.build.cssGenerator.rhinoSheetStore(fullPath)
         });
@@ -29,7 +29,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Now that the stylesheet has been prioritized, generate
         // the new stylesheet and write the contents out to a file
         var modifiedStylesheet = tg.generate();
-        //tg.options.sheetStore.save(modifiedStylesheet);
+        tg.options.sheetStore.save(modifiedStylesheet);
     }
     
     injectImportant();
