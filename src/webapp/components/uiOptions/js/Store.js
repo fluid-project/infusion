@@ -54,7 +54,7 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         },
         cookie: {
-            template: "%name=%data; expires=%expires; path=%path",
+            template: "%name=%data; path=%path",
             name: "fluid-ui-settings",
             path: "/",
             expires: ""
