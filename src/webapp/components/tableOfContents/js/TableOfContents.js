@@ -230,60 +230,7 @@ var fluid_1_4 = fluid_1_4 || {};
             that.refreshView();
         });        
     };
-    
-    // The current state of this tree generation code is a result of missing framework supports.
-    // In the future it is envisioned that it will be greatly simplified through the use of antigens.
-    // See FLUID-4261: http://issues.fluidproject.org/browse/FLUID-4261
-    fluid.tableOfContents.levels.generateTree2 = function (startLevel, endLevel) {
-        var tree = {};
-        var trueTree = {};
-        var componentID = "level" + startLevel;
-        var linkID = "link" + startLevel;
-        var itemID = "items" + startLevel;
-        var parentLevel = startLevel - 1;
-        var childLevel = startLevel + 1;
-        var controlledBy = (parentLevel ? "{headingPath" + parentLevel + "}." : "") + "headings";
-        var value = "headingValue" + startLevel;
-        var path = "headingPath" + startLevel;
-        
-        trueTree[linkID] = {
-            target: "${{" + path + "}.url}",
-            linktext: "${{" + path + "}.text}"
-        };
-        
-        tree[componentID] = {
-            children: [
-                {
-                    expander: {
-                        type: "fluid.renderer.repeat",
-                        repeatID: itemID,
-                        controlledBy: controlledBy,
-                        valueAs: value,
-                        pathAs: path,
-                        tree: {
-                            expander: [
-                                {
-                                    type: "fluid.renderer.condition",
-                                    condition: "{" + value + "}.text",
-                                    trueTree: trueTree
-                                }
-                            ]
-                        }
-                    }
-                }
-            ]
-        };
-        
-        if (childLevel <= endLevel) {
-            tree[componentID].children[0].expander.tree.expander.push({
-                type: "fluid.renderer.condition",
-                condition: "{" + value + "}.headings",
-                trueTree: fluid.tableOfContents.levels.generateTree(childLevel, endLevel)
-            });
-        }
-        
-        return tree;
-    };
+
     
     /**
      * @param   Object  that.model, the model with all the headings, it should be in the format of {headings: [...]}
