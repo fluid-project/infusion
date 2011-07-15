@@ -49,7 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 ".flc-progress");
         
             jqUnit.assertEquals("After show, expected minimal default indicator width of " + progressBar.options.minWidth + "px; actual ", 
-            progressBar.options.minWidth, progressBar.indicator.width());
+                progressBar.options.minWidth, progressBar.indicator.width());
           
             // hide the progress widget, pass 0 delay and false animation, 
             progressBar.hide(0);       

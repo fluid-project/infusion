@@ -1,5 +1,6 @@
 /*
 Copyright 2010 Lucendo Development Ltd.
+Copyright 2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -124,8 +125,7 @@ fluid.registerNamespace("fluid.tests");
             delete fluid.expandComponentOptions;
             try {
                 func();
-            }
-            finally {
+            } finally {
                 fluid.expandComponentOptions = expandComponentOptions;
             }      
         }
