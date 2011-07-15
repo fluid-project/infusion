@@ -128,40 +128,40 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.tableOfContents.modelBuilder.toModel = function (headingInfo, modelLevelFn) {
         var headings = fluid.copy(headingInfo);
-        
+//console.log('heading info: ', headingInfo);
         var buildModelLevel = function (headings, level) {
             var modelLevel = [];
-            
+console.log('In build model level, heading is: ', headings, 'level is ', level);
             while (headings.length > 0) {
                 var heading = headings[0];
                 if (heading.level < level) {
                     break;
                 }
-                
+                console.log('heading level: ', heading.level, '; level: ', level, ', modelLevel: ', modelLevel);
                 if (heading.level > level) {
                     var subHeadings = buildModelLevel(headings, level + 1);
-                    
+                    console.log('subheadings: ', subHeadings, '; modelLevel is: ', modelLevel, ' currlvl: ', level);
                     if (modelLevel.length > 0) {
                         modelLevel[modelLevel.length - 1].headings = subHeadings;
                     } else {
                         modelLevel = modelLevelFn(modelLevel, subHeadings);
                     }
                 }
-                
                 if (heading.level === level) {
-                    modelLevel.push(heading);
+                    modelLevel.push(heading); 
+//console.log('last cond: headinglvl: ', heading, level);  
                     headings.shift();
                 }
             }
-            
             return modelLevel;
         };
-        
         return buildModelLevel(headings, 1);
     };
        
     fluid.tableOfContents.modelBuilder.gradualModelLevelFn = function (modelLevel, subHeadings) {
-        return subHeadings;
+        subHeadingsClone = fluid.copy(subHeadings);
+        subHeadingsClone[0].level--;
+        return subHeadingsClone;
     };
 
     fluid.tableOfContents.modelBuilder.skippedModelLevelFn = function (modelLevel, subHeadings) {
@@ -301,12 +301,10 @@ var fluid_1_4 = fluid_1_4 || {};
                 
         // model headings comes as an Array, loop through them
         $.each (topModel.headings, function (index, model) {
-//            console.log(model);
             var childrenObj = {};
             childrenObj.children = [];
-console.log(model);            
-            // if currentLevel is not set, then this is the skipped node, add decorator to it
-            if (!currentLevel) {
+            // if model.Level is not set, then this is the skipped node, add decorator to it
+            if (!model.level) {
                 childrenObj.decorators = [
                     {
                         type: "addClass",
@@ -324,7 +322,6 @@ console.log(model);
 
         tree.ID = "level" + currentLevel + ":";
         tree.children = subtree;
-console.log('TREE', tree);
         //refractor this?
         if (currentLevel === 1) {
             return {children: [tree]};
@@ -332,8 +329,12 @@ console.log('TREE', tree);
         return tree;
     };
  
+    /** 
+     * @return  Object  Returned produceTree must be in {headings: [trees]}
+     */
     fluid.tableOfContents.levels.produceTree = function (that) {
     console.log('BEGIN', that.model);
+        // produceTree
         return fluid.tableOfContents.levels.generateTree(that.model);
     };
      

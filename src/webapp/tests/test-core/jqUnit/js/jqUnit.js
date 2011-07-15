@@ -85,6 +85,9 @@ var jqUnit = jqUnit || {};
             for (var name in thing1) {
                 var n1 = thing1[name];
                 var n2 = thing2[name];
+                console.log("Visiting name " + name + " at basename " + basename + " length " + basename.length);
+                console.log("n1: ", n1);
+                console.log("n2: ", n2);
                 var neq = deepEqDiag(n1, n2, (basename ? basename + ".": "") + name);
                 if (neq) {
                     return neq;

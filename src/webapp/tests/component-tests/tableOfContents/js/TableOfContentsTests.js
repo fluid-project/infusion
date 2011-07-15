@@ -46,26 +46,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {level: 1, text: "h1", url: "#h1"},
             {level: 6, text: "h6", url: "#h6"}
         ],
-        model: {
+        model: [{
+            level: 1, 
+            text: "h1", 
+            url: "#h1",
             headings: [{
-                level: 1, 
-                text: "h1", 
-                url: "#h1",
                 headings: [{
                     headings: [{
                         headings: [{
                             headings: [{
-                                headings: [{
-                                    level: 6, 
-                                    text: "h6", 
-                                    url: "#h6"
-                                }]
+                                level: 6, 
+                                text: "h6", 
+                                url: "#h6"
                             }]
                         }]
                     }]
                 }]
             }]
-        }
+        }]
     };
     
     /* TODO: Might want to rename this and "skippedHeadingsForSkippedIndentationModel" */
@@ -76,18 +74,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {level: 1, text: "h1", url: "#h1"},
             {level: 6, text: "h6", url: "#h6"}
         ],
-        model: {
+        model: [{
+            level: 1, 
+            text: "h1", 
+            url: "#h1",
             headings: [{
-                level: 1, 
-                text: "h1", 
-                url: "#h1",
-                headings: [{
-                    level: 6, 
-                    text: "h6", 
-                    url: "#h6"
-                }]
+                level: 2, 
+                text: "h6", 
+                url: "#h6"
             }]
-        }
+        }]
     };
     
     var linearHeadings = {
@@ -147,22 +143,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     ID: "level2:",
                     children: [{
                         ID: "items2:",
+                        decorators: [{
+                            type: "addClass",
+                            classes: "fl-tableOfContents-hide-bullet"
+                        }],
                         children: [
                         {
                             ID: "level3:",
                             children: [{
                                 ID: "items3:",
+                                decorators: [{
+                                    type: "addClass",
+                                    classes: "fl-tableOfContents-hide-bullet"
+                                }],
                                 children: [
                                 {
                                     ID: "level4:",
                                     children: [
                                     {
                                         ID: "items4:",
+                                        decorators: [{
+                                            type: "addClass",
+                                            classes: "fl-tableOfContents-hide-bullet"
+                                        }],
                                         children: [
                                         {
                                             ID: "level5:",
                                             children: [{
                                                 ID: "items5:",
+                                                decorators: [{
+                                                    type: "addClass",
+                                                    classes: "fl-tableOfContents-hide-bullet"
+                                                }],
                                                 children: [
                                                 {
                                                     ID: "level6:",
@@ -202,7 +214,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     children: [{
                         ID: "items2:",
                         children: [{
-                            ID: "link6",
+                            ID: "link2",
                             target: "#h6",
                             linktext: "h6"
                         }]
@@ -296,27 +308,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     var toModelTests = function (headingInfo, expectedModel, modelLevelFn) {
+console.log('Heading info', headingInfo);    
+console.log('Expected model', expectedModel);
         var model = fluid.tableOfContents.modelBuilder.toModel(headingInfo, modelLevelFn);
-        jqUnit.assertDeepEq("headingInfo converted to toModel correctly", expectedModel, model);
+console.log('MODEL', model);        
+        deepEqual(model, expectedModel, "headingInfo converted to toModel correctly");
     };
     
     var convertToHeadingObjectsTests = function (headings, anchorInfo, expectedHeadingInfo) {
         var modelBuilder = fluid.tableOfContents.modelBuilder();
         var headingInfo = modelBuilder.convertToHeadingObjects(headings, anchorInfo);
-        jqUnit.assertDeepEq("Heading objects created correctly", expectedHeadingInfo, headingInfo);
+        deepEqual(headingInfo, expectedHeadingInfo, "Heading objects created correctly");
     };
     
     var assembleModelTests = function (headings, anchorInfo, expectedModel) {
         var modelBuilder = fluid.tableOfContents.modelBuilder();
         var model = modelBuilder.assembleModel(headings, anchorInfo);
-        jqUnit.assertDeepEq("model assembled correctly", expectedModel, model);
+        deepEqual(model, expectedModel, model);
     };
     
     var generateTreeTests = function (model, expectedTree) {
-console.log('MODEL', model);    
+        model = {headings: model};
         var tree = fluid.tableOfContents.levels.generateTree(model);
-console.log('TREE', tree);
-console.log('EXPECTED TREE', expectedTree);
         deepEqual(tree, expectedTree, "tree generated correctly");
     };
     
@@ -425,16 +438,21 @@ console.log('EXPECTED TREE', expectedTree);
             assembleModelTests(createElms(linearHeadings.headingTags), linearHeadings.anchorInfo, linearHeadings.model);
         });
         tocMBTests.test("assembleModel: skipped headings", function () {
-            // test assembleModel with default toModel invoker - skippedHeadingsForGradualIndentationModel
-            assembleModelTests(createElms(skippedHeadingsForGradualIndentationModel.headingTags), 
-                skippedHeadingsForGradualIndentationModel.anchorInfo, skippedHeadingsForGradualIndentationModel.model);
+            // test assembleModel with default toModel invoker - skippedHeadingsForSkippedIndentationModel
+            assembleModelTests(createElms(skippedHeadingsForSkippedIndentationModel.headingTags), 
+                skippedHeadingsForSkippedIndentationModel.anchorInfo, skippedHeadingsForSkippedIndentationModel.model);
         });
         
         tocMBTests.test("Test gradualModelLevelFn", function () {
             var modelLevel = ['level1', 'level2'];
-            var subHeadings = ['subHeading1', 'subHeading2'];
+            var subHeadings = [{level: 6, text: 'h6', url: '#h6'}];
+            var expectedModelLevel = [{level: 5, text: 'h6', url: '#h6'}];
+            
             var gradualIndentationModel = fluid.tableOfContents.modelBuilder.gradualModelLevelFn(modelLevel, subHeadings);
-            jqUnit.assertEquals("gradual indentation model should always returns the subHeadings.", subHeadings, gradualIndentationModel);
+            deepEqual(gradualIndentationModel, expectedModelLevel, "gradual indentation model returns the subHeadings with level decremented by exactly 1.");
+            
+            //reference check. The function should not modify the object with the same reference.
+            jqUnit.assertFalse("This function should not modify the level value directly on the object. Returned value should not have the same reference as parameter.", subHeadings === gradualIndentationModel);
         }); 
         
         tocMBTests.test("Test skippedModelLevelFn", function () {
@@ -448,7 +466,6 @@ console.log('EXPECTED TREE', expectedTree);
         // "fluid.tableOfContents.levels" tests
         
         tocLevelsTests.test("generateTree: skipped indentation tree, [h1, '', '', '', '', h6]", function () {
-                console.log(skippedHeadingsForGradualIndentationTree);
             generateTreeTests(skippedHeadingsForSkippedIndentationModel.model, skippedHeadingsForSkippedIndentationTree);
         });
         tocLevelsTests.test("generateTree: gradual indentation tree, [h1, h6]", function () {
