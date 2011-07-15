@@ -128,19 +128,15 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.tableOfContents.modelBuilder.toModel = function (headingInfo, modelLevelFn) {
         var headings = fluid.copy(headingInfo);
-//console.log('heading info: ', headingInfo);
         var buildModelLevel = function (headings, level) {
             var modelLevel = [];
-console.log('In build model level, heading is: ', headings, 'level is ', level);
             while (headings.length > 0) {
                 var heading = headings[0];
                 if (heading.level < level) {
                     break;
                 }
-                console.log('heading level: ', heading.level, '; level: ', level, ', modelLevel: ', modelLevel);
                 if (heading.level > level) {
                     var subHeadings = buildModelLevel(headings, level + 1);
-                    console.log('subheadings: ', subHeadings, '; modelLevel is: ', modelLevel, ' currlvl: ', level);
                     if (modelLevel.length > 0) {
                         modelLevel[modelLevel.length - 1].headings = subHeadings;
                     } else {
@@ -149,7 +145,6 @@ console.log('In build model level, heading is: ', headings, 'level is ', level);
                 }
                 if (heading.level === level) {
                     modelLevel.push(heading); 
-//console.log('last cond: headinglvl: ', heading, level);  
                     headings.shift();
                 }
             }
@@ -290,53 +285,79 @@ console.log('In build model level, heading is: ', headings, 'level is ', level);
         return tree;
     };
     
-    fluid.tableOfContents.levels.generateTree = function (topModel, currentLevel) {
-        var children = [];
-        var tree = {};
-        var subtree = [];
+    /**
+     * @param   Object  that.model, the model with all the headings, it should be in the format of {headings: [...]}
+     * @param   int     the current level we want to generate the tree for.  default to 1 if not defined.
+     * @return  Object  A tree that looks like {children: [{ID: x, subTree:[...]}, ...]}
+     */
+    fluid.tableOfContents.levels.generateTree = function (headingsModel, currentLevel) {
+        var levelObj = {};
+        var levelChildren = [];
         currentLevel = currentLevel || 1;
         
-        //base case = no more sub headings, then this is where we set the anchor info.
-        if (!topModel.headings) {
-            return {ID: "link" + topModel.level, target: topModel.url, linktext: topModel.text};
+        //base case = no more sub headings, then return link object
+        if (!headingsModel.headings) {
+            return fluid.tableOfContents.levels.modelToLinkObject(headingsModel);
         }
                 
-        // model headings comes as an Array, loop through them
-        $.each (topModel.headings, function (index, model) {
-            var childrenObj = {};
-            childrenObj.children = [];
-            // if model.Level is not set, then this is the skipped node, add decorator to it
+        // loop through all headings; model is {headings:[...], level, text, url}
+        $.each (headingsModel.headings, function (index, model) {
+            var itemObj = {
+                ID : "items" + currentLevel + ":",
+                children: []
+            };
+            // if model.level is not set, then this is the skipped node, add decorator to it
             if (!model.level) {
-                childrenObj.decorators = [
-                    {
-                        type: "addClass",
-                        classes: "fl-tableOfContents-hide-bullet"
-                    }
-                ];
-            } 
-            childrenObj.ID = "items" + currentLevel + ":";
+                fluid.tableOfContents.levels.handleEmptyItemObj(itemObj);
+            }            
             if (model.headings && model.level) {
-                childrenObj.children.push({ID: "link" + model.level, target: model.url, linktext: model.text});
+                // if this has subheadings and not the skipped node, 
+                // then create a link object, and add this to the item's children
+                itemObj.children.push(fluid.tableOfContents.levels.modelToLinkObject(model));
             } 
-            childrenObj.children.push(fluid.tableOfContents.levels.generateTree(model, currentLevel + 1));
-            subtree.push(childrenObj);
+            // add subHeadings recursively
+            itemObj.children.push(fluid.tableOfContents.levels.generateTree(model, currentLevel + 1));
+            levelChildren.push(itemObj);
         });
 
-        tree.ID = "level" + currentLevel + ":";
-        tree.children = subtree;
-        //refractor this?
+        levelObj = {
+            ID: "level" + currentLevel + ":",
+            children: levelChildren
+        };
+
         if (currentLevel === 1) {
-            return {children: [tree]};
+            // final result should be wrapped inside a children.
+            return {children: [levelObj]};
         }
-        return tree;
+        return levelObj;
+    };
+    
+    /**
+     * Take the model {level, text, url}, and convert it to a link object.  This function is used 
+     * by generateTree().
+     *
+     * @param      Object  The model generated by toModel(), in the format of {level, text, url}
+     * @return     Object  A link object with the following properties, {ID, target, linktext}
+     */
+    fluid.tableOfContents.levels.modelToLinkObject = function (model) {
+        return ({ID: "link" + model.level, target: model.url, linktext: model.text});
+    };
+    
+    /** 
+     * Configure item object when item object has no text, uri, level in it.
+     * defaults to add a decorator to hide the bullets.
+     */
+    fluid.tableOfContents.levels.handleEmptyItemObj = function (itemObj) {
+        itemObj.decorators = [{
+            type: "addClass",
+            classes: "fl-tableOfContents-hide-bullet"
+        }];
     };
  
     /** 
      * @return  Object  Returned produceTree must be in {headings: [trees]}
      */
     fluid.tableOfContents.levels.produceTree = function (that) {
-    console.log('BEGIN', that.model);
-        // produceTree
         return fluid.tableOfContents.levels.generateTree(that.model);
     };
      

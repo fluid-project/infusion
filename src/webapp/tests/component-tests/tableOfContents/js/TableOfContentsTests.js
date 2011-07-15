@@ -308,10 +308,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     var toModelTests = function (headingInfo, expectedModel, modelLevelFn) {
-console.log('Heading info', headingInfo);    
-console.log('Expected model', expectedModel);
         var model = fluid.tableOfContents.modelBuilder.toModel(headingInfo, modelLevelFn);
-console.log('MODEL', model);        
         deepEqual(model, expectedModel, "headingInfo converted to toModel correctly");
     };
     
@@ -470,6 +467,23 @@ console.log('MODEL', model);
         });
         tocLevelsTests.test("generateTree: gradual indentation tree, [h1, h6]", function () {
             generateTreeTests(skippedHeadingsForGradualIndentationModel.model, skippedHeadingsForGradualIndentationTree);
+        });
+        
+        tocLevelsTests.test("modelToLinkObject: test conversion of model to link object", function () {
+            var model = {level: 1, text: 'h1', url: '#h1'};
+            var linkObject = fluid.tableOfContents.levels.modelToLinkObject(model);
+            jqUnit.assertEquals("Link ID sets properly", "link" + model.level, linkObject.ID);
+            jqUnit.assertEquals("Text sets properly", model.text, linkObject.linktext);
+            jqUnit.assertEquals("URL sets properly", model.url, linkObject.target);
+        });
+        
+        tocLevelsTests.test("handleEmptyItemObj: Add decorator to item object", function () {
+            var itemObj = {};
+            fluid.tableOfContents.levels.handleEmptyItemObj(itemObj);
+            var decorator = itemObj.decorators[0];
+            jqUnit.assertEquals("Decorator.type is 'addClass'", "addClass", decorator.type);
+            jqUnit.assertEquals("Decorator.classes is 'fl-tableOfContents-hide-bullet'", "fl-tableOfContents-hide-bullet", decorator.classes);
+            
         });
         
         tocLevelsTests.asyncTest("Render toc: linear headings", function () {
