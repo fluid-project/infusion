@@ -54,7 +54,6 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         },
         cookie: {
-            template: "%name=%data; path=%path",
             name: "fluid-ui-settings",
             path: "/",
             expires: ""
@@ -83,6 +82,24 @@ var fluid_1_4 = fluid_1_4 || {};
         
         return retObj || defaults;
     };
+    
+    /**
+     * Assembles the cookie string
+     * @param {Object} cookie settings
+     */
+    fluid.cookieStore.assembleCookie = function (cookieOptions) {
+        var cookieStr = cookieOptions.name + "=" + cookieOptions.data;
+        
+        if (cookieOptions.expires) {
+            cookieStr += "; expires=" + cookieOptions.expires;
+        }
+        
+        if (cookieOptions.path) {
+            cookieStr += "; path=" + cookieOptions.path;
+        }
+        
+        return cookieStr;
+    };
 
     /**
      * Saves the settings into a cookie
@@ -91,7 +108,7 @@ var fluid_1_4 = fluid_1_4 || {};
      */
     fluid.cookieStore.save = function (settings, cookieOptions) {
         cookieOptions.data = encodeURIComponent(JSON.stringify(settings));
-        document.cookie = fluid.stringTemplate(cookieOptions.template, cookieOptions);
+        document.cookie = fluid.cookieStore.assembleCookie(cookieOptions);
     };
     
 
