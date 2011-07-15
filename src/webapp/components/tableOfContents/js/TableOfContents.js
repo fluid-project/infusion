@@ -159,6 +159,8 @@ console.log('In build model level, heading is: ', headings, 'level is ', level);
     };
        
     fluid.tableOfContents.modelBuilder.gradualModelLevelFn = function (modelLevel, subHeadings) {
+        // Clone the subHeadings because we don't want to modify the reference of the subHeadings.  
+        // the reference will affect the equality condition in generateTree(), resulting an unwanted tree.
         subHeadingsClone = fluid.copy(subHeadings);
         subHeadingsClone[0].level--;
         return subHeadingsClone;
