@@ -28,6 +28,14 @@ var skon = skon || {};
             }
         });
 
+        fluid.demands("fluid.renderIframe", ["skon.demo"], {
+            options: {
+                markupProps: {
+                    src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
+                }
+            }
+        });
+    
         // Supply the table of contents' template URL
         fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer", "skon.demo"], {
             options: {
