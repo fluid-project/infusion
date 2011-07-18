@@ -160,6 +160,11 @@ var fluid_1_4 = fluid_1_4 || {};
         events: {
             afterRender: null
         },
+        styles: {
+            offScreen: "fl-offScreen-hidden",
+            containerFlex: "fl-container-flex",
+            container: "fl-uiOptions-fatPanel-iframe"
+        },
         markupProps: {
             "class": "flc-iframe",
             src: "./uiOptionsIframe.html"
@@ -172,7 +177,15 @@ var fluid_1_4 = fluid_1_4 || {};
         //create iframe and append to container
         $("<iframe/>", that.options.markupProps).appendTo(that.container);
         
-        that.iframe = $(".flc-iframe", that.container);
+        // find the correct iframe
+        $("iframe").each(function (idx, iframeElm) {
+            var iframe = $(iframeElm);
+            if(iframe.hasClass(that.options.markupProps["class"])) {
+                that.iframe = iframe;
+                return false;
+            }
+        });
+        
         that.iframe.addClass(styles.containerFlex);
         that.iframe.addClass(styles.container);
         that.iframe.addClass(styles.offScreen);
