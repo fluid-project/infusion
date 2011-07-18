@@ -46,14 +46,14 @@
 
 /* FROM http://peter.sh/data/vendor-prefixed-css.php?js=1 */
 
-const kENGINES = [
+var kENGINES = [
   "webkit",
   "presto",
   "trident",
   "generic"
 ];
 
-const kCSS_VENDOR_VALUES = {
+var kCSS_VENDOR_VALUES = {
   "-moz-box":             {"webkit": "-webkit-box",        "presto": "", "trident": "", "generic": "box" },
   "-moz-inline-box":      {"webkit": "-webkit-inline-box", "presto": "", "trident": "", "generic": "inline-box" },
   "-moz-initial":         {"webkit": "",                   "presto": "", "trident": "", "generic": "initial" },
@@ -79,7 +79,7 @@ const kCSS_VENDOR_VALUES = {
                            "generic": FilterRepeatingGradientForOutput }
 };
 
-const kCSS_VENDOR_PREFIXES = {"lastUpdate":1304175007,"properties":[{"gecko":"","webkit":"","presto":"","trident":"-ms-accelerator","status":"P"},
+var kCSS_VENDOR_PREFIXES = {"lastUpdate":1304175007,"properties":[{"gecko":"","webkit":"","presto":"","trident":"-ms-accelerator","status":"P"},
 {"gecko":"","webkit":"","presto":"-wap-accesskey","trident":"","status":""},
 {"gecko":"-moz-animation","webkit":"-webkit-animation","presto":"","trident":"","status":"WD"},
 {"gecko":"-moz-animation-delay","webkit":"-webkit-animation-delay","presto":"","trident":"","status":"WD"},
@@ -343,7 +343,7 @@ const kCSS_VENDOR_PREFIXES = {"lastUpdate":1304175007,"properties":[{"gecko":"",
 {"gecko":"","webkit":"-epub-writing-mode = -webkit-writing-mode","presto":"","trident":"","status":""},
 {"gecko":"","webkit":"zoom","presto":"","trident":"-ms-zoom","status":""}]};
 
-const kCSS_PREFIXED_VALUE = [
+var kCSS_PREFIXED_VALUE = [
   {"gecko": "-moz-box", "webkit": "-moz-box", "presto": "", "trident": "", "generic": "box"}
 ];
 
@@ -944,7 +944,7 @@ var CssInspector = {
 
   parseMediaQuery: function(aString)
   {
-    const kCONSTRAINTS = {
+    var kCONSTRAINTS = {
       "width": true,
       "min-width": true,
       "max-width": true,

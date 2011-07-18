@@ -36,6 +36,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var directory = new File(cssBasePath);
     var files = directory.list();
     
+    log("TEST ********** TEST");
+    
      if (files) {
          for (var i = 0; i < files.length; i++) {
              var fileName = files[i];

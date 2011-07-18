@@ -15,13 +15,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
-var fluid = {
-    build: {}
-};
-
+global = this.window || global;
+global.fluid = global.fluid || {};
+fluid.build = fluid.build || {};
 
 (function () {
-                
+        
     var prioritiesForRule = function (prioritySpec, rule) {
         var priorities = prioritySpec["fluid-cssGenerator-allRules"] || [];
         var prioritiesForRule = prioritySpec[rule.selectorText()];
