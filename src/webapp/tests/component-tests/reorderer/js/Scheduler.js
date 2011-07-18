@@ -96,4 +96,4 @@ fluid.Scheduler = (function () {
              */
         }
     };
-}) ();
+})();

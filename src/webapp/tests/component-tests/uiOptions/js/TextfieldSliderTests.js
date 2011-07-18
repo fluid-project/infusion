@@ -1,5 +1,6 @@
 /*
 Copyright 2009 University of Toronto
+Copyright 2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -79,7 +80,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var model = {
                 min: 2,
                 max: 10,
-                value: 5,
+                value: 5
             };
             var changeRequest = {
                 value: changeRequestValue        
@@ -87,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.textfieldSlider.validateValue(model, changeRequest);
             jqUnit.assertEquals("Validating value", expectedValue, changeRequest.value);
-        } 
+        };
         
         tests.test("validateValue() tests", function () {
             checkValidatedValue(11, 10);

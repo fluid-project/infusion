@@ -45,12 +45,10 @@ var fluid_1_4 = fluid_1_4 || {};
         if (that.state === STATE_INITIAL) {
             that.locate("undoContainer").hide();
             that.locate("redoContainer").hide();
-        }
-        else if (that.state === STATE_CHANGED) {
+        } else if (that.state === STATE_CHANGED) {
             that.locate("undoContainer").show();
             that.locate("redoContainer").hide();
-        }
-        else if (that.state === STATE_REVERTED) {
+        } else if (that.state === STATE_REVERTED) {
             that.locate("undoContainer").hide();
             that.locate("redoContainer").show();          
         }

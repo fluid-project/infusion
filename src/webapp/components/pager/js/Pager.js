@@ -589,16 +589,16 @@ var fluid_1_4 = fluid_1_4 || {};
         return {
             children:  
                 fluid.transform(columnDefs, function (columnDef) {
-                return {
-                    ID: iDforColumn(columnDef, opts),
-                    value: columnDef.label,
-                    decorators: [ 
-                        {"jQuery": ["click", generateColumnClick(overallThat, columnDef, opts)]},
-                        {identify: "header:" + columnDef.key},
-                        {type: "attrs", attributes: { title: (columnDef.key === newModel.sortKey) ? sortableColumnTxt : opts.options.strings.sortableColumnText}}
-                    ].concat(fetchHeaderDecorators(opts.overallOptions.decorators, columnDef))
-                };
-            })
+                    return {
+                        ID: iDforColumn(columnDef, opts),
+                        value: columnDef.label,
+                        decorators: [ 
+                            {"jQuery": ["click", generateColumnClick(overallThat, columnDef, opts)]},
+                            {identify: "header:" + columnDef.key},
+                            {type: "attrs", attributes: { title: (columnDef.key === newModel.sortKey) ? sortableColumnTxt : opts.options.strings.sortableColumnText}}
+                        ].concat(fetchHeaderDecorators(opts.overallOptions.decorators, columnDef))
+                    };
+                })  
         };
     }
    

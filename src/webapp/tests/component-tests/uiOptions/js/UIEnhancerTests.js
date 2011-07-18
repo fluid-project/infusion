@@ -1,5 +1,6 @@
 /*
 Copyright 2008-2009 University of Toronto
+Copyright 2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -53,19 +54,72 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tests.test("Settings", function () {
             expect(3);
 
-            var options = {
-                savedSettings: testSettings
-            };
             var body = $("body");
-            var initFontSize = parseFloat(body.css("fontSize"));
+            var initialFontSize = parseFloat(body.css("fontSize"));
             
             var uiEnhancer = fluid.pageEnhancer(options).uiEnhancer;
+            uiEnhancer.updateModel(testSettings);
             
-            jqUnit.assertEquals("Large text size is set", initFontSize * uiEnhancer.options.savedSettings.textSize + "px", body.css("fontSize"));
+            jqUnit.assertEquals("Large text size is set", initialFontSize * testSettings.textSize + "px", body.css("fontSize"));
             jqUnit.assertTrue("Verdana font is set", body.hasClass("fl-font-verdana"));
             jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-hc"));
 
         });
         
+        tests.test("TextSizer", function () {
+            var textSizer = fluid.uiEnhancer.textSizer(".flt-textSizer");
+            
+            jqUnit.assertTrue("Make sure initalSize is not set upon creation since we want to trigger the setting lazily.", !textSizer.initialSize);
+            textSizer.calcInitSize();
+            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 8, textSizer.initialSize);
+            textSizer.set(2);
+            jqUnit.assertEquals("The size should be doubled", "16px", textSizer.container.css("fontSize"));
+        
+        });
+        
+        tests.test("ClassSwapper", function () {
+            var opts = {
+                classes: {
+                    "default": "",
+                    "times": "fl-font-times",
+                    "comic": "fl-font-comic-sans",
+                    "arial": "fl-font-arial",
+                    "verdana": "fl-font-verdana"
+                }
+            };
+            var swapper = fluid.uiEnhancer.classSwapper(".flt-classSwapper", opts);
+            
+            jqUnit.assertEquals("There should be four classes", 4, swapper.classStr.split(" ").length);
+            jqUnit.assertEquals("There should be four class selectors", 4, swapper.classSelector.split(", ").length);
+            
+            fluid.each(opts.classes, function (classname) {
+                jqUnit.assertTrue("All class selectors should be in the combined selector, checking " + classname, swapper.classSelector.indexOf("." + classname) > -1);
+                jqUnit.assertTrue("All classes should be in the classes string, checking " + classname, swapper.classStr.indexOf(classname) > -1);
+            });
+           
+            jqUnit.assertTrue("The container has a font setting", swapper.container.is(swapper.classSelector));
+            jqUnit.assertEquals("There is a font setting in the container", 1, $(swapper.classSelector, swapper.container).length);
+            
+            swapper.clearClasses();
+            jqUnit.assertFalse("The container's font setting was removed", swapper.container.is(swapper.classSelector));
+            jqUnit.assertEquals("There is no font setting in the container", 0, $(swapper.classSelector, swapper.container).length);
+            
+            swapper.swap("times");
+            jqUnit.assertTrue("The container has a font setting of times", swapper.container.hasClass(opts.classes.times));
+            jqUnit.assertEquals("There is no font setting in the container", 0, $(swapper.classSelector, swapper.container).length);
+            
+        });
+
+        tests.test("LineSpacer", function () {
+            var lineSpacer = fluid.uiEnhancer.lineSpacer(".flt-lineSpacer");
+            
+            jqUnit.assertTrue("Make sure initalSize is not set upon creation since we want to trigger the setting lazily.", !lineSpacer.initialSize);
+            lineSpacer.calcInitSize();
+            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 1.5, lineSpacer.initialSize);
+            jqUnit.assertEquals("Check the line spacing size in pixels", "15px", lineSpacer.container.css("lineHeight"));
+            lineSpacer.set(2);
+            jqUnit.assertEquals("The size should be doubled", "30px", lineSpacer.container.css("lineHeight"));
+        
+        });
     });
 })(jQuery);
