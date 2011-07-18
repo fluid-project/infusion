@@ -29,13 +29,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // the new stylesheet and write the contents out to a file
         var modifiedStylesheet = tg.generate();
         tg.options.sheetStore.save(modifiedStylesheet, writePath);
-    }
+    };
     
-    var fileNames = cssFileNames.split(" ");
+    // Locating all of the files at "cssBasePath" and attempting to inject !importants
+    // There should be a check to make sure that only css files are run.
+    var directory = new File(cssBasePath);
+    var files = directory.list();
     
-    for (var i = 0; i < fileNames.length; i++) {
-        var readPath = cssBasePath + fileNames[i];
-        var writePath = readPath.replace(".css", "-uio.css");
-        injectImportant(readPath, writePath);
-    }
+     if (files) {
+         for (var i = 0; i < files.length; i++) {
+             var fileName = files[i];
+             java.lang.System.out.println("\n********\n" + files[i] + "\n********\n");
+             
+             // harcoding the exclusion of "fss-JSR168Bridge.css" and "fss-transitions.css" which break the !important injection
+             if (fileName.indexOf("fss-JSR168Bridge.css") < 0 && fileName.indexOf("fss-transitions.css") < 0) {
+                 var readPath = cssBasePath + files[i];
+                 var writePath = readPath.replace(".css", "-uio.css");
+                 injectImportant(readPath, writePath);
+             }
+         }
+     } else {
+         java.lang.System.out.println("Directory Error: There is no directory at path '" + cssBasePath + "'");
+     }
 })();
