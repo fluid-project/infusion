@@ -232,13 +232,60 @@ var fluid_1_4 = fluid_1_4 || {};
         });        
     };
 
+    fluid.tableOfContents.levels.generateTree = function (headingsModel, currentLevel) {
+        currentLevel = currentLevel || 0;
+        var levelObj = {
+            ID: "level" + currentLevel + ":",
+            children: []
+        };
+        
+        // base case: level is 0, returns {children:[generateTree(nextLevel)]}
+        // purpose is to wrap the first level with a children object.
+        if (currentLevel === 0) {
+            var tree = {
+                children: [
+                    fluid.tableOfContents.levels.generateTree(headingsModel, currentLevel + 1)
+                ]
+            };
+            return tree;
+        }
+        
+        //recursion
+        $.each(headingsModel.headings, function (index, model) {
+            console.log('index ', index, ' and model is ', model);
+            var itemObj = {
+                ID: "items" + currentLevel + ":",
+                children: []
+            };
+            var linkObj = {
+                ID: "link" + currentLevel,
+                target: model.url,
+                linktext: model.text
+            };
+            
+            if (!model.level) {
+                itemObj.decorators = [{
+                    type: "addClass",
+                    classes: "fl-tableOfContents-hide-bullet"
+                }];
+            } else {
+                itemObj.children.push(linkObj);
+            }
+            if (model.headings) {
+                itemObj.children.push(fluid.tableOfContents.levels.generateTree(model, currentLevel + 1));
+            } 
+            
+            levelObj.children.push(itemObj);
+        });
+        return levelObj;
+    };
     
     /**
      * @param   Object  that.model, the model with all the headings, it should be in the format of {headings: [...]}
      * @param   int     the current level we want to generate the tree for.  default to 1 if not defined.
      * @return  Object  A tree that looks like {children: [{ID: x, subTree:[...]}, ...]}
      */
-    fluid.tableOfContents.levels.generateTree = function (headingsModel, currentLevel) {
+    fluid.tableOfContents.levels.generateTree2 = function (headingsModel, currentLevel) {
         var levelObj = {};
         var levelChildren = [];
         currentLevel = currentLevel || 1;
@@ -278,7 +325,7 @@ var fluid_1_4 = fluid_1_4 || {};
             return {children: [levelObj]};
         }
         return levelObj;
-    };
+    };    
     
     /**
      * Take the model {level, text, url}, and convert it to a link object.  This function is used 
@@ -306,6 +353,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * @return  Object  Returned produceTree must be in {headings: [trees]}
      */
     fluid.tableOfContents.levels.produceTree = function (that) {
+    console.log('FINAL', fluid.tableOfContents.levels.generateTree(that.model));
         return fluid.tableOfContents.levels.generateTree(that.model);
     };
      
