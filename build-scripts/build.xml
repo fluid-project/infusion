@@ -20,10 +20,6 @@
     <property name="replaceRegexStartJS" value="[\/-z]*" />
     <property name="replaceRegexEndJS" value="&quot;" />
     <property name="fluidRegExp" value="framework/core/js/Fluid.js" />
-    
-    <!-- files to add !important too -->
-    <property name="cssBasePath" value="../src/webapp/framework/fss/css/" />
-    <property name="cssFileNames" value="fss-layout.css fss-text.css fss-theme-blackYellow.css fss-theme-coal.css fss-theme-hc.css fss-theme-hci.css fss-theme-mist.css fss-theme-rust.css fss-theme-slate.css fss-theme-yellowBlack.css" />
 
     <import file="buildutils.xml"/>
 
