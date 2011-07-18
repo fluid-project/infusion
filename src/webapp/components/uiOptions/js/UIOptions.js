@@ -252,8 +252,8 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.uiOptions.onReadyFirer = function (uiOptionsLoader) {
-        uiOptionsLoader.events.onReady.fire(uiOptionsLoader);
+    fluid.uiOptions.onReadyFirer = function (uiOptionsLoader, uiOptions) {
+        uiOptionsLoader.events.onReady.fire(uiOptionsLoader, uiOptions);
     };
     
     fluid.defaults("fluid.uiOptions.loader", {
@@ -265,7 +265,7 @@ var fluid_1_4 = fluid_1_4 || {};
             // This extra event is required because of framework bug FLUID-4337 and also the lack of "boiled listeners"
             onUIOptionsReadyBridge: {
                 event: "onUIOptionsComponentReady",
-                args: ["{fluid.uiOptions.loader}"]
+                args: ["{fluid.uiOptions.loader}", "{arguments}.0"]
             },
             // This is a public event which users outside the component can subscribe to - the argument
             // supplied is UIOptions.loader itself
@@ -288,7 +288,22 @@ var fluid_1_4 = fluid_1_4 || {};
                         "onUIOptionsComponentReady": "{loader}.events.onUIOptionsComponentReady"
                     }
                 }
-            },
+            }
+        }
+    });
+
+    /**
+     * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
+     * to allow users to set personal user interface preferences. The UI Options component provides a user 
+     * interface for setting and saving personal preferences, and the UI Enhancer component carries out the 
+     * work of applying those preferences to the user interface.
+     * 
+     * @param {Object} container
+     * @param {Object} options
+     */
+    fluid.defaults("fluid.uiOptions", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        components: {
             textControls: {
                 type: "fluid.uiOptions.textControls",
                 container: "{uiOptions}.dom.textControls",
@@ -326,22 +341,7 @@ var fluid_1_4 = fluid_1_4 || {};
                         onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
                     }
                 }
-            }
-        }
-    });
-
-    /**
-     * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
-     * to allow users to set personal user interface preferences. The UI Options component provides a user 
-     * interface for setting and saving personal preferences, and the UI Enhancer component carries out the 
-     * work of applying those preferences to the user interface.
-     * 
-     * @param {Object} container
-     * @param {Object} options
-     */
-    fluid.defaults("fluid.uiOptions", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        components: {
+            },
             preview: {
                 type: "fluid.uiOptions.preview",
                 createOnEvent: "onUIOptionsComponentReady",
@@ -460,7 +460,7 @@ var fluid_1_4 = fluid_1_4 || {};
             that.container.append(that.options.resources.template.resourceText);
             bindHandlers(that);
             bindEventHandlers(that);
-            that.events.onUIOptionsComponentReady.fire();
+            that.events.onUIOptionsComponentReady.fire(that);
         });
     };
 

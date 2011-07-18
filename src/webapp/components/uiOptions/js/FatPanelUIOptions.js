@@ -19,7 +19,6 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) { 
 
- 
     fluid.defaults("fluid.uiOptionsEventBinder", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         finalInitFunction: "fluid.uiOptionsEventBinder.finalInit",
@@ -40,9 +39,9 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
     
-    fluid.uiOptionsEventBinder.bindModelChanged = function (uiOptionsLoader, eventBinder) {
-        eventBinder.uiOptions = uiOptionsLoader.uiOptions;
-        uiOptionsLoader.uiOptions.events.modelChanged.addListener(function (model) {
+    fluid.uiOptionsEventBinder.bindModelChanged = function (uiOptions, eventBinder) {
+        eventBinder.uiOptions = uiOptions;
+        uiOptions.events.modelChanged.addListener(function (model) {
             eventBinder.pageEnhancer.uiEnhancer.updateModel(model.selections);
         });
     };
@@ -108,7 +107,7 @@ var fluid_1_4 = fluid_1_4 || {};
 		                        events: {
 			                        onUIOptionsComponentReady: {
 			                            event: "{uiOptionsLoader}.events.onUIOptionsComponentReady",
-			                            args: ["{uiOptionsLoader}", "{fluid.uiOptionsEventBinder}"]
+			                            args: ["{arguments}.0", "{fluid.uiOptionsEventBinder}"]
 			                        }
 			                    },
 			                    listeners: {
