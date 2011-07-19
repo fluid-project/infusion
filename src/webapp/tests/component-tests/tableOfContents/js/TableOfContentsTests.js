@@ -389,7 +389,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         tocLevelsTests.test("objModel: test construction of the levels, items object used by generateTree", function () {
             var levelObj = fluid.tableOfContents.levels.objModel('level', 1);
-            jqUnit.assertEquals("The last character of the ID should be a ':'", ":", levelObj.ID.substr(-1));
+            jqUnit.assertEquals("The last character of the ID should be a ':'", ":", levelObj.ID.substr(levelObj.ID.length - 1));
             jqUnit.assertEquals("Should create an empty children array", 0, levelObj.children.length);
         });
         
@@ -508,7 +508,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             headings.each(function (headingsIndex, headingsInfo) {
                 var currLink = headings.eq(headingsIndex);
                 testHeadings.headingInfo.push(serializeHeading(
-                    currLink.prop('tagName').substr(-1), 
+                    currLink.prop('tagName').substr(currLink.prop('tagName').length - 1), 
                     currLink.text(), 
                     '#test' + fluid.tableOfContents.sanitizeID(currLink.text())
                 ));
