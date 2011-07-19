@@ -2,7 +2,6 @@
  Copyright 2008-2010 University of Cambridge
  Copyright 2008-2009 University of Toronto
  Copyright 2010-2011 Lucendo Development Ltd.
- Copyright 2011 OCAD University
  
  Licensed under the Educational Community License (ECL), Version 2.0 or the New
  BSD license. You may not use this file except in compliance with one these
@@ -1477,8 +1476,7 @@ fluid.registerNamespace("fluid.tests");
             try {
                 fluid.pushSoftFailure(true);
                 fluid.fetchResources(resourceSpec2, callback);
-            }
-            finally {
+            } finally {
                 fluid.pushSoftFailure(-1);
             }
             jqUnit.assertEquals("Two calls to destructive callback", 2, destructiveCalls);

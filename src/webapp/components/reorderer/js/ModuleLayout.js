@@ -133,11 +133,12 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.defaults(true, "fluid.moduleLayoutHandler", 
-        {orientation: fluid.orientation.VERTICAL,
-         containerRole: fluid.reorderer.roles.REGIONS,
-         selectablesTabindex: -1,
-         sentinelize:         true
-         });
+        {
+            orientation: fluid.orientation.VERTICAL,
+            containerRole: fluid.reorderer.roles.REGIONS,
+            selectablesTabindex: -1,
+            sentinelize:         true
+        });
        
     /**
      * Module Layout Handler for reordering content modules.
@@ -171,7 +172,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
 
         that.getRelativePosition  = 
-           fluid.reorderer.relativeInfoGetter(options.orientation, 
+            fluid.reorderer.relativeInfoGetter(options.orientation, 
                  fluid.reorderer.WRAP_LOCKED_STRATEGY, fluid.reorderer.GEOMETRIC_STRATEGY, 
                  dropManager, dom, options.disableWrap);
                  

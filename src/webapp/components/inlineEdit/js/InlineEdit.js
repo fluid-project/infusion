@@ -2,7 +2,7 @@
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2010 University of Toronto
 Copyright 2008-2009 University of California, Berkeley
-Copyright 2010 OCAD University
+Copyright 2010-2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -50,15 +50,12 @@ var fluid_1_4 = fluid_1_4 || {};
                     sendKey(control, "keydown", 8, 0); // delete key must be dispatched exactly like this
                     sendKey(control, "keypress", 8, 0);
                 }
-            }
-
-            else if (control.createTextRange) {
+            } else if (control.createTextRange) {
                 var range = control.createTextRange();
                 range.move("character", pos);
                 range.select();
             }
-        }
-        catch (e) {} 
+        } catch (e) {} 
     };
 
     var switchToViewMode = function (that) {
@@ -123,8 +120,7 @@ var fluid_1_4 = fluid_1_4 || {};
             if (code !== $.ui.keyCode.ENTER) {
                 that.textEditButton.blur();
                 return true;
-            }
-            else {
+            } else {
                 finish(that);
                 that.textEditButton.focus(0);
             }
@@ -140,8 +136,7 @@ var fluid_1_4 = fluid_1_4 || {};
     var bindBlurHandler = function (that) {
         if (that.options.blurHandlerBinder) {
             that.options.blurHandlerBinder(that);
-        }
-        else {
+        } else {
             var blurHandler = function (evt) {
                 if (that.isEditing()) {
                     finish(that);
@@ -496,8 +491,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.editField = that.locate("edit");
         if (that.editContainer.length !== 1) {
             if (that.editContainer.length > 1) {
-                fluid.fail("InlineEdit did not find a unique container for selector " + that.options.selectors.editContainer +
-                   ": " + fluid.dumpEl(that.editContainer));
+                fluid.fail("InlineEdit did not find a unique container for selector " + that.options.selectors.editContainer + ": " + fluid.dumpEl(that.editContainer));
             }
         }
         
@@ -592,7 +586,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var opts = that.options;
         var textEditButton = that.locate("textEditButton");
         
-        if  (textEditButton.length === 0) {
+        if (textEditButton.length === 0) {
             var markup = $("<a href='#_' class='flc-inlineEdit-textEditButton'></a>");
             markup.addClass(opts.styles.textEditButton);
             markup.text(opts.tooltipText);            
@@ -760,7 +754,7 @@ var fluid_1_4 = fluid_1_4 || {};
         return { 
             value: function (newValue) {
                 return "input" === nodeName || "textarea" === nodeName ? 
-                        fluid.value($(element), newValue) : $(element).text(newValue);
+                    fluid.value($(element), newValue) : $(element).text(newValue);
             }
         };        
     };
@@ -791,7 +785,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.inlineEdit.standardEditView = function (editField) {
         var that = {
             refreshView: function (componentThat, source) {
-                if (!source || componentThat.editField && componentThat.editField.index(source) === -1) {
+                if (!source || (componentThat.editField && componentThat.editField.index(source) === -1)) {
                     componentThat.editView.value(componentThat.model.value);
                 }
             }

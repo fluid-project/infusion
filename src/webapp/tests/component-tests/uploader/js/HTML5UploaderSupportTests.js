@@ -168,6 +168,50 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return remote;
         };
         
+        var checkEventForFile = function (eventName, file, transcriptEntry) {
+            jqUnit.assertEquals("An " + eventName + " event should have been fired.", 
+                                eventName, transcriptEntry.name);
+            jqUnit.assertEquals("The event should have be passed the correct file", 
+                                file, transcriptEntry.args[0]);
+        };
+        
+        var checkEventOrderForFiles = function (eventOrder, files, transcript) {
+            for (var i = 0; i < files.length; i++) {
+                checkEventForFile(eventOrder[i], files[i], transcript[i]);
+            }
+        };
+        
+        var checkOnFileCompleteEvent = function (transcript) {
+            var lastTranscriptEntry = transcript[transcript.length - 1];
+            jqUnit.assertEquals("The last event should be onFileComplete", 
+                                "onFileComplete", lastTranscriptEntry.name);
+            jqUnit.assertEquals("One argument should have been passed to onFileComplete", 
+                                1, lastTranscriptEntry.args.length);        
+        };
+        
+        var checkAfterFileDialogEvent = function (expectedNumFiles, transcript) {
+            var lastTranscriptEntry = transcript[transcript.length - 1];
+            jqUnit.assertEquals("The last event should be afterFileDialog", 
+                                "afterFileDialog", lastTranscriptEntry.name);
+            jqUnit.assertEquals("One argument should have been passed to afterFileDialog", 
+                                1, lastTranscriptEntry.args.length);        
+            jqUnit.assertEquals(expectedNumFiles + " files should have been passed to afterFileDialog", 
+                                expectedNumFiles, lastTranscriptEntry.args[0]);
+        };
+        
+        var checkEventSequenceForAddedFiles = function (eventOrder, expectedNumFilesAdded, files, transcript) {
+            var expectedNumEvents = eventOrder.length + 1;
+            jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", 
+                                expectedNumEvents, transcript.length);
+            checkEventOrderForFiles(eventOrder, files, transcript);
+            checkAfterFileDialogEvent(expectedNumFilesAdded, transcript);
+        };
+        
+        var clearTranscriptAndAddFiles = function (tracker, files, localUploader) {
+            tracker.clearTranscript();
+            localUploader.addFiles(files);
+        };
+        
         /*********
          * Setup *
          *********/
@@ -329,50 +373,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * addFiles() Tests *
          ********************/
         
-        var checkEventForFile = function (eventName, file, transcriptEntry) {
-            jqUnit.assertEquals("An " + eventName + " event should have been fired.", 
-                                eventName, transcriptEntry.name);
-            jqUnit.assertEquals("The event should have be passed the correct file", 
-                                file, transcriptEntry.args[0]);
-        };
-        
-        var checkEventOrderForFiles = function (eventOrder, files, transcript) {
-            for (var i = 0; i < files.length; i++) {
-                checkEventForFile(eventOrder[i], files[i], transcript[i]);
-            }
-        };
-        
-        var checkOnFileCompleteEvent = function (transcript) {
-            var lastTranscriptEntry = transcript[transcript.length -1];
-            jqUnit.assertEquals("The last event should be onFileComplete", 
-                                "onFileComplete", lastTranscriptEntry.name);
-            jqUnit.assertEquals("One argument should have been passed to onFileComplete", 
-                                1, lastTranscriptEntry.args.length);        
-        };
-        
-        var checkAfterFileDialogEvent = function (expectedNumFiles, transcript) {
-            var lastTranscriptEntry = transcript[transcript.length -1];
-            jqUnit.assertEquals("The last event should be afterFileDialog", 
-                                "afterFileDialog", lastTranscriptEntry.name);
-            jqUnit.assertEquals("One argument should have been passed to afterFileDialog", 
-                                1, lastTranscriptEntry.args.length);        
-            jqUnit.assertEquals(expectedNumFiles + " files should have been passed to afterFileDialog", 
-                                expectedNumFiles, lastTranscriptEntry.args[0]);
-        };
-        
-        var checkEventSequenceForAddedFiles = function (eventOrder, expectedNumFilesAdded, files, transcript) {
-            var expectedNumEvents = eventOrder.length + 1;
-            jqUnit.assertEquals(expectedNumEvents + " events should have been fired.", 
-                                expectedNumEvents, transcript.length);
-            checkEventOrderForFiles(eventOrder, files, transcript);
-            checkAfterFileDialogEvent(expectedNumFilesAdded, transcript);
-        };
-        
-        var clearTranscriptAndAddFiles = function (tracker, files, localUploader) {
-            tracker.clearTranscript();
-            localUploader.addFiles(files);
-        };
-        
         html5UploaderTests.test("Uploader HTML5 addFiles: upload limit 3, 1MB file size limit", function () {
             var files = [
                 file1, 
@@ -421,71 +421,71 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         html5UploaderTests.test("Uploader HTML5 addFiles: upload limit 0 (infinity), 100MB file size limit", function () {
             var files = [
-                 file1, 
-                 file2, 
-                 file3
-             ];
+                    file1, 
+                    file2, 
+                    file3
+                ];
              
-             var tracker = trackLocalListeners(); 
-             var localUploader = getLocalUploader(0, 0, 100000, tracker);
-             localUploader.addFiles(files);
+            var tracker = trackLocalListeners(); 
+            var localUploader = getLocalUploader(0, 0, 100000, tracker);
+            localUploader.addFiles(files);
              
-             // Test #1: All three files should have been added to the queue.
-             var eventOrder = ["afterFileQueued", "afterFileQueued", "afterFileQueued"];
-             checkEventSequenceForAddedFiles(eventOrder, 3, files, tracker.transcript);
-             jqUnit.assertEquals("Sanity check: the queue should contain 3 files", 3, localUploader.queue.files.length);
+            // Test #1: All three files should have been added to the queue.
+            var eventOrder = ["afterFileQueued", "afterFileQueued", "afterFileQueued"];
+            checkEventSequenceForAddedFiles(eventOrder, 3, files, tracker.transcript);
+            jqUnit.assertEquals("Sanity check: the queue should contain 3 files", 3, localUploader.queue.files.length);
              
-             // Test #2: All three files should have been added to the queue.
-             clearTranscriptAndAddFiles(tracker, files, localUploader);
-             eventOrder = ["afterFileQueued", "afterFileQueued", "afterFileQueued"];
-             checkEventSequenceForAddedFiles(eventOrder, 3, files, tracker.transcript);
-             jqUnit.assertEquals("Sanity check: the queue should contain 6 files", 6, localUploader.queue.files.length);
+            // Test #2: All three files should have been added to the queue.
+            clearTranscriptAndAddFiles(tracker, files, localUploader);
+            eventOrder = ["afterFileQueued", "afterFileQueued", "afterFileQueued"];
+            checkEventSequenceForAddedFiles(eventOrder, 3, files, tracker.transcript);
+            jqUnit.assertEquals("Sanity check: the queue should contain 6 files", 6, localUploader.queue.files.length);
         });            
         
         html5UploaderTests.test("Uploader HTML5 addFiles: upload limit is null, 100MB file size limit", function () {
             var files = [
-                 file1, 
-                 file2, 
-                 file3
-             ];
+                    file1, 
+                    file2, 
+                    file3
+                ];
              
-             var tracker = trackLocalListeners();
-             var localUploader = getLocalUploader(null, 0, 100000, tracker);
-             localUploader.addFiles(files);
+            var tracker = trackLocalListeners();
+            var localUploader = getLocalUploader(null, 0, 100000, tracker);
+            localUploader.addFiles(files);
              
-             // Test #1: All three files should have been added to the queue.
-             var eventOrder = ["afterFileQueued", "afterFileQueued", "afterFileQueued"];
-             checkEventSequenceForAddedFiles(eventOrder, 3, files, tracker.transcript);
-             jqUnit.assertEquals("Sanity check: the queue should contain 3 files", 3, localUploader.queue.files.length);
-             
-             // Test #2: All three files should have been added to the queue.
-             clearTranscriptAndAddFiles(tracker, files, localUploader);
-             eventOrder = ["afterFileQueued", "afterFileQueued", "afterFileQueued"];
-             checkEventSequenceForAddedFiles(eventOrder, 3, files, tracker.transcript);
-             jqUnit.assertEquals("Sanity check: the queue should contain 4 files", 6, localUploader.queue.files.length);
+            // Test #1: All three files should have been added to the queue.
+            var eventOrder = ["afterFileQueued", "afterFileQueued", "afterFileQueued"];
+            checkEventSequenceForAddedFiles(eventOrder, 3, files, tracker.transcript);
+            jqUnit.assertEquals("Sanity check: the queue should contain 3 files", 3, localUploader.queue.files.length);
+            
+            // Test #2: All three files should have been added to the queue.
+            clearTranscriptAndAddFiles(tracker, files, localUploader);
+            eventOrder = ["afterFileQueued", "afterFileQueued", "afterFileQueued"];
+            checkEventSequenceForAddedFiles(eventOrder, 3, files, tracker.transcript);
+            jqUnit.assertEquals("Sanity check: the queue should contain 4 files", 6, localUploader.queue.files.length);
         });             
         
         html5UploaderTests.test("Uploader HTML5 addFiles: upload limit is undefined, 100MB file size limit", function () {
             var files = [
-                 file1, 
-                 file2, 
-                 file3
-             ];
+                    file1, 
+                    file2, 
+                    file3
+                ];
              
-             var tracker = trackLocalListeners();
-             var localUploader = getLocalUploader(undefined, 0, 100000, tracker);
-             localUploader.addFiles(files);
+            var tracker = trackLocalListeners();
+            var localUploader = getLocalUploader(undefined, 0, 100000, tracker);
+            localUploader.addFiles(files);
              
-             // Test #1: All three files should have been added to the queue.
-             var eventOrder = ["afterFileQueued", "afterFileQueued", "afterFileQueued"];
-             checkEventSequenceForAddedFiles(eventOrder, 3, files, tracker.transcript);
-             jqUnit.assertEquals("Sanity check: the queue should contain 3 files", 3, localUploader.queue.files.length);
+            // Test #1: All three files should have been added to the queue.
+            var eventOrder = ["afterFileQueued", "afterFileQueued", "afterFileQueued"];
+            checkEventSequenceForAddedFiles(eventOrder, 3, files, tracker.transcript);
+            jqUnit.assertEquals("Sanity check: the queue should contain 3 files", 3, localUploader.queue.files.length);
              
-             // Test #2: All three files should have been added to the queue.
-             clearTranscriptAndAddFiles(tracker, files, localUploader);
-             eventOrder = ["afterFileQueued", "afterFileQueued", "afterFileQueued"];
-             checkEventSequenceForAddedFiles(eventOrder, 3, files, tracker.transcript);
-             jqUnit.assertEquals("Sanity check: the queue should contain 6 files", 6, localUploader.queue.files.length);
+            // Test #2: All three files should have been added to the queue.
+            clearTranscriptAndAddFiles(tracker, files, localUploader);
+            eventOrder = ["afterFileQueued", "afterFileQueued", "afterFileQueued"];
+            checkEventSequenceForAddedFiles(eventOrder, 3, files, tracker.transcript);
+            jqUnit.assertEquals("Sanity check: the queue should contain 6 files", 6, localUploader.queue.files.length);
         });                 
         
         html5UploaderTests.test("formDataSender tests", function () {
