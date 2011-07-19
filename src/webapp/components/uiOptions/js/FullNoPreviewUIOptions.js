@@ -18,21 +18,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
-    /**********************
+    /******************************
      * Full No Preview UI Options *
-     *********************/
+     ******************************/
      
+    fluid.demands("fluid.uiOptions.templateLoader", "fluid.fullNoPreviewUIOptions", {
+        options: {
+            templates: {
+                uiOptions: "%prefixFullNoPreviewUIOptions.html"
+            }
+        }
+    });
+    
+    fluid.demands("fluid.uiOptions.templatePath", "fluid.fullNoPreviewUIOptions", {
+        options: {
+            value: "{fullNoPreviewUIOptions}.options.prefix"
+        }
+    });
+    
     fluid.defaults("fluid.fullNoPreviewUIOptions", {
         gradeNames: ["fluid.viewComponent", "autoInit"],            
         components: {
-            uiOptions: {
-                type: "fluid.uiOptions",
+            uiOptionsLoader: {
+                type: "fluid.uiOptions.loader",
                 container: "{fullNoPreviewUIOptions}.container"
+            },
+            templateLoader: {
+                priority: "first",
+                type: "fluid.uiOptions.templateLoader"
             }                     
         }
     });       
     
-    // Options for UIOptions in fat panel mode
+    // Options for UIOptions in full no preview mode
     fluid.demands("fluid.uiOptions", ["fluid.fullNoPreviewUIOptions"], {
         options: {
             components: {
