@@ -470,12 +470,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             generateTreeTests(skippedHeadingsForGradualIndentationModel.model, skippedHeadingsForGradualIndentationTree);
         });
         
-        tocLevelsTests.test("modelToLinkObject: test conversion of model to link object", function () {
-            var model = {level: 1, text: 'h1', url: '#h1'};
-            var linkObject = fluid.tableOfContents.levels.modelToLinkObject(model);
-            jqUnit.assertEquals("Link ID sets properly", "link" + model.level, linkObject.ID);
-            jqUnit.assertEquals("Text sets properly", model.text, linkObject.linktext);
-            jqUnit.assertEquals("URL sets properly", model.url, linkObject.target);
+        tocLevelsTests.test("objModel: test construction of the levels, items object used by generateTree", function () {
+            var levelObj = fluid.tableOfContents.levels.objModel('level', 1);
+            jqUnit.assertEquals("The last character of the ID should be a ':'", ":", levelObj.ID.substr(-1));
+            jqUnit.assertEquals("Should create an empty children array", 0, levelObj.children.length);
         });
         
         tocLevelsTests.test("handleEmptyItemObj: Add decorator to item object", function () {
