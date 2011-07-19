@@ -86,7 +86,7 @@
         <property name="buildDir" value="${base-dir}/build-scripts" />
         <property name="buildJSDir" value="${buildDir}/uiOptions/js" />
         <property name="jscssp" value="${buildDir}/lib/jscssp/js/cssParser.js" />
-        <property name="jsFiles" value="${jscssp}, ${buildJSDir}/CSSGenerator.js, ${buildJSDir}/RhinoStylesheetHandler.js" />
+        <property name="jsFiles" value="${jscssp}, ${buildJSDir}/CSSGenerator.js, ${buildJSDir}/RhinoStylesheetHandler.js, ${buildJSDir}/StylesheetImportant.js" />
         <script language="javascript" src="${base-dir}/build-scripts/uiOptions/js/bootStrapper.js" />
     </target>
 

@@ -23,6 +23,9 @@ importClass(java.io.File);
 importClass(java.lang.StringBuilder);
 importClass(java.lang.System);
 
+global = this.window || global;
+global.fluid = global.fluid || {};
+var fluid = global.fluid;
 
 (function () {
 

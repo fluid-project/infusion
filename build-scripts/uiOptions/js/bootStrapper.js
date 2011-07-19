@@ -23,8 +23,6 @@ importClass(java.io.File);
 importClass(java.lang.StringBuilder);
 importClass(java.lang.System);
 
-var fluid = {};
-
 (function () {
     
     var log = function (str) {
