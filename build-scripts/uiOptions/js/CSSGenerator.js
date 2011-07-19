@@ -17,7 +17,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 global = this.window || global;
 global.fluid = global.fluid || {};
+var fluid = global.fluid;
 fluid.build = fluid.build || {};
+var jscssp = global.jscssp;
 
 (function () {
         
@@ -34,11 +36,11 @@ fluid.build = fluid.build || {};
         // Concatenate an empty string with the file contents to ensure 
         // that we are passing in a Javascript string rather than a Java string
         that.cssText = "" + that.options.sheetStore.load();
-        that.parser = new CSSParser();
+        that.parser = new jscssp.CSSParser();
         that.stylesheet = that.parser.parse(that.cssText, false, true);
     };
-    
-    fluid.build.cssGenerator = function (options) {
+        
+    fluid.build.cssGenerator = function (options) {        
         var that = {
             options: options
         };
@@ -78,12 +80,10 @@ fluid.build = fluid.build || {};
         };
         
         that.generate = function () {
-            java.lang.System.out.println("***************stylesheet"+that.stylesheet);      
-            java.lang.System.out.println("***************CSSText"+that.stylesheet.cssText());                  
             return that.stylesheet.cssText();
         };
 
-        setupCSSGenerator(that);
+        setupCSSGenerator(that);        
         return that;
     };
     
