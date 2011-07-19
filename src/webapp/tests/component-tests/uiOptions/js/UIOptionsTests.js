@@ -24,39 +24,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var templatePrefix = "../../../../components/uiOptions/html/";
         
         fluid.defaults("fluid.uiOptionsTests", {
-	        gradeNames: ["fluid.viewComponent", "autoInit"],            
-	        components: {
-	            uiOptionsLoader: {
-	                type: "fluid.uiOptions.loader",
-	                container: "{uiOptionsTests}.container",
-	                options: {
-		                listeners: {
-		                    onReady: "fluid.uiOptionsTests.testFn"
-		                }
+            gradeNames: ["fluid.viewComponent", "autoInit"],            
+            components: {
+                uiOptionsLoader: {
+                    type: "fluid.uiOptions.loader",
+                    container: "{uiOptionsTests}.container",
+                    options: {
+                        listeners: {
+                            onReady: "fluid.uiOptionsTests.testFn"
+                        }
                     }
-	            },
-	            templateLoader: {
-	                priority: "first",
-	                type: "fluid.uiOptions.templateLoader"
-	            }                  
-	        },
-	        prefix: templatePrefix
+                },
+                templateLoader: {
+                    priority: "first",
+                    type: "fluid.uiOptions.templateLoader"
+                }                  
+            },
+            prefix: templatePrefix
         });
         
         // Supply the templates
-	    fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptionsTests", {
-	        options: {
-	            value: "{uiOptionsTests}.options.prefix"
-	        }
-	    });
-	    
-	    fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptionsTests", {
-	        options: {
-	            templates: {
+        fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptionsTests", {
+            options: {
+                value: "{uiOptionsTests}.options.prefix"
+            }
+        });
+        
+        fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptionsTests", {
+            options: {
+                templates: {
                     uiOptions: "%prefixFullPreviewUIOptions.html"
-	            }
-	        }
-	    });
+                }
+            }
+        });
     
         // Options for UIOptions
         var saveCalled = false;
@@ -113,29 +113,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var textControlsFullTemplatePath = "../../../../components/uiOptions/html/UIOptionsTemplate-text.html";
             var linksControlsDefaultTemplateName = "UIOptionsTemplate-links.html";
 
-	        // Supply the templates
+            // Supply the templates
             fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptionsTestTemplateLoader", {
                 options: {
-		            value: testTemplatePrefix
+                    value: testTemplatePrefix
                 }
             });
 
             fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptionsTestTemplateLoader", {
                 options: {
                     templates: {
-	                    uiOptions: "%prefix" + uiOptionsTemplateName,
-	                    textControls: textControlsFullTemplatePath
-	                }
-	            }
+                        uiOptions: "%prefix" + uiOptionsTemplateName,
+                        textControls: textControlsFullTemplatePath
+                    }
+                }
             });
 
             fluid.defaults("fluid.uiOptionsTestTemplateLoader", {
-	            gradeNames: ["fluid.littleComponent", "autoInit"],
-	            components: {
-	                templateLoader: {
-	                    type: "fluid.uiOptions.templateLoader"
-	                }
-	            }
+                gradeNames: ["fluid.littleComponent", "autoInit"],
+                components: {
+                    templateLoader: {
+                        type: "fluid.uiOptions.templateLoader"
+                    }
+                }
             });
 
 	        var loader = fluid.uiOptionsTestTemplateLoader(null);
