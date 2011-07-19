@@ -33,6 +33,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     // Locating all of the files at "cssBasePath" and attempting to inject !importants
     // There should be a check to make sure that only css files are run.
+    /*
     var directory = new File(cssBasePath);
     var files = directory.list();
     
@@ -52,5 +53,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          }
      } else {
          java.lang.System.out.println("Directory Error: There is no directory at path '" + cssBasePath + "'");
+     }
+     */
+     
+     var files = readJSON(importantInjectionModule).files;
+     
+     for (var i = 0; i < files.length; i++) {
+         var fileName = files[i];
+         java.lang.System.out.println("\n********\n" + files[i] + "\n********\n");
+         
+         var readPath = cssBasePath + files[i];
+         var writePath = readPath.replace(".css", "-uio.css"); // should re-evaluate this replacement
+         injectImportant(readPath, writePath);
      }
 })();
