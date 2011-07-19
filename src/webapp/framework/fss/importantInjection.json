@@ -1,0 +1,17 @@
+{
+    "fss": {
+        "name": "Fluid Skinning System",
+        "files": [
+            "fss-theme-blackYellow.css",
+            "fss-theme-yellowBlack.css",
+            "fss-theme-coal.css",
+            "fss-theme-hc.css",
+            "fss-theme-hci.css",
+            "fss-theme-mist.css",
+            "fss-theme-rust.css",
+            "fss-theme-slate.css",
+            "fss-layout.css",
+            "fss-text.css"
+        ]
+    }
+}
