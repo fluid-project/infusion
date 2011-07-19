@@ -1,6 +1,4 @@
 /*
-Copyright 2009 University of Cambridge
-Copyright 2009 University of Toronto
 Copyright 2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -157,7 +155,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.tableOfContents.modelBuilder.gradualModelLevelFn = function (modelLevel, subHeadings) {
         // Clone the subHeadings because we don't want to modify the reference of the subHeadings.  
         // the reference will affect the equality condition in generateTree(), resulting an unwanted tree.
-        subHeadingsClone = fluid.copy(subHeadings);
+        var subHeadingsClone = fluid.copy(subHeadings);
         subHeadingsClone[0].level--;
         return subHeadingsClone;
     };
@@ -238,11 +236,11 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param   string      Accepted values are: level, items
      * @param   int         The current level which is used here as the ID.
      */
-    fluid.tableOfContents.levels.objModel = function(type, ID) {
-        objModel = {
+    fluid.tableOfContents.levels.objModel = function (type, ID) {
+        var objModel = {
             ID: type + ID + ":",
             children: []
-        }
+        };
         return objModel;
     };
     
@@ -342,9 +340,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 forceCache: true,
                 url: "../html/TableOfContents.html"
             }
-        }
-
-        , 
+        }, 
         rendererFnOptions: {
             noexpand: true
         },

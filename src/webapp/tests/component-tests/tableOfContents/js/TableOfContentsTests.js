@@ -1,6 +1,5 @@
 /*
-Copyright 2009-2010 University of Toronto
-Copyright 2010 OCAD University
+Copyright 2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -11,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, jQuery, start*/
+/*global fluid, jqUnit, deepEqual, expect, jQuery, start*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -139,8 +138,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     ID: "link1",
                     target: "#h1",
                     linktext: "h1"
-                },
-                {
+                }, {
                     ID: "level2:",
                     children: [{
                         ID: "items2:",
@@ -148,8 +146,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             type: "addClass",
                             classes: "fl-tableOfContents-hide-bullet"
                         }],
-                        children: [
-                        {
+                        children: [{
                             ID: "level3:",
                             children: [{
                                 ID: "items3:",
@@ -157,18 +154,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     type: "addClass",
                                     classes: "fl-tableOfContents-hide-bullet"
                                 }],
-                                children: [
-                                {
+                                children: [{
                                     ID: "level4:",
-                                    children: [
-                                    {
+                                    children: [{
                                         ID: "items4:",
                                         decorators: [{
                                             type: "addClass",
                                             classes: "fl-tableOfContents-hide-bullet"
                                         }],
-                                        children: [
-                                        {
+                                        children: [{
                                             ID: "level5:",
                                             children: [{
                                                 ID: "items5:",
@@ -176,8 +170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                                     type: "addClass",
                                                     classes: "fl-tableOfContents-hide-bullet"
                                                 }],
-                                                children: [
-                                                {
+                                                children: [{
                                                     ID: "level6:",
                                                     children: [{
                                                         ID: "items6:",
@@ -209,8 +202,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     ID: "link1",
                     target: "#h1",
                     linktext: "h1"
-                },
-                {
+                }, {
                     ID: "level2:",
                     children: [{
                         ID: "items2:",
@@ -224,81 +216,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         }]
     };
-    
-    /**
-     * The entire tree of a level1-6 model
-     * This is just a reference for the other 2 test trees, remove it if not needed.
-     *
-    var fullTestTree = {
-        children: [{   
-            ID: "level1", 
-            children: [{
-                ID: "items1",
-                children: [{
-                    ID: "link1",
-                    target: "#h1",
-                    linktext: "h1"
-                },
-                {
-                    ID: "level2",
-                    children: [{
-                        ID: "items2",
-                        children: [{
-                            ID: "link2",
-                            target: "#h2",
-                            linktext: "h2"
-                        },
-                        {
-                            ID: "level3",
-                            children: [{
-                                ID: "items3",
-                                children: [{
-                                    ID: "link3",
-                                    target: "#h3",
-                                    linktext: "h3"
-                                },
-                                {
-                                    ID: "level4",
-                                    children: [
-                                    {
-                                        ID: "items4",
-                                        children: [{
-                                            ID: "link4",
-                                            target: "#h4",
-                                            linktext: "h4"
-                                        },
-                                        {
-                                            ID: "level5",
-                                            children: [{
-                                                ID: "items5",
-                                                children: [{
-                                                    ID: "link5",
-                                                    target: "#h5",
-                                                    linktext: "h5"
-                                                },
-                                                {
-                                                    ID: "level6",
-                                                    children: [{
-                                                        ID: "items6",
-                                                        children: [{
-                                                            ID: "link6",
-                                                            target: "#h6"
-                                                            linktext: "h6"
-                                                        }]
-                                                    }]
-                                                }]
-                                            ]}
-                                        }]
-                                    ]}
-                                }]
-                            }]
-                        }]
-                    }]
-                }]
-            }]
-        }]
-    };
-    */
     
     var createElm = function (tagName) {
         return fluid.unwrap($("<" + tagName + "/>", {text: tagName}));
