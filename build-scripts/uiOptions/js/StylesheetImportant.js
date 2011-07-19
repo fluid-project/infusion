@@ -36,39 +36,14 @@ var fluid = global.fluid;
         tg.options.sheetStore.save(modifiedStylesheet, writePath);
     };
     
-    // Locating all of the files at "cssBasePath" and attempting to inject !importants
-    // There should be a check to make sure that only css files are run.
-    /*
-    var directory = new File(cssBasePath);
-    var files = directory.list();
-    
-    log("TEST ********** TEST");
-    
-     if (files) {
-         for (var i = 0; i < files.length; i++) {
-             var fileName = files[i];
-             java.lang.System.out.println("\n********\n" + files[i] + "\n********\n");
-             
-             // harcoding the exclusion of "fss-JSR168Bridge.css" and "fss-transitions.css" which break the !important injection
-             if (fileName.indexOf("fss-JSR168Bridge.css") < 0 && fileName.indexOf("fss-transitions.css") < 0) {
-                 var readPath = cssBasePath + files[i];
-                 var writePath = readPath.replace(".css", "-uio.css");
-                 injectImportant(readPath, writePath);
-             }
-         }
-     } else {
-         java.lang.System.out.println("Directory Error: There is no directory at path '" + cssBasePath + "'");
-     }
-     */
+    // loop through files to run !important injection on
+    var files = readJSON(importantInjectionModule).files;
      
-     var files = readJSON(importantInjectionModule).files;
-     
-     for (var i = 0; i < files.length; i++) {
-         var fileName = files[i];
-         java.lang.System.out.println("\n********\n" + files[i] + "\n********\n");
-         
-         var readPath = cssBasePath + files[i];
-         var writePath = readPath.replace(".css", "-uio.css"); // should re-evaluate this replacement
-         injectImportant(readPath, writePath);
+    for (var i = 0; i < files.length; i++) {
+        var filePath = files[i];
+        log("\n********\n" + files[i] + "\n********\n");
+
+        var writePath = filePath.replace(".css", "-uio.css"); // should re-evaluate this replacement
+        injectImportant(filePath, writePath);
      }
 })();

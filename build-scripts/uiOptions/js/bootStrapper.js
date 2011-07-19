@@ -45,15 +45,15 @@ importClass(java.lang.System);
         var reader = new BufferedReader(new FileReader(new File(path)));
         var line = reader.readLine();
         var lineSeparator = System.getProperty("line.separator");
-        var readText = new StringBuilder();
+        var readText = "";
         
         while (line !== null) {
-            readText.append(line);
-            readText.append(lineSeparator);
+            readText += line;
+            readText += lineSeparator;
             line = reader.readLine();
         }
         
-        return readText.toString();
+        return readText;
     };
     
     /**
