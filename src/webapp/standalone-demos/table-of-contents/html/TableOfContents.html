@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-            <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <title>Table of Contents Template</title>
 
         <link type="text/css" href="../../../components/tableOfContents/css/TableOfContents.css" rel="stylesheet" />
@@ -18,6 +18,7 @@
         <script type="text/javascript" src="../../../framework/renderer/js/RendererUtilities.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
+        <script type="text/javascript" src="../js/table-of-contents-example.js"></script>
 
     </head>
     <body>
@@ -86,19 +87,7 @@
         </p>
         
         <script type="text/javascript">
-            fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContentsDemo");   
-            fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "fluid.tableOfContentsDemo"], {
-                options: {
-                    resources: {
-                        template: {
-                            forceCache: true,
-                            url: "../../../components/tableOfContents/html/TableOfContents.html"
-                        }
-                    }
-                }
-            });
-                       
-            fluid.tableOfContents("body");
+            demo.initTableOfContent();
         </script>
     </body>
 </html>
