@@ -23,9 +23,12 @@ importClass(java.io.File);
 importClass(java.lang.StringBuilder);
 importClass(java.lang.System);
 
+var fluid = {};
+fluid.build = {};
+
 (function () {
     
-    var log = function (str) {
+    fluid.build.log = function (str) {
         java.lang.System.out.println(str);
     };
     
@@ -34,20 +37,19 @@ importClass(java.lang.System);
      *
      * @param {String} path
      */
-    var read = function (path) {
-        
+    fluid.build.readFile = function (path) {
         var reader = new BufferedReader(new FileReader(new File(path)));
         var line = reader.readLine();
         var lineSeparator = System.getProperty("line.separator");
-        var readText = new StringBuilder();
+        var readText = "";
         
         while (line !== null) {
-            readText.append(line);
-            readText.append(lineSeparator);
+            readText += line;
+            readText += lineSeparator;
             line = reader.readLine();
         }
         
-        return readText.toString();
+        return readText;
     };
     
     /**
@@ -56,7 +58,7 @@ importClass(java.lang.System);
      * @param {String} path
      * @param {String} text
      */
-    var write = function (path, writeText) {
+    fluid.build.writeFile = function (path, writeText) {
         var writer = new BufferedWriter(new FileWriter(path));
         writer.write(writeText);
         writer.close();
@@ -67,8 +69,8 @@ importClass(java.lang.System);
      *
      * @param {String} path
      */
-    var readJSON = function (path) {
-        return JSON.parse(read(path));
+    fluid.build.readJSONFile = function (path) {
+        return JSON.parse(fluid.build.readFile(path));
     };
     
     /**
@@ -76,9 +78,8 @@ importClass(java.lang.System);
      *
      * @param {String} path
      */
-    var loadJS = function (path) {
-        var fileText = read(path);
-        log("Text to be evaled" + fileText);
+    fluid.build.evalJSFile = function (path) {
+        var fileText = fluid.build.readFile(path);
         eval.call(null, String(fileText));
     };
     
@@ -87,14 +88,14 @@ importClass(java.lang.System);
      *
      * @param {String} paths, a ", " separated string
      */
-    var loadJSFiles = function (paths) {
+    fluid.build.evalJSFiles = function (paths) {
         var filePaths = paths.split(", ");
         
         for (var i = 0; i < filePaths.length; i++) {
-            loadJS(filePaths[i]);
+            fluid.build.evalJSFile(filePaths[i]);
         }
     };
     
-    loadJSFiles(jsFiles);
+    fluid.build.evalJSFiles(jsFiles);
     
 })();

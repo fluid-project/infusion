@@ -45,25 +45,21 @@ var fluid = fluid || {};
         var modifiedStylesheet = generator.generate();
         sheetStore.save(modifiedStylesheet, writePath);
     };
+
+    // loop through files to run !important injection on
+    var files = fluid.build.readJSONFile(importantInjectionModule).files;
     
-    // Locating all of the files at "cssBasePath" and attempting to inject !importants
-    // There should be a check to make sure that only css files are run.
-    var directory = new File(cssBasePath);
-    var files = directory.list();
+    var generateWritePath = function (originalPath) {
+        var startIdx = Math.max(originalPath.lastIndexOf("/"), 0);
+        var fileName = originalPath.substring(startIdx);
         
-     if (files) {
-         for (var i = 0; i < files.length; i++) {
-             var fileName = files[i];
-             java.lang.System.out.println("\n********\n" + files[i] + "\n********\n");
-             
-             // harcoding the exclusion of "fss-JSR168Bridge.css" and "fss-transitions.css" which break the !important injection
-             if (fileName.indexOf("fss-JSR168Bridge.css") < 0 && fileName.indexOf("fss-transitions.css") < 0) {
-                 var readPath = cssBasePath + files[i];
-                 var writePath = readPath.replace(".css", "-uio.css");
-                 injectImportant(readPath, writePath);
-             }
-         }
-     } else {
-         java.lang.System.out.println("Directory Error: There is no directory at path '" + cssBasePath + "'");
+        return fssImportant + fileName.replace(".css", "-uio.css");
+    };
+     
+    for (var i = 0; i < files.length; i++) {
+        var filePath = files[i];
+        fluid.build.log("\n********\n" + files[i] + "\n********\n");
+
+        injectImportant(filePath, generateWritePath(filePath));
      }
 })();
