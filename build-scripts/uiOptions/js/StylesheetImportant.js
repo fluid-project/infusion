@@ -38,12 +38,18 @@ var fluid = global.fluid;
     
     // loop through files to run !important injection on
     var files = readJSON(importantInjectionModule).files;
+    
+    var generateWritePath = function (originalPath) {
+        var startIdx = Math.max(originalPath.lastIndexOf("/"), 0);
+        var fileName = originalPath.substring(startIdx);
+        
+        return fssImportant + fileName.replace(".css", "-uio.css");
+    };
      
     for (var i = 0; i < files.length; i++) {
         var filePath = files[i];
         log("\n********\n" + files[i] + "\n********\n");
 
-        var writePath = filePath.replace(".css", "-uio.css"); // should re-evaluate this replacement
-        injectImportant(filePath, writePath);
+        injectImportant(filePath, generateWritePath(filePath));
      }
 })();

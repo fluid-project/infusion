@@ -7,8 +7,6 @@
         "../src/webapp/framework/fss/css/fss-theme-hci.css",
         "../src/webapp/framework/fss/css/fss-theme-mist.css",
         "../src/webapp/framework/fss/css/fss-theme-rust.css",
-        "../src/webapp/framework/fss/css/fss-theme-slate.css",
-        "../src/webapp/framework/fss/css/fss-layout.css",
-        "../src/webapp/framework/fss/css/fss-text.css"
+        "../src/webapp/framework/fss/css/fss-theme-slate.css"
     ]
 }
