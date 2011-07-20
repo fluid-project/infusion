@@ -119,14 +119,7 @@ fluid.build = fluid.build || {};
         if (!rule.mSelectorText) {
             return;
         }
-        
-        var match = options.match,
-            replace = options.replace,
-            selector = rule.mSelectorText;
-        
-        if (selector.indexOf(match)) {
-            rule.mSelectorText = selector.replace(match, replace);
-        }
+        rule.mSelectorText = rule.mSelectorText.replace(options.match, options.replace);
     };
     
 })();
