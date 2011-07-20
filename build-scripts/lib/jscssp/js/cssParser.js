@@ -46,9 +46,7 @@
 
 /* FROM http://peter.sh/data/vendor-prefixed-css.php?js=1 */
 
-global = this.window || global;
-global.jscssp = global.jscssp || {};
-var jscssp = global.jscssp;
+var jscssp = {};
 
 (function() {
     var kENGINES = [

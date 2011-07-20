@@ -15,34 +15,42 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
-global = this.window || global;
-global.fluid = global.fluid || {};
-var fluid = global.fluid;
+var fluid = fluid || {};
 
 (function () {
     var injectImportant = function (readPath, writePath) {
-        var tg = fluid.build.cssGenerator({
-            sheetStore: fluid.build.cssGenerator.rhinoSheetStore(readPath)
+        var sheetStore = fluid.build.cssGenerator.rhinoSheetStore(readPath);
+        var generator = fluid.build.cssGenerator({
+            sheetStore: sheetStore
         });
         
-        var priorities = {
-            "fluid-cssGenerator-allRules": "background-color"
-        };
-        tg.prioritize(priorities);
+        generator.processRules([
+            {
+                type: fluid.build.cssGenerator.prioritize,
+                options: {
+                    "fluid-cssGenerator-allRules": "background-color"
+                }
+            },
+            {
+                type: fluid.build.cssGenerator.rewriteSelector,
+                options: {
+                    match: "fl-theme-",
+                    replace: "fl-theme-uio-"
+                }
+            }
+        ]);
         
         // Now that the stylesheet has been prioritized, generate
         // the new stylesheet and write the contents out to a file
-        var modifiedStylesheet = tg.generate();
-        tg.options.sheetStore.save(modifiedStylesheet, writePath);
+        var modifiedStylesheet = generator.generate();
+        sheetStore.save(modifiedStylesheet, writePath);
     };
     
     // Locating all of the files at "cssBasePath" and attempting to inject !importants
     // There should be a check to make sure that only css files are run.
     var directory = new File(cssBasePath);
     var files = directory.list();
-    
-    log("TEST ********** TEST");
-    
+        
      if (files) {
          for (var i = 0; i < files.length; i++) {
              var fileName = files[i];

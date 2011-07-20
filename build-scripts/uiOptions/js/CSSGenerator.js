@@ -15,11 +15,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
-global = this.window || global;
-global.fluid = global.fluid || {};
-var fluid = global.fluid;
+var fluid = fluid || {};
 fluid.build = fluid.build || {};
-var jscssp = global.jscssp;
 
 (function () {
         
@@ -45,38 +42,37 @@ var jscssp = global.jscssp;
             options: options
         };
         
-        that.prioritize = function (prioritySpec) {
-            fluid.build.cssGenerator.expandRuleSpec(prioritySpec);
-
-            // Bail right away if we have no rules to process.
-            if (!that.stylesheet.cssRules || that.stylesheet.cssRules.length < 1) {
+        that.processRules = function (ops) {
+            if (!ops) {
+                return;
+            }
+            
+            if (typeof (ops.length) !== "number") {
+                ops = [ops];
+            }
+            
+            // Bail right away if we have no rules or ops to process.
+            if (!that.stylesheet.cssRules || that.stylesheet.cssRules.length < 1 || ops.length < 1) {
                 return;
             }
 
             for (var i = 0; i < that.stylesheet.cssRules.length; i++) {
                 var rule = that.stylesheet.cssRules[i];
-            
-                // If this rule doesn't have any declarations or priorities, keep on trucking.
-                if (!rule.declarations || rule.declarations.length < 1) {
-                    continue;
-                }
                 
-                var priorities = prioritiesForRule(prioritySpec, rule);
-                if (!priorities || priorities.length < 1) {
-                    continue;
-                }
-                
-                // Whip through each declaration's properties and see if they match one of our priorities.
-                for (var j = 0; j < rule.declarations.length; j++) {
-                    var declaration = rule.declarations[j];
-                    for (var k = 0; k < priorities.length; k++) {
-                        var property = priorities[k];
-                        if (declaration.property === property) {
-                            declaration.priority = true; // Prioritize this declaration as !important.
-                        }
-                    }
+                for (var j = 0; j < ops.length; j++) {
+                    var opSpec = ops[j],
+                        fn = opSpec.type,
+                        options = opSpec.options;
+                    fn.apply(null, [rule, options]);
                 }
             }
+        };
+        
+        that.prioritize = function (prioritySpec) {
+            that.processRules({
+                type: fluid.build.cssGenerator.prioritize,
+                options: prioritySpec
+            });
         };
         
         that.generate = function () {
@@ -93,4 +89,44 @@ var jscssp = global.jscssp;
             spec[selector] = typeof(priorities) === "string" ? [priorities] : priorities;
         }
     };
+    
+    fluid.build.cssGenerator.prioritize = function (rule, prioritySpec) {
+        fluid.build.cssGenerator.expandRuleSpec(prioritySpec);
+        
+        // If this rule doesn't have any declarations or priorities, keep on trucking.
+        if (!rule.declarations || rule.declarations.length < 1) {
+            return;
+        }
+        
+        var priorities = prioritiesForRule(prioritySpec, rule);
+        if (!priorities || priorities.length < 1) {
+            return;
+        }
+        
+        // Whip through each declaration's properties and see if they match one of our priorities.
+        for (var i = 0; i < rule.declarations.length; i++) {
+            var declaration = rule.declarations[i];
+            for (var j = 0; j < priorities.length; j++) {
+                var property = priorities[j];
+                if (declaration.property === property) {
+                    declaration.priority = true; // Prioritize this declaration as !important.
+                }
+            }
+        }
+    };
+    
+    fluid.build.cssGenerator.rewriteSelector = function (rule, options) {
+        if (!rule.mSelectorText) {
+            return;
+        }
+        
+        var match = options.match,
+            replace = options.replace,
+            selector = rule.mSelectorText;
+        
+        if (selector.indexOf(match)) {
+            rule.mSelectorText = selector.replace(match, replace);
+        }
+    };
+    
 })();

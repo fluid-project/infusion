@@ -20,12 +20,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var tests = new jqUnit.TestCase("CSSGenerator Tests");
         
         var testStylesheetForPrioritySpec = function (prioritySpec, expected, msg) {
-            var tg = fluid.build.cssGenerator({
+            testStylesheetForProcessSpec({
+                type: fluid.build.cssGenerator.prioritize,
+                options: prioritySpec
+            }, expected, msg);
+        };
+        
+        var testStylesheetForProcessSpec = function (processSpec, expected, msg) {
+            var generator = fluid.build.cssGenerator({
                 sheetStore: fluid.build.cssGenerator.browserSheetStore($("#testTheme"))
             });
-            tg.prioritize(prioritySpec);
             
-            var actual = tg.generate();
+            generator.processRules(processSpec);
+
+            var actual = generator.generate();
             jqUnit.assertEquals(msg, expected, actual);
         };
         
@@ -35,15 +43,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             
             var expected = "/* Comment */" + 
-            "\n" +
-            "table {" + "\n" +
-            "  background-color: #dddddd !important;" + "\n" +
-            "  font-size: 16px;" + "\n" +
-            "}" + "\n" +
-            ".cat {" + "\n" +
-            "  background-image: url(\"cats.png\");" + "\n" +
-            "  font-size: 24px;" + "\n" +
-            "}" + "\n";
+                "\n" +
+                "table {" + "\n" +
+                "  background-color: #dddddd !important;" + "\n" +
+                "  font-size: 16px;" + "\n" +
+                "}" + "\n" +
+                ".cat {" + "\n" +
+                "  background-image: url(\"cats.png\");" + "\n" +
+                "  font-size: 24px;" + "\n" +
+                "}" + "\n";
             
             testStylesheetForPrioritySpec(priorities, expected, 
                 "The generated style sheet should have !important added to all background colors.");
@@ -56,15 +64,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
 
             var expected = "/* Comment */" + 
-            "\n" +
-            "table {" + "\n" +
-            "  background-color: #dddddd !important;" + "\n" +
-            "  font-size: 16px !important;" + "\n" +
-            "}" + "\n" +
-            ".cat {" + "\n" +
-            "  background-image: url(\"cats.png\");" + "\n" +
-            "  font-size: 24px !important;" + "\n" +
-            "}" + "\n";
+                "\n" +
+                "table {" + "\n" +
+                "  background-color: #dddddd !important;" + "\n" +
+                "  font-size: 16px !important;" + "\n" +
+                "}" + "\n" +
+                ".cat {" + "\n" +
+                "  background-image: url(\"cats.png\");" + "\n" +
+                "  font-size: 24px !important;" + "\n" +
+                "}" + "\n";
             
             testStylesheetForPrioritySpec(priorities, expected, 
                 "The generated style sheet should have !important added to all background colors and font sizes.");
@@ -76,19 +84,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             
             var expected = "/* Comment */" + 
-            "\n" +
-            "table {" + "\n" +
-            "  background-color: #dddddd;" + "\n" +
-            "  font-size: 16px;" + "\n" +
-            "}" + "\n" +
-            ".cat {" + "\n" +
-            "  background-image: url(\"cats.png\");" + "\n" +
-            "  font-size: 24px !important;" + "\n" +
-            "}" + "\n";
+                "\n" +
+                "table {" + "\n" +
+                "  background-color: #dddddd;" + "\n" +
+                "  font-size: 16px;" + "\n" +
+                "}" + "\n" +
+                ".cat {" + "\n" +
+                "  background-image: url(\"cats.png\");" + "\n" +
+                "  font-size: 24px !important;" + "\n" +
+                "}" + "\n";
             
             testStylesheetForPrioritySpec(priorities, expected, 
                 "The generated style sheet should have !important added only to the .cat rule.");
         });
+        
+        tests.test("Namespace all selectors", function () {
+            var classRewriteOptions = {
+                match: "cat",
+                replace: "fl-theme-cat"
+            };
+            
+            var expected = "/* Comment */" + 
+                "\n" +
+                "table {" + "\n" +
+                "  background-color: #dddddd;" + "\n" +
+                "  font-size: 16px;" + "\n" +
+                "}" + "\n" +
+                ".fl-theme-cat {" + "\n" +
+                "  background-image: url(\"cats.png\");" + "\n" +
+                "  font-size: 24px;" + "\n" +
+                "}" + "\n";
+            
+            testStylesheetForProcessSpec({
+                type: fluid.build.cssGenerator.rewriteSelector,
+                options: classRewriteOptions
+            }, expected, "The .cat selector should be written as '.fl-theme-cat'.");
+        });
+        
     });
     
 })(jQuery);

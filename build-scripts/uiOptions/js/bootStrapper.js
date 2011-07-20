@@ -79,7 +79,7 @@ importClass(java.lang.System);
     var loadJS = function (path) {
         var fileText = read(path);
         log("Text to be evaled" + fileText);
-        eval(String(fileText));
+        eval.call(null, String(fileText));
     };
     
     /**

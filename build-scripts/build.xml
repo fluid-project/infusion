@@ -87,7 +87,11 @@
         <property name="buildJSDir" value="${buildDir}/uiOptions/js" />
         <property name="jscssp" value="${buildDir}/lib/jscssp/js/cssParser.js" />
         <property name="jsFiles" value="${jscssp}, ${buildJSDir}/CSSGenerator.js, ${buildJSDir}/RhinoStylesheetHandler.js, ${buildJSDir}/StylesheetImportant.js" />
-        <script language="javascript" src="${base-dir}/build-scripts/uiOptions/js/bootStrapper.js" />
+        <script language="javascript" src="${base-dir}/build-scripts/uiOptions/js/bootStrapper.js" manager="bsf">
+            <classpath>
+                <fileset dir="${buildDir}/lib/rhino" includes="*.jar"></fileset>
+            </classpath>
+        </script>
     </target>
 
     <!-- This is the setup necessary for minifying the core files -->
