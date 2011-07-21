@@ -49,7 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "  font-size: 16px;" + "\n" +
                 "}" + "\n" +
                 ".cat a {" + "\n" +
-                "  background-image:url(\"cats.png\");" + "\n" +
+                "  background-image: url(\"cats.png\");" + "\n" +
                 "  font-size: 24px;" + "\n" +
                 "}" + "\n" +
                 "span {" + "\n" + 
@@ -73,7 +73,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "  font-size: 16px !important;" + "\n" +
                 "}" + "\n" +
                 ".cat a {" + "\n" +
-                "  background-image:url(\"cats.png\");" + "\n" +
+                "  background-image: url(\"cats.png\");" + "\n" +
                 "  font-size: 24px !important;" + "\n" +
                 "}" + "\n" +
                 "span {" + "\n" + 
@@ -96,7 +96,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "  font-size: 16px;" + "\n" +
                 "}" + "\n" +
                 ".cat a {" + "\n" +
-                "  background-image:url(\"cats.png\");" + "\n" +
+                "  background-image: url(\"cats.png\");" + "\n" +
                 "  font-size: 24px !important;" + "\n" +
                 "}" + "\n" +
                 "span {" + "\n" + 
@@ -120,7 +120,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "  font-size: 16px;" + "\n" +
                 "}" + "\n" +
                 ".fl-theme-cat a {" + "\n" +
-                "  background-image:url(\"cats.png\");" + "\n" +
+                "  background-image: url(\"cats.png\");" + "\n" +
                 "  font-size: 24px;" + "\n" +
                 "}" + "\n" +
                 "span {" + "\n" + 

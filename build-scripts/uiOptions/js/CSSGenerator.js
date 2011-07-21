@@ -33,7 +33,7 @@ fluid.build = fluid.build || {};
         // Concatenate an empty string with the file contents to ensure 
         // that we are passing in a Javascript string rather than a Java string
         that.cssText = "" + that.options.sheetStore.load();
-        that.parser = new jscssp.CSSParser();
+        that.parser = new CSSParser();
         that.stylesheet = that.parser.parse(that.cssText, false, true);
     };
         
@@ -119,7 +119,7 @@ fluid.build = fluid.build || {};
         if (!rule.mSelectorText) {
             return;
         }
-        rule.mSelectorText = rule.mSelectorText.replace(options.match, options.replace);
+        rule.mSelectorText = rule.mSelectorText.replace(options.match, options.replace, "g");
     };
     
 })();
