@@ -775,5 +775,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Priority order respected", 1, that.initted);
         });
         
+        
+        fluidJSTests.test("allocateSimpleId", function () {
+            var element = {};
+            var fluidId = fluid.allocateSimpleId();
+            jqUnit.assertEquals("Calling on allocateSimpleId with no parameter returns an ID starts with 'fluid-id-'", 0, fluidId.indexOf("fluid-id-"));
+            fluidId = fluid.allocateSimpleId(element);
+            jqUnit.assertEquals("Calling on allocateSimpleId with parameter returns an ID starts with 'fluid-id-'", 0, fluidId.indexOf("fluid-id-"));
+            jqUnit.assertEquals("The element ID should be set after allocateSimpleId is called with element.", fluidId, element.id);
+        });
     });
 })(jQuery);
