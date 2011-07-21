@@ -212,7 +212,6 @@ var fluid_1_4 = fluid_1_4 || {};
                 });
             return {url: url, forceCache: true};
         });
-        fluid.fetchResources(that.resources, function () {that.events.onUIOptionsTemplateReady.fire();});
     };
     
     /**************************************
@@ -258,9 +257,11 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.defaults("fluid.uiOptions.loader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
+        resources: "{templateLoader}.resources",
+        finalInitFunction: "fluid.uiOptions.loader.finalInit",
         events: {
             // These three are events private to uiOptions
-            onUIOptionsTemplateReady: "{templateLoader}.events.onUIOptionsTemplateReady",
+            onUIOptionsTemplateReady: null,
             onUIOptionsComponentReady: null,
             // This extra event is required because of framework bug FLUID-4337 and also the lack of "boiled listeners"
             onUIOptionsReadyBridge: {
@@ -291,6 +292,10 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
+    
+    fluid.uiOptions.loader.finalInit = function (that) {
+    	fluid.fetchResources(that.options.resources, function () {that.events.onUIOptionsTemplateReady.fire();});
+    };
 
     /**
      * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
