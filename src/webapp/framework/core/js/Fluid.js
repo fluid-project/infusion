@@ -1698,7 +1698,7 @@ var fluid = fluid || fluid_1_4;
     
     fluid.allocateSimpleId = function (element) {
         var simpleId = "fluid-id-" + fluid.allocateGuid();
-        if (typeof element == 'undefined') {
+        if (!element) {
             return simpleId;
         };
         element = fluid.unwrap(element);
