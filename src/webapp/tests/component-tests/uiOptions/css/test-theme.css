@@ -5,7 +5,11 @@ table {
   font-size: 16px;
 }
 
-.cat {
+.cat a {
   background-image:url("cats.png");
   font-size: 24px;
+}
+
+span {
+  font-size: 12px;
 }

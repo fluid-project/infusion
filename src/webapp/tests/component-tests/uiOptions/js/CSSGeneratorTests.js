@@ -48,9 +48,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "  background-color: #dddddd !important;" + "\n" +
                 "  font-size: 16px;" + "\n" +
                 "}" + "\n" +
-                ".cat {" + "\n" +
-                "  background-image: url(\"cats.png\");" + "\n" +
+                ".cat a {" + "\n" +
+                "  background-image:url(\"cats.png\");" + "\n" +
                 "  font-size: 24px;" + "\n" +
+                "}" + "\n" +
+                "span {" + "\n" + 
+                "  font-size: 12px;" + "\n" +
                 "}" + "\n";
             
             testStylesheetForPrioritySpec(priorities, expected, 
@@ -69,9 +72,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "  background-color: #dddddd !important;" + "\n" +
                 "  font-size: 16px !important;" + "\n" +
                 "}" + "\n" +
-                ".cat {" + "\n" +
-                "  background-image: url(\"cats.png\");" + "\n" +
+                ".cat a {" + "\n" +
+                "  background-image:url(\"cats.png\");" + "\n" +
                 "  font-size: 24px !important;" + "\n" +
+                "}" + "\n" +
+                "span {" + "\n" + 
+                "  font-size: 12px !important;" + "\n" +
                 "}" + "\n";
             
             testStylesheetForPrioritySpec(priorities, expected, 
@@ -80,7 +86,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         tests.test("Prioritize one CSS property for a specific selector", function () {
             var priorities = {
-                ".cat": "font-size"
+                ".cat a": "font-size"
             };
             
             var expected = "/* Comment */" + 
@@ -89,9 +95,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "  background-color: #dddddd;" + "\n" +
                 "  font-size: 16px;" + "\n" +
                 "}" + "\n" +
-                ".cat {" + "\n" +
-                "  background-image: url(\"cats.png\");" + "\n" +
+                ".cat a {" + "\n" +
+                "  background-image:url(\"cats.png\");" + "\n" +
                 "  font-size: 24px !important;" + "\n" +
+                "}" + "\n" +
+                "span {" + "\n" + 
+                "  font-size: 12px;" + "\n" +
                 "}" + "\n";
             
             testStylesheetForPrioritySpec(priorities, expected, 
@@ -110,9 +119,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "  background-color: #dddddd;" + "\n" +
                 "  font-size: 16px;" + "\n" +
                 "}" + "\n" +
-                ".fl-theme-cat {" + "\n" +
-                "  background-image: url(\"cats.png\");" + "\n" +
+                ".fl-theme-cat a {" + "\n" +
+                "  background-image:url(\"cats.png\");" + "\n" +
                 "  font-size: 24px;" + "\n" +
+                "}" + "\n" +
+                "span {" + "\n" + 
+                "  font-size: 12px;" + "\n" +
                 "}" + "\n";
             
             testStylesheetForProcessSpec({
