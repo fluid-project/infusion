@@ -23,9 +23,66 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var templatePrefix = "../../../../components/uiOptions/html/";
         
+        fluid.defaults("fluid.uiOptionsTests", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],            
+            components: {
+                uiOptionsLoader: {
+                    type: "fluid.uiOptions.loader",
+                    container: "{uiOptionsTests}.container",
+                    options: {
+                        listeners: {
+                            onReady: "fluid.uiOptionsTests.testFn"
+                        }
+                    }
+                },
+                templateLoader: {
+                    priority: "first",
+                    type: "fluid.uiOptions.templateLoader"
+                }                  
+            },
+            prefix: templatePrefix
+        });
+        
+        // Supply the templates
+        fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptionsTests", {
+            options: {
+                value: "{uiOptionsTests}.options.prefix"
+            }
+        });
+        
+        fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptionsTests", {
+            options: {
+                templates: {
+                    uiOptions: "%prefixFullPreviewUIOptions.html"
+                }
+            }
+        });
+    
         // Options for UIOptions
         var saveCalled = false;
 
+        fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
+            options: {
+                components: {
+                    uiEnhancer: {
+                        type: "fluid.uiEnhancer",
+                        container: "body",
+                        priority: "first"
+                    },
+                    settingsStore: "{uiEnhancer}.settingsStore"
+                },
+                listeners: {
+                    onSave: function () {
+                        saveCalled = true;
+                    }
+                }
+            }
+        });
+     
+        fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer", "fluid.uiOptions.tests"], {
+            funcName: "fluid.tempStore"
+        });
+        
         var bwSkin = {
             textSize: "1.8",
             textFont: "verdana",
@@ -40,9 +97,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             lineSpacing: 1
         };
             
-        fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer", "fluid.uiOptions.tests"], {
-            funcName: "fluid.tempStore"
-        });
+        var testUIOptions = function (testFn) {
+            fluid.uiOptionsTests.testFn = testFn;
+
+//            fluid.pageEnhancer(fluid.merge(null, enhancerTestOptions));
+            fluid.uiOptionsTests("#ui-options");
+        };
         
         var resetSaveCalled = function () {
             saveCalled = false;    
@@ -83,78 +143,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-	        var loader = fluid.uiOptionsTestTemplateLoader(null);
+            var loader = fluid.uiOptionsTestTemplateLoader(null);
 
             // The template with prefix + a customized name
-            jqUnit.assertEquals("uiOptions template url is set correctly", testTemplatePrefix + uiOptionsTemplateName, loader.templateLoader.resources.uiOptions.href);
+            jqUnit.assertEquals("uiOptions template url is set correctly", testTemplatePrefix + uiOptionsTemplateName, loader.templateLoader.resources.uiOptions.url);
             jqUnit.assertTrue("uiOptions forceCache is set", loader.templateLoader.resources.uiOptions.forceCache);
 
             // The template with a customized full url
-            jqUnit.assertEquals("textControls template url is set correctly", textControlsFullTemplatePath, loader.templateLoader.resources.textControls.href);
+            jqUnit.assertEquals("textControls template url is set correctly", textControlsFullTemplatePath, loader.templateLoader.resources.textControls.url);
             jqUnit.assertTrue("textControls forceCache is set", loader.templateLoader.resources.textControls.forceCache);
 
             // The template with prefix + default name
-            jqUnit.assertEquals("textControls template url is set correctly", testTemplatePrefix + linksControlsDefaultTemplateName, loader.templateLoader.resources.linksControls.href);
+            jqUnit.assertEquals("textControls template url is set correctly", testTemplatePrefix + linksControlsDefaultTemplateName, loader.templateLoader.resources.linksControls.url);
             jqUnit.assertTrue("textControls forceCache is set", loader.templateLoader.resources.linksControls.forceCache);
         });
 
         tests.asyncTest("Init Model and Controls", function () {
             expect(10);
             
-            fluid.defaults("fluid.uiOptionsTestInit", {
-                gradeNames: ["fluid.viewComponent", "autoInit"],            
-                components: {
-                    uiOptionsLoader: {
-                        type: "fluid.uiOptions.loader",
-                        container: "{uiOptionsTestInit}.container",
-                        options: {
-                            listeners: {
-                                onReady: "fluid.uiOptionsTestInit.testInit"
-                            }
-                        }
-                    },
-                    templateLoader: {
-                        priority: "first",
-                        type: "fluid.uiOptions.templateLoader"
-                    }                  
-                },
-                prefix: templatePrefix
-            });
-    
-            // Supply the templates
-            fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptionsTestInit", {
-                options: {
-                    value: "{uiOptionsTestInit}.options.prefix"
-                }
-            });
-            
-            fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptionsTestInit", {
-                options: {
-                    templates: {
-                        uiOptions: "%prefixFullPreviewUIOptions.html"
-                    }
-                }
-            });
-            
-            fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTestInit"], {
-                options: {
-                    components: {
-                        uiEnhancer: {
-                            type: "fluid.uiEnhancer",
-                            container: "body",
-                            priority: "first"
-                        },
-                        settingsStore: "{uiEnhancer}.settingsStore"
-                    },
-                    listeners: {
-                        onSave: function () {
-                            saveCalled = true;
-                        }
-                    }
-                }
-            });
-         
-            fluid.uiOptionsTestInit.testInit = function (uiOptionsLoader, uiOptions) {
+            testUIOptions(function (uiOptionsLoader, uiOptions) {
                 var model = uiOptions.model;
                 jqUnit.assertNotNull("Model is not null", model);
                 jqUnit.assertNotUndefined("Model is not undefined", model);
@@ -172,68 +179,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("There is default font value", 0, jQuery.inArray("default", fontValues));
                 
                 start();
-            };
-
-            fluid.uiOptionsTestInit("#ui-options");
+            });
         });
 
         tests.asyncTest("UIOptions Save, Reset, and Cancel", function () {
             expect(13);
             
-            fluid.defaults("fluid.uiOptionsTestButtons", {
-                gradeNames: ["fluid.viewComponent", "autoInit"],            
-                components: {
-                    uiOptionsLoader: {
-                        type: "fluid.uiOptions.loader",
-                        container: "{uiOptionsTestButtons}.container",
-                        options: {
-                            listeners: {
-                                onReady: "fluid.uiOptionsTestButtons.testButtons"
-                            }
-                        }
-                    },
-                    templateLoader: {
-                        priority: "first",
-                        type: "fluid.uiOptions.templateLoader"
-                    }                  
-                },
-                prefix: templatePrefix
-            });
-    
-            // Supply the templates
-            fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptionsTestButtons", {
-                options: {
-                    value: "{uiOptionsTestButtons}.options.prefix"
-                }
-            });
-            
-            fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptionsTestButtons", {
-                options: {
-                    templates: {
-                        uiOptions: "%prefixFullPreviewUIOptions.html"
-                    }
-                }
-            });
-            
-            fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTestButtons"], {
-                options: {
-                    components: {
-                        uiEnhancer: {
-                            type: "fluid.uiEnhancer",
-                            container: "body",
-                            priority: "first"
-                        },
-                        settingsStore: "{uiEnhancer}.settingsStore"
-                    },
-                    listeners: {
-                        onSave: function () {
-                            saveCalled = true;
-                        }
-                    }
-                }
-            });
-         
-            fluid.uiOptionsTestButtons.testButtons = function (uiOptionsLoader, uiOptions) {
+            testUIOptions(function (uiOptionsLoader, uiOptions) {
                 uiOptions.updateModel(bwSkin);
                 
                 jqUnit.assertFalse("Save hasn't been called", saveCalled);
@@ -262,200 +214,205 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("Cancel theme change", bwSkin.theme, uiOptions.model.selections.theme);
                 
                 start();
-            };
-              
-            fluid.uiOptionsTestButtons("#ui-options");
+            });        
         });
         
-//        tests.asyncTest("Refresh View", function () {
-//            expect(5);
-//            
-//            testUIOptions(function (uiOptionsLoader, uiOptions) {
-//                uiOptions.updateModel(bwSkin);
-//
-//                jqUnit.assertEquals("hc setting was set in the model", bwSkin.theme, uiOptions.model.selections.theme);
-//
-//                var uiEnhancerSettings = uiOptions.settingsStore.fetch();
-//                jqUnit.assertEquals("hc setting was not saved", "default", uiEnhancerSettings.theme);
-//
-//                uiOptions.events.onUIOptionsRefresh.fire();
-//                var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
-//                var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val(); 
-//                jqUnit.assertEquals("Small font size selected", "1.8", fontSizeSetting);
-//                var fontStyleSelection = $(":selected", $(".flc-uiOptions-text-font"));
-//                jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
-//                var contrastSelection = $(":selected", $(".flc-uiOptions-theme"));
-//                jqUnit.assertEquals("Black on white is selected", "bw", contrastSelection[0].value);
-//                
-//                start();
-//            });          
-//        });
-//
-//        tests.asyncTest("Init with site defaults different from UIOptions control values", function () {
-//            expect(2);
-//               
-//            var enhancerOpts = {
-//                components: {
-//                    settingsStore: {
-//                        options: {
-//                            defaultSiteSettings: {
-//                                theme: "wb",
-//                                textFont: "times"
-//                            }
-//                        }
-//                    }
-//                }
-//            };
-//            
-//            testUIOptions(function (uiOptionsLoader, uiOptions) {
-//                var settings = uiOptions.settingsStore.options.defaultSiteSettings;
-//                
-//                var themeValue = settings.theme;
-//                jqUnit.assertEquals("The theme is set to wb", "wb", themeValue);
-//
-//                var fontValue = settings.textFont;
-//                jqUnit.assertEquals("The font is set to times", "times", fontValue);
-//                
-//                start();
-//            }, enhancerOpts);
-//        });
-//
-//        /*****************
-//         * Preview tests *
-//         *****************/
-//         
-//        tests.asyncTest("Preview URL", function () {
-//            expect(1);
-//            
-//            fluid.staticEnvironment.uiOptionsTestsPreview = fluid.typeTag("fluid.uiOptions.testsPreview");
-//            
-//            var templateUrl = "TestPreviewTemplate.html";
-//            fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions"], {
-//                container: "{uiOptions}.dom.previewFrame",
-//                options: {
-//                    templateUrl: templateUrl
-//                }
-//            });     
-//    
-//            testUIOptions(function (uiOptionsLoader, uiOptions) {
-//                jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
-//                    templateUrl, uiOptions.preview.container.attr("src"));
-//                
-//                start();
-//            });
-//            
-//            delete fluid.staticEnvironment.uiOptionsTestsPreview;
-//        });
-//        
-//        tests.asyncTest("UIOptions Auto-save", function () {
-//            expect(2);
-//                
-//            fluid.staticEnvironment.uiOptionsTestsAutoSave = fluid.typeTag("fluid.uiOptions.testsAutoSave");
-//            
-//            fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsAutoSave", "fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
-//                options: {
-//                    components: {
-//                        settingsStore: "{uiEnhancer}.settingsStore"
-//                    },
-//                    listeners: {
-//                        onSave: function () {
-//                            saveCalled = true;
-//                        }
-//                    },
-//                    autoSave: true
-//                }
-//            });
-//     
-//            testUIOptions(function (uiOptionsLoader, uiOptions) {
-//                resetSaveCalled();
-//                uiOptions.updateModel(bwSkin);
-//                jqUnit.assertTrue("Model has changed, auto-save changes", saveCalled);
-//                
-//                var uiEnhancerSettings = uiOptionsLoader.uiOptions.settingsStore.fetch();
-//                jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
-//                
-//                delete fluid.staticEnvironment.uiOptionsTestsAutoSave;
-//                
-//                start();
-//            });
-//            
-//        });
-//        
-//        /********************************
-//         * UI Options Integration tests *
-//         * ******************************
-//         */
-//
-//        var applierRequestChanges = function (uiOptions, selectionOptions) {
-//            uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
-//            uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
-//            uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
-//            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);            
-//        };
-//        
-//        var checkUIOComponents = function (uiOptionsLoader, uiOptions) {
-//            jqUnit.assertTrue("Check that uiEnhancer is present", uiOptions.uiEnhancer);
-//            jqUnit.assertTrue("Check that textControls sub-component is present", uiOptions.textControls);
-//            jqUnit.assertTrue("Check that layoutControls sub-component is present", uiOptions.layoutControls);
-//            jqUnit.assertTrue("Check that linkControls sub-component is present", uiOptions.linksControls);
-//            jqUnit.assertTrue("Check that preview sub-component is present", uiOptions.options.components.preview);
-//            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.options.components.settingsStore);
-//            jqUnit.assertTrue("Check that tableOfContents sub-component is present", uiOptions.uiEnhancer.options.components.tableOfContents);
-//            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.uiEnhancer.options.components.settingsStore);
-//        };
-//        
-//        var checkModelSelections = function (expectedSelections, actualSelections) {
-//            jqUnit.assertEquals("Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
-//            jqUnit.assertEquals("Theme correctly updated", expectedSelections.theme, actualSelections.theme);
-//            jqUnit.assertEquals("Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
-//            jqUnit.assertEquals("Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
-//        };
-//        
-//        tests.asyncTest("UIOptions Integration tests", function () {
-//            fluid.staticEnvironment.uiOptionsTestsIntegration = fluid.typeTag("fluid.uiOptions.testsIntegration");
-//            
-//            fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsIntegration", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
-//                options: {
-//                    components: {
-//                        uiEnhancer: "{uiEnhancer}",
-//                        settingsStore: "{uiEnhancer}.settingsStore"
-//                    },
-//                    listeners: {
-//                        onSave: function () {
-//                            saveCalled = true;
-//                        }
-//                    },
-//                    autoSave: false
-//                }
-//            });
-//     
-//            testUIOptions(function (uiOptionsLoader, uiOptions) {
-//                checkUIOComponents(uiOptionsLoader, uiOptions);
-//                
-//                var saveButton = uiOptions.locate("save");
-//                var cancelButton = uiOptions.locate("cancel");
-//                var resetButton = uiOptions.locate("reset");
-//                
-//                applierRequestChanges(uiOptions, bwSkin);
-//                checkModelSelections(bwSkin, uiOptions.model.selections);
-//                saveButton.click();
-//                checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
-//                applierRequestChanges(uiOptions, bwSkin2);
-//                cancelButton.click();
-//                checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
-//                resetButton.click();
-//                checkModelSelections(uiOptions.model.selections, uiOptions.settingsStore.options.defaultSiteSettings);
-//                cancelButton.click();
-//                checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
-//                
-//                // apply the reset settings to make the test result page more readable
-//                resetButton.click();
-//                saveButton.click();
-//                
-//                delete fluid.staticEnvironment.uiOptionsTestsIntegration;
-//                start();
-//            });
-//        });
+        tests.asyncTest("Refresh View", function () {
+            expect(5);
+            
+            testUIOptions(function (uiOptionsLoader, uiOptions) {
+                uiOptions.updateModel(bwSkin);
+
+                jqUnit.assertEquals("hc setting was set in the model", bwSkin.theme, uiOptions.model.selections.theme);
+
+                var uiEnhancerSettings = uiOptions.settingsStore.fetch();
+                jqUnit.assertEquals("hc setting was not saved", "default", uiEnhancerSettings.theme);
+
+                uiOptions.events.onUIOptionsRefresh.fire();
+                var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
+                var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val(); 
+                jqUnit.assertEquals("Small font size selected", "1.8", fontSizeSetting);
+                var fontStyleSelection = $(":selected", $(".flc-uiOptions-text-font"));
+                jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
+                var contrastSelection = $(":selected", $(".flc-uiOptions-theme"));
+                jqUnit.assertEquals("Black on white is selected", "bw", contrastSelection[0].value);
+                
+                start();
+            });          
+        });
+
+        tests.asyncTest("Init with site defaults different from UIOptions control values", function () {
+            expect(2);
+               
+            fluid.staticEnvironment.uiOptionsTestsDiffInit = fluid.typeTag("fluid.uiOptions.testDiffInit");
+            
+            fluid.demands("settingsStore", ["fluid.uiOptionsTests", "fluid.uiOptions.testDiffInit", "fluid.uiEnhancer"], {
+                funcName: "fluid.tempStore",
+                options: {
+                    defaultSiteSettings: {
+                        theme: "wb",
+                        textFont: "times"
+                    }
+                }
+            });     
+
+            testUIOptions(function (uiOptionsLoader, uiOptions) {
+                var settings = uiOptions.settingsStore.options.defaultSiteSettings;
+                
+                var themeValue = settings.theme;
+                jqUnit.assertEquals("The theme is set to wb", "wb", themeValue);
+
+                var fontValue = settings.textFont;
+                jqUnit.assertEquals("The font is set to times", "times", fontValue);
+                
+                delete fluid.staticEnvironment.uiOptionsTestsDiffInit;
+                start();
+            });
+        });
+
+        /*****************
+         * Preview tests *
+         *****************/
+         
+        tests.asyncTest("Preview URL", function () {
+            expect(1);
+            
+            fluid.staticEnvironment.uiOptionsTestsPreview = fluid.typeTag("fluid.uiOptions.testsPreview");
+            
+            var templateUrl = "TestPreviewTemplate.html";
+            fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions"], {
+                container: "{uiOptions}.dom.previewFrame",
+                options: {
+                    templateUrl: templateUrl
+                }
+            });     
+    
+            testUIOptions(function (uiOptionsLoader, uiOptions) {
+                jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
+                    templateUrl, uiOptions.preview.container.attr("src"));
+                
+                delete fluid.staticEnvironment.uiOptionsTestsPreview;
+                start();
+            });
+        });
+        
+        tests.asyncTest("UIOptions Auto-save", function () {
+            expect(2);
+                
+            fluid.staticEnvironment.uiOptionsTestsAutoSave = fluid.typeTag("fluid.uiOptions.testsAutoSave");
+            
+            fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsAutoSave", "fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
+                options: {
+                    components: {
+                        uiEnhancer: {
+                            type: "fluid.uiEnhancer",
+                            container: "body",
+                            priority: "first"
+                        },
+                        settingsStore: "{uiEnhancer}.settingsStore"
+                    },
+                    listeners: {
+                        onSave: function () {
+                            saveCalled = true;
+                        }
+                    },
+                    autoSave: true
+                }
+            });
+     
+            testUIOptions(function (uiOptionsLoader, uiOptions) {
+                resetSaveCalled();
+                uiOptions.updateModel(bwSkin);
+                jqUnit.assertTrue("Model has changed, auto-save changes", saveCalled);
+                
+                var uiEnhancerSettings = uiOptions.settingsStore.fetch();
+                jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
+                
+                delete fluid.staticEnvironment.uiOptionsTestsAutoSave;
+                start();
+            });
+            
+        });
+        
+        /********************************
+         * UI Options Integration tests *
+         * ******************************
+         */
+
+        var applierRequestChanges = function (uiOptions, selectionOptions) {
+            uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
+            uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
+            uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
+            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);            
+        };
+        
+        var checkUIOComponents = function (uiOptionsLoader, uiOptions) {
+            jqUnit.assertTrue("Check that uiEnhancer is present", uiOptions.uiEnhancer);
+            jqUnit.assertTrue("Check that textControls sub-component is present", uiOptions.textControls);
+            jqUnit.assertTrue("Check that layoutControls sub-component is present", uiOptions.layoutControls);
+            jqUnit.assertTrue("Check that linkControls sub-component is present", uiOptions.linksControls);
+            jqUnit.assertTrue("Check that preview sub-component is present", uiOptions.options.components.preview);
+            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.options.components.settingsStore);
+            jqUnit.assertTrue("Check that tableOfContents sub-component is present", uiOptions.uiEnhancer.options.components.tableOfContents);
+            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.uiEnhancer.options.components.settingsStore);
+        };
+        
+        var checkModelSelections = function (expectedSelections, actualSelections) {
+            jqUnit.assertEquals("Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
+            jqUnit.assertEquals("Theme correctly updated", expectedSelections.theme, actualSelections.theme);
+            jqUnit.assertEquals("Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
+            jqUnit.assertEquals("Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
+        };
+        
+        tests.asyncTest("UIOptions Integration tests", function () {
+            fluid.staticEnvironment.uiOptionsTestsIntegration = fluid.typeTag("fluid.uiOptions.testsIntegration");
+            
+            fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsIntegration", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
+                options: {
+                    components: {
+                        uiEnhancer: {
+                            type: "fluid.uiEnhancer",
+                            container: "body",
+                            priority: "first"
+                        },
+                        settingsStore: "{uiEnhancer}.settingsStore"
+                    },
+                    listeners: {
+                        onSave: function () {
+                            saveCalled = true;
+                        }
+                    },
+                    autoSave: false
+                }
+            });
+     
+            testUIOptions(function (uiOptionsLoader, uiOptions) {
+                checkUIOComponents(uiOptionsLoader, uiOptions);
+                
+                var saveButton = uiOptions.locate("save");
+                var cancelButton = uiOptions.locate("cancel");
+                var resetButton = uiOptions.locate("reset");
+                
+                applierRequestChanges(uiOptions, bwSkin);
+                checkModelSelections(bwSkin, uiOptions.model.selections);
+                saveButton.click();
+                checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
+                applierRequestChanges(uiOptions, bwSkin2);
+                cancelButton.click();
+                checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
+                resetButton.click();
+                checkModelSelections(uiOptions.model.selections, uiOptions.settingsStore.options.defaultSiteSettings);
+                cancelButton.click();
+                checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
+                
+                // apply the reset settings to make the test result page more readable
+                resetButton.click();
+                saveButton.click();
+                
+                delete fluid.staticEnvironment.uiOptionsTestsIntegration;
+                start();
+            });
+        });
     });
     
 })(jQuery);

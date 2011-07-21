@@ -187,15 +187,12 @@ var fluid_1_4 = fluid_1_4 || {};
        
     fluid.defaults("fluid.uiOptions.templateLoader", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
-        finalInitFunction: "fluid.uiOptions.templateLoader.fetchTemplates",
+        finalInitFunction: "fluid.uiOptions.templateLoader.resolveTemplates",
         templates: {
             uiOptions: "%prefixFatPanelUIOptions.html",
             textControls: "%prefixUIOptionsTemplate-text.html",
             layoutControls: "%prefixUIOptionsTemplate-layout.html",
             linksControls: "%prefixUIOptionsTemplate-links.html"
-        },
-        events: {
-            onUIOptionsTemplateReady: null
         },
         // Unsupported, non-API option
         components: {
@@ -205,7 +202,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.uiOptions.templateLoader.fetchTemplates = function (that) {
+    fluid.uiOptions.templateLoader.resolveTemplates = function (that) {
         that.resources = fluid.transform(that.options.templates, function (item, key) {
             var url = fluid.stringTemplate(item, {
                     prefix: that.templatePath.options.value
@@ -294,7 +291,7 @@ var fluid_1_4 = fluid_1_4 || {};
     });
     
     fluid.uiOptions.loader.finalInit = function (that) {
-    	fluid.fetchResources(that.options.resources, function () {that.events.onUIOptionsTemplateReady.fire();});
+        fluid.fetchResources(that.options.resources, function () {that.events.onUIOptionsTemplateReady.fire();});
     };
 
     /**
@@ -445,11 +442,11 @@ var fluid_1_4 = fluid_1_4 || {};
         var bindHandlers = function (that) {
             var saveButton = that.locate("save");            
             if (saveButton.length > 0) {
-	            saveButton.click(that.save);
-				var form = fluid.findForm(saveButton);
-				$(form).submit(function () {
-					that.save();
-				});
+                saveButton.click(that.save);
+                var form = fluid.findForm(saveButton);
+                $(form).submit(function () {
+                    that.save();
+                });
 	        }
             that.locate("reset").click(that.reset);
             that.locate("cancel").click(that.cancel);
