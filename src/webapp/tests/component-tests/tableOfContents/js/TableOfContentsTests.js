@@ -29,8 +29,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
     
-    fluid.tableOfContents.generateGUIDMock = function (baseName) {
-        return 'test' + baseName;
+    fluid.tableOfContents.generateGUIDMock = function () {
+        return 'test';
     };
     
     // Use our custom GUID for testing purposes.
@@ -426,26 +426,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         tocTests.test("generateGUID", function () {
-            var GUID = fluid.tableOfContents.generateGUID('randomBaseName');
-            var GUID2 = fluid.tableOfContents.generateGUID('randomBaseName');
+            var GUID = fluid.tableOfContents.generateGUID();
+            var GUID2 = fluid.tableOfContents.generateGUID();
             
             jqUnit.assertNotEquals("GUID should not be the same with the same randomBaseName", GUID, GUID2);
-            jqUnit.assertNotEquals("Basename should remain in the GUID after generated", -1, GUID.indexOf('randomBaseName'));
         });
-        
-        tocTests.test("sanitizeID", function () {
-            var tocTest = function (custom_msg, expected, input) {
-                var actual = fluid.tableOfContents.sanitizeID(input);
-                jqUnit.assertEquals("Test non-word string: " + custom_msg, expected, actual);
-            };
-            tocTest('alphabetes', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
-            tocTest('numbers', '1234567890', '1234567890');
-            tocTest('dashes', '-', '-');
-            tocTest('underline', '_', '_');
-            tocTest('symbols', '------------------------', '`~|[];"\',.=+!@#$%^&*()\\/');
-            tocTest('i18n', 'I-t-rn-ti-n-liz-ti-n', 'Iñtërnâtiônàlizætiøn');
-        });
-        
+                
         tocTests.test("filterHeadings", function () {
             var allHeadings = $('#tocFilterHeadings :header');
             var expectedHeadings = allHeadings.not(":hidden"); 
@@ -460,11 +446,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // setup and init the ToC component
             var toc = renderTOCComponent();
             var tocBodyHeading = $('#amphibians');
-            var baseName = tocBodyHeading.text();
             var anchorInfo = toc.headingTextToAnchor(tocBodyHeading);
             
             // test goes here
-            jqUnit.assertNotEquals("Basename should be reserved in the generated anchor", -1, anchorInfo.id.indexOf(baseName));
             jqUnit.assertEquals("anchor url is the same as id except url has a '#' in front", anchorInfo.url.substr(1), anchorInfo.id);
         });
         
@@ -510,7 +494,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 testHeadings.headingInfo.push(serializeHeading(
                     currLink.prop('tagName').substr(currLink.prop('tagName').length - 1), 
                     currLink.text(), 
-                    '#test' + fluid.tableOfContents.sanitizeID(currLink.text())
+                    '#test'
                 ));
             });
             renderTOCComponent({
