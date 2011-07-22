@@ -739,12 +739,18 @@ var fluid = fluid || fluid_1_4;
     
     fluid.registerNamespace("fluid.event");
     
+    fluid.generateUniquePrefix = function() {
+        return (Math.floor(Math.random() * 1e12)).toString(36) + "-";
+    };
+    
+    var fluid_prefix = fluid.generateUniquePrefix(); 
+    
     var fluid_guid = 1;
     
-    /** Allocate an integer value that will be unique for this session **/
+    /** Allocate an string value that will be very likely unique within this (browser) process **/
     
     fluid.allocateGuid = function () {
-        return fluid_guid++;
+        return fluid_prefix + (fluid_guid++);
     };
     
     fluid.event.identifyListener = function (listener) {
@@ -1697,9 +1703,13 @@ var fluid = fluid || fluid_1_4;
      */
     
     fluid.allocateSimpleId = function (element) {
+        var simpleId = "fluid-id-" + fluid.allocateGuid();
+        if (!element) {
+            return simpleId;
+        };
         element = fluid.unwrap(element);
         if (!element.id) {
-            element.id = "fluid-id-" + fluid.allocateGuid(); 
+            element.id = simpleId;
         }
         return element.id;
     };
