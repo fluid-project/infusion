@@ -43,7 +43,7 @@
         <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../../framework/renderer/js/RendererUtilities.js"></script>
-        <script type="text/javascript" src="../../../components/tabs/js/Tabs.js"></script>
+        <script type="text/javascript" src="../../tabs/js/Tabs.js"></script>
 
         <script type="text/javascript" src="../js/Store.js"></script>
         <script type="text/javascript" src="../js/UIEnhancer.js"></script>
@@ -55,8 +55,12 @@
     </head>
 
     <body>
+        <div class="flc-toc-tocContainer fl-hidden">
+        </div>
+
         <script type="text/javascript">
             // Supply the templates
+            fluid.setLogging(true);
             fluid.staticEnvironment.uiOptionsIframe = fluid.typeTag("fluid.uiOptionsIframe");
             
             fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsIframe", {
@@ -66,12 +70,17 @@
             });
         
             // Supply the table of contents' template URL
-            fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+            fluid.demands("fluid.tableOfContents.levels", ["fluid.uiOptionsIframe", "fluid.tableOfContents"], {
                 options: {
-                    templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    resources: {
+                        template: {
+                            forceCache: true,
+                            url: "../../tableOfContents/html/TableOfContents.html"
+                        }
+                    }
                 }
             });
-            
+
             fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
                 options: {
                     classnameMap: "{fluid.uiEnhancer}.options.classnameMap"

@@ -31,9 +31,14 @@ var demo = demo || {};
     });
 
     // Supply the table of contents' template URL
-    fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+    fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
         options: {
-            templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+            resources: {
+                template: {
+                    forceCache: true,
+                    url: "../../../../components/tableOfContents/html/TableOfContents.html"
+                }
+            }
         }
     });
 
