@@ -19,12 +19,16 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) { 
 
+    /******************************
+     * fluid.uiOptionsEventBinder *
+     ******************************/
+   
     fluid.defaults("fluid.uiOptionsEventBinder", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         finalInitFunction: "fluid.uiOptionsEventBinder.finalInit",
         components: {
-            pageEnhancer: {
-                type: "fluid.pageEnhancer"
+            uiEnhancer: {
+                type: "fluid.uiEnhancer"
             },
             uiOptionsLoader: {
                 type: "fluid.uiOptionsLoader"
@@ -42,7 +46,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uiOptionsEventBinder.bindModelChanged = function (uiOptions, eventBinder) {
         eventBinder.uiOptions = uiOptions;
         uiOptions.events.modelChanged.addListener(function (model) {
-            eventBinder.pageEnhancer.uiEnhancer.updateModel(model.selections);
+            eventBinder.uiEnhancer.updateModel(model.selections);
         });
     };
     
@@ -55,7 +59,7 @@ var fluid_1_4 = fluid_1_4 || {};
             that.uiOptions.save();
         });
         that.slidingPanel.events.afterPanelShown.addListener(function () {
-            that.uiOptions.pageEnhancer.uiEnhancer.updateFromSettingsStore();
+            that.uiOptions.uiEnhancer.updateFromSettingsStore();
         });
     };
     
@@ -83,21 +87,17 @@ var fluid_1_4 = fluid_1_4 || {};
                         afterRender: "{fatPanelUIOptions}.events.afterRender"
                     },
                     styles: {
-                        offScreen: "fl-offScreen-hidden",
                         containerFlex: "fl-container-flex",
                         container: "fl-uiOptions-fatPanel"
                     }
                 }
             },
-            pageEnhancer: {
-                type: "fluid.pageEnhancer", 
-                priority: "first"
-            },
+            uiEnhancer: "{uiEnhancer}",
             eventBinder: {
                 type: "fluid.uiOptionsEventBinder",
                 options: {
                     components: {
-                        pageEnhancer: "{fatPanelUIOptions}.pageEnhancer",
+                        uiEnhancer: "{fatPanelUIOptions}.uiEnhancer",
                         uiOptionsLoader: "{fatPanelUIOptions}.uiOptionsBridge.uiOptionsLoader",
                         slidingPanel: "{fatPanelUIOptions}.slidingPanel",
                         binder: {
@@ -137,18 +137,6 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.demands("fluid.uiEnhancer", ["fluid.fatPanelUIOptions", "fluid.uiOptionsBridge"], {
-        options: {
-            listeners: {
-                modelChanged: "{fatPanelUIOptions}.markupRenderer.makeVisible"
-            }
-        }
-    });
-    
-    /******************************
-     * fluid.uiOptionsEventBinder *
-     ******************************/
-   
     /**********************
      * fluid.renderIframe *
      **********************/
@@ -160,7 +148,6 @@ var fluid_1_4 = fluid_1_4 || {};
             afterRender: null
         },
         styles: {
-            offScreen: "fl-offScreen-hidden",
             containerFlex: "fl-container-flex",
             container: "fl-uiOptions-fatPanel-iframe"
         },
@@ -187,12 +174,7 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.iframe.addClass(styles.containerFlex);
         that.iframe.addClass(styles.container);
-        that.iframe.addClass(styles.offScreen);
         that.iframe.load(that.events.afterRender.fire);
-        
-        that.makeVisible = function () {
-            that.iframe.removeClass(styles.offScreen);
-        };
     };
     
     /*************************
@@ -224,10 +206,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.demands("fluid.uiOptions", ["fluid.uiOptions.FatPanelOtherWorldLoader"], {
         options: {
             components: {
-                pageEnhancer: {
-                    type: "fluid.pageEnhancer",
-                    priority: "first"
-                },
+                uiEnhancer: "{uiEnhancer}",
                 preview: {
                     type: "fluid.emptySubcomponent"
                 },
@@ -296,7 +275,7 @@ var fluid_1_4 = fluid_1_4 || {};
         
         var fatPanelComponentMapping = {
             slidingPanel: componentPath,
-            pageEnhancer: componentPath,
+            uiEnhancer: componentPath,
             preview: componentPath,
             markupRenderer: componentPath,
             eventBinder: componentPath

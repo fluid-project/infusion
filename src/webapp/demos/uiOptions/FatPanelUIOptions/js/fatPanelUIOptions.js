@@ -43,6 +43,7 @@ var demo = demo || {};
     });
 
     demo.init = function () {
+        fluid.pageEnhancer();
         fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel", {
             prefix: "../../../../components/uiOptions/html/"
         });

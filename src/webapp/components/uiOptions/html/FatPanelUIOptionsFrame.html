@@ -60,7 +60,6 @@
 
         <script type="text/javascript">
             // Supply the templates
-            fluid.setLogging(true);
             fluid.staticEnvironment.uiOptionsIframe = fluid.typeTag("fluid.uiOptionsIframe");
             
             fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsIframe", {
@@ -98,6 +97,8 @@
                     classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
                 }
             });
+            
+            fluid.pageEnhancer();
         </script>
     </body>
 
