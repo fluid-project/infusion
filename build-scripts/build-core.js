@@ -96,6 +96,6 @@ fluid.build = {};
         }
     };
     
-    fluid.build.evalJSFiles(jsFiles);
+    fluid.build.evalJSFiles(this.evalScripts);
     
 })();
