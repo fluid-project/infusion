@@ -75,7 +75,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             var expectedTextSize = initialFontSize * testSettings.textSize;
             
-            jqUnit.assertEquals("Large text size is set", expectedTextSize.toFixed(1) + "px", body.css("fontSize"));
+            jqUnit.assertEquals("Large text size is set", expectedTextSize.toFixed(0) + "px", body.css("fontSize"));
             jqUnit.assertTrue("Verdana font is set", body.hasClass("fl-font-verdana"));
             jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-hc"));
 
