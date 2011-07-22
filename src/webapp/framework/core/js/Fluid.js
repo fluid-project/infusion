@@ -5,7 +5,7 @@
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
  *
  * For information on copyright, see the individual Infusion source code files: 
- * https://source.fluidproject.org/svn/fluid/infusion/
+ * https://github.com/fluid-project/infusion/
  */
 
 /*
@@ -13,6 +13,7 @@ Copyright 2007-2010 University of Cambridge
 Copyright 2007-2009 University of Toronto
 Copyright 2007-2009 University of California, Berkeley
 Copyright 2010 Lucendo Development Ltd.
+Copyright 2010-2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -738,12 +739,18 @@ var fluid = fluid || fluid_1_4;
     
     fluid.registerNamespace("fluid.event");
     
+    fluid.generateUniquePrefix = function() {
+        return (Math.floor(Math.random() * 1e12)).toString(36) + "-";
+    };
+    
+    var fluid_prefix = fluid.generateUniquePrefix(); 
+    
     var fluid_guid = 1;
     
-    /** Allocate an integer value that will be unique for this session **/
+    /** Allocate an string value that will be very likely unique within this (browser) process **/
     
     fluid.allocateGuid = function () {
-        return fluid_guid++;
+        return fluid_prefix + (fluid_guid++);
     };
     
     fluid.event.identifyListener = function (listener) {
@@ -1696,9 +1703,13 @@ var fluid = fluid || fluid_1_4;
      */
     
     fluid.allocateSimpleId = function (element) {
+        var simpleId = "fluid-id-" + fluid.allocateGuid();
+        if (!element) {
+            return simpleId;
+        };
         element = fluid.unwrap(element);
         if (!element.id) {
-            element.id = "fluid-id-" + fluid.allocateGuid(); 
+            element.id = simpleId;
         }
         return element.id;
     };

@@ -52,36 +52,35 @@
         <script type="text/javascript" src="../../../../components/uiOptions/js/UIOptions.js"></script>
         <script type="text/javascript" src="../../../../components/uiOptions/js/FullNoPreviewUIOptions.js"></script>
         <script type="text/javascript" src="../../../../components/tableOfContents/js/TableOfContents.js"></script>                
-
-        <script type="text/javascript">
-            $().ready(function () {
-                // Supply the templates
-                fluid.staticEnvironment.uiOptionsDemo = fluid.typeTag("fluid.uiOptionsDemo");
-                fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsDemo", {
-                    options: {
-                        prefix: "../../../../components/uiOptions/html/",
-                        templates: {
-                            uiOptions: "%prefixFullNoPreviewUIOptions.html"
-                        }
-                    }
-                });
-            
-                // Supply the table of contents' template URL
-                fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
-                    options: {
-                        templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
-                    }
-                });     
-                    
-                fluid.pageEnhancer();                
-				fluid.fullNoPreviewUIOptions("#myUIOptions");
-            });
-        </script>        
     </head>
 
     <body>
+        <div class="flc-toc-tocContainer toc">
+        </div>
+
         <h1>User Interface Options</h1>        
         <div id="myUIOptions"></div>      
+
+        <script type="text/javascript">
+            $().ready(function () {
+                // Supply the table of contents' template URL
+                fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
+                    options: {
+                        resources: {
+                            template: {
+                                forceCache: true,
+                                url: "../../../../components/tableOfContents/html/TableOfContents.html"
+                            }
+                        }
+                    }
+                });
+
+                fluid.pageEnhancer();                
+                fluid.fullNoPreviewUIOptions("#myUIOptions", {
+                    prefix: "../../../../components/uiOptions/html/"
+                });
+            });
+        </script>        
     </body>
 </html>
 

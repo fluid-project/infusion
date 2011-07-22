@@ -50,6 +50,11 @@ var fluid_1_4 = fluid_1_4 || {};
         elm.addClass(that.options.styles.hidden);
     };
     
+    var maxFilesUploaded = function (that) {
+        var fileUploadLimit = that.queue.getUploadedFiles().length + that.queue.getReadyFiles().length;
+        return (fileUploadLimit === that.options.queueSettings.fileUploadLimit);
+    };    
+    
     var setTotalProgressStyle = function (that, didError) {
         didError = didError || false;
         var indicator = that.totalProgress.indicator;
@@ -68,12 +73,20 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
     
+    // Only enable the browse button if the fileUploadLimit 
+    // has not been reached
+    var enableBrowseButton = function (that) {
+        if(!maxFilesUploaded(that)) {
+            enableElement(that, that.locate("browseButton"));
+            that.strategy.local.enableBrowseButton();            
+        }
+    }    
+    
     var setStateDone = function (that) {
         disableElement(that, that.locate("uploadButton"));
-        enableElement(that, that.locate("browseButton"));
-        that.strategy.local.enableBrowseButton();
         hideElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("uploadButton"));
+        enableBrowseButton(that);
     };
 
     var setStateLoaded = function (that) {
@@ -82,10 +95,9 @@ var fluid_1_4 = fluid_1_4 || {};
         hideElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("uploadButton"));
         enableElement(that, that.locate("uploadButton"));
-        enableElement(that, that.locate("browseButton"));
-        that.strategy.local.enableBrowseButton();
         hideElement(that, that.locate("instructions"));
         that.totalProgress.hide();
+        enableBrowseButton(that);
     };
     
     var setStateUploading = function (that) {
@@ -123,6 +135,16 @@ var fluid_1_4 = fluid_1_4 || {};
             totalBytes: fluid.uploader.formatFileSize(bytesReadyFiles)
         });
         that.locate("totalFileStatusText").html(totalStateStr);
+    };
+    
+    var renderFileUploadLimit = function (that) {
+        if (that.options.queueSettings.fileUploadLimit > 0) {
+            var fileUploadLimitText = fluid.stringTemplate(that.options.strings.progress.fileUploadLimitLabel, {
+                fileUploadLimit: that.options.queueSettings.fileUploadLimit, 
+                fileLabel: fileOrFiles(that, that.options.queueSettings.fileUploadLimit) 
+            });
+            that.locate("fileUploadLimitText").html(fileUploadLimitText);
+        }
     };
         
     var updateTotalProgress = function (that) {
@@ -317,6 +339,7 @@ var fluid_1_4 = fluid_1_4 || {};
         
         updateQueueSummaryText(that);
         that.statusUpdater();
+        renderFileUploadLimit(that);
         
         // Uploader uses application-style keyboard conventions, so give it a suitable role.
         that.container.attr("role", "application");
@@ -481,7 +504,7 @@ var fluid_1_4 = fluid_1_4 || {};
             fileSizeLimit: "20480",
             fileTypes: null,
             fileTypesDescription: null,
-            fileUploadLimit: 3,
+            fileUploadLimit: 0,
             fileQueueLimit: 0
         },
 
@@ -494,6 +517,7 @@ var fluid_1_4 = fluid_1_4 || {};
             uploadButton: ".flc-uploader-button-upload",
             pauseButton: ".flc-uploader-button-pause",
             totalFileStatusText: ".flc-uploader-total-progress-text",
+            fileUploadLimitText: ".flc-uploader-upload-limit-text",
             instructions: ".flc-uploader-browse-instructions",
             statusRegion: ".flc-uploader-status-region",
             errorsPanel: ".flc-uploader-errorsPanel"
@@ -539,6 +563,7 @@ var fluid_1_4 = fluid_1_4 || {};
 
         strings: {
             progress: {
+                fileUploadLimitLabel: "%fileUploadLimit %fileLabel maximum",
                 toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)", 
                 totalProgressLabel: "Uploading: %curFileN of %totalFilesN %fileLabel (%currBytes of %totalBytes)", 
                 completedLabel: "Uploaded: %curFileN of %totalFilesN %fileLabel (%totalCurrBytes)%errorString",

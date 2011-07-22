@@ -66,7 +66,7 @@
     <body class="fl-theme-mist fl-focus">
 
         <div class="lookNfeel fl-container flc-uiOptions-fatPanel">
-            <div class="ui_options flc-slidingPanel-panel"></div>
+            <div class="ui_options flc-slidingPanel-panel flc-uiOptions-iframe"></div>
 
             <a href="#_bottom" class="flc-slidingPanel-toggleButton skin_ fl-linearEnabled"></a>
         </div>
@@ -251,9 +251,17 @@
         <script type="text/javascript">
             // First, supply the UI Options templates
             fluid.staticEnvironment.FssSakaiUIOptions = fluid.typeTag("fluid.FssSakaiUIOptions");
-            fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.FssSakaiUIOptions", {
+            fluid.demands("fluid.uiOptionsTemplatePath", "fluid.FssSakaiUIOptions", {
                 options: {
                     prefix: "../../../components/uiOptions/html/"
+                }
+            });
+        
+            fluid.demands("fluid.renderIframe", ["fluid.FssSakaiUIOptions"], {
+                options: {
+                    markupProps: {
+                        src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
+                    }
                 }
             });
         

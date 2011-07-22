@@ -1,5 +1,7 @@
 /*
 Copyright 2008-2009 University of Toronto
+Copyright 2010-2011 OCAD University
+Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -10,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, jQuery*/
+/*global fluid, jqUnit, jQuery, deepEqual*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -466,7 +468,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "bowl.fish": "fluid.littleComponent"
     });
     
-    testCase.test("fluid.model.transformWithRules applied automatically to component options, without IoC", function() {
+    testCase.test("fluid.model.transformWithRules applied automatically to component options, without IoC", function () {
         var options = fluid.copy(oldOptions);
         options.transformOptions = {
             transformer: "fluid.model.transformWithRules",
@@ -512,7 +514,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
     
-    testCase.test("fluid.model.transformWithRules applied automatically to component options, with IoC", function() {
+    testCase.test("fluid.model.transformWithRules applied automatically to component options, with IoC", function () {
         var that = fluid.tests.transform.tip();
         checkTransformedOptions(that.transformable);
     });
