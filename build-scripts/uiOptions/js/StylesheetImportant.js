@@ -58,8 +58,7 @@ var fluid = fluid || {};
      
     for (var i = 0; i < files.length; i++) {
         var filePath = files[i];
-        fluid.build.log("\n********\n" + files[i] + "\n********\n");
-
+        fluid.build.log("Generating an !important theme for " + files[i]);
         injectImportant(filePath, generateWritePath(filePath));
      }
 })();
