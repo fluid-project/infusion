@@ -30,6 +30,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiEnhancer.tempStore"
             }
         };
+        
+        // Supply the table of contents' template URL
+        fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
+            options: {
+                resources: {
+                    template: {
+                        forceCache: true,
+                        url: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    }
+                }
+            }
+        });
+
         var tests = new jqUnit.TestCase("UI Enhancer Tests");
         
         tests.test("Initialization", function () {
@@ -60,7 +73,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var uiEnhancer = fluid.pageEnhancer(options).uiEnhancer;
             uiEnhancer.updateModel(testSettings);
             
-            jqUnit.assertEquals("Large text size is set", initialFontSize * testSettings.textSize + "px", body.css("fontSize"));
+            var expectedTextSize = initialFontSize * testSettings.textSize;
+            
+            jqUnit.assertEquals("Large text size is set", expectedTextSize.toFixed(1) + "px", body.css("fontSize"));
             jqUnit.assertTrue("Verdana font is set", body.hasClass("fl-font-verdana"));
             jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-hc"));
 
