@@ -19,6 +19,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*
  * This is the Fluid Infusion dependency manager.
  */
+// TODO: There is significantly redundant code between this file and build-core.js, particularly related
+//       to file loading and logging. These should be removed from here in favour of a dependence on the
+//       functions provided in build-core.js
+
 importClass(java.io.BufferedReader);
 importClass(java.io.FileReader);
 importClass(java.io.File);
