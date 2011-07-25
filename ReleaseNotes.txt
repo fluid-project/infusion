@@ -8,33 +8,40 @@ Documentation:      http://wiki.fluidproject.org/display/docs/Infusion+Documenta
 What's New in 1.4?
 ==================
 
-    * FSS fixes and improvements
-    * UI Options redesign
-    * jQuery UI library updated to 1.8.12
-    * jQuery UI accordion widget is no longer a dependency and will not be included in your bundle
-
-What's in this Release?
-=======================
-
-This release is available in two ways:
-
-    1) Create your own custom build, using the new Infusion Builder
-           http://builder.fluidproject.org
+    * Many improvements to the Fluid Skinning system, including:
+        - A new more modular reset system, including support for contextualized resets
+        - Easier to override: !importants have been removed
+        - New themes for accessibility
+        - More layout container sizes (thanks to Gary Thompson and Unicon)
+        - Expanded documentation and examples
+        - A new FSS contributor gallery with portlet and form styles: 
+            http://wiki.fluidproject.org/display/fluid/Fluid+Contributor+Gallery
+    * Shiny new UI Options component
+    * Improved user experience for Uploader, including error handling
+    * Substantial improvements to the Infusion IoC system
+    * Updated versions of jQuery and jQuery UI
     
-    2) Alternatively, you can download a source code release from Github:
-           https://github.com/fluid-project/infusion
-       (this will include our tests)
-    
-If you use the Infusion Builder, your download will include at the top level a single JavaScript file,
-    MyInfusion.js
-which is a combination of all requested source files. Developers can include this single file in 
-their pages to provide all the necessary support for the Infusion component Library. You can elect
-to have this file minified (for a production environment) or not (for development).
+Downloading Infusion
+======================
 
-Demo Portal
------------
-The bundle now comes with a convenient one-stop-shop for seeing all components in action. You can
-find the demo portal in the "demos" folder in the release bundle or on our Website at:
+You can create your own custom build of Infusion using the Infusion Builder:
+
+    http://builder.fluidproject.org
+    
+An all-in-one version of Infusion's JavaScript code, MyInfusion.js, can be 
+found at the top level of the distribution. When you put your application into 
+production, use the Builder to create a minified version of Infusion.
+
+For development, you can download the Infusion source code from Github:
+    
+    https://github.com/fluid-project/infusion
+
+
+Demos
+=====
+
+Infusion ships with a demo portal for seeing all components in action. You can
+find it in the "demos" folder in the release bundle or on our web site at:
 
     http://fluidproject.org/products/infusion/infusion-demos/
 
@@ -43,27 +50,20 @@ if you're using Firefox 3 and higher. Here's more information:
 
     http://kb.mozillazine.org/Security.fileuri.strict_origin_policy
     http://ejohn.org/blog/tightened-local-file-security/
-    
-Please note that the tests in the "manual-tests" folder are deprecated, and are being
-converted into unit tests. Any remaining tests in that folder may not function properly.
 
 License
--------
-Fluid Infusion code is licensed under both the ECL 2.0 and new BSD licenses. The specific licenses can be
-found in the license file:
-        licenses/Infusion-LICENSE.txt
+=======
 
-Infusion also depends upon some third party open source modules. These are contained in their own
-folders, and their licenses are also present in
-        licenses/
-        
-More information about Infusion licensing is available in our wiki:
+Fluid Infusion is licensed under both the ECL 2.0 and new BSD licenses.
+
+More information is available in our wiki:
 
     http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
 
 
 Third Party Software in Infusion
---------------------------------
+================================
+
 This is a list of publicly available software that is redistributed with Fluid Infusion, 
 categorized by license:
 
@@ -218,7 +218,6 @@ UI Options:
 Uploader: 
     FLUID-3996: Deleting files on the local filesystem after they have been added to the Uploader's queue will cause inconsistent behaviour
     FLUID-3997: Can't tab to the "Browse/Add More" button with the keyboard in IE with Flash 10
-    FLUID-3999: "Add more" button is not disabled while uploading other files in HTML5-compliant browsers
     FLUID-2052: Cannot tab away from the "Browse Files" button with Flash 10*
     * For information related to known issues with Flash 10 compatibility, 
       see http://wiki.fluidproject.org/x/kwZo
