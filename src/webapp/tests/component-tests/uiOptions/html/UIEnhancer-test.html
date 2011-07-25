@@ -12,8 +12,17 @@
         <script type="text/javascript" src="../../../../lib/json/js/json2.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
+
+        <script type="text/javascript" src="../../../../framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/RendererUtilities.js"></script>
+
         <script type="text/javascript" src="../../../../components/uiOptions/js/Store.js"></script>
         <script type="text/javascript" src="../../../../components/uiOptions/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../../../components/tableOfContents/js/TableOfContents.js"></script>                
 
         <!--  These are the jqUnit test js files -->
         <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
@@ -32,6 +41,9 @@
 
     <!-- Test HTML -->
     <div id="main" style="display:none;" class="container fl-layout-linear fl-font-size-90 fl-font-sans">
+        <div class="flc-toc-tocContainer toc">
+        </div>
+
         <div class="first-class fl-font-size-90 fl-font-spacing-3 last-class">
             <div id="inner-div" class="fl-font-arial">
                 <span class="fl-theme-hci fl-layout-linear last-class"></span>
