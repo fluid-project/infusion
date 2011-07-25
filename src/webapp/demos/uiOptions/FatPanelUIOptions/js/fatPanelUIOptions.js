@@ -16,15 +16,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 var demo = demo || {};
 (function ($) {
-    // Supply the templates
-    fluid.staticEnvironment.uiOptionsDemo = fluid.typeTag("fluid.uiOptionsDemo");
-    fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsDemo", {
+    fluid.demands("fluid.uiOptions.templatePath", "fluid.fatPanelUIOptions", {
         options: {
-            prefix: "../../../../components/uiOptions/html/"
+            value: "{fatPanelUIOptions}.options.prefix"
         }
     });
     
-    fluid.demands("fluid.renderIframe", ["fluid.uiOptionsDemo"], {
+    fluid.demands("fluid.renderIframe", ["fluid.fatPanelUIOptions"], {
         options: {
             markupProps: {
                 src: "../../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
@@ -33,13 +31,21 @@ var demo = demo || {};
     });
 
     // Supply the table of contents' template URL
-    fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+    fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
         options: {
-            templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+            resources: {
+                template: {
+                    forceCache: true,
+                    url: "../../../../components/tableOfContents/html/TableOfContents.html"
+                }
+            }
         }
     });
 
     demo.init = function () {
-        fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");   
+        fluid.pageEnhancer();
+        fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel", {
+            prefix: "../../../../components/uiOptions/html/"
+        });
     };
 })(jQuery);

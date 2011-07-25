@@ -18,31 +18,44 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
-    /**********************
+    /***************************
      * Full Preview UI Options *
-     *********************/
-     
+     ***************************/
+    fluid.demands("fluid.uiOptions.templateLoader", "fluid.fullPreviewUIOptions", {
+        options: {
+            templates: {
+                uiOptions: "%prefixFullPreviewUIOptions.html"
+            }
+        }
+    });
+    
+    fluid.demands("fluid.uiOptions.templatePath", "fluid.fullPreviewUIOptions", {
+        options: {
+            value: "{fullPreviewUIOptions}.options.prefix"
+        }
+    });
+    
     fluid.defaults("fluid.fullPreviewUIOptions", {
         gradeNames: ["fluid.viewComponent", "autoInit"],            
         components: {
-            uiOptions: {
-                type: "fluid.uiOptions",
+            uiOptionsLoader: {
+                type: "fluid.uiOptions.loader",
                 container: "{fullPreviewUIOptions}.container"
+            },
+            templateLoader: {
+                priority: "first",
+                type: "fluid.uiOptions.templateLoader"
             }                     
         }
     });       
     
-    // Options for UIOptions in fat panel mode
+    // Options for UIOptions in full with preview mode
     fluid.demands("fluid.uiOptions", ["fluid.fullPreviewUIOptions"], {
         options: {
             components: {
-                preview: {
-                    type: "fluid.uiOptions.preview",
-                    createOnEvent: "onReady"
-                },
                 settingsStore: "{uiEnhancer}.settingsStore"
             }
         }
     });      
-     
+    
 })(jQuery, fluid_1_4);

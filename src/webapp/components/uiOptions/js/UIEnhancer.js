@@ -65,10 +65,7 @@ var fluid_1_4 = fluid_1_4 || {};
             tableOfContents: {
                 type: "fluid.tableOfContents",
                 container: "{uiEnhancer}.container",
-                createOnEvent: "onReady",
-                options: {
-                    templateUrl: "../../tableOfContents/html/TableOfContents.html"
-                }
+                createOnEvent: "onReady"
             },
             textFont: {
                 type: "fluid.uiEnhancer.classSwapper",

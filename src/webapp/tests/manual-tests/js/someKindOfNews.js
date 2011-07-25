@@ -22,12 +22,20 @@ var skon = skon || {};
 
     /* Our demo script */   
     skon.slidingUIOptions = function (panel, uioptions) {
-        fluid.demands("fluid.uiOptionsTemplateLoader", [ "skon.demo"], {
+        fluid.demands("fluid.uiOptionsTemplatePath", [ "skon.demo"], {
             options: {
                 prefix: "../../../components/uiOptions/html/"
             }
         });
 
+        fluid.demands("fluid.renderIframe", ["skon.demo"], {
+            options: {
+                markupProps: {
+                    src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
+                }
+            }
+        });
+    
         // Supply the table of contents' template URL
         fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer", "skon.demo"], {
             options: {

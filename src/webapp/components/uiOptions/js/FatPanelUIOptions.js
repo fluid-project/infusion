@@ -19,41 +19,103 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) { 
 
+    /******************************
+     * fluid.uiOptionsEventBinder *
+     ******************************/
+   
+    fluid.defaults("fluid.uiOptionsEventBinder", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        finalInitFunction: "fluid.uiOptionsEventBinder.finalInit",
+        components: {
+            uiEnhancer: {
+                type: "fluid.uiEnhancer"
+            },
+            uiOptionsLoader: {
+                type: "fluid.uiOptionsLoader"
+            },
+            slidingPanel: {
+                type: "fluid.slidingPanel"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.uiOptionsEventBinder.binder", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"]
+    });
+    
+    fluid.uiOptionsEventBinder.bindModelChanged = function (uiOptions, eventBinder) {
+        eventBinder.uiOptions = uiOptions;
+        uiOptions.events.modelChanged.addListener(function (model) {
+            eventBinder.uiEnhancer.updateModel(model.selections);
+        });
+    };
+    
+    fluid.uiOptionsEventBinder.finalInit = function (that) {
+        //TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
+        // which is a child of this component - and also uiOptionsLoader which is another child
+        
+    
+        that.slidingPanel.events.afterPanelHidden.addListener(function () {
+            that.uiOptions.save();
+        });
+        that.slidingPanel.events.afterPanelShown.addListener(function () {
+            that.uiOptions.uiEnhancer.updateFromSettingsStore();
+        });
+    };
+    
+
     /****************************
      * Fat Panel UI Options Imp *
      ****************************/ 
      
-    fluid.defaults("fluid.fatPanelUIOptionsImpl", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+    fluid.defaults("fluid.fatPanelUIOptions", {
+        gradeNames: ["fluid.viewComponent"],
         selectors: {
             iframe: ".flc-uiOptions-iframe"
         },       
         components: {      
             slidingPanel: {
                 type: "fluid.slidingPanel",
-                container: "{fatPanelUIOptionsImpl}.container",
+                container: "{fatPanelUIOptions}.container",
                 createOnEvent: "afterRender"
             },
             markupRenderer: {
                 type: "fluid.renderIframe",
-                container: "{fatPanelUIOptionsImpl}.dom.iframe",
+                container: "{fatPanelUIOptions}.dom.iframe",
                 options: {
                     events: {
-                        afterRender: "{fatPanelUIOptionsImpl}.events.afterRender"
+                        afterRender: "{fatPanelUIOptions}.events.afterRender"
+                    },
+                    styles: {
+                        containerFlex: "fl-container-flex",
+                        container: "fl-uiOptions-fatPanel"
                     }
                 }
             },
-            pageEnhancer: {
-                type: "fluid.pageEnhancer", 
-                priority: "first"
-            },
+            uiEnhancer: "{uiEnhancer}",
             eventBinder: {
                 type: "fluid.uiOptionsEventBinder",
                 options: {
                     components: {
-                        pageEnhancer: "{fatPanelUIOptionsImpl}.pageEnhancer",
-                        uiOptions: "{fatPanelUIOptionsImpl}.uiOptionsBridge.uiOptions",
-                        slidingPanel: "{fatPanelUIOptionsImpl}.slidingPanel"
+                        uiEnhancer: "{fatPanelUIOptions}.uiEnhancer",
+                        uiOptionsLoader: "{fatPanelUIOptions}.uiOptionsBridge.uiOptionsLoader",
+                        slidingPanel: "{fatPanelUIOptions}.slidingPanel",
+                        binder: {
+                            type: "fluid.uiOptionsEventBinder.binder",
+                            priority: "last",
+                            options: {
+		                        events: {
+			                        onUIOptionsComponentReady: {
+			                            event: "{uiOptionsLoader}.events.onUIOptionsComponentReady",
+			                            args: ["{arguments}.0", "{fluid.uiOptionsEventBinder}"]
+			                        }
+			                    },
+			                    listeners: {
+			                        // This literal specification works around FLUID-4337
+			                        onUIOptionsComponentReady: fluid.uiOptionsEventBinder.bindModelChanged
+			                    }
+                            }
+                        }
                     }
                 },
                 createOnEvent: "afterRender",
@@ -65,7 +127,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 priority: "first",
                 options: {
                     components: { 
-                        markupRenderer: "{fatPanelUIOptionsImpl}.markupRenderer"
+                        markupRenderer: "{fatPanelUIOptions}.markupRenderer"
                     }
                 }
             }
@@ -74,46 +136,6 @@ var fluid_1_4 = fluid_1_4 || {};
             afterRender: null
         }
     });
-    
-    fluid.demands("fluid.uiEnhancer", ["fluid.fatPanelUIOptionsImpl", "fluid.uiOptionsBridge"], {
-        options: {
-            listeners: {
-                modelChanged: "{fatPanelUIOptionsImpl}.markupRenderer.makeVisible"
-            }
-        }
-    });
-    
-    /******************************
-     * fluid.uiOptionsEventBinder *
-     ******************************/
-    
-    fluid.defaults("fluid.uiOptionsEventBinder", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        finalInitFunction: "fluid.uiOptionsEventBinder.finalInit",
-        components: {
-            pageEnhancer: {
-                type: "fluid.pageEnhancer"
-            },
-            uiOptions: {
-                type: "fluid.uiOptions"
-            },
-            slidingPanel: {
-                type: "fluid.slidingPanel"
-            }
-        }
-    });
-    
-    fluid.uiOptionsEventBinder.finalInit = function (that) {
-        that.uiOptions.events.modelChanged.addListener(function (model) {
-            that.pageEnhancer.uiEnhancer.updateModel(model.selections);
-        });
-        that.slidingPanel.events.afterPanelHidden.addListener(function () {
-            that.uiOptions.save();
-        });
-        that.slidingPanel.events.afterPanelShown.addListener(function () {
-            that.uiOptions.pageEnhancer.uiEnhancer.updateFromSettingsStore();
-        });
-    };
     
     /**********************
      * fluid.renderIframe *
@@ -126,7 +148,6 @@ var fluid_1_4 = fluid_1_4 || {};
             afterRender: null
         },
         styles: {
-            offScreen: "fl-offScreen-hidden",
             containerFlex: "fl-container-flex",
             container: "fl-uiOptions-fatPanel-iframe"
         },
@@ -153,12 +174,7 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.iframe.addClass(styles.containerFlex);
         that.iframe.addClass(styles.container);
-        that.iframe.addClass(styles.offScreen);
         that.iframe.load(that.events.afterRender.fire);
-        
-        that.makeVisible = function () {
-            that.iframe.removeClass(styles.offScreen);
-        };
     };
     
     /*************************
@@ -167,27 +183,40 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.defaults("fluid.uiOptionsBridge", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
-        finalInitFunction: "fluid.uiOptionsBridge.finalInit",
-        uiOptions: {
-            type: "fluid.uiOptions",
-            options: {
-                components: {
-                    pageEnhancer: {
-                        type: "fluid.pageEnhancer",
-                        priority: "first"
-                    },
-                    preview: {
-                        type: "fluid.emptySubcomponent"
-                    },
-                    tabs: {
-                        type: "fluid.tabs",
-                        container: ".flc-uiOptions-fatPanel-tabs",   
-                        createOnEvent: "onReady"               
-                    }
+        finalInitFunction: "fluid.uiOptionsBridge.finalInit",  
+        iframe: null,
+        uiOptionsOptions: {}
+    });
+    
+    fluid.defaults("fluid.uiOptions.FatPanelOtherWorldLoader", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        components: {
+            templateLoader: {
+                priority: "first",
+                type: "fluid.uiOptions.templateLoader"
+            },  
+            uiOptionsLoader: {
+                type: "fluid.uiOptions.loader",
+                container: "{FatPanelOtherWorldLoader}.container"
+            }
+        }
+    });
+    
+    // Options for UIOptions in fat panel mode
+    fluid.demands("fluid.uiOptions", ["fluid.uiOptions.FatPanelOtherWorldLoader"], {
+        options: {
+            components: {
+                uiEnhancer: "{uiEnhancer}",
+                preview: {
+                    type: "fluid.emptySubcomponent"
+                },
+                tabs: {
+	                type: "fluid.tabs",
+	                container: "body",      
+	                createOnEvent: "onUIOptionsComponentReady"
                 }
             }
-        },        
-        iframe: null
+        }
     });
     
     fluid.uiOptionsBridge.finalInit = function (that) {
@@ -196,27 +225,30 @@ var fluid_1_4 = fluid_1_4 || {};
         var iframeWin = iframe[0].contentWindow;
         var innerFluid = iframeWin.fluid;
         var body = $("body", iframeDoc);      
-        body.addClass(that.markupRenderer.options.styles.container);        
+        body.addClass(that.markupRenderer.options.styles.container);
+        var uiOptionsOptions = {
+            options: that.options.uiOptionsOptions,
+            container: body
+        };
+        var overallOptions = {};
+        // TODO: Awful hard-wiring of dependence on exact component path
+        fluid.set(overallOptions, "components.uiOptionsLoader.options.components.uiOptions.options", uiOptionsOptions);
         
-        that.uiOptions = innerFluid.invokeGlobalFunction(that.options.uiOptions.type, 
-                [body, that.options.uiOptions.options]);  
+        var component = innerFluid.invokeGlobalFunction("fluid.uiOptions.FatPanelOtherWorldLoader", [body, overallOptions]);  
+        that.uiOptionsLoader = component.uiOptionsLoader;
     };
     
     /************************
      * Fat Panel UI Options *
      ************************/
     
-    fluid.registerNamespace("fluid.fatPanelUIOptions");
-
     fluid.fatPanelUIOptions = function (container, options) {
-        return fluid.fatPanelUIOptionsImpl(container, 
-                fluid.fatPanelUIOptions.mapOptions(options));
-    };  
-    
-    fluid.defaults("fluid.fatPanelUIOptions", {
-        gradeNames: ["fluid.viewComponent"]
-    });     
-    
+        var mappedOptions = fluid.fatPanelUIOptions.mapOptions(options);
+        var that = fluid.initView("fluid.fatPanelUIOptions", container, mappedOptions);
+        fluid.initDependents(that);
+        return that; 
+    };
+
     /**
     * @param {Object} source, original object
     * @param {Object} destination, object to copy options to
@@ -228,7 +260,7 @@ var fluid_1_4 = fluid_1_4 || {};
             var location = (map && map[key]) || defaultLocation || "";
             fluid.set(destination, (location ? location + "." : "") + key, value);
         });
-    };    
+    };
     
     // TODO: Maybe we need a framework function for model transformation to
     //       replace the code below? 
@@ -239,11 +271,11 @@ var fluid_1_4 = fluid_1_4 || {};
         var newOpts = {};
         var componentPath = "components";
         var selectorPath = "selectors";
-        var defaultBasePath = "components.uiOptionsBridge.uiOptions.options";
+        var defaultBasePath = "components.uiOptionsBridge.options.uiOptionsOptions";
         
         var fatPanelComponentMapping = {
             slidingPanel: componentPath,
-            pageEnhancer: componentPath,
+            uiEnhancer: componentPath,
             preview: componentPath,
             markupRenderer: componentPath,
             eventBinder: componentPath
@@ -262,7 +294,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 fluid.fatPanelUIOptions.moveOptions(value, newOpts, defaultPath);
             }
         });
-            
+
         return newOpts;
     };
 })(jQuery, fluid_1_4);

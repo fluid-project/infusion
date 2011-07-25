@@ -18,6 +18,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
+        fluid.staticEnvironment.uiEnhancerTests = fluid.typeTag("fluid.uiOptions.uiEnhancerTests");
+
         var testSettings = {
             textSize: "1.5",
             textFont: "verdana",
@@ -25,11 +27,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             layout: false
         };
         
-        var options = {
-            settingsStore: {
-                type: "fluid.uiEnhancer.tempStore"
+        fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer", "fluid.uiOptions.uiEnhancerTests"], {
+            funcName: "fluid.tempStore"
+        });
+        
+        // Supply the table of contents' template URL
+        fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
+            options: {
+                resources: {
+                    template: {
+                        forceCache: true,
+                        url: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    }
+                }
             }
-        };
+        });
+
         var tests = new jqUnit.TestCase("UI Enhancer Tests");
         
         tests.test("Initialization", function () {
@@ -41,7 +54,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Initially font-sans class exists", 1, $(".fl-font-sans").length);
             jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
             jqUnit.assertEquals("Initially text-spacing class exists", 1, $(".fl-font-spacing-3").length);
-            fluid.pageEnhancer(options);
+            fluid.pageEnhancer();
             jqUnit.assertEquals("font size classes should not be removed", 3, $(".fl-font-size-90").length);
             jqUnit.assertEquals("layout class is gone", 0, $(".fl-layout-linear").length);
             jqUnit.assertEquals("Fluid theme class is gone", 0, $(".fl-theme-hci").length);
@@ -57,10 +70,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var body = $("body");
             var initialFontSize = parseFloat(body.css("fontSize"));
             
-            var uiEnhancer = fluid.pageEnhancer(options).uiEnhancer;
+            var uiEnhancer = fluid.pageEnhancer().uiEnhancer;
             uiEnhancer.updateModel(testSettings);
             
-            jqUnit.assertEquals("Large text size is set", initialFontSize * testSettings.textSize + "px", body.css("fontSize"));
+            var expectedTextSize = initialFontSize * testSettings.textSize;
+            
+            jqUnit.assertEquals("Large text size is set", expectedTextSize.toFixed(0) + "px", body.css("fontSize"));
             jqUnit.assertTrue("Verdana font is set", body.hasClass("fl-font-verdana"));
             jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-hc"));
 

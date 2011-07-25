@@ -30,6 +30,10 @@
         <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/RendererUtilities.js"></script>
 
         <script type="text/javascript" src="../../../../components/uiOptions/js/Store.js"></script>
         <script type="text/javascript" src="../../../../components/uiOptions/js/UIEnhancer.js"></script>
@@ -42,13 +46,16 @@
     </head>
 
     <body>
-		<div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel">        
-			<div id="myUIOptions" class="flc-slidingPanel-panel flc-uiOptions-iframe"></div>     
+        <div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel">        
+            <div id="myUIOptions" class="flc-slidingPanel-panel flc-uiOptions-iframe"></div>     
 			
-			<div class="fl-panelBar">
-				<button class="flc-slidingPanel-toggleButton fl-toggleButton">Show/Hide</button>
-			</div>
-		</div>	
+            <div class="fl-panelBar">
+                <button class="flc-slidingPanel-toggleButton fl-toggleButton">Show/Hide</button>
+            </div>
+        </div>	
+
+        <div class="flc-toc-tocContainer toc">
+        </div>
         
         <div id="main">    
             <h1>Some Sample Title</h1>
