@@ -1726,14 +1726,14 @@ var fluid = fluid || fluid_1_4;
      * @param {String}    template    a string (can be HTML) that contains tokens embedded into it
      * @param {object}    values        a collection of token keys and values
      */
-    fluid.stringTemplate = function (template, values) {
-        var newString = template;
-        for (var key in values) {
-            var searchStr = "%" + key;
-            newString = newString.replace(searchStr, values[key]);
-        }
-        return newString;
-    };
+   fluid.stringTemplate = function (template, values) {
+       var newString = template;
+       for (var key in values) {
+            var re = new RegExp("%" + key.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "g");
+            newString = newString.replace(re, values[key]);
+       }
+       return newString;
+   };
     
 
     fluid.messageResolver = function (options) {
