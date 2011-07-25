@@ -38,12 +38,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     // Supply the table of contents' template URL
-    fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+    fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
         options: {
-            templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+            resources: {
+                template: {
+                    forceCache: true,
+                    url: "../../../../components/tableOfContents/html/TableOfContents.html"
+                }
+            }
         }
     });
-    
+
     fluid.demands("fluid.cookieStore", ["fluid.fatPanelUIOptionsTests"], {
         options: {
             cookieName: "fluid-ui-settings-test"
@@ -137,7 +142,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 components: {      
                     slidingPanel: "slidingPanel",
                     markupRenderer: "markupRenderer",
-                    pageEnhancer: "pageEnhancer",
+                    uiEnhancer: "uiEnhancer",
                     eventBinder: "eventBinder",
                     textfield: "textField",
                     slider: "slider"
@@ -156,11 +161,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 components: {      
                     slidingPanel: "slidingPanel",
                     markupRenderer: "markupRenderer",
-                    pageEnhancer: "pageEnhancer",
+                    uiEnhancer: "uiEnhancer",
                     eventBinder: "eventBinder",
                     uiOptionsBridge: {
-                        uiOptions: {
-                            options: {
+                        options: {
+	                        uiOptionsOptions: {
                                 selectors: {
                                     textfield: ".textfield",
                                     slider: ".slider"
@@ -174,7 +179,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     min: 0,
                                     max: 100
                                 }
-                            }
+	                        }
                         }
                     }
                 }
@@ -200,11 +205,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var eventBinderComponents = components.eventBinder.options.components; 
             jqUnit.assertTrue("slidingPanel is present", components.slidingPanel);
             jqUnit.assertTrue("markupRenderer is present", components.markupRenderer);
-            jqUnit.assertTrue("pageEnhancer is preset", components.pageEnhancer);
+            jqUnit.assertTrue("uiEnhancer is preset", components.uiEnhancer);
             jqUnit.assertTrue("eventBinder is present", components.eventBinder);
             jqUnit.assertTrue("uiOptionsBridge is present", components.uiOptionsBridge);
-            jqUnit.assertTrue("pageEnhancer is present as an eventBinder sub-component", eventBinderComponents.pageEnhancer);
-            jqUnit.assertTrue("uiOptions is present as an eventBinder sub-component", eventBinderComponents.uiOptions);
+            jqUnit.assertTrue("uiEnhancer is present as an eventBinder sub-component", eventBinderComponents.uiEnhancer);
+            jqUnit.assertTrue("uiOptionsLoader is present as an eventBinder sub-component", eventBinderComponents.uiOptionsLoader);
             jqUnit.assertTrue("slidingPanel is present as an eventBinder sub-component", eventBinderComponents.slidingPanel);
             jqUnit.assertTrue("markupRenderer is present as an uiOptionsBridge sub-component", components.uiOptionsBridge.options.components.markupRenderer);
         };        
@@ -224,10 +229,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         
         tests.asyncTest("Fat Panel UIOptions Integration tests", function () {
+            fluid.pageEnhancer();
             var that = fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");
             
             checkUIOComponents(that);
-            
+
             /*
              * TODO: There have been talks about implementing a Framework event that fires 
              *       once a component and all of it's subcomponents have finished resolving.
@@ -235,15 +241,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
              *       the framework event to tell us that the component is fully resolved.
              */
             setTimeout(function () {
-                var defaultSiteSettings = that.pageEnhancer.uiEnhancer.settingsStore.options.defaultSiteSettings;
-                var pageModel = that.pageEnhancer.uiEnhancer.model;
-                var panelModel = that.uiOptionsBridge.uiOptions.pageEnhancer.uiEnhancer.model;
+                var defaultSiteSettings = that.uiEnhancer.settingsStore.options.defaultSiteSettings;
+                var pageModel = that.uiEnhancer.model;
+                var panelModel = that.uiOptionsBridge.uiOptionsLoader.uiOptions.uiEnhancer.model;
                 
-                var settingsStoreOptions = that.pageEnhancer.uiEnhancer.settingsStore.options;
+                var settingsStoreOptions = that.uiEnhancer.settingsStore.options;
                 
                 // Open the Fat Panel, apply changes, and close the panel
                 that.slidingPanel.events.afterPanelShown.fire();
-                applierRequestChanges(that.uiOptionsBridge.uiOptions, bwSkin);
+                applierRequestChanges(that.uiOptionsBridge.uiOptionsLoader.uiOptions, bwSkin);
                 checkModelSelections(bwSkin, pageModel);
                 that.slidingPanel.events.afterPanelHidden.fire();
                 checkModelSelections(bwSkin, panelModel);
@@ -251,13 +257,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 
                 // Open the Fat Panel, click "Reset All", and close the panel
                 that.slidingPanel.events.afterPanelShown.fire();
-                that.uiOptionsBridge.uiOptions.locate("reset").click();
+                that.uiOptionsBridge.uiOptionsLoader.uiOptions.locate("reset").click();
                 checkModelSelections(pageModel, defaultSiteSettings);
                 that.slidingPanel.events.afterPanelHidden.fire();
                 checkModelSelections(panelModel, defaultSiteSettings);
                 checkModelSelections(pageModel, panelModel);
                 start();
             }, 1500);
-        });        
+        });
     });
-})(jQuery);        
+})(jQuery);

@@ -1,20 +1,29 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-            <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <title>Table of Contents Template</title>
 
+        <link type="text/css" href="../../../components/tableOfContents/css/TableOfContents.css" rel="stylesheet" />
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
-        <script type="text/javascript" src="../../../framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidRequests.js"></script>
         <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
+        <script type="text/javascript" src="../js/table-of-contents-example.js"></script>
 
     </head>
     <body>
+        <div class="flc-toc-tocContainer toc">
+        </div>
         <h1>Amphibians</h1>
         <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam interdum, elit lobortis dictum placerat, sapien nulla volutpat nisl, a elementum purus est sit amet pede. Vestibulum tempus, libero ut eleifend commodo, nibh quam fermentum neque, vitae suscipit nulla erat id nisl. Aliquam sollicitudin sapien sed nisl gravida malesuada. Praesent magna velit, cursus id, aliquet at, varius a, mauris. Mauris lacinia, est eget dapibus porta, augue ipsum adipiscing sapien, vitae lobortis risus diam vitae est. Fusce id felis. Donec turpis lorem, commodo non, iaculis nec, tristique vel, ligula. Donec molestie nulla non sapien. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer neque dolor, aliquam quis, fringilla tempor, scelerisque nec, nibh. Nullam volutpat fermentum purus. Curabitur vitae urna. Vivamus nibh. Curabitur non tortor. Suspendisse mi elit, placerat at, rutrum eu, congue vel, elit. Donec erat ligula, placerat id, commodo at, dignissim eu, tellus. Nam luctus metus. Curabitur molestie tincidunt sem.
@@ -78,7 +87,7 @@
         </p>
         
         <script type="text/javascript">
-            fluid.tableOfContents("body", {templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"});
+            demo.initTableOfContent();
         </script>
     </body>
 </html>
