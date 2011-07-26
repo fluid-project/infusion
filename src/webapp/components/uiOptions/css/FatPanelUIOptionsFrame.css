@@ -1,6 +1,7 @@
 /* UI Options Fat Panel styles */
 .fl-uiOptions-fatPanel {
 	min-width: 960px;
+	background-color: #fff;
 }
 
 /* Reset link */
@@ -162,6 +163,7 @@ ul.fl-pane li {
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .ui-state-hover .fl-tab-links { background-image: url('../images/yellowBlack/uio_icon_linksandbuttons_yellowBlack_16x16.png'); }
 
 /* Adjust colours for specific themes */
+.fl-theme-hc.fl-uiOptions-fatPanel {background-color: #fff; }
 .fl-theme-hc .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-hc .fl-uiOptions-fatPanel ul.fl-tabs { background-color: #000; }
 .fl-theme-hc .fl-uiOptions-fatPanel .fl-tabs a  { background-color: #000; color: #fff;}
@@ -169,12 +171,14 @@ ul.fl-pane li {
 .fl-theme-hc .fl-uiOptions-fatPanel .ui-widget-header .ui-state-active { background: none no-repeat scroll 0% 0% #fff; } /* Override a background image that was making the tab larger than necessary. */
 .fl-theme-hc .fl-uiOptions-fatPanel #reset { background-color: #000; }
 
+.fl-theme-hci.fl-uiOptions-fatPanel {background-color: #000; }
 .fl-theme-hci .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-hci .fl-uiOptions-fatPanel ul.fl-tabs  { background-color: #fff; }
 .fl-theme-hci .fl-uiOptions-fatPanel .fl-tabs a { background-color: #fff; color: #000; }
 .fl-theme-hci .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #000; color: #fff; }
 .fl-theme-hci .fl-uiOptions-fatPanel #reset { background-color: #fff; color: #000; }
 
+.fl-theme-blackYellow.fl-uiOptions-fatPanel {background-color: #ffff00; }
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-blackYellow .fl-uiOptions-fatPanel  ul.fl-tabs  { background-color: #000; }
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-tabs a { background-color: #000; color: #ffff00; }
@@ -186,6 +190,7 @@ ul.fl-pane li {
 .fl-theme-blackYellow .fl-uiOptions-fatPanel .fl-slider {background-color: #000;}
 .fl-theme-blackYellow .fl-uiOptions-fatPanel #reset { background-color: #000; color: #ffff00; }
 
+.fl-theme-yellowBlack.fl-uiOptions-fatPanel {background-color: #000; }
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel  ul.fl-tabs  { background-color: #ffff00; }
 .fl-theme-yellowBlack .fl-uiOptions-fatPanel .fl-tabs a { background-color: #ffff00; color: #000; }
