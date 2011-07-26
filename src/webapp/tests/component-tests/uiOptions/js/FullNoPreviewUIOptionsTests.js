@@ -22,14 +22,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var tests = jqUnit.testCase("FullNoPreviewUIOptions Tests");
         fluid.staticEnvironment.noPreviewUIOptionsTests = fluid.typeTag("fluid.noPreviewUIOptionsTests");
         
-        var saveCalled = false;
-        
         var bwSkin = {
             textSize: "1.8",
             textFont: "verdana",
             theme: "bw",
             lineSpacing: 2
         };
+        
+        var bwSkin2 = {
+            textSize: "2",
+            textFont: "comic sans",
+            theme: "yb",
+            lineSpacing: 1.5
+        };        
         
         /***********
          * Demands *
@@ -91,13 +96,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var saveButton = uiOptions.locate("save");
                 saveButton.click();
                 checkModelSelections(uiOptions.model.selections, bwSkin);
+                applierRequestChanges(uiOptions, bwSkin2);
+
+                var cancelButton = uiOptions.locate("cancel");
+                cancelButton.click();
+                checkModelSelections(uiOptions.model.selections, bwSkin);
                 
                 var resetButton = uiOptions.locate("reset");
                 resetButton.click();
                 checkModelSelections(uiOptions.model.selections, defaultSiteSettings);                    
                 applierRequestChanges(uiOptions, bwSkin);
                 
-                var cancelButton = uiOptions.locate("cancel");
                 cancelButton.click();
                 checkModelSelections(uiOptions.model.selections, defaultSiteSettings);
                 
