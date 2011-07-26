@@ -36,20 +36,6 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.defaults("fluid.fullNoPreviewUIOptions", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],            
-        components: {
-            uiOptionsLoader: {
-                type: "fluid.uiOptions.loader",
-                container: "{fullNoPreviewUIOptions}.container"
-            },
-            templateLoader: {
-                priority: "first",
-                type: "fluid.uiOptions.templateLoader"
-            }                     
-        }
-    });       
-    
     // Options for UIOptions in full no preview mode
     fluid.demands("fluid.uiOptions", ["fluid.fullNoPreviewUIOptions"], {
         options: {
@@ -60,6 +46,28 @@ var fluid_1_4 = fluid_1_4 || {};
                 settingsStore: "{uiEnhancer}.settingsStore"
             }
         }
-    });      
-     
+    });
+    
+    fluid.defaults("fluid.fullNoPreviewUIOptions", {
+        gradeNames: ["fluid.viewComponent"],
+        components: {
+            uiOptionsLoader: {
+                type: "fluid.uiOptions.loader",
+                container: "{fullNoPreviewUIOptions}.container"
+            },
+            templateLoader: {
+                priority: "first",
+                type: "fluid.uiOptions.templateLoader"
+            }                     
+        },
+        finalInitFunction: "fluid.fullNoPreviewUIOptions.finalInit"
+    });
+    
+    fluid.fullNoPreviewUIOptions = function (container, options) {
+        var mappedOptions = fluid.uiOptions.mapOptions(options);
+        var that = fluid.initView("fluid.fullNoPreviewUIOptions", container, mappedOptions);
+        fluid.initDependents(that);
+        return that;
+    };
+    
 })(jQuery, fluid_1_4);

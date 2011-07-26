@@ -19,6 +19,12 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) { 
 
+    fluid.demands("fluid.uiOptions.templatePath", "fluid.fatPanelUIOptions", {
+        options: {
+            value: "{fatPanelUIOptions}.options.prefix"
+        }
+    });
+    
     /******************************
      * fluid.uiOptionsEventBinder *
      ******************************/

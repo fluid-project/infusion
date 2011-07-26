@@ -55,6 +55,18 @@ var fluid_1_4 = fluid_1_4 || {};
         }        
     };
     
+    // Supply the table of contents' template URL
+//    fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
+//        options: {
+//            resources: {
+//                template: {
+//                    forceCache: true,
+//                    url: "../../../../components/tableOfContents/html/TableOfContents.html"
+//                }
+//            }
+//        }
+//    });
+
     fluid.defaults("fluid.uiEnhancer", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
@@ -65,7 +77,22 @@ var fluid_1_4 = fluid_1_4 || {};
             tableOfContents: {
                 type: "fluid.tableOfContents",
                 container: "{uiEnhancer}.container",
-                createOnEvent: "onReady"
+                createOnEvent: "onReady",
+                options: {
+                    components: {
+                        levels: {
+                            type: "fluid.tableOfContents.levels",
+                            options: {
+                                resources: {
+                                    template: {
+                                        forceCache: true,
+                                        url: "{uiEnhancer}.options.tocTemplate"
+                                    }
+                                }
+                            } 
+                        }
+                    }
+                }
             },
             textFont: {
                 type: "fluid.uiEnhancer.classSwapper",

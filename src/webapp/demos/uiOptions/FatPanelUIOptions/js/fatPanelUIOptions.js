@@ -16,12 +16,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 var demo = demo || {};
 (function ($) {
-    fluid.demands("fluid.uiOptions.templatePath", "fluid.fatPanelUIOptions", {
-        options: {
-            value: "{fatPanelUIOptions}.options.prefix"
-        }
-    });
-    
     fluid.demands("fluid.renderIframe", ["fluid.fatPanelUIOptions"], {
         options: {
             markupProps: {
@@ -30,20 +24,11 @@ var demo = demo || {};
         }
     });
 
-    // Supply the table of contents' template URL
-    fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
-        options: {
-            resources: {
-                template: {
-                    forceCache: true,
-                    url: "../../../../components/tableOfContents/html/TableOfContents.html"
-                }
-            }
-        }
-    });
-
     demo.init = function () {
-        fluid.pageEnhancer();
+        fluid.pageEnhancer({
+            tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+        });
+
         fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel", {
             prefix: "../../../../components/uiOptions/html/"
         });

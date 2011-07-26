@@ -36,19 +36,13 @@ var skon = skon || {};
             }
         });
     
-        // Supply the table of contents' template URL
-        fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer", "skon.demo"], {
-            options: {
-                templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
-            }
-        });
-
         fluid.pageEnhancer({
             classnameMap: {
                 theme: {
                     "default": "skon-theme-basic"
                 }
-            }
+            },
+            tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
         });
         
         // Next, start up UI Options

@@ -68,18 +68,6 @@
                 }
             });
         
-            // Supply the table of contents' template URL
-            fluid.demands("fluid.tableOfContents.levels", ["fluid.uiOptionsIframe", "fluid.tableOfContents"], {
-                options: {
-                    resources: {
-                        template: {
-                            forceCache: true,
-                            url: "../../tableOfContents/html/TableOfContents.html"
-                        }
-                    }
-                }
-            });
-
             fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
                 options: {
                     classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
@@ -98,7 +86,9 @@
                 }
             });
             
-            fluid.pageEnhancer();
+            fluid.pageEnhancer({
+                tocTemplate: "../../tableOfContents/html/TableOfContents.html"
+            });
         </script>
     </body>
 

@@ -35,8 +35,17 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
+    // Options for UIOptions in full with preview mode
+    fluid.demands("fluid.uiOptions", ["fluid.fullPreviewUIOptions"], {
+        options: {
+            components: {
+                settingsStore: "{uiEnhancer}.settingsStore"
+            }
+        }
+    });
+    
     fluid.defaults("fluid.fullPreviewUIOptions", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],            
+        gradeNames: ["fluid.viewComponent"],
         components: {
             uiOptionsLoader: {
                 type: "fluid.uiOptions.loader",
@@ -49,13 +58,11 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });       
     
-    // Options for UIOptions in full with preview mode
-    fluid.demands("fluid.uiOptions", ["fluid.fullPreviewUIOptions"], {
-        options: {
-            components: {
-                settingsStore: "{uiEnhancer}.settingsStore"
-            }
-        }
-    });      
-    
+    fluid.fullPreviewUIOptions = function (container, options) {
+        var mappedOptions = fluid.uiOptions.mapOptions(options);
+        var that = fluid.initView("fluid.fullPreviewUIOptions", container, mappedOptions);
+        fluid.initDependents(that);
+        return that;
+    };
+
 })(jQuery, fluid_1_4);

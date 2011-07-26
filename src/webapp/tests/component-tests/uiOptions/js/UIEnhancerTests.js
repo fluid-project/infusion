@@ -27,21 +27,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             layout: false
         };
         
-        fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer", "fluid.uiOptions.uiEnhancerTests"], {
-            funcName: "fluid.tempStore"
-        });
-        
-        // Supply the table of contents' template URL
-        fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
-            options: {
-                resources: {
-                    template: {
-                        forceCache: true,
-                        url: "../../../../components/tableOfContents/html/TableOfContents.html"
-                    }
+        var uiEnhancerOptions = {
+            components: {
+                settingsStore: {
+                    type: "fluid.tempStore"
                 }
-            }
-        });
+            },
+            tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+        };
 
         var tests = new jqUnit.TestCase("UI Enhancer Tests");
         
@@ -54,7 +47,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Initially font-sans class exists", 1, $(".fl-font-sans").length);
             jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
             jqUnit.assertEquals("Initially text-spacing class exists", 1, $(".fl-font-spacing-3").length);
-            fluid.pageEnhancer();
+            fluid.pageEnhancer(uiEnhancerOptions);
             jqUnit.assertEquals("font size classes should not be removed", 3, $(".fl-font-size-90").length);
             jqUnit.assertEquals("layout class is gone", 0, $(".fl-layout-linear").length);
             jqUnit.assertEquals("Fluid theme class is gone", 0, $(".fl-theme-hci").length);
@@ -70,7 +63,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var body = $("body");
             var initialFontSize = parseFloat(body.css("fontSize"));
             
-            var uiEnhancer = fluid.pageEnhancer().uiEnhancer;
+            var uiEnhancer = fluid.pageEnhancer(uiEnhancerOptions).uiEnhancer;
             uiEnhancer.updateModel(testSettings);
             
             var expectedTextSize = initialFontSize * testSettings.textSize;

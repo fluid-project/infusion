@@ -776,4 +776,48 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
+
+    // TODO: Maybe we need a framework function for model transformation to
+    //       replace the code below? 
+    /**
+    * @param {Object} options, top level options to be mapped
+    */
+    fluid.uiOptions.mapOptions = function (options) {
+        var newOpts = {};
+        var componentsPathMapping = {
+                "templateLoader": "components.templateLoader",
+                "uiOptions": "components.uiOptionsLoader.options.components.uiOptions",
+                "textControls": "components.uiOptionsLoader.options.components.uiOptions.options.components.textControls",
+                "layoutControls": "components.uiOptionsLoader.options.components.uiOptions.options.components.textControls",
+                "linksControls": "components.uiOptionsLoader.options.components.uiOptions.options.components.textControls",
+                "preview": "components.uiOptionsLoader.options.components.uiOptions.options.components.preview",
+                "settingStore": "components.uiOptionsLoader.options.components.uiOptions.options.components.settingStore",
+                "previewEnhancer": "components.uiOptionsLoader.options.components.uiOptions.options.components.preview.options.components.enhancer"
+            };
+
+        fluid.each(options, function (value, key) {
+            if (componentsPathMapping[key]) {
+                fluid.uiOptions.moveOptions(value, newOpts, componentsPathMapping[key]);
+            } else {
+                var option = {};
+                option[key] = value;
+                fluid.uiOptions.moveOptions(option, newOpts);
+            }
+        });
+
+        return newOpts;
+    };
+
+    /**
+    * @param {Object} source, original object
+    * @param {Object} destination, object to copy options to
+    * @param {String} defaultLocation, default path to move options location
+    */
+    fluid.uiOptions.moveOptions = function (source, destination, defaultLocation) {
+        fluid.each(source, function (value, key) {
+            var location = defaultLocation || "";
+            fluid.set(destination, (location ? location + "." : "") + key, value);
+        });
+    };
+    
 })(jQuery, fluid_1_4);
