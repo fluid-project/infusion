@@ -148,7 +148,7 @@
 .fl-theme-hc .ui-slider-horizontal .ui-slider-handle,
 .fl-theme-hci .ui-slider-horizontal .ui-slider-handle,
 .fl-theme-blackYellow .ui-slider-horizontal .ui-slider-handle,
-.fl-theme-yellowBlack .ui-slider-horizontal .ui-slider-handle { margin-top: -5px; }
+.fl-theme-yellowBlack .ui-slider-horizontal .ui-slider-handle { margin-top: -0.3em; }
 
 .fl-theme-hc .fl-uiOptions .fl-slider { background: none; background-color:#000;}
 .fl-theme-hc .fl-uiOptions .fl-slider .fl-handle, 
