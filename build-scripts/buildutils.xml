@@ -7,6 +7,7 @@
     <target name="clean" description="Cleans up all build-related artifacts and products.">
         <delete dir="${build}" />
         <delete dir="${products}" />
+		<delete dir="${fssImportant}" />
     </target>
 
     <target name="buildWAR" description="Builds a WAR file using maven given 3 parameters. toFile: the full path to the warfile to be created; fromDir: the directory containing the content to be placed in the war; warFile: the name of the warfile that is created from the maven task">
