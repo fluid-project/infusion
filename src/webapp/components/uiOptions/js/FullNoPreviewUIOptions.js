@@ -54,20 +54,15 @@ var fluid_1_4 = fluid_1_4 || {};
     });
 
     fluid.defaults("fluid.uiOptions.fullNoPreviewUIOptions", {
-        gradeNames: ["fluid.viewComponent"],
-        components: {
-            uiOptionsLoader: {
-                type: "fluid.uiOptions.loader",
-                container: "{fullNoPreviewUIOptions}.container"
-            },
-            templateLoader: {
-                priority: "first",
-                type: "fluid.uiOptions.templateLoader"
-            }                     
-        }
+        gradeNames: ["fluid.uiOptions.inline"],
+        container: "{fullNoPreviewUIOptions}.container"
     });
     
     fluid.uiOptions.fullNoPreviewUIOptions = function (container, options) {
+        // make "container" one of the options so it can be munged by the uiOptions.mapOptions.
+        // This container is used as uiOptionsLoader.container 
+        options.container = container;
+        
         var mappedOptions = fluid.uiOptions.mapOptions(options);
         var that = fluid.initView("fluid.uiOptions.fullNoPreviewUIOptions", container, mappedOptions);
         fluid.initDependents(that);

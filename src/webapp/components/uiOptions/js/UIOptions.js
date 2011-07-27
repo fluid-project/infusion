@@ -172,6 +172,103 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
+    /*********************
+     * UI Options Inline *
+     *********************/
+
+    /**
+     * An UI Options top-level component that reflects the collaboration between uiOptionsLoader
+     * and templateLoader. This component is the only UI Options component that is intended to be 
+     * called by the outside world.
+     * 
+     * @param {Object} options
+     */    
+    fluid.defaults("fluid.uiOptions.inline", {
+        gradeNames: ["fluid.viewComponent"],
+        components: {
+            uiOptionsLoader: {
+                type: "fluid.uiOptions.loader"
+            },
+            templateLoader: {
+                priority: "first",
+                type: "fluid.uiOptions.templateLoader"
+            }
+        },
+        uiOptionsTransform: {
+            transformer: "fluid.uiOptions.mapOptions",
+            config: {
+                "*.templateLoader":                                 "templateLoader",
+                "*.uiOptionsLoader.container":                       "container",
+                "*.uiOptionsLoader.*.uiOptions":                     "uiOptions",
+                "*.uiOptionsLoader.*.uiOptions.*.textControls":       "textControls",
+                "*.uiOptionsLoader.*.uiOptions.*.layoutControls":     "layoutControls",
+                "*.uiOptionsLoader.*.uiOptions.*.linksControls":      "linksControls",
+                "*.uiOptionsLoader.*.uiOptions.*.preview":            "preview",
+                "*.uiOptionsLoader.*.uiOptions.*.settingStore":       "settingStore",
+                "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
+            }
+        }
+    });
+    
+     // TODO: Maybe we need a framework function for model transformation to
+    //       replace the code below? 
+    /**
+    * @param {Object} options, top level options to be mapped
+    */
+    fluid.uiOptions.mapOptions = function (options, config) {
+        var applier = fluid.makeChangeApplier(options);
+        fluid.each(config, function (source, dest) {
+            dest = fluid.uiOptions.expandShortPath(dest); // to expand the .*. type paths
+            var value = fluid.get(options, source);
+            applier.requestChange(dest, value, "ADD");
+            applier.requestChange(source, value, "DELETE");
+        });
+    };
+    
+//    fluid.uiOptions.mapOptions = function (options) {
+//        var newOpts = {};
+//        var componentsPathMapping = {
+//                "templateLoader": "components.templateLoader",
+//                "container": "components.uiOptionsLoader.container",
+//                "uiOptions": "components.uiOptionsLoader.options.components.uiOptions",
+//                "textControls": "components.uiOptionsLoader.options.components.uiOptions.options.components.textControls",
+//                "layoutControls": "components.uiOptionsLoader.options.components.uiOptions.options.components.textControls",
+//                "linksControls": "components.uiOptionsLoader.options.components.uiOptions.options.components.textControls",
+//                "preview": "components.uiOptionsLoader.options.components.uiOptions.options.components.preview",
+//                "settingStore": "components.uiOptionsLoader.options.components.uiOptions.options.components.settingStore",
+//                "previewEnhancer": "components.uiOptionsLoader.options.components.uiOptions.options.components.preview.options.components.enhancer"
+//            };
+//
+//        fluid.each(options, function (value, key) {
+//            if (componentsPathMapping[key]) {
+//                fluid.uiOptions.moveOptions(value, newOpts, componentsPathMapping[key]);
+//            } else {
+//                var option = {};
+//                option[key] = value;
+//                fluid.uiOptions.moveOptions(option, newOpts);
+//            }
+//        });
+//
+//        return newOpts;
+//    };
+
+    /**
+    * @param {Object} source, original object
+    * @param {Object} destination, object to copy options to
+    * @param {String} defaultLocation, default path to move options location
+    */
+    fluid.uiOptions.moveOptions = function (source, destination, defaultLocation) {
+        var location = defaultLocation || "";
+        
+        if (typeof source === "string") {
+            fluid.set(destination, defaultLocation, source);
+        } else if (typeof source === "object") {
+            fluid.each(source, function (value, key) {
+                fluid.set(destination, (location ? location + "." : "") + key, value);
+            });
+        }
+    };
+    
     /******************************
      * UI Options Template Loader *
      ******************************/
@@ -777,47 +874,4 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
 
-    // TODO: Maybe we need a framework function for model transformation to
-    //       replace the code below? 
-    /**
-    * @param {Object} options, top level options to be mapped
-    */
-    fluid.uiOptions.mapOptions = function (options) {
-        var newOpts = {};
-        var componentsPathMapping = {
-                "templateLoader": "components.templateLoader",
-                "uiOptions": "components.uiOptionsLoader.options.components.uiOptions",
-                "textControls": "components.uiOptionsLoader.options.components.uiOptions.options.components.textControls",
-                "layoutControls": "components.uiOptionsLoader.options.components.uiOptions.options.components.textControls",
-                "linksControls": "components.uiOptionsLoader.options.components.uiOptions.options.components.textControls",
-                "preview": "components.uiOptionsLoader.options.components.uiOptions.options.components.preview",
-                "settingStore": "components.uiOptionsLoader.options.components.uiOptions.options.components.settingStore",
-                "previewEnhancer": "components.uiOptionsLoader.options.components.uiOptions.options.components.preview.options.components.enhancer"
-            };
-
-        fluid.each(options, function (value, key) {
-            if (componentsPathMapping[key]) {
-                fluid.uiOptions.moveOptions(value, newOpts, componentsPathMapping[key]);
-            } else {
-                var option = {};
-                option[key] = value;
-                fluid.uiOptions.moveOptions(option, newOpts);
-            }
-        });
-
-        return newOpts;
-    };
-
-    /**
-    * @param {Object} source, original object
-    * @param {Object} destination, object to copy options to
-    * @param {String} defaultLocation, default path to move options location
-    */
-    fluid.uiOptions.moveOptions = function (source, destination, defaultLocation) {
-        fluid.each(source, function (value, key) {
-            var location = defaultLocation || "";
-            fluid.set(destination, (location ? location + "." : "") + key, value);
-        });
-    };
-    
 })(jQuery, fluid_1_4);

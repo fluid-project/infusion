@@ -48,7 +48,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         /**************************************************
-         * fluid.fullNoPreviewUIOptions Integration Tests *
+         * fluid.uiOptions.fullNoPreviewUIOptions Integration Tests *
          **************************************************/        
 
         var checkUIOComponents = function (uiOptions) {
@@ -76,7 +76,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         tests.asyncTest("FullNoPreview UIOptions Integration tests", function () {
             fluid.pageEnhancer();                
-            var that = fluid.fullNoPreviewUIOptions("#myUIOptions", {
+            var that = fluid.uiOptions.fullNoPreviewUIOptions("#myUIOptions", {
                 prefix: "../../../../components/uiOptions/html/"
             });
             
