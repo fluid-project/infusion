@@ -46,6 +46,7 @@
         <mkdir dir="${assembled}" />
         <mkdir dir="${buildwar}" />
         <mkdir dir="${licenses}" />
+		<mkdir dir="${fssImportant}" />
     </target>
 
     <!-- Set the pretreat property based on the value of noMinify -->
@@ -67,6 +68,19 @@
             <equals arg1="true" arg2="${pretreat}" />
         </not>
         </condition>
+    </target>
+    
+    <!-- UI Options style sheet creation / !important injection -->
+    <target name="generateUIOThemes" depends="init" description="Namespace and inject !important into UI Options' stylesheets">
+        <property name="buildDir" value="${base-dir}/build-scripts" />
+        <property name="buildJSDir" value="${buildDir}/uiOptions/js" />
+        <property name="jscssp" value="${buildDir}/lib/jscssp/js/jscssp.js" />
+        <property name="evalScripts" value="${jscssp}, ${buildJSDir}/CSSGenerator.js, ${buildJSDir}/RhinoStylesheetHandler.js, ${buildJSDir}/StylesheetImportant.js" />
+        <script language="javascript" src="${base-dir}/build-scripts/build-core.js" manager="bsf">
+            <classpath>
+                <fileset dir="${buildDir}/lib/rhino" includes="*.jar"></fileset>
+            </classpath>
+        </script>
     </target>
 
     <!-- This is the setup necessary for minifying the core files -->
@@ -106,7 +120,11 @@
 
     <!-- Runs the javascript dependency resolver which sets $jsfile, $requiredDirectoriesSelector, $jsRegExp, $jsReplaceRegExp and $allRequiredJSFiles -->
     <target name="resolveDependencies">
-        <script language="javascript" src="${base-dir}/build-scripts/build.js" />
+        <script language="javascript" src="${base-dir}/build-scripts/dependency.js" manager="bsf">
+            <classpath>
+                <fileset dir="${buildDir}/lib/rhino" includes="*.jar"></fileset>
+            </classpath>
+        </script>
     </target>
 
     <!-- Assembles the core package -->
@@ -211,25 +229,25 @@
 
     <!-- Top level targets -->
 
-    <target name="customBuild" depends="clean, init, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assemble, buildCoreWAR, zip" 
+    <target name="customBuild" depends="clean, init, generateUIOThemes, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assemble, buildCoreWAR, zip" 
         description="Builds a custom package of Infusion containing the modules specified as command line arguments.">
     </target>
 
-    <target name="pretreatMinify" depends="clean, init, alwaysMinify"
+    <target name="pretreatMinify" depends="clean, init, generateUIOThemes, alwaysMinify"
         description="Minifies everything to prepare for builds done from pretreated source">
     </target>
     
-    <target name="builderBuild" depends="cleanExceptPretreat, init, setPretreat, setSourceDir, resolveDependencies, assemble, buildCoreWAR, zip" 
+    <target name="builderBuild" depends="cleanExceptPretreat, init, generateUIOThemes, setPretreat, setSourceDir, resolveDependencies, assemble, buildCoreWAR, zip" 
         description="Builds a custom package of Infusion containing the modules specified by the builder - expects pretreatMinify to have been run before.">
     </target>
 
     <!-- Although we don't have dependencies we use resolveDependencies because it creates a list of all the files to concatenate. -->
-    <target name="dailyBuild" depends="clean, init, setSourceDir, resolveDependencies, assembleFull, buildFullWAR"
+    <target name="dailyBuild" depends="clean, init, generateUIOThemes, setSourceDir, resolveDependencies, assembleFull, buildFullWAR"
         description="Builds a WAR of Infusion along with tests and sample code, suitable for development testing or a daily build.">
         <copy file="${assembled}/${warfile}" todir="${products}" />
     </target>
 
-    <target name="releaseBuild" depends="cleanExceptProducts, init, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assembleFull, buildCoreWAR, zip"
+    <target name="releaseBuild" depends="cleanExceptProducts, init, generateUIOThemes, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assembleFull, buildCoreWAR, zip"
         description="Builds and packages a release bundle of Infusion"/>
 
     <target name="releaseBuilds" depends="clean" 
@@ -260,5 +278,4 @@
         <jslint dir="${lint}" excludes="${excludeFromJSLint}" options="browser,eqeqeq,nomen,undef">
         </jslint>
     </target>    
-    
 </project>
