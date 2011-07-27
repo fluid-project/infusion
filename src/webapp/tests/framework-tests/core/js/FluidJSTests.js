@@ -286,7 +286,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluidJSTests.test("stringTemplate: missing token", function () {
-            var template = "Paused at: %atFile of files (%atSize of %totalSize)";
+            var template = "Paused at: %atFile of %totalFiles files (%atSize of %totalSize)";
             
             var data = {
                 atFile: 12,
@@ -296,13 +296,50 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             
             var expected = "Paused at: " + data.atFile + 
-                                " of files (" + data.atSize + 
+                                " of " + data.totalFiles + 
+                                " files (" + data.atSize + 
                                 " of " + data.totalSize + ")";
                                 
             var result = fluid.stringTemplate(template, data);
             jqUnit.assertEquals("The template strings should match.", expected, result);
         });
+        
+        fluidJSTests.test("stringTemplate: multiple replacement", function () {
+            var template = "Paused at: %0 of %0 files (%1 of %2)";
+            
+            var atFile = "12";
+            var totalFiles = "14";
+            var atSize = "100 Kb";
+            var data = [atFile, totalFiles, atSize];
+            
+            var expected = "Paused at: " + atFile + 
+                                " of " + atFile + 
+                                " files (" + totalFiles + 
+                                " of " + atSize + ")";
+                                
+            var result = fluid.stringTemplate(template, data);
+            jqUnit.assertEquals("The template strings should match.", expected, result);
+        });
 
+        fluidJSTests.test("stringTemplate: special character [] and ()", function () {
+            var template = "Paused at: %() of %[] files (%file[] of %[]file)";
+            
+            var data = {
+                "()": 12,
+                "[]": 14,
+                "file[]": "100 Kb",
+                "[]file": "12000 Gb"
+            };
+            
+            var expected = "Paused at: " + data["()"] + 
+                                " of " + data["[]"] +
+                                " files (" + data["file[]"] + 
+                                " of " + data["[]file"] + ")";
+
+                                
+            var result = fluid.stringTemplate(template, data);
+            jqUnit.assertEquals("The template strings should match.", expected, result);
+        });
 
         fluidJSTests.test("jById id not found", function () {
             var invalidIdElement = fluid.jById("this-id-does-not-exitst");

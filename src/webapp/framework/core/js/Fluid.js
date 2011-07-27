@@ -1717,6 +1717,12 @@ var fluid = fluid || fluid_1_4;
 
     // Message resolution and templating
    
+   
+    /**
+    * Converts a string to a regexp with the specified flags given in parameters
+    * @param {String} a string that has to be turned into a regular expression
+    * @param {String} the flags to provide to the reg exp 
+    */
     fluid.stringToRegExp = function (str, flags) {
         return new RegExp(str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), flags);
     };
