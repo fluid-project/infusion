@@ -1,11 +1,6 @@
-/* 
- * This is a minified version of Douglas Crockford's JSON2.js parser, release in the public domain.
- * http://www.json.org/json2.js
- */
-if(!this.JSON){JSON=function(){function f(n){return n<10?"0"+n:n}Date.prototype.toJSON=function(){return this.getUTCFullYear()+"-"+f(this.getUTCMonth()+1)+"-"+f(this.getUTCDate())+"T"+f(this.getUTCHours())+":"+f(this.getUTCMinutes())+":"+f(this.getUTCSeconds())+"Z"};var m={"\b":"\\b","\t":"\\t","\n":"\\n","\f":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"};function stringify(value,whitelist){var a,i,k,l,r=/["\\\x00-\x1f\x7f-\x9f]/g,v;switch(typeof value){case"string":return r.test(value)?'"'+value.replace(r,function(a){var c=m[a];if(c){return c}c=a.charCodeAt();return"\\u00"+Math.floor(c/16).toString(16)+(c%16).toString(16)})+'"':'"'+value+'"';case"number":return isFinite(value)?String(value):"null";case"boolean":case"null":return String(value);case"object":if(!value){return"null"}if(typeof value.toJSON==="function"){return stringify(value.toJSON())}a=[];if(typeof value.length==="number"&&!(value.propertyIsEnumerable("length"))){l=value.length;for(i=0;i<l;i+=1){a.push(stringify(value[i],whitelist)||"null")}return"["+a.join(",")+"]"}if(whitelist){l=whitelist.length;for(i=0;i<l;i+=1){k=whitelist[i];if(typeof k==="string"){v=stringify(value[k],whitelist);if(v){a.push(stringify(k)+":"+v)}}}}else{for(k in value){if(typeof k==="string"){v=stringify(value[k],whitelist);if(v){a.push(stringify(k)+":"+v)}}}}return"{"+a.join(",")+"}"}}return{stringify:stringify,parse:function(text,filter){var j;function walk(k,v){var i,n;if(v&&typeof v==="object"){for(i in v){if(Object.prototype.hasOwnProperty.apply(v,[i])){n=walk(i,v[i]);if(n!==undefined){v[i]=n}}}}return filter(k,v)}if(/^[\],:{}\s]*$/.test(text.replace(/\\./g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(:?[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:\s*\[)+/g,""))){j=eval("("+text+")");return typeof filter==="function"?walk("",j):j}throw new SyntaxError("parseJSON")}}}()};
-
 /*
 Copyright 2009 University of Toronto
+Copyright 2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -24,6 +19,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*
  * This is the Fluid Infusion dependency manager.
  */
+// TODO: There is significantly redundant code between this file and build-core.js, particularly related
+//       to file loading and logging. These should be removed from here in favour of a dependence on the
+//       functions provided in build-core.js
+
 importClass(java.io.BufferedReader);
 importClass(java.io.FileReader);
 importClass(java.io.File);
@@ -212,50 +211,50 @@ var globalObj = this;
     };
     
     /**
-         * Returns the list of all the files required (from requiredModules), as a comma delimited string.
-         * These files are scoped to the moduleFileTable passed, and the paths contain the directory specified.
-         * 
-         * @param {Object} moduleFileTable
-         * @param {Object} dir
-         */
-        var getAllRequiredFiles = function (requiredModules, moduleFileTable, dir) {
-            var fileStr = "";
-            for (var i = 0; i < requiredModules.length; i++) {
-                var currentModule = requiredModules[i];
-                fileStr += pathsForModuleFiles(currentModule, moduleFileTable, dir);
-            }
+     * Returns the list of all the files required (from requiredModules), as a comma delimited string.
+     * These files are scoped to the moduleFileTable passed, and the paths contain the directory specified.
+     * 
+     * @param {Object} moduleFileTable
+     * @param {Object} dir
+     */
+    var getAllRequiredFiles = function (requiredModules, moduleFileTable, dir) {
+        var fileStr = "";
+        for (var i = 0; i < requiredModules.length; i++) {
+            var currentModule = requiredModules[i];
+            fileStr += pathsForModuleFiles(currentModule, moduleFileTable, dir);
+        }
 
-            logVerbose("*** All required files: " + fileStr);
-            return fileStr;
-        };
+        logVerbose("*** All required files: " + fileStr);
+        return fileStr;
+    };
         
-        /**
-         * Builds up the regular expression to find the requiredModules from the moduleFileTable
-         * 
-         * @param {Object} regExpStart
-         * @param {Object} regExpEnd
-         * @param {Object} requiredModules
-         * @param {Object} moduleFileTable
-         */
-        var buildRegExpression = function (regExpStart, regExpEnd, requiredModules, moduleFileTable) {
-            var regStart = regExpStart;
-            var regEnd = regExpEnd;
-            var regExpStr = "";
-            var convertedStr = "";
-            for (var i = 0; i < requiredModules.length; i++) {
-                var currentModule = requiredModules[i];
-                var currentFiles = moduleFileTable[currentModule];
-                
-                for (var j = 0; j < currentFiles.length; j++) {
-                    if (regExpStr) {
-                        regExpStr += "|";
-                    }
-                    convertedStr = currentFiles[j].replace(/\./g, "\\."); //this is to escape the "." character which is a wildcard in ant regex.
-                    regExpStr += (regStart + convertedStr + regEnd);
+    /**
+     * Builds up the regular expression to find the requiredModules from the moduleFileTable
+     * 
+     * @param {Object} regExpStart
+     * @param {Object} regExpEnd
+     * @param {Object} requiredModules
+     * @param {Object} moduleFileTable
+     */
+    var buildRegExpression = function (regExpStart, regExpEnd, requiredModules, moduleFileTable) {
+        var regStart = regExpStart;
+        var regEnd = regExpEnd;
+        var regExpStr = "";
+        var convertedStr = "";
+        for (var i = 0; i < requiredModules.length; i++) {
+            var currentModule = requiredModules[i];
+            var currentFiles = moduleFileTable[currentModule];
+            
+            for (var j = 0; j < currentFiles.length; j++) {
+                if (regExpStr) {
+                    regExpStr += "|";
                 }
+                convertedStr = currentFiles[j].replace(/\./g, "\\."); //this is to escape the "." character which is a wildcard in ant regex.
+                regExpStr += (regStart + convertedStr + regEnd);
             }
-            return regExpStr;
-        };
+        }
+        return regExpStr;
+    };
         
     /**
      * Resolves dependencies for the modules passed in. 
@@ -313,7 +312,7 @@ var globalObj = this;
             var obj = globalObj.project;
             return buildRegExpression(obj.getProperty("replaceRegexStartJS"), obj.getProperty("replaceRegexEndJS"), that.requiredModules, that.moduleJSFileTable);
         };
-    
+        
         /**
          * Fetches the dependency declaration for the given module name from the file system,
          * parsing it into an object from JSON data.
