@@ -29,7 +29,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             lineSpacing: 2
         };
         
-        var bwSkin2 = {
+        var ybSkin = {
             textSize: "2",
             textFont: "comic sans",
             theme: "yb",
@@ -96,7 +96,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var saveButton = uiOptions.locate("save");
                 saveButton.click();
                 checkModelSelections(uiOptions.model.selections, bwSkin);
-                applierRequestChanges(uiOptions, bwSkin2);
+                applierRequestChanges(uiOptions, ybSkin);
 
                 var cancelButton = uiOptions.locate("cancel");
                 cancelButton.click();
