@@ -1129,7 +1129,8 @@ fluid.registerNamespace("fluid.tests");
         });
         
         fluid.tests.multiIdentity = function () {
-            return arguments;
+            // since arguments is not a true array, need to convert into one to avoid confusing new QUnit.deepEquiv
+            return fluid.makeArray(arguments);
         };
         
         renderTests.test("InitBlock rendering (FLUID-3482)", function () {
