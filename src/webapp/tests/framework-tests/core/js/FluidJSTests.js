@@ -322,19 +322,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluidJSTests.test("stringTemplate: special character [] and ()", function () {
-            var template = "Paused at: %() of %[] files (%file[] of %[]file)";
+            var template = "Paused at: %() of %[] files (%file[] of %file)";
             
             var data = {
                 "()": 12,
                 "[]": 14,
                 "file[]": "100 Kb",
-                "[]file": "12000 Gb"
+                "file": "12000 Gb"
             };
             
             var expected = "Paused at: " + data["()"] + 
                                 " of " + data["[]"] +
                                 " files (" + data["file[]"] + 
-                                " of " + data["[]file"] + ")";
+                                " of " + data["file"] + ")";
 
                                 
             var result = fluid.stringTemplate(template, data);
