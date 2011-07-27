@@ -150,10 +150,10 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             "theme": {
                 "default": "",
-                "bw": "fl-theme-hc",
-                "wb": "fl-theme-hci",
-                "by": "fl-theme-blackYellow",
-                "yb": "fl-theme-yellowBlack"
+                "bw": "fl-theme-uio-hc",
+                "wb": "fl-theme-uio-hci",
+                "by": "fl-theme-uio-blackYellow",
+                "yb": "fl-theme-uio-yellowBlack"
             },
             "layout": "fl-layout-linear",
             "links": "fl-text-underline fl-text-bold fl-text-larger", 

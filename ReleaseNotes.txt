@@ -98,6 +98,8 @@ Other licenses:
     * Douglas Crockford's JSON.js (from 2007-11-06): http://www.json.org/ (Public Domain)
     * fss-layout.css uses some styles, related to hiding content, based on HTML5 Boilerplate v1.0
       see: https://github.com/paulirish/html5-boilerplate/blob/master/README.md (Public Domain)
+    * JSCSSP, a JavaScript CSS Parser used by the Infusion build process: 
+      http://glazman.org/JSCSSP/freshmeat.html (MPL 1.1): 
 
 Documentation
 =============
