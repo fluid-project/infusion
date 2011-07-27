@@ -1716,6 +1716,10 @@ var fluid = fluid || fluid_1_4;
     
 
     // Message resolution and templating
+   
+    fluid.stringToRegExp = function (str, flags) {
+        return new RegExp(str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), flags);
+    };
     
     /**
      * Simple string template system. 
@@ -1729,7 +1733,7 @@ var fluid = fluid || fluid_1_4;
    fluid.stringTemplate = function (template, values) {
        var newString = template;
        for (var key in values) {
-            var re = new RegExp("%" + key.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "g");
+            var re = fluid.stringToRegExp("%" + key, "g");
             newString = newString.replace(re, values[key]);
        }
        return newString;
