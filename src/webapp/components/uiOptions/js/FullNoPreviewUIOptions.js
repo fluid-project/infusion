@@ -44,10 +44,15 @@ var fluid_1_4 = fluid_1_4 || {};
                     type: "fluid.emptySubcomponent"
                 },
                 settingsStore: "{uiEnhancer}.settingsStore"
+            },
+            listeners: {
+                onReset: function (uiOptions) {
+                    uiOptions.save();
+                }
             }
         }
     });
-    
+
     fluid.defaults("fluid.uiOptions.fullNoPreviewUIOptions", {
         gradeNames: ["fluid.viewComponent"],
         components: {

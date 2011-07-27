@@ -406,8 +406,8 @@ var fluid_1_4 = fluid_1_4 || {};
          * Resets the selections to the integrator's defaults and fires onReset
          */
         that.reset = function () {
-            that.events.onReset.fire();
             that.updateModel(fluid.copy(that.settingsStore.options.defaultSiteSettings));
+            that.events.onReset.fire(that);
             that.events.onUIOptionsRefresh.fire();
         };
         
