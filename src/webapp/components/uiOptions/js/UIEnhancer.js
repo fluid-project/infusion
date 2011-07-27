@@ -55,18 +55,6 @@ var fluid_1_4 = fluid_1_4 || {};
         }        
     };
     
-    // Supply the table of contents' template URL
-//    fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
-//        options: {
-//            resources: {
-//                template: {
-//                    forceCache: true,
-//                    url: "../../../../components/tableOfContents/html/TableOfContents.html"
-//                }
-//            }
-//        }
-//    });
-
     fluid.defaults("fluid.uiEnhancer", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {

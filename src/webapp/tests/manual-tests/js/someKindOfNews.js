@@ -28,7 +28,7 @@ var skon = skon || {};
             }
         });
 
-        fluid.demands("fluid.renderIframe", ["skon.demo"], {
+        fluid.demands("fluid.uiOptions.renderIframe", ["skon.demo"], {
             options: {
                 markupProps: {
                     src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
@@ -46,7 +46,7 @@ var skon = skon || {};
         });
         
         // Next, start up UI Options
-        fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");            
+        fluid.uiOptions.fatPanelUIOptions(".flc-uiOptions-fatPanel");            
     };
     
 })(jQuery, fluid);

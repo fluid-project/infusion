@@ -260,7 +260,7 @@
                 }
             });
         
-            fluid.demands("fluid.renderIframe", ["fluid.FssSakaiUIOptions"], {
+            fluid.demands("fluid.uiOptions.renderIframe", ["fluid.FssSakaiUIOptions"], {
                 options: {
                     markupProps: {
                         src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
@@ -272,7 +272,7 @@
             fluid.pageEnhancer({
                 tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
             });
-            fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");
+            fluid.uiOptions.fatPanelUIOptions(".flc-uiOptions-fatPanel");
         </script>
     </body>
 </html>

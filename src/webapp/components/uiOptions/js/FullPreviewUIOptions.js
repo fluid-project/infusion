@@ -21,7 +21,7 @@ var fluid_1_4 = fluid_1_4 || {};
     /***************************
      * Full Preview UI Options *
      ***************************/
-    fluid.demands("fluid.uiOptions.templateLoader", "fluid.fullPreviewUIOptions", {
+    fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptions.fullPreviewUIOptions", {
         options: {
             templates: {
                 uiOptions: "%prefixFullPreviewUIOptions.html"
@@ -29,14 +29,14 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.demands("fluid.uiOptions.templatePath", "fluid.fullPreviewUIOptions", {
+    fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptions.fullPreviewUIOptions", {
         options: {
             value: "{fullPreviewUIOptions}.options.prefix"
         }
     });
     
     // Options for UIOptions in full with preview mode
-    fluid.demands("fluid.uiOptions", ["fluid.fullPreviewUIOptions"], {
+    fluid.demands("fluid.uiOptions", ["fluid.uiOptions.fullPreviewUIOptions"], {
         options: {
             components: {
                 settingsStore: "{uiEnhancer}.settingsStore"
@@ -44,7 +44,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.defaults("fluid.fullPreviewUIOptions", {
+    fluid.defaults("fluid.uiOptions.fullPreviewUIOptions", {
         gradeNames: ["fluid.viewComponent"],
         components: {
             uiOptionsLoader: {
@@ -58,9 +58,9 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });       
     
-    fluid.fullPreviewUIOptions = function (container, options) {
+    fluid.uiOptions.fullPreviewUIOptions = function (container, options) {
         var mappedOptions = fluid.uiOptions.mapOptions(options);
-        var that = fluid.initView("fluid.fullPreviewUIOptions", container, mappedOptions);
+        var that = fluid.initView("fluid.uiOptions.fullPreviewUIOptions", container, mappedOptions);
         fluid.initDependents(that);
         return that;
     };

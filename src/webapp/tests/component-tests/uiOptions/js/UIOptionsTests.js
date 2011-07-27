@@ -195,7 +195,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 
                 var uiEnhancerSettings = uiOptions.settingsStore.fetch();
                 jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
-                jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-hc"));
+                jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-uio-hc"));
                 jqUnit.assertEquals("Text size has been saved", bwSkin.textSize, uiOptions.model.selections.textSize);
                 jqUnit.assertEquals("Text font has been saved", bwSkin.textFont, uiOptions.model.selections.textFont);
                 jqUnit.assertEquals("Theme has been saved", bwSkin.theme, uiOptions.model.selections.theme);

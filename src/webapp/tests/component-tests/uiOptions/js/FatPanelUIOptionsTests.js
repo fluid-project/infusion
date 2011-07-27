@@ -22,14 +22,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      ***********/
     
     // Supply the templates
-    fluid.staticEnvironment.fatPanelUIOptionsTests = fluid.typeTag("fluid.fatPanelUIOptionsTests");
-    fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.fatPanelUIOptionsTests", {
+    fluid.staticEnvironment.fatPanelUIOptionsTests = fluid.typeTag("fluid.uiOptions.fatPanelUIOptionsTests");
+    fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptions.fatPanelUIOptionsTests", {
         options: {
             prefix: "../../../../components/uiOptions/html/"
         }
     });
     
-    fluid.demands("fluid.renderIframe", ["fluid.fatPanelUIOptionsTests"], {
+    fluid.demands("fluid.uiOptions.renderIframe", ["fluid.uiOptions.fatPanelUIOptionsTests"], {
         options: {
             markupProps: {
                 src: "../../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
@@ -49,7 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.demands("fluid.cookieStore", ["fluid.fatPanelUIOptionsTests"], {
+    fluid.demands("fluid.cookieStore", ["fluid.uiOptions.fatPanelUIOptionsTests"], {
         options: {
             cookieName: "fluid-ui-settings-test"
         }
@@ -66,7 +66,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             opt2: "option2"
         };
 
-        fluid.fatPanelUIOptions.moveOptions(testOptions, actual, defaultLocation, map);
+        fluid.uiOptions.fatPanelUIOptions.moveOptions(testOptions, actual, defaultLocation, map);
         jqUnit.assertDeepEq("The options were move correctly", expected, actual);
     };
     
@@ -76,7 +76,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var tests = jqUnit.testCase("FatPanelUIOptions Tests");
         
         /*********************************
-         * fluid.fatPanelUIOptions tests *
+         * fluid.uiOptions.fatPanelUIOptions tests *
          *********************************/
          
         tests.test("moveOptions: map all options", function () {
@@ -185,7 +185,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             };
             
-            var mappedOpts = fluid.fatPanelUIOptions.mapOptions(options);
+            var mappedOpts = fluid.uiOptions.fatPanelUIOptions.mapOptions(options);
             jqUnit.assertDeepEq("The options were mapped correctly", expectedOpts, mappedOpts);
         });
         
@@ -230,7 +230,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         tests.asyncTest("Fat Panel UIOptions Integration tests", function () {
             fluid.pageEnhancer();
-            var that = fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");
+            var that = fluid.uiOptions.fatPanelUIOptions(".flc-uiOptions-fatPanel");
             
             checkUIOComponents(that);
 

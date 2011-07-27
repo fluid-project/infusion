@@ -22,7 +22,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * Full No Preview UI Options *
      ******************************/
      
-    fluid.demands("fluid.uiOptions.templateLoader", "fluid.fullNoPreviewUIOptions", {
+    fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptions.fullNoPreviewUIOptions", {
         options: {
             templates: {
                 uiOptions: "%prefixFullNoPreviewUIOptions.html"
@@ -30,14 +30,14 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.demands("fluid.uiOptions.templatePath", "fluid.fullNoPreviewUIOptions", {
+    fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptions.fullNoPreviewUIOptions", {
         options: {
             value: "{fullNoPreviewUIOptions}.options.prefix"
         }
     });
     
     // Options for UIOptions in full no preview mode
-    fluid.demands("fluid.uiOptions", ["fluid.fullNoPreviewUIOptions"], {
+    fluid.demands("fluid.uiOptions", ["fluid.uiOptions.fullNoPreviewUIOptions"], {
         options: {
             components: {
                 preview: {
@@ -48,7 +48,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.defaults("fluid.fullNoPreviewUIOptions", {
+    fluid.defaults("fluid.uiOptions.fullNoPreviewUIOptions", {
         gradeNames: ["fluid.viewComponent"],
         components: {
             uiOptionsLoader: {
@@ -59,13 +59,12 @@ var fluid_1_4 = fluid_1_4 || {};
                 priority: "first",
                 type: "fluid.uiOptions.templateLoader"
             }                     
-        },
-        finalInitFunction: "fluid.fullNoPreviewUIOptions.finalInit"
+        }
     });
     
-    fluid.fullNoPreviewUIOptions = function (container, options) {
+    fluid.uiOptions.fullNoPreviewUIOptions = function (container, options) {
         var mappedOptions = fluid.uiOptions.mapOptions(options);
-        var that = fluid.initView("fluid.fullNoPreviewUIOptions", container, mappedOptions);
+        var that = fluid.initView("fluid.uiOptions.fullNoPreviewUIOptions", container, mappedOptions);
         fluid.initDependents(that);
         return that;
     };
