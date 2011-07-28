@@ -10,25 +10,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global skon:true, fluid, jQuery*/
+/*global uioDemo:true, fluid, jQuery*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
-var skon = skon || {};
+var uioDemo = uioDemo || {};
 (function ($, fluid) {       
 
-    fluid.staticEnvironment.skonEnvironment = fluid.typeTag("skon.demo");
+    fluid.staticEnvironment.uioDemoEnvironment = fluid.typeTag("uioDemo.demo");
 
     /* Our demo script */   
-    skon.slidingUIOptions = function (panel, uioptions) {
-        fluid.demands("fluid.uiOptions.templatePath", ["fluid.fatPanelUIOptions", "skon.demo"], {
+    uioDemo.slidingUIOptions = function (panel, uioptions) {
+        fluid.demands("fluid.uiOptions.templatePath", ["fluid.fatPanelUIOptions", "uioDemo.demo"], {
             options: {
                 value: "{fatPanelUIOptions}.options.prefix"
             }
         });
 
-        fluid.demands("fluid.renderIframe", ["skon.demo"], {
+        fluid.demands("fluid.renderIframe", ["uioDemo.demo"], {
             options: {
                 markupProps: {
                     src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
@@ -37,7 +37,7 @@ var skon = skon || {};
         });
     
         // Supply the table of contents' template URL
-        fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "skon.demo"], {
+        fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "uioDemo.demo"], {
             options: {
                 resources: {
                     template: {
@@ -51,7 +51,7 @@ var skon = skon || {};
         fluid.pageEnhancer({
             classnameMap: {
                 theme: {
-                    "default": "skon-theme-basic"
+                    "default": "uio-demo-theme"
                 }
             }
         });
