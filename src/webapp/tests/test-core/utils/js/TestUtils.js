@@ -94,6 +94,11 @@ fluid.testUtils.canonicaliseFunctions = function (tree) {
     });
 };
 
+/** Assert that two trees are equal after applying a "canonicalisation function". This can be used in 
+ * cases where the criterion for equivalence is looser than exact object equivalence - for example, 
+ * when using renderer trees, "fluid.testUtils.sortTree" can be used for canonFunc", or in the case
+ * of a resourceSpec, "fluid.testUtils.canonicaliseFunctions". **/
+
 fluid.testUtils.assertCanoniseEqual = function (message, expected, actual, canonFunc) {
     var expected2 = canonFunc(expected);
     var actual2 = canonFunc(actual);
