@@ -20,7 +20,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.setLogging(true);
         
         var tests = jqUnit.testCase("FullNoPreviewUIOptions Tests");
-        fluid.staticEnvironment.noPreviewUIOptionsTests = fluid.typeTag("fluid.noPreviewUIOptionsTests");
         
         var bwSkin = {
             textSize: "1.8",
@@ -35,17 +34,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             theme: "yb",
             lineSpacing: 1.5
         };        
-        
-        /***********
-         * Demands *
-         ***********/
-        
-        // Supply the table of contents' template URL
-        fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
-            options: {
-                templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
-            }
-        });
         
         /**************************************************
          * fluid.uiOptions.fullNoPreviewUIOptions Integration Tests *
@@ -75,7 +63,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };                
         
         tests.asyncTest("FullNoPreview UIOptions Integration tests", function () {
-            fluid.pageEnhancer();                
+            fluid.pageEnhancer({
+                tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+            });
+            
             var that = fluid.uiOptions.fullNoPreviewUIOptions("#myUIOptions", {
                 prefix: "../../../../components/uiOptions/html/"
             });

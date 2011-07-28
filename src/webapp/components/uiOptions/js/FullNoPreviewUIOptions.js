@@ -30,12 +30,6 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptions.fullNoPreviewUIOptions", {
-        options: {
-            value: "{fullNoPreviewUIOptions}.options.prefix"
-        }
-    });
-    
     // Options for UIOptions in full no preview mode
     fluid.demands("fluid.uiOptions", ["fluid.uiOptions.fullNoPreviewUIOptions"], {
         options: {
@@ -60,10 +54,11 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uiOptions.fullNoPreviewUIOptions = function (container, options) {
         // make "container" one of the options so it can be munged by the uiOptions.mapOptions.
-        // This container is used as uiOptionsLoader.container 
+        // This container is passed down to be used as uiOptionsLoader.container 
+        var mapping = fluid.defaults("fluid.uiOptions.fullNoPreviewUIOptions").uiOptionsTransform.config;
         options.container = container;
         
-        var mappedOptions = fluid.uiOptions.mapOptions(options);
+        var mappedOptions = fluid.uiOptions.mapOptions(options, mapping);
         var that = fluid.initView("fluid.uiOptions.fullNoPreviewUIOptions", container, mappedOptions);
         fluid.initDependents(that);
         return that;

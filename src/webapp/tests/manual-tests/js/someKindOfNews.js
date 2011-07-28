@@ -16,26 +16,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var skon = skon || {};
-(function ($, fluid) {       
-
-    fluid.staticEnvironment.skonEnvironment = fluid.typeTag("skon.demo");
-
+(function ($, fluid) {
+	
     /* Our demo script */   
     skon.slidingUIOptions = function (panel, uioptions) {
-        fluid.demands("fluid.uiOptionsTemplatePath", [ "skon.demo"], {
-            options: {
-                prefix: "../../../components/uiOptions/html/"
-            }
-        });
-
-        fluid.demands("fluid.uiOptions.renderIframe", ["skon.demo"], {
-            options: {
-                markupProps: {
-                    src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
-                }
-            }
-        });
-    
+        // First, start up Page Enhancer
         fluid.pageEnhancer({
             classnameMap: {
                 theme: {
@@ -46,7 +31,16 @@ var skon = skon || {};
         });
         
         // Next, start up UI Options
-        fluid.uiOptions.fatPanelUIOptions(".flc-uiOptions-fatPanel");            
+        fluid.uiOptions.fatPanelUIOptions(".flc-uiOptions-fatPanel", {
+            prefix: "../../../components/uiOptions/html/",
+            markupRenderer: {
+                options: {
+                    markupProps: {
+                        src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
+                    }
+                }
+            }
+        });
     };
     
 })(jQuery, fluid);

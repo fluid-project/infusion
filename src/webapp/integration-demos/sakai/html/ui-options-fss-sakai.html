@@ -252,27 +252,22 @@
         
         <!-- Script block to instantiate UI Options when the necessary markup has loaded. -->
         <script type="text/javascript">
-            // First, supply the UI Options templates
-            fluid.staticEnvironment.FssSakaiUIOptions = fluid.typeTag("fluid.FssSakaiUIOptions");
-            fluid.demands("fluid.uiOptionsTemplatePath", "fluid.FssSakaiUIOptions", {
-                options: {
-                    prefix: "../../../components/uiOptions/html/"
-                }
-            });
-        
-            fluid.demands("fluid.uiOptions.renderIframe", ["fluid.FssSakaiUIOptions"], {
-                options: {
-                    markupProps: {
-                        src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
-                    }
-                }
-            });
-        
-            // Next, instantiate UI Options
+            // First, instantiate Page Enhancer
             fluid.pageEnhancer({
                 tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
             });
-            fluid.uiOptions.fatPanelUIOptions(".flc-uiOptions-fatPanel");
+
+            // Next, instantiate UI Options
+            fluid.uiOptions.fatPanelUIOptions(".flc-uiOptions-fatPanel", {
+                prefix: "../../../components/uiOptions/html/",
+                markupRenderer: {
+                    options: {
+                        markupProps: {
+                            src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
+                        }
+                    }
+                }
+            });
         </script>
     </body>
 </html>

@@ -23,31 +23,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     // Supply the templates
     fluid.staticEnvironment.fatPanelUIOptionsTests = fluid.typeTag("fluid.uiOptions.fatPanelUIOptionsTests");
-    fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptions.fatPanelUIOptionsTests", {
-        options: {
-            prefix: "../../../../components/uiOptions/html/"
-        }
-    });
-    
-    fluid.demands("fluid.uiOptions.renderIframe", ["fluid.uiOptions.fatPanelUIOptionsTests"], {
-        options: {
-            markupProps: {
-                src: "../../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
-            }
-        }
-    });
-
-    // Supply the table of contents' template URL
-    fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
-        options: {
-            resources: {
-                template: {
-                    forceCache: true,
-                    url: "../../../../components/tableOfContents/html/TableOfContents.html"
-                }
-            }
-        }
-    });
 
     fluid.demands("fluid.cookieStore", ["fluid.uiOptions.fatPanelUIOptionsTests"], {
         options: {
@@ -55,139 +30,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });    
     
-    /******************
-     * Test functions *
-     ******************/
-     
-    var moveOptionsTest = function (expected, map, defaultLocation, testOptions) {
-        var actual = {};
-        testOptions = testOptions || {
-            opt1: "option1",
-            opt2: "option2"
-        };
-
-        fluid.uiOptions.fatPanelUIOptions.moveOptions(testOptions, actual, defaultLocation, map);
-        jqUnit.assertDeepEq("The options were move correctly", expected, actual);
-    };
-    
     $(document).ready(function () {
         fluid.setLogging(true);
 
         var tests = jqUnit.testCase("FatPanelUIOptions Tests");
-        
-        /*********************************
-         * fluid.uiOptions.fatPanelUIOptions tests *
-         *********************************/
-         
-        tests.test("moveOptions: map all options", function () {
-            var expected = {
-                new1: {
-                    opt1: "option1"
-                },
-                new2: {
-                    opt2: "option2"
-                }
-            };
-            
-            var map = {
-                opt1: "new1",
-                opt2: "new2"
-            };
-            
-            moveOptionsTest(expected, map);
-        });
-        
-        tests.test("moveOptions: map some options, no default location", function () {
-            var expected = {
-                new1: {
-                    opt1: "option1"
-                },
-                opt2: "option2"
-            };
-            
-            var map = {
-                opt1: "new1"
-            };
-            
-            moveOptionsTest(expected, map);
-        });
-        
-        tests.test("moveOptions: no map w/ default location", function () {
-            var expected = {
-                "new": {
-                    opt1: "option1",
-                    opt2: "option2"
-                }
-            };
-            
-            moveOptionsTest(expected, null, "new");
-        });
-        
-        tests.test("moveOptions: no map, no default location", function () {
-            var expected = {
-                opt1: "option1",
-                opt2: "option2"
-            };
-            
-            moveOptionsTest(expected);
-        });
-        
-        tests.test("mapOptionsTest ", function () {
-            var options = {
-                selectors: {
-                    iframe: ".iframe",
-                    textfield: ".textfield",
-                    slider: ".slider"
-                },       
-                components: {      
-                    slidingPanel: "slidingPanel",
-                    markupRenderer: "markupRenderer",
-                    uiEnhancer: "uiEnhancer",
-                    eventBinder: "eventBinder",
-                    textfield: "textField",
-                    slider: "slider"
-                },
-                model: {
-                    value: null,
-                    min: 0,
-                    max: 100
-                }
-            };
-            
-            var expectedOpts = {
-                selectors: {
-                    iframe: ".iframe"
-                },       
-                components: {      
-                    slidingPanel: "slidingPanel",
-                    markupRenderer: "markupRenderer",
-                    uiEnhancer: "uiEnhancer",
-                    eventBinder: "eventBinder",
-                    uiOptionsBridge: {
-                        options: {
-	                        uiOptionsOptions: {
-                                selectors: {
-                                    textfield: ".textfield",
-                                    slider: ".slider"
-                                },
-                                components: { 
-                                    textfield: "textField",
-                                    slider: "slider"
-                                },
-                                model: {
-                                    value: null,
-                                    min: 0,
-                                    max: 100
-                                }
-	                        }
-                        }
-                    }
-                }
-            };
-            
-            var mappedOpts = fluid.uiOptions.fatPanelUIOptions.mapOptions(options);
-            jqUnit.assertDeepEq("The options were mapped correctly", expectedOpts, mappedOpts);
-        });
         
         /***************************************
          * FatPanelUIOptions integration tests *
@@ -229,8 +75,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         
         tests.asyncTest("Fat Panel UIOptions Integration tests", function () {
-            fluid.pageEnhancer();
-            var that = fluid.uiOptions.fatPanelUIOptions(".flc-uiOptions-fatPanel");
+            fluid.pageEnhancer({
+                tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+            });
+            
+            var that = fluid.uiOptions.fatPanelUIOptions(".flc-uiOptions-fatPanel", {
+                prefix: "../../../../components/uiOptions/html/",
+                markupRenderer: {
+                    options: {
+                        markupProps: {
+                            src: "../../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
+                        }
+                    }
+                }
+            });
             
             checkUIOComponents(that);
 

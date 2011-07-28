@@ -197,9 +197,10 @@ var fluid_1_4 = fluid_1_4 || {};
         uiOptionsTransform: {
             transformer: "fluid.uiOptions.mapOptions",
             config: {
-                "*.templateLoader":                                 "templateLoader",
-                "*.uiOptionsLoader.container":                       "container",
-                "*.uiOptionsLoader.*.uiOptions":                     "uiOptions",
+                "*.templateLoader":                                   "templateLoader",
+                "*.templateLoader.*.templatePath.options.value":              "prefix",
+                "*.uiOptionsLoader.container":                        "container",
+                "*.uiOptionsLoader.*.uiOptions":                      "uiOptions",
                 "*.uiOptionsLoader.*.uiOptions.*.textControls":       "textControls",
                 "*.uiOptionsLoader.*.uiOptions.*.layoutControls":     "layoutControls",
                 "*.uiOptionsLoader.*.uiOptions.*.linksControls":      "linksControls",
@@ -216,57 +217,33 @@ var fluid_1_4 = fluid_1_4 || {};
     * @param {Object} options, top level options to be mapped
     */
     fluid.uiOptions.mapOptions = function (options, config) {
-        var applier = fluid.makeChangeApplier(options);
-        fluid.each(config, function (source, dest) {
-            dest = fluid.uiOptions.expandShortPath(dest); // to expand the .*. type paths
-            var value = fluid.get(options, source);
-            applier.requestChange(dest, value, "ADD");
-            applier.requestChange(source, value, "DELETE");
-        });
-    };
-    
-//    fluid.uiOptions.mapOptions = function (options) {
-//        var newOpts = {};
-//        var componentsPathMapping = {
-//                "templateLoader": "components.templateLoader",
-//                "container": "components.uiOptionsLoader.container",
-//                "uiOptions": "components.uiOptionsLoader.options.components.uiOptions",
-//                "textControls": "components.uiOptionsLoader.options.components.uiOptions.options.components.textControls",
-//                "layoutControls": "components.uiOptionsLoader.options.components.uiOptions.options.components.textControls",
-//                "linksControls": "components.uiOptionsLoader.options.components.uiOptions.options.components.textControls",
-//                "preview": "components.uiOptionsLoader.options.components.uiOptions.options.components.preview",
-//                "settingStore": "components.uiOptionsLoader.options.components.uiOptions.options.components.settingStore",
-//                "previewEnhancer": "components.uiOptionsLoader.options.components.uiOptions.options.components.preview.options.components.enhancer"
-//            };
-//
-//        fluid.each(options, function (value, key) {
-//            if (componentsPathMapping[key]) {
-//                fluid.uiOptions.moveOptions(value, newOpts, componentsPathMapping[key]);
-//            } else {
-//                var option = {};
-//                option[key] = value;
-//                fluid.uiOptions.moveOptions(option, newOpts);
-//            }
-//        });
-//
-//        return newOpts;
-//    };
+        if (options) {
+            var applier = fluid.makeChangeApplier(options);
 
-    /**
-    * @param {Object} source, original object
-    * @param {Object} destination, object to copy options to
-    * @param {String} defaultLocation, default path to move options location
-    */
-    fluid.uiOptions.moveOptions = function (source, destination, defaultLocation) {
-        var location = defaultLocation || "";
-        
-        if (typeof source === "string") {
-            fluid.set(destination, defaultLocation, source);
-        } else if (typeof source === "object") {
-            fluid.each(source, function (value, key) {
-                fluid.set(destination, (location ? location + "." : "") + key, value);
+            fluid.each(config, function (source, dest) {
+                dest = fluid.uiOptions.expandShortPath(dest);
+                var value = fluid.get(options, source);
+                applier.requestChange(dest, value, "ADD");
+                applier.requestChange(source, value, "DELETE");
             });
         }
+
+        return options;
+    };
+    
+    fluid.uiOptions.expandShortPath = function (path) {
+        var strToreplaceFirst = "components";
+        var strToreplaceRest = "options.components";
+
+        // replace the first "*"
+        var re = fluid.stringToRegExp("*");
+        var newPath = path.replace(re, strToreplaceFirst);
+
+        // replace the rest "*"
+        re = fluid.stringToRegExp("*", "g");
+        newPath = newPath.replace(re, strToreplaceRest);
+        
+        return newPath;
     };
     
     /******************************

@@ -29,12 +29,6 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptions.fullPreviewUIOptions", {
-        options: {
-            value: "{fullPreviewUIOptions}.options.prefix"
-        }
-    });
-    
     // Options for UIOptions in full with preview mode
     fluid.demands("fluid.uiOptions", ["fluid.uiOptions.fullPreviewUIOptions"], {
         options: {
@@ -51,9 +45,8 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uiOptions.fullPreviewUIOptions = function (container, options) {
         // make "container" one of the options so it can be munged by the uiOptions.mapOptions.
-        // This container is used as uiOptionsLoader.container 
-//        var mappedOptions = fluid.uiOptions.mapOptions(options);
-        var mapping = fluid.defaults("fluid.uiOptions.fullPreviewUIOptions").uiOptionsTransform;
+        // This container is passed down to be used as uiOptionsLoader.container 
+        var mapping = fluid.defaults("fluid.uiOptions.fullPreviewUIOptions").uiOptionsTransform.config;
         options.container = container;
         
         var mappedOptions = fluid.uiOptions.mapOptions(options, mapping);

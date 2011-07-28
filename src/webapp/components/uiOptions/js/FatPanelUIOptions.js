@@ -110,16 +110,16 @@ var fluid_1_4 = fluid_1_4 || {};
                             type: "fluid.uiOptions.fatPanelEventBinder.binder",
                             priority: "last",
                             options: {
-		                        events: {
-			                        onUIOptionsComponentReady: {
-			                            event: "{uiOptionsLoader}.events.onUIOptionsComponentReady",
-			                            args: ["{arguments}.0", "{fluid.uiOptions.fatPanelEventBinder}"]
-			                        }
-			                    },
-			                    listeners: {
-			                        // This literal specification works around FLUID-4337
-			                        onUIOptionsComponentReady: fluid.uiOptions.fatPanelEventBinder.bindModelChanged
-			                    }
+                                events: {
+                                    onUIOptionsComponentReady: {
+                                        event: "{uiOptionsLoader}.events.onUIOptionsComponentReady",
+                                        args: ["{arguments}.0", "{fluid.uiOptions.fatPanelEventBinder}"]
+                                    }
+                                },
+                                listeners: {
+                                    // This literal specification works around FLUID-4337
+                                    onUIOptionsComponentReady: fluid.uiOptions.fatPanelEventBinder.bindModelChanged
+                                }
                             }
                         }
                     }
@@ -136,6 +136,20 @@ var fluid_1_4 = fluid_1_4 || {};
                         markupRenderer: "{fatPanelUIOptions}.markupRenderer"
                     }
                 }
+            }
+        },
+        uiOptionsTransform: {
+            transformer: "fluid.uiOptions.mapOptions",
+            config: {
+                "*.slidingPanel":                                       "slidingPanel",
+                "*.markupRenderer":                                     "markupRenderer",
+                "*.eventBinder":                                        "eventBinder",
+                "selectors.iframe":                                     "iframe",
+                "*.uiOptionsBridge.options.uiOptions":                  "uiOptions",
+                "*.uiOptionsBridge.options.uiOptions.*.textControls":   "textControls",
+                "*.uiOptionsBridge.options.uiOptions.*.layoutControls": "layoutControls",
+                "*.uiOptionsBridge.options.uiOptions.*.linksControls":  "linksControls",
+                "*.uiOptionsBridge.options.uiOptions.*.settingStore":   "settingStore"
             }
         },
         events: {
@@ -172,7 +186,7 @@ var fluid_1_4 = fluid_1_4 || {};
         // find the correct iframe
         $("iframe").each(function (idx, iframeElm) {
             var iframe = $(iframeElm);
-            if(iframe.hasClass(that.options.markupProps["class"])) {
+            if (iframe.hasClass(that.options.markupProps["class"])) {
                 that.iframe = iframe;
                 return false;
             }
@@ -217,9 +231,9 @@ var fluid_1_4 = fluid_1_4 || {};
                     type: "fluid.emptySubcomponent"
                 },
                 tabs: {
-	                type: "fluid.tabs",
-	                container: "body",      
-	                createOnEvent: "onUIOptionsComponentReady"
+                    type: "fluid.tabs",
+                    container: "body",      
+                    createOnEvent: "onUIOptionsComponentReady"
                 }
             }
         }
@@ -232,13 +246,9 @@ var fluid_1_4 = fluid_1_4 || {};
         var innerFluid = iframeWin.fluid;
         var body = $("body", iframeDoc);      
         body.addClass(that.markupRenderer.options.styles.container);
-        var uiOptionsOptions = {
-            options: that.options.uiOptionsOptions,
-            container: body
-        };
         var overallOptions = {};
         // TODO: Awful hard-wiring of dependence on exact component path
-        fluid.set(overallOptions, "components.uiOptionsLoader.options.components.uiOptions.options", uiOptionsOptions);
+        fluid.set(overallOptions, "components.uiOptionsLoader.options.components.uiOptions", that.options.uiOptions);
         
         var component = innerFluid.invokeGlobalFunction("fluid.uiOptions.FatPanelOtherWorldLoader", [body, overallOptions]);  
         that.uiOptionsLoader = component.uiOptionsLoader;
@@ -249,58 +259,13 @@ var fluid_1_4 = fluid_1_4 || {};
      ************************/
     
     fluid.uiOptions.fatPanelUIOptions = function (container, options) {
-        var mappedOptions = fluid.uiOptions.fatPanelUIOptions.mapOptions(options);
+        var mapping = fluid.defaults("fluid.uiOptions.fatPanelUIOptions").uiOptionsTransform.config;
+        
+        var mappedOptions = fluid.uiOptions.mapOptions(options, mapping);
+
         var that = fluid.initView("fluid.uiOptions.fatPanelUIOptions", container, mappedOptions);
         fluid.initDependents(that);
         return that; 
     };
 
-    /**
-    * @param {Object} source, original object
-    * @param {Object} destination, object to copy options to
-    * @param {String} defaultLocation, default path to move options location
-    * @param {Object} map, move instructions format {key: location}
-    */
-    fluid.uiOptions.fatPanelUIOptions.moveOptions = function (source, destination, defaultLocation, map) {
-        fluid.each(source, function (value, key) {
-            var location = (map && map[key]) || defaultLocation || "";
-            fluid.set(destination, (location ? location + "." : "") + key, value);
-        });
-    };
-    
-    // TODO: Maybe we need a framework function for model transformation to
-    //       replace the code below? 
-    /**
-    * @param {Object} options, top level options to be mapped
-    */
-    fluid.uiOptions.fatPanelUIOptions.mapOptions = function (options) {
-        var newOpts = {};
-        var componentPath = "components";
-        var selectorPath = "selectors";
-        var defaultBasePath = "components.uiOptionsBridge.options.uiOptionsOptions";
-        
-        var fatPanelComponentMapping = {
-            slidingPanel: componentPath,
-            uiEnhancer: componentPath,
-            preview: componentPath,
-            markupRenderer: componentPath,
-            eventBinder: componentPath
-        };
-        var selectorMapping = {
-            iframe: selectorPath
-        };
-        
-        fluid.each(options, function (value, key) {
-            var defaultPath = defaultBasePath + "." + key;
-            if (key === "components") {
-                fluid.uiOptions.fatPanelUIOptions.moveOptions(value, newOpts, defaultPath, fatPanelComponentMapping);
-            } else if (key === "selectors") {
-                fluid.uiOptions.fatPanelUIOptions.moveOptions(value, newOpts, defaultPath, selectorMapping);
-            } else {
-                fluid.uiOptions.fatPanelUIOptions.moveOptions(value, newOpts, defaultPath);
-            }
-        });
-
-        return newOpts;
-    };
 })(jQuery, fluid_1_4);
