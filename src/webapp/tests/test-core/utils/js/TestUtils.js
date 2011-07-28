@@ -96,7 +96,7 @@ fluid.testUtils.canonicaliseFunctions = function (tree) {
 
 fluid.testUtils.assertCanoniseEqual = function (message, expected, actual, canonFunc) {
     var expected2 = canonFunc(expected);
-    var actual2 = canonFunc(expected);
+    var actual2 = canonFunc(actual);
     jqUnit.assertDeepEq(message, expected2, actual2);  
 };
 
