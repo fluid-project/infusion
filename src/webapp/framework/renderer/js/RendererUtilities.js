@@ -429,7 +429,7 @@ fluid_1_4 = fluid_1_4 || {};
             var EL = typeof (value) === "string" ? fetchEL(value) : null;
             if (EL) {
                 proto.valuebinding = EL;
-            } else {
+            } else if (value !== undefined) {
                 proto.value = value;
             }
             if (options.model && proto.valuebinding && proto.value === undefined) {

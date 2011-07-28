@@ -1362,7 +1362,7 @@ fluid.registerNamespace("fluid.tests");
             }
         };
     
-        jqUnit.assertDeepEq("Accumulated resourceSpecs", requiredSpecs, resourceSpecs);
+        fluid.testUtils.assertCanoniseEqual("Accumulated resourceSpecs", requiredSpecs, resourceSpecs, fluid.testUtils.canonicaliseFunctions);
     
         var expectedRes = {
             objects: {

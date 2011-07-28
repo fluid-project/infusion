@@ -816,7 +816,7 @@ fluid.registerNamespace("fluid.tests");
                          selection: { valuebinding: "fields.addressType1"},
                          optionlist: { value: ["Home", "Work"]},
                          optionnames: { value: ["home", "work"]}
-                        }
+                    }
                 ]
             };
             jqUnit.assertDeepEq("UISelect expansion", expected, expanded);
@@ -877,6 +877,7 @@ fluid.registerNamespace("fluid.tests");
                     {ID: "loanIn-lender",
                          componentType: "UIBound",
                          valuebinding: "fields.lenders.0.lender",
+                         value: undefined,
                          decorators: [{
                             type: "fluid",
                             func: "cspace.autocomplete",
@@ -1091,11 +1092,13 @@ fluid.registerNamespace("fluid.tests");
                 children: [{
                     ID: "component1",
                     componentType: "UIBound",
-                    valuebinding: "path1"
+                    valuebinding: "path1",
+                    value: undefined
                 }, {
                     ID: "component2",
                     componentType: "UIBound",
                     valuebinding: "path2",
+                    value: undefined,
                     decorators: {
                         type: "fluid",
                         func: "cspace.autocomplete",
@@ -1346,7 +1349,7 @@ fluid.registerNamespace("fluid.tests");
                     }
                 ]
             };
-            fluid.testUtils.assertTree("Selection explosion", expected, expanded);
+            fluid.testUtils.assertCanoniseEqual("Selection explosion", expected, expanded, fluid.testUtils.sortTree);
         });
         
         protoTests.test("FLUID-3844 test: messagekey resolved by expander", function () {
@@ -1358,7 +1361,7 @@ fluid.registerNamespace("fluid.tests");
                     },
                     "FLUID-4301": [ 
                         { id: 1 },
-                        { id: 1 }  
+                        { id: 1 }
                     ]
                 }
             };
@@ -1382,7 +1385,8 @@ fluid.registerNamespace("fluid.tests");
                 }
             };
             var expanded = expander(protoTree);
-            fluid.testUtils.assertTree("Message key resolved", model.tabs.here.name, expanded.children[0].children[0].linktext.messagekey.value);
+            fluid.testUtils.assertCanoniseEqual("Message key resolved", model.tabs.here.name, 
+                expanded.children[0].children[0].linktext.messagekey.value, fluid.testUtils.sortTree);
         });
         
         protoTests.test("Can't have explicit valuebinding in the proto tree (no other way if there are decorators)", function () {
@@ -1412,8 +1416,10 @@ fluid.registerNamespace("fluid.tests");
                 }
             };
             var expanded = expander(protoTree);
-            fluid.testUtils.assertTree("Valuebinding should be resolved", "vector.0.index", expanded.children[0].children[0].valuebinding);
-            fluid.testUtils.assertTree("Valuebinding should be resolved", "one", expanded.children[0].children[0].value);
+            fluid.testUtils.assertCanoniseEqual("Valuebinding should be resolved", "vector.0.index", 
+                expanded.children[0].children[0].valuebinding, fluid.testUtils.sortTree);
+             fluid.testUtils.assertCanoniseEqual("Valuebinding should be resolved", "one", 
+                 expanded.children[0].children[0].value, fluid.testUtils.sortTree);
         });
     };  
 })(jQuery); 

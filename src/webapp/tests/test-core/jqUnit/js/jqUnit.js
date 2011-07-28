@@ -34,89 +34,7 @@ var jqUnit = jqUnit || {};
 })();
 
 (function ($) {
-    
-    /************************
-     * Deep equality assert *
-     ************************/
-    
-    function path(el) {
-        return el ? "path " + el: "root path";
-    }
-    
-    function reportType(obj) {
-        var type = typeof(obj);
-        return type === "string" || type === "number" || type === "boolean" ? type + " (" + obj + ")"
-          : type;
-    }
-    
-    function deepEqImpl(thing1, thing2, basename) {
-        basename = basename || "";
-        
-        if (thing1 === thing2) {
-            return null;
-        }
-        
-        if (typeof(thing1) !== typeof(thing2)) {
-            return "Type mismatch at " + path(basename) + ": " + reportType(thing1) + " to " + reportType(thing2);
-        }
-        
-        if (thing1 === null ^ thing2 === null) {
-            return "Unexpected null value at " + path(basename);
-        }
-        
-        if (thing1 === undefined ^ thing2 === undefined) {
-            return "Unexpected undefined value at " + path(basename);
-        }
-        
-        if (typeof(thing1) === "function") {
-            return null; // compare all functions as equal
-        }
-        
-        if (typeof(thing1) !== 'object') {
-            if (thing1 !== thing2) {
-                return "Primitive mismatch at " + path(basename) + ": " + thing1 + " to " + thing2;
-            }
-        } else {
-            var length1 = thing1.length;
-            var length2 = thing2.length;
-            if (length1 !== length2) {
-                return "Array length mismatch at " + path(basename) + ": " + length1 + " to " + length2; 
-            }
-            for (var name in thing1) {
-                var n1 = thing1[name];
-                var n2 = thing2[name];
-                var neq = deepEqDiag(n1, n2, (basename ? basename + ".": "") + name);
-                if (neq) {
-                    return neq;
-                }
-            }
-        }
-        
-        return null;
-    }
 
-    function deepEqDiag(thing1, thing2, basename) {
-        var diag1 = deepEqImpl(thing1, thing2, basename);
-        if (diag1) {
-            return diag1;
-        }
-        
-        var diag2 = deepEqImpl(thing2, thing1, basename);
-        if (diag2) {
-            return diag2;
-        }
-        
-        return null;    
-    }
-    
-    jqUnit.deepEq = function (thing1, thing2) {
-        return !deepEqImpl(thing1, thing2) && !deepEqImpl(thing2, thing1);
-    };
-      
-    jqUnit.deepEqDiag = function (thing1, thing2) {
-        return deepEqDiag(thing1, thing2);
-    };
-    
     /**
      * Keeps track of the order of function invocations. The transcript contains information about
      * each invocation, including its name and the arguments that were supplied to it.
@@ -223,13 +141,11 @@ var jqUnit = jqUnit || {};
         },
         
         assertDeepEq: function (msg, expected, actual) {
-            var diag = deepEqDiag(expected, actual);
-            ok(diag === null, msg + (diag === null ? "" : ": " + diag));
+            QUnit.deepEqual(actual, expected, msg);
         },
         
         assertDeepNeq: function (msg, unexpected, actual) {
-            var diag = deepEqDiag(unexpected, actual);
-            ok(diag !== null, msg);
+            QUnit.notDeepEqual(actual, unexpected, msg);
         },
         // Namespaced version of "expect" for civilization
         expect: function(number) {
