@@ -353,9 +353,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assembleModelTests(createElms(linearHeadings.headingTags), linearHeadings.anchorInfo, linearHeadings.model);
         });
         tocMBTests.test("assembleModel: skipped headings", function () {
-            // test assembleModel with default toModel invoker - skippedHeadingsForSkippedIndentationModel
-            assembleModelTests(createElms(skippedHeadingsForSkippedIndentationModel.headingTags), 
-                skippedHeadingsForSkippedIndentationModel.anchorInfo, skippedHeadingsForSkippedIndentationModel.model);
+            // test assembleModel with default toModel invoker - skippedHeadingsForGradualIndentationModel
+            assembleModelTests(createElms(skippedHeadingsForGradualIndentationModel.headingTags), 
+                skippedHeadingsForGradualIndentationModel.anchorInfo, skippedHeadingsForGradualIndentationModel.model);
         });
         
         tocMBTests.test("Test gradualModelLevelFn", function () {
