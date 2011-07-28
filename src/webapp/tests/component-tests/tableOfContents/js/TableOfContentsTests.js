@@ -386,6 +386,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tocLevelsTests.test("generateTree: gradual indentation tree, [h1, h6]", function () {
             generateTreeTests(skippedHeadingsForGradualIndentationModel.model, skippedHeadingsForGradualIndentationTree);
         });
+        tocLevelsTests.test("generateTree: empty tree, []", function () {
+            generateTreeTests([], []);
+        });
+        
         
         tocLevelsTests.test("objModel: test construction of the levels, items object used by generateTree", function () {
             var levelObj = fluid.tableOfContents.levels.objModel('level', 1);

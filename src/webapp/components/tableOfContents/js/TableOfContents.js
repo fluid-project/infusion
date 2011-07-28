@@ -258,6 +258,11 @@ var fluid_1_4 = fluid_1_4 || {};
         currentLevel = currentLevel || 0;
         var levelObj = fluid.tableOfContents.levels.objModel("level", currentLevel);
         
+        // FLUID-4352, run generateTree iff there are headings in the model.
+        if (headingsModel.headings.length === 0) {
+            return [];
+        }
+        
         // base case: level is 0, returns {children:[generateTree(nextLevel)]}
         // purpose is to wrap the first level with a children object.
         if (currentLevel === 0) {
