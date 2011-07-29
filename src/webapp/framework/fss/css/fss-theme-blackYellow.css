@@ -15,6 +15,9 @@
 /* Divs, inputs */
 .fl-theme-blackYellow div, .fl-theme-blackYellow input {color:#000000; background-color:#ffff00; border-color:#000;}
 
+/* iframes */
+.fl-theme-blackYellow iframe {border-color:#000;}
+
 /* Links */
 .fl-theme-blackYellow a  {color: #000; font-weight:bold; background-color:#ff0;}
 

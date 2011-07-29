@@ -15,6 +15,9 @@
 /* Divs, inputs */
 .fl-theme-hc div, .fl-theme-hc input {color:#000000; background-color:#ffffff; border-color:#000;}
 
+/* iframes */
+.fl-theme-hc iframe {border-color:#000;}
+
 /* Links */
 .fl-theme-hc a  {color: #000; font-weight:bold; background-color:#fff;}
 

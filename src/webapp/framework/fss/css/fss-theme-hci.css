@@ -13,7 +13,10 @@
 .fl-theme-hci {color:#fff; background-color:#000;}
 
 /* Divs, inputs */
-.fl-theme-hci div, .fl-theme-hci input {color:#fff; background-color:#000;}
+.fl-theme-hci div, .fl-theme-hci input {color:#fff; background-color:#000; border-color:#fff}
+
+/* iframes */
+.fl-theme-hci iframe {border-color:#fff;}
 
 /* Links */
 .fl-theme-hci a  {color: #ffffff; font-weight:bold; background-color:#000000;}
