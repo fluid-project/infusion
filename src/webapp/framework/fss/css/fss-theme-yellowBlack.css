@@ -24,7 +24,7 @@
 .fl-theme-yellowBlack h3,
 .fl-theme-yellowBlack h4,
 .fl-theme-yellowBlack h5,
-.fl-theme-yellowBlack h6 {color:#ffff00; background-color:#000000; border-color:#ffff00; border-bottom:0.1em dashed #ffff00;}
+.fl-theme-yellowBlack h6 {color:#ffff00; background-color:#000000; border-color:#ffff00;}
 
 /* Tables */
 .fl-theme-yellowBlack th {border:0.1em solid #ffff00; background-color:#ffff00; color:#000000;}
