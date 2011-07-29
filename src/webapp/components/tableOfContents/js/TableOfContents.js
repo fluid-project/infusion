@@ -191,7 +191,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 funcName: "fluid.tableOfContents.modelBuilder.toModel",
                 args: ["{arguments}.0", "{modelBuilder}.modelLevelFn"]
             },
-            modelLevelFn: "fluid.tableOfContents.modelBuilder.skippedModelLevelFn"
+            modelLevelFn: "fluid.tableOfContents.modelBuilder.gradualModelLevelFn"
         }
     });
     
