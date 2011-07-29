@@ -80,7 +80,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
             
             var that = fluid.uiOptions.fatPanelUIOptions(".flc-uiOptions-fatPanel", {
-                prefix: "../../../../components/uiOptions/html/",
+                prefix: "../../../components/uiOptions/html/",
                 markupRenderer: {
                     options: {
                         markupProps: {

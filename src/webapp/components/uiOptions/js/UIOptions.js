@@ -198,7 +198,7 @@ var fluid_1_4 = fluid_1_4 || {};
             transformer: "fluid.uiOptions.mapOptions",
             config: {
                 "*.templateLoader":                                   "templateLoader",
-                "*.templateLoader.*.templatePath.options.value":              "prefix",
+                "*.templateLoader.*.templatePath.options.value":      "prefix",
                 "*.uiOptionsLoader.container":                        "container",
                 "*.uiOptionsLoader.*.uiOptions":                      "uiOptions",
                 "*.uiOptionsLoader.*.uiOptions.*.textControls":       "textControls",
@@ -223,8 +223,10 @@ var fluid_1_4 = fluid_1_4 || {};
             fluid.each(config, function (source, dest) {
                 dest = fluid.uiOptions.expandShortPath(dest);
                 var value = fluid.get(options, source);
-                applier.requestChange(dest, value, "ADD");
-                applier.requestChange(source, value, "DELETE");
+                if (value) {
+                    applier.requestChange(dest, value, "ADD");
+                    applier.requestChange(source, value, "DELETE");
+                }
             });
         }
 
@@ -750,7 +752,7 @@ var fluid_1_4 = fluid_1_4 || {};
         preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.linksControls.produceTree",
-        resources: {                    
+        resources: {
             template: "{templateLoader}.resources.linksControls"
         }
     });
