@@ -38,6 +38,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         funcName: 'fluid.tableOfContents.generateGUIDMock'
     });
     
+    /* For testing a page with no headings */
+    var emptyHeadings = {
+        headingTags: [],
+        anchorInfo: [],
+        headingInfo: [],
+        model: []
+    };
+    
     /* TODO: Might want to rename this and "skippedHeadingsForGradualIndentationModel" */
     var skippedHeadingsForSkippedIndentationModel = {
         headingTags: ["h1", "h6"],
@@ -263,6 +271,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var renderTOCTest = function (that, testHeadings) {
         var tocLinks = locateSet(that, ["link1", "link2", "link3", "link4", "link5", "link6"]);
         jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
+        // #FLUID-4252: check if <ul> exists when there is no tocLinks
+        if (tocLinks.length === 0) {
+            jqUnit.assertEquals("<ul> should not be defined when no headers are found", 0, $('ul', that.locate('flc-toc-tocContainer')).length);
+        }
         fluid.each(tocLinks, function (elm, idx) {
             var hInfo = testHeadings.headingInfo[idx];
             elm = $(elm);
@@ -276,7 +288,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
        
     var renderTOCTests = function (testHeadings) {
-        var container = $(".flc-toc-tocContainer");
+        var container = $(".flc-toc-tocContainer", "#flc-toc");
         fluid.tableOfContents.levels(container, {
             model: {
                 headings: testHeadings.model
@@ -298,9 +310,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     /**
      * Returns a ToC Component with the predefined demand block
+     * defaults container is #flc-toc
      */
-    var renderTOCComponent = function (options) {
-        return fluid.tableOfContents("#flc-toc", options);
+    var renderTOCComponent = function (container, options) {
+        container = container || "#flc-toc";
+        return fluid.tableOfContents(container, options);
     };
 
     $(document).ready(function () {
@@ -406,6 +420,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
         });
         
+        tocLevelsTests.asyncTest("Render toc: empty headings", function () {
+            //FLUID-4252
+            renderTOCTests(emptyHeadings);
+        });
         tocLevelsTests.asyncTest("Render toc: linear headings", function () {
             renderTOCTests(linearHeadings);
         });
@@ -501,7 +519,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     '#test'
                 ));
             });
-            renderTOCComponent({
+            renderTOCComponent("#flc-toc", {
                 listeners: {
                     afterRender: function (that) {
                         renderTOCTest(that, testHeadings);
@@ -528,6 +546,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {level: 3, text: "CATT", url: "#toc_CATT_23"}
             ];
             */
+        });
+        
+        /**
+         * #FLUID-4352: Test component with no headings. Make sure no <ul> is set
+         */
+        tocTests.asyncTest("Component test empty headings", function () {
+            // craft headingInfo so renderTOCTest() can use it
+            var testHeadings = {
+                    headingInfo : []
+                };
+            renderTOCComponent("#flc-toc-noHeaders", {
+                listeners: {
+                    afterRender: function (that) {
+                        renderTOCTest(that, testHeadings);
+                        renderTOCAnchorTest();
+                        start();
+                    }
+                }
+            });
         });
     });
 })(jQuery);
