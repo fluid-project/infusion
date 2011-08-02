@@ -28,7 +28,21 @@ var fluid = fluid || {};
             {
                 type: fluid.build.cssGenerator.prioritize,
                 options: {
-                    "fluid-cssGenerator-allRules": "background-color"
+                    "fluid-cssGenerator-allRules": [
+                        "font-size", 
+                        "line-height", 
+                        "font-family", 
+                        "color", 
+                        "background-color", 
+                        "background-image", 
+                        "background", 
+                        "border", 
+                        "border-color",
+                        "border-bottom-color",
+                        "border-top-color",
+                        "border-left-color",
+                        "border-right-color"
+                    ]
                 }
             },
             {

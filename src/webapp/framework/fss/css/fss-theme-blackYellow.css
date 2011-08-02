@@ -15,6 +15,9 @@
 /* Divs, inputs */
 .fl-theme-blackYellow div, .fl-theme-blackYellow input {color:#000000; background-color:#ffff00; border-color:#000;}
 
+/* iframes */
+.fl-theme-blackYellow iframe {border-color:#000;}
+
 /* Links */
 .fl-theme-blackYellow a  {color: #000; font-weight:bold; background-color:#ff0;}
 
@@ -24,7 +27,7 @@
 .fl-theme-blackYellow h3,
 .fl-theme-blackYellow h4,
 .fl-theme-blackYellow h5,
-.fl-theme-blackYellow h6 {color:#000; background-color:#ff0; border-color:#000; border-bottom:0.1em dashed #000000;}
+.fl-theme-blackYellow h6 {color:#000; background-color:#ff0; border-color:#000;}
 
 /* Tables */
 .fl-theme-blackYellow th {border:0.1em solid #000; background-color:#000; color:#ff0;}
