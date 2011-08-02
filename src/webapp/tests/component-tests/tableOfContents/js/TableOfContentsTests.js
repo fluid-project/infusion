@@ -271,7 +271,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var renderTOCTest = function (that, testHeadings) {
         var tocLinks = locateSet(that, ["link1", "link2", "link3", "link4", "link5", "link6"]);
         jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
-        // #FLUID-4252: check if <ul> exists when there is no tocLinks
+        // #FLUID-4352: check if <ul> exists when there is no tocLinks
         if (tocLinks.length === 0) {
             jqUnit.assertEquals("<ul> should not be defined when no headers are found", 0, $('ul', that.locate('flc-toc-tocContainer')).length);
         }
@@ -421,7 +421,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         tocLevelsTests.asyncTest("Render toc: empty headings", function () {
-            //FLUID-4252
+            //FLUID-4352
             renderTOCTests(emptyHeadings);
         });
         tocLevelsTests.asyncTest("Render toc: linear headings", function () {
