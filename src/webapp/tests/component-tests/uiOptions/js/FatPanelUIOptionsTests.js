@@ -22,9 +22,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      ***********/
     
     // Supply the templates
-    fluid.staticEnvironment.fatPanelUIOptionsTests = fluid.typeTag("fluid.uiOptions.fatPanelUIOptionsTests");
+    fluid.staticEnvironment.fatPanelTests = fluid.typeTag("fluid.uiOptions.fatPanelTests");
 
-    fluid.demands("fluid.cookieStore", ["fluid.uiOptions.fatPanelUIOptionsTests"], {
+    fluid.demands("fluid.cookieStore", ["fluid.uiOptions.fatPanelTests"], {
         options: {
             cookieName: "fluid-ui-settings-test"
         }
@@ -33,11 +33,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         fluid.setLogging(true);
 
-        var tests = jqUnit.testCase("FatPanelUIOptions Tests");
+        var tests = jqUnit.testCase("UIOptions fatPanel Tests");
         
-        /***************************************
-         * FatPanelUIOptions integration tests *
-         ***************************************/
+        /****************************************
+         * UIOptions fatPanel integration tests *
+         ****************************************/
         
         var applierRequestChanges = function (uiOptions, selectionOptions) {
             uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
@@ -53,11 +53,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("markupRenderer is present", components.markupRenderer);
             jqUnit.assertTrue("uiEnhancer is preset", components.uiEnhancer);
             jqUnit.assertTrue("eventBinder is present", components.eventBinder);
-            jqUnit.assertTrue("uiOptionsBridge is present", components.uiOptionsBridge);
+            jqUnit.assertTrue("Bridge is present", components.bridge);
             jqUnit.assertTrue("uiEnhancer is present as an eventBinder sub-component", eventBinderComponents.uiEnhancer);
             jqUnit.assertTrue("uiOptionsLoader is present as an eventBinder sub-component", eventBinderComponents.uiOptionsLoader);
             jqUnit.assertTrue("slidingPanel is present as an eventBinder sub-component", eventBinderComponents.slidingPanel);
-            jqUnit.assertTrue("markupRenderer is present as an uiOptionsBridge sub-component", components.uiOptionsBridge.options.components.markupRenderer);
+            jqUnit.assertTrue("markupRenderer is present as an bridge sub-component", components.bridge.options.components.markupRenderer);
         };        
         
         var checkModelSelections = function (expectedSelections, actualSelections) {
@@ -79,7 +79,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
             });
             
-            var that = fluid.uiOptions.fatPanelUIOptions(".flc-uiOptions-fatPanel", {
+            var that = fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
                 prefix: "../../../components/uiOptions/html/",
                 markupRenderer: {
                     options: {
@@ -101,13 +101,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             setTimeout(function () {
                 var defaultSiteSettings = that.uiEnhancer.settingsStore.options.defaultSiteSettings;
                 var pageModel = that.uiEnhancer.model;
-                var panelModel = that.uiOptionsBridge.uiOptionsLoader.uiOptions.uiEnhancer.model;
+                var panelModel = that.bridge.uiOptionsLoader.uiOptions.uiEnhancer.model;
                 
                 var settingsStoreOptions = that.uiEnhancer.settingsStore.options;
                 
                 // Open the Fat Panel, apply changes, and close the panel
                 that.slidingPanel.events.afterPanelShown.fire();
-                applierRequestChanges(that.uiOptionsBridge.uiOptionsLoader.uiOptions, bwSkin);
+                applierRequestChanges(that.bridge.uiOptionsLoader.uiOptions, bwSkin);
                 checkModelSelections(bwSkin, pageModel);
                 that.slidingPanel.events.afterPanelHidden.fire();
                 checkModelSelections(bwSkin, panelModel);
@@ -115,7 +115,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 
                 // Open the Fat Panel, click "Reset All", and close the panel
                 that.slidingPanel.events.afterPanelShown.fire();
-                that.uiOptionsBridge.uiOptionsLoader.uiOptions.locate("reset").click();
+                that.bridge.uiOptionsLoader.uiOptions.locate("reset").click();
                 checkModelSelections(pageModel, defaultSiteSettings);
                 that.slidingPanel.events.afterPanelHidden.fire();
                 checkModelSelections(panelModel, defaultSiteSettings);

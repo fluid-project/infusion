@@ -101,7 +101,10 @@ var fluid_1_4 = fluid_1_4 || {};
                 }
             },
             settingsStore: {
-                type: "fluid.uiOptions.store"
+                type: "fluid.uiOptions.store",
+                options: {
+                    defaultSiteSettings: "{uiEnhancer}.options.defaultSiteSettings"
+                }
             }
         },
         invokers: {

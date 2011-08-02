@@ -21,7 +21,7 @@ var demo = demo || {};
             tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
         });
 
-        fluid.uiOptions.fatPanelUIOptions(".flc-uiOptions-fatPanel", {
+        fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
             // Note that the path given in the "prefix" option is the relative path from the location
             // of UI Options templates to the location of the html file that is displayed in iFrame
             prefix: "../../../components/uiOptions/html/",

@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         fluid.setLogging(true);
         
-        var tests = jqUnit.testCase("FullNoPreviewUIOptions Tests");
+        var tests = jqUnit.testCase("UIOptions FullNoPreview Tests");
         
         var bwSkin = {
             textSize: "1.8",
@@ -35,9 +35,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             lineSpacing: 1.5
         };        
         
-        /**************************************************
-         * fluid.uiOptions.fullNoPreviewUIOptions Integration Tests *
-         **************************************************/        
+        /***************************************************
+         * fluid.uiOptions.fullNoPreview Integration Tests *
+         ***************************************************/
 
         var checkUIOComponents = function (uiOptions) {
             jqUnit.assertTrue("Check that textControls sub-component is present", uiOptions.textControls);
@@ -67,7 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
             });
             
-            var that = fluid.uiOptions.fullNoPreviewUIOptions("#myUIOptions", {
+            var that = fluid.uiOptions.fullNoPreview("#myUIOptions", {
                 prefix: "../../../../components/uiOptions/html/"
             });
             
