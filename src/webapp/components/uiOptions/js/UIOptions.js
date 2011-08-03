@@ -428,10 +428,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 createOnEvent: "onUIOptionsComponentReady",
                 container: "{uiOptions}.dom.previewFrame"
             },
-            settingsStore: {    // supplied by demands
-                type: "fluid.uiOptions.store"
-            },
-            eventBinder: {    // supplied by demands
+            eventBinder: {
                 type: "fluid.uiOptions.eventBinder"
             }
         },

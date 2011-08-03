@@ -211,6 +211,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     options: {
                         components: {
                             uiEnhancer: "{uiEnhancer}",
+                            settingsStore: "{uiEnhancer}.settingsStore",
                             preview: {
                                 type: "fluid.emptySubcomponent"
                             },
