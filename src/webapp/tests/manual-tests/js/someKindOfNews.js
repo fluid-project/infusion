@@ -31,7 +31,7 @@ var skon = skon || {};
         });
         
         // Next, start up UI Options
-        fluid.uiOptions.fatPanelUIOptions(".flc-uiOptions-fatPanel", {
+        fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
             prefix: "../../../components/uiOptions/html/",
             markupRenderer: {
                 options: {

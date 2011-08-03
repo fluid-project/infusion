@@ -19,12 +19,6 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) { 
 
-//    fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptions.fatPanelUIOptions", {
-//        options: {
-//            value: "{fatPanelUIOptions}.options.prefix"
-//        }
-//    });
-    
     /***************************************
      * fluid.uiOptions.fatPanelEventBinder *
      ***************************************/
@@ -33,9 +27,9 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         finalInitFunction: "fluid.uiOptions.fatPanelEventBinder.finalInit",
         components: {
-            uiEnhancer: {
-                type: "fluid.uiEnhancer"
-            },
+            // uiEnhancer: {
+                // type: "fluid.uiEnhancer"
+            // },
             uiOptionsLoader: {
                 type: "fluid.uiOptions.loader"
             },
@@ -74,7 +68,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * Fat Panel UI Options Imp *
      ****************************/ 
      
-    fluid.defaults("fluid.uiOptions.fatPanelUIOptions", {
+    fluid.defaults("fluid.uiOptions.fatPanel", {
         gradeNames: ["fluid.viewComponent"],
         selectors: {
             iframe: ".flc-uiOptions-iframe"
@@ -82,15 +76,15 @@ var fluid_1_4 = fluid_1_4 || {};
         components: {      
             slidingPanel: {
                 type: "fluid.slidingPanel",
-                container: "{fatPanelUIOptions}.container",
+                container: "{fatPanel}.container",
                 createOnEvent: "afterRender"
             },
             markupRenderer: {
                 type: "fluid.uiOptions.renderIframe",
-                container: "{fatPanelUIOptions}.dom.iframe",
+                container: "{fatPanel}.dom.iframe",
                 options: {
                     events: {
-                        afterRender: "{fatPanelUIOptions}.events.afterRender"
+                        afterRender: "{fatPanel}.events.afterRender"
                     },
                     styles: {
                         containerFlex: "fl-container-flex",
@@ -103,9 +97,9 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uiOptions.fatPanelEventBinder",
                 options: {
                     components: {
-                        uiEnhancer: "{fatPanelUIOptions}.uiEnhancer",
-                        uiOptionsLoader: "{fatPanelUIOptions}.uiOptionsBridge.uiOptionsLoader",
-                        slidingPanel: "{fatPanelUIOptions}.slidingPanel",
+                        uiEnhancer: "{fatPanel}.uiEnhancer",
+                        uiOptionsLoader: "{fatPanel}.bridge.uiOptionsLoader",
+                        slidingPanel: "{fatPanel}.slidingPanel",
                         binder: {
                             type: "fluid.uiOptions.fatPanelEventBinder.binder",
                             priority: "last",
@@ -127,13 +121,13 @@ var fluid_1_4 = fluid_1_4 || {};
                 createOnEvent: "afterRender",
                 priority: "last"
             },
-            uiOptionsBridge: {
-                type: "fluid.uiOptions.uiOptionsBridge",
+            bridge: {
+                type: "fluid.uiOptions.bridge",
                 createOnEvent: "afterRender",
                 priority: "first",
                 options: {
                     components: { 
-                        markupRenderer: "{fatPanelUIOptions}.markupRenderer"
+                        markupRenderer: "{fatPanel}.markupRenderer"
                     }
                 }
             }
@@ -141,17 +135,17 @@ var fluid_1_4 = fluid_1_4 || {};
         uiOptionsTransform: {
             transformer: "fluid.uiOptions.mapOptions",
             config: {
-                "*.slidingPanel":                                       "slidingPanel",
-                "*.markupRenderer":                                     "markupRenderer",
-                "*.eventBinder":                                        "eventBinder",
-                "selectors.iframe":                                     "iframe",
-                "*.uiOptionsBridge.options.templateLoader":             "templateLoader",
-                "*.uiOptionsBridge.options.prefix":                     "prefix",
-                "*.uiOptionsBridge.options.uiOptions":                  "uiOptions",
-                "*.uiOptionsBridge.options.uiOptions.*.textControls":   "textControls",
-                "*.uiOptionsBridge.options.uiOptions.*.layoutControls": "layoutControls",
-                "*.uiOptionsBridge.options.uiOptions.*.linksControls":  "linksControls",
-                "*.uiOptionsBridge.options.uiOptions.*.settingStore":   "settingStore"
+                "*.slidingPanel":                              "slidingPanel",
+                "*.markupRenderer":                            "markupRenderer",
+                "*.eventBinder":                               "eventBinder",
+                "selectors.iframe":                            "iframe",
+                "*.bridge.options.templateLoader":             "templateLoader",
+                "*.bridge.options.prefix":                     "prefix",
+                "*.bridge.options.uiOptions":                  "uiOptions",
+                "*.bridge.options.uiOptions.*.textControls":   "textControls",
+                "*.bridge.options.uiOptions.*.layoutControls": "layoutControls",
+                "*.bridge.options.uiOptions.*.linksControls":  "linksControls",
+                "*.bridge.options.uiOptions.*.settingStore":   "settingStore"
             }
         },
         events: {
@@ -200,37 +194,39 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     /***********************************
-     * fluid.uiOptions.uiOptionsBridge *
+     * fluid.uiOptions.bridge *
      ***********************************/
     
-    fluid.defaults("fluid.uiOptions.uiOptionsBridge", {
+    fluid.defaults("fluid.uiOptions.bridge", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
-        finalInitFunction: "fluid.uiOptions.uiOptionsBridge.finalInit",  
+        finalInitFunction: "fluid.uiOptions.bridge.finalInit",  
         iframe: null
     });
     
     fluid.defaults("fluid.uiOptions.FatPanelOtherWorldLoader", {
-        gradeNames: ["fluid.uiOptions.inline", "autoInit"]
-    });
-    
-    // Options for UIOptions in fat panel mode
-    fluid.demands("fluid.uiOptions", ["fluid.uiOptions.FatPanelOtherWorldLoader"], {
-        options: {
-            components: {
-                uiEnhancer: "{uiEnhancer}",
-                preview: {
-                    type: "fluid.emptySubcomponent"
-                },
-                tabs: {
-                    type: "fluid.tabs",
-                    container: "body",      
-                    createOnEvent: "onUIOptionsComponentReady"
+        gradeNames: ["fluid.uiOptions.inline", "autoInit"],
+        uiOptionsTransform: {
+            config: {
+                "*.uiOptionsLoader.*.uiOptions": {
+                    options: {
+                        components: {
+                            uiEnhancer: "{uiEnhancer}",
+                            preview: {
+                                type: "fluid.emptySubcomponent"
+                            },
+                            tabs: {
+                                type: "fluid.tabs",
+                                container: "body",      
+                                createOnEvent: "onUIOptionsComponentReady"
+                            }
+                        }
+                    }
                 }
             }
         }
     });
     
-    fluid.uiOptions.uiOptionsBridge.finalInit = function (that) {
+    fluid.uiOptions.bridge.finalInit = function (that) {
         var iframe = that.markupRenderer.iframe;
         var iframeDoc = iframe.contents();
         var iframeWin = iframe[0].contentWindow;
@@ -240,12 +236,12 @@ var fluid_1_4 = fluid_1_4 || {};
         
         var overallOptions = {};
         overallOptions.container = container;
-        var bridgeMapping = fluid.defaults("fluid.uiOptions.fatPanelUIOptions").uiOptionsTransform.config;
+        var bridgeMapping = fluid.defaults("fluid.uiOptions.fatPanel").uiOptionsTransform.config;
         
         fluid.each(bridgeMapping, function (to, from) {
             fluid.each(that.options, function (value, key) {
                 // the mapping belongs to FatPanelOtherWorldLoader
-                if (from.indexOf("uiOptionsBridge") !== -1 && key === to) {
+                if (from.indexOf("bridge") !== -1 && key === to) {
                     overallOptions[key] = value;
                 }
             });
@@ -262,12 +258,12 @@ var fluid_1_4 = fluid_1_4 || {};
      * Fat Panel UI Options *
      ************************/
     
-    fluid.uiOptions.fatPanelUIOptions = function (container, options) {
-        var mapping = fluid.defaults("fluid.uiOptions.fatPanelUIOptions").uiOptionsTransform.config;
+    fluid.uiOptions.fatPanel = function (container, options) {
+        var mapping = fluid.defaults("fluid.uiOptions.fatPanel").uiOptionsTransform.config;
         
         var mappedOptions = fluid.uiOptions.mapOptions(options, mapping);
 
-        var that = fluid.initView("fluid.uiOptions.fatPanelUIOptions", container, mappedOptions);
+        var that = fluid.initView("fluid.uiOptions.fatPanel", container, mappedOptions);
         fluid.initDependents(that);
         return that; 
     };

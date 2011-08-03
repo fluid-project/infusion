@@ -21,36 +21,38 @@ var fluid_1_4 = fluid_1_4 || {};
     /***************************
      * Full Preview UI Options *
      ***************************/
-    fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptions.fullPreviewUIOptions", {
-        options: {
-            templates: {
-                uiOptions: "%prefixFullPreviewUIOptions.html"
-            }
-        }
-    });
-    
-    // Options for UIOptions in full with preview mode
-    fluid.demands("fluid.uiOptions", ["fluid.uiOptions.fullPreviewUIOptions"], {
-        options: {
-            components: {
-                settingsStore: "{uiEnhancer}.settingsStore"
-            }
-        }
-    });
-    
-    fluid.defaults("fluid.uiOptions.fullPreviewUIOptions", {
+
+    fluid.defaults("fluid.uiOptions.fullPreview", {
         gradeNames: ["fluid.uiOptions.inline"],
-        container: "{fullPreviewUIOptions}.container"
-    });       
+        container: "{fullPreview}.container",
+        uiOptionsTransform: {
+            config: {
+                "*.templateLoader": {
+                    options: {
+                        templates: {
+                            uiOptions: "%prefixFullPreviewUIOptions.html"
+                        }
+                    }
+                },
+                "*.uiOptionsLoader.*.uiOptions": {
+                    options: {
+                        components: {
+                            settingsStore: "{uiEnhancer}.settingsStore"
+                        }
+                    }
+                }
+            }
+        }
+    });
     
-    fluid.uiOptions.fullPreviewUIOptions = function (container, options) {
+    fluid.uiOptions.fullPreview = function (container, options) {
         // make "container" one of the options so it can be munged by the uiOptions.mapOptions.
         // This container is passed down to be used as uiOptionsLoader.container 
-        var mapping = fluid.defaults("fluid.uiOptions.fullPreviewUIOptions").uiOptionsTransform.config;
+        var mapping = fluid.defaults("fluid.uiOptions.fullPreview").uiOptionsTransform.config;
         options.container = container;
         
         var mappedOptions = fluid.uiOptions.mapOptions(options, mapping);
-        var that = fluid.initView("fluid.uiOptions.fullPreviewUIOptions", container, mappedOptions);
+        var that = fluid.initView("fluid.uiOptions.fullPreview", container, mappedOptions);
         fluid.initDependents(that);
         return that;
     };

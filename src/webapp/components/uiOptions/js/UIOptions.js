@@ -205,7 +205,6 @@ var fluid_1_4 = fluid_1_4 || {};
                 "*.uiOptionsLoader.*.uiOptions.*.layoutControls":     "layoutControls",
                 "*.uiOptionsLoader.*.uiOptions.*.linksControls":      "linksControls",
                 "*.uiOptionsLoader.*.uiOptions.*.preview":            "preview",
-                "*.uiOptionsLoader.*.uiOptions.*.settingStore":       "settingStore",
                 "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
             }
         }
@@ -215,6 +214,7 @@ var fluid_1_4 = fluid_1_4 || {};
     //       replace the code below? 
     /**
     * @param {Object} options, top level options to be mapped
+    * @param {Array} config, a mapping between the target path on the IoC tree and the option name
     */
     fluid.uiOptions.mapOptions = function (options, config) {
         if (options) {
@@ -222,10 +222,15 @@ var fluid_1_4 = fluid_1_4 || {};
 
             fluid.each(config, function (source, dest) {
                 dest = fluid.uiOptions.expandShortPath(dest);
-                var value = fluid.get(options, source);
-                if (value) {
-                    applier.requestChange(dest, value, "ADD");
-                    applier.requestChange(source, value, "DELETE");
+                
+                if (typeof source === "string") {
+                    var value = fluid.get(options, source);
+                    if (value) {
+                        applier.requestChange(dest, value, "ADD");
+                        applier.requestChange(source, value, "DELETE");
+                    }
+                } else if (typeof source === "object") {
+                    applier.requestChange(dest, source, "ADD");
                 }
             });
         }
@@ -387,8 +392,6 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{uiOptions}.dom.textControls",
                 createOnEvent: "onUIOptionsComponentReady",
                 options: {
-                    textSize: "{uiOptions}.options.textSize",
-                    lineSpacing: "{uiOptions}.options.lineSpacing",
                     model: "{uiOptions}.model",
                     applier: "{uiOptions}.applier",
                     events: {
@@ -431,14 +434,6 @@ var fluid_1_4 = fluid_1_4 || {};
             eventBinder: {    // supplied by demands
                 type: "fluid.uiOptions.eventBinder"
             }
-        },
-        textSize: {
-            min: 1,
-            max: 2
-        },
-        lineSpacing: {
-            min: 1,
-            max: 2
         },
         selectors: {
             textControls: ".flc-uiOptions-text-controls",
@@ -621,6 +616,14 @@ var fluid_1_4 = fluid_1_4 || {};
         controlValues: { 
             textFont: ["default", "times", "comic", "arial", "verdana"],
             theme: ["default", "bw", "wb", "by", "yb"]
+        },
+        textSize: {
+            min: 1,
+            max: 2
+        },
+        lineSpacing: {
+            min: 1,
+            max: 2
         },
         selectors: {
             textFont: ".flc-uiOptions-text-font",

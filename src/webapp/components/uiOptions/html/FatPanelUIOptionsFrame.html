@@ -59,33 +59,6 @@
         </div>
 
         <script type="text/javascript">
-            // Supply the templates
-            fluid.staticEnvironment.uiOptionsIframe = fluid.typeTag("fluid.uiOptionsIframe");
-            
-            fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsIframe", {
-                options: {
-                    prefix: "./"
-                }
-            });
-        
-            fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
-                options: {
-                    classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
-                }
-            });
-            
-            fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
-                options: {
-                    classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
-                }
-            });
-
-            fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
-                options: {
-                    classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
-                }
-            });
-            
             fluid.pageEnhancer({
                 tocTemplate: "../../tableOfContents/html/TableOfContents.html"
             });
