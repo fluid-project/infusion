@@ -57,7 +57,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.pageEnhancer();
             jqUnit.assertEquals("font size classes should not be removed", 3, $(".fl-font-size-90").length);
             jqUnit.assertEquals("layout class is gone", 0, $(".fl-layout-linear").length);
-            jqUnit.assertEquals("Fluid theme class is gone", 0, $(".fl-theme-hci").length);
+            jqUnit.assertEquals("FSS theme class has not been removed", 1, $(".fl-theme-hci").length);
             jqUnit.assertEquals("font comic sans class is gone", 0, $(".fl-font-comic-sans").length);
             jqUnit.assertEquals("arial class is not set", 0, $(".fl-font-arial").length);
             jqUnit.assertEquals("Things are still styled with 'first-class' ", 3, $(".first-class").length);
