@@ -13,7 +13,10 @@
 .fl-theme-yellowBlack {color:#ff0; background-color:#000;}  
 
 /* Divs, inputs */
-.fl-theme-yellowBlack div, .fl-theme-yellowBlack input {color:#ff0; background-color:#000;}
+.fl-theme-yellowBlack div, .fl-theme-yellowBlack input {color:#ff0; background-color:#000; border-color:#ff0}
+
+/* iframes */
+.fl-theme-yellowBlack iframe {border-color:#ff0;}
 
 /* Links */
 .fl-theme-yellowBlack a  {color: #ffff00; font-weight:bold; background-color:#000000;}
