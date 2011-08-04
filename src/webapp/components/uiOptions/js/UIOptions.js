@@ -270,10 +270,10 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         finalInitFunction: "fluid.uiOptions.templateLoader.resolveTemplates",
         templates: {
-            uiOptions: "%prefixFatPanelUIOptions.html",
-            textControls: "%prefixUIOptionsTemplate-text.html",
-            layoutControls: "%prefixUIOptionsTemplate-layout.html",
-            linksControls: "%prefixUIOptionsTemplate-links.html"
+            uiOptions: "%prefix/FatPanelUIOptions.html",
+            textControls: "%prefix/UIOptionsTemplate-text.html",
+            layoutControls: "%prefix/UIOptionsTemplate-layout.html",
+            linksControls: "%prefix/UIOptionsTemplate-links.html"
         },
         // Unsupported, non-API option
         components: {
@@ -283,11 +283,16 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
+    fluid.uiOptions.transformUrls = function(toTransform, prefix) {
+        return fluid.transform(toTransform, function (item) {
+            return fluid.stringTemplate(item, { "prefix/": prefix });
+        });
+    };
+    
     fluid.uiOptions.templateLoader.resolveTemplates = function (that) {
-        that.resources = fluid.transform(that.options.templates, function (item, key) {
-            var url = fluid.stringTemplate(item, {
-                    prefix: that.templatePath.options.value
-                });
+        var mapped = fluid.uiOptions.transformUrls(that.options.templates, that.templatePath.options.value);   
+    
+        that.resources = fluid.transform(mapped, function (url) {
             return {url: url, forceCache: true};
         });
     };

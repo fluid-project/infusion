@@ -17,7 +17,58 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 var fluid_1_4 = fluid_1_4 || {};
 
-(function ($, fluid) { 
+(function ($, fluid) {
+
+    /** URL utilities salvaged from kettle - these should go into core framework **/
+  
+    fluid.generate = function (n, generator) {
+        var togo = [];
+        for (var i = 0; i < n; ++ i) {
+            togo[i] = typeof(generator) === "function" ?
+                generator.call(null, i) : generator;
+        }
+        return togo;       
+    };
+
+    fluid.registerNamespace("fluid.url");
+   
+    fluid.url.generateDepth = function(depth) {
+        return fluid.generate(depth, "../").join("");
+    };
+   
+    fluid.url.parsePathInfo = function (pathInfo) {
+        var togo = {};
+        var segs = pathInfo.split("/");
+        if (segs.length > 0) {
+            var top = segs.length - 1;
+            var dotpos = segs[top].indexOf(".");
+            if (dotpos !== -1) {
+                togo.extension = segs[top].substring(dotpos + 1);
+                segs[top] = segs[top].substring(0, dotpos);
+            }
+        }
+        togo.pathInfo = segs;
+        return togo;
+    };
+    
+    /** Collapse the array of segments into a URL path, starting at the specified
+     * segment index - this will not terminate with a slash, unless the final segment
+     * is the empty string
+     */
+    fluid.url.collapseSegs = function(segs, from, to) {
+        var togo = "";
+        if (from === undefined) { 
+            from = 0;
+        }
+        if (to === undefined) {
+            to = segs.length;
+        }
+        for (var i = from; i < to - 1; ++ i) {
+            togo += segs[i] + "/";
+        }
+        togo += segs[to - 1];
+        return togo;   
+    };
 
     /***************************************
      * fluid.uiOptions.fatPanelEventBinder *
@@ -72,7 +123,8 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.viewComponent"],
         selectors: {
             iframe: ".flc-uiOptions-iframe"
-        },       
+        },
+        relativePrefix: "./",  // Prefix for "other world" component templates relative to the iframe URL
         components: {      
             slidingPanel: {
                 type: "fluid.slidingPanel",
@@ -83,6 +135,9 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uiOptions.renderIframe",
                 container: "{fatPanel}.dom.iframe",
                 options: {
+                    markupProps: {
+                        src: "%prefix/FatPanelUIOptionsFrame.html"
+                    },
                     events: {
                         afterRender: "{fatPanel}.events.afterRender"
                     },
@@ -137,10 +192,11 @@ var fluid_1_4 = fluid_1_4 || {};
             config: {
                 "*.slidingPanel":                              "slidingPanel",
                 "*.markupRenderer":                            "markupRenderer",
+                "*.markupRenderer.options.prefix":             "prefix",
                 "*.eventBinder":                               "eventBinder",
                 "selectors.iframe":                            "iframe",
                 "*.bridge.options.templateLoader":             "templateLoader",
-                "*.bridge.options.prefix":                     "prefix",
+                "*.bridge.options.prefix":                     "relativePrefix",
                 "*.bridge.options.uiOptions":                  "uiOptions",
                 "*.bridge.options.uiOptions.*.textControls":   "textControls",
                 "*.bridge.options.uiOptions.*.layoutControls": "layoutControls",
@@ -167,14 +223,17 @@ var fluid_1_4 = fluid_1_4 || {};
             containerFlex: "fl-container-flex",
             container: "fl-uiOptions-fatPanel-iframe"
         },
+        prefix: "./",
         markupProps: {
             "class": "flc-iframe",
-            src: "./uiOptionsIframe.html"
+            src: "%prefix/uiOptionsIframe.html"
         }
     });
     
     fluid.uiOptions.renderIframe.finalInit = function (that) {
         var styles = that.options.styles;
+        that.options.markupProps = fluid.uiOptions.transformUrls(that.options.markupProps, that.options.prefix);
+        that.iframeSrc = that.options.markupProps.src;
         
         //create iframe and append to container
         $("<iframe/>", that.options.markupProps).appendTo(that.container);
@@ -229,6 +288,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uiOptions.bridge.finalInit = function (that) {
         var iframe = that.markupRenderer.iframe;
+        var iframeSrc = that.markupRenderer.iframeSrc; // TODO: Use this in future to transform prefix
         var iframeDoc = iframe.contents();
         var iframeWin = iframe[0].contentWindow;
         var innerFluid = iframeWin.fluid;
