@@ -30,7 +30,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 "*.templateLoader": {
                     options: {
                         templates: {
-                            uiOptions: "%prefixFullPreviewUIOptions.html"
+                            uiOptions: "%prefix/FullPreviewUIOptions.html"
                         }
                     }
                 },
