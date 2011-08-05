@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 var fluid_1_4 = fluid_1_4 || {};
 
-(function ($, fluid) { 
+(function ($, fluid) {
 
     /***************************************
      * fluid.uiOptions.fatPanelEventBinder *
@@ -72,7 +72,8 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.viewComponent"],
         selectors: {
             iframe: ".flc-uiOptions-iframe"
-        },       
+        },
+        relativePrefix: "./",  // Prefix for "other world" component templates relative to the iframe URL
         components: {      
             slidingPanel: {
                 type: "fluid.slidingPanel",
@@ -83,6 +84,9 @@ var fluid_1_4 = fluid_1_4 || {};
                 type: "fluid.uiOptions.renderIframe",
                 container: "{fatPanel}.dom.iframe",
                 options: {
+                    markupProps: {
+                        src: "%prefix/FatPanelUIOptionsFrame.html"
+                    },
                     events: {
                         afterRender: "{fatPanel}.events.afterRender"
                     },
@@ -137,10 +141,13 @@ var fluid_1_4 = fluid_1_4 || {};
             config: {
                 "*.slidingPanel":                              "slidingPanel",
                 "*.markupRenderer":                            "markupRenderer",
+                "*.markupRenderer.options.prefix":             "prefix",
                 "*.eventBinder":                               "eventBinder",
                 "selectors.iframe":                            "iframe",
-                "*.bridge.options.templateLoader":             "templateLoader",
-                "*.bridge.options.prefix":                     "prefix",
+         // Not sure what this is doing, but it picks up some partially merged component from somewhere       
+         //       "*.bridge.options.templateLoader":             "templateLoader",
+         // NB this "from" value is ignored - need to write up computed relativePrefix to actual option sent to bridge
+                "*.bridge.options.prefix":      "relativePrefix",
                 "*.bridge.options.uiOptions":                  "uiOptions",
                 "*.bridge.options.textControls":               "textControls",
                 "*.bridge.options.layoutControls":             "layoutControls",
@@ -166,14 +173,17 @@ var fluid_1_4 = fluid_1_4 || {};
             containerFlex: "fl-container-flex",
             container: "fl-uiOptions-fatPanel-iframe"
         },
+        prefix: "./",
         markupProps: {
             "class": "flc-iframe",
-            src: "./uiOptionsIframe.html"
+            src: "%prefix/uiOptionsIframe.html"
         }
     });
     
     fluid.uiOptions.renderIframe.finalInit = function (that) {
         var styles = that.options.styles;
+        that.options.markupProps = fluid.uiOptions.transformUrls(that.options.markupProps, that.options.prefix);
+        that.iframeSrc = that.options.markupProps.src;
         
         //create iframe and append to container
         $("<iframe/>", that.options.markupProps).appendTo(that.container);
@@ -228,10 +238,15 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uiOptions.bridge.finalInit = function (that) {
         var iframe = that.markupRenderer.iframe;
+        var origPrefix = that.markupRenderer.options.prefix;
         var iframeDoc = iframe.contents();
         var iframeWin = iframe[0].contentWindow;
         var innerFluid = iframeWin.fluid;
-        var container = $("body", iframeDoc);      
+        var container = $("body", iframeDoc);
+        var outerLocation = window.location.href;
+        var iframeLocation = iframeWin.location.href;
+        var relativePrefix = fluid.url.computeRelativePrefix(outerLocation, iframeLocation, origPrefix);
+        that.options.relativePrefix = relativePrefix; // TODO: more flexible defaulting here
         container.addClass(that.markupRenderer.options.styles.container);
         
         var overallOptions = {};
