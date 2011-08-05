@@ -172,6 +172,124 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
+    /*********************
+     * UI Options Inline *
+     *********************/
+
+    /**
+     * An UI Options top-level component that reflects the collaboration between uiOptionsLoader
+     * and templateLoader. This component is the only UI Options component that is intended to be 
+     * called by the outside world.
+     * 
+     * @param {Object} options
+     */    
+    fluid.defaults("fluid.uiOptions.inline", {
+        gradeNames: ["fluid.viewComponent"],
+        components: {
+            uiOptionsLoader: {
+                type: "fluid.uiOptions.loader"
+            },
+            templateLoader: {
+                priority: "first",
+                type: "fluid.uiOptions.templateLoader"
+            }
+        },
+        uiOptionsTransform: {
+            transformer: "fluid.uiOptions.mapOptions",
+            config: {
+                "*.templateLoader":                                   "templateLoader",
+                "*.templateLoader.*.templatePath.options.value":      "prefix",
+                "*.uiOptionsLoader.container":                        "container",
+                "*.uiOptionsLoader.*.uiOptions":                      "uiOptions",
+                "*.uiOptionsLoader.*.uiOptions.*.textControls":       "textControls",
+                "*.uiOptionsLoader.*.uiOptions.*.layoutControls":     "layoutControls",
+                "*.uiOptionsLoader.*.uiOptions.*.linksControls":      "linksControls",
+                "*.uiOptionsLoader.*.uiOptions.*.preview":            "preview",
+                "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
+            }
+        }
+    });
+    
+    /**
+    * @param {Object} inObject, the element on inObject is in the pair of key -> value
+    */
+    fluid.uiOptions.sortByKeyLength = function (inObject) {
+        var keys = [];
+        var outObject = {};
+    
+        for (var k in inObject) {
+            keys.push(k);
+        }
+
+        keys.sort(function (a, b) {
+            if (a.length > b.length) {
+                return 1;
+            } else if (a.length < b.length) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+        
+        return keys;
+    };
+    
+    // TODO: Maybe we need a framework function for model transformation to
+    //       replace the code below? 
+    /**
+    * @param {Object} options, top level options to be mapped
+    * @param {Object} componentConfig, the component's defaults mapping between target path and value
+    * @param {Object} used in fluid.merge() to merge options and componentConfig
+    * @param {Array} config, a mapping between the target path on the IoC tree and the option name
+    */
+    fluid.uiOptions.mapOptions = function (options, componentConfig, mergePolicy, config) {
+        options = options || {};
+        componentConfig = componentConfig || {};
+        config = config || fluid.defaults("fluid.uiOptions.inline").uiOptionsTransform.config;
+        
+        // Sort the config object by the length of the key in case an option and its child option
+        // are both configurable. 
+        // For instance: "*.templateLoader" & "*.templateLoader.*.templatePath.options.value"
+        var sortedConfigKeys = fluid.uiOptions.sortByKeyLength(config);
+         
+        var componentOptions = {};
+
+        var optionsApplier = fluid.makeChangeApplier(options);
+        var componentConfigApplier = fluid.makeChangeApplier(componentOptions);
+
+        fluid.each(sortedConfigKeys, function (origDest) {
+            var source = config[origDest];
+            var dest = fluid.uiOptions.expandShortPath(origDest);
+            
+            // Process the user pass-in options
+            var value = fluid.get(options, source);
+            if (value) {
+                optionsApplier.requestChange(dest, value, "ADD");
+                optionsApplier.requestChange(source, value, "DELETE");
+            }
+            
+            // Process component's default options
+            if (typeof componentConfig[origDest] === "object") {
+                componentConfigApplier.requestChange(dest, componentConfig[origDest], "ADD");
+            }
+        });
+        
+        return fluid.merge(mergePolicy, componentOptions, options);
+    };
+    
+    fluid.uiOptions.expandShortPath = function (path) {
+        var strToreplaceFirst = "components";
+        var strToreplaceRest = "options.components";
+
+        // replace the beginning "*"
+        var newPath = (path.charAt(0) === "*") ? path.replace("*", strToreplaceFirst) : path;
+
+        // replace the rest "*"
+        newPath = newPath.replace(/\*/g, strToreplaceRest);
+        
+        return newPath;
+    };
+    
     /******************************
      * UI Options Template Loader *
      ******************************/
@@ -189,10 +307,10 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         finalInitFunction: "fluid.uiOptions.templateLoader.resolveTemplates",
         templates: {
-            uiOptions: "%prefixFatPanelUIOptions.html",
-            textControls: "%prefixUIOptionsTemplate-text.html",
-            layoutControls: "%prefixUIOptionsTemplate-layout.html",
-            linksControls: "%prefixUIOptionsTemplate-links.html"
+            uiOptions: "%prefix/FatPanelUIOptions.html",
+            textControls: "%prefix/UIOptionsTemplate-text.html",
+            layoutControls: "%prefix/UIOptionsTemplate-layout.html",
+            linksControls: "%prefix/UIOptionsTemplate-links.html"
         },
         // Unsupported, non-API option
         components: {
@@ -202,11 +320,16 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
+    fluid.uiOptions.transformUrls = function (toTransform, prefix) {
+        return fluid.transform(toTransform, function (item) {
+            return fluid.stringTemplate(item, { "prefix/": prefix });
+        });
+    };
+    
     fluid.uiOptions.templateLoader.resolveTemplates = function (that) {
-        that.resources = fluid.transform(that.options.templates, function (item, key) {
-            var url = fluid.stringTemplate(item, {
-                    prefix: that.templatePath.options.value
-                });
+        var mapped = fluid.uiOptions.transformUrls(that.options.templates, that.templatePath.options.value);   
+    
+        that.resources = fluid.transform(mapped, function (url) {
             return {url: url, forceCache: true};
         });
     };
@@ -311,8 +434,6 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{uiOptions}.dom.textControls",
                 createOnEvent: "onUIOptionsComponentReady",
                 options: {
-                    textSize: "{uiOptions}.options.textSize",
-                    lineSpacing: "{uiOptions}.options.lineSpacing",
                     model: "{uiOptions}.model",
                     applier: "{uiOptions}.applier",
                     events: {
@@ -349,20 +470,9 @@ var fluid_1_4 = fluid_1_4 || {};
                 createOnEvent: "onUIOptionsComponentReady",
                 container: "{uiOptions}.dom.previewFrame"
             },
-            settingsStore: {    // supplied by demands
-                type: "fluid.uiOptions.store"
-            },
-            eventBinder: {    // supplied by demands
+            eventBinder: {
                 type: "fluid.uiOptions.eventBinder"
             }
-        },
-        textSize: {
-            min: 1,
-            max: 2
-        },
-        lineSpacing: {
-            min: 1,
-            max: 2
         },
         selectors: {
             textControls: ".flc-uiOptions-text-controls",
@@ -546,6 +656,14 @@ var fluid_1_4 = fluid_1_4 || {};
             textFont: ["default", "times", "comic", "arial", "verdana"],
             theme: ["default", "bw", "wb", "by", "yb"]
         },
+        textSize: {
+            min: 1,
+            max: 2
+        },
+        lineSpacing: {
+            min: 1,
+            max: 2
+        },
         selectors: {
             textFont: ".flc-uiOptions-text-font",
             theme: ".flc-uiOptions-theme",
@@ -676,7 +794,7 @@ var fluid_1_4 = fluid_1_4 || {};
         preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.linksControls.produceTree",
-        resources: {                    
+        resources: {
             template: "{templateLoader}.resources.linksControls"
         }
     });
@@ -776,4 +894,5 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
+
 })(jQuery, fluid_1_4);
