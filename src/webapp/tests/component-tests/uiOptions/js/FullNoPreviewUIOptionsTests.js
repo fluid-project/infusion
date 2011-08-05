@@ -19,7 +19,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         fluid.setLogging(true);
         
-        var tests = jqUnit.testCase("UIOptions FullNoPreview Tests");
+        var tests = jqUnit.testCase("FullNoPreviewUIOptions Tests");
+        fluid.staticEnvironment.noPreviewUIOptionsTests = fluid.typeTag("fluid.noPreviewUIOptionsTests");
         
         var bwSkin = {
             textSize: "1.8",
@@ -35,9 +36,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             lineSpacing: 1.5
         };        
         
-        /***************************************************
-         * fluid.uiOptions.fullNoPreview Integration Tests *
-         ***************************************************/
+        /***********
+         * Demands *
+         ***********/
+        
+        // Supply the table of contents' template URL
+        fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
+            options: {
+                templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+            }
+        });
+        
+        /**************************************************
+         * fluid.fullNoPreviewUIOptions Integration Tests *
+         **************************************************/        
 
         var checkUIOComponents = function (uiOptions) {
             jqUnit.assertTrue("Check that textControls sub-component is present", uiOptions.textControls);
@@ -63,11 +75,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };                
         
         tests.asyncTest("FullNoPreview UIOptions Integration tests", function () {
-            fluid.pageEnhancer({
-                tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
-            });
-            
-            var that = fluid.uiOptions.fullNoPreview("#myUIOptions", {
+            fluid.pageEnhancer();                
+            var that = fluid.fullNoPreviewUIOptions("#myUIOptions", {
                 prefix: "../../../../components/uiOptions/html/"
             });
             
