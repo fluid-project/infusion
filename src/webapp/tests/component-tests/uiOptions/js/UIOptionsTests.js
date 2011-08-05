@@ -53,7 +53,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptionsTests", {
             options: {
                 templates: {
-                    uiOptions: "%prefixFullPreviewUIOptions.html"
+                    uiOptions: "%prefix/FullPreviewUIOptions.html"
                 }
             }
         });
@@ -253,7 +253,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptionsTestTemplateLoader", {
                 options: {
                     templates: {
-                        uiOptions: "%prefix" + uiOptionsTemplateName,
+                        uiOptions: "%prefix/" + uiOptionsTemplateName,
                         textControls: textControlsFullTemplatePath
                     }
                 }

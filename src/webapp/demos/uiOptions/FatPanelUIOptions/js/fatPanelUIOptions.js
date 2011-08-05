@@ -22,9 +22,6 @@ var demo = demo || {};
         });
 
         fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
-            // Note that the path provided in the "prefix" option is the relative path from 
-            // the location of UI Options templates to the iFrame whose location is provided 
-            // below in markupRenderer.options.markupProps.src
             prefix: "../../../../components/uiOptions/html/",
             relativePrefix: "./",
             markupRenderer: {

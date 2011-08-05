@@ -113,7 +113,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 checkModelSelections(panelModel, defaultSiteSettings);
                 checkModelSelections(pageModel, panelModel);
                 start();
-            }, 2000);
+            }, 2500);
         });
         
         /********************************************************
@@ -174,8 +174,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("The fifth text font string value matches", testStrings[4], actualTextFontStrings[4]);
 
                 jqUnit.assertEquals("There are 5 elements in the text font control value list", 5, actualTextFontControlValues.length);
-                jqUnit.assertEquals("The first text font string value matches", testControlValues[0], actualTextFontControlValues[0]);
-                jqUnit.assertEquals("The fifth text font string value matches", testControlValues[4], actualTextFontControlValues[4]);
+                jqUnit.assertEquals("The first text font control value matches", testControlValues[0], actualTextFontControlValues[0]);
+                jqUnit.assertEquals("The fifth text font control value matches", testControlValues[4], actualTextFontControlValues[4]);
 
                 start();
             }, 2500);

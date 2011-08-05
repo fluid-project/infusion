@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid_1_4:true, jQuery*/
+/*global fluid_1_4:true, jQuery, window*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -257,8 +257,10 @@ var fluid_1_4 = fluid_1_4 || {};
 
         // Extracts the mappings that only belong to FatPanelOtherWorldLoader
         fluid.each(swappedBridgeMapping, function (value, key) {
-            if (value.indexOf("*.bridge") === 0) {
-                overallOptions[key] = that.options[key];
+            if (value.indexOf("*.bridge") === 0 && that.options[key]) {
+                // find out the option name used in the other world
+                var keyInOtherWorld = value.substring(value.lastIndexOf(".") + 1);
+                overallOptions[keyInOtherWorld] = that.options[key];
             }
         });
 
