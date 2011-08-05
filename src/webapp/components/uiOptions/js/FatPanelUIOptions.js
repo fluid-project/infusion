@@ -256,10 +256,11 @@ var fluid_1_4 = fluid_1_4 || {};
         });
 
         // Extracts the mappings that only belong to FatPanelOtherWorldLoader
+        var bridgeSymbol = "*.bridge.options";
         fluid.each(swappedBridgeMapping, function (value, key) {
-            if (value.indexOf("*.bridge") === 0 && that.options[key]) {
+            if (value.indexOf(bridgeSymbol) === 0 && that.options[key]) {
                 // find out the option name used in the other world
-                var keyInOtherWorld = value.substring(value.lastIndexOf(".") + 1);
+                var keyInOtherWorld = value.substring(bridgeSymbol.length + 1);
                 fluid.set(overallOptions, keyInOtherWorld, that.options[key]);
             }
         });

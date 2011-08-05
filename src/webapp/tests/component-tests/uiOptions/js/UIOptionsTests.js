@@ -124,13 +124,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var expected = ["a", "cc", "ddd"];
             sortByKeyLength(initial, expected);
 
-            var initial = {
+            initial = {
                 "aaaa.***.ccc": "1",
                 "aaaa.bbb.cc": "2",
                 "aaaa.bbb.cccdd": "3",
                 "a.b.c": "1"
             };
-            var expected = ["a.b.c", "aaaa.bbb.cc", "aaaa.***.ccc", "aaaa.bbb.cccdd"];
+            expected = ["a.b.c", "aaaa.bbb.cc", "aaaa.***.ccc", "aaaa.bbb.cccdd"];
             sortByKeyLength(initial, expected);
         });
         
