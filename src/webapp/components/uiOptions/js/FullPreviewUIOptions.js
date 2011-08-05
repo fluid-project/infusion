@@ -21,41 +21,41 @@ var fluid_1_4 = fluid_1_4 || {};
     /***************************
      * Full Preview UI Options *
      ***************************/
-    fluid.demands("fluid.uiOptions.templateLoader", "fluid.fullPreviewUIOptions", {
-        options: {
-            templates: {
-                uiOptions: "%prefixFullPreviewUIOptions.html"
+
+    fluid.defaults("fluid.uiOptions.fullPreview", {
+        gradeNames: ["fluid.uiOptions.inline"],
+        container: "{fullPreview}.container",
+        uiOptionsTransform: {
+            config: {
+                "*.templateLoader": {
+                    options: {
+                        templates: {
+                            uiOptions: "%prefix/FullPreviewUIOptions.html"
+                        }
+                    }
+                },
+                "*.uiOptionsLoader.*.uiOptions": {
+                    options: {
+                        components: {
+                            settingsStore: "{uiEnhancer}.settingsStore"
+                        }
+                    }
+                }
             }
         }
     });
     
-    fluid.demands("fluid.uiOptions.templatePath", "fluid.fullPreviewUIOptions", {
-        options: {
-            value: "{fullPreviewUIOptions}.options.prefix"
-        }
-    });
-    
-    fluid.defaults("fluid.fullPreviewUIOptions", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],            
-        components: {
-            uiOptionsLoader: {
-                type: "fluid.uiOptions.loader",
-                container: "{fullPreviewUIOptions}.container"
-            },
-            templateLoader: {
-                priority: "first",
-                type: "fluid.uiOptions.templateLoader"
-            }                     
-        }
-    });       
-    
-    // Options for UIOptions in full with preview mode
-    fluid.demands("fluid.uiOptions", ["fluid.fullPreviewUIOptions"], {
-        options: {
-            components: {
-                settingsStore: "{uiEnhancer}.settingsStore"
-            }
-        }
-    });      
-    
+    fluid.uiOptions.fullPreview = function (container, options) {
+        // make "container" one of the options so it can be munged by the uiOptions.mapOptions.
+        // This container is passed down to be used as uiOptionsLoader.container 
+        var componentConfig = fluid.defaults("fluid.uiOptions.fullPreview").uiOptionsTransform.config;
+        var mergePolicy = fluid.defaults("fluid.uiOptions.fullPreview").mergePolicy;
+        options.container = container;
+        
+        var mappedOptions = fluid.uiOptions.mapOptions(options, componentConfig, mergePolicy);
+        var that = fluid.initView("fluid.uiOptions.fullPreview", container, mappedOptions);
+        fluid.initDependents(that);
+        return that;
+    };
+
 })(jQuery, fluid_1_4);

@@ -18,37 +18,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var uioDemo = uioDemo || {};
 (function ($, fluid) {       
 
-    fluid.staticEnvironment.uioDemoEnvironment = fluid.typeTag("uioDemo.demo");
-
     /* Our demo script */   
     uioDemo.slidingUIOptions = function (panel, uioptions) {
-        fluid.demands("fluid.uiOptions.templatePath", ["fluid.fatPanelUIOptions", "uioDemo.demo"], {
-            options: {
-                value: "{fatPanelUIOptions}.options.prefix"
-            }
-        });
-
-        fluid.demands("fluid.renderIframe", ["uioDemo.demo"], {
-            options: {
-                markupProps: {
-                    src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
-                }
-            }
-        });
-    
-        // Supply the table of contents' template URL
-        fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "uioDemo.demo"], {
-            options: {
-                resources: {
-                    template: {
-                        forceCache: true,
-                        url: "../../../components/tableOfContents/html/TableOfContents.html"
-                    }
-                }
-            }
-        });
 
         fluid.pageEnhancer({
+            // Supply the table of contents' template URL
+            tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html",
             classnameMap: {
                 theme: {
                     "default": "uio-demo-theme"
@@ -57,9 +32,17 @@ var uioDemo = uioDemo || {};
         });
         
         // Next, start up UI Options
-        fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel", {
-            prefix: "../../../../components/uiOptions/html/"
-        });            
+        fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
+            prefix: "../../../components/uiOptions/html/",
+            relativePrefix: "./",
+            markupRenderer: {
+                options: {
+                    markupProps: {
+                        src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
+                    }
+                }
+            }
+        });
     };
     
 })(jQuery, fluid);

@@ -65,7 +65,22 @@ var fluid_1_4 = fluid_1_4 || {};
             tableOfContents: {
                 type: "fluid.tableOfContents",
                 container: "{uiEnhancer}.container",
-                createOnEvent: "onReady"
+                createOnEvent: "onReady",
+                options: {
+                    components: {
+                        levels: {
+                            type: "fluid.tableOfContents.levels",
+                            options: {
+                                resources: {
+                                    template: {
+                                        forceCache: true,
+                                        url: "{uiEnhancer}.options.tocTemplate"
+                                    }
+                                }
+                            } 
+                        }
+                    }
+                }
             },
             textFont: {
                 type: "fluid.uiEnhancer.classSwapper",
@@ -86,7 +101,10 @@ var fluid_1_4 = fluid_1_4 || {};
                 }
             },
             settingsStore: {
-                type: "fluid.uiOptions.store"
+                type: "fluid.uiOptions.store",
+                options: {
+                    defaultSiteSettings: "{uiEnhancer}.options.defaultSiteSettings"
+                }
             }
         },
         invokers: {

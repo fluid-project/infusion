@@ -25,11 +25,6 @@
         <title>User Interface Options Demo</title>
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.mouse.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>        
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.tabs.js"></script>        
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.ariaTabs.js"></script>        
         <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
 
         <script type="text/javascript" src="../../../framework/core/js/FluidDocument.js"></script>
@@ -44,7 +39,9 @@
         <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../../framework/renderer/js/RendererUtilities.js"></script>
 
+        <script type="text/javascript" src="../../../components/uiOptions/js/URLUtilities.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/Store.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIEnhancer.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/FatPanelUIOptions.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/SlidingPanel.js"></script>
@@ -56,8 +53,10 @@
     <body class="uio-demo-theme">
 
 		<div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel">
+            <!-- This is the div that will contain the UI Options component -->
 			<div id="myUIOptions" class="flc-slidingPanel-panel flc-uiOptions-iframe"></div>
-			
+
+            <!-- This div is for the sliding panel that shows and hides the UI Options controls -->
 			<div class="fl-panelBar">
 				<button class="flc-slidingPanel-toggleButton fl-toggleButton">Show/Hide</button>
 			</div>
@@ -72,8 +71,7 @@
             </div>
         </div>
 
-        <div class="flc-toc-tocContainer toc">
-        </div>
+        <div class="flc-toc-tocContainer toc"> </div>
 
         <div class="fl-container-950 fl-centered">
             <div class="fl-fix header">
