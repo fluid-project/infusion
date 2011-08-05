@@ -21,17 +21,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Demands *
      ***********/
     
-    // Supply the templates
-    fluid.staticEnvironment.fatPanelTests = fluid.typeTag("fluid.uiOptions.fatPanelTests");
-
-    fluid.demands("fluid.cookieStore", ["fluid.uiOptions.fatPanelTests"], {
-        options: {
-            cookieName: "fluid-ui-settings-test"
-        }
-    });    
-    
     $(document).ready(function () {
         fluid.setLogging(true);
+
+        fluid.staticEnvironment.fatPanelTests = fluid.typeTag("fluid.uiOptions.fatPanelTests");
+
+        // Use temp store rather than the cookie store for setting save
+        fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer", "fluid.uiOptions.fatPanelTests"], {
+            funcName: "fluid.tempStore"
+        });
 
         var tests = jqUnit.testCase("UIOptions fatPanel Tests");
         
@@ -61,7 +59,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };        
         
         var checkModelSelections = function (expectedSelections, actualSelections) {
-            jqUnit.assertEquals("Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
+            jqUnit.assertEquals("Text font correctly updated",  expectedSelections.textFont, actualSelections.textFont);
             jqUnit.assertEquals("Theme correctly updated", expectedSelections.theme, actualSelections.theme);
             jqUnit.assertEquals("Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
             jqUnit.assertEquals("Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
@@ -78,13 +76,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.pageEnhancer({
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
             });
-            
+
             var that = fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
-                prefix: "../../../components/uiOptions/html/",
+                prefix: "../../../../components/uiOptions/html/",
                 markupRenderer: {
                     options: {
                         markupProps: {
-                            src: "../../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
+                            src: "./FatPanelUIOptionsFrame-test.html"
                         }
                     }
                 }
@@ -92,12 +90,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             checkUIOComponents(that);
 
-            /*
-             * TODO: There have been talks about implementing a Framework event that fires 
-             *       once a component and all of it's subcomponents have finished resolving.
-             *       Once that is in, we can remove the hacky timeout call and listen for
-             *       the framework event to tell us that the component is fully resolved.
-             */
             setTimeout(function () {
                 var defaultSiteSettings = that.uiEnhancer.settingsStore.options.defaultSiteSettings;
                 var pageModel = that.uiEnhancer.model;
@@ -121,7 +113,73 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 checkModelSelections(panelModel, defaultSiteSettings);
                 checkModelSelections(pageModel, panelModel);
                 start();
-            }, 1500);
+            }, 2000);
         });
+        
+        /********************************************************
+         * UIOptions fatPanel options munging integration tests *
+         ********************************************************/
+        
+        tests.asyncTest("Fat Panel UIOptions Options Munging Integration tests", function () {
+            fluid.pageEnhancer({
+                tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
+                classnameMap: {
+                    "textFont": {
+                        "default": "fl-font-times"
+                    },
+                    "theme": {
+                        "yb": "fl-test"
+                    }
+                },
+                defaultSiteSettings: {
+                    theme: "yb"
+                }
+            });
+
+            var testStrings = ["Test1", "Test2", "Test3", "Test4", "Test5"];
+            var testControlValues = ["a", "b", "c", "d", "e"];
+
+            var that = fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
+                prefix: "../../../../components/uiOptions/html/",
+                markupRenderer: {
+                    options: {
+                        markupProps: {
+                            src: "./FatPanelUIOptionsFrame-test.html"
+                        }
+                    }
+                },
+                textControls: {
+                    options: {
+                        strings: {
+                            textFont: testStrings
+                        },
+                        controlValues: { 
+                            textFont: testControlValues
+                        }
+                    }
+                }
+            });
+            
+            setTimeout(function () {
+                var body = $("body");
+                
+                jqUnit.assertTrue("Times font is set", body.hasClass("fl-font-times"));
+                jqUnit.assertTrue("The default test theme is set", body.hasClass("fl-test"));
+                
+                var actualTextFontStrings = that.bridge.uiOptionsLoader.uiOptions.textControls.options.strings.textFont;
+                var actualTextFontControlValues = that.bridge.uiOptionsLoader.uiOptions.textControls.options.controlValues.textFont;
+                
+                jqUnit.assertEquals("There are 5 elements in the text font string list", 5, actualTextFontStrings.length);
+                jqUnit.assertEquals("The first text font string value matches", testStrings[0], actualTextFontStrings[0]);
+                jqUnit.assertEquals("The fifth text font string value matches", testStrings[4], actualTextFontStrings[4]);
+
+                jqUnit.assertEquals("There are 5 elements in the text font control value list", 5, actualTextFontControlValues.length);
+                jqUnit.assertEquals("The first text font string value matches", testControlValues[0], actualTextFontControlValues[0]);
+                jqUnit.assertEquals("The fifth text font string value matches", testControlValues[4], actualTextFontControlValues[4]);
+
+                start();
+            }, 2500);
+        });
+        
     });
 })(jQuery);

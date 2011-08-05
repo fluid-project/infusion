@@ -129,5 +129,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The size should be doubled", "30px", lineSpacer.container.css("lineHeight"));
         
         });
+
+        tests.test("Options munging", function () {
+            expect(2);
+
+            uiEnhancerOptions = {
+                components: {
+                    settingsStore: {
+                        type: "fluid.tempStore"
+                    }
+                },
+                tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
+                classnameMap: {
+                    "textFont": {
+                        "default": "fl-font-times"
+                    },
+                    "theme": {
+                        "yb": "fl-test"
+                    }
+                },
+                defaultSiteSettings: {
+                    theme: "yb"
+                }
+            };
+
+            fluid.pageEnhancer(uiEnhancerOptions);
+
+            var body = $("body");
+                
+            jqUnit.assertTrue("The initial times font is set correctly", body.hasClass("fl-font-times"));
+            jqUnit.assertTrue("The initial test theme is set correctly", body.hasClass("fl-test"));
+        });
+
     });
 })(jQuery);

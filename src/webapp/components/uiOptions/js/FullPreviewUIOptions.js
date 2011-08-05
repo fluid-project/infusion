@@ -48,10 +48,11 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uiOptions.fullPreview = function (container, options) {
         // make "container" one of the options so it can be munged by the uiOptions.mapOptions.
         // This container is passed down to be used as uiOptionsLoader.container 
-        var mapping = fluid.defaults("fluid.uiOptions.fullPreview").uiOptionsTransform.config;
+        var componentConfig = fluid.defaults("fluid.uiOptions.fullPreview").uiOptionsTransform.config;
+        var mergePolicy = fluid.defaults("fluid.uiOptions.fullPreview").mergePolicy;
         options.container = container;
         
-        var mappedOptions = fluid.uiOptions.mapOptions(options, mapping);
+        var mappedOptions = fluid.uiOptions.mapOptions(options, componentConfig, mergePolicy);
         var that = fluid.initView("fluid.uiOptions.fullPreview", container, mappedOptions);
         fluid.initDependents(that);
         return that;

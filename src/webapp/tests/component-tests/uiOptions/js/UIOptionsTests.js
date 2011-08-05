@@ -123,30 +123,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expandPathTest(initial, initial);
         });
         
-        var mapOptionsTest = function (initial, config, expected) {
-            var actual = fluid.uiOptions.mapOptions(initial, config);
-            jqUnit.assertDeepEq("The path is expanded correctly", expected, actual);
-        };
-    
         tests.test("Map Options", function () {
-            expect(3);
-            var initial = {
-                    compA: {
-                        opt1: "food"
-                    }
-                };
+            expect(4);
             
-            var config = {
-                    "*.comp1.*.comp2": "compA"
-                };
+            var options1 = null;
+            var options2 = null;
+            
+            var actual = fluid.uiOptions.mapOptions(options1, options2, "preserve");
+            jqUnit.assertDeepEq("The path is expanded correctly", {}, actual);
+
+            options1 = {
+                textControls: {
+                    opt1: "food"
+                }
+            };
+
+            options2 = {};
             
             var expected = {
                 components: {
-                    comp1: {
+                    uiOptionsLoader: {
                         options: {
                             components: {
-                                comp2: {
-                                    opt1: "food"
+                                uiOptions: {
+                                    options: {
+                                        components: {
+                                            textControls: {
+                                                opt1: "food"
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -154,31 +160,79 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             };
             
-            mapOptionsTest(initial, config, expected);
+            actual = fluid.uiOptions.mapOptions(options1, options2, "preserve");
+            jqUnit.assertDeepEq("The path is expanded correctly", expected, actual);
 
-            initial = {
-                compA: {
+            options1 = {
+                textControls: {
                     opt1: "food"
                 }
             };
             
-            config = {
-                "comp1.comp2.comp3" : "compA"
+            options2 = {
+                "*.uiOptionsLoader.*.uiOptions" : {
+                    opt: "drink"
+                }
             };
+            
             expected = {
-                comp1: {
-                    comp2: {
-                        comp3: {
-                            opt1: "food"
+                components: {
+                    uiOptionsLoader: {
+                        options: {
+                            components: {
+                                uiOptions: {
+                                    opt: "drink",
+                                    options: {
+                                        components: {
+                                            textControls: {
+                                                opt1: "food"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             };
             
-            mapOptionsTest(initial, config, expected);
+            actual = fluid.uiOptions.mapOptions(options1, options2);
+            jqUnit.assertDeepEq("Options1 and options2 are combined correctly", expected, actual);
             
-            initial = null;
-            mapOptionsTest(initial, config, initial);
+            options1 = {
+                textControls: {
+                    opt1: "food"
+                }
+            };
+            
+            options2 = {
+                "*.uiOptionsLoader.*.uiOptions.*.textControls" : {
+                    opt: "drink"
+                }
+            };
+            
+            expected = {
+                components: {
+                    uiOptionsLoader: {
+                        options: {
+                            components: {
+                                uiOptions: {
+                                    options: {
+                                        components: {
+                                            textControls: {
+                                                opt1: "food"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            actual = fluid.uiOptions.mapOptions(options1, options2, "replace");
+            jqUnit.assertDeepEq("Options1 is preserved over options2", expected, actual);
         });
         
         tests.test("Template Loader", function () {

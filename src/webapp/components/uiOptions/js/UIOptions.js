@@ -214,41 +214,48 @@ var fluid_1_4 = fluid_1_4 || {};
     //       replace the code below? 
     /**
     * @param {Object} options, top level options to be mapped
+    * @param {Object} componentConfig, the component's defaults mapping between target path and value
+    * @param {Object} used in fluid.merge() to merge options and componentConfig
     * @param {Array} config, a mapping between the target path on the IoC tree and the option name
     */
-    fluid.uiOptions.mapOptions = function (options, config) {
-        if (options) {
-            var applier = fluid.makeChangeApplier(options);
+    fluid.uiOptions.mapOptions = function (options, componentConfig, mergePolicy, config) {
+        options = options || {};
+        componentConfig = componentConfig || {};
+        config = config || fluid.defaults("fluid.uiOptions.inline").uiOptionsTransform.config;
+        
+        var componentOptions = {};
 
-            fluid.each(config, function (source, dest) {
-                dest = fluid.uiOptions.expandShortPath(dest);
-                
-                if (typeof source === "string") {
-                    var value = fluid.get(options, source);
-                    if (value) {
-                        applier.requestChange(dest, value, "ADD");
-                        applier.requestChange(source, value, "DELETE");
-                    }
-                } else if (typeof source === "object") {
-                    applier.requestChange(dest, source, "ADD");
-                }
-            });
-        }
+        var optionsApplier = fluid.makeChangeApplier(options);
+        var componentConfigApplier = fluid.makeChangeApplier(componentOptions);
 
-        return options;
+        fluid.each(config, function (source, origDest) {
+            var dest = fluid.uiOptions.expandShortPath(origDest);
+            
+            // Process the user pass-in options
+            var value = fluid.get(options, source);
+            if (value) {
+                optionsApplier.requestChange(dest, value, "ADD");
+                optionsApplier.requestChange(source, value, "DELETE");
+            }
+            
+            // Process component's default options
+            if (typeof componentConfig[origDest] === "object") {
+                componentConfigApplier.requestChange(dest, componentConfig[origDest], "ADD");
+            }
+        });
+        
+        return fluid.merge(mergePolicy, componentOptions, options);
     };
     
     fluid.uiOptions.expandShortPath = function (path) {
         var strToreplaceFirst = "components";
         var strToreplaceRest = "options.components";
 
-        // replace the first "*"
-        var re = fluid.stringToRegExp("*");
-        var newPath = path.replace(re, strToreplaceFirst);
+        // replace the beginning "*"
+        var newPath = (path.charAt(0) === "*") ? path.replace("*", strToreplaceFirst) : path;
 
         // replace the rest "*"
-        re = fluid.stringToRegExp("*", "g");
-        newPath = newPath.replace(re, strToreplaceRest);
+        newPath = newPath.replace(/\*/g, strToreplaceRest);
         
         return newPath;
     };

@@ -142,10 +142,9 @@ var fluid_1_4 = fluid_1_4 || {};
                 "*.bridge.options.templateLoader":             "templateLoader",
                 "*.bridge.options.prefix":                     "prefix",
                 "*.bridge.options.uiOptions":                  "uiOptions",
-                "*.bridge.options.uiOptions.*.textControls":   "textControls",
-                "*.bridge.options.uiOptions.*.layoutControls": "layoutControls",
-                "*.bridge.options.uiOptions.*.linksControls":  "linksControls",
-                "*.bridge.options.uiOptions.*.settingStore":   "settingStore"
+                "*.bridge.options.textControls":               "textControls",
+                "*.bridge.options.layoutControls":             "layoutControls",
+                "*.bridge.options.linksControls":              "linksControls"
             }
         },
         events: {
@@ -239,17 +238,25 @@ var fluid_1_4 = fluid_1_4 || {};
         overallOptions.container = container;
         var bridgeMapping = fluid.defaults("fluid.uiOptions.fatPanel").uiOptionsTransform.config;
         
-        fluid.each(bridgeMapping, function (to, from) {
-            fluid.each(that.options, function (value, key) {
-                // the mapping belongs to FatPanelOtherWorldLoader
-                if (from.indexOf("bridge") !== -1 && key === to) {
-                    overallOptions[key] = value;
-                }
-            });
-        });
+        var swappedBridgeMapping = {};
         
-        var mapping = fluid.defaults("fluid.uiOptions.FatPanelOtherWorldLoader").uiOptionsTransform.config;
-        var mappedOptions = fluid.uiOptions.mapOptions(overallOptions, mapping);
+        // Swap the mapping for easier extraction on FatPanelOtherWorldLoader options
+        fluid.each(bridgeMapping, function (value, key) {
+            if (typeof value === "string") {
+                swappedBridgeMapping[value] = key;
+            }
+        });
+
+        // Extracts the mappings that only belong to FatPanelOtherWorldLoader
+        fluid.each(swappedBridgeMapping, function (value, key) {
+            if (value.indexOf("*.bridge") === 0) {
+                overallOptions[key] = that.options[key];
+            }
+        });
+
+        var componentConfig = fluid.defaults("fluid.uiOptions.FatPanelOtherWorldLoader").uiOptionsTransform.config;
+        var mergePolicy = fluid.defaults("fluid.uiOptions.FatPanelOtherWorldLoader").mergePolicy;
+        var mappedOptions = fluid.uiOptions.mapOptions(overallOptions, componentConfig, mergePolicy);
 
         var component = innerFluid.invokeGlobalFunction("fluid.uiOptions.FatPanelOtherWorldLoader", [container, mappedOptions]);  
         that.uiOptionsLoader = component.uiOptionsLoader;
@@ -260,9 +267,10 @@ var fluid_1_4 = fluid_1_4 || {};
      ************************/
     
     fluid.uiOptions.fatPanel = function (container, options) {
-        var mapping = fluid.defaults("fluid.uiOptions.fatPanel").uiOptionsTransform.config;
+        var config = fluid.defaults("fluid.uiOptions.fatPanel").uiOptionsTransform.config;
+        var mergePolicy = fluid.defaults("fluid.uiOptions.fatPanel").mergePolicy;
         
-        var mappedOptions = fluid.uiOptions.mapOptions(options, mapping);
+        var mappedOptions = fluid.uiOptions.mapOptions(options, config, mergePolicy, config);
 
         var that = fluid.initView("fluid.uiOptions.fatPanel", container, mappedOptions);
         fluid.initDependents(that);
