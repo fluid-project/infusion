@@ -27,9 +27,6 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         finalInitFunction: "fluid.uiOptions.fatPanelEventBinder.finalInit",
         components: {
-            // uiEnhancer: {
-                // type: "fluid.uiEnhancer"
-            // },
             uiOptionsLoader: {
                 type: "fluid.uiOptions.loader"
             },
@@ -53,8 +50,6 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uiOptions.fatPanelEventBinder.finalInit = function (that) {
         //TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component - and also uiOptionsLoader which is another child
-        
-    
         that.slidingPanel.events.afterPanelHidden.addListener(function () {
             that.uiOptions.save();
         });
@@ -144,10 +139,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 "*.markupRenderer.options.prefix":             "prefix",
                 "*.eventBinder":                               "eventBinder",
                 "selectors.iframe":                            "iframe",
-         // Not sure what this is doing, but it picks up some partially merged component from somewhere       
-         //       "*.bridge.options.templateLoader":             "templateLoader",
-         // NB this "from" value is ignored - need to write up computed relativePrefix to actual option sent to bridge
-                "*.bridge.options.prefix":      "relativePrefix",
+                "*.bridge.options.templateLoader":             "templateLoader",
+                "*.bridge.options.prefix":                     "relativePrefix",
                 "*.bridge.options.uiOptions":                  "uiOptions",
                 "*.bridge.options.textControls":               "textControls",
                 "*.bridge.options.layoutControls":             "layoutControls",
