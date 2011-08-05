@@ -260,13 +260,12 @@ var fluid_1_4 = fluid_1_4 || {};
             if (value.indexOf("*.bridge") === 0 && that.options[key]) {
                 // find out the option name used in the other world
                 var keyInOtherWorld = value.substring(value.lastIndexOf(".") + 1);
-                overallOptions[keyInOtherWorld] = that.options[key];
+                fluid.set(overallOptions, keyInOtherWorld, that.options[key]);
             }
         });
 
-        var componentConfig = fluid.defaults("fluid.uiOptions.FatPanelOtherWorldLoader").uiOptionsTransform.config;
-        var mergePolicy = fluid.defaults("fluid.uiOptions.FatPanelOtherWorldLoader").mergePolicy;
-        var mappedOptions = fluid.uiOptions.mapOptions(overallOptions, componentConfig, mergePolicy);
+        var defaults = fluid.defaults("fluid.uiOptions.FatPanelOtherWorldLoader");
+        var mappedOptions = fluid.uiOptions.mapOptions(overallOptions, defaults.uiOptionsTransform.config, defaults.mergePolicy);
 
         var component = innerFluid.invokeGlobalFunction("fluid.uiOptions.FatPanelOtherWorldLoader", [container, mappedOptions]);  
         that.uiOptionsLoader = component.uiOptionsLoader;
@@ -277,10 +276,10 @@ var fluid_1_4 = fluid_1_4 || {};
      ************************/
     
     fluid.uiOptions.fatPanel = function (container, options) {
-        var config = fluid.defaults("fluid.uiOptions.fatPanel").uiOptionsTransform.config;
-        var mergePolicy = fluid.defaults("fluid.uiOptions.fatPanel").mergePolicy;
+        var defaults = fluid.defaults("fluid.uiOptions.fatPanel");
+        var config = defaults.uiOptionsTransform.config;
         
-        var mappedOptions = fluid.uiOptions.mapOptions(options, config, mergePolicy, config);
+        var mappedOptions = fluid.uiOptions.mapOptions(options, config, defaults.mergePolicy, config);
 
         var that = fluid.initView("fluid.uiOptions.fatPanel", container, mappedOptions);
         fluid.initDependents(that);

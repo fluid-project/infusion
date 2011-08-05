@@ -108,6 +108,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         var tests = jqUnit.testCase("UIOptions Tests");
 
+        var sortByKeyLength = function (initial, expected) {
+            var actual = fluid.uiOptions.sortByKeyLength(initial);
+            jqUnit.assertDeepEq("Sorted correctly", expected, actual);
+        };
+        
+        tests.test("Sort object key by length", function () {
+            expect(2);
+
+            var initial = {
+                "ddd": "1",
+                "cc": "2",
+                "a": "3"
+            };
+            var expected = ["a", "cc", "ddd"];
+            sortByKeyLength(initial, expected);
+
+            var initial = {
+                "aaaa.***.ccc": "1",
+                "aaaa.bbb.cc": "2",
+                "aaaa.bbb.cccdd": "3",
+                "a.b.c": "1"
+            };
+            var expected = ["a.b.c", "aaaa.bbb.cc", "aaaa.***.ccc", "aaaa.bbb.cccdd"];
+            sortByKeyLength(initial, expected);
+        });
+        
         var expandPathTest = function (initial, expected) {
             var actual = fluid.uiOptions.expandShortPath(initial);
             jqUnit.assertDeepEq("The path is expanded correctly", expected, actual);

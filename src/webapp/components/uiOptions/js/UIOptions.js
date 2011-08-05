@@ -210,7 +210,31 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-     // TODO: Maybe we need a framework function for model transformation to
+    /**
+    * @param {Object} inObject, the element on inObject is in the pair of key -> value
+    */
+    fluid.uiOptions.sortByKeyLength = function (inObject) {
+        var keys = [];
+        var outObject = {};
+    
+        for (var k in inObject) {
+            keys.push(k);
+        }
+
+        keys.sort(function (a, b) {
+            if (a.length > b.length) {
+                return 1;
+            } else if (a.length < b.length) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+        
+        return keys;
+    };
+    
+    // TODO: Maybe we need a framework function for model transformation to
     //       replace the code below? 
     /**
     * @param {Object} options, top level options to be mapped
@@ -223,12 +247,18 @@ var fluid_1_4 = fluid_1_4 || {};
         componentConfig = componentConfig || {};
         config = config || fluid.defaults("fluid.uiOptions.inline").uiOptionsTransform.config;
         
+        // Sort the config object by the length of the key in case an option and its child option
+        // are both configurable. 
+        // For instance: "*.templateLoader" & "*.templateLoader.*.templatePath.options.value"
+        var sortedConfigKeys = fluid.uiOptions.sortByKeyLength(config);
+         
         var componentOptions = {};
 
         var optionsApplier = fluid.makeChangeApplier(options);
         var componentConfigApplier = fluid.makeChangeApplier(componentOptions);
 
-        fluid.each(config, function (source, origDest) {
+        fluid.each(sortedConfigKeys, function (origDest) {
+            var source = config[origDest];
             var dest = fluid.uiOptions.expandShortPath(origDest);
             
             // Process the user pass-in options
@@ -290,7 +320,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.uiOptions.transformUrls = function(toTransform, prefix) {
+    fluid.uiOptions.transformUrls = function (toTransform, prefix) {
         return fluid.transform(toTransform, function (item) {
             return fluid.stringTemplate(item, { "prefix/": prefix });
         });
