@@ -13,7 +13,10 @@
 .fl-theme-hci {color:#fff; background-color:#000;}
 
 /* Divs, inputs */
-.fl-theme-hci div, .fl-theme-hci input {color:#fff; background-color:#000;}
+.fl-theme-hci div, .fl-theme-hci input {color:#fff; background-color:#000; border-color:#fff}
+
+/* iframes */
+.fl-theme-hci iframe {border-color:#fff;}
 
 /* Links */
 .fl-theme-hci a  {color: #ffffff; font-weight:bold; background-color:#000000;}
@@ -24,7 +27,7 @@
 .fl-theme-hci h3,
 .fl-theme-hci h4,
 .fl-theme-hci h5,
-.fl-theme-hci h6 {color:#ffffff; background-color:#000000; border-color:#ffffff; border-bottom:0.1em dashed #ffffff;}
+.fl-theme-hci h6 {color:#ffffff; background-color:#000000; border-color:#ffffff;}
 
 /* Tables */
 .fl-theme-hci th {border:0.1em solid #ffffff; background-color:#ffffff; color:#000000;}

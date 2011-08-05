@@ -191,7 +191,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 funcName: "fluid.tableOfContents.modelBuilder.toModel",
                 args: ["{arguments}.0", "{modelBuilder}.modelLevelFn"]
             },
-            modelLevelFn: "fluid.tableOfContents.modelBuilder.skippedModelLevelFn"
+            modelLevelFn: "fluid.tableOfContents.modelBuilder.gradualModelLevelFn"
         }
     });
     
@@ -257,6 +257,11 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.tableOfContents.levels.generateTree = function (headingsModel, currentLevel) {
         currentLevel = currentLevel || 0;
         var levelObj = fluid.tableOfContents.levels.objModel("level", currentLevel);
+        
+        // FLUID-4352, run generateTree iff there are headings in the model.
+        if (headingsModel.headings.length === 0) {
+            return [];
+        }
         
         // base case: level is 0, returns {children:[generateTree(nextLevel)]}
         // purpose is to wrap the first level with a children object.
