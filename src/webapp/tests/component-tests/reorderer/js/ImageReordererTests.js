@@ -150,13 +150,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
         
         function verticalMovementTest(lightbox, modifiedUpEvt, modifiedDownEvt) {
+            var initMoveCount = lightbox.moveCount;
             // Default width is 3 thumbnails.
             focusLightbox();
             compositeKey(lightbox, modifiedDownEvt, 0);
             assertItemsInOrder("after modified-down", [1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
     
             compositeKey(lightbox, modifiedUpEvt, 0);
-            assertItemsInOriginalPosition("after modified-up");        
+            assertItemsInOriginalPosition("after modified-up");
+            jqUnit.assertEquals("Two calls to afterMove listener", initMoveCount + 2, lightbox.moveCount);         
         }
         
         function horizontalMovementTest(lightbox, modifiedRightEvt, modifiedLeftEvt) {
