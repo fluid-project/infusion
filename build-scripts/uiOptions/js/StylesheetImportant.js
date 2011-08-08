@@ -51,6 +51,9 @@ var fluid = fluid || {};
                     match: "fl-theme-",
                     replace: "fl-theme-uio-"
                 }
+            },
+            {
+                type: fluid.build.cssGenerator.rewriteRelativeUrls
             }
         ]);
         

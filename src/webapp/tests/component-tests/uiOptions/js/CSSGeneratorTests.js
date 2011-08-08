@@ -132,7 +132,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: classRewriteOptions
             }, expected, "The .cat selector should be written as '.fl-theme-cat'.");
         });
-        
+
+        tests.test("Rewrite URL", function () {
+            // need to test: 
+                // relative url with '..'
+                // relative url without '..'
+                // full url
+                // url surrounded by single quotes
+                // url surrounded by double quotes
+                // url with spaces before the quotes
+                // url with spaces after the quotes
+            
+            testStylesheetForProcessSpec({
+                type: fluid.build.cssGenerator.rewriteRelativeUrls
+            }, {}, "The urls should be rewritten");
+            
+        });
+
     });
     
 })(jQuery);

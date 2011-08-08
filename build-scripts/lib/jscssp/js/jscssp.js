@@ -1220,6 +1220,9 @@ CSSParser.prototype = {
 	          valueText += fn + arg;
 	          var value = new jscsspVariable(kJscsspPRIMITIVE_VALUE, aSheet);
 	          value.value = fn + arg;
+              if (fn === "url(") {
+                  value.url = token.value;
+              }
 	          values.push(value);
 	        }
 	        else
@@ -2146,7 +2149,7 @@ CSSParser.prototype = {
       var v = this.trim11(value);
       if ((v[0] == "'" && v[v.length -1] == "'") ||
           (v[0] == '"' && v[v.length -1] == '"'))
-        v = v.substring(1, v.length - 2)
+        v = v.substring(1, v.length - 1)
       var r = new RegExp("^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?", "");
       var m = v.match(r)
       if (m) {

@@ -79,7 +79,7 @@ fluid.build = fluid.build || {};
             return that.stylesheet.cssText();
         };
 
-        setupCSSGenerator(that);        
+        setupCSSGenerator(that);
         return that;
     };
     
@@ -120,6 +120,10 @@ fluid.build = fluid.build || {};
             return;
         }
         rule.mSelectorText = rule.mSelectorText.replace(options.match, options.replace, "g");
+    };
+    
+    fluid.build.cssGenerator.rewriteRelativeUrls = function (rule) {
+        return;
     };
     
 })();
