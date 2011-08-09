@@ -77,7 +77,7 @@ function createLightbox(options) {
     var reorderer;
     var listenerConfig = { // afterMove listener to test FLUID-4391
         listeners: {
-            afterMove: function() {
+            afterMove: function () {
                 reorderer.moveCount++;
             }
         }  
