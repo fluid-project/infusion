@@ -33,15 +33,7 @@ var uioDemo = uioDemo || {};
         
         // Next, start up UI Options
         fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
-            prefix: "../../../components/uiOptions/html/",
-            relativePrefix: "./",
-            markupRenderer: {
-                options: {
-                    markupProps: {
-                        src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
-                    }
-                }
-            }
+            prefix: "../../../components/uiOptions/html/"
         });
     };
     
