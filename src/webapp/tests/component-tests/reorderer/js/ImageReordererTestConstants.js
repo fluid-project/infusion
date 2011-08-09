@@ -19,6 +19,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 /**
  * This file contains test constants and setup and teardown functions that are used when testing with the data in the Lightbox.html file.
+ * TODO: Rework this file and testing strategy so it is properly namespaced and uses composition of options for configuration rather than
+ * multiple drivers and bare functions.
  */
 var numOfImages = 14;
 
@@ -71,12 +73,24 @@ function findNoOrderables() {
     return [];
 }
 
-function createLightbox() {
-    return fluid.reorderImages(fetchLightboxRoot());
+function createLightbox(options) {
+    var reorderer;
+    var listenerConfig = { // afterMove listener to test FLUID-4391
+        listeners: {
+            afterMove: function() {
+                reorderer.moveCount++;
+            }
+        }  
+    };
+    // TODO: produce a mergePolicy that can do this non-destructively
+    var mergedOptions = fluid.merge(null, {}, listenerConfig, options);
+    reorderer = fluid.reorderImages(fetchLightboxRoot(), mergedOptions);
+    reorderer.moveCount = 0;
+    return reorderer;
 }
 
 function createLightboxWithNoOrderables() {
-    return fluid.reorderer(fetchLightboxRoot(), {
+    return createLightbox({
         selectors: {
             movables: findNoOrderables
         }
@@ -94,7 +108,7 @@ var altKeys = {
 };
     
 function createAltKeystrokeLightbox() {
-    return fluid.reorderImages(fetchLightboxRoot(), {
+    return createLightbox({
         keysets: [altKeys],
         selectors: {
             movables: findOrderableByDivAndId
@@ -113,7 +127,7 @@ function createMultiKeystrokeLightbox() {
         left: fluid.reorderer.keys.LEFT
     };
     
-    return fluid.reorderImages(fetchLightboxRoot(), {
+    return createLightbox({
         keysets: [altKeys, altKeys2],
         selectors: {
             movables: findOrderableByDivAndId
@@ -132,7 +146,7 @@ function createMultiOverlappingKeystrokeLightbox() {
         left: fluid.reorderer.keys.LEFT
     };
     
-    return fluid.reorderImages(fluid.jById(lightboxRootId), {
+    return createLightbox({
         keysets: [altKeys, altKeys2],
         selectors: {
             movables: findOrderableByDivAndId
