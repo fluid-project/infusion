@@ -172,10 +172,10 @@
 .fl-theme-wb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/wb/uio_icon_save_hci_13x13.png"); }
 .fl-theme-wb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/wb/uio_icon_cancel_hci_13x13.png"); }
 
-.fl-theme-yb .fl-uiOptions .fl-slider {background: none; background-color:#fff;}
+.fl-theme-yb .fl-uiOptions .fl-slider {background: none; background-color:#000;}
 .fl-theme-yb .fl-uiOptions .fl-slider .fl-handle,
 .fl-theme-yb .fl-uiOptions .fl-slider a,
-.fl-theme-yb .fl-uiOptions .fl-slider a:hover {border:1px solid #fff; background-color:#000;}
+.fl-theme-yb .fl-uiOptions .fl-slider a:hover {border:1px solid #ffff00; background-color:#000;}
 .fl-theme-yb .fl-uiOptions .fl-text-slider-left { background-image: url("../images/yb/uio_icon_smallA_yellowBlack_10x10.png"); }
 .fl-theme-yb .fl-uiOptions .fl-text-slider-right { background-image: url("../images/yb/uio_icon_bigA_yellowBlack_20x20.png"); }
 .fl-theme-yb .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/yb/uio_icon_linesNarrow_yellowBlack_16x12.png"); }
@@ -183,10 +183,10 @@
 .fl-theme-yb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/yb/uio_icon_save_yellowBlack_13x13.png"); }
 .fl-theme-yb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/yb/uio_icon_cancel_yellowBlack_13x13.png"); }
 
-.fl-theme-by .fl-uiOptions .fl-slider {background: none; background-color:#fff;}
+.fl-theme-by .fl-uiOptions .fl-slider {background: none; background-color:#ffff00;}
 .fl-theme-by .fl-uiOptions .fl-slider .fl-handle,
 .fl-theme-by .fl-uiOptions .fl-slider a,
-.fl-theme-by .fl-uiOptions .fl-slider a:hover {border:1px solid #000; background-color:#000;}
+.fl-theme-by .fl-uiOptions .fl-slider a:hover {border:1px solid #000; background-color:#ffff00;}
 .fl-theme-by .fl-uiOptions .fl-text-slider-left { background-image: url("../images/by/uio_icon_smallA_blackYellow_10x10.png"); }
 .fl-theme-by .fl-uiOptions .fl-text-slider-right { background-image: url("../images/by/uio_icon_bigA_blackYellow_20x20.png"); }
 .fl-theme-by .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/by/uio_icon_linesNarrow_blackYellow_16x12.png"); }
