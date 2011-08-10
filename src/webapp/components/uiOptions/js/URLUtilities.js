@@ -147,7 +147,7 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.url.isAbsoluteUrl = function(url) {
         var parseRel = fluid.url.parseUri(url);
-        return (parseRel.host || parseRel.directory.charAt(0) === '/');
+        return (parseRel.host || parseRel.protocol || parseRel.directory.charAt(0) === '/');
     };
     
     fluid.url.computeRelativePrefix = function(outerLocation, iframeLocation, relPath) {
