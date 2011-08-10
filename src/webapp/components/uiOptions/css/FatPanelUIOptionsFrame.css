@@ -165,35 +165,16 @@ ul.fl-pane li {
 /* Adjust colours for specific themes */
 .fl-theme-bw .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-bw .fl-uiOptions-fatPanel ul.fl-tabs { background-color: #000; }
-.fl-theme-bw .fl-uiOptions-fatPanel .fl-tabs a  { background-color: #000; color: #fff;}
-.fl-theme-bw .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #fff;  color: #000; }
-.fl-theme-bw .fl-uiOptions-fatPanel .ui-widget-header .ui-state-active { background: none no-repeat scroll 0% 0% #fff; } /* Override a background image that was making the tab larger than necessary. */
-.fl-theme-bw .fl-uiOptions-fatPanel #reset { background-color: #000; }
+.fl-theme-bw .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #fff !important;  color: #000 !important; }
 
 .fl-theme-wb .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-wb .fl-uiOptions-fatPanel ul.fl-tabs  { background-color: #fff; }
-.fl-theme-wb .fl-uiOptions-fatPanel .fl-tabs a { background-color: #fff; color: #000; }
-.fl-theme-wb .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #000; color: #fff; }
-.fl-theme-wb .fl-uiOptions-fatPanel #reset { background-color: #fff; color: #000; }
+.fl-theme-wb .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #000 !important; color: #fff !important; }
 
 .fl-theme-by .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-by .fl-uiOptions-fatPanel  ul.fl-tabs  { background-color: #000; }
-.fl-theme-by .fl-uiOptions-fatPanel .fl-tabs a { background-color: #000; color: #ffff00; }
-.fl-theme-by .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #ffff00; color: #000; }
-.fl-theme-by .fl-uiOptions-fatPanel .ui-widget-header .ui-state-default {background: none no-repeat scroll 0% 0% #000; }
-.fl-theme-by .fl-uiOptions-fatPanel .ui-tabs .fl-tabs li {background-color: #000; }
-.fl-theme-by .fl-uiOptions-fatPanel .ui-widget-content { background:0; color: #000;}
-.fl-theme-by .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider .fl-handle, .fl-theme-by .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider a { border: 1px solid #000;}
-.fl-theme-by .fl-uiOptions-fatPanel .fl-slider {background-color: #000;}
-.fl-theme-by .fl-uiOptions-fatPanel #reset { background-color: #000; color: #ffff00; }
+.fl-theme-by .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #ffff00 !important; color: #000 !important; }
 
 .fl-theme-yb .fl-uiOptions-fatPanel .ui-widget-header { background: 0;}
 .fl-theme-yb .fl-uiOptions-fatPanel  ul.fl-tabs  { background-color: #ffff00; }
-.fl-theme-yb .fl-uiOptions-fatPanel .fl-tabs a { background-color: #ffff00; color: #000; }
-.fl-theme-yb .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #000; color: #ffff00 }
-.fl-theme-yb .fl-uiOptions-fatPanel .ui-widget-header .ui-state-default {background: none no-repeat scroll 0% 0% #ffff00; }
-.fl-theme-yb .fl-uiOptions-fatPanel .ui-tabs .fl-tabs li {background-color: #ffff00; }
-.fl-theme-yb .fl-uiOptions-fatPanel .ui-widget-content { background:0; color: #ffff00;}
-.fl-theme-yb .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider .fl-handle, .fl-theme-yb  .fl-uiOptions-fatPanel .fl-uiOptions .fl-slider a { border: 1px solid #ffff00;}
-.fl-theme-yb .fl-uiOptions-fatPanel .fl-slider {background-color: #ffff00;}
-.fl-theme-yb .fl-uiOptions-fatPanel #reset { background-color: #ffff00; color: #000; }
+.fl-theme-yb .fl-uiOptions-fatPanel .fl-tabs .ui-tabs-selected a { background-color: #000 !important; color: #ffff00 !important; }
