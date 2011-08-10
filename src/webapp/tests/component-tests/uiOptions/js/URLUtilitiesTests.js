@@ -52,6 +52,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             outerLoc: "file:///E:/Source/gits/infusion-master/src/webapp/demos/uiOptions/FatPanelUIOptions/html/uiOptions.html",
             relPath: "a/b/g/",
             expected: "../../../demos/uiOptions/FatPanelUIOptions/html/a/b/g/"
+        },
+        {
+            iframeLoc: "file:///E:/Source/gits/infusion-master/src/webapp/components/uiOptions/html/FatPanelUIOptionsFrame.html",
+            outerLoc: "file:///E:/Source/gits/infusion-master/src/webapp/demos/uiOptions/FatPanelUIOptions/html/uiOptions.html",
+            relPath: "/a/b/g/",
+            expected: "/a/b/g/"
+        },
+        {
+            iframeLoc: "file:///E:/Source/gits/infusion-master/src/webapp/components/uiOptions/html/FatPanelUIOptionsFrame.html",
+            outerLoc: "file:///E:/Source/gits/infusion-master/src/webapp/demos/uiOptions/FatPanelUIOptions/html/uiOptions.html",
+            relPath: "http://localhost:8888/wordpress/wp-content/themes/FSSFive/infusion/components/uiOptions/html/",
+            expected: "http://localhost:8888/wordpress/wp-content/themes/FSSFive/infusion/components/uiOptions/html/"
         }
         ]
         fluid.each(tests, function(test, key) {

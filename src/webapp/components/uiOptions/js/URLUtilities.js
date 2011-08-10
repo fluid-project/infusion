@@ -145,9 +145,17 @@ var fluid_1_4 = fluid_1_4 || {};
         return parsedSegs.pathInfo;
     };
     
+    fluid.url.isAbsoluteUrl = function(url) {
+        var parseRel = fluid.url.parseUri(url);
+        return (parseRel.host || parseRel.directory.charAt(0) === '/');
+    };
+    
     fluid.url.computeRelativePrefix = function(outerLocation, iframeLocation, relPath) {
-        var parsedOuter = fluid.url.parseSegs(outerLocation);
+        if (fluid.url.isAbsoluteUrl(relPath)) {
+            return relPath;
+        }
         var relSegs = fluid.url.parsePathInfo(relPath).pathInfo;
+        var parsedOuter = fluid.url.parseSegs(outerLocation);
         var parsedRel = parsedOuter.concat(relSegs);
         fluid.url.cononocolosePath(parsedRel);
         var parsedInner = fluid.url.parseSegs(iframeLocation);
