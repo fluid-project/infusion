@@ -49,7 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "  font-size: 16px;" + "\n" +
                 "}" + "\n" +
                 ".cat a {" + "\n" +
-                "  background-image: url(\"cats.png\");" + "\n" +
+                "  background-image: url('cats.png');" + "\n" +
                 "  font-size: 24px;" + "\n" +
                 "}" + "\n" +
                 "span {" + "\n" + 
@@ -73,7 +73,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "  font-size: 16px !important;" + "\n" +
                 "}" + "\n" +
                 ".cat a {" + "\n" +
-                "  background-image: url(\"cats.png\");" + "\n" +
+                "  background-image: url('cats.png');" + "\n" +
                 "  font-size: 24px !important;" + "\n" +
                 "}" + "\n" +
                 "span {" + "\n" + 
@@ -96,7 +96,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "  font-size: 16px;" + "\n" +
                 "}" + "\n" +
                 ".cat a {" + "\n" +
-                "  background-image: url(\"cats.png\");" + "\n" +
+                "  background-image: url('cats.png');" + "\n" +
                 "  font-size: 24px !important;" + "\n" +
                 "}" + "\n" +
                 "span {" + "\n" + 
@@ -120,7 +120,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "  font-size: 16px;" + "\n" +
                 "}" + "\n" +
                 ".fl-theme-cat a {" + "\n" +
-                "  background-image: url(\"cats.png\");" + "\n" +
+                "  background-image: url('cats.png');" + "\n" +
                 "  font-size: 24px;" + "\n" +
                 "}" + "\n" +
                 "span {" + "\n" + 
@@ -134,18 +134,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         tests.test("Rewrite URL", function () {
-            // need to test: 
-                // relative url with '..'
-                // relative url without '..'
-                // full url
-                // url surrounded by single quotes
-                // url surrounded by double quotes
-                // url with spaces before the quotes
-                // url with spaces after the quotes
+            var prefix = "../../../../framework/fss/css/";
             
+            var opts = {
+                prefix: prefix
+            };
+            
+            var expected = "/* Comment */" + 
+            "\n" +
+            "table {" + "\n" +
+            "  background-color: #dddddd;" + "\n" +
+            "  font-size: 16px;" + "\n" +
+            "}" + "\n" +
+            ".cat a {" + "\n" +
+            "  background-image: url('" + prefix + "cats.png');" + "\n" +
+            "  font-size: 24px;" + "\n" +
+            "}" + "\n" +
+            "span {" + "\n" + 
+            "  font-size: 12px;" + "\n" +
+            "}" + "\n";
+
             testStylesheetForProcessSpec({
-                type: fluid.build.cssGenerator.rewriteRelativeUrls
-            }, {}, "The urls should be rewritten");
+                type: fluid.build.cssGenerator.rewriteRelativeUrls,
+                options: opts
+            }, expected, "The urls should be rewritten");
             
         });
 

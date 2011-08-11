@@ -65,6 +65,10 @@ var SI  = IS_IDENT|START_IDENT;
 var XI  = IS_IDENT            |IS_HEX_DIGIT;
 var XSI = IS_IDENT|START_IDENT|IS_HEX_DIGIT;
 
+var assembleUrl = function (url) {
+    return "url('" + url + "')";
+};
+
 function CSSScanner(aString)
 {
   this.init(aString);
@@ -902,7 +906,7 @@ CSSParser.prototype = {
       token = this.getToken(true, true);
       var urlContent = this.parseURL(token);
       if (urlContent) {
-        href = "url(" + urlContent;
+        href = assembleUrl(urlContent);
         s += " " + href;
       }
     }
@@ -1033,7 +1037,7 @@ CSSParser.prototype = {
           token = this.getToken(true, true);
           var urlContent = this.parseURL(token);
           if (urlContent) {
-            url += "url(" + urlContent;
+            url += assembleUrl(urlContent);
             foundURL = true;
             s += " " + urlContent;
           }
@@ -1211,8 +1215,15 @@ CSSParser.prototype = {
           }
           else
             return "";
-        }
-        else {
+        } else if (token.isFunction("url(")) {
+            token = this.getToken(true, true);
+            var urlContent = this.parseURL(token);
+            var value = new jscsspVariable(kJscsspPRIMITIVE_VALUE, aSheet);
+            value.url = urlContent;
+            value.value = assembleUrl(urlContent);
+            values.push(value);
+            valueText += value.value;
+        } else {
 	        var fn = token.value;
 	        token = this.getToken(false, true);
 	        var arg = this.parseFunctionArgument(token);
@@ -1220,9 +1231,6 @@ CSSParser.prototype = {
 	          valueText += fn + arg;
 	          var value = new jscsspVariable(kJscsspPRIMITIVE_VALUE, aSheet);
 	          value.value = fn + arg;
-              if (fn === "url(") {
-                  value.url = token.value;
-              }
 	          values.push(value);
 	        }
 	        else
@@ -1409,13 +1417,13 @@ CSSParser.prototype = {
     return top + " " + right + " " + bottom + " " + left;
   },
 
-  parseCueShorthand: function(token, declarations, aAcceptPriority)
+  parseCueShorthand: function(token, aDecl, aAcceptPriority)
   {
     var before = "";
     var after = "";
 
     var values = [];
-    var values = [];
+    
     while (true) {
 
       if (!token.isNotNull())
@@ -1440,7 +1448,7 @@ CSSParser.prototype = {
         var token = this.getToken(true, true);
         var urlContent = this.parseURL(token);
         if (urlContent)
-          values.push("url(" + urlContent);
+          values.push(assembleUrl(urlContent));
         else
           return "";
       }
@@ -1464,8 +1472,12 @@ CSSParser.prototype = {
         return "";
     }
     this.forgetState();
-    aDecl.push(this._createJscsspDeclarationFromValue("cue-before", before));
-    aDecl.push(this._createJscsspDeclarationFromValue("cue-after", after));
+    var beforeDecl = this._createJscsspDeclarationFromValue("cue-before", before);
+    beforeDecl.values[0].url = urlContent;  // This is making crazy assumptions
+    aDecl.push(beforeDecl);
+    var afterDecl = this._createJscsspDeclarationFromValue("cue-after", after);
+    afterDecl.values[0].url = urlContent;
+    aDecl.push(afterDecl);
     return before + " " + after;
   },
 
@@ -1749,6 +1761,7 @@ CSSParser.prototype = {
     var bgAttachment = null;
     var bgImage = null;
     var bgPosition = null;
+    var url;
 
     while (true) {
 
@@ -1812,12 +1825,11 @@ CSSParser.prototype = {
         else if (!bgImage &&
                  (token.isFunction("url(")
                   || token.isIdent("none"))) {
-          bgImage = token.value;
           if (token.isFunction("url(")) {
             token = this.getToken(true, true);
-            var url = this.parseURL(token); // TODO
+            url = this.parseURL(token); // TODO
             if (url)
-              bgImage += url;
+              bgImage = assembleUrl(url);
             else
               return "";
           }
@@ -1845,7 +1857,9 @@ CSSParser.prototype = {
     bgPosition = bgPosition ? bgPosition : "top left";
 
     aDecl.push(this._createJscsspDeclarationFromValue("background-color", bgColor));
-    aDecl.push(this._createJscsspDeclarationFromValue("background-image", bgImage));
+    var bgImgDecl = this._createJscsspDeclarationFromValue("background-image", bgImage);
+    bgImgDecl.values[0].url = url;
+    aDecl.push(bgImgDecl);
     aDecl.push(this._createJscsspDeclarationFromValue("background-repeat", bgRepeat));
     aDecl.push(this._createJscsspDeclarationFromValue("background-attachment", bgAttachment));
     aDecl.push(this._createJscsspDeclarationFromValue("background-position", bgPosition));
@@ -1859,7 +1873,7 @@ CSSParser.prototype = {
     var lType = null;
     var lPosition = null;
     var lImage = null;
-
+    
     while (true) {
 
       if (!token.isNotNull())
@@ -1890,11 +1904,11 @@ CSSParser.prototype = {
         lPosition = token.value;
       }
 
-      else if (!lImage && token.isFunction("url")) {
+      else if (!lImage && token.isFunction("url(")) {
         token = this.getToken(true, true);
         var urlContent = this.parseURL(token);
         if (urlContent) {
-          lImage = "url(" + urlContent;
+          lImage = assembleUrl(urlContent);
         }
         else
           return "";
@@ -1913,7 +1927,9 @@ CSSParser.prototype = {
 
     aDecl.push(this._createJscsspDeclarationFromValue("list-style-type", lType));
     aDecl.push(this._createJscsspDeclarationFromValue("list-style-position", lPosition));
-    aDecl.push(this._createJscsspDeclarationFromValue("list-style-image", lImage));
+    var imgDecl = this._createJscsspDeclarationFromValue("list-style-image", lImage);
+    imgDecl.values[0].url = urlContent;  // FIX THIS
+    aDecl.push(imgDecl);
     return lType + " " + lPosition + " " + lImage;
   },
 
@@ -2149,14 +2165,14 @@ CSSParser.prototype = {
       var v = this.trim11(value);
       if ((v[0] == "'" && v[v.length -1] == "'") ||
           (v[0] == '"' && v[v.length -1] == '"'))
-        v = v.substring(1, v.length - 1)
+        v = v.substring(1, v.length - 1);
       var r = new RegExp("^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?", "");
       var m = v.match(r)
       if (m) {
         if (m[5].match ( /[^a-z0-9\\-_\\.!~\\*'\\(\\)]/g ) )
           return null;
       }
-      return value + ")";
+      return v;
     }
     return "";
   },
@@ -3653,7 +3669,7 @@ jscsspVariable.prototype = {
     if (this.type == kJscsspVARIABLE_VALUE)
       return this.resolveVariable(this.name, this.parentRule, this.parentStyleSheet);
     else
-      return this.value;
+      return this.url ? assembleUrl(this.url) : this.value;
   },
 
   setCssText: function(val) {

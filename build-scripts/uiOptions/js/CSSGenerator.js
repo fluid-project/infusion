@@ -122,8 +122,21 @@ fluid.build = fluid.build || {};
         rule.mSelectorText = rule.mSelectorText.replace(options.match, options.replace, "g");
     };
     
-    fluid.build.cssGenerator.rewriteRelativeUrls = function (rule) {
-        return;
+    // TODO: This looks a lot like prioritize - can we refactor this code? 
+    fluid.build.cssGenerator.rewriteRelativeUrls = function (rule, options) {
+        if (!rule.declarations) {
+            return;
+        }
+
+        for (var i = 0; i < rule.declarations.length; i++) {
+            var values = rule.declarations[i].values;
+            for (var j = 0; j < values.length; j++) {
+                var value = values[j];
+                if (value.url) {
+                    value.url = options.prefix + value.url;
+                }
+            }
+        }
     };
     
 })();
