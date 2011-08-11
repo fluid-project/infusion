@@ -54,8 +54,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "}" + "\n" +
                 "span {" + "\n" + 
                 "  font-size: 12px;" + "\n" +
-                "}" + "\n";
-            
+                "}" + "\n" +
+                ".sheep {" + "\n" + 
+                "  cue-before: url('http://sheep.org');" + "\n" + 
+                "  cue-after: url('http://sheep.org');" + "\n" + 
+                 "}" + "\n";
+
             testStylesheetForPrioritySpec(priorities, expected, 
                 "The generated style sheet should have !important added to all background colors.");
         });
@@ -78,7 +82,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "}" + "\n" +
                 "span {" + "\n" + 
                 "  font-size: 12px !important;" + "\n" +
-                "}" + "\n";
+                "}" + "\n" +
+                ".sheep {" + "\n" + 
+                "  cue-before: url('http://sheep.org');" + "\n" + 
+                "  cue-after: url('http://sheep.org');" + "\n" + 
+                 "}" + "\n";
             
             testStylesheetForPrioritySpec(priorities, expected, 
                 "The generated style sheet should have !important added to all background colors and font sizes.");
@@ -101,7 +109,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "}" + "\n" +
                 "span {" + "\n" + 
                 "  font-size: 12px;" + "\n" +
-                "}" + "\n";
+                "}" + "\n" +
+                ".sheep {" + "\n" + 
+                "  cue-before: url('http://sheep.org');" + "\n" + 
+                "  cue-after: url('http://sheep.org');" + "\n" + 
+                 "}" + "\n";
             
             testStylesheetForPrioritySpec(priorities, expected, 
                 "The generated style sheet should have !important added only to the .cat rule.");
@@ -125,7 +137,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "}" + "\n" +
                 "span {" + "\n" + 
                 "  font-size: 12px;" + "\n" +
-                "}" + "\n";
+                "}" + "\n" +
+                ".sheep {" + "\n" + 
+                "  cue-before: url('http://sheep.org');" + "\n" + 
+                "  cue-after: url('http://sheep.org');" + "\n" + 
+                 "}" + "\n";
             
             testStylesheetForProcessSpec({
                 type: fluid.build.cssGenerator.rewriteSelector,
@@ -133,7 +149,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }, expected, "The .cat selector should be written as '.fl-theme-cat'.");
         });
 
-        tests.test("Rewrite URL", function () {
+        tests.test("Rewrite Relative URLs", function () {
             var prefix = "../../../../framework/fss/css/";
             
             var opts = {
@@ -152,7 +168,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "}" + "\n" +
             "span {" + "\n" + 
             "  font-size: 12px;" + "\n" +
-            "}" + "\n";
+            "}" + "\n" +
+            ".sheep {" + "\n" + 
+            "  cue-before: url('http://sheep.org');" + "\n" + 
+            "  cue-after: url('http://sheep.org');" + "\n" + 
+             "}" + "\n";
 
             testStylesheetForProcessSpec({
                 type: fluid.build.cssGenerator.rewriteRelativeUrls,

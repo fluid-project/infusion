@@ -123,7 +123,7 @@ fluid.build = fluid.build || {};
     };
     
     // TODO: This looks a lot like prioritize - can we refactor this code? 
-    fluid.build.cssGenerator.rewriteRelativeUrls = function (rule, options) {
+    fluid.build.cssGenerator.modifyValue = function (rule, modifyFunc) {
         if (!rule.declarations) {
             return;
         }
@@ -131,12 +131,17 @@ fluid.build = fluid.build || {};
         for (var i = 0; i < rule.declarations.length; i++) {
             var values = rule.declarations[i].values;
             for (var j = 0; j < values.length; j++) {
-                var value = values[j];
-                if (value.url) {
-                    value.url = options.prefix + value.url;
-                }
+                modifyFunc(values[j]);
             }
         }
     };
-    
+
+    fluid.build.cssGenerator.rewriteRelativeUrls = function (rule, options) {
+        fluid.build.cssGenerator.modifyValue(rule, 
+                function (value) {
+                    if (value.url && value.url.indexOf("://") < 0) {
+                        value.url = options.prefix + value.url;
+                    }
+                });
+    };
 })();

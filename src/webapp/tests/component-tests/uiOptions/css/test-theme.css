@@ -13,3 +13,5 @@ table {
 span {
   font-size: 12px;
 }
+
+.sheep { cue: url( 'http://sheep.org' ); }
