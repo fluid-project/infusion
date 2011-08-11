@@ -35,6 +35,13 @@ var uioDemo = uioDemo || {};
         fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
             prefix: "../../../components/uiOptions/html/"
         });
+
+        $(".disp-opts-with-preview").click(function(){
+           window.location = "uiOptionsFullWithPreview.html";
+       });
+        $(".disp-opts-without-preview").click(function(){
+           window.location = "uiOptionsFullWithoutPreview.html";
+       });
     };
     
 })(jQuery, fluid);

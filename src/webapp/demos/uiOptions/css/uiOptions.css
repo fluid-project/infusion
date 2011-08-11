@@ -44,18 +44,20 @@
     margin-bottom: 10px;
 }
 .uio-demo-theme .content h2 {
-    margin-top: 0;
+    margin-bottom: 0.5em;
     font-weight: normal;
     font-size: 1.6em;
     line-height: 100%;
 }
-.uio-demo-theme .header {
+.uio-demo-theme .header,
+.uio-demo-theme .instructions {
     font-size: 1.3em;
 }
 .uio-demo-theme .header h1 {
     font-family: LoveYaLikeASister, "Courier New, Courier", monospace;
     font-size: 3em;
-    margin-bottom: 30px;
+    line-height: 1em;
+    margin-bottom: 20px;
 }
 .uio-demo-theme .header .tagline {
     font-family: LatoLightItalic, Helvetica, Tahoma, Verdana, sans-serif;
@@ -66,23 +68,33 @@
 .uio-demo-theme .header .disp-pref {
     font-weight: bold;
 }
-.uio-demo-theme .header .instructions h2 {
+.uio-demo-theme .instructions h2 {
     font-family: LatoBlack, Helvetica, Tahoma, Verdana, sans-serif;
     font-weight: normal;
     margin-bottom: 0.5em;
 }
-.uio-demo-theme .header .instructions .instruction-comment {
-    font-size: 0.8em;
-}
-.uio-demo-theme .header .instructions ol {
+.uio-demo-theme .instructions ol {
+    margin-left: 1.5em;
     margin-top: 0px;
 }
-.uio-demo-theme .header .instructions li {
+.uio-demo-theme .instructions li {
     font-size: 1.25em;
     margin-bottom: 1em;
 }
+.uio-demo-theme .instructions .instruction-comment {
+    font-size: 0.8em;
+}
 .uio-demo-theme .disp-opts-buttons {
     margin-top: 40px;
+}
+.uio-demo-theme .disp-opts-button-container {
+    background-color: #0071BC;
+    padding: 10px;
+    margin-top: 15px;
+    background-image: url("../images/arrow_right.png");
+    background-repeat: no-repeat;
+    background-position: right; 
+    padding-right: 25px;
 }
 .uio-demo-theme .disp-opts-button {
     font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
@@ -90,12 +102,10 @@
     color: white;
     background-color: #0071BC;
     text-transform: uppercase;
-    padding: 10px;
-    margin-top: 15px;
-    background-image: url("../images/arrow_right.png");
-    background-repeat: no-repeat;
-    background-position: right; 
+    text-align: left;
     padding-right: 25px;
+    border-style: none none;
+    padding-left: 0;
 }
 .uio-demo-theme .disp-opts-button a {
     color: white;
@@ -107,7 +117,7 @@
 }
 .uio-demo-theme .content {
     margin-top: 1em;
-    padding: 10px;
+    padding: 10px 0;
     border-top: dashed 1px #426088;
 }
 .uio-demo-theme .feedback-form input,
