@@ -129,21 +129,24 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} options 
      */
     fluid.reorderImages = function (container, options) {
-        // Instantiate a mini-Image Reorderer component, then feed its options to the real Reorderer.
-        var that = fluid.initView("fluid.reorderImages", container, options);
+       // TODO: fix up this nonstandard workflow once we IoC-ify reorderer and implement standard
+       // wrapper facility
+        var defaults = fluid.defaults("fluid.reorderImages");
+        var mergedOptions = fluid.merge(defaults.mergePolicy, {}, defaults, options);
+        container = fluid.container(container);
         
         // If the user didn't specify their own afterMove or movables options,
         // set up defaults for them using the old id-based scheme.
         // Backwards API compatiblity. Remove references to afterMoveCallback by Infusion 1.5.
-        setDefaultValue(that, "options.listeners.afterMove", 
-                        that.options.afterMoveCallback || createIDAfterMoveListener(that.container));
-        setDefaultValue(that, "options.selectors.movables", 
-                        createImageCellFinder(that.container, that.container.prop("id")));
+        setDefaultValue(mergedOptions, "listeners.afterMove", 
+                        mergedOptions.afterMoveCallback || createIDAfterMoveListener(container));
+        setDefaultValue(mergedOptions, "selectors.movables", 
+                        createImageCellFinder(container, container.prop("id")));
         
-        var reorderer = fluid.reorderer(that.container, that.options);
+        var reorderer = fluid.reorderer(container, mergedOptions);
         
-        fluid.tabindex($("a", that.container), -1);
-        addThumbnailActivateHandler(that.container);
+        fluid.tabindex($("a", container), -1);
+        addThumbnailActivateHandler(container);
         
         return reorderer;
     };

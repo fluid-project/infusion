@@ -15,7 +15,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*global fluid_1_4:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, continue: true, elsecatch: true, operator: true, jslintok:true, undef: true, newcap: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid_1_4 = fluid_1_4 || {};
 
@@ -1347,7 +1347,7 @@ fluid_1_4 = fluid_1_4 || {};
         function processDecoratorQueue() {
             for (var i = 0; i < decoratorQueue.length; ++i) {
                 var decorator = decoratorQueue[i];
-                for (var j = 0; j < decorator.ids.length; ++ j) {
+                for (var j = 0; j < decorator.ids.length; ++j) {
                     var id = decorator.ids[j];
                     var node = fluid.byId(id, renderOptions.document);
                     if (!node) {

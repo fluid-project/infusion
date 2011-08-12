@@ -21,50 +21,49 @@ var fluid_1_4 = fluid_1_4 || {};
     /******************************
      * Full No Preview UI Options *
      ******************************/
-     
-    fluid.demands("fluid.uiOptions.templateLoader", "fluid.fullNoPreviewUIOptions", {
-        options: {
-            templates: {
-                uiOptions: "%prefixFullNoPreviewUIOptions.html"
-            }
-        }
-    });
-    
-    fluid.demands("fluid.uiOptions.templatePath", "fluid.fullNoPreviewUIOptions", {
-        options: {
-            value: "{fullNoPreviewUIOptions}.options.prefix"
-        }
-    });
-    
-    fluid.defaults("fluid.fullNoPreviewUIOptions", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],            
-        components: {
-            uiOptionsLoader: {
-                type: "fluid.uiOptions.loader",
-                container: "{fullNoPreviewUIOptions}.container"
-            },
-            templateLoader: {
-                priority: "first",
-                type: "fluid.uiOptions.templateLoader"
-            }                     
-        }
-    });       
-    
-    // Options for UIOptions in full no preview mode
-    fluid.demands("fluid.uiOptions", ["fluid.fullNoPreviewUIOptions"], {
-        options: {
-            components: {
-                preview: {
-                    type: "fluid.emptySubcomponent"
+
+    fluid.defaults("fluid.uiOptions.fullNoPreview", {
+        gradeNames: ["fluid.uiOptions.inline"],
+        container: "{fullNoPreview}.container",
+        uiOptionsTransform: {
+            config: {
+                "*.templateLoader": {
+                    options: {
+                        templates: {
+                            uiOptions: "%prefix/FullNoPreviewUIOptions.html"
+                        }
+                    }
                 },
-                settingsStore: "{uiEnhancer}.settingsStore"
-            },
-            listeners: {
-                onReset: function (uiOptions) {
-                    uiOptions.save();
+                "*.uiOptionsLoader.*.uiOptions": {
+                    options: {
+                        components: {
+                            preview: {
+                                type: "fluid.emptySubcomponent"
+                            },
+                            settingsStore: "{uiEnhancer}.settingsStore"
+                        },
+                        listeners: {
+                            onReset: function (uiOptions) {
+                                uiOptions.save();
+                            }
+                        }
+                    }
                 }
             }
         }
     });
-
+    
+    fluid.uiOptions.fullNoPreview = function (container, options) {
+        // make "container" one of the options so it can be munged by the uiOptions.mapOptions.
+        // This container is passed down to be used as uiOptionsLoader.container 
+        var componentConfig = fluid.defaults("fluid.uiOptions.fullNoPreview").uiOptionsTransform.config;
+        var mergePolicy = fluid.defaults("fluid.uiOptions.fullNoPreview").mergePolicy;
+        options.container = container;
+        
+        var mappedOptions = fluid.uiOptions.mapOptions(options, componentConfig, mergePolicy);
+        var that = fluid.initView("fluid.uiOptions.fullNoPreview", container, mappedOptions);
+        fluid.initDependents(that);
+        return that;
+    };
+    
 })(jQuery, fluid_1_4);

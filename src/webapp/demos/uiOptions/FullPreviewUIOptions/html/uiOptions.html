@@ -57,21 +57,17 @@
         
         <script type="text/javascript">
             $().ready(function () {
-                // Supply the table of contents' template URL
-                fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
-                    options: {
-                        resources: {
-                            template: {
-                                forceCache: true,
-                                url: "../../../../components/tableOfContents/html/TableOfContents.html"
-                            }
-                        }
-                    }
+                fluid.pageEnhancer({
+                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
                 });
 
-                fluid.pageEnhancer();                
-                fluid.fullPreviewUIOptions("#myUIOptions", {
-                    prefix: "../../../../components/uiOptions/html/"
+                fluid.uiOptions.fullPreview("#myUIOptions", {
+                    prefix: "../../../../components/uiOptions/html/",
+                    previewEnhancer: {
+                        options: {
+                            tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                        }
+                    }
                 });
             });
         </script>

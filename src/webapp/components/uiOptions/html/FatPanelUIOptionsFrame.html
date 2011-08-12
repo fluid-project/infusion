@@ -57,46 +57,9 @@
         </div>
 
         <script type="text/javascript">
-            // Supply the templates
-            fluid.staticEnvironment.uiOptionsIframe = fluid.typeTag("fluid.uiOptionsIframe");
-            
-            fluid.demands("fluid.uiOptionsTemplateLoader", "fluid.uiOptionsIframe", {
-                options: {
-                    prefix: "./"
-                }
+            fluid.pageEnhancer({
+                tocTemplate: "../../tableOfContents/html/TableOfContents.html"
             });
-        
-            // Supply the table of contents' template URL
-            fluid.demands("fluid.tableOfContents.levels", ["fluid.uiOptionsIframe", "fluid.tableOfContents"], {
-                options: {
-                    resources: {
-                        template: {
-                            forceCache: true,
-                            url: "../../tableOfContents/html/TableOfContents.html"
-                        }
-                    }
-                }
-            });
-
-            fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
-                options: {
-                    classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
-                }
-            });
-            
-            fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
-                options: {
-                    classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
-                }
-            });
-
-            fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptionsIframe", "fluid.uiOptions"], {
-                options: {
-                    classnameMap: "{fluid.uiEnhancer}.options.classnameMap"
-                }
-            });
-            
-            fluid.pageEnhancer();
         </script>
     </body>
 
