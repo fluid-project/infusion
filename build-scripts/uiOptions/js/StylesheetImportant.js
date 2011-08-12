@@ -53,7 +53,10 @@ var fluid = fluid || {};
                 }
             },
             {
-                type: fluid.build.cssGenerator.rewriteRelativeUrls
+                type: fluid.build.cssGenerator.rewriteRelativeUrls,
+                options: {
+                    prefix: "../../../../framework/fss/css/"  // Instead of hardcoding use the urls you have to create this
+                }
             }
         ]);
         

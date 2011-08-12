@@ -2166,12 +2166,13 @@ CSSParser.prototype = {
       if ((v[0] == "'" && v[v.length -1] == "'") ||
           (v[0] == '"' && v[v.length -1] == '"'))
         v = v.substring(1, v.length - 1);
-      var r = new RegExp("^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?", "");
-      var m = v.match(r)
-      if (m) {
-        if (m[5].match ( /[^a-z0-9\\-_\\.!~\\*'\\(\\)]/g ) )
-          return null;
-      }
+// Commenting out the url validation code because of FLUID-4400
+//      var r = new RegExp("^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?", "");
+//      var m = v.match(r)
+//      if (m) {
+//        if (m[5].match ( /[^a-z0-9\\-_\\.!~\\*'\\(\\)]/g ) )
+//          return null;
+//      }
       return v;
     }
     return "";

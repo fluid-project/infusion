@@ -11,7 +11,7 @@ table {
 }
 
 span {
-  font-size: 12px;
+  font-size: 12px;  /* Setting font size */
 }
 
 .sheep { cue: url( 'http://sheep.org' ); }

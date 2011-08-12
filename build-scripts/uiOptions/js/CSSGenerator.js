@@ -86,7 +86,7 @@ fluid.build = fluid.build || {};
     fluid.build.cssGenerator.expandRuleSpec = function (spec) {
         for (var selector in spec) {
             var priorities = spec[selector];
-            spec[selector] = typeof(priorities) === "string" ? [priorities] : priorities;
+            spec[selector] = typeof (priorities) === "string" ? [priorities] : priorities;
         }
     };
     
@@ -122,7 +122,6 @@ fluid.build = fluid.build || {};
         rule.mSelectorText = rule.mSelectorText.replace(options.match, options.replace, "g");
     };
     
-    // TODO: This looks a lot like prioritize - can we refactor this code? 
     fluid.build.cssGenerator.modifyValue = function (rule, modifyFunc) {
         if (!rule.declarations) {
             return;
@@ -130,6 +129,9 @@ fluid.build = fluid.build || {};
 
         for (var i = 0; i < rule.declarations.length; i++) {
             var values = rule.declarations[i].values;
+            if (!values) {
+                break;
+            }
             for (var j = 0; j < values.length; j++) {
                 modifyFunc(values[j]);
             }
@@ -138,10 +140,10 @@ fluid.build = fluid.build || {};
 
     fluid.build.cssGenerator.rewriteRelativeUrls = function (rule, options) {
         fluid.build.cssGenerator.modifyValue(rule, 
-                function (value) {
-                    if (value.url && value.url.indexOf("://") < 0) {
-                        value.url = options.prefix + value.url;
-                    }
-                });
+            function (value) {
+                if (value.url && value.url.indexOf("://") < 0) {
+                    value.url = options.prefix + value.url;
+                }
+            });
     };
 })();
