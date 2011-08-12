@@ -188,22 +188,7 @@ var fluid = fluid || fluid_1_4;
     };
     
     // Functional programming utilities.
-            
-    /** Return an empty container as the same type as the argument (either an
-     * array or hash */
-    fluid.freshContainer = function (tocopy) {
-        return fluid.isArrayable(tocopy) ? [] : {};   
-    };
-    
-    /** Performs a deep copy (clone) of its argument **/
-    
-    fluid.copy = function (tocopy) {
-        if (fluid.isPrimitive(tocopy)) {
-            return tocopy;
-        }
-        return $.extend(true, fluid.freshContainer(tocopy), tocopy);
-    };
-    
+               
     /** A basic utility that returns its argument unchanged */
     
     fluid.identity = function (arg) {
@@ -239,6 +224,20 @@ var fluid = fluid || fluid_1_4;
         return totest && !fluid.isPrimitive(totest) && typeof (totest.length) === "number";
     };
     
+    /** Return an empty container as the same type as the argument (either an
+     * array or hash */
+    fluid.freshContainer = function (tocopy) {
+        return fluid.isArrayable(tocopy) ? [] : {};   
+    };
+    
+    /** Performs a deep copy (clone) of its argument **/
+    
+    fluid.copy = function (tocopy) {
+        if (fluid.isPrimitive(tocopy)) {
+            return tocopy;
+        }
+        return $.extend(true, fluid.freshContainer(tocopy), tocopy);
+    };
             
     /** Corrected version of jQuery makeArray that returns an empty array on undefined rather than crashing **/
     fluid.makeArray = function (arg) {
@@ -456,7 +455,7 @@ var fluid = fluid || fluid_1_4;
      * @param {Object|Array} target the target to be cleared
      */
     fluid.clear = function (target) {
-        if (target instanceof Array) {
+        if (fluid.isArrayable(target)) {
             target.length = 0;
         } else {
             for (var i in target) {
@@ -1183,7 +1182,7 @@ var fluid = fluid || fluid_1_4;
                         !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
                         !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "nomerge") && !fluid.mergePolicyIs(newPolicy, "noexpand")) {
                     if (primitiveTarget) {
-                        target[name] = thisTarget = thisSource instanceof Array ? [] : {};
+                        target[name] = thisTarget = fluid.freshContainer(thisSource)
                     }
                     mergeImpl(policy, path, thisTarget, thisSource, newPolicy, rec);
                 } else {
