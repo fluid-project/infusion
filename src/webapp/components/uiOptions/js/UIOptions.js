@@ -557,7 +557,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 $(form).submit(function () {
                     that.save();
                 });
-	        }
+            }
             that.locate("reset").click(that.reset);
             that.locate("cancel").click(that.cancel);
         };
@@ -585,6 +585,7 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
     
+    /*
     fluid.demands("fluid.uiOptions.eventBinder", ["fluid.uiOptions"], {
         options: {
             listeners: {
@@ -592,6 +593,7 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
+    */
     
 
     var initModel = function (that) {

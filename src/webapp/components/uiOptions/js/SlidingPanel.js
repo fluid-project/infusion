@@ -33,8 +33,10 @@ var fluid_1_4 = fluid_1_4 || {};
             hideText: "- Hide"
         },          
         events: {
-            afterPanelHidden: null,
-            afterPanelShown: null
+            onPanelHide: null,
+            onPanelShow: null,
+            afterPanelHide: null,
+            afterPanelShow: null
         },
         finalInitFunction: "fluid.slidingPanel.finalInit",
         invokers: {
@@ -42,7 +44,7 @@ var fluid_1_4 = fluid_1_4 || {};
             show: "fluid.slidingPanel.slideDown"
         },
         hideByDefault: true
-    });     
+    });
     
     fluid.slidingPanel.slideUp = function (element, callback, duration) {
         $(element).slideUp(duration || "400", callback);
@@ -50,18 +52,20 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.slidingPanel.slideDown = function (element, callback, duration) {
         $(element).slideDown(duration || "400", callback);
-    };    
+    };
     
     fluid.slidingPanel.finalInit = function (that) {        
     
         that.showPanel = function () {
+            that.events.onPanelShow.fire(that);
             that.locate("toggleButton").text(that.options.strings.hideText);        
-            that.show(that.locate("panel"), that.events.afterPanelShown.fire);  
+            that.show(that.locate("panel"), that.events.afterPanelShow.fire);  
         };  
     
         that.hidePanel = function () {
+            that.events.onPanelHide.fire(that);
             that.locate("toggleButton").text(that.options.strings.showText);        
-            that.hide(that.locate("panel"), that.events.afterPanelHidden.fire);
+            that.hide(that.locate("panel"), that.events.afterPanelHide.fire);
         };      
         
         that.togglePanel = function () {
@@ -70,6 +74,10 @@ var fluid_1_4 = fluid_1_4 || {};
             } else {
                 that.hidePanel();             
             }       
+        };
+        
+        that.setPanelHeight = function(newHeight) {
+            that.locate("panel").height(newHeight);
         };
     
         //Event binder
