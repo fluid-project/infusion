@@ -18,7 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid = fluid || {};
 
 (function () {
-    var injectImportant = function (readPath, writePath) {
+    var injectImportant = function (readPath, writePath, urlPrefix) {
         var sheetStore = fluid.build.cssGenerator.rhinoSheetStore(readPath);
         var generator = fluid.build.cssGenerator({
             sheetStore: sheetStore
@@ -55,7 +55,7 @@ var fluid = fluid || {};
             {
                 type: fluid.build.cssGenerator.rewriteRelativeUrls,
                 options: {
-                    prefix: "../../../../framework/fss/css/"  // Instead of hardcoding use the urls you have to create this
+                    prefix: urlPrefix
                 }
             }
         ]);
@@ -67,7 +67,8 @@ var fluid = fluid || {};
     };
 
     // loop through files to run !important injection on
-    var files = fluid.build.readJSONFile(importantInjectionModule).files;
+    var moduleOpts = fluid.build.readJSONFile(importantInjectionModule);
+    var files = moduleOpts.files;
     
     var generateWritePath = function (originalPath) {
         var startIdx = Math.max(originalPath.lastIndexOf("/"), 0);
@@ -79,6 +80,6 @@ var fluid = fluid || {};
     for (var i = 0; i < files.length; i++) {
         var filePath = files[i];
         fluid.build.log("Generating an !important theme for " + files[i]);
-        injectImportant(filePath, generateWritePath(filePath));
+        injectImportant(filePath, generateWritePath(filePath), moduleOpts.urlPrefix);
      }
 })();

@@ -1438,17 +1438,23 @@ CSSParser.prototype = {
       }
 
       else if (!values.length && token.isIdent(this.kINHERIT)) {
-        values.push(token.value);
+        values.push({value: token.value});
       }
 
-      else if (token.isIdent("none"))
-        values.push(token.value);
+      else if (token.isIdent("none")) {
+        values.push({value: token.value});
+      }
 
-        else if (token.isFunction("url(")) {
+      else if (token.isFunction("url(")) {
         var token = this.getToken(true, true);
         var urlContent = this.parseURL(token);
-        if (urlContent)
-          values.push(assembleUrl(urlContent));
+        if (urlContent) {
+          var valueObj = {
+            value: assembleUrl(urlContent),
+            url: urlContent
+          };
+          values.push(valueObj);
+        }
         else
           return "";
       }
@@ -1472,12 +1478,18 @@ CSSParser.prototype = {
         return "";
     }
     this.forgetState();
-    var beforeDecl = this._createJscsspDeclarationFromValue("cue-before", before);
-    beforeDecl.values[0].url = urlContent;  // This is making crazy assumptions
+    var beforeDecl = this._createJscsspDeclarationFromValue("cue-before", before.value);
+    if (before.url) {
+        beforeDecl.values[0].url = before.url;
+    }
     aDecl.push(beforeDecl);
-    var afterDecl = this._createJscsspDeclarationFromValue("cue-after", after);
-    afterDecl.values[0].url = urlContent;
+        
+    var afterDecl = this._createJscsspDeclarationFromValue("cue-after", after.value);
+    if (after.url) {
+        afterDecl.values[0].url = after.url;
+    }
     aDecl.push(afterDecl);
+    
     return before + " " + after;
   },
 
@@ -1761,7 +1773,6 @@ CSSParser.prototype = {
     var bgAttachment = null;
     var bgImage = null;
     var bgPosition = null;
-    var url;
 
     while (true) {
 
@@ -1781,7 +1792,7 @@ CSSParser.prototype = {
 		    bgColor = this.kINHERIT;
 		    bgRepeat = this.kINHERIT;
 		    bgAttachment = this.kINHERIT;
-		    bgImage = this.kINHERIT;
+		    bgImage = {value: this.kINHERIT};
 		    bgPosition = this.kINHERIT;
       }
 
@@ -1827,9 +1838,12 @@ CSSParser.prototype = {
                   || token.isIdent("none"))) {
           if (token.isFunction("url(")) {
             token = this.getToken(true, true);
-            url = this.parseURL(token); // TODO
-            if (url)
-              bgImage = assembleUrl(url);
+            var urlContent = this.parseURL(token); // TODO
+            if (urlContent)
+              bgImage = {
+                value: assembleUrl(urlContent),
+                url: urlContent
+              };
             else
               return "";
           }
@@ -1851,19 +1865,19 @@ CSSParser.prototype = {
     // create the declarations
     this.forgetState();
     bgColor = bgColor ? bgColor : "transparent";
-    bgImage = bgImage ? bgImage : "none";
+    bgImage = bgImage ? bgImage : {value: "none"};
     bgRepeat = bgRepeat ? bgRepeat : "repeat";
     bgAttachment = bgAttachment ? bgAttachment : "scroll";
     bgPosition = bgPosition ? bgPosition : "top left";
 
     aDecl.push(this._createJscsspDeclarationFromValue("background-color", bgColor));
-    var bgImgDecl = this._createJscsspDeclarationFromValue("background-image", bgImage);
-    bgImgDecl.values[0].url = url;
+    var bgImgDecl = this._createJscsspDeclarationFromValue("background-image", bgImage.value);
+    bgImgDecl.values[0].url = bgImage.url;
     aDecl.push(bgImgDecl);
     aDecl.push(this._createJscsspDeclarationFromValue("background-repeat", bgRepeat));
     aDecl.push(this._createJscsspDeclarationFromValue("background-attachment", bgAttachment));
     aDecl.push(this._createJscsspDeclarationFromValue("background-position", bgPosition));
-    return bgColor + " " + bgImage + " " + bgRepeat + " " + bgAttachment + " " + bgPosition;
+    return bgColor + " " + bgImage.value + " " + bgRepeat + " " + bgAttachment + " " + bgPosition;
   },
 
   parseListStyleShorthand: function(token, aDecl, aAcceptPriority)
@@ -1891,7 +1905,7 @@ CSSParser.prototype = {
                && token.isIdent(this.kINHERIT)) {
         lType = this.kINHERIT;
         lPosition = this.kINHERIT;
-        lImage = this.kINHERIT;
+        lImage = {value: this.kINHERIT};
       }
 
       else if (!lType &&
@@ -1908,7 +1922,10 @@ CSSParser.prototype = {
         token = this.getToken(true, true);
         var urlContent = this.parseURL(token);
         if (urlContent) {
-          lImage = assembleUrl(urlContent);
+          lImage = {
+            value: assembleUrl(urlContent),
+            url: urlContent
+          };
         }
         else
           return "";
@@ -1922,15 +1939,15 @@ CSSParser.prototype = {
     // create the declarations
     this.forgetState();
     lType = lType ? lType : "none";
-    lImage = lImage ? lImage : "none";
+    lImage = lImage ? lImage : {value: "none"};
     lPosition = lPosition ? lPosition : "outside";
 
     aDecl.push(this._createJscsspDeclarationFromValue("list-style-type", lType));
     aDecl.push(this._createJscsspDeclarationFromValue("list-style-position", lPosition));
-    var imgDecl = this._createJscsspDeclarationFromValue("list-style-image", lImage);
-    imgDecl.values[0].url = urlContent;  // FIX THIS
+    var imgDecl = this._createJscsspDeclarationFromValue("list-style-image", lImage.value);
+    imgDecl.values[0].url = lImage.url;
     aDecl.push(imgDecl);
-    return lType + " " + lPosition + " " + lImage;
+    return lType + " " + lPosition + " " + lImage.value;
   },
 
   parseFontShorthand: function(token, aDecl, aAcceptPriority)
