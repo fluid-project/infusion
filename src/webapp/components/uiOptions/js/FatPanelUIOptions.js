@@ -65,7 +65,7 @@ var fluid_1_4 = fluid_1_4 || {};
             var dokkument = uiOptions.container[0].ownerDocument;
             var height = fluid.dom.getDocumentHeight(dokkument);
             var iframe = fatPanel.markupRenderer.iframe;
-            var attrs = {height: height + 20};
+            var attrs = {height: height + 15}; // TODO: Configurable padding here
             iframe.animate(attrs, 400);
         });
         
@@ -104,9 +104,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{fatPanel}.container",
                 options: {
                     invokers: {
-                          show: {
+                        show: {
                             funcName: "fluid.uiOptions.fatPanelEventBinder.showPanel"
-                        //    args: ["{fatPanel}", "{slidingPanel}"]
                         }  
                     }
                 },
@@ -202,6 +201,8 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         prefix: "./",
         markupProps: {
+            // This overflow specification fixes anomalous x overflow on FF, but may not on IE
+            style: "overflow-x:hidden; overflow-y:auto;",
             "class": "flc-iframe",
             src: "%prefix/uiOptionsIframe.html"
         }

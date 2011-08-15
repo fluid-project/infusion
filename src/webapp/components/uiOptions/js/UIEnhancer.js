@@ -227,7 +227,6 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     fluid.uiEnhancer.getTextSize = function (container) {
-        //console.log("getTextSize for ", container, ": ", container.css("font-size"));
         return parseFloat(container.css("font-size"));        
     };
 
@@ -257,7 +256,6 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uiEnhancer.textSizer.set = function (times, that) {
         if (!that.initialSize) {
             that.calcInitSize();
-            console.log("UIEnhancer id " + that.id + " initialSize " + that.initialSize);
         }
         
         if (times === 1) {
