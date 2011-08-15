@@ -1,13 +1,13 @@
 {
     "files": [
-        "../src/webapp/framework/fss/css/fss-theme-blackYellow.css",
-        "../src/webapp/framework/fss/css/fss-theme-yellowBlack.css",
-        "../src/webapp/framework/fss/css/fss-theme-coal.css",
-        "../src/webapp/framework/fss/css/fss-theme-hc.css",
-        "../src/webapp/framework/fss/css/fss-theme-hci.css",
-        "../src/webapp/framework/fss/css/fss-theme-mist.css",
-        "../src/webapp/framework/fss/css/fss-theme-rust.css",
-        "../src/webapp/framework/fss/css/fss-theme-slate.css"
+        "src/webapp/framework/fss/css/fss-theme-blackYellow.css",
+        "src/webapp/framework/fss/css/fss-theme-yellowBlack.css",
+        "src/webapp/framework/fss/css/fss-theme-coal.css",
+        "src/webapp/framework/fss/css/fss-theme-hc.css",
+        "src/webapp/framework/fss/css/fss-theme-hci.css",
+        "src/webapp/framework/fss/css/fss-theme-mist.css",
+        "src/webapp/framework/fss/css/fss-theme-rust.css",
+        "src/webapp/framework/fss/css/fss-theme-slate.css"
     ],
     "urlPrefix": "../../../../framework/fss/css/"
 }

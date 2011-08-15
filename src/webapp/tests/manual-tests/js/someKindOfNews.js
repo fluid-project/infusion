@@ -16,43 +16,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var skon = skon || {};
-(function ($, fluid) {       
-
-    fluid.staticEnvironment.skonEnvironment = fluid.typeTag("skon.demo");
-
+(function ($, fluid) {
+	
     /* Our demo script */   
     skon.slidingUIOptions = function (panel, uioptions) {
-        fluid.demands("fluid.uiOptionsTemplatePath", [ "skon.demo"], {
-            options: {
-                prefix: "../../../components/uiOptions/html/"
-            }
-        });
-
-        fluid.demands("fluid.renderIframe", ["skon.demo"], {
-            options: {
-                markupProps: {
-                    src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
-                }
-            }
-        });
-    
-        // Supply the table of contents' template URL
-        fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer", "skon.demo"], {
-            options: {
-                templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
-            }
-        });
-
+        // First, start up Page Enhancer
         fluid.pageEnhancer({
             classnameMap: {
                 theme: {
                     "default": "skon-theme-basic"
                 }
-            }
+            },
+            tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
         });
         
         // Next, start up UI Options
-        fluid.fatPanelUIOptions(".flc-uiOptions-fatPanel");            
+        fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
+            prefix: "../../../components/uiOptions/html/",
+            markupRenderer: {
+                options: {
+                    markupProps: {
+                        src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
+                    }
+                }
+            }
+        });
     };
     
 })(jQuery, fluid);
