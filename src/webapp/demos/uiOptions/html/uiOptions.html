@@ -19,7 +19,6 @@
 
         <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/UIOptions.css" />
         <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/FatPanelUIOptions.css" />
-        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/Slider.css" />
         <link rel="stylesheet" type="text/css" href="../css/uiOptions.css" />
 
         <title>User Interface Options Demo</title>
@@ -52,6 +51,10 @@
 
     <body class="uio-demo-theme">
 
+        <script type="text/javascript">
+            demo.initPageEnhancer("uio-demo-theme");
+        </script>
+
 		<div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel">
             <!-- This is the div that will contain the UI Options component -->
 			<div id="myUIOptions" class="flc-slidingPanel-panel flc-uiOptions-iframe"></div>
@@ -72,10 +75,6 @@
         </div>
 
         <div class="flc-toc-tocContainer toc"> </div>
-
-        <script type="text/javascript">
-            uioDemo.slidingUIOptions($("#mySlidingPanel"), $("#myUIOptions"));            
-        </script>
 
         <div class="fl-container-950 fl-centered">
             <div class="fl-clearfix header">
@@ -207,5 +206,10 @@
                 </div>
             </div>
         </div>
+
+        <script type="text/javascript">
+            demo.initFatPanel($("#mySlidingPanel"), $("#myUIOptions"));            
+        </script>
+
     </body>
 </html>
