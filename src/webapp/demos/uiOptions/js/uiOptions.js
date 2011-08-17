@@ -35,39 +35,37 @@ var demo = demo || {};
 
     /**
      * The basic options for configuring the full-page versions of UI Options are the same,
-     * regardless of whether or not the Preview is used. This function is used by both
-     * full-page version, with and without Preview, to set up these options.
+     * regardless of whether or not the Preview is used. These settings used by both
+     * full-page version, with and without Preview.
      */
-    var setUpBasicFullPageOpts = function () {
-        return {
-            // Tell UIOptions where to find all the templates, relative to this file
-            prefix: "../../../components/uiOptions/html/",
+    var basicFullPageOpts = {
+        // Tell UIOptions where to find all the templates, relative to this file
+        prefix: "../../../components/uiOptions/html/",
 
-            // Tell UIOptions where to redirect to if the user cancels the operation
-            uiOptions: {
-                options: {
-                    listeners: {
-                        onCancel: function () {
-                            window.location = "uiOptions.html";
-                        }
+        // Tell UIOptions where to redirect to if the user cancels the operation
+        uiOptions: {
+            options: {
+                listeners: {
+                    onCancel: function () {
+                        window.location = "uiOptions.html";
                     }
                 }
             }
-        };
+        }
     };
 
     /**
      * Initialize UI Options on the "Full Page, No Preview" version.
      */
     demo.initFullNoPreview = function (container) {
-        fluid.uiOptions.fullNoPreview(container, setUpBasicFullPageOpts());
+        fluid.uiOptions.fullNoPreview(container, basicFullPageOpts);
     };
 
     /**
      * Initialize UI Options on the "Full Page, With Preview" version.
      */
     demo.initFullWithPreview = function (container, customThemeName) {
-        var opts = setUpBasicFullPageOpts();
+        var opts = basicFullPageOpts;
      
         // In addition to the basic options, we need to configure the Preview's UI Enhancer
         opts.previewEnhancer = {
