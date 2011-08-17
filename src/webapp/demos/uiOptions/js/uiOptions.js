@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
+/*global demo:true, fluid, jQuery, window*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -18,24 +18,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var demo = demo || {};
 (function ($, fluid) {       
 
-    // Initialize UI Enhancer for the page.
+    /**
+     * Initialize UI Enhancer for the page. This function is used by the two full-page
+     * UI Options pages as well as by the demo page itself.
+     */
     demo.initPageEnhancer = function (customThemeName) {
-        var opts = {
-            tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
-        };
-        if (customThemeName) {
-            opts.classnameMap = {
+        fluid.pageEnhancer({
+            tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html",
+            classnameMap: {
                 theme: {
                     "default": customThemeName
                 }
-            };
-        }
-        fluid.pageEnhancer(opts);
+            }
+        });
     };
 
-    // Initialize UI Options on the Full Page, No Preview version
-    demo.initFullNoPreview = function (container) {
-        fluid.uiOptions.fullNoPreview(container, {
+    /**
+     * The basic options for configuring the full-page versions of UI Options are the same,
+     * regardless of whether or not the Preview is used. This function is used by both
+     * full-page version, with and without Preview, to set up these options.
+     */
+    var setUpBasicFullPageOpts = function () {
+        return {
             // Tell UIOptions where to find all the templates, relative to this file
             prefix: "../../../components/uiOptions/html/",
 
@@ -43,63 +47,67 @@ var demo = demo || {};
             uiOptions: {
                 options: {
                     listeners: {
-                        onCancel: function(){
+                        onCancel: function () {
                             window.location = "uiOptions.html";
                         }
                     }
                 }
             }
-        });
+        };
     };
 
-    // Initialize UI Options on the Full Page, With Preview version
+    /**
+     * Initialize UI Options on the "Full Page, No Preview" version.
+     */
+    demo.initFullNoPreview = function (container) {
+        fluid.uiOptions.fullNoPreview(container, setUpBasicFullPageOpts());
+    };
+
+    /**
+     * Initialize UI Options on the "Full Page, With Preview" version.
+     */
     demo.initFullWithPreview = function (container, customThemeName) {
-        fluid.uiOptions.fullPreview(container, {
-            // Tell UIOptions where to find all the templates, relative to this file
-            prefix: "../../../components/uiOptions/html/",
+        var opts = setUpBasicFullPageOpts();
+     
+        // In addition to the basic options, we need to configure the Preview's UI Enhancer
+        opts.previewEnhancer = {
+            options: {
+                // Tell the Preview's UI Enhancer where the Table of Contents template is
+                tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html",
 
-            // Tell UIOptions where to redirect to if the user cancels the operation
-            uiOptions: {
-               options: {
-                   listeners: {
-                       onCancel: function(){
-                           window.location = "uiOptions.html";
-                       }
-                   }
-               }
-            },
-
-            // Configure the preview's UI Enhancer
-            previewEnhancer: {
-                options: {
-                    // Tell the Preview's UI Enhancer where the Table of Contents template is
-                    tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html",
-
-                    // and the name of the default theme
-                    classnameMap: {
-                        theme: {
-                            "default": customThemeName
-                        }
+                // and the name of the default theme
+                classnameMap: {
+                    theme: {
+                        "default": customThemeName
                     }
                 }
             }
+        };
+        fluid.uiOptions.fullPreview(container, opts);
+    };
+
+    /**
+     * Initialize UI Options on the "Fat Panel" version. This version of UI Options uses the
+     * page itself as a live preview.
+     */
+    demo.initFatPanel = function (container) {        
+        fluid.uiOptions.fatPanel(container, {
+            // Tell UIOptions where to find all the templates, relative to this file
+            prefix: "../../../components/uiOptions/html/"
         });
     };
 
-    // Initialize UI Options on the Fat Panel version
-    demo.initFatPanel = function (panel, uioptions) {        
-        // Start up UI Options
-        fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
-            prefix: "../../../components/uiOptions/html/"
-        });
-
+    /**
+     * Set up the buttons to link to the full-page versions of UI Options.
+     */
+    demo.setUpButtons = function () {
         // Configure the buttons
-        $(".disp-opts-with-preview").click(function(){
-           window.location = "uiOptionsFullWithPreview.html";
-       });
-        $(".disp-opts-without-preview").click(function(){
-           window.location = "uiOptionsFullWithoutPreview.html";
-       });
+        $(".disp-opts-with-preview").click(function () {
+            window.location = "uiOptionsFullWithPreview.html";
+        });
+        $(".disp-opts-without-preview").click(function () {
+            window.location = "uiOptionsFullWithoutPreview.html";
+        });
     };
     
 })(jQuery, fluid);

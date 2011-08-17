@@ -50,20 +50,25 @@
     </head>
 
     <body class="uio-demo-theme">
-
+        <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             demo.initPageEnhancer("uio-demo-theme");
         </script>
 
+        <!-- BEGIN markup for fat-panel UI Options -->
 		<div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel">
             <!-- This is the div that will contain the UI Options component -->
-			<div id="myUIOptions" class="flc-slidingPanel-panel flc-uiOptions-iframe"></div>
+			<div class="flc-slidingPanel-panel flc-uiOptions-iframe"></div>
 
             <!-- This div is for the sliding panel that shows and hides the UI Options controls -->
 			<div class="fl-panelBar">
 				<button class="flc-slidingPanel-toggleButton fl-toggleButton">Show/Hide</button>
 			</div>
 		</div>	
+        <!-- END markup for fat-panel UI Options -->
+        <script type="text/javascript">
+            demo.initFatPanel(".flc-uiOptions-fatPanel");            
+        </script>
 
         <div class="fl-force-right fl-push disp-opts-buttons">
             <div class="disp-opts-button-container">
@@ -73,6 +78,9 @@
                 <button class="disp-opts-without-preview disp-opts-button">Display Preferences<br/><span class="preview">(without preview)</span></button>
             </div>
         </div>
+        <script type="text/javascript">
+            demo.setUpButtons();            
+        </script>
 
         <div class="flc-toc-tocContainer toc"> </div>
 
@@ -206,10 +214,5 @@
                 </div>
             </div>
         </div>
-
-        <script type="text/javascript">
-            demo.initFatPanel($("#mySlidingPanel"), $("#myUIOptions"));            
-        </script>
-
     </body>
 </html>
