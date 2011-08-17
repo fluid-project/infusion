@@ -43,59 +43,32 @@
         <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/FullPreviewUIOptions.js"></script>        
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
+
+        <script type="text/javascript" src="../js/uiOptions.js"></script>
     </head>
 
     <body>
+        <!-- The page-wide UI Enhancer needs to be initialized right away -->
+        <script type="text/javascript">
+            demo.initPageEnhancer();
+        </script>
+
         <div class="backButton">
             <a href="uiOptions.html">Return To Site</a> 
         </div>
 
         <div class="content">
-            <div class="flc-toc-tocContainer toc">
+            <div class="flc-toc-tocContainer fl-hidden">
             </div>
     
             <h1>User Interface Options</h1>
-            
             <div id="myUIOptions"></div>
         </div>
         
         <script type="text/javascript">
-            $().ready(function () {
-                fluid.pageEnhancer({
-                    tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
-                });
-
-                fluid.uiOptions.fullPreview("#myUIOptions", {
-                    // Tell UIOptions where to find all the templates, relative to this file
-                    prefix: "../../../components/uiOptions/html/",
-
-                    // Tell UIOptions where to redirect to if the user cancels the operation
-                    uiOptions: {
-                       options: {
-                           listeners: {
-                               onCancel: function(){
-                                   window.location = "uiOptions.html";
-                               }
-                           }
-                       }
-                    },
-
-                    previewEnhancer: {
-                        options: {
-                            // Tell the Preview's UI Enhancer where the Table of Contents template is
-                            tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html",
-
-                            // and the name of the default theme
-                            classnameMap: {
-                                theme: {
-                                    "default": "uio-demo-theme"
-                                }
-                            }
-                        }
-                    }
-                });
-            });
+            demo.initFullWithPreview("#myUIOptions", "uio-demo-theme");
         </script>
+
     </body>
 </html>
 
