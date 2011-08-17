@@ -19,12 +19,26 @@ var demo = demo || {};
 (function ($, fluid) {       
 
     /**
+     * The UI Options interface is defined by several HTML templates. The component
+     * needs to know where those templates are. This variable will be used by all
+     * versions of the component.
+     */
+    var pathToTemplates = "../../../components/uiOptions/html/";
+    
+    /**
+     * The UI Enhancer's Table of Contents uses a template. This path variable is used by all
+     * three versions of the component, as well as by the UI Enhancer present in the Preview
+     * itself.
+     */
+    var pathToTocTemplate = "../../../components/tableOfContents/html/TableOfContents.html";
+
+    /**
      * Initialize UI Enhancer for the page. This function is used by the two full-page
      * UI Options pages as well as by the demo page itself.
      */
     demo.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
-            tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html",
+            tocTemplate: pathToTocTemplate,
             classnameMap: {
                 theme: {
                     "default": customThemeName
@@ -40,7 +54,7 @@ var demo = demo || {};
      */
     var basicFullPageOpts = {
         // Tell UIOptions where to find all the templates, relative to this file
-        prefix: "../../../components/uiOptions/html/",
+        prefix: pathToTemplates,
 
         // Tell UIOptions where to redirect to if the user cancels the operation
         uiOptions: {
@@ -71,7 +85,7 @@ var demo = demo || {};
         opts.previewEnhancer = {
             options: {
                 // Tell the Preview's UI Enhancer where the Table of Contents template is
-                tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html",
+                tocTemplate: pathToTocTemplate,
 
                 // and the name of the default theme
                 classnameMap: {
@@ -91,7 +105,7 @@ var demo = demo || {};
     demo.initFatPanel = function (container) {        
         fluid.uiOptions.fatPanel(container, {
             // Tell UIOptions where to find all the templates, relative to this file
-            prefix: "../../../components/uiOptions/html/"
+            prefix: pathToTemplates
         });
     };
 
