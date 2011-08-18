@@ -46,7 +46,7 @@ var fluid_1_4 = fluid_1_4 || {};
             if (that.tableOfContents) {
                 that.tableOfContents.show();
             } else {
-                that.events.onReady.fire();
+                $(document).ready(that.events.onReady.fire);
             }
         } else {
             if (that.tableOfContents) {
