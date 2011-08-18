@@ -61,7 +61,13 @@ var fluid = fluid || {};
     };
 
     // loop through files to run !important injection on
-    var files = fluid.build.readJSONFile(importantInjectionModule).files;
+    var files = fluid.build.readJSONFile(importantInjectionModule).files,
+        i;
+        
+    // Make them absolute.
+    for (i = 0; i < files.length; i++) {
+        files[i] = project.getProperty("base-dir") + "/" + files[i];
+    }
     
     var generateWritePath = function (originalPath) {
         var startIdx = Math.max(originalPath.lastIndexOf("/"), 0);
@@ -70,7 +76,7 @@ var fluid = fluid || {};
         return fssImportant + fileName.replace(".css", "-uio.css");
     };
      
-    for (var i = 0; i < files.length; i++) {
+    for (i = 0; i < files.length; i++) {
         var filePath = files[i];
         fluid.build.log("Generating an !important theme for " + files[i]);
         injectImportant(filePath, generateWritePath(filePath));
