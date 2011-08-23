@@ -104,7 +104,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 container: "{fatPanel}.container",
                 options: {
                     invokers: {
-                        show: {
+                        operateShow: {
                             funcName: "fluid.uiOptions.fatPanelEventBinder.showPanel"
                         }  
                     }

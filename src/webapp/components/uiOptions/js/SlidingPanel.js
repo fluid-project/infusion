@@ -40,8 +40,8 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         finalInitFunction: "fluid.slidingPanel.finalInit",
         invokers: {
-            hide: "fluid.slidingPanel.slideUp",
-            show: "fluid.slidingPanel.slideDown"
+            operateHide: "fluid.slidingPanel.slideUp",
+            operateShow: "fluid.slidingPanel.slideDown"
         },
         hideByDefault: true
     });
@@ -59,13 +59,13 @@ var fluid_1_4 = fluid_1_4 || {};
         that.showPanel = function () {
             that.events.onPanelShow.fire(that);
             that.locate("toggleButton").text(that.options.strings.hideText);        
-            that.show(that.locate("panel"), that.events.afterPanelShow.fire);  
+            that.operateShow(that.locate("panel"), that.events.afterPanelShow.fire);  
         };  
     
         that.hidePanel = function () {
             that.events.onPanelHide.fire(that);
             that.locate("toggleButton").text(that.options.strings.showText);        
-            that.hide(that.locate("panel"), that.events.afterPanelHide.fire);
+            that.operateHide(that.locate("panel"), that.events.afterPanelHide.fire);
         };      
         
         that.togglePanel = function () {

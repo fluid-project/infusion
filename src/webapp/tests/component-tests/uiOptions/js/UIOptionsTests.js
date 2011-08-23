@@ -18,7 +18,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        fluid.setLogging(true);
         fluid.staticEnvironment.uiOptionsTests = fluid.typeTag("fluid.uiOptions.tests");
 
         var templatePrefix = "../../../../components/uiOptions/html/";
@@ -74,7 +73,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listeners: {
                     onSave: function () {
                         saveCalled = true;
-                    }
+                    },
+                    onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
                 }
             }
         });
@@ -340,7 +340,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 uiOptions.updateModel(bwSkin);
                 
                 jqUnit.assertFalse("Save hasn't been called", saveCalled);
-                uiOptions.save();
+                uiOptions.saveAndApply();
                 var container = $("body");
                 jqUnit.assertTrue("Save has been called", saveCalled);
                 
