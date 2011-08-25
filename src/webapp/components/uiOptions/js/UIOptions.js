@@ -511,6 +511,12 @@ var fluid_1_4 = fluid_1_4 || {};
             var savedSelections = fluid.copy(that.model.selections);
             that.settingsStore.save(savedSelections);
         };
+        
+        that.saveAndApply = function () {
+            that.save();
+            that.events.onUIOptionsRefresh.fire();
+        };
+
 
         /**
          * Resets the selections to the integrator's defaults and fires onReset
@@ -552,12 +558,12 @@ var fluid_1_4 = fluid_1_4 || {};
         var bindHandlers = function (that) {
             var saveButton = that.locate("save");            
             if (saveButton.length > 0) {
-                saveButton.click(that.save);
+                saveButton.click(that.saveAndApply);
                 var form = fluid.findForm(saveButton);
                 $(form).submit(function () {
-                    that.save();
+                    that.saveAndApply();
                 });
-	        }
+            }
             that.locate("reset").click(that.reset);
             that.locate("cancel").click(that.cancel);
         };
@@ -584,15 +590,6 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uiOptions.eventBinder", {
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
-    
-    fluid.demands("fluid.uiOptions.eventBinder", ["fluid.uiOptions"], {
-        options: {
-            listeners: {
-                "{uiOptions}.events.onSave": "{uiEnhancer}.updateModel"
-            }
-        }
-    });
-    
 
     var initModel = function (that) {
         fluid.each(that.options.controlValues, function (item, key) {
