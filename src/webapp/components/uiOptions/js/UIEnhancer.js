@@ -141,10 +141,10 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             "theme": {
                 "default": "",
-                "bw": "fl-theme-uio-bw fl-theme-bw fl-force-theme",
-                "wb": "fl-theme-uio-wb fl-theme-wb fl-force-theme",
-                "by": "fl-theme-uio-by fl-theme-by fl-force-theme",
-                "yb": "fl-theme-uio-yb fl-theme-yb fl-force-theme"
+                "bw": "fl-theme-uio-bw fl-theme-bw fl-preview-theme",
+                "wb": "fl-theme-uio-wb fl-theme-wb fl-preview-theme",
+                "by": "fl-theme-uio-by fl-theme-by fl-preview-theme",
+                "yb": "fl-theme-uio-yb fl-theme-yb fl-preview-theme"
             },
             "layout": "fl-layout-linear",
             "links": "fl-text-underline fl-text-bold fl-text-larger", 

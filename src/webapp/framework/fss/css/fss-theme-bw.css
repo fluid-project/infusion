@@ -12,10 +12,12 @@
 
 .fl-theme-bw,
 .fl-theme-bw *,
+.fl-theme-bw.fl-preview-theme,
 .fl-theme-wb.fl-inverted-color,
 .fl-theme-wb .fl-inverted-color,
 .fl-theme-wb.fl-inverted-color *,
-.fl-theme-wb .fl-inverted-color * {color:#000000; background-color:#ffffff; border-color:#000000;}
+.fl-theme-wb .fl-inverted-color *,
+.fl-theme-wb.fl-preview-theme.fl-inverted-color {color:#000000; background-color:#ffffff; border-color:#000000;}
   
 /* Divs, inputs */
 .fl-theme-bw div,

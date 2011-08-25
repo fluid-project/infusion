@@ -225,15 +225,3 @@
     height: auto !important;
     padding-bottom: 20px;
 }
-
-/* Theming */
-/* This is a bit hacky and should be removed if possible when switching to rich select menus */
-
-.fl-theme-bw.fl-force-theme,
-.fl-theme-wb.fl-force-theme.fl-inverted-color {color:#000000 !important; background-color:#ffffff !important; border-color:#000000 !important;}
-.fl-theme-wb.fl-force-theme,
-.fl-theme-bw.fl-force-theme.fl-inverted-color {color:#fff !important; background-color:#000 !important; border-color:#fff !important;}
-.fl-theme-by.fl-force-theme,
-.fl-theme-yb.fl-force-theme.fl-inverted-color {color:#000000 !important; background-color:#ffff00 !important; border-color:#000000 !important;}
-.fl-theme-yb.fl-force-theme,
-.fl-theme-by.fl-force-theme.fl-inverted-color {color:#ff0 !important; background-color:#000 !important; border-color:#ff0 !important;}
