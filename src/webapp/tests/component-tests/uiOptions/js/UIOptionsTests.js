@@ -345,8 +345,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertTrue("Save has been called", saveCalled);
                 
                 var uiEnhancerSettings = uiOptions.settingsStore.fetch();
-                jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
-                jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-uio-hc"));
+                jqUnit.assertDeepEq("bw setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
+                jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-bw"));
                 jqUnit.assertEquals("Text size has been saved", bwSkin.textSize, uiOptions.model.selections.textSize);
                 jqUnit.assertEquals("Text font has been saved", bwSkin.textFont, uiOptions.model.selections.textFont);
                 jqUnit.assertEquals("Theme has been saved", bwSkin.theme, uiOptions.model.selections.theme);
@@ -374,10 +374,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testUIOptions(function (uiOptionsLoader, uiOptions) {
                 uiOptions.updateModel(bwSkin);
 
-                jqUnit.assertEquals("hc setting was set in the model", bwSkin.theme, uiOptions.model.selections.theme);
+                jqUnit.assertEquals("bw setting was set in the model", bwSkin.theme, uiOptions.model.selections.theme);
 
                 var uiEnhancerSettings = uiOptions.settingsStore.fetch();
-                jqUnit.assertEquals("hc setting was not saved", "default", uiEnhancerSettings.theme);
+                jqUnit.assertEquals("bw setting was not saved", "default", uiEnhancerSettings.theme);
 
                 uiOptions.events.onUIOptionsRefresh.fire();
                 var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
@@ -477,7 +477,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertTrue("Model has changed, auto-save changes", saveCalled);
                 
                 var uiEnhancerSettings = uiOptions.settingsStore.fetch();
-                jqUnit.assertDeepEq("hc setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
+                jqUnit.assertDeepEq("bw setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
                 
                 delete fluid.staticEnvironment.uiOptionsTestsAutoSave;
                 start();

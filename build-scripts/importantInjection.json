@@ -1,12 +1,12 @@
 {
     "files": [
-        "../src/webapp/framework/fss/css/fss-theme-blackYellow.css",
-        "../src/webapp/framework/fss/css/fss-theme-yellowBlack.css",
-        "../src/webapp/framework/fss/css/fss-theme-coal.css",
-        "../src/webapp/framework/fss/css/fss-theme-hc.css",
-        "../src/webapp/framework/fss/css/fss-theme-hci.css",
-        "../src/webapp/framework/fss/css/fss-theme-mist.css",
-        "../src/webapp/framework/fss/css/fss-theme-rust.css",
-        "../src/webapp/framework/fss/css/fss-theme-slate.css"
+        "src/webapp/framework/fss/css/fss-theme-by.css",
+        "src/webapp/framework/fss/css/fss-theme-yb.css",
+        "src/webapp/framework/fss/css/fss-theme-coal.css",
+        "src/webapp/framework/fss/css/fss-theme-bw.css",
+        "src/webapp/framework/fss/css/fss-theme-wb.css",
+        "src/webapp/framework/fss/css/fss-theme-mist.css",
+        "src/webapp/framework/fss/css/fss-theme-rust.css",
+        "src/webapp/framework/fss/css/fss-theme-slate.css"
     ]
 }

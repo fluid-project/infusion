@@ -174,26 +174,26 @@ var fluid_1_4 = fluid_1_4 || {};
         // afterProgressHidden:  
         // Registering listener with the callback provided by the user and reinitializing
         // the event trigger function. 
-        // Note: callback depricated as of 1.5, use afterProgressHidden event
+        // Note: callback deprecated as of 1.5, use afterProgressHidden event
         if (that.options.hideAnimation.callback) {
             that.events.afterProgressHidden.addListener(that.options.hideAnimation.callback);           
         }
         
         // triggers the afterProgressHidden event    
-        // Note: callback depricated as of 1.5, use afterProgressHidden event
+        // Note: callback deprecated as of 1.5, use afterProgressHidden event
         that.options.hideAnimation.callback = that.events.afterProgressHidden.fire;
 
         
         // onProgressBegin:
         // Registering listener with the callback provided by the user and reinitializing
         // the event trigger function.  
-        // Note: callback depricated as of 1.5, use onProgressBegin event
+        // Note: callback deprecated as of 1.5, use onProgressBegin event
         if (that.options.showAnimation.callback) {
             that.events.onProgressBegin.addListener(that.options.showAnimation.callback);                      
         } 
             
         // triggers the onProgressBegin event
-        // Note: callback depricated as of 1.5, use onProgressBegin event
+        // Note: callback deprecated as of 1.5, use onProgressBegin event
         that.options.showAnimation.callback = that.events.onProgressBegin.fire;
     };
            
