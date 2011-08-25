@@ -15,7 +15,8 @@
  * General Styling
  */
   
-.fl-theme-mist {color:#000000; background-color:#f4f4f4; border-color:#4070a1;}
+.fl-theme-mist,
+.fl-theme-mist.fl-preview-theme {color:#000000; background-color:#f4f4f4; border-color:#4070a1;}
 
 /* Links */
 .fl-theme-mist a {color: #5a95cf; font-weight:bold;}
