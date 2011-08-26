@@ -140,7 +140,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 "verdana": "fl-font-verdana"
             },
             "theme": {
-                "default": "",
+                "default": "fl-uio-default-theme",
                 "bw": "fl-theme-uio-bw fl-theme-bw fl-preview-theme",
                 "wb": "fl-theme-uio-wb fl-theme-wb fl-preview-theme",
                 "by": "fl-theme-uio-by fl-theme-by fl-preview-theme",
@@ -310,7 +310,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uiEnhancer.classSwapper.clearClasses = function (that) {
-        $(that.classSelector, that.container).add(that.container).removeClass(that.classStr);
+        that.container.removeClass(that.classStr);
     };
     
     fluid.uiEnhancer.classSwapper.swap = function (classname, that) {
