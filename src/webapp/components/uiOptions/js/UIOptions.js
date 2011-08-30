@@ -721,12 +721,16 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.defaults("fluid.uiOptions.selectDecorator", {
         gradeNames: ["fluid.viewComponent", "autoInit"], 
-        finalInitFunction: "fluid.uiOptions.selectDecorator.finalInit"
+        finalInitFunction: "fluid.uiOptions.selectDecorator.finalInit",
+        styles: {
+            preview: "fl-preview-theme"
+        }
     });
     
     fluid.uiOptions.selectDecorator.finalInit = function (that) {
         fluid.each($("option", that.container), function (option) {
-            option.className = that.options.styles[fluid.value(option)];
+            var styles = that.options.styles;
+            $(option).addClass(styles.preview + " " + styles[fluid.value(option)]);
         });
     };
     

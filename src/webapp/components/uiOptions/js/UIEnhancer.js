@@ -105,6 +105,11 @@ var fluid_1_4 = fluid_1_4 || {};
                 options: {
                     defaultSiteSettings: "{uiEnhancer}.options.defaultSiteSettings"
                 }
+            },
+            ie6Inversion: {
+                type: "fluid.ie6.colorInversion",
+                container: "{uiEnhancer}.container",
+                createOnEvent: "onReady"
             }
         },
         invokers: {
@@ -140,7 +145,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 "verdana": "fl-font-verdana"
             },
             "theme": {
-                "default": "",
+                "default": "fl-uio-default-theme",
                 "bw": "fl-theme-uio-bw fl-theme-bw",
                 "wb": "fl-theme-uio-wb fl-theme-wb",
                 "by": "fl-theme-uio-by fl-theme-by",
@@ -310,7 +315,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uiEnhancer.classSwapper.clearClasses = function (that) {
-        $(that.classSelector, that.container).add(that.container).removeClass(that.classStr);
+        that.container.removeClass(that.classStr);
     };
     
     fluid.uiEnhancer.classSwapper.swap = function (classname, that) {
@@ -404,5 +409,35 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer"], {
         funcName: "fluid.cookieStore"
     });
+    
+    /*********************************************************************************************
+     * ie6.colorInversion                                                                        *
+     *                                                                                           *
+     * The purpose of this small component is to remove the instances of                         *
+     * fl-inverted-color. This prevents a bug in IE6 where the default theme                     *
+     * will have elements styled with the theme color.                                           *
+     *                                                                                           *
+     * Caused by:                                                                                *
+     * http://thunderguy.com/semicolon/2005/05/16/multiple-class-selectors-in-internet-explorer/ *
+     *********************************************************************************************/
+     
+     fluid.registerNamespace("fluid.ie6.colorInversion");
+     
+     fluid.ie6.colorInversion.finalInit = function (that) {
+         if($.browser.msie && $.browser.version === "6.0") {
+             that.locate("remove").removeClass(that.options.styles.remove);
+         }
+     };
+     
+     fluid.defaults("fluid.ie6.colorInversion", {
+         gradeNames: ["fluid.viewComponent", "autoInit"],
+         finalInitFunction: "fluid.ie6.colorInversion.finalInit",
+         selectors: {
+             remove: ".fl-inverted-color"
+         },
+         styles: {
+             remove: "fl-inverted-color"
+         }
+     });
 
 })(jQuery, fluid_1_4);
