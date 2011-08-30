@@ -22,7 +22,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      ***********/
     
     $(document).ready(function () {
-        fluid.setLogging(true);
 
         fluid.staticEnvironment.fatPanelTests = fluid.typeTag("fluid.uiOptions.fatPanelTests");
 
@@ -58,11 +57,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("markupRenderer is present as an bridge sub-component", components.bridge.options.components.markupRenderer);
         };        
         
-        var checkModelSelections = function (expectedSelections, actualSelections) {
-            jqUnit.assertEquals("Text font correctly updated",  expectedSelections.textFont, actualSelections.textFont);
-            jqUnit.assertEquals("Theme correctly updated", expectedSelections.theme, actualSelections.theme);
-            jqUnit.assertEquals("Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
-            jqUnit.assertEquals("Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
+        var checkModelSelections = function (message, expectedSelections, actualSelections) {
+            jqUnit.assertEquals("Text font correctly updated: " + message,  expectedSelections.textFont, actualSelections.textFont);
+            jqUnit.assertEquals("Theme correctly updated: " + message, expectedSelections.theme, actualSelections.theme);
+            jqUnit.assertEquals("Text size correctly updated: " + message, expectedSelections.textSize, actualSelections.textSize);
+            jqUnit.assertEquals("Line spacing correctly updated: " + message, expectedSelections.lineSpacing, actualSelections.lineSpacing);            
         };
         
         var bwSkin = {
@@ -98,20 +97,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var settingsStoreOptions = that.uiEnhancer.settingsStore.options;
                 
                 // Open the Fat Panel, apply changes, and close the panel
-                that.slidingPanel.events.afterPanelShown.fire();
+                that.slidingPanel.showPanel();
                 applierRequestChanges(that.bridge.uiOptionsLoader.uiOptions, bwSkin);
-                checkModelSelections(bwSkin, pageModel);
-                that.slidingPanel.events.afterPanelHidden.fire();
-                checkModelSelections(bwSkin, panelModel);
-                checkModelSelections(pageModel, panelModel);
+                checkModelSelections("pageModel from bwSkin", bwSkin, pageModel);
+                that.slidingPanel.hidePanel();
+                that.slidingPanel.showPanel();
+                checkModelSelections("panelModel from bwSkin", bwSkin, panelModel);
+                checkModelSelections("panelModel from pageModel", pageModel, panelModel);
+                that.slidingPanel.hidePanel();
                 
                 // Open the Fat Panel, click "Reset All", and close the panel
-                that.slidingPanel.events.afterPanelShown.fire();
+                that.slidingPanel.showPanel();
                 that.bridge.uiOptionsLoader.uiOptions.locate("reset").click();
-                checkModelSelections(pageModel, defaultSiteSettings);
-                that.slidingPanel.events.afterPanelHidden.fire();
-                checkModelSelections(panelModel, defaultSiteSettings);
-                checkModelSelections(pageModel, panelModel);
+                checkModelSelections("pageModel from defaults", defaultSiteSettings, pageModel);
+                that.slidingPanel.hidePanel();
+                checkModelSelections("panelModel from defaults", defaultSiteSettings, panelModel);
+                checkModelSelections("pageModel from panelModel", panelModel, pageModel);
                 start();
             }, 2500);
         });
