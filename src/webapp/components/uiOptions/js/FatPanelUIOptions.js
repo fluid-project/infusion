@@ -85,7 +85,9 @@ var fluid_1_4 = fluid_1_4 || {};
     // show immediately, animation will be done after size calculation above
     fluid.uiOptions.fatPanelEventBinder.showPanel = function(panel, callback) {
         panel.show();
-        callback();
+        // A bizarre race condition has emerged under FF where the iframe held within the panel does not
+        // react synchronously to being shown
+        setTimeout(callback, 1);
     };
 
     /***************************************************************
@@ -159,6 +161,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 priority: "first",
                 options: {
                     components: { 
+                        uiEnhancer: "{fatPanel}.uiEnhancer",
                         markupRenderer: "{fatPanel}.markupRenderer"
                     }
                 }
@@ -174,10 +177,12 @@ var fluid_1_4 = fluid_1_4 || {};
                 "selectors.iframe":                            "iframe",
                 "*.bridge.options.templateLoader":             "templateLoader",
                 "*.bridge.options.prefix":                     "relativePrefix",
+                "*.bridge.options.uiOptionsLoader":            "uiOptionsLoader",
                 "*.bridge.options.uiOptions":                  "uiOptions",
                 "*.bridge.options.textControls":               "textControls",
                 "*.bridge.options.layoutControls":             "layoutControls",
-                "*.bridge.options.linksControls":              "linksControls"
+                "*.bridge.options.linksControls":              "linksControls",
+                "*.bridge.options.uiEnhancer":                 "uiEnhancer"
             }
         },
         events: {
@@ -243,13 +248,21 @@ var fluid_1_4 = fluid_1_4 || {};
         // FLUID-4392 additive demands blocks
         uiOptionsTransform: {
             config: {
+                "!*.uiOptionsLoader.*.uiOptions.*.uiEnhancer.options": "uiEnhancer.options",
                 "*.uiOptionsLoader.*.uiOptions": {
                     options: {
                         events: {
                             onSignificantDOMChange: null  
                         },
                         components: {
-                            uiEnhancer: "{uiEnhancer}",
+                            uiEnhancer: {
+                                type: "fluid.uiEnhancer",
+                                container: "body",
+                                priority: "first",
+                                options: {
+                                    tocTemplate: "../../tableOfContents/html/TableOfContents.html"
+                                }
+                            },
                             settingsStore: "{uiEnhancer}.settingsStore",
                             preview: {
                                 type: "fluid.emptySubcomponent"
@@ -313,6 +326,9 @@ var fluid_1_4 = fluid_1_4 || {};
         });
 
         var defaults = fluid.defaults("fluid.uiOptions.FatPanelOtherWorldLoader");
+        // Hack for FLUID-4409: Capabilities of our ad hoc "mapOptions" function have been exceeded - put weak priority instance of outer
+        // merged options into the inner world
+        fluid.set(overallOptions, "uiEnhancer.options", that.uiEnhancer.options.originalUserOptions);
         var mappedOptions = fluid.uiOptions.mapOptions(overallOptions, defaults.uiOptionsTransform.config, defaults.mergePolicy);
         var component = innerFluid.invokeGlobalFunction("fluid.uiOptions.FatPanelOtherWorldLoader", [container, mappedOptions]);
         that.uiOptionsLoader = component.uiOptionsLoader;
@@ -326,7 +342,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var defaults = fluid.defaults("fluid.uiOptions.fatPanel");
         var config = defaults.uiOptionsTransform.config;
         
-        var mappedOptions = fluid.uiOptions.mapOptions(options, config, defaults.mergePolicy, config);
+        var mappedOptions = fluid.uiOptions.mapOptions(options, config, defaults.mergePolicy);
 
         var that = fluid.initView("fluid.uiOptions.fatPanel", container, mappedOptions);
         fluid.initDependents(that);
