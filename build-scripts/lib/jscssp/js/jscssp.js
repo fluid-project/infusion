@@ -65,6 +65,10 @@ var SI  = IS_IDENT|START_IDENT;
 var XI  = IS_IDENT            |IS_HEX_DIGIT;
 var XSI = IS_IDENT|START_IDENT|IS_HEX_DIGIT;
 
+var assembleUrl = function (url) {
+    return "url('" + url + "')";
+};
+
 function CSSScanner(aString)
 {
   this.init(aString);
@@ -902,7 +906,7 @@ CSSParser.prototype = {
       token = this.getToken(true, true);
       var urlContent = this.parseURL(token);
       if (urlContent) {
-        href = "url(" + urlContent;
+        href = assembleUrl(urlContent);
         s += " " + href;
       }
     }
@@ -1033,7 +1037,7 @@ CSSParser.prototype = {
           token = this.getToken(true, true);
           var urlContent = this.parseURL(token);
           if (urlContent) {
-            url += "url(" + urlContent;
+            url += assembleUrl(urlContent);
             foundURL = true;
             s += " " + urlContent;
           }
@@ -1211,8 +1215,15 @@ CSSParser.prototype = {
           }
           else
             return "";
-        }
-        else {
+        } else if (token.isFunction("url(")) {
+            token = this.getToken(true, true);
+            var urlContent = this.parseURL(token);
+            var value = new jscsspVariable(kJscsspPRIMITIVE_VALUE, aSheet);
+            value.url = urlContent;
+            value.value = assembleUrl(urlContent);
+            values.push(value);
+            valueText += value.value;
+        } else {
 	        var fn = token.value;
 	        token = this.getToken(false, true);
 	        var arg = this.parseFunctionArgument(token);
@@ -1406,13 +1417,13 @@ CSSParser.prototype = {
     return top + " " + right + " " + bottom + " " + left;
   },
 
-  parseCueShorthand: function(token, declarations, aAcceptPriority)
+  parseCueShorthand: function(token, aDecl, aAcceptPriority)
   {
     var before = "";
     var after = "";
 
     var values = [];
-    var values = [];
+    
     while (true) {
 
       if (!token.isNotNull())
@@ -1427,17 +1438,23 @@ CSSParser.prototype = {
       }
 
       else if (!values.length && token.isIdent(this.kINHERIT)) {
-        values.push(token.value);
+        values.push({value: token.value});
       }
 
-      else if (token.isIdent("none"))
-        values.push(token.value);
+      else if (token.isIdent("none")) {
+        values.push({value: token.value});
+      }
 
-        else if (token.isFunction("url(")) {
+      else if (token.isFunction("url(")) {
         var token = this.getToken(true, true);
         var urlContent = this.parseURL(token);
-        if (urlContent)
-          values.push("url(" + urlContent);
+        if (urlContent) {
+          var valueObj = {
+            value: assembleUrl(urlContent),
+            url: urlContent
+          };
+          values.push(valueObj);
+        }
         else
           return "";
       }
@@ -1461,8 +1478,18 @@ CSSParser.prototype = {
         return "";
     }
     this.forgetState();
-    aDecl.push(this._createJscsspDeclarationFromValue("cue-before", before));
-    aDecl.push(this._createJscsspDeclarationFromValue("cue-after", after));
+    var beforeDecl = this._createJscsspDeclarationFromValue("cue-before", before.value);
+    if (before.url) {
+        beforeDecl.values[0].url = before.url;
+    }
+    aDecl.push(beforeDecl);
+        
+    var afterDecl = this._createJscsspDeclarationFromValue("cue-after", after.value);
+    if (after.url) {
+        afterDecl.values[0].url = after.url;
+    }
+    aDecl.push(afterDecl);
+    
     return before + " " + after;
   },
 
@@ -1765,7 +1792,7 @@ CSSParser.prototype = {
 		    bgColor = this.kINHERIT;
 		    bgRepeat = this.kINHERIT;
 		    bgAttachment = this.kINHERIT;
-		    bgImage = this.kINHERIT;
+		    bgImage = {value: this.kINHERIT};
 		    bgPosition = this.kINHERIT;
       }
 
@@ -1809,12 +1836,14 @@ CSSParser.prototype = {
         else if (!bgImage &&
                  (token.isFunction("url(")
                   || token.isIdent("none"))) {
-          bgImage = token.value;
           if (token.isFunction("url(")) {
             token = this.getToken(true, true);
-            var url = this.parseURL(token); // TODO
-            if (url)
-              bgImage += url;
+            var urlContent = this.parseURL(token); // TODO
+            if (urlContent)
+              bgImage = {
+                value: assembleUrl(urlContent),
+                url: urlContent
+              };
             else
               return "";
           }
@@ -1836,17 +1865,19 @@ CSSParser.prototype = {
     // create the declarations
     this.forgetState();
     bgColor = bgColor ? bgColor : "transparent";
-    bgImage = bgImage ? bgImage : "none";
+    bgImage = bgImage ? bgImage : {value: "none"};
     bgRepeat = bgRepeat ? bgRepeat : "repeat";
     bgAttachment = bgAttachment ? bgAttachment : "scroll";
     bgPosition = bgPosition ? bgPosition : "top left";
 
     aDecl.push(this._createJscsspDeclarationFromValue("background-color", bgColor));
-    aDecl.push(this._createJscsspDeclarationFromValue("background-image", bgImage));
+    var bgImgDecl = this._createJscsspDeclarationFromValue("background-image", bgImage.value);
+    bgImgDecl.values[0].url = bgImage.url;
+    aDecl.push(bgImgDecl);
     aDecl.push(this._createJscsspDeclarationFromValue("background-repeat", bgRepeat));
     aDecl.push(this._createJscsspDeclarationFromValue("background-attachment", bgAttachment));
     aDecl.push(this._createJscsspDeclarationFromValue("background-position", bgPosition));
-    return bgColor + " " + bgImage + " " + bgRepeat + " " + bgAttachment + " " + bgPosition;
+    return bgColor + " " + bgImage.value + " " + bgRepeat + " " + bgAttachment + " " + bgPosition;
   },
 
   parseListStyleShorthand: function(token, aDecl, aAcceptPriority)
@@ -1856,7 +1887,7 @@ CSSParser.prototype = {
     var lType = null;
     var lPosition = null;
     var lImage = null;
-
+    
     while (true) {
 
       if (!token.isNotNull())
@@ -1874,7 +1905,7 @@ CSSParser.prototype = {
                && token.isIdent(this.kINHERIT)) {
         lType = this.kINHERIT;
         lPosition = this.kINHERIT;
-        lImage = this.kINHERIT;
+        lImage = {value: this.kINHERIT};
       }
 
       else if (!lType &&
@@ -1887,11 +1918,14 @@ CSSParser.prototype = {
         lPosition = token.value;
       }
 
-      else if (!lImage && token.isFunction("url")) {
+      else if (!lImage && token.isFunction("url(")) {
         token = this.getToken(true, true);
         var urlContent = this.parseURL(token);
         if (urlContent) {
-          lImage = "url(" + urlContent;
+          lImage = {
+            value: assembleUrl(urlContent),
+            url: urlContent
+          };
         }
         else
           return "";
@@ -1905,13 +1939,15 @@ CSSParser.prototype = {
     // create the declarations
     this.forgetState();
     lType = lType ? lType : "none";
-    lImage = lImage ? lImage : "none";
+    lImage = lImage ? lImage : {value: "none"};
     lPosition = lPosition ? lPosition : "outside";
 
     aDecl.push(this._createJscsspDeclarationFromValue("list-style-type", lType));
     aDecl.push(this._createJscsspDeclarationFromValue("list-style-position", lPosition));
-    aDecl.push(this._createJscsspDeclarationFromValue("list-style-image", lImage));
-    return lType + " " + lPosition + " " + lImage;
+    var imgDecl = this._createJscsspDeclarationFromValue("list-style-image", lImage.value);
+    imgDecl.values[0].url = lImage.url;
+    aDecl.push(imgDecl);
+    return lType + " " + lPosition + " " + lImage.value;
   },
 
   parseFontShorthand: function(token, aDecl, aAcceptPriority)
@@ -2146,14 +2182,15 @@ CSSParser.prototype = {
       var v = this.trim11(value);
       if ((v[0] == "'" && v[v.length -1] == "'") ||
           (v[0] == '"' && v[v.length -1] == '"'))
-        v = v.substring(1, v.length - 2)
-      var r = new RegExp("^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?", "");
-      var m = v.match(r)
-      if (m) {
-        if (m[5].match ( /[^a-z0-9\\-_\\.!~\\*'\\(\\)]/g ) )
-          return null;
-      }
-      return value + ")";
+        v = v.substring(1, v.length - 1);
+// Commenting out the url validation code because of FLUID-4400
+//      var r = new RegExp("^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?", "");
+//      var m = v.match(r)
+//      if (m) {
+//        if (m[5].match ( /[^a-z0-9\\-_\\.!~\\*'\\(\\)]/g ) )
+//          return null;
+//      }
+      return v;
     }
     return "";
   },
@@ -3650,7 +3687,7 @@ jscsspVariable.prototype = {
     if (this.type == kJscsspVARIABLE_VALUE)
       return this.resolveVariable(this.name, this.parentRule, this.parentStyleSheet);
     else
-      return this.value;
+      return this.url ? assembleUrl(this.url) : this.value;
   },
 
   setCssText: function(val) {
