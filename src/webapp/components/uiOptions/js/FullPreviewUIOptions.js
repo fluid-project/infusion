@@ -55,7 +55,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var componentConfig = fluid.defaults("fluid.uiOptions.fullPreview").uiOptionsTransform.config;
         var mergePolicy = fluid.defaults("fluid.uiOptions.fullPreview").mergePolicy;
         options.container = container;
-        // This is a terrible hack for FLUID-4099. Since it is impossible for us to be invoked via IoC, the only
+        // This is a terrible hack for FLUID-4409. Since it is impossible for us to be invoked via IoC, the only
         // source of this configuration could be the static pageEnhancer
         var enhancerOptions = fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions");
         options.outerPreviewEnhancerOptions = enhancerOptions;

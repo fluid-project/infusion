@@ -384,7 +384,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.pageEnhancer = function (uiEnhancerOptions) {
         var that = fluid.initLittleComponent("fluid.pageEnhancer");
         uiEnhancerOptions = fluid.copy(uiEnhancerOptions);
-        // This hack is required to resolve FLUID-4099 - much improved framework support is required
+        // This hack is required to resolve FLUID-4409 - much improved framework support is required
         uiEnhancerOptions.originalUserOptions = fluid.copy(uiEnhancerOptions);
         that.uiEnhancerOptions = uiEnhancerOptions;
         fluid.initDependents(that);
