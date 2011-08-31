@@ -46,7 +46,7 @@ var fluid_1_4 = fluid_1_4 || {};
             if (that.tableOfContents) {
                 that.tableOfContents.show();
             } else {
-                $(document).ready(that.events.onReady.fire);
+                $(document).ready(that.events.onCreateTOCReady.fire);
             }
         } else {
             if (that.tableOfContents) {
@@ -65,7 +65,7 @@ var fluid_1_4 = fluid_1_4 || {};
             tableOfContents: {
                 type: "fluid.tableOfContents",
                 container: "{uiEnhancer}.container",
-                createOnEvent: "onReady",
+                createOnEvent: "onCreateTOCReady",
                 options: {
                     components: {
                         levels: {
@@ -134,6 +134,7 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         events: {
             onReady: null,
+            onCreateTOCReady: null,
             modelChanged: null
         },
         classnameMap: {
@@ -166,6 +167,9 @@ var fluid_1_4 = fluid_1_4 || {};
             });
 
         that.updateFromSettingsStore();
+        
+        that.events.onReady.fire();
+        
         return that;
     };
     
@@ -421,14 +425,6 @@ var fluid_1_4 = fluid_1_4 || {};
      * http://thunderguy.com/semicolon/2005/05/16/multiple-class-selectors-in-internet-explorer/ *
      *********************************************************************************************/
      
-     fluid.registerNamespace("fluid.ie6.colorInversion");
-     
-     fluid.ie6.colorInversion.finalInit = function (that) {
-         if($.browser.msie && $.browser.version === "6.0") {
-             that.locate("remove").removeClass(that.options.styles.remove);
-         }
-     };
-     
      fluid.defaults("fluid.ie6.colorInversion", {
          gradeNames: ["fluid.viewComponent", "autoInit"],
          finalInitFunction: "fluid.ie6.colorInversion.finalInit",
@@ -440,4 +436,10 @@ var fluid_1_4 = fluid_1_4 || {};
          }
      });
 
+     fluid.ie6.colorInversion.finalInit = function (that) {
+         if($.browser.msie && $.browser.version === "6.0") {
+             that.locate("remove").removeClass(that.options.styles.remove);
+         }
+     };
+     
 })(jQuery, fluid_1_4);
