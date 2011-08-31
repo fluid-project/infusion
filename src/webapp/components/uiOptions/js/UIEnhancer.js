@@ -398,7 +398,7 @@ var fluid_1_4 = fluid_1_4 || {};
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
                 container: "body",
-                options: "{pageEnhancer}.uiEnhancerOptions",
+                options: "{pageEnhancer}.uiEnhancerOptions"
             }
         }
     });

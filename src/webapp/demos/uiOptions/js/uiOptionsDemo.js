@@ -79,25 +79,7 @@ var demo = demo || {};
      * Initialize UI Options on the "Full Page, With Preview" version.
      */
     demo.initFullWithPreview = function (container) {
-        var opts = basicFullPageOpts;
-     
-        // In addition to the basic options, we need to configure the Preview's UI Enhancer
-        opts.previewEnhancer = {
-          /*
-            options: {
-                // Tell the Preview's UI Enhancer where the Table of Contents template is
-                tocTemplate: pathToTocTemplate,
-
-                // and the name of the default theme
-                classnameMap: {
-                    theme: {
-                        "default": customThemeName
-                    }
-                }
-            }
-            */
-        };
-        fluid.uiOptions.fullPreview(container, opts);
+        fluid.uiOptions.fullPreview(container, basicFullPageOpts);
     };
 
     /**
