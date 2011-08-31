@@ -29,7 +29,7 @@ var demo = demo || {};
             async : false,
             error: function (XMLHttpRequest, state, error) {
                 if (error && error.code === 1012 && (demo.name === "uiOptions" || demo.name === "uploader")) {
-                    // Access denide: we're prob. in FF with the same origin policy blocking our fetch
+                    // Access denied: we're prob. in FF with the same origin policy blocking our fetch
                     abortDemo = true;
                 }
             }
@@ -63,12 +63,12 @@ var demo = demo || {};
             content : null
         },
         "js" : {
-            path: demo.path + "js/" + demo.name + ".js",
+            path: demo.path + "js/" + demo.name + "Demo.js",
             tab : null,
             content : null
         },
         "data" : {
-            path: demo.path + "data/" + demo.name + ".js",
+            path: demo.path + "data/" + demo.name + "DemoData.js",
             tab : null,
             content : null
         }

@@ -257,7 +257,6 @@ var fluid_1_4 = fluid_1_4 || {};
         if (!that.initialSize) {
             that.calcInitSize();
         }
-        
         if (times === 1) {
             that.container.css("font-size", ""); // empty is same effect as not being set
         } else if (times && times > 0) {
@@ -384,6 +383,9 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.pageEnhancer = function (uiEnhancerOptions) {
         var that = fluid.initLittleComponent("fluid.pageEnhancer");
+        uiEnhancerOptions = fluid.copy(uiEnhancerOptions);
+        // This hack is required to resolve FLUID-4409 - much improved framework support is required
+        uiEnhancerOptions.originalUserOptions = fluid.copy(uiEnhancerOptions);
         that.uiEnhancerOptions = uiEnhancerOptions;
         fluid.initDependents(that);
         fluid.staticEnvironment.uiEnhancer = that.uiEnhancer;
