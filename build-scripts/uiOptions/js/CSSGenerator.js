@@ -79,14 +79,14 @@ fluid.build = fluid.build || {};
             return that.stylesheet.cssText();
         };
 
-        setupCSSGenerator(that);        
+        setupCSSGenerator(that);
         return that;
     };
     
     fluid.build.cssGenerator.expandRuleSpec = function (spec) {
         for (var selector in spec) {
             var priorities = spec[selector];
-            spec[selector] = typeof(priorities) === "string" ? [priorities] : priorities;
+            spec[selector] = typeof (priorities) === "string" ? [priorities] : priorities;
         }
     };
     
@@ -122,4 +122,28 @@ fluid.build = fluid.build || {};
         rule.mSelectorText = rule.mSelectorText.replace(options.match, options.replace, "g");
     };
     
+    fluid.build.cssGenerator.modifyValue = function (rule, modifyFunc) {
+        if (!rule.declarations) {
+            return;
+        }
+
+        for (var i = 0; i < rule.declarations.length; i++) {
+            var values = rule.declarations[i].values;
+            if (!values) {
+                break;
+            }
+            for (var j = 0; j < values.length; j++) {
+                modifyFunc(values[j]);
+            }
+        }
+    };
+
+    fluid.build.cssGenerator.rewriteRelativeUrls = function (rule, options) {
+        fluid.build.cssGenerator.modifyValue(rule, 
+            function (value) {
+                if (value.url && value.url.indexOf("://") < 0) {
+                    value.url = options.prefix + value.url;
+                }
+            });
+    };
 })();
