@@ -185,6 +185,9 @@ var fluid_1_4 = fluid_1_4 || {};
      */    
     fluid.defaults("fluid.uiOptions.inline", {
         gradeNames: ["fluid.viewComponent"],
+        mergePolicy: {
+            uiOptionsTransform: "noexpand"  
+        },
         components: {
             uiOptionsLoader: {
                 type: "fluid.uiOptions.loader"
@@ -199,6 +202,7 @@ var fluid_1_4 = fluid_1_4 || {};
             config: {
                 "*.templateLoader":                                   "templateLoader",
                 "*.templateLoader.*.templatePath.options.value":      "prefix",
+                "*.uiOptionsLoader":                                  "uiOptionsLoader",
                 "*.uiOptionsLoader.container":                        "container",
                 "*.uiOptionsLoader.*.uiOptions":                      "uiOptions",
                 "*.uiOptionsLoader.*.uiOptions.*.textControls":       "textControls",
@@ -215,43 +219,32 @@ var fluid_1_4 = fluid_1_4 || {};
     */
     fluid.uiOptions.sortByKeyLength = function (inObject) {
         var keys = [];
-        var outObject = {};
-    
+
         for (var k in inObject) {
             keys.push(k);
         }
 
         keys.sort(function (a, b) {
-            if (a.length > b.length) {
-                return 1;
-            } else if (a.length < b.length) {
-                return -1;
-            } else {
-                return 0;
-            }
+            return a.length - b.length;
         });
         
         return keys;
     };
     
-    // TODO: Maybe we need a framework function for model transformation to
-    //       replace the code below? 
+    // TODO: This dreadful function will be absorbed into the framework for 1.5
     /**
     * @param {Object} options, top level options to be mapped
     * @param {Object} componentConfig, the component's defaults mapping between target path and value
     * @param {Object} used in fluid.merge() to merge options and componentConfig
     * @param {Array} config, a mapping between the target path on the IoC tree and the option name
     */
-    fluid.uiOptions.mapOptions = function (options, componentConfig, mergePolicy, config) {
+    fluid.uiOptions.mapOptions = function (options, config, mergePolicy) {
         options = options || {};
-        componentConfig = componentConfig || {};
-        config = config || fluid.defaults("fluid.uiOptions.inline").uiOptionsTransform.config;
-        
         // Sort the config object by the length of the key in case an option and its child option
         // are both configurable. 
         // For instance: "*.templateLoader" & "*.templateLoader.*.templatePath.options.value"
-        var sortedConfigKeys = fluid.uiOptions.sortByKeyLength(config);
-         
+        var sortedConfigKeys = fluid.uiOptions.sortByKeyLength(config);         
+
         var componentOptions = {};
 
         var optionsApplier = fluid.makeChangeApplier(options);
@@ -260,17 +253,18 @@ var fluid_1_4 = fluid_1_4 || {};
         fluid.each(sortedConfigKeys, function (origDest) {
             var source = config[origDest];
             var dest = fluid.uiOptions.expandShortPath(origDest);
-            
-            // Process the user pass-in options
-            var value = fluid.get(options, source);
-            if (value) {
-                optionsApplier.requestChange(dest, value, "ADD");
-                optionsApplier.requestChange(source, value, "DELETE");
+            if (typeof(source) === "string") {
+                var applier = origDest.charAt(0) === "!"? componentConfigApplier : optionsApplier;
+                
+                // Process the user pass-in options
+                var value = fluid.get(options, source);
+                if (value) {
+                    applier.requestChange(dest, value, "ADD");
+                    optionsApplier.requestChange(source, value, "DELETE");
+                }
             }
-            
-            // Process component's default options
-            if (typeof componentConfig[origDest] === "object") {
-                componentConfigApplier.requestChange(dest, componentConfig[origDest], "ADD");
+            else {
+                componentConfigApplier.requestChange(dest, source, "ADD");
             }
         });
         
@@ -278,6 +272,9 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uiOptions.expandShortPath = function (path) {
+        if (path.charAt(0) === "!") {
+            path = path.substring(1);
+        }
         var strToreplaceFirst = "components";
         var strToreplaceRest = "options.components";
 
