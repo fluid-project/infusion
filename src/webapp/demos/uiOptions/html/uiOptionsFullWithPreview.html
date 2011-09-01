@@ -48,13 +48,13 @@
         <script type="text/javascript" src="../../../components/uiOptions/js/FullPreviewUIOptions.js"></script>        
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
 
-        <script type="text/javascript" src="../js/uiOptions.js"></script>
+        <script type="text/javascript" src="../js/uiOptionsDemo.js"></script>
     </head>
 
     <body>
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
-            demo.initPageEnhancer();
+            demo.initPageEnhancer("uio-demo-theme");
         </script>
 
         <div class="backButton">
@@ -70,7 +70,7 @@
         </div>
         
         <script type="text/javascript">
-            demo.initFullWithPreview("#myUIOptions", "uio-demo-theme");
+            demo.initFullWithPreview("#myUIOptions");
         </script>
 
     </body>

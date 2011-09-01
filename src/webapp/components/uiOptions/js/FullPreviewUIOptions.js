@@ -27,6 +27,7 @@ var fluid_1_4 = fluid_1_4 || {};
         container: "{fullPreview}.container",
         uiOptionsTransform: {
             config: {
+                "!*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer.options": "outerPreviewEnhancerOptions",
                 "*.templateLoader": {
                     options: {
                         templates: {
@@ -54,6 +55,10 @@ var fluid_1_4 = fluid_1_4 || {};
         var componentConfig = fluid.defaults("fluid.uiOptions.fullPreview").uiOptionsTransform.config;
         var mergePolicy = fluid.defaults("fluid.uiOptions.fullPreview").mergePolicy;
         options.container = container;
+        // This is a terrible hack for FLUID-4409. Since it is impossible for us to be invoked via IoC, the only
+        // source of this configuration could be the static pageEnhancer
+        var enhancerOptions = fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions");
+        options.outerPreviewEnhancerOptions = enhancerOptions;
         
         var mappedOptions = fluid.uiOptions.mapOptions(options, componentConfig, mergePolicy);
         var that = fluid.initView("fluid.uiOptions.fullPreview", container, mappedOptions);
