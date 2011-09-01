@@ -39,7 +39,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var tests = new jqUnit.TestCase("UI Enhancer Tests");
         
         tests.test("Initialization", function () {
-            expect(13);
+            expect(11);
 
             jqUnit.assertEquals("Initially font size classes exist", 3, $(".fl-font-size-90").length);
             jqUnit.assertEquals("Initially layout class exists", 3, $(".fl-layout-linear").length);
@@ -51,8 +51,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("font size classes should not be removed", 3, $(".fl-font-size-90").length);
             jqUnit.assertEquals("layout class is gone", 0, $(".fl-layout-linear").length);
             jqUnit.assertEquals("FSS theme class has not been removed", 1, $(".fl-theme-wb").length);
-            jqUnit.assertEquals("font comic sans class is gone", 0, $(".fl-font-comic-sans").length);
-            jqUnit.assertEquals("arial class is not set", 0, $(".fl-font-arial").length);
             jqUnit.assertEquals("Things are still styled with 'first-class' ", 3, $(".first-class").length);
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });
@@ -110,11 +108,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             swapper.clearClasses();
             jqUnit.assertFalse("The container's font setting was removed", swapper.container.is(swapper.classSelector));
-            jqUnit.assertEquals("There is no font setting in the container", 0, $(swapper.classSelector, swapper.container).length);
             
             swapper.swap("times");
             jqUnit.assertTrue("The container has a font setting of times", swapper.container.hasClass(opts.classes.times));
-            jqUnit.assertEquals("There is no font setting in the container", 0, $(swapper.classSelector, swapper.container).length);
             
         });
 
@@ -128,6 +124,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             lineSpacer.set(2);
             jqUnit.assertEquals("The size should be doubled", "30px", lineSpacer.container.css("lineHeight"));
         
+        });
+
+        tests.test("IE6ColorInversion", function () {
+            expect(1);
+            fluid.pageEnhancer(uiEnhancerOptions);
+
+            if ($.browser.msie && $.browser.version === "6.0") {
+                jqUnit.assertEquals("fl-inverted-color has been removed", 0, $(".fl-inverted-color").length);
+            } else {
+                jqUnit.assertEquals("fl-inverted-color is not touched", 1, $(".fl-inverted-color").length);
+            }
+
         });
 
         tests.test("Options munging", function () {

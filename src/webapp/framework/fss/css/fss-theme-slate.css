@@ -12,7 +12,8 @@
  * General Styling
  */
 
-.fl-theme-slate {color:#000000; background-color:#cccccc; border-color:#999999;}
+.fl-theme-slate,
+.fl-theme-slate.fl-preview-theme {color:#000000; background-color:#cccccc; border-color:#999999;}
 
 /* Links */
 .fl-theme-slate a {color: #ebebeb; font-weight:bold;}

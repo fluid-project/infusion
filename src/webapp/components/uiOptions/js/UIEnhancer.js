@@ -46,7 +46,7 @@ var fluid_1_4 = fluid_1_4 || {};
             if (that.tableOfContents) {
                 that.tableOfContents.show();
             } else {
-                $(document).ready(that.events.onReady.fire);
+                $(document).ready(that.events.onCreateTOCReady.fire);
             }
         } else {
             if (that.tableOfContents) {
@@ -65,7 +65,7 @@ var fluid_1_4 = fluid_1_4 || {};
             tableOfContents: {
                 type: "fluid.tableOfContents",
                 container: "{uiEnhancer}.container",
-                createOnEvent: "onReady",
+                createOnEvent: "onCreateTOCReady",
                 options: {
                     components: {
                         levels: {
@@ -125,10 +125,11 @@ var fluid_1_4 = fluid_1_4 || {};
             // NOTE: when we do the ants refactoring each of these will be half an ant
             setLayout: "fluid.uiEnhancer.setLayout",
             styleLinks: "fluid.uiEnhancer.styleLinks",
-            styleInputs: "fluid.uiEnhancer.styleInputs"
+            styleInputs: "fluid.uiEnhancer.styleInputs",
+            setIE6ColorInversion: "fluid.uiEnhancer.setIE6ColorInversion"
         },
         events: {
-            onReady: null,
+            onCreateTOCReady: null,
             modelChanged: null
         },
         classnameMap: {
@@ -140,7 +141,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 "verdana": "fl-font-verdana"
             },
             "theme": {
-                "default": "",
+                "default": "fl-uio-default-theme",
                 "bw": "fl-theme-uio-bw fl-theme-bw",
                 "wb": "fl-theme-uio-wb fl-theme-wb",
                 "by": "fl-theme-uio-by fl-theme-by",
@@ -149,6 +150,12 @@ var fluid_1_4 = fluid_1_4 || {};
             "layout": "fl-layout-linear",
             "links": "fl-text-underline fl-text-bold fl-text-larger", 
             "inputsLarger": "fl-text-larger"
+        },
+        selectors: {
+            colorInversion: ".fl-inverted-color"
+        },
+        styles: {
+            colorInversionClass: "fl-inverted-color"
         },
         finalInitFunction: "fluid.uiEnhancer.finalInit"
     });
@@ -184,6 +191,7 @@ var fluid_1_4 = fluid_1_4 || {};
         setToc(that, that.model.toc);
         that.styleLinks(that);
         that.styleInputs(that);
+        that.setIE6ColorInversion(that);
     };
 
 
@@ -224,6 +232,21 @@ var fluid_1_4 = fluid_1_4 || {};
      */
     fluid.uiEnhancer.styleInputs = function (that) {
         that.styleElements($("input", that.container), that.model.inputsLarger, that.options.classnameMap.inputsLarger);
+    };
+
+    /**
+     * remove the instances of fl-inverted-color when the default theme is selected. 
+     * This prevents a bug in IE6 where the default theme will have elements styled 
+     * with the theme color.
+     *
+     * Caused by:
+     * http://thunderguy.com/semicolon/2005/05/16/multiple-class-selectors-in-internet-explorer/
+     * @param {Object} that - the uiEnhancer
+     */
+    fluid.uiEnhancer.setIE6ColorInversion = function (that) {
+        if ($.browser.msie && $.browser.version === "6.0" && that.model.theme === "default") {
+            that.locate("colorInversion").removeClass(that.options.styles.colorInversionClass);
+        }
     };
 
     fluid.uiEnhancer.getTextSize = function (container) {
@@ -309,7 +332,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uiEnhancer.classSwapper.clearClasses = function (that) {
-        $(that.classSelector, that.container).add(that.container).removeClass(that.classStr);
+        that.container.removeClass(that.classStr);
     };
     
     fluid.uiEnhancer.classSwapper.swap = function (classname, that) {
@@ -406,5 +429,5 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer"], {
         funcName: "fluid.cookieStore"
     });
-
+    
 })(jQuery, fluid_1_4);
