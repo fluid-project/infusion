@@ -129,7 +129,6 @@ var fluid_1_4 = fluid_1_4 || {};
             setIE6ColorInversion: "fluid.uiEnhancer.setIE6ColorInversion"
         },
         events: {
-            onReady: null,
             onCreateTOCReady: null,
             modelChanged: null
         },
