@@ -126,6 +126,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         });
 
+        tests.test("IE6ColorInversion", function () {
+            expect(1);
+            fluid.pageEnhancer(uiEnhancerOptions);
+
+            if ($.browser.msie && $.browser.version === "6.0") {
+                jqUnit.assertEquals("fl-inverted-color has been removed", 0, $(".fl-inverted-color").length);
+            } else {
+                jqUnit.assertEquals("fl-inverted-color is not touched", 1, $(".fl-inverted-color").length);
+            }
+
+        });
+
         tests.test("Options munging", function () {
             expect(2);
 

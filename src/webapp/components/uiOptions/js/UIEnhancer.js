@@ -105,11 +105,6 @@ var fluid_1_4 = fluid_1_4 || {};
                 options: {
                     defaultSiteSettings: "{uiEnhancer}.options.defaultSiteSettings"
                 }
-            },
-            ie6Inversion: {
-                type: "fluid.ie6.colorInversion",
-                container: "{uiEnhancer}.container",
-                createOnEvent: "onReady"
             }
         },
         invokers: {
@@ -130,7 +125,8 @@ var fluid_1_4 = fluid_1_4 || {};
             // NOTE: when we do the ants refactoring each of these will be half an ant
             setLayout: "fluid.uiEnhancer.setLayout",
             styleLinks: "fluid.uiEnhancer.styleLinks",
-            styleInputs: "fluid.uiEnhancer.styleInputs"
+            styleInputs: "fluid.uiEnhancer.styleInputs",
+            setIE6ColorInversion: "fluid.uiEnhancer.setIE6ColorInversion"
         },
         events: {
             onReady: null,
@@ -156,6 +152,12 @@ var fluid_1_4 = fluid_1_4 || {};
             "links": "fl-text-underline fl-text-bold fl-text-larger", 
             "inputsLarger": "fl-text-larger"
         },
+        selectors: {
+            colorInversion: ".fl-inverted-color"
+        },
+        styles: {
+            colorInversionClass: "fl-inverted-color"
+        },
         finalInitFunction: "fluid.uiEnhancer.finalInit"
     });
 
@@ -167,9 +169,6 @@ var fluid_1_4 = fluid_1_4 || {};
             });
 
         that.updateFromSettingsStore();
-        
-        that.events.onReady.fire();
-        
         return that;
     };
     
@@ -193,6 +192,7 @@ var fluid_1_4 = fluid_1_4 || {};
         setToc(that, that.model.toc);
         that.styleLinks(that);
         that.styleInputs(that);
+        that.setIE6ColorInversion(that);
     };
 
 
@@ -233,6 +233,21 @@ var fluid_1_4 = fluid_1_4 || {};
      */
     fluid.uiEnhancer.styleInputs = function (that) {
         that.styleElements($("input", that.container), that.model.inputsLarger, that.options.classnameMap.inputsLarger);
+    };
+
+    /**
+     * remove the instances of fl-inverted-color when the default theme is selected. 
+     * This prevents a bug in IE6 where the default theme will have elements styled 
+     * with the theme color.
+     *
+     * Caused by:
+     * http://thunderguy.com/semicolon/2005/05/16/multiple-class-selectors-in-internet-explorer/
+     * @param {Object} that - the uiEnhancer
+     */
+    fluid.uiEnhancer.setIE6ColorInversion = function (that) {
+        if ($.browser.msie && $.browser.version === "6.0" && that.model.theme === "default") {
+            that.locate("colorInversion").removeClass(that.options.styles.colorInversionClass);
+        }
     };
 
     fluid.uiEnhancer.getTextSize = function (container) {
@@ -414,32 +429,4 @@ var fluid_1_4 = fluid_1_4 || {};
         funcName: "fluid.cookieStore"
     });
     
-    /*********************************************************************************************
-     * ie6.colorInversion                                                                        *
-     *                                                                                           *
-     * The purpose of this small component is to remove the instances of                         *
-     * fl-inverted-color. This prevents a bug in IE6 where the default theme                     *
-     * will have elements styled with the theme color.                                           *
-     *                                                                                           *
-     * Caused by:                                                                                *
-     * http://thunderguy.com/semicolon/2005/05/16/multiple-class-selectors-in-internet-explorer/ *
-     *********************************************************************************************/
-     
-     fluid.defaults("fluid.ie6.colorInversion", {
-         gradeNames: ["fluid.viewComponent", "autoInit"],
-         finalInitFunction: "fluid.ie6.colorInversion.finalInit",
-         selectors: {
-             remove: ".fl-inverted-color"
-         },
-         styles: {
-             remove: "fl-inverted-color"
-         }
-     });
-
-     fluid.ie6.colorInversion.finalInit = function (that) {
-         if($.browser.msie && $.browser.version === "6.0") {
-             that.locate("remove").removeClass(that.options.styles.remove);
-         }
-     };
-     
 })(jQuery, fluid_1_4);

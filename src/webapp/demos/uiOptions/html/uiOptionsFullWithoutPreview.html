@@ -54,7 +54,10 @@
     <body>
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
-            demo.initPageEnhancer();
+            $(document).ready(function () {
+                demo.initPageEnhancer();
+                demo.initFullNoPreview("#myUIOptions");
+            });
         </script>
 
         <div class="backButton fl-inverted-color">
@@ -68,10 +71,6 @@
             <h1>User Interface Options</h1>        
             <div id="myUIOptions"></div>     
         </div>
-
-        <script type="text/javascript">
-            demo.initFullNoPreview("#myUIOptions");
-        </script>
 
     </body>
 </html>

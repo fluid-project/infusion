@@ -52,7 +52,10 @@
     <body class="uio-demo-theme">
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
-            demo.initPageEnhancer("uio-demo-theme");
+            $(document).ready(function () {
+                demo.initPageEnhancer("uio-demo-theme");
+                demo.initFatPanel(".flc-uiOptions-fatPanel");
+            })
         </script>
 
         <!-- BEGIN markup for fat-panel UI Options -->
@@ -66,9 +69,6 @@
 			</div>
 		</div>	
         <!-- END markup for fat-panel UI Options -->
-        <script type="text/javascript">
-            demo.initFatPanel(".flc-uiOptions-fatPanel");            
-        </script>
 
         <div class="fl-force-right fl-push disp-opts-buttons">
             <div class="disp-opts-button-container fl-inverted-color">
