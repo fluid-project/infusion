@@ -150,22 +150,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         tests.test("Map Options", function () {
-            expect(4);
+            expect(3);
             
-            var options1 = null;
-            var options2 = null;
+            var config = fluid.defaults("fluid.uiOptions.inline").uiOptionsTransform.config;
+
+            var options = null;
             
-            var actual = fluid.uiOptions.mapOptions(options1, options2, "preserve");
+            var actual = fluid.uiOptions.mapOptions(options, config, "preserve");
             jqUnit.assertDeepEq("The path is expanded correctly", {}, actual);
 
-            options1 = {
+            
+            options = {
                 textControls: {
                     opt1: "food"
                 }
             };
 
-            options2 = {};
-            
             var expected = {
                 components: {
                     uiOptionsLoader: {
@@ -186,18 +186,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             };
             
-            actual = fluid.uiOptions.mapOptions(options1, options2, "preserve");
+            actual = fluid.uiOptions.mapOptions(options, config, "preserve");
             jqUnit.assertDeepEq("The path is expanded correctly", expected, actual);
 
-            options1 = {
+            options = {
+                uiOptions: {
+                    opt: "drink"
+                },
                 textControls: {
                     opt1: "food"
-                }
-            };
-            
-            options2 = {
-                "*.uiOptionsLoader.*.uiOptions" : {
-                    opt: "drink"
                 }
             };
             
@@ -222,43 +219,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             };
             
-            actual = fluid.uiOptions.mapOptions(options1, options2);
-            jqUnit.assertDeepEq("Options1 and options2 are combined correctly", expected, actual);
-            
-            options1 = {
-                textControls: {
-                    opt1: "food"
-                }
-            };
-            
-            options2 = {
-                "*.uiOptionsLoader.*.uiOptions.*.textControls" : {
-                    opt: "drink"
-                }
-            };
-            
-            expected = {
-                components: {
-                    uiOptionsLoader: {
-                        options: {
-                            components: {
-                                uiOptions: {
-                                    options: {
-                                        components: {
-                                            textControls: {
-                                                opt1: "food"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-            
-            actual = fluid.uiOptions.mapOptions(options1, options2, "replace");
-            jqUnit.assertDeepEq("Options1 is preserved over options2", expected, actual);
+            actual = fluid.uiOptions.mapOptions(options, config);
+            jqUnit.assertDeepEq("Multiple options are expanded and combined correctly", expected, actual);
         });
         
         tests.test("Template Loader", function () {
