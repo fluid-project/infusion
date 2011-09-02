@@ -323,11 +323,6 @@ var fluid_1_4 = fluid_1_4 || {};
         } else if (times && times > 0) {
             var targetSize = that.initialSize * times + "px";
             that.container.css("font-size", targetSize);
-
-            // The css change needs to be applied onto <button> tag separately.
-            // Otherwise there is no effect.
-            // http://issues.fluidproject.org/browse/FLUID-4376
-            $("button", that.container).css("font-size", targetSize);
         }
     };
     
@@ -416,11 +411,6 @@ var fluid_1_4 = fluid_1_4 || {};
         
         var newLineSpacing = times === "" || times === 1 ? that.initialSize : times * that.initialSize;
         that.container.css("line-height", newLineSpacing + "em");
-
-        // The css change needs to be applied onto <button> tag separately.
-        // Otherwise there is no effect.
-        // http://issues.fluidproject.org/browse/FLUID-4376
-        $("button", that.container).css("line-height", newLineSpacing + "em");
     };
     
     // Returns the value of css style "line-height" in em 
