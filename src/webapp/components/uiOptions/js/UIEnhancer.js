@@ -28,25 +28,36 @@ var fluid_1_4 = fluid_1_4 || {};
      * spcial handling on IE6.                                                     *
      *******************************************************************************/
     
-    fluid.registerNamespace("fluid.browser");
     fluid.registerNamespace("fluid.browser.version");
 
-    fluid.browser.ie = function () {
+    fluid.browser.msie = function () {
         var isIE = ($.browser.msie);
-        return isIE ? fluid.typeTag("fluid.browser.ie") : undefined;
+        return isIE ? fluid.typeTag("fluid.browser.msie") : undefined;
     };
 
-    fluid.browser.version.is6 = function () {
-        var is6 = ($.browser.version === "6.0");
-        return is6 ? fluid.typeTag("fluid.browser.version.6") : undefined;
+    fluid.browser.majorVersion = function () {
+    // From http://www.useragentstring.com/pages/Internet%20Explorer/ several variants are possible
+    // for IE6 - and in general we probably just want to detect major versions
+        var version = $.browser.version;
+        var dotpos = version.indexOf(".");
+        var majorVersion = version.substring(0, dotpos);
+        return fluid.typeTag("fluid.browser.majorVersion."+majorVersion);
     };
 
     var features = {
-        browserIE: fluid.browser.ie(),
-        browserVersion6: fluid.browser.version.is6()
+        browserIE: fluid.browser.msie(),
+        browserMajorVersion: fluid.browser.majorVersion()
     };
     
     fluid.merge(null, fluid.staticEnvironment, features);
+    
+    // Temporary solution pending revised IoC system in 1.5
+    
+    fluid.hasFeature = function (tagName) {
+        return fluid.find(fluid.staticEnvironment, function(value) {
+            return value && value.typeName === tagName? true: undefined;
+        });
+    };
 
     /*******************************************************************************
      * UI Enhancer                                                                 *
@@ -271,7 +282,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} that - the uiEnhancer
      */
     fluid.uiEnhancer.setIE6ColorInversion = function (that) {
-        if (fluid.staticEnvironment.browserIE && fluid.staticEnvironment.browserVersion6 && that.model.theme === "default") {
+        if (fluid.hasFeature("fluid.browser.msie") && fluid.hasFeature("fluid.browser.majorVersion.6") && that.model.theme === "default") {
             that.locate("colorInversion").removeClass(that.options.styles.colorInversionClass);
         }
     };

@@ -126,16 +126,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         });
 
-        tests.test("IE6ColorInversion", function () {
-            expect(1);
-            fluid.pageEnhancer(uiEnhancerOptions);
+        function cleanStaticEnvironment() {
+            delete fluid.staticEnvironment.browserIE;
+            delete fluid.staticEnvironment.browserMajorVersion;            
+        }
 
-            if (fluid.staticEnvironment.browserIE && fluid.staticEnvironment.browserVersion6) {
-                jqUnit.assertEquals("fl-inverted-color has been removed", 0, $(".fl-inverted-color").length);
-            } else {
-                jqUnit.assertEquals("fl-inverted-color is not touched", 1, $(".fl-inverted-color").length);
-            }
-
+        function withIE6Environment(withIt, testFunc) {
+            try {
+                cleanStaticEnvironment;
+                if (withIt) {
+                    fluid.staticEnvironment.browserIE = fluid.typeTag("fluid.browser.msie");
+                    fluid.staticEnvironment.browserMajorVersion = fluid.typeTag("fluid.browser.majorVersion.6");
+                }
+                testFunc();
+             }
+             finally {
+                 cleanStaticEnvironment();
+             }
+        }
+        
+        function testIE6ColorInversion(withIt, testFunc) {
+            tests.test("IE6ColorInversion: " + withIt, function() { 
+                withIE6Environment(withIt, function() {
+                    fluid.pageEnhancer(uiEnhancerOptions);
+                    testFunc();
+                })}
+           );
+        }
+        
+        testIE6ColorInversion(true, function() {  
+            jqUnit.assertEquals("fl-inverted-color has been removed", 0, $(".fl-inverted-color").length);
+        });
+        testIE6ColorInversion(false, function() {
+            jqUnit.assertEquals("fl-inverted-color is not touched", 1, $(".fl-inverted-color").length);
         });
 
         tests.test("Options munging", function () {
