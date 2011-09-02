@@ -22,6 +22,33 @@ var fluid_1_4 = fluid_1_4 || {};
 (function ($, fluid) {
 
     /*******************************************************************************
+     * Browser type and version detection.                                         *
+     *                                                                             *
+     * Add type tags of IE and browser version into static environment for the     * 
+     * spcial handling on IE6.                                                     *
+     *******************************************************************************/
+    
+    fluid.registerNamespace("fluid.browser");
+    fluid.registerNamespace("fluid.browser.version");
+
+    fluid.browser.ie = function () {
+        var isIE = ($.browser.msie);
+        return isIE ? fluid.typeTag("fluid.browser.ie") : undefined;
+    };
+
+    fluid.browser.version.is6 = function () {
+        var is6 = ($.browser.version === "6.0");
+        return is6 ? fluid.typeTag("fluid.browser.version.6") : undefined;
+    };
+
+    var features = {
+        browserIE: fluid.browser.ie(),
+        browserVersion6: fluid.browser.version.is6()
+    };
+    
+    fluid.merge(null, fluid.staticEnvironment, features);
+
+    /*******************************************************************************
      * UI Enhancer                                                                 *
      *                                                                             *
      * Works in conjunction with FSS to transform the page based on user settings. *
@@ -244,7 +271,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} that - the uiEnhancer
      */
     fluid.uiEnhancer.setIE6ColorInversion = function (that) {
-        if ($.browser.msie && $.browser.version === "6.0" && that.model.theme === "default") {
+        if (fluid.staticEnvironment.browserIE && fluid.staticEnvironment.browserVersion6 && that.model.theme === "default") {
             that.locate("colorInversion").removeClass(that.options.styles.colorInversionClass);
         }
     };

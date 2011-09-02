@@ -130,7 +130,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expect(1);
             fluid.pageEnhancer(uiEnhancerOptions);
 
-            if ($.browser.msie && $.browser.version === "6.0") {
+            if (fluid.staticEnvironment.browserIE && fluid.staticEnvironment.browserVersion6) {
                 jqUnit.assertEquals("fl-inverted-color has been removed", 0, $(".fl-inverted-color").length);
             } else {
                 jqUnit.assertEquals("fl-inverted-color is not touched", 1, $(".fl-inverted-color").length);
