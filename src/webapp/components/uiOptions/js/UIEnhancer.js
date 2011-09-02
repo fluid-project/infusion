@@ -269,7 +269,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param {Object} that - the uiEnhancer
      */
     fluid.uiEnhancer.styleInputs = function (that) {
-        that.styleElements($("input", that.container), that.model.inputsLarger, that.options.classnameMap.inputsLarger);
+        that.styleElements($("input, button", that.container), that.model.inputsLarger, that.options.classnameMap.inputsLarger);
     };
 
     /**
