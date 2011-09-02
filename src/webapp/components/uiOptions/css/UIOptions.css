@@ -53,11 +53,12 @@
 .fl-uiOptions select#textFont option.verdana { font-family: Verdana; }
 
 .fl-uiOptions select#theme { font-weight:bold; text-transform: uppercase; }
-.fl-uiOptions select#theme option.default { color: #000; background-color: #efefef;}
-.fl-uiOptions select#theme option.bw { color: #fff; background-color: #000;}
-.fl-uiOptions select#theme option.wb { color: #000; background-color: #fff;}
-.fl-uiOptions select#theme option.by { color: #000; background-color: #ffee00;}
-.fl-uiOptions select#theme option.yb { color: #ffee00; background-color: #000;}
+
+/* 
+    Had to add !importants in order for this style to still show up when another contrast theme has been selected
+    It should be removed when we have an Infusion Theme
+*/
+.fl-uiOptions select#theme option.fl-uio-default-theme { color: #000 !important; background-color: #efefef !important;}
 
 /* Text and display controls */
 .fl-uiOptions .fl-uiOptions-text label {
