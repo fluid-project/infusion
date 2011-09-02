@@ -41,7 +41,7 @@ var fluid_1_4 = fluid_1_4 || {};
         var version = $.browser.version;
         var dotpos = version.indexOf(".");
         var majorVersion = version.substring(0, dotpos);
-        return fluid.typeTag("fluid.browser.majorVersion."+majorVersion);
+        return fluid.typeTag("fluid.browser.majorVersion." + majorVersion);
     };
 
     var features = {
@@ -54,8 +54,8 @@ var fluid_1_4 = fluid_1_4 || {};
     // Temporary solution pending revised IoC system in 1.5
     
     fluid.hasFeature = function (tagName) {
-        return fluid.find(fluid.staticEnvironment, function(value) {
-            return value && value.typeName === tagName? true: undefined;
+        return fluid.find(fluid.staticEnvironment, function (value) {
+            return value && value.typeName === tagName ? true : undefined;
         });
     };
 
@@ -321,7 +321,13 @@ var fluid_1_4 = fluid_1_4 || {};
         if (times === 1) {
             that.container.css("font-size", ""); // empty is same effect as not being set
         } else if (times && times > 0) {
-            that.container.css("font-size", that.initialSize * times + "px");
+            var targetSize = that.initialSize * times + "px";
+            that.container.css("font-size", targetSize);
+
+            // The css change needs to be applied onto <button> tag separately.
+            // Otherwise there is no effect.
+            // http://issues.fluidproject.org/browse/FLUID-4376
+            $("button", that.container).css("font-size", targetSize);
         }
     };
     
@@ -410,6 +416,11 @@ var fluid_1_4 = fluid_1_4 || {};
         
         var newLineSpacing = times === "" || times === 1 ? that.initialSize : times * that.initialSize;
         that.container.css("line-height", newLineSpacing + "em");
+
+        // The css change needs to be applied onto <button> tag separately.
+        // Otherwise there is no effect.
+        // http://issues.fluidproject.org/browse/FLUID-4376
+        $("button", that.container).css("line-height", newLineSpacing + "em");
     };
     
     // Returns the value of css style "line-height" in em 
