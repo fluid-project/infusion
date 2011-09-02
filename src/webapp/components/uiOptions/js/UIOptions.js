@@ -172,6 +172,8 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
 
+    fluid.registerNamespace("fluid.uiOptions");
+
     /*********************
      * UI Options Inline *
      *********************/
@@ -234,9 +236,8 @@ var fluid_1_4 = fluid_1_4 || {};
     // TODO: This dreadful function will be absorbed into the framework for 1.5
     /**
     * @param {Object} options, top level options to be mapped
-    * @param {Object} componentConfig, the component's defaults mapping between target path and value
-    * @param {Object} used in fluid.merge() to merge options and componentConfig
     * @param {Array} config, a mapping between the target path on the IoC tree and the option name
+    * @param {Object} used in fluid.merge() to merge options and componentConfig
     */
     fluid.uiOptions.mapOptions = function (options, config, mergePolicy) {
         options = options || {};
