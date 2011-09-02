@@ -54,10 +54,13 @@
     <body>
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
-            demo.initPageEnhancer("uio-demo-theme");
+            $(document).ready(function () {
+                demo.initPageEnhancer("uio-demo-theme");
+                demo.initFullWithPreview("#myUIOptions");
+            });
         </script>
 
-        <div class="backButton">
+        <div class="backButton fl-inverted-color">
             <a href="uiOptions.html">Return To Site</a> 
         </div>
 
@@ -69,10 +72,6 @@
             <div id="myUIOptions"></div>
         </div>
         
-        <script type="text/javascript">
-            demo.initFullWithPreview("#myUIOptions");
-        </script>
-
     </body>
 </html>
 

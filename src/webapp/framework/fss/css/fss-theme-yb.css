@@ -11,7 +11,13 @@
  */
 
 .fl-theme-yb,
-.fl-theme-by.fl-inverted-color {color:#ff0; background-color:#000;}  
+.fl-theme-yb *,
+.fl-preview-theme.fl-theme-yb,
+.fl-theme-by.fl-inverted-color,
+.fl-theme-by .fl-inverted-color,
+.fl-theme-by.fl-inverted-color *,
+.fl-theme-by .fl-inverted-color *,
+.fl-preview-theme.fl-theme-by.fl-inverted-color {color:#ff0; background-color:#000; border-color:#ff0;}  
 
 /* Divs, inputs */
 .fl-theme-yb div, 
