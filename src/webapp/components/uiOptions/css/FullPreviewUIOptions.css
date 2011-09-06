@@ -6,7 +6,6 @@
 
 .fl-uiOptions-fullPreview ul li {
     clear: left;
-    height: 3.5em;
 }
 
 /* Control section headers */
@@ -51,7 +50,7 @@
 .fl-uiOptions-fullPreview label {
     display: block;
     float: left;
-    width: 14em;
+    width: 15em;
 }
 
 /* Layout and link controls */
