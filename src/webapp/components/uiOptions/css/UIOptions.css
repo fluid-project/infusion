@@ -52,7 +52,7 @@
 .fl-uiOptions select#textFont option.arial { font-family: Arial; }
 .fl-uiOptions select#textFont option.verdana { font-family: Verdana; }
 
-.fl-uiOptions select#theme { font-weight:bold; text-transform: uppercase; }
+.fl-uiOptions select#theme { font-weight:bold; }
 
 /* 
     Had to add !importants in order for this style to still show up when another contrast theme has been selected
