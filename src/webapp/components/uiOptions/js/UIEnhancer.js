@@ -173,10 +173,10 @@ var fluid_1_4 = fluid_1_4 || {};
         classnameMap: {
             "textFont": {
                 "default": "",
-                "times": "fl-font-times",
-                "comic": "fl-font-comic-sans",
-                "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana"
+                "times": "fl-font-uio-times",
+                "comic": "fl-font-uio-comic-sans",
+                "arial": "fl-font-uio-arial",
+                "verdana": "fl-font-uio-verdana"
             },
             "theme": {
                 "default": "fl-uio-default-theme",
