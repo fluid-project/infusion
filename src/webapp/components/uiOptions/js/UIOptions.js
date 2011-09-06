@@ -254,8 +254,8 @@ var fluid_1_4 = fluid_1_4 || {};
         fluid.each(sortedConfigKeys, function (origDest) {
             var source = config[origDest];
             var dest = fluid.uiOptions.expandShortPath(origDest);
-            if (typeof(source) === "string") {
-                var applier = origDest.charAt(0) === "!"? componentConfigApplier : optionsApplier;
+            if (typeof (source) === "string") {
+                var applier = origDest.charAt(0) === "!" ? componentConfigApplier : optionsApplier;
                 
                 // Process the user pass-in options
                 var value = fluid.get(options, source);
@@ -263,8 +263,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     applier.requestChange(dest, value, "ADD");
                     optionsApplier.requestChange(source, value, "DELETE");
                 }
-            }
-            else {
+            } else {
                 componentConfigApplier.requestChange(dest, source, "ADD");
             }
         });
@@ -591,6 +590,12 @@ var fluid_1_4 = fluid_1_4 || {};
 
     var initModel = function (that) {
         fluid.each(that.options.controlValues, function (item, key) {
+            if (key === "theme") {
+                fluid.each(that.options.strings[key], function (strText, strKey) {
+                    that.options.strings[key][strKey] = strText.toUpperCase();
+                });
+            }
+
             that.applier.requestChange("labelMap." + key, {
                 values: that.options.controlValues[key],
                 names: that.options.strings[key],
@@ -645,7 +650,7 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.rendererComponent", "autoInit"], 
         strings: {
             textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"],
-            theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
+            theme: ["DEFAULT", "BLACK ON WHITE", "WHITE ON BLACK", "BLACK ON YELLOW", "YELLOW ON BLACK"]
         },
         controlValues: { 
             textFont: ["default", "times", "comic", "arial", "verdana"],
