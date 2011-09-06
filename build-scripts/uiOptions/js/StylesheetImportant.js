@@ -41,7 +41,8 @@ var fluid = fluid || {};
                         "border-bottom-color",
                         "border-top-color",
                         "border-left-color",
-                        "border-right-color"
+                        "border-right-color",
+                        "font-family"
                     ]
                 }
             },
@@ -50,6 +51,13 @@ var fluid = fluid || {};
                 options: {
                     match: "fl-theme-",
                     replace: "fl-theme-uio-"
+                }
+            },
+            {
+                type: fluid.build.cssGenerator.rewriteSelector,
+                options: {
+                    match: "fl-font-",
+                    replace: "fl-font-uio-"
                 }
             },
             {
