@@ -28,7 +28,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tests.asyncTest("Show Panel", function () {
             expect(2);
             var slidingPanel = fluid.slidingPanel(".flc-slidingPanel");  
-            slidingPanel.events.afterPanelShown.addListener(function () {
+            slidingPanel.events.afterPanelShow.addListener(function () {
                 jqUnit.assertEquals("Show panel", "block", slidingPanel.locate("panel").css("display"));                                                       
                 jqUnit.assertEquals("Show panel button text", slidingPanel.options.strings.hideText, slidingPanel.locate("toggleButton").text());  
                 start();
@@ -40,7 +40,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expect(2);
             var slidingPanel = fluid.slidingPanel(".flc-slidingPanel", {hideByDefault: false});
             
-            slidingPanel.events.afterPanelHidden.addListener(function () {
+            slidingPanel.events.afterPanelHide.addListener(function () {
                 jqUnit.assertEquals("Hide panel", "none", slidingPanel.locate("panel").css("display"));                      
                 jqUnit.assertEquals("Hide panel button text", slidingPanel.options.strings.showText, slidingPanel.locate("toggleButton").text());    
                 start();
@@ -54,7 +54,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expect(1);
             var slidingPanel = fluid.slidingPanel(".flc-slidingPanel");     
             
-            slidingPanel.events.afterPanelShown.addListener(function () {
+            slidingPanel.events.afterPanelShow.addListener(function () {
                 jqUnit.assertEquals("Show panel via toggle", "block", slidingPanel.locate("panel").css("display"));                                                                                  
                 start();            
             });
@@ -66,7 +66,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expect(1);
             var slidingPanel = fluid.slidingPanel(".flc-slidingPanel", {hideByDefault: false});         
             
-            slidingPanel.events.afterPanelHidden.addListener(function () {
+            slidingPanel.events.afterPanelHide.addListener(function () {
                 jqUnit.assertEquals("Hide panel via toggle", "none",  slidingPanel.locate("panel").css("display"));                                                                       
                 start();    
             });
