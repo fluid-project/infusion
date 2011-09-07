@@ -253,23 +253,23 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uiOptions.mapOptionsRecord = function(options, sortedConfigKeys, config) {
-        options = options || {};
-        var optionsLow = {};
-        var optionsApplier = fluid.makeChangeApplier(options);
-        var lowApplier = fluid.makeChangeApplier(optionsLow);
+        var opRecs = [{}, {}, options || {}];
+        var appliers = fluid.transform(opRecs, function(opRec) {
+            return fluid.makeChangeApplier(opRec);
+        });
         fluid.each(sortedConfigKeys, function (origDest) {
             var source = config[origDest];
             var dest = fluid.uiOptions.expandShortPath(origDest);
-            var applier = origDest.charAt(0) === "!"? lowApplier : optionsApplier;
+            var applier = appliers[origDest.charAt(0) === "!"? 0 : 1];
             
             // Process the user pass-in options
             var value = fluid.get(options, source);
             if (value) {
                 applier.requestChange(dest, value, "ADD");
-                optionsApplier.requestChange(source, value, "DELETE");
+                appliers[2].requestChange(source, value, "DELETE");
             }
         });
-        return [optionsLow, options];
+        return opRecs;
     }
     // TODO: This dreadful function will be absorbed into the framework for 1.5
     /**
