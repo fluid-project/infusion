@@ -27,7 +27,7 @@ var fluid_1_4 = fluid_1_4 || {};
         container: "{fullPreview}.container",
         uiOptionsTransform: {
             config: {
-                "!*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer.options": "outerPreviewEnhancerOptions",
+                "!*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer.options": "outerPreviewEnhancerOptions"
             }
         },
         derivedDefaults: {
@@ -51,7 +51,7 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     });
     
-    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.fullPreview", function(options) {
+    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.fullPreview", function (options) {
         // This is a terrible hack for FLUID-4409. Since it is impossible for us to be invoked via IoC, the only
         // source of this configuration could be the static pageEnhancer
         // The correct way to resolve the problem is to refactor UIEnhancer so that all of its configuration other than
