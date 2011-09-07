@@ -103,7 +103,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     invokers: {
                         calcInitSize: {
                             funcName: "fluid.uiEnhancer.textSizer.calcInitSize",
-                            args: ["{textSizer}", "{uiEnhancer}.options.fontSizeMap"]
+                            args: ["{textSizer}", "{uiEnhancer}.options.fontSizeMap", "{uiEnhancer}.options.px2emFactor"]
                         }
                     }
                 }
@@ -214,6 +214,7 @@ var fluid_1_4 = fluid_1_4 || {};
             "x-large": "23px",
             "xx-large": "30px"
         },
+        px2emFactor: "16",
         selectors: {
             colorInversion: ".fl-inverted-color"
         },
@@ -333,9 +334,9 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param (Object) container
      * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
      */
-    fluid.uiEnhancer.getTextSizeInEm = function (container, fontSizeMap) {
-        // retrieve fontSize in px, convert and return in em - 1em === 16px 
-        return Math.round(fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap) / 16 * 10000) / 10000;
+    fluid.uiEnhancer.getTextSizeInEm = function (container, fontSizeMap, px2emFactor) {
+        // retrieve fontSize in px, convert and return in em 
+        return Math.round(fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap) / px2emFactor * 10000) / 10000;
     };
 
     /*******************************************************************************
@@ -367,8 +368,8 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
     
-    fluid.uiEnhancer.textSizer.calcInitSize = function (that, fontSizeMap) {
-        that.initialSize = fluid.uiEnhancer.getTextSizeInEm(that.container, fontSizeMap);     
+    fluid.uiEnhancer.textSizer.calcInitSize = function (that, fontSizeMap, px2emFactor) {
+        that.initialSize = fluid.uiEnhancer.getTextSizeInEm(that.container, fontSizeMap, px2emFactor);     
     };
     
 
