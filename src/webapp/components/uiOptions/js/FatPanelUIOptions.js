@@ -246,46 +246,48 @@ var fluid_1_4 = fluid_1_4 || {};
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         // TODO: This material is not really transformation, but would be better expressed by
         // FLUID-4392 additive demands blocks
-        uiOptionsTransform: {
-            config: {
-                "!*.uiOptionsLoader.*.uiOptions.*.uiEnhancer.options": "uiEnhancer.options",
-                "*.uiOptionsLoader.*.uiOptions": {
-                    options: {
-                        events: {
-                            onSignificantDOMChange: null  
+        derivedDefaults: {
+            uiOptions: {
+                options: {
+                    events: {
+                        onSignificantDOMChange: null  
+                    },
+                    components: {
+                        uiEnhancer: {
+                            type: "fluid.uiEnhancer",
+                            container: "body",
+                            priority: "first",
+                            options: {
+                                tocTemplate: "../../tableOfContents/html/TableOfContents.html"
+                            }
                         },
-                        components: {
-                            uiEnhancer: {
-                                type: "fluid.uiEnhancer",
-                                container: "body",
-                                priority: "first",
-                                options: {
-                                    tocTemplate: "../../tableOfContents/html/TableOfContents.html"
-                                }
-                            },
-                            settingsStore: "{uiEnhancer}.settingsStore",
-                            preview: {
-                                type: "fluid.emptySubcomponent"
-                            },
-                            tabs: {
-                                type: "fluid.tabs",
-                                container: "body",
-                                createOnEvent: "onUIOptionsComponentReady",
-                                options: {
-                                    events: { // TODO: this mess required through lack of FLUID-4398
-                                        boiledTabShow: {
-                                            event: "tabsshow",
-                                            args: ["{uiOptions}"]
-                                        }
-                                    },
-                                    listeners: { // FLUID-4337 bug again
-                                        boiledTabShow: fluid.uiOptions.tabSelectRelay
+                        settingsStore: "{uiEnhancer}.settingsStore",
+                        preview: {
+                            type: "fluid.emptySubcomponent"
+                        },
+                        tabs: {
+                            type: "fluid.tabs",
+                            container: "body",
+                            createOnEvent: "onUIOptionsComponentReady",
+                            options: {
+                                events: { // TODO: this mess required through lack of FLUID-4398
+                                    boiledTabShow: {
+                                        event: "tabsshow",
+                                        args: ["{uiOptions}"]
                                     }
+                                },
+                                listeners: { // FLUID-4337 bug again
+                                    boiledTabShow: fluid.uiOptions.tabSelectRelay
                                 }
                             }
                         }
                     }
                 }
+            }
+        },
+        uiOptionsTransform: {
+            config: { // For FLUID-4409
+                "!*.uiOptionsLoader.*.uiOptions.*.uiEnhancer.options": "uiEnhancer.options",
             }
         }
     });
@@ -310,9 +312,7 @@ var fluid_1_4 = fluid_1_4 || {};
         
         // Swap the mapping for easier extraction on FatPanelOtherWorldLoader options
         fluid.each(bridgeMapping, function (value, key) {
-            if (typeof value === "string") {
-                swappedBridgeMapping[value] = key;
-            }
+           swappedBridgeMapping[value] = key;
         });
 
         // Extracts the mappings that only belong to FatPanelOtherWorldLoader
@@ -329,7 +329,8 @@ var fluid_1_4 = fluid_1_4 || {};
         // Hack for FLUID-4409: Capabilities of our ad hoc "mapOptions" function have been exceeded - put weak priority instance of outer
         // merged options into the inner world
         fluid.set(overallOptions, "uiEnhancer.options", that.uiEnhancer.options.originalUserOptions);
-        var mappedOptions = fluid.uiOptions.mapOptions(overallOptions, defaults.uiOptionsTransform.config, defaults.mergePolicy);
+        var mappedOptions = fluid.uiOptions.mapOptions(overallOptions, defaults.uiOptionsTransform.config, defaults.mergePolicy, 
+            fluid.copy(defaults.derivedDefaults));
         var component = innerFluid.invokeGlobalFunction("fluid.uiOptions.FatPanelOtherWorldLoader", [container, mappedOptions]);
         that.uiOptionsLoader = component.uiOptionsLoader;
     };
