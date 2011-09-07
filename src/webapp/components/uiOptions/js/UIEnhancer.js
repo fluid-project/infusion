@@ -98,7 +98,15 @@ var fluid_1_4 = fluid_1_4 || {};
         components: {
             textSize: {
                 type: "fluid.uiEnhancer.textSizer",
-                container: "{uiEnhancer}.container"
+                container: "{uiEnhancer}.container",
+                options: {
+                    invokers: {
+                        calcInitSize: {
+                            funcName: "fluid.uiEnhancer.textSizer.calcInitSize",
+                            args: ["{textSizer}", "{uiEnhancer}.options.fontSizeMap"]
+                        }
+                    }
+                }
             },
             tableOfContents: {
                 type: "fluid.tableOfContents",
@@ -129,7 +137,15 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             lineSpacing: {
                 type: "fluid.uiEnhancer.lineSpacer",
-                container: "{uiEnhancer}.container"
+                container: "{uiEnhancer}.container",
+                options: {
+                    invokers: {
+                        calcInitSize: {
+                            funcName: "fluid.uiEnhancer.lineSpacer.calcInitSize",
+                            args: ["{lineSpacer}", "{uiEnhancer}.options.fontSizeMap"]
+                        }
+                    }
+                }
             },
             theme: {
                 type: "fluid.uiEnhancer.classSwapper",
@@ -296,17 +312,31 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
 
-    fluid.uiEnhancer.getTextSize = function (container, fontSizeMap) {
+    /**
+     * return "font-size" in px
+     * @param (Object) container
+     * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
+     */
+    fluid.uiEnhancer.getTextSizeInPx = function (container, fontSizeMap) {
         var fontSize = container.css("font-size");
 
         if (fontSizeMap[fontSize]) {
             fontSize = fontSizeMap[fontSize];
         }
 
+        // fontSize is in px, convert and return font size in em
         return parseFloat(fontSize);
     };
 
-
+    /**
+     * return "font-size" in em
+     * @param (Object) container
+     * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
+     */
+    fluid.uiEnhancer.getTextSizeInEm = function (container, fontSizeMap) {
+        // retrieve fontSize in px, convert and return in em - 1em === 16px 
+        return Math.round(fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap) / 16 * 10000) / 10000;
+    };
 
     /*******************************************************************************
      * TextSizer                                                              *
@@ -321,10 +351,6 @@ var fluid_1_4 = fluid_1_4 || {};
             set: {
                 funcName: "fluid.uiEnhancer.textSizer.set",
                 args: ["@0", "{textSizer}"]
-            },
-            calcInitSize: {
-                funcName: "fluid.uiEnhancer.textSizer.calcInitSize",
-                args: ["{textSizer}"]
             }
         }
     });
@@ -336,13 +362,13 @@ var fluid_1_4 = fluid_1_4 || {};
         if (times === 1) {
             that.container.css("font-size", ""); // empty is same effect as not being set
         } else if (times && times > 0) {
-            var targetSize = that.initialSize * times + "px";
+            var targetSize = that.initialSize * times + "em";
             that.container.css("font-size", targetSize);
         }
     };
     
-    fluid.uiEnhancer.textSizer.calcInitSize = function (that) {
-        that.initialSize = fluid.uiEnhancer.getTextSize(that.container, fluid.defaults("fluid.uiEnhancer").fontSizeMap);     
+    fluid.uiEnhancer.textSizer.calcInitSize = function (that, fontSizeMap) {
+        that.initialSize = fluid.uiEnhancer.getTextSizeInEm(that.container, fontSizeMap);     
     };
     
 
@@ -410,10 +436,6 @@ var fluid_1_4 = fluid_1_4 || {};
             set: {
                 funcName: "fluid.uiEnhancer.lineSpacer.set",
                 args: ["@0", "{lineSpacer}"]
-            },
-            calcInitSize: {
-                funcName: "fluid.uiEnhancer.lineSpacer.calcInitSize",
-                args: ["{lineSpacer}"]
             }
         }
     });
@@ -429,7 +451,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     // Returns the value of css style "line-height" in em 
-    fluid.uiEnhancer.lineSpacer.calcInitSize = function (that) {
+    fluid.uiEnhancer.lineSpacer.calcInitSize = function (that, fontSizeMap) {
         var lineHeight = that.container.css("lineHeight");
         
         // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1em.
@@ -450,7 +472,7 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
         
-        that.initialSize = Math.round(parseFloat(lineHeight) / fluid.uiEnhancer.getTextSize(that.container, fluid.defaults("fluid.uiEnhancer").fontSizeMap) * 100) / 100;
+        that.initialSize = Math.round(parseFloat(lineHeight) / fluid.uiEnhancer.getTextSizeInPx(that.container, fontSizeMap) * 100) / 100;
     };
 
     /*******************************************************************************
