@@ -74,6 +74,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.pageEnhancer({
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
             });
+            var savedSelections;
+            function testSave(selections) {
+                savedSelections = selections;
+            }
             
             function testComponent(uiOptionsLoader, uiOptions) {
                 var defaultSiteSettings = uiOptions.settingsStore.options.defaultSiteSettings;
@@ -84,6 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var saveButton = uiOptions.locate("save");
                 saveButton.click();
                 checkModelSelections(uiOptions.model.selections, bwSkin);
+                jqUnit.assertEquals("Save event fired with selections", uiOptions.model.selections, savedSelections);
                 applierRequestChanges(uiOptions, ybSkin);
     
                 var cancelButton = uiOptions.locate("cancel");
@@ -101,7 +106,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 start();
             };
             
-            jqUnit.expect(22);
+            jqUnit.expect(23);
                        
             var that = fluid.uiOptions.fullNoPreview("#myUIOptions", {
                 prefix: "../../../../components/uiOptions/html/",
@@ -109,6 +114,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     options: {
                         listeners: {
                             onReady: testComponent
+                        }
+                    }
+                },
+                uiOptions: {
+                    options: {
+                        listeners: {
+                            onSave: testSave
                         }
                     }
                 }

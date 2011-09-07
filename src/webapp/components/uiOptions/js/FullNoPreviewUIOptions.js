@@ -25,46 +25,33 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.defaults("fluid.uiOptions.fullNoPreview", {
         gradeNames: ["fluid.uiOptions.inline"],
         container: "{fullNoPreview}.container",
-        uiOptionsTransform: {
-            config: {
-                "*.templateLoader": {
-                    options: {
-                        templates: {
-                            uiOptions: "%prefix/FullNoPreviewUIOptions.html"
-                        }
+        derivedDefaults: {
+            templateLoader: {
+                options: {
+                    templates: {
+                        uiOptions: "%prefix/FullNoPreviewUIOptions.html"
                     }
-                },
-                "*.uiOptionsLoader.*.uiOptions": {
-                    options: {
-                        components: {
-                            preview: {
-                                type: "fluid.emptySubcomponent"
-                            },
-                            settingsStore: "{uiEnhancer}.settingsStore"
+                }
+            },
+            uiOptions: {
+                options: {
+                    components: {
+                        preview: {
+                            type: "fluid.emptySubcomponent"
                         },
-                        listeners: {
-                            onReset: function (uiOptions) {
-                                uiOptions.save();
-                            },
-                            onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
-                        }
+                        settingsStore: "{uiEnhancer}.settingsStore"
+                    },
+                    listeners: {
+                        onReset: function (uiOptions) {
+                            uiOptions.save();
+                        },
+                        onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
                     }
                 }
             }
         }
     });
     
-    fluid.uiOptions.fullNoPreview = function (container, options) {
-        // make "container" one of the options so it can be munged by the uiOptions.mapOptions.
-        // This container is passed down to be used as uiOptionsLoader.container 
-        var componentConfig = fluid.defaults("fluid.uiOptions.fullNoPreview").uiOptionsTransform.config;
-        var mergePolicy = fluid.defaults("fluid.uiOptions.fullNoPreview").mergePolicy;
-        options.container = container;
-        
-        var mappedOptions = fluid.uiOptions.mapOptions(options, componentConfig, mergePolicy);
-        var that = fluid.initView("fluid.uiOptions.fullNoPreview", container, mappedOptions);
-        fluid.initDependents(that);
-        return that;
-    };
+    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.fullNoPreview", fluid.identity); 
     
 })(jQuery, fluid_1_4);
