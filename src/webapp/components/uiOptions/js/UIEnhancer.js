@@ -189,6 +189,15 @@ var fluid_1_4 = fluid_1_4 || {};
             "links": "fl-text-underline fl-text-bold fl-text-larger", 
             "inputsLarger": "fl-text-larger"
         },
+        fontSizeMap: {
+            "xx-small": "9px",
+            "x-small": "11px",
+            "small": "13px",
+            "medium": "15px",
+            "large": "18px",
+            "x-large": "23px",
+            "xx-large": "30px"
+        },
         selectors: {
             colorInversion: ".fl-inverted-color"
         },
@@ -287,8 +296,14 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
 
-    fluid.uiEnhancer.getTextSize = function (container) {
-        return parseFloat(container.css("font-size"));        
+    fluid.uiEnhancer.getTextSize = function (container, fontSizeMap) {
+        var fontSize = container.css("font-size");
+
+        if (fontSizeMap[fontSize]) {
+            fontSize = fontSizeMap[fontSize];
+        }
+
+        return parseFloat(fontSize);
     };
 
 
@@ -327,7 +342,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uiEnhancer.textSizer.calcInitSize = function (that) {
-        that.initialSize = fluid.uiEnhancer.getTextSize(that.container);     
+        that.initialSize = fluid.uiEnhancer.getTextSize(that.container, fluid.defaults("fluid.uiEnhancer").fontSizeMap);     
     };
     
 
@@ -430,11 +445,12 @@ var fluid_1_4 = fluid_1_4 || {};
             lineHeightInIE = that.container[0].currentStyle.lineHeight;
             
             if (lineHeightInIE.match(/[0-9]$/)) {
-                return lineHeightInIE;
+                that.initialSize = lineHeightInIE;
+                return;
             }
         }
         
-        that.initialSize = Math.round(parseFloat(lineHeight) / fluid.uiEnhancer.getTextSize(that.container) * 100) / 100;
+        that.initialSize = Math.round(parseFloat(lineHeight) / fluid.uiEnhancer.getTextSize(that.container, fluid.defaults("fluid.uiEnhancer").fontSizeMap) * 100) / 100;
     };
 
     /*******************************************************************************
