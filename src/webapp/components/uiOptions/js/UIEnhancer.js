@@ -98,7 +98,15 @@ var fluid_1_4 = fluid_1_4 || {};
         components: {
             textSize: {
                 type: "fluid.uiEnhancer.textSizer",
-                container: "{uiEnhancer}.container"
+                container: "{uiEnhancer}.container",
+                options: {
+                    invokers: {
+                        calcInitSize: {
+                            funcName: "fluid.uiEnhancer.textSizer.calcInitSize",
+                            args: ["{textSizer}", "{uiEnhancer}.options.fontSizeMap", "{uiEnhancer}.options.px2emFactor"]
+                        }
+                    }
+                }
             },
             tableOfContents: {
                 type: "fluid.tableOfContents",
@@ -129,7 +137,15 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             lineSpacing: {
                 type: "fluid.uiEnhancer.lineSpacer",
-                container: "{uiEnhancer}.container"
+                container: "{uiEnhancer}.container",
+                options: {
+                    invokers: {
+                        calcInitSize: {
+                            funcName: "fluid.uiEnhancer.lineSpacer.calcInitSize",
+                            args: ["{lineSpacer}", "{uiEnhancer}.options.fontSizeMap"]
+                        }
+                    }
+                }
             },
             theme: {
                 type: "fluid.uiEnhancer.classSwapper",
@@ -189,6 +205,16 @@ var fluid_1_4 = fluid_1_4 || {};
             "links": "fl-text-underline fl-text-bold fl-text-larger", 
             "inputsLarger": "fl-text-larger"
         },
+        fontSizeMap: {
+            "xx-small": "9px",
+            "x-small": "11px",
+            "small": "13px",
+            "medium": "15px",
+            "large": "18px",
+            "x-large": "23px",
+            "xx-large": "30px"
+        },
+        px2emFactor: "16",
         selectors: {
             colorInversion: ".fl-inverted-color"
         },
@@ -287,11 +313,31 @@ var fluid_1_4 = fluid_1_4 || {};
         }
     };
 
-    fluid.uiEnhancer.getTextSize = function (container) {
-        return parseFloat(container.css("font-size"));        
+    /**
+     * return "font-size" in px
+     * @param (Object) container
+     * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
+     */
+    fluid.uiEnhancer.getTextSizeInPx = function (container, fontSizeMap) {
+        var fontSize = container.css("font-size");
+
+        if (fontSizeMap[fontSize]) {
+            fontSize = fontSizeMap[fontSize];
+        }
+
+        // fontSize is in px, convert and return font size in em
+        return parseFloat(fontSize);
     };
 
-
+    /**
+     * return "font-size" in em
+     * @param (Object) container
+     * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
+     */
+    fluid.uiEnhancer.getTextSizeInEm = function (container, fontSizeMap, px2emFactor) {
+        // retrieve fontSize in px, convert and return in em 
+        return Math.round(fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap) / px2emFactor * 10000) / 10000;
+    };
 
     /*******************************************************************************
      * TextSizer                                                              *
@@ -306,10 +352,6 @@ var fluid_1_4 = fluid_1_4 || {};
             set: {
                 funcName: "fluid.uiEnhancer.textSizer.set",
                 args: ["@0", "{textSizer}"]
-            },
-            calcInitSize: {
-                funcName: "fluid.uiEnhancer.textSizer.calcInitSize",
-                args: ["{textSizer}"]
             }
         }
     });
@@ -321,13 +363,13 @@ var fluid_1_4 = fluid_1_4 || {};
         if (times === 1) {
             that.container.css("font-size", ""); // empty is same effect as not being set
         } else if (times && times > 0) {
-            var targetSize = that.initialSize * times + "px";
+            var targetSize = that.initialSize * times + "em";
             that.container.css("font-size", targetSize);
         }
     };
     
-    fluid.uiEnhancer.textSizer.calcInitSize = function (that) {
-        that.initialSize = fluid.uiEnhancer.getTextSize(that.container);     
+    fluid.uiEnhancer.textSizer.calcInitSize = function (that, fontSizeMap, px2emFactor) {
+        that.initialSize = fluid.uiEnhancer.getTextSizeInEm(that.container, fontSizeMap, px2emFactor);     
     };
     
 
@@ -395,10 +437,6 @@ var fluid_1_4 = fluid_1_4 || {};
             set: {
                 funcName: "fluid.uiEnhancer.lineSpacer.set",
                 args: ["@0", "{lineSpacer}"]
-            },
-            calcInitSize: {
-                funcName: "fluid.uiEnhancer.lineSpacer.calcInitSize",
-                args: ["{lineSpacer}"]
             }
         }
     });
@@ -414,7 +452,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     // Returns the value of css style "line-height" in em 
-    fluid.uiEnhancer.lineSpacer.calcInitSize = function (that) {
+    fluid.uiEnhancer.lineSpacer.calcInitSize = function (that, fontSizeMap) {
         var lineHeight = that.container.css("lineHeight");
         
         // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1em.
@@ -430,11 +468,12 @@ var fluid_1_4 = fluid_1_4 || {};
             lineHeightInIE = that.container[0].currentStyle.lineHeight;
             
             if (lineHeightInIE.match(/[0-9]$/)) {
-                return lineHeightInIE;
+                that.initialSize = lineHeightInIE;
+                return;
             }
         }
         
-        that.initialSize = Math.round(parseFloat(lineHeight) / fluid.uiEnhancer.getTextSize(that.container) * 100) / 100;
+        that.initialSize = Math.round(parseFloat(lineHeight) / fluid.uiEnhancer.getTextSizeInPx(that.container, fontSizeMap) * 100) / 100;
     };
 
     /*******************************************************************************
