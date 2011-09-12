@@ -1,5 +1,6 @@
 /* UI Options Fat Panel styles */
 .fl-uiOptions-fatPanel {
+    min-width: 960px;
 	min-width: inherit;
     background-color: #fff;
 }
@@ -46,7 +47,6 @@
 .fl-uiOptions-fatPanel.ui-tabs .ui-tabs-nav li { top: 0px; margin: 0px; }
 .fl-uiOptions-fatPanel.ui-tabs .ui-tabs-nav li a { float: left; padding: 1em 1.5em 1em 3em; }
 .fl-uiOptions-fatPanel.ui-tabs .ui-state-default { border: none; }
-.fl-uiOptions-fatPanel.ui-tabs .ui-helper-reset { line-height: 1em; }
 .fl-uiOptions-fatPanel.ui-tabs .ui-tabs-nav li.ui-tabs-selected { padding-bottom: 0px; }
 .fl-uiOptions-fatPanel .fl-tabs .ui-corner-top { -moz-border-radius-topleft: 0px; -moz-border-radius-topright: 0px; }
 .fl-uiOptions-fatPanel .fl-tabs .ui-corner-all { -moz-border-radius: 0px; }
@@ -55,14 +55,14 @@
 .fl-uiOptions-fatPanel.ui-tabs .ui-widget-header { background: none; border: 0px; background-color: #333333; }
 
 .fl-uiOptions-fatPanel.ui-tabs .ui-tabs-panel ul {
-	margin: 0em;
-	padding-top: 1.5em;
+    margin: 0em;
+    padding-top: 1.5em;
 }
 
 /* Tab images */
 .fl-uiOptions-fatPanel .fl-tab-text, .fl-uiOptions-fatPanel .fl-tab-layout, .fl-uiOptions-fatPanel .fl-tab-links, .fl-uiOptions-fatPanel #reset {
     background-repeat: no-repeat;
-    background-position: 1.1em 0.6em;
+    background-position: 8% 50%;
 }
 
 .fl-uiOptions-fatPanel .fl-tab-text { background-image: url('../images/default/uio_icon_textanddisplay_defaultInverted_16x16.png'); }

@@ -1,5 +1,5 @@
 body {
-	font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
+    font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
 }
 .content {
     margin: 64px 64px 64px 64px;
@@ -8,9 +8,6 @@ h1 {
     font-size: 1.4em;
     margin-bottom: 1em;
     font-weight: bold;
-}
-#toc {
-	margin-bottom: 25px;
 }
 .backButton {
     background-color: #0071BC;
