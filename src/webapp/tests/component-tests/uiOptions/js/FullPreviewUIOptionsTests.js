@@ -20,19 +20,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.setLogging(true);
         
         var tests = jqUnit.testCase("FullPreviewUIOptions Tests");
-        fluid.staticEnvironment.fullPreviewUIOptionsTests = fluid.typeTag("fluid.FullPreviewUIOptionsTests");
-
-        // Supply the table of contents' template URL
-        fluid.demands("fluid.tableOfContents", ["fluid.uiEnhancer"], {
-            options: {
-                templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
-            }
-        });
         
         /**************************************************
          * fluid.fullPreviewUIOptions Integration Tests *
          **************************************************/        
-        fluid.tests.uiOptions.integrationTest(tests, "fluid.uiOptions.fullPreview");    
+        fluid.tests.uiOptions.integrationTest(tests, "fluid.uiOptions.fullPreview");
+        fluid.tests.uiOptions.mungingIntegrationTest(tests, "fluid.uiOptions.fullPreview", "#myUIOptions");    
     });
 
 })(jQuery);        
