@@ -37,16 +37,6 @@ var fluid_1_4 = fluid_1_4 || {};
                         uiOptions: "%prefix/FullPreviewUIOptions.html"
                     }
                 }
-            },
-            uiOptions: {
-                options: {
-                    components: {
-                        settingsStore: "{uiEnhancer}.settingsStore"
-                    },
-                    listeners: {
-                        onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
-                    }
-                }
             }
         }
     });

@@ -214,6 +214,24 @@ var fluid_1_4 = fluid_1_4 || {};
                 "*.uiOptionsLoader.*.uiOptions.*.preview":            "preview",
                 "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
             }
+        },
+        derivedDefaults: {
+            uiOptions: {
+                options: {
+                    components: {
+                        preview: {
+                            type: "fluid.emptySubcomponent"
+                        },
+                        settingsStore: "{uiEnhancer}.settingsStore"
+                    },
+                    listeners: {
+                        onReset: function (uiOptions) {
+                            uiOptions.save();
+                        },
+                        onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
+                    }
+                }
+            }
         }
     });
     
