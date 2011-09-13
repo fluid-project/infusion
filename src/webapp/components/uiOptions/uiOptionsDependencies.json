@@ -10,6 +10,7 @@
             "FullUIOptions.css"
         ],
         "files": [
+            "URLUtilities.js",
             "Store.js",
             "UIEnhancer.js",
             "UIOptions.js",

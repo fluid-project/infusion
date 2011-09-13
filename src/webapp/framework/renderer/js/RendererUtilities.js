@@ -15,7 +15,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*global fluid_1_4:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, funcinvoke: true, elsecatch: true, operator: true, jslintok:true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, continue: true, elsecatch: true, operator: true, jslintok:true, undef: true, newcap: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid_1_4 = fluid_1_4 || {};
 
@@ -166,10 +166,9 @@ fluid_1_4 = fluid_1_4 || {};
             };
         }
         var produceTree = that.events.produceTree;
-        produceTree.addListener( function() {
+        produceTree.addListener(function() {
             return that.options.protoTree;
-            }
-        );
+        });
         
         if (that.options.produceTree) {
             produceTree.addListener(that.options.produceTree);
@@ -429,7 +428,7 @@ fluid_1_4 = fluid_1_4 || {};
             var EL = typeof (value) === "string" ? fetchEL(value) : null;
             if (EL) {
                 proto.valuebinding = EL;
-            } else {
+            } else if (value !== undefined) {
                 proto.value = value;
             }
             if (options.model && proto.valuebinding && proto.value === undefined) {

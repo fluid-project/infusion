@@ -1,0 +1,22 @@
+body {
+    font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
+}
+.content {
+    margin: 64px 64px 64px 64px;
+}
+h1 {
+    font-size: 1.4em;
+    margin-bottom: 1em;
+    font-weight: bold;
+}
+.backButton {
+    background-color: #0071BC;
+    padding: 10px;
+}
+.backButton a {
+    color: white;
+    text-decoration: none;
+    padding-left: 25px;
+    background-image: url("../images/arrow_left.png");
+    background-repeat: no-repeat;
+}

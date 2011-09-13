@@ -27,39 +27,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             layout: false
         };
         
-        fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer", "fluid.uiOptions.uiEnhancerTests"], {
-            funcName: "fluid.tempStore"
-        });
-        
-        // Supply the table of contents' template URL
-        fluid.demands("fluid.tableOfContents.levels", "fluid.tableOfContents", {
-            options: {
-                resources: {
-                    template: {
-                        forceCache: true,
-                        url: "../../../../components/tableOfContents/html/TableOfContents.html"
-                    }
+        var uiEnhancerOptions = {
+            components: {
+                settingsStore: {
+                    type: "fluid.tempStore"
                 }
-            }
-        });
+            },
+            tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+        };
 
         var tests = new jqUnit.TestCase("UI Enhancer Tests");
         
         tests.test("Initialization", function () {
-            expect(13);
+            expect(11);
 
             jqUnit.assertEquals("Initially font size classes exist", 3, $(".fl-font-size-90").length);
             jqUnit.assertEquals("Initially layout class exists", 3, $(".fl-layout-linear").length);
-            jqUnit.assertEquals("Initially mist class exists", 1, $(".fl-theme-hci").length);
+            jqUnit.assertEquals("Initially white on black class exists", 1, $(".fl-theme-wb").length);
             jqUnit.assertEquals("Initially font-sans class exists", 1, $(".fl-font-sans").length);
             jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
             jqUnit.assertEquals("Initially text-spacing class exists", 1, $(".fl-font-spacing-3").length);
-            fluid.pageEnhancer();
+            fluid.pageEnhancer(uiEnhancerOptions);
             jqUnit.assertEquals("font size classes should not be removed", 3, $(".fl-font-size-90").length);
             jqUnit.assertEquals("layout class is gone", 0, $(".fl-layout-linear").length);
-            jqUnit.assertEquals("Fluid theme class is gone", 0, $(".fl-theme-hci").length);
-            jqUnit.assertEquals("font comic sans class is gone", 0, $(".fl-font-comic-sans").length);
-            jqUnit.assertEquals("arial class is not set", 0, $(".fl-font-arial").length);
+            jqUnit.assertEquals("FSS theme class has not been removed", 1, $(".fl-theme-wb").length);
             jqUnit.assertEquals("Things are still styled with 'first-class' ", 3, $(".first-class").length);
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });
@@ -70,14 +61,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var body = $("body");
             var initialFontSize = parseFloat(body.css("fontSize"));
             
-            var uiEnhancer = fluid.pageEnhancer().uiEnhancer;
+            var uiEnhancer = fluid.pageEnhancer(uiEnhancerOptions).uiEnhancer;
             uiEnhancer.updateModel(testSettings);
             
             var expectedTextSize = initialFontSize * testSettings.textSize;
             
             jqUnit.assertEquals("Large text size is set", expectedTextSize.toFixed(0) + "px", body.css("fontSize"));
-            jqUnit.assertTrue("Verdana font is set", body.hasClass("fl-font-verdana"));
-            jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-hc"));
+            jqUnit.assertTrue("Verdana font is set", body.hasClass("fl-font-uio-verdana"));
+            jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-bw"));
 
         });
         
@@ -117,11 +108,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             swapper.clearClasses();
             jqUnit.assertFalse("The container's font setting was removed", swapper.container.is(swapper.classSelector));
-            jqUnit.assertEquals("There is no font setting in the container", 0, $(swapper.classSelector, swapper.container).length);
             
             swapper.swap("times");
             jqUnit.assertTrue("The container has a font setting of times", swapper.container.hasClass(opts.classes.times));
-            jqUnit.assertEquals("There is no font setting in the container", 0, $(swapper.classSelector, swapper.container).length);
             
         });
 
@@ -136,5 +125,72 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The size should be doubled", "30px", lineSpacer.container.css("lineHeight"));
         
         });
+
+        function cleanStaticEnvironment() {
+            delete fluid.staticEnvironment.browserIE;
+            delete fluid.staticEnvironment.browserMajorVersion;            
+        }
+
+        function withIE6Environment(withIt, testFunc) {
+            try {
+                cleanStaticEnvironment;
+                if (withIt) {
+                    fluid.staticEnvironment.browserIE = fluid.typeTag("fluid.browser.msie");
+                    fluid.staticEnvironment.browserMajorVersion = fluid.typeTag("fluid.browser.majorVersion.6");
+                }
+                testFunc();
+             }
+             finally {
+                 cleanStaticEnvironment();
+             }
+        }
+        
+        function testIE6ColorInversion(withIt, testFunc) {
+            tests.test("IE6ColorInversion: " + withIt, function() { 
+                withIE6Environment(withIt, function() {
+                    fluid.pageEnhancer(uiEnhancerOptions);
+                    testFunc();
+                })}
+           );
+        }
+        
+        testIE6ColorInversion(true, function() {  
+            jqUnit.assertEquals("fl-inverted-color has been removed", 0, $(".fl-inverted-color").length);
+        });
+        testIE6ColorInversion(false, function() {
+            jqUnit.assertEquals("fl-inverted-color is not touched", 1, $(".fl-inverted-color").length);
+        });
+
+        tests.test("Options munging", function () {
+            expect(2);
+
+            uiEnhancerOptions = {
+                components: {
+                    settingsStore: {
+                        type: "fluid.tempStore"
+                    }
+                },
+                tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
+                classnameMap: {
+                    "textFont": {
+                        "default": "fl-font-times"
+                    },
+                    "theme": {
+                        "yb": "fl-test"
+                    }
+                },
+                defaultSiteSettings: {
+                    theme: "yb"
+                }
+            };
+
+            fluid.pageEnhancer(uiEnhancerOptions);
+
+            var body = $("body");
+                
+            jqUnit.assertTrue("The initial times font is set correctly", body.hasClass("fl-font-times"));
+            jqUnit.assertTrue("The initial test theme is set correctly", body.hasClass("fl-test"));
+        });
+
     });
 })(jQuery);

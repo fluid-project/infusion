@@ -73,5 +73,8 @@ body.fl-reset,
 .fl-reset sup {vertical-align:text-top;}
 .fl-reset sub {vertical-align:text-bottom;}
 
-/*because legend doesn't inherit in IE */
+/* because legend doesn't inherit in IE */
 .fl-reset legend{color:#000;}
+
+/* button font and size inherit from its parent */
+.fl-reset button {font-family: inherit;font-size: inherit;}

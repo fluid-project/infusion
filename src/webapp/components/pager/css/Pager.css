@@ -57,12 +57,12 @@
 /***********************************************************/
 /** THEMES - High Contrast **/
 /* Pager data */
-.fl-theme-hc .fl-pager .fl-pager-data {
+.fl-theme-bw .fl-pager .fl-pager-data {
 }
-.fl-theme-hc .fl-pager .fl-pager-data .fl-pager-desc {
+.fl-theme-bw .fl-pager .fl-pager-data .fl-pager-desc {
   background: url(../images/arrow-up.png) no-repeat right;
 }
-.fl-theme-hc .fl-pager .fl-pager-data .fl-pager-asc {
+.fl-theme-bw .fl-pager .fl-pager-data .fl-pager-asc {
   background: url(../images/arrow-dn.png) no-repeat right;
 }
 

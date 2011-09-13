@@ -13,7 +13,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*global fluid_1_4:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, elsecatch: true, operator: true, jslintok: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, continue: true, elsecatch: true, operator: true, jslintok:true, undef: true, newcap: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
 
@@ -201,7 +201,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 var ref = fluid.renderContextReference(parsed);
                 fluid.log("Failed to resolve reference " + ref + ": thatStack contains\n" + fluid.dumpThatStack(thatStack, instantiator));
                 fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " 
-                    + context + " from component root of type " + thatStack[0].typeName);
+                    + context + " from component root of type " + thatStack[0].typeName, "\ninstantiator contents: ", instantiator);
             }
             return fluid.get(foundComponent, parsed.path, fetchStrategies);
         };
@@ -637,7 +637,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 var invokeSpec = fluid.embodyDemands(instantiator, that, demandspec, args, {passArgs: true});
                 return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
             }, ["    while invoking invoker with name " + functionName + " on component", that]);
-        }
+        };
     };
     
     // unsupported, non-API function
@@ -768,7 +768,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             togo.push(key);
         });
         return togo;
-    }
+    };
     
     // unsupported, non-API function    
     fluid.localRecordExpected = ["type", "options", "arguments", "mergeOptions",
@@ -892,7 +892,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             instantiator = root["fluid.instantiator"] = fluid.instantiator();
             //fluid.log("Created new instantiator with id " + instantiator.id + " in order to operate on component " + typeName);
         }
-        return fluid.pushActivity( function() {
+        return fluid.pushActivity(function() {
             return fluid.tryCatch(function() {
                 if (that) {
                     instantiator.recordComponent(that);
@@ -1146,7 +1146,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.resolveEnvironment = function(obj, options) {
         // Don't create a component here since this function is itself used in the 
         // component expansion pathway - avoid all expansion in any case to head off FLUID-4301
-        var options = $.extend(true, {}, fluid.rawDefaults("fluid.resolveEnvironment"), options);
+        options = $.extend(true, {}, fluid.rawDefaults("fluid.resolveEnvironment"), options);
         return resolveEnvironmentImpl(obj, options);
     };
 

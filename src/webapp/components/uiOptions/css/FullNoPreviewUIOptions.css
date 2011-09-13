@@ -39,15 +39,3 @@ body {
 .fl-uiOptions-fullNoPreview .fl-inputs  {
     margin-bottom: 15px;        /* adds space between label, inputs when browser window is narrow */
 }
-
-/* Text controls */
-.fl-uiOptions-fullNoPreview .fl-uiOptions-text ul li {
-    clear: left;
-    height: 3.5em;
-}
-
-/* Layout and link controls */
-.fl-uiOptions-fullNoPreview .fl-uiOptions-layout li, 
-.fl-uiOptions-fullNoPreview .fl-uiOptions-links li {
-    height: 4em;
-}

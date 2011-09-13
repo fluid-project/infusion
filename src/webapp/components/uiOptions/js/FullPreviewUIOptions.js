@@ -21,41 +21,44 @@ var fluid_1_4 = fluid_1_4 || {};
     /***************************
      * Full Preview UI Options *
      ***************************/
-    fluid.demands("fluid.uiOptions.templateLoader", "fluid.fullPreviewUIOptions", {
-        options: {
-            templates: {
-                uiOptions: "%prefixFullPreviewUIOptions.html"
+
+    fluid.defaults("fluid.uiOptions.fullPreview", {
+        gradeNames: ["fluid.uiOptions.inline"],
+        container: "{fullPreview}.container",
+        uiOptionsTransform: {
+            config: {
+                "!*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer.options": "outerPreviewEnhancerOptions"
             }
-        }
-    });
-    
-    fluid.demands("fluid.uiOptions.templatePath", "fluid.fullPreviewUIOptions", {
-        options: {
-            value: "{fullPreviewUIOptions}.options.prefix"
-        }
-    });
-    
-    fluid.defaults("fluid.fullPreviewUIOptions", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],            
-        components: {
-            uiOptionsLoader: {
-                type: "fluid.uiOptions.loader",
-                container: "{fullPreviewUIOptions}.container"
-            },
+        },
+        derivedDefaults: {
             templateLoader: {
-                priority: "first",
-                type: "fluid.uiOptions.templateLoader"
-            }                     
-        }
-    });       
-    
-    // Options for UIOptions in full with preview mode
-    fluid.demands("fluid.uiOptions", ["fluid.fullPreviewUIOptions"], {
-        options: {
-            components: {
-                settingsStore: "{uiEnhancer}.settingsStore"
+                options: {
+                    templates: {
+                        uiOptions: "%prefix/FullPreviewUIOptions.html"
+                    }
+                }
+            },
+            uiOptions: {
+                options: {
+                    components: {
+                        settingsStore: "{uiEnhancer}.settingsStore"
+                    },
+                    listeners: {
+                        onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
+                    }
+                }
             }
         }
-    });      
+    });
+    
+    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.fullPreview", function (options) {
+        // This is a terrible hack for FLUID-4409. Since it is impossible for us to be invoked via IoC, the only
+        // source of this configuration could be the static pageEnhancer
+        // The correct way to resolve the problem is to refactor UIEnhancer so that all of its configuration other than
+        // the container to be bound to be enhanced is kept in a separate, shared component, "UIEnhancerConfig".
+        var enhancerOptions = fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions");
+        options.outerPreviewEnhancerOptions = enhancerOptions;
+        return options;
+    });
     
 })(jQuery, fluid_1_4);
