@@ -33,14 +33,14 @@
     /* background: -moz-linear-gradient(bottom, #e0e0e0, #fff;) */
     background-image: url("../images/default/uio_icon_save_default_13x13.png");
     background-repeat: no-repeat;
-    background-position: 0.2em 0.5em;
+    background-position: 2% 50%;
 }
 
 .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel {
     padding-left: 20px;
     background-image: url("../images/default/uio_icon_cancel_default_13x13.png");
     background-repeat: no-repeat;
-    background-position: 0.2em 0.5em;
+    background-position: 2% 50%;
 }
 
 /* Section header icons */
@@ -52,17 +52,27 @@
 .fl-uiOptions h2.fl-uiOptions-text-icon {
     background-image: url("../images/default/uio_icon_textanddisplay_default_18x18.png");
     background-repeat: no-repeat;
-    background-position: 0px 0.7em;
+    background-position: 0px 55%;
 }
 .fl-uiOptions h2.fl-uiOptions-layout-icon {
     background-image: url("../images/default/uio_icon_layoutandnavigation_default_18x18.png");
     background-repeat: no-repeat;
-    background-position: 0px 0.7em; 
+    background-position: 0px 55%; 
 }
 .fl-uiOptions h2.fl-uiOptions-links-icon {
     background-image: url("../images/default/uio_icon_linksandbuttons_default_18x18.png");
     background-repeat: no-repeat;
-    background-position: 0px 0.7em; 
+    background-position: 0px 55%; 
+}
+
+/* Text controls */
+.fl-uiOptions .fl-uiOptions-text ul li {
+    clear: left;
+    height: 3.5em;
+}
+
+.fl-uiOptions .fl-slider-input {
+    float: right;
 }
 
 /* Theming */

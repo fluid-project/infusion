@@ -2,7 +2,6 @@
 
 .fl-uiOptions {
     font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
-    font-size: 0.85em;
 }
 
 /* Controls */
@@ -30,14 +29,9 @@
     margin-right: 10px;
 }
 
-.fl-uiOptions .fl-slider-input {
-    float: right;
-}
-
 /* Check boxes */
 .fl-uiOptions input[type="checkbox"] {
     margin-right:10px;
-    margin-bottom: 2em;
     border: 1px solid black;
 }
 
@@ -75,9 +69,13 @@
 /* Layout and links controls */
 .fl-uiOptions .fl-uiOptions-option-description {
     color: #4D4D4D;
-    margin-bottom: 1em;
     padding-top: 5px;
     font-size: 1.1em;
+}
+
+.fl-uiOptions .fl-uiOptions-layout div, 
+.fl-uiOptions .fl-uiOptions-links div {
+    margin-left: 25px;
 }
 
 /* Slider specifics */

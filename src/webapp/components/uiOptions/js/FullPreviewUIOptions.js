@@ -27,43 +27,38 @@ var fluid_1_4 = fluid_1_4 || {};
         container: "{fullPreview}.container",
         uiOptionsTransform: {
             config: {
-                "!*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer.options": "outerPreviewEnhancerOptions",
-                "*.templateLoader": {
-                    options: {
-                        templates: {
-                            uiOptions: "%prefix/FullPreviewUIOptions.html"
-                        }
+                "!*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer.options": "outerPreviewEnhancerOptions"
+            }
+        },
+        derivedDefaults: {
+            templateLoader: {
+                options: {
+                    templates: {
+                        uiOptions: "%prefix/FullPreviewUIOptions.html"
                     }
-                },
-                "*.uiOptionsLoader.*.uiOptions": {
-                    options: {
-                        components: {
-                            settingsStore: "{uiEnhancer}.settingsStore"
-                        },
-                        listeners: {
-                            onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
-                        }
+                }
+            },
+            uiOptions: {
+                options: {
+                    components: {
+                        settingsStore: "{uiEnhancer}.settingsStore"
+                    },
+                    listeners: {
+                        onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
                     }
                 }
             }
         }
     });
     
-    fluid.uiOptions.fullPreview = function (container, options) {
-        // make "container" one of the options so it can be munged by the uiOptions.mapOptions.
-        // This container is passed down to be used as uiOptionsLoader.container 
-        var componentConfig = fluid.defaults("fluid.uiOptions.fullPreview").uiOptionsTransform.config;
-        var mergePolicy = fluid.defaults("fluid.uiOptions.fullPreview").mergePolicy;
-        options.container = container;
+    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.fullPreview", function (options) {
         // This is a terrible hack for FLUID-4409. Since it is impossible for us to be invoked via IoC, the only
         // source of this configuration could be the static pageEnhancer
+        // The correct way to resolve the problem is to refactor UIEnhancer so that all of its configuration other than
+        // the container to be bound to be enhanced is kept in a separate, shared component, "UIEnhancerConfig".
         var enhancerOptions = fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions");
         options.outerPreviewEnhancerOptions = enhancerOptions;
-        
-        var mappedOptions = fluid.uiOptions.mapOptions(options, componentConfig, mergePolicy);
-        var that = fluid.initView("fluid.uiOptions.fullPreview", container, mappedOptions);
-        fluid.initDependents(that);
-        return that;
-    };
-
+        return options;
+    });
+    
 })(jQuery, fluid_1_4);
