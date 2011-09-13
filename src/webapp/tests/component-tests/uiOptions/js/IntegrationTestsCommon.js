@@ -79,7 +79,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     }
     
-    fluid.tests.uiOptions.integrationTest = function(tests, componentName) {
+    fluid.tests.uiOptions.integrationTest = function(tests, componentName, resetShouldSave) {
         tests.asyncTest(componentName + " Integration tests", function () {
             fluid.pageEnhancer({
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
@@ -116,7 +116,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
                 
                 cancelButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from original (unchaned after cancel)", uiOptions.model.selections, defaultSiteSettings);
+                fluid.tests.uiOptions.checkModelSelections("model from original (correct state after reset and cancel)", 
+                    (resetShouldSave? defaultSiteSettings : fluid.tests.uiOptions.bwSkin), uiOptions.model.selections);
                 
                 start();
             };
