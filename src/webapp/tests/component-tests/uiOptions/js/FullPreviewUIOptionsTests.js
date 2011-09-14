@@ -19,10 +19,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         fluid.setLogging(true);
         
-        var tests = jqUnit.testCase("FullNoPreviewUIOptions Tests");
-
-        fluid.tests.uiOptions.integrationTest(tests, "fluid.uiOptions.fullNoPreview", true);
-        fluid.tests.uiOptions.mungingIntegrationTest(tests, "fluid.uiOptions.fullNoPreview", "#myUIOptions");   
-
+        var tests = jqUnit.testCase("FullPreviewUIOptions Tests");
+        
+        /**************************************************
+         * fluid.fullPreviewUIOptions Integration Tests *
+         **************************************************/        
+        fluid.tests.uiOptions.integrationTest(tests, "fluid.uiOptions.fullPreview", false);
+        fluid.tests.uiOptions.mungingIntegrationTest(tests, "fluid.uiOptions.fullPreview", "#myUIOptions");    
     });
-})(jQuery);
+
+})(jQuery);        
