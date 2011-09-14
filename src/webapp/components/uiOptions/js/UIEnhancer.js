@@ -360,21 +360,14 @@ var fluid_1_4 = fluid_1_4 || {};
         if (!that.initialSize) {
             that.calcInitSize();
         }
-        if (times === 1) {
-            that.container.css("font-size", ""); // empty is same effect as not being set
-        } else if (times && times > 0) {
-            var targetSize = that.initialSize * times + "em";
-            that.container.css("font-size", targetSize);
-        }
+
+        var targetSize = times && times > 0 ? times * that.initialSize : that.initialSize;
+        that.container.css("font-size", targetSize + "em");
     };
     
     fluid.uiEnhancer.textSizer.calcInitSize = function (that, fontSizeMap, px2emFactor) {
         that.initialSize = fluid.uiEnhancer.getTextSizeInEm(that.container, fontSizeMap, px2emFactor);     
     };
-    
-
-
-
 
     /*******************************************************************************
      * ClassSwapper                                                                *
@@ -420,9 +413,6 @@ var fluid_1_4 = fluid_1_4 || {};
         that.clearClasses(that);
         that.container.addClass(that.options.classes[classname]);
     };
-
-
-
     
     /*******************************************************************************
      * LineSpacer                                                                  *
