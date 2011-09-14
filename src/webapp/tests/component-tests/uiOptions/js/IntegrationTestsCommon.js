@@ -38,14 +38,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         textFont: "verdana",
         theme: "bw",
         lineSpacing: 2
-        };
+    };
         
     fluid.tests.uiOptions.ybSkin = {
         textSize: "2",
         textFont: "comic sans",
         theme: "yb",
         lineSpacing: 1.5
-        };  
+    };  
     
     fluid.tests.uiOptions.expectedInline = [ 
         "layoutControls",
@@ -56,30 +56,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          
     fluid.tests.uiOptions.expectedModel = [
         "textFont", "theme", "textSize", "lineSpacing"
-    ]
+    ];
     
-    fluid.tests.uiOptions.assertPresent = function(uiOptions, expecteds) {
+    fluid.tests.uiOptions.assertPresent = function (uiOptions, expecteds) {
         jqUnit.expect(expecteds.length);
-        fluid.each(expecteds, function(expected) {
+        fluid.each(expecteds, function (expected) {
             var value = fluid.get(uiOptions, expected);
             jqUnit.assertTrue("Expected component at path " + expected, value);
         });
     };
     
     fluid.tests.uiOptions.checkModelSelections = function (message, expectedSelections, actualSelections) {
-        fluid.each(fluid.tests.uiOptions.expectedModel, function(expected) {
+        fluid.each(fluid.tests.uiOptions.expectedModel, function (expected) {
             jqUnit.assertEquals(expected + " correctly updated: " + message, 
                 fluid.get(expectedSelections, expected), fluid.get(actualSelections, expected));
         });
-    }
+    };
             
     fluid.tests.uiOptions.applierRequestChanges = function (uiOptions, selectionOptions) {
-        fluid.each(fluid.tests.uiOptions.expectedModel, function(expected) {
-            uiOptions.applier.requestChange("selections."+expected, fluid.get(selectionOptions, expected));
+        fluid.each(fluid.tests.uiOptions.expectedModel, function (expected) {
+            uiOptions.applier.requestChange("selections." + expected, fluid.get(selectionOptions, expected));
         });
-    }
+    };
     
-    fluid.tests.uiOptions.integrationTest = function(tests, componentName, resetShouldSave) {
+    fluid.tests.uiOptions.integrationTest = function (tests, componentName, resetShouldSave) {
         tests.asyncTest(componentName + " Integration tests", function () {
             fluid.pageEnhancer({
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
@@ -117,10 +117,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 
                 cancelButton.click();
                 fluid.tests.uiOptions.checkModelSelections("model from original (correct state after reset and cancel)", 
-                    (resetShouldSave? defaultSiteSettings : fluid.tests.uiOptions.bwSkin), uiOptions.model.selections);
+                    (resetShouldSave ? defaultSiteSettings : fluid.tests.uiOptions.bwSkin), uiOptions.model.selections);
                 
                 start();
-            };
+            }
             
             jqUnit.expect(18);
                        
@@ -175,7 +175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
     
-    fluid.tests.uiOptions.mungingIntegrationTest = function(tests, componentName, container, extraOpts, extraListener) {
+    fluid.tests.uiOptions.mungingIntegrationTest = function (tests, componentName, container, extraOpts, extraListener) {
         extraListener = extraListener || fluid.identity;
       
         tests.asyncTest(componentName + " Munging Integration tests", function () {
@@ -204,7 +204,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("The fifth text font control value matches", testControlValues[4], actualTextFontControlValues[4]);
 
                 start();
-            };
+            }
             
             function testStarter() {
                 start();
@@ -236,8 +236,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             onReady: [
                                 {listener: testComponent},
                                 {listener: listenerRelay},
-                                {listener: testStarter,
-                                 priority: "last"}
+                                {
+                                    listener: testStarter,
+                                    priority: "last"
+                                }
                             ]
                         }
                     }
@@ -248,7 +250,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             that = fluid.invokeGlobalFunction(componentName, [container, options]);
         });
-    }
+    };
 
 })(jQuery);
   
