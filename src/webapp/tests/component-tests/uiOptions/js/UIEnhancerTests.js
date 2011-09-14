@@ -130,7 +130,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 withIE6Environment(withIt, function () {
                     fluid.pageEnhancer(uiEnhancerOptions);
                     testFunc();
-                })
+                });
             });
         }
         
