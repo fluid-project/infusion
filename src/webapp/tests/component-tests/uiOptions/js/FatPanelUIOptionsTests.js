@@ -16,61 +16,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
-    
-    /***********
-     * Demands *
-     ***********/
-    
+
     $(document).ready(function () {
 
-        fluid.staticEnvironment.fatPanelTests = fluid.typeTag("fluid.uiOptions.fatPanelTests");
-
-        // Use temp store rather than the cookie store for setting save
-        fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer", "fluid.uiOptions.fatPanelTests"], {
-            funcName: "fluid.tempStore"
-        });
-
         var tests = jqUnit.testCase("UIOptions fatPanel Tests");
+        
+        fluid.tests.uiOptions.expectedFatPanel = [
+            "eventBinder.uiEnhancer",
+            "eventBinder.uiOptionsLoader",
+            "eventBinder.slidingPanel",
+            "bridge.markupRenderer"];
         
         /****************************************
          * UIOptions fatPanel integration tests *
          ****************************************/
-        
-        var applierRequestChanges = function (uiOptions, selectionOptions) {
-            uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
-            uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
-            uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
-            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);            
-        };
-        
-        var checkUIOComponents = function (uio) {
-            var components = uio.options.components;
-            var eventBinderComponents = components.eventBinder.options.components; 
-            jqUnit.assertTrue("slidingPanel is present", components.slidingPanel);
-            jqUnit.assertTrue("markupRenderer is present", components.markupRenderer);
-            jqUnit.assertTrue("uiEnhancer is preset", components.uiEnhancer);
-            jqUnit.assertTrue("eventBinder is present", components.eventBinder);
-            jqUnit.assertTrue("Bridge is present", components.bridge);
-            jqUnit.assertTrue("uiEnhancer is present as an eventBinder sub-component", eventBinderComponents.uiEnhancer);
-            jqUnit.assertTrue("uiOptionsLoader is present as an eventBinder sub-component", eventBinderComponents.uiOptionsLoader);
-            jqUnit.assertTrue("slidingPanel is present as an eventBinder sub-component", eventBinderComponents.slidingPanel);
-            jqUnit.assertTrue("markupRenderer is present as an bridge sub-component", components.bridge.options.components.markupRenderer);
-        };        
-        
-        var checkModelSelections = function (message, expectedSelections, actualSelections) {
-            jqUnit.assertEquals("Text font correctly updated: " + message,  expectedSelections.textFont, actualSelections.textFont);
-            jqUnit.assertEquals("Theme correctly updated: " + message, expectedSelections.theme, actualSelections.theme);
-            jqUnit.assertEquals("Text size correctly updated: " + message, expectedSelections.textSize, actualSelections.textSize);
-            jqUnit.assertEquals("Line spacing correctly updated: " + message, expectedSelections.lineSpacing, actualSelections.lineSpacing);            
-        };
-        
-        var bwSkin = {
-            textSize: "1.8",
-            textFont: "verdana",
-            theme: "bw",
-            lineSpacing: 2
-        };
-        
+
         tests.asyncTest("Fat Panel UIOptions Integration tests", function () {
             fluid.pageEnhancer({
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
@@ -83,22 +43,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var pageModel = that.uiEnhancer.model;
                 var panelModel = uiOptions.uiEnhancer.model;
                 if (sequence === 0) {
-                    applierRequestChanges(that.bridge.uiOptionsLoader.uiOptions, bwSkin);
-                    checkModelSelections("pageModel from bwSkin", bwSkin, pageModel);
+                    fluid.tests.uiOptions.applierRequestChanges(that.bridge.uiOptionsLoader.uiOptions, fluid.tests.uiOptions.bwSkin);
+                    fluid.tests.uiOptions.checkModelSelections("pageModel from bwSkin", fluid.tests.uiOptions.bwSkin, pageModel);
                     that.slidingPanel.hidePanel();
                     that.slidingPanel.showPanel();
                 } else if (sequence === 1) {    
-                    checkModelSelections("panelModel from bwSkin", bwSkin, panelModel);
-                    checkModelSelections("panelModel from pageModel", pageModel, panelModel);
+                    fluid.tests.uiOptions.checkModelSelections("panelModel from bwSkin", fluid.tests.uiOptions.bwSkin, panelModel);
+                    fluid.tests.uiOptions.checkModelSelections("panelModel from pageModel", pageModel, panelModel);
                     that.slidingPanel.hidePanel();
                     that.slidingPanel.showPanel();
                 } else if (sequence === 2) {
                   // Open the Fat Panel, click "Reset All", and close the panel
                     uiOptions.locate("reset").click();
-                    checkModelSelections("pageModel from defaults", defaultSiteSettings, pageModel);
+                    fluid.tests.uiOptions.checkModelSelections("pageModel from defaults", defaultSiteSettings, pageModel);
                     that.slidingPanel.hidePanel();
-                    checkModelSelections("panelModel from defaults", defaultSiteSettings, panelModel);
-                    checkModelSelections("pageModel from panelModel", panelModel, pageModel);  
+                    fluid.tests.uiOptions.checkModelSelections("panelModel from defaults", defaultSiteSettings, panelModel);
+                    fluid.tests.uiOptions.checkModelSelections("pageModel from panelModel", panelModel, pageModel);  
                     start();
                 }
                 ++sequence;
@@ -106,6 +66,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             function testComponent(uiOptionsLoader, uiOptionsIn) {
                 uiOptions = uiOptionsIn;
+                fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedInline);
+                fluid.tests.uiOptions.assertPresent(that, fluid.tests.uiOptions.expectedFatPanel);
                 that.slidingPanel.showPanel();
             }
 
@@ -133,9 +95,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             });
-            
-            checkUIOComponents(that);
-
+            jqUnit.expect(24);
 
         });
         
@@ -143,83 +103,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * UIOptions fatPanel options munging integration tests *
          ********************************************************/
         
-        tests.asyncTest("Fat Panel UIOptions Options Munging Integration tests", function () {
-            var enhancerOpts = {
-                tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
-                classnameMap: {
-                    "textFont": {
-                        "default": "fl-font-times"
-                    },
-                    "theme": {
-                        "yb": "fl-test"
-                    }
-                },
-                defaultSiteSettings: {
-                    theme: "yb"
-                }
-            };
-            fluid.pageEnhancer(enhancerOpts);
-
-            var testStrings = ["Test1", "Test2", "Test3", "Test4", "Test5"];
-            var testControlValues = ["a", "b", "c", "d", "e"];
-            
-            var that;
-            
-            function testComponent(uiOptionsLoader, uiOptions) {
-                var body = $("body");
-                
-                jqUnit.assertTrue("Times font is set", body.hasClass("fl-font-times"));
-                jqUnit.assertTrue("The default test theme is set", body.hasClass("fl-test"));
-                
-                var actualTextFontStrings = uiOptions.textControls.options.strings.textFont;
-                var actualTextFontControlValues = uiOptions.textControls.options.controlValues.textFont;
-                
-                jqUnit.assertEquals("There are 5 elements in the text font string list", 5, actualTextFontStrings.length);
-                jqUnit.assertEquals("The first text font string value matches", testStrings[0], actualTextFontStrings[0]);
-                jqUnit.assertEquals("The fifth text font string value matches", testStrings[4], actualTextFontStrings[4]);
-
-                jqUnit.assertEquals("There are 5 elements in the text font control value list", 5, actualTextFontControlValues.length);
-                jqUnit.assertEquals("The first text font control value matches", testControlValues[0], actualTextFontControlValues[0]);
-                jqUnit.assertEquals("The fifth text font control value matches", testControlValues[4], actualTextFontControlValues[4]);
-                
-                jqUnit.assertEquals("classnameMap transferred to outer UIEnhancer", enhancerOpts.classnameMap.textFont["default"],
+        function testEnhancerTransit(that, uiOptionsLoader, uiOptions) {
+            jqUnit.expect(2);
+            var cMap = fluid.tests.uiOptions.enhancerOptions.classnameMap;
+            jqUnit.assertEquals("classnameMap transferred to outer UIEnhancer", cMap.textFont["default"],
                    that.uiEnhancer.options.classnameMap.textFont["default"]);
                    
-                jqUnit.assertEquals("classnameMap transferred to inner UIEnhancer", enhancerOpts.classnameMap.textFont["default"],
+            jqUnit.assertEquals("classnameMap transferred to inner UIEnhancer", cMap.textFont["default"],
                    uiOptions.uiEnhancer.options.classnameMap.textFont["default"]);
-
-                start();
-            }
-            that = fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
-                prefix: "../../../../components/uiOptions/html/",
+        }
+        
+        fluid.tests.uiOptions.mungingIntegrationTest(tests, "fluid.uiOptions.fatPanel", ".flc-uiOptions-fatPanel", 
+            {
                 markupRenderer: {
                     options: {
                         markupProps: {
                             src: "./FatPanelUIOptionsFrame-test.html"
                         }
                     }
-                },
-                textControls: {
-                    options: {
-                        strings: {
-                            textFont: testStrings
-                        },
-                        controlValues: { 
-                            textFont: testControlValues
-                        }
-                    }
-                },
-                uiOptionsLoader: {
-                    options: {
-                        listeners: {
-                            onReady: testComponent
-                        }
-                    }
                 }
-            });
-            
-
-        });
+            }, testEnhancerTransit);
+        
         
     });
 })(jQuery);

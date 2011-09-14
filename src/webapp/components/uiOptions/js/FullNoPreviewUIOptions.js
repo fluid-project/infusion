@@ -39,13 +39,11 @@ var fluid_1_4 = fluid_1_4 || {};
                         preview: {
                             type: "fluid.emptySubcomponent"
                         },
-                        settingsStore: "{uiEnhancer}.settingsStore"
                     },
                     listeners: {
                         onReset: function (uiOptions) {
                             uiOptions.save();
-                        },
-                        onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
+                        }
                     }
                 }
             }

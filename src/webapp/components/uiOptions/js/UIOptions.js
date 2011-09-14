@@ -214,6 +214,18 @@ var fluid_1_4 = fluid_1_4 || {};
                 "*.uiOptionsLoader.*.uiOptions.*.preview":            "preview",
                 "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
             }
+        },
+        derivedDefaults: {
+            uiOptions: {
+                options: {
+                    components: {
+                        settingsStore: "{uiEnhancer}.settingsStore"
+                    },
+                    listeners: {
+                        onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
+                    }
+                }
+            }
         }
     });
     
@@ -228,6 +240,8 @@ var fluid_1_4 = fluid_1_4 || {};
             var mappedOptions = fluid.uiOptions.mapOptions(options, defaults.uiOptionsTransform.config, defaults.mergePolicy, 
                 fluid.copy(defaults.derivedDefaults));
             var that = fluid.initView(componentName, container, mappedOptions);
+            // Fake out standard framework failed view diagnosis to prevent "that is null" message - remove this in 1.5
+            fluid.diagnoseFailedView(componentName, that, fluid.defaults(componentName), [componentName, container, mappedOptions]);
             fluid.initDependents(that);
             return that;
         });
