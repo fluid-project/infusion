@@ -11,7 +11,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, jQuery*/
+/*global fluid, jqUnit, expect, start, jQuery*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -26,7 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             theme: "bw",
             layout: false,
             toc: true,
-            links: true, 
+            links: true
         };
         
         var uiEnhancerOptions = {
@@ -154,8 +154,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             function testTocStyling() {
                 var tocLinks = $(".flc-toc-tocContainer a");
                 var filtered = tocLinks.filter(".fl-text-underline");
-                ++ refreshCount;
-                if (refreshCount == 2) {
+                ++refreshCount;
+                if (refreshCount === 2) {
                     jqUnit.assertEquals("All toc links have been styled", tocLinks.length, filtered.length);
                     jqUnit.assertNotEquals("Some toc links generated on 2nd pass", 0, tocLinks.length);
                     start();
@@ -165,8 +165,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var options = fluid.merge(null, {}, uiEnhancerOptions, {
                 listeners: {
                     lateRefreshView: {
-                       priority: "last",
-                       listener: testTocStyling
+                        priority: "last",
+                        listener: testTocStyling
                     }
                 }
             });
