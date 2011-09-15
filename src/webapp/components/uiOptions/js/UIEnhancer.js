@@ -65,34 +65,6 @@ var fluid_1_4 = fluid_1_4 || {};
      * Works in conjunction with FSS to transform the page based on user settings. *
      *******************************************************************************/
     
-    // TODO: These are left here since toc refactoring has been carried out in another branch.
-    /**
-     * Returns true if the value is true or the string "true", false otherwise
-     * @param {Object} val
-     */
-    var isTrue = function (val) {
-        return val && (val === true || val === "true");
-    };
-
-    /**
-     * Shows the table of contents when tocSetting is "On". Hides the table of contents otherwise.
-     * @param {Object} that
-     * @param {Object} tocSetting
-     */
-    var setToc = function (that, tocSetting) {
-        if (isTrue(tocSetting)) {
-            if (that.tableOfContents) {
-                that.tableOfContents.show();
-            } else {
-                $(document).ready(that.events.onCreateTOCReady.fire);
-            }
-        } else {
-            if (that.tableOfContents) {
-                that.tableOfContents.hide();
-            }
-        }        
-    };
-    
     fluid.defaults("fluid.uiEnhancer", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
@@ -125,6 +97,10 @@ var fluid_1_4 = fluid_1_4 || {};
                                 }
                             } 
                         }
+                    },
+                    listeners: {
+                      // TODO: This is as a result of lack of FLUID-4398, event relay
+                        afterRender: "{uiEnhancer}.lateRefreshRelay"
                     }
                 }
             },
@@ -184,7 +160,13 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         events: {
             onCreateTOCReady: null,
+            lateRefreshView: null,
             modelChanged: null
+        },
+        listeners: {
+            // TODO: listener merging does not work in a reasonable way. Non-namespaced listeners
+            // override rather than merging as they should
+            "lateRefreshView.domReading": "fluid.uiEnhancer.applyDomReadingSettings"
         },
         classnameMap: {
             "textFont": {
@@ -207,11 +189,11 @@ var fluid_1_4 = fluid_1_4 || {};
         },
         fontSizeMap: {
             "xx-small": "9px",
-            "x-small": "11px",
-            "small": "13px",
-            "medium": "15px",
-            "large": "18px",
-            "x-large": "23px",
+            "x-small":  "11px",
+            "small":    "13px",
+            "medium":   "15px",
+            "large":    "18px",
+            "x-large":  "23px",
             "xx-large": "30px"
         },
         px2emFactor: "16",
@@ -231,6 +213,9 @@ var fluid_1_4 = fluid_1_4 || {};
                 that.refreshView();   
             });
 
+        that.lateRefreshRelay = function () {
+            that.events.lateRefreshView.fire(that);
+        };
         that.updateFromSettingsStore();
         return that;
     };
@@ -243,6 +228,34 @@ var fluid_1_4 = fluid_1_4 || {};
         applier.requestChange("", newModel);
     };
 
+    fluid.uiEnhancer.applyTocSetting = function (that) {
+        var async = false;
+        if (that.model.toc) {
+            if (that.tableOfContents) {
+                that.tableOfContents.show();
+            } else {
+                that.events.onCreateTOCReady.fire();
+                async = true;
+            }
+        } else {
+            if (that.tableOfContents) {
+                that.tableOfContents.hide();
+            }
+        }
+        if (!async) {
+            that.lateRefreshRelay();
+        }
+    };
+
+    // Apply those UIEnhancer settings which require reading elements from the DOM - 
+    // as opposed to those which may be honoured by static CSS styles
+    fluid.uiEnhancer.applyDomReadingSettings = function (that) {
+        that.setLayout(that);
+        that.styleLinks(that);
+        that.styleInputs(that);
+        that.setIE6ColorInversion(that); 
+    };
+
     /**
      * Transforms the interface based on the settings in that.model
      */
@@ -251,11 +264,9 @@ var fluid_1_4 = fluid_1_4 || {};
         that.textFont.swap(that.model.textFont);
         that.lineSpacing.set(that.model.lineSpacing);
         that.theme.swap(that.model.theme);
-        that.setLayout(that);
-        setToc(that, that.model.toc);
-        that.styleLinks(that);
-        that.styleInputs(that);
-        that.setIE6ColorInversion(that);
+        $(document).ready(function () {
+            fluid.uiEnhancer.applyTocSetting(that);
+        });
     };
 
 
