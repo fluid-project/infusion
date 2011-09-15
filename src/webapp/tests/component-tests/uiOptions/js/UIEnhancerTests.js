@@ -11,7 +11,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, jQuery*/
+/*global fluid, jqUnit, expect, start, jQuery*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -24,7 +24,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             textSize: "1.5",
             textFont: "verdana",
             theme: "bw",
-            layout: false
+            layout: false,
+            toc: true,
+            links: true
         };
         
         var uiEnhancerOptions = {
@@ -47,6 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Initially font-sans class exists", 1, $(".fl-font-sans").length);
             jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
             jqUnit.assertEquals("Initially text-spacing class exists", 1, $(".fl-font-spacing-3").length);
+
             fluid.pageEnhancer(uiEnhancerOptions);
             jqUnit.assertEquals("font size classes should not be removed", 3, $(".fl-font-size-90").length);
             jqUnit.assertEquals("layout class is gone", 0, $(".fl-layout-linear").length);
@@ -141,13 +144,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("fl-inverted-color is not touched", 1, $(".fl-inverted-color").length);
         });
 
-        tests.test("Settings", function () {
-            expect(3);
+        tests.asyncTest("Settings", function () {
+            expect(5);
 
             var body = $("body");
             var initialFontSize = parseFloat(body.css("fontSize"));
+            var refreshCount = 0;
             
-            var uiEnhancer = fluid.pageEnhancer(uiEnhancerOptions).uiEnhancer;
+            function testTocStyling() {
+                var tocLinks = $(".flc-toc-tocContainer a");
+                var filtered = tocLinks.filter(".fl-text-underline");
+                ++refreshCount;
+                if (refreshCount === 2) {
+                    jqUnit.assertEquals("All toc links have been styled", tocLinks.length, filtered.length);
+                    jqUnit.assertNotEquals("Some toc links generated on 2nd pass", 0, tocLinks.length);
+                    start();
+                }
+            }
+            
+            var options = fluid.merge(null, {}, uiEnhancerOptions, {
+                listeners: {
+                    lateRefreshView: {
+                        priority: "last",
+                        listener: testTocStyling
+                    }
+                }
+            });
+            
+            var uiEnhancer = fluid.pageEnhancer(options).uiEnhancer;
             uiEnhancer.updateModel(testSettings);
             
             var expectedTextSize = initialFontSize * testSettings.textSize;
