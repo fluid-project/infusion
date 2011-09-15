@@ -164,7 +164,9 @@ var fluid_1_4 = fluid_1_4 || {};
             modelChanged: null
         },
         listeners: {
-            lateRefreshView: "fluid.uiEnhancer.applyDomReadingSettings"
+            // TODO: listener merging does not work in a reasonable way. Non-namespaced listeners
+            // override rather than merging as they should
+            "lateRefreshView.domReading": "fluid.uiEnhancer.applyDomReadingSettings"
         },
         classnameMap: {
             "textFont": {
