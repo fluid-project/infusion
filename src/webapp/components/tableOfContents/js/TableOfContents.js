@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid_1_4:true, jQuery*/
+/*global fluid_1_4:true, jQuery, window */
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -23,12 +23,32 @@ var fluid_1_4 = fluid_1_4 || {};
     * ToC *
     *******/
     fluid.registerNamespace("fluid.tableOfContents");
+
+
+    /** Extract the window that a DOM element has come from **/
+    // See http://stackoverflow.com/questions/223991/how-can-i-get-the-window-object-that-an-html-node-belongs-to-using-javascript
+    fluid.windowFromElement = function (element) {
+        var ownerDoc = element.ownerDocument;
+        var inWindow = ownerDoc.defaultView || ownerDoc.parentWindow;
+        return inWindow;
+    };
+    
+    /** A hack for FLUID-4453 - assume that if the element is not from the window
+      * we believe to be current, it is a "preview iframe" case and that the global
+      * jQuery object has been set up in the standard way */
+      
+    fluid.jQueryFromElement = function (element) {
+        var inWindow = fluid.windowFromElement(element);
+        return inWindow === window ? $ : inWindow.jQuery; 
+    };
     
     fluid.tableOfContents.insertAnchor = function (name, element) {
-        $("<a></a>", {
+        var inJQ = fluid.jQueryFromElement(element);
+        var anchor = inJQ("<a></a>", {
             name: name,
             id: name
-        }).insertBefore(element);
+        });
+        anchor.insertBefore(element);
     };
     
     fluid.tableOfContents.generateGUID = function () {
@@ -59,7 +79,7 @@ var fluid_1_4 = fluid_1_4 || {};
             return anchorInfo;
         };
         
-        that.anchorInfo = fluid.transform(headings, function (heading) {
+        that.anchorInfo = fluid.transform(headings, function (heading, index) {
             return that.headingTextToAnchor(heading);
         });
         
@@ -73,6 +93,7 @@ var fluid_1_4 = fluid_1_4 || {};
         };
         
         that.model = that.modelBuilder.assembleModel(headings, that.anchorInfo);
+        
         that.events.onReady.fire();
     };
     
