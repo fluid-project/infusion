@@ -54,8 +54,7 @@ var fluid_1_4 = fluid_1_4 || {};
         $(element).slideDown(duration || "400", callback);
     };
     
-    fluid.slidingPanel.finalInit = function (that) {        
-    
+    fluid.slidingPanel.finalInit = function (that) {
         that.showPanel = function () {
             that.events.onPanelShow.fire(that);
             that.locate("toggleButton").text(that.options.strings.hideText);        

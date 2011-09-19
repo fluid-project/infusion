@@ -58,7 +58,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     fluid.tests.uiOptions.checkModelSelections("pageModel from defaults", defaultSiteSettings, pageModel);
                     that.slidingPanel.hidePanel();
                     fluid.tests.uiOptions.checkModelSelections("panelModel from defaults", defaultSiteSettings, panelModel);
-                    fluid.tests.uiOptions.checkModelSelections("pageModel from panelModel", panelModel, pageModel);  
+                    fluid.tests.uiOptions.checkModelSelections("pageModel from panelModel", pageModel, panelModel);  
                     start();
                 }
                 ++sequence;
@@ -95,7 +95,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             });
-            jqUnit.expect(24);
+            jqUnit.expect(6);
 
         });
         
@@ -111,6 +111,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                    
             jqUnit.assertEquals("classnameMap transferred to inner UIEnhancer", cMap.textFont["default"],
                    uiOptions.uiEnhancer.options.classnameMap.textFont["default"]);
+            start();
         }
         
         fluid.tests.uiOptions.mungingIntegrationTest(tests, "fluid.uiOptions.fatPanel", ".flc-uiOptions-fatPanel", 

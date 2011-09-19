@@ -81,7 +81,6 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.applier.modelChanged.addListener("value", 
             function (newModel) {
-                // update preview window
                 that.events.modelChanged.fire(newModel.value);
             }
             );
@@ -345,17 +344,17 @@ var fluid_1_4 = fluid_1_4 || {};
             templatePath: {
                 type: "fluid.uiOptions.templatePath"
             }
+        },
+        invokers: {
+            transformURL: {
+                funcName: "fluid.stringTemplate",
+                args: [ "{arguments}.0", { "prefix/" : "{templateLoader}.templatePath.options.value"} ]
+            }
         }
     });
-    
-    fluid.uiOptions.transformUrls = function (toTransform, prefix) {
-        return fluid.transform(toTransform, function (item) {
-            return fluid.stringTemplate(item, { "prefix/": prefix });
-        });
-    };
-    
+
     fluid.uiOptions.templateLoader.resolveTemplates = function (that) {
-        var mapped = fluid.uiOptions.transformUrls(that.options.templates, that.templatePath.options.value);   
+        var mapped = fluid.transform(that.options.templates, that.transformURL);
     
         that.resources = fluid.transform(mapped, function (url) {
             return {url: url, forceCache: true};
@@ -603,10 +602,15 @@ var fluid_1_4 = fluid_1_4 || {};
         };
         
         fluid.fetchResources(that.options.resources, function () {
-            that.container.append(that.options.resources.template.resourceText);
-            bindHandlers(that);
-            bindEventHandlers(that);
-            that.events.onUIOptionsComponentReady.fire(that);
+          // This setTimeout is to ensure that fetching of resources is asynchronous,
+          // and so that component construction does not run ahead of subcomponents for FatPanel
+          // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix) 
+            setTimeout(function() {
+                that.container.append(that.options.resources.template.resourceText);
+                bindHandlers(that);
+                bindEventHandlers(that);
+                that.events.onUIOptionsComponentReady.fire(that);
+            }, 1);
         });
     };
 
@@ -860,7 +864,10 @@ var fluid_1_4 = fluid_1_4 || {};
             eventBinder: {
                 type: "fluid.uiOptions.preview.eventBinder",
                 createOnEvent: "onReady"
-            }
+            },
+            // TODO: This is a violation of containment, but we can't use up our allowance of demands
+            // blocks as a result of FLUID-4392
+            templateLoader: "{templateLoader}"
         },
         invokers: {
             updateModel: {
@@ -876,7 +883,7 @@ var fluid_1_4 = fluid_1_4 || {};
             onReady: null
         },
         
-        templateUrl: "UIOptionsPreview.html"
+        templateUrl: "%prefix/UIOptionsPreview.html"
     });
     
     fluid.uiOptions.preview.updateModel = function (that, selections) {
@@ -891,12 +898,13 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     fluid.uiOptions.preview.finalInit = function (that) {
-        that.container.attr("src", that.options.templateUrl);        
-
+        var templateUrl = that.templateLoader.transformURL(that.options.templateUrl);
         that.container.load(function () {
             that.enhancerContainer = $("body", that.container.contents());
             that.events.onReady.fire();
         });
+        that.container.attr("src", templateUrl);        
+
     };
 
     fluid.demands("fluid.uiEnhancer", "fluid.uiOptions.preview", {

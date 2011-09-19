@@ -25,26 +25,12 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.registerNamespace("fluid.tableOfContents");
 
 
-    /** Extract the window that a DOM element has come from **/
-    // See http://stackoverflow.com/questions/223991/how-can-i-get-the-window-object-that-an-html-node-belongs-to-using-javascript
-    fluid.windowFromElement = function (element) {
-        var ownerDoc = element.ownerDocument;
-        var inWindow = ownerDoc.defaultView || ownerDoc.parentWindow;
-        return inWindow;
-    };
-    
-    /** A hack for FLUID-4453 - assume that if the element is not from the window
-      * we believe to be current, it is a "preview iframe" case and that the global
-      * jQuery object has been set up in the standard way */
-      
-    fluid.jQueryFromElement = function (element) {
-        var inWindow = fluid.windowFromElement(element);
-        return inWindow === window ? $ : inWindow.jQuery; 
-    };
     
     fluid.tableOfContents.insertAnchor = function (name, element) {
-        var inJQ = fluid.jQueryFromElement(element);
-        var anchor = inJQ("<a></a>", {
+       // In order to resolve FLUID-4453, we need to make sure that the owner document is correctly
+       // taken from the target element (the preview may be in an iframe)
+        var anchor = $("<a></a>", element.ownerDocument);
+        anchor.prop({
             name: name,
             id: name
         });
@@ -93,7 +79,7 @@ var fluid_1_4 = fluid_1_4 || {};
         };
         
         that.model = that.modelBuilder.assembleModel(headings, that.anchorInfo);
-        
+
         that.events.onReady.fire();
     };
     
