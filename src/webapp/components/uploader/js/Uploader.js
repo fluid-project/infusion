@@ -252,6 +252,15 @@ var fluid_1_4 = fluid_1_4 || {};
         updateQueueSummaryText(that);
     }; 
     
+    var uploadNextOrFinish = function (that) {
+        if (that.queue.shouldUploadNextFile()) {
+            that.strategy.remote.uploadNextFile();
+        } else {
+            that.events.afterUploadComplete.fire(that.queue.currentBatch.files);
+            that.queue.clearCurrentBatch();
+        }        
+    };
+    
     var bindEvents = function (that) {
         that.events.afterFileDialog.addListener(function () {
             updateStateAfterFileDialog(that);
@@ -290,13 +299,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.events.onFileComplete.addListener(function (file) {
             that.queue.finishFile(file);
             that.events.afterFileComplete.fire(file); 
-            
-            if (that.queue.shouldUploadNextFile()) {
-                that.strategy.remote.uploadNextFile();
-            } else {
-                that.events.afterUploadComplete.fire(that.queue.currentBatch.files);
-                that.queue.clearCurrentBatch();
-            }
+            uploadNextOrFinish(that);
         });
         
         that.events.onFileSuccess.addListener(function (file) {
@@ -318,6 +321,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     that.queue.currentBatch.totalBytesUploaded += file.size;
                     that.queue.currentBatch.numFilesErrored++;
                 }
+                uploadNextOrFinish(that);
             }
         });
 
