@@ -605,7 +605,7 @@ var fluid_1_4 = fluid_1_4 || {};
           // This setTimeout is to ensure that fetching of resources is asynchronous,
           // and so that component construction does not run ahead of subcomponents for FatPanel
           // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix) 
-            setTimeout(function() {
+            setTimeout(function () {
                 that.container.append(that.options.resources.template.resourceText);
                 bindHandlers(that);
                 bindEventHandlers(that);

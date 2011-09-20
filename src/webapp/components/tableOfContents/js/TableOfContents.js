@@ -65,7 +65,7 @@ var fluid_1_4 = fluid_1_4 || {};
             return anchorInfo;
         };
         
-        that.anchorInfo = fluid.transform(headings, function (heading, index) {
+        that.anchorInfo = fluid.transform(headings, function (heading) {
             return that.headingTextToAnchor(heading);
         });
         

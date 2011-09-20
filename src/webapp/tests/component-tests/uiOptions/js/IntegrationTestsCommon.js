@@ -68,7 +68,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
             
     fluid.tests.uiOptions.applierRequestChanges = function (uiOptions, selectionOptions) {
-        fluid.each(selectionOptions, function(value, key) {
+        fluid.each(selectionOptions, function (value, key) {
             uiOptions.applier.requestChange("selections." + key, value);
         });
     };
@@ -170,7 +170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.tests.uiOptions.mungingIntegrationTest = function (tests, componentName, container, extraOpts, extraListener) {
-        extraListener = extraListener || function() { start(); };
+        extraListener = extraListener || function () { start(); };
       
         tests.asyncTest(componentName + " Munging Integration tests", function () {
             fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
@@ -224,7 +224,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         listeners: {
                             onReady: [
                                 {listener: testComponent},
-                                {listener: listenerRelay},
+                                {listener: listenerRelay}
                             ]
                         }
                     }
