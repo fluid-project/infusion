@@ -320,8 +320,8 @@ var fluid_1_4 = fluid_1_4 || {};
                 if (that.queue.isUploading) {
                     that.queue.currentBatch.totalBytesUploaded += file.size;
                     that.queue.currentBatch.numFilesErrored++;
+                    uploadNextOrFinish(that);
                 }
-                uploadNextOrFinish(that);
             }
         });
 
