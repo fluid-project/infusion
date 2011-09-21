@@ -51,7 +51,7 @@ var fluid_1_4 = fluid_1_4 || {};
     };
     
     var maxFilesUploaded = function (that) {
-        var fileUploadLimit = that.queue.getUploadedFiles().length + that.queue.getReadyFiles().length;
+        var fileUploadLimit = that.queue.getUploadedFiles().length + that.queue.getReadyFiles().length + that.queue.getErroredFiles().length;
         return (fileUploadLimit === that.options.queueSettings.fileUploadLimit);
     };    
     
