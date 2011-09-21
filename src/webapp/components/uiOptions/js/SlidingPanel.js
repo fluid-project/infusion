@@ -75,7 +75,7 @@ var fluid_1_4 = fluid_1_4 || {};
             }       
         };
         
-        that.setPanelHeight = function(newHeight) {
+        that.setPanelHeight = function (newHeight) {
             that.locate("panel").height(newHeight);
         };
     

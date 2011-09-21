@@ -50,7 +50,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var links = $(".flc-toc-tocContainer a", container);
                 jqUnit.assertTrue("ToC links created", links.length > 0); 
                 start();
-            }, 100);
+            }, 200);
         }
         
         that = fluid.tests.uiOptions.mungingIntegrationTest(tests, "fluid.uiOptions.fullPreview", "#myUIOptions", {
