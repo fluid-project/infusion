@@ -71,15 +71,15 @@ var demo = demo || {};
     /**
      * Initialize UI Options on the "Full Page, No Preview" version.
      */
-    demo.initFullNoPreview = function (container) {
-        fluid.uiOptions.fullNoPreview(container, basicFullPageOpts);
+    demo.initFullNoPreview = function (container, options) {
+        fluid.uiOptions.fullNoPreview(container, $.extend(true, {}, basicFullPageOpts, options));
     };
 
     /**
      * Initialize UI Options on the "Full Page, With Preview" version.
      */
-    demo.initFullWithPreview = function (container) {
-        fluid.uiOptions.fullPreview(container, basicFullPageOpts);
+    demo.initFullWithPreview = function (container, options) {
+        fluid.uiOptions.fullPreview(container, $.extend(true, {}, basicFullPageOpts, options));
     };
 
     /**
