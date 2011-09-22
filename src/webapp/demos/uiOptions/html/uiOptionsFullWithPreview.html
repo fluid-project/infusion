@@ -57,7 +57,13 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 demo.initPageEnhancer("uio-demo-theme");
-                demo.initFullWithPreview("#myUIOptions");
+                demo.initFullWithPreview("#myUIOptions", {
+                    preview: {
+                        options: {
+                            templateUrl: "UIOptionsPreview.html"
+                        }
+                    }
+                });
             });
         </script>
 

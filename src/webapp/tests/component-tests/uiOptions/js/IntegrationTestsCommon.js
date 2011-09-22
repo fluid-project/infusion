@@ -54,9 +54,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "settingsStore",
         "eventBinder"];
          
-    fluid.tests.uiOptions.expectedModel = [
-        "textFont", "theme", "textSize", "lineSpacing"
-    ];
     
     fluid.tests.uiOptions.assertPresent = function (uiOptions, expecteds) {
         jqUnit.expect(expecteds.length);
@@ -67,15 +64,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.tests.uiOptions.checkModelSelections = function (message, expectedSelections, actualSelections) {
-        fluid.each(fluid.tests.uiOptions.expectedModel, function (expected) {
-            jqUnit.assertEquals(expected + " correctly updated: " + message, 
-                fluid.get(expectedSelections, expected), fluid.get(actualSelections, expected));
-        });
+        fluid.testUtils.assertLeftHand("Model correctly updated", expectedSelections, actualSelections);
     };
             
     fluid.tests.uiOptions.applierRequestChanges = function (uiOptions, selectionOptions) {
-        fluid.each(fluid.tests.uiOptions.expectedModel, function (expected) {
-            uiOptions.applier.requestChange("selections." + expected, fluid.get(selectionOptions, expected));
+        fluid.each(selectionOptions, function (value, key) {
+            uiOptions.applier.requestChange("selections." + key, value);
         });
     };
     
@@ -122,7 +116,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 start();
             }
             
-            jqUnit.expect(18);
+            jqUnit.expect(6);
                        
             var that = fluid.invokeGlobalFunction(componentName, ["#myUIOptions", {
                 prefix: "../../../../components/uiOptions/html/",
@@ -176,7 +170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.tests.uiOptions.mungingIntegrationTest = function (tests, componentName, container, extraOpts, extraListener) {
-        extraListener = extraListener || fluid.identity;
+        extraListener = extraListener || function () { start(); };
       
         tests.asyncTest(componentName + " Munging Integration tests", function () {
             fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
@@ -202,13 +196,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("There are 5 elements in the text font control value list", 5, actualTextFontControlValues.length);
                 jqUnit.assertEquals("The first text font control value matches", testControlValues[0], actualTextFontControlValues[0]);
                 jqUnit.assertEquals("The fifth text font control value matches", testControlValues[4], actualTextFontControlValues[4]);
+            }
 
-                start();
-            }
-            
-            function testStarter() {
-                start();
-            }
             var that;
             // TODO: This awful sleaze relies on the fact that the Fat Panel is *definitely* asynchronous, and therefore
             // "that" will be visible by the time this relay fires. A better solution would be to boil the "onReady" event
@@ -235,11 +224,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         listeners: {
                             onReady: [
                                 {listener: testComponent},
-                                {listener: listenerRelay},
-                                {
-                                    listener: testStarter,
-                                    priority: "last"
-                                }
+                                {listener: listenerRelay}
                             ]
                         }
                     }

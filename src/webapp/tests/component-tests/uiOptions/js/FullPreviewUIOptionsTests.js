@@ -17,7 +17,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        fluid.setLogging(true);
         
         var tests = jqUnit.testCase("FullPreviewUIOptions Tests");
         
@@ -25,7 +24,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * fluid.fullPreviewUIOptions Integration Tests *
          **************************************************/        
         fluid.tests.uiOptions.integrationTest(tests, "fluid.uiOptions.fullPreview", false);
-        fluid.tests.uiOptions.mungingIntegrationTest(tests, "fluid.uiOptions.fullPreview", "#myUIOptions");    
+        
+        var testSettings = {
+            textSize: "1.5",
+            textFont: "verdana",
+            theme: "bw",
+            layout: false,
+            toc: true,
+            links: true
+        };
+        
+        // TODO: we need MUCH better event boiling support in order to avoid rubbish like this
+        var that, uiOptions;
+        function testToCEnhancement(innerThat, uiOptionsLoader, innerUIOptions) {
+            uiOptions = innerUIOptions;
+        }
+        
+        function testToCEnhancement2() {
+            fluid.tests.uiOptions.applierRequestChanges(uiOptions, testSettings);
+            jqUnit.expect(1);
+            // TODO: Very unsatisfactory - the TOC resources are the final thing we wait on, and the
+            // event for this is very deeply buried
+            setTimeout(function () {
+                var container = uiOptions.preview.enhancerContainer;
+                var links = $(".flc-toc-tocContainer a", container);
+                jqUnit.assertTrue("ToC links created", links.length > 0); 
+                start();
+            }, 200);
+        }
+        
+        that = fluid.tests.uiOptions.mungingIntegrationTest(tests, "fluid.uiOptions.fullPreview", "#myUIOptions", {
+            preview: {
+                options: {
+                    templateUrl: "TestPreviewTemplate.html",
+                    listeners: {
+                        "onReady.toc2": {
+                            listener: testToCEnhancement2,
+                            priority: "last"
+                        }
+                    }
+                }
+            }
+        }, testToCEnhancement);    
     });
 
-})(jQuery);        
+})(jQuery);
