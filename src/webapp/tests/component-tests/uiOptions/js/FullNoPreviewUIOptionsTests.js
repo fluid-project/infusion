@@ -17,7 +17,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        fluid.setLogging(true);
         
         var tests = jqUnit.testCase("FullNoPreviewUIOptions Tests");
 
