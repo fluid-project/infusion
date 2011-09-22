@@ -91,20 +91,6 @@ var fluid_1_4 = fluid_1_4 || {};
         events.onFileComplete.fire(file);
     };
     
-    fluid.uploader.html5Strategy.progressTracker = function () {
-        var that = {
-            previousBytesLoaded: 0
-        };
-        
-        that.getChunkSize = function (bytesLoaded) {
-            var chunkSize = bytesLoaded - that.previousBytesLoaded;
-            that.previousBytesLoaded = bytesLoaded;
-            return chunkSize;
-        };
-        
-        return that;
-    };
-    
     fluid.uploader.html5Strategy.monitorFileUploadXHR = function (file, events, xhr) {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
@@ -120,9 +106,8 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         };
 
-        var progressTracker = fluid.uploader.html5Strategy.progressTracker();
         xhr.upload.onprogress = function (pe) {
-            events.onFileProgress.fire(file, progressTracker.getChunkSize(pe.loaded), pe.total);
+            events.onFileProgress.fire(file, pe.loaded, pe.total);
         };
     };
     

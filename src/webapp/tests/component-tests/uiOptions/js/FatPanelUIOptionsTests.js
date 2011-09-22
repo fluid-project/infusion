@@ -76,7 +76,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 markupRenderer: {
                     options: {
                         markupProps: {
-                            src: "./FatPanelUIOptionsFrame-test.html"
+                            src: "./FatPanelUIOptionsFrame.html"
                         }
                     }
                 },
@@ -119,7 +119,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 markupRenderer: {
                     options: {
                         markupProps: {
-                            src: "./FatPanelUIOptionsFrame-test.html"
+                            src: "./FatPanelUIOptionsFrame.html"
                         }
                     }
                 }
