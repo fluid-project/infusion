@@ -58,6 +58,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });
 
+        tests.test("getPx2EmFactor", function () {
+            var px2emFactor = fluid.uiEnhancer.getPx2EmFactor($(".flt-baseFontSize-child"));
+
+            jqUnit.assertEquals("Check that the factor is pulled from the container correctly", 8, px2emFactor);
+        });
+
         tests.test("TextSizer", function () {
             var container = $(".flt-textSizer");
             var uiEnhancer = fluid.uiEnhancer(container, uiEnhancerOptions);
