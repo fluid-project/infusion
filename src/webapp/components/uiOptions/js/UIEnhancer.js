@@ -75,7 +75,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     invokers: {
                         calcInitSize: {
                             funcName: "fluid.uiEnhancer.textSizer.calcInitSize",
-                            args: ["{textSizer}", "{uiEnhancer}.options.fontSizeMap", "{uiEnhancer}.options.px2emFactor"]
+                            args: ["{textSizer}", "{uiEnhancer}.options.fontSizeMap"]
                         }
                     }
                 }
@@ -196,7 +196,6 @@ var fluid_1_4 = fluid_1_4 || {};
             "x-large":  "23px",
             "xx-large": "30px"
         },
-        px2emFactor: "16",
         selectors: {
             colorInversion: ".fl-inverted-color"
         },
@@ -336,7 +335,7 @@ var fluid_1_4 = fluid_1_4 || {};
             fontSize = fontSizeMap[fontSize];
         }
 
-        // fontSize is in px, convert and return font size in em
+        // return fontSize in px
         return parseFloat(fontSize);
     };
 
@@ -345,9 +344,20 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param (Object) container
      * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
      */
-    fluid.uiEnhancer.getTextSizeInEm = function (container, fontSizeMap, px2emFactor) {
+    fluid.uiEnhancer.getTextSizeInEm = function (container, fontSizeMap) {
+        var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container);
+
         // retrieve fontSize in px, convert and return in em 
         return Math.round(fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap) / px2emFactor * 10000) / 10000;
+    };
+    
+    fluid.uiEnhancer.getPx2EmFactor = function (container) {
+        // The base font size is the computed font size of the container's parent element unless the container itself has been a "body" tag
+        if (container.get(0).tagName !== "BODY") {
+            container = container.parent();
+        }
+
+        return parseFloat(container.css("font-size"));
     };
 
     /*******************************************************************************
@@ -376,8 +386,8 @@ var fluid_1_4 = fluid_1_4 || {};
         that.container.css("font-size", targetSize + "em");
     };
     
-    fluid.uiEnhancer.textSizer.calcInitSize = function (that, fontSizeMap, px2emFactor) {
-        that.initialSize = fluid.uiEnhancer.getTextSizeInEm(that.container, fontSizeMap, px2emFactor);     
+    fluid.uiEnhancer.textSizer.calcInitSize = function (that, fontSizeMap) {
+        that.initialSize = fluid.uiEnhancer.getTextSizeInEm(that.container, fontSizeMap);
     };
 
     /*******************************************************************************

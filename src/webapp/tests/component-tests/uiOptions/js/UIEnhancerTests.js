@@ -59,10 +59,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         tests.test("TextSizer", function () {
-            var uiEnhancer = fluid.uiEnhancer(".flt-textSizer", uiEnhancerOptions);
+            var container = $(".flt-textSizer");
+            var uiEnhancer = fluid.uiEnhancer(container, uiEnhancerOptions);
             var textSizer = uiEnhancer.textSize;
             
-            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 0.5, textSizer.initialSize);
+            var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container);
+            var expectedInitialSize = Math.round(8 / px2emFactor * 10000) / 10000;
+            
+            jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, textSizer.initialSize);
             textSizer.set(2);
             jqUnit.assertEquals("The size should be doubled", "16px", textSizer.container.css("fontSize"));
         
