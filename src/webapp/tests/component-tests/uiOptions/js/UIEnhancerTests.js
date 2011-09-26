@@ -114,9 +114,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var lineSpacer = uiEnhancer.lineSpacing;
             
             jqUnit.assertEquals("Check that the size is pulled from the container correctly", 1.5, lineSpacer.initialSize);
-            jqUnit.assertEquals("Check the line spacing size in pixels", "15px", lineSpacer.container.css("lineHeight"));
+            jqUnit.assertEquals("Check the line spacing size in pixels", "12px", lineSpacer.container.css("lineHeight"));
             lineSpacer.set(2);
-            jqUnit.assertEquals("The size should be doubled", "30px", lineSpacer.container.css("lineHeight"));
+            jqUnit.assertEquals("The size should be doubled", "24px", lineSpacer.container.css("lineHeight"));
         
         });
 
