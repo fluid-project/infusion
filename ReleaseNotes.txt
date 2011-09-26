@@ -126,14 +126,14 @@ Mac OS X 10.6:
    
 Windows XP:
     * Firefox 3.6
-    * Firefox 5
+    * Firefox 6
     * Internet Explorer 6
     * Internet Explorer 7
     * Internet Explorer 8
     * Google Chrome
     
 Windows 7:
-    * Firefox 5
+    * Firefox 6
     * Internet Explorer 8
     * Internet Explorer 9
     
@@ -206,6 +206,7 @@ Renderer:
     FLUID-3277: Attempt to add children to leaf component in tree results in "targetlump is undefined" error
     FLUID-3276: Enclosing branch nodes within markup which has "headers" attribute causes them to become invisible to the renderer
     FLUID-2577: Renderer performance can be slow on IE 6 and 7 in some contexts.
+    FLUID-4322: Renderer can corrupt tag nesting structure in some cases with branch containers
 
 Reorderer: 
     FLUID-3963: Can't reorderer with the mouse: IE9.
@@ -215,7 +216,8 @@ Reorderer:
 
 UI Options: 
     FLUID-2831: Links UI Option settings are not retained in IE6 WinXP.
-    FLUID-4317: Full-page versions of UIOptions don't use their own templates by default.
+    FLUID-4394: Fat Panel UI Options' iFrame HTML page doesn't play nice with a concatenated build of Infusion
+    FLUID-4426: Sliding Panel needs ARIA and/or to move focus to beginning of panel when opened to alert screen readers of new content
     
 Uploader: 
     FLUID-3996: Deleting files on the local filesystem after they have been added to the Uploader's queue will cause inconsistent behaviour
