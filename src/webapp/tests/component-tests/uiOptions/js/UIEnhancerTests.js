@@ -59,7 +59,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         tests.test("getPx2EmFactor", function () {
-            var px2emFactor = fluid.uiEnhancer.getPx2EmFactor($(".flt-baseFontSize-child"));
+            var container = $(".flt-baseFontSize-child");
+            var uiEnhancer = fluid.uiEnhancer(container, uiEnhancerOptions);
+            var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container, uiEnhancer.options.fontSizeMap);
 
             jqUnit.assertEquals("Check that the factor is pulled from the container correctly", 8, px2emFactor);
         });
@@ -69,7 +71,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var uiEnhancer = fluid.uiEnhancer(container, uiEnhancerOptions);
             var textSizer = uiEnhancer.textSize;
             
-            var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container);
+            var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container, uiEnhancer.options.fontSizeMap);
             var expectedInitialSize = Math.round(8 / px2emFactor * 10000) / 10000;
             
             jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, textSizer.initialSize);

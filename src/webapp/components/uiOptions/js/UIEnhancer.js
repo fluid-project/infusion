@@ -345,19 +345,18 @@ var fluid_1_4 = fluid_1_4 || {};
      * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
      */
     fluid.uiEnhancer.getTextSizeInEm = function (container, fontSizeMap) {
-        var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container);
+        var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container, fontSizeMap);
 
         // retrieve fontSize in px, convert and return in em 
         return Math.round(fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap) / px2emFactor * 10000) / 10000;
     };
     
-    fluid.uiEnhancer.getPx2EmFactor = function (container) {
+    fluid.uiEnhancer.getPx2EmFactor = function (container, fontSizeMap) {
         // The base font size is the computed font size of the container's parent element unless the container itself has been a "body" tag
         if (container.get(0).tagName !== "BODY") {
             container = container.parent();
         }
-
-        return parseFloat(container.css("font-size"));
+        return fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap);
     };
 
     /*******************************************************************************
