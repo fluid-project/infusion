@@ -58,11 +58,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });
 
+        tests.test("getPx2EmFactor", function () {
+            var container = $(".flt-baseFontSize-child");
+            var uiEnhancer = fluid.uiEnhancer(container, uiEnhancerOptions);
+            var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container, uiEnhancer.options.fontSizeMap);
+
+            jqUnit.assertEquals("Check that the factor is pulled from the container correctly", 8, px2emFactor);
+        });
+
         tests.test("TextSizer", function () {
-            var uiEnhancer = fluid.uiEnhancer(".flt-textSizer", uiEnhancerOptions);
+            var container = $(".flt-textSizer");
+            var uiEnhancer = fluid.uiEnhancer(container, uiEnhancerOptions);
             var textSizer = uiEnhancer.textSize;
             
-            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 0.5, textSizer.initialSize);
+            var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container, uiEnhancer.options.fontSizeMap);
+            var expectedInitialSize = Math.round(8 / px2emFactor * 10000) / 10000;
+            
+            jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, textSizer.initialSize);
             textSizer.set(2);
             jqUnit.assertEquals("The size should be doubled", "16px", textSizer.container.css("fontSize"));
         
@@ -104,9 +116,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var lineSpacer = uiEnhancer.lineSpacing;
             
             jqUnit.assertEquals("Check that the size is pulled from the container correctly", 1.5, lineSpacer.initialSize);
-            jqUnit.assertEquals("Check the line spacing size in pixels", "15px", lineSpacer.container.css("lineHeight"));
+            jqUnit.assertEquals("Check the line spacing size in pixels", "12px", lineSpacer.container.css("lineHeight"));
             lineSpacer.set(2);
-            jqUnit.assertEquals("The size should be doubled", "30px", lineSpacer.container.css("lineHeight"));
+            jqUnit.assertEquals("The size should be doubled", "24px", lineSpacer.container.css("lineHeight"));
         
         });
 
