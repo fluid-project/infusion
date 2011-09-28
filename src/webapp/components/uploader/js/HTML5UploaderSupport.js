@@ -428,6 +428,10 @@ var fluid_1_4 = fluid_1_4 || {};
             that.locate("fileInputs").prop("disabled", true);
         };
         
+        that.isEnabled = function() {
+            return !that.locate("fileInputs").prop("disabled");  
+        };
+        
         setupBrowseButtonView(that);
         return that;
     };
