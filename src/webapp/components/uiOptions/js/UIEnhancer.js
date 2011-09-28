@@ -467,7 +467,8 @@ var fluid_1_4 = fluid_1_4 || {};
         
         // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1em.
         if (lineHeight === "normal") {
-            return 1;
+            that.initialSize = 1;
+            return;
         }
         
         // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
