@@ -25,8 +25,6 @@ var fluid_1_4 = fluid_1_4 || {};
 
 (function ($, fluid) {
     
-    fluid.setLogging(true);
-    
     var fileOrFiles = function (that, numFiles) {
         return (numFiles === 1) ? that.options.strings.progress.singleFile : 
             that.options.strings.progress.pluralFiles;
@@ -76,11 +74,11 @@ var fluid_1_4 = fluid_1_4 || {};
     // Only enable the browse button if the fileUploadLimit 
     // has not been reached
     var enableBrowseButton = function (that) {
-        if(!maxFilesUploaded(that)) {
+        if (!maxFilesUploaded(that)) {
             enableElement(that, that.locate("browseButton"));
             that.strategy.local.enableBrowseButton();            
         }
-    }    
+    };
     
     var setStateDone = function (that) {
         disableElement(that, that.locate("uploadButton"));
@@ -316,6 +314,7 @@ var fluid_1_4 = fluid_1_4 || {};
                 file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
                 return;
             } else {
+              // TODO: Avoid reaching directly into the filequeue and manipulating its state from here
                 file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
                 if (that.queue.isUploading) {
                     that.queue.currentBatch.totalBytesUploaded += file.size;
@@ -683,7 +682,7 @@ var fluid_1_4 = fluid_1_4 || {};
      * Error constants for the Uploader               *
      * TODO: These are SWFUpload-specific error codes *
      **************************************************/
-     
+    // TODO: Change these opaque numerical constants into strings which are easy to interpret
     fluid.uploader.queueErrorConstants = {
         QUEUE_LIMIT_EXCEEDED: -100,
         FILE_EXCEEDS_SIZE_LIMIT: -110,
