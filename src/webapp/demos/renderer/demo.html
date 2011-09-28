@@ -41,9 +41,10 @@
             <h2>Renderer<a href="mailto:infusion-users@fluidproject.org?subject=Broken demo: Renderer">Report broken demo</a></h2>
             <div class="fl-col example">
                 <h3>Live Example</h3>
-                <p><strong>Instructions: </strong>Below is a basic template of markup. Use the 'Render' button to repopulate the template with the data model on the right.</p>
-
-				<p>As controls are manipulated on the left, the Renderer automatically updates the data model to reflect the user's choices.</p>
+                <p><strong>Instructions: </strong>Use the 'Render' button below to populate the template on the left with the data model to the right. As controls are manipulated on the left, the Renderer automatically updates the data model to reflect the user's choices.</p>
+                <p><strong>Note:</strong> This demo uses a "full" component tree: Each component is fully specified and the tree is ready to render. Full component trees are recommended in complex situations or situations where the tree will require further processing before it becomes final.</p>
+                <p>To render a relatively simple component tree (e.g. no further processing, just the simplest way to achieve a particular effect), consider using the "prototree" format. Prototrees are a form of shorthand that is expanded by the Renderer before being rendered. They are also useful if you need a fully declarative solution (i.e. you are encoding the tree in JSON).</p>
+                <p>For demos of simple prototrees, see our <a href="http://wiki.fluidproject.org/display/docs/Renderer+Instructional+Demos">Renderer Instructional Demos</a>.</p>
                 <iframe src="about:blank"></iframe>
             </div>
             <div class="fl-col content fl-theme-mist">
