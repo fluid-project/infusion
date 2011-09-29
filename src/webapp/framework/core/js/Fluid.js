@@ -41,7 +41,7 @@ var fluid = fluid || fluid_1_4;
     };
     var globalObject = window || {};
     
-    var softFailure = [false];
+    var softFailure = [true];
     
     // This function will be patched from FluidIoC.js in order to describe complex activities
     fluid.describeActivity = function () {
