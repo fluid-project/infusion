@@ -119,9 +119,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Check the line spacing size in pixels", "12px", lineSpacer.container.css("lineHeight"));
             lineSpacer.set(2);
             jqUnit.assertEquals("The size should be doubled", "24px", lineSpacer.container.css("lineHeight"));
-        
         });
 
+        function testNumberizeLineHeight(lineHeight, expected) {
+            tests.test("numberizeLineHeight - " + lineHeight, function () { 
+                var uiEnhancer = fluid.uiEnhancer(".flt-lineSpacer", uiEnhancerOptions);
+                var lineSpacer = uiEnhancer.lineSpacing;
+                
+                var numerizedLineHeight = fluid.uiEnhancer.lineSpacer.numerizeLineHeight(lineSpacer, uiEnhancer.options.fontSizeMap, lineHeight);
+
+                jqUnit.assertEquals("line-height value 'normal' has been converted", expected, numerizedLineHeight);
+            });
+        }
+        
+        testNumberizeLineHeight("normal", 1.2);
+        testNumberizeLineHeight(8, 1);
+        
         function cleanStaticEnvironment() {
             delete fluid.staticEnvironment.browserIE;
             delete fluid.staticEnvironment.browserMajorVersion;            

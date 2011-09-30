@@ -463,15 +463,21 @@ var fluid_1_4 = fluid_1_4 || {};
     
     // Returns the value of css style "line-height" in em 
     fluid.uiEnhancer.lineSpacer.calcInitSize = function (that, fontSizeMap) {
-        var lineHeight = that.container.css("lineHeight");
+        var lineHeight = that.container.css("line-height");
         
-        // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1em.
+        that.initialSize = fluid.uiEnhancer.lineSpacer.numerizeLineHeight(that, fontSizeMap, lineHeight);
+    };
+    
+    // Interprets browser returned "line-height" value into a numeric value in em
+    fluid.uiEnhancer.lineSpacer.numerizeLineHeight = function (that, fontSizeMap, lineHeight) {
+        // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1.2em
+        // according to https://developer.mozilla.org/en/CSS/line-height
         if (lineHeight === "normal") {
-            that.initialSize = 1;
-            return;
+            return 1.2;
         }
         
         // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
+        // This bug only occurs in IE 6 - 8, not in IE9, which is calculated at the last return
         if ($.browser.msie) {
             var lineHeightInIE;
             
@@ -479,12 +485,11 @@ var fluid_1_4 = fluid_1_4 || {};
             lineHeightInIE = that.container[0].currentStyle.lineHeight;
             
             if (lineHeightInIE.match(/[0-9]$/)) {
-                that.initialSize = lineHeightInIE;
-                return;
+                return lineHeightInIE;
             }
         }
         
-        that.initialSize = Math.round(parseFloat(lineHeight) / fluid.uiEnhancer.getTextSizeInPx(that.container, fontSizeMap) * 100) / 100;
+        return Math.round(parseFloat(lineHeight) / fluid.uiEnhancer.getTextSizeInPx(that.container, fontSizeMap) * 100) / 100;
     };
 
     /*******************************************************************************
