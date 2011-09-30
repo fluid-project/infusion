@@ -1,4 +1,5 @@
 /*
+Copyright 2009 University of Toronto
 Copyright 2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
