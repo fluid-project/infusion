@@ -361,31 +361,28 @@ var fluid_1_4 = fluid_1_4 || {};
 
     // Interprets browser returned "line-height" value, either a string "normal" or a number with "px" suffix, 
     // into a numeric value in em
-    fluid.uiEnhancer.numerizeLineHeight = function (container, fontSizeMap, lineHeight) {
+    fluid.uiEnhancer.numerizeLineHeight = function (lineHeight, fontSize) {
+        // Make sure lineHeight is defined. Undefined lineHeight occurs when the container being detected does not exist.
+        if (!lineHeight) {
+            return 0;
+        }
+
         // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1.2em
         // according to https://developer.mozilla.org/en/CSS/line-height
         if (lineHeight === "normal") {
             return 1.2;
         }
         
-        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
-        // This bug only occurs in IE 6 - 8, not in IE9, whose calculation falls out of the following "if" block into the last return
-        if ($.browser.msie) {
-            var lineHeightInIE;
-            
-            // if unit is missing, assume the value is in "em"
-            lineHeightInIE = container[0].currentStyle.lineHeight;
-            
-            if (lineHeightInIE.match(/[0-9]$/)) {
-                return lineHeightInIE;
-            }
+        // Continuing the work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
+        if (lineHeight.match(/[0-9]$/)) {
+            return lineHeight;
         }
         
-        return Math.round(parseFloat(lineHeight) / fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap) * 100) / 100;
+        return Math.round(parseFloat(lineHeight) / fontSize * 100) / 100;
     };
 
     /*******************************************************************************
-     * TextSizer                                                              *
+     * TextSizer                                                                   *
      *                                                                             *
      * Sets the text size on the container to the multiple provided.               *
      * Note: This will become half an ant                                          *
@@ -488,9 +485,18 @@ var fluid_1_4 = fluid_1_4 || {};
     
     // Returns the value of css style "line-height" in em 
     fluid.uiEnhancer.lineSpacer.calcInitSize = function (that, fontSizeMap) {
-        var lineHeight = that.container.css("line-height");
+        var lineHeight;
+
+        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
+        if (that.container[0].currentStyle) {
+            lineHeight = that.container[0].currentStyle.lineHeight;
+        } else {
+            lineHeight = that.container.css("line-height");
+        }
         
-        that.initialSize = fluid.uiEnhancer.numerizeLineHeight(that.container, fontSizeMap, lineHeight);
+        var fontSize = fluid.uiEnhancer.getTextSizeInPx(that.container, fontSizeMap);
+
+        that.initialSize = fluid.uiEnhancer.numerizeLineHeight(lineHeight, fontSize);
     };
     
     /*******************************************************************************

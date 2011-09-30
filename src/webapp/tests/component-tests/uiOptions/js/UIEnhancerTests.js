@@ -121,18 +121,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The size should be doubled", "24px", lineSpacer.container.css("lineHeight"));
         });
 
-        function testNumberizeLineHeight(lineHeight, expected) {
-            tests.test("numberizeLineHeight - " + lineHeight, function () { 
+        function testNumerizeLineHeight(lineHeight, expected) {
+            tests.test("numerizeLineHeight - " + lineHeight, function () { 
                 var uiEnhancer = fluid.uiEnhancer(".flt-lineSpacer", uiEnhancerOptions);
+                var fontSize = fluid.uiEnhancer.getTextSizeInPx(uiEnhancer.container, uiEnhancer.options.fontSizeMap);
                 
-                var numerizedLineHeight = fluid.uiEnhancer.numerizeLineHeight(uiEnhancer.container, uiEnhancer.options.fontSizeMap, lineHeight);
+                var numerizedLineHeight = fluid.uiEnhancer.numerizeLineHeight(lineHeight, fontSize);
 
                 jqUnit.assertEquals("line-height value '" + lineHeight + "' has been converted correctly", expected, numerizedLineHeight);
             });
         }
         
-        testNumberizeLineHeight("normal", 1.2);
-        testNumberizeLineHeight("8px", 1);
+        testNumerizeLineHeight("normal", 1.2);
+        testNumerizeLineHeight("8px", 1);
+        testNumerizeLineHeight("1.5", 1.5);
         
         function cleanStaticEnvironment() {
             delete fluid.staticEnvironment.browserIE;
