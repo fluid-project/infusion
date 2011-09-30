@@ -1,5 +1,5 @@
 /*!
- * Fluid Infusion v1.3
+ * Fluid Infusion v1.4
  *
  * Infusion is distributed under the Educational Community License 2.0 and new BSD licenses: 
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
@@ -34,14 +34,14 @@ var fluid = fluid || fluid_1_4;
 
 (function ($, fluid) {
     
-    fluid.version = "Infusion 1.3";
+    fluid.version = "Infusion 1.4";
     
     fluid.environment = {
         fluid: fluid
     };
     var globalObject = window || {};
     
-    var softFailure = [false];
+    var softFailure = [true];
     
     // This function will be patched from FluidIoC.js in order to describe complex activities
     fluid.describeActivity = function () {

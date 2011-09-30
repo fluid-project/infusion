@@ -71,7 +71,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
  
     $(function () {
-        fluid.setLogging(true);
         absoluteProgress = fluid.progress("#absoluteProgress");
         floatyProgress = fluid.progress("#floatyProgress", {selectors: {
             displayElement: ".fluid-progress-bar" // required
