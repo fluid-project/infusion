@@ -361,7 +361,7 @@ var fluid_1_4 = fluid_1_4 || {};
 
     // Interprets browser returned "line-height" value, either a string "normal" or a number with "px" suffix, 
     // into a numeric value in em
-    fluid.uiEnhancer.numerizeLineHeight = function (that, fontSizeMap, lineHeight) {
+    fluid.uiEnhancer.numerizeLineHeight = function (container, fontSizeMap, lineHeight) {
         // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1.2em
         // according to https://developer.mozilla.org/en/CSS/line-height
         if (lineHeight === "normal") {
@@ -374,14 +374,14 @@ var fluid_1_4 = fluid_1_4 || {};
             var lineHeightInIE;
             
             // if unit is missing, assume the value is in "em"
-            lineHeightInIE = that.container[0].currentStyle.lineHeight;
+            lineHeightInIE = container[0].currentStyle.lineHeight;
             
             if (lineHeightInIE.match(/[0-9]$/)) {
                 return lineHeightInIE;
             }
         }
         
-        return Math.round(parseFloat(lineHeight) / fluid.uiEnhancer.getTextSizeInPx(that.container, fontSizeMap) * 100) / 100;
+        return Math.round(parseFloat(lineHeight) / fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap) * 100) / 100;
     };
 
     /*******************************************************************************
@@ -490,7 +490,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uiEnhancer.lineSpacer.calcInitSize = function (that, fontSizeMap) {
         var lineHeight = that.container.css("line-height");
         
-        that.initialSize = fluid.uiEnhancer.numerizeLineHeight(that, fontSizeMap, lineHeight);
+        that.initialSize = fluid.uiEnhancer.numerizeLineHeight(that.container, fontSizeMap, lineHeight);
     };
     
     /*******************************************************************************
