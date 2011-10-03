@@ -757,16 +757,19 @@ var fluid = fluid || fluid_1_4;
         return listener.$$guid;
     };
     
+    // unsupported, NON-API function
     fluid.event.mapPriority = function (priority, count) {
         return (priority === null || priority === undefined ? -count : 
            (priority === "last" ? -Number.MAX_VALUE :
               (priority === "first" ? Number.MAX_VALUE : priority)));
     };
     
+    // unsupported, NON-API function
     fluid.event.listenerComparator = function (recA, recB) {
         return recB.priority - recA.priority;
     };
     
+    // unsupported, NON-API function
     fluid.event.sortListeners = function (listeners) {
         var togo = [];
         fluid.each(listeners, function (listener) {
@@ -860,6 +863,7 @@ var fluid = fluid || fluid_1_4;
         };
     };
     
+    // unsupported, NON-API function
     fluid.event.addListenerToFirer = function (firer, value, namespace) {
         if (fluid.isArrayable(value)) {
             for (var i = 0; i < value.length; ++i) {
