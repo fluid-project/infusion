@@ -1,5 +1,4 @@
 /*
-Copyright 2008-2009 University of Toronto
 Copyright 2010-2011 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
