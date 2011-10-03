@@ -48,6 +48,14 @@
 	-> DOM Pollution removed 
 */
 
+/*
+ * This file was forked from https://github.com/FGRibreau/JSCSSP
+ * Further modifications were made for use in Fluid Infusion
+ * to improve unit test coverage, URL handling, and more.
+ *
+ * These modifications are copyright 2011, OCAD University
+ */
+
 (function(){
 	
 
