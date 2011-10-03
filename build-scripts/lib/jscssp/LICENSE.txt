@@ -27,3 +27,5 @@ Contributor(s):
    Jonathon Jongsma <jonathon.jongsma@collabora.co.uk>, Collabora Ltd.
    Siraj Razick <siraj.razick@collabora.co.uk>, Collabora Ltd.
    Daniel Glazman <daniel.glazman@disruptive-innovations.com>
+   FG Ribreau - FGRibreau.com
+   Fluid Project, OCAD University <cclark@ocad.ca>
