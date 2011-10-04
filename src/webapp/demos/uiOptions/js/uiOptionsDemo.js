@@ -1,5 +1,6 @@
 /*
 Copyright 2011 OCAD University
+Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -71,15 +72,15 @@ var demo = demo || {};
     /**
      * Initialize UI Options on the "Full Page, No Preview" version.
      */
-    demo.initFullNoPreview = function (container) {
-        fluid.uiOptions.fullNoPreview(container, basicFullPageOpts);
+    demo.initFullNoPreview = function (container, options) {
+        fluid.uiOptions.fullNoPreview(container, $.extend(true, {}, basicFullPageOpts, options));
     };
 
     /**
      * Initialize UI Options on the "Full Page, With Preview" version.
      */
-    demo.initFullWithPreview = function (container) {
-        fluid.uiOptions.fullPreview(container, basicFullPageOpts);
+    demo.initFullWithPreview = function (container, options) {
+        fluid.uiOptions.fullPreview(container, $.extend(true, {}, basicFullPageOpts, options));
     };
 
     /**

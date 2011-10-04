@@ -1,5 +1,6 @@
 /*
 Copyright 2011 OCAD University
+Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -215,15 +216,21 @@ var fluid_1_4 = fluid_1_4 || {};
     
     fluid.uiOptions.renderIframe.finalInit = function (that) {
         var styles = that.options.styles;
-        that.options.markupProps = fluid.uiOptions.transformUrls(that.options.markupProps, that.options.prefix);
+        // TODO: get earlier access to templateLoader, 
+        that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, {"prefix/": that.options.prefix});
         that.iframeSrc = that.options.markupProps.src;
         
         //create iframe and append to container
-        that.iframe = $("<iframe/>", that.options.markupProps).appendTo(that.container);
+        that.iframe = $("<iframe/>");
+        that.iframe.load(function () {
+            that.events.afterRender.fire();
+        });
+        that.iframe.attr(that.options.markupProps);
         
         that.iframe.addClass(styles.containerFlex);
         that.iframe.addClass(styles.container);
-        that.iframe.load(that.events.afterRender.fire);
+
+        that.iframe.appendTo(that.container);
     };
     
     /***********************************

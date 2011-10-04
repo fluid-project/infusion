@@ -1,5 +1,6 @@
 /*
 Copyright 2010-2011 OCAD University 
+Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -91,20 +92,6 @@ var fluid_1_4 = fluid_1_4 || {};
         events.onFileComplete.fire(file);
     };
     
-    fluid.uploader.html5Strategy.progressTracker = function () {
-        var that = {
-            previousBytesLoaded: 0
-        };
-        
-        that.getChunkSize = function (bytesLoaded) {
-            var chunkSize = bytesLoaded - that.previousBytesLoaded;
-            that.previousBytesLoaded = bytesLoaded;
-            return chunkSize;
-        };
-        
-        return that;
-    };
-    
     fluid.uploader.html5Strategy.monitorFileUploadXHR = function (file, events, xhr) {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
@@ -120,9 +107,8 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         };
 
-        var progressTracker = fluid.uploader.html5Strategy.progressTracker();
         xhr.upload.onprogress = function (pe) {
-            events.onFileProgress.fire(file, progressTracker.getChunkSize(pe.loaded), pe.total);
+            events.onFileProgress.fire(file, pe.loaded, pe.total);
         };
     };
     
@@ -441,6 +427,10 @@ var fluid_1_4 = fluid_1_4 || {};
         
         that.disable = function () {
             that.locate("fileInputs").prop("disabled", true);
+        };
+        
+        that.isEnabled = function() {
+            return !that.locate("fileInputs").prop("disabled");  
         };
         
         setupBrowseButtonView(that);

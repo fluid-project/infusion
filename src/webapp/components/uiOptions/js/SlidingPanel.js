@@ -1,5 +1,6 @@
 /*
 Copyright 2011 OCAD University
+Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -54,8 +55,7 @@ var fluid_1_4 = fluid_1_4 || {};
         $(element).slideDown(duration || "400", callback);
     };
     
-    fluid.slidingPanel.finalInit = function (that) {        
-    
+    fluid.slidingPanel.finalInit = function (that) {
         that.showPanel = function () {
             that.events.onPanelShow.fire(that);
             that.locate("toggleButton").text(that.options.strings.hideText);        
@@ -76,7 +76,7 @@ var fluid_1_4 = fluid_1_4 || {};
             }       
         };
         
-        that.setPanelHeight = function(newHeight) {
+        that.setPanelHeight = function (newHeight) {
             that.locate("panel").height(newHeight);
         };
     

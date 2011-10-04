@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2009 University of Toronto
 Copyright 2011 OCAD University
+Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -11,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, jQuery*/
+/*global fluid, jqUnit, expect, start, jQuery*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -24,7 +25,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             textSize: "1.5",
             textFont: "verdana",
             theme: "bw",
-            layout: false
+            layout: false,
+            toc: true,
+            links: true
         };
         
         var uiEnhancerOptions = {
@@ -47,6 +50,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Initially font-sans class exists", 1, $(".fl-font-sans").length);
             jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
             jqUnit.assertEquals("Initially text-spacing class exists", 1, $(".fl-font-spacing-3").length);
+
             fluid.pageEnhancer(uiEnhancerOptions);
             jqUnit.assertEquals("font size classes should not be removed", 3, $(".fl-font-size-90").length);
             jqUnit.assertEquals("layout class is gone", 0, $(".fl-layout-linear").length);
@@ -55,29 +59,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });
 
-        tests.test("Settings", function () {
-            expect(3);
+        tests.test("getPx2EmFactor", function () {
+            var container = $(".flt-baseFontSize-child");
+            var uiEnhancer = fluid.uiEnhancer(container, uiEnhancerOptions);
+            var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container, uiEnhancer.options.fontSizeMap);
 
-            var body = $("body");
-            var initialFontSize = parseFloat(body.css("fontSize"));
-            
-            var uiEnhancer = fluid.pageEnhancer(uiEnhancerOptions).uiEnhancer;
-            uiEnhancer.updateModel(testSettings);
-            
-            var expectedTextSize = initialFontSize * testSettings.textSize;
-            
-            jqUnit.assertEquals("Large text size is set", expectedTextSize.toFixed(0) + "px", body.css("fontSize"));
-            jqUnit.assertTrue("Verdana font is set", body.hasClass("fl-font-uio-verdana"));
-            jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-bw"));
-
+            jqUnit.assertEquals("Check that the factor is pulled from the container correctly", 8, px2emFactor);
         });
-        
+
         tests.test("TextSizer", function () {
-            var textSizer = fluid.uiEnhancer.textSizer(".flt-textSizer");
+            var container = $(".flt-textSizer");
+            var uiEnhancer = fluid.uiEnhancer(container, uiEnhancerOptions);
+            var textSizer = uiEnhancer.textSize;
             
-            jqUnit.assertTrue("Make sure initalSize is not set upon creation since we want to trigger the setting lazily.", !textSizer.initialSize);
-            textSizer.calcInitSize();
-            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 8, textSizer.initialSize);
+            var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container, uiEnhancer.options.fontSizeMap);
+            var expectedInitialSize = Math.round(8 / px2emFactor * 10000) / 10000;
+            
+            jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, textSizer.initialSize);
             textSizer.set(2);
             jqUnit.assertEquals("The size should be doubled", "16px", textSizer.container.css("fontSize"));
         
@@ -115,17 +113,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         tests.test("LineSpacer", function () {
-            var lineSpacer = fluid.uiEnhancer.lineSpacer(".flt-lineSpacer");
+            var uiEnhancer = fluid.uiEnhancer(".flt-lineSpacer", uiEnhancerOptions);
+            var lineSpacer = uiEnhancer.lineSpacing;
             
-            jqUnit.assertTrue("Make sure initalSize is not set upon creation since we want to trigger the setting lazily.", !lineSpacer.initialSize);
-            lineSpacer.calcInitSize();
             jqUnit.assertEquals("Check that the size is pulled from the container correctly", 1.5, lineSpacer.initialSize);
-            jqUnit.assertEquals("Check the line spacing size in pixels", "15px", lineSpacer.container.css("lineHeight"));
+            jqUnit.assertEquals("Check the line spacing size in pixels", "12px", lineSpacer.container.css("lineHeight"));
             lineSpacer.set(2);
-            jqUnit.assertEquals("The size should be doubled", "30px", lineSpacer.container.css("lineHeight"));
-        
+            jqUnit.assertEquals("The size should be doubled", "24px", lineSpacer.container.css("lineHeight"));
         });
 
+        function testNumerizeLineHeight(lineHeight, expected) {
+            tests.test("numerizeLineHeight - " + lineHeight, function () { 
+                var uiEnhancer = fluid.uiEnhancer(".flt-lineSpacer", uiEnhancerOptions);
+                var fontSize = fluid.uiEnhancer.getTextSizeInPx(uiEnhancer.container, uiEnhancer.options.fontSizeMap);
+                
+                var numerizedLineHeight = fluid.uiEnhancer.numerizeLineHeight(lineHeight, fontSize);
+
+                jqUnit.assertEquals("line-height value '" + lineHeight + "' has been converted correctly", expected, numerizedLineHeight);
+            });
+        }
+        
+        testNumerizeLineHeight("normal", 1.2);
+        testNumerizeLineHeight("8px", 1);
+        testNumerizeLineHeight("1.5", 1.5);
+        
         function cleanStaticEnvironment() {
             delete fluid.staticEnvironment.browserIE;
             delete fluid.staticEnvironment.browserMajorVersion;            
@@ -133,34 +144,71 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         function withIE6Environment(withIt, testFunc) {
             try {
-                cleanStaticEnvironment;
+                cleanStaticEnvironment();
                 if (withIt) {
                     fluid.staticEnvironment.browserIE = fluid.typeTag("fluid.browser.msie");
                     fluid.staticEnvironment.browserMajorVersion = fluid.typeTag("fluid.browser.majorVersion.6");
                 }
                 testFunc();
-             }
-             finally {
-                 cleanStaticEnvironment();
-             }
+            } finally {
+                cleanStaticEnvironment();
+            }
         }
         
         function testIE6ColorInversion(withIt, testFunc) {
-            tests.test("IE6ColorInversion: " + withIt, function() { 
-                withIE6Environment(withIt, function() {
+            tests.test("IE6ColorInversion: " + withIt, function () { 
+                withIE6Environment(withIt, function () {
                     fluid.pageEnhancer(uiEnhancerOptions);
                     testFunc();
-                })}
-           );
+                });
+            });
         }
         
-        testIE6ColorInversion(true, function() {  
+        testIE6ColorInversion(true, function () {  
             jqUnit.assertEquals("fl-inverted-color has been removed", 0, $(".fl-inverted-color").length);
         });
-        testIE6ColorInversion(false, function() {
+        testIE6ColorInversion(false, function () {
             jqUnit.assertEquals("fl-inverted-color is not touched", 1, $(".fl-inverted-color").length);
         });
 
+        tests.asyncTest("Settings", function () {
+            expect(5);
+
+            var body = $("body");
+            var initialFontSize = parseFloat(body.css("fontSize"));
+            var refreshCount = 0;
+            
+            function testTocStyling() {
+                var tocLinks = $(".flc-toc-tocContainer a");
+                var filtered = tocLinks.filter(".fl-text-underline");
+                ++refreshCount;
+                if (refreshCount === 2) {
+                    jqUnit.assertEquals("All toc links have been styled", tocLinks.length, filtered.length);
+                    jqUnit.assertNotEquals("Some toc links generated on 2nd pass", 0, tocLinks.length);
+                    start();
+                }
+            }
+            
+            var options = fluid.merge(null, {}, uiEnhancerOptions, {
+                listeners: {
+                    lateRefreshView: {
+                        priority: "last",
+                        listener: testTocStyling
+                    }
+                }
+            });
+            
+            var uiEnhancer = fluid.pageEnhancer(options).uiEnhancer;
+            uiEnhancer.updateModel(testSettings);
+            
+            var expectedTextSize = initialFontSize * testSettings.textSize;
+            
+            jqUnit.assertEquals("Large text size is set", expectedTextSize.toFixed(0) + "px", body.css("fontSize"));
+            jqUnit.assertTrue("Verdana font is set", body.hasClass("fl-font-uio-verdana"));
+            jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-bw"));
+
+        });
+        
         tests.test("Options munging", function () {
             expect(2);
 

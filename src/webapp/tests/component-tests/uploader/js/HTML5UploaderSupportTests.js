@@ -1,5 +1,6 @@
 /*
 Copyright 2010-2011 OCAD University
+Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -297,21 +298,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkEventOrderForFiles(eventOrder, files, transcript);
             checkOnFileCompleteEvent(transcript);            
         });         
-        
-        /***************************
-         * progressTracker() Tests *
-         ***************************/
-        
-        html5UploaderTests.test("Ensure loaded bytes are properly tracked", function () {
-            var progress = fluid.uploader.html5Strategy.progressTracker();    
 
-            var uploadProgress = progress.getChunkSize(100);
-            jqUnit.assertEquals("The chunk size should be", 100, uploadProgress);
-            jqUnit.assertEquals("100 bytes were previously uploaded", 100, progress.previousBytesLoaded);
-            
-            uploadProgress = progress.getChunkSize(250);
-            jqUnit.assertEquals("The chunk size should now be", 150, uploadProgress);
-        });
         
         /************************************
          * generateMultiPartContent() Tests *

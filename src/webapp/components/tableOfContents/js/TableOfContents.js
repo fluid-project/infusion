@@ -1,5 +1,6 @@
 /*
 Copyright 2011 OCAD University
+Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -10,7 +11,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid_1_4:true, jQuery*/
+/*global fluid_1_4:true, jQuery, window */
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -23,12 +24,18 @@ var fluid_1_4 = fluid_1_4 || {};
     * ToC *
     *******/
     fluid.registerNamespace("fluid.tableOfContents");
+
+
     
     fluid.tableOfContents.insertAnchor = function (name, element) {
-        $("<a></a>", {
+       // In order to resolve FLUID-4453, we need to make sure that the owner document is correctly
+       // taken from the target element (the preview may be in an iframe)
+        var anchor = $("<a></a>", element.ownerDocument);
+        anchor.prop({
             name: name,
             id: name
-        }).insertBefore(element);
+        });
+        anchor.insertBefore(element);
     };
     
     fluid.tableOfContents.generateGUID = function () {
@@ -73,6 +80,7 @@ var fluid_1_4 = fluid_1_4 || {};
         };
         
         that.model = that.modelBuilder.assembleModel(headings, that.anchorInfo);
+
         that.events.onReady.fire();
     };
     

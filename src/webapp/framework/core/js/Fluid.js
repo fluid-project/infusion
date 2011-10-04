@@ -1,5 +1,5 @@
 /*!
- * Fluid Infusion v1.3
+ * Fluid Infusion v1.4
  *
  * Infusion is distributed under the Educational Community License 2.0 and new BSD licenses: 
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
@@ -12,8 +12,9 @@
 Copyright 2007-2010 University of Cambridge
 Copyright 2007-2009 University of Toronto
 Copyright 2007-2009 University of California, Berkeley
-Copyright 2010 Lucendo Development Ltd.
-Copyright 2010-2011 OCAD University
+Copyright 2010-2011 Lucendo Development Ltd.
+Copyright 2010 OCAD University
+Copyright 2011 Charly Molter
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -34,14 +35,14 @@ var fluid = fluid || fluid_1_4;
 
 (function ($, fluid) {
     
-    fluid.version = "Infusion 1.3";
+    fluid.version = "Infusion 1.4";
     
     fluid.environment = {
         fluid: fluid
     };
     var globalObject = window || {};
     
-    var softFailure = [false];
+    var softFailure = [true];
     
     // This function will be patched from FluidIoC.js in order to describe complex activities
     fluid.describeActivity = function () {
@@ -757,16 +758,19 @@ var fluid = fluid || fluid_1_4;
         return listener.$$guid;
     };
     
+    // unsupported, NON-API function
     fluid.event.mapPriority = function (priority, count) {
         return (priority === null || priority === undefined ? -count : 
            (priority === "last" ? -Number.MAX_VALUE :
               (priority === "first" ? Number.MAX_VALUE : priority)));
     };
     
+    // unsupported, NON-API function
     fluid.event.listenerComparator = function (recA, recB) {
         return recB.priority - recA.priority;
     };
     
+    // unsupported, NON-API function
     fluid.event.sortListeners = function (listeners) {
         var togo = [];
         fluid.each(listeners, function (listener) {
@@ -860,6 +864,7 @@ var fluid = fluid || fluid_1_4;
         };
     };
     
+    // unsupported, NON-API function
     fluid.event.addListenerToFirer = function (firer, value, namespace) {
         if (fluid.isArrayable(value)) {
             for (var i = 0; i < value.length; ++i) {
