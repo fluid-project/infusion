@@ -479,8 +479,10 @@ var fluid_1_4 = fluid_1_4 || {};
             that.calcInitSize();
         }
         
-        var newLineSpacing = times === "" || times === 1 ? that.initialSize : times * that.initialSize;
-        that.container.css("line-height", newLineSpacing + "em");
+        if (that.initialSize > 0) {
+            var newLineSpacing = times === "" || times === 1 ? that.initialSize : times * that.initialSize;
+            that.container.css("line-height", newLineSpacing + "em");
+        }
     };
     
     // Returns the value of css style "line-height" in em 
