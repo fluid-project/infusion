@@ -360,9 +360,12 @@ var fluid_1_4 = fluid_1_4 || {};
     };
 
     // Interprets browser returned "line-height" value, either a string "normal" or a number with "px" suffix, 
-    // into a numeric value in em
+    // into a numeric value in em. 
+    // Return 0 when the line-height is not detectable (a fix for http://issues.fluidproject.org/browse/FLUID-4500).
     fluid.uiEnhancer.numerizeLineHeight = function (lineHeight, fontSize) {
-        // Make sure lineHeight is defined. Undefined lineHeight occurs when the container being detected does not exist.
+        // Make sure lineHeight is defined.  
+        // Undefined lineHeight occurs when the line-height value on the container is un-detectable, 
+        // which appears on detecting it on the hidden div in firefox.
         if (!lineHeight) {
             return 0;
         }
@@ -479,8 +482,13 @@ var fluid_1_4 = fluid_1_4 || {};
             that.calcInitSize();
         }
         
-        var newLineSpacing = times === "" || times === 1 ? that.initialSize : times * that.initialSize;
-        that.container.css("line-height", newLineSpacing + "em");
+        // that.initialSize equals 0 when the line-height value on the container is un-detectable,
+        // which is to fix http://issues.fluidproject.org/browse/FLUID-4500
+        // @ See fluid.uiEnhancer.numerizeLineHeight()
+        if (that.initialSize > 0) {
+            var newLineSpacing = times === "" || times === 1 ? that.initialSize : times * that.initialSize;
+            that.container.css("line-height", newLineSpacing + "em");
+        }
     };
     
     // Returns the value of css style "line-height" in em 
