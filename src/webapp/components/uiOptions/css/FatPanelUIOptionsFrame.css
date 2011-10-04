@@ -1,7 +1,7 @@
 /* UI Options Fat Panel styles */
 .fl-uiOptions-fatPanel {
     min-width: 960px;
-	min-width: inherit;
+    min-width: inherit;
     background-color: #fff;
 }
 
@@ -90,6 +90,11 @@ ul.fl-pane li {
 
 .fl-uiOptions-fatPanel label {
     padding-bottom: 0.5em;
+}
+
+.fl-uiOptions-fatPanel .fl-uiOptions-option-description {
+    clear: both;
+    padding-bottom: 1em;    
 }
 
 .fl-uiOptions-fatPanel .fl-inputs {
