@@ -482,7 +482,8 @@ var fluid_1_4 = fluid_1_4 || {};
             that.calcInitSize();
         }
         
-        // that.initialSize equals 0 when the line-height value on the container is un-detectable.
+        // that.initialSize equals 0 when the line-height value on the container is un-detectable,
+        // which is to fix http://issues.fluidproject.org/browse/FLUID-4500
         // @ See fluid.uiEnhancer.numerizeLineHeight()
         if (that.initialSize > 0) {
             var newLineSpacing = times === "" || times === 1 ? that.initialSize : times * that.initialSize;
