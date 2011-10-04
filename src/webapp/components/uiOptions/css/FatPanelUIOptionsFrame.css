@@ -89,7 +89,12 @@ ul.fl-pane li {
 }
 
 .fl-uiOptions-fatPanel label {
-    padding-bottom: 0.5em;
+    padding-bottom: 1em;
+}
+
+.fl-uiOptions-fatPanel .fl-uiOptions-option-description {
+	clear: both;
+    padding-bottom: 1em;	
 }
 
 .fl-uiOptions-fatPanel .fl-inputs {
