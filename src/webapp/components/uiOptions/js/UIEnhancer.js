@@ -75,7 +75,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     invokers: {
                         calcInitSize: {
                             funcName: "fluid.uiEnhancer.textSizer.calcInitSize",
-                            args: ["{textSizer}", "{uiEnhancer}.options.fontSizeMap"]
+                            args: ["{textSizer}.container", "{uiEnhancer}.options.fontSizeMap"]
                         }
                     }
                 }
@@ -118,7 +118,7 @@ var fluid_1_4 = fluid_1_4 || {};
                     invokers: {
                         calcInitSize: {
                             funcName: "fluid.uiEnhancer.lineSpacer.calcInitSize",
-                            args: ["{lineSpacer}", "{uiEnhancer}.options.fontSizeMap"]
+                            args: ["{lineSpacer}.container", "{uiEnhancer}.options.fontSizeMap"]
                         }
                     }
                 }
@@ -359,13 +359,26 @@ var fluid_1_4 = fluid_1_4 || {};
         return fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap);
     };
 
-    // Interprets browser returned "line-height" value, either a string "normal" or a number with "px" suffix, 
+    // Return "line-height" css value
+    fluid.uiEnhancer.getLineHeight = function (container) {
+        var lineHeight;
+        
+        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
+        if (container[0].currentStyle) {
+            lineHeight = container[0].currentStyle.lineHeight;
+        } else {
+            lineHeight = container.css("line-height");
+        }
+        
+        return lineHeight;
+    };
+    
+    // Interprets browser returned "line-height" value, either a string "normal", a number with "px" suffix or "undefined" 
     // into a numeric value in em. 
-    // Return 0 when the line-height is not detectable (a fix for http://issues.fluidproject.org/browse/FLUID-4500).
+    // Return 0 when the given "lineHeight" argument is "undefined" (http://issues.fluidproject.org/browse/FLUID-4500).
     fluid.uiEnhancer.numerizeLineHeight = function (lineHeight, fontSize) {
-        // Make sure lineHeight is defined.  
-        // Undefined lineHeight occurs when the line-height value on the container is un-detectable, 
-        // which appears on detecting it on the hidden div in firefox.
+        // Handel the given "lineHeight" argument is "undefined", which occurs when firefox detects 
+        // "line-height" css value on a hidden container. (http://issues.fluidproject.org/browse/FLUID-4500)
         if (!lineHeight) {
             return 0;
         }
@@ -403,15 +416,17 @@ var fluid_1_4 = fluid_1_4 || {};
        
     fluid.uiEnhancer.textSizer.set = function (times, that) {
         if (!that.initialSize) {
-            that.calcInitSize();
+            that.initialSize = that.calcInitSize();
         }
 
-        var targetSize = times && times > 0 ? times * that.initialSize : that.initialSize;
-        that.container.css("font-size", targetSize + "em");
+        if (that.initialSize) {
+            var targetSize = times * that.initialSize;
+            that.container.css("font-size", targetSize + "em");
+        }
     };
     
-    fluid.uiEnhancer.textSizer.calcInitSize = function (that, fontSizeMap) {
-        that.initialSize = fluid.uiEnhancer.getTextSizeInEm(that.container, fontSizeMap);
+    fluid.uiEnhancer.textSizer.calcInitSize = function (container, fontSizeMap) {
+        return fluid.uiEnhancer.getTextSizeInEm(container, fontSizeMap);
     };
 
     /*******************************************************************************
@@ -479,32 +494,24 @@ var fluid_1_4 = fluid_1_4 || {};
     // TODO: this might be almost the same as textSize setting - can we share?
     fluid.uiEnhancer.lineSpacer.set = function (times, that) {
         if (!that.initialSize) {
-            that.calcInitSize();
+            that.initialSize = that.calcInitSize();
         }
         
-        // that.initialSize equals 0 when the line-height value on the container is un-detectable,
-        // which is to fix http://issues.fluidproject.org/browse/FLUID-4500
-        // @ See fluid.uiEnhancer.numerizeLineHeight()
-        if (that.initialSize > 0) {
-            var newLineSpacing = times === "" || times === 1 ? that.initialSize : times * that.initialSize;
-            that.container.css("line-height", newLineSpacing + "em");
+        // that.initialSize === 0 when the browser returned "lineHeight" css value is undefined,
+        // which occurs when firefox detects this value on a hidden container.
+        // @ See fluid.uiEnhancer.numerizeLineHeight() & http://issues.fluidproject.org/browse/FLUID-4500
+        if (that.initialSize) {
+            var targetLineSpacing = times * that.initialSize;
+            that.container.css("line-height", targetLineSpacing + "em");
         }
     };
     
     // Returns the value of css style "line-height" in em 
-    fluid.uiEnhancer.lineSpacer.calcInitSize = function (that, fontSizeMap) {
-        var lineHeight;
+    fluid.uiEnhancer.lineSpacer.calcInitSize = function (container, fontSizeMap) {
+        var lineHeight = fluid.uiEnhancer.getLineHeight(container);
+        var fontSize = fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap);
 
-        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
-        if (that.container[0].currentStyle) {
-            lineHeight = that.container[0].currentStyle.lineHeight;
-        } else {
-            lineHeight = that.container.css("line-height");
-        }
-        
-        var fontSize = fluid.uiEnhancer.getTextSizeInPx(that.container, fontSizeMap);
-
-        that.initialSize = fluid.uiEnhancer.numerizeLineHeight(lineHeight, fontSize);
+        return fluid.uiEnhancer.numerizeLineHeight(lineHeight, fontSize);
     };
     
     /*******************************************************************************
