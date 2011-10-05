@@ -112,14 +112,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
         });
 
-        tests.test("LineSpacer", function () {
-            var uiEnhancer = fluid.uiEnhancer(".flt-lineSpacer", uiEnhancerOptions);
-            var lineSpacer = uiEnhancer.lineSpacing;
-            
-            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 1.5, lineSpacer.initialSize);
-            jqUnit.assertEquals("Check the line spacing size in pixels", "12px", lineSpacer.container.css("lineHeight"));
-            lineSpacer.set(2);
-            jqUnit.assertEquals("The size should be doubled", "24px", lineSpacer.container.css("lineHeight"));
+        tests.test("getLineHeight", function () {
+            // Mimic IE with its DOM lineHeight structure
+            var container = [{currentStyle: {lineHeight: "10"}}];
+            var lineHeight = fluid.uiEnhancer.getLineHeight(container);
+            jqUnit.assertEquals("getLineHeight with IE simulation", "10", lineHeight);
+
+            var container = [{currentStyle: {lineHeight: "14pt"}}];
+            var lineHeight = fluid.uiEnhancer.getLineHeight(container);
+            jqUnit.assertEquals("getLineHeight with IE simulation", "14pt", lineHeight);
+
+            container = $(".flt-lineSpacer");
+            lineHeight = fluid.uiEnhancer.getLineHeight(container);
+            jqUnit.assertEquals("getLineHeight without IE simulation", "12px", lineHeight);
         });
 
         function testNumerizeLineHeight(lineHeight, expected) {
@@ -133,10 +138,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         }
         
+        var undefinedLineHeight;
+        testNumerizeLineHeight(undefinedLineHeight, 0);
         testNumerizeLineHeight("normal", 1.2);
         testNumerizeLineHeight("8px", 1);
         testNumerizeLineHeight("1.5", 1.5);
         
+        tests.test("LineSpacer", function () {
+            var uiEnhancer = fluid.uiEnhancer(".flt-lineSpacer", uiEnhancerOptions);
+            var lineSpacer = uiEnhancer.lineSpacing;
+      
+            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 1.5, lineSpacer.initialSize);
+            jqUnit.assertEquals("Check the line spacing size in pixels", "12px", lineSpacer.container.css("lineHeight"));
+            lineSpacer.set(2);
+            jqUnit.assertEquals("The size should be doubled", "24px", lineSpacer.container.css("lineHeight"));
+        });
+
         function cleanStaticEnvironment() {
             delete fluid.staticEnvironment.browserIE;
             delete fluid.staticEnvironment.browserMajorVersion;            
