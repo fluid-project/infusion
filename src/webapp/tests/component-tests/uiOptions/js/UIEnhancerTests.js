@@ -114,9 +114,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         tests.test("getLineHeight", function () {
             // Mimic IE with its DOM lineHeight structure
-            var container = [{currentStyle: {lineHeight: 10}}];
+            var container = [{currentStyle: {lineHeight: "10"}}];
             var lineHeight = fluid.uiEnhancer.getLineHeight(container);
-            jqUnit.assertEquals("getLineHeight with IE simulation", 10, lineHeight);
+            jqUnit.assertEquals("getLineHeight with IE simulation", "10", lineHeight);
+
+            var container = [{currentStyle: {lineHeight: "14pt"}}];
+            var lineHeight = fluid.uiEnhancer.getLineHeight(container);
+            jqUnit.assertEquals("getLineHeight with IE simulation", "14pt", lineHeight);
 
             container = $(".flt-lineSpacer");
             lineHeight = fluid.uiEnhancer.getLineHeight(container);
