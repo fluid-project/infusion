@@ -124,7 +124,7 @@ The following browsers are fully supported and were actively tested against for 
 
 Mac OS X 10.6:
     * Safari 5
-    * Firefox 5
+    * Firefox 6
    
 Windows XP:
     * Firefox 3.6
@@ -132,7 +132,7 @@ Windows XP:
     * Internet Explorer 6
     * Internet Explorer 7
     * Internet Explorer 8
-    * Google Chrome
+    * Google Chrome (latest stable release)
     
 Windows 7:
     * Firefox 6
@@ -141,7 +141,6 @@ Windows 7:
     
 For more information on Fluid Infusion browser support, please see:
     http://wiki.fluidproject.org/display/fluid/Browser+Support
-
 
 Status of Components and Framework Features
 ===========================================
