@@ -136,6 +136,7 @@
                 <exclude name="**/*Dependencies.json" />
             </fileset>
         </copy>
+        <copy file="${base-dir}/ReleaseNotes.txt" todir="${assembled}" />
         <copy file="${base-dir}/README.txt" todir="${assembled}" />
         <copy todir="${licenses}" flatten="true">
             <fileset dir="${base-dir}">
