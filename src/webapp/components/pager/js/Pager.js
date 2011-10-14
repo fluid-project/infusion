@@ -13,12 +13,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid_1_4:true, jQuery*/
+/*global fluid_1_5:true, jQuery*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
-var fluid_1_4 = fluid_1_4 || {};
+var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
@@ -932,4 +932,4 @@ var fluid_1_4 = fluid_1_4 || {};
             rangeAnnotation: "<b> %first </b><br/>&mdash;<br/><b> %last </b>"
         }
     });
-})(jQuery, fluid_1_4);
+})(jQuery, fluid_1_5);

@@ -11,12 +11,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid_1_4:true*/
+/*global fluid_1_5:true*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
-var fluid_1_4 = fluid_1_4 || {};
+var fluid_1_5 = fluid_1_5 || {};
 
 /**************************************************************************************
  * Note: this file should not be included in the InfusionAll build.                   *
@@ -107,4 +107,4 @@ var fluid_1_4 = fluid_1_4 || {};
         
         return options;
     };
-})(fluid_1_4);
+})(fluid_1_5);
