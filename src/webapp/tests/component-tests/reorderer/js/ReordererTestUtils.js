@@ -11,13 +11,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global defaultClass, draggingClass, fluid:true, fluid_1_4:true, jqUnit, orderableIds, selectedClass, jQuery*/
+/*global defaultClass, draggingClass, fluid:true, fluid_1_5:true, jqUnit, orderableIds, selectedClass, jQuery*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
-var fluid_1_4 = fluid_1_4 || {};
-var fluid = fluid || fluid_1_4;
+var fluid_1_5 = fluid_1_5 || {};
+var fluid = fluid || fluid_1_5;
 
 (function ($, fluid) {
 
@@ -168,4 +168,4 @@ var fluid = fluid || fluid_1_4;
         }
     };   
   
-})(jQuery, fluid_1_4);
+})(jQuery, fluid_1_5);
