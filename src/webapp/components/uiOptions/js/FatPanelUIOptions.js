@@ -20,6 +20,8 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
+	fluid.setLogging(true);
+
     /***************************************
      * fluid.uiOptions.fatPanelEventBinder *
      ***************************************/
@@ -100,7 +102,7 @@ var fluid_1_5 = fluid_1_5 || {};
         selectors: {
             iframe: ".flc-uiOptions-iframe"
         },
-        relativePrefix: "./",  // Prefix for "other world" component templates relative to the iframe URL
+//        relativePrefix: "./",  // Prefix for "other world" component templates relative to the iframe URL
         components: {      
             slidingPanel: {
                 type: "fluid.slidingPanel",
@@ -132,7 +134,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     components: {
                         uiEnhancer: "{fatPanel}.uiEnhancer",
-                        uiOptionsLoader: "{fatPanel}.bridge.uiOptionsLoader",
+                        uiOptionsLoader: "{renderUIOptions}.uiOptionsLoader",
                         slidingPanel: "{fatPanel}.slidingPanel",
                         binder: {
                             type: "fluid.uiOptions.fatPanelEventBinder.binder",
@@ -156,16 +158,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 createOnEvent: "afterRender",
                 priority: "last"
             },
-            bridge: {
-                type: "fluid.uiOptions.bridge",
+            renderUIOptions: {
+                type: "fluid.uiOptions.renderUIOptions",
+                container: "{markupRenderer}.options.renderUIOContainer",
                 createOnEvent: "afterRender",
-                priority: "first",
-                options: {
-                    components: { 
-                        uiEnhancer: "{fatPanel}.uiEnhancer",
-                        markupRenderer: "{fatPanel}.markupRenderer"
-                    }
-                }
+                priority: "first"
             }
         },
         uiOptionsTransform: {
@@ -176,14 +173,14 @@ var fluid_1_5 = fluid_1_5 || {};
                 "*.markupRenderer.options.prefix":             "prefix",
                 "*.eventBinder":                               "eventBinder",
                 "selectors.iframe":                            "iframe",
-                "*.bridge.options.templateLoader":             "templateLoader",
-                "*.bridge.options.prefix":                     "relativePrefix",
-                "*.bridge.options.uiOptionsLoader":            "uiOptionsLoader",
-                "*.bridge.options.uiOptions":                  "uiOptions",
-                "*.bridge.options.textControls":               "textControls",
-                "*.bridge.options.layoutControls":             "layoutControls",
-                "*.bridge.options.linksControls":              "linksControls",
-                "*.bridge.options.uiEnhancer":                 "uiEnhancer"
+                "*.renderUIOptions.options.templateLoader":    "templateLoader",
+                "*.renderUIOptions.options.prefix":            "prefix",
+                "*.renderUIOptions.options.uiOptionsLoader":   "uiOptionsLoader",
+                "*.renderUIOptions.options.uiOptions":         "uiOptions",
+                "*.renderUIOptions.options.textControls":      "textControls",
+                "*.renderUIOptions.options.layoutControls":    "layoutControls",
+                "*.renderUIOptions.options.linksControls":     "linksControls",
+                "*.renderUIOptions.options.uiEnhancer":        "uiEnhancer"
             }
         },
         events: {
@@ -223,6 +220,11 @@ var fluid_1_5 = fluid_1_5 || {};
         //create iframe and append to container
         that.iframe = $("<iframe/>");
         that.iframe.load(function () {
+            that.options.iframeDoc = that.iframe[0].contentWindow.document;
+
+            var iframeDoc = that.iframe.contents();
+            that.options.renderUIOContainer = $("body", iframeDoc);
+             
             that.events.afterRender.fire();
         });
         that.iframe.attr(that.options.markupProps);
@@ -234,14 +236,8 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     /***********************************
-     * fluid.uiOptions.bridge *
+     * fluid.uiOptions.renderUIOptions *
      ***********************************/
-    
-    fluid.defaults("fluid.uiOptions.bridge", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        finalInitFunction: "fluid.uiOptions.bridge.finalInit",  
-        iframe: null
-    });
     
     // TODO: This function is only necessary through lack of listener boiling power - it should
     // be possible to directly relay one event firing to another, FLUID-4398
@@ -249,8 +245,8 @@ var fluid_1_5 = fluid_1_5 || {};
         uiOptions.events.onSignificantDOMChange.fire();
     };
     
-    fluid.defaults("fluid.uiOptions.FatPanelOtherWorldLoader", {
-        gradeNames: ["fluid.uiOptions.inline", "autoInit"],
+    fluid.defaults("fluid.uiOptions.renderUIOptions", {
+        gradeNames: ["fluid.uiOptions.inline"],
         // TODO: This material is not really transformation, but would be better expressed by
         // FLUID-4392 additive demands blocks
         derivedDefaults: {
@@ -260,17 +256,32 @@ var fluid_1_5 = fluid_1_5 || {};
                         onSignificantDOMChange: null  
                     },
                     components: {
-                        uiEnhancer: {
-                            type: "fluid.uiEnhancer",
-                            container: "body",
-                            priority: "first",
-                            options: {
-                                tocTemplate: "../../tableOfContents/html/TableOfContents.html"
-                            }
-                        },
+                        uiEnhancer: "{fatPanel}.uiEnhancer",
+                        markupRenderer: "{fatPanel}.markupRenderer",
                         settingsStore: "{uiEnhancer}.settingsStore",
                         preview: {
                             type: "fluid.emptySubcomponent"
+                        },
+                        textControls: {
+                            options: {
+                                rendererOptions: {
+                                    document: "{markupRenderer}.options.iframeDoc"
+                                }
+                            }
+                        },
+                        layoutControls: {
+                            options: {
+                                rendererOptions: {
+                                    document: "{markupRenderer}.options.iframeDoc"
+                                }
+                            }
+                        },
+                        linksControls: {
+                            options: {
+                                rendererOptions: {
+                                    document: "{markupRenderer}.options.iframeDoc"
+                                }
+                            }
                         },
                         tabs: {
                             type: "fluid.tabs",
@@ -299,7 +310,29 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    fluid.uiOptions.bridge.finalInit = function (that) {
+    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.renderUIOptions", function (options) {
+        // Move the options that are delivered from uiOptionsTransform.config to the desired options level
+        var fatPanelMapping = fluid.defaults("fluid.uiOptions.fatPanel").uiOptionsTransform.config;
+        var swappedFatPanelMapping = {};
+        
+        // Swap the mapping for easier extraction on renderUIOptions options
+        fluid.each(fatPanelMapping, function (value, key) {
+            swappedFatPanelMapping[value] = key;
+        });
+
+        // Extracts the mappings that only belong to renderUIOptions
+        var renderUIOSymbol = "*.renderUIOptions.options";
+        fluid.each(swappedFatPanelMapping, function (value, key) {
+            if (value.indexOf(renderUIOSymbol) === 0 && options.localRecord.options[key]) {
+                options[key] = options.localRecord.options[key];
+            }
+        });
+
+        return options;
+    });
+    
+    // NOT IN USE
+    fluid.uiOptions.renderUIOptions.finalInit = function (that) {
         var iframe = that.markupRenderer.iframe;
         var origPrefix = that.markupRenderer.options.prefix;
         var iframeDoc = iframe.contents();
@@ -313,32 +346,33 @@ var fluid_1_5 = fluid_1_5 || {};
         
         var overallOptions = {};
         overallOptions.container = container;
-        var bridgeMapping = fluid.defaults("fluid.uiOptions.fatPanel").uiOptionsTransform.config;
+        var fatPanelMapping = fluid.defaults("fluid.uiOptions.fatPanel").uiOptionsTransform.config;
         
-        var swappedBridgeMapping = {};
+        var swappedFatPanelMapping = {};
         
-        // Swap the mapping for easier extraction on FatPanelOtherWorldLoader options
-        fluid.each(bridgeMapping, function (value, key) {
-            swappedBridgeMapping[value] = key;
+        // Swap the mapping for easier extraction on renderUIOptions options
+        fluid.each(fatPanelMapping, function (value, key) {
+            swappedFatPanelMapping[value] = key;
         });
 
-        // Extracts the mappings that only belong to FatPanelOtherWorldLoader
-        var bridgeSymbol = "*.bridge.options";
-        fluid.each(swappedBridgeMapping, function (value, key) {
-            if (value.indexOf(bridgeSymbol) === 0 && that.options[key]) {
+        // Extracts the mappings that only belong to renderUIOptions
+        var renderUIOSymbol = "*.renderUIOptions.options";
+        fluid.each(swappedFatPanelMapping, function (value, key) {
+            if (value.indexOf(renderUIOSymbol) === 0 && that.options[key]) {
                 // find out the option name used in the other world
-                var keyInOtherWorld = value.substring(bridgeSymbol.length + 1);
+                var keyInOtherWorld = value.substring(renderUIOSymbol.length + 1);
                 fluid.set(overallOptions, keyInOtherWorld, that.options[key]);
             }
         });
 
-        var defaults = fluid.defaults("fluid.uiOptions.FatPanelOtherWorldLoader");
+        var defaults = fluid.defaults("fluid.uiOptions.renderUIOptions");
         // Hack for FLUID-4409: Capabilities of our ad hoc "mapOptions" function have been exceeded - put weak priority instance of outer
         // merged options into the inner world
         fluid.set(overallOptions, "uiEnhancer.options", that.uiEnhancer.options.originalUserOptions);
         var mappedOptions = fluid.uiOptions.mapOptions(overallOptions, defaults.uiOptionsTransform.config, defaults.mergePolicy, 
             fluid.copy(defaults.derivedDefaults));
-        var component = innerFluid.invokeGlobalFunction("fluid.uiOptions.FatPanelOtherWorldLoader", [container, mappedOptions]);
+        that.options = mappedOptions;
+        var component = innerFluid.invokeGlobalFunction("fluid.uiOptions.renderUIOptions", [container, mappedOptions]);
         that.uiOptionsLoader = component.uiOptionsLoader;
     };
     

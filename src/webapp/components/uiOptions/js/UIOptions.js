@@ -277,7 +277,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var value = fluid.get(options, source);
             if (value) {
                 applier.requestChange(dest, value, "ADD");
-                appliers[2].requestChange(source, value, "DELETE");
+//                appliers[2].requestChange(source, value, "DELETE");
             }
         });
         return opRecs;
