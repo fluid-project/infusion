@@ -93,16 +93,26 @@ var fluid_1_5 = fluid_1_5 || {};
         setTimeout(callback, 1);
     };
 
-    /***************************************************************
-     * Fat Panel UI Options Top Level Driver (out in normal world) *
-     ***************************************************************/ 
+    /*****************************************
+     * Fat Panel UI Options Top Level Driver *
+     *****************************************/ 
      
+    fluid.uiOptions.fatPanel = function (container, options) {
+        var defaults = fluid.defaults("fluid.uiOptions.fatPanel");
+        var config = defaults.uiOptionsTransform.config;
+        
+        var mappedOptions = fluid.uiOptions.mapOptions(options, config, defaults.mergePolicy);
+
+        var that = fluid.initView("fluid.uiOptions.fatPanel", container, mappedOptions);
+        fluid.initDependents(that);
+        return that; 
+    };
+
     fluid.defaults("fluid.uiOptions.fatPanel", {
         gradeNames: ["fluid.viewComponent"],
         selectors: {
             iframe: ".flc-uiOptions-iframe"
         },
-//        relativePrefix: "./",  // Prefix for "other world" component templates relative to the iframe URL
         components: {      
             slidingPanel: {
                 type: "fluid.slidingPanel",
@@ -117,7 +127,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 createOnEvent: "afterRender"
             },
             markupRenderer: {
-                type: "fluid.uiOptions.renderIframe",
+                type: "fluid.uiOptions.fatPanel.renderIframe",
                 container: "{fatPanel}.dom.iframe",
                 options: {
                     markupProps: {
@@ -159,7 +169,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 priority: "last"
             },
             renderUIOptions: {
-                type: "fluid.uiOptions.renderUIOptions",
+                type: "fluid.uiOptions.fatPanel.renderUIOptions",
                 container: "{markupRenderer}.options.renderUIOContainer",
                 createOnEvent: "afterRender",
                 priority: "first"
@@ -188,13 +198,13 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    /********************************
-     * fluid.uiOptions.renderIframe *
-     ********************************/
+    /*****************************************
+     * fluid.uiOptions.fatPanel.renderIframe *
+     *****************************************/
     
-    fluid.defaults("fluid.uiOptions.renderIframe", {
+    fluid.defaults("fluid.uiOptions.fatPanel.renderIframe", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        finalInitFunction: "fluid.uiOptions.renderIframe.finalInit",
+        finalInitFunction: "fluid.uiOptions.fatPanel.renderIframe.finalInit",
         events: {
             afterRender: null
         },
@@ -211,7 +221,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    fluid.uiOptions.renderIframe.finalInit = function (that) {
+    fluid.uiOptions.fatPanel.renderIframe.finalInit = function (that) {
         var styles = that.options.styles;
         // TODO: get earlier access to templateLoader, 
         that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, {"prefix/": that.options.prefix});
@@ -235,9 +245,9 @@ var fluid_1_5 = fluid_1_5 || {};
         that.iframe.appendTo(that.container);
     };
     
-    /***********************************
-     * fluid.uiOptions.renderUIOptions *
-     ***********************************/
+    /********************************************
+     * fluid.uiOptions.fatPanel.renderUIOptions *
+     ********************************************/
     
     // TODO: This function is only necessary through lack of listener boiling power - it should
     // be possible to directly relay one event firing to another, FLUID-4398
@@ -245,7 +255,7 @@ var fluid_1_5 = fluid_1_5 || {};
         uiOptions.events.onSignificantDOMChange.fire();
     };
     
-    fluid.defaults("fluid.uiOptions.renderUIOptions", {
+    fluid.defaults("fluid.uiOptions.fatPanel.renderUIOptions", {
         gradeNames: ["fluid.uiOptions.inline"],
         // TODO: This material is not really transformation, but would be better expressed by
         // FLUID-4392 additive demands blocks
@@ -285,7 +295,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         },
                         tabs: {
                             type: "fluid.tabs",
-                            container: "body",
+                            container: "{renderUIOptions}.container",
                             createOnEvent: "onUIOptionsComponentReady",
                             options: {
                                 events: { // TODO: this mess required through lack of FLUID-4398
@@ -310,7 +320,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.renderUIOptions", function (options) {
+    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.fatPanel.renderUIOptions", function (options) {
         // Move the options that are delivered from uiOptionsTransform.config to the desired options level
         var fatPanelMapping = fluid.defaults("fluid.uiOptions.fatPanel").uiOptionsTransform.config;
         var swappedFatPanelMapping = {};
@@ -332,7 +342,7 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     // NOT IN USE
-    fluid.uiOptions.renderUIOptions.finalInit = function (that) {
+    fluid.uiOptions.fatPanel.renderUIOptions.finalInit = function (that) {
         var iframe = that.markupRenderer.iframe;
         var origPrefix = that.markupRenderer.options.prefix;
         var iframeDoc = iframe.contents();
@@ -365,30 +375,15 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
 
-        var defaults = fluid.defaults("fluid.uiOptions.renderUIOptions");
+        var defaults = fluid.defaults("fluid.uiOptions.fatPanel.renderUIOptions");
         // Hack for FLUID-4409: Capabilities of our ad hoc "mapOptions" function have been exceeded - put weak priority instance of outer
         // merged options into the inner world
         fluid.set(overallOptions, "uiEnhancer.options", that.uiEnhancer.options.originalUserOptions);
         var mappedOptions = fluid.uiOptions.mapOptions(overallOptions, defaults.uiOptionsTransform.config, defaults.mergePolicy, 
             fluid.copy(defaults.derivedDefaults));
         that.options = mappedOptions;
-        var component = innerFluid.invokeGlobalFunction("fluid.uiOptions.renderUIOptions", [container, mappedOptions]);
+        var component = innerFluid.invokeGlobalFunction("fluid.uiOptions.fatPanel.renderUIOptions", [container, mappedOptions]);
         that.uiOptionsLoader = component.uiOptionsLoader;
     };
     
-    /************************
-     * Fat Panel UI Options *
-     ************************/
-    
-    fluid.uiOptions.fatPanel = function (container, options) {
-        var defaults = fluid.defaults("fluid.uiOptions.fatPanel");
-        var config = defaults.uiOptionsTransform.config;
-        
-        var mappedOptions = fluid.uiOptions.mapOptions(options, config, defaults.mergePolicy);
-
-        var that = fluid.initView("fluid.uiOptions.fatPanel", container, mappedOptions);
-        fluid.initDependents(that);
-        return that; 
-    };
-
 })(jQuery, fluid_1_5);
