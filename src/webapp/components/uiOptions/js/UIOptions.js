@@ -379,24 +379,6 @@ var fluid_1_5 = fluid_1_5 || {};
     /**************
      * UI Options *
      **************/
-
-    fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptions"], {
-        options: {
-            classnameMap: "{uiEnhancer}.options.classnameMap"
-        }
-    });
-    
-    fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptions"], {
-        options: {
-            classnameMap: "{uiEnhancer}.options.classnameMap"
-        }
-    });
-    
-    fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptions"], {
-        options: {
-            classnameMap: "{uiEnhancer}.options.classnameMap"
-        }
-    });
     
     fluid.uiOptions.onReadyFirer = function (uiOptionsLoader, uiOptions) {
         uiOptionsLoader.events.onReady.fire(uiOptionsLoader, uiOptions);
@@ -463,6 +445,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     model: "{uiOptions}.model",
                     applier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
+                    rendererOptions: "{uiOptions}.options.rendererOptions",
                     events: {
                         onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
                     }
@@ -475,6 +459,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     model: "{uiOptions}.model",
                     applier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
+                    rendererOptions: "{uiOptions}.options.rendererOptions",
                     events: {
                         onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
                     }
@@ -487,6 +473,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     model: "{uiOptions}.model",
                     applier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
+                    rendererOptions: "{uiOptions}.options.rendererOptions",
                     events: {
                         onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
                     }

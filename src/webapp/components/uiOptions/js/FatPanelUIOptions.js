@@ -67,7 +67,7 @@ var fluid_1_5 = fluid_1_5 || {};
         uiOptions.events.onSignificantDOMChange.addListener(function () {
             var dokkument = uiOptions.container[0].ownerDocument;
             var height = fluid.dom.getDocumentHeight(dokkument);
-            var iframe = fatPanel.markupRenderer.iframe;
+            var iframe = fatPanel.iframeRenderer.iframe;
             var attrs = {height: height + 15}; // TODO: Configurable padding here
             iframe.animate(attrs, 400);
         });
@@ -126,7 +126,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 },
                 createOnEvent: "afterRender"
             },
-            markupRenderer: {
+            iframeRenderer: {
                 type: "fluid.uiOptions.fatPanel.renderIframe",
                 container: "{fatPanel}.dom.iframe",
                 options: {
@@ -170,7 +170,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             renderUIOptions: {
                 type: "fluid.uiOptions.fatPanel.renderUIOptions",
-                container: "{markupRenderer}.renderUIOContainer",
+                container: "{iframeRenderer}.renderUIOContainer",
                 createOnEvent: "afterRender",
                 priority: "first"
             }
@@ -179,8 +179,8 @@ var fluid_1_5 = fluid_1_5 || {};
             transformer: "fluid.uiOptions.mapOptions",
             config: {
                 "*.slidingPanel":                              "slidingPanel",
-                "*.markupRenderer":                            "markupRenderer",
-                "*.markupRenderer.options.prefix":             "prefix",
+                "*.iframeRenderer":                            "iframeRenderer",
+                "*.iframeRenderer.options.prefix":             "prefix",
                 "*.eventBinder":                               "eventBinder",
                 "selectors.iframe":                            "iframe",
                 "*.renderUIOptions.options.templateLoader":    "templateLoader",
@@ -267,36 +267,16 @@ var fluid_1_5 = fluid_1_5 || {};
                     events: {
                         onSignificantDOMChange: null  
                     },
+                    rendererOptions: {
+                        document: "{iframeRenderer}.iframeDocument",
+                        jQuery: "{iframeRenderer}.jQuery"
+                        },
                     components: {
                         uiEnhancer: "{fatPanel}.uiEnhancer",
-                        markupRenderer: "{fatPanel}.markupRenderer",
+                        iframeRenderer: "{fatPanel}.iframeRenderer",
                         settingsStore: "{uiEnhancer}.settingsStore",
                         preview: {
                             type: "fluid.emptySubcomponent"
-                        },
-                        textControls: {
-                            options: {
-                                rendererOptions: {
-                                    document: "{markupRenderer}.iframeDocument",
-                                    jQuery: "{markupRenderer}.jQuery"
-                                }
-                            }
-                        },
-                        layoutControls: {
-                            options: {
-                                rendererOptions: {
-                                    document: "{markupRenderer}.iframeDocument",
-                                    jQuery: "{markupRenderer}.jQuery"
-                                }
-                            }
-                        },
-                        linksControls: {
-                            options: {
-                                rendererOptions: {
-                                    document: "{markupRenderer}.iframeDocument",
-                                    jQuery: "{markupRenderer}.jQuery"
-                                }
-                            }
                         },
                         tabs: {
                             type: "fluid.tabs",
@@ -346,49 +326,5 @@ var fluid_1_5 = fluid_1_5 || {};
         return options;
     });
     
-    // NOT IN USE
-    fluid.uiOptions.fatPanel.renderUIOptions.finalInit = function (that) {
-        var iframe = that.markupRenderer.iframe;
-        var origPrefix = that.markupRenderer.options.prefix;
-        var iframeDoc = iframe.contents();
-        var iframeWin = iframe[0].contentWindow;
-        var innerFluid = iframeWin.fluid;
-        var container = $("body", iframeDoc);
-        var outerLocation = window.location.href;
-        var iframeLocation = iframeWin.location.href;
-        var relativePrefix = fluid.url.computeRelativePrefix(outerLocation, iframeLocation, origPrefix);
-        that.options.relativePrefix = relativePrefix; // TODO: more flexible defaulting here
-        
-        var overallOptions = {};
-        overallOptions.container = container;
-        var fatPanelMapping = fluid.defaults("fluid.uiOptions.fatPanel").uiOptionsTransform.config;
-        
-        var swappedFatPanelMapping = {};
-        
-        // Swap the mapping for easier extraction on renderUIOptions options
-        fluid.each(fatPanelMapping, function (value, key) {
-            swappedFatPanelMapping[value] = key;
-        });
-
-        // Extracts the mappings that only belong to renderUIOptions
-        var renderUIOSymbol = "*.renderUIOptions.options";
-        fluid.each(swappedFatPanelMapping, function (value, key) {
-            if (value.indexOf(renderUIOSymbol) === 0 && that.options[key]) {
-                // find out the option name used in the other world
-                var keyInOtherWorld = value.substring(renderUIOSymbol.length + 1);
-                fluid.set(overallOptions, keyInOtherWorld, that.options[key]);
-            }
-        });
-
-        var defaults = fluid.defaults("fluid.uiOptions.fatPanel.renderUIOptions");
-        // Hack for FLUID-4409: Capabilities of our ad hoc "mapOptions" function have been exceeded - put weak priority instance of outer
-        // merged options into the inner world
-        fluid.set(overallOptions, "uiEnhancer.options", that.uiEnhancer.options.originalUserOptions);
-        var mappedOptions = fluid.uiOptions.mapOptions(overallOptions, defaults.uiOptionsTransform.config, defaults.mergePolicy, 
-            fluid.copy(defaults.derivedDefaults));
-        that.options = mappedOptions;
-        var component = innerFluid.invokeGlobalFunction("fluid.uiOptions.fatPanel.renderUIOptions", [container, mappedOptions]);
-        that.uiOptionsLoader = component.uiOptionsLoader;
-    };
     
 })(jQuery, fluid_1_5);
