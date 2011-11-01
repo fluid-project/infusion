@@ -170,7 +170,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             renderUIOptions: {
                 type: "fluid.uiOptions.fatPanel.renderUIOptions",
-                container: "{markupRenderer}.options.renderUIOContainer",
+                container: "{markupRenderer}.renderUIOContainer",
                 createOnEvent: "afterRender",
                 priority: "first"
             }
@@ -230,10 +230,12 @@ var fluid_1_5 = fluid_1_5 || {};
         //create iframe and append to container
         that.iframe = $("<iframe/>");
         that.iframe.load(function () {
-            that.options.iframeDoc = that.iframe[0].contentWindow.document;
+            var iframeWindow = that.iframe[0].contentWindow;
+            that.iframeDocument = iframeWindow.document;
 
-            var iframeDoc = that.iframe.contents();
-            that.options.renderUIOContainer = $("body", iframeDoc);
+            //var iframeDoc = that.iframe.contents();
+            that.renderUIOContainer = $("body", that.iframeDocument);
+            that.jQuery = iframeWindow.jQuery;
              
             that.events.afterRender.fire();
         });
@@ -275,21 +277,24 @@ var fluid_1_5 = fluid_1_5 || {};
                         textControls: {
                             options: {
                                 rendererOptions: {
-                                    document: "{markupRenderer}.options.iframeDoc"
+                                    document: "{markupRenderer}.iframeDocument",
+                                    jQuery: "{markupRenderer}.jQuery"
                                 }
                             }
                         },
                         layoutControls: {
                             options: {
                                 rendererOptions: {
-                                    document: "{markupRenderer}.options.iframeDoc"
+                                    document: "{markupRenderer}.iframeDocument",
+                                    jQuery: "{markupRenderer}.jQuery"
                                 }
                             }
                         },
                         linksControls: {
                             options: {
                                 rendererOptions: {
-                                    document: "{markupRenderer}.options.iframeDoc"
+                                    document: "{markupRenderer}.iframeDocument",
+                                    jQuery: "{markupRenderer}.jQuery"
                                 }
                             }
                         },

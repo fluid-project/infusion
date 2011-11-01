@@ -169,9 +169,11 @@ var fluid = fluid || fluid_1_5;
      * often unhelpful jQuery default of returning the overall document node.
      * 
      * @param {Object} obj the object to wrap in a jQuery
+     * @param {jQuery} userJQuery the jQuery object to use for the wrapping, optional - use the current jQuery if absent
      */
-    fluid.wrap = function (obj) {
-        return ((!obj || obj.jquery) ? obj : $(obj)); 
+    fluid.wrap = function (obj, userJQuery) {
+        userJQuery = userJQuery || $;
+        return ((!obj || obj.jquery) ? obj : userJQuery(obj)); 
     };
     
     /**
@@ -1504,8 +1506,8 @@ var fluid = fluid || fluid_1_5;
      * @param {Boolean} fallible <code>true</code> if an empty container is to be reported as a valid condition
      * @return a single-element jQuery of container
      */
-    fluid.container = function (containerSpec, fallible) {
-        var container = fluid.wrap(containerSpec);
+    fluid.container = function (containerSpec, fallible, userJQuery) {
+        var container = fluid.wrap(containerSpec, userJQuery);
         if (fallible && (!container || container.length === 0)) {
             return null;
         }
@@ -1628,7 +1630,9 @@ var fluid = fluid || fluid_1_5;
      // 4th argument is NOT SUPPORTED, see comments for initLittleComponent
     fluid.initView = function (componentName, container, userOptions, localOptions) {
         fluid.expectFilledSelector(container, "Error instantiating component with name \"" + componentName);
-        container = fluid.container(container, true);
+        // TODO: This is rubbish, just get rid of "fallible components" entirely
+        var userJQuery = fluid.get(userOptions, "jQuery") || fluid.get(userOptions, "localRecord.options.jQuery");
+        container = fluid.container(container, true, userJQuery);
         if (!container) {
             return null;
         }

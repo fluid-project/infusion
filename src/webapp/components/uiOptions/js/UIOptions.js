@@ -639,6 +639,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid",
                 func: "fluid.textfieldSlider",
                 options: {
+                    jQuery: that.options.rendererOptions.jQuery,
                     listeners: {
                         modelChanged: function (value) {
                             that.applier.requestChange("selections." + item, value);

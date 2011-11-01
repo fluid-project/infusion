@@ -292,8 +292,8 @@ fluid_1_5 = fluid_1_5 || {};
             options.messageLocator = fluid.resolveMessageSource(options.messageSource);
         }
         options.document = options.document || document;
-        
-        var directFossils = fossilsIn || {}; // map of submittingname to {EL, submittingname, oldvalue}
+        options.jQuery = options.jQuery || $;
+        options.fossils = options.fossils || fossilsIn || {}; // map of submittingname to {EL, submittingname, oldvalue}
       
         var globalmap = {};
         var branchmap = {};
@@ -307,7 +307,7 @@ fluid_1_5 = fluid_1_5 || {};
         var renderedbindings = {}; // map of fullID to true for UISelects which have already had bindings written
         var usedIDs = {};
         
-        var that = {};
+        var that = {options: options};
         
         function getRewriteKey(template, parent, id) {
             return template.resourceKey + parent.fullID + id;
@@ -616,10 +616,10 @@ fluid_1_5 = fluid_1_5 || {};
         function dumpBoundFields(/** UIBound**/ torender, parent) { // jslint:ok - whitespace
             if (torender) {
                 var holder = parent? parent : torender;
-                if (directFossils && holder.valuebinding) {
+                if (renderOptions.fossils && holder.valuebinding) {
                     var fossilKey = holder.submittingname || torender.finalID;
                   // TODO: this will store multiple times for each member of a UISelect
-                    directFossils[fossilKey] = {
+                    renderOptions.fossils[fossilKey] = {
                         name: fossilKey,
                         EL: holder.valuebinding,
                         oldvalue: holder.value
@@ -763,7 +763,7 @@ fluid_1_5 = fluid_1_5 || {};
                         nodeType: 1,
                         className: attrcopy["class"] || ""
                     };
-                    $(fakeNode)[type](decorator.classes);
+                    renderOptions.jQuery(fakeNode)[type](decorator.classes);
                     attrcopy["class"] = fakeNode.className;
                 }
                 else if (type === "identify") {
@@ -1355,14 +1355,14 @@ fluid_1_5 = fluid_1_5 || {};
                             + " which has a queued decorator was not found in the output markup");
                     }
                     if (decorator.type === "jQuery") {
-                        var jnode = $(node);
-                        jnode[decorator.func].apply(jnode, $.makeArray(decorator.args));
+                        var jnode = renderOptions.jQuery(node);
+                        jnode[decorator.func].apply(jnode, fluid.makeArray(decorator.args));
                     }
                     else if (decorator.type === "fluid") {
                         var args = decorator.args;
                         if (!args) {
                             if (!decorator.container) {
-                                decorator.container = $(node);
+                                decorator.container = renderOptions.jQuery(node);
                             }
                             else {
                                 decorator.container.push(node);
@@ -1464,6 +1464,8 @@ fluid_1_5 = fluid_1_5 || {};
   
     fluid.reRender = function (templates, node, tree, options) {
         options = options || {};
+        var renderer = fluid.renderer(templates, tree, options, options.fossils);
+        options = renderer.options;
               // Empty the node first, to head off any potential id collisions when rendering
         node = fluid.unwrap(node);
         var lastFocusedElement = fluid.getLastFocusedElement ? fluid.getLastFocusedElement() : null;
@@ -1472,24 +1474,22 @@ fluid_1_5 = fluid_1_5 || {};
             lastId = lastFocusedElement.id;
         }
         if ($.browser.msie) {
-            $(node).empty(); //- this operation is very slow.
+            options.jQuery(node).empty(); //- this operation is very slow.
         }
         else {
             node.innerHTML = "";
         }
-        var fossils = options.fossils || {};
         
-        var renderer = fluid.renderer(templates, tree, options, fossils);
         var rendered = renderer.renderTemplates();
         if (options.renderRaw) {
             rendered = fluid.XMLEncode(rendered);
             rendered = rendered.replace(/\n/g, "<br/>");
         }
         if (options.model) {
-            fluid.bindFossils(node, options.model, fossils);
+            fluid.bindFossils(node, options.model, options.fossils);
         }
         if ($.browser.msie) {
-            $(node).html(rendered);
+            options.jQuery(node).html(rendered);
         }
         else {
             node.innerHTML = rendered;
@@ -1498,7 +1498,7 @@ fluid_1_5 = fluid_1_5 || {};
         if (lastId) {
             var element = fluid.byId(lastId);
             if (element) {
-                $(element).focus();
+                options.jQuery(element).focus();
             }      
         }
           
