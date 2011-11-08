@@ -20,96 +20,32 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
-	fluid.setLogging(true);
+    fluid.setLogging(true);
 
-    /***************************************
-     * fluid.uiOptions.fatPanelEventBinder *
-     ***************************************/
-   
-    fluid.defaults("fluid.uiOptions.fatPanelEventBinder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        finalInitFunction: "fluid.uiOptions.fatPanelEventBinder.finalInit",
-        components: {
-            uiOptionsLoader: {
-                type: "fluid.uiOptions.loader"
-            },
-            slidingPanel: {
-                type: "fluid.slidingPanel"
-            }
-        }
-    });
-    
-    fluid.defaults("fluid.uiOptions.fatPanelEventBinder.binder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"]
-    });
-    
     fluid.registerNamespace("fluid.dom");
     
     fluid.dom.getDocumentHeight = function (dokkument) {
         var body = $("body", dokkument)[0]; 
         return body.offsetHeight;
     };
-    
-    fluid.uiOptions.fatPanelEventBinder.updateView = function (uiOptions) {
-        uiOptions.uiEnhancer.updateFromSettingsStore();
-        uiOptions.events.onSignificantDOMChange.fire();
-    };
-    
-    fluid.uiOptions.fatPanelEventBinder.bindLateEvents = function (uiOptions, eventBinder, fatPanel) {
-        eventBinder.uiOptions = uiOptions;
-        uiOptions.events.modelChanged.addListener(function (model) {
-            eventBinder.uiEnhancer.updateModel(model.selections);
-            uiOptions.save();
-        });
-        uiOptions.events.onReset.addListener(function (uiOptions) {
-            fluid.uiOptions.fatPanelEventBinder.updateView(uiOptions);
-        });
-        uiOptions.events.onSignificantDOMChange.addListener(function () {
-            var dokkument = uiOptions.container[0].ownerDocument;
-            var height = fluid.dom.getDocumentHeight(dokkument);
-            var iframe = fatPanel.iframeRenderer.iframe;
-            var attrs = {height: height + 15}; // TODO: Configurable padding here
-            iframe.animate(attrs, 400);
-        });
-        
-        fatPanel.slidingPanel.events.afterPanelHide.addListener(function () {
-            fatPanel.markupRenderer.iframe.height(0);
-        });
-    };
-        
-    fluid.uiOptions.fatPanelEventBinder.finalInit = function (that) {
-        //TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
-        // which is a child of this component - and also uiOptionsLoader which is another child
-        that.slidingPanel.events.afterPanelShow.addListener(function () {
-            fluid.uiOptions.fatPanelEventBinder.updateView(that.uiOptions);
-        });
-    };
-    
-    // show immediately, animation will be done after size calculation above
-    fluid.uiOptions.fatPanelEventBinder.showPanel = function (panel, callback) {
-        panel.show();
-        // A bizarre race condition has emerged under FF where the iframe held within the panel does not
-        // react synchronously to being shown
-        setTimeout(callback, 1);
-    };
 
     /*****************************************
      * Fat Panel UI Options Top Level Driver *
      *****************************************/ 
-     
-    fluid.uiOptions.fatPanel = function (container, options) {
-        var defaults = fluid.defaults("fluid.uiOptions.fatPanel");
-        var config = defaults.uiOptionsTransform.config;
-        
-        var mappedOptions = fluid.uiOptions.mapOptions(options, config, defaults.mergePolicy);
 
-        var that = fluid.initView("fluid.uiOptions.fatPanel", container, mappedOptions);
-        fluid.initDependents(that);
-        return that; 
-    };
 
     fluid.defaults("fluid.uiOptions.fatPanel", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.uiOptions.inline"],
+        events: {
+            afterRender: null,
+            onReady: null
+        },
+        listeners: {
+            onReady: {
+                listener: "fluid.uiOptions.fatPanel.bindEvents",
+                args: ["{arguments}.0.uiOptions", "{uiEnhancer}", "{fatPanel}"]
+            }  
+        },
         selectors: {
             iframe: ".flc-uiOptions-iframe"
         },
@@ -120,7 +56,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     invokers: {
                         operateShow: {
-                            funcName: "fluid.uiOptions.fatPanelEventBinder.showPanel"
+                            funcName: "fluid.uiOptions.fatPanel.showPanel"
                         }  
                     }
                 },
@@ -137,65 +73,73 @@ var fluid_1_5 = fluid_1_5 || {};
                         afterRender: "{fatPanel}.events.afterRender"
                     }
                 }
-            },
-            uiEnhancer: "{uiEnhancer}",
-            eventBinder: {
-                type: "fluid.uiOptions.fatPanelEventBinder",
+            }
+        },
+        // TODO: This material is not really transformation, but would be better expressed by
+        // FLUID-4392 additive demands blocks
+        derivedDefaults: {
+            uiOptionsLoader: {
                 options: {
+                    events: {
+                        templatesAndIframeReady: {
+                            events: {
+                                iframeReady: "{fatPanel}.events.afterRender",
+                                templateReady: "onUIOptionsTemplateReady"
+                            }  
+                        },
+                        onReady: "{fatPanel}.events.onReady"
+                    }
+                }
+            },
+            uiOptions: {
+                createOnEvent: "templatesAndIframeReady",
+                container: "{iframeRenderer}.renderUIOContainer",
+                options: {
+                    events: {
+                        onSignificantDOMChange: null  
+                    },
+                    rendererOptions: {
+                        document: "{iframeRenderer}.iframeDocument",
+                        jQuery: "{iframeRenderer}.jQuery"
+                        },
                     components: {
-                        uiEnhancer: "{fatPanel}.uiEnhancer",
-                        uiOptionsLoader: "{renderUIOptions}.uiOptionsLoader",
-                        slidingPanel: "{fatPanel}.slidingPanel",
-                        binder: {
-                            type: "fluid.uiOptions.fatPanelEventBinder.binder",
-                            priority: "last",
+                        iframeRenderer: "{fatPanel}.iframeRenderer",
+                        settingsStore: "{uiEnhancer}.settingsStore",
+                        preview: {
+                            type: "fluid.emptySubcomponent"
+                        },
+                        tabs: {
+                            type: "fluid.tabs",
+                            container: "{uiOptions}.container",
+                            createOnEvent: "onUIOptionsComponentReady",
                             options: {
-                                events: {
-                                    onUIOptionsComponentReady: {
-                                        event: "{uiOptionsLoader}.events.onUIOptionsComponentReady",
-                                        args: ["{arguments}.0", "{fluid.uiOptions.fatPanelEventBinder}", "{fatPanel}"]
-                                    }
-                                },
                                 listeners: {
-                                    // This literal specification works around FLUID-4337
-                                    // The actual behaviour should really be handled by FLUID-4335
-                                    onUIOptionsComponentReady: fluid.uiOptions.fatPanelEventBinder.bindLateEvents
+                                    "tabsshow": {
+                                        listener: "{uiOptions}.events.onSignificantDOMChange"
+                                    }
                                 }
                             }
                         }
                     }
-                },
-                createOnEvent: "afterRender",
-                priority: "last"
-            },
-            renderUIOptions: {
-                type: "fluid.uiOptions.fatPanel.renderUIOptions",
-                container: "{iframeRenderer}.renderUIOContainer",
-                createOnEvent: "afterRender",
-                priority: "first"
+                }
             }
         },
         uiOptionsTransform: {
-            transformer: "fluid.uiOptions.mapOptions",
-            config: {
+            config: { // For FLUID-4409
+                "!*.uiOptionsLoader.*.uiOptions.*.uiEnhancer.options": "uiEnhancer.options",
                 "*.slidingPanel":                              "slidingPanel",
                 "*.iframeRenderer":                            "iframeRenderer",
                 "*.iframeRenderer.options.prefix":             "prefix",
-                "*.eventBinder":                               "eventBinder",
-                "selectors.iframe":                            "iframe",
-                "*.renderUIOptions.options.templateLoader":    "templateLoader",
-                "*.renderUIOptions.options.prefix":            "prefix",
-                "*.renderUIOptions.options.uiOptionsLoader":   "uiOptionsLoader",
-                "*.renderUIOptions.options.uiOptions":         "uiOptions",
-                "*.renderUIOptions.options.textControls":      "textControls",
-                "*.renderUIOptions.options.layoutControls":    "layoutControls",
-                "*.renderUIOptions.options.linksControls":     "linksControls",
-                "*.renderUIOptions.options.uiEnhancer":        "uiEnhancer"
+                "selectors.iframe":                            "iframe"
             }
-        },
-        events: {
-            afterRender: null
         }
+    });
+    
+        
+    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.fatPanel", function (options) {
+        var enhancerOptions = fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions");
+        options.outerPreviewEnhancerOptions = enhancerOptions;
+        return options;
     });
     
     /*****************************************
@@ -246,85 +190,45 @@ var fluid_1_5 = fluid_1_5 || {};
 
         that.iframe.appendTo(that.container);
     };
-    
-    /********************************************
-     * fluid.uiOptions.fatPanel.renderUIOptions *
-     ********************************************/
-    
-    // TODO: This function is only necessary through lack of listener boiling power - it should
-    // be possible to directly relay one event firing to another, FLUID-4398
-    fluid.uiOptions.tabSelectRelay = function (uiOptions) {
+        
+    fluid.uiOptions.fatPanel.updateView = function (uiOptions, uiEnhancer) {
+        uiEnhancer.updateFromSettingsStore();
         uiOptions.events.onSignificantDOMChange.fire();
     };
     
-    fluid.defaults("fluid.uiOptions.fatPanel.renderUIOptions", {
-        gradeNames: ["fluid.uiOptions.inline"],
-        // TODO: This material is not really transformation, but would be better expressed by
-        // FLUID-4392 additive demands blocks
-        derivedDefaults: {
-            uiOptions: {
-                options: {
-                    events: {
-                        onSignificantDOMChange: null  
-                    },
-                    rendererOptions: {
-                        document: "{iframeRenderer}.iframeDocument",
-                        jQuery: "{iframeRenderer}.jQuery"
-                        },
-                    components: {
-                        uiEnhancer: "{fatPanel}.uiEnhancer",
-                        iframeRenderer: "{fatPanel}.iframeRenderer",
-                        settingsStore: "{uiEnhancer}.settingsStore",
-                        preview: {
-                            type: "fluid.emptySubcomponent"
-                        },
-                        tabs: {
-                            type: "fluid.tabs",
-                            container: "{renderUIOptions}.container",
-                            createOnEvent: "onUIOptionsComponentReady",
-                            options: {
-                                events: { // TODO: this mess required through lack of FLUID-4398
-                                    boiledTabShow: {
-                                        event: "tabsshow",
-                                        args: ["{uiOptions}"]
-                                    }
-                                },
-                                listeners: { // FLUID-4337 bug again
-                                    boiledTabShow: fluid.uiOptions.tabSelectRelay
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        uiOptionsTransform: {
-            config: { // For FLUID-4409
-                "!*.uiOptionsLoader.*.uiOptions.*.uiEnhancer.options": "uiEnhancer.options"
-            }
-        }
-    });
+    fluid.uiOptions.fatPanel.bindEvents = function (uiOptions, uiEnhancer, fatPanel) {
+        //TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
+        // which is a child of this component - and also uiOptionsLoader which is another child
+        fatPanel.slidingPanel.events.afterPanelShow.addListener(function () {
+            fluid.uiOptions.fatPanel.updateView(uiOptions, uiEnhancer);
+        });  
     
-    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.fatPanel.renderUIOptions", function (options) {
-        // Move the options that are delivered from uiOptionsTransform.config to the desired options level
-        var fatPanelMapping = fluid.defaults("fluid.uiOptions.fatPanel").uiOptionsTransform.config;
-        var swappedFatPanelMapping = {};
+        uiOptions.events.modelChanged.addListener(function (model) {
+            uiEnhancer.updateModel(model.selections);
+            uiOptions.save();
+        });
+        uiOptions.events.onReset.addListener(function (uiOptions) {
+            fluid.uiOptions.fatPanel.updateView(uiOptions);
+        });
+        uiOptions.events.onSignificantDOMChange.addListener(function () {
+            var dokkument = uiOptions.container[0].ownerDocument;
+            var height = fluid.dom.getDocumentHeight(dokkument);
+            var iframe = fatPanel.iframeRenderer.iframe;
+            var attrs = {height: height + 15}; // TODO: Configurable padding here
+            iframe.animate(attrs, 400);
+        });
         
-        // Swap the mapping for easier extraction on renderUIOptions options
-        fluid.each(fatPanelMapping, function (value, key) {
-            swappedFatPanelMapping[value] = key;
+        fatPanel.slidingPanel.events.afterPanelHide.addListener(function () {
+            fatPanel.iframeRenderer.iframe.height(0);
         });
-
-        // Extracts the mappings that only belong to renderUIOptions
-        var renderUIOSymbol = "*.renderUIOptions.options";
-        fluid.each(swappedFatPanelMapping, function (value, key) {
-            if (value.indexOf(renderUIOSymbol) === 0 && options.localRecord.options[key]) {
-                options[key] = options.localRecord.options[key];
-            }
-        });
-
-        return options;
-    });
+    };
     
+    // show immediately, animation will be done after size calculation above
+    fluid.uiOptions.fatPanel.showPanel = function (panel, callback) {
+        panel.show();
+        // A bizarre race condition has emerged under FF where the iframe held within the panel does not
+        // react synchronously to being shown
+        setTimeout(callback, 1);
+    };
     
 })(jQuery, fluid_1_5);

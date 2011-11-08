@@ -42,7 +42,7 @@ var fluid = fluid || fluid_1_5;
     };
     var globalObject = window || {};
     
-    var softFailure = [true];
+    var softFailure = [false];
     
     // This function will be patched from FluidIoC.js in order to describe complex activities
     fluid.describeActivity = function () {
@@ -780,6 +780,23 @@ var fluid = fluid || fluid_1_5;
         });
         return togo.sort(fluid.event.listenerComparator);
     };
+    
+    fluid.event.resolveListener = function (listener) {
+        if (typeof (listener) === "string") {
+            var listenerFunc = fluid.getGlobalValue(listener);
+            if (!listenerFunc) {
+                fluid.fail("Unable to look up name " + listener + " as a global function"); 
+            } else {
+                listener = listenerFunc;
+            }
+        }
+        return listener;
+    };
+    
+    fluid.event.nameEvent = function (that, eventName) {
+        return eventName + " of " + fluid.nameComponent(that);
+    };
+    
     /** Construct an "event firer" object which can be used to register and deregister 
      * listeners, to which "events" can be fired. These events consist of an arbitrary
      * function signature. General documentation on the Fluid events system is at
@@ -791,22 +808,17 @@ var fluid = fluid || fluid_1_5;
      * will be the return value of fire()
      */
     
-    fluid.event.getEventFirer = function (unicast, preventable) {
+    fluid.event.getEventFirer = function (unicast, preventable, name) {
         var listeners = {};
         var sortedListeners = [];
         
         function fireToListeners(listeners, args, wrapper) {
-            for (var i in listeners) {
+            fluid.log("Firing event " + name + " to list of " + listeners.length + " listeners");
+            for (var i = 0; i < listeners.length; ++ i) {
                 var lisrec = listeners[i];
+                lisrec.listener = fluid.event.resolveListener(lisrec.listener);
                 var listener = lisrec.listener;
-                if (typeof (listener) === "string") {
-                    var listenerFunc = fluid.getGlobalValue(listener);
-                    if (!listenerFunc) {
-                        fluid.fail("Unable to look up name " + listener + " as a global function"); 
-                    } else {
-                        listener = lisrec.listener = listenerFunc;
-                    }
-                }
+
                 if (lisrec.predicate && !lisrec.predicate(listener, args)) {
                     continue;
                 }
@@ -829,6 +841,8 @@ var fluid = fluid || fluid_1_5;
         }
         
         return {
+            name: name,
+            typeName: "fluid.event.firer", 
             addListener: function (listener, namespace, predicate, priority) {
                 if (!listener) {
                     return;
@@ -878,6 +892,9 @@ var fluid = fluid || fluid_1_5;
             firer.addListener(value.listener, namespace || value.namespace, value.predicate, value.priority);
         }
     };
+    
+    fluid.event.resolveListenerRecord = fluid.identity; // non-IOC passthrough
+    
     /**
      * Attaches the user's listeners to a set of events.
      * 
@@ -902,10 +919,11 @@ var fluid = fluid || fluid_1_5;
                 }
                 if (!events[key]) {
                     fluid.fail("Listener registered for event " + key + " which is not defined for this component");
-                    events[key] = fluid.event.getEventFirer();
+                    events[key] = fluid.event.getEventFirer(null, null, fluid.event.nameEvent(that, key));
                 }
                 firer = events[key];
             }
+            value = fluid.event.resolveListenerRecord(value, that, key);
             fluid.event.addListenerToFirer(firer, value, namespace);
         });
     };
@@ -922,7 +940,7 @@ var fluid = fluid || fluid_1_5;
                     event = fluid.event.resolveEvent(that, eventKey, eventSpec);
                 }
             } else if (pass === "flat") {
-                event = fluid.event.getEventFirer(eventSpec === "unicast", eventSpec === "preventable");
+                event = fluid.event.getEventFirer(eventSpec === "unicast", eventSpec === "preventable", fluid.event.nameEvent(that, eventKey));
             }
             if (event) {
                 that.events[eventKey] = event;
@@ -947,8 +965,8 @@ var fluid = fluid || fluid_1_5;
         initEvents(that, options.events, "flat"); 
         initEvents(that, options.events, "IoC");
         // TODO: manually expand these late so that members attached to ourselves with preInitFunction can be detected
-        var listeners = fluid.expandOptions ? fluid.expandOptions(options.listeners, that) : options.listeners;
-        fluid.mergeListeners(that, that.events, listeners);
+        //var listeners = fluid.expandOptions ? fluid.expandOptions(options.listeners, that) : options.listeners;
+        fluid.mergeListeners(that, that.events, options.listeners);
     };
     
     fluid.mergeListenersPolicy = function (target, source) {
@@ -1007,8 +1025,8 @@ var fluid = fluid || fluid_1_5;
         
     // unsupported, NON-API function
     fluid.makeLifecycleFirers = function () {
-        return fluid.transform(fluid.lifecycleFunctions, function () {
-            return fluid.event.getEventFirer();
+        return fluid.transform(fluid.lifecycleFunctions, function (value, key) {
+            return fluid.event.getEventFirer(null, null, key);
         });
     };
     
@@ -1142,6 +1160,11 @@ var fluid = fluid || fluid_1_5;
             options: 1
         }
     });
+
+    /** Generate a name for a component for debugging purposes */    
+    fluid.nameComponent = function (that) {
+        return that? "component with typename " + that.typeName + " and id " + that.id : "[unknown component]"
+    };
     
     // unsupported, NON-API function
     fluid.guardCircularity = function (seenIds, source, message1, message2) {
@@ -1149,7 +1172,7 @@ var fluid = fluid || fluid_1_5;
             if (!seenIds[source.id]) {
                 seenIds[source.id] = source;
             } else if (seenIds[source.id] === source) {
-                fluid.fail("Circularity in options " + message1 + " - component with typename " + source.typeName + " and id " + source.id 
+                fluid.fail("Circularity in options " + message1 + " - " + fluid.nameComponent(source)
                     + " has already been seen" + message2);  
             }
         }      

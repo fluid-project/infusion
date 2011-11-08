@@ -698,6 +698,13 @@ fluid.registerNamespace("fluid.tests");
         });
         child.events.parentEvent.fire(origArg0);
         jqUnit.assertEquals("Value received in cross-tree injected listener", origArg0, that.listenerHolder.value);
+        // TODO: boiledParent.fire should not fire to eventParent! boiledParent listeners all expect 3 arguments,
+        // eventParent listeners just expect 1. We actually probably never wanted to boil events at all, only to boil
+        // listeners. In all "composite" event cases, (including boiling, multi-events, etc.) the events will not share
+        // firing and behave as if the composite part was just a listener spec. 
+        // Recommend everyone to use boiled listeners for all composite cases? I guess use an event in the case
+        // that multiple listeners will want to share the config.
+        // So - the only shared case is eName: thing or eName: {event: thing} with NOTHING else
         
         child.events.localEvent.addListener(function (arg0) {
             jqUnit.assertEquals("Plain transmission of argument", origArg0, arg0);
@@ -707,6 +714,63 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Injection of self via demands block", child, argChild);
         });
         child.events.localEvent.fire(origArg0);
+    });
+    
+    fluid.defaults("fluid.tests.eventParent3", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            parentEvent1: null,
+            parentEvent2: null  
+        },
+        components: {
+            eventChild: {
+                type: "fluid.tests.eventChild3"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.eventChild3", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            boiledDouble: {
+                events: {
+                   event1: "{eventParent3}.events.parentEvent1",
+                   event2: "{eventParent3}.events.parentEvent2"
+                },
+                args: ["{arguments}.event1.0", "{arguments}.event2.1"]
+            },
+            relayEvent: null
+        },
+        listeners: {
+            boiledDouble: [
+                 "fluid.tests.globalListener", // This tests FLUID-4337
+                 {                             // This tests FLUID-4398
+                     listener: "{eventChild3}.events.relayEvent",
+                     args: "{arguments}.1" 
+                 }
+                 ]
+        }
+    });
+    
+    fluid.tests.globalListener = function(parent, arg2) {
+        if (!parent.listenerRecord) {
+            parent.listenerRecord = [];
+        };
+        parent.listenerRecord.push(arg2);
+    };
+    
+    fluidIoCTests.test("FLUID-4398 event and listener boiling", function () {
+        var that = fluid.tests.eventParent3();
+        var received = {};
+        that.eventChild.events.relayEvent.addListener(function(arg) {
+            received.arg = arg;
+        });
+        that.events.parentEvent1.fire(that); // first event does nothing
+        jqUnit.assertNoValue("No event on first fire", that.listenerRecord);
+        jqUnit.assertNoValue("No relay on first fire", received.arg);
+        that.events.parentEvent2.fire(3, 4);
+        jqUnit.assertDeepEq("Received boiled argument after dual fire", [4], that.listenerRecord);
+        jqUnit.assertEquals("Received relayed fire after dual fire", 4, received.arg);
     });
     
     // Simpler demonstration matching docs, also using "scoped event binding"
