@@ -162,29 +162,7 @@ var fluid = fluid || fluid_1_5;
             }
         }
     };
-    
-    /**
-     * Wraps an object in a jQuery if it isn't already one. This function is useful since
-     * it ensures to wrap a null or otherwise falsy argument to itself, rather than the
-     * often unhelpful jQuery default of returning the overall document node.
-     * 
-     * @param {Object} obj the object to wrap in a jQuery
-     * @param {jQuery} userJQuery the jQuery object to use for the wrapping, optional - use the current jQuery if absent
-     */
-    fluid.wrap = function (obj, userJQuery) {
-        userJQuery = userJQuery || $;
-        return ((!obj || obj.jquery) ? obj : userJQuery(obj)); 
-    };
-    
-    /**
-     * If obj is a jQuery, this function will return the first DOM element within it.
-     * 
-     * @param {jQuery} obj the jQuery instance to unwrap into a pure DOM element
-     */
-    fluid.unwrap = function (obj) {
-        return obj && obj.jquery && obj.length === 1 ? obj[0] : obj; // Unwrap the element if it's a jQuery.
-    };
-    
+     
     // Functional programming utilities.
                
     /** A basic utility that returns its argument unchanged */
@@ -1521,6 +1499,29 @@ var fluid = fluid || fluid_1_5;
     };
     
     fluid.notrycatch = fluid.checkTryCatchParameter();
+
+   
+    /**
+     * Wraps an object in a jQuery if it isn't already one. This function is useful since
+     * it ensures to wrap a null or otherwise falsy argument to itself, rather than the
+     * often unhelpful jQuery default of returning the overall document node.
+     * 
+     * @param {Object} obj the object to wrap in a jQuery
+     * @param {jQuery} userJQuery the jQuery object to use for the wrapping, optional - use the current jQuery if absent
+     */
+    fluid.wrap = function (obj, userJQuery) {
+        userJQuery = userJQuery || $;
+        return ((!obj || obj.jquery) ? obj : userJQuery(obj)); 
+    };
+    
+    /**
+     * If obj is a jQuery, this function will return the first DOM element within it.
+     * 
+     * @param {jQuery} obj the jQuery instance to unwrap into a pure DOM element
+     */
+    fluid.unwrap = function (obj) {
+        return obj && obj.jquery && obj.length === 1 ? obj[0] : obj; // Unwrap the element if it's a jQuery.
+    };
     
     /**
      * Fetches a single container element and returns it as a jQuery.
@@ -1530,6 +1531,9 @@ var fluid = fluid || fluid_1_5;
      * @return a single-element jQuery of container
      */
     fluid.container = function (containerSpec, fallible, userJQuery) {
+        if (userJQuery) {
+            containerSpec = fluid.unwrap(containerSpec);
+        }
         var container = fluid.wrap(containerSpec, userJQuery);
         if (fallible && (!container || container.length === 0)) {
             return null;
@@ -1559,6 +1563,7 @@ var fluid = fluid || fluid_1_5;
      */
     fluid.createDomBinder = function (container, selectors) {
         var cache = {}, that = {};
+        var userJQuery = container.constructor;
         
         function cacheKey(name, thisContainer) {
             return fluid.allocateSimpleId(thisContainer) + "-" + name;
@@ -1582,14 +1587,12 @@ var fluid = fluid || fluid_1_5;
             }
 
             if (typeof (selector) === "function") {
-                togo = $(selector.call(null, fluid.unwrap(thisContainer)));
+                togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
             } else {
-                togo = $(selector, thisContainer);
+                togo = userJQuery(selector, thisContainer);
             }
             if (togo.get(0) === document) {
                 togo = [];
-                //fluid.fail("Selector " + name + " with value " + selectors[name] +
-                //            " did not find any elements with container " + fluid.dumpEl(container));
             }
             if (!togo.selector) {
                 togo.selector = selector;
@@ -1597,6 +1600,7 @@ var fluid = fluid || fluid_1_5;
             }
             togo.selectorName = name;
             record(name, thisContainer, togo);
+            console.log("Returning with " + togo.constructor.expando);
             return togo;
         };
         that.fastLocate = function (name, localContainer) {
@@ -1651,15 +1655,17 @@ var fluid = fluid || fluid_1_5;
      * @param {Object} userOptions The configuration options for this component.
      */
      // 4th argument is NOT SUPPORTED, see comments for initLittleComponent
-    fluid.initView = function (componentName, container, userOptions, localOptions) {
+    fluid.initView = function (componentName, containerSpec, userOptions, localOptions) {
         fluid.expectFilledSelector(container, "Error instantiating component with name \"" + componentName);
-        // TODO: This is rubbish, just get rid of "fallible components" entirely
-        var userJQuery = fluid.get(userOptions, "jQuery") || fluid.get(userOptions, "localRecord.options.jQuery");
-        container = fluid.container(container, true, userJQuery);
+        var container = fluid.container(containerSpec, true);
         if (!container) {
             return null;
         }
-        var that = fluid.initLittleComponent(componentName, userOptions, localOptions || {gradeNames: ["fluid.viewComponent"]}); 
+        var that = fluid.initLittleComponent(componentName, userOptions, localOptions || {gradeNames: ["fluid.viewComponent"]});
+        var userJQuery = that.options.jQuery; // Do it a second time to correct for jQuery injection
+        if (userJQuery) {
+            container = fluid.container(containerSpec, true, userJQuery);
+        }
         that.container = container;
         fluid.initDomBinder(that);
 

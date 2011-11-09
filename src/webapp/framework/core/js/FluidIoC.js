@@ -54,7 +54,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     // thatStack contains an increasing list of MORE SPECIFIC thats.
-    var visitComponents = function(thatStack, visitor, options) {
+    var visitComponents = function(instantiator, thatStack, visitor, options) {
         options = options || {
             visited: {},
             flat: true
@@ -67,7 +67,9 @@ var fluid_1_5 = fluid_1_5 || {};
             }
             if (that.typeName) {
                 options.visited[that.id] = true;
-                if (visitor(that, "", options, 0, 0)) {
+                var path = instantiator.idToPath[that.id] || "";
+                var memberName = fluid.pathUtil.getTailPath(path);
+                if (visitor(that, memberName, options, 0, 0)) {
                     return;
                 }
             }
@@ -111,7 +113,7 @@ var fluid_1_5 = fluid_1_5 || {};
     }
     
     // unsupported, non-API function
-    fluid.dumpThat = function(that, instantiator) {
+    fluid.dumpThat = function(that) {
         return "{ typeName: \"" + that.typeName + "\" id: " + that.id + "}";
     };
     
@@ -185,7 +187,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 };
             }
             var foundComponent;
-            visitComponents(thatStack, function(component, name, options, up, down) {
+            visitComponents(instantiator, thatStack, function(component, name, options, up, down) {
                 if (context === name || context === component.typeName || context === component.nickName) {
                     foundComponent = component;
                     if (down > 1) {
@@ -202,7 +204,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 var ref = fluid.renderContextReference(parsed);
                 fluid.log("Failed to resolve reference " + ref + ": thatStack contains\n" + fluid.dumpThatStack(thatStack, instantiator));
                 fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " 
-                    + context + " from component root of type " + thatStack[0].typeName, "\ninstantiator contents: ", instantiator);
+                    + context + " from component leaf of type " + thatStack[thatStack.length - 1].typeName, "\ninstantiator contents: ", instantiator);
             }
             return fluid.get(foundComponent, parsed.path, fetchStrategies);
         };
@@ -525,7 +527,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var contextNames = {};
         var visited = [];
         var thatStack = instantiator.getFullStack(parentThat);
-        visitComponents(thatStack, function(component, xname, options, up, down) {
+        visitComponents(instantiator, thatStack, function(component, xname, options, up, down) {
             contextNames[component.typeName] = true;
             visited.push(component);
         });
@@ -754,7 +756,12 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             else {
                 var firer = {}; // jslint:ok - already defined
                 fluid.each(["fire", "removeListener"], function(method) {
-                    firer[method] = function() {origin[method].apply(null, arguments);};
+                    firer[method] = function() {
+                        var outerArgs = arguments;
+                        return fluid.applyInstantiator(instantiator, that, function() {
+                            return origin[method].apply(null, outerArgs);
+                        });
+                    };
                 });
                 firer.addListener = function(listener, namespace, predicate, priority) {
                     var dispatcher = fluid.event.dispatchListener(instantiator, that, listener, eventName, eventSpec);
@@ -906,11 +913,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.expandComponentOptions = fluid.wrapActivity(fluid.expandComponentOptions, 
         ["    while expanding component options ", "arguments.1.value", " with record ", "arguments.1", " for component ", "arguments.2"]);
     
-    // The case without the instantiator is from the ginger strategy - this logic is still a little ragged
-    fluid.initDependent = function(that, name, userInstantiator, directArgs) {
-        if (!that || that[name]) { return; }
-        fluid.log("Beginning instantiation of component with name \"" + name + "\" as child of " + fluid.dumpThat(that));
-        directArgs = directArgs || [];
+    fluid.applyInstantiator = function(userInstantiator, that, func) {
         var root = fluid.threadLocal();
         if (userInstantiator) {
             var existing = root["fluid.instantiator"];
@@ -920,13 +923,21 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
             else {
                 root["fluid.instantiator"] = userInstantiator;
-                // fluid.log("*** initDependent for " + that.typeName + " member " + name + " was supplied USER instantiator with id " + userInstantiator.id + " - STORED");
+                fluid.log("*** restored USER instantiator with id " + userInstantiator.id + " - STORED");
             }
         }
-        
+        return fluid.withInstantiator(that, func);
+    };
+    
+    // The case without the instantiator is from the ginger strategy - this logic is still a little ragged
+    fluid.initDependent = function(that, name, userInstantiator, directArgs) {
+        if (!that || that[name]) { return; }
+        fluid.log("Beginning instantiation of component with name \"" + name + "\" as child of " + fluid.dumpThat(that));
+        directArgs = directArgs || [];
         var component = that.options.components[name];
         var instance; // escape to here for debugging purposes
-        fluid.withInstantiator(that, function(instantiator) {
+        
+        fluid.applyInstantiator(userInstantiator, that, function(instantiator) {
             if (typeof(component) === "string") {
                 that[name] = fluid.expandOptions([component], that)[0]; // TODO: expose more sensible semantic for expandOptions 
             }
@@ -968,7 +979,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var instantiator = root["fluid.instantiator"];
         if (!instantiator) {
             instantiator = root["fluid.instantiator"] = fluid.instantiator();
-            //fluid.log("Created new instantiator with id " + instantiator.id + " in order to operate on component " + typeName);
+            fluid.log("Created new instantiator with id " + instantiator.id + " in order to operate on component " + (that? that.typeName : "[none]"));
         }
         return fluid.pushActivity(function() {
             return fluid.tryCatch(function() {
@@ -982,7 +993,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 var count = instantiator.stack(-1);
                 //fluid.log("Instantiator stack -1 to " + instantiator.stackCount + " for " + typeName);
                 if (count === 0) {
-                    //fluid.log("Clearing instantiator with id " + instantiator.id + " from threadLocal for end of " + typeName);
+                    fluid.log("Clearing instantiator with id " + instantiator.id + " from threadLocal for end of " + (that? that.typeName : "[none]"));
                     delete root["fluid.instantiator"];
                 }
             });
@@ -994,6 +1005,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var events = fluid.makeArray(component.createOnEvent);
         fluid.each(events, function(eventName) {
             that.events[eventName].addListener(function() {
+                fluid.log("Beginning instantiation of deferred component " + componentName + " due to event " + eventName);
                 if (that[componentName]) {
                     instantiator.clearComponent(that, componentName);
                 }

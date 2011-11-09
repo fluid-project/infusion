@@ -78,7 +78,7 @@ var fluid_1_5 = fluid_1_5 || {};
             elements = nodeIn;
         }
         else {
-            elements = document.getElementsByName(name);
+            elements = node.ownerDocument.getElementsByName(name);
             var scope = fluid.findForm(node);
             elements = $.grep(elements, 
             function (element) {

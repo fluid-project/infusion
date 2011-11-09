@@ -43,13 +43,14 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             onReady: {
                 listener: "fluid.uiOptions.fatPanel.bindEvents",
-                args: ["{arguments}.0.uiOptions", "{uiEnhancer}", "{fatPanel}"]
-            }  
+                args: ["{arguments}.0.uiOptions", "{uiEnhancer}", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
+            }
         },
         selectors: {
             iframe: ".flc-uiOptions-iframe"
         },
-        components: {      
+        components: {
+            pageEnhancer: "{uiEnhancer}",
             slidingPanel: {
                 type: "fluid.slidingPanel",
                 container: "{fatPanel}.container",
@@ -71,6 +72,17 @@ var fluid_1_5 = fluid_1_5 || {};
                     },
                     events: {
                         afterRender: "{fatPanel}.events.afterRender"
+                    },
+                    components: {
+                        iframeEnhancer: {
+                            type: "fluid.uiEnhancer",
+                            container: "{iframeRenderer}.renderUIOContainer",
+                            createOnEvent: "afterRender",
+                            options: {
+                                jQuery: "{iframeRenderer}.jQuery",
+                                tocTemplate: "{pageEnhancer}.options.tocTemplate"
+                            }
+                        }
                     }
                 }
             }
@@ -114,7 +126,7 @@ var fluid_1_5 = fluid_1_5 || {};
                             createOnEvent: "onUIOptionsComponentReady",
                             options: {
                                 listeners: {
-                                    "tabsshow": {
+                                    tabsshow: {
                                         listener: "{uiOptions}.events.onSignificantDOMChange"
                                     }
                                 }
@@ -126,7 +138,6 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         uiOptionsTransform: {
             config: { // For FLUID-4409
-                "!*.uiOptionsLoader.*.uiOptions.*.uiEnhancer.options": "uiEnhancer.options",
                 "*.slidingPanel":                              "slidingPanel",
                 "*.iframeRenderer":                            "iframeRenderer",
                 "*.iframeRenderer.options.prefix":             "prefix",
@@ -180,8 +191,7 @@ var fluid_1_5 = fluid_1_5 || {};
             //var iframeDoc = that.iframe.contents();
             that.renderUIOContainer = $("body", that.iframeDocument);
             that.jQuery = iframeWindow.jQuery;
-             
-            that.events.afterRender.fire();
+            that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
         });
         that.iframe.attr(that.options.markupProps);
         
@@ -196,11 +206,11 @@ var fluid_1_5 = fluid_1_5 || {};
         uiOptions.events.onSignificantDOMChange.fire();
     };
     
-    fluid.uiOptions.fatPanel.bindEvents = function (uiOptions, uiEnhancer, fatPanel) {
+    fluid.uiOptions.fatPanel.bindEvents = function (uiOptions, uiEnhancer, iframeEnhancer, fatPanel) {
         //TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component - and also uiOptionsLoader which is another child
         fatPanel.slidingPanel.events.afterPanelShow.addListener(function () {
-            fluid.uiOptions.fatPanel.updateView(uiOptions, uiEnhancer);
+            fluid.uiOptions.fatPanel.updateView(uiOptions, iframeEnhancer);
         });  
     
         uiOptions.events.modelChanged.addListener(function (model) {
@@ -208,7 +218,7 @@ var fluid_1_5 = fluid_1_5 || {};
             uiOptions.save();
         });
         uiOptions.events.onReset.addListener(function (uiOptions) {
-            fluid.uiOptions.fatPanel.updateView(uiOptions);
+            fluid.uiOptions.fatPanel.updateView(uiOptions, iframeEnhancer);
         });
         uiOptions.events.onSignificantDOMChange.addListener(function () {
             var dokkument = uiOptions.container[0].ownerDocument;

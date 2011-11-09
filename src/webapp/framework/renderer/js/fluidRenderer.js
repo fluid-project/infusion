@@ -596,7 +596,7 @@ fluid_1_5 = fluid_1_5 || {};
             var tagname = trc.uselump.tagname;
             var applier = renderOptions.applier;
             function applyFunc() {
-                fluid.applyChange(fluid.byId(finalID), undefined, applier);
+                fluid.applyChange(fluid.byId(finalID, renderOptions.document), undefined, applier);
             }
             if (renderOptions.autoBind && /input|select|textarea/.test(tagname) 
                     && !renderedbindings[finalID]) {
@@ -1496,7 +1496,7 @@ fluid_1_5 = fluid_1_5 || {};
         }
         renderer.processDecoratorQueue();
         if (lastId) {
-            var element = fluid.byId(lastId);
+            var element = fluid.byId(lastId, options.document);
             if (element) {
                 options.jQuery(element).focus();
             }      

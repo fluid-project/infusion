@@ -141,7 +141,7 @@ var fluid_1_5 = fluid_1_5 || {};
         thumb.attr(ariaDefaults);
     };
     
-    fluid.textfieldSlider.slider.finalInit = function (that) {       
+    fluid.textfieldSlider.slider.finalInit = function (that) {
         that.slider = that.container.slider(that.model);
         
         that.initSlider = function (sliderOptions) {

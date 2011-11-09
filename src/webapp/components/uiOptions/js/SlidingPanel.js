@@ -44,7 +44,10 @@ var fluid_1_5 = fluid_1_5 || {};
             operateHide: "fluid.slidingPanel.slideUp",
             operateShow: "fluid.slidingPanel.slideDown"
         },
-        hideByDefault: true
+        model: {
+            isShowing: false
+        },
+        
     });
     
     fluid.slidingPanel.slideUp = function (element, callback, duration) {
@@ -58,37 +61,31 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.slidingPanel.finalInit = function (that) {
         that.showPanel = function () {
             that.events.onPanelShow.fire(that);
-            that.locate("toggleButton").text(that.options.strings.hideText);        
             that.operateShow(that.locate("panel"), that.events.afterPanelShow.fire);  
         };  
     
         that.hidePanel = function () {
             that.events.onPanelHide.fire(that);
-            that.locate("toggleButton").text(that.options.strings.showText);        
             that.operateHide(that.locate("panel"), that.events.afterPanelHide.fire);
         };      
         
         that.togglePanel = function () {
-            if (that.locate("panel").is(":hidden")) {                                       
-                that.showPanel();
-            } else {
-                that.hidePanel();             
-            }       
+            that[that.model.isShowing? "hidePanel": "showPanel"] ();
+            that.applier.requestChange("isShowing", !that.model.isShowing);
+            that.refreshView();
         };
         
         that.setPanelHeight = function (newHeight) {
             that.locate("panel").height(newHeight);
         };
+        
+        that.refreshView = function() {
+            that.locate("toggleButton").text(that.options.strings[that.model.isShowing?"hideText": "showText"]);         
+        };
     
-        //Event binder
         that.locate("toggleButton").click(that.togglePanel);        
-            
-        //Start Up: hide panel
-        if (that.options.hideByDefault) {
-            //TODO: figure out how to remove duplicate code
-            that.locate("toggleButton").text(that.options.strings.showText);        
-            that.locate("panel").hide();
-        }
+        
+        that.refreshView();
     };    
 
 })(jQuery, fluid_1_5);
