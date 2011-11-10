@@ -759,6 +759,7 @@ var fluid = fluid || fluid_1_5;
         return togo.sort(fluid.event.listenerComparator);
     };
     
+    // unsupported, NON-API function
     fluid.event.resolveListener = function (listener) {
         if (typeof (listener) === "string") {
             var listenerFunc = fluid.getGlobalValue(listener);
@@ -873,12 +874,7 @@ var fluid = fluid || fluid_1_5;
     
     fluid.event.resolveListenerRecord = fluid.identity; // non-IOC passthrough
     
-    /**
-     * Attaches the user's listeners to a set of events.
-     * 
-     * @param {Object} events a collection of named event firers
-     * @param {Object} listeners optional listeners to add
-     */
+    // unsupported, NON-API function
     fluid.mergeListeners = function (that, events, listeners) {
         fluid.each(listeners, function (value, key) {
             var firer, namespace;
@@ -926,17 +922,7 @@ var fluid = fluid || fluid_1_5;
         });
     }
     
-    /**
-     * Sets up a component's declared events.
-     * Events are specified in the options object by name. There are three different types of events that can be
-     * specified: 
-     * 1. an ordinary multicast event, specified by "null". 
-     * 2. a unicast event, which allows only one listener to be registered
-     * 3. a preventable event
-     * 
-     * @param {Object} that the component
-     * @param {Object} options the component's options structure, containing the declared event names and types
-     */
+    // unsupported, NON-API function
     fluid.instantiateFirers = function (that, options) {
         that.events = {};
         // TODO: manual 2-phase instantiation since we have no GINGER WORLD
@@ -1600,7 +1586,6 @@ var fluid = fluid || fluid_1_5;
             }
             togo.selectorName = name;
             record(name, thisContainer, togo);
-            console.log("Returning with " + togo.constructor.expando);
             return togo;
         };
         that.fastLocate = function (name, localContainer) {
@@ -1666,6 +1651,8 @@ var fluid = fluid || fluid_1_5;
         if (userJQuery) {
             container = fluid.container(containerSpec, true, userJQuery);
         }
+//        fluid.log("Constructing view component " + componentName + " with container " + container.constructor.expando + 
+//            (userJQuery? " user jQuery " + userJQuery.expando: "") + " env: " + $.expando);
         that.container = container;
         fluid.initDomBinder(that);
 

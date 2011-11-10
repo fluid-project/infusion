@@ -380,31 +380,22 @@ var fluid_1_5 = fluid_1_5 || {};
      * UI Options *
      **************/
     
-    fluid.uiOptions.onReadyFirer = function (uiOptionsLoader, uiOptions) {
-        uiOptionsLoader.events.onReady.fire(uiOptionsLoader, uiOptions);
-    };
-    
     fluid.defaults("fluid.uiOptions.loader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         resources: "{templateLoader}.resources",
         finalInitFunction: "fluid.uiOptions.loader.finalInit",
         events: {
-            // These three are events private to uiOptions
-            onUIOptionsTemplateReady: null,
-            onUIOptionsComponentReady: null,
-            // This extra event is required because of framework bug FLUID-4337 and also the lack of "boiled listeners"
-            onUIOptionsReadyBridge: {
-                event: "onUIOptionsComponentReady",
-                args: ["{fluid.uiOptions.loader}", "{arguments}.0"]
-            },
+            // These two are events private to uiOptions
+            onUIOptionsTemplateReady: null, // templates are loaded - construct UIOptions itself
+            onUIOptionsComponentReady: null, // UIOptions is loaded - construct its subcomponents
             // This is a public event which users outside the component can subscribe to - the argument
             // supplied is UIOptions.loader itself
             onReady: null
         },
         listeners: {
-            onUIOptionsReadyBridge: {
-                // Literal use of listener function again due to FLUID-4337
-                listener: fluid.uiOptions.onReadyFirer,
+            onUIOptionsComponentReady: {
+                listener: "{loader}.events.onReady",
+                args: ["{fluid.uiOptions.loader}", "{arguments}.0"],
                 priority: "last"
             }
         },

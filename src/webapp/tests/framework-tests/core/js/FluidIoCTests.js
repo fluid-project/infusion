@@ -773,6 +773,36 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("Received relayed fire after dual fire", 4, received.arg);
     });
     
+    fluid.defaults("fluid.tests.eventBoiling2", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            baseEvent: null,
+            baseEvent2: null,
+            boiledEvent: {
+                event: "baseEvent",
+            }
+        },
+        listeners: {
+            baseEvent2: "{eventBoiling2}.events.boiledEvent"
+        }      
+    });
+    
+    fluidIoCTests.test("FLUID-4398 further event boiling tests", function () {
+        var count = 0;
+        // Tests i) inter-event reference using unqualified local names
+        // ii) listener reference to a non-composite boiled event without using "fire" suffix
+        var baseListener = function() {
+           ++ count;
+        };
+        var that = fluid.tests.eventBoiling2({
+            listeners: {
+                baseEvent: baseListener
+            }
+        });
+        that.events.baseEvent2.fire();
+        jqUnit.assertEquals("Double relay to base event", 1, count);
+    });
+    
     // Simpler demonstration matching docs, also using "scoped event binding"
     fluid.defaults("fluid.tests.eventParent2", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],

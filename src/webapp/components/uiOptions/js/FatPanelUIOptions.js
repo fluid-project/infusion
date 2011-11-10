@@ -79,6 +79,9 @@ var fluid_1_5 = fluid_1_5 || {};
                             container: "{iframeRenderer}.renderUIOContainer",
                             createOnEvent: "afterRender",
                             options: {
+                                components: {
+                                    settingsStore: "{pageEnhancer}.settingsStore",  
+                                },
                                 jQuery: "{iframeRenderer}.jQuery",
                                 tocTemplate: "{pageEnhancer}.options.tocTemplate"
                             }
@@ -110,6 +113,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     events: {
                         onSignificantDOMChange: null  
                     },
+                    jQuery: "{iframeRenderer}.jQuery",
                     rendererOptions: {
                         document: "{iframeRenderer}.iframeDocument",
                         jQuery: "{iframeRenderer}.jQuery"
@@ -138,6 +142,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         uiOptionsTransform: {
             config: { // For FLUID-4409
+                "!*.iframeRenderer.*.iframeEnhancer.options":  "outerEnhancerOptions",
                 "*.slidingPanel":                              "slidingPanel",
                 "*.iframeRenderer":                            "iframeRenderer",
                 "*.iframeRenderer.options.prefix":             "prefix",
@@ -149,7 +154,7 @@ var fluid_1_5 = fluid_1_5 || {};
         
     fluid.uiOptions.inline.makeCreator("fluid.uiOptions.fatPanel", function (options) {
         var enhancerOptions = fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions");
-        options.outerPreviewEnhancerOptions = enhancerOptions;
+        options.outerEnhancerOptions = enhancerOptions;
         return options;
     });
     

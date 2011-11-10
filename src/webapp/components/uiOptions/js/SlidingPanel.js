@@ -47,7 +47,16 @@ var fluid_1_5 = fluid_1_5 || {};
         model: {
             isShowing: false
         },
-        
+        methods: {
+            showPanel: {
+                finalState: true,
+                name: "Show"
+            },
+            hidePanel: {
+                finalState: false,
+                name: "Hide"
+            }
+        }
     });
     
     fluid.slidingPanel.slideUp = function (element, callback, duration) {
@@ -59,20 +68,17 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.slidingPanel.finalInit = function (that) {
-        that.showPanel = function () {
-            that.events.onPanelShow.fire(that);
-            that.operateShow(that.locate("panel"), that.events.afterPanelShow.fire);  
-        };  
-    
-        that.hidePanel = function () {
-            that.events.onPanelHide.fire(that);
-            that.operateHide(that.locate("panel"), that.events.afterPanelHide.fire);
-        };      
+        fluid.each(that.options.methods, function(method, methodName) {
+            that[methodName] = function() {
+                that.events["onPanel" + method.name].fire(that);
+                that.applier.requestChange("isShowing", method.finalState);
+                that.refreshView();
+                that["operate"+method.name](that.locate("panel"), that.events["afterPanel"+method.name].fire);
+            }
+        });
         
         that.togglePanel = function () {
             that[that.model.isShowing? "hidePanel": "showPanel"] ();
-            that.applier.requestChange("isShowing", !that.model.isShowing);
-            that.refreshView();
         };
         
         that.setPanelHeight = function (newHeight) {

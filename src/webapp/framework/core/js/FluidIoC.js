@@ -672,7 +672,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // unsupported, non-API function
     fluid.event.dispatchListener = function(instantiator, that, listener, eventName, eventSpec, indirectArgs) {
         return fluid.wrapActivity(function() {
-            listener = fluid.event.resolveListener(listener);
+            listener = fluid.event.resolveListener(listener); // just resolves globals
             var args = indirectArgs? arguments[0] : arguments;
             var demandspec = fluid.determineDemands(instantiator, that, eventName);
             if (demandspec.args.length === 0 && eventSpec.args) {
@@ -754,7 +754,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 }
             }
             else {
-                var firer = {}; // jslint:ok - already defined
+                var firer = {typeName: "fluid.event.firer"}; // jslint:ok - already defined
                 fluid.each(["fire", "removeListener"], function(method) {
                     firer[method] = function() {
                         var outerArgs = arguments;
