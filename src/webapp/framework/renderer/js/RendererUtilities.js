@@ -357,16 +357,22 @@ fluid_1_5 = fluid_1_5 || {};
         var parsed = fluid.extractELWithContext(string, options);
         if (parsed) {
             if (parsed.context) {
-                var fetched = env[parsed.context];
-                if (typeof(fetched) !== "string") {
-                    fluid.fail("Could not look up context path named " + parsed.context + " to string value");
-                }
-                return fluid.model.composePath(fetched, parsed.path);
+                return fluid.transformContextPath(parsed, env).path;
             }
             else {
                 return parsed.path;
             }
         }
+    };
+    
+    fluid.transformContextPath = function (parsed, env) {
+        if (parsed.context) {
+            var fetched = env[parsed.context];
+            if (typeof(fetched) === "string") {
+                return { path: fluid.model.composePath(fetched, parsed.path) }; 
+            }
+        }
+        return parsed;
     };
 
     /** Create a "protoComponent expander" with the supplied set of options.
@@ -394,13 +400,15 @@ fluid_1_5 = fluid_1_5 || {};
         var options = $.extend({
             ELstyle: "${}"
         }, expandOptions); // shallow copy of options
-        options.fetcher = fluid.makeEnvironmentFetcher("rendererEnvironment", options.model); 
-        var IDescape = options.IDescape || "\\";
+        
+        options.fetcher = fluid.makeEnvironmentFetcher("rendererEnvironment", options.model, fluid.transformContextPath);
         
         function fetchEL(string) {
             var env = fluid.threadLocal().rendererEnvironment;
             return fluid.extractContextualPath(string, options, env);
         }
+         
+        var IDescape = options.IDescape || "\\";
         
         var expandLight = function (source) {
             return fluid.resolveEnvironment(source, options); 
