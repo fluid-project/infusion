@@ -27,14 +27,16 @@ var fluid_1_5 = fluid_1_5 || {};
         labelAttribute: "aria-label",
         liveRegionMarkup: "<div class=\"liveRegion fl-offScreen-hidden\" aria-live=\"polite\"></div>",
         liveRegionId: "fluid-ariaLabeller-liveRegion",
-        invokers: {
-            generateLiveElement: {funcName: "fluid.ariaLabeller.generateLiveElement", args: ["{ariaLabeller}"]}
+        events: {
+            generateLiveElement: "unicast"
+        },
+        listeners: {
+            generateLiveElement: "fluid.ariaLabeller.generateLiveElement"
         }
     });
  
     fluid.ariaLabeller = function (element, options) {
         var that = fluid.initView("fluid.ariaLabeller", element, options);
-        fluid.initDependents(that);
 
         that.update = function (newOptions) {
             newOptions = newOptions || that.options;
@@ -42,7 +44,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (newOptions.dynamicLabel) {
                 var live = fluid.jById(that.options.liveRegionId); 
                 if (live.length === 0) {
-                    live = that.generateLiveElement();
+                    live = that.events.generateLiveElement.fire(that);
                 }
                 live.text(newOptions.text);
             }
