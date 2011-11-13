@@ -1013,10 +1013,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
     
     // unsupported, non-API function  
-    fluid.makeEnvironmentFetcher = function(prefix, directModel) {
+    fluid.makeEnvironmentFetcher = function(prefix, directModel, elResolver) {
         return function(parsed) {
             var env = fluid.get(fluid.threadLocal(), prefix);
-            return fluid.fetchContextReference(parsed, directModel, env);
+            return fluid.fetchContextReference(parsed, directModel, env, elResolver);
         };
     };
     
@@ -1066,7 +1066,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return "{" + parsed.context + "}" + parsed.path;  
     };
     
-    fluid.fetchContextReference = function(parsed, directModel, env) {
+    fluid.fetchContextReference = function(parsed, directModel, env, elResolver) {
+        if (elResolver) {
+            parsed = elResolver(parsed, env);
+        }
         var base = parsed.context? env[parsed.context] : directModel;
         if (!base) {
             return base;

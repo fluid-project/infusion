@@ -1416,8 +1416,47 @@ fluid.registerNamespace("fluid.tests");
             var expanded = expander(protoTree);
             fluid.testUtils.assertCanoniseEqual("Valuebinding should be resolved", "vector.0.index", 
                 expanded.children[0].children[0].valuebinding, fluid.testUtils.sortTree);
-             fluid.testUtils.assertCanoniseEqual("Valuebinding should be resolved", "one", 
+            fluid.testUtils.assertCanoniseEqual("Valuebinding should be resolved", "one", 
                  expanded.children[0].children[0].value, fluid.testUtils.sortTree);
         });
-    };  
+        
+        fluid.defaults("fluid.tests.FLUID4537", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            renderOnInit: true,
+            model: {
+                feeds: [
+                    { title: "Title 1", description: "Description 1", link: "http://fake.com" }
+                ]
+            },
+            selectors: {
+                item: ".news-item",
+                title: ".title",
+                link: ".link",
+                description: ".description"
+            },
+            repeatingSelectors: [ "item" ],
+            protoTree: {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    repeatID: "item",
+                    controlledBy: "feeds",
+                    pathAs: "item",
+                    tree: {
+                        title: "${{item}.title}",
+                        link: { target: "${{item}.link}", decorators: { attrs: { title: "${{item}.description}" } } },
+                        description: "${{item}.description}"
+                    }
+                }
+            }
+        });
+        
+        protoTests.test("FLUID-4537: Attribute decorator expansion test", function () {
+            var that = fluid.tests.FLUID4537(".news-items", {});
+            var links = that.locate("link");
+            jqUnit.assertEquals("One link rendered", 1, links.length);
+            var attr = links.attr("title");
+            jqUnit.assertEquals("Description title rendered", that.model.feeds[0].description, attr);
+        });
+        
+    }; 
 })(jQuery); 
