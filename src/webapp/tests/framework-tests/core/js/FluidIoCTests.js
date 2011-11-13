@@ -116,30 +116,6 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
-    
-    fluid.defaults("fluid.tests.parentView", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        components: {
-            defaultedChildView: {
-                type: "fluid.tests.subComponent",
-                container: "{parentView}.dom.defaultedChildContainer"
-            },
-            demandedChildView: {
-                type: "fluid.tests.childView"
-            }
-        },
-        selectors: {
-            defaultedChildContainer: ".flc-tests-parentView-defaultedChildContainer",
-            demandedChildContainer: ".flc-tests-parentView-demandedChildContainer"
-        }
-    });
-    
-    fluid.demands("fluid.tests.childView", "fluid.tests.parentView", {
-        container: "{parentView}.dom.demandedChildContainer",
-        options: {
-            cat: "meow"
-        }
-    });
 
     fluid.makeComponents({
         "fluid.tests.testOrder":          "fluid.viewComponent", 
@@ -698,6 +674,13 @@ fluid.registerNamespace("fluid.tests");
         });
         child.events.parentEvent.fire(origArg0);
         jqUnit.assertEquals("Value received in cross-tree injected listener", origArg0, that.listenerHolder.value);
+        // TODO: boiledParent.fire should not fire to eventParent! boiledParent listeners all expect 3 arguments,
+        // eventParent listeners just expect 1. We actually probably never wanted to boil events at all, only to boil
+        // listeners. In all "composite" event cases, (including boiling, multi-events, etc.) the events will not share
+        // firing and behave as if the composite part was just a listener spec. 
+        // Recommend everyone to use boiled listeners for all composite cases? I guess use an event in the case
+        // that multiple listeners will want to share the config.
+        // So - the only shared case is eName: thing or eName: {event: thing} with NOTHING else
         
         child.events.localEvent.addListener(function (arg0) {
             jqUnit.assertEquals("Plain transmission of argument", origArg0, arg0);
@@ -707,6 +690,93 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Injection of self via demands block", child, argChild);
         });
         child.events.localEvent.fire(origArg0);
+    });
+    
+    fluid.defaults("fluid.tests.eventParent3", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            parentEvent1: null,
+            parentEvent2: null  
+        },
+        components: {
+            eventChild: {
+                type: "fluid.tests.eventChild3"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.eventChild3", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            boiledDouble: {
+                events: {
+                   event1: "{eventParent3}.events.parentEvent1",
+                   event2: "{eventParent3}.events.parentEvent2"
+                },
+                args: ["{arguments}.event1.0", "{arguments}.event2.1"]
+            },
+            relayEvent: null
+        },
+        listeners: {
+            boiledDouble: [
+                 "fluid.tests.globalListener", // This tests FLUID-4337
+                 {                             // This tests FLUID-4398
+                     listener: "{eventChild3}.events.relayEvent",
+                     args: "{arguments}.1" 
+                 }
+                 ]
+        }
+    });
+    
+    fluid.tests.globalListener = function(parent, arg2) {
+        if (!parent.listenerRecord) {
+            parent.listenerRecord = [];
+        };
+        parent.listenerRecord.push(arg2);
+    };
+    
+    fluidIoCTests.test("FLUID-4398 event and listener boiling", function () {
+        var that = fluid.tests.eventParent3();
+        var received = {};
+        that.eventChild.events.relayEvent.addListener(function(arg) {
+            received.arg = arg;
+        });
+        that.events.parentEvent1.fire(that); // first event does nothing
+        jqUnit.assertNoValue("No event on first fire", that.listenerRecord);
+        jqUnit.assertNoValue("No relay on first fire", received.arg);
+        that.events.parentEvent2.fire(3, 4);
+        jqUnit.assertDeepEq("Received boiled argument after dual fire", [4], that.listenerRecord);
+        jqUnit.assertEquals("Received relayed fire after dual fire", 4, received.arg);
+    });
+    
+    fluid.defaults("fluid.tests.eventBoiling2", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            baseEvent: null,
+            baseEvent2: null,
+            boiledEvent: {
+                event: "baseEvent",
+            }
+        },
+        listeners: {
+            baseEvent2: "{eventBoiling2}.events.boiledEvent"
+        }      
+    });
+    
+    fluidIoCTests.test("FLUID-4398 further event boiling tests", function () {
+        var count = 0;
+        // Tests i) inter-event reference using unqualified local names
+        // ii) listener reference to a non-composite boiled event without using "fire" suffix
+        var baseListener = function() {
+           ++ count;
+        };
+        var that = fluid.tests.eventBoiling2({
+            listeners: {
+                baseEvent: baseListener
+            }
+        });
+        that.events.baseEvent2.fire();
+        jqUnit.assertEquals("Double relay to base event", 1, count);
     });
     
     // Simpler demonstration matching docs, also using "scoped event binding"
@@ -763,6 +833,10 @@ fluid.registerNamespace("fluid.tests");
         returnedPath: "gchild"
     });
     
+    fluid.defaults("fluid.tests.refChild", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
     fluid.defaults("fluid.tests.reinstantiation", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         headValue: "headValue",
@@ -794,6 +868,16 @@ fluid.registerNamespace("fluid.tests");
                                     child6: "{reinstantiation}.headChild",
                                     child7: {
                                         type: "fluid.tests.unexpectedReturn"
+                                    },
+                                    child8: {
+                                        type: "fluid.tests.reinsChild2",
+                                        options: {
+                                           // This reference tests FLUID-4338
+ // nb test is currently through a slightly slimy means - without fix for 4338, the 
+ // component is triggered through "ginger exploration" of its parent rather than being
+ // found directly, and then triggers a circularity error.
+                                            value: "{child2}.options.value"
+                                        }
                                     }
                                 }
                             }
@@ -818,7 +902,7 @@ fluid.registerNamespace("fluid.tests");
     
     function checkValue(message, root, value, paths) {
         fluid.each(paths, function (path) {
-            jqUnit.assertEquals(message + " transmitted from root", value, fluid.get(root, path));
+            jqUnit.assertEquals(message + " transmitted from root to path " + path, value, fluid.get(root, path));
         }); 
     }
     
@@ -826,8 +910,13 @@ fluid.registerNamespace("fluid.tests");
         var reins = fluid.tests.reinstantiation();
         var origID = reins.child1.child2.id;
         var instantiator = reins.child1.instantiator;
-        var expectedPaths = ["child1.child2.options.value", "child1.child2.otherValue", 
-            "child1.child2.child3.options.value", "child1.child2.child3.otherValue"];
+        var expectedPaths = [
+            "child1.child2.options.value", 
+            "child1.child2.otherValue", 
+            "child1.child2.child3.options.value", 
+            "child1.child2.child3.otherValue",
+            "child1.child2.child8.options.value"
+            ];
         checkValue("Original value", reins, reins.options.headValue, expectedPaths);
         reins.options.headValue = "headValue2"; // in poor style, modify options to verify reexpansion
         reins.child1.options.components.child2 = fluid.copy(fluid.defaults("fluid.tests.reinstantiation").components.child1.options.components.child2);
@@ -1477,6 +1566,30 @@ fluid.registerNamespace("fluid.tests");
     /************************************
      * DOM Binder IoC Resolution Tests. *
      ************************************/
+         
+    fluid.defaults("fluid.tests.parentView", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        components: {
+            defaultedChildView: {
+                type: "fluid.tests.subComponent",
+                container: "{parentView}.dom.defaultedChildContainer"
+            },
+            demandedChildView: {
+                type: "fluid.tests.childView"
+            }
+        },
+        selectors: {
+            defaultedChildContainer: ".flc-tests-parentView-defaultedChildContainer",
+            demandedChildContainer: ".flc-tests-parentView-demandedChildContainer"
+        }
+    });
+    
+    fluid.demands("fluid.tests.childView", "fluid.tests.parentView", {
+        container: "{parentView}.dom.demandedChildContainer",
+        options: {
+            cat: "meow"
+        }
+    });
      
     var checkChildContainer = function (parent, child, containerName, configName) {
         jqUnit.assertEquals("The child component should have the correct container sourced from the parent's DOM Binder when configured in " + configName,

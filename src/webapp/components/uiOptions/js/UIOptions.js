@@ -141,7 +141,7 @@ var fluid_1_5 = fluid_1_5 || {};
         thumb.attr(ariaDefaults);
     };
     
-    fluid.textfieldSlider.slider.finalInit = function (that) {       
+    fluid.textfieldSlider.slider.finalInit = function (that) {
         that.slider = that.container.slider(that.model);
         
         that.initSlider = function (sliderOptions) {
@@ -268,6 +268,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var appliers = fluid.transform(opRecs, function (opRec) {
             return fluid.makeChangeApplier(opRec);
         });
+        var toDelete = [];
         fluid.each(sortedConfigKeys, function (origDest) {
             var source = config[origDest];
             var dest = fluid.uiOptions.expandShortPath(origDest);
@@ -277,8 +278,11 @@ var fluid_1_5 = fluid_1_5 || {};
             var value = fluid.get(options, source);
             if (value) {
                 applier.requestChange(dest, value, "ADD");
-                appliers[2].requestChange(source, value, "DELETE");
+                toDelete.push({source: source, value: value});
             }
+        });
+        fluid.each(toDelete, function(elem) {
+            appliers[2].requestChange(elem.source, elem.value, "DELETE");
         });
         return opRecs;
     };
@@ -379,50 +383,23 @@ var fluid_1_5 = fluid_1_5 || {};
     /**************
      * UI Options *
      **************/
-
-    fluid.demands("fluid.uiOptions.textControls", ["fluid.uiOptions"], {
-        options: {
-            classnameMap: "{uiEnhancer}.options.classnameMap"
-        }
-    });
-    
-    fluid.demands("fluid.uiOptions.layoutControls", ["fluid.uiOptions"], {
-        options: {
-            classnameMap: "{uiEnhancer}.options.classnameMap"
-        }
-    });
-    
-    fluid.demands("fluid.uiOptions.linksControls", ["fluid.uiOptions"], {
-        options: {
-            classnameMap: "{uiEnhancer}.options.classnameMap"
-        }
-    });
-    
-    fluid.uiOptions.onReadyFirer = function (uiOptionsLoader, uiOptions) {
-        uiOptionsLoader.events.onReady.fire(uiOptionsLoader, uiOptions);
-    };
     
     fluid.defaults("fluid.uiOptions.loader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         resources: "{templateLoader}.resources",
         finalInitFunction: "fluid.uiOptions.loader.finalInit",
         events: {
-            // These three are events private to uiOptions
-            onUIOptionsTemplateReady: null,
-            onUIOptionsComponentReady: null,
-            // This extra event is required because of framework bug FLUID-4337 and also the lack of "boiled listeners"
-            onUIOptionsReadyBridge: {
-                event: "onUIOptionsComponentReady",
-                args: ["{fluid.uiOptions.loader}", "{arguments}.0"]
-            },
+            // These two are events private to uiOptions
+            onUIOptionsTemplateReady: null, // templates are loaded - construct UIOptions itself
+            onUIOptionsComponentReady: null, // UIOptions is loaded - construct its subcomponents
             // This is a public event which users outside the component can subscribe to - the argument
             // supplied is UIOptions.loader itself
             onReady: null
         },
         listeners: {
-            onUIOptionsReadyBridge: {
-                // Literal use of listener function again due to FLUID-4337
-                listener: fluid.uiOptions.onReadyFirer,
+            onUIOptionsComponentReady: {
+                listener: "{loader}.events.onReady",
+                args: ["{fluid.uiOptions.loader}", "{arguments}.0"],
                 priority: "last"
             }
         },
@@ -463,6 +440,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     model: "{uiOptions}.model",
                     applier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
+                    rendererOptions: "{uiOptions}.options.rendererOptions",
                     events: {
                         onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
                     }
@@ -475,6 +454,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     model: "{uiOptions}.model",
                     applier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
+                    rendererOptions: "{uiOptions}.options.rendererOptions",
                     events: {
                         onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
                     }
@@ -487,6 +468,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     model: "{uiOptions}.model",
                     applier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
+                    rendererOptions: "{uiOptions}.options.rendererOptions",
                     events: {
                         onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
                     }
