@@ -1367,7 +1367,7 @@ fluid_1_5 = fluid_1_5 || {};
                             else {
                                 decorator.container.push(node);
                             }
-                            args = [node, decorator.options];
+                            args = [decorator.container, decorator.options];
                         }
                         var that = renderer.invokeFluidDecorator(decorator.func, args, id, i, options);
                         decorator.that = that;

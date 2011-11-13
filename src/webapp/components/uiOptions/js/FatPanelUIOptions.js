@@ -20,8 +20,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
-    fluid.setLogging(true);
-
     fluid.registerNamespace("fluid.dom");
     
     fluid.dom.getDocumentHeight = function (dokkument) {
@@ -113,11 +111,6 @@ var fluid_1_5 = fluid_1_5 || {};
                     events: {
                         onSignificantDOMChange: null  
                     },
-                    jQuery: "{iframeRenderer}.jQuery",
-                    rendererOptions: {
-                        document: "{iframeRenderer}.iframeDocument",
-                        jQuery: "{iframeRenderer}.jQuery"
-                        },
                     components: {
                         iframeRenderer: "{fatPanel}.iframeRenderer",
                         settingsStore: "{uiEnhancer}.settingsStore",
@@ -194,8 +187,8 @@ var fluid_1_5 = fluid_1_5 || {};
             that.iframeDocument = iframeWindow.document;
 
             //var iframeDoc = that.iframe.contents();
-            that.renderUIOContainer = $("body", that.iframeDocument);
             that.jQuery = iframeWindow.jQuery;
+            that.renderUIOContainer = that.jQuery("body", that.iframeDocument);
             that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
         });
         that.iframe.attr(that.options.markupProps);

@@ -268,6 +268,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var appliers = fluid.transform(opRecs, function (opRec) {
             return fluid.makeChangeApplier(opRec);
         });
+        var toDelete = [];
         fluid.each(sortedConfigKeys, function (origDest) {
             var source = config[origDest];
             var dest = fluid.uiOptions.expandShortPath(origDest);
@@ -277,8 +278,11 @@ var fluid_1_5 = fluid_1_5 || {};
             var value = fluid.get(options, source);
             if (value) {
                 applier.requestChange(dest, value, "ADD");
-//                appliers[2].requestChange(source, value, "DELETE");
+                toDelete.push({source: source, value: value});
             }
+        });
+        fluid.each(toDelete, function(elem) {
+            appliers[2].requestChange(elem.source, elem.value, "DELETE");
         });
         return opRecs;
     };
@@ -618,7 +622,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid",
                 func: "fluid.textfieldSlider",
                 options: {
-                    jQuery: that.options.rendererOptions.jQuery,
                     listeners: {
                         modelChanged: function (value) {
                             that.applier.requestChange("selections." + item, value);

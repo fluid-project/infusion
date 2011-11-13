@@ -1651,8 +1651,8 @@ var fluid = fluid || fluid_1_5;
         if (userJQuery) {
             container = fluid.container(containerSpec, true, userJQuery);
         }
-//        fluid.log("Constructing view component " + componentName + " with container " + container.constructor.expando + 
-//            (userJQuery? " user jQuery " + userJQuery.expando: "") + " env: " + $.expando);
+        fluid.log("Constructing view component " + componentName + " with container " + container.constructor.expando + 
+            (userJQuery? " user jQuery " + userJQuery.expando: "") + " env: " + $.expando);
         that.container = container;
         fluid.initDomBinder(that);
 

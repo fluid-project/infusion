@@ -116,30 +116,6 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
-    
-    fluid.defaults("fluid.tests.parentView", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        components: {
-            defaultedChildView: {
-                type: "fluid.tests.subComponent",
-                container: "{parentView}.dom.defaultedChildContainer"
-            },
-            demandedChildView: {
-                type: "fluid.tests.childView"
-            }
-        },
-        selectors: {
-            defaultedChildContainer: ".flc-tests-parentView-defaultedChildContainer",
-            demandedChildContainer: ".flc-tests-parentView-demandedChildContainer"
-        }
-    });
-    
-    fluid.demands("fluid.tests.childView", "fluid.tests.parentView", {
-        container: "{parentView}.dom.demandedChildContainer",
-        options: {
-            cat: "meow"
-        }
-    });
 
     fluid.makeComponents({
         "fluid.tests.testOrder":          "fluid.viewComponent", 
@@ -857,6 +833,10 @@ fluid.registerNamespace("fluid.tests");
         returnedPath: "gchild"
     });
     
+    fluid.defaults("fluid.tests.refChild", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
     fluid.defaults("fluid.tests.reinstantiation", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         headValue: "headValue",
@@ -888,6 +868,16 @@ fluid.registerNamespace("fluid.tests");
                                     child6: "{reinstantiation}.headChild",
                                     child7: {
                                         type: "fluid.tests.unexpectedReturn"
+                                    },
+                                    child8: {
+                                        type: "fluid.tests.reinsChild2",
+                                        options: {
+                                           // This reference tests FLUID-4338
+ // nb test is currently through a slightly slimy means - without fix for 4338, the 
+ // component is triggered through "ginger exploration" of its parent rather than being
+ // found directly, and then triggers a circularity error.
+                                            value: "{child2}.options.value"
+                                        }
                                     }
                                 }
                             }
@@ -912,7 +902,7 @@ fluid.registerNamespace("fluid.tests");
     
     function checkValue(message, root, value, paths) {
         fluid.each(paths, function (path) {
-            jqUnit.assertEquals(message + " transmitted from root", value, fluid.get(root, path));
+            jqUnit.assertEquals(message + " transmitted from root to path " + path, value, fluid.get(root, path));
         }); 
     }
     
@@ -920,8 +910,13 @@ fluid.registerNamespace("fluid.tests");
         var reins = fluid.tests.reinstantiation();
         var origID = reins.child1.child2.id;
         var instantiator = reins.child1.instantiator;
-        var expectedPaths = ["child1.child2.options.value", "child1.child2.otherValue", 
-            "child1.child2.child3.options.value", "child1.child2.child3.otherValue"];
+        var expectedPaths = [
+            "child1.child2.options.value", 
+            "child1.child2.otherValue", 
+            "child1.child2.child3.options.value", 
+            "child1.child2.child3.otherValue",
+            "child1.child2.child8.options.value"
+            ];
         checkValue("Original value", reins, reins.options.headValue, expectedPaths);
         reins.options.headValue = "headValue2"; // in poor style, modify options to verify reexpansion
         reins.child1.options.components.child2 = fluid.copy(fluid.defaults("fluid.tests.reinstantiation").components.child1.options.components.child2);
@@ -1571,6 +1566,30 @@ fluid.registerNamespace("fluid.tests");
     /************************************
      * DOM Binder IoC Resolution Tests. *
      ************************************/
+         
+    fluid.defaults("fluid.tests.parentView", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        components: {
+            defaultedChildView: {
+                type: "fluid.tests.subComponent",
+                container: "{parentView}.dom.defaultedChildContainer"
+            },
+            demandedChildView: {
+                type: "fluid.tests.childView"
+            }
+        },
+        selectors: {
+            defaultedChildContainer: ".flc-tests-parentView-defaultedChildContainer",
+            demandedChildContainer: ".flc-tests-parentView-demandedChildContainer"
+        }
+    });
+    
+    fluid.demands("fluid.tests.childView", "fluid.tests.parentView", {
+        container: "{parentView}.dom.demandedChildContainer",
+        options: {
+            cat: "meow"
+        }
+    });
      
     var checkChildContainer = function (parent, child, containerName, configName) {
         jqUnit.assertEquals("The child component should have the correct container sourced from the parent's DOM Binder when configured in " + configName,
