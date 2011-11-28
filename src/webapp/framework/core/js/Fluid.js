@@ -1752,13 +1752,25 @@ var fluid = fluid || fluid_1_5;
     // Message resolution and templating
    
    
-    /**
+   /**
     * Converts a string to a regexp with the specified flags given in parameters
     * @param {String} a string that has to be turned into a regular expression
     * @param {String} the flags to provide to the reg exp 
     */
     fluid.stringToRegExp = function (str, flags) {
         return new RegExp(str.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), flags);
+    };
+    
+   /**
+    * @param boolean ascending <code>true</code> if a comparator is to be returned which 
+    * sorts strings in descending order of length
+    */
+    fluid.compareStringLength = function (ascending) {
+        return ascending ? function (a, b) {
+            return a.length - b.length;
+        } : function (a, b) {
+            return b.length - a.length;
+        };
     };
     
     /**
@@ -1768,15 +1780,17 @@ var fluid = fluid || fluid_1_5;
      * Keys and values can be of any data type that can be coerced into a string. Arrays will work here as well.
      * 
      * @param {String}    template    a string (can be HTML) that contains tokens embedded into it
-     * @param {object}    values        a collection of token keys and values
+     * @param {object}    values      a collection of token keys and values
      */
     fluid.stringTemplate = function (template, values) {
-        var newString = template;
-        for (var key in values) {
+        var keys = fluid.keys(values);
+        keys = keys.sort(fluid.compareStringLength());
+        for (var i = 0; i < keys.length; ++ i) {
+            var key = keys[i];
             var re = fluid.stringToRegExp("%" + key, "g");
-            newString = newString.replace(re, values[key]);
+            template = template.replace(re, values[key]);
         }
-        return newString;
+        return template;
     };
     
 

@@ -250,17 +250,8 @@ var fluid_1_5 = fluid_1_5 || {};
     * @param {Object} inObject, the element on inObject is in the pair of key -> value
     */
     fluid.uiOptions.sortByKeyLength = function (inObject) {
-        var keys = [];
-
-        for (var k in inObject) {
-            keys.push(k);
-        }
-
-        keys.sort(function (a, b) {
-            return a.length - b.length;
-        });
-        
-        return keys;
+        var keys = fluid.keys(inObject);
+        return keys.sort(fluid.compareStringLength(true));
     };
     
     fluid.uiOptions.mapOptionsRecord = function (options, sortedConfigKeys, config) {

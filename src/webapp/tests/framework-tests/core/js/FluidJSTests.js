@@ -194,6 +194,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertDeepEq("Array copy", array, copy);
         });
         
+        fluidJSTests.test("stringTemplate: greedy", function () {
+            var template = "%tenant/%tenantname",
+                tenant = "../tenant",
+                tenantname = "core",
+                expected = "../tenant/core",
+                result = fluid.stringTemplate(template, {tenant: tenant, tenantname: tenantname});
+            jqUnit.assertEquals("The template strings should match.", expected, result);
+        });
+
         fluidJSTests.test("stringTemplate: array of string values", function () {
             var template = "Paused at: %0 of %1 files (%2 of %3)";
             
