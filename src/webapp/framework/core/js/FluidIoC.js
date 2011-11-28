@@ -1163,7 +1163,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         if (!base) {
             return base;
         }
-        return fluid.get(base, parsed.path);
+        return parsed.noDereference? parsed.path: fluid.get(base, parsed.path);
     };
     
     // unsupported, non-API function
