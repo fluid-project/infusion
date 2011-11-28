@@ -205,7 +205,7 @@ var fluid_1_5 = fluid_1_5 || {};
         finalInitFunction: "fluid.uiEnhancer.finalInit"
     });
 
-    fluid.uiEnhancer.finalInit = function (that) {        
+    fluid.uiEnhancer.finalInit = function (that) {
         that.applier.modelChanged.addListener("",
             function (newModel, oldModel, changeRequest) {
                 that.events.modelChanged.fire(newModel, oldModel, changeRequest);
