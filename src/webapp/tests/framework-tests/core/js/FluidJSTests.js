@@ -777,6 +777,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             firer.fire(false); //listener should not run and assertion should not execute 
         });
         
+        fluid.tests.makeNotingListener = function(key, value) {
+            return function(that) {
+                var existing = that.values[key];
+                that.values[key] = existing === undefined? 1 : existing + 1;
+            };
+        };
+        
+        fluid.defaults("fluid.tests.listenerTest", {
+            gradeNames: ["fluid.eventedComponent", "autoInit"],
+            events: {
+                event: null
+            },
+            listeners: {
+                event: fluid.tests.makeNotingListener("noNamespace"),
+                "event.namespace": fluid.tests.makeNotingListener("namespace")
+            }
+        });
+        
+        fluidJSTests.test("Correctly merge optioned listeners", function() {
+            var options = {listeners: {
+                event: fluid.tests.makeNotingListener("noNamespace2"),
+                "event.namespace": fluid.tests.makeNotingListener("namespace2")
+            }};
+            var that = fluid.tests.listenerTest(options);
+            that.values = {};
+            that.events.event.fire(that);
+            var expected = {
+                noNamespace: 1,
+                noNamespace2: 1,
+                namespace2: 1  
+            };
+            jqUnit.assertDeepEq("Listeners correctly merged", expected, that.values); 
+        });
+        
         fluid.tests.initLifecycle = function (that) {
             that.initted = true;  
         };

@@ -786,7 +786,7 @@ var fluid = fluid || fluid_1_5;
      * be checked for <code>false</code> in which case further listeners will be shortcircuited, and this
      * will be the return value of fire()
      */
-    
+    // This name will be deprecated in Fluid 2.0 for fluid.makeEventFirer (or fluid.eventFirer)
     fluid.event.getEventFirer = function (unicast, preventable, name) {
         var listeners = {};
         var sortedListeners = [];
@@ -859,6 +859,19 @@ var fluid = fluid || fluid_1_5;
         };
     };
     
+    fluid.makeEventFirer = fluid.event.getEventFirer;
+    
+    /** Fire the specified event with supplied arguments. This call is an optimisation utility
+     * which handles the case where the firer has not been instantiated (presumably as a result
+     * of having no listeners registered 
+     */
+     
+    fluid.fireEvent = function (firer, args) {
+        if (firer) {
+            firer.fire.apply(null, fluid.makeArray(args));
+        }  
+    };
+    
     // unsupported, NON-API function
     fluid.event.addListenerToFirer = function (firer, value, namespace) {
         if (fluid.isArrayable(value)) {
@@ -893,7 +906,7 @@ var fluid = fluid || fluid_1_5;
                 }
                 if (!events[key]) {
                     fluid.fail("Listener registered for event " + key + " which is not defined for this component");
-                    events[key] = fluid.event.getEventFirer(null, null, fluid.event.nameEvent(that, key));
+                    events[key] = fluid.makeEventFirer(null, null, fluid.event.nameEvent(that, key));
                 }
                 firer = events[key];
             }
@@ -914,7 +927,7 @@ var fluid = fluid || fluid_1_5;
                     event = fluid.event.resolveEvent(that, eventKey, eventSpec);
                 }
             } else if (pass === "flat") {
-                event = fluid.event.getEventFirer(eventSpec === "unicast", eventSpec === "preventable", fluid.event.nameEvent(that, eventKey));
+                event = fluid.makeEventFirer(eventSpec === "unicast", eventSpec === "preventable", fluid.event.nameEvent(that, eventKey));
             }
             if (event) {
                 that.events[eventKey] = event;
@@ -933,12 +946,19 @@ var fluid = fluid || fluid_1_5;
         fluid.mergeListeners(that, that.events, options.listeners);
     };
     
+    fluid.mergeListenerPolicy = function (target, source, key) {
+        // cf. triage in mergeListeners
+        var hasNamespace = key.charAt(0) !== "{" && key.indexOf(".") !== -1; 
+        return hasNamespace? (source? source : target) 
+          : fluid.makeArray(target).concat(fluid.makeArray(source));
+    };
+    
     fluid.mergeListenersPolicy = function (target, source) {
-        var togo = target || {};
+        target = target || {};
         fluid.each(source, function (listeners, key) {
-            togo[key] = fluid.makeArray(source[key]).concat(fluid.makeArray(listeners));
+            target[key] = fluid.mergeListenerPolicy(target[key], listeners, key);
         });
-        return togo;
+        return target;
     };
     
     /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
@@ -977,22 +997,9 @@ var fluid = fluid || fluid_1_5;
         finalInitFunction: true
     };
     
-    // unsupported, NON-API function
-    fluid.mergeLifecycleFunction = function (target, source) {
-        fluid.event.addListenerToFirer(target, source);
-        return target;
-    };
-    
     fluid.rootMergePolicy = fluid.transform(fluid.lifecycleFunctions, function () {
-        return fluid.mergeLifecycleFunction;
+        return fluid.mergeListenerPolicy;
     });
-        
-    // unsupported, NON-API function
-    fluid.makeLifecycleFirers = function () {
-        return fluid.transform(fluid.lifecycleFunctions, function (value, key) {
-            return fluid.event.getEventFirer(null, null, key);
-        });
-    };
     
     // unsupported, NON-API function
     fluid.resolveGrade = function (defaults, gradeNames) {
@@ -1001,7 +1008,7 @@ var fluid = fluid || fluid_1_5;
             var gradeStruct = fluid.resolveGradeStructure(gradeNames);
             mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs).concat({gradeNames: gradeStruct.gradeChain});
         }
-        mergeArgs = [fluid.rootMergePolicy, fluid.makeLifecycleFirers()].concat(mergeArgs);
+        mergeArgs = [fluid.rootMergePolicy, {}].concat(mergeArgs);
         var mergedDefaults = fluid.merge.apply(null, mergeArgs);
         return mergedDefaults;  
     };
@@ -1094,7 +1101,7 @@ var fluid = fluid || fluid_1_5;
     fluid.defaults("fluid.eventedComponent", {
         gradeNames: ["fluid.littleComponent"],
         mergePolicy: {
-            listeners: "fluid.mergeListenersPolicy"
+            listeners: fluid.mergeListenersPolicy
         }
     });
     
@@ -1147,10 +1154,6 @@ var fluid = fluid || fluid_1_5;
     };
     
     function mergeImpl(policy, basePath, target, source, thisPolicy, rec) {
-        if (typeof (thisPolicy) === "function") {
-            thisPolicy.call(null, target, source);
-            return target;
-        }
         if (fluid.mergePolicyIs(thisPolicy, "replace")) {
             fluid.clear(target);
         }
@@ -1159,20 +1162,21 @@ var fluid = fluid || fluid_1_5;
         for (var name in source) {
             var path = (basePath ? basePath + "." : "") + name;
             var newPolicy = policy && typeof (policy) !== "string" ? policy[path] : policy;
+            var funcPolicy = typeof (newPolicy) === "function";
             var thisTarget = target[name];
             var thisSource = source[name];
             var primitiveTarget = fluid.isPrimitive(thisTarget);
     
             if (thisSource !== undefined) {
-                if (thisSource !== null && typeof (thisSource) === "object" &&
+                if (!funcPolicy && thisSource !== null && typeof (thisSource) === "object" &&
                         !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
                         !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "nomerge") && !fluid.mergePolicyIs(newPolicy, "noexpand")) {
                     if (primitiveTarget) {
-                        target[name] = thisTarget = fluid.freshContainer(thisSource)
+                        target[name] = thisTarget = fluid.freshContainer(thisSource);
                     }
                     mergeImpl(policy, path, thisTarget, thisSource, newPolicy, rec);
                 } else {
-                    if (typeof (newPolicy) === "function") {
+                    if (funcPolicy) {
                         target[name] = newPolicy.call(null, thisTarget, thisSource, name);
                     } else if (!fluid.isValue(thisTarget) || !fluid.mergePolicyIs(newPolicy, "reverse")) {
                         // TODO: When "grades" are implemented, grandfather in any paired applier to perform these operations
@@ -1255,16 +1259,13 @@ var fluid = fluid || fluid_1_5;
      */
     // unsupported, NON-API function
     fluid.mergeComponentOptions = function (that, componentName, userOptions, localOptions) {
-        var defaults = fluid.defaults(componentName);
-        var mergePolicy = $.extend({}, fluid.rootMergePolicy, defaults ? defaults.mergePolicy : {});
-        var defaultGrades = defaults && defaults.gradeNames;
-        var mergeArgs;
-        if (!defaultGrades) {
-            defaults = fluid.censorKeys(defaults, fluid.keys(fluid.lifecycleFunctions));
-            mergeArgs = [mergePolicy, localOptions];
-        } else {
-            mergeArgs = [mergePolicy];
-        }
+        var defaults = fluid.defaults(componentName) || {};
+        var mergePolicy = $.extend({}, fluid.rootMergePolicy, defaults.mergePolicy);
+        var defaultGrades = defaults.gradeNames;
+
+        localOptions = defaultGrades? {} : fluid.resolveGrade({}, localOptions.gradeNames);
+        var mergeArgs = [mergePolicy, localOptions];
+        
         var extraArgs;
         if (fluid.expandComponentOptions) {
             extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
@@ -1347,10 +1348,10 @@ var fluid = fluid || fluid_1_5;
         // TODO: nickName must be available earlier than other merged options so that component may resolve to itself
         that.nickName = options && options.nickName ? options.nickName : fluid.computeNickName(that.typeName);
         localOptions = localOptions || {gradeNames: "fluid.littleComponent"};
-        localOptions = fluid.resolveGrade({}, localOptions.gradeNames);
         
         fluid.mergeComponentOptions(that, name, options, localOptions);
-        that.options.preInitFunction.fire(that);
+        fluid.initLifecycleFunctions(that);
+        fluid.fireEvent(that.options.preInitFunction, that);
 
         if (fluid.hasGrade(that.options, "fluid.eventedComponent")) {
             fluid.instantiateFirers(that, that.options);
@@ -1359,6 +1360,16 @@ var fluid = fluid || fluid_1_5;
             fluid.clearLifecycleFunctions(that.options);
         }
         return that;
+    };
+    
+    fluid.initLifecycleFunctions = function (that) {
+        fluid.each(fluid.lifecycleFunctions, function (func, key) {
+            var value = that.options[key];
+            if (value) {
+                that.options[key] = fluid.makeEventFirer(null, null, key);
+                fluid.event.addListenerToFirer(that.options[key], value);
+            }  
+        }); 
     };
     
     fluid.clearLifecycleFunctions = function (options) {
@@ -1394,11 +1405,11 @@ var fluid = fluid || fluid_1_5;
         var args = [componentName].concat(fluid.makeArray(initArgs)); // TODO: support different initFunction variants
         var that = fluid.invokeGlobalFunction(options.initFunction, args);
         fluid.diagnoseFailedView(componentName, that, options, args);
-        that.options.postInitFunction.fire(that);
+        fluid.fireEvent(that.options.postInitFunction, that);
         if (fluid.initDependents) {
             fluid.initDependents(that);
         }
-        that.options.finalInitFunction.fire(that);
+        fluid.fireEvent(that.options.finalInitFunction, that);
         fluid.clearLifecycleFunctions(that.options);
         return that.options.returnedPath ? fluid.get(that, that.options.returnedPath) : that;
     };
