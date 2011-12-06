@@ -632,7 +632,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.makeFreeInvoker = function(functionName, environment) {
         var demandSpec = fluid.determineDemands(fluid.freeInstantiator, null, functionName);
         return function() {
-            var invokeSpec = fluid.embodyDemands(fluid.freeInstantiator, null, demandSpec, arguments, {passArgs: true});
+            var invokeSpec = fluid.embodyDemands(fluid.freeInstantiator, null, demandSpec, fluid.makeArray(arguments), {passArgs: true});
             return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
         };
     };
@@ -640,7 +640,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.makeInvoker = function(instantiator, that, demandspec, functionName, environment) {
         demandspec = demandspec || fluid.determineDemands(instantiator, that, functionName);
         return function() {
-            var args = arguments;
+            var args = fluid.makeArray(arguments);
             return fluid.pushActivity(function() {
                 var invokeSpec = fluid.embodyDemands(instantiator, that, demandspec, args, {passArgs: true});
                 return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
@@ -673,13 +673,13 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.event.dispatchListener = function(instantiator, that, listener, eventName, eventSpec, indirectArgs) {
         return fluid.wrapActivity(function() {
             listener = fluid.event.resolveListener(listener); // just resolves globals
-            var args = indirectArgs? arguments[0] : arguments;
+            var args = indirectArgs? arguments[0] : fluid.makeArray(arguments);
             var demandspec = fluid.determineDemands(instantiator, that, eventName);
             if (demandspec.args.length === 0 && eventSpec.args) {
                 demandspec.args = eventSpec.args;
             }
             var resolved = fluid.embodyDemands(instantiator, that, demandspec, args, {passArgs: true, componentOptions: eventSpec}); 
-            listener.apply(null, resolved.args);
+            return listener.apply(null, resolved.args);
         }, [" firing to listener to event named " + eventName + " of ", that]);
     };
     
@@ -757,7 +757,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 var firer = {typeName: "fluid.event.firer"}; // jslint:ok - already defined
                 fluid.each(["fire", "removeListener"], function(method) {
                     firer[method] = function() {
-                        var outerArgs = arguments;
+                        var outerArgs = fluid.makeArray(arguments);
                         return fluid.applyInstantiator(instantiator, that, function() {
                             return origin[method].apply(null, outerArgs);
                         });
