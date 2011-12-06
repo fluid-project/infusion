@@ -191,13 +191,13 @@ var fluid = fluid || fluid_1_5;
         return obj && typeof (obj.nodeType) === "number";  
     };
     
-    /** Determines whether the supplied object can be treated as an array, by 
-     * iterating an index towards its length. The test functions by detecting
-     * a property named "length" which is of type "number", but excluding objects
-     * which are themselves of primitive types (in particular functions and strings)
+    /** Determines whether the supplied object is an array. The strategy used is an optimised
+     * approach taken from an earlier version of jQuery - detecting whether the toString() version
+     * of the object agrees with the textual form [object Array], or else whether the object is a 
+     * jQuery object (the most common source of "fake arrays").
      */
     fluid.isArrayable = function (totest) {
-        return totest && !fluid.isPrimitive(totest) && typeof (totest.length) === "number";
+        return totest && (totest.jquery || Object.prototype.toString.call(totest) === "[object Array]");
     };
     
     /** Return an empty container as the same type as the argument (either an
