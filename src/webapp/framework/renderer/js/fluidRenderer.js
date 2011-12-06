@@ -1361,13 +1361,14 @@ fluid_1_5 = fluid_1_5 || {};
                     else if (decorator.type === "fluid") {
                         var args = decorator.args;
                         if (!args) {
+                            var thisContainer = renderOptions.jQuery(node);
                             if (!decorator.container) {
-                                decorator.container = renderOptions.jQuery(node);
+                                decorator.container = thisContainer;
                             }
                             else {
                                 decorator.container.push(node);
                             }
-                            args = [decorator.container, decorator.options];
+                            args = [thisContainer, decorator.options];
                         }
                         var that = renderer.invokeFluidDecorator(decorator.func, args, id, i, options);
                         decorator.that = that;
