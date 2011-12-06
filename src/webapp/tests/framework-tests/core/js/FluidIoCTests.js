@@ -1276,18 +1276,19 @@ fluid.registerNamespace("fluid.tests");
     fluidIoCTests.test("Tree circularity test", function () {
         try {
             fluid.pushSoftFailure(true);
-            jqUnit.expect(3);
+            jqUnit.expect(2);
             var circular = fluid.tests.circularity();
             // if this test fails, the browser will bomb with a stack overflow 
             jqUnit.assertValue("Circular test delivered instantiator", circular.child1.options.instantiator);
             
-            var rawDefaults = fluid.rawDefaults("fluid.tests.circChild");
-            delete rawDefaults.mergePolicy;
-            try {
-                var circular2 = fluid.tests.circularity();
-            } catch (e) {
-                jqUnit.assert("Exception caught in circular instantiation");
-            }
+            // This part of the test can no longer run since FLUID-4563 no longer allows us to dynamically modify options
+            // var rawDefaults = fluid.rawDefaults("fluid.tests.circChild");
+            // delete rawDefaults.mergePolicy;
+            // try {
+            //     var circular2 = fluid.tests.circularity();
+            // } catch (e) {
+            //     jqUnit.assert("Exception caught in circular instantiation");
+            //}
             try {
                 fluid.expandOptions(circular, circular);
             } catch (e2) {

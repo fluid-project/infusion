@@ -465,31 +465,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertNotNull("Scoped inexistent return", inexistent);
             jqUnit.assertEquals("Scoped inexistent length", 0, inexistent.length);
         });
+
+        var testDefaults = {
+            foo: "bar"    
+        };
+
+        fluid.defaults("test", testDefaults); 
          
         fluidJSTests.test("Defaults: store and retrieve default values", function () {
-            var testDefaults = {
-                foo: "bar"    
-            };
-            
             // Assign a collection of defaults for the first time.
-            fluid.defaults("test", testDefaults);
+
             jqUnit.assertDeepEq("defaults() should return the specified defaults", 
                                 testDefaults, fluid.filterKeys(fluid.defaults("test"), ["foo"]));
             
             // Re-assign the defaults with a new collection.
-            testDefaults = {
+            testDefaults2 = {
                 baz: "foo"
             };
-            fluid.defaults("test", testDefaults);
-            jqUnit.assertDeepEq("defaults() should return the new defaults", 
-                                testDefaults, fluid.filterKeys(fluid.defaults("test"), ["baz"]));
-            jqUnit.assertEquals("Foo should no longer be a property of the tabs defaults.", 
-                                undefined, fluid.defaults("test").foo);
-            
-            // Nullify the defaults altogether.
-            fluid.defaults("test", null);
-            jqUnit.assertNoValue("The test defaults should be null.", 
-                              fluid.defaults("test"));
+            fluid.defaults("test", testDefaults2);
+            jqUnit.assertDeepEq("defaults() should return the original defaults", 
+                                testDefaults, fluid.filterKeys(fluid.defaults("test"), ["foo", "baz"]));
             
             // Try to access defaults for a component that doesn't exist.
             jqUnit.assertNoValue("The defaults for a nonexistent component should be null.", 

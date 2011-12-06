@@ -439,6 +439,18 @@ var fluid = fluid || fluid_1_5;
             }
         }
     };
+    
+   /**
+    * @param boolean ascending <code>true</code> if a comparator is to be returned which 
+    * sorts strings in descending order of length
+    */
+    fluid.compareStringLength = function (ascending) {
+        return ascending ? function (a, b) {
+            return a.length - b.length;
+        } : function (a, b) {
+            return b.length - a.length;
+        };
+    };
         
     // Model functions
     fluid.model = {}; // cannot call registerNamespace yet since it depends on fluid.model
@@ -1001,8 +1013,14 @@ var fluid = fluid || fluid_1_5;
         return fluid.mergeListenerPolicy;
     });
     
+    var mergedDefaultsCache = {};
+    
+    fluid.gradeNamesToKey = function (gradeNames, defaultName) {
+        return defaultName + "|" + fluid.makeArray(gradeNames).sort().join("|");
+    };
+    
     // unsupported, NON-API function
-    fluid.resolveGrade = function (defaults, gradeNames) {
+    fluid.resolveGrade = function (defaults, defaultName, gradeNames) {
         var mergeArgs = [defaults];
         if (gradeNames) {
             var gradeStruct = fluid.resolveGradeStructure(gradeNames);
@@ -1012,6 +1030,15 @@ var fluid = fluid || fluid_1_5;
         var mergedDefaults = fluid.merge.apply(null, mergeArgs);
         return mergedDefaults;  
     };
+    
+    fluid.getGradedDefaults = function (defaults, defaultName, gradeNames) {
+        var key = fluid.gradeNamesToKey(gradeNames, defaultName);
+        var mergedDefaults = mergedDefaultsCache[key];
+        if (!mergedDefaults) {
+            mergedDefaults = mergedDefaultsCache[key] = fluid.resolveGrade(defaults, defaultName, gradeNames);
+        }
+        return mergedDefaults;
+    };
 
     // unsupported, NON-API function
     fluid.resolveGradedOptions = function (componentName) {
@@ -1019,7 +1046,7 @@ var fluid = fluid || fluid_1_5;
         if (!defaults) {
             return defaults;
         } else {
-            return fluid.resolveGrade(defaults, defaults.gradeNames);
+            return fluid.getGradedDefaults(defaults, componentName, defaults.gradeNames);
         }
     };
     
@@ -1263,7 +1290,7 @@ var fluid = fluid || fluid_1_5;
         var mergePolicy = $.extend({}, fluid.rootMergePolicy, defaults.mergePolicy);
         var defaultGrades = defaults.gradeNames;
 
-        localOptions = defaultGrades? {} : fluid.resolveGrade({}, localOptions.gradeNames);
+        localOptions = defaultGrades? {} : fluid.copy(fluid.getGradedDefaults({}, "", localOptions.gradeNames));
         var mergeArgs = [mergePolicy, localOptions];
         
         var extraArgs;
@@ -1770,18 +1797,6 @@ var fluid = fluid || fluid_1_5;
     */
     fluid.stringToRegExp = function (str, flags) {
         return new RegExp(str.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), flags);
-    };
-    
-   /**
-    * @param boolean ascending <code>true</code> if a comparator is to be returned which 
-    * sorts strings in descending order of length
-    */
-    fluid.compareStringLength = function (ascending) {
-        return ascending ? function (a, b) {
-            return a.length - b.length;
-        } : function (a, b) {
-            return b.length - a.length;
-        };
     };
     
     /**
