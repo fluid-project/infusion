@@ -517,141 +517,81 @@ var fluid = fluid || fluid_1_5;
     fluid.path = fluid.model.composeSegments;
     fluid.composePath = fluid.model.composePath;
 
-    /** Standard strategies for resolving path segments **/
-    fluid.model.environmentStrategy = function (initEnvironment) {
-        return {
-            init: function () {
-                var environment = initEnvironment;
-                return function (root, segment, index) {
-                    var togo;
-                    if (environment && environment[segment]) {
-                        togo = environment[segment];
-                    }
-                    environment = null;
-                    return togo; 
-                };
-            }
-        };
-    };
 
-    fluid.model.defaultCreatorStrategy = function (root, segment) {
-        if (root[segment] === undefined) {
-            root[segment] = {};
-            return root[segment];
-        }
+    // unsupported, NON-API function
+    fluid.requireDataBinding = function () {
+        fluid.fail("Please include DataBinding.js in order to operate complex model accessor configuration");  
     };
     
-    fluid.model.defaultFetchStrategy = function (root, segment) {
-        return segment === "" ? root : root[segment];
-    };
-        
-    fluid.model.funcResolverStrategy = function (root, segment) {
-        if (root.resolvePathSegment) {
+    fluid.model.trundle = fluid.model.getPenultimate = fluid.requireDataBinding;
+    
+    // unsupported, NON-API function
+    fluid.model.resolvePathSegment = function (root, segment, create, origEnv) {
+        if (root.resolvePathSegment && !origEnv) {
             return root.resolvePathSegment(segment);
         }
-    };
-    
-    // unsupported, NON-API function
-    fluid.model.applyStrategy = function (strategy, root, segment, index) {
-        if (typeof (strategy) === "function") { 
-            return strategy(root, segment, index);
-        } else if (strategy && strategy.next) {
-            return strategy.next(root, segment, index);
+        if (root[segment] === undefined && create) {
+            root[segment] = {};
         }
+        return root[segment];
     };
     
     // unsupported, NON-API function
-    fluid.model.initStrategy = function (baseStrategy, index, oldStrategies) {
-        return baseStrategy.init ? baseStrategy.init(oldStrategies ? oldStrategies[index] : undefined) : baseStrategy;
-    };
-    
-    // unsupported, NON-API function
-    fluid.model.makeTrundler = function (root, config, oldStrategies) {
-        var that = {
-            root: root,
-            strategies: fluid.isArrayable(config) ? config : 
-                fluid.transform(config.strategies, function (strategy, index) {
-                    return fluid.model.initStrategy(strategy, index, oldStrategies); 
-                })
-        };
-        that.trundle = function (EL, uncess) {
-            uncess = uncess || 0;
-            var newThat = fluid.model.makeTrundler(that.root, config, that.strategies);
-            newThat.segs = fluid.model.parseEL(EL);
-            newThat.index = 0;
-            newThat.step(newThat.segs.length - uncess);
-            return newThat;
-        };
-        that.next = function () {
-            if (!that.root) {
-                return;
+    fluid.model.getPenultimateSimple = function (root, EL, environment, create) {
+        var origEnv = environment;
+        var segs = fluid.model.parseEL(EL);
+        for (var i = 0; i < segs.length - 1; ++i) {
+            if (!root) {
+                return {root: root };
             }
-            var accepted;
-            for (var i = 0; i < that.strategies.length; ++i) {
-                var value = fluid.model.applyStrategy(that.strategies[i], that.root, that.segs[that.index], that.index);
-                if (accepted === undefined) {
-                    accepted = value;
-                }
-            }
-            if (accepted === fluid.NO_VALUE) {
-                accepted = undefined;
-            }
-            that.root = accepted;
-            ++that.index;
-        };
-        that.step = function (limit) {
-            for (var i = 0; i < limit; ++i) {
-                that.next();
-            }
-            that.last = that.segs[that.index];
-        };
-        return that;
-    };
-
-    fluid.model.defaultSetConfig = {
-        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
-    };
-    
-    // unsupported, NON-API function
-    // core trundling recursion point
-    fluid.model.trundleImpl = function (trundler, EL, config, uncess) {
-        if (typeof (EL) === "string") {
-            trundler = trundler.trundle(EL, uncess);
-        } else {
-            var key = EL.type || "default";
-            var resolver = config.resolvers[key];
-            if (!resolver) {
-                fluid.fail("Unable to find resolver of type " + key);
-            }
-            trundler = resolver(EL, trundler) || {};
-            if (EL.path && trundler.trundle && trundler.root !== undefined) {
-                trundler = fluid.model.trundleImpl(trundler, EL.path, config, uncess);
+            var segment = segs[i];
+            if (environment && environment[segment]) {
+                root = environment[segment];
+                environment = null;
+            } else {
+                root = fluid.model.resolvePathSegment(root, segment, create, origEnv);
             }
         }
-        return trundler;  
+        return {root: root, last: segs[segs.length - 1]};
+    };
+    
+    fluid.model.setSimple = function (root, EL, newValue, environment) {
+        var pen = fluid.model.getPenultimateSimple(root, EL, environment, true);
+        pen.root[pen.last] = newValue;
+    };
+    
+    /** Evaluates an EL expression by fetching a dot-separated list of members
+     * recursively from a provided root.
+     * @param root The root data structure in which the EL expression is to be evaluated
+     * @param {string} EL The EL expression to be evaluated
+     * @param environment An optional "environment" which, if it contains any members
+     * at top level, will take priority over the root data structure.
+     * @return The fetched data value.
+     */
+    
+    fluid.model.getSimple = function (root, EL, environment) {
+        if (EL === "" || EL === null || EL === undefined) {
+            return root;
+        }
+        var pen = fluid.model.getPenultimateSimple(root, EL, environment);
+        return pen.root ? pen.root[pen.last] : pen.root;
     };
     
     // unsupported, NON-API function
-    // entry point for initially unbased trundling
-    fluid.model.trundle = function (root, EL, config, uncess) {
-        EL = EL || "";
-        config = config || fluid.model.defaultGetConfig;
-        var trundler = fluid.model.makeTrundler(root, config);
-        return fluid.model.trundleImpl(trundler, EL, config, uncess);
-    };
-    
-    fluid.model.getPenultimate = function (root, EL, config) {
-        return fluid.model.trundle(root, EL, config, 1);
+    // Returns undefined to signal complex configuration which needs to be farmed out to DataBinding.js
+    fluid.decodeAccessorArg = function (arg3) {
+        return (!arg3 || arg3 === fluid.model.defaultGetConfig || arg3 === fluid.model.defaultSetConfig) ? 
+            null : (arg3.type === "environment" ? arg3.value : undefined);
     };
     
     fluid.set = function (root, EL, newValue, config) {
-        config = config || fluid.model.defaultSetConfig;
-        var trundler = fluid.model.getPenultimate(root, EL, config);
-        trundler.root[trundler.last] = newValue;
-    };
-    
-    fluid.model.defaultGetConfig = {
-        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy]
+        var env = fluid.decodeAccessorArg(config);
+        if (env === undefined) {
+            var trundler = fluid.model.getPenultimate(root, EL, config);
+            trundler.root[trundler.last] = newValue;
+        } else {
+            fluid.model.setSimple(root, EL, newValue, env);
+        }
     };
     
     /** Evaluates an EL expression by fetching a dot-separated list of members
@@ -664,7 +604,10 @@ var fluid = fluid || fluid_1_5;
      */
     
     fluid.get = function (root, EL, config) {
-        return fluid.model.trundle(root, EL, config).root;
+        var env = fluid.decodeAccessorArg(config);
+        return env === undefined ? 
+            fluid.model.trundle(root, EL, config).root 
+            : fluid.model.getSimple(root, EL, env);
     };
 
     // This backward compatibility will be maintained for a number of releases, probably until Fluid 2.0
@@ -674,8 +617,7 @@ var fluid = fluid || fluid_1_5;
     fluid.getGlobalValue = function (path, env) {
         if (path) {
             env = env || fluid.environment;
-            var envFetcher = fluid.model.environmentStrategy(env);
-            return fluid.get(globalObject, path, {strategies: [envFetcher].concat(fluid.model.defaultGetConfig.strategies)});
+            return fluid.get(globalObject, path, {type: "environment", value: env});
         }
     };
     
@@ -700,8 +642,7 @@ var fluid = fluid || fluid_1_5;
     
     fluid.registerGlobalFunction = function (functionPath, func, env) {
         env = env || fluid.environment;
-        var envFetcher = fluid.model.environmentStrategy(env);
-        fluid.set(globalObject, functionPath, func, {strategies: [envFetcher].concat(fluid.model.defaultSetConfig.strategies)});
+        fluid.set(globalObject, functionPath, func, {type: "environment", value: env});
     };
     
     fluid.setGlobalValue = fluid.registerGlobalFunction;
@@ -805,7 +746,7 @@ var fluid = fluid || fluid_1_5;
         
         function fireToListeners(listeners, args, wrapper) {
             fluid.log("Firing event " + name + " to list of " + listeners.length + " listeners");
-            for (var i = 0; i < listeners.length; ++ i) {
+            for (var i = 0; i < listeners.length; ++i) {
                 var lisrec = listeners[i];
                 lisrec.listener = fluid.event.resolveListener(lisrec.listener);
                 var listener = lisrec.listener;
@@ -961,8 +902,8 @@ var fluid = fluid || fluid_1_5;
     fluid.mergeListenerPolicy = function (target, source, key) {
         // cf. triage in mergeListeners
         var hasNamespace = key.charAt(0) !== "{" && key.indexOf(".") !== -1; 
-        return hasNamespace? (source? source : target) 
-          : fluid.makeArray(target).concat(fluid.makeArray(source));
+        return hasNamespace ? (source ? source : target) 
+            : fluid.makeArray(target).concat(fluid.makeArray(source));
     };
     
     fluid.mergeListenersPolicy = function (target, source) {
@@ -1135,7 +1076,7 @@ var fluid = fluid || fluid_1_5;
         
     fluid.preInitModelComponent = function (that) {
         that.model = that.options.model || {};
-        that.applier = that.options.applier || fluid.makeChangeApplier(that.model, that.options.changeApplierOptions);
+        that.applier = that.options.applier || (fluid.makeChangeApplier ? fluid.makeChangeApplier(that.model, that.options.changeApplierOptions) : null);
     };
     
     fluid.defaults("fluid.modelComponent", {
@@ -1161,7 +1102,7 @@ var fluid = fluid || fluid_1_5;
 
     /** Generate a name for a component for debugging purposes */    
     fluid.nameComponent = function (that) {
-        return that? "component with typename " + that.typeName + " and id " + that.id : "[unknown component]"
+        return that ? "component with typename " + that.typeName + " and id " + that.id : "[unknown component]";
     };
     
     // unsupported, NON-API function
@@ -1179,7 +1120,17 @@ var fluid = fluid || fluid_1_5;
     fluid.mergePolicyIs = function (policy, test) {
         return typeof (policy) === "string" && $.inArray(test, policy.split(/\s*,\s*/)) !== -1;
     };
-    
+
+    // Cheapskate implementation which avoids dependency on DataBinding.js    
+    fluid.model.mergeModel = function (target, source, applier) {
+        var copySource = fluid.copy(source);
+        if (!fluid.isPrimitive(target)) {
+            $.extend(source, target);
+        }
+        $.extend(source, copySource);
+        return source; 
+    };
+
     function mergeImpl(policy, basePath, target, source, thisPolicy, rec) {
         if (fluid.mergePolicyIs(thisPolicy, "replace")) {
             fluid.clear(target);
@@ -1290,7 +1241,7 @@ var fluid = fluid || fluid_1_5;
         var mergePolicy = $.extend({}, fluid.rootMergePolicy, defaults.mergePolicy);
         var defaultGrades = defaults.gradeNames;
 
-        localOptions = defaultGrades? {} : fluid.copy(fluid.getGradedDefaults({}, "", localOptions.gradeNames));
+        localOptions = defaultGrades ? {} : fluid.copy(fluid.getGradedDefaults({}, "", localOptions.gradeNames));
         var mergeArgs = [mergePolicy, localOptions];
         
         var extraArgs;
@@ -1411,14 +1362,13 @@ var fluid = fluid || fluid_1_5;
     // It preserves the current framework behaviour for the 1.4 release, but provides a more informative
     // diagnostic - in fact, it is perfectly acceptable for a component's creator to return no value and
     // the failure is really in assumptions in fluid.initComponent. Revisit this issue for 1.5
-    fluid.diagnoseFailedView = function(componentName, that, options, args) {
+    fluid.diagnoseFailedView = function (componentName, that, options, args) {
         if (!that && fluid.hasGrade(options, "fluid.viewComponent")) {
             var container = fluid.wrap(args[1]);
-            var message1 = "Instantiation of autoInit component with type " + componentName + " failed, since "
+            var message1 = "Instantiation of autoInit component with type " + componentName + " failed, since ";
             if (container.length === 0) {
                 fluid.fail(message1 + "selector \"", args[1], "\" did not match any markup in the document");
-            }
-            else {
+            } else {
                 fluid.fail(message1 + " component creator function did not return a value");
             }  
         }  
@@ -1679,8 +1629,8 @@ var fluid = fluid || fluid_1_5;
      */
      // 4th argument is NOT SUPPORTED, see comments for initLittleComponent
     fluid.initView = function (componentName, containerSpec, userOptions, localOptions) {
-        fluid.expectFilledSelector(container, "Error instantiating component with name \"" + componentName);
         var container = fluid.container(containerSpec, true);
+        fluid.expectFilledSelector(container, "Error instantiating component with name \"" + componentName);
         if (!container) {
             return null;
         }
@@ -1690,7 +1640,7 @@ var fluid = fluid || fluid_1_5;
             container = fluid.container(containerSpec, true, userJQuery);
         }
         fluid.log("Constructing view component " + componentName + " with container " + container.constructor.expando + 
-            (userJQuery? " user jQuery " + userJQuery.expando: "") + " env: " + $.expando);
+            (userJQuery ? " user jQuery " + userJQuery.expando : "") + " env: " + $.expando);
         that.container = container;
         fluid.initDomBinder(that);
 
@@ -1811,7 +1761,7 @@ var fluid = fluid || fluid_1_5;
     fluid.stringTemplate = function (template, values) {
         var keys = fluid.keys(values);
         keys = keys.sort(fluid.compareStringLength());
-        for (var i = 0; i < keys.length; ++ i) {
+        for (var i = 0; i < keys.length; ++i) {
             var key = keys[i];
             var re = fluid.stringToRegExp("%" + key, "g");
             template = template.replace(re, values[key]);

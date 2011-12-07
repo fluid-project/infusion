@@ -212,7 +212,7 @@ var fluid_1_5 = fluid_1_5 || {};
     }
      
     function makeStackResolverOptions(instantiator, parentThat, localRecord, expandOptions) {
-        return $.extend({}, fluid.defaults("fluid.resolveEnvironment"), {
+        return $.extend(true, {}, fluid.defaults("fluid.resolveEnvironment"), {
             fetcher: makeStackFetcher(instantiator, parentThat, localRecord, expandOptions)
         }); 
     }
@@ -1234,7 +1234,8 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.resolveEnvironment = function(obj, options) {
         // Don't create a component here since this function is itself used in the 
         // component expansion pathway - avoid all expansion in any case to head off FLUID-4301
-        options = $.extend(true, {}, fluid.rawDefaults("fluid.resolveEnvironment"), options);
+        options = $.extend({}, fluid.rawDefaults("fluid.resolveEnvironment"), options);
+        options.seenIds = {};
         return resolveEnvironmentImpl(obj, options);
     };
 
