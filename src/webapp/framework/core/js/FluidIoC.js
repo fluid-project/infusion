@@ -478,6 +478,16 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }
     }
     
+    var isDemandLogging = false;
+    fluid.setDemandLogging = function(set) {
+        isDemandLogging = set;  
+    };
+    
+    // unsupported, non-API function
+    fluid.isDemandLogging = function(demandingNames) {
+        return isDemandLogging && fluid.isLogging() && demandingNames[0] !== "fluid.threadLocal";
+    };
+    
     fluid.demands = function(demandingName, contextName, spec) {
         var contextNames = $.makeArray(contextName).sort(); 
         if (!spec) {
@@ -486,7 +496,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         else if (spec.length) {
             spec = {args: spec};
         }
-        if (fluid.getCallerInfo) {
+        if (fluid.getCallerInfo && fluid.isDemandLogging()) {
             var callerInfo = fluid.getCallerInfo(5);
             if (callerInfo) {
                 spec.registeredFrom = callerInfo;
@@ -504,16 +514,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.compareDemands = function(speca, specb) {
         var p1 = speca.uncess - specb.uncess;
         return p1 === 0? specb.intersect - speca.intersect : p1;
-    };
-    
-    var isDemandLogging = false;
-    fluid.setDemandLogging = function(set) {
-        isDemandLogging = set;  
-    };
-    
-    // unsupported, non-API function
-    fluid.isDemandLogging = function(demandingNames) {
-        return isDemandLogging && fluid.isLogging() && demandingNames[0] !== "fluid.threadLocal";
     };
     
     // unsupported, non-API function
@@ -1058,19 +1058,14 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     // fluid.environmentalRoot.environmentClass = fluid.typeTag("fluid.rhino");
     
-    fluid.demands("fluid.threadLocal", "fluid.browser", {funcName: "fluid.singleThreadLocal"});
-
     var singleThreadLocal = fluid.typeTag("fluid.dynamicEnvironment");
     
     fluid.singleThreadLocal = function() {
         return singleThreadLocal;
     };
 
-    fluid.threadLocal = function() {
-        // quick implementation since this is not very dynamic, a hazard to debugging, and used frequently within IoC itself
-        var demands = fluid.locateDemands(fluid.freeInstantiator, null, ["fluid.threadLocal"]);
-        return fluid.invokeGlobalFunction(demands.funcName, arguments);
-    };
+    // Return to the old strategy of monkey-patching this, since this is a most frequently used function within IoC
+    fluid.threadLocal = fluid.singleThreadLocal;
 
     function applyLocalChange(applier, type, path, value) {
         var change = {
