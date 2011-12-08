@@ -39,6 +39,11 @@ var fluid_1_5 = fluid_1_5 || {};
             onReady: null
         },
         listeners: {
+            afterRender: {
+                listener: "fluid.uiOptions.fatPanel.panelSizer",
+                args: ["{fatPanel}"],
+                priority: "last"
+            },
             onReady: {
                 listener: "fluid.uiOptions.fatPanel.bindEvents",
                 args: ["{arguments}.0.uiOptions", "{uiEnhancer}", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
@@ -56,7 +61,10 @@ var fluid_1_5 = fluid_1_5 || {};
                     invokers: {
                         operateShow: {
                             funcName: "fluid.uiOptions.fatPanel.showPanel"
-                        }  
+                        },
+                        operateHide: {
+                            funcName: "fluid.uiOptions.fatPanel.hidePanel"
+                        } 
                     }
                 },
                 createOnEvent: "afterRender"
@@ -204,8 +212,15 @@ var fluid_1_5 = fluid_1_5 || {};
         uiOptions.events.onSignificantDOMChange.fire();
     };
     
+    fluid.uiOptions.fatPanel.panelSizer = function (fatPanel) {
+        var panel = fatPanel.slidingPanel.locate("panel");
+        // For some inexplicable reason, in some integrations, the initial height of the panel become exactly 
+        // one lineheight rather than zero
+        panel.css({height: "0px"});      
+    };
+    
     fluid.uiOptions.fatPanel.bindEvents = function (uiOptions, uiEnhancer, iframeEnhancer, fatPanel) {
-        //TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
+        // TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component - and also uiOptionsLoader which is another child
         fatPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             fluid.uiOptions.fatPanel.updateView(uiOptions, iframeEnhancer);
@@ -223,6 +238,8 @@ var fluid_1_5 = fluid_1_5 || {};
             var height = fluid.dom.getDocumentHeight(dokkument);
             var iframe = fatPanel.iframeRenderer.iframe;
             var attrs = {height: height + 15}; // TODO: Configurable padding here
+            var panel = fatPanel.slidingPanel.locate("panel");
+            panel.css({height: ""});
             iframe.animate(attrs, 400);
         });
         
@@ -230,10 +247,17 @@ var fluid_1_5 = fluid_1_5 || {};
             fatPanel.iframeRenderer.iframe.height(0);
         });
     };
+
+    // Replace the standard animator since we don't want the panel to become hidden
+    // (potential cause of jumping)
+    fluid.uiOptions.fatPanel.hidePanel = function (panel, callback) {
+        $(panel).animate({height: 0}, {duration: 400, complete: callback});
+    }
     
-    // show immediately, animation will be done after size calculation above
+    // no activity - the kickback to the updateView listener will automatically trigger the
+    // DOMChangeListener above. This ordering is preferable to avoid causing the animation to
+    // jump by refreshing the view inside the iframe
     fluid.uiOptions.fatPanel.showPanel = function (panel, callback) {
-        panel.show();
         // A bizarre race condition has emerged under FF where the iframe held within the panel does not
         // react synchronously to being shown
         setTimeout(callback, 1);
