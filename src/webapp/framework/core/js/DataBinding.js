@@ -108,9 +108,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
-    /** "Automatically" apply to whatever part of the data model is
+   /** "Automatically" apply to whatever part of the data model is
      * relevant, the changed value received at the given DOM node*/
-    fluid.applyChange = function (node, newValue, applier) {
+    fluid.applyBoundChange = function (node, newValue, applier) {
         node = fluid.unwrap(node);
         if (newValue === undefined) {
             newValue = fluid.value(node);
@@ -138,6 +138,141 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.set(root.data, EL, newValue);
         }    
     };
+    
+    /** MODEL ACCESSOR ENGINE (trundler) **/
+    
+    /** Standard strategies for resolving path segments **/
+    fluid.model.environmentStrategy = function (initEnvironment) {
+        return {
+            init: function () {
+                var environment = initEnvironment;
+                return function (root, segment, index) {
+                    var togo;
+                    if (environment && environment[segment]) {
+                        togo = environment[segment];
+                    }
+                    environment = null;
+                    return togo; 
+                };
+            }
+        };
+    };
+
+    fluid.model.defaultCreatorStrategy = function (root, segment) {
+        if (root[segment] === undefined) {
+            root[segment] = {};
+            return root[segment];
+        }
+    };
+    
+    fluid.model.defaultFetchStrategy = function (root, segment) {
+        return segment === "" ? root : root[segment];
+    };
+        
+    fluid.model.funcResolverStrategy = function (root, segment) {
+        if (root.resolvePathSegment) {
+            return root.resolvePathSegment(segment);
+        }
+    };
+    
+        
+    fluid.model.defaultGetConfig = {
+        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy]
+    };
+
+    fluid.model.defaultSetConfig = {
+        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
+    };
+    
+    
+    // unsupported, NON-API function
+    fluid.model.applyStrategy = function (strategy, root, segment, index) {
+        if (typeof (strategy) === "function") { 
+            return strategy(root, segment, index);
+        } else if (strategy && strategy.next) {
+            return strategy.next(root, segment, index);
+        }
+    };
+    
+    // unsupported, NON-API function
+    fluid.model.initStrategy = function (baseStrategy, index, oldStrategies) {
+        return baseStrategy.init ? baseStrategy.init(oldStrategies ? oldStrategies[index] : undefined) : baseStrategy;
+    };
+    
+    // unsupported, NON-API function
+    fluid.model.makeTrundler = function (root, config, oldStrategies) {
+        var that = {
+            root: root,
+            strategies: fluid.isArrayable(config) ? config : 
+                fluid.transform(config.strategies, function (strategy, index) {
+                    return fluid.model.initStrategy(strategy, index, oldStrategies); 
+                })
+        };
+        that.trundle = function (EL, uncess) {
+            uncess = uncess || 0;
+            var newThat = fluid.model.makeTrundler(that.root, config, that.strategies);
+            newThat.segs = fluid.model.parseEL(EL);
+            newThat.index = 0;
+            newThat.step(newThat.segs.length - uncess);
+            return newThat;
+        };
+        that.next = function () {
+            if (!that.root) {
+                return;
+            }
+            var accepted;
+            for (var i = 0; i < that.strategies.length; ++i) {
+                var value = fluid.model.applyStrategy(that.strategies[i], that.root, that.segs[that.index], that.index);
+                if (accepted === undefined) {
+                    accepted = value;
+                }
+            }
+            if (accepted === fluid.NO_VALUE) {
+                accepted = undefined;
+            }
+            that.root = accepted;
+            ++that.index;
+        };
+        that.step = function (limit) {
+            for (var i = 0; i < limit; ++i) {
+                that.next();
+            }
+            that.last = that.segs[that.index];
+        };
+        return that;
+    };
+    
+    // unsupported, NON-API function
+    // core trundling recursion point
+    fluid.model.trundleImpl = function (trundler, EL, config, uncess) {
+        if (typeof (EL) === "string") {
+            trundler = trundler.trundle(EL, uncess);
+        } else {
+            var key = EL.type || "default";
+            var resolver = config.resolvers[key];
+            if (!resolver) {
+                fluid.fail("Unable to find resolver of type " + key);
+            }
+            trundler = resolver(EL, trundler) || {};
+            if (EL.path && trundler.trundle && trundler.root !== undefined) {
+                trundler = fluid.model.trundleImpl(trundler, EL.path, config, uncess);
+            }
+        }
+        return trundler;  
+    };
+        
+    // unsupported, NON-API function
+    // entry point for initially unbased trundling
+    fluid.model.trundle = function (root, EL, config, uncess) {
+        EL = EL || "";
+        config = config || fluid.model.defaultGetConfig;
+        var trundler = fluid.model.makeTrundler(root, config);
+        return fluid.model.trundleImpl(trundler, EL, config, uncess);
+    };
+    
+    fluid.model.getPenultimate = function (root, EL, config) {
+        return fluid.model.trundle(root, EL, config, 1);
+    };  
    
     // Implementation notes: The EL path manipulation utilities here are somewhat more thorough
     // and expensive versions of those provided in Fluid.js - there is some duplication of 
@@ -261,17 +396,8 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return togo;
     };
-    
-    fluid.model.mergeModel = function (target, source, applier) {
-        var copySource = fluid.copy(source);
-        applier = applier || fluid.makeChangeApplier(source);
-        if (!fluid.isPrimitive(target)) {
-            applier.fireChangeRequest({type: "ADD", path: "", value: target});
-        }
-        applier.fireChangeRequest({type: "MERGE", path: "", value: copySource});
-        return source; 
-    };
         
+    /** CHANGE APPLIER **/    
       
     fluid.model.isNullChange = function (model, request, resolverGetConfig) {
         if (request.type === "ADD") {

@@ -596,7 +596,7 @@ fluid_1_5 = fluid_1_5 || {};
             var tagname = trc.uselump.tagname;
             var applier = renderOptions.applier;
             function applyFunc() {
-                fluid.applyChange(fluid.byId(finalID, renderOptions.document), undefined, applier);
+                fluid.applyBoundChange(fluid.byId(finalID, renderOptions.document), undefined, applier);
             }
             if (renderOptions.autoBind && /input|select|textarea/.test(tagname) 
                     && !renderedbindings[finalID]) {

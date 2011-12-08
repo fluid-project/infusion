@@ -465,31 +465,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertNotNull("Scoped inexistent return", inexistent);
             jqUnit.assertEquals("Scoped inexistent length", 0, inexistent.length);
         });
+
+        var testDefaults = {
+            foo: "bar"    
+        };
+
+        fluid.defaults("test", testDefaults); 
          
         fluidJSTests.test("Defaults: store and retrieve default values", function () {
-            var testDefaults = {
-                foo: "bar"    
-            };
-            
             // Assign a collection of defaults for the first time.
-            fluid.defaults("test", testDefaults);
+
             jqUnit.assertDeepEq("defaults() should return the specified defaults", 
                                 testDefaults, fluid.filterKeys(fluid.defaults("test"), ["foo"]));
             
             // Re-assign the defaults with a new collection.
-            testDefaults = {
+            testDefaults2 = {
                 baz: "foo"
             };
-            fluid.defaults("test", testDefaults);
-            jqUnit.assertDeepEq("defaults() should return the new defaults", 
-                                testDefaults, fluid.filterKeys(fluid.defaults("test"), ["baz"]));
-            jqUnit.assertEquals("Foo should no longer be a property of the tabs defaults.", 
-                                undefined, fluid.defaults("test").foo);
-            
-            // Nullify the defaults altogether.
-            fluid.defaults("test", null);
-            jqUnit.assertNoValue("The test defaults should be null.", 
-                              fluid.defaults("test"));
+            fluid.defaults("test", testDefaults2);
+            jqUnit.assertDeepEq("defaults() should return the original defaults", 
+                                testDefaults, fluid.filterKeys(fluid.defaults("test"), ["foo", "baz"]));
             
             // Try to access defaults for a component that doesn't exist.
             jqUnit.assertNoValue("The defaults for a nonexistent component should be null.", 
@@ -590,118 +585,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
             jqUnit.assertEquals("Call new global function", 2, fluid.newFunc());
         });
-        
-        var customStrategy = function (root, segment, index) {
-            return index === 0 && segment === "path3" ? fluid.NO_VALUE : undefined;
-        };
-        
-        fluidJSTests.test("getBeanValue with custom strategy", function () {
-            var model = {path3: "thing", path4: "otherThing"};
-            var value = fluid.get(model, "path3", {strategies: [customStrategy, fluid.model.defaultFetchStrategy]});
-            jqUnit.assertUndefined("path3 value censored", value);
-            var value2 = fluid.get(model, "path4", {strategies: [customStrategy, fluid.model.defaultFetchStrategy]});
-            jqUnit.assertEquals("path4 value uncensored", model.path4, value2);
-        });
-        
-        fluid.tests.childMatchResolver = function (options, trundler) {
-            trundler = trundler.trundle(options.queryPath);
-            return fluid.find(trundler.root, function (value, key) {
-                var trundleKey = trundler.trundle(key);
-                var trundleChild = trundleKey.trundle(options.childPath);
-                if (trundleChild.root === options.value) {
-                    return trundleKey;
-                } 
-            });
-        };
-        
-        fluid.tests.generateRepeatableThing = function (gens) {
-            var togo = [];
-            for (var i = 0; i < gens.length; i += 3) {
-                togo.push({
-                    _primary: !!Number(gens.charAt(i)),
-                    value: {
-                        a: Number(gens.charAt(i + 1)),
-                        b: Number(gens.charAt(i + 2))
-                    }     
-                });
-            }
-            return togo;
-        };
-        
-        fluid.tests.basicResolverModel = {
-            fields: {  
-                repeatableThing: fluid.tests.generateRepeatableThing("001123")
-            }
-        };
-                
-        fluidJSTests.test("getBeanValue with resolver", function () {
-            var model = fluid.copy(fluid.tests.basicResolverModel);
-            var config = $.extend(true, fluid.model.defaultGetConfig, {
-                resolvers: {
-                    childMatch: fluid.tests.childMatchResolver
-                }
-            });
-            var el = {
-                type: "childMatch",
-                queryPath: "fields.repeatableThing",
-                childPath: "_primary",
-                value: true,
-                path: "value.a"
-            };
-            var resolved = fluid.get(model, el, config);
-            jqUnit.assertEquals("Queried resolved value", 2, resolved);
-            model.fields.repeatableThing = [{}];
-            el.path = "value";
-            resolved = fluid.get(model, el, config);
-            jqUnit.assertUndefined("Queried resolved value", resolved);
-        });
-
-        fluid.tests.repeatableModifyingStrategy = {
-            init: function (oldStrategy) {
-                var that = {};
-                that.path = oldStrategy ? oldStrategy.path : "";
-                that.next = function (root, segment) {
-                    that.path = fluid.model.composePath(that.path, segment);
-                    return that.path === "fields.repeatableThing.1.value" ?
-                        fluid.tests.generateRepeatableThing("145") : undefined;   
-                };
-                return that;
-            }
-        };
-
-        fluidJSTests.test("Complex resolving and strategising", function () {
-            var model = fluid.copy(fluid.tests.basicResolverModel);
-            model.fields.repeatableThing[1].value = fluid.tests.generateRepeatableThing("045167089");
-            var el = {
-                type: "childMatch",
-                queryPath: "fields.repeatableThing",
-                childPath: "_primary",
-                value: true,
-                path: {
-                    type: "childMatch",
-                    queryPath: "value",
-                    childPath: "_primary",
-                    value: true,
-                    path: "value.a"
-                }
-            };
-            var config = $.extend(true, {}, fluid.model.defaultGetConfig, {
-                resolvers: {
-                    childMatch: fluid.tests.childMatchResolver
-                }
-            });
-            var resolved = fluid.get(model, el, config);
-            jqUnit.assertEquals("Queried resolved value", 6, resolved);
-            var config2 = {
-                resolvers: {
-                    childMatch: fluid.tests.childMatchResolver
-                },
-                strategies: [fluid.tests.repeatableModifyingStrategy].concat(fluid.model.defaultGetConfig.strategies) 
-            };
-            var resolved2 = fluid.get(model, el, config2);
-            jqUnit.assertEquals("Queried resolved and strategised value", 4, resolved2);
-        });
-
+ 
         fluidJSTests.test("Globals", function () {
             var space = fluid.registerNamespace("fluid.engage.mccord");
             space.func = function () { 

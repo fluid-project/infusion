@@ -21,6 +21,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
   
     $(document).ready(function () {
+        fluid.setLogging(true);
+        fluid.setDemandLogging(true);
         var uploaderTests = new jqUnit.TestCase("Uploader Basic Tests");
 
         fluid.staticEnvironment.uploader = fluid.typeTag("fluid.uploader.tests");

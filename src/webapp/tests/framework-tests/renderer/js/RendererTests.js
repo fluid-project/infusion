@@ -642,7 +642,7 @@ fluid.registerNamespace("fluid.tests");
             select.val("Enchiridion");
             select.change();
             if (!opts) {
-                fluid.applyChange(select);
+                fluid.applyBoundChange(select);
             }
             jqUnit.assertEquals("Applied value to model", "Enchiridion", model1.choice);
             fluid.reRender(template, node, fluid.copy(binding_tree), merge({
@@ -696,7 +696,7 @@ fluid.registerNamespace("fluid.tests");
             select.val(["Exomologesis", "Apocatastasis"]);
             select.change();
             if (!opts) {
-                fluid.applyChange(select);
+                fluid.applyBoundChange(select);
             }
             jqUnit.assertDeepEq("Applied value to model", ["Apocatastasis", "Exomologesis"], model2.choice);
         });
@@ -769,7 +769,7 @@ fluid.registerNamespace("fluid.tests");
             fluid.value(inputs, "Enchiridion");
             $(inputs[0]).change();
             if (!opts) {
-                fluid.applyChange(inputs);
+                fluid.applyBoundChange(inputs);
             }
             jqUnit.assertEquals("Applied value to model", "Enchiridion", model3.choice);
         });
@@ -825,7 +825,7 @@ fluid.registerNamespace("fluid.tests");
             fluid.value(inputs, ["Exomologesis", "Apocatastasis"]);
             $(inputs[0]).change();
             if (!opts) {
-                fluid.applyChange(inputs);
+                fluid.applyBoundChange(inputs);
             }
             jqUnit.assertDeepEq("Applied value to model", ["Apocatastasis", "Exomologesis"], model4.choice);
         });

@@ -57,7 +57,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.progressiveCheckerForComponent = function (options) {
         var that = fluid.initLittleComponent("fluid.progressiveCheckerForComponent", options);
         var defaults = fluid.defaults(that.options.componentName);
-        return fluid.progressiveChecker(fluid.expandOptions(defaults.progressiveCheckerOptions, that));  
+        return fluid.progressiveChecker(fluid.expandOptions(fluid.copy(defaults.progressiveCheckerOptions), that));  
     };
 
     fluid.defaults("fluid.progressiveCheckerForComponent", {
