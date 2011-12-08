@@ -1179,29 +1179,11 @@ var fluid = fluid || fluid_1_5;
     fluid.mergePolicyIs = function (policy, test) {
         return typeof (policy) === "string" && $.inArray(test, policy.split(/\s*,\s*/)) !== -1;
     };
-    window.pathCount = [];
-    
-    fluid.summarisePathCount = function (pathCount) {
-        var togo = {};
-        for (var i = 0; i < pathCount.length; ++ i) {
-            var path = pathCount[i];
-            if (!togo[path]) {
-                togo[path] = 1;
-            }
-            else {
-                ++togo[path];
-            }
-        }
-        var toReallyGo = [];
-        fluid.each(togo, function(el, path) {
-            toReallyGo.push({path: path, count: el});
-        });
-        toReallyGo.sort(function(a, b) {return b.count - a.count});
-        return toReallyGo;
-    }
     
     function mergeImpl(policy, basePath, target, source, thisPolicy, rec) {
-        window.pathCount.push(basePath);
+        if (fluid.isTracing) {
+            fluid.tracing.pathCount.push(basePath);
+        }
         if (fluid.mergePolicyIs(thisPolicy, "replace")) {
             fluid.clear(target);
         }
