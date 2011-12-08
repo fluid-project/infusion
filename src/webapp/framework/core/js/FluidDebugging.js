@@ -70,7 +70,7 @@ var fluid = fluid || fluid_1_5;
             var path = el.path;
             if (!fluid.find(prefixes, function(prefix) {
                 if (path.indexOf(prefix) === 0) {
-                    prefixCount[prefix] ++;
+                    prefixCount[prefix] += el.count;
                     return true;
                 }
             })) {
