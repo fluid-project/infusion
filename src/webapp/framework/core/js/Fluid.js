@@ -527,11 +527,12 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.model.resolvePathSegment = function (root, segment, create, origEnv) {
-        if (root.resolvePathSegment && !origEnv) {
+        if (!origEnv && root.resolvePathSegment) {
             return root.resolvePathSegment(segment);
         }
-        if (root[segment] === undefined && create) {
-            root[segment] = {};
+        if (create && root[segment] === undefined) {
+            // This optimisation in this heavily used function has a fair effect
+            return root[segment] = {};
         }
         return root[segment];
     };
