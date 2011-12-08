@@ -1133,6 +1133,9 @@ var fluid = fluid || fluid_1_5;
     };
 
     function mergeImpl(policy, basePath, target, source, thisPolicy, rec) {
+        if (fluid.isTracing) {
+            fluid.tracing.pathCount.push(basePath);
+        }
         if (fluid.mergePolicyIs(thisPolicy, "replace")) {
             fluid.clear(target);
         }
