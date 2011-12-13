@@ -185,12 +185,6 @@ var fluid = fluid || fluid_1_5;
         return !value || valueType === "string" || valueType === "boolean" || valueType === "number" || valueType === "function";
     };
     
-    fluid.isDOMNode = function (obj) {
-      // This could be more sound, but messy: 
-      // http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
-        return obj && typeof (obj.nodeType) === "number";  
-    };
-    
     /** Determines whether the supplied object is an array. The strategy used is an optimised
      * approach taken from an earlier version of jQuery - detecting whether the toString() version
      * of the object agrees with the textual form [object Array], or else whether the object is a 
@@ -198,6 +192,12 @@ var fluid = fluid || fluid_1_5;
      */
     fluid.isArrayable = function (totest) {
         return totest && (totest.jquery || Object.prototype.toString.call(totest) === "[object Array]");
+    };
+    
+    fluid.isDOMNode = function (obj) {
+      // This could be more sound, but messy: 
+      // http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
+        return obj && typeof (obj.nodeType) === "number";  
     };
     
     /** Return an empty container as the same type as the argument (either an
@@ -215,13 +215,21 @@ var fluid = fluid || fluid_1_5;
         return $.extend(true, fluid.freshContainer(tocopy), tocopy);
     };
             
-    /** Corrected version of jQuery makeArray that returns an empty array on undefined rather than crashing **/
+    /** Corrected version of jQuery makeArray that returns an empty array on undefined rather than crashing.
+      * We don't deal with as many pathological cases as jQuery **/
     fluid.makeArray = function (arg) {
-        if (arg === null || arg === undefined) {
-            return [];
-        } else {
-            return $.makeArray(arg);
+        var togo = [];
+        if (arg !== null && arg !== undefined) {
+            if (fluid.isPrimitive(arg) || typeof(arg.length) !== "number") {
+                togo.push(arg); 
+            }
+            else {
+                for (var i = 0; i < arg.length; ++ i) {
+                    togo[i] = arg[i];
+                }
+            }
         }
+        return togo;
     };
     
     function transformInternal(source, togo, key, args) {
@@ -1091,15 +1099,6 @@ var fluid = fluid || fluid_1_5;
             applier: "nomerge"
         }
     });
-    
-    fluid.defaults("fluid.viewComponent", {
-        gradeNames: ["fluid.littleComponent", "fluid.modelComponent", "fluid.eventedComponent"],
-        initFunction: "fluid.initView",
-        argumentMap: {
-            container: 0,
-            options: 1
-        }
-    });
 
     /** Generate a name for a component for debugging purposes */    
     fluid.nameComponent = function (that) {
@@ -1360,23 +1359,8 @@ var fluid = fluid || fluid_1_5;
         });
         delete options.initFunction; 
     };
-    
-    // unsupported, NON-API function
-    // NOTE: this function represents a temporary strategy until we have more integrated IoC debugging.
-    // It preserves the current framework behaviour for the 1.4 release, but provides a more informative
-    // diagnostic - in fact, it is perfectly acceptable for a component's creator to return no value and
-    // the failure is really in assumptions in fluid.initComponent. Revisit this issue for 1.5
-    fluid.diagnoseFailedView = function (componentName, that, options, args) {
-        if (!that && fluid.hasGrade(options, "fluid.viewComponent")) {
-            var container = fluid.wrap(args[1]);
-            var message1 = "Instantiation of autoInit component with type " + componentName + " failed, since ";
-            if (container.length === 0) {
-                fluid.fail(message1 + "selector \"", args[1], "\" did not match any markup in the document");
-            } else {
-                fluid.fail(message1 + " component creator function did not return a value");
-            }  
-        }  
-    };
+
+    fluid.diagnoseFailedView = fluid.identity;    
     
     fluid.initComponent = function (componentName, initArgs) {
         var options = fluid.defaults(componentName);
@@ -1467,279 +1451,6 @@ var fluid = fluid || fluid_1_5;
         return fluid.initSubcomponents(that, className, args)[0];
     };
 
-
-  // **** VIEW-DEPENDENT DEFINITIONS BELOW HERE
-
-    fluid.checkTryCatchParameter = function () {
-        var location = window.location || { search: "", protocol: "file:" };
-        var GETParams = location.search.slice(1).split('&');
-        return fluid.contains(GETParams, "notrycatch");
-    };
-    
-    fluid.notrycatch = fluid.checkTryCatchParameter();
-
-   
-    /**
-     * Wraps an object in a jQuery if it isn't already one. This function is useful since
-     * it ensures to wrap a null or otherwise falsy argument to itself, rather than the
-     * often unhelpful jQuery default of returning the overall document node.
-     * 
-     * @param {Object} obj the object to wrap in a jQuery
-     * @param {jQuery} userJQuery the jQuery object to use for the wrapping, optional - use the current jQuery if absent
-     */
-    fluid.wrap = function (obj, userJQuery) {
-        userJQuery = userJQuery || $;
-        return ((!obj || obj.jquery) ? obj : userJQuery(obj)); 
-    };
-    
-    /**
-     * If obj is a jQuery, this function will return the first DOM element within it.
-     * 
-     * @param {jQuery} obj the jQuery instance to unwrap into a pure DOM element
-     */
-    fluid.unwrap = function (obj) {
-        return obj && obj.jquery && obj.length === 1 ? obj[0] : obj; // Unwrap the element if it's a jQuery.
-    };
-    
-    /**
-     * Fetches a single container element and returns it as a jQuery.
-     * 
-     * @param {String||jQuery||element} containerSpec an id string, a single-element jQuery, or a DOM element specifying a unique container
-     * @param {Boolean} fallible <code>true</code> if an empty container is to be reported as a valid condition
-     * @return a single-element jQuery of container
-     */
-    fluid.container = function (containerSpec, fallible, userJQuery) {
-        if (userJQuery) {
-            containerSpec = fluid.unwrap(containerSpec);
-        }
-        var container = fluid.wrap(containerSpec, userJQuery);
-        if (fallible && (!container || container.length === 0)) {
-            return null;
-        }
-        
-        // Throw an exception if we've got more or less than one element.
-        if (!container || !container.jquery || container.length !== 1) {
-            if (typeof (containerSpec) !== "string") {
-                containerSpec = container.selector;
-            }
-            var count = container.length !== undefined ? container.length : 0;
-            fluid.fail((count > 1 ? "More than one (" + count + ") container elements were"
-                    : "No container element was") + " found for selector " + containerSpec);
-        }
-        if (!fluid.isDOMNode(container[0])) {
-            fluid.fail("fluid.container was supplied a non-jQueryable element");  
-        }
-        
-        return container;
-    };
-    
-    /**
-     * Creates a new DOM Binder instance, used to locate elements in the DOM by name.
-     * 
-     * @param {Object} container the root element in which to locate named elements
-     * @param {Object} selectors a collection of named jQuery selectors
-     */
-    fluid.createDomBinder = function (container, selectors) {
-        var cache = {}, that = {};
-        var userJQuery = container.constructor;
-        
-        function cacheKey(name, thisContainer) {
-            return fluid.allocateSimpleId(thisContainer) + "-" + name;
-        }
-
-        function record(name, thisContainer, result) {
-            cache[cacheKey(name, thisContainer)] = result;
-        }
-
-        that.locate = function (name, localContainer) {
-            var selector, thisContainer, togo;
-            
-            selector = selectors[name];
-            thisContainer = localContainer ? localContainer : container;
-            if (!thisContainer) {
-                fluid.fail("DOM binder invoked for selector " + name + " without container");
-            }
-
-            if (!selector) {
-                return thisContainer;
-            }
-
-            if (typeof (selector) === "function") {
-                togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
-            } else {
-                togo = userJQuery(selector, thisContainer);
-            }
-            if (togo.get(0) === document) {
-                togo = [];
-            }
-            if (!togo.selector) {
-                togo.selector = selector;
-                togo.context = thisContainer;
-            }
-            togo.selectorName = name;
-            record(name, thisContainer, togo);
-            return togo;
-        };
-        that.fastLocate = function (name, localContainer) {
-            var thisContainer = localContainer ? localContainer : container;
-            var key = cacheKey(name, thisContainer);
-            var togo = cache[key];
-            return togo ? togo : that.locate(name, localContainer);
-        };
-        that.clear = function () {
-            cache = {};
-        };
-        that.refresh = function (names, localContainer) {
-            var thisContainer = localContainer ? localContainer : container;
-            if (typeof names === "string") {
-                names = [names];
-            }
-            if (thisContainer.length === undefined) {
-                thisContainer = [thisContainer];
-            }
-            for (var i = 0; i < names.length; ++i) {
-                for (var j = 0; j < thisContainer.length; ++j) {
-                    that.locate(names[i], thisContainer[j]);
-                }
-            }
-        };
-        that.resolvePathSegment = that.locate;
-        
-        return that;
-    };
-    
-    /** Expect that jQuery selector query has resulted in a non-empty set of 
-     * results. If none are found, this function will fail with a diagnostic message, 
-     * with the supplied message prepended.
-     */
-    fluid.expectFilledSelector = function (result, message) {
-        if (result && result.length === 0 && result.jquery) {
-            fluid.fail(message + ": selector \"" + result.selector + "\" with name " + result.selectorName +
-                       " returned no results in context " + fluid.dumpEl(result.context));
-        }
-    };
-    
-    /** 
-     * The central initialiation method called as the first act of every Fluid
-     * component. This function automatically merges user options with defaults,
-     * attaches a DOM Binder to the instance, and configures events.
-     * 
-     * @param {String} componentName The unique "name" of the component, which will be used
-     * to fetch the default options from store. By recommendation, this should be the global
-     * name of the component's creator function.
-     * @param {jQueryable} container A specifier for the single root "container node" in the
-     * DOM which will house all the markup for this component.
-     * @param {Object} userOptions The configuration options for this component.
-     */
-     // 4th argument is NOT SUPPORTED, see comments for initLittleComponent
-    fluid.initView = function (componentName, containerSpec, userOptions, localOptions) {
-        var container = fluid.container(containerSpec, true);
-        fluid.expectFilledSelector(container, "Error instantiating component with name \"" + componentName);
-        if (!container) {
-            return null;
-        }
-        var that = fluid.initLittleComponent(componentName, userOptions, localOptions || {gradeNames: ["fluid.viewComponent"]});
-        var userJQuery = that.options.jQuery; // Do it a second time to correct for jQuery injection
-        if (userJQuery) {
-            container = fluid.container(containerSpec, true, userJQuery);
-        }
-        fluid.log("Constructing view component " + componentName + " with container " + container.constructor.expando + 
-            (userJQuery ? " user jQuery " + userJQuery.expando : "") + " env: " + $.expando);
-        that.container = container;
-        fluid.initDomBinder(that);
-
-        return that;
-    };
-    
-    /**
-     * Creates a new DOM Binder instance for the specified component and mixes it in.
-     * 
-     * @param {Object} that the component instance to attach the new DOM Binder to
-     */
-    fluid.initDomBinder = function (that) {
-        that.dom = fluid.createDomBinder(that.container, that.options.selectors);
-        that.locate = that.dom.locate;      
-    };
-
-    // DOM Utilities.
-    
-    /**
-     * Finds the nearest ancestor of the element that passes the test
-     * @param {Element} element DOM element
-     * @param {Function} test A function which takes an element as a parameter and return true or false for some test
-     */
-    fluid.findAncestor = function (element, test) {
-        element = fluid.unwrap(element);
-        while (element) {
-            if (test(element)) {
-                return element;
-            }
-            element = element.parentNode;
-        }
-    };
-    
-    /**
-     * Returns a jQuery object given the id of a DOM node. In the case the element
-     * is not found, will return an empty list.
-     */
-    fluid.jById = function (id, dokkument) {
-        dokkument = dokkument && dokkument.nodeType === 9 ? dokkument : document;
-        var element = fluid.byId(id, dokkument);
-        var togo = element ? $(element) : [];
-        togo.selector = "#" + id;
-        togo.context = dokkument;
-        return togo;
-    };
-    
-    /**
-     * Returns an DOM element quickly, given an id
-     * 
-     * @param {Object} id the id of the DOM node to find
-     * @param {Document} dokkument the document in which it is to be found (if left empty, use the current document)
-     * @return The DOM element with this id, or null, if none exists in the document.
-     */
-    fluid.byId = function (id, dokkument) {
-        dokkument = dokkument && dokkument.nodeType === 9 ? dokkument : document;
-        var el = dokkument.getElementById(id);
-        if (el) {
-        // Use element id property here rather than attribute, to work around FLUID-3953
-            if (el.id !== id) {
-                fluid.fail("Problem in document structure - picked up element " +
-                    fluid.dumpEl(el) + " for id " + id +
-                    " without this id - most likely the element has a name which conflicts with this id");
-            }
-            return el;
-        } else {
-            return null;
-        }
-    };
-    
-    /**
-     * Returns the id attribute from a jQuery or pure DOM element.
-     * 
-     * @param {jQuery||Element} element the element to return the id attribute for
-     */
-    fluid.getId = function (element) {
-        return fluid.unwrap(element).id;
-    };
-    
-    /** 
-     * Allocate an id to the supplied element if it has none already, by a simple
-     * scheme resulting in ids "fluid-id-nnnn" where nnnn is an increasing integer.
-     */
-    
-    fluid.allocateSimpleId = function (element) {
-        var simpleId = "fluid-id-" + fluid.allocateGuid();
-        if (!element) {
-            return simpleId;
-        }
-        element = fluid.unwrap(element);
-        if (!element.id) {
-            element.id = simpleId;
-        }
-        return element.id;
-    };
-    
 
     // Message resolution and templating
    
