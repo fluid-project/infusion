@@ -39,11 +39,6 @@ var fluid_1_5 = fluid_1_5 || {};
             onReady: null
         },
         listeners: {
-            afterRender: {
-                listener: "fluid.uiOptions.fatPanel.panelSizer",
-                args: ["{fatPanel}"],
-                priority: "last"
-            },
             onReady: {
                 listener: "fluid.uiOptions.fatPanel.bindEvents",
                 args: ["{arguments}.0.uiOptions", "{uiEnhancer}", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
@@ -210,13 +205,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uiOptions.fatPanel.updateView = function (uiOptions, uiEnhancer) {
         uiEnhancer.updateFromSettingsStore();
         uiOptions.events.onSignificantDOMChange.fire();
-    };
-    
-    fluid.uiOptions.fatPanel.panelSizer = function (fatPanel) {
-        var panel = fatPanel.slidingPanel.locate("panel");
-        // For some inexplicable reason, in some integrations, the initial height of the panel become exactly 
-        // one lineheight rather than zero
-        panel.css({height: "0px"});      
     };
     
     fluid.uiOptions.fatPanel.bindEvents = function (uiOptions, uiEnhancer, iframeEnhancer, fatPanel) {
