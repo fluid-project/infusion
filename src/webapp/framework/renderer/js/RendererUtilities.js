@@ -119,7 +119,8 @@ fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.viewComponent"],
         initFunction: "fluid.initRendererComponent",
         mergePolicy: {
-            protoTree: "noexpand, replace"
+            protoTree: "noexpand, replace",
+            parentBundle: "nomerge"
         },
         rendererOptions: {
             autoBind: true
