@@ -38,12 +38,121 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Match thing", "thing", fluid.pathUtil.matchPath("thing", "thing.otherThing"));
             jqUnit.assertEquals("Match thing *", "thing.otherThing", fluid.pathUtil.matchPath("thing.*", "thing.otherThing"));
         });
-                
-        fluid.tests.testMergeComponent = function (options) {
-            return fluid.initLittleComponent("fluid.tests.testMergeComponent", options);
+        
+               
+        var customStrategy = function (root, segment, index) {
+            return index === 0 && segment === "path3" ? fluid.NO_VALUE : undefined;
         };
         
-        function testPreservingMerge(preserve, defaultModel) {
+        DataBindingTests.test("getBeanValue with custom strategy", function () {
+            var model = {path3: "thing", path4: "otherThing"};
+            var value = fluid.get(model, "path3", {strategies: [customStrategy, fluid.model.defaultFetchStrategy]});
+            jqUnit.assertUndefined("path3 value censored", value);
+            var value2 = fluid.get(model, "path4", {strategies: [customStrategy, fluid.model.defaultFetchStrategy]});
+            jqUnit.assertEquals("path4 value uncensored", model.path4, value2);
+        });
+        
+        fluid.tests.childMatchResolver = function (options, trundler) {
+            trundler = trundler.trundle(options.queryPath);
+            return fluid.find(trundler.root, function (value, key) {
+                var trundleKey = trundler.trundle(key);
+                var trundleChild = trundleKey.trundle(options.childPath);
+                if (trundleChild.root === options.value) {
+                    return trundleKey;
+                } 
+            });
+        };
+        
+        fluid.tests.generateRepeatableThing = function (gens) {
+            var togo = [];
+            for (var i = 0; i < gens.length; i += 3) {
+                togo.push({
+                    _primary: !!Number(gens.charAt(i)),
+                    value: {
+                        a: Number(gens.charAt(i + 1)),
+                        b: Number(gens.charAt(i + 2))
+                    }     
+                });
+            }
+            return togo;
+        };
+        
+        fluid.tests.basicResolverModel = {
+            fields: {  
+                repeatableThing: fluid.tests.generateRepeatableThing("001123")
+            }
+        };
+                
+        DataBindingTests.test("getBeanValue with resolver", function () {
+            var model = fluid.copy(fluid.tests.basicResolverModel);
+            var config = $.extend(true, {}, fluid.model.defaultGetConfig, {
+                resolvers: {
+                    childMatch: fluid.tests.childMatchResolver
+                }
+            });
+            var el = {
+                type: "childMatch",
+                queryPath: "fields.repeatableThing",
+                childPath: "_primary",
+                value: true,
+                path: "value.a"
+            };
+            var resolved = fluid.get(model, el, config);
+            jqUnit.assertEquals("Queried resolved value", 2, resolved);
+            model.fields.repeatableThing = [{}];
+            el.path = "value";
+            resolved = fluid.get(model, el, config);
+            jqUnit.assertUndefined("Queried resolved value", resolved);
+        });
+
+        fluid.tests.repeatableModifyingStrategy = {
+            init: function (oldStrategy) {
+                var that = {};
+                that.path = oldStrategy ? oldStrategy.path : "";
+                that.next = function (root, segment) {
+                    that.path = fluid.model.composePath(that.path, segment);
+                    return that.path === "fields.repeatableThing.1.value" ?
+                        fluid.tests.generateRepeatableThing("145") : undefined;   
+                };
+                return that;
+            }
+        };
+
+        DataBindingTests.test("Complex resolving and strategising", function () {
+            var model = fluid.copy(fluid.tests.basicResolverModel);
+            model.fields.repeatableThing[1].value = fluid.tests.generateRepeatableThing("045167089");
+            var el = {
+                type: "childMatch",
+                queryPath: "fields.repeatableThing",
+                childPath: "_primary",
+                value: true,
+                path: {
+                    type: "childMatch",
+                    queryPath: "value",
+                    childPath: "_primary",
+                    value: true,
+                    path: "value.a"
+                }
+            };
+            var config = $.extend(true, {}, fluid.model.defaultGetConfig, {
+                resolvers: {
+                    childMatch: fluid.tests.childMatchResolver
+                }
+            });
+            var resolved = fluid.get(model, el, config);
+            jqUnit.assertEquals("Queried resolved value", 6, resolved);
+            var config2 = {
+                resolvers: {
+                    childMatch: fluid.tests.childMatchResolver
+                },
+                strategies: [fluid.tests.repeatableModifyingStrategy].concat(fluid.model.defaultGetConfig.strategies) 
+            };
+            var resolved2 = fluid.get(model, el, config2);
+            jqUnit.assertEquals("Queried resolved and strategised value", 4, resolved2);
+        });
+        
+        
+        function testPreservingMerge(name, preserve, defaultModel) {
             var defaults = { lala: "blalalha"};
             if (preserve) {
                 defaults.mergePolicy = {model: "preserve"};
@@ -51,14 +160,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             if (defaultModel !== undefined) {
                 defaults.model = defaultModel;
             }
-            fluid.defaults("fluid.tests.testMergeComponent", defaults);
+            var compName = "fluid.tests.testMergeComponent." + name;
+            fluid.defaults(name, defaults);
+            fluid.setGlobalValue(name, function (options) {
+                return fluid.initLittleComponent(name, options);
+            });
             var model = { foo: "foo" };
 
-            var comp = fluid.tests.testMergeComponent({model: model});
+            var comp = fluid.invokeGlobalFunction(name, [{model: model}]);
             
-            var presString = preserve ? " - preserve" : "";
+            var presString = name + (preserve ? " - preserve" : "");
             
-            jqUnit.assertEquals("Identical model reference" + presString, 
+            jqUnit.assertEquals("Identical model reference " + presString, 
                 preserve, comp.options.model === model);
             var mergedModel = $.extend(true, {}, model, defaultModel);
             
@@ -67,15 +180,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      
         
         DataBindingTests.test("Merge model semantics - preserve", function () {
-            testPreservingMerge(true);
-            testPreservingMerge(false);
+            testPreservingMerge("undef1", true);
+            testPreservingMerge("undef2", false);
              // defaultModel of "null" tests FLUID-3768
-            testPreservingMerge(true, null);
-            testPreservingMerge(false, null);
+            testPreservingMerge("null1", true, null);
+            testPreservingMerge("null2", false, null);
             // populated defaultModel tests FLUID-3824
             var defaultModel = { roo: "roo"};
-            testPreservingMerge(true, defaultModel);
-            testPreservingMerge(false, defaultModel);
+            testPreservingMerge("model1", true, defaultModel);
+            testPreservingMerge("model2", false, defaultModel);
         });
         
         DataBindingTests.test("FLUID-3729 test: application into nothing", function () {

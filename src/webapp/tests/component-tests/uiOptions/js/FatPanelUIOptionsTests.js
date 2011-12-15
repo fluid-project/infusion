@@ -23,10 +23,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var tests = jqUnit.testCase("UIOptions fatPanel Tests");
         
         fluid.tests.uiOptions.expectedFatPanel = [
-            "eventBinder.uiEnhancer",
-            "eventBinder.uiOptionsLoader",
-            "eventBinder.slidingPanel",
-            "bridge.markupRenderer"];
+            "pageEnhancer",
+            "slidingPanel",
+            "iframeRenderer",
+            "iframeRenderer.iframeEnhancer"];
         
         /****************************************
          * UIOptions fatPanel integration tests *
@@ -40,11 +40,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var sequence = 0;
             
             function afterShowFunc() {
-                var defaultSiteSettings = that.uiEnhancer.settingsStore.options.defaultSiteSettings;
-                var pageModel = that.uiEnhancer.model;
-                var panelModel = uiOptions.uiEnhancer.model;
+                var defaultSiteSettings = that.pageEnhancer.settingsStore.options.defaultSiteSettings;
+                var pageModel = that.pageEnhancer.model;
+                var panelModel = that.iframeRenderer.iframeEnhancer.model;
                 if (sequence === 0) {
-                    fluid.tests.uiOptions.applierRequestChanges(that.bridge.uiOptionsLoader.uiOptions, fluid.tests.uiOptions.bwSkin);
+                    fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
                     fluid.tests.uiOptions.checkModelSelections("pageModel from bwSkin", fluid.tests.uiOptions.bwSkin, pageModel);
                     that.slidingPanel.hidePanel();
                     that.slidingPanel.showPanel();
@@ -91,7 +91,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 slidingPanel: {
                     options: {
                         listeners: {
-                            afterPanelShow: afterShowFunc
+                            afterPanelShow: {
+                                listener: afterShowFunc,
+                                priority: "last"
+                            }
                         }
                     }
                 }
@@ -108,10 +111,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(2);
             var cMap = fluid.tests.uiOptions.enhancerOptions.classnameMap;
             jqUnit.assertEquals("classnameMap transferred to outer UIEnhancer", cMap.textFont["default"],
-                   that.uiEnhancer.options.classnameMap.textFont["default"]);
+                   that.pageEnhancer.options.classnameMap.textFont["default"]);
                    
             jqUnit.assertEquals("classnameMap transferred to inner UIEnhancer", cMap.textFont["default"],
-                   uiOptions.uiEnhancer.options.classnameMap.textFont["default"]);
+                   that.iframeRenderer.iframeEnhancer.options.classnameMap.textFont["default"]);
             start();
         }
         

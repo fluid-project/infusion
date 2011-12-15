@@ -13,10 +13,6 @@
         <script type="text/javascript" src="../../../../framework/core/js/FluidDebugging.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
-        <!--  Required for mergeModel in messageResolver -->
-        <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
-        <!--  Required for ARIA labeller -->
-        <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
 
         <!--  These are the jqUnit test js files -->
         <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
@@ -34,7 +30,21 @@
     <ol id="qunit-tests"></ol>
 
     <!-- Test HTML -->
-    <div id="main" class="container">
+    <div id="main">
+        <div class="container" id="main-container"></div>
+        <div class="container"></div>
+    
+        <ul id="pager-top" class="pager-top">
+            <li id="top1" class="page-link"><a href="#" id="page-link-1">1</a></li>
+            <li id="top2" class="page-link"><a href="#" id="page-link-2">2</a></li>
+            <li id="top3" class="page-link"><a href="#" id="page-link-3">3</a></li>
+            <li id="previous-top" class="previous">&lt; previous</li>
+            <li id="next-top" class="next">next &gt;</li>
+        </ul>
+        
+        <div id="FLUID-3953-test" rsf:id="FLUID-3953-test-confusion">
+        </div>
+    
         <div id="blurrable-widget">
             <select id="component-1">
                 <option name="thing1">value 1</option>
