@@ -1514,7 +1514,8 @@ var fluid = fluid || fluid_1_5;
     
     fluid.defaults("fluid.messageResolver", {
         mergePolicy: {
-            messageBase: "preserve"  
+            messageBase: "preserve",
+            parents: "nomerge"
         },
         resolveFunc: fluid.stringTemplate,
         parseFunc: fluid.identity,
