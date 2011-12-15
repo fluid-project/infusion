@@ -367,7 +367,7 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.set(options, "componentRecord.options.mergeAllOptions.0", oldOptions);
         }
         
-        var demands = $.makeArray(demandspec.args);
+        var demands = fluid.makeArray(demandspec.args);
         var upDefaults = fluid.defaults(demandspec.funcName); // I can SEE into TIME!!
         var argMap = upDefaults? upDefaults.argumentMap : null;
         var inferMap = false;
@@ -485,11 +485,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     // unsupported, non-API function
     fluid.isDemandLogging = function(demandingNames) {
-        return isDemandLogging && fluid.isLogging() && demandingNames[0] !== "fluid.threadLocal";
+        return isDemandLogging && fluid.isLogging();
     };
     
     fluid.demands = function(demandingName, contextName, spec) {
-        var contextNames = $.makeArray(contextName).sort(); 
+        var contextNames = fluid.makeArray(contextName).sort(); 
         if (!spec) {
             return searchDemands(demandingName, contextNames);
         }
@@ -575,7 +575,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
      */
     // unsupported, non-API function
     fluid.determineDemands = function (instantiator, parentThat, funcNames) {
-        funcNames = $.makeArray(funcNames);
+        funcNames = fluid.makeArray(funcNames);
         var newFuncName = funcNames[0];
         var demandspec = fluid.locateDemands(instantiator, parentThat, funcNames) || {};
         if (demandspec.funcName) {
@@ -1243,7 +1243,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
 
     fluid.expander.deferredCall = function(target, source, recurse) {
         var expander = source.expander;
-        var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : $.makeArray(expander.args);
+        var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : fluid.makeArray(expander.args);
         args = recurse(args); 
         return fluid.invokeGlobalFunction(expander.func, args);
     };
@@ -1252,7 +1252,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.deferredInvokeCall = function(target, source, recurse) {
         var expander = source.expander;
-        var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : $.makeArray(expander.args);
+        var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : fluid.makeArray(expander.args);
         args = recurse(args);  
         return fluid.invoke(expander.func, args);
     };

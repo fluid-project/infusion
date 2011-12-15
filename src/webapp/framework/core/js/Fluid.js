@@ -518,7 +518,7 @@ var fluid = fluid || fluid_1_5;
     
     /** Compose any number of path segments, none of which may be empty **/
     fluid.model.composeSegments = function () {
-        return $.makeArray(arguments).join(".");
+        return fluid.makeArray(arguments).join(".");
     };
     
     /** Helpful alias for old-style API **/
