@@ -184,6 +184,54 @@ fluid.registerNamespace("fluid.tests");
                 testProleptickSet(mainDelay, collDelay);
             }
         }    
+
+        cachingTests.asyncTest("FLUID-4576: Function for success option", function () {
+            expect(3);
+
+            var testSpec = {
+                template: {
+                    // specify a file that will ensure a successful fetch
+                    url: "Caching-test.html",
+                    options: {
+                        success: function (response, status, xhr) {
+                            jqUnit.assertTrue("The success function should be called on successful fetch", true);
+                            jqUnit.assertEquals("There result should be successful", "success", status);
+                            start();
+                        }
+                    }
+                }
+            };
+
+            fluid.fetchResources(testSpec, function (resultSpec) {
+                jqUnit.assertFalse("There should be no error on initial fetch", resultSpec.template.fetchError);
+            });
+        });
+
+        cachingTests.asyncTest("FLUID-4576: Function name for success option", function () {
+            expect(3);
+            
+            var testSpec = {
+                template: {
+                    // specify a file that will ensure a successful fetch
+                    url: "Caching-test.html",
+                    options: {
+                        success: "fluid.tests.testSuccessFunction"
+                    }
+                }
+            };
+            // define the success function
+            fluid.tests.testSuccessFunction = function (response, status, xhr) {
+                jqUnit.assertTrue("The success function should be called on successful fetch, when called by name", true);
+                jqUnit.assertEquals("There result should be successful", "success", status);
+                start();
+            };
+
+
+            fluid.fetchResources(testSpec, function (resultSpec) {
+                jqUnit.assertFalse("There should be no error on initial fetch", resultSpec.template.fetchError);
+            });
+        });
+
     };
    
 })(jQuery); 

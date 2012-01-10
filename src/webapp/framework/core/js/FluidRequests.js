@@ -46,6 +46,10 @@ var fluid_1_5 = fluid_1_5 || {};
              if (resourceSpec.url && !resourceSpec.href) {
                 resourceSpec.href = resourceSpec.url;
              }
+             // for FLUID-4576:
+             if (resourceSpec.options && (typeof(resourceSpec.options.success) === "string")) {
+                 resourceSpec.options.success = fluid.getGlobalValue(resourceSpec.options.success);
+             }
         });
         if (that.options.amalgamateClasses) {
             fluid.fetchResources.amalgamateClasses(resourceSpecs, that.options.amalgamateClasses, that.operate);
