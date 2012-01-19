@@ -1124,11 +1124,11 @@ var fluid = fluid || fluid_1_5;
 
     // Cheapskate implementation which avoids dependency on DataBinding.js    
     fluid.model.mergeModel = function (target, source, applier) {
-        var copySource = fluid.copy(source);
         if (!fluid.isPrimitive(target)) {
+            var copySource = fluid.copy(source);
             $.extend(source, target);
+            $.extend(source, copySource);
         }
-        $.extend(source, copySource);
         return source; 
     };
 
