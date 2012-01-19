@@ -37,7 +37,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
 
             listeners: {
-                onFileSuccess: fluid.identity
+                onFileSuccess: [fluid.identity]
             },
 
             decorators: [{
@@ -66,7 +66,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
 
             listeners: {
-                onFileSuccess: fluid.identity
+                onFileSuccess: [fluid.identity]
             }
         };
         
@@ -107,8 +107,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var testTransformation = function (spec, source, target) {
             for (var sourcePath in spec) {
                 var targetPath = spec[sourcePath];
-                jqUnit.assertEquals(sourcePath + " should have been transformed to " + targetPath,
-                    fluid.get(source, sourcePath), fluid.get(target, targetPath));
+                var sourceItem = fluid.get(source, sourcePath);
+                var targetItem = fluid.get(target, targetPath);  
+                jqUnit.assertDeepEq(sourcePath + " should have been transformed to " + targetPath, sourceItem, targetItem);
             }
         };
         

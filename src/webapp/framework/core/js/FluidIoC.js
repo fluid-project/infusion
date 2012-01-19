@@ -54,7 +54,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     // thatStack contains an increasing list of MORE SPECIFIC thats.
-    var visitComponents = function(thatStack, visitor, options) {
+    var visitComponents = function(instantiator, thatStack, visitor, options) {
         options = options || {
             visited: {},
             flat: true
@@ -67,7 +67,9 @@ var fluid_1_5 = fluid_1_5 || {};
             }
             if (that.typeName) {
                 options.visited[that.id] = true;
-                if (visitor(that, "", options, 0, 0)) {
+                var path = instantiator.idToPath[that.id] || "";
+                var memberName = fluid.pathUtil.getTailPath(path);
+                if (visitor(that, memberName, options, 0, 0)) {
                     return;
                 }
             }
@@ -111,7 +113,7 @@ var fluid_1_5 = fluid_1_5 || {};
     }
     
     // unsupported, non-API function
-    fluid.dumpThat = function(that, instantiator) {
+    fluid.dumpThat = function(that) {
         return "{ typeName: \"" + that.typeName + "\" id: " + that.id + "}";
     };
     
@@ -133,7 +135,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // Execute the supplied function with the specified activity description pushed onto the stack
     // unsupported, non-API function
     fluid.pushActivity = function(func, message) {
-        if (!message) {
+        if (!message || fluid.notrycatch) {
             return func();
         }
         var root = fluid.threadLocal();
@@ -151,11 +153,11 @@ var fluid_1_5 = fluid_1_5 || {};
     
     // Return a function wrapped by the activity of describing its activity
     // unsupported, non-API function
-    fluid.wrapActivity = function(func, messageSpec) {
+    fluid.wrapActivity = fluid.notrycatch? fluid.identity : function(func, messageSpec) {
         return function() {
             var args = fluid.makeArray(arguments);
             var message = fluid.transform(fluid.makeArray(messageSpec), function(specEl) {
-                if (specEl.indexOf("arguments.") === 0) {
+                if (typeof(specEl) === "string" && specEl.indexOf("arguments.") === 0) {
                     var el = specEl.substring("arguments.".length);
                     return fluid.get(args, el);
                 }
@@ -185,7 +187,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 };
             }
             var foundComponent;
-            visitComponents(thatStack, function(component, name, options, up, down) {
+            visitComponents(instantiator, thatStack, function(component, name, options, up, down) {
                 if (context === name || context === component.typeName || context === component.nickName) {
                     foundComponent = component;
                     if (down > 1) {
@@ -202,7 +204,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 var ref = fluid.renderContextReference(parsed);
                 fluid.log("Failed to resolve reference " + ref + ": thatStack contains\n" + fluid.dumpThatStack(thatStack, instantiator));
                 fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " 
-                    + context + " from component root of type " + thatStack[0].typeName, "\ninstantiator contents: ", instantiator);
+                    + context + " from component leaf of type " + thatStack[thatStack.length - 1].typeName, "\ninstantiator contents: ", instantiator);
             }
             return fluid.get(foundComponent, parsed.path, fetchStrategies);
         };
@@ -504,9 +506,14 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return p1 === 0? specb.intersect - speca.intersect : p1;
     };
     
+    var isDemandLogging = false;
+    fluid.setDemandLogging = function(set) {
+        isDemandLogging = set;  
+    };
+    
     // unsupported, non-API function
     fluid.isDemandLogging = function(demandingNames) {
-        return fluid.isLogging() && demandingNames[0] !== "fluid.threadLocal";
+        return isDemandLogging && fluid.isLogging() && demandingNames[0] !== "fluid.threadLocal";
     };
     
     // unsupported, non-API function
@@ -520,7 +527,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var contextNames = {};
         var visited = [];
         var thatStack = instantiator.getFullStack(parentThat);
-        visitComponents(thatStack, function(component, xname, options, up, down) {
+        visitComponents(instantiator, thatStack, function(component, xname, options, up, down) {
             contextNames[component.typeName] = true;
             visited.push(component);
         });
@@ -625,7 +632,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.makeFreeInvoker = function(functionName, environment) {
         var demandSpec = fluid.determineDemands(fluid.freeInstantiator, null, functionName);
         return function() {
-            var invokeSpec = fluid.embodyDemands(fluid.freeInstantiator, null, demandSpec, arguments, {passArgs: true});
+            var invokeSpec = fluid.embodyDemands(fluid.freeInstantiator, null, demandSpec, fluid.makeArray(arguments), {passArgs: true});
             return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
         };
     };
@@ -633,7 +640,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.makeInvoker = function(instantiator, that, demandspec, functionName, environment) {
         demandspec = demandspec || fluid.determineDemands(instantiator, that, functionName);
         return function() {
-            var args = arguments;
+            var args = fluid.makeArray(arguments);
             return fluid.pushActivity(function() {
                 var invokeSpec = fluid.embodyDemands(instantiator, that, demandspec, args, {passArgs: true});
                 return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
@@ -641,53 +648,127 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         };
     };
     
+    fluid.event.listenerEngine = function(eventSpec, callback) {
+        var argstruc = {};
+        function checkFire() {
+            var notall = fluid.find(eventSpec, function(value, key) {
+                if (argstruc[key] === undefined) {
+                    return true;
+                }  
+            });
+            if (!notall) {
+                callback(argstruc);
+                fluid.clear(argstruc);
+            }
+        }
+        fluid.each(eventSpec, function(event, eventName) {
+            event.addListener(function() {
+                argstruc[eventName] = fluid.makeArray(arguments);
+                checkFire();
+            });
+        });
+    };
+    
     // unsupported, non-API function
-    fluid.event.dispatchListener = function(instantiator, that, listener, eventName, eventSpec) {
-        return function() {
+    fluid.event.dispatchListener = function(instantiator, that, listener, eventName, eventSpec, indirectArgs) {
+        return fluid.wrapActivity(function() {
+            listener = fluid.event.resolveListener(listener); // just resolves globals
+            var args = indirectArgs? arguments[0] : fluid.makeArray(arguments);
             var demandspec = fluid.determineDemands(instantiator, that, eventName);
             if (demandspec.args.length === 0 && eventSpec.args) {
                 demandspec.args = eventSpec.args;
             }
-            var resolved = fluid.embodyDemands(instantiator, that, demandspec, arguments, {passArgs: true, componentOptions: eventSpec}); 
-            listener.apply(null, resolved.args);
-        }; 
+            var resolved = fluid.embodyDemands(instantiator, that, demandspec, args, {passArgs: true, componentOptions: eventSpec}); 
+            return listener.apply(null, resolved.args);
+        }, [" firing to listener to event named " + eventName + " of ", that]);
+    };
+    
+    fluid.event.resolveListenerRecord = function(lisrec, that, eventName) {
+        return fluid.withInstantiator(that, function(instantiator) {
+            var records = fluid.makeArray(lisrec);
+            return fluid.transform(records, function(record) {
+                if (fluid.isPrimitive(record)) {
+                    record = {listener: record};
+                }
+                var listener = fluid.expandOptions(record.listener, that);
+                if (listener.typeName === "fluid.event.firer") {
+                    listener = listener.fire;
+                }
+                record.listener = fluid.event.dispatchListener(instantiator, that, listener, eventName, record);
+                return record;
+            });
+        }); 
+    };
+    
+    fluid.event.expandOneEvent = function(event, that) {
+        var origin;
+        if (typeof(event) === "string" && event.charAt(0) !== "{") {
+            // Special dispensation so we can resolve onto our own events without GINGER WORLD
+            origin = that.events[event];
+        }
+        else {
+            origin = fluid.expandOptions(event, that);
+        }
+        if (!origin || origin.typeName !== "fluid.event.firer") {
+            fluid.fail("Error in event specification - could not resolve base event reference ", event, " to an event firer: got ", origin);
+        }
+        return origin;
+    };
+    
+    fluid.event.expandEvents = function(event, that) {
+        return typeof(event) === "string"?
+            fluid.event.expandOneEvent(event, that) :
+            fluid.transform(event, function(oneEvent) {
+                return fluid.event.expandOneEvent(oneEvent, that);
+            });
     };
     
     // unsupported, non-API function
     fluid.event.resolveEvent = function(that, eventName, eventSpec) {
         return fluid.withInstantiator(that, function(instantiator) {
             if (typeof(eventSpec) === "string") {
-                var firer = fluid.expandOptions(eventSpec, that);
-                if (!firer) {
-                    fluid.fail("Error in fluid.event.resolveEvent - context path " + eventSpec + " could not be looked up to a valid event firer");
-                }
-                return firer;
+                eventSpec = {event: eventSpec};
             }
-            else {
-                var event = eventSpec.event;
-                var origin;
-                if (!event) {
-                    fluid.fail("Event specification for event with name " + eventName + " does not include a base event specification");
-                }
-                if (event.charAt(0) === "{") {
-                    origin = fluid.expandOptions(event, that);
+            var event = eventSpec.event || eventSpec.events;
+            if (!event) {
+                fluid.fail("Event specification for event with name " + eventName + " does not include a base event specification: ", eventSpec);
+            }
+            
+            var origin = fluid.event.expandEvents(event, that);
+
+            var isMultiple = origin.typeName !== "fluid.event.firer";
+            var isComposite = eventSpec.args || isMultiple;
+            // If "event" is not composite, we want to share the listener list and FIRE method with the original
+            // If "event" is composite, we need to create a new firer. "composite" includes case where any boiling
+            // occurred - this was implemented wrongly in 1.4.
+            var firer;
+            if (isComposite) {
+                firer = fluid.event.getEventFirer(null, null, " [composite] " + fluid.event.nameEvent(that, eventName));
+                var dispatcher = fluid.event.dispatchListener(instantiator, that, firer.fire, eventName, eventSpec, isMultiple);
+                if (isMultiple) {
+                    fluid.event.listenerEngine(origin, dispatcher);
                 }
                 else {
-                    origin = that.events[event];
+                    origin.addListener(dispatcher);
                 }
-                if (!origin) {
-                    fluid.fail("Error in event specification - could not resolve base event reference " + event + " to an event firer");
-                }
-                var firer = {}; // jslint:ok - already defined
-                fluid.each(["fire", "removeListener"], function(method) {
-                    firer[method] = function() {origin[method].apply(null, arguments);};
-                });
-                firer.addListener = function(listener, namespace, predicate, priority) {
-                    origin.addListener(fluid.event.dispatchListener(instantiator, that, listener, eventName, eventSpec),
-                        namespace, predicate, priority);
-                };
-                return firer;
             }
+            else {
+                firer = {typeName: "fluid.event.firer"}; // jslint:ok - already defined
+                firer.fire = function () {
+                    var outerArgs = fluid.makeArray(arguments);
+                    return fluid.applyInstantiator(instantiator, that, function () {
+                        return origin.fire.apply(null, outerArgs);
+                    });
+                };
+                firer.addListener = function (listener, namespace, predicate, priority) {
+                    var dispatcher = fluid.event.dispatchListener(instantiator, that, listener, eventName, eventSpec);
+                    origin.addListener(dispatcher, namespace, predicate, priority);
+                };
+                firer.removeListener = function (listener) {
+                    origin.removeListener(listener);
+                };
+            }
+            return firer;
         }); 
     };
     
@@ -832,11 +913,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.expandComponentOptions = fluid.wrapActivity(fluid.expandComponentOptions, 
         ["    while expanding component options ", "arguments.1.value", " with record ", "arguments.1", " for component ", "arguments.2"]);
     
-    // The case without the instantiator is from the ginger strategy - this logic is still a little ragged
-    fluid.initDependent = function(that, name, userInstantiator, directArgs) {
-        if (!that || that[name]) { return; }
-        fluid.log("Beginning instantiation of component with name \"" + name + "\" as child of " + fluid.dumpThat(that));
-        directArgs = directArgs || [];
+    fluid.applyInstantiator = function(userInstantiator, that, func) {
         var root = fluid.threadLocal();
         if (userInstantiator) {
             var existing = root["fluid.instantiator"];
@@ -846,12 +923,21 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
             else {
                 root["fluid.instantiator"] = userInstantiator;
-                // fluid.log("*** initDependent for " + that.typeName + " member " + name + " was supplied USER instantiator with id " + userInstantiator.id + " - STORED");
+                fluid.log("*** restored USER instantiator with id " + userInstantiator.id + " - STORED");
             }
         }
-        
+        return fluid.withInstantiator(that, func);
+    };
+    
+    // The case without the instantiator is from the ginger strategy - this logic is still a little ragged
+    fluid.initDependent = function(that, name, userInstantiator, directArgs) {
+        if (!that || that[name]) { return; }
+        fluid.log("Beginning instantiation of component with name \"" + name + "\" as child of " + fluid.dumpThat(that));
+        directArgs = directArgs || [];
         var component = that.options.components[name];
-        fluid.withInstantiator(that, function(instantiator) {
+        var instance; // escape to here for debugging purposes
+        
+        fluid.applyInstantiator(userInstantiator, that, function(instantiator) {
             if (typeof(component) === "string") {
                 that[name] = fluid.expandOptions([component], that)[0]; // TODO: expose more sensible semantic for expandOptions 
             }
@@ -860,7 +946,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 instantiator.pushUpcomingInstantiation(that, name);
                 fluid.tryCatch(function() {
                     that[inCreationMarker] = true;
-                    var instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
+                    instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
                     // The existing instantiator record will be provisional, adjust it to take account of the true return
                     // TODO: Instantiator contents are generally extremely incomplete
                     var path = fluid.composePath(instantiator.idToPath[that.id] || "", name);
@@ -881,7 +967,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 that[name] = component;
             }
         }, ["    while instantiating dependent component with name \"" + name + "\" with record ", component, " as child of ", that]);
-        fluid.log("Finished instantiation of component with name \"" + name + "\" as child of " + fluid.dumpThat(that));
+        if (instance) {
+            fluid.log("Finished instantiation of component with name \"" + name + "\" and id " + instance.id + " as child of " + fluid.dumpThat(that));
+        }
     };
     
     // NON-API function
@@ -891,7 +979,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var instantiator = root["fluid.instantiator"];
         if (!instantiator) {
             instantiator = root["fluid.instantiator"] = fluid.instantiator();
-            //fluid.log("Created new instantiator with id " + instantiator.id + " in order to operate on component " + typeName);
+            fluid.log("Created new instantiator with id " + instantiator.id + " in order to operate on component " + (that? that.typeName : "[none]"));
         }
         return fluid.pushActivity(function() {
             return fluid.tryCatch(function() {
@@ -905,7 +993,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 var count = instantiator.stack(-1);
                 //fluid.log("Instantiator stack -1 to " + instantiator.stackCount + " for " + typeName);
                 if (count === 0) {
-                    //fluid.log("Clearing instantiator with id " + instantiator.id + " from threadLocal for end of " + typeName);
+                    fluid.log("Clearing instantiator with id " + instantiator.id + " from threadLocal for end of " + (that? that.typeName : "[none]"));
                     delete root["fluid.instantiator"];
                 }
             });
@@ -917,6 +1005,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var events = fluid.makeArray(component.createOnEvent);
         fluid.each(events, function(eventName) {
             that.events[eventName].addListener(function() {
+                fluid.log("Beginning instantiation of deferred component " + componentName + " due to event " + eventName);
                 if (that[componentName]) {
                     instantiator.clearComponent(that, componentName);
                 }
@@ -1063,7 +1152,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
     
     fluid.renderContextReference = function(parsed) {
-        return "{" + parsed.context + "}" + parsed.path;  
+        return "{" + parsed.context + "}." + parsed.path;  
     };
     
     fluid.fetchContextReference = function(parsed, directModel, env, elResolver) {
@@ -1074,7 +1163,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         if (!base) {
             return base;
         }
-        return fluid.get(base, parsed.path);
+        return parsed.noDereference? parsed.path : fluid.get(base, parsed.path);
     };
     
     // unsupported, non-API function
