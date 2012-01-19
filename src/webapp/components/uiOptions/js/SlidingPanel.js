@@ -68,25 +68,25 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.slidingPanel.finalInit = function (that) {
-        fluid.each(that.options.methods, function(method, methodName) {
-            that[methodName] = function() {
+        fluid.each(that.options.methods, function (method, methodName) {
+            that[methodName] = function () {
                 that.events["onPanel" + method.name].fire(that);
                 that.applier.requestChange("isShowing", method.finalState);
                 that.refreshView();
-                that["operate"+method.name](that.locate("panel"), that.events["afterPanel"+method.name].fire);
-            }
+                that["operate" + method.name](that.locate("panel"), that.events["afterPanel" + method.name].fire);
+            };
         });
         
         that.togglePanel = function () {
-            that[that.model.isShowing? "hidePanel": "showPanel"] ();
+            that[that.model.isShowing ? "hidePanel" : "showPanel"]();
         };
         
         that.setPanelHeight = function (newHeight) {
             that.locate("panel").height(newHeight);
         };
         
-        that.refreshView = function() {
-            that.locate("toggleButton").text(that.options.strings[that.model.isShowing?"hideText": "showText"]);         
+        that.refreshView = function () {
+            that.locate("toggleButton").text(that.options.strings[that.model.isShowing ? "hideText" : "showText"]);         
         };
     
         that.locate("toggleButton").click(that.togglePanel);        
