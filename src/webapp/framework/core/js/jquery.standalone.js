@@ -4,6 +4,11 @@
  * jQuery JavaScript Library v1.6.1
  * http://jquery.com/
  *
+ * This implementation is only intended to be used in contexts where the Fluid Infusion framework
+ * is required to be used without a functioning DOM being available (node.js or other standalone contexts).
+ * It includes the minimum definitions taken from jQuery required to operate the core of Fluid.js
+ * without FluidView.js. Consult http://issues.fluidproject.org/browse/FLUID-4568 for more details.
+ *
  * Copyright 2011, John Resig
  * Copyright 2011- OCAD University
  *
