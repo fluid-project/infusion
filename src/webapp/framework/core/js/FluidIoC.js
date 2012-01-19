@@ -153,7 +153,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     // Return a function wrapped by the activity of describing its activity
     // unsupported, non-API function
-    fluid.wrapActivity = fluid.notrycatch? fluid.identity: function(func, messageSpec) {
+    fluid.wrapActivity = fluid.notrycatch? fluid.identity : function(func, messageSpec) {
         return function() {
             var args = fluid.makeArray(arguments);
             var message = fluid.transform(fluid.makeArray(messageSpec), function(specEl) {
@@ -719,8 +719,8 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return typeof(event) === "string"?
             fluid.event.expandOneEvent(event, that) :
             fluid.transform(event, function(oneEvent) {
-                return fluid.event.expandOneEvent(oneEvent, that)
-        });
+                return fluid.event.expandOneEvent(oneEvent, that);
+            });
     };
     
     // unsupported, non-API function
@@ -730,7 +730,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 eventSpec = {event: eventSpec};
             }
             var event = eventSpec.event || eventSpec.events;
-            var origin;
             if (!event) {
                 fluid.fail("Event specification for event with name " + eventName + " does not include a base event specification: ", eventSpec);
             }
@@ -742,9 +741,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             // If "event" is not composite, we want to share the listener list and FIRE method with the original
             // If "event" is composite, we need to create a new firer. "composite" includes case where any boiling
             // occurred - this was implemented wrongly in 1.4.
-               
+            var firer;
             if (isComposite) {
-                var firer = fluid.event.getEventFirer(null, null, " [composite] " + fluid.event.nameEvent(that, eventName));
+                firer = fluid.event.getEventFirer(null, null, " [composite] " + fluid.event.nameEvent(that, eventName));
                 var dispatcher = fluid.event.dispatchListener(instantiator, that, firer.fire, eventName, eventSpec, isMultiple);
                 if (isMultiple) {
                     fluid.event.listenerEngine(origin, dispatcher);
@@ -754,18 +753,19 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 }
             }
             else {
-                var firer = {typeName: "fluid.event.firer"}; // jslint:ok - already defined
-                fluid.each(["fire", "removeListener"], function(method) {
-                    firer[method] = function() {
-                        var outerArgs = fluid.makeArray(arguments);
-                        return fluid.applyInstantiator(instantiator, that, function() {
-                            return origin[method].apply(null, outerArgs);
-                        });
-                    };
-                });
-                firer.addListener = function(listener, namespace, predicate, priority) {
+                firer = {typeName: "fluid.event.firer"}; // jslint:ok - already defined
+                firer.fire = function () {
+                    var outerArgs = fluid.makeArray(arguments);
+                    return fluid.applyInstantiator(instantiator, that, function () {
+                        return origin.fire.apply(null, outerArgs);
+                    });
+                };
+                firer.addListener = function (listener, namespace, predicate, priority) {
                     var dispatcher = fluid.event.dispatchListener(instantiator, that, listener, eventName, eventSpec);
                     origin.addListener(dispatcher, namespace, predicate, priority);
+                };
+                firer.removeListener = function (listener) {
+                    origin.removeListener(listener);
                 };
             }
             return firer;
@@ -1163,7 +1163,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         if (!base) {
             return base;
         }
-        return parsed.noDereference? parsed.path: fluid.get(base, parsed.path);
+        return parsed.noDereference? parsed.path : fluid.get(base, parsed.path);
     };
     
     // unsupported, non-API function
