@@ -588,6 +588,7 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     // Returns undefined to signal complex configuration which needs to be farmed out to DataBinding.js
+    // any other return represents an environment value AND a simple configuration we can handle here
     fluid.decodeAccessorArg = function (arg3) {
         return (!arg3 || arg3 === fluid.model.defaultGetConfig || arg3 === fluid.model.defaultSetConfig) ? 
             null : (arg3.type === "environment" ? arg3.value : undefined);
