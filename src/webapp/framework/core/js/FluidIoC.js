@@ -918,7 +918,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         if (userInstantiator) {
             var existing = root["fluid.instantiator"];
             if (existing && existing !== userInstantiator) {
-                fluid.fail("Error in initDependent: user instantiator supplied with id " + userInstantiator.id 
+                fluid.fail("Error in applyInstantiator: user instantiator supplied with id " + userInstantiator.id 
                     + " which differs from that for currently active instantiation with id " + existing.id);
             }
             else {
