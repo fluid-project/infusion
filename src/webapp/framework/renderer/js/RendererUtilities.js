@@ -82,11 +82,13 @@ fluid_1_5 = fluid_1_5 || {};
         var source = options.templateSource ? options.templateSource : {node: $(container)};
         var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, baseObject);
         rendererOptions.fossils = fossils || {};
-        var cascadeOptions = container.jquery? {
-            document: container[0].ownerDocument,
-            jQuery: container.constructor  
-        } : {};
-        fluid.renderer.reverseMerge(rendererOptions, cascadeOptions, fluid.keys(cascadeOptions));
+        if (container.jquery) {
+            var cascadeOptions = {
+                document: container[0].ownerDocument,
+                jQuery: container.constructor  
+            };
+            fluid.renderer.reverseMerge(rendererOptions, cascadeOptions, fluid.keys(cascadeOptions));
+        }
         
         var expanderOptions = fluid.renderer.modeliseOptions(options.expanderOptions, {ELstyle: "${}"}, baseObject);
         fluid.renderer.reverseMerge(expanderOptions, options, ["resolverGetConfig", "resolverSetConfig"]);
