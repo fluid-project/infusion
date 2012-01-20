@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
          
-        var GeometricManagerTests = new jqUnit.TestCase("GeometricManagerTests");
+        var geometricManagerTests = new jqUnit.TestCase("geometricManagerTests");
         
         function assertOrder(message, parentId, required) {
             var all = $("#" + parentId + " div");
@@ -32,14 +32,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals(message, required, str);
         }
 
-        GeometricManagerTests.test("Original order", function () {
+        geometricManagerTests.test("Original order", function () {
             expect(2);
             assertOrder("Original order", "permuteTest",  "0123A4567B8");
             assertOrder("Original order", "permuteTest2", "abCc");
         });
 
         function selfPermuteTest(name, source, target, position, expected) {
-            GeometricManagerTests.test(name, function () {
+            geometricManagerTests.test(name, function () {
                 var orders = $("#permuteTest .orderable");
           
                 fluid.permuteDom(orders[source], orders[target], position, orders, orders);
@@ -49,7 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
         
         function crossPermuteTest(name, source, target, position, expected1, expected2) {
-            GeometricManagerTests.test(name, function () {
+            geometricManagerTests.test(name, function () {
                 var sourceElements = $("#permuteTest .orderable");
                 var targetElements = $("#permuteTest2 .orderable");
           
@@ -89,7 +89,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         crossPermuteTest("0->2 AFTER",  0, 2, fluid.position.AFTER,   "1234A5678B",  "abCc0");             
         
  
-        GeometricManagerTests.test("minPointRectangle", function () {
+        geometricManagerTests.test("minPointRectangle", function () {
           
             expect(6);
             
@@ -115,7 +115,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
           
         });
         
-        GeometricManagerTests.test("minRectRect", function () {
+        geometricManagerTests.test("minRectRect", function () {
           
             expect(6);
             
@@ -134,12 +134,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
           
         });
         
-        GeometricManagerTests.test("projectFrom", function () {          
+        geometricManagerTests.test("projectFrom", function () {          
             expect(24);  
             fluid.testUtils.reorderer.stepProjectFrom(false);
         });
             
-        GeometricManagerTests.test("projectFrom with disabled wrap", function () {          
+        geometricManagerTests.test("projectFrom with disabled wrap", function () {          
             expect(24);  
             fluid.testUtils.reorderer.stepProjectFrom(true);
         });

@@ -33,6 +33,56 @@ var fluid = fluid || fluid_1_5;
         return zeropad(date.getHours()) + ":" + zeropad(date.getMinutes()) + ":" + zeropad(date.getSeconds()) + "." + zeropad(date.getMilliseconds(), 3);
     };
 
+    fluid.isTracing = true;
+
+    fluid.registerNamespace("fluid.tracing");
+
+    fluid.tracing.pathCount = [];
+    
+    fluid.tracing.summarisePathCount = function (pathCount) {
+        pathCount = pathCount || fluid.tracing.pathCount;
+        var togo = {};
+        for (var i = 0; i < pathCount.length; ++ i) {
+            var path = pathCount[i];
+            if (!togo[path]) {
+                togo[path] = 1;
+            }
+            else {
+                ++togo[path];
+            }
+        }
+        var toReallyGo = [];
+        fluid.each(togo, function(el, path) {
+            toReallyGo.push({path: path, count: el});
+        });
+        toReallyGo.sort(function(a, b) {return b.count - a.count});
+        return toReallyGo;
+    };
+    
+    fluid.tracing.condensePathCount = function (prefixes, pathCount) {
+        prefixes = fluid.makeArray(prefixes);
+        var prefixCount = {};
+        fluid.each(prefixes, function(prefix) {
+            prefixCount[prefix] = 0;
+        });
+        var togo = [];
+        fluid.each(pathCount, function(el) {
+            var path = el.path;
+            if (!fluid.find(prefixes, function(prefix) {
+                if (path.indexOf(prefix) === 0) {
+                    prefixCount[prefix] += el.count;
+                    return true;
+                }
+            })) {
+            togo.push(el);
+            }
+        });
+        fluid.each(prefixCount, function(count, path) {
+            togo.unshift({path: path, count: count});
+        });
+        return togo;
+    };
+
     // Exception stripping code taken from https://github.com/emwendelin/javascript-stacktrace/blob/master/stacktrace.js
     // BSD licence, see header
     

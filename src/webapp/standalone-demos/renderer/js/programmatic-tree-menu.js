@@ -124,16 +124,19 @@ fluid.dataBindingExample = (function ($) {
     return {
         setup: function () {
             var fullEl = fluid.byId("render");
+            var rendered;
             fullEl.onclick = function () {
                 renderMenu();
+                rendered = true;
             };
 
-            // This call to fluid.applyChange() will update the model associated with the inputs
+            // This call to fluid.applyBoundChange() will update the model associated with the inputs
             // with whatever the current value of the inputs are, and update the display
             var applyButton = fluid.byId("apply-change");
             applyButton.onclick = function () {
+                if (!rendered) {return; }
                 var inputs = $("input", $("#wine-list"));
-                fluid.applyChange(inputs);
+                fluid.applyBoundChange(inputs);
                 dumpModel(wineModel, $("#bound-model"));
             };
         }

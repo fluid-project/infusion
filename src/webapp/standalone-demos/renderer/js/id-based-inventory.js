@@ -62,9 +62,9 @@ fluid.inventoryExample =  (function () {
         // fluid.selfRender() and fluid.reRender() return the original template. This template
         // can be re-used by fluid.reRender().
         if (parsedTemplate) {
-            parsedTemplate = fluid.reRender(parsedTemplate, jQuery("[id=table-base:]"), fullTree);
+            parsedTemplate = fluid.reRender(parsedTemplate, fluid.jById("table-base:"), fullTree);
         } else {
-            parsedTemplate = fluid.selfRender(jQuery("[id=table-base:]"), fullTree);
+            parsedTemplate = fluid.selfRender(fluid.jById("table-base:"), fullTree);
         }
     };
 
@@ -104,9 +104,9 @@ fluid.inventoryExample =  (function () {
         // fluid.selfRender() and fluid.reRender() return the original template. This template
         // can be re-used by fluid.reRender().
         if (parsedTemplate) {
-            parsedTemplate = fluid.reRender(parsedTemplate, jQuery("[id=table-base:]"), abridgedTree);
+            parsedTemplate = fluid.reRender(parsedTemplate, fluid.jById("table-base:"), abridgedTree);
         } else {
-            parsedTemplate = fluid.selfRender(jQuery("[id=table-base:]"), abridgedTree);
+            parsedTemplate = fluid.selfRender(fluid.jById("table-base:"), abridgedTree);
         }
     };
 

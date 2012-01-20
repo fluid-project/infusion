@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
-
+    
     fluid.staticEnvironment.uiOptionsTest = fluid.typeTag("fluid.tests.uiOptions");
     
     // Use temp store rather than the cookie store for setting save
@@ -65,7 +65,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.tests.uiOptions.checkModelSelections = function (message, expectedSelections, actualSelections) {
-        fluid.testUtils.assertLeftHand("Model correctly updated", expectedSelections, actualSelections);
+        fluid.testUtils.assertLeftHand("Model correctly updated: " + message, expectedSelections, actualSelections);
     };
             
     fluid.tests.uiOptions.applierRequestChanges = function (uiOptions, selectionOptions) {
