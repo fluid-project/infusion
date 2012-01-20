@@ -44,7 +44,19 @@ var fluid_1_5 = fluid_1_5 || {};
             operateHide: "fluid.slidingPanel.slideUp",
             operateShow: "fluid.slidingPanel.slideDown"
         },
-        hideByDefault: true
+        model: {
+            isShowing: false
+        },
+        methods: {
+            showPanel: {
+                finalState: true,
+                name: "Show"
+            },
+            hidePanel: {
+                finalState: false,
+                name: "Hide"
+            }
+        }
     });
     
     fluid.slidingPanel.slideUp = function (element, callback, duration) {
@@ -56,39 +68,30 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.slidingPanel.finalInit = function (that) {
-        that.showPanel = function () {
-            that.events.onPanelShow.fire(that);
-            that.locate("toggleButton").text(that.options.strings.hideText);        
-            that.operateShow(that.locate("panel"), that.events.afterPanelShow.fire);  
-        };  
-    
-        that.hidePanel = function () {
-            that.events.onPanelHide.fire(that);
-            that.locate("toggleButton").text(that.options.strings.showText);        
-            that.operateHide(that.locate("panel"), that.events.afterPanelHide.fire);
-        };      
+        fluid.each(that.options.methods, function (method, methodName) {
+            that[methodName] = function () {
+                that.events["onPanel" + method.name].fire(that);
+                that.applier.requestChange("isShowing", method.finalState);
+                that.refreshView();
+                that["operate" + method.name](that.locate("panel"), that.events["afterPanel" + method.name].fire);
+            };
+        });
         
         that.togglePanel = function () {
-            if (that.locate("panel").is(":hidden")) {                                       
-                that.showPanel();
-            } else {
-                that.hidePanel();             
-            }       
+            that[that.model.isShowing ? "hidePanel" : "showPanel"]();
         };
         
         that.setPanelHeight = function (newHeight) {
             that.locate("panel").height(newHeight);
         };
+        
+        that.refreshView = function () {
+            that.locate("toggleButton").text(that.options.strings[that.model.isShowing ? "hideText" : "showText"]);         
+        };
     
-        //Event binder
         that.locate("toggleButton").click(that.togglePanel);        
-            
-        //Start Up: hide panel
-        if (that.options.hideByDefault) {
-            //TODO: figure out how to remove duplicate code
-            that.locate("toggleButton").text(that.options.strings.showText);        
-            that.locate("panel").hide();
-        }
+        
+        that.refreshView();
     };    
 
 })(jQuery, fluid_1_5);

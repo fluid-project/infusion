@@ -82,6 +82,13 @@ fluid_1_5 = fluid_1_5 || {};
         var source = options.templateSource ? options.templateSource : {node: $(container)};
         var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, baseObject);
         rendererOptions.fossils = fossils || {};
+        if (container.jquery) {
+            var cascadeOptions = {
+                document: container[0].ownerDocument,
+                jQuery: container.constructor  
+            };
+            fluid.renderer.reverseMerge(rendererOptions, cascadeOptions, fluid.keys(cascadeOptions));
+        }
         
         var expanderOptions = fluid.renderer.modeliseOptions(options.expanderOptions, {ELstyle: "${}"}, baseObject);
         fluid.renderer.reverseMerge(expanderOptions, options, ["resolverGetConfig", "resolverSetConfig"]);
@@ -114,7 +121,8 @@ fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.viewComponent"],
         initFunction: "fluid.initRendererComponent",
         mergePolicy: {
-            protoTree: "noexpand, replace"
+            protoTree: "noexpand, replace",
+            parentBundle: "nomerge"
         },
         rendererOptions: {
             autoBind: true
@@ -302,7 +310,7 @@ fluid_1_5 = fluid_1_5 || {};
             var EL = fluid.model.composePath(path, i); 
             var envAdd = {};
             if (options.pathAs) {
-                envAdd[options.pathAs] = EL;
+                envAdd[options.pathAs] = "${" + EL + "}";
             }
             if (options.valueAs) {
                 envAdd[options.valueAs] = fluid.get(config.model, EL, config.resolverGetConfig);
@@ -368,8 +376,15 @@ fluid_1_5 = fluid_1_5 || {};
     fluid.transformContextPath = function (parsed, env) {
         if (parsed.context) {
             var fetched = env[parsed.context];
+            var EL;
             if (typeof(fetched) === "string") {
-                return { path: fluid.model.composePath(fetched, parsed.path) }; 
+                EL = fluid.extractEL(fetched, {ELstyle: "${}"});
+            }
+            if (EL) {
+                return {
+                    noDereference: parsed.path === "", 
+                    path: fluid.model.composePath(EL, parsed.path) 
+                    }; 
             }
         }
         return parsed;
