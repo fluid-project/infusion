@@ -950,7 +950,7 @@ fluid.registerNamespace("fluid.tests");
                     type: "fluid.renderer.repeat",
                     controlledBy: "vector",
                     pathAs: "elementPath",
-                    valueAs: "element", 
+                    valueAs: "element",
                     repeatID: "link",
                     tree: {
                         linktext: "${{elementPath}}",
@@ -1457,6 +1457,49 @@ fluid.registerNamespace("fluid.tests");
             var attr = links.attr("title");
             jqUnit.assertEquals("Description title rendered", that.model.feeds[0].description, attr);
         });
-        
+
+        fluid.defaults("fluid.tests.pathExpander", {
+            gradeNames: ["autoInit", "fluid.viewComponent"]
+        });
+        fluid.defaults("fluid.tests.pathExpanderParent", {
+            gradeNames: ["autoInit", "fluid.rendererComponent"],
+            model: {
+                rows: ["0", "1", "2"]
+            },
+            selectors: {
+                row: ".pathexp-row",
+                decorated: ".pathexp-row-decorated"
+            },
+            repeatingSelectors: ["row"],
+            protoTree: {
+                expander: {
+                    repeatID: "row",
+                    type: "fluid.renderer.repeat",
+                    pathAs: "path",
+                    valueAs: "value",
+                    controlledBy: "rows",
+                    tree: {
+                        decorated: {
+                            decorators: {
+                                type: "fluid",
+                                func: "fluid.tests.pathExpander",
+                                options: {
+                                    path: "{path}",
+                                    val: "{value}"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            renderOnInit: true
+        });
+        protoTests.test("FLUID-4537 further: pathAs propagation", function () {
+            var that = fluid.tests.pathExpanderParent(".pathAsProp");
+            var decorators = fluid.renderer.getDecoratorComponents(that);
+            fluid.each(decorators, function (comp, name) {
+                jqUnit.assertEquals("Path should not be expanded into value", "rows." + comp.options.val, comp.options.path);
+            });
+        });
     }; 
 })(jQuery); 
