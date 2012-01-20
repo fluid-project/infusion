@@ -18,8 +18,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     
-    fluid.setLogging(true);
-
     fluid.staticEnvironment.uiOptionsTest = fluid.typeTag("fluid.tests.uiOptions");
     
     // Use temp store rather than the cookie store for setting save

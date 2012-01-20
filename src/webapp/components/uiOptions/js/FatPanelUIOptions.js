@@ -81,7 +81,7 @@ var fluid_1_5 = fluid_1_5 || {};
                             createOnEvent: "afterRender",
                             options: {
                                 components: {
-                                    settingsStore: "{pageEnhancer}.settingsStore",  
+                                    settingsStore: "{pageEnhancer}.settingsStore"  
                                 },
                                 jQuery: "{iframeRenderer}.jQuery",
                                 tocTemplate: "{pageEnhancer}.options.tocTemplate"
@@ -240,7 +240,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // (potential cause of jumping)
     fluid.uiOptions.fatPanel.hidePanel = function (panel, callback) {
         $(panel).animate({height: 0}, {duration: 400, complete: callback});
-    }
+    };
     
     // no activity - the kickback to the updateView listener will automatically trigger the
     // DOMChangeListener above. This ordering is preferable to avoid causing the animation to
