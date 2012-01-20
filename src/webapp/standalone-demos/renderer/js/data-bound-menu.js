@@ -153,7 +153,7 @@ fluid.dataBindingExample = (function ($) {
         
         // The autoBind option tells the renderer to automatically update the model when the value
         // of an input changes. Without this parameter, the model must be updated manually through
-        // a call to fluid.applyChange().
+        // a call to fluid.applyBoundChange().
         fluid.selfRender(jQuery("#food-list"), foodTree, {model: foodModel, autoBind: true});
         dumpModel(foodModel, jQuery("#autobound-model"));
 
@@ -166,16 +166,19 @@ fluid.dataBindingExample = (function ($) {
     return {
         setup: function () {
             var fullEl = fluid.byId("render");
+            var rendered;
             fullEl.onclick = function () {
                 renderMenu();
+                rendered = true;
             };
 
-            // This call to fluid.applyChange() will update the model associated with the inputs
+            // This call to fluid.applyBoundChange() will update the model associated with the inputs
             // with whatever the current value of the inputs are.
             var applyButton = fluid.byId("apply-change");
             applyButton.onclick = function () {
+                if (!rendered) {return; }
                 var inputs = $("input", $("#wine-list"));
-                fluid.applyChange(inputs);
+                fluid.applyBoundChange(inputs);
                 dumpModel(wineModel, $("#bound-model"));
             };
         }

@@ -1458,6 +1458,89 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Description title rendered", that.model.feeds[0].description, attr);
         });
 
+        fluid.defaults("fluid.tests.FLUID4536", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+            components: {
+                iframeHead: {
+                    createOnEvent: "iframeLoad",
+                    type: "fluid.tests.FLUID4536IframeHead",
+                    container: "{FLUID4536}.iframeContainer"
+                }
+            },
+            selectors: {
+                iframe: "iframe"
+            },
+            events: {
+                iframeLoad: null  
+            },
+            finalInitFunction: "fluid.tests.FLUID4536.finalInit"
+        });
+
+        fluid.tests.FLUID4536.finalInit = function(that) {
+            that.iframe = that.dom.locate("iframe");
+            function tryLoad() {
+                var iframeWindow = that.iframe[0].contentWindow;
+                that.iframeDocument = iframeWindow.document;
+    
+                that.jQuery = iframeWindow.jQuery;
+                if (that.jQuery) {
+                    that.iframeContainer = that.jQuery("body");
+                    that.events.iframeLoad.fire(that);
+                }
+            }
+            tryLoad();
+            if (!that.jQuery) {
+                that.iframe.load(tryLoad);
+            }
+        };
+    
+        fluid.defaults("fluid.tests.FLUID4536IframeHead", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+            components: {
+                iframeChild: {
+                    type: "fluid.tests.FLUID4536IframeChild",
+                    container: "{FLUID4536IframeHead}.dom.component"
+                }
+            },
+            selectors: {
+                component: "#main"
+            }
+        });
+        
+        fluid.defaults("fluid.tests.FLUID4536IframeChild", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            model: {
+                checked: true
+            },
+            protoTree: {
+                checkbox: "${checked}"  
+            },
+            selectors: {
+                checkbox: ".flc-checkbox"
+            },
+            renderOnInit: true
+        });
+    
+        protoTests.asyncTest("FLUID-4536 iframe propagation test", function() {
+            jqUnit.expect(4);
+            fluid.tests.FLUID4536("#main", {listeners: {
+                iframeLoad: {
+                    priority: "last",   
+                    listener: 
+                    function(that) {
+                    jqUnit.assertValue("Inner component constructed", that.iframeHead.iframeChild);
+                    var outerExpando = $.expando;
+                    var innerExpando = that.iframeContainer.constructor.expando;
+                    jqUnit.assertNotEquals("Inner container uses different jQuery", outerExpando, innerExpando);
+                    var child = that.iframeHead.iframeChild;
+                    var furtherExpando = child.container.constructor.expando;
+                    jqUnit.assertEquals("jQuery propagated through DOM binder", innerExpando, furtherExpando);
+                    child.locate("checkbox").prop("checked", false).change();
+                    jqUnit.assertEquals("Operable renderer component in child", false, child.model.checked);
+                    start();
+               }}}});
+        });
+        
         fluid.defaults("fluid.tests.pathExpander", {
             gradeNames: ["autoInit", "fluid.viewComponent"]
         });
