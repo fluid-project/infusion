@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         fluid.registerNamespace("fluid.tests");
         
-        var AriaLabellerTests = new jqUnit.TestCase("Aria Labeller Tests");
+        var ariaLabellerTests = new jqUnit.TestCase("Aria Labeller Tests");
         var k = fluid.testUtils.reorderer.bindReorderer(itemIds);
 
         function assertItemsInOrder(message, expectOrder) {
@@ -41,7 +41,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.demands("fluid.reorderList", "fluid.tests.labellerTester", 
             ["{labellerTester}.container", "{options}"]);
         
-        AriaLabellerTests.test("IoC instantiation", function () {
+        ariaLabellerTests.test("IoC instantiation", function () {
 
             var labellerTester = fluid.tests.labellerTester("#list1");
             jqUnit.assertNotUndefined("reorderer created", labellerTester.reorderer);
