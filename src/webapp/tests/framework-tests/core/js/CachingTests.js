@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global window, fluid, jqUnit, jQuery, start, stop*/
+/*global window, fluid, jqUnit, jQuery, start, stop, expect*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -185,53 +185,71 @@ fluid.registerNamespace("fluid.tests");
             }
         }    
 
-        cachingTests.asyncTest("FLUID-4576: Function for success option", function () {
-            expect(3);
-
-            var testSpec = {
-                template: {
-                    // specify a file that will ensure a successful fetch
-                    url: "Caching-test.html",
-                    options: {
-                        success: function (response, status, xhr) {
-                            jqUnit.assertTrue("The success function should be called on successful fetch", true);
-                            jqUnit.assertEquals("There result should be successful", "success", status);
-                            start();
-                        }
-                    }
-                }
-            };
-
-            fluid.fetchResources(testSpec, function (resultSpec) {
-                jqUnit.assertFalse("There should be no error on initial fetch", resultSpec.template.fetchError);
-            });
-        });
-
-        cachingTests.asyncTest("FLUID-4576: Function name for success option", function () {
-            expect(3);
-            
-            var testSpec = {
-                template: {
-                    // specify a file that will ensure a successful fetch
-                    url: "Caching-test.html",
-                    options: {
-                        success: "fluid.tests.testSuccessFunction"
-                    }
-                }
-            };
-            // define the success function
-            fluid.tests.testSuccessFunction = function (response, status, xhr) {
-                jqUnit.assertTrue("The success function should be called on successful fetch, when called by name", true);
-                jqUnit.assertEquals("There result should be successful", "success", status);
+        // ============================================
+        // Infrastructure dor FLUID-4576 callback tests
+        //
+        function makeCallbackFunction(expectedResult) {
+            return function (response, status, xhr) {
+                jqUnit.assertTrue("The " + expectedResult + " function should be called", true);
+                jqUnit.assertEquals("There result should be " + expectedResult, expectedResult, status);
                 start();
             };
+        }
+        function makeFetchResultChecker(expectError) {
+            return function (resultSpec) {
+                jqUnit.assertEquals("There should " + (expectError ? "" : "not ") + "be an error on the initial fetch", expectError, !!resultSpec.template.fetchError)
+            };
+        }
+        function makeTestSpec(filename, successFunc, errorFunc) {
+            return {
+                template: {
+                    url: filename,
+                    options: {
+                        success: successFunc,
+                        error: errorFunc
+                    }
+                }
+            };
+        }
+        fluid.tests.callbackFilenames = {
+            valid: "Caching-test.html",
+            invalid: "Foofer.doodle"
+        };
+        fluid.tests.testSuccessFunction = function (response, status, xhr) {
+            makeCallbackFunction("success")(response, status, xhr);
+        };
+        fluid.tests.testErrorFunction = function (response, status, xhr) {
+            makeCallbackFunction("error")(response, status, xhr);
+        };
 
+        function callbackTest(filename, successCallback, errorCallback) {
+            expect(3);
+            var spec = makeTestSpec(filename, successCallback, errorCallback);
+            fluid.fetchResources(spec, makeFetchResultChecker(!successCallback));
+        }
 
-            fluid.fetchResources(testSpec, function (resultSpec) {
-                jqUnit.assertFalse("There should be no error on initial fetch", resultSpec.template.fetchError);
+        // ===============================
+        // Actual tests for FLUID-4576
+        //
+        cachingTests.asyncTest("FLUID-4576: Anonymous function for success option", function () {
+            callbackTest(fluid.tests.callbackFilenames.valid, function (response, status, xhr) {
+                makeCallbackFunction("success")(response, status, xhr);
+            }, null);
+        });
+
+        cachingTests.asyncTest("FLUID-4576: String function name for success option", function () {
+            callbackTest(fluid.tests.callbackFilenames.valid, "fluid.tests.testSuccessFunction", null);
+        });
+
+        cachingTests.asyncTest("FLUID-4576: Anonymous function for error option", function () {
+            callbackTest(fluid.tests.callbackFilenames.invalid, null, function (response, status, xhr) {
+                makeCallbackFunction("error")(response, status, xhr);
             });
         });
 
+        cachingTests.asyncTest("FLUID-4576: String function name for error option", function () {
+            callbackTest(fluid.tests.callbackFilenames.invalid, null, "fluid.tests.testErrorFunction");
+        });
     };
    
 })(jQuery); 
