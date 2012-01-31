@@ -1204,5 +1204,29 @@ fluid.registerNamespace("fluid.tests");
             fluid.pushSoftFailure(-1);  
         }
     });
+    
+    fluid.defaults("fluid.tests.badListener", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            haveEvent: null
+        },
+        listeners: {
+            haveEvent: "{badListener}.noListener"  
+        }
+    });
+    
+    fluidIoCTests.test("FLUID-4151 test - diagnostic for bad listener resolution", function () {
+        try {
+            jqUnit.expect(1);
+            fluid.pushSoftFailure(true);
+            var bad = fluid.tests.badListener();
+        } catch (e) {
+            var message = e.message;
+            var index = message.indexOf("badListener");
+            jqUnit.assertTrue("Caught diagnostic exception in constructing bad listener component", index >= 0);
+        } finally {
+            fluid.pushSoftFailure(-1);  
+        }
+    });
 
 })(jQuery); 

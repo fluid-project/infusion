@@ -691,6 +691,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                     record = {listener: record};
                 }
                 var listener = fluid.expandOptions(record.listener, that);
+                if (!listener) {
+                    fluid.fail("Error in listener record - could not resolve reference " + record.listener + " to a listener or firer. "
+                    + "Did you miss out \"events.\" when referring to an event firer?");
+                }
                 if (listener.typeName === "fluid.event.firer") {
                     listener = listener.fire;
                 }
