@@ -680,7 +680,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
             var resolved = fluid.embodyDemands(instantiator, that, demandspec, args, {passArgs: true, componentOptions: eventSpec}); 
             return listener.apply(null, resolved.args);
-        }, [" firing to listener to event named " + eventName + " of ", that]);
+        }, [" firing to listener to event named " + eventName + " of component ", that]);
     };
     
     fluid.event.resolveListenerRecord = function(lisrec, that, eventName) {
@@ -691,13 +691,17 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                     record = {listener: record};
                 }
                 var listener = fluid.expandOptions(record.listener, that);
+                if (!listener) {
+                    fluid.fail("Error in listener record - could not resolve reference " + record.listener + " to a listener or firer. "
+                    + "Did you miss out \"events.\" when referring to an event firer?");
+                }
                 if (listener.typeName === "fluid.event.firer") {
                     listener = listener.fire;
                 }
                 record.listener = fluid.event.dispatchListener(instantiator, that, listener, eventName, record);
                 return record;
             });
-        }); 
+        }, [ "    while resolving listener record for event named " + eventName + " for component ", that]); 
     };
     
     fluid.event.expandOneEvent = function(event, that) {
@@ -769,7 +773,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 };
             }
             return firer;
-        }); 
+        }, ["    while resolving event with name " + eventName + " attached to component ", that]); 
     };
     
         
@@ -830,7 +834,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 pres.restore(expanded);
             }
             return expanded;
-        });
+        }, ["    while expanding options for component of type " + that.typeName + ": ", that]);
     };
     
     // unsupported, non-API function    
@@ -913,7 +917,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.expandComponentOptions = fluid.wrapActivity(fluid.expandComponentOptions, 
         ["    while expanding component options ", "arguments.1.value", " with record ", "arguments.1", " for component ", "arguments.2"]);
     
-    fluid.applyInstantiator = function(userInstantiator, that, func) {
+    fluid.applyInstantiator = function(userInstantiator, that, func, message) {
         var root = fluid.threadLocal();
         if (userInstantiator) {
             var existing = root["fluid.instantiator"];
@@ -926,7 +930,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 fluid.log("*** restored USER instantiator with id " + userInstantiator.id + " - STORED");
             }
         }
-        return fluid.withInstantiator(that, func);
+        return fluid.withInstantiator(that, func, message);
     };
     
     // The case without the instantiator is from the ginger strategy - this logic is still a little ragged
@@ -1049,7 +1053,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 }, ["    while instantiating invoker with name \"" + name + "\" with record ", invokerec, " as child of ", that]); // jslint:ok
                 fluid.log("Finished instantiation of invoker with name \"" + name + "\" as child of " + fluid.dumpThat(that)); 
             }
-        });
+        }, ["    while instantiating dependent components for component " + that.typeName]);
     };   
         
     fluid.staticEnvironment = fluid.typeTag("fluid.staticEnvironment");
