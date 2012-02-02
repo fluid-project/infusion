@@ -97,7 +97,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (xhr.readyState === 4) {
                 var status = xhr.status;
                 // TODO: See a pattern here? Fix it.
-                if (status === 200) {
+                if (status >= 200 && status <= 204) {
                     fluid.uploader.html5Strategy.fileSuccessHandler(file, events, xhr);
                 } else if (status === 0) {
                     fluid.uploader.html5Strategy.fileStopHandler(file, events, xhr);
@@ -429,7 +429,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.locate("fileInputs").prop("disabled", true);
         };
         
-        that.isEnabled = function() {
+        that.isEnabled = function () {
             return !that.locate("fileInputs").prop("disabled");  
         };
         

@@ -304,20 +304,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         var checkRemoteFileHandler = function (uploader, fileset) {
-            var xhrStatus = [200, 0, 100];
-            var fileStatus = [
-                fluid.uploader.fileStatusConstants.COMPLETE,
-                fluid.uploader.fileStatusConstants.CANCELLED,
-                fluid.uploader.fileStatusConstants.ERROR
-            ];
+            var status = {
+                200: fluid.uploader.fileStatusConstants.COMPLETE,
+                201: fluid.uploader.fileStatusConstants.COMPLETE,
+                202: fluid.uploader.fileStatusConstants.COMPLETE,
+                203: fluid.uploader.fileStatusConstants.COMPLETE,
+                204: fluid.uploader.fileStatusConstants.COMPLETE,
+                0: fluid.uploader.fileStatusConstants.CANCELLED,
+                100: fluid.uploader.fileStatusConstants.ERROR,
+                205: fluid.uploader.fileStatusConstants.ERROR,
+                301: fluid.uploader.fileStatusConstants.ERROR,
+                404: fluid.uploader.fileStatusConstants.ERROR
+            };
             
-            for (var i = 0; i < xhrStatus.length; i++) {
+            for (var httpStatus in status) {
                 addFiles(uploader, fileset);
                 var file = uploader.queue.getReadyFiles()[0]; 
-                var xhr = createXHR(xhrStatus[i]);
+                var xhr = createXHR(parseInt(httpStatus, 10));
                 fluid.uploader.html5Strategy.monitorFileUploadXHR(file, uploader.events, xhr);
                 xhr.onreadystatechange();
-                jqUnit.assertEquals("The file status is updated", fileStatus[i], file.filestatus);
+                jqUnit.assertEquals("The file status is updated", status[httpStatus], file.filestatus);
 
                 // Clear the queue for the next test
                 uploader.queue.files = [];
