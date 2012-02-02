@@ -191,6 +191,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testPreservingMerge("model2", false, defaultModel);
         });
         
+        // NB - this implementation is in Fluid.js, but test is grouped with the one above
+        DataBindingTests.test("FLUID 4585 test: mergeModel with nested model", function () {
+            var defaults = {
+                twoLevels: {
+                    one: 1,
+                    two: 2,
+                    three: 3
+                }
+            };
+            var options = {
+                twoLevels: {
+                    two: "two"
+                }
+            };
+            var expected = {
+                twoLevels: {
+                    one: 1,
+                    two: "two",
+                    three: 3
+                }
+            };
+            var result = fluid.model.mergeModel(defaults, options);
+            jqUnit.assertDeepEq("Model should be properly merged", expected, result);
+        });
+        
         DataBindingTests.test("FLUID-3729 test: application into nothing", function () {
             var model = {};
             

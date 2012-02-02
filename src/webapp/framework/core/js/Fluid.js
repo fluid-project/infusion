@@ -1126,8 +1126,8 @@ var fluid = fluid || fluid_1_5;
     fluid.model.mergeModel = function (target, source, applier) {
         if (!fluid.isPrimitive(target)) {
             var copySource = fluid.copy(source);
-            $.extend(source, target);
-            $.extend(source, copySource);
+            $.extend(true, source, target);
+            $.extend(true, source, copySource);
         }
         return source; 
     };

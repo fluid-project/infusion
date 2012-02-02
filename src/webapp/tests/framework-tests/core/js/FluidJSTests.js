@@ -562,6 +562,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.lifecycleTest2({model: model});
         jqUnit.assertUndefined("Grade preInit function defeated", that.model);
         jqUnit.assertEquals("Priority order respected", 1, that.initted);
-        });
-        
+    });
+
 })(jQuery);
