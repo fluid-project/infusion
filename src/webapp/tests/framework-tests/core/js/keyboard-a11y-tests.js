@@ -604,4 +604,26 @@ if (!fluid.unwrap) {
         jqUnit.assertTrue("When onLeaveContainer is not specified, onUnselect should be called instead when tabbing out of the selectables container.", 
                           wasCalled);
     });
+
+    keyboardA11y.test("No-wrap options", function () {
+        // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
+        if (!$.browser.mozilla) {
+            return;
+        }
+        var menu = makeMenuSelectable({
+            noWrap: true
+        });
+
+        menu.items.fluid("selectable.select", getFirstMenuItem());
+        simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.UP);
+        keyboardA11y.assertSelected(getFirstMenuItem());
+        keyboardA11y.assertNotSelected(getLastMenuItem());
+
+        menu.items.fluid("selectable.select", getLastMenuItem());
+        simulateKeyDown(getLastMenuItem(), $.ui.keyCode.DOWN);
+        keyboardA11y.assertSelected(getLastMenuItem());
+        keyboardA11y.assertNotSelected(getFirstMenuItem());
+
+    });
+
 })(jQuery);
