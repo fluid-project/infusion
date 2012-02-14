@@ -336,7 +336,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     queueSettings: "{multiFileUploader}.options.queueSettings",
                     selectors: {
-                        browseButton: "{multiFileUploader}.selectors.browseButton"
+                        browseButton: "{multiFileUploader}.options.selectors.browseButton"
                     },
                     listeners: {
                         onFilesQueued: "{local}.addFiles"
