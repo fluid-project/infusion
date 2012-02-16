@@ -1,0 +1,12 @@
+[
+    "../framework/core/js/jquery.standalone.js",
+    "../framework/core/js/Fluid.js",
+    "../framework/core/js/FluidRequests.js",
+    "../framework/core/js/DataBinding.js",
+    "../framework/core/js/FluidIoC.js",
+    "../framework/core/js/ModelTransformations.js",
+    "../lib/fastXmlPull/js/fastXmlPull.js",
+    "../framework/renderer/js/fluidParser.js",
+    "../framework/renderer/js/fluidRenderer.js",
+    "../framework/renderer/js/RendererUtilities.js"
+]

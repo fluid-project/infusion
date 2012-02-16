@@ -1,0 +1,13 @@
+{
+  "name": "infusion",
+  "description": "Infusion is an application framework for developing flexible stuff with JavaScript.",
+  "version": "1.4",
+  "author": "Fluid Project",
+  "contributors": [],
+  "dependencies": {},
+  "devDependencies": {},
+  "keywords": ["infusion", "framework", "application", "fluid", "IoC", "Inversion of Control"],
+  "repository": "git://github.com/fluid-project/infusion.git",
+  "main": "./src/webapp/module/fluid.js",
+  "engines": { "node" : ">=0.1.9" }
+}
