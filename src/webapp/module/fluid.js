@@ -1,7 +1,5 @@
 /*
-Copyright 2009 University of Toronto
-Copyright 2010-2011 OCAD University
-Copyright 2011 Lucendo Development Ltd.
+Copyright 2012 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
