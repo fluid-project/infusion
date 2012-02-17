@@ -52,7 +52,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.require = function (moduleName, namespace) {
         namespace = namespace || moduleName;
         var module = require(moduleName);
-        console.log("Setting ", namespace, " to ", module);
         fluid.set(context, namespace, module);
         return module;
     };
