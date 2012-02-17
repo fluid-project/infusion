@@ -16,24 +16,27 @@
     });
 
     var loadInContext = function (path) {
-        var data = fs.readFileSync(buildPath(path));
-        vm.runInContext(data, context);
+        var fullpath = buildPath(path);
+        var data = fs.readFileSync(fullpath);
+        vm.runInContext(data, context, fullpath);
     };
 
-    var includes = fs.readFileSync(buildPath("includes.json")),
-        i;
+    var includes = fs.readFileSync(buildPath("includes.json"));
 
     includes = JSON.parse(includes)
 
-    for (i = 0; i < includes.length; ++i) {
+    for (var i = 0; i < includes.length; ++i) {
         loadInContext(includes[i]);
-    }
+    };
     
     var fluid = context.fluid;
 
-    fluid.require = function (module) {
-        context[module] = require(module);
-        return context[module];
+    fluid.require = function (moduleName, namespace) {
+        namespace = namespace || moduleName;
+        var module = require(moduleName);
+        console.log("Setting ", namespace, " to ", module);
+        fluid.set(context, namespace, module);
+        return module;
     };
 
     module.exports = fluid;
