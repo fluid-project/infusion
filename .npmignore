@@ -13,6 +13,7 @@ src/webapp/lib/swfupload
 src/webapp/framework/fss
 src/webapp/framework/enhancement
 build-scripts
+products
 project.xml
 project.properties
 pom.xml
