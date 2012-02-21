@@ -210,6 +210,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "*.uiOptionsLoader.*.uiOptions.*.textControls":       "textControls",
                 "*.uiOptionsLoader.*.uiOptions.*.layoutControls":     "layoutControls",
                 "*.uiOptionsLoader.*.uiOptions.*.linksControls":      "linksControls",
+                "*.uiOptionsLoader.*.uiOptions.*.mediaControls":      "mediaControls",
                 "*.uiOptionsLoader.*.uiOptions.*.preview":            "preview",
                 "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
             }
@@ -332,7 +333,8 @@ var fluid_1_5 = fluid_1_5 || {};
             uiOptions: "%prefix/FatPanelUIOptions.html",
             textControls: "%prefix/UIOptionsTemplate-text.html",
             layoutControls: "%prefix/UIOptionsTemplate-layout.html",
-            linksControls: "%prefix/UIOptionsTemplate-links.html"
+            linksControls: "%prefix/UIOptionsTemplate-links.html",
+            mediaControls: "%prefix/UIOptionsTemplate-media.html"
         },
         // Unsupported, non-API option
         components: {
@@ -466,6 +468,20 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             },
+            mediaControls: {
+                type: "fluid.uiOptions.mediaControls",
+                container: "{uiOptions}.dom.mediaControls",
+                createOnEvent: "onUIOptionsComponentReady",
+                options: {
+                    model: "{uiOptions}.model",
+                    applier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
+                    rendererOptions: "{uiOptions}.options.rendererOptions",
+                    events: {
+                        onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
+                    }
+                }
+            },
             preview: {
                 type: "fluid.uiOptions.preview",
                 createOnEvent: "onUIOptionsComponentReady",
@@ -479,6 +495,7 @@ var fluid_1_5 = fluid_1_5 || {};
             textControls: ".flc-uiOptions-text-controls",
             layoutControls: ".flc-uiOptions-layout-controls",
             linksControls: ".flc-uiOptions-links-controls",
+            mediaControls: ".flc-uiOptions-media-controls",
             cancel: ".flc-uiOptions-cancel",
             reset: ".flc-uiOptions-reset",
             save: ".flc-uiOptions-save",
@@ -818,6 +835,47 @@ var fluid_1_5 = fluid_1_5 || {};
 
         return tree;
     };
+
+    /*****************************
+     * UI Options Media Controls *
+     *****************************/
+    /**
+     * A sub-component of fluid.uiOptions that renders the "media" panel of the user preferences interface.
+     */
+    fluid.defaults("fluid.uiOptions.mediaControls", {
+        gradeNames: ["fluid.rendererComponent", "autoInit"], 
+        selectors: {
+            volume: ".flc-uiOptions-volume",
+            captions: ".flc-uiOptions-captions",
+            transcripts: ".flc-uiOptions-transcripts"
+        },
+        events: {
+            onUIOptionsRefresh: null    
+        },
+        listeners: {
+            onUIOptionsRefresh: "{mediaControls}.refreshView"     
+        },
+        preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
+        finalInitFunction: "fluid.uiOptions.controlsFinalInit",
+        produceTree: "fluid.uiOptions.mediaControls.produceTree",
+        resources: {
+            template: "{templateLoader}.resources.mediaControls"
+        }
+    });
+
+    fluid.uiOptions.mediaControls.produceTree = function (that) {
+        var tree = {};
+        // TODO: missing volume
+        for (var item in that.model.selections) {
+            if (item === "captions" || item === "transcripts") {
+                // render check boxes
+                tree[item] = "${selections." + item + "}";
+            }
+        }
+
+        return tree;
+    };
+
 
     /**********************
      * UI Options Preview *

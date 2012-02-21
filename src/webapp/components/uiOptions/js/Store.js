@@ -30,7 +30,9 @@ var fluid_1_5 = fluid_1_5 || {};
             layout: false,                // boolean
             toc: false,                   // boolean
             links: false,                 // boolean
-            inputsLarger: false           // boolean
+            inputsLarger: false,          // boolean
+            captions: false,              // boolean
+            transcripts: false            // boolean
         }
     });
     
