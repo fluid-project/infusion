@@ -152,9 +152,16 @@
 }
 
 .fl-uiOptions .fl-icon {
-    height: 2em;
     width: 2em;
     padding-top: 1em;
+}
+
+.fl-uiOptions-volume .fl-slider {
+    top: .36em;
+}
+
+.fl-uiOptions-media li {
+    padding-right: 7em;
 }
 
 /* Theming */
