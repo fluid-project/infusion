@@ -32,7 +32,8 @@ var fluid_1_5 = fluid_1_5 || {};
             links: false,                 // boolean
             inputsLarger: false,          // boolean
             captions: false,              // boolean
-            transcripts: false            // boolean
+            transcripts: false,           // boolean
+            volume: 50                    // number between 0 and 100
         }
     });
     

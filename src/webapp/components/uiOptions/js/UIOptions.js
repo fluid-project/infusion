@@ -865,11 +865,17 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uiOptions.mediaControls.produceTree = function (that) {
         var tree = {};
-        // TODO: missing volume
         for (var item in that.model.selections) {
             if (item === "captions" || item === "transcripts") {
                 // render check boxes
                 tree[item] = "${selections." + item + "}";
+            } else if (item === "volume") {
+                tree[item] = {
+                    decorators: {
+                        type: "jQuery",
+                        func: "slider"
+                    }
+                };
             }
         }
 
