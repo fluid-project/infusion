@@ -60,7 +60,7 @@
 }
 
 /* Tab images */
-.fl-uiOptions-fatPanel .fl-tab-text, .fl-uiOptions-fatPanel .fl-tab-layout, .fl-uiOptions-fatPanel .fl-tab-links, .fl-uiOptions-fatPanel #reset {
+.fl-uiOptions-fatPanel .fl-tab-text, .fl-uiOptions-fatPanel .fl-tab-layout, .fl-uiOptions-fatPanel .fl-tab-links, .fl-uiOptions-fatPanel .fl-tab-media, .fl-uiOptions-fatPanel #reset {
     background-repeat: no-repeat;
     background-position: 8% 50%;
 }
@@ -68,10 +68,20 @@
 .fl-uiOptions-fatPanel .fl-tab-text { background-image: url('../images/default/uio_icon_textanddisplay_defaultInverted_16x16.png'); }
 .fl-uiOptions-fatPanel .fl-tab-layout { background-image: url('../images/default/uio_icon_layoutandnavigation_defaultInverted_16x16.png'); }
 .fl-uiOptions-fatPanel .fl-tab-links { background-image: url('../images/default/uio_icon_linksandbuttons_defaultInverted_16x16.png'); }
+.fl-theme-wb .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-media, /* override for wb theme */
+.fl-theme-wb .fl-uiOptions-fatPanel .ui-state-hover .fl-tab-media, /* override for wb theme */
+.fl-uiOptions-fatPanel .fl-tab-media { background-image: url('../images/wb/uio_icon_audioandvideo_white_18x18.png'); }
 .fl-uiOptions-fatPanel #reset { background-image: url('../images/default/uio_icon_reset_defaultInverted_16x16.png'); }
 .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-text { background-image: url('../images/default/uio_icon_textanddisplay_default_16x16.png'); }
 .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-layout { background-image: url('../images/default/uio_icon_layoutandnavigation_default_16x16.png'); }
 .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-links { background-image: url('../images/default/uio_icon_linksandbuttons_default_16x16.png'); }
+.fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-media,
+.fl-theme-bw .fl-uiOptions-fatPanel .ui-state-hover .fl-tab-media, /* override for bw theme */
+.fl-theme-wb .fl-uiOptions-fatPanel .fl-tab-media, /* override for wb theme */
+.fl-theme-yb .fl-uiOptions-fatPanel .fl-tab-media, /* override for yb theme */
+.fl-theme-by .fl-uiOptions-fatPanel .ui-state-hover .fl-tab-media, /* override for by theme */ 
+.fl-theme-by .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-media /* override for by theme */ 
+ { background-image: url('../images/bw/uio_icon_audioandvideo_black_18x18.png'); }
 
 /* Tab Pane */
 ul.fl-pane li {
@@ -142,6 +152,10 @@ ul.fl-pane li {
 .fl-theme-by .fl-uiOptions-fatPanel .fl-tab-text { background-image: url('../images/by/uio_icon_textanddisplay_blackYellowInverted_16x16.png'); }
 .fl-theme-by .fl-uiOptions-fatPanel .fl-tab-layout { background-image: url('../images/by/uio_icon_layoutandnavigation_blackYellowInverted_16x16.png'); }
 .fl-theme-by .fl-uiOptions-fatPanel .fl-tab-links { background-image: url('../images/by/uio_icon_linksandbuttons_blackYellowInverted_16x16.png'); }
+.fl-theme-by .fl-uiOptions-fatPanel .fl-tab-media,
+.fl-theme-yb .fl-uiOptions-fatPanel .ui-state-hover .fl-tab-media,
+.fl-theme-yb .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-media
+ { background-image: url('../images/yb/uio_icon_audioandvideo_yellow_18x18.png'); }
 .fl-theme-by .fl-uiOptions-fatPanel #reset { background-image: url('../images/by/uio_icon_reset_blackYellowInverted_16x16.png'); }
 .fl-theme-by .fl-uiOptions-fatPanel .ui-tabs-selected .fl-tab-text,
 .fl-theme-by .fl-uiOptions-fatPanel .ui-state-hover .fl-tab-text { background-image: url('../images/by/uio_icon_textanddisplay_blackYellow_16x16.png'); }
