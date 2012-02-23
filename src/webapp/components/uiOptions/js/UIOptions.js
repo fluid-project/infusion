@@ -872,8 +872,13 @@ var fluid_1_5 = fluid_1_5 || {};
             } else if (item === "volume") {
                 tree[item] = {
                     decorators: {
-                        type: "jQuery",
-                        func: "slider"
+                        type: "fluid",
+                        func: "fluid.textfieldSlider.slider",
+                        options: {
+                            model: {
+                                value: that.model.selections[item]
+                            }
+                        }
                     }
                 };
             }
