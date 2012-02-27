@@ -55,11 +55,11 @@ var fluid = fluid || fluid_1_5;
 
         // Use native String.trim function wherever possible
         trim: trim ? function( text ) {
-            return text == null ? "" : trim.call( text );
+            return text === null ? "" : trim.call( text );
         } :
         // Otherwise use our own trimming functionality
         function( text ) {
-            return text == null ? "" : text.toString().replace( trimLeft, "" ).replace( trimRight, "" );
+            return text === null ? "" : text.toString().replace( trimLeft, "" ).replace( trimRight, "" );
         },
         
         // A crude way of determining if an object is a window
