@@ -33,6 +33,7 @@ var fluid_1_5 = fluid_1_5 || {};
             inputsLarger: false,          // boolean
             captions: false,              // boolean
             transcripts: false,           // boolean
+            language: "en",               // ISO 639-1 language code
             volume: 50                    // number between 0 and 100
         }
     });
@@ -84,7 +85,7 @@ var fluid_1_5 = fluid_1_5 || {};
             } 
         }
         
-        return retObj || defaults;
+        return $.extend(true, {}, defaults, retObj);
     };
     
     /**

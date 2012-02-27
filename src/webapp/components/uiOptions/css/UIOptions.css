@@ -160,10 +160,6 @@
     top: .36em;
 }
 
-.fl-uiOptions-media li {
-    padding-right: 7em;
-}
-
 /* Theming */
 .fl-theme-bw .ui-slider-horizontal .ui-slider-handle,
 .fl-theme-wb .ui-slider-horizontal .ui-slider-handle,

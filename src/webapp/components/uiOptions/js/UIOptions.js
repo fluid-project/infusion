@@ -42,7 +42,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{textfieldSlider}.dom.slider",
                 options: {
                     model: "{textfieldSlider}.model",
-                    applier: "{textfieldSlider}.applier"
+                    applier: "{textfieldSlider}.applier",
+                    sliderOptions: "{textfieldSlider}.options.sliderOptions"
                 }
             }
         },
@@ -60,30 +61,26 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         sliderOptions: {
             orientation: "horizontal",
-            step: 0.1
+            step: 1.0
         }, 
         finalInitFunction: "fluid.textfieldSlider.finalInit"
     });    
     
     fluid.textfieldSlider.finalInit = function (that) {
-        // initialize slider
-        var sliderOptions = $.extend(true, {}, that.options.sliderOptions, that.model);
-        
-        that.slider.initSlider(sliderOptions);
 
         that.refreshView = function () {
             var val = that.model.value;
-            
             that.textfield.container.val(val);
-            that.slider.setSliderValue(val);
-            that.slider.setSliderAria(val);
         };
         
+        // TODO: replace this with "model events relay" system.
+        // problem: if we place these directly in "events", this will destroy all
+        // existing events named "modelChanged".
         that.applier.modelChanged.addListener("value", 
             function (newModel) {
                 that.events.modelChanged.fire(newModel.value);
             }
-            );
+        );
 
         that.events.modelChanged.addListener(that.refreshView);
 
@@ -107,7 +104,6 @@ var fluid_1_5 = fluid_1_5 || {};
             } else if (newValue > model.max) {
                 newValue = model.max;
             }
-            
             changeRequest.value = newValue;
         } else {
             changeRequest.value = oldValue;
@@ -127,13 +123,16 @@ var fluid_1_5 = fluid_1_5 || {};
         finalInitFunction: "fluid.textfieldSlider.slider.finalInit",
         selectors: {
             thumb: ".ui-slider-handle"
-        }
+        },
+        events: {
+            modelChanged: null
+        },
     });
     
     // This will be removed once the jQuery UI slider has built in ARIA 
     var initSliderAria = function (thumb, opts) {
         var ariaDefaults = {
-            role: 'slider',
+            role: "slider",
             "aria-valuenow": opts.value,
             "aria-valuemin": opts.min,
             "aria-valuemax": opts.max
@@ -142,12 +141,10 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.textfieldSlider.slider.finalInit = function (that) {
-        that.slider = that.container.slider(that.model);
+        var sliderOptions = $.extend(true, {}, that.options.sliderOptions, that.model);
         
-        that.initSlider = function (sliderOptions) {
-            var slider = that.slider.slider(sliderOptions);
-            initSliderAria(that.locate("thumb"), sliderOptions);
-        };
+        that.slider = that.container.slider(sliderOptions);
+        initSliderAria(that.locate("thumb"), sliderOptions);
         
         that.setSliderValue = function (value) {
             that.slider.slider("value", value);
@@ -160,6 +157,15 @@ var fluid_1_5 = fluid_1_5 || {};
         that.slider.bind("slide", function (e, ui) {
             that.applier.requestChange("value", ui.value);
         });
+        
+        that.applier.modelChanged.addListener("value", 
+            function (newModel) {
+                that.setSliderValue(newModel.value);
+                that.setSliderAria(newModel.value);
+                that.events.modelChanged.fire(newModel.value);
+            }
+        );
+        
     };
 
 })(jQuery, fluid_1_5);
@@ -475,7 +481,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     model: "{uiOptions}.model",
                     applier: "{uiOptions}.applier",
-                    classnameMap: "{uiEnhancer}.options.classnameMap",
                     rendererOptions: "{uiOptions}.options.rendererOptions",
                     events: {
                         onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
@@ -614,21 +619,21 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
 
-    var initModel = function (that) {
+    var optionsToLabelMap = function (that) {
         fluid.each(that.options.controlValues, function (item, key) {
             that.applier.requestChange("labelMap." + key, {
                 values: that.options.controlValues[key],
                 names: that.options.strings[key],
-                classes: that.options.classnameMap[key]
+                classes: fluid.get(that, "options.classnameMap."+key)
             });
         });
     };
     
-    var createSliderNode = function (that, item) {
+    var createSliderNode = function (that, item, type, options) {
         return {
             decorators: {
                 type: "fluid",
-                func: "fluid.textfieldSlider",
+                func: type,
                 options: {
                     listeners: {
                         modelChanged: function (value) {
@@ -639,14 +644,16 @@ var fluid_1_5 = fluid_1_5 || {};
                         min: that.options[item].min,
                         max: that.options[item].max,
                         value: that.model.selections[item]
-                    }
+                        
+                    },
+                    sliderOptions: that.options[item].sliderOptions
                 }
             }
         };
     };
     
     fluid.uiOptions.controlsFinalInit = function (that) {
-        initModel(that);
+        optionsToLabelMap(that);
         that.refreshView();        
     };
     
@@ -678,11 +685,19 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         textSize: {
             min: 1,
-            max: 2
+            max: 2,
+            sliderOptions: {
+                orientation: "horizontal",
+                step: 0.1
+            } 
         },
         lineSpacing: {
             min: 1,
-            max: 2
+            max: 2,
+            sliderOptions: {
+                orientation: "horizontal",
+                step: 0.1
+            } 
         },
         selectors: {
             textFont: ".flc-uiOptions-text-font",
@@ -724,7 +739,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 };
             } else if (item === "textSize" || item === "lineSpacing") {
                 // textfield sliders
-                tree[item] = createSliderNode(that, item);
+                tree[item] = createSliderNode(that, item, "fluid.textfieldSlider");
             }
         }
         
@@ -844,10 +859,25 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.mediaControls", {
         gradeNames: ["fluid.rendererComponent", "autoInit"], 
+        strings: {
+            language: ["Engliah", "French"]
+        },
+        controlValues: {
+            language: ["en", "fr"] 
+        },
+        volume: {
+            min: 0,
+            max: 100,
+            sliderOptions: {
+                orientation: "horizontal",
+                step: 10
+            }
+        },
         selectors: {
             volume: ".flc-uiOptions-volume",
             captions: ".flc-uiOptions-captions",
-            transcripts: ".flc-uiOptions-transcripts"
+            transcripts: ".flc-uiOptions-transcripts",
+            language: ".flc-uiOptions-language"
         },
         events: {
             onUIOptionsRefresh: null    
@@ -855,6 +885,7 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             onUIOptionsRefresh: "{mediaControls}.refreshView"     
         },
+
         preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
         finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.mediaControls.produceTree",
@@ -869,18 +900,14 @@ var fluid_1_5 = fluid_1_5 || {};
             if (item === "captions" || item === "transcripts") {
                 // render check boxes
                 tree[item] = "${selections." + item + "}";
-            } else if (item === "volume") {
+            } else if (item === "language") {
                 tree[item] = {
-                    decorators: {
-                        type: "fluid",
-                        func: "fluid.textfieldSlider.slider",
-                        options: {
-                            model: {
-                                value: that.model.selections[item]
-                            }
-                        }
-                    }
-                };
+                    optionnames: "${labelMap." + item + ".names}",
+                    optionlist: "${labelMap." + item + ".values}",
+                    selection: "${selections.language}",
+                }
+            } else if (item === "volume") {
+                tree[item] = createSliderNode(that, item, "fluid.textfieldSlider.slider");
             }
         }
 

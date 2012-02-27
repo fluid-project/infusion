@@ -54,7 +54,7 @@
 .fl-uiOptions-fatPanel.ui-widget-content { border: none; }
 .fl-uiOptions-fatPanel.ui-tabs .ui-widget-header { background: none; border: 0px; background-color: #333333; }
 
-.fl-uiOptions-fatPanel.ui-tabs .ui-tabs-panel ul {
+ul.fl-uiOptions-topContainer {
     margin: 0em;
     padding-top: 1.5em;
 }
