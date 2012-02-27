@@ -1,0 +1,16 @@
+li.fl-media-column {
+    float: left;
+    }
+
+.fl-media-column li {
+    clear: both;
+}
+
+ul.fl-uiOptions-nestedList {
+    padding-top: 0em;
+    margin: 0em;
+}
+
+li.fl-uiOptions-volume {
+    padding-right: 7em;
+}
