@@ -28,7 +28,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     var context = vm.createContext({
-        window: {}
+        window: {},
+        console: console
     });
 
     var loadInContext = function (path) {
