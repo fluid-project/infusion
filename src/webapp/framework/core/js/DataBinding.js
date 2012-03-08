@@ -740,7 +740,7 @@ var fluid_1_5 = fluid_1_5 || {};
         };
         
         that.hasChangeSource = function (source) {
-          
+            return false;
         };
         
         return that;
