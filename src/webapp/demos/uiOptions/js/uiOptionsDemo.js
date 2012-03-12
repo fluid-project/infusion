@@ -90,7 +90,23 @@ var demo = demo || {};
     demo.initFatPanel = function (container) {        
         fluid.uiOptions.fatPanel(container, {
             // Tell UIOptions where to find all the templates, relative to this file
-            prefix: pathToTemplates
+            prefix: pathToTemplates,
+            slidingPanel: {
+                options: {
+                    strings: {
+                        showText: "+ Mostrar preferencias de visualización ",
+                        hideText: "- Ocultar"
+                    }
+                }
+            },
+            textControls: {
+                options: {
+                    strings: {
+                        textFont: ["Predeterminado", "Times New Roman", "Comic Sans", "Arial", "Verdana"],
+                        theme: ["Predeterminado", "Negro sobre blanco ", "Blanco sobre negro ", "Negro sobre amarillo ", "Amarillo sobre negro "]
+                    }
+                }
+            }
         });
     };
 

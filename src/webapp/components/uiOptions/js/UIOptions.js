@@ -652,8 +652,8 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.textControls", {
         gradeNames: ["fluid.rendererComponent", "autoInit"], 
         strings: {
-            textFont: ["Predeterminado", "Times New Roman", "Comic Sans", "Arial", "Verdana"],
-            theme: ["Predeterminado", "Negro sobre blanco ", "Blanco sobre negro ", "Negro sobre amarillo ", "Amarillo sobre negro "]
+            textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"],
+            theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
         },
         controlValues: { 
             textFont: ["default", "times", "comic", "arial", "verdana"],
