@@ -129,7 +129,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // Return an array of objects describing the current activity
     // unsupported, non-API function
     fluid.describeActivity = function() {
-        return fluid.threadLocal().activityStack || [];
+        return fluid.globalThreadLocal().activityStack || [];
     };
     
     // Execute the supplied function with the specified activity description pushed onto the stack
@@ -138,7 +138,7 @@ var fluid_1_5 = fluid_1_5 || {};
         if (!message || fluid.notrycatch) {
             return func();
         }
-        var root = fluid.threadLocal();
+        var root = fluid.globalThreadLocal();
         if (!root.activityStack) {
             root.activityStack = [];
         }
@@ -252,7 +252,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that.getEnvironmentalStack = function() {
             var togo = [fluid.staticEnvironment];
             if (!freeInstantiator) {
-                togo.push(fluid.threadLocal());
+                togo.push(fluid.globalThreadLocal());
             }
             return togo;
         };
@@ -918,7 +918,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         ["    while expanding component options ", "arguments.1.value", " with record ", "arguments.1", " for component ", "arguments.2"]);
     
     fluid.applyInstantiator = function(userInstantiator, that, func, message) {
-        var root = fluid.threadLocal();
+        var root = fluid.globalThreadLocal();
         if (userInstantiator) {
             var existing = root["fluid.instantiator"];
             if (existing && existing !== userInstantiator) {
@@ -979,7 +979,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // NON-API function
     // This function is stateful and MUST NOT be called by client code
     fluid.withInstantiator = function(that, func, message) {
-        var root = fluid.threadLocal();
+        var root = fluid.globalThreadLocal();
         var instantiator = root["fluid.instantiator"];
         if (!instantiator) {
             instantiator = root["fluid.instantiator"] = fluid.instantiator();
@@ -1060,16 +1060,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.staticEnvironment.environmentClass = fluid.typeTag("fluid.browser");
     
-    // fluid.environmentalRoot.environmentClass = fluid.typeTag("fluid.rhino");
-    
-    var singleThreadLocal = fluid.typeTag("fluid.dynamicEnvironment");
-    
-    fluid.singleThreadLocal = function() {
-        return singleThreadLocal;
-    };
-
-    // Return to the old strategy of monkey-patching this, since this is a most frequently used function within IoC
-    fluid.threadLocal = fluid.singleThreadLocal;
+    fluid.globalThreadLocal = fluid.threadLocal(function() {
+        return fluid.typeTag("fluid.dynamicEnvironment");
+    });
 
     function applyLocalChange(applier, type, path, value) {
         var change = {
@@ -1083,7 +1076,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // unsupported, non-API function
     fluid.withEnvironment = function(envAdd, func, prefix) {
         prefix = prefix || "";
-        var root = fluid.threadLocal();
+        var root = fluid.globalThreadLocal();
         var applier = fluid.makeChangeApplier(root, {thin: true});
         return fluid.tryCatch(function() {
             for (var key in envAdd) {
@@ -1103,7 +1096,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // unsupported, non-API function  
     fluid.makeEnvironmentFetcher = function(prefix, directModel, elResolver) {
         return function(parsed) {
-            var env = fluid.get(fluid.threadLocal(), prefix);
+            var env = fluid.get(fluid.globalThreadLocal(), prefix);
             return fluid.fetchContextReference(parsed, directModel, env, elResolver);
         };
     };

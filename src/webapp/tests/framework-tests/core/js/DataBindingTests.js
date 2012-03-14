@@ -383,6 +383,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertFalse("Model unchanged ", modelChangedCheck);
         });
         
+        
+        
+        DataBindingTests.test("FLUID-4633 test - source tracking", function() {
+            var model = {
+                property1: 1,
+                property2: 2  
+            };
+            var applier = fluid.makeChangeApplier(model);
+      
+            var indirect = fluid.makeEventFirer();
+            applier.modelChanged.addListener("property1", function() {
+                indirect.fire();
+            });
+            indirect.addListener(function() {
+                fluid.fireSourcedChange(applier, "property2", 3, "indirectSource");
+            });
+            var listenerFired = false;
+            fluid.addSourceGuardedListener(applier, "property2", "originalSource", function() {
+                listenerFired = applier.hasChangeSource("indirectSource");
+            });
+            fluid.fireSourcedChange(applier, "property1", 2, "originalSource");
+            jqUnit.assertFalse("Recurrence censored from originalSource", listenerFired);
+            fluid.fireSourcedChange(applier, "property1", 3, "alternateSource");
+            jqUnit.assertTrue("Recurrence propagated from alternate source", listenerFired);
+            
+            
+        });
+        
         DataBindingTests.test("ChangeApplier", function () {
             var outerDAR = null;
             function checkingGuard(model, dar) {
