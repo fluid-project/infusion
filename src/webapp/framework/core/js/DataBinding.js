@@ -432,41 +432,20 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     };
-    
-    // Utility shared between changeApplier and superApplier
-    
-    function bindRequestChange(that) {
-        that.requestChange = function (path, value, type) {
-            var changeRequest = {
-                path: path,
-                value: value,
-                type: type
-            };
-            that.fireChangeRequest(changeRequest);
-        };
-    }
-    
-    
-    // TODO: put into framework
-    fluid.hasChangeSource = function (changes, source) {
-        return fluid.find(changes, function(change) {
-            if (change.source === source) {
-                return true;
-            }
-        });
-    };
-    
+          
     /** Add a listener to a ChangeApplier event that only acts in the case the event
      * has not come from the specified source (typically ourself)
      * @param modelEvent An model event held by a changeApplier (typically applier.modelChanged)
      * @param path The path specification to listen to
      * @param source The source value to exclude (direct equality used)
      * @param func The listener to be notified of a change
+     * @param [eventName] - optional - the event name to be listened to - defaults to "modelChanged" 
      */
-    fluid.addSourceGuardedListener = function(modelEvent, path, source, func) {
-        modelEvent.addListener(path, 
-            function(newModel, oldModel, changes) {
-                if (!fluid.hasChangeSource(changes, source)) {
+    fluid.addSourceGuardedListener = function(applier, path, source, func, eventName) {
+        eventName = eventName || "modelChanged";
+        applier[eventName].addListener(path, 
+            function() {
+                if (!applier.hasChangeSource(source)) {
                     func.apply(null, arguments);
             }
         });
@@ -491,6 +470,38 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
   
+    // Utility shared between changeApplier and superApplier
+    
+    function bindRequestChange(that) {
+        that.requestChange = function (path, value, type) {
+            var changeRequest = {
+                path: path,
+                value: value,
+                type: type
+            };
+            that.fireChangeRequest(changeRequest);
+        };
+    }
+    
+    // Utility used for source tracking in changeApplier
+    
+    function sourceWrapModelChanged(modelChanged, threadLocal) {
+        return function(changeRequest) {
+            var sources = threadLocal().sources;
+            var args = arguments;
+            var source = changeRequest.source || "";
+            fluid.tryCatch(function() {
+                if (sources[source] === undefined) {
+                    sources[source] = 0;
+                }
+                ++sources[source];
+                modelChanged.apply(null, args);
+            }, null, function() {
+                --sources[source];
+            });
+        };
+    }
+  
     fluid.makeChangeApplier = function (model, options) {
         options = options || {};
         var baseEvents = {
@@ -498,6 +509,7 @@ var fluid_1_5 = fluid_1_5 || {};
             postGuards: fluid.event.getEventFirer(false, true, "postGuard event"),
             modelChanged: fluid.event.getEventFirer(false, false, "modelChanged event")
         };
+        var threadLocal = fluid.threadLocal(function() { return {sources: {}};});
         var that = {
         // For now, we don't use "id" to avoid confusing component detection which uses
         // a simple algorithm looking for that field
@@ -657,6 +669,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         };
         
+        that.fireChangeRequest = sourceWrapModelChanged(that.fireChangeRequest, threadLocal);
         bindRequestChange(that);
 
         function fireAgglomerated(eventName, formName, changes, args, accpos) {
@@ -734,13 +747,15 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             };
+            
+            ation.fireChangeRequest = sourceWrapModelChanged(ation.fireChangeRequest, threadLocal);
             bindRequestChange(ation);
 
             return ation;
         };
         
         that.hasChangeSource = function (source) {
-            return false;
+            return threadLocal().sources[source] > 0;
         };
         
         return that;
