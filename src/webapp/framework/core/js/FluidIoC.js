@@ -693,7 +693,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 var listener = fluid.expandOptions(record.listener, that);
                 if (!listener) {
                     fluid.fail("Error in listener record - could not resolve reference " + record.listener + " to a listener or firer. "
-                    + "Did you miss out \"events.\" when referring to an event firer?");
+                        + "Did you miss out \"events.\" when referring to an event firer?");
                 }
                 if (listener.typeName === "fluid.event.firer") {
                     listener = listener.fire;
@@ -1063,44 +1063,36 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.globalThreadLocal = fluid.threadLocal(function() {
         return fluid.typeTag("fluid.dynamicEnvironment");
     });
-
-    function applyLocalChange(applier, type, path, value) {
-        var change = {
-            type: type,
-            path: path,
-            value: value
-        };
-        applier.fireChangeRequest(change);
-    }
-
+    
+    // Although the following two functions are unsupported and not part of the IoC
+    // implementation proper, they are still used in the renderer
+    // expander as well as in some old-style tests and various places in CSpace.
+    
     // unsupported, non-API function
-    fluid.withEnvironment = function(envAdd, func, prefix) {
-        prefix = prefix || "";
-        var root = fluid.globalThreadLocal();
-        var applier = fluid.makeChangeApplier(root, {thin: true});
+    fluid.withEnvironment = function(envAdd, func, root) {
+        root = root || fluid.globalThreadLocal();
         return fluid.tryCatch(function() {
             for (var key in envAdd) {
-                applyLocalChange(applier, "ADD", fluid.model.composePath(prefix, key), envAdd[key]);
+                root[key] = envAdd[key];
             }
             $.extend(root, envAdd);
             return func();
         }, null, function() {
             for (var key in envAdd) { // jslint:ok duplicate "value"
-              // TODO: This could be much better through i) refactoring the ChangeApplier so we could naturally use "rollback" semantics 
-              // and/or implementing this material using some form of "prototype chain"
-                applyLocalChange(applier, "DELETE", fluid.model.composePath(prefix, key));
+                delete root[key]; // TODO: users may want a recursive "scoping" model
             }
         });
     };
     
     // unsupported, non-API function  
-    fluid.makeEnvironmentFetcher = function(prefix, directModel, elResolver) {
+    fluid.makeEnvironmentFetcher = function(directModel, elResolver, envGetter) {
+        envGetter = envGetter || fluid.globalThreadLocal;
         return function(parsed) {
-            var env = fluid.get(fluid.globalThreadLocal(), prefix);
+            var env = envGetter();
             return fluid.fetchContextReference(parsed, directModel, env, elResolver);
         };
     };
-    
+
     // unsupported, non-API function  
     fluid.extractEL = function(string, options) {
         if (options.ELstyle === "ALL") {
