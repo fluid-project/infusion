@@ -860,7 +860,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.mediaControls", {
         gradeNames: ["fluid.rendererComponent", "autoInit"], 
         strings: {
-            language: ["Engliah", "French"]
+            language: ["English", "French"]
         },
         controlValues: {
             language: ["en", "fr"] 

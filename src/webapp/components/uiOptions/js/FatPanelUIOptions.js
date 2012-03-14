@@ -111,6 +111,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 createOnEvent: "templatesAndIframeReady",
                 container: "{iframeRenderer}.renderUIOContainer",
                 options: {
+                    // ensure that model and applier are available to users at top level
+                    model: "{fatPanel}.model",
+                    applier: "{fatPanel}.applier",
                     events: {
                         onSignificantDOMChange: null  
                     },
