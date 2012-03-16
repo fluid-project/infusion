@@ -66,6 +66,14 @@ var demo = demo || {};
                     }
                 }
             }
+        },
+        textControls: {
+            options: {
+                strings: {
+                    textFont: ["Predeterminado", "Times New Roman", "Comic Sans", "Arial", "Verdana"],
+                    theme: ["Predeterminado", "Negro sobre blanco ", "Blanco sobre negro ", "Negro sobre amarillo ", "Amarillo sobre negro "]
+                }
+            }
         }
     };
 
