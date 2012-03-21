@@ -479,5 +479,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             applier.fireChangeRequest({path: "innerProperty.innerPath2", type: "DELETE"});
             jqUnit.assertEquals("Removed via deletion", undefined, model.innerProperty.innerpath2);
         });
+        
+        DataBindingTests.test("FLUID-4625 test: Over-broad changes", function() {
+            // This tests FLUID-4625 - we don't test at the utility level of matchPath since this is the functional
+            // behaviour required. In practice we may want a better implementation which explodes composite changes into
+            // smaller increments so that we can avoid unnecessary notifications, but this at least covers the case
+            // of missed notifications
+            var model = {
+                selections: {
+                    lineSpacing: 1.0
+                }  
+            };
+            var applier = fluid.makeChangeApplier(model);
+            var notified = false;
+            applier.modelChanged.addListener("selections.linespacing", function() {
+                notified = true;
+            });
+            applier.requestChange("selections", {lineSpacing: 1.5});
+            jqUnit.assertTrue("Over-broad change triggers listener", notified);
+        });
     });
 })(jQuery);

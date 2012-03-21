@@ -1,5 +1,5 @@
 /*
-Copyright 2012 OCAD University
+Copyright 2012 OCAD University, Antranig Basman
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -28,7 +28,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     var context = vm.createContext({
-        window: {}
+        window: {},
+        console: console
     });
 
     var loadInContext = function (path) {
@@ -47,11 +48,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     var fluid = context.fluid;
 
-    fluid.require = function (moduleName, namespace) {
+    fluid.require = function (moduleName, foreignRequire, namespace) {
+        foreignRequire = foreignRequire || require;
         namespace = namespace || moduleName;
-        var module = require(moduleName);
+        var module = foreignRequire(moduleName);
         fluid.set(context, namespace, module);
         return module;
+    };
+    
+    fluid.getLoader = function (dirName, foreignRequire) {
+        return {
+            require: function (moduleName, namespace) {
+                if (moduleName.indexOf("/") > -1) {
+                    moduleName = dirName + "/" + moduleName;
+                }
+                return fluid.require(moduleName, foreignRequire, namespace);
+            }
+        }
     };
 
     module.exports = fluid;

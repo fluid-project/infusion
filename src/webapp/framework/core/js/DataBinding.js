@@ -374,11 +374,11 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.pathUtil.matchPath = function (spec, path) {
         var togo = "";
         while (true) {
-            if (!spec || path === "") {
+            // FLUID-4625 - symmetry on spec and path is actually undesirable, but this
+            // quickly avoids at least missed notifications - improved (but slower) 
+            // implementation should explode composite changes
+            if (!spec || !path) {
                 break;
-            }
-            if (!path) {
-                return null;
             }
             var spechead = fluid.pathUtil.getHeadPath(spec);
             var pathhead = fluid.pathUtil.getHeadPath(path);
