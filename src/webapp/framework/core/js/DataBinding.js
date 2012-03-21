@@ -16,7 +16,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*global fluid_1_5:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, continue: true, elsecatch: true, operator: true, jslintok:true, undef: true, newcap: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_5 = fluid_1_5 || {};
 
@@ -45,7 +45,7 @@ var fluid_1_5 = fluid_1_5 || {};
         node = fluid.unwrap(node);
         var key = node.name || node.id;
         var record = fossils[key];
-        return record ? record.EL: null;
+        return record ? record.EL : null;
     };
   
     fluid.findForm = function (node) {
@@ -65,9 +65,9 @@ var fluid_1_5 = fluid_1_5 || {};
             node = node[0];
             multiple = true;
         }
-        if ("input" !== node.nodeName.toLowerCase() || ! /radio|checkbox/.test(node.type)) {
+        if ("input" !== node.nodeName.toLowerCase() || !/radio|checkbox/.test(node.type)) {
             // resist changes to contract of jQuery.val() in jQuery 1.5.1 (see FLUID-4113)
-            return newValue === undefined? $(node).val() : $(node).val(newValue);
+            return newValue === undefined ? $(node).val() : $(node).val(newValue);
         }
         var name = node.name;
         if (name === undefined) {
@@ -76,12 +76,10 @@ var fluid_1_5 = fluid_1_5 || {};
         var elements;
         if (multiple) {
             elements = nodeIn;
-        }
-        else {
+        } else {
             elements = node.ownerDocument.getElementsByName(name);
             var scope = fluid.findForm(node);
-            elements = $.grep(elements, 
-            function (element) {
+            elements = $.grep(elements, function (element) {
                 if (element.name !== name) {
                     return false;
                 }
@@ -99,8 +97,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 this.checked = (newValue instanceof Array ? 
                     $.inArray(this.value, newValue) !== -1 : newValue === this.value);
             });
-        }
-        else { // this part jQuery will not do - extracting value from <input> array
+        } else { // this part jQuery will not do - extracting value from <input> array
             var checked = $.map(elements, function (element) {
                 return element.checked ? element.value : null;
             });
@@ -128,13 +125,12 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.fail("No fossil discovered for name " + name + " in fossil record above " + fluid.dumpEl(node));
         }
         if (typeof(fossil.oldvalue) === "boolean") { // deal with the case of an "isolated checkbox"
-            newValue = newValue[0] ? true: false;
+            newValue = newValue[0] ? true : false;
         }
         var EL = root.fossils[name].EL;
         if (applier) {
             applier.fireChangeRequest({path: EL, value: newValue, source: node.id});
-        }
-        else {
+        } else {
             fluid.set(root.data, EL, newValue);
         }    
     };
@@ -417,7 +413,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 if (request.type === "ADD") {
                     fluid.clear(pen.root);
                 }
-                $.extend(true, request.path === "" ? pen.root: pen.root[pen.last], request.value);
+                $.extend(true, request.path === "" ? pen.root : pen.root[pen.last], request.value);
             }
             else {
                 pen.root[pen.last] = request.value;
@@ -432,7 +428,44 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     };
+          
+    /** Add a listener to a ChangeApplier event that only acts in the case the event
+     * has not come from the specified source (typically ourself)
+     * @param modelEvent An model event held by a changeApplier (typically applier.modelChanged)
+     * @param path The path specification to listen to
+     * @param source The source value to exclude (direct equality used)
+     * @param func The listener to be notified of a change
+     * @param [eventName] - optional - the event name to be listened to - defaults to "modelChanged" 
+     */
+    fluid.addSourceGuardedListener = function(applier, path, source, func, eventName) {
+        eventName = eventName || "modelChanged";
+        applier[eventName].addListener(path, 
+            function() {
+                if (!applier.hasChangeSource(source)) {
+                    func.apply(null, arguments);
+                }
+            });
+    };
+
+    /** Convenience method to fire a change event to a specified applier, including
+     * a supplied "source" identified (perhaps for use with addSourceGuardedListener)
+     */ 
+    fluid.fireSourcedChange = function (applier, path, value, source) {
+        applier.fireChangeRequest({
+            path: path,
+            value: value,
+            source: source
+        });         
+    };
     
+    /** Dispatches a list of changes to the supplied applier */
+    fluid.requestChanges = function (applier, changes) {
+        for (var i = 0; i < changes.length; ++i) {
+            applier.fireChangeRequest(changes[i]);
+        }  
+    };
+    
+  
     // Utility shared between changeApplier and superApplier
     
     function bindRequestChange(that) {
@@ -446,6 +479,24 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     }
     
+    // Utility used for source tracking in changeApplier
+    
+    function sourceWrapModelChanged(modelChanged, threadLocal) {
+        return function(changeRequest) {
+            var sources = threadLocal().sources;
+            var args = arguments;
+            var source = changeRequest.source || "";
+            fluid.tryCatch(function() {
+                if (sources[source] === undefined) {
+                    sources[source] = 0;
+                }
+                ++sources[source];
+                modelChanged.apply(null, args);
+            }, null, function() {
+                --sources[source];
+            });
+        };
+    }
   
     fluid.makeChangeApplier = function (model, options) {
         options = options || {};
@@ -454,7 +505,11 @@ var fluid_1_5 = fluid_1_5 || {};
             postGuards: fluid.event.getEventFirer(false, true, "postGuard event"),
             modelChanged: fluid.event.getEventFirer(false, false, "modelChanged event")
         };
+        var threadLocal = fluid.threadLocal(function() { return {sources: {}};});
         var that = {
+        // For now, we don't use "id" to avoid confusing component detection which uses
+        // a simple algorithm looking for that field
+            changeid: fluid.allocateGuid(),
             model: model
         };
         
@@ -513,7 +568,7 @@ var fluid_1_5 = fluid_1_5 || {};
                             record.accumulate = [accum];
                         }
                         fireSpec.guids[guid] = record;
-                        var collection = transactional ? "transListeners": "listeners";
+                        var collection = transactional ? "transListeners" : "listeners";
                         fireSpec[collection].push(record);
                         fireSpec.all.push(record);
                     }
@@ -610,14 +665,15 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         };
         
+        that.fireChangeRequest = sourceWrapModelChanged(that.fireChangeRequest, threadLocal);
         bindRequestChange(that);
 
         function fireAgglomerated(eventName, formName, changes, args, accpos) {
             var fireSpec = makeFireSpec();
-            for (var i = 0; i < changes.length; ++ i) {
+            for (var i = 0; i < changes.length; ++i) {
                 prepareFireEvent(eventName, changes[i].path, fireSpec, changes[i]);
             }
-            for (var j = 0; j < fireSpec[formName].length; ++ j) {
+            for (var j = 0; j < fireSpec[formName].length; ++j) {
                 var spec = fireSpec[formName][j];
                 if (accpos) {
                     args[accpos] = spec.accumulate;
@@ -641,12 +697,13 @@ var fluid_1_5 = fluid_1_5 || {};
             }
             // the guard in the inner world is given a private applier to "fast track"
             // and glob collateral changes it requires
-            var internalApplier = 
-              {fireChangeRequest: function (changeRequest) {
+            var internalApplier = {
+                fireChangeRequest: function (changeRequest) {
                     preFireChangeRequest(changeRequest);
                     fluid.model.applyChangeRequest(newModel, changeRequest, options.resolverSetConfig);
                     changes.push(changeRequest);
-                }};
+                }
+            };
             bindRequestChange(internalApplier);
             var ation = {
                 commit: function () {
@@ -687,9 +744,15 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             };
+            
+            ation.fireChangeRequest = sourceWrapModelChanged(ation.fireChangeRequest, threadLocal);
             bindRequestChange(ation);
 
             return ation;
+        };
+        
+        that.hasChangeSource = function (source) {
+            return threadLocal().sources[source] > 0;
         };
         
         return that;
@@ -702,7 +765,7 @@ var fluid_1_5 = fluid_1_5 || {};
             subAppliers.push({path: path, subApplier: subApplier});
         };
         that.fireChangeRequest = function (request) {
-            for (var i = 0; i < subAppliers.length; ++ i) {
+            for (var i = 0; i < subAppliers.length; ++i) {
                 var path = subAppliers[i].path;
                 if (request.path.indexOf(path) === 0) {
                     var subpath = request.path.substring(path.length + 1);
@@ -719,7 +782,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.attachModel = function (baseModel, path, model) {
         var segs = fluid.model.parseEL(path);
-        for (var i = 0; i < segs.length - 1; ++ i) {
+        for (var i = 0; i < segs.length - 1; ++i) {
             var seg = segs[i];
             var subModel = baseModel[seg];
             if (!subModel) {
