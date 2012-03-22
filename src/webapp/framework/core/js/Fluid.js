@@ -47,6 +47,16 @@ var fluid = fluid || fluid_1_5;
     
     var globalObject = window || {};
     
+    fluid.singleThreadLocal = function(initFunc) {
+        var value = initFunc();
+        return function() {
+            return value;
+        };
+    };
+    
+    // Return to the old strategy of monkey-patching this, since this is a most frequently used function within IoC    
+    fluid.threadLocal = fluid.singleThreadLocal;
+    
     var softFailure = [false];
     
     // This function will be patched from FluidIoC.js in order to describe complex activities
