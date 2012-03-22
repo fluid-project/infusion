@@ -29,6 +29,10 @@ var fluid = fluid || fluid_1_5;
     var _jQuery = window.jQuery;
     // Map over the $ in case of overwrite
     var _$ = window.$;
+    // Used for trimming whitespace
+    var trimLeft = /^\s+/,
+        trimRight = /\s+$/,
+        trim = String.prototype.trim;
     
     var jQuery = fluid.jQueryStandalone = {
       
@@ -47,6 +51,15 @@ var fluid = fluid || fluid_1_5;
       
         isArray: Array.isArray || function (obj) {
             toString.call(obj) === "[object Array]"
+        },
+
+        // Use native String.trim function wherever possible
+        trim: trim ? function( text ) {
+            return text === null ? "" : trim.call( text );
+        } :
+        // Otherwise use our own trimming functionality
+        function( text ) {
+            return text === null ? "" : text.toString().replace( trimLeft, "" ).replace( trimRight, "" );
         },
         
         // A crude way of determining if an object is a window

@@ -37,9 +37,14 @@ var fluid = fluid || fluid_1_5;
     
     fluid.version = "Infusion 1.5";
     
+    // Export this for use in environments like node.js, where it is useful for
+    // configuring stack trace behaviour
+    fluid.Error = Error;
+    
     fluid.environment = {
         fluid: fluid
     };
+    
     var globalObject = window || {};
     
     fluid.singleThreadLocal = function(initFunc) {
