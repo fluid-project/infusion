@@ -22,20 +22,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.defaults("fluid.uiOptions.store", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
-        defaultSiteSettings: {
-            textFont: "default",          // key from classname map
-            theme: "default",             // key from classname map
-            textSize: 1,                  // in points
-            lineSpacing: 1,               // in ems
-            layout: false,                // boolean
-            toc: false,                   // boolean
-            links: false,                 // boolean
-            inputsLarger: false,          // boolean
-            captions: false,              // boolean
-            transcripts: false,           // boolean
-            language: "en",               // ISO 639-1 language code
-            volume: 50                    // number between 0 and 100
-        }
+        defaultSiteSettings: {}
     });
     
     /****************
@@ -137,6 +124,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{arguments}.0", "{tempStore}"]
             }
         },
+        defaultSiteSettings: {},
         finalInitFunction: "fluid.tempStore.finalInit"
     });
 

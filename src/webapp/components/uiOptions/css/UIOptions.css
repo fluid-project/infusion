@@ -143,21 +143,9 @@
     width: 16px;    
 }
 
-.fl-uiOptions .fl-volume-slider-left { 
-    background-image: url("../images/bw/uio_icon_volumeOff_black_12x21.png");
-}
-
-.fl-uiOptions .fl-volume-slider-right { 
-    background-image: url("../images/bw/uio_icon_volumeOn_black_23x21.png");
-}
-
 .fl-uiOptions .fl-icon {
     width: 2em;
     padding-top: 1em;
-}
-
-.fl-uiOptions-volume .fl-slider {
-    top: .36em;
 }
 
 /* Theming */
@@ -185,8 +173,6 @@
 .fl-theme-wb .fl-uiOptions .fl-text-slider-right { background-image: url("../images/wb/uio_icon_bigA_hci_20x20.png"); }
 .fl-theme-wb .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/wb/uio_icon_linesNarrow_hci_16x12.png"); }
 .fl-theme-wb .fl-uiOptions .fl-spacing-slider-right { background-image: url("../images/wb/uio_icon_linesWide_hci_16x21.png"); }
-.fl-theme-wb .fl-uiOptions .fl-volume-slider-left { background-image: url("../images/wb/uio_icon_volumeOff_white_12x21.png"); }
-.fl-theme-wb .fl-uiOptions .fl-volume-slider-right { background-image: url("../images/wb/uio_icon_volumeOn_white_23x21.png"); }
 .fl-theme-wb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/wb/uio_icon_save_hci_13x13.png"); }
 .fl-theme-wb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/wb/uio_icon_cancel_hci_13x13.png"); }
 
@@ -198,8 +184,6 @@
 .fl-theme-yb .fl-uiOptions .fl-text-slider-right { background-image: url("../images/yb/uio_icon_bigA_yellowBlack_20x20.png"); }
 .fl-theme-yb .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/yb/uio_icon_linesNarrow_yellowBlack_16x12.png"); }
 .fl-theme-yb .fl-uiOptions .fl-spacing-slider-right { background-image: url("../images/yb/uio_icon_linesWide_yellowBlack_16x21.png"); }
-.fl-theme-yb .fl-uiOptions .fl-volume-slider-left { background-image: url("../images/yb/uio_icon_volumeOff_yellow_12x21.png"); }
-.fl-theme-yb .fl-uiOptions .fl-volume-slider-right { background-image: url("../images/yb/uio_icon_volumeOn_yellow_23x21.png"); }
 .fl-theme-yb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/yb/uio_icon_save_yellowBlack_13x13.png"); }
 .fl-theme-yb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/yb/uio_icon_cancel_yellowBlack_13x13.png"); }
 

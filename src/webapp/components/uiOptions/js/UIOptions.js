@@ -216,7 +216,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 "*.uiOptionsLoader.*.uiOptions.*.textControls":       "textControls",
                 "*.uiOptionsLoader.*.uiOptions.*.layoutControls":     "layoutControls",
                 "*.uiOptionsLoader.*.uiOptions.*.linksControls":      "linksControls",
-                "*.uiOptionsLoader.*.uiOptions.*.mediaControls":      "mediaControls",
                 "*.uiOptionsLoader.*.uiOptions.*.preview":            "preview",
                 "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
             }
@@ -235,6 +234,12 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
+    // A temporary function to automate the work of making a creator function for a UIOptions configuration.
+    // These creator functions accept literal options from the user (via direct function call) and
+    // apply a mapping transformation to them to make some deeply nested configuration more accessible.
+    
+    // Unfortunately this operation conflicts with the workflow of the IoC system in constructing a component - 
+    // so these UIOptions configurations are not suitable for use as IoC-driven subcomponents. 
     fluid.uiOptions.inline.makeCreator = function (componentName, processor) {
         fluid.setGlobalValue(componentName, function (container, options) {
             // make "container" one of the options so it can be munged by the uiOptions.mapOptions.
@@ -339,8 +344,7 @@ var fluid_1_5 = fluid_1_5 || {};
             uiOptions: "%prefix/FatPanelUIOptions.html",
             textControls: "%prefix/UIOptionsTemplate-text.html",
             layoutControls: "%prefix/UIOptionsTemplate-layout.html",
-            linksControls: "%prefix/UIOptionsTemplate-links.html",
-            mediaControls: "%prefix/UIOptionsTemplate-media.html"
+            linksControls: "%prefix/UIOptionsTemplate-links.html"
         },
         // Unsupported, non-API option
         components: {
@@ -419,6 +423,40 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uiOptions.loader.finalInit = function (that) {
         fluid.fetchResources(that.options.resources, function () {that.events.onUIOptionsTemplateReady.fire();});
     };
+    
+        
+    // This function compensates for a framework deficiency that due to lack of gingerness, the "refreshView"
+    // function synthesized by rendererComponent is not available during listener registration which only 
+    // occurs after component init functions have completed (http://issues.fluidproject.org/browse/FLUID-4334)
+    fluid.uiOptions.lateRefreshViewBinder = function (that) {
+        that.refreshView = function () {
+            that.renderer.refreshView();
+        };
+    };
+    
+    fluid.uiOptions.defaultModelMerger = function (target, source) {
+        $.extend(true, target, source);
+    };
+    
+    // Temporary, encapsulation-violating definition of an Ant - currently these can't
+    // be deployed outside the direct environment of a UIOptions component
+    fluid.defaults("fluid.uiOptions.ant", {
+        gradeNames: ["fluid.rendererComponent"],
+        model: "{uiOptions}.model",
+        applier: "{uiOptions}.applier",
+        events: {
+            onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh",
+        },
+        listeners: {
+            onUIOptionsRefresh: "{that}.refreshView",     
+            "{uiOptions}.events.contributeDefaultModel": {
+                listener: "fluid.uiOptions.defaultModelMerger",
+                args: ["{arguments}.0", "{that}.options.defaultModel"]
+            }
+        },
+        preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
+        finalInitFunction: "fluid.uiOptions.controlsFinalInit",
+    });
 
     /**
      * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
@@ -437,13 +475,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.textControls",
                 createOnEvent: "onUIOptionsComponentReady",
                 options: {
-                    model: "{uiOptions}.model",
-                    applier: "{uiOptions}.applier",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
-                    rendererOptions: "{uiOptions}.options.rendererOptions",
-                    events: {
-                        onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
-                    }
+
                 }
             },
             layoutControls: {
@@ -451,13 +484,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.layoutControls",
                 createOnEvent: "onUIOptionsComponentReady",
                 options: {
-                    model: "{uiOptions}.model",
-                    applier: "{uiOptions}.applier",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
-                    rendererOptions: "{uiOptions}.options.rendererOptions",
-                    events: {
-                        onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
-                    }
                 }
             },
             linksControls: {
@@ -465,26 +492,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.linksControls",
                 createOnEvent: "onUIOptionsComponentReady",
                 options: {
-                    model: "{uiOptions}.model",
-                    applier: "{uiOptions}.applier",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
-                    rendererOptions: "{uiOptions}.options.rendererOptions",
-                    events: {
-                        onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
-                    }
-                }
-            },
-            mediaControls: {
-                type: "fluid.uiOptions.mediaControls",
-                container: "{uiOptions}.dom.mediaControls",
-                createOnEvent: "onUIOptionsComponentReady",
-                options: {
-                    model: "{uiOptions}.model",
-                    applier: "{uiOptions}.applier",
-                    rendererOptions: "{uiOptions}.options.rendererOptions",
-                    events: {
-                        onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
-                    }
                 }
             },
             preview: {
@@ -500,7 +508,6 @@ var fluid_1_5 = fluid_1_5 || {};
             textControls: ".flc-uiOptions-text-controls",
             layoutControls: ".flc-uiOptions-layout-controls",
             linksControls: ".flc-uiOptions-links-controls",
-            mediaControls: ".flc-uiOptions-media-controls",
             cancel: ".flc-uiOptions-cancel",
             reset: ".flc-uiOptions-reset",
             save: ".flc-uiOptions-save",
@@ -513,7 +520,8 @@ var fluid_1_5 = fluid_1_5 || {};
             onAutoSave: null,
             modelChanged: null,
             onUIOptionsRefresh: null,
-            onUIOptionsComponentReady: null
+            onUIOptionsComponentReady: null,
+            contributeDefaultModel: null,
         },
         finalInitFunction: "fluid.uiOptions.finalInit",
         resources: {
@@ -523,7 +531,14 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     fluid.uiOptions.finalInit = function (that) {
-        that.applier.requestChange("selections", fluid.copy(that.settingsStore.fetch()));
+        that.defaultModel = {};
+        that.events.contributeDefaultModel.fire(that.defaultModel);
+
+        that.fetch = function () {
+            var initialModel = that.settingsStore.fetch();
+            initialModel = $.extend(true, {}, that.defaultModel, initialModel);
+            that.updateModel(initialModel);
+        };
 
         /**
          * Saves the current model and fires onSave
@@ -540,12 +555,11 @@ var fluid_1_5 = fluid_1_5 || {};
             that.events.onUIOptionsRefresh.fire();
         };
 
-
         /**
          * Resets the selections to the integrator's defaults and fires onReset
          */
         that.reset = function () {
-            that.updateModel(fluid.copy(that.settingsStore.options.defaultSiteSettings));
+            that.updateModel(fluid.copy(that.defaultModel));
             that.events.onReset.fire(that);
             that.events.onUIOptionsRefresh.fire();
         };
@@ -555,7 +569,7 @@ var fluid_1_5 = fluid_1_5 || {};
          */
         that.cancel = function () {
             that.events.onCancel.fire();
-            that.updateModel(that.settingsStore.fetch());
+            that.fetch();
             that.events.onUIOptionsRefresh.fire();
         };
         
@@ -597,6 +611,8 @@ var fluid_1_5 = fluid_1_5 || {};
             });
         };
         
+        that.fetch();
+        
         fluid.fetchResources(that.options.resources, function () {
           // This setTimeout is to ensure that fetching of resources is asynchronous,
           // and so that component construction does not run ahead of subcomponents for FatPanel
@@ -619,6 +635,8 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
 
+    // Utility function which assembles material in the model suitable for rendering
+    // style-based selection dropdowns
     var optionsToLabelMap = function (that) {
         fluid.each(that.options.controlValues, function (item, key) {
             that.applier.requestChange("labelMap." + key, {
@@ -629,7 +647,7 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
-    var createSliderNode = function (that, item, type, options) {
+    fluid.uiOptions.createSliderNode = function (that, item, type, options) {
         return {
             decorators: {
                 type: "fluid",
@@ -656,14 +674,32 @@ var fluid_1_5 = fluid_1_5 || {};
         optionsToLabelMap(that);
         that.refreshView();        
     };
+
+
+    /***********************************************
+     * UI Options Select Dropdown Options Decorator*
+     ***********************************************/
+
+    /**
+     * A sub-component that decorates the options on the select dropdown list box with the css style
+     */
+    fluid.demands("fluid.uiOptions.selectDecorator", "fluid.uiOptions", {
+        container: "{arguments}.0"
+    });
     
-    // This function compensates for a framework deficiency that due to lack of gingerness, the "refreshView"
-    // function synthesized by rendererComponent is not available during listener registration which only 
-    // occurs after component init functions have completed (http://issues.fluidproject.org/browse/FLUID-4334)
-    fluid.uiOptions.lateRefreshViewBinder = function (that) {
-        that.refreshView = function () {
-            that.renderer.refreshView();
-        };
+    fluid.defaults("fluid.uiOptions.selectDecorator", {
+        gradeNames: ["fluid.viewComponent", "autoInit"], 
+        finalInitFunction: "fluid.uiOptions.selectDecorator.finalInit",
+        styles: {
+            preview: "fl-preview-theme"
+        }
+    });
+    
+    fluid.uiOptions.selectDecorator.finalInit = function (that) {
+        fluid.each($("option", that.container), function (option) {
+            var styles = that.options.styles;
+            $(option).addClass(styles.preview + " " + styles[fluid.value(option)]);
+        });
     };
 
     /****************************
@@ -674,7 +710,13 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "text and display" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.textControls", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.ant", "autoInit"], 
+        defaultModel: {
+            textFont: "default",          // key from classname map
+            theme: "default",             // key from classname map
+            textSize: 1,                  // in points
+            lineSpacing: 1,               // in ems
+        },
         strings: {
             textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"],
             theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
@@ -708,11 +750,6 @@ var fluid_1_5 = fluid_1_5 || {};
         events: {
             onUIOptionsRefresh: null    
         },
-        listeners: {
-            onUIOptionsRefresh: "{textControls}.refreshView"     
-        },
-        preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
-        finalInitFunction: "fluid.uiOptions.controlsFinalInit",
         produceTree: "fluid.uiOptions.textControls.produceTree",
         resources: {
             template: "{templateLoader}.resources.textControls"
@@ -739,37 +776,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 };
             } else if (item === "textSize" || item === "lineSpacing") {
                 // textfield sliders
-                tree[item] = createSliderNode(that, item, "fluid.textfieldSlider");
+                tree[item] = fluid.uiOptions.createSliderNode(that, item, "fluid.textfieldSlider");
             }
         }
         
         return tree;
-    };
-
-    /***********************************************
-     * UI Options Select Dropdown Options Decorator*
-     ***********************************************/
-
-    /**
-     * A sub-component that decorates the options on the select dropdown list box with the css style
-     */
-    fluid.demands("fluid.uiOptions.selectDecorator", "fluid.uiOptions", {
-        container: "{arguments}.0"
-    });
-    
-    fluid.defaults("fluid.uiOptions.selectDecorator", {
-        gradeNames: ["fluid.viewComponent", "autoInit"], 
-        finalInitFunction: "fluid.uiOptions.selectDecorator.finalInit",
-        styles: {
-            preview: "fl-preview-theme"
-        }
-    });
-    
-    fluid.uiOptions.selectDecorator.finalInit = function (that) {
-        fluid.each($("option", that.container), function (option) {
-            var styles = that.options.styles;
-            $(option).addClass(styles.preview + " " + styles[fluid.value(option)]);
-        });
     };
     
     /******************************
@@ -780,37 +791,23 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "layout and navigation" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.layoutControls", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.ant", "autoInit"],
+        defaultModel: {
+            layout: false,                // boolean
+            toc: false,                   // boolean
+        },
         selectors: {
             layout: ".flc-uiOptions-layout",
             toc: ".flc-uiOptions-toc"
         },
-        events: {
-            onUIOptionsRefresh: null    
+        protoTree: {
+            links: "${selections}.layout",
+            inputsLarger: "${selections}.toc"          
         },
-        listeners: {
-            onUIOptionsRefresh: "{layoutControls}.refreshView"     
-        },
-        preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
-        finalInitFunction: "fluid.uiOptions.controlsFinalInit",
-        produceTree: "fluid.uiOptions.layoutControls.produceTree",
         resources: {                    
             template: "{templateLoader}.resources.layoutControls"
         }
     });
-
-    fluid.uiOptions.layoutControls.produceTree = function (that) {
-        var tree = {};
-        
-        for (var item in that.model.selections) {
-            if (item === "layout" || item === "toc") {
-                // render radio buttons
-                tree[item] = "${selections." + item + "}";
-            }
-        }
-        
-        return tree;
-    };
 
     /*****************************
      * UI Options Links Controls *
@@ -819,101 +816,23 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "links and buttons" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.linksControls", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.ant", "autoInit"],
+        defaultModel: {
+            links: false,                 // boolean
+            inputsLarger: false           // boolean
+        },
         selectors: {
             links: ".flc-uiOptions-links",
             inputsLarger: ".flc-uiOptions-inputs-larger"
         },
-        events: {
-            onUIOptionsRefresh: null    
+        protoTree: {
+            links: "${selections}.links",
+            inputsLarger: "${selections}.inputsLarger"          
         },
-        listeners: {
-            onUIOptionsRefresh: "{linksControls}.refreshView"     
-        },
-        preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
-        finalInitFunction: "fluid.uiOptions.controlsFinalInit",
-        produceTree: "fluid.uiOptions.linksControls.produceTree",
         resources: {
             template: "{templateLoader}.resources.linksControls"
         }
     });
-
-    fluid.uiOptions.linksControls.produceTree = function (that) {
-        var tree = {};
-        
-        for (var item in that.model.selections) {
-            if (item === "links" || item === "inputsLarger") {
-                // render check boxes
-                tree[item] = "${selections." + item + "}";
-            }
-        }
-
-        return tree;
-    };
-
-    /*****************************
-     * UI Options Media Controls *
-     *****************************/
-    /**
-     * A sub-component of fluid.uiOptions that renders the "media" panel of the user preferences interface.
-     */
-    fluid.defaults("fluid.uiOptions.mediaControls", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"], 
-        strings: {
-            language: ["English", "French"]
-        },
-        controlValues: {
-            language: ["en", "fr"] 
-        },
-        volume: {
-            min: 0,
-            max: 100,
-            sliderOptions: {
-                orientation: "horizontal",
-                step: 10
-            }
-        },
-        selectors: {
-            volume: ".flc-uiOptions-volume",
-            captions: ".flc-uiOptions-captions",
-            transcripts: ".flc-uiOptions-transcripts",
-            language: ".flc-uiOptions-language"
-        },
-        events: {
-            onUIOptionsRefresh: null    
-        },
-        listeners: {
-            onUIOptionsRefresh: "{mediaControls}.refreshView"     
-        },
-
-        preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
-        finalInitFunction: "fluid.uiOptions.controlsFinalInit",
-        produceTree: "fluid.uiOptions.mediaControls.produceTree",
-        resources: {
-            template: "{templateLoader}.resources.mediaControls"
-        }
-    });
-
-    fluid.uiOptions.mediaControls.produceTree = function (that) {
-        var tree = {};
-        for (var item in that.model.selections) {
-            if (item === "captions" || item === "transcripts") {
-                // render check boxes
-                tree[item] = "${selections." + item + "}";
-            } else if (item === "language") {
-                tree[item] = {
-                    optionnames: "${labelMap." + item + ".names}",
-                    optionlist: "${labelMap." + item + ".values}",
-                    selection: "${selections.language}",
-                }
-            } else if (item === "volume") {
-                tree[item] = createSliderNode(that, item, "fluid.textfieldSlider.slider");
-            }
-        }
-
-        return tree;
-    };
-
 
     /**********************
      * UI Options Preview *
@@ -958,7 +877,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.preview.updateModel = function (that, selections) {
         /**
-         * Setimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
+         * SetTimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
          */
         setTimeout(function () {
             if (that.enhancer) {

@@ -194,7 +194,7 @@ var fluid_1_5 = fluid_1_5 || {};
             visitComponents(instantiator, thatStack, function(component, name, options, up, down) {
                 if (context === name || context === component.typeName || context === component.nickName) {
                     foundComponent = component;
-                    if (down > 1) {
+                    if (down > 1) { // TODO: remove this branch!
                         fluid.log("***WARNING: value resolution for context " + context + " found at depth " + down + ": this may not be supported in future");   
                     }
                     return true; // YOUR VISIT IS AT AN END!!
