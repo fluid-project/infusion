@@ -1234,7 +1234,8 @@ fluid.registerNamespace("fluid.tests");
         events: {
             outEvent1: null,
             // note inconsistency - only IoC-resolved events get instantiator wrapping!
-            outEvent2: "{island1}.events.outEvent1" 
+            // "that" reference tests FLUID-4680
+            outEvent2: "{that}.events.outEvent1" 
         }
     });
     

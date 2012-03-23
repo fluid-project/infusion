@@ -179,36 +179,38 @@ var fluid_1_5 = fluid_1_5 || {};
         var fetchStrategies = [fluid.model.funcResolverStrategy, makeGingerStrategy(instantiator, parentThat, thatStack)]; 
         var fetcher = function(parsed) {
             var context = parsed.context;
+            var foundComponent;
             if (context === "instantiator") {
                 // special treatment for the current instantiator which used to be discovered as unique in threadLocal
                 return instantiator;
             }
-            if (localRecord && localRecordExpected.test(context)) {
+            else if (context === "that") {
+                foundComponent = parentThat; 
+            }
+            else if (localRecord && localRecordExpected.test(context)) {
                 var fetched = fluid.get(localRecord[context], parsed.path);
                 return (context === "arguments" || expandOptions.direct)? fetched : {
                     marker: context === "options"? fluid.EXPAND : fluid.EXPAND_NOW,
                     value: fetched
                 };
             }
-            var foundComponent;
-            visitComponents(instantiator, thatStack, function(component, name, options, up, down) {
-                if (context === name || context === component.typeName || context === component.nickName) {
-                    foundComponent = component;
-                    if (down > 1) {
-                        fluid.log("***WARNING: value resolution for context " + context + " found at depth " + down + ": this may not be supported in future");   
+            if (!foundComponent) {
+                visitComponents(instantiator, thatStack, function(component, name, options, up, down) {
+                    if (context === name || context === component.typeName || context === component.nickName) {
+                        foundComponent = component;
+                        return true; // YOUR VISIT IS AT AN END!!
                     }
-                    return true; // YOUR VISIT IS AT AN END!!
-                }
-                if (fluid.get(component, fluid.path("options", "components", context, "type")) && !component[context]) {
-                    foundComponent = fluid.get(component, context, {strategies: fetchStrategies});
-                    return true;
-                }
-            });
+                    if (fluid.get(component, fluid.path("options", "components", context, "type")) && !component[context]) {
+                        foundComponent = fluid.get(component, context, {strategies: fetchStrategies});
+                        return true;
+                    }
+                });
+            }
             if (!foundComponent && parsed.path !== "") {
                 var ref = fluid.renderContextReference(parsed);
                 fluid.log("Failed to resolve reference " + ref + ": thatStack contains\n" + fluid.dumpThatStack(thatStack, instantiator));
                 fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " 
-                    + context + " from component leaf of type " + thatStack[thatStack.length - 1].typeName, "\ninstantiator contents: ", instantiator);
+                    + context + " from component leaf of type " + parentThat.typeName, "\ninstantiator contents: ", instantiator);
             }
             return fluid.get(foundComponent, parsed.path, fetchStrategies);
         };
