@@ -473,7 +473,7 @@ var fluid_1_5 = fluid_1_5 || {};
             textControls: {
                 type: "fluid.uiOptions.textControls",
                 container: "{uiOptions}.dom.textControls",
-                createOnEvent: "onUIOptionsComponentReady",
+                createOnEvent: "onUIOptionsMarkupReady",
                 options: {
                     classnameMap: "{uiEnhancer}.options.classnameMap",
 
@@ -482,7 +482,7 @@ var fluid_1_5 = fluid_1_5 || {};
             layoutControls: {
                 type: "fluid.uiOptions.layoutControls",
                 container: "{uiOptions}.dom.layoutControls",
-                createOnEvent: "onUIOptionsComponentReady",
+                createOnEvent: "onUIOptionsMarkupReady",
                 options: {
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                 }
@@ -490,7 +490,7 @@ var fluid_1_5 = fluid_1_5 || {};
             linksControls: {
                 type: "fluid.uiOptions.linksControls",
                 container: "{uiOptions}.dom.linksControls",
-                createOnEvent: "onUIOptionsComponentReady",
+                createOnEvent: "onUIOptionsMarkupReady",
                 options: {
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                 }
@@ -520,9 +520,14 @@ var fluid_1_5 = fluid_1_5 || {};
             onAutoSave: null,
             modelChanged: null,
             onUIOptionsRefresh: null,
+            onUIOptionsMarkupReady: null,
             onUIOptionsComponentReady: null,
             contributeDefaultModel: null,
         },
+        listeners: {
+            onAutoSave: "{that}.save",  
+        },
+        preInitFunction: "fluid.uiOptions.preInit",
         finalInitFunction: "fluid.uiOptions.finalInit",
         resources: {
             template: "{templateLoader}.resources.uiOptions"
@@ -530,14 +535,38 @@ var fluid_1_5 = fluid_1_5 || {};
         autoSave: false
     });
 
-    fluid.uiOptions.finalInit = function (that) {
+    // called once markup is applied to the document containing tab component roots
+    fluid.uiOptions.finishInit = function (that) {
+        var bindHandlers = function (that) {
+            var saveButton = that.locate("save");            
+            if (saveButton.length > 0) {
+                saveButton.click(that.saveAndApply);
+                var form = fluid.findForm(saveButton);
+                $(form).submit(function () {
+                    that.saveAndApply();
+                });
+            }
+            that.locate("reset").click(that.reset);
+            that.locate("cancel").click(that.cancel);
+        };
+        
+        that.container.append(that.options.resources.template.resourceText);
+        bindHandlers(that);
+        // This creates subcomponents - we can find default model afterwards
+        that.events.onUIOptionsMarkupReady.fire(that);
+        
         that.defaultModel = {};
         that.events.contributeDefaultModel.fire(that.defaultModel);
-
+        that.fetch();
+        that.events.onUIOptionsComponentReady.fire(that);
+    };
+    
+    fluid.uiOptions.preInit = function (that) {
         that.fetch = function () {
             var initialModel = that.settingsStore.fetch();
             initialModel = $.extend(true, {}, that.defaultModel, initialModel);
             that.updateModel(initialModel);
+            that.events.onUIOptionsRefresh.fire();
         };
 
         /**
@@ -570,7 +599,6 @@ var fluid_1_5 = fluid_1_5 || {};
         that.cancel = function () {
             that.events.onCancel.fire();
             that.fetch();
-            that.events.onUIOptionsRefresh.fire();
         };
         
         /**
@@ -590,38 +618,16 @@ var fluid_1_5 = fluid_1_5 || {};
                     that.events.onAutoSave.fire();
                 }
             }
-            );
-            
-        var bindHandlers = function (that) {
-            var saveButton = that.locate("save");            
-            if (saveButton.length > 0) {
-                saveButton.click(that.saveAndApply);
-                var form = fluid.findForm(saveButton);
-                $(form).submit(function () {
-                    that.saveAndApply();
-                });
-            }
-            that.locate("reset").click(that.reset);
-            that.locate("cancel").click(that.cancel);
-        };
-        
-        var bindEventHandlers = function (that) {
-            that.events.onAutoSave.addListener(function () {
-                that.save();    
-            });
-        };
-        
-        that.fetch();
-        
+        );
+    };
+
+    fluid.uiOptions.finalInit = function (that) {
         fluid.fetchResources(that.options.resources, function () {
           // This setTimeout is to ensure that fetching of resources is asynchronous,
           // and so that component construction does not run ahead of subcomponents for FatPanel
           // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix) 
             setTimeout(function () {
-                that.container.append(that.options.resources.template.resourceText);
-                bindHandlers(that);
-                bindEventHandlers(that);
-                that.events.onUIOptionsComponentReady.fire(that);
+                fluid.uiOptions.finishInit(that);
             }, 1);
         });
     };
@@ -672,7 +678,6 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.controlsFinalInit = function (that) {
         optionsToLabelMap(that);
-        that.refreshView();        
     };
 
 
@@ -746,9 +751,6 @@ var fluid_1_5 = fluid_1_5 || {};
             theme: ".flc-uiOptions-theme",
             textSize: ".flc-uiOptions-min-text-size",
             lineSpacing: ".flc-uiOptions-line-spacing"
-        },
-        events: {
-            onUIOptionsRefresh: null    
         },
         produceTree: "fluid.uiOptions.textControls.produceTree",
         resources: {

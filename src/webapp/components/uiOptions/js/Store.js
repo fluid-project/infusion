@@ -22,7 +22,21 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.defaults("fluid.uiOptions.store", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
-        defaultSiteSettings: {}
+        defaultSiteSettings: {
+        // TODO: Note that since antification is not complete, this information now
+        // duplicates that kept within the "halfway ants" which are registered as the panels
+        // in UIOptions, so that when we create a "bare UIEnhancer" we can still get at them.
+        // In time, the UIEnhancer will be abolished and replaced with a relay system similar
+        // to the one used in the Video Player
+            textFont: "default",          // key from classname map
+            theme: "default",             // key from classname map
+            textSize: 1,                  // in points
+            lineSpacing: 1,               // in ems
+            layout: false,                // boolean
+            toc: false,                   // boolean
+            links: false,                 // boolean
+            inputsLarger: false           // boolean
+        }
     });
     
     /****************
