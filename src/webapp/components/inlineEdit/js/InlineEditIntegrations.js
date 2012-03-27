@@ -168,13 +168,6 @@ var fluid_1_5 = fluid_1_5 || {};
         function focusEditor(editor) {
             setTimeout(function () {
                 tinyMCE.execCommand('mceFocus', false, that.editField[0].id);
-                if ($.browser.mozilla && $.browser.version.substring(0, 3) === "1.8") {
-                    // Have not yet found any way to make this work on FF2.x - best to do nothing,
-                    // for FLUID-2206
-                    //var body = editor.getBody();
-                    //fluid.setCaretToEnd(body.firstChild, "");
-                    return;
-                }
                 editor.selection.select(editor.getBody(), 1);
                 editor.selection.collapse(0);
             }, 10);
@@ -185,12 +178,13 @@ var fluid_1_5 = fluid_1_5 || {};
             var editorBody = editor.getBody();
 
             // NB - this section has no effect - on most browsers no focus events
-            // are delivered to the actual body
-            fluid.deadMansBlur(that.editField, 
-                {
+            // are delivered to the actual body - however, on recent TinyMCE, the 
+            // "focusEditor" call DOES deliver a blur which causes FLUID-4681
+            that.deadMansBlur = fluid.deadMansBlur(that.editField, {
+                    cancelByDefault: true,
                     exclusions: {body: $(editorBody)}, 
                     handler: function () {
-                        that.cancel();
+                        that[that.options.onBlur]();
                     }
                 });
         });
@@ -199,7 +193,13 @@ var fluid_1_5 = fluid_1_5 || {};
             var editor = tinyMCE.get(that.editField[0].id);
             if (editor) {
                 focusEditor(editor);
-            } 
+            }
+            if (that.deadMansBlur) {
+                that.deadMansBlur.reArm();
+            }
+        });
+        that.events.afterFinishEdit.addListener(function () {
+            that.deadMansBlur.noteProceeded();
         });
     };
    
@@ -245,6 +245,7 @@ var fluid_1_5 = fluid_1_5 || {};
         lazyEditView: true,
         defaultViewText: "Click Edit",
         modelComparator: fluid.inlineEdit.htmlComparator,
+        onBlur: "finish",
         blurHandlerBinder: fluid.inlineEdit.tinyMCE.blurHandlerBinder,
         displayModeRenderer: fluid.inlineEdit.richTextDisplayModeRenderer,
         editModeRenderer: fluid.inlineEdit.tinyMCE.editModeRenderer
