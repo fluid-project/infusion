@@ -214,8 +214,14 @@ var fluid_1_5 = fluid_1_5 || {};
                 oldinit();
             }
         };
-        
-        tinyMCE.init(options);
+        // Ensure that instance creation is always asynchronous, to ensure that
+        // blurHandlerBinder always executes BEFORE instance is ready - so that
+        // its afterInitEdit listener is registered in time. All of this architecture
+        // is unsatisfactory, but can't be easily fixed until the whole component is
+        // migrated over to IoC with declarative listener registration.
+        setTimeout(function() {
+            tinyMCE.init(options);
+        }, 1);
     };
     
     fluid.defaults("fluid.inlineEdit.tinyMCE", {
