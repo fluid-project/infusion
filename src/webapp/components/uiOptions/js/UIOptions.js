@@ -241,7 +241,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // Unfortunately this operation conflicts with the workflow of the IoC system in constructing a component - 
     // so these UIOptions configurations are not suitable for use as IoC-driven subcomponents. 
     fluid.uiOptions.inline.makeCreator = function (componentName, processor) {
-        fluid.setGlobalValue(componentName, function (container, options) {
+        var creator = function (container, options) {
             // make "container" one of the options so it can be munged by the uiOptions.mapOptions.
             // This container is passed down to be used as uiOptionsLoader.container
             var defaults = fluid.defaults(componentName);
@@ -251,11 +251,17 @@ var fluid_1_5 = fluid_1_5 || {};
             var mappedOptions = fluid.uiOptions.mapOptions(options, defaults.uiOptionsTransform.config, defaults.mergePolicy, 
                 fluid.copy(defaults.derivedDefaults));
             var that = fluid.initView(componentName, container, mappedOptions);
-            // Fake out standard framework failed view diagnosis to prevent "that is null" message - remove this in 1.5
+            // This workflow copied from fluid.initView
             fluid.diagnoseFailedView(componentName, that, fluid.defaults(componentName), [componentName, container, mappedOptions]);
             fluid.initDependents(that);
             return that;
-        });
+        };
+        // This workflow taken from framework fluid.makeComponent
+        var existing = fluid.getGlobalValue(componentName);
+        if (existing) {
+            $.extend(creator, existing);
+        }
+        fluid.setGlobalValue(componentName, creator);
     };
     
     /**
@@ -421,7 +427,7 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     fluid.uiOptions.loader.finalInit = function (that) {
-        fluid.fetchResources(that.options.resources, function () {that.events.onUIOptionsTemplateReady.fire();});
+        fluid.fetchResources(that.options.resources, that.events.onUIOptionsTemplateReady.fire);
     };
     
         
