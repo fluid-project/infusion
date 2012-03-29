@@ -809,8 +809,8 @@ var fluid_1_5 = fluid_1_5 || {};
             toc: ".flc-uiOptions-toc"
         },
         protoTree: {
-            links: "${selections}.layout",
-            inputsLarger: "${selections}.toc"          
+            toc: "${selections.toc}",
+            layout: "${selections.layout}"        
         },
         resources: {                    
             template: "{templateLoader}.resources.layoutControls"
@@ -834,8 +834,8 @@ var fluid_1_5 = fluid_1_5 || {};
             inputsLarger: ".flc-uiOptions-inputs-larger"
         },
         protoTree: {
-            links: "${selections}.links",
-            inputsLarger: "${selections}.inputsLarger"          
+            links: "${selections.links}",
+            inputsLarger: "${selections.inputsLarger}"          
         },
         resources: {
             template: "{templateLoader}.resources.linksControls"
