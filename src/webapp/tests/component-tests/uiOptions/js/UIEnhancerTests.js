@@ -59,12 +59,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });
 
-        tests.test("getPx2EmFactor", function () {
+        tests.test("getPx2EmFactor & getTextSizeInEm", function () {
+            expect(2);
+            
             var container = $(".flt-baseFontSize-child");
             var uiEnhancer = fluid.uiEnhancer(container, uiEnhancerOptions);
             var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container, uiEnhancer.options.fontSizeMap);
 
             jqUnit.assertEquals("Check that the factor is pulled from the container correctly", 8, px2emFactor);
+
+            var container = $("html");
+            var fontSizeInEm = fluid.uiEnhancer.getTextSizeInEm(container, uiEnhancer.options.fontSizeMap);
+
+            jqUnit.assertEquals("Unable to detect the text size in em for the DOM root element <html>. Always return 1em.", 1, fontSizeInEm);
         });
 
         tests.test("TextSizer", function () {
