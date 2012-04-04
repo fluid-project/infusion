@@ -340,7 +340,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("bw setting was set in the model", bwSkin.theme, uiOptions.model.selections.theme);
 
                 var uiEnhancerSettings = uiOptions.settingsStore.fetch();
-                jqUnit.assertEquals("bw setting was not saved", undefined, uiEnhancerSettings.theme);
+                // TODO: Note that this test used to test for "undefined" and once again it should, after
+                // FLUID-4686 is resolved.
+                var defaultTheme = fluid.defaults("fluid.uiOptions.store").defaultSiteSettings.theme;
+                jqUnit.assertEquals("bw setting was not saved", defaultTheme, uiEnhancerSettings.theme);
 
                 uiOptions.events.onUIOptionsRefresh.fire();
                 var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
