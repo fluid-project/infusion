@@ -264,14 +264,16 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
-    /** A utility with the same signature as jQuery.text, but without the API irregularity
+    /** A utility with the same signature as jQuery.text and jQuery.html, but without the API irregularity
      * that treats a single argument of undefined as different to no arguments */
     // in jQuery 1.7.1, jQuery pulled the same dumb trick with $.text() that they did with $.val() previously,
     // see comment in fluid.value below
-    fluid.text = function (node, newValue) {
-        nodeIn = $(node);
-        return newValue === undefined ? node.text() : node.text(newValue);   
-    };
+    fluid.each(["text", "html"], function (method) {
+        fluid[method] = function (node, newValue) {
+            node = $(node);
+            return newValue === undefined ? node[method]() : node[method](newValue);
+        };   
+    });
     
     /** A generalisation of jQuery.val to correctly handle the case of acquiring and
      * setting the value of clustered radio button/checkbox sets, potentially, given
