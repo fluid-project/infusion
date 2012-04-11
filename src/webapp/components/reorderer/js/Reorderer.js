@@ -21,8 +21,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+  
+    fluid.reorderer = fluid.registerNamespace("fluid.reorderer");
     
-    var defaultAvatarCreator = function (item, cssClass, dropWarning) {
+    fluid.reorderer.defaultAvatarCreator = function (item, cssClass, dropWarning) {
         fluid.dom.cleanseScripts(fluid.unwrap(item));
         var avatar = $(item).clone();
         
@@ -612,7 +614,7 @@ var fluid_1_5 = fluid_1_5 || {};
             grabHandle: "",
             stylisticOffset: ""
         },
-        avatarCreator: defaultAvatarCreator,
+        avatarCreator: fluid.reorderer.defaultAvatarCreator,
         keysets: fluid.reorderer.defaultKeysets,
         layoutHandler: {
             type: "fluid.listLayoutHandler"
@@ -795,7 +797,8 @@ var fluid_1_5 = fluid_1_5 || {};
                         if (moved) {
                             moved.newRender = plainLabel;
                             label = that.renderLabel(selectable, moved.oldRender.position);
-                            $(selectable).one("focusout", function () {
+                            // once we move focus out of the element which just moved, return its ARIA label to be the new plain label
+                            $(selectable).one("focusout.ariaLabeller", function () {
                                 if (movedMap[id]) {
                                     var oldLabel = movedMap[id].newRender.label;
                                     delete movedMap[id];
@@ -808,7 +811,11 @@ var fluid_1_5 = fluid_1_5 || {};
                     });
                 },
                 onMove: function (item, newPosition) {
+                    console.log("labeller onMove: map is ", movedMap);
                     fluid.clear(movedMap); // if we somehow were fooled into missing a defocus, at least clear the map on a 2nd move
+                    // This unbind is needed for FLUID-4693 with Chrome 18, which generates a focusOut when
+                    // simply doing the DOM manipulation to move the element to a new position.   
+                    $(item).unbind("focusout.ariaLabeller");
                     var movingId = fluid.allocateSimpleId(item);
                     movedMap[movingId] = {
                         oldRender: that.renderLabel(item)
