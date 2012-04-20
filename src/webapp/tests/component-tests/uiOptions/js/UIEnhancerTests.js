@@ -131,7 +131,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             container = $(".flt-lineSpacer");
             lineHeight = fluid.uiEnhancer.getLineHeight(container);
-            jqUnit.assertEquals("getLineHeight without IE simulation", "16px", lineHeight);
+            jqUnit.assertEquals("getLineHeight without IE simulation", "12px", lineHeight);
         });
 
         function testNumerizeLineHeight(lineHeight, expected) {
@@ -148,7 +148,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var undefinedLineHeight;
         testNumerizeLineHeight(undefinedLineHeight, 0);
         testNumerizeLineHeight("normal", 1.2);
-        testNumerizeLineHeight("8px", 1);
+        testNumerizeLineHeight("6px", 1);
         testNumerizeLineHeight("1.5", 1.5);
         
         // This is necessary to work around IE differences in handling line-height unitless factors
@@ -166,9 +166,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var lineSpacer = uiEnhancer.lineSpacing;
       
             jqUnit.assertEquals("Check that the size is pulled from the container correctly", 2, Math.round(lineSpacer.initialSize));
-            jqUnit.assertEquals("Check the line spacing size in pixels", "16px", convertLineHeightFactor(lineSpacer.container.css("lineHeight"), lineSpacer.container.css("fontSize")));
+            jqUnit.assertEquals("Check the line spacing size in pixels", "12px", convertLineHeightFactor(lineSpacer.container.css("lineHeight"), lineSpacer.container.css("fontSize")));
             lineSpacer.set(2);
-            jqUnit.assertEquals("The size should be doubled", "32px", convertLineHeightFactor(lineSpacer.container.css("lineHeight"), lineSpacer.container.css("fontSize")));
+            jqUnit.assertEquals("The size should be doubled", "24px", convertLineHeightFactor(lineSpacer.container.css("lineHeight"), lineSpacer.container.css("fontSize")));
         });
 
         function cleanStaticEnvironment() {
