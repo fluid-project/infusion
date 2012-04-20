@@ -264,5 +264,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("The initial test theme is set correctly", body.hasClass("fl-test"));
         });
 
+        tests.test("FLUID-4703: Line height unit", function () {
+            var child1El = $(".flt-lineHeight-child-1em");
+            var child2El = $(".flt-lineHeight-child-2em");
+
+            var child1emHeight = child1El.height() - 1; // adjusted to account for rounding by jQuery
+            var child2emHeight = child2El.height();
+            jqUnit.assertTrue("The line height of the 2em child should be close to twice the size of the 1em child", 2*child1emHeight < child2emHeight);
+        });
+
     });
 })(jQuery);
