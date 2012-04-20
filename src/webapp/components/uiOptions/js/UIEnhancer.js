@@ -503,7 +503,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // @ See fluid.uiEnhancer.numerizeLineHeight() & http://issues.fluidproject.org/browse/FLUID-4500
         if (that.initialSize) {
             var targetLineSpacing = times * that.initialSize;
-            that.container.css("line-height", targetLineSpacing + "em");
+            that.container.css("line-height", targetLineSpacing);
         }
     };
     
