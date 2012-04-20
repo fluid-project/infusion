@@ -131,7 +131,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             container = $(".flt-lineSpacer");
             lineHeight = fluid.uiEnhancer.getLineHeight(container);
-            jqUnit.assertEquals("getLineHeight without IE simulation", "12px", lineHeight);
+            jqUnit.assertEquals("getLineHeight without IE simulation", "16px", lineHeight);
         });
 
         function testNumerizeLineHeight(lineHeight, expected) {
@@ -139,7 +139,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var uiEnhancer = fluid.uiEnhancer(".flt-lineSpacer", uiEnhancerOptions);
                 var fontSize = fluid.uiEnhancer.getTextSizeInPx(uiEnhancer.container, uiEnhancer.options.fontSizeMap);
                 
-                var numerizedLineHeight = fluid.uiEnhancer.numerizeLineHeight(lineHeight, fontSize);
+                var numerizedLineHeight = fluid.uiEnhancer.numerizeLineHeight(lineHeight, Math.round(fontSize));
 
                 jqUnit.assertEquals("line-height value '" + lineHeight + "' has been converted correctly", expected, numerizedLineHeight);
             });
@@ -151,14 +151,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testNumerizeLineHeight("8px", 1);
         testNumerizeLineHeight("1.5", 1.5);
         
+        // This is necessary to work around IE differences in handling line-height unitless factors
+        var convertLineHeightFactor = function (lineHeight, fontSize) {
+            // Continuing the work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
+            if (lineHeight.match(/[0-9]$/)) {
+                return Math.round(lineHeight * parseFloat(fontSize)) + "px";
+            } else {
+                return lineHeight;
+            }
+        };
+
         tests.test("LineSpacer", function () {
             var uiEnhancer = fluid.uiEnhancer(".flt-lineSpacer", uiEnhancerOptions);
             var lineSpacer = uiEnhancer.lineSpacing;
       
-            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 1.5, lineSpacer.initialSize);
-            jqUnit.assertEquals("Check the line spacing size in pixels", "12px", lineSpacer.container.css("lineHeight"));
+            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 2, Math.round(lineSpacer.initialSize));
+            jqUnit.assertEquals("Check the line spacing size in pixels", "16px", convertLineHeightFactor(lineSpacer.container.css("lineHeight"), lineSpacer.container.css("fontSize")));
             lineSpacer.set(2);
-            jqUnit.assertEquals("The size should be doubled", "24px", lineSpacer.container.css("lineHeight"));
+            jqUnit.assertEquals("The size should be doubled", "32px", convertLineHeightFactor(lineSpacer.container.css("lineHeight"), lineSpacer.container.css("fontSize")));
         });
 
         function cleanStaticEnvironment() {
