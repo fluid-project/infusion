@@ -350,8 +350,9 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.uiEnhancer.getPx2EmFactor = function (container, fontSizeMap) {
-        // The base font size is the computed font size of the container's parent element unless the container itself has been a "body" tag
-        if (container.get(0).tagName !== "BODY") {
+        // The base font size is the computed font size of the container's parent element unless the container itself 
+        // has been the DOM root element "HTML" which is NOT detectable with this algorithm
+        if (container.get(0).tagName !== "HTML") {
             container = container.parent();
         }
         return fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap);
@@ -500,7 +501,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // @ See fluid.uiEnhancer.numerizeLineHeight() & http://issues.fluidproject.org/browse/FLUID-4500
         if (that.initialSize) {
             var targetLineSpacing = times * that.initialSize;
-            that.container.css("line-height", targetLineSpacing + "em");
+            that.container.css("line-height", targetLineSpacing);
         }
     };
     

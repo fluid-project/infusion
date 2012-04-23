@@ -36,7 +36,6 @@ img {
     margin-bottom: 0.5em;
     font-weight: normal;
     font-size: 1.6em;
-    line-height: 100%;
 }
 .header,
 .instructions {
@@ -45,13 +44,11 @@ img {
 .header h1 {
     font-family: LoveYaLikeASister, "Courier New, Courier", monospace;
     font-size: 3em;
-    line-height: 1em;
     margin-bottom: 20px;
 }
 .header .tagline {
     font-family: LatoLightItalic, Helvetica, Tahoma, Verdana, sans-serif;
     font-size: 1.3em;
-    line-height: 130%;
     font-style: italic;
 }
 .header .disp-pref {
