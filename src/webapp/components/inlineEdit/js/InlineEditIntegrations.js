@@ -182,7 +182,7 @@ var fluid_1_5 = fluid_1_5 || {};
             // "focusEditor" call DOES deliver a blur which causes FLUID-4681
             that.deadMansBlur = fluid.deadMansBlur(that.editField, {
                     cancelByDefault: true,
-                    exclusions: {body: $(editorBody)}, 
+                    exclusions: {body: $(editorBody), container: that.container}, 
                     handler: function () {
                         that[that.options.onBlur]();
                     }
