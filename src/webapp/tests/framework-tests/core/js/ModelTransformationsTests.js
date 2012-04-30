@@ -37,228 +37,342 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     var cleanSource = fluid.copy(source);
     
-    var testCase = jqUnit.TestCase("Model Transformation", function () {
-        source = cleanSource;
-    });
+    var testCase = jqUnit.TestCase("Model Transformation");
     
-    testCase.test("fluid.model.transform.value()", function () {    
-        // Transform value with path
-        var result = fluid.model.transform.value(source, {
-            path: "hamster.wheel"
-        });
-        jqUnit.assertEquals("A value transform should resolve the specified path.", 
-                            source.hamster.wheel, result);
-        
-        // Transform value with path and default value
-        result = fluid.model.transform.value(source, {
-            path: "hamster.wheel",
+    function testOneExpander(message, model, expander, method, expected) {
+        var transformed = fluid.model.transform(model, {value: {
+            expander: expander}});
+        jqUnit[method].apply(null, [message, expected, transformed.value]); 
+    }
+    
+    var valueTests = [{
+        message: "A value transform should resolve the specified path.", 
+        expander: {
+            type: "fluid.model.transform.value", 
+            inputPath: "hamster.wheel"
+        }, 
+        method: "assertEquals", 
+        expected: source.hamster.wheel
+    }, {
+        message: "When the path is valid, the value option should not be returned.", 
+        expander: {
+            type: "fluid.model.transform.value", 
+            inputPath: "hamster.wheel",
             value: "hello!"
-        });
-        
-        jqUnit.assertNotEquals("When the path is valid, the value option should not be returned.", 
-                               "hello!", result);
-                               
-        result = fluid.model.transform.value(source, {
-            path: "dog",
+        }, 
+        method: "assertNotEquals", 
+        expected: "hello!"
+    }, {
+        message: "When the path's value is null, the value option should not be returned.",
+        expander: {
+            type: "fluid.model.transform.value", 
+            inputPath: "dog",
             value: "hello!"
-        });
-
-        jqUnit.assertNotEquals("When the path's value is null, the value option should not be returned.", 
-                               "hello!", result);
-                              
-        result = fluid.model.transform.value(source, {
-            path: "goat",
+        }, 
+        method: "assertNotEquals", 
+        expected: "hello!"
+    }, {
+        message: "When the path's value is false, the value option should not be returned.",
+        expander: {
+            type: "fluid.model.transform.value", 
+            inputPath: "goat",
             value: "hello!"
-        });
-
-        jqUnit.assertNotEquals("When the path's value is 'false', the value option should not be returned.", 
-                               "hello!", result);
-
-        result = fluid.model.transform.value(source, {
-            path: "gerbil",
+        }, 
+        method: "assertNotEquals", 
+        expected: "hello!"
+    }, {
+        message: "When the path's value is undefined, the value option should be returned.",
+        expander: {
+            type: "fluid.model.transform.value", 
+            inputPath: "gerbil",
             value: "hello!"
-        });
-       
-        jqUnit.assertEquals("When the path's value is undefined, the value option should be returned.", 
-                            "hello!", result);
-                            
-        // Transform value with literal value
-        result = fluid.model.transform.value(source, {
+        }, 
+        method: "assertEquals", 
+        expected: "hello!"
+    }, {
+        message: "When the path's value is not specified, the value option should be returned.",
+        expander: {
+            type: "fluid.model.transform.value", 
             value: "toothpick"
-        });
-        
-        jqUnit.assertEquals("When the path's value is not specified, the value option should be returned.", 
-                            "toothpick", result);
-
-        // Transform value with path and literal value
-        result = fluid.model.transform.value(source, {
-            path: "cat",
+        }, 
+        method: "assertEquals", 
+        expected: "toothpick"
+    }, {
+        message: "When the path's value is defined, the referenced value should be returned.",
+        expander: {
+            type: "fluid.model.transform.value", 
+            inputPath: "cat",
             value: "rrrrr"
-        });
-        
-        jqUnit.assertEquals("When the path's value is undefined, the value option should be returned.", 
-                            source.cat, result);
-        
-        // Transform with rules instead of EL path
-        result = fluid.model.transform.value(source, {
+        }, 
+        method: "assertEquals", 
+        expected: source.cat
+    }, {
+        message: "Where the path is a rules object, it the result should be an expanded version of it.",
+        expander: {
+            type: "fluid.model.transform.value", 
             value: {
-                alligator: {
-                    expander: {
-                        type: "fluid.model.transform.value",
-                        path: "hamster"
-                    }
-                },
-                tiger: {
-                    expander: {
-                        type: "fluid.model.transform.value",
-                        path: "hamster.wheel"
-                    }
-                }
-            }
-        }, fluid.model.transformWithRules);
-        
-        var expected = {
+               alligator: {
+                   expander: {
+                       type: "fluid.model.transform.value",
+                       inputPath: "hamster"
+                   }
+               },
+               tiger: {
+                   expander: {
+                       type: "fluid.model.transform.value",
+                       inputPath: "hamster.wheel"
+                   }
+               }
+           }
+        }, 
+        method: "assertDeepEq", 
+        expected: {
             alligator: source.hamster,
             tiger: source.hamster.wheel
-        };
-        
-        jqUnit.assertDeepEq("Where the path is a rules object, it the result should be an expanded version of it.",
-                            expected, result);
-    });
+        }
+    }
+    ];
     
-    testCase.test("fluid.model.transform.arrayValue()", function () {
-        var result = fluid.model.transform.arrayValue(source, {
-            path: "cat"
-        });
-        
-        jqUnit.assertDeepEq("arrayValue() should box a non-array value up as one.", 
-                            [source.cat], result);
-                            
-        result = fluid.model.transform.arrayValue(source, {
-            path: "sheep"
-        });
-        
-        jqUnit.assertDeepEq("arrayValue() should not box up an array value.", 
-                            source.sheep, result);
-    });
+    var testOneStructure = function (tests) {
+        for (var i = 0; i < tests.length; ++ i) {
+            var v = tests[i];
+            testOneExpander(v.message, v.model || source, v.expander, v.method, v.expected);
+        }      
+    }
     
-    testCase.test("fluid.model.transform.arrayValue()", function () {
-        var result = fluid.model.transform.count(source, {
-            path: "cat"
-        });
-        
-        jqUnit.assertEquals("count() should return a length of 1 for a non-array value.", 
-                            1, result);
-                            
-        result = fluid.model.transform.count(source, {
-            path: "sheep"
-        });
-        
-        jqUnit.assertEquals("count() should return the length for array values.", 
-                            2, result);
+    testCase.test("fluid.model.transform.value()", function () {
+        testOneStructure(valueTests);
     });
 
+    var arrayValueTests = [{
+        message: "arrayValue() should box a non-array value up as one.", 
+        expander: {
+            type: "fluid.model.transform.arrayValue", 
+            inputPath: "cat"
+        }, 
+        method: "assertDeepEq", 
+        expected: [source.cat]
+    }, {
+        message: "arrayValue() should not box up an array value.", 
+        expander: {
+            type: "fluid.model.transform.arrayValue", 
+            inputPath: "sheep"
+        }, 
+        method: "assertDeepEq", 
+        expected: source.sheep
+    }];
+
+    testCase.test("fluid.model.transform.arrayValue()", function () {
+        testOneStructure(arrayValueTests);
+    });
+
+    var countTests = [{
+        message: "count() should return a length of 1 for a non-array value.", 
+        expander: {
+            type: "fluid.model.transform.count", 
+            inputPath: "cat"
+        }, 
+        method: "assertEquals", 
+        expected: 1
+    }, {
+        message: "count() should return the length for array values.", 
+        expander: {
+            type: "fluid.model.transform.count", 
+            inputPath: "sheep"
+        }, 
+        method: "assertEquals", 
+        expected: 2
+    }];
+
+    testCase.test("fluid.model.transform.count()", function () {
+        testOneStructure(countTests);
+    });
     
-    var createValuePathExpanders = function (paths) {
-        var values = [];
-        for (var i = 0; i < paths.length; i++) {
-            var path = paths[i];
-            values.push({
-                expander: {
-                    type: "fluid.model.transform.value",
-                    path: path
-                }
-            });
-        }
-        
+    var createValuePathExpanders = function (paths) {        
         return {
-            values: values
+            values: fluid.transform(paths, function (path) {
+                return {
+                    expander: {
+                        type: "fluid.model.transform.value",
+                        inputPath: path
+                    }
+                };
+            })
         };
     };
     
+    var firstValueTests = [{
+        message: "firstValue() should return the first non-undefined value in paths", 
+        expander: {
+            type: "fluid.model.transform.firstValue", 
+            values: ["cat", "dog"]
+        }, 
+        method: "assertEquals", 
+        expected: source.cat
+    }, {
+        message: "firstValue() should return the second path value when the first is undefined", 
+        expander: {
+            type: "fluid.model.transform.firstValue", 
+            values: ["gerbil", "cat"]
+        }, 
+        method: "assertEquals", 
+        expected: source.cat
+    }, {
+        message: "firstValue() should return the first path value when is false", 
+        expander: {
+            type: "fluid.model.transform.firstValue", 
+            values: ["goat", "cat"]
+        }, 
+        method: "assertEquals", 
+        expected: source.goat
+    }, {
+        message: "firstValue() should return the first path value when is null", 
+        expander: {
+            type: "fluid.model.transform.firstValue", 
+            values: ["dog", "cat"]
+        }, 
+        method: "assertEquals", 
+        expected: source.dog
+    }, {
+        message: "firstValue() should return the first path value when is 0", 
+        expander: {
+            type: "fluid.model.transform.firstValue", 
+            values: ["hippo", "cat"]
+        }, 
+        method: "assertEquals", 
+        expected: source.hippo
+    }];
+    
     testCase.test("fluid.model.transform.firstValue()", function () {
-        var result = fluid.model.transform.firstValue(source, createValuePathExpanders(["cat", "dog"]));
-        jqUnit.assertEquals("firstValue() should return the first non-undefined value in paths",
-                            source.cat, result);
-
-        result = fluid.model.transform.firstValue(source, createValuePathExpanders(["gerbil", "cat"]));
-
-        jqUnit.assertEquals("firstValue() should return the second path value when the first is undefined",
-                             source.cat, result);
-                            
-        result = fluid.model.transform.firstValue(source, createValuePathExpanders(["goat", "cat"]));
-
-        jqUnit.assertEquals("firstValue() should return the first path value when is false",
-                            source.goat, result);
-                            
-        result = fluid.model.transform.firstValue(source, createValuePathExpanders(["dog", "cat"]));
-
-        jqUnit.assertEquals("firstValue() should return the first path value when is null",
-                            source.dog, result);
-                            
-        result = fluid.model.transform.firstValue(source, createValuePathExpanders(["hippo", "cat"]));
-
-        jqUnit.assertEquals("firstValue() should return the first path value when is 0",
-                            source.hippo, result);
+        testOneStructure(firstValueTests);
     });
     
-    testCase.test("fluid.model.transform.merge()", function () {        
-        // Merge to simple objects via EL paths.
-        var result = fluid.model.transform.merge(source, {
-            left: "hamster",
-            right: "cow"
-        });
-        
-        var expected = {
-            wheel: source.hamster.wheel,
-            grass: source.cow.grass
-        };
-        
-        jqUnit.assertDeepEq("Objects should be correctly merged.", expected, result);
-        jqUnit.assertDeepEq("The source object should be unchanged after merging.", cleanSource, source);
-        
-        // Merging a non-object property should return the left-hand side.                            
-        result = fluid.model.transform.merge(source, {
-            left: "hamster",
-            right: "cat"
-        });
-        jqUnit.assertEquals("If a non-object property is used to merge, the left hand side value should be returned.",
-                            source.hamster, result);
-                            
-        // Merge two objects, one specified by an EL path and other by a sub-rules object.
-        result = fluid.model.transform.merge(source, {
-            left: "hamster",
-            right: {
-                guppy: {
-                    expander: {
-                        type: "fluid.model.transform.value",
-                        path: "cow.grass"
-                    }
+    var demuxModel = {
+        tracking: "focus"  
+    };
+    
+    var demuxOptions = {
+        "mouse": {
+            "outputPath": "FollowMouse",
+            "value": true
+        },
+        "focus": {
+            "outputPath": "FollowFocus",
+            "value": true
+         },
+        "caret": {
+            "outputPath": "FollowCaret",
+            "value": true
+        }
+    };
+    
+    var demultiplexTests = [{
+        message: "demultiplexValue selects focus based on path",
+        model: demuxModel, 
+        expander: {
+            type: "fluid.model.transform.demultiplexValue",
+            inputPath: "tracking",
+            options: demuxOptions
+        },
+        method: "assertDeepEq",
+        expected: {
+            "FollowFocus": true
+        }
+    }, {
+        message: "demultiplexValue selects mouse by default",
+        model: {
+            tracking: "unknown-thing"
+        }, 
+        expander: {
+            type: "fluid.model.transform.demultiplexValue",
+            inputPath: "tracking",
+            defaultOption: "mouse",
+            options: demuxOptions
+        },
+        method: "assertDeepEq",
+        expected: {
+            "FollowMouse": true
+        }
+    }, {
+        message: "demultiplexValue with default output value and non-string input value",
+        model: {
+            condition: true
+        }, 
+        expander: {
+            type: "fluid.model.transform.demultiplexValue",
+            inputPath: "condition",
+            defaultValue: "CATTOO",
+            options: {
+                "true": {
+                    outputPath: "trueCATT"
                 },
-                minnow: {
+                "false": {
+                    outputPath: "falseCATT"
+                }
+            }
+        },
+        method: "assertDeepEq",
+        expected: {
+            "trueCATT": "CATTOO"
+        }
+    }];
+    
+    testCase.test("fluid.model.transform.demultiplexValue()", function () {
+        testOneStructure(demultiplexTests);
+    });
+    
+    testCase.test("transform with compact inputPath", function() {
+        var rules = {
+            feline: "cat",
+            kangaroo: {
+                value: "literal value"
+            },
+            "farm.goat": "goat",
+            "farm.sheep": "sheep"
+        };
+        var expected = {
+            feline: "meow", // prop rename
+            kangaroo: "literal value",
+            farm: { // Restructure
+                goat: false,
+                sheep: [
+                    "baaa",
+                    "wooooool"
+                ]
+            }
+        };
+        var result = fluid.model.transform(source, rules);
+        jqUnit.assertDeepEq("The model should be transformed based on the specified rules", expected, result);
+    });
+    
+    testCase.test("transform with nested farm.goat", function() {
+        var rules = {
+            "farm": {
+                "goat": {
                     expander: {
                         type: "fluid.model.transform.value",
-                        path: "sheep.1"
+                        inputPath: "goat"
                     }
                 }
             }
-        }, fluid.model.transformWithRules);
-        expected = {
-            wheel: source.hamster.wheel,
-            guppy: source.cow.grass,
-            minnow: source.sheep[1]
         };
-        jqUnit.assertDeepEq("", expected, result);
-  
+        var expected = {
+           farm: { // Restructure
+                goat: false,
+            }
+        };
+        var result = fluid.model.transform(source, rules);
+        jqUnit.assertDeepEq("The model should be transformed based on the specified rules", expected, result);
     });
     
-    testCase.test("fluid.model.transformWithRules()", function () {
+    
+    testCase.test("fluid.model.transform()", function () {
         var rules = {
             // Rename a property
             feline: { 
                 expander: {
                     type: "fluid.model.transform.value",
-                    path: "cat"
+                    inputPath: "cat"
                 }
             },
 
@@ -266,7 +380,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gerbil: {
                 expander: {
                     type: "fluid.model.transform.value",
-                    path: "gerbil",
+                    inputPath: "gerbil",
                     value: "sold out"
                 }
             },
@@ -283,13 +397,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "farm.goat": {                                          
                 expander: {
                     type: "fluid.model.transform.value",
-                    path: "goat"
+                    inputPath: "goat"
                 }
             },
             "farm.sheep": {
                 expander: {
                     type: "fluid.model.transform.value",
-                    path: "sheep"
+                    inputPath: "sheep"
                 }
             },
 
@@ -301,13 +415,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         {
                             expander: {
                                 type: "fluid.model.transform.value",
-                                path: "grizzly"
+                                inputPath: "grizzly"
                             }
                         },
                         {
                             expander: {
                                 type: "fluid.model.transform.value",
-                                path: "polar"
+                                inputPath: "polar"
                             }
                         }
                     ]
@@ -329,11 +443,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             bear: "grrr" // first value
         };
         
-        var result = fluid.model.transformWithRules(source, rules);
+        var result = fluid.model.transform(source, rules);
         jqUnit.assertDeepEq("The model should transformed based on the specified rules", expected, result);
     });
     
-    testCase.test("fluid.model.transformWithRules() with idempotent rules", function () {
+    testCase.test("fluid.model.transform() with idempotent rules", function () {
         var idempotentRules = {
             wheel: {
                 expander: {
@@ -342,13 +456,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         {
                             expander: {
                                 type: "fluid.model.transform.value",
-                                path: "wheel"
+                                inputPath: "wheel"
                             }
                         },
                         {
                             expander: {
                                 type: "fluid.model.transform.value",
-                                path: "hamster.wheel"
+                                inputPath: "hamster.wheel"
                             }
                         }
                     ]
@@ -361,13 +475,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         {
                             expander: {
                                 type: "fluid.model.transform.value",
-                                path: "barn.cat"
+                                inputPath: "barn.cat"
                             }
                         },
                         {
                             expander: {
                                 type: "fluid.model.transform.value",
-                                path: "cat"
+                                inputPath: "cat"
                             }
                         }
                     ]
@@ -382,34 +496,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
         
-        var result = fluid.model.transformWithRules(source, idempotentRules);
+        var result = fluid.model.transform(source, idempotentRules);
         
         // Test idempotency of the transform (with these particular rules).
-        result = fluid.model.transformWithRules(fluid.copy(result), idempotentRules);
+        result = fluid.model.transform(fluid.copy(result), idempotentRules);
         jqUnit.assertDeepEq("Running the transform on the output of itself shouldn't mangle the result.",
                             expected, result);
                             
         // Test that a model that already matches the rules isn't mangled by the transform (with these particular rules).
-        result = fluid.model.transformWithRules(fluid.copy(expected), idempotentRules);
+        result = fluid.model.transform(fluid.copy(expected), idempotentRules);
         jqUnit.assertDeepEq("With the appropriate rules, a model that already matches the transformation rules should pass through successfully.",
                             expected, result);
-    });
-    
-    testCase.test("fluid.model.transformWithRules() with multiple rules", function () {
-        var ruleA = {
-            kitten: "cat"
-        };
-        
-        var ruleB = {
-            sirius: "kitten"
-        };
-        
-        var expected = {
-            sirius: "meow"
-        };
-        
-        var result = fluid.model.transformWithRules(source, [ruleA, ruleB]);
-        jqUnit.assertDeepEq("An array of rules should cause each to be applied in sequence.", expected, result);
     });
     
     var oldOptions = {
@@ -450,8 +547,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.testUtils.assertLeftHand("Options sucessfully transformed", expected, that.options);
     };
     
-    testCase.test("fluid.model.transformWithRules(): options backwards compatibility", function () {
-        var result = fluid.model.transformWithRules(oldOptions, transformRules);
+    testCase.test("fluid.model.transform(): options backwards compatibility", function () {
+        var result = fluid.model.transform(oldOptions, transformRules);
         deepEqual(result, modernOptions, "Options should be transformed successfully based on the provided rules.");
     });
     
@@ -467,10 +564,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "bowl.fish": "fluid.littleComponent"
     });
     
-    testCase.test("fluid.model.transformWithRules applied automatically to component options, without IoC", function () {
+    testCase.test("fluid.model.transform applied automatically to component options, without IoC", function () {
         var options = fluid.copy(oldOptions);
         options.transformOptions = {
-            transformer: "fluid.model.transformWithRules",
+            transformer: "fluid.model.transform",
             config: transformRules  
         };
         var that = fluid.tests.testTransformable(options);
@@ -479,7 +576,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.demands("fluid.transformOptions", ["fluid.tests.testTransformableIoC", "fluid.tests.transform.version.old"], {
         options: {
-            transformer: "fluid.model.transformWithRules",
+            transformer: "fluid.model.transform",
             config: transformRules
         }
     });
@@ -513,7 +610,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
     
-    testCase.test("fluid.model.transformWithRules applied automatically to component options, with IoC", function () {
+    testCase.test("fluid.model.transform applied automatically to component options, with IoC", function () {
         var that = fluid.tests.transform.tip();
         checkTransformedOptions(that.transformable);
     });

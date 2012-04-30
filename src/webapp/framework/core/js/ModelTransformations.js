@@ -21,89 +21,218 @@ var fluid = fluid || fluid_1_5;
 
 (function ($) {
 
-    fluid.model = fluid.model || {};
-    fluid.model.transform = fluid.model.transform || {};
+    fluid.registerNamespace("fluid.model.transform");
     
+    /** Grade definitions for standard transformation function hierarchy **/
     
-    /******************************
-     * General Model Transformers *
-     ******************************/
+    fluid.defaults("fluid.transformFunction", {
+        gradeNames: "fluid.function"
+    });
     
-    fluid.model.transform.value = function (model, expandSpec, recurse) {
-        var val;
-        if (expandSpec.path) {
-            val = fluid.get(model, expandSpec.path);
-            
-            if (typeof(val) !== "undefined") {
-                return val;
-            }
-        }
-        
-        return typeof(expandSpec.value) === "object" ? recurse(model, expandSpec.value) : expandSpec.value;    
-    };
+    // uses standard layout and workflow involving inputPath
+    fluid.defaults("fluid.standardInputTransformFunction", {
+        gradeNames: "fluid.transformFunction"  
+    });
     
-    fluid.model.transform.arrayValue = function (model, expandSpec, recurse) {
-        return fluid.makeArray(fluid.model.transform.value(model, expandSpec));
-    };
-     
-    fluid.model.transform.count = function (model, expandSpec, recurse) {
-        var value = fluid.get(model, expandSpec.path);
-        return fluid.makeArray(value).length;
-    };
-     
-    fluid.model.transform.firstValue = function (model, expandSpec, recurse) {
-        var result;
-        for (var i = 0; i < expandSpec.values.length; i++) {
-            var value = expandSpec.values[i];
-            if (typeof(value) === "string") {
-                value = fixupExpandSpec(value);
-            }
-            result = fluid.model.transform.value(model, value.expander, recurse);
-            if (typeof(result) !== "undefined") {
-                break;
-            }
-        }
-        return result;
-    };
+    fluid.defaults("fluid.standardOutputTransformFunction", {
+        gradeNames: "fluid.transformFunction"  
+    });
     
-    var getOrRecurse = function (model, value, recurse) {
-        return typeof(value) === "string" ? fluid.get(model, value) : recurse(model, value, recurse);
-    };
+    // uses the standard layout and workflow involving inputPath and outputPath
+    fluid.defaults("fluid.standardTransformFunction", {
+        gradeNames: ["fluid.standardInputTransformFunction", "fluid.standardOutputTransformFunction"]  
+    });
     
-    fluid.model.transform.merge = function (model, expandSpec, recurse) {
-        var left = getOrRecurse(model, expandSpec.left, recurse);
-        var right = getOrRecurse(model, expandSpec.right, recurse);
-        
-        if (typeof(left) !== "object" || typeof(right) !== "object") {
-            return left;
-        }
-        
-        return fluid.merge(expandSpec.policy ? expandSpec.policy : null, {}, left, right);
-    };
-     
-    var fixupExpandSpec = function (expandSpec) {
+    fluid.defaults("fluid.lens", {
+        gradeNames: "fluid.transformFunction"
+        // inverseLens - plan is for this method to return "inverted configuration" rather than actually
+        // to perform inversion
+        // TODO: harmonise with strategy used in VideoPlayer_framework.js
+    });
+    
+    /***********************************
+     * Base utilities for transformers *
+     ***********************************/
+
+    fluid.model.transform.pathToRule = function (inputPath) {
         return {
             expander: {
                 type: "fluid.model.transform.value",
-                path: expandSpec
+                inputPath: inputPath
             }
         };
     };
     
-    var expandRule = function (model, targetPath, rule) {
-        var expanded = {};
-        for (var key in rule) {
-            var value = rule[key];
-            if (key === "expander") {
-                var expanderFn = fluid.getGlobalValue(value.type);
-                if (expanderFn) {
-                    expanded = expanderFn.call(null, model, value, fluid.model.transformWithRules);
-                }
-            } else {
-                expanded[key] = fluid.model.transformWithRules(model, value);
+    fluid.model.transform.valueToRule = function (value) {
+        return {
+            expander: {
+                type: "fluid.model.transform.literalValue",
+                value: value
+            }
+        };
+    };
+
+    fluid.model.transform.getValue = function (expandSpec, expander) {
+        var val;
+        if (expandSpec.inputPath) {
+            val = fluid.get(expander.source, expandSpec.inputPath);
+        }
+        if (val === undefined && expandSpec.value) {
+            var toExpand = fluid.isPrimitive(expandSpec.value)? fluid.model.transform.valueToRule(expandSpec.value) : expandSpec.value;
+            val = expander.expand(toExpand, expander);
+        }
+        return val;
+    };
+    
+    // distinguished value which indicates that a transformation rule supplied a 
+    // non-default output path, and so the user should be prevented from making use of it
+    // in a compound expander definition
+    fluid.model.transform.NONDEFAULT_OUTPUT_PATH_RETURN = {};
+    
+    fluid.model.transform.setValue = function (expandSpec, value, expander) {
+        var outputPath = expander.prefix;
+        // avoid crosslinking to input object - this might be controlled by a "nocopy" option in future
+        var toset = fluid.copy(value); 
+        if (expandSpec.outputPath) {
+            outputPath = fluid.model.composePaths(outputPath, expandSpec.outputPath);
+        }
+        // TODO: custom resolver config here to create non-hash output model structure
+        if (toset !== undefined) {
+            fluid.set(expander.target, outputPath, toset);
+        }
+        return expandSpec.outputPath? fluid.model.transform.NONDEFAULT_OUTPUT_PATH_RETURN: toset;
+    };
+    
+    /****************************************
+     * Standard transformermation functions *
+     ****************************************/
+        
+    fluid.model.transform.value = fluid.identity;
+    
+    fluid.defaults("fluid.model.transform.value", { 
+        gradeNames: "fluid.standardTransformFunction"
+    });
+    
+    fluid.model.transform.literalValue = function (expanderSpec) {
+        return expanderSpec.value;  
+    };
+    
+    fluid.defaults("fluid.model.transform.literalValue", { 
+        gradeNames: "fluid.standardOutputTransformFunction"
+    });
+    
+    fluid.model.transform.arrayValue = function (value) {
+        return fluid.makeArray(value);
+    };
+        
+    fluid.defaults("fluid.model.transform.arrayValue", { 
+        gradeNames: "fluid.standardTransformFunction"
+    });
+     
+    fluid.model.transform.count = function (value) {
+        return fluid.makeArray(value).length;
+    };
+    
+    fluid.defaults("fluid.model.transform.count", { 
+        gradeNames: "fluid.standardTransformFunction"
+    });
+     
+    fluid.model.transform.firstValue = function (expandSpec, expander) {
+        if (!expandSpec.values || !expandSpec.values.length) {
+            fluid.fail("firstValue transformer requires an array of values at path named \"values\", supplied", expandSpec);
+        }
+        for (var i = 0; i < expandSpec.values.length; i++) {
+            var value = expandSpec.values[i];
+            var expanded = expander.expand(value, expander);
+            if (expanded !== undefined) {
+                return expanded;
             }
         }
-        return expanded;
+    };
+    
+    fluid.defaults("fluid.model.transform.firstValue", { 
+        gradeNames: "fluid.standardOutputTransformFunction"
+    });
+
+    fluid.model.transform.demultiplexValue = function (value, expander, expandSpec) {
+        if (!expandSpec.options) {
+            fluid.fail("demultiplexValue requires a hash of options at path named \"options\", supplied ", expandSpec);
+        }
+        var indexed = expandSpec.options[value];
+        if (!indexed) {
+            indexed = expandSpec.options[expandSpec.defaultOption];
+            if (!indexed) {
+                fluid.fail("value ", value, " for demultiplexValue could not be looked up to an option, and no defaultOption supplied with ", expandSpec);
+            }
+        }
+        var value = indexed.value === undefined? expandSpec.defaultValue : indexed.value;
+        return fluid.model.transform.setValue(indexed, value, expander); 
+    };
+    
+    fluid.defaults("fluid.model.transform.demultiplexValue", { 
+        gradeNames: "fluid.standardInputTransformFunction"
+    });
+    
+    fluid.model.transform.expandValue = function (rule, expander) {
+        if (typeof(rule) === "string") {
+            rule = fluid.model.transform.pathToRule(rule);
+        }
+        // special dispensation to allow "value" at top level
+        else if (rule.value && expander.prefix !== "") {
+            rule = fluid.model.transform.valueToRule(rule.value);
+        }
+        var togo;
+        if (rule.expander) {
+            var expanders = fluid.makeArray(rule.expander);
+            for (var i = 0; i < expanders.length; ++ i) {
+                var expandSpec = expanders[i];  
+                var expanderFn = fluid.getGlobalValue(expandSpec.type);
+                var expdef = fluid.defaults(expandSpec.type);
+                if (!fluid.hasGrade(expdef, "fluid.transformFunction") || !expanderFn) {
+                    fluid.fail("Transformation record specifies transformation function with name " + 
+                       expandSpec.type + " which is not a properly configured transformation function (missing grade or definition)");
+                }
+                var expanderArgs = [expandSpec, expander];
+                if (fluid.hasGrade(expdef, "fluid.standardInputTransformFunction")) {
+                    var expanded = fluid.model.transform.getValue(expandSpec, expander);
+                    expanderArgs[0] = expanded;
+                    expanderArgs[2] = expandSpec;
+                }
+                var transformed = expanderFn.apply(null, expanderArgs);
+                if (fluid.hasGrade(expdef, "fluid.standardOutputTransformFunction")) {
+                    togo = fluid.model.transform.setValue(expandSpec, transformed, expander);
+                }
+            }
+        } else {
+            for (var key in rule) {
+                var value = rule[key];
+                fluid.model.transform.pushPrefix(key, expander);
+                expander.expand(value, expander);
+                fluid.model.transform.popPrefix(expander);
+            }
+            togo = fluid.get(expander.target, expander.prefix);
+        }
+        return togo;
+    };
+    
+    /** Accepts two fully escaped paths, either of which may be empty **/
+    fluid.model.composePaths = function (prefix, suffix) {
+        if (prefix === "" || suffix === "") {
+            return prefix + suffix;
+        }
+        else {
+            return prefix + "." + suffix;
+        }
+    };
+    
+    fluid.model.transform.pushPrefix = function (prefix, expander) {
+        var newPath = fluid.model.composePaths(expander.prefix, prefix);
+        expander.prefixStack.push(expander.prefix);
+        expander.prefix = newPath;
+    };
+    
+    fluid.model.transform.popPrefix = function (expander) {
+        expander.prefix = expander.prefixStack.pop();
     };
     
     /**
@@ -118,30 +247,25 @@ var fluid = fluid || fluid_1_5;
      *       }
      *   }
      *
-     * @param {Object} model the model to transform
+     * @param {Object} source the model to transform
      * @param {Object} rules a rules object containing instructions on how to transform the model
      */
-    fluid.model.transformWithRules = function (model, rules) {
-        var transformed;
-        rules = fluid.makeArray(rules);
+    fluid.model.transformWithRules = function (source, rules) {
+
+        var expander = {
+            expand: fluid.model.transform.expandValue,
+            source: source,
+            target: {},
+            prefix: "",
+            prefixStack: []
+        };
         
-        fluid.each(rules, function (rulesObj) {
-            transformed = {};
-            for (var targetPath in rulesObj) {
-                var rule = rulesObj[targetPath];
-
-                if (typeof(rule) === "string") {
-                    rule = fixupExpandSpec(rule);
-                }
-
-                var expanded = expandRule(model, targetPath, rule);
-                if (typeof(expanded) !== "undefined") {
-                    fluid.set(transformed, targetPath, expanded);
-                }
-            };
-            model = transformed;
-        });
-        return transformed;
+        fluid.model.transform.expandValue(rules, expander);
+        return expander.target;
+        
     };
+    
+    $.extend(fluid.model.transformWithRules, fluid.model.transform);
+    fluid.model.transform = fluid.model.transformWithRules;
     
 })(jQuery, fluid_1_5);
