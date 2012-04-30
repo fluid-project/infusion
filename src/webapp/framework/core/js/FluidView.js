@@ -453,6 +453,9 @@ var fluid_1_5 = fluid_1_5 || {};
         that.reArm = function () {
             fluid.globalDismissal(that.options.exclusions, that.proceed);
         };
+        that.addExclusion = function (exclusions) {
+            fluid.globalDismissal(exclusions, that.proceed);
+        };
         that.proceed = function (event) {
             fluid.log("Direct proceed through " + event.type + " on " + fluid.dumpEl(event.target));
             that.blurPending = false;

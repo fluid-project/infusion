@@ -187,6 +187,20 @@ var fluid_1_5 = fluid_1_5 || {};
                         that[that.options.onBlur]();
                     }
                 });
+            // Ridiculous drilling down functions on 3.4.9 to track dynamic creation of
+            // menu dropdowns which otherwise causes an undetectable focus transfer 
+            // away from editor (they are appended to the end of the document rather than
+            // nested within the editor).
+            editor.controlManager.onAdd.add(function(e) {
+                if (e.onShowMenu) {
+                    e.onShowMenu.add(function() {
+                        var el = fluid.byId(e.element.id);
+                        if (el) {
+                            that.deadMansBlur.addExclusion({id: el});
+                        }
+                    });
+                }
+            });
         });
             
         that.events.afterBeginEdit.addListener(function () {
