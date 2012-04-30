@@ -63,8 +63,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Transform hash chain", {a: true, b: false}, fluid.transform({a: 0, b: 1}, addOne, isOdd));
     });
     
-    fluidJSTests.test("keyForValue, fluid.find and fluid.each", function () {
-        expect(16);
+    fluidJSTests.test("keyForValue, fluid.find, fluid.each, fluid.keys and fluid.values", function () {
+        expect(18);
         var seekIt = function (seek) {
             fluid.each(seek, function (value, key) {
                 jqUnit.assertEquals("Find value with keyForValue - " + value + ": ", key, fluid.keyForValue(seek, value));
@@ -79,6 +79,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         seekIt(seek1);
         var seek2 = [1, null, false, "Sneeze"];
         seekIt(seek2);
+        
+        jqUnit.assertDeepEq("fluid.keys", ["One", "Two", "Three", "Four"], fluid.keys(seek1));
+        jqUnit.assertDeepEq("fluid.values", [1, null, false, "Sneeze"], fluid.values(seek1));
     });
     
     fluidJSTests.test("null iteration", function () {
