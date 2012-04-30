@@ -144,6 +144,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOneStructure(valueTests);
     });
 
+    var transformToShortNames = {
+        expander: {
+            inputPath: "*.expander.type",
+            type: "fluid.computeNickName"  
+        }
+    };
+    
+    testCase.test("Transform with wildcard path and short names", function () {
+        var shortened = fluid.model.transform(valueTests, transformToShortNames);
+        var expected = fluid.transform(valueTests, function(config) {
+             return {
+                 expander: {
+                     type: fluid.computeNickName(config.expander.type)
+                 }
+             };
+        });
+        jqUnit.assertDeepEq("Transformed expander types to short names", expected, shortened);
+        var newConfig = $.extend(true, [], valueTests, shortened);
+        testOneStructure(newConfig);
+    });
+
     var arrayValueTests = [{
         message: "arrayValue() should box a non-array value up as one.", 
         expander: {

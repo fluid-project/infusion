@@ -173,6 +173,34 @@ var fluid = fluid || fluid_1_5;
         gradeNames: "fluid.standardInputTransformFunction"
     });
     
+    fluid.model.transform.expandExpander = function (expandSpec, expander) {
+        var typeName = expandSpec.type;
+        if (typeName.indexOf(".") === -1) {
+            typeName = "fluid.model.transform." + typeName;
+        }
+        var expanderFn = fluid.getGlobalValue(typeName);
+        var expdef = fluid.defaults(typeName);
+        if (typeof(expanderFn) !== "function") {
+           fluid.fail("Transformation record specifies transformation function with name " + 
+               expandSpec.type + " which is not a function - ", expanderFn);
+        }
+        if (!fluid.hasGrade(expdef, "fluid.transformFunction")) {
+            // If no suitable grade is set up, assume that it is intended to be used as a standardTransformFunction
+            expdef = fluid.defaults("fluid.standardTransformFunction");
+        }
+        var expanderArgs = [expandSpec, expander];
+        if (fluid.hasGrade(expdef, "fluid.standardInputTransformFunction")) {
+            var expanded = fluid.model.transform.getValue(expandSpec, expander);
+            expanderArgs[0] = expanded;
+            expanderArgs[2] = expandSpec;
+        }
+        var transformed = expanderFn.apply(null, expanderArgs);
+        if (fluid.hasGrade(expdef, "fluid.standardOutputTransformFunction")) {
+            transformed = fluid.model.transform.setValue(expandSpec, transformed, expander);
+        }
+        return transformed;
+    };
+    
     fluid.model.transform.expandValue = function (rule, expander) {
         if (typeof(rule) === "string") {
             rule = fluid.model.transform.pathToRule(rule);
@@ -185,30 +213,19 @@ var fluid = fluid || fluid_1_5;
         if (rule.expander) {
             var expanders = fluid.makeArray(rule.expander);
             for (var i = 0; i < expanders.length; ++ i) {
-                var expandSpec = expanders[i];  
-                var expanderFn = fluid.getGlobalValue(expandSpec.type);
-                var expdef = fluid.defaults(expandSpec.type);
-                if (!fluid.hasGrade(expdef, "fluid.transformFunction") || !expanderFn) {
-                    fluid.fail("Transformation record specifies transformation function with name " + 
-                       expandSpec.type + " which is not a properly configured transformation function (missing grade or definition)");
+                var expandSpec = expanders[i];
+                if (typeof(expandSpec.inputPath) === "string" && expandSpec.inputPath.indexOf("*") !== -1) {
+                    expander.queued.push({expandSpec: expandSpec, prefix: expander.prefix});
+                    continue;
                 }
-                var expanderArgs = [expandSpec, expander];
-                if (fluid.hasGrade(expdef, "fluid.standardInputTransformFunction")) {
-                    var expanded = fluid.model.transform.getValue(expandSpec, expander);
-                    expanderArgs[0] = expanded;
-                    expanderArgs[2] = expandSpec;
-                }
-                var transformed = expanderFn.apply(null, expanderArgs);
-                if (fluid.hasGrade(expdef, "fluid.standardOutputTransformFunction")) {
-                    togo = fluid.model.transform.setValue(expandSpec, transformed, expander);
-                }
+                togo = fluid.model.transform.expandExpander(expandSpec, expander);
             }
         } else {
             for (var key in rule) {
                 var value = rule[key];
-                fluid.model.transform.pushPrefix(key, expander);
+                expander.prefixOp.push(key);
                 expander.expand(value, expander);
-                fluid.model.transform.popPrefix(expander);
+                expander.prefixOp.pop();
             }
             togo = fluid.get(expander.target, expander.prefix);
         }
@@ -225,16 +242,40 @@ var fluid = fluid || fluid_1_5;
         }
     };
     
-    fluid.model.transform.pushPrefix = function (prefix, expander) {
-        var newPath = fluid.model.composePaths(expander.prefix, prefix);
-        expander.prefixStack.push(expander.prefix);
-        expander.prefix = newPath;
+    fluid.model.transform.makePathStack = function (expander, prefixName) {
+        var stack = expander[prefixName + "Stack"];
+        return {
+            push: function (prefix) {
+                var newPath = fluid.model.composePaths(expander[prefixName], prefix);
+                stack.push(expander[prefixName]);
+                expander[prefixName] = newPath;
+            },
+            pop: function () {
+                expander[prefixName] = stack.pop();
+            }
+        };
     };
     
-    fluid.model.transform.popPrefix = function (expander) {
-        expander.prefix = expander.prefixStack.pop();
+    fluid.model.transform.expandWildcards = function (expander, source) {
+        fluid.each(source, function (value, key) {
+            var q = expander.queued;
+            expander.pathOp.push(key);
+            for (var i = 0; i < q.length; ++ i) {
+                var expandSpec = q[i].expandSpec;
+                if (fluid.pathUtil.matchPath(expandSpec.inputPath, expander.path, true)) {
+                    var esCopy = fluid.copy(expandSpec);
+                    esCopy.inputPath = expander.path;
+                    // TODO: allow some kind of interpolation for output path
+                    esCopy.outputPath = expander.path;
+                    fluid.model.transform.expandExpander(esCopy, expander);
+                }
+            }
+            if (!fluid.isPrimitive(value)) {
+                fluid.model.transform.expandWildcards(expander, value);
+            }
+            expander.pathOp.pop();
+        });
     };
-    
     /**
      * Transforms a model based on a specified expansion rules objects.
      * Rules objects take the form of:
@@ -255,12 +296,21 @@ var fluid = fluid || fluid_1_5;
         var expander = {
             expand: fluid.model.transform.expandValue,
             source: source,
-            target: {},
+            target: fluid.freshContainer(source),
             prefix: "",
-            prefixStack: []
+            prefixStack: [],
+            queued: []
         };
+        expander.prefixOp = fluid.model.transform.makePathStack(expander, "prefix");
         
         fluid.model.transform.expandValue(rules, expander);
+        if (expander.queued.length > 0) {
+            expander.typeStack = [];
+            expander.path = "";
+            expander.pathStack = [];
+            expander.pathOp = fluid.model.transform.makePathStack(expander, "path");
+            fluid.model.transform.expandWildcards(expander, source);
+        }
         return expander.target;
         
     };

@@ -306,7 +306,7 @@ var fluid_1_5 = fluid_1_5 || {};
             else {
                 escaped = false;
                 if (segment !== null) {
-                    accept += c;
+                    segment += c;
                 }
             }
         }
@@ -369,11 +369,24 @@ var fluid_1_5 = fluid_1_5 || {};
             prefix += '.';
         }
         return composeSegment(prefix, suffix);
-    };    
+    };
+    
+    /** Determines whether a particular EL path matches a given path specification.
+     * The specification consists of a path with optional wildcard segments represented by "*".
+     * @param spec (string) The specification to be matched
+     * @param path (string) The path to be tested
+     * @param exact (boolean) Whether the path must exactly match the length of the specification in
+     * terms of path segments in order to count as match. If exact is falsy, short specifications will
+     * match all longer paths as if they were padded out with "*" segments 
+     * @return (string) The path which matched the specification, or <code>null</code> if there was no match
+     */
    
-    fluid.pathUtil.matchPath = function (spec, path) {
+    fluid.pathUtil.matchPath = function (spec, path, exact) {
         var togo = "";
         while (true) {
+            if (!path && spec && exact) {
+                return null;
+            }
             // FLUID-4625 - symmetry on spec and path is actually undesirable, but this
             // quickly avoids at least missed notifications - improved (but slower) 
             // implementation should explode composite changes
