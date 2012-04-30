@@ -47,64 +47,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var record = fossils[key];
         return record ? record.EL : null;
     };
-  
-    fluid.findForm = function (node) {
-        return fluid.findAncestor(node, function (element) {
-            return element.nodeName.toLowerCase() === "form";
-        });
-    };
-    
-    /** A generalisation of jQuery.val to correctly handle the case of acquiring and
-     * setting the value of clustered radio button/checkbox sets, potentially, given
-     * a node corresponding to just one element.
-     */
-    fluid.value = function (nodeIn, newValue) {
-        var node = fluid.unwrap(nodeIn);
-        var multiple = false;
-        if (node.nodeType === undefined && node.length > 1) {
-            node = node[0];
-            multiple = true;
-        }
-        if ("input" !== node.nodeName.toLowerCase() || !/radio|checkbox/.test(node.type)) {
-            // resist changes to contract of jQuery.val() in jQuery 1.5.1 (see FLUID-4113)
-            return newValue === undefined ? $(node).val() : $(node).val(newValue);
-        }
-        var name = node.name;
-        if (name === undefined) {
-            fluid.fail("Cannot acquire value from node " + fluid.dumpEl(node) + " which does not have name attribute set");
-        }
-        var elements;
-        if (multiple) {
-            elements = nodeIn;
-        } else {
-            elements = node.ownerDocument.getElementsByName(name);
-            var scope = fluid.findForm(node);
-            elements = $.grep(elements, function (element) {
-                if (element.name !== name) {
-                    return false;
-                }
-                return !scope || fluid.dom.isContainer(scope, element);
-            });
-        }
-        if (newValue !== undefined) {
-            if (typeof(newValue) === "boolean") {
-                newValue = (newValue ? "true" : "false");
-            }
-          // jQuery gets this partially right, but when dealing with radio button array will
-          // set all of their values to "newValue" rather than setting the checked property
-          // of the corresponding control. 
-            $.each(elements, function () {
-                this.checked = (newValue instanceof Array ? 
-                    $.inArray(this.value, newValue) !== -1 : newValue === this.value);
-            });
-        } else { // this part jQuery will not do - extracting value from <input> array
-            var checked = $.map(elements, function (element) {
-                return element.checked ? element.value : null;
-            });
-            return node.type === "radio" ? checked[0] : checked;
-        }
-    };
-    
+      
    /** "Automatically" apply to whatever part of the data model is
      * relevant, the changed value received at the given DOM node*/
     fluid.applyBoundChange = function (node, newValue, applier) {
