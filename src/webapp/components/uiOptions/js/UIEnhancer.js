@@ -75,7 +75,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     invokers: {
                         calcInitSize: {
                             funcName: "fluid.uiEnhancer.textSizer.calcInitSize",
-                            args: ["{textSizer}.container", "{uiEnhancer}.options.fontSizeMap"]
+                            args: ["{that}.container", "{uiEnhancer}.options.fontSizeMap"]
                         }
                     }
                 }
@@ -118,7 +118,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     invokers: {
                         calcInitSize: {
                             funcName: "fluid.uiEnhancer.lineSpacer.calcInitSize",
-                            args: ["{lineSpacer}.container", "{uiEnhancer}.options.fontSizeMap"]
+                            args: ["{that}.container", "{uiEnhancer}.options.fontSizeMap"]
                         }
                     }
                 }
@@ -164,8 +164,6 @@ var fluid_1_5 = fluid_1_5 || {};
             modelChanged: null
         },
         listeners: {
-            // TODO: listener merging does not work in a reasonable way. Non-namespaced listeners
-            // override rather than merging as they should
             "lateRefreshView.domReading": "fluid.uiEnhancer.applyDomReadingSettings"
         },
         classnameMap: {
