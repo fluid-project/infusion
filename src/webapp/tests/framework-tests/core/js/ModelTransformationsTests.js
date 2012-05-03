@@ -275,23 +275,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var demuxOptions = {
         "mouse": {
             "outputPath": "FollowMouse",
-            "value": true
+            "outputValue": true
         },
         "focus": {
             "outputPath": "FollowFocus",
-            "value": true
+            "outputValue": true
          },
         "caret": {
             "outputPath": "FollowCaret",
-            "value": true
+            "outputValue": true
         }
     };
     
     var demultiplexTests = [{
-        message: "demultiplexValue selects focus based on path",
+        message: "valueMapper selects focus based on path",
         model: demuxModel, 
         expander: {
-            type: "fluid.model.transform.demultiplexValue",
+            type: "fluid.model.transform.valueMapper",
             inputPath: "tracking",
             options: demuxOptions
         },
@@ -300,14 +300,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "FollowFocus": true
         }
     }, {
-        message: "demultiplexValue selects mouse by default",
+        message: "valueMapper selects mouse by default",
         model: {
             tracking: "unknown-thing"
         }, 
         expander: {
-            type: "fluid.model.transform.demultiplexValue",
+            type: "fluid.model.transform.valueMapper",
             inputPath: "tracking",
-            defaultOption: "mouse",
+            defaultInputValue: "mouse",
             options: demuxOptions
         },
         method: "assertDeepEq",
@@ -315,14 +315,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "FollowMouse": true
         }
     }, {
-        message: "demultiplexValue with default output value and non-string input value",
+        message: "valueMapper with default output value and non-string input value",
         model: {
             condition: true
         }, 
         expander: {
-            type: "fluid.model.transform.demultiplexValue",
+            type: "fluid.model.transform.valueMapper",
             inputPath: "condition",
-            defaultValue: "CATTOO",
+            defaultOutputValue: "CATTOO",
             options: {
                 "true": {
                     outputPath: "trueCATT"
@@ -338,7 +338,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     }];
     
-    testCase.test("fluid.model.transform.demultiplexValue()", function () {
+    testCase.test("fluid.model.transform.valueMapper()", function () {
         testOneStructure(demultiplexTests);
     });
     
