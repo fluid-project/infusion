@@ -801,7 +801,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.uiOptions.ant", "autoInit"],
         defaultModel: {
             layout: false,                // boolean
-            toc: false,                   // boolean
+            toc: false                   // boolean
         },
         selectors: {
             layout: ".flc-uiOptions-layout",
