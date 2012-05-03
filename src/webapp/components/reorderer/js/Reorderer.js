@@ -431,7 +431,7 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     
         var dropChangeListener = function (dropTarget) {
-            fluid.moveDom(dropMarker, dropTarget.element, dropTarget.position);
+            fluid.dom.moveDom(dropMarker, dropTarget.element, dropTarget.position);
             dropMarker.css("display", "");
             if (mouseDropWarning) {
                 if (dropTarget.lockedelem) {

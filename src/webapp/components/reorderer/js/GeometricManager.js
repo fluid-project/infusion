@@ -81,8 +81,11 @@ var fluid_1_5 = fluid_1_5 || {};
         right: fluid.direction.RIGHT
     };
     
+    fluid.registerNamespace("fluid.dom");
+    
     // moves a single node in the DOM to a new position relative to another
-    fluid.moveDom = function (source, target, position) {
+    // unsupported, NON-API function
+    fluid.dom.moveDom = function (source, target, position) {
         source = fluid.unwrap(source);
         target = fluid.unwrap(target);
         
@@ -116,7 +119,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     // unsupported, NON-API function
-    fluid.normalisePosition = function (position, samespan, targeti, sourcei) {
+    fluid.dom.normalisePosition = function (position, samespan, targeti, sourcei) {
         // convert a REPLACE into a primitive BEFORE/AFTER
         if (position === fluid.position.REPLACE) {
             position = samespan && targeti >= sourcei ? fluid.position.AFTER : fluid.position.BEFORE;
@@ -124,7 +127,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return position;
     };
     
-    fluid.permuteDom = function (element, target, position, sourceelements, targetelements) {
+    fluid.dom.permuteDom = function (element, target, position, sourceelements, targetelements) {
         element = fluid.unwrap(element);
         target = fluid.unwrap(target);
         var sourcei = $.inArray(element, sourceelements);
@@ -138,14 +141,14 @@ var fluid_1_5 = fluid_1_5 || {};
                 " not found in source list " + fluid.dumpEl(targetelements));
         }
         var samespan = sourceelements === targetelements;
-        position = fluid.normalisePosition(position, samespan, targeti, sourcei);
+        position = fluid.dom.normalisePosition(position, samespan, targeti, sourcei);
 
         //fluid.log("permuteDom sourcei " + sourcei + " targeti " + targeti);
         // cache the old neighbourhood of the element for the final move
         var oldn = {};
         oldn[fluid.position.AFTER] = element.nextSibling;
         oldn[fluid.position.BEFORE] = element.previousSibling;
-        fluid.moveDom(sourceelements[sourcei], targetelements[targeti], position);
+        fluid.dom.moveDom(sourceelements[sourcei], targetelements[targeti], position);
         
         // perform the leftward-moving, AFTER shift
         var frontlimit = samespan ? targeti - 1 : sourceelements.length - 2;
@@ -156,10 +159,10 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         if (!samespan || targeti > sourcei) {
             for (i = frontlimit; i > sourcei; --i) {
-                fluid.moveDom(sourceelements[i + 1], sourceelements[i], fluid.position.AFTER);
+                fluid.dom.moveDom(sourceelements[i + 1], sourceelements[i], fluid.position.AFTER);
             }
             if (sourcei + 1 < sourceelements.length) {
-                fluid.moveDom(sourceelements[sourcei + 1], oldn[fluid.position.AFTER], fluid.position.BEFORE);
+                fluid.dom.moveDom(sourceelements[sourcei + 1], oldn[fluid.position.AFTER], fluid.position.BEFORE);
             }
         }
         // perform the rightward-moving, BEFORE shift
@@ -170,10 +173,10 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         if (!samespan || targeti < sourcei) {
             for (i = targeti; i < backlimit; ++i) {
-                fluid.moveDom(targetelements[i], targetelements[i + 1], fluid.position.BEFORE);
+                fluid.dom.moveDom(targetelements[i], targetelements[i + 1], fluid.position.BEFORE);
             }
             if (backlimit >= 0 && backlimit < targetelements.length - 1) {
-                fluid.moveDom(targetelements[backlimit], oldn[fluid.position.BEFORE], fluid.position.AFTER);
+                fluid.dom.moveDom(targetelements[backlimit], oldn[fluid.position.BEFORE], fluid.position.AFTER);
             }                
         }
 
@@ -184,7 +187,7 @@ var fluid_1_5 = fluid_1_5 || {};
             a.currentStyle[name];
     };
     
-    var isAttached = function (node) {
+    fluid.dom.isAttached = function (node) {
         while (node && node.nodeName) {
             if (node.nodeName === "BODY") {
                 return true;
@@ -194,19 +197,20 @@ var fluid_1_5 = fluid_1_5 || {};
         return false;
     };
     
-    var generalHidden = function (a) {
-        return "hidden" === a.type || curCss(a, "display") === "none" || curCss(a, "visibility") === "hidden" || !isAttached(a);
+    fluid.dom.generalHidden = function (a) {
+        return "hidden" === a.type || curCss(a, "display") === "none" || curCss(a, "visibility") === "hidden" || !fluid.dom.isAttached(a);
     };
     
-
-    var computeGeometry = function (element, orientation, disposition) {
+    fluid.registerNamespace("fluid.geometricManager");
+    
+    fluid.geometricManager.computeGeometry = function (element, orientation, disposition) {
         var elem = {};
         elem.element = element;
         elem.orientation = orientation;
         if (disposition === fluid.position.INSIDE) {
             elem.position = disposition;
         }
-        if (generalHidden(element)) {
+        if (fluid.dom.generalHidden(element)) {
             elem.clazz = "hidden";
         }
         var pos = fluid.dom.computeAbsolutePosition(element) || [0, 0];
@@ -221,23 +225,23 @@ var fluid_1_5 = fluid_1_5 || {};
     // A "suitable large" value for the sentinel blocks at the ends of spans
     var SENTINEL_DIMENSION = 10000;
 
-    function dumprect(rect) {
+    fluid.geometricManager.dumprect = function (rect) {
         return "Rect top: " + rect.top +
                  " left: " + rect.left + 
                " bottom: " + rect.bottom +
                 " right: " + rect.right;
-    }
+    };
 
-    function dumpelem(cacheelem) {
+    fluid.geometricManager.dumpelem = function (cacheelem) {
         if (!cacheelem || !cacheelem.rect) {
             return "null";
         } else {
-            return dumprect(cacheelem.rect) + " position: " +
+            return fluid.geometricManager.dumprect(cacheelem.rect) + " position: " +
                 cacheelem.position +
                 " for " +
                 fluid.dumpEl(cacheelem.element);
         }
-    }
+    };
     
    
     // unsupported, NON-API function
@@ -255,13 +259,14 @@ var fluid_1_5 = fluid_1_5 || {};
             targets = [];
             cache = {};
             var mapper = geometricInfo.elementMapper;
+            var geometryComputor = geometricInfo.geometryComputor || fluid.geometricManager.computeGeometry;
             for (var i = 0; i < geometricInfo.extents.length; ++i) {
                 var thisInfo = geometricInfo.extents[i];
                 var orientation = thisInfo.orientation;
                 var sides = fluid.rectSides[orientation];
                 
                 var processElement = function (element, sentB, sentF, disposition, j) {
-                    var cacheelem = computeGeometry(element, orientation, disposition);
+                    var cacheelem = geometryComputor(element, orientation, disposition);
                     cacheelem.owner = thisInfo;
                     if (cacheelem.clazz !== "hidden" && mapper) {
                         cacheelem.clazz = mapper(element);
@@ -295,10 +300,10 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
                 if (allHidden && thisInfo.parentElement) {
-                    processElement(thisInfo.parentElement, true, true, 
-                            fluid.position.INSIDE);
+                    processElement(thisInfo.parentElement, true, true, fluid.position.INSIDE);
                 }
-            }   
+            }
+            fluid.dropManager.normalizeSentinels(targets);
         };
         
         that.startDrag = function (event, handlePos, handleWidth, handleHeight) {
@@ -446,7 +451,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that.geometricMove = function (element, target, position) {
             var sourceElements = that.getOwningSpan(element, null, true);
             var targetElements = that.getOwningSpan(target, position, true);
-            fluid.permuteDom(element, target, position, sourceElements, targetElements);
+            fluid.dom.permuteDom(element, target, position, sourceElements, targetElements);
         };              
         
         return that;
@@ -461,12 +466,29 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.dropManager.sentinelizeElement = function (targets, sides, cacheelem, fc, disposition, clazz) {
         var elemCopy = $.extend(true, {}, cacheelem);
+        elemCopy.origRect = fluid.copy(elemCopy.rect);
         elemCopy.rect[sides[fc]] = elemCopy.rect[sides[1 - fc]] + (fc ? 1 : -1);
         elemCopy.rect[sides[1 - fc]] = (fc ? -1 : 1) * SENTINEL_DIMENSION;
         elemCopy.position = disposition === fluid.position.INSIDE ?
             disposition : (fc ? fluid.position.BEFORE : fluid.position.AFTER);
         elemCopy.clazz = clazz;
         targets[targets.length] = elemCopy;
+    };
+    
+    // This function is necessary to prevent overlapping sentinels for FLUID-4692
+    // Very sadly this simple implementation now makes the setup O(n^2) in the number of elements
+    
+    fluid.dropManager.normalizeSentinels = function (targets) {
+        for (var i = 0; i < targets.length; ++ i) {
+            for (var j = 0; j < targets.length; ++ j) {
+                var ti = targets[i], tj = targets[j];
+                var jrect = tj.origRect || tj.rect;
+                if (ti.element !== tj.element && ti.origRect && fluid.geom.minRectRect(ti.rect, jrect) === 0) {
+                    ti.rect = ti.origRect;
+                    delete ti.origRect;
+                }
+            }
+        }
     };
     
     fluid.dropManager.splitElement = function (targets, sides, cacheelem, disposition, clazz1, clazz2) {
