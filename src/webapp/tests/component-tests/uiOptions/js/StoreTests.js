@@ -88,7 +88,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             // Check that we get back the test settings correctly.
             var result = store.fetch();
-            jqUnit.assertDeepEq("The settings are saved and retrieved correctly.", testSettings, result);
+            // Note that the result of "fetch" now adds default values where they don't occur - although the actual
+            // stored value correctly consists of just the original values. Perhaps we should have a separate method
+            // "fetchRaw" that gets the original values for some purposes (including testing)?
+            fluid.testUtils.assertLeftHand("The settings are saved and retrieved correctly.", testSettings, result);
             
             // Change the results, save again. It should work again.
             var differentSettings = fluid.copy(testSettings);

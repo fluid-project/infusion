@@ -22,6 +22,8 @@ var fluid_1_5 = fluid_1_5 || {};
     /** 
      * Returns the absolute position of a supplied DOM node in pixels.
      * Implementation taken from quirksmode http://www.quirksmode.org/js/findpos.html
+     * At the original time of writing considerably quicker and more reliable than jQuery.offset() 
+     * - this should be reevaluated in time.
      */
     fluid.dom.computeAbsolutePosition = function (element) {
         var curleft = 0, curtop = 0;

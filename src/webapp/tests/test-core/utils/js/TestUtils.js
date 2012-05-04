@@ -105,14 +105,14 @@ fluid.testUtils.assertCanoniseEqual = function (message, expected, actual, canon
     jqUnit.assertDeepEq(message, expected2, actual2);  
 };
 
-/** Assert that the expected value object is a subset (considered in terms of shallow key coincidence) of the
- * "actual" value object **/ 
+/** Assert that the actual value object is a subset (considered in terms of shallow key coincidence) of the
+ * expected value object (this method is the one that will be most often used in practice) **/ 
 
 fluid.testUtils.assertLeftHand = function(message, expected, actual) {
     jqUnit.assertDeepEq(message, expected, fluid.filterKeys(actual, fluid.keys(expected)));  
 };
 
-/** Assert that the expected value object is a superset of the "actual" value object **/
+/** Assert that the actual value object is a superset of the expected value object **/
 
 fluid.testUtils.assertRightHand = function(message, expected, actual) {
     jqUnit.assertDeepEq(message, fluid.filterKeys(expected, fluid.keys(actual)), actual);  

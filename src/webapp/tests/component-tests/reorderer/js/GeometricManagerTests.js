@@ -42,7 +42,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             geometricManagerTests.test(name, function () {
                 var orders = $("#permuteTest .orderable");
           
-                fluid.permuteDom(orders[source], orders[target], position, orders, orders);
+                fluid.dom.permuteDom(orders[source], orders[target], position, orders, orders);
                 expect(1);
                 assertOrder(name, "permuteTest", expected);
             });            
@@ -53,7 +53,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var sourceElements = $("#permuteTest .orderable");
                 var targetElements = $("#permuteTest2 .orderable");
           
-                fluid.permuteDom(sourceElements[source], targetElements[target], 
+                fluid.dom.permuteDom(sourceElements[source], targetElements[target], 
                        position, sourceElements, targetElements);
                 expect(2);
                 assertOrder(name, "permuteTest", expected1);
@@ -134,14 +134,158 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
           
         });
         
-        geometricManagerTests.test("projectFrom", function () {          
-            expect(24);  
-            fluid.testUtils.reorderer.stepProjectFrom(false);
+        fluid.testUtils.reorderer.offsetGridTestRects = [
+            // column 1, 3x3 squares spaced by 1, middle skew 1 to the right
+                {left: 1, top: 1, right: 4, bottom: 4},
+                {left: 2, top: 5, right: 5, bottom: 8},
+                {left: 1, top: 9, right: 4, bottom: 12},
+            // column 2, same dimensions but offset down by 1
+                {left: 6, top: 2, right: 9, bottom: 5},
+                {left: 6, top: 6, right: 9, bottom: 9}
+            ];
+            
+        fluid.testUtils.reorderer.offsetGridTestAssertions = [
+            ["Right0", 0, "RIGHT", 3, false],
+            ["Left3",  3, "LEFT",  0, false],
+            ["Right3", 3, "RIGHT", 0, true],
+            ["Left0",  0, "LEFT",  3, true],
+            ["Down0",  0, "DOWN",  1, false],
+            ["Up1",    1, "UP",    0, false],
+            
+            ["Up0",    0, "UP",    2, true],
+            ["Down2",  2, "DOWN",  0, true],
+            ["Right2", 2, "RIGHT", 4, false],
+            ["Left4",  4, "LEFT",  1, false],
+            ["Left1",  1, "LEFT",  4, true],
+            ["Right4", 4, "RIGHT", 1, true]  
+        ];
+           
+        // GeometricManagerTest
+        fluid.testUtils.reorderer.stepProjectFrom = function (rects, disabledWrap, assertions) {
+            
+            var elems = fluid.transform(rects, function (rect, i) {
+                return {rect: rect, index: i};
+            });
+                        
+            function assertProject(name, fromIndex, direction, toIndex, couldWrap) {
+                var proj = fluid.geom.projectFrom(rects[fromIndex], fluid.direction[direction], elems, false, disabledWrap);
+                if (couldWrap && disabledWrap) {
+                    jqUnit.assertUndefined(name + " index " + toIndex, proj.cacheelem);
+                    jqUnit.assertFalse("no wrapping from index:" + fromIndex + " to index:" + toIndex + " wrapped set to " + couldWrap, proj.wrapped);
+                } else {
+                    jqUnit.assertEquals(name + " index", toIndex, proj.cacheelem.index);
+                    jqUnit.assertEquals(name + " wrapped", couldWrap, proj.wrapped);
+                }
+            }
+            
+            for (var i = 0; i < assertions.length; ++ i) {
+                assertProject.apply(null, assertions[i]);
+            }
+            
+        };
+        
+        geometricManagerTests.test("projectFrom", function () {
+            var r = fluid.testUtils.reorderer;   
+            expect(r.offsetGridTestAssertions.length * 2);
+            fluid.testUtils.reorderer.stepProjectFrom(r.offsetGridTestRects, false, r.offsetGridTestAssertions);
         });
             
         geometricManagerTests.test("projectFrom with disabled wrap", function () {          
-            expect(24);  
-            fluid.testUtils.reorderer.stepProjectFrom(true);
+            var r = fluid.testUtils.reorderer;   
+            expect(r.offsetGridTestAssertions.length * 2);
+            fluid.testUtils.reorderer.stepProjectFrom(r.offsetGridTestRects, true, r.offsetGridTestAssertions);
+        });
+        
+        
+        // To test FLUID-4692
+        fluid.testUtils.reorderer.NickMayneTestRects = [
+            // Two full rows, a row of three squares, and then another full row
+                {left: 0, top: 0, right: 5, bottom: 1},
+                {left: 0, top: 2, right: 5, bottom: 3},
+                {left: 0, top: 4, right: 1, bottom: 5},
+                {left: 2, top: 4, right: 3, bottom: 5},
+                {left: 4, top: 4, right: 5, bottom: 5},
+                {left: 0, top: 6, right: 5, bottom: 7}
+            ];
+        
+        fluid.testUtils.reorderer.NickMayneKeyTestAssertions = [
+            ["Down0", 0, "DOWN", 1, false],
+            ["Up1",   1, "UP",   0, false],
+            ["Down1", 1, "DOWN", 2, false],
+            ["Up2",   2, "UP",   1, false],
+            ["Up3",   3, "UP",   1, false],
+            ["Up4",   4, "UP",   1, false],
+            ["Down2", 2, "DOWN", 5, false],
+            ["Down3", 3, "DOWN", 5, false],
+            ["Down4", 4, "DOWN", 5, false],
+            ["Up5",   5, "UP",   2, false]
+            ];
+            
+        fluid.testUtils.reorderer.NickMayneMouseTestAssertions = [
+            [0.5, 0.5, 0],
+            [0.5, 2.5, 1],
+            [0.5, 4.5, 2],
+            [2.5, 4.5, 3],
+            [4.5, 4.5, 4],
+            [0.5, 6.5, 5],
+            [0.5, -10, 0],
+            [0.5, 10, 5]
+        ];
+        
+        var elementToIndex = function (element) {
+            return element.id.substring(3); // remove "el-" prefix
+        };
+        
+        var testGeometryComputor = function (rects) {
+            return function (element, orientation, disposition) {
+                var elem = {};
+                elem.element = element;
+                elem.orientation = orientation;
+                if (disposition === fluid.position.INSIDE) {
+                    elem.position = disposition;
+                    }
+                var ind = elementToIndex(element); 
+                elem.rect = rects[ind];
+                return elem;
+            };
+        };
+        
+        geometricManagerTests.test("sentinelization test FLUID-4692", function () {
+            var dropManager = fluid.dropManager();
+            
+            var zones = $(".zone", "#FLUID-4692-test");
+            var extents = fluid.transform(zones, function(zone) {
+                return {
+                    orientation: fluid.orientation.VERTICAL,
+                    elements: [],
+                    parentElement: zone
+                }  
+            });
+            var geometricInfo = {
+                extents: extents,
+                geometryComputor: testGeometryComputor(fluid.testUtils.reorderer.NickMayneTestRects),
+                sentinelize: true,
+                elementMapper: null
+            };
+            dropManager.updateGeometry(geometricInfo);
+            
+            var as = fluid.testUtils.reorderer.NickMayneKeyTestAssertions;
+            jqUnit.expect(as.length);
+            
+            for (var i = 0; i < as.length; ++ i) {
+                var a = as[i];
+                var res = dropManager.projectFrom(zones[a[1]], fluid.direction[a[2]], false, a[4]);
+                jqUnit.assertEquals(a[0], a[3], elementToIndex(res.element));
+            }
+            
+            var ms = fluid.testUtils.reorderer.NickMayneMouseTestAssertions;
+            jqUnit.expect(ms.length);
+            
+            for (var i = 0; i < ms.length; ++ i) {
+                var m = ms[i];
+                var closest = dropManager.closestTarget(m[0], m[1]);
+                jqUnit.assertEquals("Mouse test " + i, m[2], elementToIndex(closest.element));
+            }
         });
     });
 })(jQuery);

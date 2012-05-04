@@ -62,7 +62,7 @@ var fluid_1_5 = fluid_1_5 || {};
         } else {
             var relativeItemIndices = fluid.moduleLayout.findColumnAndItemIndices(target, layout);
             targetCol = layout.columns[relativeItemIndices.columnIndex].elements;
-            position = fluid.normalisePosition(position, 
+            position = fluid.dom.normalisePosition(position, 
                   itemIndices.columnIndex === relativeItemIndices.columnIndex, 
                   relativeItemIndices.itemIndex, itemIndices.itemIndex);
             var relative = position === fluid.position.BEFORE ? 0 : 1;
@@ -132,13 +132,12 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
-    fluid.defaults(true, "fluid.moduleLayoutHandler", 
-        {
-            orientation: fluid.orientation.VERTICAL,
-            containerRole: fluid.reorderer.roles.REGIONS,
-            selectablesTabindex: -1,
-            sentinelize:         true
-        });
+    fluid.defaults(true, "fluid.moduleLayoutHandler", {
+        orientation: fluid.orientation.VERTICAL,
+        containerRole: fluid.reorderer.roles.REGIONS,
+        selectablesTabindex: -1,
+        sentinelize:         true
+    });
        
     /**
      * Module Layout Handler for reordering content modules.

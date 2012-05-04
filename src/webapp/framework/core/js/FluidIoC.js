@@ -919,6 +919,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.expandComponentOptions = fluid.wrapActivity(fluid.expandComponentOptions, 
         ["    while expanding component options ", "arguments.1.value", " with record ", "arguments.1", " for component ", "arguments.2"]);
+
    
     // NON-API function 
     fluid.getInstantiators = function() {

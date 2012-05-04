@@ -143,6 +143,11 @@
     width: 16px;    
 }
 
+.fl-uiOptions .fl-icon {
+    width: 2em;
+    padding-top: 1em;
+}
+
 /* Theming */
 .fl-theme-bw .ui-slider-horizontal .ui-slider-handle,
 .fl-theme-wb .ui-slider-horizontal .ui-slider-handle,

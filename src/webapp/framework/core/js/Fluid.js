@@ -394,14 +394,21 @@ var fluid = fluid || fluid_1_5;
         return fluid.filterKeys(toCensor, keys, true);
     };
     
-    /** Return the keys in the supplied object as an array **/
-    fluid.keys = function (obj) {
-        var togo = [];
-        fluid.each(obj, function (value, key) {
-            togo.push(key);
-        });
-        return togo;
+    fluid.makeFlatten = function (index) {
+        return function (obj) {
+            var togo = [];
+            fluid.each(obj, function (value, key) {
+                togo.push(arguments[index]);
+            });
+            return togo;
+        }; 
     };
+    
+    /** Return the keys in the supplied object as an array **/
+    fluid.keys = fluid.makeFlatten(1); 
+    
+    /** Return the values in the supplied object as an array **/
+    fluid.values = fluid.makeFlatten(0);
     
     /** 
      * Searches through the supplied object, and returns <code>true</code> if the supplied value
