@@ -40,8 +40,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
                
-        var customStrategy = function (root, segment, index) {
-            return index === 0 && segment === "path3" ? fluid.NO_VALUE : undefined;
+        var customStrategy = function (root, segment, path) {
+            return path === "path3" ? fluid.NO_VALUE : undefined;
         };
         
         DataBindingTests.test("getBeanValue with custom strategy", function () {

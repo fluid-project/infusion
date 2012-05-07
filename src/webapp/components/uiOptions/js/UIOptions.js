@@ -187,7 +187,10 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.inline", {
         gradeNames: ["fluid.viewComponent"],
         mergePolicy: {
-            uiOptionsTransform: "noexpand",
+// This needs to be taken away with FLUID-4695 since it is now actually honoured! And it appears that
+// "noexpand" as currently implemented also implies "nomerge". These need to be separated - this comment
+// can be removed once FLUID-4706 is fixed
+//            uiOptionsTransform: "noexpand",
             derivedDefaults: "noexpand"
         },
         components: {

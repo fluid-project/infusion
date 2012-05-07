@@ -17,6 +17,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
+  
+    fluid.registerNamespace("fluid.tests");
+    
     var source = {
         cat: "meow",
         dog: null,
@@ -152,7 +155,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     testCase.test("Transform with wildcard path and short names", function () {
-        var shortened = fluid.model.transform(valueTests, transformToShortNames);
+        var shortened = fluid.model.transform(valueTests, transformToShortNames, {isomorphic: true});
         var expected = fluid.transform(valueTests, function(config) {
              return {
                  expander: {
@@ -268,11 +271,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOneStructure(firstValueTests);
     });
     
-    var demuxModel = {
+    var mapperModel = {
         tracking: "focus"  
     };
     
-    var demuxOptions = {
+    var mapperOptions = {
         "mouse": {
             "outputPath": "FollowMouse",
             "outputValue": true
@@ -287,13 +290,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
     
-    var demultiplexTests = [{
+    var mapperTests = [{
         message: "valueMapper selects focus based on path",
-        model: demuxModel, 
+        model: mapperModel, 
         expander: {
             type: "fluid.model.transform.valueMapper",
             inputPath: "tracking",
-            options: demuxOptions
+            options: mapperOptions
         },
         method: "assertDeepEq",
         expected: {
@@ -308,7 +311,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             type: "fluid.model.transform.valueMapper",
             inputPath: "tracking",
             defaultInputValue: "mouse",
-            options: demuxOptions
+            options: mapperOptions
         },
         method: "assertDeepEq",
         expected: {
@@ -339,9 +342,108 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }];
     
     testCase.test("fluid.model.transform.valueMapper()", function () {
-        testOneStructure(demultiplexTests);
+        testOneStructure(mapperTests);
     });
     
+    var a4aFontRules = {"textFont": {
+        "expander": {
+            "type": "fluid.model.transform.valueMapper",
+            "inputPath": "fontFace.genericFontFace",
+            "_comment": "TODO: For now, this ignores the actual 'fontName' setting",
+            "options": {
+                "serif": "times",
+                "sans serif": "verdana",
+                "monospaced": "default",
+                "fantasy": "default",
+                "cursive": "default"
+            }
+        }
+    }
+    };
+    
+   fluid.tests.expandCompactRule = function (value) {
+        return {
+            outputValue: value,
+            outputPath: ""
+        };
+    }
+    
+    testCase.test("valueMapper with compact value", function() {
+        var source = {
+            fontFace: {
+                genericFontFace: "serif",
+                fontName: ["Times New Roman"]
+            }
+        };
+        var expected = {textFont: "times"};
+        function testCompact(message, rules) {
+            var transformed = fluid.model.transform(source, rules);
+            jqUnit.assertDeepEq("valueMapper with compact value" + message, expected, transformed);
+        }
+                  
+        testCompact(" - compact", a4aFontRules);
+        var exRules = {
+             "textFont.expander.options.*": {
+                 expander: {
+                      type: "fluid.tests.expandCompactRule"
+                 }
+             }, 
+             "": ""
+        };
+        var expandedRules = fluid.model.transform(a4aFontRules, exRules);
+        var expectedRules = fluid.copy(a4aFontRules);
+        fluid.set(expectedRules, "textFont.expander.options", fluid.transform(a4aFontRules.textFont.expander.options, function (value) {
+            return fluid.tests.expandCompactRule(value);
+        }));
+        jqUnit.assertDeepEq("Rules transformed to expanded form", expectedRules, expandedRules);
+        testCompact(" - expanded", expandedRules); 
+    });
+
+    testCase.test("transform with custom schema", function() {
+        var rules = {
+            "0.0.feline": "cat"
+        };
+        var schema = {
+            "": "array",
+            "*": "array"
+        };
+        var expected = [
+            [ {
+              feline: "meow"
+            } ]
+            ];
+        var result = fluid.model.transform(source, rules, {flatSchema: schema});
+        jqUnit.assertDeepEq("Default array structure should have been created by transform", expected, result);            
+    });
+    
+    var gpiiSettingsResponse = [{
+        "org.gnome.desktop.a11y.magnifier": {
+            "settings": {
+                "cross-hairs-clip": { "oldValue":  false, "newValue": true }
+            }
+        }
+    }];
+        
+    testCase.test("transform with isomorphic schema and wildcards", function() {
+        var rules = {
+            "*.*.settings.*": {
+                expander: {
+                    type: "value",
+                    inputPath: "newValue"
+                }
+            }
+        };
+        var expected = [{
+            "org.gnome.desktop.a11y.magnifier": {
+                "settings": {
+                    "cross-hairs-clip": true 
+                }
+            }
+        }]
+        var result = fluid.model.transform(gpiiSettingsResponse, rules, {isomorphic: true});
+        jqUnit.assertDeepEq("isomorphic structure with wildcards and recursive expander", expected, result);    
+    });
+   
     testCase.test("transform with compact inputPath", function() {
         var rules = {
             feline: "cat",
