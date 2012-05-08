@@ -339,6 +339,85 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {
             "trueCATT": "CATTOO"
         }
+    }, {
+        message: "valueMapper with default output value and non-string input value with long records",
+        model: {
+            condition: true
+        }, 
+        expander: {
+            type: "fluid.model.transform.valueMapper",
+            inputPath: "condition",
+            defaultOutputValue: "CATTOO",
+            options: [ {
+                    inputValue: true,
+                    outputPath: "trueCATT"
+                }, {
+                    inputValue: false,
+                    outputPath: "falseCATT"
+                }
+             ]
+        },
+        method: "assertDeepEq",
+        expected: {
+            "trueCATT": "CATTOO"
+        }
+    }, {
+        message: "valueMapper with unmatched input value and no defaultInput",
+        model: {
+            condition: true
+        }, 
+        expander: {
+            type: "fluid.model.transform.valueMapper",
+            inputPath: "uncondition",
+            defaultOutputValue: "CATTOO",
+            defaultOutputPath: "anyCATT",
+            options: [ {
+                    undefinedInputValue: true,
+                    undefinedOutputValue: true,
+                    outputPath: "trueCATT"
+                }, {
+                    inputValue: true,
+                    outputPath: "trueCATT"
+                }, {
+                    inputValue: false,
+                    outputPath: "falseCATT"
+                }
+             ]
+        },
+        method: "assertDeepEq",
+        expected: undefined
+    }, {
+        message: "valueMapper with unmatched input value mapped to definite value",
+        model: {}, 
+        expander: {
+            type: "fluid.model.transform.valueMapper",
+            inputPath: "uncondition",
+            options: [ {
+                    undefinedInputValue: true,
+                    outputValue: "undefinedCATT",
+                    outputPath: "trueCATT"
+                }
+             ]
+        },
+        method: "assertDeepEq",
+        expected: {
+            trueCATT: "undefinedCATT"
+        }
+    }, {
+        message: "valueMapper with unmatched input value mapped to undefined value with short form",
+        model: {}, 
+        expander: {
+            type: "fluid.model.transform.valueMapper",
+            inputPath: "uncondition",
+            defaultOutputPath: "wouldbeCATT",
+            options: {
+                "undefined": {
+                    undefinedOutputValue: true,
+                }
+            }
+        },
+        method: "assertDeepEq",
+        expected: undefined
     }];
     
     testCase.test("fluid.model.transform.valueMapper()", function () {
@@ -388,7 +467,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                       type: "fluid.tests.expandCompactRule"
                  }
              }, 
-             "": ""
+             "": "" // put this last to test key sorting
         };
         var expandedRules = fluid.model.transform(a4aFontRules, exRules);
         var expectedRules = fluid.copy(a4aFontRules);
@@ -630,6 +709,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         result = fluid.model.transform(fluid.copy(expected), idempotentRules);
         jqUnit.assertDeepEq("With the appropriate rules, a model that already matches the transformation rules should pass through successfully.",
                             expected, result);
+    });
+    
+    testCase.test("fluid.model.transformWithRules() with multiple rules", function () {
+        var ruleA = {
+            kitten: "cat"
+        };
+        
+        var ruleB = {
+            sirius: "kitten"
+        };
+        
+        var expected = {
+            sirius: "meow"
+        };
+        
+        var result = fluid.model.transform.sequence(source, [ruleA, ruleB]);
+        jqUnit.assertDeepEq("An array of rules should cause each to be applied in sequence.", expected, result);
     });
     
     var oldOptions = {

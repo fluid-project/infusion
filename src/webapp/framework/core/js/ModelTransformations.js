@@ -54,6 +54,7 @@ var fluid = fluid || fluid_1_5;
      * Base utilities for transformers *
      ***********************************/
 
+    // unsupported, NON-API function
     fluid.model.transform.pathToRule = function (inputPath) {
         return {
             expander: {
@@ -63,6 +64,7 @@ var fluid = fluid || fluid_1_5;
         };
     };
     
+    // unsupported, NON-API function    
     fluid.model.transform.valueToRule = function (value) {
         return {
             expander: {
@@ -205,14 +207,16 @@ var fluid = fluid || fluid_1_5;
         }
     };
     
+    // unsupported, NON-API function    
     fluid.model.transform.compareMatches = function (speca, specb) {
-        return speca.matchCount - specb.matchCount;
+        return specb.matchCount - speca.matchCount;
     };
     
     fluid.firstDefined = function (a, b) {
         return a === undefined? b : a;
     };
-    
+
+    // unsupported, NON-API function    
     fluid.model.transform.matchValueMapperFull = function (outerValue, expander, expandSpec) {
         var o = expandSpec.options;
         if (o.length === 0) {
@@ -226,11 +230,11 @@ var fluid = fluid || fluid_1_5;
             var option = o[i];
             var value = fluid.firstDefined(fluid.model.transform.getValue(option.inputPath, undefined, expander),
                 outerValue);
-            var match = fluid.model.transform.matchValue(option.inputValue, value);
-            matchPower[i] = {index: i, matchCount: match.matchCount};
+            var matchCount = fluid.model.transform.matchValue(option.undefinedInputValue? undefined : option.inputValue, value);
+            matchPower[i] = {index: i, matchCount: matchCount};
         }
         matchPower.sort(fluid.model.transform.compareMatches);
-        return matchPower[0].compareMatches === matchPower[1].compareMatches ? -1 : matchPower[0].index; 
+        return matchPower[0].matchCount === matchPower[1].matchCount ? -1 : matchPower[0].index; 
     };
 
     fluid.model.transform.valueMapper = function (expandSpec, expander) {
@@ -241,7 +245,7 @@ var fluid = fluid || fluid_1_5;
         var deref = fluid.isArrayable(expandSpec.options) ? // long form with list of records    
             function (testVal) {
                   var index = fluid.model.transform.matchValueMapperFull(testVal, expander, expandSpec);
-                  return index === -1? null : expandSpec[index];
+                  return index === -1? null : expandSpec.options[index];
             } : 
             function (testVal) {
                  return expandSpec.options[testVal];
@@ -257,7 +261,8 @@ var fluid = fluid || fluid_1_5;
             fluid.fail("value ", value, " for valueMapper could not be looked up to an option, and no default inputValue supplied with ", expandSpec);
         }
         var outputValue = fluid.isPrimitive(indexed) ? indexed : 
-            (indexed.outputValue === undefined? expandSpec.defaultOutputValue : indexed.outputValue);
+            (indexed.undefinedOutputValue ? undefined : 
+                (indexed.outputValue === undefined ? expandSpec.defaultOutputValue : indexed.outputValue));
         var outputPath = indexed.outputPath === undefined? expandSpec.defaultOutputPath: indexed.outputPath;
         return fluid.model.transform.setValue(outputPath, outputValue, expander); 
     };
@@ -308,7 +313,7 @@ var fluid = fluid || fluid_1_5;
         gradeNames: ["fluid.transformFunction", "fluid.lens"],
         invertConfiguration: "fluid.model.transform.valueMapper.invert"
     });
-    
+     
     fluid.model.transform.prefixApplier = function (expandSpec, expander) {
         if (expandSpec.inputPrefix) {
             expander.inputPrefixOp.push(expandSpec.inputPrefix);
@@ -322,13 +327,14 @@ var fluid = fluid || fluid_1_5;
         }
         if (expandSpec.outputPrefix) {
             expander.outputPrefixOp.pop();
-        }        
+        }
     };
     
     fluid.defaults("fluid.model.transform.prefixApplier", {
         gradeNames: ["fluid.transformFunction"]
     });
     
+    // unsupported, NON-API function    
     fluid.model.makePathStack = function (expander, prefixName) {
         var stack = expander[prefixName + "Stack"] = [];
         expander[prefixName] = "";
@@ -343,7 +349,8 @@ var fluid = fluid || fluid_1_5;
             }
         };
     };
-        
+    
+    // unsupported, NON-API function        
     fluid.model.transform.expandExpander = function (expandSpec, expander) {
         var typeName = expandSpec.type;
         if (!typeName) {
@@ -375,6 +382,7 @@ var fluid = fluid || fluid_1_5;
         return transformed;
     };
     
+    // unsupported, NON-API function    
     fluid.model.transform.expandWildcards = function (expander, source) {
         fluid.each(source, function (value, key) {
             var q = expander.queued;
@@ -400,10 +408,12 @@ var fluid = fluid || fluid_1_5;
         });
     };
     
+    // unsupported, NON-API function   
     fluid.model.transform.hasWildcard = function(path) {
         return typeof(path) === "string" && path.indexOf("*") !== -1;
     };
     
+    // unsupported, NON-API function
     fluid.model.transform.maybePushWildcard = function(expander, expandSpec) {
         var hw = fluid.model.transform.hasWildcard;
         var matchPath;
@@ -427,6 +437,7 @@ var fluid = fluid || fluid_1_5;
         return keys.sort(fluid.compareStringLength(true));
     };
     
+    // unsupported, NON-API function
     fluid.model.transform.expandValue = function (rule, expander) {
         if (typeof(rule) === "string") {
             rule = fluid.model.transform.pathToRule(rule);
@@ -471,11 +482,12 @@ var fluid = fluid || fluid_1_5;
         return togo;
     };
     
+    // unsupported, NON-API function
     fluid.model.transform.makeExpander = function (expander, expandFn) {
         expander.expand = function (rules) {
             return expandFn(rules, expander);
         };
-    }
+    };
     
     fluid.model.transform.invertConfiguration = function (rules) {
         var expander = {
@@ -489,6 +501,7 @@ var fluid = fluid || fluid_1_5;
         };
     };
     
+    // unsupported, NON-API function
     fluid.model.transform.flatSchemaStrategy = function (flatSchema) {
         var keys = fluid.model.sortByKeyLength(flatSchema);
         return function (root, segment, path) {
@@ -502,11 +515,13 @@ var fluid = fluid || fluid_1_5;
         };
     };
     
+    // unsupported, NON-API function
     fluid.model.transform.defaultSchemaValue = function (schemaValue) {
         var type = fluid.isPrimitive(schemaValue) ? schemaValue : schemaValue.type;
         return schemaValue === "array"? [] : {};
     };
     
+    // unsupported, NON-API function
     fluid.model.transform.isomorphicSchemaStrategy = function (source) { 
         return function (root, segment, path) {
             var existing = fluid.get(source, path);
@@ -514,6 +529,7 @@ var fluid = fluid || fluid_1_5;
         };
     };
     
+    // unsupported, NON-API function
     fluid.model.transform.decodeStrategy = function (source, options) {
         if (options.isomorphic) {
             return fluid.model.transform.isomorphicSchemaStrategy(source);
@@ -523,6 +539,7 @@ var fluid = fluid || fluid_1_5;
         }
     };
     
+    // unsupported, NON-API function
     fluid.model.transform.schemaToCreatorStrategy = function (strategy) {
         return function (root, segment, path) {
             if (root[segment] === undefined) {
@@ -530,6 +547,16 @@ var fluid = fluid || fluid_1_5;
                 return root[segment] = fluid.model.transform.defaultSchemaValue(schemaValue);
             }
         };  
+    };
+    
+    /** Transforms a model by a sequence of rules. Parameters as for fluid.model.transform,
+     * only with an array accepted for "rules"
+     */
+    fluid.model.transform.sequence = function (source, rules, options) {
+        for (var i = 0; i < rules.length; ++ i) {
+            source = fluid.model.transform(source, rules[i], options);
+        }
+        return source;
     };
     
     /**
@@ -546,6 +573,11 @@ var fluid = fluid || fluid_1_5;
      *
      * @param {Object} source the model to transform
      * @param {Object} rules a rules object containing instructions on how to transform the model
+     * @param {Object} options a set of rules governing the transformations. At present this may contain
+     * the values <code>isomorphic: true</code> indicating that the output model is to be governed by the
+     * same schema found in the input model, or <code>flatSchema</code> holding a flat schema object which 
+     * consists of a hash of EL path specifications with wildcards, to the values "array"/"object" defining
+     * the schema to be used to construct missing trunk values.
      */
     fluid.model.transformWithRules = function (source, rules, options) {
         options = options || {};

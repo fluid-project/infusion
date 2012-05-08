@@ -1175,7 +1175,7 @@ var fluid = fluid || fluid_1_5;
             if (thisSource !== undefined) {
                 if (!funcPolicy && thisSource !== null && typeof (thisSource) === "object" &&
                         !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
-                        !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "nomerge") && !fluid.mergePolicyIs(newPolicy, "noexpand")) {
+                        !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "nomerge")) {
                     if (primitiveTarget) {
                         target[name] = thisTarget = fluid.freshContainer(thisSource);
                     }
