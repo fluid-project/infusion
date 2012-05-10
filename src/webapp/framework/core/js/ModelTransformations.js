@@ -467,18 +467,19 @@ var fluid = fluid || fluid_1_5;
                     }
                 }
             }
-        } else {
-            // always apply rules with shortest keys first
-            var keys = fluid.model.sortByKeyLength(rule);
-            for (var i = 0; i < keys.length; ++ i) {
-                var key = keys[i];
+        }
+        // always apply rules with shortest keys first
+        var keys = fluid.model.sortByKeyLength(rule);
+        for (var i = 0; i < keys.length; ++ i) {
+            var key = keys[i];
+            if (key !== "expander") {
                 var value = rule[key];
                 expander.outputPrefixOp.push(key);
                 expander.expand(value, expander);
                 expander.outputPrefixOp.pop();
             }
-            togo = fluid.get(expander.target, expander.outputPrefix);
         }
+        togo = fluid.get(expander.target, expander.outputPrefix);
         return togo;
     };
     

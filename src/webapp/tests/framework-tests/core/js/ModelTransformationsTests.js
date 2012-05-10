@@ -522,6 +522,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var result = fluid.model.transform(gpiiSettingsResponse, rules, {isomorphic: true});
         jqUnit.assertDeepEq("isomorphic structure with wildcards and recursive expander", expected, result);    
     });
+
+    testCase.test("transform with path named value and literalValue", function() {
+        var model = {
+            "Magnification": 100
+        };
+        var transform = {
+            "Magnification": {
+                 expander: {
+                     type: "fluid.model.transform.value",
+                     inputPath: "Magnification",
+                     outputPath: "value"
+                 },
+                 dataType: {
+                     expander: {
+                         type: "fluid.model.transform.literalValue",
+                         value: "REG_DWORD"
+                     }
+                 }
+             }
+        };
+         
+        var expected = {
+            "Magnification": {
+                "value": 100,
+                "dataType": "REG_DWORD"
+            }
+        };
+     
+        var actual = fluid.model.transform(model, transform);
+     
+        jqUnit.assertDeepEq("Model transformed with value", actual, expected);
+    });
    
     testCase.test("transform with compact inputPath", function() {
         var rules = {
