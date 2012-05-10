@@ -494,16 +494,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var result = fluid.model.transform(source, rules, {flatSchema: schema});
         jqUnit.assertDeepEq("Default array structure should have been created by transform", expected, result);            
     });
-    
-    var gpiiSettingsResponse = [{
+     
+    testCase.test("transform with isomorphic schema and wildcards", function () {
+        var gpiiSettingsResponse = [{
         "org.gnome.desktop.a11y.magnifier": {
             "settings": {
                 "cross-hairs-clip": { "oldValue":  false, "newValue": true }
             }
         }
-    }];
-        
-    testCase.test("transform with isomorphic schema and wildcards", function() {
+        }];
         var rules = {
             "*.*.settings.*": {
                 expander: {
@@ -523,15 +522,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("isomorphic structure with wildcards and recursive expander", expected, result);    
     });
     
-    var flatterGpiiSettingsResponse = {
-        "org.gnome.desktop.a11y.magnifier": {
-            "settings": {
-                "cross-hairs-clip": { "oldValue":  false, "newValue": true }
-            }
-        }
-    };
-    
     testCase.test("transform with no schema, wildcards and dot-paths", function() {
+         var flatterGpiiSettingsResponse = {
+            "org.gnome.desktop.a11y.magnifier": {
+                "settings": {
+                    "cross-hairs-clip": { "oldValue":  false, "newValue": true }
+                }
+            }
+        };
         var rules = {
             "*.settings.*": {
                 expander: {
@@ -548,6 +546,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
         var result = fluid.model.transform(flatterGpiiSettingsResponse, rules);
+        jqUnit.assertDeepEq("wildcards, recursive expander and dot-paths", expected, result);    
+    });
+    
+    testCase.test("transform with schema, wildcards AFTER dot-paths", function() {
+         var modernGpiiSettingsResponse = {
+            "org.gnome.desktop.a11y.magnifier": [{
+                "settings": {
+                    "cross-hairs-clip": { "oldValue":  false, "newValue": true }
+                }
+            }]
+        };
+        var rules = {
+            "*.*.settings.*": {
+                expander: {
+                    type: "value",
+                    inputPath: "newValue"
+                }
+            }
+        };
+        var expected = {
+            "org.gnome.desktop.a11y.magnifier": [{
+                "settings": {
+                    "cross-hairs-clip": true 
+                }
+            }]
+        }
+        var result = fluid.model.transform(modernGpiiSettingsResponse, rules, {isomorphic: true});
         jqUnit.assertDeepEq("wildcards, recursive expander and dot-paths", expected, result);    
     });
 

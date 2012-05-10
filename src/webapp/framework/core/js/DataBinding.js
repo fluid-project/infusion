@@ -207,7 +207,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that.trundle = function (EL, uncess) {
             uncess = uncess || 0;
             var newThat = fluid.model.makeTrundler(that.root, config, that.strategies);
-            newThat.segs = config.parser? config.parser(EL) : fluid.model.parseEL(EL);
+            newThat.segs = config.parser? config.parser.parse(EL) : fluid.model.parseEL(EL);
             newThat.index = 0;
             newThat.path = "";
             newThat.step(newThat.segs.length - uncess);
@@ -221,7 +221,7 @@ var fluid_1_5 = fluid_1_5 || {};
             // TODO: Temporary adjustment before trundlers are destroyed by FLUID-4705
             // In the final system "new strategies" should be able to declare whether any of them
             // require this path computed or not
-            that.path = fluid.model.composePath(that.path, that.segs[that.index]);
+            that.path = (config.parser? config.parser.compose : fluid.model.composePath)(that.path, that.segs[that.index]);
             for (var i = 0; i < that.strategies.length; ++i) {
                 var value = fluid.model.applyStrategy(that.strategies[i], that.root, that.segs[that.index], that.path);
                 if (accepted === undefined) {

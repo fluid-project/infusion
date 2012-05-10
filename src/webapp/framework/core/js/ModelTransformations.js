@@ -523,20 +523,20 @@ var fluid = fluid || fluid_1_5;
     };
     
     // unsupported, NON-API function
-    fluid.model.transform.isomorphicSchemaStrategy = function (source) { 
+    fluid.model.transform.isomorphicSchemaStrategy = function (source, getConfig) { 
         return function (root, segment, path) {
-            var existing = fluid.get(source, path);
+            var existing = fluid.get(source, path, getConfig);
             return fluid.isArrayable(existing) ? "array" : "object";
         };
     };
     
     // unsupported, NON-API function
-    fluid.model.transform.decodeStrategy = function (source, options) {
+    fluid.model.transform.decodeStrategy = function (source, options, getConfig) {
         if (options.isomorphic) {
-            return fluid.model.transform.isomorphicSchemaStrategy(source);
+            return fluid.model.transform.isomorphicSchemaStrategy(source, getConfig);
         }
         else if (options.flatSchema) {
-            return fluid.model.transform.flatSchemaStrategy(options.flatSchema);
+            return fluid.model.transform.flatSchemaStrategy(options.flatSchema, getConfig);
         }
     };
     
@@ -582,13 +582,17 @@ var fluid = fluid || fluid_1_5;
      */
     fluid.model.transformWithRules = function (source, rules, options) {
         options = options || {};
-        var schemaStrategy = fluid.model.transform.decodeStrategy(source, options);
+        var parser = {
+            parse: fluid.pathUtil.parseEL,
+            compose: fluid.pathUtil.composePath
+        };
         var getConfig = {
-            parser: fluid.pathUtil.parseEL,
+            parser: parser,
             strategies: [fluid.model.defaultFetchStrategy]
         };
+        var schemaStrategy = fluid.model.transform.decodeStrategy(source, options, getConfig);
         var setConfig = {
-            parser: fluid.pathUtil.parseEL,
+            parser: parser,
             strategies: [fluid.model.defaultFetchStrategy, schemaStrategy ? fluid.model.transform.schemaToCreatorStrategy(schemaStrategy)
                 : fluid.model.defaultCreatorStrategy]
         };
