@@ -583,13 +583,14 @@ var fluid = fluid || fluid_1_5;
     fluid.model.transformWithRules = function (source, rules, options) {
         options = options || {};
         var schemaStrategy = fluid.model.transform.decodeStrategy(source, options);
-        var setConfig = schemaStrategy? {
-            parser: fluid.pathUtil.parseEL,
-            strategies: [fluid.model.defaultFetchStrategy, fluid.model.transform.schemaToCreatorStrategy(schemaStrategy)]
-        } : undefined;
         var getConfig = {
             parser: fluid.pathUtil.parseEL,
             strategies: [fluid.model.defaultFetchStrategy]
+        };
+        var setConfig = {
+            parser: fluid.pathUtil.parseEL,
+            strategies: [fluid.model.defaultFetchStrategy, schemaStrategy ? fluid.model.transform.schemaToCreatorStrategy(schemaStrategy)
+                : fluid.model.defaultCreatorStrategy]
         };
         var expander = {
             source: source,

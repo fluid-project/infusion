@@ -522,6 +522,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var result = fluid.model.transform(gpiiSettingsResponse, rules, {isomorphic: true});
         jqUnit.assertDeepEq("isomorphic structure with wildcards and recursive expander", expected, result);    
     });
+    
+    var flatterGpiiSettingsResponse = {
+        "org.gnome.desktop.a11y.magnifier": {
+            "settings": {
+                "cross-hairs-clip": { "oldValue":  false, "newValue": true }
+            }
+        }
+    };
+    
+    testCase.test("transform with no schema, wildcards and dot-paths", function() {
+        var rules = {
+            "*.settings.*": {
+                expander: {
+                    type: "value",
+                    inputPath: "newValue"
+                }
+            }
+        };
+        var expected = {
+            "org.gnome.desktop.a11y.magnifier": {
+                "settings": {
+                    "cross-hairs-clip": true 
+                }
+            }
+        }
+        var result = fluid.model.transform(flatterGpiiSettingsResponse, rules);
+        jqUnit.assertDeepEq("wildcards, recursive expander and dot-paths", expected, result);    
+    });
 
     testCase.test("transform with path named value and literalValue", function() {
         var model = {

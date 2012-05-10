@@ -279,12 +279,12 @@ var fluid_1_5 = fluid_1_5 || {};
     // and expensive versions of those provided in Fluid.js - there is some duplication of 
     // functionality. This is a tradeoff between stability and performance - the versions in
     // Fluid.js are the most frequently used and do not implement escaping of characters .
-    // as \. and \ as \\ as the versions here. The implementations here are not quite complete
-    // or very performant and are left here partially as an implementation note. Problems will
+    // as \. and \ as \\ as the versions here. The implementations here are not 
+    // performant and are left here partially as an implementation note. Problems will
     // arise if clients manipulate JSON structures containing "." characters in keys as if they
-    // are models, treating these is best left until the cases where they occur. The now standard
-    // utilities fluid.path(), fluid.parseEL and fluid.composePath are the ones recommended for
-    // general users and their implementation can be upgraded if required.
+    // are models. The basic  utilities fluid.path(), fluid.parseEL and fluid.composePath are 
+    // the ones recommended for general users and the following implementations will
+    // be upgraded to use regexes in future to make them better alternatives
    
     fluid.pathUtil = {};
    
@@ -323,15 +323,18 @@ var fluid_1_5 = fluid_1_5 || {};
     
     var globalAccept = []; // TODO: serious reentrancy risk here, why is this impl like this?
     
+    /** Parses a path segment, following escaping rules, starting from character index i in the supplied path */
     fluid.pathUtil.getPathSegment = function (path, i) {
         getPathSegmentImpl(globalAccept, path, i);
         return globalAccept[0];
     }; 
   
+    /** Returns just the head segment of an EL path */
     fluid.pathUtil.getHeadPath = function (path) {
         return fluid.pathUtil.getPathSegment(path, 0);
     };
   
+    /** Returns all of an EL path minus its first segment - if the path consists of just one segment, returns "" */  
     fluid.pathUtil.getFromHeadPath = function (path) {
         var firstdot = getPathSegmentImpl(null, path, 0);
         return firstdot === path.length ? "" : path.substring(firstdot + 1);
@@ -341,18 +344,26 @@ var fluid_1_5 = fluid_1_5 || {};
         // TODO: proper escaping rules
         return path.lastIndexOf(".");
     }
-    
+
+    /** Returns all of an EL path minus its final segment - if the path consists of just one segment, returns "" - 
+     * WARNING - this method does not follow escaping rules */    
     fluid.pathUtil.getToTailPath = function (path) {
         var lastdot = lastDotIndex(path);
         return lastdot === -1 ? "" : path.substring(0, lastdot);
     };
 
-  /** Returns the very last path component of a bean path */
+    /** Returns the very last path component of an EL path 
+     * WARNING - this method does not follow escaping rules */
     fluid.pathUtil.getTailPath = function (path) {
         var lastdot = lastDotIndex(path);
         return fluid.pathUtil.getPathSegment(path, lastdot + 1);
     };
 
+    /** A version of fluid.model.parseEL that apples escaping rules - this allows path segments
+     * to contain period characters . - characters "\" and "}" will also be escaped. WARNING - 
+     * this current implementation is EXTREMELY slow compared to fluid.model.parseEL and should
+     * not be used in performance-sensitive applications */
+     
     fluid.pathUtil.parseEL = function (path) {
         var togo = [];
         var index = 0;
@@ -376,6 +387,9 @@ var fluid_1_5 = fluid_1_5 || {};
         return prefix;
     };
     
+    /** Escapes a single path segment by replacing any character ".", "\" or "}" with
+     * itself prepended by \
+     */
     fluid.pathUtil.escapeSegment = function (segment) {
         return composeSegment("", segment);  
     };
@@ -531,6 +545,10 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     }
   
+    /** The core creator function constructing ChangeAppliers. See API documentation
+     * at http://wiki.fluidproject.org/display/fluid/ChangeApplier+API for the various
+     * options supported in the options structure */
+     
     fluid.makeChangeApplier = function (model, options) {
         options = options || {};
         var baseEvents = {
