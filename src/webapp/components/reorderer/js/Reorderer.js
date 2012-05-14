@@ -57,8 +57,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return avatar;
     };
-    
-    function bindHandlersToContainer(container, keyDownHandler, keyUpHandler, mouseMoveHandler) {
+
+    // unsupported, NON-API function    
+    fluid.reorderer.bindHandlersToContainer = function (container, keyDownHandler, keyUpHandler, mouseMoveHandler) {
         var actualKeyDown = keyDownHandler;
         var advancedPrevention = false;
 
@@ -81,9 +82,10 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         container.keydown(actualKeyDown);
         container.keyup(keyUpHandler);
-    }
+    };
     
-    function addRolesToContainer(that) {
+    // unsupported, NON-API function
+    fluid.reorderer.addRolesToContainer = function (that) {
         that.container.attr("role", that.options.containerRole.container);
         that.container.attr("aria-multiselectable", "false");
         that.container.attr("aria-readonly", "false");
@@ -91,15 +93,16 @@ var fluid_1_5 = fluid_1_5 || {};
         // FLUID-3707: We require to have BOTH application role as well as our named role
         // This however breaks the component completely under NVDA and causes it to perpetually drop back into "browse mode"
         //that.container.wrap("<div role=\"application\"></div>");
-    }
+    };
     
-    function createAvatarId(parentId) {
+    // unsupported, NON-API function
+    fluid.reorderer.createAvatarId = function (parentId) {
         // Generating the avatar's id to be containerId_avatar
         // This is safe since there is only a single avatar at a time
         return parentId + "_avatar";
-    }
+    };
     
-    var adaptKeysets = function (options) {
+    fluid.reorderer.adaptKeysets = function (options) {
         if (options.keysets && !(options.keysets instanceof Array)) {
             options.keysets = [options.keysets];    
         }
@@ -125,7 +128,7 @@ var fluid_1_5 = fluid_1_5 || {};
      *                                  avatar
      *                  avatarCreator - a function that returns a valid DOM node to be used as the dragging avatar
      */
-    fluid.reorderer = function (container, options) {
+    fluid.reordererImpl = function (container, options) {
         if (!container) {
             fluid.fail("Reorderer initialised with no container");
         }
@@ -139,7 +142,7 @@ var fluid_1_5 = fluid_1_5 || {};
         
         thatReorderer.activeItem = undefined;
 
-        adaptKeysets(options);
+        fluid.reorderer.adaptKeysets(options);
  
         var kbDropWarning = thatReorderer.locate("dropWarning");
         var mouseDropWarning;
@@ -476,10 +479,10 @@ var fluid_1_5 = fluid_1_5 || {};
 
         // Final initialization of the Reorderer at the end of the construction process 
         if (thatReorderer.container) {
-            bindHandlersToContainer(thatReorderer.container, 
+            fluid.reorderer.bindHandlersToContainer(thatReorderer.container, 
                 thatReorderer.handleKeyDown,
                 thatReorderer.handleKeyUp);
-            addRolesToContainer(thatReorderer);
+            fluid.reorderer.addRolesToContainer(thatReorderer);
             fluid.tabbable(thatReorderer.container);
             initItems();
         }
@@ -852,4 +855,8 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
 
+    // shallow-copy the accumulated namespace onto the target function
+    $.extend(fluid.reordererImpl, fluid.reorderer);
+    fluid.reorderer = fluid.reordererImpl;
+    
 })(jQuery, fluid_1_5);
