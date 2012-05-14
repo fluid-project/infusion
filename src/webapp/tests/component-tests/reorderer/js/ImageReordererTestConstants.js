@@ -61,7 +61,7 @@ function fetchLightboxRoot() {
 }
 
 function focusLightbox() {
-    fetchLightboxRoot().focus();
+    fetchLightboxRoot()[0].focus();
 }
 
 function findOrderableByDivAndId(containerEl) {
