@@ -205,6 +205,7 @@ var fluid_1_5 = fluid_1_5 || {};
         
         that.iframe.addClass(styles.containerFlex);
         that.iframe.addClass(styles.container);
+        that.iframe.hide();
 
         that.iframe.appendTo(that.container);
     };
@@ -240,6 +241,12 @@ var fluid_1_5 = fluid_1_5 || {};
         
         fatPanel.slidingPanel.events.afterPanelHide.addListener(function () {
             fatPanel.iframeRenderer.iframe.height(0);
+            
+            // Prevent the hidden UIO panel from being keyboard and screen reader accessible
+            fatPanel.iframeRenderer.iframe.hide();
+        });
+        fatPanel.slidingPanel.events.onPanelShow.addListener(function () {
+            fatPanel.iframeRenderer.iframe.show();
         });
     };
 
