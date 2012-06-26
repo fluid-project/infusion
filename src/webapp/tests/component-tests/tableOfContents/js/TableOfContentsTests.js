@@ -566,5 +566,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
         });
+
+
+        /**
+         * #FLUID-4723: Test that the output includes an actual header
+         */
+        tocTests.asyncTest("Output includes a heading", function () {
+            renderTOCComponent("#flc-toc", {
+                listeners: {
+                    afterRender: function (that) {
+                        var header = $("h1", that.container);
+                        jqUnit.assertEquals("The output should contain exactly one H1", 1, header.length);
+                        jqUnit.assertEquals("The H1 should contain the expected text", "Table of Contents", header.text());
+                        start();
+                    }
+                }
+            });
+        });
     });
 })(jQuery);
