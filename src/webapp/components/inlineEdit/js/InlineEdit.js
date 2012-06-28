@@ -195,7 +195,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     var showDefaultViewText = function (that) {
-        that.displayView.value(that.options.defaultViewText);
+        that.displayView.value(that.options.strings.defaultViewText);
         that.viewEl.css('padding-right', that.existingPadding);
         that.viewEl.addClass(that.options.styles.defaultViewStyle);
     };
@@ -331,6 +331,11 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options a collection of options settings
      */
     fluid.inlineEdit = function (componentContainer, userOptions) {   
+        // bring 'defaultViewText' option into strings object
+        userOptions = userOptions || {};
+        userOptions.strings = userOptions.strings || {};
+        userOptions.strings.defaultViewText = userOptions.strings.defaultViewText || userOptions.defaultViewText;
+
         var that = fluid.initView("inlineEdit", componentContainer, userOptions);
         
         that.viewEl = fluid.inlineEdit.setupDisplayText(that);
@@ -595,9 +600,9 @@ var fluid_1_5 = fluid_1_5 || {};
              * Set text for the button and listen
              * for modelChanged to keep it updated
              */ 
-            fluid.inlineEdit.updateTextEditButton(markup, that.model.value || opts.defaultViewText, opts.strings.textEditButton);
+            fluid.inlineEdit.updateTextEditButton(markup, that.model.value || opts.strings.defaultViewText, opts.strings.textEditButton);
             that.events.modelChanged.addListener(function () {
-                fluid.inlineEdit.updateTextEditButton(markup, that.model.value || opts.defaultViewText, opts.strings.textEditButton);
+                fluid.inlineEdit.updateTextEditButton(markup, that.model.value || opts.strings.defaultViewText, opts.strings.textEditButton);
             });        
             
             that.locate("text").after(markup);
@@ -645,16 +650,22 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} displayModeRenderer The display mode container
      * @param {Ojbect} styles The default styling for the display mode container on mouse hover
      */    
-    fluid.inlineEdit.bindHighlightHandler = function (element, displayModeRenderer, styles) {
+    fluid.inlineEdit.bindHighlightHandler = function (element, displayModeRenderer, that) {
         element = $(element);
         
         var focusOn = function () {
-            displayModeRenderer.addClass(styles.focus);
-            displayModeRenderer.addClass(styles.invitation);
+            displayModeRenderer.addClass(that.options.styles.focus);
+            displayModeRenderer.addClass(that.options.styles.invitation);
+            if (!that.model || !that.model.value) {
+                displayModeRenderer.prevObject.text(that.options.strings.defaultFocussedViewText);
+            }
         };
         var focusOff = function () {
-            displayModeRenderer.removeClass(styles.focus);
-            displayModeRenderer.removeClass(styles.invitation);
+            displayModeRenderer.removeClass(that.options.styles.focus);
+            displayModeRenderer.removeClass(that.options.styles.invitation);
+            if (!that.model || !that.model.value) {
+                displayModeRenderer.prevObject.text(that.options.strings.defaultViewText);
+            }
         };
         
         element.focus(focusOn);
@@ -743,8 +754,8 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.inlineEdit.bindMouseHandlers(that.viewEl, that.edit);
         fluid.inlineEdit.bindMouseHandlers(that.textEditButton, that.edit);
         fluid.inlineEdit.bindKeyboardHandlers(that.textEditButton, that.edit);
-        fluid.inlineEdit.bindHighlightHandler(that.viewEl, displayModeRenderer, styles);
-        fluid.inlineEdit.bindHighlightHandler(that.textEditButton, displayModeRenderer, styles);
+        fluid.inlineEdit.bindHighlightHandler(that.viewEl, displayModeRenderer, that);
+        fluid.inlineEdit.bindHighlightHandler(that.textEditButton, displayModeRenderer, that);
         
         return displayModeRenderer;
     };    
@@ -764,7 +775,7 @@ var fluid_1_5 = fluid_1_5 || {};
             refreshView: function (componentThat, source) {
                 if (componentThat.model.value) {
                     showEditedText(componentThat);
-                } else if (componentThat.options.defaultViewText) {
+                } else if (componentThat.options.strings.defaultViewText) {
                     showDefaultViewText(componentThat);
                 } else {
                     showNothing(componentThat);
@@ -843,7 +854,9 @@ var fluid_1_5 = fluid_1_5 || {};
 
         strings: {
             textEditButton: "Edit text %text",
-            editModeInstruction: "Escape to cancel, Enter or Tab when finished"
+            editModeInstruction: "Escape to cancel, Enter or Tab when finished",
+            defaultViewText: "Click here to edit", /* this will override the direct option */
+            defaultFocussedViewText: "Click here or press enter to edit"
         },
         
         paddings: {

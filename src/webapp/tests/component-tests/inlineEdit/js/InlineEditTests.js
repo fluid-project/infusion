@@ -222,6 +222,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("After initialization, display has custom invitation text.", customInvitation, display.text());
         });
         
+        inlineEditTests.test("Focussed invitation text (Default)", function () {
+            expect(3);
+
+            var display = $("#empty-display");
+            var inlineEditor = fluid.inlineEdit("#empty-inline-edit");
+            jqUnit.assertEquals("After initialization of empty display, display has default invitation text: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
+            var button = inlineEditor.textEditButton;
+            button.focus();
+            jqUnit.assertEquals("After focus, display has default focussed invitation text: ", fluid.defaults("inlineEdit").strings.defaultFocussedViewText, display.text());
+            button.blur();
+            jqUnit.assertEquals("After blur, display has default invitation text: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
+        });
+
         inlineEditTests.test("Invitation text (none)", function () {
             expect(10);
     
@@ -828,7 +841,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // Add event handlers.
                 fluid.inlineEdit.bindHoverHandlers(displayModeRenderer, styles.invitation);
                 fluid.inlineEdit.bindMouseHandlers(that.viewEl, that.edit);
-                fluid.inlineEdit.bindHighlightHandler(that.viewEl, displayModeRenderer, styles);
+                fluid.inlineEdit.bindHighlightHandler(that.viewEl, displayModeRenderer, that);
                 
                 return displayModeRenderer;                        
             };
@@ -874,6 +887,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var button = fluid.inlineEdit.setupTextEditButton(editor);     
                 jqUnit.assertTrue("textEditButton has button role", "button", button.attr("role"));
             });            
+
+            inlineEditTests.test("Old-fashioned 'defaultViewText' string", function () {
+                var testString = "This is a test string";
+                var inlineEditor = fluid.inlineEdit("#empty-inline-edit", {
+                    defaultViewText: testString
+                });
+                var display = $("#empty-display");
+                jqUnit.assertEquals("Initialized with old-fashioned option, display should have text string", testString, display.text());
+            });
+
+            inlineEditTests.test("Upgraded 'defaultViewText' string", function () {
+                var testString = "This is a test string";
+                var inlineEditor = fluid.inlineEdit("#empty-inline-edit", {
+                    strings: {
+                        defaultViewText: testString
+                    }
+                });
+                var display = $("#empty-display");
+                jqUnit.assertEquals("Initialized with old-fashioned option, display should have text string", testString, display.text());
+            });
+
+            inlineEditTests.test("Conflicting 'defaultViewText' strings", function () {
+                var oldWay = "This is the old way";
+                var newWay = "This is the new way";
+                var inlineEditor = fluid.inlineEdit("#empty-inline-edit", {
+                    defaultViewText: oldWay,
+                    strings: {
+                        defaultViewText: newWay
+                    }
+                });
+                var display = $("#empty-display");
+                jqUnit.assertEquals("Initialized with both strings, the new one should win out", newWay, display.text());
+            });
         })();
     });
 })(jQuery);
