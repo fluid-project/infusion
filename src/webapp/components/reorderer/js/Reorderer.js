@@ -331,7 +331,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         dropWarningEl = mouseDropWarning[0];
                     }
                     avatar = $(options.avatarCreator(item[0], styles.avatar, dropWarningEl));
-                    avatar.prop("id", createAvatarId(thatReorderer.container.id));
+                    avatar.prop("id", fluid.reorderer.createAvatarId(thatReorderer.container.id));
                     return avatar;
                 },
                 start: function (e, ui) {
