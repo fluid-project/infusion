@@ -21,8 +21,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+  
+    fluid.reorderer = fluid.registerNamespace("fluid.reorderer");
     
-    var defaultAvatarCreator = function (item, cssClass, dropWarning) {
+    fluid.reorderer.defaultAvatarCreator = function (item, cssClass, dropWarning) {
         fluid.dom.cleanseScripts(fluid.unwrap(item));
         var avatar = $(item).clone();
         
@@ -55,8 +57,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return avatar;
     };
-    
-    function bindHandlersToContainer(container, keyDownHandler, keyUpHandler, mouseMoveHandler) {
+
+    // unsupported, NON-API function    
+    fluid.reorderer.bindHandlersToContainer = function (container, keyDownHandler, keyUpHandler, mouseMoveHandler) {
         var actualKeyDown = keyDownHandler;
         var advancedPrevention = false;
 
@@ -79,9 +82,10 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         container.keydown(actualKeyDown);
         container.keyup(keyUpHandler);
-    }
+    };
     
-    function addRolesToContainer(that) {
+    // unsupported, NON-API function
+    fluid.reorderer.addRolesToContainer = function (that) {
         that.container.attr("role", that.options.containerRole.container);
         that.container.attr("aria-multiselectable", "false");
         that.container.attr("aria-readonly", "false");
@@ -89,15 +93,16 @@ var fluid_1_5 = fluid_1_5 || {};
         // FLUID-3707: We require to have BOTH application role as well as our named role
         // This however breaks the component completely under NVDA and causes it to perpetually drop back into "browse mode"
         //that.container.wrap("<div role=\"application\"></div>");
-    }
+    };
     
-    function createAvatarId(parentId) {
+    // unsupported, NON-API function
+    fluid.reorderer.createAvatarId = function (parentId) {
         // Generating the avatar's id to be containerId_avatar
         // This is safe since there is only a single avatar at a time
         return parentId + "_avatar";
-    }
+    };
     
-    var adaptKeysets = function (options) {
+    fluid.reorderer.adaptKeysets = function (options) {
         if (options.keysets && !(options.keysets instanceof Array)) {
             options.keysets = [options.keysets];    
         }
@@ -123,7 +128,7 @@ var fluid_1_5 = fluid_1_5 || {};
      *                                  avatar
      *                  avatarCreator - a function that returns a valid DOM node to be used as the dragging avatar
      */
-    fluid.reorderer = function (container, options) {
+    fluid.reordererImpl = function (container, options) {
         if (!container) {
             fluid.fail("Reorderer initialised with no container");
         }
@@ -137,7 +142,7 @@ var fluid_1_5 = fluid_1_5 || {};
         
         thatReorderer.activeItem = undefined;
 
-        adaptKeysets(options);
+        fluid.reorderer.adaptKeysets(options);
  
         var kbDropWarning = thatReorderer.locate("dropWarning");
         var mouseDropWarning;
@@ -326,7 +331,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         dropWarningEl = mouseDropWarning[0];
                     }
                     avatar = $(options.avatarCreator(item[0], styles.avatar, dropWarningEl));
-                    avatar.prop("id", createAvatarId(thatReorderer.container.id));
+                    avatar.prop("id", fluid.reorderer.createAvatarId(thatReorderer.container.id));
                     return avatar;
                 },
                 start: function (e, ui) {
@@ -474,10 +479,10 @@ var fluid_1_5 = fluid_1_5 || {};
 
         // Final initialization of the Reorderer at the end of the construction process 
         if (thatReorderer.container) {
-            bindHandlersToContainer(thatReorderer.container, 
+            fluid.reorderer.bindHandlersToContainer(thatReorderer.container, 
                 thatReorderer.handleKeyDown,
                 thatReorderer.handleKeyUp);
-            addRolesToContainer(thatReorderer);
+            fluid.reorderer.addRolesToContainer(thatReorderer);
             fluid.tabbable(thatReorderer.container);
             initItems();
         }
@@ -612,7 +617,7 @@ var fluid_1_5 = fluid_1_5 || {};
             grabHandle: "",
             stylisticOffset: ""
         },
-        avatarCreator: defaultAvatarCreator,
+        avatarCreator: fluid.reorderer.defaultAvatarCreator,
         keysets: fluid.reorderer.defaultKeysets,
         layoutHandler: {
             type: "fluid.listLayoutHandler"
@@ -795,7 +800,8 @@ var fluid_1_5 = fluid_1_5 || {};
                         if (moved) {
                             moved.newRender = plainLabel;
                             label = that.renderLabel(selectable, moved.oldRender.position);
-                            $(selectable).one("focusout", function () {
+                            // once we move focus out of the element which just moved, return its ARIA label to be the new plain label
+                            $(selectable).one("focusout.ariaLabeller", function () {
                                 if (movedMap[id]) {
                                     var oldLabel = movedMap[id].newRender.label;
                                     delete movedMap[id];
@@ -809,6 +815,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 },
                 onMove: function (item, newPosition) {
                     fluid.clear(movedMap); // if we somehow were fooled into missing a defocus, at least clear the map on a 2nd move
+                    // This unbind is needed for FLUID-4693 with Chrome 18, which generates a focusOut when
+                    // simply doing the DOM manipulation to move the element to a new position.   
+                    $(item).unbind("focusout.ariaLabeller");
                     var movingId = fluid.allocateSimpleId(item);
                     movedMap[movingId] = {
                         oldRender: that.renderLabel(item)
@@ -845,4 +854,8 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
 
+    // shallow-copy the accumulated namespace onto the target function
+    $.extend(fluid.reordererImpl, fluid.reorderer);
+    fluid.reorderer = fluid.reordererImpl;
+    
 })(jQuery, fluid_1_5);
