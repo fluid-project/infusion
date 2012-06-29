@@ -110,7 +110,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         method: "assertEquals", 
         expected: source.cat
     }, {
-        message: "Where the path is a rules object, it the result should be an expanded version of it.",
+        message: "Where the path is a rules object, the result should be an expanded version of it.",
         expander: {
             type: "fluid.model.transform.value", 
             value: {
@@ -137,10 +137,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     ];
     
     var testOneStructure = function (tests) {
-        for (var i = 0; i < tests.length; ++ i) {
-            var v = tests[i];
+        fluid.each(tests, function(v) {
             testOneExpander(v.message, v.model || source, v.expander, v.method, v.expected);
-        }      
+        });
     }
     
     testCase.test("fluid.model.transform.value()", function () {
@@ -290,7 +289,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
     
-    var mapperTests = [{
+    var mapperTests = {
+    "simple": {
         message: "valueMapper selects focus based on path",
         model: mapperModel, 
         expander: {
@@ -302,7 +302,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {
             "FollowFocus": true
         }
-    }, {
+    }, 
+    "deffolt": {
         message: "valueMapper selects mouse by default",
         model: {
             tracking: "unknown-thing"
@@ -317,7 +318,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {
             "FollowMouse": true
         }
-    }, {
+    }, 
+    "nonString": {
         message: "valueMapper with default output value and non-string input value",
         model: {
             condition: true
@@ -339,7 +341,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {
             "trueCATT": "CATTOO"
         }
-    }, {
+    }, 
+    "nonString-long": {
         message: "valueMapper with default output value and non-string input value with long records",
         model: {
             condition: true
@@ -361,7 +364,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {
             "trueCATT": "CATTOO"
         }
-    }, {
+    },
+    "unmatched-none": {
         message: "valueMapper with unmatched input value and no defaultInput",
         model: {
             condition: true
@@ -386,7 +390,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         method: "assertDeepEq",
         expected: undefined
-    }, {
+    }, 
+    "unmatched-definite": {
         message: "valueMapper with unmatched input value mapped to definite value",
         model: {}, 
         expander: {
@@ -403,7 +408,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {
             trueCATT: "undefinedCATT"
         }
-    }, {
+    },
+    "unmatched-undefined-short": {
         message: "valueMapper with unmatched input value mapped to undefined value with short form",
         model: {}, 
         expander: {
@@ -418,7 +424,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         method: "assertDeepEq",
         expected: undefined
-    }];
+    }
+    };
     
     testCase.test("fluid.model.transform.valueMapper()", function () {
         testOneStructure(mapperTests);
@@ -652,6 +659,117 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The model should be transformed based on the specified rules", expected, result);
     });
     
+    testCase.test("invert simple transformation", function() {
+        var rules = {
+            farm: "goat"
+        };
+        var inverseRules = fluid.model.transform.invertConfiguration(rules);
+        var expectedInverse = {
+            expander: [{
+                type: "fluid.model.transform.value",
+                inputPath: "farm",
+                outputPath: "goat"
+            }]
+        };
+        jqUnit.assertDeepEq("Inverted simple rules", expectedInverse, inverseRules);
+        var forward = fluid.model.transform(source, rules);
+        var reverse = fluid.model.transform(forward, inverseRules);
+        var modelBit = {
+            goat: false
+        };
+        jqUnit.assertDeepEq("Recovered image of model", modelBit, reverse);
+    });
+    
+    testCase.test("invert valueMapper transformation", function() {
+        var rules = {
+            expander: {
+            type: "fluid.model.transform.valueMapper",
+            inputPath: "tracking",
+            options: mapperOptions
+        },
+        };
+        var mapperModel = {
+            tracking: "focus"  
+        };
+        
+        var inverseRules = fluid.model.transform.invertConfiguration(rules);
+        var expectedInverse = {
+            expander: [{
+                type: "fluid.model.transform.valueMapper",
+                outputPath: "tracking",
+                options: [{
+                    inputPath: "FollowMouse",
+                    inputValue: true,
+                    outputValue: "mouse"
+                },
+                {
+                    inputPath: "FollowFocus",
+                    inputValue: true,
+                    outputValue: "focus"
+                },
+                {
+                    inputPath: "FollowCaret",
+                    inputValue: true,
+                    outputValue: "caret"
+                }]
+            }]
+        };
+        jqUnit.assertDeepEq("Inverted valueMapper", expectedInverse, inverseRules);
+        var forward = fluid.model.transform(mapperModel, rules);
+        var reverse = fluid.model.transform(forward, inverseRules);
+        jqUnit.assertDeepEq("Perfectly inverted mapping", mapperModel, reverse);
+    });
+    
+    testCase.test("invert long form valueMapper", function() {
+        var cattoo = mapperTests["nonString-long"];
+        var rules = {expander: cattoo.expander};
+        var inverseRules = fluid.model.transform.invertConfiguration(rules);
+        var expectedInverse = {
+            expander: [{
+                type: "fluid.model.transform.valueMapper",
+                outputPath: "condition",
+                options: [ {
+                    outputValue: true,
+                    inputValue: "CATTOO",
+                    inputPath: "trueCATT"
+                }, {
+                    outputValue: false,
+                    inputValue: "CATTOO",
+                    inputPath: "falseCATT"
+                }] 
+            }]
+        };
+        jqUnit.assertDeepEq("Inverted valueMapper", expectedInverse, inverseRules);
+        var forward = fluid.model.transform(cattoo.model, rules);
+        var reverse = fluid.model.transform(forward, inverseRules);
+        jqUnit.assertDeepEq("Perfectly inverted mapping", cattoo.model, reverse);
+    });
+    
+    var capabilitiesTransformations = {
+        "mag-factor": "display.screenEnhancement.magnification",
+        "show-cross-hairs": "display.screenEnhancement.showCrosshairs",
+        "mouse-tracking": {
+            "expander": {
+                "type": "fluid.model.transform.valueMapper",
+                "inputPath": "display.screenEnhancement.tracking",
+                "options": {
+                    "mouse": {
+                        "outputValue": "centered"
+                    }
+                }
+            }
+        }
+    };
+    
+    testCase.test("collect inputPath from mixed transformation", function() {
+        var paths = fluid.model.transform.collectInputPaths(capabilitiesTransformations);
+        var expected = [
+            "display.screenEnhancement.magnification",
+            "display.screenEnhancement.showCrosshairs",
+            "display.screenEnhancement.tracking"
+        ];
+        jqUnit.assertDeepEq("Collected input paths", expected, paths.sort());
+    });
     
     testCase.test("fluid.model.transform()", function () {
         var rules = {
