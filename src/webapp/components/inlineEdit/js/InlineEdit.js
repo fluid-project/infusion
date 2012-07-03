@@ -734,6 +734,18 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
     
+    /** Bind all user-facing event handlers required by the component **/
+    fluid.inlineEdit.bindEventHandlers = function (that, displayModeContainer) {
+        var styles = that.options.styles;
+        
+        fluid.inlineEdit.bindHoverHandlers(displayModeContainer, styles.invitation);
+        fluid.inlineEdit.bindMouseHandlers(that.viewEl, that.edit);
+        fluid.inlineEdit.bindMouseHandlers(that.textEditButton, that.edit);
+        fluid.inlineEdit.bindKeyboardHandlers(that.textEditButton, that.edit);
+        fluid.inlineEdit.bindHighlightHandler(that.viewEl, displayModeContainer, that);
+        fluid.inlineEdit.bindHighlightHandler(that.textEditButton, displayModeContainer, that);
+    };
+    
     /**
      * Render the display mode view.  
      * 
@@ -744,28 +756,22 @@ var fluid_1_5 = fluid_1_5 || {};
         var styles = that.options.styles;
         
         var displayModeWrapper = fluid.inlineEdit.setupDisplayModeContainer(styles);
-        var displayModeRenderer = that.viewEl.wrap(displayModeWrapper).parent();
+        displayModeContainer = that.viewEl.wrap(displayModeWrapper).parent();
         
         that.textEditButton = fluid.inlineEdit.setupTextEditButton(that);
-        displayModeRenderer.append(that.textEditButton);
+        displayModeContainer.append(that.textEditButton);
         
-        // Add event handlers.
-        fluid.inlineEdit.bindHoverHandlers(displayModeRenderer, styles.invitation);
-        fluid.inlineEdit.bindMouseHandlers(that.viewEl, that.edit);
-        fluid.inlineEdit.bindMouseHandlers(that.textEditButton, that.edit);
-        fluid.inlineEdit.bindKeyboardHandlers(that.textEditButton, that.edit);
-        fluid.inlineEdit.bindHighlightHandler(that.viewEl, displayModeRenderer, that);
-        fluid.inlineEdit.bindHighlightHandler(that.textEditButton, displayModeRenderer, that);
-        
-        return displayModeRenderer;
+        fluid.inlineEdit.bindEventHandlers(that, displayModeContainer);
+
+        return displayModeContainer;
     };    
     
     fluid.inlineEdit.standardAccessor = function (element) {
         var nodeName = element.nodeName.toLowerCase();
         return { 
             value: function (newValue) {
-                return "input" === nodeName || "textarea" === nodeName ? 
-                    fluid.value($(element), newValue) : $(element).text(newValue);
+                return fluid["input" === nodeName || "textarea" === nodeName ?
+                    "value" : "text"]($(element), newValue);
             }
         };        
     };

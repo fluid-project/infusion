@@ -68,9 +68,9 @@ This is a list of publicly available software that is redistributed with Fluid I
 categorized by license:
 
 MIT License:
-    * jQuery javascript library v1.6.1 http://jquery.com/ 
-    * jQuery UI dialog, draggable, mouse, position, slider, and tabs javascript widgets v1.8.12: http://ui.jquery.com/
-    * jQuery UI tooltip (pre-release from jQuery 1.9 branch) https://github.com/jquery/jquery-ui/tree/tooltip
+    * jQuery javascript library v1.7.2 http://jquery.com/ 
+    * jQuery UI dialog, draggable, mouse, position, slider, and tabs javascript widgets v1.8.18: http://ui.jquery.com/
+    * jQuery UI tooltip (pre-release from jQuery UI 1.9 branch) https://github.com/jquery/jquery-ui/tree/tooltip
     * jQuery QUnit: http://docs.jquery.com/QUnit
     * jQuery Mockjax: https://github.com/appendto/jquery-mockjax
     * jQuery Chili code highlighter v2.2 http://code.google.com/p/jquery-chili-js/ 

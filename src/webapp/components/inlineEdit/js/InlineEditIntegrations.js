@@ -31,12 +31,12 @@ var fluid_1_5 = fluid_1_5 || {};
                 value: function (newValue) {
                     var editor = editorGetFn(editField);
                     if (!editor) {
-                        if (newValue) {
+                        if (newValue !== undefined) {
                             $(editField).val(newValue);
                         }
                         return "";
                     }
-                    if (newValue) {
+                    if (newValue !== undefined) {
                         setValueFn(editField, editor, newValue);
                     } else {
                         return getValueFn(editor);
@@ -49,7 +49,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.inlineEdit.richTextViewAccessor = function (element) {
         return {
             value: function (newValue) {
-                return $(element).html(newValue);
+                return fluid.html(element, newValue);
             }
         };
     };        

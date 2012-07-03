@@ -837,7 +837,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 pres.restore(expanded);
             }
             return expanded;
-        }, ["    while expanding options for component of type " + that.typeName + ": ", that]);
+        }, ["    while expanding options for component of type " + (that? that.typeName : "null") + ": ", that]);
     };
     
     // unsupported, non-API function    
