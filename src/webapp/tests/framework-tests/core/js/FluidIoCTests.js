@@ -804,28 +804,6 @@ fluid.registerNamespace("fluid.tests");
     });
 
     
-    fluid.defaults("fluid.tests.circularity", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            instantiator: "{instantiator}",
-            child1: {
-                type: "fluid.tests.circChild"
-            }
-        }
-    });
-    
-    fluid.defaults("fluid.tests.circChild", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        mergePolicy: {
-            instantiator: "noexpand"
-        }
-    });
-    
-    fluid.demands("fluid.tests.circChild", "fluid.tests.circularity",
-        [{
-            instantiator: "{circularity}.instantiator"  
-        }]);
-    
     fluid.tests.makeInitFunction = function (name) {
         return function (that) {
             that.initFunctionRecord.push(name);
@@ -1022,6 +1000,28 @@ fluid.registerNamespace("fluid.tests");
         var testComp = fluid.tests.guidedParent();
         jqUnit.assertDeepEq("Children constructed in sort order", [1, 2, 3, 4], testComp.constructRecord);
     });
+        
+    fluid.defaults("fluid.tests.circularity", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            instantiator: "{instantiator}",
+            child1: {
+                type: "fluid.tests.circChild"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.circChild", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        mergePolicy: {
+            instantiator: "nomerge"
+        }
+    });
+    
+    fluid.demands("fluid.tests.circChild", "fluid.tests.circularity",
+        [{
+            instantiator: "{circularity}.instantiator"  
+        }]);
     
     fluidIoCTests.test("Tree circularity test", function () {
         try {
