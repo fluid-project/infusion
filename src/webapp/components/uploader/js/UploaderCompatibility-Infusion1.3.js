@@ -27,9 +27,8 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.registerNamespace("fluid.compat.fluid_1_3.uploader");
     fluid.staticEnvironment.uploader_1_3_Compatibility = fluid.typeTag("fluid.uploader.fluid_1_3");
 
-    fluid.compat.fluid_1_3.uploader.fileTypeTransformer = function (model, expandSpec) {
+    fluid.compat.fluid_1_3.uploader.fileTypeTransformer = function (val) {
         var mimeTypeMap = fluid.uploader.mimeTypeRegistry;
-        var val = fluid.get(model, expandSpec.path);
         if (fluid.isArrayable(val) || typeof (val) !== "string") {
             return val;
         }
@@ -69,7 +68,7 @@ var fluid_1_5 = fluid_1_5 || {};
         "queueSettings.fileTypes": {
             expander: {
                 type: "fluid.compat.fluid_1_3.uploader.fileTypeTransformer", 
-                path: "queueSettings.fileTypes"
+                inputPath: "queueSettings.fileTypes"
             }
         }
     };
@@ -86,7 +85,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.demands("fluid.uploader", ["fluid.uploader.fluid_1_2", "fluid.uploader.fluid_1_3"], {
         mergeOptions: {
             transformOptions: {
-                transformer: "fluid.model.transformWithRules",
+                transformer: "fluid.model.transform.sequence",
                 config: [fluid.compat.fluid_1_2.uploader.optionsRules, fluid.compat.fluid_1_3.uploader.optionsRules]
             }
         }
@@ -102,7 +101,7 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.compat.fluid_1_3.uploader.optionsRules;
         
         options.transformOptions = {
-            transformer: "fluid.model.transformWithRules",
+            transformer: "fluid.model.transform.sequence",
             config: rules
         };
         

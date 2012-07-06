@@ -707,7 +707,7 @@ var fluid = fluid || fluid_1_5;
     
     var fluid_guid = 1;
     
-    /** Allocate an string value that will be very likely unique within this (browser) process **/
+    /** Allocate an string value that will be very likely unique within this Fluid scope (frame or process) **/
     
     fluid.allocateGuid = function () {
         return fluid_prefix + (fluid_guid++);
@@ -957,7 +957,8 @@ var fluid = fluid || fluid_1_5;
             gs.gradeHash[gradeName] = true;
             gs.gradeChain.push(gradeName);
             gs.optionsChain.push(options);
-            fluid.each(options.gradeNames, function (parent) {
+            var oGradeNames = fluid.makeArray(options.gradeNames);
+            fluid.each(oGradeNames, function (parent) {
                 if (!gs.gradeHash[parent]) {
                     resolveGradesImpl(gs, parent);
                 }
@@ -975,17 +976,7 @@ var fluid = fluid || fluid_1_5;
         };
         return resolveGradesImpl(gradeStruct, gradeNames);
     };
-    
-    fluid.lifecycleFunctions = {
-        preInitFunction: true,
-        postInitFunction: true,
-        finalInitFunction: true
-    };
-    
-    fluid.rootMergePolicy = fluid.transform(fluid.lifecycleFunctions, function () {
-        return fluid.mergeListenerPolicy;
-    });
-    
+        
     var mergedDefaultsCache = {};
     
     fluid.gradeNamesToKey = function (gradeNames, defaultName) {
@@ -999,7 +990,11 @@ var fluid = fluid || fluid_1_5;
             var gradeStruct = fluid.resolveGradeStructure(gradeNames);
             mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs).concat({gradeNames: gradeStruct.gradeChain});
         }
-        mergeArgs = [fluid.rootMergePolicy, {}].concat(mergeArgs);
+        var mergePolicy = {};
+        for (var i = 0; i < mergeArgs.length; ++ i) {
+            mergePolicy = $.extend(true, mergePolicy, mergeArgs[i].mergePolicy);
+        }
+        mergeArgs = [mergePolicy, {}].concat(mergeArgs);
         var mergedDefaults = fluid.merge.apply(null, mergeArgs);
         return mergedDefaults;  
     };
@@ -1057,7 +1052,7 @@ var fluid = fluid || fluid_1_5;
             return fluid.resolveGradedOptions(componentName);
         } else {
             if (options && options.options) {
-                fluid.fail("Probable error in options structure with option named \"options\" - perhaps you meant to write these options at top level in fluid.defaults?");  
+                fluid.fail("Probable error in options structure for " + componentName + " with option named \"options\" - perhaps you meant to write these options at top level in fluid.defaults? - ", options);  
             }
             fluid.rawDefaults(componentName, options);
             if (fluid.hasGrade(options, "autoInit")) {
@@ -1091,8 +1086,21 @@ var fluid = fluid || fluid_1_5;
     
     // The base system grade definitions
     
+    fluid.defaults("fluid.function", {});
+    
+    fluid.lifecycleFunctions = {
+        preInitFunction: true,
+        postInitFunction: true,
+        finalInitFunction: true
+    };
+    
+    fluid.rootMergePolicy = fluid.transform(fluid.lifecycleFunctions, function () {
+        return fluid.mergeListenerPolicy;
+    });
+    
     fluid.defaults("fluid.littleComponent", {
         initFunction: "fluid.initLittleComponent",
+        mergePolicy: fluid.rootMergePolicy,
         argumentMap: {
             options: 0
         }
@@ -1174,7 +1182,7 @@ var fluid = fluid || fluid_1_5;
             if (thisSource !== undefined) {
                 if (!funcPolicy && thisSource !== null && typeof (thisSource) === "object" &&
                         !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
-                        !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "nomerge") && !fluid.mergePolicyIs(newPolicy, "noexpand")) {
+                        !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "nomerge")) {
                     if (primitiveTarget) {
                         target[name] = thisTarget = fluid.freshContainer(thisSource);
                     }

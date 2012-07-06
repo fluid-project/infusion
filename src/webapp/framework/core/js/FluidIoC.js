@@ -649,7 +649,8 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }, ["    while invoking invoker with name " + functionName + " on component", that]);
         };
     };
-    
+
+    // unsupported, non-API function    
     fluid.event.listenerEngine = function(eventSpec, callback) {
         var argstruc = {};
         function checkFire() {
@@ -685,6 +686,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }, [" firing to listener to event named " + eventName + " of component ", that]);
     };
     
+    // unsupported, non-API function
     fluid.event.resolveListenerRecord = function(lisrec, that, eventName) {
         return fluid.withInstantiator(that, function(instantiator) {
             var records = fluid.makeArray(lisrec);
@@ -706,6 +708,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }, [ "    while resolving listener record for event named " + eventName + " for component ", that]); 
     };
     
+    // unsupported, non-API function
     fluid.event.expandOneEvent = function(event, that) {
         var origin;
         if (typeof(event) === "string" && event.charAt(0) !== "{") {
@@ -720,7 +723,8 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }
         return origin;
     };
-    
+
+    // unsupported, non-API function    
     fluid.event.expandEvents = function(event, that) {
         return typeof(event) === "string"?
             fluid.event.expandOneEvent(event, that) :
