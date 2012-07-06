@@ -189,10 +189,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var display = $("#empty-display");
             jqUnit.assertEquals("Before initialization of empty display, display is empty", "", display.text());
             var inlineEditor = fluid.inlineEdit("#empty-inline-edit");
-            jqUnit.assertEquals("After initialization of empty display, display has invitation text: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
+            jqUnit.assertEquals("After initialization of empty display, display has invitation text: ", fluid.defaults("inlineEdit").strings.defaultViewText, display.text());
             jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewStyle));
             jqUnit.assertTrue("Invitation text still contains it's initial class attribute as well", display.hasClass("flc-inlineEdit-text")); // added for FLUID-1803 
-            jqUnit.assertEquals("The textEditButton text should be set", "Edit text " + inlineEditor.options.defaultViewText, inlineEditor.locate("textEditButton").text());
+            jqUnit.assertEquals("The textEditButton text should be set", "Edit text " + inlineEditor.options.strings.defaultViewText, inlineEditor.locate("textEditButton").text());
             
             var testText = "This is test text.";
             var edit = inlineEditor.editField;
@@ -206,7 +206,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             inlineEditor.edit();
             edit.prop("value", "");
             inlineEditor.finish();
-            jqUnit.assertEquals("After clearing the field, display should have invitation text again: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
+            jqUnit.assertEquals("After clearing the field, display should have invitation text again: ", fluid.defaults("inlineEdit").strings.defaultViewText, display.text());
             jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewStyle));
             jqUnit.assertTrue("Invitation text still contains it's initial class attribute as well", display.hasClass("flc-inlineEdit-text")); // added for FLUID-1803
         });
@@ -227,12 +227,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             var display = $("#empty-display");
             var inlineEditor = fluid.inlineEdit("#empty-inline-edit");
-            jqUnit.assertEquals("After initialization of empty display, display has default invitation text: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
+            jqUnit.assertEquals("After initialization of empty display, display has default invitation text: ", fluid.defaults("inlineEdit").strings.defaultViewText, display.text());
             var button = inlineEditor.textEditButton;
             button.focus();
             jqUnit.assertEquals("After focus, display has default focussed invitation text: ", fluid.defaults("inlineEdit").strings.defaultFocussedViewText, display.text());
             button.blur();
-            jqUnit.assertEquals("After blur, display has default invitation text: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
+            jqUnit.assertEquals("After blur, display has default invitation text: ", fluid.defaults("inlineEdit").strings.defaultViewText, display.text());
         });
 
         inlineEditTests.test("Invitation text (none)", function () {

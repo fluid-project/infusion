@@ -331,13 +331,14 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options a collection of options settings
      */
     fluid.inlineEdit = function (componentContainer, userOptions) {   
-        // bring 'defaultViewText' option into strings object
-        userOptions = userOptions || {};
-        userOptions.strings = userOptions.strings || {};
-        userOptions.strings.defaultViewText = userOptions.strings.defaultViewText || userOptions.defaultViewText;
-
         var that = fluid.initView("inlineEdit", componentContainer, userOptions);
         
+        // if old 'defaultViewText' option was used intead of strings version, update strings version
+        if ((that.options.defaultViewText !== undefined) &&
+            (that.options.strings.defaultViewText === fluid.defaults("inlineEdit").strings.defaultViewText)) {
+            that.options.strings.defaultViewText = that.options.defaultViewText;
+        }
+
         that.viewEl = fluid.inlineEdit.setupDisplayText(that);
         
         that.displayView = fluid.initSubcomponent(that, "displayView", that.viewEl);
@@ -653,23 +654,17 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.inlineEdit.bindHighlightHandler = function (element, displayModeRenderer, that) {
         element = $(element);
         
-        var focusOn = function () {
-            displayModeRenderer.addClass(that.options.styles.focus);
-            displayModeRenderer.addClass(that.options.styles.invitation);
-            if (!that.model || !that.model.value) {
-                displayModeRenderer.prevObject.text(that.options.strings.defaultFocussedViewText);
-            }
+        var makeFocusSwitcher = function (focusOn) {
+            return function () {
+                displayModeRenderer.toggleClass(that.options.styles.focus);
+                displayModeRenderer.toggleClass(that.options.styles.invitation);
+                if (!that.model || !that.model.value) {
+                    displayModeRenderer.prevObject.text(focusOn ? that.options.strings.defaultFocussedViewText : that.options.strings.defaultViewText);
+                }
+            };
         };
-        var focusOff = function () {
-            displayModeRenderer.removeClass(that.options.styles.focus);
-            displayModeRenderer.removeClass(that.options.styles.invitation);
-            if (!that.model || !that.model.value) {
-                displayModeRenderer.prevObject.text(that.options.strings.defaultViewText);
-            }
-        };
-        
-        element.focus(focusOn);
-        element.blur(focusOff);
+        element.focus(makeFocusSwitcher(true));
+        element.blur(makeFocusSwitcher(false));
     };        
     
     /**
@@ -903,9 +898,6 @@ var fluid_1_5 = fluid_1_5 || {};
         
         lazyEditView: false,
         
-        // this is here for backwards API compatibility, but should be in the strings block
-        defaultViewText: "Click here to edit",
-
         /** View Mode Tooltip Settings **/
         useTooltip: true,
         
