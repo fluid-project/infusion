@@ -114,9 +114,9 @@ var fluid = fluid || fluid_1_5;
         return userOutputPath ? fluid.model.transform.NONDEFAULT_OUTPUT_PATH_RETURN : toset;
     };
     
-    /****************************************
-     * Standard transformermation functions *
-     ****************************************/
+    /**********************************
+     * Standard transformer functions *
+     **********************************/
         
     fluid.model.transform.value = fluid.identity;
     
@@ -263,7 +263,7 @@ var fluid = fluid || fluid_1_5;
             indexed = deref(expandSpec.defaultInputValue);
         }
         if (!indexed) {
-            fluid.fail("value ", value, " for valueMapper could not be looked up to an option, and no default inputValue supplied with ", expandSpec);
+            return;
         }
         var outputValue = fluid.isPrimitive(indexed) ? indexed : 
             (indexed.undefinedOutputValue ? undefined : 
