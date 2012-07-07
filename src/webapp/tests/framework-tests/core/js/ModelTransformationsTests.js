@@ -424,6 +424,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         method: "assertDeepEq",
         expected: undefined
+    },
+    "unmatched-nodefaults": {
+        message: "valueMapper with unmatched input value and no default or undefined values specified.",
+        model: {
+            display: {
+                screenEnhancement: {
+                    fontSize: 24
+                }
+            }
+        },
+        expander: {
+            type: "fluid.model.transform.valueMapper",
+            inputPath: "display.screenEnhancement.tracking",
+            options: {
+                "mouse": {
+                    "outputValue": "centered"
+                }
+            }
+        },
+        method: "assertDeepEq",
+        expected: undefined
     }
     };
     
