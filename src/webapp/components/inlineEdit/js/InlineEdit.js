@@ -656,8 +656,8 @@ var fluid_1_5 = fluid_1_5 || {};
         
         var makeFocusSwitcher = function (focusOn) {
             return function () {
-                displayModeRenderer.toggleClass(that.options.styles.focus);
-                displayModeRenderer.toggleClass(that.options.styles.invitation);
+                displayModeRenderer.toggleClass(that.options.styles.focus, focusOn);
+                displayModeRenderer.toggleClass(that.options.styles.invitation, focusOn);
                 if (!that.model || !that.model.value) {
                     displayModeRenderer.prevObject.text(focusOn ? that.options.strings.defaultFocussedViewText : that.options.strings.defaultViewText);
                 }
