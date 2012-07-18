@@ -841,7 +841,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // Add event handlers.
                 fluid.inlineEdit.bindHoverHandlers(displayModeRenderer, styles.invitation);
                 fluid.inlineEdit.bindMouseHandlers(that.viewEl, that.edit);
-                fluid.inlineEdit.bindHighlightHandler(that.viewEl, displayModeRenderer, that);
+                fluid.inlineEdit.bindHighlightHandler(that.viewEl, displayModeRenderer, that.options.styles, that.options.strings, that.model);
                 
                 return displayModeRenderer;                        
             };

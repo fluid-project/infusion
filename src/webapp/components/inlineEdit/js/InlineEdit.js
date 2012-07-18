@@ -647,19 +647,21 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * Bind keyboard focus and blur event handlers to an element
      * 
+     * Note: This function is an unsupported, NON-API function
+     *
      * @param {Object} element The element to which the event handlers are bound
      * @param {Object} displayModeRenderer The display mode container
      * @param {Ojbect} styles The default styling for the display mode container on mouse hover
      */    
-    fluid.inlineEdit.bindHighlightHandler = function (element, displayModeRenderer, that) {
+    fluid.inlineEdit.bindHighlightHandler = function (element, displayModeRenderer, styles, strings, model) {
         element = $(element);
         
         var makeFocusSwitcher = function (focusOn) {
             return function () {
-                displayModeRenderer.toggleClass(that.options.styles.focus, focusOn);
-                displayModeRenderer.toggleClass(that.options.styles.invitation, focusOn);
-                if (!that.model || !that.model.value) {
-                    displayModeRenderer.prevObject.text(focusOn ? that.options.strings.defaultFocussedViewText : that.options.strings.defaultViewText);
+                displayModeRenderer.toggleClass(styles.focus, focusOn);
+                displayModeRenderer.toggleClass(styles.invitation, focusOn);
+                if (!model || !model.value) {
+                    displayModeRenderer.prevObject.text(focusOn ? strings.defaultFocussedViewText : strings.defaultViewText);
                 }
             };
         };
@@ -737,8 +739,8 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.inlineEdit.bindMouseHandlers(that.viewEl, that.edit);
         fluid.inlineEdit.bindMouseHandlers(that.textEditButton, that.edit);
         fluid.inlineEdit.bindKeyboardHandlers(that.textEditButton, that.edit);
-        fluid.inlineEdit.bindHighlightHandler(that.viewEl, displayModeContainer, that);
-        fluid.inlineEdit.bindHighlightHandler(that.textEditButton, displayModeContainer, that);
+        fluid.inlineEdit.bindHighlightHandler(that.viewEl, displayModeContainer, that.options.styles, that.options.strings, that.model);
+        fluid.inlineEdit.bindHighlightHandler(that.textEditButton, displayModeContainer, that.options.styles, that.options.strings, that.model);
     };
     
     /**
