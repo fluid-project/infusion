@@ -49,7 +49,10 @@ var demo = demo || {};
             styles: {
                 edit: "demo-inlineEdit-title-edit demo-inlineEdit-edit"
             },
-            defaultViewText: "Edit this"
+            strings: {
+                defaultViewText: "Edit this",
+                defaultFocussedViewText: "Edit this (click or press enter)"
+            }
         });
         
         fluid.inlineEdit(".demoSelector-inlineEdit-container-caption", {
@@ -60,7 +63,10 @@ var demo = demo || {};
                     renderer: demo.undoRenderer
                 }
             },
-            defaultViewText: "Edit this"
+            strings: {
+                defaultViewText: "Edit this",
+                defaultFocussedViewText: "Edit this (click or press enter)"
+            }
         });
     };
         
