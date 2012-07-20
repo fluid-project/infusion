@@ -36,7 +36,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     {
                         expander: {
                             type: "fluid.model.transform.value",
-                            path: "components"
+                            inputPath: "components"
                         }
                     },
                     {

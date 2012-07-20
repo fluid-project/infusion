@@ -1,0 +1,23 @@
+{
+  "name": "infusion",
+  "description": "Infusion is an application framework for developing flexible stuff with JavaScript.",
+  "version": "1.5.0-SNAPSHOT",
+  "author": "Fluid Project",
+  "bugs": "http://issues.fluidproject.org/browse/FLUID",
+  "homepage": "http://www.fluidproject.org/",
+  "dependencies": {},
+  "licenses": [
+     {
+       "type": "BSD-3-Clause",
+       "url": "http://www.opensource.org/licenses/BSD-3-Clause"
+     },
+     {
+       "type": "ECL-2.0",
+       "url":  "http://www.opensource.org/licenses/ECL-2.0"
+     }
+  ],
+  "keywords": ["infusion", "framework", "application", "fluid", "IoC", "Inversion of Control", "MVC", "evented"],
+  "repository": "git://github.com/fluid-project/infusion.git",
+  "main": "./src/webapp/module/fluid.js",
+  "engines": { "node" : ">=0.1.9" }
+}

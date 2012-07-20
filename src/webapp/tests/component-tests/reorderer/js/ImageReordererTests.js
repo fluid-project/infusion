@@ -311,7 +311,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertItemDefault("Initially ", 0);
         
             // Focus the lightbox and make sure the first thumb nail is selected
-            lbRoot.focus();
+            lbRoot[0].focus();
             assertItemFocused("When lightbox has focus ", 0);
             assertItemDefault("When lightbox has focus ", 1);
             
@@ -324,7 +324,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertItemDefault("After focus leaves the lightbox ", 0);
             
             // Change focus to the lightbox and check that the first thumb nail is still movable.
-            lbRoot.focus();
+            lbRoot[0].focus();
             assertItemFocused("When lightbox has focus again ", 0);
             assertItemDefault("When lightbox has focus again ", 1);
             
@@ -342,7 +342,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertItemDefault("Lightbox blur with second selected ", 1);
         
             // Focus the lightbox and check that the second thumb nail is still movable
-            lbRoot.focus();
+            lbRoot[0].focus();
             assertItemFocused("Lightbox refocused with second selected ", 1);
             assertItemDefault("Lightbox refocused with second selected ", 0);
         });

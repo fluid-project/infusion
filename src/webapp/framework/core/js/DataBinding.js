@@ -16,7 +16,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*global fluid_1_5:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, continue: true, elsecatch: true, operator: true, jslintok:true, undef: true, newcap: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_5 = fluid_1_5 || {};
 
@@ -45,69 +45,9 @@ var fluid_1_5 = fluid_1_5 || {};
         node = fluid.unwrap(node);
         var key = node.name || node.id;
         var record = fossils[key];
-        return record ? record.EL: null;
+        return record ? record.EL : null;
     };
-  
-    fluid.findForm = function (node) {
-        return fluid.findAncestor(node, function (element) {
-            return element.nodeName.toLowerCase() === "form";
-        });
-    };
-    
-    /** A generalisation of jQuery.val to correctly handle the case of acquiring and
-     * setting the value of clustered radio button/checkbox sets, potentially, given
-     * a node corresponding to just one element.
-     */
-    fluid.value = function (nodeIn, newValue) {
-        var node = fluid.unwrap(nodeIn);
-        var multiple = false;
-        if (node.nodeType === undefined && node.length > 1) {
-            node = node[0];
-            multiple = true;
-        }
-        if ("input" !== node.nodeName.toLowerCase() || ! /radio|checkbox/.test(node.type)) {
-            // resist changes to contract of jQuery.val() in jQuery 1.5.1 (see FLUID-4113)
-            return newValue === undefined? $(node).val() : $(node).val(newValue);
-        }
-        var name = node.name;
-        if (name === undefined) {
-            fluid.fail("Cannot acquire value from node " + fluid.dumpEl(node) + " which does not have name attribute set");
-        }
-        var elements;
-        if (multiple) {
-            elements = nodeIn;
-        }
-        else {
-            elements = node.ownerDocument.getElementsByName(name);
-            var scope = fluid.findForm(node);
-            elements = $.grep(elements, 
-            function (element) {
-                if (element.name !== name) {
-                    return false;
-                }
-                return !scope || fluid.dom.isContainer(scope, element);
-            });
-        }
-        if (newValue !== undefined) {
-            if (typeof(newValue) === "boolean") {
-                newValue = (newValue ? "true" : "false");
-            }
-          // jQuery gets this partially right, but when dealing with radio button array will
-          // set all of their values to "newValue" rather than setting the checked property
-          // of the corresponding control. 
-            $.each(elements, function () {
-                this.checked = (newValue instanceof Array ? 
-                    $.inArray(this.value, newValue) !== -1 : newValue === this.value);
-            });
-        }
-        else { // this part jQuery will not do - extracting value from <input> array
-            var checked = $.map(elements, function (element) {
-                return element.checked ? element.value : null;
-            });
-            return node.type === "radio" ? checked[0] : checked;
-        }
-    };
-    
+      
    /** "Automatically" apply to whatever part of the data model is
      * relevant, the changed value received at the given DOM node*/
     fluid.applyBoundChange = function (node, newValue, applier) {
@@ -128,13 +68,12 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.fail("No fossil discovered for name " + name + " in fossil record above " + fluid.dumpEl(node));
         }
         if (typeof(fossil.oldvalue) === "boolean") { // deal with the case of an "isolated checkbox"
-            newValue = newValue[0] ? true: false;
+            newValue = newValue[0] ? true : false;
         }
         var EL = root.fossils[name].EL;
         if (applier) {
             applier.fireChangeRequest({path: EL, value: newValue, source: node.id});
-        }
-        else {
+        } else {
             fluid.set(root.data, EL, newValue);
         }    
     };
@@ -186,11 +125,11 @@ var fluid_1_5 = fluid_1_5 || {};
     
     
     // unsupported, NON-API function
-    fluid.model.applyStrategy = function (strategy, root, segment, index) {
+    fluid.model.applyStrategy = function (strategy, root, segment, path) {
         if (typeof (strategy) === "function") { 
-            return strategy(root, segment, index);
+            return strategy(root, segment, path);
         } else if (strategy && strategy.next) {
-            return strategy.next(root, segment, index);
+            return strategy.next(root, segment, path);
         }
     };
     
@@ -211,8 +150,9 @@ var fluid_1_5 = fluid_1_5 || {};
         that.trundle = function (EL, uncess) {
             uncess = uncess || 0;
             var newThat = fluid.model.makeTrundler(that.root, config, that.strategies);
-            newThat.segs = fluid.model.parseEL(EL);
+            newThat.segs = config.parser? config.parser.parse(EL) : fluid.model.parseEL(EL);
             newThat.index = 0;
+            newThat.path = "";
             newThat.step(newThat.segs.length - uncess);
             return newThat;
         };
@@ -221,8 +161,12 @@ var fluid_1_5 = fluid_1_5 || {};
                 return;
             }
             var accepted;
+            // TODO: Temporary adjustment before trundlers are destroyed by FLUID-4705
+            // In the final system "new strategies" should be able to declare whether any of them
+            // require this path computed or not
+            that.path = (config.parser? config.parser.compose : fluid.model.composePath)(that.path, that.segs[that.index]);
             for (var i = 0; i < that.strategies.length; ++i) {
-                var value = fluid.model.applyStrategy(that.strategies[i], that.root, that.segs[that.index], that.index);
+                var value = fluid.model.applyStrategy(that.strategies[i], that.root, that.segs[that.index], that.path);
                 if (accepted === undefined) {
                     accepted = value;
                 }
@@ -278,12 +222,12 @@ var fluid_1_5 = fluid_1_5 || {};
     // and expensive versions of those provided in Fluid.js - there is some duplication of 
     // functionality. This is a tradeoff between stability and performance - the versions in
     // Fluid.js are the most frequently used and do not implement escaping of characters .
-    // as \. and \ as \\ as the versions here. The implementations here are not quite complete
-    // or very performant and are left here partially as an implementation note. Problems will
+    // as \. and \ as \\ as the versions here. The implementations here are not 
+    // performant and are left here partially as an implementation note. Problems will
     // arise if clients manipulate JSON structures containing "." characters in keys as if they
-    // are models, treating these is best left until the cases where they occur. The now standard
-    // utilities fluid.path(), fluid.parseEL and fluid.composePath are the ones recommended for
-    // general users and their implementation can be upgraded if required.
+    // are models. The basic  utilities fluid.path(), fluid.parseEL and fluid.composePath are 
+    // the ones recommended for general users and the following implementations will
+    // be upgraded to use regexes in future to make them better alternatives
    
     fluid.pathUtil = {};
    
@@ -310,7 +254,7 @@ var fluid_1_5 = fluid_1_5 || {};
             else {
                 escaped = false;
                 if (segment !== null) {
-                    accept += c;
+                    segment += c;
                 }
             }
         }
@@ -322,35 +266,57 @@ var fluid_1_5 = fluid_1_5 || {};
     
     var globalAccept = []; // TODO: serious reentrancy risk here, why is this impl like this?
     
+    /** Parses a path segment, following escaping rules, starting from character index i in the supplied path */
     fluid.pathUtil.getPathSegment = function (path, i) {
         getPathSegmentImpl(globalAccept, path, i);
         return globalAccept[0];
     }; 
   
+    /** Returns just the head segment of an EL path */
     fluid.pathUtil.getHeadPath = function (path) {
         return fluid.pathUtil.getPathSegment(path, 0);
     };
   
+    /** Returns all of an EL path minus its first segment - if the path consists of just one segment, returns "" */  
     fluid.pathUtil.getFromHeadPath = function (path) {
         var firstdot = getPathSegmentImpl(null, path, 0);
-        return firstdot === path.length ? null
-            : path.substring(firstdot + 1);
+        return firstdot === path.length ? "" : path.substring(firstdot + 1);
     };
     
     function lastDotIndex(path) {
         // TODO: proper escaping rules
         return path.lastIndexOf(".");
     }
-    
+
+    /** Returns all of an EL path minus its final segment - if the path consists of just one segment, returns "" - 
+     * WARNING - this method does not follow escaping rules */    
     fluid.pathUtil.getToTailPath = function (path) {
         var lastdot = lastDotIndex(path);
-        return lastdot === -1 ? null : path.substring(0, lastdot);
+        return lastdot === -1 ? "" : path.substring(0, lastdot);
     };
 
-  /** Returns the very last path component of a bean path */
+    /** Returns the very last path component of an EL path 
+     * WARNING - this method does not follow escaping rules */
     fluid.pathUtil.getTailPath = function (path) {
         var lastdot = lastDotIndex(path);
         return fluid.pathUtil.getPathSegment(path, lastdot + 1);
+    };
+
+    /** A version of fluid.model.parseEL that apples escaping rules - this allows path segments
+     * to contain period characters . - characters "\" and "}" will also be escaped. WARNING - 
+     * this current implementation is EXTREMELY slow compared to fluid.model.parseEL and should
+     * not be used in performance-sensitive applications */
+     
+    fluid.pathUtil.parseEL = function (path) {
+        var togo = [];
+        var index = 0;
+        var limit = path.length;
+        while (index < limit) {
+            var firstdot = getPathSegmentImpl(globalAccept, path, index);
+            togo.push(globalAccept[0]);
+            index = firstdot + 1;
+        }
+        return togo;
     };
     
     var composeSegment = function (prefix, toappend) {
@@ -364,6 +330,13 @@ var fluid_1_5 = fluid_1_5 || {};
         return prefix;
     };
     
+    /** Escapes a single path segment by replacing any character ".", "\" or "}" with
+     * itself prepended by \
+     */
+    fluid.pathUtil.escapeSegment = function (segment) {
+        return composeSegment("", segment);  
+    };
+    
     /**
      * Compose a prefix and suffix EL path, where the prefix is already escaped.
      * Prefix may be empty, but not null. The suffix will become escaped.
@@ -373,16 +346,29 @@ var fluid_1_5 = fluid_1_5 || {};
             prefix += '.';
         }
         return composeSegment(prefix, suffix);
-    };    
+    };
+    
+    /** Determines whether a particular EL path matches a given path specification.
+     * The specification consists of a path with optional wildcard segments represented by "*".
+     * @param spec (string) The specification to be matched
+     * @param path (string) The path to be tested
+     * @param exact (boolean) Whether the path must exactly match the length of the specification in
+     * terms of path segments in order to count as match. If exact is falsy, short specifications will
+     * match all longer paths as if they were padded out with "*" segments 
+     * @return (string) The path which matched the specification, or <code>null</code> if there was no match
+     */
    
-    fluid.pathUtil.matchPath = function (spec, path) {
+    fluid.pathUtil.matchPath = function (spec, path, exact) {
         var togo = "";
         while (true) {
-            if (!spec || path === "") {
-                break;
-            }
-            if (!path) {
+            if (((path === "") ^ (spec === "")) && exact) {
                 return null;
+            }
+            // FLUID-4625 - symmetry on spec and path is actually undesirable, but this
+            // quickly avoids at least missed notifications - improved (but slower) 
+            // implementation should explode composite changes
+            if (!spec || !path) {
+                break;
             }
             var spechead = fluid.pathUtil.getHeadPath(spec);
             var pathhead = fluid.pathUtil.getHeadPath(path);
@@ -417,7 +403,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 if (request.type === "ADD") {
                     fluid.clear(pen.root);
                 }
-                $.extend(true, request.path === "" ? pen.root: pen.root[pen.last], request.value);
+                $.extend(true, request.path === "" ? pen.root : pen.root[pen.last], request.value);
             }
             else {
                 pen.root[pen.last] = request.value;
@@ -432,7 +418,44 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     };
+          
+    /** Add a listener to a ChangeApplier event that only acts in the case the event
+     * has not come from the specified source (typically ourself)
+     * @param modelEvent An model event held by a changeApplier (typically applier.modelChanged)
+     * @param path The path specification to listen to
+     * @param source The source value to exclude (direct equality used)
+     * @param func The listener to be notified of a change
+     * @param [eventName] - optional - the event name to be listened to - defaults to "modelChanged" 
+     */
+    fluid.addSourceGuardedListener = function(applier, path, source, func, eventName) {
+        eventName = eventName || "modelChanged";
+        applier[eventName].addListener(path, 
+            function() {
+                if (!applier.hasChangeSource(source)) {
+                    func.apply(null, arguments);
+                }
+            });
+    };
+
+    /** Convenience method to fire a change event to a specified applier, including
+     * a supplied "source" identified (perhaps for use with addSourceGuardedListener)
+     */ 
+    fluid.fireSourcedChange = function (applier, path, value, source) {
+        applier.fireChangeRequest({
+            path: path,
+            value: value,
+            source: source
+        });         
+    };
     
+    /** Dispatches a list of changes to the supplied applier */
+    fluid.requestChanges = function (applier, changes) {
+        for (var i = 0; i < changes.length; ++i) {
+            applier.fireChangeRequest(changes[i]);
+        }  
+    };
+    
+  
     // Utility shared between changeApplier and superApplier
     
     function bindRequestChange(that) {
@@ -446,7 +469,29 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     }
     
+    // Utility used for source tracking in changeApplier
+    
+    function sourceWrapModelChanged(modelChanged, threadLocal) {
+        return function(changeRequest) {
+            var sources = threadLocal().sources;
+            var args = arguments;
+            var source = changeRequest.source || "";
+            fluid.tryCatch(function() {
+                if (sources[source] === undefined) {
+                    sources[source] = 0;
+                }
+                ++sources[source];
+                modelChanged.apply(null, args);
+            }, null, function() {
+                --sources[source];
+            });
+        };
+    }
   
+    /** The core creator function constructing ChangeAppliers. See API documentation
+     * at http://wiki.fluidproject.org/display/fluid/ChangeApplier+API for the various
+     * options supported in the options structure */
+     
     fluid.makeChangeApplier = function (model, options) {
         options = options || {};
         var baseEvents = {
@@ -454,7 +499,11 @@ var fluid_1_5 = fluid_1_5 || {};
             postGuards: fluid.event.getEventFirer(false, true, "postGuard event"),
             modelChanged: fluid.event.getEventFirer(false, false, "modelChanged event")
         };
+        var threadLocal = fluid.threadLocal(function() { return {sources: {}};});
         var that = {
+        // For now, we don't use "id" to avoid confusing component detection which uses
+        // a simple algorithm looking for that field
+            changeid: fluid.allocateGuid(),
             model: model
         };
         
@@ -513,7 +562,7 @@ var fluid_1_5 = fluid_1_5 || {};
                             record.accumulate = [accum];
                         }
                         fireSpec.guids[guid] = record;
-                        var collection = transactional ? "transListeners": "listeners";
+                        var collection = transactional ? "transListeners" : "listeners";
                         fireSpec[collection].push(record);
                         fireSpec.all.push(record);
                     }
@@ -610,14 +659,15 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         };
         
+        that.fireChangeRequest = sourceWrapModelChanged(that.fireChangeRequest, threadLocal);
         bindRequestChange(that);
 
         function fireAgglomerated(eventName, formName, changes, args, accpos) {
             var fireSpec = makeFireSpec();
-            for (var i = 0; i < changes.length; ++ i) {
+            for (var i = 0; i < changes.length; ++i) {
                 prepareFireEvent(eventName, changes[i].path, fireSpec, changes[i]);
             }
-            for (var j = 0; j < fireSpec[formName].length; ++ j) {
+            for (var j = 0; j < fireSpec[formName].length; ++j) {
                 var spec = fireSpec[formName][j];
                 if (accpos) {
                     args[accpos] = spec.accumulate;
@@ -641,12 +691,13 @@ var fluid_1_5 = fluid_1_5 || {};
             }
             // the guard in the inner world is given a private applier to "fast track"
             // and glob collateral changes it requires
-            var internalApplier = 
-              {fireChangeRequest: function (changeRequest) {
+            var internalApplier = {
+                fireChangeRequest: function (changeRequest) {
                     preFireChangeRequest(changeRequest);
                     fluid.model.applyChangeRequest(newModel, changeRequest, options.resolverSetConfig);
                     changes.push(changeRequest);
-                }};
+                }
+            };
             bindRequestChange(internalApplier);
             var ation = {
                 commit: function () {
@@ -687,9 +738,15 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             };
+            
+            ation.fireChangeRequest = sourceWrapModelChanged(ation.fireChangeRequest, threadLocal);
             bindRequestChange(ation);
 
             return ation;
+        };
+        
+        that.hasChangeSource = function (source) {
+            return threadLocal().sources[source] > 0;
         };
         
         return that;
@@ -702,7 +759,7 @@ var fluid_1_5 = fluid_1_5 || {};
             subAppliers.push({path: path, subApplier: subApplier});
         };
         that.fireChangeRequest = function (request) {
-            for (var i = 0; i < subAppliers.length; ++ i) {
+            for (var i = 0; i < subAppliers.length; ++i) {
                 var path = subAppliers[i].path;
                 if (request.path.indexOf(path) === 0) {
                     var subpath = request.path.substring(path.length + 1);
@@ -719,7 +776,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.attachModel = function (baseModel, path, model) {
         var segs = fluid.model.parseEL(path);
-        for (var i = 0; i < segs.length - 1; ++ i) {
+        for (var i = 0; i < segs.length - 1; ++i) {
             var seg = segs[i];
             var subModel = baseModel[seg];
             if (!subModel) {

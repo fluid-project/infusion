@@ -340,7 +340,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("bw setting was set in the model", bwSkin.theme, uiOptions.model.selections.theme);
 
                 var uiEnhancerSettings = uiOptions.settingsStore.fetch();
-                jqUnit.assertEquals("bw setting was not saved", "default", uiEnhancerSettings.theme);
+                // TODO: Note that this test used to test for "undefined" and once again it should, after
+                // FLUID-4686 is resolved.
+                var defaultTheme = fluid.defaults("fluid.uiOptions.store").defaultSiteSettings.theme;
+                jqUnit.assertEquals("bw setting was not saved", defaultTheme, uiEnhancerSettings.theme);
 
                 uiOptions.events.onUIOptionsRefresh.fire();
                 var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
@@ -471,11 +474,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Check that store sub-component is present", uiOptions.uiEnhancer.options.components.settingsStore);
         };
         
-        var checkModelSelections = function (expectedSelections, actualSelections) {
-            jqUnit.assertEquals("Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
-            jqUnit.assertEquals("Theme correctly updated", expectedSelections.theme, actualSelections.theme);
-            jqUnit.assertEquals("Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
-            jqUnit.assertEquals("Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
+        var checkModelSelections = function (message, expectedSelections, actualSelections) {
+            jqUnit.assertEquals(message + ": Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
+            jqUnit.assertEquals(message + ": Theme correctly updated", expectedSelections.theme, actualSelections.theme);
+            jqUnit.assertEquals(message + ": Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
+            jqUnit.assertEquals(message + ": Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
         };
         
         tests.asyncTest("UIOptions Integration tests", function () {
@@ -508,16 +511,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var resetButton = uiOptions.locate("reset");
                 
                 applierRequestChanges(uiOptions, bwSkin);
-                checkModelSelections(bwSkin, uiOptions.model.selections);
+                checkModelSelections("After apply bwSkin", bwSkin, uiOptions.model.selections);
                 saveButton.click();
-                checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
+                checkModelSelections("After clicking save", bwSkin, uiOptions.settingsStore.fetch());
                 applierRequestChanges(uiOptions, bwSkin2);
                 cancelButton.click();
-                checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
+                checkModelSelections("After applying bwSkin2 and clicking cancel", bwSkin, uiOptions.settingsStore.fetch());
                 resetButton.click();
-                checkModelSelections(uiOptions.model.selections, uiOptions.settingsStore.options.defaultSiteSettings);
+                checkModelSelections("After clicking reset", uiOptions.defaultModel, uiOptions.model.selections);
                 cancelButton.click();
-                checkModelSelections(bwSkin, uiOptions.settingsStore.fetch());
+                checkModelSelections("After clicking cancel", bwSkin, uiOptions.settingsStore.fetch());
                 
                 // apply the reset settings to make the test result page more readable
                 resetButton.click();

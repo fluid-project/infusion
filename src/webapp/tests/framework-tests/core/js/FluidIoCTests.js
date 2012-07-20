@@ -804,28 +804,6 @@ fluid.registerNamespace("fluid.tests");
     });
 
     
-    fluid.defaults("fluid.tests.circularity", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            instantiator: "{instantiator}",
-            child1: {
-                type: "fluid.tests.circChild"
-            }
-        }
-    });
-    
-    fluid.defaults("fluid.tests.circChild", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        mergePolicy: {
-            instantiator: "noexpand"
-        }
-    });
-    
-    fluid.demands("fluid.tests.circChild", "fluid.tests.circularity",
-        [{
-            instantiator: "{circularity}.instantiator"  
-        }]);
-    
     fluid.tests.makeInitFunction = function (name) {
         return function (that) {
             that.initFunctionRecord.push(name);
@@ -1022,6 +1000,28 @@ fluid.registerNamespace("fluid.tests");
         var testComp = fluid.tests.guidedParent();
         jqUnit.assertDeepEq("Children constructed in sort order", [1, 2, 3, 4], testComp.constructRecord);
     });
+        
+    fluid.defaults("fluid.tests.circularity", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            instantiator: "{instantiator}",
+            child1: {
+                type: "fluid.tests.circChild"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.circChild", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        mergePolicy: {
+            instantiator: "nomerge"
+        }
+    });
+    
+    fluid.demands("fluid.tests.circChild", "fluid.tests.circularity",
+        [{
+            instantiator: "{circularity}.instantiator"  
+        }]);
     
     fluidIoCTests.test("Tree circularity test", function () {
         try {
@@ -1228,5 +1228,38 @@ fluid.registerNamespace("fluid.tests");
             fluid.pushSoftFailure(-1);  
         }
     });
+    
+    fluid.defaults("fluid.tests.island1", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            outEvent1: null,
+            // note inconsistency - only IoC-resolved events get instantiator wrapping!
+            // "that" reference tests FLUID-4680
+            outEvent2: "{that}.events.outEvent1" 
+        }
+    });
+    
+    fluid.defaults("fluid.tests.island2", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            inEvent: null
+        },
+        components: {
+            instantRequires: {
+                type: "fluid.tests.news.child",
+                createOnEvent: "inEvent"
+            }   
+        }  
+    });
 
+    fluidIoCTests.test("FLUID-4626 test - cross-island use of instantiators", function() {
+        jqUnit.expect(1);
+        var island1 = fluid.tests.island1();
+        var island2 = fluid.tests.island2();
+        island1.events.outEvent2.addListener(function() {
+            island2.events.inEvent.fire()
+        });
+        island1.events.outEvent2.fire();
+        jqUnit.assert("No error fired on cross-island dispatch");
+    });
 })(jQuery); 

@@ -5,6 +5,7 @@
     margin: 0 auto;
     background-color: #ccd3ff;
     overflow:auto;
+    padding: 5px;
 }
  
 .demo-layoutReorderer-container h2 {
@@ -25,11 +26,12 @@
 .demo-layoutReorderer-module-dragbar {
     /* dragbar is the bar on top of each module */
     cursor: move;
-    height: 20px;
+    /*height: 20px; */
     background-color: #A5CFEF;
     background-position: right center;
     background-repeat: no-repeat;
     background-image: url("../images/move.png");
+    padding: 4px;
 }
 
 .demo-layoutReorderer-locked .demo-layoutReorderer-module-dragbar {

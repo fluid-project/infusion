@@ -40,8 +40,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
                
-        var customStrategy = function (root, segment, index) {
-            return index === 0 && segment === "path3" ? fluid.NO_VALUE : undefined;
+        var customStrategy = function (root, segment, path) {
+            return path === "path3" ? fluid.NO_VALUE : undefined;
         };
         
         DataBindingTests.test("getBeanValue with custom strategy", function () {
@@ -383,6 +383,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertFalse("Model unchanged ", modelChangedCheck);
         });
         
+        
+        
+        DataBindingTests.test("FLUID-4633 test - source tracking", function() {
+            var model = {
+                property1: 1,
+                property2: 2  
+            };
+            var applier = fluid.makeChangeApplier(model);
+      
+            var indirect = fluid.makeEventFirer();
+            applier.modelChanged.addListener("property1", function() {
+                indirect.fire();
+            });
+            indirect.addListener(function() {
+                fluid.fireSourcedChange(applier, "property2", 3, "indirectSource");
+            });
+            var listenerFired = false;
+            fluid.addSourceGuardedListener(applier, "property2", "originalSource", function() {
+                listenerFired = applier.hasChangeSource("indirectSource");
+            });
+            fluid.fireSourcedChange(applier, "property1", 2, "originalSource");
+            jqUnit.assertFalse("Recurrence censored from originalSource", listenerFired);
+            fluid.fireSourcedChange(applier, "property1", 3, "alternateSource");
+            jqUnit.assertTrue("Recurrence propagated from alternate source", listenerFired);
+            
+            
+        });
+        
         DataBindingTests.test("ChangeApplier", function () {
             var outerDAR = null;
             function checkingGuard(model, dar) {
@@ -450,6 +478,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             applier.fireChangeRequest({path: "innerProperty.innerPath2", type: "DELETE"});
             jqUnit.assertEquals("Removed via deletion", undefined, model.innerProperty.innerpath2);
+        });
+        
+        DataBindingTests.test("FLUID-4625 test: Over-broad changes", function() {
+            // This tests FLUID-4625 - we don't test at the utility level of matchPath since this is the functional
+            // behaviour required. In practice we may want a better implementation which explodes composite changes into
+            // smaller increments so that we can avoid unnecessary notifications, but this at least covers the case
+            // of missed notifications
+            var model = {
+                selections: {
+                    lineSpacing: 1.0
+                }  
+            };
+            var applier = fluid.makeChangeApplier(model);
+            var notified = false;
+            applier.modelChanged.addListener("selections.linespacing", function() {
+                notified = true;
+            });
+            applier.requestChange("selections", {lineSpacing: 1.5});
+            jqUnit.assertTrue("Over-broad change triggers listener", notified);
         });
     });
 })(jQuery);

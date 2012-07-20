@@ -36,10 +36,9 @@ var demo = demo || {};
                 editor.cancel();
                 return false;
             });
-        }; 
-
-        // Create a TinyMCE-based Rich Inline Edit component.
-        var tinyEditor = fluid.inlineEdit.tinyMCE("#demo-richInlineEdit-container-tinyMCE", {
+        };
+        
+        var tinyMCEOptions = {
             tinyMCE: {
                 width: 1024,
                 theme: "advanced",
@@ -55,9 +54,16 @@ var demo = demo || {};
             strings: {
                 textEditButton: "Edit"
             },
-            tooltipText: "Use the edit link to make changes"            
-        });
+            tooltipText: "Use the Edit link to make changes"            
+        };
+
+        // Create a TinyMCE-based Rich Inline Edit component.
+        var tinyEditor = fluid.inlineEdit.tinyMCE("#demo-richInlineEdit-container-tinyMCE", tinyMCEOptions);
         makeButtons(tinyEditor);
+        
+                // Create a TinyMCE-based Rich Inline Edit component.
+        var tinyEditor2 = fluid.inlineEdit.tinyMCE("#demo-richInlineEdit-container-tinyMCE-2", tinyMCEOptions);
+        makeButtons(tinyEditor2);
 
         // Create an CKEditor 3.x-based Rich Inline Edit component.
         var ckEditor = fluid.inlineEdit.CKEditor("#demo-richInlineEdit-container-ckEditor", {
@@ -71,7 +77,7 @@ var demo = demo || {};
             strings: {
                 textEditButton: "Edit"
             },
-            tooltipText: "Use the edit link to make changes"
+            tooltipText: "Use the Edit link to make changes"
         });
         makeButtons(ckEditor);    
     };    

@@ -298,7 +298,8 @@ fluid_1_5 = fluid_1_5 || {};
     
     fluid.renderer.repeat = function (options, container, key, config) {
         fluid.expect("Repetition expander", ["controlledBy", "tree"], options);
-        var path = fluid.extractContextualPath(options.controlledBy, {ELstyle: "ALL"}, fluid.threadLocal());
+        var env = config.threadLocal();
+        var path = fluid.extractContextualPath(options.controlledBy, {ELstyle: "ALL"}, env);
         var list = fluid.get(config.model, path, config.resolverGetConfig);
         
         var togo = {};
@@ -307,15 +308,17 @@ fluid_1_5 = fluid_1_5 || {};
         }
         var expanded = [];
         fluid.each(list, function (element, i) {
-            var EL = fluid.model.composePath(path, i); 
-            var envAdd = {};
+            var EL = fluid.model.composePath(path, i);
+            var envAdd = {}; 
             if (options.pathAs) {
                 envAdd[options.pathAs] = "${" + EL + "}";
             }
             if (options.valueAs) {
                 envAdd[options.valueAs] = fluid.get(config.model, EL, config.resolverGetConfig);
             }
-            var expandrow = fluid.withEnvironment(envAdd, function () {return config.expander(options.tree); }, "rendererEnvironment");
+            var expandrow = fluid.withEnvironment(envAdd, function() {
+                return config.expander(options.tree);
+            }, env);
             if (fluid.isArrayable(expandrow)) {
                 if (expandrow.length > 0) {
                     expanded.push({children: expandrow});
@@ -384,7 +387,7 @@ fluid_1_5 = fluid_1_5 || {};
                 return {
                     noDereference: parsed.path === "", 
                     path: fluid.model.composePath(EL, parsed.path) 
-                    }; 
+                }; 
             }
         }
         return parsed;
@@ -415,11 +418,10 @@ fluid_1_5 = fluid_1_5 || {};
         var options = $.extend({
             ELstyle: "${}"
         }, expandOptions); // shallow copy of options
-        
-        options.fetcher = fluid.makeEnvironmentFetcher("rendererEnvironment", options.model, fluid.transformContextPath);
+        var threadLocal; // rebound on every expansion at entry point
         
         function fetchEL(string) {
-            var env = fluid.threadLocal().rendererEnvironment;
+            var env = threadLocal();
             return fluid.extractContextualPath(string, options, env);
         }
          
@@ -493,6 +495,7 @@ fluid_1_5 = fluid_1_5 || {};
             resolverSetConfig: options.resolverSetConfig,
             expander: expandExternal,
             expandLight: expandLight
+            //threadLocal: threadLocal
         };
         
         var expandLeaf = function (leaf, componentType) {
@@ -599,10 +602,12 @@ fluid_1_5 = fluid_1_5 || {};
         };
         
         return function(entry) {
-            var initEnvironment = $.extend({}, options.envAdd);
-            return fluid.withEnvironment({rendererEnvironment: initEnvironment}, function() {
-                return expandEntry(entry);
+            threadLocal = fluid.threadLocal(function() {
+                return $.extend({}, options.envAdd);
             });
+            options.fetcher = fluid.makeEnvironmentFetcher(options.model, fluid.transformContextPath, threadLocal);
+            expandConfig.threadLocal = threadLocal;
+            return expandEntry(entry);
         };
     };
     

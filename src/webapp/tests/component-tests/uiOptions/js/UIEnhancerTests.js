@@ -59,12 +59,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });
 
-        tests.test("getPx2EmFactor", function () {
+        tests.test("getPx2EmFactor & getTextSizeInEm", function () {
+            expect(2);
+            
             var container = $(".flt-baseFontSize-child");
             var uiEnhancer = fluid.uiEnhancer(container, uiEnhancerOptions);
             var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container, uiEnhancer.options.fontSizeMap);
 
             jqUnit.assertEquals("Check that the factor is pulled from the container correctly", 8, px2emFactor);
+
+            var container = $("html");
+            var fontSizeInEm = fluid.uiEnhancer.getTextSizeInEm(container, uiEnhancer.options.fontSizeMap);
+
+            jqUnit.assertEquals("Unable to detect the text size in em for the DOM root element <html>. Always return 1em.", 1, fontSizeInEm);
         });
 
         tests.test("TextSizer", function () {
@@ -132,7 +139,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var uiEnhancer = fluid.uiEnhancer(".flt-lineSpacer", uiEnhancerOptions);
                 var fontSize = fluid.uiEnhancer.getTextSizeInPx(uiEnhancer.container, uiEnhancer.options.fontSizeMap);
                 
-                var numerizedLineHeight = fluid.uiEnhancer.numerizeLineHeight(lineHeight, fontSize);
+                var numerizedLineHeight = fluid.uiEnhancer.numerizeLineHeight(lineHeight, Math.round(fontSize));
 
                 jqUnit.assertEquals("line-height value '" + lineHeight + "' has been converted correctly", expected, numerizedLineHeight);
             });
@@ -141,17 +148,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var undefinedLineHeight;
         testNumerizeLineHeight(undefinedLineHeight, 0);
         testNumerizeLineHeight("normal", 1.2);
-        testNumerizeLineHeight("8px", 1);
+        testNumerizeLineHeight("6px", 1);
         testNumerizeLineHeight("1.5", 1.5);
         
+        // This is necessary to work around IE differences in handling line-height unitless factors
+        var convertLineHeightFactor = function (lineHeight, fontSize) {
+            // Continuing the work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
+            if (lineHeight.match(/[0-9]$/)) {
+                return Math.round(lineHeight * parseFloat(fontSize)) + "px";
+            } else {
+                return lineHeight;
+            }
+        };
+
         tests.test("LineSpacer", function () {
             var uiEnhancer = fluid.uiEnhancer(".flt-lineSpacer", uiEnhancerOptions);
             var lineSpacer = uiEnhancer.lineSpacing;
       
-            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 1.5, lineSpacer.initialSize);
-            jqUnit.assertEquals("Check the line spacing size in pixels", "12px", lineSpacer.container.css("lineHeight"));
+            jqUnit.assertEquals("Check that the size is pulled from the container correctly", 2, Math.round(lineSpacer.initialSize));
+            jqUnit.assertEquals("Check the line spacing size in pixels", "12px", convertLineHeightFactor(lineSpacer.container.css("lineHeight"), lineSpacer.container.css("fontSize")));
             lineSpacer.set(2);
-            jqUnit.assertEquals("The size should be doubled", "24px", lineSpacer.container.css("lineHeight"));
+            jqUnit.assertEquals("The size should be doubled", "24px", convertLineHeightFactor(lineSpacer.container.css("lineHeight"), lineSpacer.container.css("fontSize")));
         });
 
         function cleanStaticEnvironment() {
@@ -255,6 +272,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 
             jqUnit.assertTrue("The initial times font is set correctly", body.hasClass("fl-font-times"));
             jqUnit.assertTrue("The initial test theme is set correctly", body.hasClass("fl-test"));
+        });
+
+        tests.test("FLUID-4703: Line height unit", function () {
+            var child1El = $(".flt-lineHeight-child-1em");
+            var child2El = $(".flt-lineHeight-child-2em");
+
+            var child1emHeight = child1El.height() - 1; // adjusted to account for rounding by jQuery
+            var child2emHeight = child2El.height();
+            jqUnit.assertTrue("The line height of the 2em child should be close to twice the size of the 1em child", 2*child1emHeight < child2emHeight);
         });
 
     });
