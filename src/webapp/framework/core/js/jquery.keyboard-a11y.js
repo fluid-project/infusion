@@ -296,10 +296,10 @@ var fluid = fluid || fluid_1_5;
     var reifyIndex = function(sc_that) {
         var elements = sc_that.selectables;
         if (sc_that.activeItemIndex >= elements.length) {
-            sc_that.activeItemIndex = 0;
+            sc_that.activeItemIndex = (sc_that.options.noWrap ? elements.length  - 1: 0);
         }
         if (sc_that.activeItemIndex < 0 && sc_that.activeItemIndex !== NO_SELECTION) {
-            sc_that.activeItemIndex = elements.length - 1;
+            sc_that.activeItemIndex = (sc_that.options.noWrap ? 0 : elements.length - 1);
         }
         if (sc_that.activeItemIndex >= 0) {
             fluid.focus(elements[sc_that.activeItemIndex]);
@@ -522,7 +522,8 @@ var fluid = fluid || fluid_1_5;
         selectableElements: null,
         onSelect: null,
         onUnselect: null,
-        onLeaveContainer: null
+        onLeaveContainer: null,
+        noWrap: false
     };
 
     /********************************************************************
