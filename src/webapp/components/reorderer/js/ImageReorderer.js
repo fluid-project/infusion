@@ -155,6 +155,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.lightbox = fluid.reorderImages;
     
     fluid.defaults("fluid.reorderImages", {
+        gradeNames: ["fluid.viewComponent"],
         layoutHandler: "fluid.gridLayoutHandler",
 
         selectors: {

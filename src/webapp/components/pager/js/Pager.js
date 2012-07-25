@@ -851,6 +851,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.defaults("fluid.pager", {
+        gradeNames: ["fluid.viewComponent"],
         mergePolicy: {
             dataModel: "preserve",
             model: "preserve"
