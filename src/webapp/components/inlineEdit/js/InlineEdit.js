@@ -825,7 +825,8 @@ var fluid_1_5 = fluid_1_5 || {};
         return setupInlineEdits(editables, options);
     };
     
-    fluid.defaults("inlineEdit", {  
+    fluid.defaults("inlineEdit", {
+        gradeNames: ["fluid.viewComponent"],
         selectors: {
             text: ".flc-inlineEdit-text",
             editContainer: ".flc-inlineEdit-editContainer",
@@ -912,6 +913,7 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     fluid.defaults("inlineEdits", {
+        gradeNames: ["fluid.viewComponent"],
         selectors: {
             editables: ".flc-inlineEditable"
         }
