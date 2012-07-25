@@ -39,6 +39,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.defaults("fluid.uploader.swfUploadStrategy", {
+        gradeNames: ["fluid.littleComponent"],
         components: {
             engine: {
                 type: "fluid.uploader.swfUploadStrategy.engine",
@@ -169,6 +170,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.defaults("fluid.uploader.swfUploadStrategy.engine", {
+        gradeNames: ["fluid.littleComponent"],
         invokers: {
             setupDOM: "fluid.uploader.swfUploadStrategy.setupDOM",
             setupConfig: "fluid.uploader.swfUploadStrategy.setupConfig",

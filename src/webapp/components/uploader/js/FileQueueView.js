@@ -488,6 +488,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.defaults("fluid.scrollable", {
+        gradeNames: ["fluid.viewComponent"],
         makeScrollableFn: fluid.scrollable.makeSimple
     });
 

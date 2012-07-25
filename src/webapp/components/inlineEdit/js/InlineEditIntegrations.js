@@ -239,6 +239,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.defaults("fluid.inlineEdit.tinyMCE", {
+        gradeNames: ["fluid.viewComponent"],
         tinyMCE : {
             mode: "exact", 
             theme: "simple"
@@ -343,6 +344,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };                                                     
     
     fluid.defaults("fluid.inlineEdit.CKEditor", {
+        gradeNames: ["fluid.viewComponent"],
         selectors: {
             edit: "textarea" 
         },
@@ -408,6 +410,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.defaults("fluid.inlineEdit.dropdown", {
+        gradeNames: ["fluid.viewComponent"],
         applyEditPadding: false,
         blurHandlerBinder: fluid.inlineEdit.dropdown.blurHandlerBinder,
         editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer
