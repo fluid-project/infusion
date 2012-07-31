@@ -614,7 +614,9 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         selectors: {
             dropWarning: ".flc-reorderer-dropWarning",
-            movables: ".flc-reorderer-movable",
+            movables:    ".flc-reorderer-movable",
+            selectables: ".flc-reorderer-movable",
+            dropTargets: ".flc-reorderer-movable",
             grabHandle: "",
             stylisticOffset: ""
         },
