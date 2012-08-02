@@ -37,26 +37,29 @@ fluid_1_5 = fluid_1_5 || {};
         }
         return togo;
     };
-    
-    fluid.renderer.visitDecorators = function(that, visitor) {
+
+    // TODO: API status of these 3 functions is uncertain. So far, they have never
+    // appeared in documentation. API change required for Infusion 1.5 to include instantiator.
+    // This is inconvenient, but in the future, all component discovery will require this.   
+    fluid.renderer.visitDecorators = function(that, visitor, instantiator) {
         fluid.visitComponentChildren(that, function(component, name) {
             if (name.indexOf(fluid.renderer.decoratorComponentPrefix) === 0) {
                 visitor(component, name);
             }
-        }, {flat: true});  
+        }, {flat: true, instantiator: instantiator});  
     };
 
     fluid.renderer.clearDecorators = function(instantiator, that) {
         fluid.renderer.visitDecorators(that, function(component, name) {
             instantiator.clearComponent(that, name);
-        });
+        }, instantiator);
     };
     
-    fluid.renderer.getDecoratorComponents = function(that) {
+    fluid.renderer.getDecoratorComponents = function(that, instantiator) {
         var togo = {};
         fluid.renderer.visitDecorators(that, function(component, name) {
             togo[name] = component;
-        });
+        }, instantiator);
         return togo;
     };
 
