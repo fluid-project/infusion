@@ -896,6 +896,9 @@ fluid.registerNamespace("fluid.tests");
         
         fluid.defaults("fluid.tests.repeatHead", {
             gradeNames: ["fluid.rendererComponent", "autoInit"],
+            components: {
+                instantiator: "{instantiator}",
+            },
             protoTree: {
                 expander: {
                     type: "fluid.renderer.repeat",
@@ -925,7 +928,7 @@ fluid.registerNamespace("fluid.tests");
             };
             var head = fluid.tests.repeatHead(".repeater-leaf-test", {model: model});
             head.refreshView();
-            var decorators = fluid.renderer.getDecoratorComponents(head);
+            var decorators = fluid.renderer.getDecoratorComponents(head, head.instantiator);
             var declist = [];
             fluid.each(decorators, function (decorator, key) {
                 declist.push({key: key, decorator: decorator});
@@ -1546,6 +1549,9 @@ fluid.registerNamespace("fluid.tests");
         });
         fluid.defaults("fluid.tests.pathExpanderParent", {
             gradeNames: ["autoInit", "fluid.rendererComponent"],
+            components: {
+                instantiator: "{instantiator}",
+            },
             model: {
                 rows: ["0", "1", "2"]
             },
@@ -1579,7 +1585,7 @@ fluid.registerNamespace("fluid.tests");
         });
         protoTests.test("FLUID-4537 further: pathAs propagation", function () {
             var that = fluid.tests.pathExpanderParent(".pathAsProp");
-            var decorators = fluid.renderer.getDecoratorComponents(that);
+            var decorators = fluid.renderer.getDecoratorComponents(that, that.instantiator);
             fluid.each(decorators, function (comp, name) {
                 jqUnit.assertEquals("Path should not be expanded into value", "rows." + comp.options.val, comp.options.path);
             });
