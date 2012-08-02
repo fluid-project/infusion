@@ -632,6 +632,8 @@ fluid.registerNamespace("fluid.tests");
         that.eventChild.events.parentEvent.fire();
         
     });
+
+    /** FLUID-4055 - reinstantiation test **/
     
     fluid.tests.reinsNonComponent = function () {
         return {
@@ -742,6 +744,39 @@ fluid.registerNamespace("fluid.tests");
         checkValue("Changed value", reins, "headValue2", expectedPaths);
     });
     
+    /** FLUID-4711 - corruption in clear with injected material of longer scope **/
+    
+    fluid.defaults("fluid.tests.clearParent", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            requestStart: null
+        },
+        components: {
+            longChild: {
+                type: "fluid.tests.refChild"
+            },
+            shortParent: {
+                type: "fluid.tests.refChild",
+                createOnEvent: "requestStart",
+                options: {
+                    components: {
+                         clearParent: "{clearParent}"
+                    }
+                }
+            }
+        }  
+    });
+    
+    fluidIoCTests.test("FLUID-4711 reinstantiation test", function () {
+        var reins = fluid.tests.clearParent();
+        reins.events.requestStart.fire();
+        jqUnit.assertValue("Child components instantiated and injected", reins.shortParent.clearParent.longChild);
+        reins.events.requestStart.fire();
+        jqUnit.assertValue("Long lifetime component has survived", reins.longChild);
+    });
+    
+    /** FLUID-4179 unexpected material in clear test **/
+    
     fluid.defaults("fluid.tests.misclearTop", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -776,6 +811,8 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertValue("Component successfully constructed", that);
     });
     
+    /** FLUID-4129 - merge policy for component options test **/
+    
     fluid.defaults("fluid.tests.mergeChild", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         mergePolicy: {
@@ -803,6 +840,7 @@ fluid.registerNamespace("fluid.tests");
             mergeComp.mergeChild.options.dangerousParams);
     });
 
+    /** Component lifecycle functions and merging test **/
     
     fluid.tests.makeInitFunction = function (name) {
         return function (that) {
@@ -900,6 +938,8 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertDeepEq("Expected initialisation sequence", testComp.initFunctionRecord, expected); 
     });
     
+    /** FLUID-4290 - createOnEvent sequence corruption test **/
+    
     fluid.defaults("fluid.tests.createOnEvent", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         events: {
@@ -939,6 +979,8 @@ fluid.registerNamespace("fluid.tests");
         var testComp = fluid.tests.createOnEvent();
         jqUnit.assert("Component successfully constructed");
     });
+
+    /** Guided component sequence (priority field without createOnEvent **/
 
     fluid.tests.guidedChildInit = function (that) {
        // awful, illegal, side-effect-laden init function :P
@@ -1000,6 +1042,8 @@ fluid.registerNamespace("fluid.tests");
         var testComp = fluid.tests.guidedParent();
         jqUnit.assertDeepEq("Children constructed in sort order", [1, 2, 3, 4], testComp.constructRecord);
     });
+    
+    /** Tree circularity test (early detection of stack overflow **/
         
     fluid.defaults("fluid.tests.circularity", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
@@ -1074,7 +1118,6 @@ fluid.registerNamespace("fluid.tests");
     fluid.tests.circular.initEngine = function (that) {
       // This line, which is a somewhat illegal use of an invoker before construction is complete,
       // will trigger failure
-      //  fluid.fail("Thing");
         that.bindEvents();
     };
     
@@ -1125,6 +1168,7 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
+    /** Correct resolution of invoker arguments through the tree **/
 
     fluid.tests.invokerGrandParent = function (options) {
         var that = fluid.initLittleComponent("fluid.tests.invokerGrandParent", options);
@@ -1178,6 +1222,8 @@ fluid.registerNamespace("fluid.tests");
             newValue, that.invokerwrapper.invoker2.checkTestValue());
     });
     
+    /** FLUID-4285 - prevent attempts to refer to options outside options block **/
+    
     fluid.defaults("fluid.tests.news.parent", {
         gradeNames: ["fluid.modelComponent", "autoInit"],
         model: { test: "test" },
@@ -1228,6 +1274,8 @@ fluid.registerNamespace("fluid.tests");
             fluid.pushSoftFailure(-1);  
         }
     });
+    
+    /** FLUID-4626 - references between separated component "islands" (without common instantiator) **/
     
     fluid.defaults("fluid.tests.island1", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],

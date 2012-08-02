@@ -1424,6 +1424,7 @@ var fluid = fluid || fluid_1_5;
             togo = entry.apply(null, args);
         }
 
+        // TODO: deprecate "returnedOptions" and incorporate into regular ginger world system
         var returnedOptions = togo ? togo.returnedOptions : null;
         if (returnedOptions) {
             fluid.merge(that.options.mergePolicy, that.options, returnedOptions);
