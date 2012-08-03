@@ -799,6 +799,7 @@ fluid_1_5 = fluid_1_5 || {};
         
         function resolveArgs(args) {
             if (!args) {return args;}
+            args = fluid.copy(args); // FLUID-4737: Avoid corrupting material which may have been fetched from the model
             return fluid.transform(args, function (arg, index) {
                 upgradeBound(args, index, renderOptions.model, renderOptions.resolverGetConfig);
                 return args[index].value;
