@@ -427,7 +427,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 innerProperty: {
                     innerPath1: 3,
                     innerPath2: "Owneriet"
-                }
+                },
+                arrayInnerProperty: [{a: "a", b: "b"}, {a: "A", b: "B"}]
             };
             var applier = fluid.makeChangeApplier(model);
             applier.guards.addListener("outerProperty", checkingGuard, "firstListener");
@@ -478,6 +479,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             applier.fireChangeRequest({path: "innerProperty.innerPath2", type: "DELETE"});
             jqUnit.assertEquals("Removed via deletion", undefined, model.innerProperty.innerpath2);
+            
+            function checkingGuard3(model, dar) {
+                return dar.value.length === 1;
+            }
+            
+            // Tests for FLUID-4739
+            applier.guards.addListener("arrayInnerProperty.0.a", checkingGuard3, "checkingGuard3");
+            applier.requestChange("arrayInnerProperty.0.a", "new a");
+            jqUnit.assertEquals("The model should have been guarded and not changed", "a", model.arrayInnerProperty[0].a);
+            applier.requestChange("arrayInnerProperty.0.b", "new b");
+            jqUnit.assertEquals("The model should have updated", "new b", model.arrayInnerProperty[0].b);
+            var newArray = [{a: "a", b: "b", c: "c"}, {a: "A", b: "B", c: "C"}]
+            applier.requestChange("arrayInnerProperty", newArray);
+            jqUnit.assertDeepEq("The model should have updated", newArray, model.arrayInnerProperty[0]);
+            applier.guards.removeListener("checkingGuard3");
         });
         
         DataBindingTests.test("FLUID-4625 test: Over-broad changes", function() {
