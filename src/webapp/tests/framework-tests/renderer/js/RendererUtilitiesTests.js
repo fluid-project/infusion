@@ -896,6 +896,9 @@ fluid.registerNamespace("fluid.tests");
         
         fluid.defaults("fluid.tests.repeatHead", {
             gradeNames: ["fluid.rendererComponent", "autoInit"],
+            components: {
+                instantiator: "{instantiator}",
+            },
             protoTree: {
                 expander: {
                     type: "fluid.renderer.repeat",
@@ -925,7 +928,7 @@ fluid.registerNamespace("fluid.tests");
             };
             var head = fluid.tests.repeatHead(".repeater-leaf-test", {model: model});
             head.refreshView();
-            var decorators = fluid.renderer.getDecoratorComponents(head);
+            var decorators = fluid.renderer.getDecoratorComponents(head, head.instantiator);
             var declist = [];
             fluid.each(decorators, function (decorator, key) {
                 declist.push({key: key, decorator: decorator});
@@ -1386,6 +1389,56 @@ fluid.registerNamespace("fluid.tests");
             fluid.testUtils.assertCanoniseEqual("Message key resolved", model.tabs.here.name, 
                 expanded.children[0].children[0].linktext.messagekey.value, fluid.testUtils.sortTree);
         });
+
+        fluid.registerNamespace("fluid.tests.FLUID4737");
+
+        fluid.tests.FLUID4737.produceTree = function (that) {
+            return {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    repeatID: "messages:",
+                    controlledBy: "vals",
+                    pathAs: "valPath",
+                    valueAs: "valValue",
+                    tree: {
+                        message: {
+                            messagekey: "message",
+                            args: "{valValue}"
+                        }
+                    }
+                }
+            }
+        };
+
+        fluid.defaults("fluid.tests.FLUID4737", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            produceTree: "fluid.tests.FLUID4737.produceTree",
+            selectors: {
+                messages: ".messages",
+                message: ".message"
+            },
+            repeatingSelectors: ["messages"],
+            strings: {
+                message: "model value: %mVal"
+            },
+            model: {vals: [{mVal: 1}, {mVal: 2}]}
+        });
+        
+        protoTests.test("FLUID-4737: Messagekey with arguments from the model", function () {
+            var origModel, that;
+            jqUnit.expect(1);
+            var testModel = function (that) {
+                jqUnit.assertDeepEq("The model shouldn't have changed", origModel, that.model);
+            };
+            
+            that = fluid.tests.FLUID4737(".FLUID-4737", {
+                listeners: {
+                    afterRender: testModel
+                }
+            });
+            origModel = fluid.copy(that.model);
+            that.refreshView();
+        });
         
         protoTests.test("Can't have explicit valuebinding in the proto tree (no other way if there are decorators)", function () {
             var model = {
@@ -1546,6 +1599,9 @@ fluid.registerNamespace("fluid.tests");
         });
         fluid.defaults("fluid.tests.pathExpanderParent", {
             gradeNames: ["autoInit", "fluid.rendererComponent"],
+            components: {
+                instantiator: "{instantiator}",
+            },
             model: {
                 rows: ["0", "1", "2"]
             },
@@ -1579,7 +1635,7 @@ fluid.registerNamespace("fluid.tests");
         });
         protoTests.test("FLUID-4537 further: pathAs propagation", function () {
             var that = fluid.tests.pathExpanderParent(".pathAsProp");
-            var decorators = fluid.renderer.getDecoratorComponents(that);
+            var decorators = fluid.renderer.getDecoratorComponents(that, that.instantiator);
             fluid.each(decorators, function (comp, name) {
                 jqUnit.assertEquals("Path should not be expanded into value", "rows." + comp.options.val, comp.options.path);
             });

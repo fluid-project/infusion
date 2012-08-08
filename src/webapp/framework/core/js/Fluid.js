@@ -1147,7 +1147,10 @@ var fluid = fluid || fluid_1_5;
             }
         }      
     };
-                
+
+    // TODO: so far, profiling does not suggest that this implementation is a performance risk, but we really should start
+    // "precompiling" these.
+    // unsupported, NON-API function                
     fluid.mergePolicyIs = function (policy, test) {
         return typeof (policy) === "string" && $.inArray(test, policy.split(/\s*,\s*/)) !== -1;
     };
@@ -1200,6 +1203,41 @@ var fluid = fluid || fluid_1_5;
         }
         return target;
     }
+
+    // TODO: deprecate this method of detecting default value merge policies before 1.5 in favour of 
+    // explicit typed records a la ModelTransformations
+    // unsupported, NON-API function
+    fluid.isDefaultValueMergePolicy = function (policy) {
+        return typeof(policy) === "string"
+            && (policy.indexOf(",") === -1 && !/replace|preserve|nomerge|noexpand|reverse/.test(policy));
+    };
+    
+    // unsupported, NON-API function
+    fluid.applyDefaultValueMergePolicy = function (defaults, merged) {
+        var policy = merged.mergePolicy;
+        if (policy && typeof (policy) !== "string") {
+            for (var key in policy) {
+                var elrh = policy[key];
+                if (fluid.isDefaultValueMergePolicy(elrh)) {
+                    var defaultTarget = fluid.get(defaults, key);
+                    var mergedTarget = fluid.get(merged, key);
+                 // TODO: this implementation is faulty since it will trigger if a user modifies a source value to its default value
+                 // - and also will still copy over a target if user modifies it to its default value
+                 // probably needs FLUID-4392 for a proper fix since the algorithm will need a fundamental change to progress from
+                 // R2L rather than L2R (is that even possible!)
+                    if (defaultTarget === mergedTarget) {
+                        var defaultSource = fluid.get(defaults, elrh);
+                        var mergedSource = fluid.get(merged, elrh);
+                        // NB: This line represents a change in policy - will not apply default value policy to defaults themselves
+                        if (defaultSource !== mergedSource) {
+                            fluid.set(merged, key, mergedSource);
+                        }
+                    }
+                }
+            }
+        }
+        return merged;
+    };
     
     /** Merge a collection of options structures onto a target, following an optional policy.
      * This function is typically called automatically, as a result of an invocation of
@@ -1223,18 +1261,6 @@ var fluid = fluid || fluid_1_5;
             var source = arguments[i];
             if (source !== null && source !== undefined) {
                 mergeImpl(policy, path, target, source, policy ? policy[""] : null, {seenIds: {}});
-            }
-        }
-        if (policy && typeof (policy) !== "string") {
-            for (var key in policy) {
-                var elrh = policy[key];
-                if (typeof (elrh) === "string" && elrh !== "replace" && elrh !== "preserve") {
-                    var oldValue = fluid.get(target, key);
-                    if (oldValue === null || oldValue === undefined) {
-                        var value = fluid.get(target, elrh);
-                        fluid.set(target, key, value);
-                    }
-                }
             }
         }
         return target;     
@@ -1289,7 +1315,9 @@ var fluid = fluid || fluid_1_5;
             extraArgs = fluid.transformOptions(extraArgs, transRec);
         }
         mergeArgs = mergeArgs.concat(extraArgs);
-        that.options = fluid.merge.apply(null, mergeArgs);
+        var merged = fluid.merge.apply(null, mergeArgs);
+        merged = fluid.applyDefaultValueMergePolicy(defaults, merged);
+        that.options = merged;
     };
     
     // The Fluid Component System proper   
@@ -1424,6 +1452,7 @@ var fluid = fluid || fluid_1_5;
             togo = entry.apply(null, args);
         }
 
+        // TODO: deprecate "returnedOptions" and incorporate into regular ginger world system
         var returnedOptions = togo ? togo.returnedOptions : null;
         if (returnedOptions) {
             fluid.merge(that.options.mergePolicy, that.options, returnedOptions);

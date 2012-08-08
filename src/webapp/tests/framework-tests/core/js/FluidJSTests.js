@@ -98,8 +98,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluidJSTests.test("merge", function () {
-      
-        expect(8);
+        expect(7);
         
         var bit1 = {prop1: "thing1"};
         var bit2 = {prop2: "thing2"};
@@ -120,14 +119,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
           
         jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
             fluid.merge([], [], [bit1, bit2], null, [bit2, bit1, bits]));
-        
-        jqUnit.assertDeepEq("Value fetch", [bits, bits], 
-            fluid.merge({"0.prop1": "1.prop1",
-                       "1.prop2": "0.prop2"}, [], [bit2, bit1], []));  
-        
     });
   
-    fluidJSTests.test("reverse merge", function () {
+    fluidJSTests.test("reverse merge at depth", function () {
         var target = {
             root: {
                 prop1: "thing1",
@@ -144,50 +138,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Property 1 should have been preserved", "thing1", target1.root.prop1);
         
         var target2 = fluid.copy(target);
-        fluid.merge(target2, source);
+        fluid.merge(null, target2, source);
         jqUnit.assertEquals("Property 1 should have been preserved", "thing1", target2.root.prop1);
   
     });
     
-    fluidJSTests.test("reverse merge: object with multiple keys", function () {
+    fluidJSTests.test("reverse merge at root", function () {
         var target = {
-            prop1: {
-                child1: {"key1": "value1", "key2": 2},
-                child2: 2,
-                child3: 3
-            },
-            prop2: "old",
-            prop3: {"key1": "value1", "key2": 2}
+            prop2: "old"
         };
         var source = {
-            prop1: {
-                child1: {"key1": "value1", "key2": 2},
-                child2: 2,
-                child3: 3
-            },
-            prop2: "new",
-            prop3: {"key1": "value1", "key2": 2}
+            prop2: "new"
         };
 
         var testReverseMerge = function (policy, expected) {
             var thisTarget = fluid.copy(target);
-            if (policy === "undeclared") {
-                fluid.merge(thisTarget, source);
-            } else {
-                fluid.merge(policy, thisTarget, source);
-            }
+            fluid.merge(policy, thisTarget, source);
             jqUnit.assertEquals("\"" + policy + "\" policy", expected, thisTarget.prop2);
         };
 
         testReverseMerge("reverse", target.prop2);
-        testReverseMerge("undeclared",  target.prop2);
-
-        //falsy policy should be replaced.
-        var undefined_obj = {}; //to mimic undefined behavior
-        testReverseMerge(undefined_obj[""],  source.prop2);
         testReverseMerge(null,  source.prop2);
-        testReverseMerge("",  source.prop2);
-        testReverseMerge("random_string",  source.prop2);
     });
     
     fluidJSTests.test("copy", function () {
@@ -457,6 +428,64 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Local fallback",  bundleb.key1, resolver.resolve(["key2", "key1"]));
         jqUnit.assertEquals("Global fallback", bundlea.key2, resolver.resolve(["key4", "key2"]));
     });
+    
+    fluid.defaults("fluid.tests.defaultMergePolicy", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        defaultSource: "sourceValue",
+        defaultTarget: "targetValue",
+        mergePolicy: {
+            defaultTarget: "defaultSource"
+        }
+    }); 
+    
+    fluid.tests.fluid4736Tests = [{
+        message: "merge policy has no effect on plain defaults",
+        options: undefined,
+        expected: {
+            defaultSource: "sourceValue",
+            defaultTarget: "targetValue"          
+        }
+    }, {
+        message: "merge policy copies user option to default value",
+        options: {
+            defaultSource: "userSource"
+        },
+        expected: {
+            defaultSource: "userSource",
+            defaultTarget: "userSource"
+        }
+    }, {
+        message: "merge policy has no effect on full user values",
+        options: {
+            defaultSource: "userSource",
+            defaultTarget: "userTarget"
+        },
+        expected: {
+            defaultSource: "userSource",
+            defaultTarget: "userTarget"
+        }
+    }, 
+    /*
+    // This test case can probably not be supported until FLUID-4392: See implementation comment in
+    // fluid.applyDefaultValueMergePolicy - see also FLUID-4733
+    {
+        message: "user modifies value to default",
+        options: {
+            defaultSource: "sourceValue",
+        },
+        expected: {
+            defaultSource: "sourceValue",
+            defaultTarget: "sourceValue"
+        }
+    }*/];
+    
+    fluidJSTests.test("FLUID-4736: Interaction of default value merge policy with grade chain", function () {
+        fluid.each(fluid.tests.fluid4736Tests, function (fixture) {
+            var component = fluid.tests.defaultMergePolicy(fixture.options);
+            fluid.testUtils.assertLeftHand(fixture.message, fixture.expected, component.options);              
+        });      
+    });
+    
     
     fluidJSTests.test("Sorting listeners", function () {
         var accumulate = [];

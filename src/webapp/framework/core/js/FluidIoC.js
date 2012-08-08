@@ -32,9 +32,11 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     // unsupported, non-API function
-    fluid.visitComponentChildren = function(that, visitor, options, up, down) {
-        options = options || {};
+    // Currently still uses manual traversal - once we ban manually instantiated components,
+    // it will use the instantiator's records instead. In that day, "fireBreak" will bite the dust too
+    fluid.visitComponentChildren = function(that, visitor, options, path) {
         for (var name in that) {
+            var newPath = options.instantiator.composePath(path, name);
             var component = that[name];
             //Every component *should* have an id, but some clients may not yet be compliant
             //if (component && component.typeName && !component.id) {
@@ -44,39 +46,40 @@ var fluid_1_5 = fluid_1_5 || {};
             if (options.visited) {
                 options.visited[component.id] = true;
             }
-            if (visitor(component, name, options, up, down)) {
+            if (visitor(component, name, newPath, path)) {
                 return true;
             }
             if (!fluid.isFireBreak(component) && !options.flat) {
-                fluid.visitComponentChildren(component, visitor, options, up, down + 1);
+                fluid.visitComponentChildren(component, visitor, options, newPath);
             }
         }
     };
     
     // thatStack contains an increasing list of MORE SPECIFIC thats.
+    // this visits all components starting from the current location (end of stack)
+    // in visibility order up the tree.
     var visitComponents = function(instantiator, thatStack, visitor, options) {
         options = options || {
             visited: {},
-            flat: true
+            flat: true,
+            instantiator: instantiator
         };
-        var up = 0;
         for (var i = thatStack.length - 1; i >= 0; --i) {
             var that = thatStack[i];
             if (fluid.isFireBreak(that)) {
                 return;
             }
+            var path = instantiator.idToPath[that.id] || ""; // This resolves FLUID-4338
             if (that.typeName) {
                 options.visited[that.id] = true;
-                var path = instantiator.idToPath[that.id] || "";
                 var memberName = fluid.pathUtil.getTailPath(path);
-                if (visitor(that, memberName, options, 0, 0)) {
+                if (visitor(that, memberName, path)) {
                     return;
                 }
             }
-            if (fluid.visitComponentChildren(that, visitor, options, up, 1)) {
+            if (fluid.visitComponentChildren(that, visitor, options, path)) {
                 return;
             }
-            ++up;
         }
     };
     
@@ -89,7 +92,8 @@ var fluid_1_5 = fluid_1_5 || {};
             var atval = component[thisSeg];
             if (atval === undefined) {
                 var parentPath = instantiator.idToPath[component.id];
-                atval = instantiator.pathToComponent[fluid.composePath(parentPath, thisSeg)];
+                var childPath = fluid.composePath(parentPath, thisSeg);
+                atval = instantiator.pathToComponent[childPath]; 
                 // if it was not attached to the component, but it is in the instantiator, it MUST be in creation - prepare to fail
                 if (atval) {
                     atval[inCreationMarker] = true;
@@ -195,7 +199,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 };
             }
             if (!foundComponent) {
-                visitComponents(instantiator, thatStack, function(component, name, options, up, down) {
+                visitComponents(instantiator, thatStack, function(component, name) {
                     if (context === name || context === component.typeName || context === component.nickName) {
                         foundComponent = component;
                         return true; // YOUR VISIT IS AT AN END!!
@@ -233,7 +237,8 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             idToPath: {},
             pathToComponent: {},
-            nickName: "instantiator"
+            nickName: "instantiator",
+            composePath: fluid.composePath // For speed, we declare that no component's name may contain a period
         };
         var that = fluid.typeTag("fluid.instantiator");
         that = $.extend(that, preThat);
@@ -243,7 +248,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var parsed = fluid.model.parseEL(path);
             var togo = fluid.transform(parsed, function(value, i) {
                 var parentPath = fluid.model.composeSegments.apply(null, parsed.slice(0, i + 1));
-                return that.pathToComponent[parentPath];    
+                return that.pathToComponent[parentPath];
             });
             var root = that.pathToComponent[""];
             if (root) {
@@ -262,18 +267,20 @@ var fluid_1_5 = fluid_1_5 || {};
             var thatStack = component? that.getThatStack(component) : [];
             return that.getEnvironmentalStack().concat(thatStack);
         };
-        function recordComponent(component, path) {
-            that.idToPath[component.id] = path;
+        function recordComponent(component, path, created) {
+            if (created) {
+                that.idToPath[component.id] = path;
+            }
             if (that.pathToComponent[path]) {
                 fluid.fail("Error during instantiation - path " + path + " which has just created component " + fluid.dumpThat(component) 
                     + " has already been used for component " + fluid.dumpThat(that.pathToComponent[path]) + " - this is a circular instantiation or other oversight."
                     + " Please clear the component using instantiator.clearComponent() before reusing the path.");
             }
-            that.pathToComponent[path] = component;          
+            that.pathToComponent[path] = component;
         }
         that.recordRoot = function(component) {
             if (component && component.id && !that.pathToComponent[""]) {
-                recordComponent(component, "");
+                recordComponent(component, "", true);
             }  
         };
         that.pushUpcomingInstantiation = function(parent, name) {
@@ -282,7 +289,7 @@ var fluid_1_5 = fluid_1_5 || {};
         };
         that.recordComponent = function(component) {
             if (that.expectedName) {
-                that.recordKnownComponent(that.expectedParent, component, that.expectedName);
+                that.recordKnownComponent(that.expectedParent, component, that.expectedName, true);
                 delete that.expectedName;
                 delete that.expectedParent;
             }
@@ -290,23 +297,36 @@ var fluid_1_5 = fluid_1_5 || {};
                 that.recordRoot(component);
             }
         };
-        that.clearComponent = function(component, name, child, options, noModTree) {
-            options = options || {visited: {}, flat: true};
+        that.clearComponent = function(component, name, child, options, noModTree, path) {
+            var record = that.idToPath[component.id];
+            // use flat recursion since we want to use our own recursion rather than rely on "visited" records
+            options = options || {flat: true, instantiator: that};
             child = child || component[name];
-            fluid.visitComponentChildren(child, function(gchild, gchildname) {
-                that.clearComponent(child, gchildname, null, options, noModTree);
-            }, options);
-            var path = that.idToPath[child.id];
-            delete that.idToPath[child.id];
-            delete that.pathToComponent[path];
+            path = path || record;
+            if (path === undefined) {
+                fluid.fail("Cannot clear component " + name + " from component ", component, 
+                    " which was not created by this instantiator"); 
+            }
+
+            var childPath = that.composePath(path, name);
+
+            // only recurse on components which were created in place - if the id record disagrees with the
+            // recurse path, it must have been injected
+            if (record === path) { 
+                fluid.visitComponentChildren(child, function(gchild, gchildname, newPath, parentPath) {
+                    that.clearComponent(child, gchildname, null, options, true, parentPath);
+                }, options, childPath);
+            }
+            delete that.idToPath[child.id];         // there may be no entry - if injected
+            delete that.pathToComponent[childPath]; // there may be no entry - if created informally
             if (!noModTree) {
-                delete component[name];
+                delete component[name]; // there may be no entry - if creation is not concluded
             }
         };
-        that.recordKnownComponent = function(parent, component, name) {
+        that.recordKnownComponent = function(parent, component, name, created) {
             var parentPath = that.idToPath[parent.id] || "";
-            var path = fluid.model.composePath(parentPath, name);
-            recordComponent(component, path);
+            var path = that.composePath(parentPath, name);
+            recordComponent(component, path, created);
         };
         return that;
     };
@@ -529,7 +549,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var contextNames = {};
         var visited = [];
         var thatStack = instantiator.getFullStack(parentThat);
-        visitComponents(instantiator, thatStack, function(component, xname, options, up, down) {
+        visitComponents(instantiator, thatStack, function(component, xname, path) {
             contextNames[component.typeName] = true;
             visited.push(component);
         });
@@ -988,7 +1008,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         
         fluid.withInstantiator(that, function(instantiator) {
             if (typeof(component) === "string") {
-                that[name] = fluid.expandOptions([component], that)[0]; // TODO: expose more sensible semantic for expandOptions 
+                var instance = fluid.expandOptions([component], that)[0]; // TODO: expose more sensible semantic for expandOptions
+                instantiator.recordKnownComponent(that, instance, name, false); 
+                that[name] = instance;
             }
             else if (component.type) {
                 var invokeSpec = fluid.resolveDemands(instantiator, that, [component.type, name], directArgs, {componentRecord: component});
@@ -998,13 +1020,16 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                     instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
                     // The existing instantiator record will be provisional, adjust it to take account of the true return
                     // TODO: Instantiator contents are generally extremely incomplete
-                    var path = fluid.composePath(instantiator.idToPath[that.id] || "", name);
+                    var path = instantiator.composePath(instantiator.idToPath[that.id] || "", name);
                     var existing = instantiator.pathToComponent[path];
+                    // This branch deals with the case where the component creator registered a component into "pathToComponent"
+                    // that does not agree with the component which was the return value. We need to clear out "pathToComponent" but
+                    // not shred the component since most of it is probably still valid
                     if (existing && existing !== instance) {
-                        instantiator.clearComponent(that, name, existing, null, true);
+                        instantiator.clearComponent(that, name, existing);
                     }
                     if (instance && instance.typeName && instance.id && instance !== existing) {
-                        instantiator.recordKnownComponent(that, instance, name);
+                        instantiator.recordKnownComponent(that, instance, name, true);
                     }
                     that[name] = instance;
                 }, null, function() {

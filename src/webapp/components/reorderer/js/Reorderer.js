@@ -602,6 +602,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.defaults("fluid.reorderer", {
+        gradeNames: ["fluid.viewComponent"],
         styles: {
             defaultStyle: "fl-reorderer-movable-default",
             selected: "fl-reorderer-movable-selected",
@@ -613,7 +614,9 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         selectors: {
             dropWarning: ".flc-reorderer-dropWarning",
-            movables: ".flc-reorderer-movable",
+            movables:    ".flc-reorderer-movable",
+            selectables: ".flc-reorderer-movable",
+            dropTargets: ".flc-reorderer-movable",
             grabHandle: "",
             stylisticOffset: ""
         },
@@ -736,6 +739,7 @@ var fluid_1_5 = fluid_1_5 || {};
     }; // End of GridLayoutHandler
 
     fluid.defaults("fluid.reorderer.labeller", {
+        gradeNames: ["fluid.littleComponent"],
         strings: {
             overallTemplate: "%recentStatus %item %position %movable",
             position:        "%index of %length",

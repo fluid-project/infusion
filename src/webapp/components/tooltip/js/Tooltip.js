@@ -94,6 +94,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.defaults("fluid.tooltip", {
+        gradeNames: ["fluid.viewComponent"],
         styles: {
             tooltip: ""
         },
