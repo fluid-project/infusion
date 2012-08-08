@@ -10,37 +10,6 @@
 		<delete dir="${fssImportant}" />
     </target>
 
-    <target name="buildWAR" description="Builds a WAR file using maven given 3 parameters. toFile: the full path to the warfile to be created; fromDir: the directory containing the content to be placed in the war; warFile: the name of the warfile that is created from the maven task">
-      <condition property="isWindows">
-        <os family="windows" />
-      </condition>
-      <antcall target="invokeMavenForWAR" />
-      <antcall target="invokeMavenForWARWindows" />
-      <echo>Copying war file ...</echo>
-      <copy tofile="${toFile}" file="${fromDir}/target/${warFile}" />
-    </target>
-
-    <!-- Uses maven to create a WAR file on a non-Windows operating system. Expects 'fromDir' to be set. -->
-    <target name="invokeMavenForWAR" unless="isWindows">
-      <echo>Building war file... ${fromDir} </echo>
-      <apply executable="mvn" dir="${fromDir}" parallel="true">
-          <fileset  dir=".">
-              <include name="pom.xml"/>
-          </fileset>
-          <arg value="install" />
-      </apply>
-    </target>
-  
-    <!-- Uses maven to create a WAR file on a Windows operating system. Expects 'fromDir' to be set. -->
-    <target name="invokeMavenForWARWindows" if="isWindows">
-      <apply executable="cmd" dir="${fromDir}" parallel="true" vmlauncher="false">
-          <fileset  dir=".">
-              <include name="pom.xml"/>
-          </fileset>
-          <arg value="/c mvn.bat install" />
-      </apply>
-    </target>
-
     <!-- Expects toDir, fromDir, filePattern, lineBreakArg to be set -->
     <target name="minify">
         <echo> Going to minify from ${fromDir} to ${toDir} including ${filePattern}  </echo>

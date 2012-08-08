@@ -54,9 +54,6 @@ To run the Infusion build scripts, you'll need to set up the following:
     a. Download it from http://ant.apache.org
     b. Replace the default installation that may have shipped with your machine (/usr/share/ant on Mac OS X)
     c. Run ant -f fetch.xml to fetch Ant's optional tasks
-2. Maven
-    a. Download it from http://maven.apache.org/download.html
-    b. Follow the installation instructions at http://maven.apache.org/download.html#Installation
-3. A clone of Infusion "git clone git://github.com/fluid-project/infusion.git"
+2. A clone of Infusion "git clone git://github.com/fluid-project/infusion.git"
 
 

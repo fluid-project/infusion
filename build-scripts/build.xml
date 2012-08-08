@@ -32,7 +32,6 @@
     <target name="cleanExceptPretreat">
         <delete dir="${assembled}" />
         <delete dir="${products}" />
-        <delete dir="${buildwar}" />
         <delete dir="${working}" />
         </target>
 
@@ -45,7 +44,6 @@
         <mkdir dir="${products}" />
         <mkdir dir="${pretreated}" />
         <mkdir dir="${assembled}" />
-        <mkdir dir="${buildwar}" />
         <mkdir dir="${licenses}" />
 		<mkdir dir="${fssImportant}" />
     </target>
@@ -157,54 +155,6 @@
         </copy>   
     </target>
 
-    <target name="copyMavenWARFiles">
-        <copy todir="${buildwar}/src/webapp/WEB-INF" >
-            <fileset dir="${web-inf}"/>
-        </copy>
-  
-        <copy todir="${buildwar}">
-            <fileset dir="${base-dir}">
-                <include name="pom.xml" />
-                <include name="project.xml" />
-                <include name="maven.xml" />
-                <include name="project.properties" />
-            </fileset>
-        </copy>
-    </target>
-
-    <!-- Copies the files required to build a war file containing Infusion. -->
-    <target name="copyCoreWARFiles" depends="copyMavenWARFiles">        
-        <copy todir="${buildwar}/src/webapp/" >
-            <fileset dir="${assembled}">
-                <include name="components/**/*" />
-                <include name="framework/**/*" />
-                <include name="lib/**/*" />          
-            </fileset>
-        </copy>    
-    </target>
-
-    <!-- Builds the core Infusion WAR file. -->
-    <target name="buildCoreWAR" depends="copyCoreWARFiles">        
-        <antcall target="buildWAR">
-            <param name="fromDir" value="${buildwar}" />
-            <param name="toFile" value="${assembled}/${warfile}" />
-            <param name="warFile" value="${warfile}" />
-        </antcall>
-    </target>
-
-    <!-- Builds a WAR file that includes everything that has been assembled -->
-    <target name="buildFullWAR" depends="copyMavenWARFiles">
-        <copy todir="${buildwar}/src/webapp/" >
-            <fileset dir="${assembled}" />
-        </copy>
-
-        <antcall target="buildWAR">
-            <param name="fromDir" value="${buildwar}" />
-            <param name="toFile" value="${assembled}/${warfile}" />
-            <param name="warFile" value="${warfile}" />
-        </antcall>
-    </target>
-
     <!-- zips up the assembled package and puts it into the products directory -->
     <target name="zip">
         <echo>Zipping bundle to ${products}/${zipfile}</echo>
@@ -227,10 +177,9 @@
     </target>
     
 
-
     <!-- Top level targets -->
 
-    <target name="customBuild" depends="clean, init, generateUIOThemes, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assemble, buildCoreWAR, zip" 
+    <target name="customBuild" depends="clean, init, generateUIOThemes, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assemble, zip" 
         description="Builds a custom package of Infusion containing the modules specified as command line arguments.">
     </target>
 
@@ -238,17 +187,11 @@
         description="Minifies everything to prepare for builds done from pretreated source">
     </target>
     
-    <target name="builderBuild" depends="cleanExceptPretreat, init, setPretreat, setSourceDir, resolveDependencies, assemble, buildCoreWAR, zip" 
+    <target name="builderBuild" depends="cleanExceptPretreat, init, setPretreat, setSourceDir, resolveDependencies, assemble, zip" 
         description="Builds a custom package of Infusion containing the modules specified by the builder - expects pretreatMinify to have been run before.">
     </target>
 
-    <!-- Although we don't have dependencies we use resolveDependencies because it creates a list of all the files to concatenate. -->
-    <target name="dailyBuild" depends="clean, init, generateUIOThemes, setSourceDir, resolveDependencies, assembleFull, buildFullWAR"
-        description="Builds a WAR of Infusion along with tests and sample code, suitable for development testing or a daily build.">
-        <copy file="${assembled}/${warfile}" todir="${products}" />
-    </target>
-
-    <target name="releaseBuild" depends="cleanExceptProducts, init, generateUIOThemes, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assembleFull, buildCoreWAR, zip"
+    <target name="releaseBuild" depends="cleanExceptProducts, init, generateUIOThemes, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assembleFull, zip"
         description="Builds and packages a release bundle of Infusion"/>
 
     <target name="releaseBuilds" depends="clean" 
