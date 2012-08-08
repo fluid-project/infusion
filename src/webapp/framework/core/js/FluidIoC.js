@@ -663,7 +663,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         demandspec = demandspec || fluid.determineDemands(userInstantiator, that, functionName);
         return function() {
             var args = fluid.makeArray(arguments);
-            /*****!!!!!@@@@@ HOTPATCHED here AMB to work around GPII preferencesSource failure as FLUID-4712 - fix and testcase required **/
+            // FLUID-4712: properly contextualise invoker so that any new constructions are not corrupted
             return fluid.withInstantiator(that, function(instantiator) {
                 var invokeSpec = fluid.embodyDemands(instantiator, that, demandspec, args, {passArgs: true});
                 return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
