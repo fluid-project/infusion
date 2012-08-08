@@ -480,19 +480,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             applier.fireChangeRequest({path: "innerProperty.innerPath2", type: "DELETE"});
             jqUnit.assertEquals("Removed via deletion", undefined, model.innerProperty.innerpath2);
             
+            var guardPath = "arrayInnerProperty.0.a";
+            
             function checkingGuard3(model, dar) {
-                return dar.value.length === 1;
+                var excess = fluid.pathUtil.getExcessPath(dar.path, guardPath);
+                var value = fluid.get(dar.value, excess);
+                return value.length === 1;
             }
             
             // Tests for FLUID-4739
-            applier.guards.addListener("arrayInnerProperty.0.a", checkingGuard3, "checkingGuard3");
+            applier.guards.addListener(guardPath, checkingGuard3, "checkingGuard3");
             applier.requestChange("arrayInnerProperty.0.a", "new a");
             jqUnit.assertEquals("The model should have been guarded and not changed", "a", model.arrayInnerProperty[0].a);
             applier.requestChange("arrayInnerProperty.0.b", "new b");
             jqUnit.assertEquals("The model should have updated", "new b", model.arrayInnerProperty[0].b);
             var newArray = [{a: "a", b: "b", c: "c"}, {a: "A", b: "B", c: "C"}]
             applier.requestChange("arrayInnerProperty", newArray);
-            jqUnit.assertDeepEq("The model should have updated", newArray, model.arrayInnerProperty[0]);
+            jqUnit.assertDeepEq("The model should have updated", newArray, model.arrayInnerProperty);
             applier.guards.removeListener("checkingGuard3");
         });
         
