@@ -182,7 +182,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "yb": "fl-theme-uio-yb fl-theme-yb"
             },
             "layout": "fl-layout-linear",
-            "links": "fl-text-underline fl-text-bold fl-text-larger", 
+            "links": "fl-link-enhanced",
             "inputsLarger": "fl-text-larger"
         },
         fontSizeMap: {

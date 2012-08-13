@@ -214,7 +214,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             function testTocStyling() {
                 var tocLinks = $(".flc-toc-tocContainer a");
-                var filtered = tocLinks.filter(".fl-text-underline");
+                var filtered = tocLinks.filter(".fl-link-enhanced");
                 ++refreshCount;
                 if (refreshCount === 2) {
                     jqUnit.assertEquals("All toc links have been styled", tocLinks.length, filtered.length);
