@@ -25,11 +25,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var parser = new CSSParser();
             var parsedSheet = parser.parse(stylesheetText, false, true);
             var rules = parsedSheet.cssRules;
-            equals(rules.length, 1, "There should be one parsed CSS rule.");
+            equal(rules.length, 1, "There should be one parsed CSS rule.");
                 
             var rule = rules[0];
-            equals(rule.error, undefined, "The rule should not have an error.");
-            equals(rule.mSelectorText, expectedSelectorText, "The rule should have the correct selector.");
+            equal(rule.error, undefined, "The rule should not have an error.");
+            equal(rule.mSelectorText, expectedSelectorText, "The rule should have the correct selector.");
         };
         
         test("Parse rule with plain element selector", function () {

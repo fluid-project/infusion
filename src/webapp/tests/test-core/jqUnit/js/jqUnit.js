@@ -101,7 +101,7 @@ var jqUnit = jqUnit || {};
         },
         
         assertEquals: function (msg, expected, actual) {
-            equals(actual, expected, msg);
+            equal(actual, expected, msg);
         },
         
         assertNotEquals: function (msg, value1, value2) {
@@ -133,7 +133,7 @@ var jqUnit = jqUnit || {};
         },
         
         assertNull: function (msg, value) {
-            equals(value, null, msg);
+            equal(value, null, msg);
         },
 
         assertNotNull: function (msg, value) {
@@ -149,7 +149,8 @@ var jqUnit = jqUnit || {};
         },
         // Namespaced version of "expect" for civilization
         expect: function(number) {
-            expect(number);
+            var oldExpect = expect();
+            expect(number + oldExpect);
         }
     };
 

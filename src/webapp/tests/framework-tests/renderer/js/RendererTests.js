@@ -972,6 +972,7 @@ fluid.registerNamespace("fluid.tests");
         });
         
         renderTests.test("Single properly closed li bug (FLUID-2178)", function () {
+            jqUnit.expect(0);
             var node = $(".FLUID-2178-test");
             var tree = {
                 "toc-list:": [{
@@ -1494,6 +1495,7 @@ fluid.registerNamespace("fluid.tests");
         };
         
         renderTests.test("Renderer performance test - FLUID-3684", function () {
+            jqUnit.expect(0);
             fluid.setLogging(true);
             var renderit = function (specs) {
                 var data = JSON.parse(specs.data.resourceText);

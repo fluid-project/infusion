@@ -52,7 +52,7 @@ fluid.registerNamespace("fluid.tests");
                 fluid.pushSoftFailure(true);
                 expect(2);
                 // Give it a valid id string.
-                var result = fluid.container("#main");
+                var result = fluid.container("#main-container");
                 jqUnit.assertTrue("One element should be returned when specifying a selector",
                                   1, result.length);
               
@@ -72,7 +72,7 @@ fluid.registerNamespace("fluid.tests");
                 fluid.pushSoftFailure(true);
                 expect(2);
                 // Try with a single-item jQuery.
-                var oneContainer = jQuery("#main");
+                var oneContainer = jQuery("#main-container");
                 var result = fluid.container(oneContainer);
                 jqUnit.assertEquals("If a single-element jQuery is used, it should be immediately returned.",
                              oneContainer, result);
@@ -90,7 +90,7 @@ fluid.registerNamespace("fluid.tests");
         });
         
         fluidViewTests.test("container(): bind to a DOM element", function () {
-            var container = document.getElementById("main");
+            var container = document.getElementById("main-container");
             var result = fluid.container(container);
             jqUnit.assertEquals("If a single DOM element is used, it should be wrapped in a jQuery.",
                                 container, result[0]);
