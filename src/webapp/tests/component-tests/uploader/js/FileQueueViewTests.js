@@ -30,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.uploader.fileQueueView",
                     options: {
                         model: fluid.uploader.fileQueue().files,
-                        uploaderContainer: "#main"
+                        uploaderContainer: "#qunit-fixture"
                     }
                 } 
             },
@@ -46,7 +46,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader.tests.multiFileUploader", {
             type: "fluid.uploader.fileQueueView",
-            container: "#main .flc-uploader-queue",
+            container: "#qunit-fixture .flc-uploader-queue",
             options: {
                 events: {
                     onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
@@ -70,7 +70,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 
         // Useful locate functions.
         var locateRows = function (q) {
-            return $("#main .flc-uploader-queue").find(q.options.selectors.fileRows);   
+            return $("#qunit-fixture .flc-uploader-queue").find(q.options.selectors.fileRows);   
         };
         
         var nameForRow = function (q, rowEl) {
@@ -272,7 +272,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             q.addFile(mountainTestFile);
             q.addFile(oceanTestFile);
             
-            $("#main .flc-uploader-queue")[0].focus();
+            $("#qunit-fixture .flc-uploader-queue")[0].focus();
             // Ensure that the first item is focussed.
             jqUnit.assertTrue("The first row should be selected.",
                                 locateRows(q).eq(0).hasClass(q.options.styles.selected));

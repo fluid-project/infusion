@@ -534,7 +534,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
            
             var instantiateInlineEdits = function (callback) {
-                return fluid.inlineEdits("#main", {
+                return fluid.inlineEdits("#qunit-fixture", {
                     selectors: {
                         editables: inlineEditsSel
                     },

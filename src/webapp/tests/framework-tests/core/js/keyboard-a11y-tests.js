@@ -417,12 +417,17 @@ if (!fluid.unwrap) {
         getThirdMenuItem().fluid("activate");
         jqUnit.assertEquals("The menu.activatedItem should be set to the third item.", getThirdMenuItem()[0], menu.activatedItem);
     });
+    
+    function guardMozilla() {
+        // These tests can only be run on FF, due to reliance on DOM 2 for synthesizing events.
+        if (!$.browser.mozilla) {
+            jqUnit.expect(0);
+            return true;
+        }
+    }
 
     keyboardA11y.test("activate with Enter key", function () {
-        // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
-        if (!$.browser.mozilla) {
-            return;
-        }
+        if (guardMozilla()) {return;}
 
         var menu = createActivatableMenu();
         simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.ENTER);
@@ -430,10 +435,7 @@ if (!fluid.unwrap) {
     });
 
     keyboardA11y.test("activate with Spacebar", function () {
-        // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
-        if (!$.browser.mozilla) {
-            return;
-        }
+        if (guardMozilla()) {return;}
 
         var menu = createActivatableMenu();
         simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.SPACE);
@@ -441,10 +443,7 @@ if (!fluid.unwrap) {
     });
 
     keyboardA11y.test("One custom activate binding", function () {
-        // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
-        if (!jQuery.browser.mozilla) {
-            return;
-        }
+        if (guardMozilla()) {return;}
 
         var menu = createAndFocusMenu();
         var eventTarget = null;
@@ -479,10 +478,7 @@ if (!fluid.unwrap) {
 
     function makeCustomActivateTest(enabled) {
         keyboardA11y.test("Multiple custom activate bindings" + (enabled ? "" : " - disabled"), function () {
-            // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
-            if (!$.browser.mozilla) {
-                return;
-            }
+        if (guardMozilla()) {return;}
     
             var menu = createAndFocusMenu();
     
@@ -565,10 +561,7 @@ if (!fluid.unwrap) {
     };
     
     keyboardA11y.test("Leaving container: onLeaveContainer", function () {
-        // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
-        if (!$.browser.mozilla) {
-            return;
-        }
+        if (guardMozilla()) {return;}
         
         var wasCalled = false;
         quickMakeSelectable(MENU_SEL, {
@@ -586,10 +579,7 @@ if (!fluid.unwrap) {
     });
     
     keyboardA11y.test("Leaving container: onUnselect", function () {
-        // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
-        if (!$.browser.mozilla) {
-            return;
-        }
+        if (guardMozilla()) {return;}
         
         var wasCalled = false;
         quickMakeSelectable(MENU_SEL, {
@@ -606,10 +596,8 @@ if (!fluid.unwrap) {
     });
 
     keyboardA11y.test("No-wrap options", function () {
-        // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
-        if (!$.browser.mozilla) {
-            return;
-        }
+        if (guardMozilla()) {return;}
+        
         var menu = makeMenuSelectable({
             noWrap: true
         });

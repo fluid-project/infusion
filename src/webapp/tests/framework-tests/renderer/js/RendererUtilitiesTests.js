@@ -670,7 +670,7 @@ fluid.registerNamespace("fluid.tests");
         });
         
         compTests.test("Decorator with sub model", function () {
-            var that = fluid.tests.decoratorParent("#main");
+            var that = fluid.tests.decoratorParent("#decorator-container");
             that.refreshView();
             var decorator = that["**-renderer-row::val-0"];
             jqUnit.assertEquals("Original value should be", "TEST", decorator.locate("val").val());
@@ -1556,7 +1556,7 @@ fluid.registerNamespace("fluid.tests");
                 }
             },
             selectors: {
-                component: "#main"
+                component: "#iframe-root"
             }
         });
         
@@ -1576,21 +1576,21 @@ fluid.registerNamespace("fluid.tests");
     
         protoTests.asyncTest("FLUID-4536 iframe propagation test", function() {
             jqUnit.expect(4);
-            fluid.tests.FLUID4536("#main", {listeners: {
+            fluid.tests.FLUID4536("#qunit-fixture", {listeners: {
                 iframeLoad: {
                     priority: "last",   
                     listener: 
                     function(that) {
-                    jqUnit.assertValue("Inner component constructed", that.iframeHead.iframeChild);
-                    var outerExpando = $.expando;
-                    var innerExpando = that.iframeContainer.constructor.expando;
-                    jqUnit.assertNotEquals("Inner container uses different jQuery", outerExpando, innerExpando);
-                    var child = that.iframeHead.iframeChild;
-                    var furtherExpando = child.container.constructor.expando;
-                    jqUnit.assertEquals("jQuery propagated through DOM binder", innerExpando, furtherExpando);
-                    child.locate("checkbox").prop("checked", false).change();
-                    jqUnit.assertEquals("Operable renderer component in child", false, child.model.checked);
-                    start();
+                        jqUnit.assertValue("Inner component constructed", that.iframeHead.iframeChild);
+                        var outerExpando = $.expando;
+                        var innerExpando = that.iframeContainer.constructor.expando;
+                        jqUnit.assertNotEquals("Inner container uses different jQuery", outerExpando, innerExpando);
+                        var child = that.iframeHead.iframeChild;
+                        var furtherExpando = child.container.constructor.expando;
+                        jqUnit.assertEquals("jQuery propagated through DOM binder", innerExpando, furtherExpando);
+                        child.locate("checkbox").prop("checked", false).change();
+                        jqUnit.assertEquals("Operable renderer component in child", false, child.model.checked);
+                        start();
                }}}});
         });
         
