@@ -1,2 +1,3 @@
-jQuery doesn't formally release versions of QUnit. This version of qunit.js and qunit.css were taken from revision c532d183664118fc2ca1 of http://github.com/jquery/qunit/tree/master/qunit/
+jQuery doesn't formally release versions of QUnit. This version of qunit.js and qunit.css were taken from revision 3e3690930 of 
+https://github.com/fluid-project/qunit
 
