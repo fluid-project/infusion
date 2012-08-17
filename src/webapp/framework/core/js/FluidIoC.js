@@ -659,14 +659,15 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         };
     };
     
-    fluid.makeInvoker = function(instantiator, that, demandspec, functionName, environment) {
-        demandspec = demandspec || fluid.determineDemands(instantiator, that, functionName);
+    fluid.makeInvoker = function(userInstantiator, that, demandspec, functionName, environment) {
+        demandspec = demandspec || fluid.determineDemands(userInstantiator, that, functionName);
         return function() {
             var args = fluid.makeArray(arguments);
-            return fluid.pushActivity(function() {
+            // FLUID-4712: properly contextualise invoker so that any new constructions are not corrupted
+            return fluid.withInstantiator(that, function(instantiator) {
                 var invokeSpec = fluid.embodyDemands(instantiator, that, demandspec, args, {passArgs: true});
                 return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
-            }, ["    while invoking invoker with name " + functionName + " on component", that]);
+            }, ["    while invoking invoker with name " + functionName + " on component", that], userInstantiator);
         };
     };
 
@@ -943,7 +944,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.expandComponentOptions = fluid.wrapActivity(fluid.expandComponentOptions, 
         ["    while expanding component options ", "arguments.1.value", " with record ", "arguments.1", " for component ", "arguments.2"]);
-
    
     // NON-API function 
     fluid.getInstantiators = function() {
