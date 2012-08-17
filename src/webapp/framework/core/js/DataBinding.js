@@ -348,6 +348,22 @@ var fluid_1_5 = fluid_1_5 || {};
         return composeSegment(prefix, suffix);
     };
     
+    /** Determine the path by which a given path is nested within another **/
+    
+    fluid.pathUtil.getExcessPath = function (base, longer) {
+        var index = longer.indexOf(base);
+        if (index !== 0) {
+            fluid.fail("Path " + base + " is not a prefix of path " + longer);
+        }
+        if (base.length === longer.length) {
+            return "";
+        }
+        if (longer[base.length] !== ".") {
+            fluid.fail("Path " + base + " is not properly nested in path " + longer);
+        }
+        return longer.substring(base.length + 1);
+    };
+    
     /** Determines whether a particular EL path matches a given path specification.
      * The specification consists of a path with optional wildcard segments represented by "*".
      * @param spec (string) The specification to be matched
