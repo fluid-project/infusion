@@ -88,7 +88,7 @@ fluid.registerNamespace("fluid.tests");
         "fluid.tests.multiResSub3":       "fluid.littleComponent",
         "fluid.tests.fluid3818child":     "fluid.littleComponent",
         "fluid.tests.thatStackTail":      "fluid.littleComponent",
-        "fluid.tests.reinsChild":         "fluid.littleComponent"
+        "fluid.tests.reinsChild":         "fluid.littleComponent" // standard blank "littleComponent" used throughout tests 
     });
 
     fluid.defaults("fluid.tests.invokerComponent", {
@@ -1170,16 +1170,10 @@ fluid.registerNamespace("fluid.tests");
 
     /** Correct resolution of invoker arguments through the tree **/
 
-    fluid.tests.invokerGrandParent = function (options) {
-        var that = fluid.initLittleComponent("fluid.tests.invokerGrandParent", options);
-        fluid.initDependents(that);
-        return that;
-    };
-    
     fluid.defaults("fluid.tests.invokerGrandParent", {
-        gradeNames: "fluid.littleComponent",
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
-            invoker1: {
+            parent1: {
                 type: "fluid.tests.invokerParent"
             },
             invokerwrapper: {
@@ -1201,7 +1195,7 @@ fluid.registerNamespace("fluid.tests");
     fluid.defaults("fluid.tests.invokerParentWrapper", {
         gradeNames: ["fluid.modelComponent", "autoInit"],
         components: {
-            invoker2: {
+            parent2: {
                 type: "fluid.tests.invokerParent"
             }
         }
@@ -1217,9 +1211,56 @@ fluid.registerNamespace("fluid.tests");
     fluidIoCTests.test("Invoker resolution tests", function () {
         var that = fluid.tests.invokerGrandParent();
         var newValue = 2;
-        that.invokerwrapper.invoker2.applier.requestChange("testValue", newValue);
+        that.invokerwrapper.parent2.applier.requestChange("testValue", newValue);
         jqUnit.assertEquals("The invoker for second subcomponent should return the value from its parent", 
-            newValue, that.invokerwrapper.invoker2.checkTestValue());
+            newValue, that.invokerwrapper.parent2.checkTestValue());
+    });
+    
+    /** FLUID-4712 - contextualisation of calls issued from an invoker **/
+    
+    fluid.defaults("fluid.tests.test4712parent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            refChild3: { // put at top level so that "blank instantiator guess" is definitively wrong
+                type: "fluid.tests.reinsChild",
+                options: {
+                    refOption: 3
+                }
+            },
+            instantiator: "{instantiator}",
+            refChild: {
+                type: "fluid.tests.reinsChild",
+                options: {
+                    components: {
+                        refChild2: { // this component gets cleared and gingerly reinstantiated
+                            type: "fluid.tests.reinsChild",
+                            options: {
+                                components: {
+                                    // resolution of this parent will fail if invoker loses context (broken "that stack")
+                                    ref3: "{refChild3}"
+                                }
+                            }
+                        }
+                    },
+                    invokers: {
+                        invoker: {
+                            funcName: "fluid.identity",
+                            args: "{refChild2}.ref3.options.refOption"
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    fluidIoCTests.test("Invoker contextualisation tests", function() {
+        jqUnit.expect(3);
+        var that = fluid.tests.test4712parent();
+        jqUnit.assertEquals("Child component should be properly instantiated", 3, that.refChild.refChild2.ref3.options.refOption);
+        jqUnit.assertEquals("Invoker should resolve on startup", 3, that.refChild.invoker());
+        that.instantiator.clearComponent(that.refChild, "refChild2");
+        var resolved = that.refChild.invoker();
+        jqUnit.assertEquals("Component reconstruction and resolution", 3, resolved);
     });
     
     /** FLUID-4285 - prevent attempts to refer to options outside options block **/
