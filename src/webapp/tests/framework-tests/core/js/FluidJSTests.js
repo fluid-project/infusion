@@ -505,16 +505,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluidJSTests.test("Attach and remove listeners", function () {
         var testListener = function (shouldExecute) {
-            jqUnit.assertTrue("This listener should be reached only once", shouldExecute);
+            jqUnit.assertTrue("Listener firing " + (shouldExecute ? "" : "not ") + "expected", shouldExecute);
         };
 
-        expect(1);
+        jqUnit.expect(2);
         var firer = fluid.event.getEventFirer();
         firer.addListener(testListener);
         firer.fire(true);
-
         firer.removeListener(testListener);
-        firer.fire(false); //listener should not run and assertion should not execute 
+        firer.fire(false); //listener should not run and assertion should not execute
+        
+        firer.addListener(testListener, "namespace");
+        firer.fire(true);
+        firer.removeListener(testListener);
+        firer.fire(false);
     });
     
     fluid.tests.makeNotingListener = function(key, value) {
@@ -531,24 +535,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         listeners: {
             event: fluid.tests.makeNotingListener("noNamespace"),
-            "event.namespace": fluid.tests.makeNotingListener("namespace")
-        }
+            "event.namespace": fluid.tests.makeNotingListener("namespace"),
+            onCreate: fluid.tests.makeNotingListener("onCreate"),
+            "onCreate.namespace": fluid.tests.makeNotingListener("onCreate.namespace")
+        },
+        finalInitFunction: "fluid.tests.listenerTest.finalInit"
     });
+    
+    fluid.tests.listenerTest.finalInit = function (that) {
+        that.values = {};
+    };
     
     fluidJSTests.test("Correctly merge optioned listeners", function() {
         var options = {listeners: {
             event: fluid.tests.makeNotingListener("noNamespace2"),
-            "event.namespace": fluid.tests.makeNotingListener("namespace2")
+            "event.namespace": fluid.tests.makeNotingListener("namespace2"),
+            onCreate: fluid.tests.makeNotingListener("onCreate2"),
+            "onCreate.namespace": fluid.tests.makeNotingListener("onCreate.namespace2")
         }};
         var that = fluid.tests.listenerTest(options);
-        that.values = {};
+        var expected1 = {
+            onCreate: 1,
+            onCreate2: 1,
+            "onCreate.namespace2": 1
+        };
+        jqUnit.assertDeepEq("Creation listeners merged and fired", expected1, that.values);
         that.events.event.fire(that);
-        var expected = {
+        var expected2 = {
             noNamespace: 1,
             noNamespace2: 1,
-            namespace2: 1  
+            namespace2: 1,
         };
-        jqUnit.assertDeepEq("Listeners correctly merged", expected, that.values); 
+        jqUnit.assertDeepEq("Listeners correctly merged", $.extend(expected2, expected1), that.values); 
     });
     
     fluid.tests.initLifecycle = function (that) {
