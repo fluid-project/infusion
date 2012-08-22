@@ -1056,7 +1056,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             if (typeof(component) === "string") {
                 var instance = fluid.expandOptions([component], that)[0]; // TODO: expose more sensible semantic for expandOptions
                 instantiator.recordKnownComponent(that, instance, name, false); 
-                that[name] = instance;
             }
             else if (component.type) {
                 var invokeSpec = fluid.resolveDemands(instantiator, that, [component.type, name], directArgs, {componentRecord: component});
@@ -1078,7 +1077,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                         instantiator.recordKnownComponent(that, instance, name, true);
                     }
                     instance.destroy = fluid.fabricateDestroyMethod(that, name, instantiator, instance);
-                    that[name] = instance;
                 }, null, function() {
                     delete that[inCreationMarker];
                     instantiator.pushUpcomingInstantiation();
@@ -1087,6 +1085,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             else {
                 fluid.fail("Unrecognised material in place of subcomponent " + name + " - no \"type\" field found");
             }
+            that[name] = instance;
             fluid.fireEvent(instance, "events.onAttach", [instance, name, that]);
         }, ["    while instantiating dependent component with name \"" + name + "\" with record ", component, " as child of ", that],
         userInstantiator);
