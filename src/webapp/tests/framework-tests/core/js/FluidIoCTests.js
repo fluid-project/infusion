@@ -427,6 +427,8 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("Identical model reference", model, returned);
     });
     
+    /** FLUID-4135 - event injection and boiling test **/
+    
     fluid.tests.listenerHolder = function () {
         var that = fluid.initLittleComponent("fluid.tests.listenerHolder");
         that.listener = function (value) {
@@ -508,6 +510,8 @@ fluid.registerNamespace("fluid.tests");
         child.events.localEvent.fire(origArg0);
     });
     
+    /** FLUID-4398 - event injection and event/listener boiling test **/
+    
     fluid.defaults("fluid.tests.eventParent3", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         events: {
@@ -540,7 +544,7 @@ fluid.registerNamespace("fluid.tests");
                      listener: "{eventChild3}.events.relayEvent",
                      args: "{arguments}.1" 
                  }
-                 ]
+             ]
         }
     });
     
@@ -563,6 +567,12 @@ fluid.registerNamespace("fluid.tests");
         that.events.parentEvent2.fire(3, 4);
         jqUnit.assertDeepEq("Received boiled argument after dual fire", [4], that.listenerRecord);
         jqUnit.assertEquals("Received relayed fire after dual fire", 4, received.arg);
+        that.eventChild.destroy(); // for FLUID-4257
+        jqUnit.assertUndefined("Component has been destroyed", that.eventChild);
+        that.events.parentEvent1.fire(that);
+        that.events.parentEvent2.fire(3, 5);
+        jqUnit.assertDeepEq("No event fired by destroyed child component", [4], that.listenerRecord);
+        jqUnit.assertEquals("No event fired by destroyed child component", 4, received.arg);
     });
     
     fluid.defaults("fluid.tests.eventBoiling2", {
@@ -594,6 +604,8 @@ fluid.registerNamespace("fluid.tests");
         that.events.baseEvent2.fire();
         jqUnit.assertEquals("Double relay to base event", 1, count);
     });
+    
+    /** FLUID-4135 - simple event injection test **/
     
     // Simpler demonstration matching docs, also using "scoped event binding"
     fluid.defaults("fluid.tests.eventParent2", {
@@ -840,69 +852,98 @@ fluid.registerNamespace("fluid.tests");
             mergeComp.mergeChild.options.dangerousParams);
     });
 
-    /** Component lifecycle functions and merging test **/
+    /** Component lifecycle functions and merging test - includes FLUID-4257 **/
     
-    fluid.tests.makeInitFunction = function (name) {
-        return function (that) {
-            that.initFunctionRecord.push(name);
+    function pushRecord(target, name, extra, that, childName, parent) {
+        var key = that.options.name + "." + name;
+        target.listenerRecord.push(extra ? {
+            key: key,
+            name: childName,
+            parent: parent.nickName
+        } : key);      
+    }
+    
+    fluid.tests.makeTimedListener = function (name, extra) {
+        return function (that, childName, parent) {
+            pushRecord(that, name, extra, that, childName, parent);
         };
     };
     
-    fluid.tests.createInitFunctionsMembers = function (that) {
-        that.mainEventListener = function () {
-            that.initFunctionRecord.push("mainEventListener");
+    fluid.tests.makeTimedChildListener = function (name, extra) {
+        return function (that, childName, parent) {
+            pushRecord(that.options.parent, name, extra, that, childName, parent);
         };
-        that.initFunctionRecord = [];
+    };
+    
+    fluid.tests.createRecordingMembers = function (that, extra) {
+        that.mainEventListener = function () {
+            that.listenerRecord.push("root.mainEventListener");
+        };
+        that.listenerRecord = [];
     };
     
     // Test FLUID-4162 by creating namespace before component of the same name
-    fluid.registerNamespace("fluid.tests.initFunctions");
+    fluid.registerNamespace("fluid.tests.lifecycle");
     
-    fluid.tests.initFunctions.initRecordingComponent = function (that) {
+    fluid.tests.lifecycle.initRecordingComponent = function (that) {
         var parent = that.options.parent;
-        parent.initFunctionRecord.push(that.options.name);
+        parent.listenerRecord.push(that.options.name);
     };
     
-    fluid.defaults("fluid.tests.initFunctions.recordingComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+    fluid.defaults("fluid.tests.lifecycle.recordingComponent", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
         mergePolicy: {
             parent: "nomerge"  
         },
-        postInitFunction: "fluid.tests.initFunctions.initRecordingComponent"
+        postInitFunction: fluid.tests.makeTimedChildListener("postInitFunction"),
+        listeners: {
+            onCreate: fluid.tests.makeTimedChildListener("onCreate"),
+            onAttach: fluid.tests.makeTimedChildListener("onAttach", true),
+            onDestroy: fluid.tests.makeTimedChildListener("onDestroy", true),
+            onClear: fluid.tests.makeTimedChildListener("onClear", true),
+        }
     });
     
-    fluid.defaults("fluid.tests.initFunctions", {
+    fluid.defaults("fluid.tests.lifecycle", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
-        preInitFunction: ["fluid.tests.createInitFunctionsMembers", fluid.tests.makeInitFunction("preInitFunction")],
-        postInitFunction: fluid.tests.makeInitFunction("postInitFunction"),
-        finalInitFunction: fluid.tests.makeInitFunction("finalInitFunction"),
+        preInitFunction: ["fluid.tests.createRecordingMembers", fluid.tests.makeTimedListener("preInitFunction")],
+        postInitFunction: fluid.tests.makeTimedListener("postInitFunction"),
+        finalInitFunction: fluid.tests.makeTimedListener("finalInitFunction"),
         events: {
             mainEvent: null
         },
+        name: "root",
         listeners: {
-            mainEvent: "{initFunctions}.mainEventListener"
+            mainEvent: "{lifecycle}.mainEventListener",
+            onCreate: fluid.tests.makeTimedListener("onCreate"),
+            onAttach: fluid.tests.makeTimedListener("onAttach", true), // these two listeners track attachment and detachment round the tree
+            onClear: fluid.tests.makeTimedListener("onClear", true),
+            onDestroy: fluid.tests.makeTimedListener("onDestroy", true) // must never fire - root component must have manual destruction
         },
         components: {
             initTimeComponent: {
-                type: "fluid.tests.initFunctions.recordingComponent",
+                type: "fluid.tests.lifecycle.recordingComponent",
                 options: {
-                    parent: "{initFunctions}",
+                    parent: "{lifecycle}", // NB: This is strictly abuse - injection of component which has not finished construction
                     name: "initTimeComponent"
                 }
             },
             eventTimeComponent: {
-                type: "fluid.tests.initFunctions.recordingComponent",
+                type: "fluid.tests.lifecycle.recordingComponent",
                 createOnEvent: "mainEvent",
                 options: {
-                    parent: "{initFunctions}",
-                    name: "eventTimeComponent"  
-                } 
+                    parent: "{lifecycle}",
+                    name: "eventTimeComponent",
+                    components: {
+                        injected: "{lifecycle}"
+                    }
+                }
             },
             demandsInitComponent: {
-                type: "fluid.tests.initFunctions.demandsInitComponent",
+                type: "fluid.tests.lifecycle.demandsInitComponent",
                 options: {
                     components: {
-                        parent: "{initFunctions}"
+                        parent: "{lifecycle}"
                     }
                 }
             }
@@ -910,32 +951,92 @@ fluid.registerNamespace("fluid.tests");
         }
     });
     
-    fluid.defaults("fluid.tests.initFunctions.demandsInitComponent", {
+    fluid.defaults("fluid.tests.lifecycle.demandsInitComponent", {
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
-    fluid.tests.initFunctions.demandsInitComponent.finalInitFunction = function (that) {
-        that.parent.initFunctionRecord.push("finalInitFunctionSubcomponent");
+    fluid.tests.lifecycle.demandsInitComponent.finalInitFunction = function (that) {
+        that.parent.listenerRecord.push("finalInitFunctionSubcomponent");
     };
-    fluid.demands("demandsInitComponent", "fluid.tests.initFunctions", {
+    fluid.demands("demandsInitComponent", "fluid.tests.lifecycle", {
         options: {
-            finalInitFunction: fluid.tests.initFunctions.demandsInitComponent.finalInitFunction
+            finalInitFunction: fluid.tests.lifecycle.demandsInitComponent.finalInitFunction
         }
     });
     
-    fluidIoCTests.test("Component lifecycle test", function () {
-        var testComp = fluid.tests.initFunctions();
+    fluidIoCTests.test("Component lifecycle test - with FLUID-4257", function () {
+        var testComp = fluid.tests.lifecycle();
+        testComp.events.mainEvent.fire();
         testComp.events.mainEvent.fire();
         var expected = [
-            "preInitFunction",
-            "postInitFunction",
-            "initTimeComponent",
+            "root.preInitFunction",
+            "root.postInitFunction",
+            "initTimeComponent.postInitFunction",
+            "initTimeComponent.onCreate",
+            {key: "initTimeComponent.onAttach", name: "initTimeComponent", parent: "lifecycle"},
+            {key: "root.onAttach", name: "parent", parent: "demandsInitComponent"},
             "finalInitFunctionSubcomponent",
-            "finalInitFunction",
-            "mainEventListener",
-            "eventTimeComponent"
+            "root.finalInitFunction",
+            "root.onCreate",
+            "root.mainEventListener",
+            "eventTimeComponent.postInitFunction",
+            {key: "root.onAttach", name: "injected", parent: "recordingComponent"}, // eventTimeComponent's injected root
+            "eventTimeComponent.onCreate",
+            {key: "eventTimeComponent.onAttach", name: "eventTimeComponent", parent: "lifecycle"},
+            "root.mainEventListener",
+            {key: "eventTimeComponent.onClear", name: "eventTimeComponent", parent: "lifecycle"},
+            {key: "eventTimeComponent.onDestroy", name: "eventTimeComponent", parent: "lifecycle"},
+            {key: "root.onClear", name: "injected", parent: "recordingComponent"}, // NO destroy here!
+            "eventTimeComponent.postInitFunction",
+            {key: "root.onAttach", name: "injected", parent: "recordingComponent"}, // re-inject 2nd time
+            "eventTimeComponent.onCreate",
+            {key: "eventTimeComponent.onAttach", name: "eventTimeComponent", parent: "lifecycle"}
         ];
-        jqUnit.assertDeepEq("Expected initialisation sequence", testComp.initFunctionRecord, expected); 
+        jqUnit.assertDeepEq("Expected initialisation sequence", expected, testComp.listenerRecord); 
+    });
+    
+    /** FLUID-4257 - automatic listener teardown test **/
+    
+    fluid.defaults("fluid.tests.head4257", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            parentEvent: null
+        },
+        components: {
+            child1: {
+                type: "fluid.tests.child4257",
+                options: {
+                    listeners: {
+                        "{head4257}.events.parentEvent": {
+                            listener: "{child4257}.listener",
+                            namespace: "parentSpace", // Attempt to fool identification of event
+                            args: ["{head4257}", "{arguments}.0"]
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.child4257", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        preInitFunction: "fluid.tests.child4257.preInit"  
+    });
+    
+    fluid.tests.child4257.preInit = function (that) {
+        that.listener = function (parentThat, arg) {
+            parentThat.records = parentThat.records || [];
+            parentThat.records.push(arg);
+        };
+    };
+    
+    fluidIoCTests.test("FLUID-4257 test: removal of injected listeners", function() {
+        var that = fluid.tests.head4257();
+        that.events.parentEvent.fire(3);
+        jqUnit.assertDeepEq("First event fire", [3], that.records);
+        that.child1.destroy();
+        that.events.parentEvent.fire(4);
+        jqUnit.assertDeepEq("Listener no longer registered", [3], that.records);
     });
     
     /** FLUID-4290 - createOnEvent sequence corruption test **/
