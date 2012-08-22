@@ -228,6 +228,16 @@ var fluid_1_5 = fluid_1_5 || {};
     }
     
     // unsupported, non-API function
+    fluid.clearListeners = function (idToListeners, key) {
+        fluid.each(idToListeners[key], function (rec) {
+            rec.event.removeListener(rec.listener);  
+        });
+        delete idToListeners[key];
+    }
+    
+    // unsupported, non-API function - however, this structure is of considerable interest to those debugging
+    // into IoC issues. The structures idToPath and pathToComponent contain a complete map of the component tree
+    // forming the surrounding scope
     fluid.instantiator = function(freeInstantiator) {
         // NB: We may not use the options merging framework itself here, since "withInstantiator" below
         // will blow up, as it tries to resolve the instantiator which we are instantiating *NOW*
@@ -237,12 +247,20 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             idToPath: {},
             pathToComponent: {},
+            idToListeners: {},
             nickName: "instantiator",
             composePath: fluid.composePath // For speed, we declare that no component's name may contain a period
         };
         var that = fluid.typeTag("fluid.instantiator");
         that = $.extend(that, preThat);
-
+        
+        that.recordListener = function (event, listener, source) {
+            var listeners = that.idToListeners[source.id];
+            if (!listeners) {
+                listeners = that.idToListeners[source.id] = [];
+            }
+            listeners.push({event: event, listener: listener});
+        };
         that.getThatStack = function(component) {
             var path = that.idToPath[component.id] || "";
             var parsed = fluid.model.parseEL(path);
@@ -307,12 +325,16 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.fail("Cannot clear component " + name + " from component ", component, 
                     " which was not created by this instantiator"); 
             }
+            fluid.fireEvent(child, "events.onClear", [child, name, component]);
 
             var childPath = that.composePath(path, name);
+            var childRecord = that.idToPath[child.id];
 
             // only recurse on components which were created in place - if the id record disagrees with the
             // recurse path, it must have been injected
-            if (record === path) { 
+            if (childRecord === childPath) {
+                fluid.fireEvent(child, "events.onDestroy", [child, name, component]);
+                fluid.clearListeners(that.idToListeners, child.id);
                 fluid.visitComponentChildren(child, function(gchild, gchildname, newPath, parentPath) {
                     that.clearComponent(child, gchildname, null, options, true, parentPath);
                 }, options, childPath);
@@ -670,9 +692,21 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }, ["    while invoking invoker with name " + functionName + " on component", that], userInstantiator);
         };
     };
+    
+    // unsupported, non-API function
+    // weird higher-order function so that we can staightforwardly dispatch original args back onto listener   
+    fluid.event.makeTrackedListenerAdder = function (instantiator, source) {
+        return function (event) {
+            return {addListener: function(listener) {
+                    instantiator.recordListener(event, listener, source);
+                    event.addListener.apply(null, arguments);
+                }
+            }
+        }
+    };
 
     // unsupported, non-API function    
-    fluid.event.listenerEngine = function(eventSpec, callback) {
+    fluid.event.listenerEngine = function(eventSpec, callback, adder) {
         var argstruc = {};
         function checkFire() {
             var notall = fluid.find(eventSpec, function(value, key) {
@@ -686,7 +720,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
         }
         fluid.each(eventSpec, function(event, eventName) {
-            event.addListener(function() {
+            adder(event).addListener(function() {
                 argstruc[eventName] = fluid.makeArray(arguments);
                 checkFire();
             });
@@ -711,7 +745,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.event.resolveListenerRecord = function(lisrec, that, eventName) {
         return fluid.withInstantiator(that, function(instantiator) {
             var records = fluid.makeArray(lisrec);
-            return fluid.transform(records, function(record) {
+            var transRecs = fluid.transform(records, function(record) {
                 if (fluid.isPrimitive(record)) {
                     record = {listener: record};
                 }
@@ -726,6 +760,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 record.listener = fluid.event.dispatchListener(instantiator, that, listener, eventName, record);
                 return record;
             });
+            return {
+                records: transRecs,
+                adderWrapper: fluid.event.makeTrackedListenerAdder(instantiator, that)
+            };
         }, [ "    while resolving listener record for event named " + eventName + " for component ", that]); 
     };
     
@@ -757,6 +795,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // unsupported, non-API function
     fluid.event.resolveEvent = function(that, eventName, eventSpec) {
         return fluid.withInstantiator(that, function(instantiator) {
+            var adder = fluid.event.makeTrackedListenerAdder(instantiator, that);
             if (typeof(eventSpec) === "string") {
                 eventSpec = {event: eventSpec};
             }
@@ -777,10 +816,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 firer = fluid.event.getEventFirer(null, null, " [composite] " + fluid.event.nameEvent(that, eventName));
                 var dispatcher = fluid.event.dispatchListener(instantiator, that, firer.fire, eventName, eventSpec, isMultiple);
                 if (isMultiple) {
-                    fluid.event.listenerEngine(origin, dispatcher);
+                    fluid.event.listenerEngine(origin, dispatcher, adder);
                 }
                 else {
-                    origin.addListener(dispatcher);
+                    adder(origin).addListener(dispatcher);
                 }
             }
             else {
@@ -794,7 +833,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 };
                 firer.addListener = function (listener, namespace, predicate, priority) {
                     var dispatcher = fluid.event.dispatchListener(instantiator, that, listener, eventName, eventSpec);
-                    origin.addListener(dispatcher, namespace, predicate, priority);
+                    adder(origin).addListener(dispatcher, namespace, predicate, priority);
                 };
                 firer.removeListener = function (listener) {
                     origin.removeListener(listener);
@@ -997,6 +1036,13 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             });
         }, message);
     };
+
+    // NON-API function
+    fluid.fabricateDestroyMethod = function (that, name, instantiator, child) {
+        return function () {
+            instantiator.clearComponent(that, name, child);
+        };
+    };
     
     // The case without the instantiator is from the ginger strategy - this logic is still a little ragged
     fluid.initDependent = function(that, name, userInstantiator, directArgs) {
@@ -1031,15 +1077,17 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                     if (instance && instance.typeName && instance.id && instance !== existing) {
                         instantiator.recordKnownComponent(that, instance, name, true);
                     }
+                    instance.destroy = fluid.fabricateDestroyMethod(that, name, instantiator, instance);
                     that[name] = instance;
                 }, null, function() {
                     delete that[inCreationMarker];
                     instantiator.pushUpcomingInstantiation();
                 });
             }
-            else { 
-                that[name] = component;
+            else {
+                fluid.fail("Unrecognised material in place of subcomponent " + name + " - no \"type\" field found");
             }
+            fluid.fireEvent(instance, "events.onAttach", [instance, name, that]);
         }, ["    while instantiating dependent component with name \"" + name + "\" with record ", component, " as child of ", that],
         userInstantiator);
         if (instance) {
