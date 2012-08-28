@@ -61,16 +61,10 @@ fluid.registerNamespace("fluid.tests");
         };
         
         fluid.tests.censoringStrategy = function (listCensor) {
-            return {
-                init: function () {
-                    var totalPath = "";
-                    return function (root, segment, index) {
-                        var orig = root[segment];
-                        totalPath = fluid.model.composePath(totalPath, segment);
-                        return totalPath === "recordlist.deffolt" ?
-                            listCensor(orig) : orig;
-                    };
-                }
+            var matchPath = ["recordlist", "deffolt"];
+            return function (root, segment, index, segs) {
+                var orig = root[segment];
+                return fluid.pathUtil.matchSegments(matchPath, segs, 0, index) ? listCensor(orig) : orig;
             };
         };
         

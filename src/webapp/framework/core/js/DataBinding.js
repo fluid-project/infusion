@@ -162,7 +162,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.model.accessWithStrategy = function (root, EL, newValue, config, initSegs, returnSegs) {
         // This function is written in this unfortunate style largely for efficiency reasons. In many cases
         // it should be capable of running with 0 allocations (EL is preparsed, initSegs is empty)
-        if (typeof(EL) === "object") {
+        if (!fluid.isPrimitive(EL) && !fluid.isArrayable(EL)) {
             var key = EL.type || "default";
             var resolver = config.resolvers[key];
             if (!resolver) {
@@ -391,17 +391,17 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.model.applyChangeRequest = function (model, request, resolverSetConfig) {
         var pen = fluid.model.accessWithStrategy(model, request.path, fluid.VALUE, resolverSetConfig || fluid.model.defaultSetConfig, null, true);
-        pen.last = pen.segs[pen.segs.length - 1];
+        var last = pen.segs[pen.segs.length - 1];
         
         if (request.type === "ADD" || request.type === "MERGE") {
             if (request.path === "" || request.type === "MERGE") {
                 if (request.type === "ADD") {
                     fluid.clear(pen.root);
                 }
-                $.extend(true, request.path === "" ? pen.root : pen.root[pen.last], request.value);
+                $.extend(true, request.path === "" ? pen.root : pen.root[last], request.value);
             }
             else {
-                pen.root[pen.last] = request.value;
+                pen.root[last] = request.value;
             }
         }
         else if (request.type === "DELETE") {
@@ -409,7 +409,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.clear(pen.root);
             }
             else {
-                delete pen.root[pen.last];
+                delete pen.root[last];
             }
         }
     };

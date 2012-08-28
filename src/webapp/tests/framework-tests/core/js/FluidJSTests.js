@@ -417,7 +417,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 resolvePathSegment: resolver
             }
         };
-        jqUnit.assertEquals("Nested resolver", "resolved", fluid.get(model2, "nested.resolver"));
+        jqUnit.assertEquals("Nested resolver", "resolved", fluid.get(model2, ["nested", "resolver"]));
     });
     
     fluidJSTests.test("messageResolver", function () {

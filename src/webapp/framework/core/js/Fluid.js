@@ -569,8 +569,8 @@ var fluid = fluid || fluid_1_5;
 
     // unsupported, NON-API function   
     fluid.model.pathToSegments = function (EL, config) {
-        var parser = config && config.parser ? config.parser : fluid.model.parseEL;
-        var segs = fluid.isArrayable(EL) ? EL : parser(EL);
+        var parser = config && config.parser ? config.parser.parse : fluid.model.parseEL;
+        var segs = typeof(EL) === "number" || typeof(EL) === "string" ? parser(EL) : EL;
         return segs;
     };
     
@@ -584,7 +584,7 @@ var fluid = fluid || fluid_1_5;
         }
         var uncess = newValue === fluid.NO_VALUE ? 0 : 1;
         var root = traverser(root, segs, initPos, config, uncess);
-        if (newValue === fluid.NO_VALUE || newValue == fluid.VALUE) { // get or custom
+        if (newValue === fluid.NO_VALUE || newValue === fluid.VALUE) { // get or custom
             return returnSegs ? {root: root, segs: segs} : root;
         }
         else { // set
@@ -657,18 +657,7 @@ var fluid = fluid || fluid_1_5;
         var env = fluid.decodeAccessorArg(config);
         return env === undefined ?
             fluid.model.getWithStrategy(root, EL, config, initSegs)
-            : fluid.model.getSimple(root, EL, env, initSegs);
-    };
-    
-    fluid.makeAccessor = function (config) {
-        return {
-            set: function (root, EL, newValue, initSegs) {
-                return fluid.set(root, EL, newValue, config, initSegs);
-            },
-            get: function (root, EL, initSegs) {
-                return fluid.get(root, EL, config, initSegs);
-            }
-        };  
+            : fluid.model.accessImpl(root, EL, fluid.NO_VALUE, env, null, false, fluid.model.traverseSimple); 
     };
 
     // This backward compatibility will be maintained for a number of releases, probably until Fluid 2.0

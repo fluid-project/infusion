@@ -559,7 +559,8 @@ var fluid = fluid || fluid_1_5;
     // unsupported, NON-API function
     fluid.model.transform.flatSchemaStrategy = function (flatSchema) {
         var keys = fluid.model.sortByKeyLength(flatSchema);
-        return function (root, segment, path) {
+        return function (root, segment, index, segs) {
+            var path = fluid.path.apply(null, segs.slice(0, index));
           // TODO: clearly this implementation could be much more efficient
             for (var i = 0; i < keys.length; ++i) {
                 var key = keys[i];
@@ -578,8 +579,8 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.model.transform.isomorphicSchemaStrategy = function (source, getConfig) { 
-        return function (root, segment, path) {
-            var existing = fluid.get(source, path, getConfig);
+        return function (root, segment, index, segs) {
+            var existing = fluid.get(source, segs.slice(0, index), getConfig);
             return fluid.isArrayable(existing) ? "array" : "object";
         };
     };
@@ -596,9 +597,9 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.model.transform.schemaToCreatorStrategy = function (strategy) {
-        return function (root, segment, path) {
+        return function (root, segment, index, segs) {
             if (root[segment] === undefined) {
-                var schemaValue = strategy(root, segment, path); 
+                var schemaValue = strategy(root, segment, index, segs); 
                 return root[segment] = fluid.model.transform.defaultSchemaValue(schemaValue);
             }
         };  
@@ -652,7 +653,7 @@ var fluid = fluid || fluid_1_5;
         };
         var expander = {
             source: source,
-            target: schemaStrategy ? fluid.model.transform.defaultSchemaValue(schemaStrategy(null, "", "")) : {},
+            target: schemaStrategy ? fluid.model.transform.defaultSchemaValue(schemaStrategy(null, "", 0, [""])) : {},
             resolverGetConfig: getConfig,
             queued: []
         };
