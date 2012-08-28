@@ -553,7 +553,7 @@ var fluid = fluid || fluid_1_5;
         fluid.fail("Please include DataBinding.js in order to operate complex model accessor configuration");
     };
     
-    fluid.model.trundle = fluid.model.getPenultimate = fluid.requireDataBinding;
+    fluid.model.setWithStrategy = fluid.model.getWithStrategy = fluid.requireDataBinding;
     
     // unsupported, NON-API function
     fluid.model.resolvePathSegment = function (root, segment, create, origEnv) {
@@ -566,46 +566,66 @@ var fluid = fluid || fluid_1_5;
         }
         return root[segment];
     };
+
+    // unsupported, NON-API function   
+    fluid.model.pathToSegments = function (EL, config) {
+        var parser = config && config.parser ? config.parser : fluid.model.parseEL;
+        var segs = fluid.isArrayable(EL) ? EL : parser(EL);
+        return segs;
+    };
+    
+    // Overall strategy skeleton for all implementations of fluid.get/set
+    fluid.model.accessImpl = function (root, EL, newValue, config, initSegs, returnSegs, traverser) {
+        var segs = fluid.model.pathToSegments(EL, config);
+        var initPos = 0;
+        if (initSegs) {
+            initPos = initSegs.length;
+            segs = initSegs.concat(segs);
+        }
+        var uncess = newValue === fluid.NO_VALUE ? 0 : 1;
+        var root = traverser(root, segs, initPos, config, uncess);
+        if (newValue === fluid.NO_VALUE || newValue == fluid.VALUE) { // get or custom
+            return returnSegs ? {root: root, segs: segs} : root;
+        }
+        else { // set
+            root[segs[segs.length - 1]] = newValue; 
+        }
+    }
     
     // unsupported, NON-API function
-    fluid.model.getPenultimateSimple = function (root, EL, environment, create) {
+    fluid.model.accessSimple = function (root, EL, newValue, environment, initSegs, returnSegs) {
+        return fluid.model.accessImpl(root, EL, newValue, environment, initSegs, returnSegs, fluid.model.traverseSimple);
+    };
+    
+    fluid.model.traverseSimple = function (root, segs, initPos, environment, uncess) {
         var origEnv = environment;
-        var segs = fluid.model.parseEL(EL);
-        for (var i = 0; i < segs.length - 1; ++i) {
+        var limit = segs.length - uncess;
+        for (var i = 0; i < limit; ++i) {
             if (!root) {
-                return {root: root };
+                return root;
             }
             var segment = segs[i];
             if (environment && environment[segment]) {
                 root = environment[segment];
-                environment = null;
             } else {
-                root = fluid.model.resolvePathSegment(root, segment, create, origEnv);
+                root = fluid.model.resolvePathSegment(root, segment, uncess === 1, origEnv);
             }
+            environment = null;
         }
-        return {root: root, last: segs[segs.length - 1]};
+        return root;
     };
     
-    fluid.model.setSimple = function (root, EL, newValue, environment) {
-        var pen = fluid.model.getPenultimateSimple(root, EL, environment, true);
-        pen.root[pen.last] = newValue;
+    fluid.model.setSimple = function (root, EL, newValue, environment, initSegs) {
+        fluid.model.accessSimple(root, EL, newValue, environment, initSegs, false);
     };
     
-    /** Evaluates an EL expression by fetching a dot-separated list of members
-     * recursively from a provided root.
-     * @param root The root data structure in which the EL expression is to be evaluated
-     * @param {string} EL The EL expression to be evaluated
-     * @param environment An optional "environment" which, if it contains any members
-     * at top level, will take priority over the root data structure.
-     * @return The fetched data value.
-     */
+    /** Optimised version of fluid.get for uncustomised configurations **/
     
-    fluid.model.getSimple = function (root, EL, environment) {
-        if (EL === "" || EL === null || EL === undefined) {
+    fluid.model.getSimple = function (root, EL, environment, initSegs) {
+        if (EL === null || EL === undefined || EL.length === 0) {
             return root;
         }
-        var pen = fluid.model.getPenultimateSimple(root, EL, environment);
-        return pen.root ? pen.root[pen.last] : pen.root;
+        return fluid.model.accessSimple(root, EL, fluid.NO_VALUE, environment, initSegs, false);
     };
     
     // unsupported, NON-API function
@@ -616,30 +636,39 @@ var fluid = fluid || fluid_1_5;
             null : (arg3.type === "environment" ? arg3.value : undefined);
     };
     
-    fluid.set = function (root, EL, newValue, config) {
+    fluid.set = function (root, EL, newValue, config, initSegs) {
         var env = fluid.decodeAccessorArg(config);
         if (env === undefined) {
-            var trundler = fluid.model.getPenultimate(root, EL, config);
-            trundler.root[trundler.last] = newValue;
+            fluid.model.setWithStrategy(root, EL, newValue, config, initSegs);
         } else {
-            fluid.model.setSimple(root, EL, newValue, env);
+            fluid.model.setSimple(root, EL, newValue, env, initSegs);
         }
     };
     
     /** Evaluates an EL expression by fetching a dot-separated list of members
      * recursively from a provided root.
      * @param root The root data structure in which the EL expression is to be evaluated
-     * @param {string} EL The EL expression to be evaluated
-     * @param environment An optional "environment" which, if it contains any members
-     * at top level, will take priority over the root data structure.
+     * @param {string/array} EL The EL expression to be evaluated, or an array of path segments
+     * @param config An optional configuration or environment structure which can customise the fetch operation
      * @return The fetched data value.
      */
     
-    fluid.get = function (root, EL, config) {
+    fluid.get = function (root, EL, config, initSegs) {
         var env = fluid.decodeAccessorArg(config);
         return env === undefined ?
-            fluid.model.trundle(root, EL, config).root
-            : fluid.model.getSimple(root, EL, env);
+            fluid.model.getWithStrategy(root, EL, config, initSegs)
+            : fluid.model.getSimple(root, EL, env, initSegs);
+    };
+    
+    fluid.makeAccessor = function (config) {
+        return {
+            set: function (root, EL, newValue, initSegs) {
+                return fluid.set(root, EL, newValue, config, initSegs);
+            },
+            get: function (root, EL, initSegs) {
+                return fluid.get(root, EL, config, initSegs);
+            }
+        };  
     };
 
     // This backward compatibility will be maintained for a number of releases, probably until Fluid 2.0

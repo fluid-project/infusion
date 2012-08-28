@@ -81,19 +81,10 @@ var fluid_1_5 = fluid_1_5 || {};
     /** MODEL ACCESSOR ENGINE (trundler) **/
     
     /** Standard strategies for resolving path segments **/
-    fluid.model.environmentStrategy = function (initEnvironment) {
-        return {
-            init: function () {
-                var environment = initEnvironment;
-                return function (root, segment, index) {
-                    var togo;
-                    if (environment && environment[segment]) {
-                        togo = environment[segment];
-                    }
-                    environment = null;
-                    return togo; 
-                };
-            }
+    fluid.model.makeEnvironmentStrategy = function (environment) {
+        return function (root, segment, index) {
+            return index === 0 && environment[segment] ?
+                environment[segment] : undefined; 
         };
     };
 
@@ -123,50 +114,17 @@ var fluid_1_5 = fluid_1_5 || {};
         strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
     };
     
-    
     // unsupported, NON-API function
-    fluid.model.applyStrategy = function (strategy, root, segment, path) {
-        if (typeof (strategy) === "function") { 
-            return strategy(root, segment, path);
-        } else if (strategy && strategy.next) {
-            return strategy.next(root, segment, path);
-        }
-    };
-    
-    // unsupported, NON-API function
-    fluid.model.initStrategy = function (baseStrategy, index, oldStrategies) {
-        return baseStrategy.init ? baseStrategy.init(oldStrategies ? oldStrategies[index] : undefined) : baseStrategy;
-    };
-    
-    // unsupported, NON-API function
-    fluid.model.makeTrundler = function (root, config, oldStrategies) {
-        var that = {
-            root: root,
-            strategies: fluid.isArrayable(config) ? config : 
-                fluid.transform(config.strategies, function (strategy, index) {
-                    return fluid.model.initStrategy(strategy, index, oldStrategies); 
-                })
-        };
-        that.trundle = function (EL, uncess) {
-            uncess = uncess || 0;
-            var newThat = fluid.model.makeTrundler(that.root, config, that.strategies);
-            newThat.segs = config.parser? config.parser.parse(EL) : fluid.model.parseEL(EL);
-            newThat.index = 0;
-            newThat.path = "";
-            newThat.step(newThat.segs.length - uncess);
-            return newThat;
-        };
-        that.next = function () {
-            if (!that.root) {
-                return;
+    fluid.model.traverseWithStrategy = function (root, segs, initPos, config, uncess) {
+        var strategies = config.strategies;
+        var limit = segs.length - uncess;
+        for (var i = initPos; i < limit; ++i) {
+            if (!root) {
+                return root;
             }
-            var accepted;
-            // TODO: Temporary adjustment before trundlers are destroyed by FLUID-4705
-            // In the final system "new strategies" should be able to declare whether any of them
-            // require this path computed or not
-            that.path = (config.parser? config.parser.compose : fluid.model.composePath)(that.path, that.segs[that.index]);
-            for (var i = 0; i < that.strategies.length; ++i) {
-                var value = fluid.model.applyStrategy(that.strategies[i], that.root, that.segs[that.index], that.path);
+            var accepted = undefined;
+            for (var j = 0; j < strategies.length; ++ j) {
+                var value = strategies[j](root, segs[i], i + 1, segs);
                 if (accepted === undefined) {
                     accepted = value;
                 }
@@ -174,50 +132,55 @@ var fluid_1_5 = fluid_1_5 || {};
             if (accepted === fluid.NO_VALUE) {
                 accepted = undefined;
             }
-            that.root = accepted;
-            ++that.index;
-        };
-        that.step = function (limit) {
-            for (var i = 0; i < limit; ++i) {
-                that.next();
-            }
-            that.last = that.segs[that.index];
-        };
-        return that;
+            root = accepted;
+        }
+        return root;
+    };
+    
+    /** Returns both the value and the path of the value held at the supplied EL path **/
+    fluid.model.getValueAndSegments = function (root, EL, config, initSegs) {
+        return fluid.model.accessWithStrategy(root, EL, fluid.NO_VALUE, config, initSegs, true);
+    };
+    
+    // Very lightweight remnant of trundler, only used in resolvers
+    // unsupported, NON-API function
+    fluid.model.makeTrundler = function (config) {
+        return function (valueSeg, EL) {
+            return fluid.model.getValueAndSegments(valueSeg.root, EL, config, valueSeg.segs); 
+        };  
+    };
+    
+    fluid.model.getWithStrategy = function (root, EL, config, initSegs) {
+        return fluid.model.accessWithStrategy(root, EL, fluid.NO_VALUE, config, initSegs);
+    };
+    
+    fluid.model.setWithStrategy = function (root, EL, newValue, config, initSegs) {
+        fluid.model.accessWithStrategy(root, EL, newValue, config, initSegs);
     };
     
     // unsupported, NON-API function
-    // core trundling recursion point
-    fluid.model.trundleImpl = function (trundler, EL, config, uncess) {
-        if (typeof (EL) === "string") {
-            trundler = trundler.trundle(EL, uncess);
-        } else {
+    fluid.model.accessWithStrategy = function (root, EL, newValue, config, initSegs, returnSegs) {
+        // This function is written in this unfortunate style largely for efficiency reasons. In many cases
+        // it should be capable of running with 0 allocations (EL is preparsed, initSegs is empty)
+        if (typeof(EL) === "object") {
             var key = EL.type || "default";
             var resolver = config.resolvers[key];
             if (!resolver) {
                 fluid.fail("Unable to find resolver of type " + key);
             }
-            trundler = resolver(EL, trundler) || {};
-            if (EL.path && trundler.trundle && trundler.root !== undefined) {
-                trundler = fluid.model.trundleImpl(trundler, EL.path, config, uncess);
+            var trundler = fluid.model.makeTrundler(config); // very lightweight trundler for resolvers
+            var valueSeg = {root: root, segs: initSegs};
+            valueSeg = resolver(valueSeg, EL, trundler);
+            if (EL.path && valueSeg) { // every resolver supports this piece of output resolution
+                valueSeg = trundler(valueSeg, EL.path);
             }
+            return returnSegs ? valueSeg : (valueSeg ? valueSeg.root : undefined);
         }
-        return trundler;  
+        else {
+            return fluid.model.accessImpl(root, EL, newValue, config, initSegs, returnSegs, fluid.model.traverseWithStrategy);
+        }
     };
-        
-    // unsupported, NON-API function
-    // entry point for initially unbased trundling
-    fluid.model.trundle = function (root, EL, config, uncess) {
-        EL = EL || "";
-        config = config || fluid.model.defaultGetConfig;
-        var trundler = fluid.model.makeTrundler(root, config);
-        return fluid.model.trundleImpl(trundler, EL, config, uncess);
-    };
-    
-    fluid.model.getPenultimate = function (root, EL, config) {
-        return fluid.model.trundle(root, EL, config, 1);
-    };  
-   
+  
     // Implementation notes: The EL path manipulation utilities here are somewhat more thorough
     // and expensive versions of those provided in Fluid.js - there is some duplication of 
     // functionality. This is a tradeoff between stability and performance - the versions in
@@ -348,6 +311,21 @@ var fluid_1_5 = fluid_1_5 || {};
         return composeSegment(prefix, suffix);
     };
     
+    /** Helpful utility for use in resolvers - matches a path which has already been
+      * parsed into segments **/
+    
+    fluid.pathUtil.matchSegments = function (toMatch, segs, start, end) {
+        if (end - start !== toMatch.length) {
+            return false;
+        }
+        for (var i = start; i < end; ++ i) {
+            if (segs[i] !== toMatch[i - start]) {
+               return false;
+            }
+        }
+        return true;
+    };
+    
     /** Determine the path by which a given path is nested within another **/
     
     fluid.pathUtil.getExcessPath = function (base, longer) {
@@ -412,7 +390,8 @@ var fluid_1_5 = fluid_1_5 || {};
     /** Applies the supplied ChangeRequest object directly to the supplied model.
      */
     fluid.model.applyChangeRequest = function (model, request, resolverSetConfig) {
-        var pen = fluid.model.getPenultimate(model, request.path, resolverSetConfig || fluid.model.defaultSetConfig);
+        var pen = fluid.model.accessWithStrategy(model, request.path, fluid.VALUE, resolverSetConfig || fluid.model.defaultSetConfig, null, true);
+        pen.last = pen.segs[pen.segs.length - 1];
         
         if (request.type === "ADD" || request.type === "MERGE") {
             if (request.path === "" || request.type === "MERGE") {

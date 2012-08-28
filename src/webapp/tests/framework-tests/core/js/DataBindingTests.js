@@ -40,8 +40,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
                
-        var customStrategy = function (root, segment, path) {
-            return path === "path3" ? fluid.NO_VALUE : undefined;
+        var customStrategy = function (root, segment, i, segs) {
+            return fluid.pathUtil.matchSegments(["path3"], segs, 0, i) ? fluid.NO_VALUE : undefined;
         };
         
         DataBindingTests.test("getBeanValue with custom strategy", function () {
@@ -52,17 +52,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("path4 value uncensored", model.path4, value2);
         });
         
-        fluid.tests.childMatchResolver = function (options, trundler) {
-            trundler = trundler.trundle(options.queryPath);
-            return fluid.find(trundler.root, function (value, key) {
-                var trundleKey = trundler.trundle(key);
-                var trundleChild = trundleKey.trundle(options.childPath);
+        fluid.tests.childMatchResolver = function (valueSeg, options, trundler) {
+            valueSeg = trundler(valueSeg, options.queryPath);
+            return fluid.find(valueSeg.root, function (value, key) {
+                var trundleKey = trundler(valueSeg, key);
+                var trundleChild = trundler(trundleKey, options.childPath);
                 if (trundleChild.root === options.value) {
                     return trundleKey;
-                } 
+                }
             });
         };
-        
+        // Unpacks a string encoded in triples into an array of objects, where the first digit encodes whether
+        // _primary is true or false, and the following two encode the values of properties "a" and "b"
         fluid.tests.generateRepeatableThing = function (gens) {
             var togo = [];
             for (var i = 0; i < gens.length; i += 3) {
@@ -105,17 +106,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertUndefined("Queried resolved value", resolved);
         });
 
-        fluid.tests.repeatableModifyingStrategy = {
-            init: function (oldStrategy) {
-                var that = {};
-                that.path = oldStrategy ? oldStrategy.path : "";
-                that.next = function (root, segment) {
-                    that.path = fluid.model.composePath(that.path, segment);
-                    return that.path === "fields.repeatableThing.1.value" ?
+        fluid.tests.repeatableModifyingStrategy = function (toMatch) {
+            var matchSegs = fluid.model.parseEL(toMatch);
+            return function (root, segment, i, segs) {
+                return fluid.pathUtil.matchSegments(matchSegs, segs, 0, i) ?
                         fluid.tests.generateRepeatableThing("145") : undefined;   
-                };
-                return that;
-            }
+            };
         };
 
         DataBindingTests.test("Complex resolving and strategising", function () {
@@ -145,7 +141,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 resolvers: {
                     childMatch: fluid.tests.childMatchResolver
                 },
-                strategies: [fluid.tests.repeatableModifyingStrategy].concat(fluid.model.defaultGetConfig.strategies) 
+                strategies: [fluid.tests.repeatableModifyingStrategy("fields.repeatableThing.1.value")].concat(fluid.model.defaultGetConfig.strategies) 
             };
             var resolved2 = fluid.get(model, el, config2);
             jqUnit.assertEquals("Queried resolved and strategised value", 4, resolved2);
