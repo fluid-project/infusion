@@ -614,4 +614,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Priority order respected", 1, that.initted);
     });
 
+    /** Test FLUID-4776 - only one instance of preinit function registered **/
+   
+    fluid.defaults("fluid.tests.lifecycleTest3", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        preInitFunction: "fluid.tests.lifecycleTest3.preInit"   
+    });
+    
+    fluid.tests.lifecycleTest3.preInit = function(that) {
+        if (!that.count) {
+            that.count = 0;
+        }
+        ++ that.count;  
+    };
+
+    fluidJSTests.test("Registration of lifecycle functions by convention", function () {
+        var that = fluid.tests.lifecycleTest3();
+        jqUnit.assertEquals("Only one call to preInitFunction", 1, that.count);
+    });
+
 })(jQuery);

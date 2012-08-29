@@ -1434,10 +1434,31 @@ var fluid = fluid || fluid_1_5;
         }
         return that;
     };
+
+    // unsupported, NON-API function    
+    fluid.updateWithDefaultLifecycle = function (key, value, typeName) {
+        var funcName = typeName + "." + key.substring(0, key.length - "function".length);
+        var funcVal = fluid.getGlobalValue(funcName);
+        if (typeof (funcVal) === "function") {
+            value = fluid.makeArray(value);
+            var existing = fluid.find(value, function (el) {
+                var listener = el.listener || el;
+                if (listener == funcVal || listener == funcName) {
+                    return true;
+                }
+            });
+            if (!existing) {
+                value.push(funcVal);
+            }
+        }
+        return value;
+    };
+    
     // unsupported, NON-API function
     fluid.initLifecycleFunctions = function (that) {
         fluid.each(fluid.lifecycleFunctions, function (func, key) {
             var value = that.options[key];
+            value = fluid.updateWithDefaultLifecycle(key, value, that.typeName);
             if (value) {
                 that.options[key] = fluid.makeEventFirer(null, null, key);
                 fluid.event.addListenerToFirer(that.options[key], value);

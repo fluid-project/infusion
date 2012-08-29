@@ -1019,8 +1019,8 @@ fluid.registerNamespace("fluid.tests");
     });
     
     fluid.defaults("fluid.tests.child4257", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        preInitFunction: "fluid.tests.child4257.preInit"  
+        gradeNames: ["fluid.eventedComponent", "autoInit"]
+        // implicitly registered init function tests FLUID-4776
     });
     
     fluid.tests.child4257.preInit = function (that) {
