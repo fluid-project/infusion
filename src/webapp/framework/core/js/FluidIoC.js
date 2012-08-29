@@ -216,7 +216,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " 
                     + context + " from component leaf of type " + parentThat.typeName, "\ninstantiator contents: ", instantiator);
             }
-            return fluid.get(foundComponent, parsed.path, fetchStrategies);
+            return fluid.get(foundComponent, parsed.path, {strategies: fetchStrategies});
         };
         return fetcher;
     }
@@ -860,9 +860,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
         });
         fluid.each(preserveList, function(xvalue, path) {
-            var pen = fluid.model.getPenultimate(options, path);
-            var value = pen.root[pen.last];
-            delete pen.root[pen.last];
+            var pen = fluid.model.accessWithStrategy(options, path, fluid.VALUE, fluid.model.defaultGetConfig, null, true);
+            var last = pen.segs[pen.segs.length - 1];
+            var value = pen.root[last];
+            delete pen.root[last];
             fluid.set(preserve, path, value);  
         });
         return {
