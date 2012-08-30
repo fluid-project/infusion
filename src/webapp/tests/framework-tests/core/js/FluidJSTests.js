@@ -367,7 +367,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
     
-    fluidJSTests.test("set/getBeanValue", function () {
+    fluidJSTests.test("fluid.get and fluid.set", function () {
         var model = {"path3": "thing"};
         jqUnit.assertEquals("Get simple value", "thing", fluid.get(model, "path3"));
         jqUnit.assertDeepEq("Get root value", model, fluid.get(model, ""));
@@ -400,7 +400,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.registerNamespace("cspace.autocomplete");
         var fluidd3 = fluid.getGlobalValue("cspace.fluid");
         jqUnit.assertUndefined("No environment slippage", fluidd3);
-        
+        var fluidd4 = fluid.getGlobalValue("cspace.fluid.get");
+        jqUnit.assertUndefined("No environment slippage", fluidd4);
+    });
+    
+    fluidJSTests.test("fluid.get with resolution and segments", function () {
+        var resolver = function (segment) {
+           return "resolved";
+        };
+        var model = {
+            resolvePathSegment: resolver,
+        };
+        jqUnit.assertEquals("Root resolver", "resolved", fluid.get(model, "resolver"));
+        var model2 = {
+            nested: {
+                resolvePathSegment: resolver
+            }
+        };
+        jqUnit.assertEquals("Nested resolver", "resolved", fluid.get(model2, ["nested", "resolver"]));
     });
     
     fluidJSTests.test("messageResolver", function () {
