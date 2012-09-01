@@ -427,6 +427,8 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("Identical model reference", model, returned);
     });
     
+    /** FLUID-4330 - ginger expansion tests **/
+    
     /** FLUID-4135 - event injection and boiling test **/
     
     fluid.tests.listenerHolder = function () {

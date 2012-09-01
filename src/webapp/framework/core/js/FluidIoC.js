@@ -883,8 +883,8 @@ outer:  for (var i = 0; i < exist.length; ++i) {
      *  result of environmental substitutions. Note that options contained inside "components" will not be expanded
      *  by this call directly to avoid linearly increasing expansion depth if this call is occuring as a result of
      *  "initDependents" */
-     // TODO: This needs to be integrated with "embodyDemands" above which makes a call to "resolveEnvironment" directly
-     // but with very similarly derived options (makeStackResolverOptions)
+     // TODO: This needs to be integrated with "embodyDemands" above which makes two further calls to expandLight
+     // and with very similarly derived options (makeStackResolverOptions)
     fluid.expandOptions = function(args, that, localRecord, outerExpandOptions) {
         if (!args) {
             return args;
@@ -1283,13 +1283,76 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.resolveContextValue = fluid.wrapActivity(fluid.resolveContextValue, 
         ["    while resolving context value ", "arguments.0"]);
     
-    function resolveEnvironmentImpl(obj, options) {
+    function regenerateCursor(options, segs, i) {
+        segs = segs.slice(0, i);
+        var source = fluid.get(options.source, segs); // TODO: hyperspeed version which bypasses everything and avoids slice
+        return source;
+    }
+    
+    function makeExpandStrategy(options) {
+        var strategy = function(target, name, i, segs, source) { // Cursor is just source
+            if (target.hasOwnProperty(name)) { // bail out if our work has already been done
+                return target[name];
+            }
+            if (source === undefined) { // recover our state in case this is an external entry point
+                source = regenerateCursor(options, segs, i - 1);
+            }
+            var thisSource = source[name];
+            var expanded = disposeSource(member, options);
+            var isTrunk = fluid.diagnoseTrunk(expanded);
+            var thisTarget = target[name] = isTrunk ? isTrunk : expanded;
+            if (isTrunk) {
+                fluid.each(member, function (newSource, key) {
+                    if (newSource === undefined) {
+                        thisTarget[key] = undefined; // avoid ever dispatching to ourselves with undefined source
+                    }
+                    else { // Don't bother to generate segs or i in direct dispatch to self!!!!!!
+                        strategy(thisTarget, key, null, null, newSource);
+                    }
+                });
+            }
+            return thisTarget;
+        };
+        options.selfStrategy = strategy;
+        return strategy;
+    }
+    
+    fluid.arrayTrunk = [];
+    
+    fluid.objectTrunk = {};
+    
+    // These two functions form a deferred version of fluid.freshContainer
+    
+    fluid.diagnoseTrunk = function(maybeTrunk) {
+        return maybeTrunk === fluid.arrayTrunk ? [] : 
+            (maybeTrunk == fluid.objectTrunk ? {} : undefined);
+    };
+    
+    fluid.sendTrunk = function(source) {
+        return fluid.isArrayable(source) ? fluid.arrayTrunk : fluid.objectTrunk;
+    };
+    
+    function disposeSource(obj, options) {
         fluid.guardCircularity(options.seenIds, obj, "expansion", 
              " - please ensure options are not circularly connected, or protect from expansion using the \"noexpand\" policy or expander");
-        function recurse(arg) {
-            return resolveEnvironmentImpl(arg, options);
+        if (typeof(obj) === "string") {
+            return fluid.resolveContextValue(obj, options);
         }
-        if (typeof(obj) === "string" && !options.noValue) {
+        else if (fluid.isPrimitive(obj) || obj.nodeType !== undefined || obj.jquery) {
+            return obj;
+        }
+        else return fluid.sendTrunk(obj);      
+    }
+    
+    function resolveEnvironmentImpl(obj, options) { 
+     // obj ==== source!! needs regenerating
+     // options now needs to contain OVERALL SOURCE
+        fluid.guardCircularity(options.seenIds, obj, "expansion", 
+             " - please ensure options are not circularly connected, or protect from expansion using the \"noexpand\" policy or expander");
+        var recurse = function (arg) {
+            return resolveEnvironmentImpl(arg, options);
+        };
+        if (typeof(obj) === "string") {
             return fluid.resolveContextValue(obj, options);
         }
         else if (fluid.isPrimitive(obj) || obj.nodeType !== undefined || obj.jquery) {
@@ -1299,8 +1362,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             return options.filter(obj, recurse, options);
         }
         else {
+
             return (options.noCopy? fluid.each : fluid.transform)(obj, function(value, key) {
-                return resolveEnvironmentImpl(value, options);
+                return recurse(value); // resolveEnvironmentImpl(value, options);
             });
         }
     }
@@ -1356,7 +1420,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             for (var key in obj) {
                 var value = obj[key];
                 var expander;
-                if (key === "expander" && !(options.expandOnly && options.expandOnly[value.type])) {
+                if (key === "expander") {
                     expander = fluid.getGlobalValue(value.type);  
                     if (expander) {
                         return expander.call(null, togo, obj, recurse, options);
