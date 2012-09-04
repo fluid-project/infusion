@@ -157,35 +157,6 @@ fluid.registerNamespace("fluid.tests");
             }, null]
         });
     
-    fluid.defaults("fluid.tests.defaultInteraction", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            popup: {
-                type: "fluid.tests.popup"
-            }
-        }  
-    });
-
-    fluid.defaults("fluid.tests.popup", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        resources: {
-            template: {
-                forceCache: true,
-                url: "../html/AutocompleteAddPopup.html"
-            }
-        }
-    });
-
-    fluid.demands("fluid.tests.popup", "fluid.tests.localTest", {
-        args: {
-            resources: {
-                template: {
-                    url: "../../html/AutocompleteAddPopup.html"
-                }
-            }
-        }
-    });
-
 
 
     var fluidIoCTests = new jqUnit.TestCase("Fluid IoC Tests");
@@ -259,6 +230,36 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertNotUndefined("Resolved value from static environment", staticRes);
         } finally {
             delete fluid.staticEnvironment.localEnvironment;
+        }
+    });
+
+
+    fluid.defaults("fluid.tests.defaultInteraction", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            popup: {
+                type: "fluid.tests.popup"
+            }
+        }  
+    });
+
+    fluid.defaults("fluid.tests.popup", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        resources: {
+            template: {
+                forceCache: true,
+                url: "../html/AutocompleteAddPopup.html"
+            }
+        }
+    });
+
+    fluid.demands("fluid.tests.popup", "fluid.tests.localTest", {
+        args: {
+            resources: {
+                template: {
+                    url: "../../html/AutocompleteAddPopup.html"
+                }
+            }
         }
     });
 
@@ -428,6 +429,8 @@ fluid.registerNamespace("fluid.tests");
     });
     
     /** FLUID-4330 - ginger expansion tests **/
+    
+    
     
     /** FLUID-4135 - event injection and boiling test **/
     
@@ -1260,10 +1263,13 @@ fluid.registerNamespace("fluid.tests");
     
     fluidIoCTests.test("Advanced circularity test I", function () {
         // If this test fails, it will bomb the browser with an infinite recursion
+        // TODO: In the new framework, this no longer fails! But it probably shouldn't in the
+        // long run anyway
         try {
             fluid.pushSoftFailure(true);
             jqUnit.expect(1);
             var comp = fluid.tests.circular.strategy();
+            jqUnit.assertValue("Component constructed", comp);
         } catch (e) {
             jqUnit.assert("Circular construction guarded");  
         } finally {

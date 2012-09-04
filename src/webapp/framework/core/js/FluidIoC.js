@@ -942,12 +942,23 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         });
     };
     
+    fluid.expandLocal = function(value, localRecord) {
+        if (!value) {
+            return value;
+        }
+        if (typeof(value) !== "string") {
+            return value;
+        }
+        var parsed = fluid.parseContextReference(value, 0);
+        return fluid.get(fluid.get(localRecord, parsed.context), parsed.path);
+    };
+    
     // unsupported, non-API function
     fluid.expandComponentOptions = function(defaults, userOptions, that) {
         if (userOptions && userOptions.localRecord) {
             fluid.checkComponentRecord(defaults, userOptions.localRecord);
         }
-        defaults = fluid.expandOptions(fluid.copy(defaults), that);
+        //defaults = fluid.expandOptions(fluid.copy(defaults), that);
         var localRecord = {};
         if (userOptions && userOptions.marker === fluid.EXPAND) {
             // TODO: Somewhat perplexing... the local record itself, by any route we could get here, consists of unexpanded
@@ -957,11 +968,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 if (defaults && defaults.mergePolicy) {
                     localOptions.mergePolicy = defaults.mergePolicy;
                 }
-                localRecord.options = fluid.expandOptions(localOptions, that);
+                localRecord.options = localOptions;//fluid.expandOptions(localOptions, that);
             }
             localRecord["arguments"] = fluid.get(userOptions, "localRecord.arguments");
             var toExpand = userOptions.value;
-            userOptions = fluid.expandOptions(toExpand, that, localRecord, {direct: true});
+            userOptions = fluid.expandLocal(toExpand, localRecord); // fluid.expandOptions(toExpand, that, localRecord, {direct: true});
         }
         localRecord.directOptions = userOptions;
         if (!localRecord.options) {
@@ -971,15 +982,15 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             localRecord.options = userOptions;
         }
         var mergeOptions = (userOptions && userOptions.mergeAllOptions) || ["{directOptions}"];
-        var togo = fluid.transform(mergeOptions, function(path) {
+        var togo = fluid.transform(mergeOptions, function(value) {
             // Avoid use of expandOptions in simple case to avoid infinite recursion when constructing instantiator
-            return path === "{directOptions}"? localRecord.directOptions : fluid.expandOptions(path, that, localRecord, {direct: true}); 
+            return value === "{directOptions}"? localRecord.directOptions : value; //fluid.expandOptions(value, that, localRecord, {direct: true}); 
         });
         var transRec = fluid.locateTransformationRecord(that);
         if (transRec) {
             togo[0].transformOptions = transRec.options;
         }
-        return [defaults].concat(togo);
+        return {options: [defaults].concat(togo), localRecord: localRecord};
     };
     
     fluid.expandComponentOptions = fluid.wrapActivity(fluid.expandComponentOptions, 
@@ -1362,7 +1373,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             return options.filter(obj, recurse, options);
         }
         else {
-
             return (options.noCopy? fluid.each : fluid.transform)(obj, function(value, key) {
                 return recurse(value); // resolveEnvironmentImpl(value, options);
             });

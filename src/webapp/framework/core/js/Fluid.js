@@ -1357,8 +1357,10 @@ var fluid = fluid || fluid_1_5;
         var mergeArgs = [mergePolicy, localOptions];
         
         var extraArgs;
+        var expandResult;
         if (fluid.expandComponentOptions) {
-            extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
+            expandResult = fluid.expandComponentOptions(defaults, userOptions, that);
+            extraArgs = expandResult.options;
         } else {
             extraArgs = [defaults, userOptions];
         }
@@ -1369,6 +1371,9 @@ var fluid = fluid || fluid_1_5;
         mergeArgs = mergeArgs.concat(extraArgs);
         var merged = fluid.merge.apply(null, mergeArgs);
         merged = fluid.applyDefaultValueMergePolicy(defaults, merged);
+        if (fluid.expandOptions) {
+            merged = fluid.expandOptions(merged, that, expandResult.localRecord);
+        }
         that.options = merged;
     };
     
