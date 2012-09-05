@@ -1452,4 +1452,19 @@ fluid.registerNamespace("fluid.tests");
         island1.events.outEvent2.fire();
         jqUnit.assert("No error fired on cross-island dispatch");
     });
+
+    fluid.defaults("fluid.gradeComponent", {
+        gradeNames: ["autoInit", "fluid.littleComponent"]
+    });
+    fluid.gradeComponent.preInit = function (that) {
+        jqUnit.assert("Pre init function is called by a component of fluid.gradeComponent grade.");
+    };
+    fluid.defaults("fluid.gradeUsingComponent", {
+        gradeNames: ["autoInit", "fluid.gradeComponent"]
+    });
+
+    fluidIoCTests.test("FLUID-4788 test - default lifecycle functions inherited from a grade.", function() {
+        jqUnit.expect(1);
+        fluid.gradeUsingComponent();
+    });
 })(jQuery); 
