@@ -233,6 +233,7 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
+    /** Basic IoC Tests **/
 
     fluid.defaults("fluid.tests.defaultInteraction", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
@@ -282,6 +283,41 @@ fluid.registerNamespace("fluid.tests");
         }
     });
     
+    /** Expansion order test **/
+    
+    // Example liberated from UIOptions implementation, which revealed requirement for
+    // "expansion before merging" when constructing the new framework. This is a perverse
+    // but probably valid usage of the framework
+    
+    fluid.defaults("fluid.tests.uiEnhancer", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        value: 3,
+        outerValue: 4 
+    });
+    
+    fluid.defaults("fluid.tests.pageEnhancer", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        uiEnhancerOptions: {
+            outerValue: 3
+        },
+        components: {
+            uiEnhancer: {
+                type: "fluid.tests.uiEnhancer",
+                options: "{pageEnhancer}.options.uiEnhancerOptions"
+            }
+        }
+    });
+    
+    fluidIoCTests.test("Expansion order test", function () {
+        var that = fluid.tests.pageEnhancer();
+        var expected = {
+            value: 3,
+            outerValue: 3
+        };
+        fluid.testUtils.assertLeftHand("Correctly merged options", expected, that.uiEnhancer.options);
+    });
+    
+    /** Listener merging tests **/
 
     fluid.tests.listenerMergingPreInit = function (that) {
         that.eventFired = function (eventName) {
@@ -430,7 +466,45 @@ fluid.registerNamespace("fluid.tests");
     
     /** FLUID-4330 - ginger expansion tests **/
     
+    var outerConfig = {
+        value: 4,
+        otherValue: 3
+    };
     
+    var expandingConfig = {
+        outerValue: "{outerConfig}.value",
+        selfValue: "{self}.outerValue", // backward reference
+        selfForward: "{self}.innerBlock.innerRef", // forward reference
+        innerBlock: {
+            innerValue: 5,
+            innerRef: "{outerConfig}.otherValue"
+        }
+    };
+    
+    var expected = {
+        outerValue: 4,
+        selfValue: 4, // backward reference
+        selfForward: 3, // forward reference
+        innerBlock: {
+            innerValue: 5,
+            innerRef: 3
+        }
+    };
+    
+    fluidIoCTests.test("FLUID-4330 Basic Ginger Expansion Test", function () {
+        var contexts = {};
+        var fetcher = function (parsed) {
+            var context = contexts[parsed.context];
+            return fluid.get(context.root, parsed.path, context.config);
+        };
+        var expandOptions = fluid.mergedResolveOptions({source: expandingConfig, sourceTrundler: fluid.concreteTrundler, fetcher: fetcher});
+        var expandStrategy = fluid.makeExpandStrategy(expandOptions);
+        var target = {};
+        contexts.outerConfig = {root: outerConfig, config: {strategies: [fluid.model.defaultFetchStrategy]}};
+        contexts.self = {root: target, config: {strategies: [expandStrategy]}};
+        fluid.fetchChildren(target, expandOptions.source, expandStrategy, expandOptions.sourceTrundler);
+        jqUnit.assertDeepEq("Properly expanded self-referential structure", expected, target);
+    });
     
     /** FLUID-4135 - event injection and boiling test **/
     

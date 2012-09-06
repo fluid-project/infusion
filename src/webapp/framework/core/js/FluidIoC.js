@@ -958,7 +958,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         if (userOptions && userOptions.localRecord) {
             fluid.checkComponentRecord(defaults, userOptions.localRecord);
         }
-        //defaults = fluid.expandOptions(fluid.copy(defaults), that);
+        defaults = fluid.expandOptions(fluid.copy(defaults), that);
         var localRecord = {};
         if (userOptions && userOptions.marker === fluid.EXPAND) {
             // TODO: Somewhat perplexing... the local record itself, by any route we could get here, consists of unexpanded
@@ -968,11 +968,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 if (defaults && defaults.mergePolicy) {
                     localOptions.mergePolicy = defaults.mergePolicy;
                 }
-                localRecord.options = localOptions;//fluid.expandOptions(localOptions, that);
+                localRecord.options = fluid.expandOptions(localOptions, that);
             }
             localRecord["arguments"] = fluid.get(userOptions, "localRecord.arguments");
             var toExpand = userOptions.value;
-            userOptions = fluid.expandLocal(toExpand, localRecord); // fluid.expandOptions(toExpand, that, localRecord, {direct: true});
+            userOptions = fluid.expandOptions(toExpand, that, localRecord, {direct: true});
         }
         localRecord.directOptions = userOptions;
         if (!localRecord.options) {
@@ -984,13 +984,13 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var mergeOptions = (userOptions && userOptions.mergeAllOptions) || ["{directOptions}"];
         var togo = fluid.transform(mergeOptions, function(value) {
             // Avoid use of expandOptions in simple case to avoid infinite recursion when constructing instantiator
-            return value === "{directOptions}"? localRecord.directOptions : value; //fluid.expandOptions(value, that, localRecord, {direct: true}); 
+            return value === "{directOptions}"? localRecord.directOptions : fluid.expandOptions(value, that, localRecord, {direct: true}); 
         });
         var transRec = fluid.locateTransformationRecord(that);
         if (transRec) {
             togo[0].transformOptions = transRec.options;
         }
-        return {options: [defaults].concat(togo), localRecord: localRecord};
+        return [defaults].concat(togo);
     };
     
     fluid.expandComponentOptions = fluid.wrapActivity(fluid.expandComponentOptions, 
@@ -1294,39 +1294,59 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.resolveContextValue = fluid.wrapActivity(fluid.resolveContextValue, 
         ["    while resolving context value ", "arguments.0"]);
     
-    function regenerateCursor(options, segs, i) {
-        segs = segs.slice(0, i);
-        var source = fluid.get(options.source, segs); // TODO: hyperspeed version which bypasses everything and avoids slice
+    // A very simple "new inner trundler" that just performs concrete property access
+    // Note that every "strategy" is also a "trundler" of this type, considering just the first two arguments
+    fluid.concreteTrundler = function (source, seg) {
+        return !source? source : source[seg];  
+    };
+    
+    // This function appears somewhat reusable, but not entirely - it probably needs to be packaged
+    // along with the particular "strategy". Very similar to the old "filter"... the "outer driver" needs
+    // to execute it to get the first recursion going at top level. This was one of the most odd results
+    // of the reorganisation, since the "old work" seemed much more naturally expressed in terms of values
+    // and what happened to them. The "new work" is expressed in terms of paths and how to move amongst them.
+    fluid.fetchChildren = function (target, source, strategy, sourceTrundler) {
+        fluid.each(source, function (newSource, key) {
+            if (newSource === undefined) {
+                target[key] = undefined; // avoid ever dispatching to ourselves with undefined source
+            }
+            else { // Don't bother to generate segs or i in direct dispatch to self!!!!!!
+                strategy(target, key, null, null, source, sourceTrundler);
+            }
+        });
+    };
+    
+    function regenerateCursor (options, segs, limit, sourceTrundler) {
+        var source = options.source;
+        for (var i = 0; i < limit; ++ i) {
+            source = sourceTrundler(source, seg[i]);
+        }
         return source;
     }
     
-    function makeExpandStrategy(options) {
-        var strategy = function(target, name, i, segs, source) { // Cursor is just source
+    // so far - options contains source and seenIds, and EL resolution options, including fetcher
+    // it used to also contain "noCopy" and "filter" which took care of expanders
+    
+    fluid.makeExpandStrategy = function (options) {
+        var strategy = function (target, name, i, segs, source) { // Cursor is just source
             if (target.hasOwnProperty(name)) { // bail out if our work has already been done
                 return target[name];
             }
             if (source === undefined) { // recover our state in case this is an external entry point
                 source = regenerateCursor(options, segs, i - 1);
             }
-            var thisSource = source[name];
-            var expanded = disposeSource(member, options);
+            var thisSource = options.sourceTrundler(source, name);
+            var expanded = disposeSource(thisSource, options);
             var isTrunk = fluid.diagnoseTrunk(expanded);
-            var thisTarget = target[name] = isTrunk ? isTrunk : expanded;
+            var thisTarget = target[name] = isTrunk ? fluid.sendTrunk(thisSource) : expanded;
             if (isTrunk) {
-                fluid.each(member, function (newSource, key) {
-                    if (newSource === undefined) {
-                        thisTarget[key] = undefined; // avoid ever dispatching to ourselves with undefined source
-                    }
-                    else { // Don't bother to generate segs or i in direct dispatch to self!!!!!!
-                        strategy(thisTarget, key, null, null, newSource);
-                    }
-                });
+                fluid.fetchChildren(thisTarget, thisSource, strategy, options.sourceTrundler);
             }
             return thisTarget;
         };
         options.selfStrategy = strategy;
         return strategy;
-    }
+    };
     
     fluid.arrayTrunk = [];
     
@@ -1385,11 +1405,16 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         bareContextRefs: true
     });
     
-    fluid.resolveEnvironment = function(obj, options) {
+    fluid.mergedResolveOptions = function(options) {
         // Don't create a component here since this function is itself used in the 
         // component expansion pathway - avoid all expansion in any case to head off FLUID-4301
         options = $.extend({}, fluid.rawDefaults("fluid.resolveEnvironment"), options);
         options.seenIds = {};
+        return options;
+    }
+    
+    fluid.resolveEnvironment = function(obj, options) {
+        var options = fluid.mergedResolveOptions(options);
         return resolveEnvironmentImpl(obj, options);
     };
 
