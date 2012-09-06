@@ -859,6 +859,9 @@ var fluid = fluid || fluid_1_5;
                 if (typeof (listener) === "string") {
                     namespace = listener;
                     var record = listeners[listener];
+                    if (!record) {
+                        return;
+                    }
                     listener = record.listener;
                 } 
                 var id = identify(listener);
