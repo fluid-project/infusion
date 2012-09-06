@@ -514,5 +514,191 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             applier.requestChange("selections", {lineSpacing: 1.5});
             jqUnit.assertTrue("Over-broad change triggers listener", notified);
         });
+
+        DataBindingTests.test("Super Applier: change request", function () {
+            expect(3);
+            var one = {
+                    field1: "field1"
+                },
+                oneApplier = fluid.makeChangeApplier(one),
+                two = {
+                    field2: "field2"
+                },
+                twoApplier = fluid.makeChangeApplier(two);
+            var togo = fluid.assembleModel({
+                one: {
+                    model: one,
+                    applier: oneApplier
+                },
+                two: {
+                    model: two,
+                    applier: twoApplier
+                }
+            });
+            jqUnit.assertDeepEq("Combined model should be", {
+                one: {
+                    field1: "field1"
+                },
+                two: {
+                    field2: "field2"
+                }
+            }, togo.model);
+            togo.applier.requestChange("one.field1", "NEW");
+            togo.applier.requestChange("two.field2", "NEW");
+            jqUnit.assertEquals("Model should be updated", "NEW", togo.model.one.field1);
+            jqUnit.assertEquals("Model should be updated", "NEW", togo.model.two.field2);
+        });
+
+        DataBindingTests.test("Super Applier: modelChanged", function () {
+            expect(3);
+            var one = {
+                    field1: "field1"
+                },
+                oneApplier = fluid.makeChangeApplier(one),
+                two = {
+                    field2: "field2"
+                },
+                twoApplier = fluid.makeChangeApplier(two);
+            var togo = fluid.assembleModel({
+                one: {
+                    model: one,
+                    applier: oneApplier
+                },
+                two: {
+                    model: two,
+                    applier: twoApplier
+                }
+            });
+            togo.applier.modelChanged.addListener("one.field1", function () {
+                jqUnit.assertEquals("Model should be updated", "NEW", togo.model.one.field1);
+            });
+            togo.applier.modelChanged.addListener("two.field2", function () {
+                jqUnit.assertEquals("Model should be updated", "NEW", togo.model.two.field2);
+            });
+            togo.applier.requestChange("one.field1", "NEW");
+            togo.applier.requestChange("two.field2", "NEW");
+            jqUnit.assertDeepEq("Combined model should be", {
+                one: {
+                    field1: "NEW"
+                },
+                two: {
+                    field2: "NEW"
+                }
+            }, togo.model);
+        });
+
+        DataBindingTests.test("Super Applier: modelChanged deferred", function () {
+            expect(1);
+            var one = {
+                    field1: "field1"
+                },
+                oneApplier = fluid.makeChangeApplier(one),
+                two = {
+                    field2: "field2"
+                },
+                twoApplier = fluid.makeChangeApplier(two);
+                togo = fluid.assembleModel({
+                    one: {
+                        model: one,
+                        applier: oneApplier
+                    }
+                });
+            // Test addition of deferred listener.
+            togo.applier.modelChanged.addListener("two.field2", function () {
+                jqUnit.assertEquals("Model should be updated", "NEW", togo.model.two.field2);
+            });
+            fluid.attachModel(togo.model, "two", two);
+            togo.applier.addSubApplier("two", twoApplier);
+            togo.applier.requestChange("two.field2", "NEW");
+
+            // Test addition and then removal of deferred listener before the model/applier is attached.
+            togo.applier.modelChanged.addListener("three.field3", function () {
+                jqUnit.assertTrue("This listener test should never run", false);
+            }, "toRemove");
+            var three = {
+                field3: "field3"
+            }, threeApplier = fluid.makeChangeApplier(three);
+            togo.applier.modelChanged.removeListener("toRemove");
+            fluid.attachModel(togo.model, "three", three);
+            togo.applier.addSubApplier("three", threeApplier);
+            togo.applier.requestChange("three.field3", "NEW");
+        });
+
+        DataBindingTests.test("Super Applier: guards", function () {
+            expect(3);
+            var one = {
+                    field1: "field1"
+                },
+                oneApplier = fluid.makeChangeApplier(one),
+                two = {
+                    field2: "field2"
+                },
+                twoApplier = fluid.makeChangeApplier(two);
+            var togo = fluid.assembleModel({
+                one: {
+                    model: one,
+                    applier: oneApplier
+                },
+                two: {
+                    model: two,
+                    applier: twoApplier
+                }
+            });
+            togo.applier.guards.addListener("one.field1", function () {
+                jqUnit.assertEquals("Model should not be updated", "field1", togo.model.one.field1);
+            });
+            togo.applier.guards.addListener("two.field2", function () {
+                jqUnit.assertEquals("Model should not be updated", "field2", togo.model.two.field2);
+            });
+            togo.applier.requestChange("one.field1", "NEW");
+            togo.applier.requestChange("two.field2", "NEW");
+            jqUnit.assertDeepEq("Combined model should be", {
+                one: {
+                    field1: "NEW"
+                },
+                two: {
+                    field2: "NEW"
+                }
+            }, togo.model);
+        });
+
+        DataBindingTests.test("Super Applier: guards deferred", function () {
+            expect(3);
+            var one = {
+                    field1: "field1"
+                },
+                oneApplier = fluid.makeChangeApplier(one),
+                two = {
+                    field2: "field2"
+                },
+                twoApplier = fluid.makeChangeApplier(two);
+                togo = fluid.assembleModel({
+                    one: {
+                        model: one,
+                        applier: oneApplier
+                    }
+                });
+            // Test addition of deferred guard.
+            togo.applier.guards.addListener("two.field2", function () {
+                jqUnit.assertEquals("Model should be updated", "field2", togo.model.two.field2);
+            });
+            fluid.attachModel(togo.model, "two", two);
+            togo.applier.addSubApplier("two", twoApplier);
+            togo.applier.requestChange("two.field2", "NEW");
+            jqUnit.assertEquals("Model should be updated", "NEW", togo.model.two.field2);
+
+            // Test addition and then removal of deferred guard before the model/applier is attached.
+            togo.applier.guards.addListener("three.field3", function () {
+                jqUnit.assertTrue("This guard's test should never run", false);
+            }, "toRemove");
+            var three = {
+                field3: "field3"
+            }, threeApplier = fluid.makeChangeApplier(three);
+            togo.applier.guards.removeListener("toRemove");
+            fluid.attachModel(togo.model, "three", three);
+            togo.applier.addSubApplier("three", threeApplier);
+            togo.applier.requestChange("three.field3", "NEW");
+            jqUnit.assertEquals("Model should be updated", "NEW", togo.model.three.field3);
+        });
     });
 })(jQuery);

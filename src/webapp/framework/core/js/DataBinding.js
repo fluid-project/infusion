@@ -748,24 +748,117 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.makeSuperApplier = function () {
-        var subAppliers = [];
-        var that = {};
-        that.addSubApplier = function (path, subApplier) {
-            subAppliers.push({path: path, subApplier: subApplier});
-        };
-        that.fireChangeRequest = function (request) {
-            for (var i = 0; i < subAppliers.length; ++i) {
-                var path = subAppliers[i].path;
-                if (request.path.indexOf(path) === 0) {
-                    var subpath = request.path.substring(path.length + 1);
-                    var subRequest = fluid.copy(request);
-                    subRequest.path = subpath;
-                    // TODO: Deal with the as yet unsupported case of an EL rvalue DAR
-                    subAppliers[i].subApplier.fireChangeRequest(subRequest);
-                }
+        var subAppliers = {},
+            listeners = {},
+            guards = {},
+            that = fluid.makeChangeApplier();
+
+        function buildSubSpec (spec, matchedPath) {
+            var specPath = spec.path || spec,
+                subpath = specPath.substring(matchedPath.length + 1),
+                subSpec = fluid.copy(spec);
+            if (subSpec.path) {
+                subSpec.path = subpath;
+            } else {
+                subSpec = subpath;
             }
+            return subSpec;
+        }
+
+        function addDeferred(path, firer, listeners) {
+            fluid.remove_if(listeners, function (thisListeners, seg) {
+                var matchedPath = fluid.pathUtil.matchPath(path, seg);
+                if (!matchedPath) {
+                    return;
+                }
+                fluid.each(thisListeners, function (listener) {
+                    var subSpec = buildSubSpec(listener.spec, matchedPath);
+                    firer.addListener(subSpec, listener.listener, listener.namespace);
+                });
+                return true;
+            });
+        }
+
+        function addListener (spec, listener, namespace, firer, listeners) {
+            var specPath = spec.path || spec,
+                matchedPath, subSpec,
+                subApplier = fluid.find(subAppliers, function (subApplier, path) {
+                    matchedPath = fluid.pathUtil.matchPath(path, specPath);
+                    if (matchedPath) {
+                        return subApplier;
+                    }
+                });
+            if (subApplier) {
+                subSpec = buildSubSpec(spec, matchedPath);
+                subApplier[firer].addListener(subSpec, listener, namespace);
+                return;
+            }
+            listeners[specPath] = fluid.makeArray(listeners[specPath]);
+            listeners[specPath].push({
+                spec: spec,
+                listener: listener,
+                namespace: namespace
+            });
+        }
+
+        function removeListener (listener, firer, listeners) {
+            fluid.each(subAppliers, function (subApplier) {
+                subApplier[firer].removeListener(listener);
+            });
+            // Here we still don't know if the listener is removed so we need to check
+            // the ones that are registered but not attached.
+            if (typeof (listener) !== "string") {
+                return;
+            }
+            fluid.remove_if(listeners, function (thisListeners) {
+                fluid.remove_if(thisListeners, function (thisListener) {
+                    if (thisListener.namespace === listener) {
+                        return true;
+                    }
+                });
+                if (thisListeners.length < 1) {
+                    return true;
+                }
+            });
+        }
+
+        that.addSubApplier = function (path, subApplier) {
+            subAppliers[path] = subApplier;
+            addDeferred(path, subApplier.modelChanged, listeners);
+            addDeferred(path, subApplier.guards, guards);
+        };
+
+        that.fireChangeRequest = function (request) {
+            fluid.find(subAppliers, function (subApplier, path) {
+                if (request.path.indexOf(path) !== 0) {
+                    return;
+                }
+                var subpath = request.path.substring(path.length + 1);
+                var subRequest = fluid.copy(request);
+                subRequest.path = subpath;
+                // TODO: Deal with the as yet unsupported case of an EL rvalue DAR
+                subApplier.fireChangeRequest(subRequest);
+                return true;
+            });
         };
         bindRequestChange(that);
+
+        that.guards.addListener = function (spec, guard, namespace) {
+            addListener(spec, guard, namespace, "guards", guards);
+        };
+
+        that.modelChanged.addListener = function (spec, listener, namespace) {
+            addListener(spec, listener, namespace, "modelChanged", listeners);
+        };
+
+        that.guards.removeListener = function (listener) {
+            removeListener(listener, "guards", guards);
+        };
+
+        that.modelChanged.removeListener = function (listener) {
+            removeListener(listener, "modelChanged", listeners);
+        };
+
         return that;
     };
     
