@@ -536,6 +536,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         firer.fire(true);
         firer.removeListener(testListener);
         firer.fire(false);
+        firer.removeListener("toRemoveNonExistent"); // for FLUID-4791
+        firer.fire(false);
     });
     
     fluid.tests.makeNotingListener = function(key, value) {
@@ -586,19 +588,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Listeners correctly merged", $.extend(expected2, expected1), that.values); 
     });
 
-    fluidJSTests.test("Correctly remove listeners", function() {
-        expect(1);
-        var firer = fluid.event.getEventFirer();
-        firer.addListener(function () {
-            jqUnit.assert("Listener fires");
-        }, "toRemove");
-        firer.fire();
-        firer.removeListener("toRemove");
-        firer.fire();
-        firer.removeListener("toRemoveNonExistent");
-        firer.fire();
-    });
-    
     fluid.tests.initLifecycle = function (that) {
         that.initted = true;  
     };
