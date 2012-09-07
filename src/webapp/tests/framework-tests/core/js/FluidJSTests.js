@@ -536,6 +536,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         firer.fire(true);
         firer.removeListener(testListener);
         firer.fire(false);
+        firer.removeListener("toRemoveNonExistent"); // for FLUID-4791
+        firer.fire(false);
     });
     
     fluid.tests.makeNotingListener = function(key, value) {
@@ -585,7 +587,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         jqUnit.assertDeepEq("Listeners correctly merged", $.extend(expected2, expected1), that.values); 
     });
-    
+
     fluid.tests.initLifecycle = function (that) {
         that.initted = true;  
     };
