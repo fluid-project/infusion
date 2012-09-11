@@ -1300,80 +1300,92 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return !source? source : source[seg];  
     };
     
+    fluid.expandExpander = function (target, source, options) {
+        var expander = fluid.getGlobalValue(source.expander.type);  
+        if (expander) {
+            return expander.call(null, target, source, options);
+        }
+    }
+    
     // This function appears somewhat reusable, but not entirely - it probably needs to be packaged
     // along with the particular "strategy". Very similar to the old "filter"... the "outer driver" needs
     // to execute it to get the first recursion going at top level. This was one of the most odd results
     // of the reorganisation, since the "old work" seemed much more naturally expressed in terms of values
     // and what happened to them. The "new work" is expressed in terms of paths and how to move amongst them.
-    fluid.fetchChildren = function (target, source, strategy, sourceTrundler) {
+    fluid.fetchChildren = function (target, source, options) {
+        if (source.expander && source.expander.type) { // possible merging expander at top level
+            fluid.expandExpander(target, source, options);
+        }
         fluid.each(source, function (newSource, key) {
             if (newSource === undefined) {
                 target[key] = undefined; // avoid ever dispatching to ourselves with undefined source
             }
             else { // Don't bother to generate segs or i in direct dispatch to self!!!!!!
-                strategy(target, key, null, null, source, sourceTrundler);
+                options.strategy(target, key, null, null, source, options.sourceTrundler);
             }
         });
+        return target;
     };
     
+    // TODO: This method is unnecessary and introduces quadratic inefficiency. The driver should detect
+    // "homogeneous uni-strategy trundling" and just dispatch to the strategy in one go
     function regenerateCursor (options, segs, limit, sourceTrundler) {
         var source = options.source;
         for (var i = 0; i < limit; ++ i) {
-            source = sourceTrundler(source, seg[i]);
+            source = sourceTrundler(source, segs[i]);
         }
         return source;
     }
+    
+    fluid.expandSource = function (options, target, name, source, recurse) {
+        var expanded, isTrunk;
+        fluid.guardCircularity(options.seenIds, source, "expansion", 
+             " - please ensure options are not circularly connected, or protect from expansion using the \"noexpand\" policy or expander");
+        if (typeof (source) === "string") {
+            expanded = fluid.resolveContextValue(source, options);
+        }
+        else if (fluid.isPrimitive(source) || source.nodeType !== undefined || source.jquery) {
+            expanded = source;
+        }
+        else if (source.expander) {
+            expanded = fluid.expandExpander(target, source, options);
+        }
+        else {
+            expanded = fluid.freshContainer(source);
+            isTrunk = true;
+        }
+        target[name] = expanded;
+        if (isTrunk) {
+            recurse(expanded, source);
+        }
+        return expanded;
+    };
     
     // so far - options contains source and seenIds, and EL resolution options, including fetcher
     // it used to also contain "noCopy" and "filter" which took care of expanders
     
     fluid.makeExpandStrategy = function (options) {
+        var recurse = function (target, source) {
+            return fluid.fetchChildren(target, source, options);
+        };
         var strategy = function (target, name, i, segs, source) { // Cursor is just source
             if (target.hasOwnProperty(name)) { // bail out if our work has already been done
                 return target[name];
             }
+            if (name === "expander" && source && source.expander.type) { // must be direct dispatch from fetchChildren
+                return;
+            }
             if (source === undefined) { // recover our state in case this is an external entry point
-                source = regenerateCursor(options, segs, i - 1);
+                source = regenerateCursor(options, segs, i - 1, options.sourceTrundler);
             }
             var thisSource = options.sourceTrundler(source, name);
-            var expanded = disposeSource(thisSource, options);
-            var isTrunk = fluid.diagnoseTrunk(expanded);
-            var thisTarget = target[name] = isTrunk ? fluid.sendTrunk(thisSource) : expanded;
-            if (isTrunk) {
-                fluid.fetchChildren(thisTarget, thisSource, strategy, options.sourceTrundler);
-            }
-            return thisTarget;
+            
+            return fluid.expandSource(options, target, name, thisSource, recurse);
         };
-        options.selfStrategy = strategy;
+        options.recurse = recurse;
+        options.strategy = strategy;
         return strategy;
     };
-    
-    fluid.arrayTrunk = [];
-    
-    fluid.objectTrunk = {};
-    
-    // These two functions form a deferred version of fluid.freshContainer
-    
-    fluid.diagnoseTrunk = function(maybeTrunk) {
-        return maybeTrunk === fluid.arrayTrunk ? [] : 
-            (maybeTrunk == fluid.objectTrunk ? {} : undefined);
-    };
-    
-    fluid.sendTrunk = function(source) {
-        return fluid.isArrayable(source) ? fluid.arrayTrunk : fluid.objectTrunk;
-    };
-    
-    function disposeSource(obj, options) {
-        fluid.guardCircularity(options.seenIds, obj, "expansion", 
-             " - please ensure options are not circularly connected, or protect from expansion using the \"noexpand\" policy or expander");
-        if (typeof(obj) === "string") {
-            return fluid.resolveContextValue(obj, options);
-        }
-        else if (fluid.isPrimitive(obj) || obj.nodeType !== undefined || obj.jquery) {
-            return obj;
-        }
-        else return fluid.sendTrunk(obj);      
-    }
     
     function resolveEnvironmentImpl(obj, options) { 
      // obj ==== source!! needs regenerating
@@ -1418,12 +1430,15 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return resolveEnvironmentImpl(obj, options);
     };
 
-    /** "light" expanders, starting with support functions for the "deferredFetcher" expander **/
+    /** "light" expanders, starting with support functions for the so-called "deferredCall" expanders,
+         which make an arbitrary function call (after expanding arguments) and are then replaced in
+         the configuration with the call results. These will probably be abolished and replaced with
+         equivalent model transformation machinery **/
 
-    fluid.expander.deferredCall = function(target, source, recurse) {
+    fluid.expander.deferredCall = function(target, source, options) {
         var expander = source.expander;
         var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : fluid.makeArray(expander.args);
-        args = recurse(args); 
+        args = options.recurse([], args); 
         return fluid.invokeGlobalFunction(expander.func, args);
     };
     
@@ -1432,13 +1447,13 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.deferredInvokeCall = function(target, source, recurse) {
         var expander = source.expander;
         var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : fluid.makeArray(expander.args);
-        args = recurse(args);  
+        args = recurse(args); // TODO: risk of double expansion here. embodyDemands will sometimes expand, sometimes not... 
         return fluid.invoke(expander.func, args);
     };
     
     // The "noexpand" expander which simply unwraps one level of expansion and ceases.
     fluid.expander.noexpand = function(target, source) {
-        return $.extend(target, source.expander.tree);
+        return source.expander.value ? source.expander.value : $.extend(target, source.expander.tree);
     };
   
     fluid.noexpand = fluid.expander.noexpand; // TODO: check naming and namespacing

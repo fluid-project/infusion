@@ -478,6 +478,32 @@ fluid.registerNamespace("fluid.tests");
         innerBlock: {
             innerValue: 5,
             innerRef: "{outerConfig}.otherValue"
+        },
+        innerBlock2: { // this block tests cursor regeneration
+            innerRef: "{self}.innerBlock2.moreInner.innerValue",
+            moreInner: {
+                innerValue: 6
+            }
+        },
+        expanderValue: {
+            expander: {
+                type: "fluid.deferredCall",
+                func: "fluid.identity",
+                args: "{self}.forwardValue"
+            }
+        },
+        forwardValue: "{outerConfig}.value",
+        unexpanded: {
+            expander: {
+                type: "fluid.noexpand",
+                value: "{outerConfig}.value"
+            }
+        },
+        expander: {
+            type: "fluid.noexpand",
+            tree: {
+                unexpandedTop: "{outerConfig}.value"
+            }
         }
     };
     
@@ -488,7 +514,17 @@ fluid.registerNamespace("fluid.tests");
         innerBlock: {
             innerValue: 5,
             innerRef: 3
-        }
+        },
+        innerBlock2: {
+            innerRef: 6,
+            moreInner: {
+                innerValue: 6
+            }
+        },
+        expanderValue: 4,
+        forwardValue: 4,
+        unexpanded: "{outerConfig}.value",
+        unexpandedTop: "{outerConfig}.value"
     };
     
     fluidIoCTests.test("FLUID-4330 Basic Ginger Expansion Test", function () {
@@ -502,7 +538,7 @@ fluid.registerNamespace("fluid.tests");
         var target = {};
         contexts.outerConfig = {root: outerConfig, config: {strategies: [fluid.model.defaultFetchStrategy]}};
         contexts.self = {root: target, config: {strategies: [expandStrategy]}};
-        fluid.fetchChildren(target, expandOptions.source, expandStrategy, expandOptions.sourceTrundler);
+        fluid.fetchChildren(target, expandOptions.source, expandOptions);
         jqUnit.assertDeepEq("Properly expanded self-referential structure", expected, target);
     });
     
