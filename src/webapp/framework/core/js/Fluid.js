@@ -761,10 +761,10 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.event.resolveListener = function (listener) {
-        if (typeof (listener) === "string") {
-            var listenerFunc = fluid.getGlobalValue(listener);
+        if (listener.globalName) {
+            var listenerFunc = fluid.getGlobalValue(listener.globalName);
             if (!listenerFunc) {
-                fluid.fail("Unable to look up name " + listener + " as a global function");
+                fluid.fail("Unable to look up name " + listener.globalName + " as a global function");
             } else {
                 listener = listenerFunc;
             }
@@ -820,6 +820,8 @@ var fluid = fluid || fluid_1_5;
                 }
             }
         }
+        var identify = fluid.event.identifyListener;
+        
         var that;
         var lazyInit = function () { // Lazy init function to economise on object references
             listeners = {};
@@ -832,6 +834,9 @@ var fluid = fluid || fluid_1_5;
                 if (unicast) {
                     namespace = "unicast";
                 }
+                if (typeof(listener) === "string") {
+                    listener = {globalName: listener};
+                }
                 var id = identify(listener);
                 namespace = namespace || id;
                 var record = {listener: listener, predicate: predicate,
@@ -843,9 +848,6 @@ var fluid = fluid || fluid_1_5;
             };
             that.addListener.apply(null, arguments);
         };
-        
-        var identify = fluid.event.identifyListener;
-        
         that = {
             name: name,
             typeName: "fluid.event.firer",

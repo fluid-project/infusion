@@ -730,7 +730,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // unsupported, non-API function
     fluid.event.dispatchListener = function(instantiator, that, listener, eventName, eventSpec, indirectArgs) {
         return fluid.wrapActivity(function() {
-            listener = fluid.event.resolveListener(listener); // just resolves globals
+            if (typeof(listener) === "string") {
+                listener = fluid.event.resolveListener({globalName: listener}); // just resolves globals
+            }
             var args = indirectArgs? arguments[0] : fluid.makeArray(arguments);
             var demandspec = fluid.determineDemands(instantiator, that, eventName);
             if (demandspec.args.length === 0 && eventSpec.args) {
