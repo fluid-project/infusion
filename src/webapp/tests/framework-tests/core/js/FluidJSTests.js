@@ -612,6 +612,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.initted = 2;
     };
     
+    fluid.tests.initLifecycleM = function (that) {
+        that.initMultiple = that.initMultiple || 0;
+        that.initMultiple++;  
+    };
+    
     fluid.defaults("fluid.tests.lifecycleTest2", {
         gradeNames: ["fluid.modelComponent", "autoInit"],
         preInitFunction: [{
@@ -623,7 +628,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, {
             priority: 1,
             listener: "fluid.tests.initLifecycle1"
-        }]
+        }],
+        postInitFunction: [ // This tests FLUID-4779
+            "fluid.tests.initLifecycleM",
+            "fluid.tests.initLifecycleM"
+        ]
     });
     
     fluidJSTests.test("Detailed interaction of priority and namespacing with lifecycle functions", function () {
@@ -631,6 +640,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.lifecycleTest2({model: model});
         jqUnit.assertUndefined("Grade preInit function defeated", that.model);
         jqUnit.assertEquals("Priority order respected", 1, that.initted);
+        jqUnit.assertEquals("Two global name listeners added", 2, that.initMultiple);
     });
 
     /** Test FLUID-4776 - only one instance of preinit function registered **/
