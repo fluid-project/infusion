@@ -1013,9 +1013,9 @@ var fluid = fluid || fluid_1_5;
     };
     
     // unsupported, NON-API function
-    fluid.resolveGradeStructure = function (gradeNames) {
+    fluid.resolveGradeStructure = function (defaultName, gradeNames) {
         var gradeStruct = {
-            gradeChain: [],
+            gradeChain: [defaultName],
             gradeHash: {},
             optionsChain: []
         };
@@ -1032,7 +1032,7 @@ var fluid = fluid || fluid_1_5;
     fluid.resolveGrade = function (defaults, defaultName, gradeNames) {
         var mergeArgs = [defaults];
         if (gradeNames) {
-            var gradeStruct = fluid.resolveGradeStructure(gradeNames);
+            var gradeStruct = fluid.resolveGradeStructure(defaultName, gradeNames);
             mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs).concat({gradeNames: gradeStruct.gradeChain});
         }
         var mergePolicy = {};
@@ -1474,9 +1474,14 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.initLifecycleFunctions = function (that) {
+        var gradeNames = that.options.gradeNames;
         fluid.each(fluid.lifecycleFunctions, function (func, key) {
             var value = that.options[key];
-            value = fluid.updateWithDefaultLifecycle(key, value, that.typeName);
+            for (var i = gradeNames.length - 1; i >= 0; -- i) { // most specific grades are at front
+                if (gradeNames[i] !== "autoInit") {  
+                    value = fluid.updateWithDefaultLifecycle(key, value, gradeNames[i]);
+                }
+            }
             if (value) {
                 that.options[key] = fluid.makeEventFirer(null, null, key);
                 fluid.event.addListenerToFirer(that.options[key], value);
