@@ -662,4 +662,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Only one call to preInitFunction", 1, that.count);
     });
 
+    /** Test FLUID-4788 - acquiring default initFunctions through the hierarchy **/
+
+    fluid.defaults("fluid.gradeComponent", {
+        gradeNames: ["autoInit", "fluid.littleComponent"]
+    });
+    fluid.gradeComponent.preInit = function (that) {
+        jqUnit.assert("Pre init function is called by a component of fluid.gradeComponent grade.");
+    };
+    fluid.defaults("fluid.gradeUsingComponent", {
+        gradeNames: ["autoInit", "fluid.gradeComponent"]
+    });
+
+    fluidJSTests.test("FLUID-4788 test - default lifecycle functions inherited from a grade.", function() {
+        jqUnit.expect(1);
+        fluid.gradeUsingComponent();
+    });
+
 })(jQuery);
