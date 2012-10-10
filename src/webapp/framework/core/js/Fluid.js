@@ -761,10 +761,10 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.event.resolveListener = function (listener) {
-        if (typeof (listener) === "string") {
-            var listenerFunc = fluid.getGlobalValue(listener);
+        if (listener.globalName) {
+            var listenerFunc = fluid.getGlobalValue(listener.globalName);
             if (!listenerFunc) {
-                fluid.fail("Unable to look up name " + listener + " as a global function");
+                fluid.fail("Unable to look up name " + listener.globalName + " as a global function");
             } else {
                 listener = listenerFunc;
             }
@@ -820,6 +820,8 @@ var fluid = fluid || fluid_1_5;
                 }
             }
         }
+        var identify = fluid.event.identifyListener;
+        
         var that;
         var lazyInit = function () { // Lazy init function to economise on object references
             listeners = {};
@@ -832,6 +834,9 @@ var fluid = fluid || fluid_1_5;
                 if (unicast) {
                     namespace = "unicast";
                 }
+                if (typeof(listener) === "string") {
+                    listener = {globalName: listener};
+                }
                 var id = identify(listener);
                 namespace = namespace || id;
                 var record = {listener: listener, predicate: predicate,
@@ -843,9 +848,6 @@ var fluid = fluid || fluid_1_5;
             };
             that.addListener.apply(null, arguments);
         };
-        
-        var identify = fluid.event.identifyListener;
-        
         that = {
             name: name,
             typeName: "fluid.event.firer",
@@ -1016,9 +1018,9 @@ var fluid = fluid || fluid_1_5;
     };
     
     // unsupported, NON-API function
-    fluid.resolveGradeStructure = function (gradeNames) {
+    fluid.resolveGradeStructure = function (defaultName, gradeNames) {
         var gradeStruct = {
-            gradeChain: [],
+            gradeChain: [defaultName],
             gradeHash: {},
             optionsChain: []
         };
@@ -1035,7 +1037,7 @@ var fluid = fluid || fluid_1_5;
     fluid.resolveGrade = function (defaults, defaultName, gradeNames) {
         var mergeArgs = [defaults];
         if (gradeNames) {
-            var gradeStruct = fluid.resolveGradeStructure(gradeNames);
+            var gradeStruct = fluid.resolveGradeStructure(defaultName, gradeNames);
             mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs).concat({gradeNames: gradeStruct.gradeChain});
         }
         var mergePolicy = {};
@@ -1477,9 +1479,14 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.initLifecycleFunctions = function (that) {
+        var gradeNames = that.options.gradeNames;
         fluid.each(fluid.lifecycleFunctions, function (func, key) {
             var value = that.options[key];
-            value = fluid.updateWithDefaultLifecycle(key, value, that.typeName);
+            for (var i = gradeNames.length - 1; i >= 0; -- i) { // most specific grades are at front
+                if (gradeNames[i] !== "autoInit") {  
+                    value = fluid.updateWithDefaultLifecycle(key, value, gradeNames[i]);
+                }
+            }
             if (value) {
                 that.options[key] = fluid.makeEventFirer(null, null, key);
                 fluid.event.addListenerToFirer(that.options[key], value);
