@@ -65,6 +65,7 @@ var fluid_1_5 = fluid_1_5 || {};
          */
         that.updateContent = function (content) {
             that.container.tooltip("option", "content", createContentFunc(content));
+            that.container.data("tooltip").tooltip.html(content);
         };
         
         /**

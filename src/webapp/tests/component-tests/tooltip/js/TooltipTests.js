@@ -65,7 +65,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("The tooltip element is exposed correctly", 0 === tt.elm.index(ttELM));
             
             tt.updateContent(newContent);
-            jqUnit.assertTrue("The tooltip content should have updated", newContent, ttELM.text());
+            jqUnit.assertEquals("The tooltip content should have updated", newContent, ttELM.text());
             
             tt.container.tooltip("destroy");
         });
