@@ -323,7 +323,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }};
     };
     
-    fluid.expander.deferredFetcher = function(target, source, recurse, expandOptions) {
+    fluid.expander.deferredFetcher = function(target, source, expandOptions) {
         var expander = source.expander;
         var spec = fluid.copy(expander);
         // fetch the "global" collector specified in the external environment to receive

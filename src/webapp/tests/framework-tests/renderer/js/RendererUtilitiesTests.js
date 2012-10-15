@@ -137,6 +137,14 @@ fluid.registerNamespace("fluid.tests");
         fluid.demands("fluid.tests.rendererMiddle", "fluid.tests.rendererParent",
             ["{rendererParent}.dom.middle", fluid.COMPONENT_OPTIONS]);
         
+        /** This test is a fake! The advertised functionality - that of using an IoC-resolved 
+         * expression like {rendererParent}.options.parentValue in a protoTree is not really
+         * available. This only works in this test as a result of not giving the component 
+         * the standard renderer component grade, which would bring in a mergePolicy of 
+         * protoTree: "noexpand, replace" which would prevent the protoTree from being subject
+         * to IoC expansion. You can choose between either IoC expansion or renderer protoTree
+         * expansion, not both */
+        
         fluid.defaults("fluid.tests.rendererMiddle", {
             mergePolicy: {
                 "rendererOptions.instantiator": "nomerge",

@@ -1203,13 +1203,6 @@ var fluid = fluid || fluid_1_5;
         }
     };
 
-    // TODO: so far, profiling does not suggest that this implementation is a performance risk, but we really should start
-    // "precompiling" these.
-    // unsupported, NON-API function
-    fluid.mergePolicyIs = function (policy, test) {
-        return typeof (policy) === "string" && $.inArray(test, policy.split(/\s*,\s*/)) !== -1;
-    };
-
     // Cheapskate implementation which avoids dependency on DataBinding.js
     fluid.model.mergeModel = function (target, source, applier) {
         if (!fluid.isPrimitive(target)) {
@@ -1220,18 +1213,36 @@ var fluid = fluid || fluid_1_5;
         return source;
     };
 
-    function mergeImpl(policy, basePath, target, source, thisPolicy, rec) {
+    // TODO: so far, profiling does not suggest that this implementation is a performance risk, but we really should start
+    // "precompiling" these.
+    // unsupported, NON-API function
+    fluid.mergePolicyIs = function (policy, test) {
+        return typeof (policy) === "string" && $.inArray(test, policy.split(/\s*,\s*/)) !== -1;
+    };
+    
+    var emptyPolicy = {};
+    fluid.derefMergePolicy = function (policy) {
+        return (policy? policy["*"]: emptyPolicy) || emptyPolicy;
+    }
+
+    function mergeImpl(target, /* name, */ i, segs, source, policy, options) {
         if (fluid.isTracing) {
-            fluid.tracing.pathCount.push(basePath);
+            fluid.tracing.pathCount.push(fluid.path(segs.slice(0, i)));
         }
-        if (fluid.mergePolicyIs(thisPolicy, "replace")) {
+        var thisPolicy = fluid.derefMergePolicy(policy);
+        if (thisPolicy.replace) {
             fluid.clear(target);
         }
-        fluid.guardCircularity(rec.seenIds, source, "merging", " when evaluating path " + basePath + " - please protect components from merging using the \"nomerge\" merge policy");
+        //fluid.guardCircularity(options.seenIds, source, "merging", " when evaluating path " + segs + " - please protect components from merging using the \"nomerge\" merge policy");
       
         for (var name in source) {
-            var path = (basePath ? basePath + "." : "") + name;
-            var newPolicy = policy && typeof (policy) !== "string" ? policy[path] : policy;
+            segs[i] = name;
+            var newPolicyHolder = policy? policy[name] : null;
+            var newPolicy = fluid.derefMergePolicy(newPolicyHolder);
+            if (policy === "reverse") { // final exception for "global options" used in Reorderer - remove whenever we can
+                newPolicyHolder = "reverse";
+                newPolicy = {reverse: true};
+            }
             var funcPolicy = typeof (newPolicy) === "function";
             var thisTarget = target[name];
             var thisSource = source[name];
@@ -1240,24 +1251,47 @@ var fluid = fluid || fluid_1_5;
             if (thisSource !== undefined) {
                 if (!funcPolicy && thisSource !== null && typeof (thisSource) === "object" &&
                         !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
-                        !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "nomerge")) {
+                        !newPolicy.preserve && !newPolicy.nomerge) {
                     if (primitiveTarget) {
                         target[name] = thisTarget = fluid.freshContainer(thisSource);
                     }
-                    mergeImpl(policy, path, thisTarget, thisSource, newPolicy, rec);
+                    mergeImpl(thisTarget, i + 1, segs, thisSource, newPolicyHolder, options);
                 } else {
                     if (funcPolicy) {
                         target[name] = newPolicy.call(null, thisTarget, thisSource, name);
-                    } else if (!fluid.isValue(thisTarget) || !fluid.mergePolicyIs(newPolicy, "reverse")) {
-                        // TODO: When "grades" are implemented, grandfather in any paired applier to perform these operations
-                        // NB: mergePolicy of "preserve" now creates dependency on DataBinding.js
-                        target[name] = fluid.isValue(thisTarget) && fluid.mergePolicyIs(newPolicy, "preserve") ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
+                    } else if (!fluid.isValue(thisTarget) || !newPolicy.reverse) {
+                        target[name] = fluid.isValue(thisTarget) && newPolicy.preserve ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
                     }
                 }
             }
         }
         return target;
     }
+    
+    fluid.compileMergePolicy = function (mergePolicy) {
+        var compiled = {};
+        if (!mergePolicy) {
+            return compiled;
+        }
+        if (mergePolicy == "reverse") { // final exception for "global options" used in Reorderer - remove whenever we can
+            return mergePolicy;
+        }
+        fluid.each(mergePolicy, function (value, key) {
+            var parsed;
+            if (typeof(value) === "function") {
+                parsed = value;
+            }
+            else if (!fluid.isDefaultValueMergePolicy(value)) {
+                var split = value.split(/\s*,\s*/);
+                var parsed = {};
+                for (var i = 0; i < split.length; ++ i) {
+                    parsed[split[i]] = true;
+                }
+            }
+            fluid.set(compiled, fluid.composePath(key, "*"), parsed);
+        });
+        return compiled;
+    };
 
     // TODO: deprecate this method of detecting default value merge policies before 1.6 in favour of
     // explicit typed records a la ModelTransformations
@@ -1270,7 +1304,7 @@ var fluid = fluid || fluid_1_5;
     // unsupported, NON-API function
     fluid.applyDefaultValueMergePolicy = function (defaults, merged) {
         var policy = merged.mergePolicy;
-        if (policy && typeof (policy) !== "string") {
+        if (policy) {
             for (var key in policy) {
                 var elrh = policy[key];
                 if (fluid.isDefaultValueMergePolicy(elrh)) {
@@ -1310,12 +1344,13 @@ var fluid = fluid || fluid_1_5;
      */
     
     fluid.merge = function (policy, target) {
-        var path = "";
+        var segs = [];
+        var compiled = fluid.compileMergePolicy(policy); // TODO: with gingerness, we can compute this early
         
         for (var i = 2; i < arguments.length; ++i) {
             var source = arguments[i];
             if (source !== null && source !== undefined) {
-                mergeImpl(policy, path, target, source, policy ? policy[""] : null, {seenIds: {}});
+                mergeImpl(target, /*name, */ 0, segs, source, compiled, {seenIds: {}});
             }
         }
         return target;
@@ -1661,7 +1696,7 @@ var fluid = fluid || fluid_1_5;
     
     fluid.defaults("fluid.messageResolver", {
         mergePolicy: {
-            messageBase: "preserve",
+            messageBase: "nomerge",
             parents: "nomerge"
         },
         resolveFunc: fluid.stringTemplate,

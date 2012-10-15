@@ -533,12 +533,16 @@ fluid.registerNamespace("fluid.tests");
             var context = contexts[parsed.context];
             return fluid.get(context.root, parsed.path, context.config);
         };
-        var expandOptions = fluid.mergedResolveOptions({source: expandingConfig, sourceTrundler: fluid.concreteTrundler, fetcher: fetcher});
+        var expandOptions = fluid.mergedResolveOptions( {
+            source: expandingConfig, 
+            sourceTrundler: fluid.concreteTrundler, fetcher: fetcher,
+            mergePolicy: {}
+            });
         var expandStrategy = fluid.makeExpandStrategy(expandOptions);
         var target = {};
         contexts.outerConfig = {root: outerConfig, config: {strategies: [fluid.model.defaultFetchStrategy]}};
         contexts.self = {root: target, config: {strategies: [expandStrategy]}};
-        fluid.fetchChildren(target, expandOptions.source, expandOptions);
+        fluid.fetchChildren(target, expandOptions.source, {}, false, expandOptions);
         jqUnit.assertDeepEq("Properly expanded self-referential structure", expected, target);
     });
     
