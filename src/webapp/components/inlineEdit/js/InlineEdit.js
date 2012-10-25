@@ -331,11 +331,11 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options a collection of options settings
      */
     fluid.inlineEdit = function (componentContainer, userOptions) {   
-        var that = fluid.initView("inlineEdit", componentContainer, userOptions);
+        var that = fluid.initView("fluid.inlineEdit", componentContainer, userOptions);
         
         // if old 'defaultViewText' option was used intead of strings version, update strings version
         if ((that.options.defaultViewText !== undefined) &&
-            (that.options.strings.defaultViewText === fluid.defaults("inlineEdit").strings.defaultViewText)) {
+            (that.options.strings.defaultViewText === fluid.defaults("fluid.inlineEdit").strings.defaultViewText)) {
             that.options.strings.defaultViewText = that.options.defaultViewText;
         }
 
@@ -816,7 +816,7 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.inlineEdits = function (componentContainer, options) {
         options = options || {};
-        var selectors = $.extend({}, fluid.defaults("inlineEdits").selectors, options.selectors);
+        var selectors = $.extend({}, fluid.defaults("fluid.inlineEdits").selectors, options.selectors);
         
         // Bind to the DOM.
         var container = fluid.container(componentContainer);
@@ -825,7 +825,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return setupInlineEdits(editables, options);
     };
     
-    fluid.defaults("inlineEdit", {
+    fluid.defaults("fluid.inlineEdit", {
         gradeNames: ["fluid.viewComponent"],
         selectors: {
             text: ".flc-inlineEdit-text",
@@ -912,7 +912,7 @@ var fluid_1_5 = fluid_1_5 || {};
         selectOnEdit: false        
     });
     
-    fluid.defaults("inlineEdits", {
+    fluid.defaults("fluid.inlineEdits", {
         gradeNames: ["fluid.viewComponent"],
         selectors: {
             editables: ".flc-inlineEditable"
