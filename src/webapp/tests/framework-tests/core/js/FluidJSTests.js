@@ -134,7 +134,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
         var target1 = fluid.copy(target);
-        fluid.merge("reverse", target1, source);
+        fluid.reverseMerge(target1, source);
         jqUnit.assertEquals("Property 1 should have been preserved", "thing1", target1.root.prop1);
         
         var target2 = fluid.copy(target);
@@ -153,8 +153,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var testReverseMerge = function (policy, expected) {
             var thisTarget = fluid.copy(target);
-            fluid.merge(policy, thisTarget, source);
-            jqUnit.assertEquals("\"" + policy + "\" policy", expected, thisTarget.prop2);
+            var reverse = policy === "reverse";
+            // Note change in semantic in new framework - we no longer destructively merge onto target, it behaves just
+            // like another source. We could not do this consistently and maintain semantics of mergePolicies as well as 
+            // tracking work
+            var result = reverse ? fluid.reverseMerge(thisTarget, source) : fluid.merge(policy, thisTarget, source); 
+            jqUnit.assertEquals("\"" + policy + "\" policy", expected, (reverse ? thisTarget : result).prop2);
         };
 
         testReverseMerge("reverse", target.prop2);

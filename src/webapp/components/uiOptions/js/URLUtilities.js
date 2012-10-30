@@ -21,15 +21,6 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     /** URL utilities salvaged from kettle - these should go into core framework **/
-  
-    fluid.generate = function (n, generator) {
-        var togo = [];
-        for (var i = 0; i < n; ++ i) {
-            togo[i] = typeof(generator) === "function" ?
-                generator.call(null, i) : generator;
-        }
-        return togo;       
-    };
 
     fluid.registerNamespace("fluid.url");
    

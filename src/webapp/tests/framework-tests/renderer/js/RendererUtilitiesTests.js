@@ -332,32 +332,7 @@ fluid.registerNamespace("fluid.tests");
             });
             assertRenderedText(renderRecs, array);
         });
-    
-        var censorFunc = function (types) {
-            var togo = [];
-            fluid.each(types, function (type) {
-                if (type.charAt(0) === "o") {
-                    togo.push(type);
-                }
-            });
-            return togo;
-        };
         
-        var testFilteredRecords = function (that) {
-            that.refreshView();
-            var renderRecs = that.locate("recordType");
-            var censored = censorFunc(that.model.recordlist.deffolt);
-            jqUnit.assertEquals("Rendered elements", censored.length, renderRecs.length);
-            assertRenderedText(renderRecs, censored);      
-        };
-        
-        var testMessageRepeat = function (that) {
-            that.refreshView();
-            var tablinks = that.locate("tabLink");
-            jqUnit.assertEquals("Existing string relative should be found", "Acquisition", tablinks.eq(0).text());
-            jqUnit.assertEquals("Nonexisting string relative should be notified ", "[No messagecodes provided]", tablinks.eq(1).text());
-            jqUnit.assertEquals("Nonexisting string relative should be notified ", "[No messagecodes provided]", that.locate("unmatchedMessage").text());
-        };
         
         var testMultipleExpanders = function (that) {
             that.refreshView();
@@ -426,6 +401,15 @@ fluid.registerNamespace("fluid.tests");
             testMultipleExpanders(that);
         });
         
+        
+        var testMessageRepeat = function (that) {
+            that.refreshView();
+            var tablinks = that.locate("tabLink");
+            jqUnit.assertEquals("Existing string relative should be found", "Acquisition", tablinks.eq(0).text());
+            jqUnit.assertEquals("Nonexisting string relative should be notified ", "[No messagecodes provided]", tablinks.eq(1).text());
+            jqUnit.assertEquals("Nonexisting string relative should be notified ", "[No messagecodes provided]", that.locate("unmatchedMessage").text());
+        };
+        
         compTests.test("FLUID-3819 test: messagekey with no value", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test-repeat", {
                 resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]},
@@ -473,6 +457,25 @@ fluid.registerNamespace("fluid.tests");
             });
             testMessageRepeat(that);
         });
+        
+        var censorFunc = function (types) {
+            var togo = [];
+            fluid.each(types, function (type) {
+                if (type.charAt(0) === "o") {
+                    togo.push(type);
+                }
+            });
+            return togo;
+        };
+        
+        var testFilteredRecords = function (that) {
+            that.refreshView();
+            var renderRecs = that.locate("recordType");
+            var censored = censorFunc(that.model.recordlist.deffolt);
+            jqUnit.assertEquals("Rendered elements", censored.length, renderRecs.length);
+            assertRenderedText(renderRecs, censored);      
+        };
+        
         
         compTests.test("Renderer component with custom resolver", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test", {

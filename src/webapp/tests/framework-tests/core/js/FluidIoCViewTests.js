@@ -335,7 +335,7 @@ fluid.registerNamespace("fluid.tests");
         });
     };
 
-    fluidIoCTests.test("Deferred expander Tests", function () {
+    fluidIoCTests.asyncTest("Deferred expander Tests", function () {
         var pageBuilder = {
             uispec: {
                 objects: "These Objects",
@@ -425,6 +425,7 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertUndefined("No fetch error", resourceSpecs.objects.fetchError);
             jqUnit.assertValue("Request completed", resourceSpecs.objects.completeTime);
             jqUnit.assertDeepEq("Resolved model", expectedRes, expanded);
+            start();
         });
     });
 

@@ -20,26 +20,6 @@ fluid.registerNamespace("fluid.tests");
 
 (function ($) {
 
-    fluid.defaults("fluid.tests.modelComponent", {
-        gradeNames: ["fluid.modelComponent", "autoInit"]
-    });
-
-
-    fluid.defaults("fluid.tests.dependentModel", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        mergePolicy: {
-            model: "preserve"
-        },
-        components: {
-            modelComponent: {
-                type: "fluid.tests.modelComponent",
-                options: {
-                    model: "{dependentModel}.options.model"
-                }
-            }
-        }
-    });
-
     fluid.defaults("fluid.tests.fluid3818head", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -180,9 +160,29 @@ fluid.registerNamespace("fluid.tests");
     });
 
 
+    fluid.defaults("fluid.tests.modelComponent", {
+        gradeNames: ["fluid.modelComponent", "autoInit"]
+    });
+
+
+    fluid.defaults("fluid.tests.dependentModel", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        mergePolicy: {
+            model: "preserve"
+        },
+        components: {
+            modelComponent: {
+                type: "fluid.tests.modelComponent",
+                options: {
+                    model: "{dependentModel}.options.model"
+                }
+            }
+        }
+    });
+
     fluidIoCTests.test("Aliasing expander test", function () {
         jqUnit.expect(3);
-        var model = {};
+        var model = {unpollute: 1};
         var that = fluid.tests.dependentModel({model: model});
         jqUnit.assertValue("Constructed", that);
         model.pollute = 3;
@@ -542,7 +542,7 @@ fluid.registerNamespace("fluid.tests");
         var target = {};
         contexts.outerConfig = {root: outerConfig, config: {strategies: [fluid.model.defaultFetchStrategy]}};
         contexts.self = {root: target, config: {strategies: [expandStrategy]}};
-        fluid.fetchChildren(target, expandOptions.source, {}, false, expandOptions);
+        fluid.fetchExpandChildren(target, expandOptions.source, {}, false, expandOptions);
         jqUnit.assertDeepEq("Properly expanded self-referential structure", expected, target);
     });
     

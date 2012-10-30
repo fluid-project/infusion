@@ -373,6 +373,21 @@ var fluid = fluid || fluid_1_5;
         return source;
     };
     
+    /** Fills an array of given size with copies of a value or result of a function invocation
+     * @param n {Number} The size of the array to be filled
+     * @param generator {Object|Function} Either a value to be replicated or function to be called 
+     * @param applyFunc {Boolean} If true, treat the generator value as a function to be invoked with
+     * argument equal to the index position
+     */ 
+      
+    fluid.generate = function (n, generator, applyFunc) {
+        var togo = [];
+        for (var i = 0; i < n; ++ i) {
+            togo[i] = applyFunc? generator.call(null, i) : generator;
+        }
+        return togo;       
+    };
+    
     /** Accepts an object to be filtered, and a list of keys. Either all keys not present in
      * the list are removed, or only keys present in the list are returned.
      * @param toFilter {Array|Object} The object to be filtered - this will be modified by the operation
@@ -1224,57 +1239,11 @@ var fluid = fluid || fluid_1_5;
     fluid.derefMergePolicy = function (policy) {
         return (policy? policy["*"]: emptyPolicy) || emptyPolicy;
     }
-
-    function mergeImpl(target, /* name, */ i, segs, source, policy, options) {
-        if (fluid.isTracing) {
-            fluid.tracing.pathCount.push(fluid.path(segs.slice(0, i)));
-        }
-        var thisPolicy = fluid.derefMergePolicy(policy);
-        if (thisPolicy.replace) {
-            fluid.clear(target);
-        }
-        //fluid.guardCircularity(options.seenIds, source, "merging", " when evaluating path " + segs + " - please protect components from merging using the \"nomerge\" merge policy");
-      
-        for (var name in source) {
-            segs[i] = name;
-            var newPolicyHolder = policy? policy[name] : null;
-            var newPolicy = fluid.derefMergePolicy(newPolicyHolder);
-            if (policy === "reverse") { // final exception for "global options" used in Reorderer - remove whenever we can
-                newPolicyHolder = "reverse";
-                newPolicy = {reverse: true};
-            }
-            var funcPolicy = typeof (newPolicy) === "function";
-            var thisTarget = target[name];
-            var thisSource = source[name];
-            var primitiveTarget = fluid.isPrimitive(thisTarget);
-    
-            if (thisSource !== undefined) {
-                if (!funcPolicy && thisSource !== null && typeof (thisSource) === "object" &&
-                        !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
-                        !newPolicy.preserve && !newPolicy.nomerge) {
-                    if (primitiveTarget) {
-                        target[name] = thisTarget = fluid.freshContainer(thisSource);
-                    }
-                    mergeImpl(thisTarget, i + 1, segs, thisSource, newPolicyHolder, options);
-                } else {
-                    if (funcPolicy) {
-                        target[name] = newPolicy.call(null, thisTarget, thisSource, name);
-                    } else if (!fluid.isValue(thisTarget) || !newPolicy.reverse) {
-                        target[name] = fluid.isValue(thisTarget) && newPolicy.preserve ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
-                    }
-                }
-            }
-        }
-        return target;
-    }
     
     fluid.compileMergePolicy = function (mergePolicy) {
         var compiled = {};
         if (!mergePolicy) {
             return compiled;
-        }
-        if (mergePolicy == "reverse") { // final exception for "global options" used in Reorderer - remove whenever we can
-            return mergePolicy;
         }
         fluid.each(mergePolicy, function (value, key) {
             var parsed;
@@ -1298,7 +1267,23 @@ var fluid = fluid || fluid_1_5;
     // unsupported, NON-API function
     fluid.isDefaultValueMergePolicy = function (policy) {
         return typeof(policy) === "string"
-            && (policy.indexOf(",") === -1 && !/replace|preserve|nomerge|noexpand|reverse/.test(policy));
+            && (policy.indexOf(",") === -1 && !/replace|preserve|nomerge|noexpand/.test(policy));
+    };
+    
+    // unsupported, NON-API function
+    // This function will be removed once the Reorderer no longer requires "reverse merge"
+    fluid.reverseMerge = function (target, source) {
+        fluid.each(source, function (value, key) {
+            var existing = target[key];
+            if (existing !== undefined) {
+                if (!fluid.isPrimitive(target[key])) {
+                    fluid.reverseMerge(target[key], source[key]);
+                }
+            }
+            else {
+                target[key] = fluid.copy(source[key]);
+            }
+        });
     };
     
     // unsupported, NON-API function
@@ -1328,32 +1313,156 @@ var fluid = fluid || fluid_1_5;
         return merged;
     };
     
+    fluid.NO_RECURSE = {}; // a marker indicating that a source has been consumed and should not be recursed on
+    
+    fluid.mergeOneImpl = function (thisTarget, thisSource, j, sources, newPolicy, i, segs, options) {
+        var togo = thisTarget;
+
+        var funcPolicy = typeof (newPolicy) === "function";
+        var primitiveTarget = fluid.isPrimitive(thisTarget);
+
+        if (thisSource !== undefined) {
+            if (!funcPolicy && thisSource !== null && typeof (thisSource) === "object" &&
+                    !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
+                    !newPolicy.preserve && !newPolicy.nomerge) {
+                if (primitiveTarget) {
+                    togo = thisTarget = fluid.freshContainer(thisSource);
+                }
+                // recursion is now external? We can't do it from here since sources are not all known
+                //options.recurse(thisTarget, i + 1, segs, sources, newPolicyHolder, options);
+            } else {
+                sources[j] = fluid.NO_RECURSE;
+                if (funcPolicy) {
+                    togo = newPolicy.call(null, thisTarget, thisSource, segs[i - 1], segs, i); // NB - change in this mostly unused argument
+                } else {
+                    togo = fluid.isValue(thisTarget) && newPolicy.preserve ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
+                }
+            }
+        }
+        return togo;
+    };
+    // NB - same quadratic worry about these as in FluidIoC in the case the RHS trundler is live - 
+    // the problem is that IT ITSELF might be in "regenerate" mode for each step - although in practice
+    // it won't because target is cached
+    function regenerateCursor (source, segs, limit, sourceTrundler) {
+        for (var i = 0; i < limit; ++ i) {
+            source = sourceTrundler(source, segs[i]);
+        }
+        return source;
+    }
+    
+    function regenerateSources (sources, segs, limit, sourceTrundlers) {
+        var togo = [];
+        for (var i = 0; i < sources.length; ++ i) {
+            var thisSource = regenerateCursor(sources[i], segs, limit, sourceTrundlers[i]);
+            if (thisSource !== undefined) {
+                togo.push(thisSource);
+            }
+        }
+        return togo;
+    }
+    
+    fluid.fetchMergeChildren = function (target, i, segs, sources, mergePolicy, options) {
+        var thisPolicy = fluid.derefMergePolicy(mergePolicy);
+        var lastNonEmpty = -1;
+        for (var j = sources.length - 1; j >= 0; -- j) {
+            var source = sources[j];
+            // NB - this detection relies on strategy return being complete objects - which they are
+            // although we need to set up the roots separately. We need to START the process of evaluating each
+            // object root (sources) COMPLETELY, before we even begin! Even if the effect of this is to cause a
+            // dispatch into ourselves almost immediately. We can do this because we can take control over our
+            // TARGET objects and construct them early. Even if there is a self-dispatch, it will be fine since it is
+            // DIRECTED and so will not trouble our "slow" detection of properties. After all self-dispatches end, control
+            // will THEN return to "evaluation of arguments" (expander blocks) and only then FINALLY to this "slow" 
+            // traversal of concrete properties to do the final merge.
+            if (source !== fluid.NO_RECURSE) {
+                fluid.each(source, function (newSource, name) {
+                    if (lastNonEmpty === -1) {
+                        lastNonEmpty = j;
+                    }
+                    if (!target.hasOwnProperty(name)) { // only request each new target key once -- all sources will be queried per strategy
+                       segs[i] = name;
+                       if (!thisPolicy.replace || j === lastNonEmpty) {
+                           options.strategy(target, name, i + 1, segs, sources, mergePolicy, lastNonEmpty);
+                       }
+                    }
+                });
+            }
+        }
+        return target;
+    };
+    
+    fluid.makeMergeStrategy = function (options) {
+        var recurse = function (target, i, segs, sources, policy) {
+            return fluid.fetchMergeChildren(target, i, segs, sources, policy, options);
+        };
+        var strategy = function (target, name, i, segs, sources, policy, lastNonEmpty) {
+            if (fluid.isTracing) {
+                fluid.tracing.pathCount.push(fluid.path(segs.slice(0, i)));
+            }
+            //fluid.guardCircularity(options.seenIds, source, "merging", " when evaluating path " + segs + " - please protect components from merging using the \"nomerge\" merge policy");
+      
+            if (target.hasOwnProperty(name)) { // bail out if our work has already been done
+                return target[name];
+            }
+            if (sources === undefined) { // recover our state in case this is an external entry point
+                sources = regenerateSources(options.sources, segs, i - 1, options.sourceTrundlers);
+                policy = regenerateCursor(options.mergePolicy, segs, i - 1, fluid.concreteTrundler);
+            }
+            var thisTarget = undefined;
+            var thisPolicy = fluid.derefMergePolicy(policy);
+            var newPolicyHolder = fluid.concreteTrundler(policy, name);
+            var newPolicy = fluid.derefMergePolicy(newPolicyHolder);
+            var newSources = [];
+            var start = 0, limit = sources.length;
+            if (thisPolicy.replace && lastNonEmpty !== undefined) {
+                start = lastNonEmpty; limit = lastNonEmpty + 1;
+            }
+            for (var j = start; j < limit; ++ j) { // TODO: try to economise on this array and on gaps
+                var thisSource = options.sourceTrundlers[j](sources[j], name);
+                newSources[j] = thisSource;
+                thisTarget = fluid.mergeOneImpl(thisTarget, thisSource, j, newSources, newPolicy, i, segs, options);
+            }
+            target[name] = thisTarget;
+            recurse(thisTarget, i, segs, newSources, thisPolicy, options);
+        };
+        options.strategy = strategy;
+        options.recurse = recurse;
+        return strategy;
+    };
+        
+    // A very simple "new inner trundler" that just performs concrete property access
+    // Note that every "strategy" is also a "trundler" of this type, considering just the first two arguments
+    fluid.concreteTrundler = function (source, seg) {
+        return !source? undefined : source[seg];  
+    };
+    
     /** Merge a collection of options structures onto a target, following an optional policy.
      * This function is typically called automatically, as a result of an invocation of
      * <code>fluid.initLittleComponent</code>. The behaviour of this function is explained more fully on
      * the page http://wiki.fluidproject.org/display/fluid/Options+Merging+for+Fluid+Components .
      * @param policy {Object/String} A "policy object" specifiying the type of merge to be performed.
-     * If policy is of type {String} it should take on the value "reverse" or "replace" representing
+     * If policy is of type {String} it should take on the value "replace" representing
      * a static policy. If it is an
      * Object, it should contain a mapping of EL paths onto these String values, representing a
      * fine-grained policy. If it is an Object, the values may also themselves be EL paths
      * representing that a default value is to be taken from that path.
-     * @param target {Object} The options structure which is to be modified by receiving the merge results.
      * @param options1, options2, .... {Object} an arbitrary list of options structure which are to
-     * be merged "on top of" the <code>target</code>. These will not be modified.
+     * be merged together. These will not be modified.
      */
-    
-    fluid.merge = function (policy, target) {
-        var segs = [];
-        var compiled = fluid.compileMergePolicy(policy); // TODO: with gingerness, we can compute this early
         
-        for (var i = 2; i < arguments.length; ++i) {
-            var source = arguments[i];
-            if (source !== null && source !== undefined) {
-                mergeImpl(target, /*name, */ 0, segs, source, compiled, {seenIds: {}});
-            }
-        }
-        return target;
+    fluid.merge = function (policy /*, ... sources */) {
+        var segs = [];
+        var options = {
+            mergePolicy: fluid.compileMergePolicy(policy), // TODO: with gingerness, we can compute this early
+            sources: Array.prototype.slice.call(arguments, 1),
+            seenIds: {}
+        };
+        options.target = fluid.freshContainer(options.sources[0]);
+        options.sourceTrundlers = fluid.generate(options.sources.length, fluid.concreteTrundler);
+        fluid.makeMergeStrategy(options);
+        fluid.fetchMergeChildren(options.target, 0, [], options.sources, options.mergePolicy, options);
+        return options.target;
     };
 
     // unsupported, NON-API function
@@ -1566,7 +1675,11 @@ var fluid = fluid || fluid_1_5;
         if (typeof (entry) !== "function") {
             var entryType = typeof (entry) === "string" ? entry : entry.type;
             var globDef = fluid.defaults(true, entryType);
-            fluid.merge("reverse", that.options, globDef);
+            if (globDef !== undefined) {
+            // TODO: remove "reverse merge" and "global defaults" from framework which is only used in Reorderer
+            // due to change in semantics of fluid.merge we now need this algorithm as a stopgap
+                fluid.reverseMerge(that.options, globDef);
+            }
             togo = entryType === "fluid.emptySubcomponent" ?
                 fluid.emptySubcomponent(entry.options) :
                 fluid.invokeGlobalFunction(entryType, args);

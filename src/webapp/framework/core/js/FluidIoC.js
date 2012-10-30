@@ -1287,12 +1287,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.resolveContextValue = fluid.wrapActivity(fluid.resolveContextValue, 
         ["    while resolving context value ", "arguments.0"]);
     
-    // A very simple "new inner trundler" that just performs concrete property access
-    // Note that every "strategy" is also a "trundler" of this type, considering just the first two arguments
-    fluid.concreteTrundler = function (source, seg) {
-        return !source? source : source[seg];  
-    };
-    
     fluid.expandExpander = function (target, source, options) {
         var expander = fluid.getGlobalValue(source.expander.type);  
         if (expander) {
@@ -1305,17 +1299,22 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // to execute it to get the first recursion going at top level. This was one of the most odd results
     // of the reorganisation, since the "old work" seemed much more naturally expressed in terms of values
     // and what happened to them. The "new work" is expressed in terms of paths and how to move amongst them.
-    fluid.fetchChildren = function (target, source, mergePolicy, miniWorld, options) {
+    fluid.fetchExpandChildren = function (target, source, mergePolicy, miniWorld, options) {
         if (source.expander && source.expander.type) { // possible merging expander at top level
             var expanded = fluid.expandExpander(target, source, options);
             $.extend(true, target, expanded);
         }
+        // NOTE! This expects that RHS is concrete! For material input to "expansion" this happens to be the case, but is not
+        // true for other algorithms. Inconsistently, this algorithm uses "sourceTrundler" below. In fact, this "fetchChildren"
+        // operation looks like it is a fundamental primitive of the system. We do call "deliverer" early which enables correct
+        // reference to parent nodes up the tree - however, anyone processing a tree IN THE CHAIN requires that it is produced
+        // concretely at the point STRATEGY returns. Which in fact it is...............
         fluid.each(source, function (newSource, key) {
             if (newSource === undefined) {
                 target[key] = undefined; // avoid ever dispatching to ourselves with undefined source
             }
             else { // Don't bother to generate segs or i in direct dispatch to self!!!!!!
-                options.strategy(target, key, null, null, source, mergePolicy, miniWorld, options.sourceTrundler);
+                options.strategy(target, key, null, null, source, mergePolicy, miniWorld);
             }
         });
         return target;
@@ -1372,7 +1371,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.makeExpandStrategy = function (options) {
         var recurse = function (target, source, policy, miniWorld) {
-            return fluid.fetchChildren(target, source, policy, miniWorld, options);
+            return fluid.fetchExpandChildren(target, source, policy, miniWorld, options);
         };
         var strategy = function (target, name, i, segs, source, policy, miniWorld) {
             if (!miniWorld && target.hasOwnProperty(name)) { // bail out if our work has already been done
@@ -1411,7 +1410,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }
         else {
             var target = fluid.freshContainer(obj);
-            fluid.fetchChildren(target, obj, options.mergePolicy, false, options);
+            fluid.fetchExpandChildren(target, obj, options.mergePolicy, false, options);
             return target;
         }
     };
