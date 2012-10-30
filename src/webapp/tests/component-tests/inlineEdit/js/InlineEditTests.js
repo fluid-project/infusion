@@ -70,10 +70,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.viewEl[0].id);
             jqUnit.assertEquals("Edit container is set to", editContainer[0].id, inlineEditor.editContainer[0].id);
             jqUnit.assertEquals("Edit field is set to", editField[0].id, inlineEditor.editField[0].id);
-            jqUnit.assertEquals("Focus style is default", fluid.defaults("inlineEdit").styles.focus, inlineEditor.options.styles.focus);
-            jqUnit.assertEquals("Invitation style is default", fluid.defaults("inlineEdit").styles.invitation, inlineEditor.options.styles.invitation);
-            jqUnit.assertEquals("Paddings add is default", fluid.defaults("inlineEdit").paddings.edit, inlineEditor.options.paddings.edit);
-            jqUnit.assertEquals("Paddings minimum is default", fluid.defaults("inlineEdit").paddings.minimumEdit, inlineEditor.options.paddings.minimumEdit);
+            jqUnit.assertEquals("Focus style is default", fluid.defaults("fluid.inlineEdit").styles.focus, inlineEditor.options.styles.focus);
+            jqUnit.assertEquals("Invitation style is default", fluid.defaults("fluid.inlineEdit").styles.invitation, inlineEditor.options.styles.invitation);
+            jqUnit.assertEquals("Paddings add is default", fluid.defaults("fluid.inlineEdit").paddings.edit, inlineEditor.options.paddings.edit);
+            jqUnit.assertEquals("Paddings minimum is default", fluid.defaults("fluid.inlineEdit").paddings.minimumEdit, inlineEditor.options.paddings.minimumEdit);
             jqUnit.assertTrue("FLUID-2100: The tool tip is on by default", inlineEditor.options.useTooltip);
             jqUnit.isVisible("Display field is visible", "#display");
             jqUnit.notVisible("Edit field is hidden", "#edit-container");
@@ -189,7 +189,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var display = $("#empty-display");
             jqUnit.assertEquals("Before initialization of empty display, display is empty", "", display.text());
             var inlineEditor = fluid.inlineEdit("#empty-inline-edit");
-            jqUnit.assertEquals("After initialization of empty display, display has invitation text: ", fluid.defaults("inlineEdit").strings.defaultViewText, display.text());
+            jqUnit.assertEquals("After initialization of empty display, display has invitation text: ", fluid.defaults("fluid.inlineEdit").strings.defaultViewText, display.text());
             jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewStyle));
             jqUnit.assertTrue("Invitation text still contains it's initial class attribute as well", display.hasClass("flc-inlineEdit-text")); // added for FLUID-1803 
             jqUnit.assertEquals("The textEditButton text should be set", "Edit text " + inlineEditor.options.strings.defaultViewText, inlineEditor.locate("textEditButton").text());
@@ -206,7 +206,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             inlineEditor.edit();
             edit.prop("value", "");
             inlineEditor.finish();
-            jqUnit.assertEquals("After clearing the field, display should have invitation text again: ", fluid.defaults("inlineEdit").strings.defaultViewText, display.text());
+            jqUnit.assertEquals("After clearing the field, display should have invitation text again: ", fluid.defaults("fluid.inlineEdit").strings.defaultViewText, display.text());
             jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewStyle));
             jqUnit.assertTrue("Invitation text still contains it's initial class attribute as well", display.hasClass("flc-inlineEdit-text")); // added for FLUID-1803
         });
@@ -227,12 +227,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             var display = $("#empty-display");
             var inlineEditor = fluid.inlineEdit("#empty-inline-edit");
-            jqUnit.assertEquals("After initialization of empty display, display has default invitation text: ", fluid.defaults("inlineEdit").strings.defaultViewText, display.text());
+            jqUnit.assertEquals("After initialization of empty display, display has default invitation text: ", fluid.defaults("fluid.inlineEdit").strings.defaultViewText, display.text());
             var button = inlineEditor.textEditButton;
             button.focus();
-            jqUnit.assertEquals("After focus, display has default focussed invitation text: ", fluid.defaults("inlineEdit").strings.defaultFocussedViewText, display.text());
+            jqUnit.assertEquals("After focus, display has default focussed invitation text: ", fluid.defaults("fluid.inlineEdit").strings.defaultFocussedViewText, display.text());
             button.blur();
-            jqUnit.assertEquals("After blur, display has default invitation text: ", fluid.defaults("inlineEdit").strings.defaultViewText, display.text());
+            jqUnit.assertEquals("After blur, display has default invitation text: ", fluid.defaults("fluid.inlineEdit").strings.defaultViewText, display.text());
         });
 
         inlineEditTests.test("Invitation text (none)", function () {
@@ -245,7 +245,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
             var inlineEditor = fluid.inlineEdit("#empty-inline-edit", {defaultViewText: ""});
             jqUnit.assertEquals("After initialization, display is still empty", "", display.text());
-            jqUnit.assertEquals("The display field padding is ", fluid.defaults("inlineEdit").paddings.minimumView, parseFloat(display.css("padding-right")));
+            jqUnit.assertEquals("The display field padding is ", fluid.defaults("fluid.inlineEdit").paddings.minimumView, parseFloat(display.css("padding-right")));
     
             var testText = "This is test text that is a bit long.";
             var edit = inlineEditor.editField;
@@ -261,7 +261,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             edit.prop("value", "");
             inlineEditor.finish();
             jqUnit.assertEquals("After clearing the field, display should be empty again: ", "", display.text());
-            jqUnit.assertEquals("The display field padding is ", fluid.defaults("inlineEdit").paddings.minimumView, parseFloat(display.css("padding-right")));
+            jqUnit.assertEquals("The display field padding is ", fluid.defaults("fluid.inlineEdit").paddings.minimumView, parseFloat(display.css("padding-right")));
         });
         
         inlineEditTests.test("isEditing", function () {
@@ -919,6 +919,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 });
                 var display = $("#empty-display");
                 jqUnit.assertEquals("Initialized with both strings, the new one should win out", newWay, display.text());
+            });
+            
+            inlineEditTests.test("IOC InlineEdit test", function () {
+                var inlineEdit = $("#ioc-inline-edit").find(".flc-ioc-inlineEditable");
+                
+                fluid.defaults("fluid.componentWithInlineEdit", {
+                    gradeNames: ["fluid.eventedComponent", "autoInit"],
+                    components: {
+                        iocInlineEdit: {
+                            type: "fluid.inlineEdit",
+                            container: inlineEdit,
+                            options: {
+                                tooltipText: "My optional tooltip. InlineEdit has options"
+                            }
+                        }
+                    }
+                });
+                var someComponent = fluid.componentWithInlineEdit();
+                jqUnit.assertTrue("inlineEdit was resolved in IOC", someComponent.iocInlineEdit);
             });
         })();
     });
