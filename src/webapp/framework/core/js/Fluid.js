@@ -1313,8 +1313,6 @@ var fluid = fluid || fluid_1_5;
         return merged;
     };
     
-    fluid.NO_RECURSE = {}; // a marker indicating that a source has been consumed and should not be recursed on
-    
     fluid.mergeOneImpl = function (thisTarget, thisSource, j, sources, newPolicy, i, segs, options) {
         var togo = thisTarget;
 
@@ -1331,7 +1329,7 @@ var fluid = fluid || fluid_1_5;
                 // recursion is now external? We can't do it from here since sources are not all known
                 //options.recurse(thisTarget, i + 1, segs, sources, newPolicyHolder, options);
             } else {
-                sources[j] = fluid.NO_RECURSE;
+                sources[j] = undefined;
                 if (funcPolicy) {
                     togo = newPolicy.call(null, thisTarget, thisSource, segs[i - 1], segs, i); // NB - change in this mostly unused argument
                 } else {
@@ -1364,8 +1362,7 @@ var fluid = fluid || fluid_1_5;
     
     fluid.fetchMergeChildren = function (target, i, segs, sources, mergePolicy, options) {
         var thisPolicy = fluid.derefMergePolicy(mergePolicy);
-        var lastNonEmpty = -1;
-        for (var j = sources.length - 1; j >= 0; -- j) {
+        for (var j = sources.length - 1; j >= 0; -- j) { // this direction now irrelevant - control is in the strategy
             var source = sources[j];
             // NB - this detection relies on strategy return being complete objects - which they are
             // although we need to set up the roots separately. We need to START the process of evaluating each
@@ -1375,28 +1372,23 @@ var fluid = fluid || fluid_1_5;
             // DIRECTED and so will not trouble our "slow" detection of properties. After all self-dispatches end, control
             // will THEN return to "evaluation of arguments" (expander blocks) and only then FINALLY to this "slow" 
             // traversal of concrete properties to do the final merge.
-            if (source !== fluid.NO_RECURSE) {
+            if (source !== undefined) {
                 fluid.each(source, function (newSource, name) {
-                    if (lastNonEmpty === -1) {
-                        lastNonEmpty = j;
-                    }
                     if (!target.hasOwnProperty(name)) { // only request each new target key once -- all sources will be queried per strategy
-                       segs[i] = name;
-                       if (!thisPolicy.replace || j === lastNonEmpty) {
-                           options.strategy(target, name, i + 1, segs, sources, mergePolicy, lastNonEmpty);
-                       }
+                        segs[i] = name;
+                        options.strategy(target, name, i + 1, segs, sources, mergePolicy);
                     }
                 });
+                if (thisPolicy.replace) { // this branch primarily deals with a policy of replace at the root
+                    break;
+                }
             }
         }
         return target;
     };
     
     fluid.makeMergeStrategy = function (options) {
-        var recurse = function (target, i, segs, sources, policy) {
-            return fluid.fetchMergeChildren(target, i, segs, sources, policy, options);
-        };
-        var strategy = function (target, name, i, segs, sources, policy, lastNonEmpty) {
+        var strategy = function (target, name, i, segs, sources, policy) {
             if (fluid.isTracing) {
                 fluid.tracing.pathCount.push(fluid.path(segs.slice(0, i)));
             }
@@ -1409,25 +1401,38 @@ var fluid = fluid || fluid_1_5;
                 sources = regenerateSources(options.sources, segs, i - 1, options.sourceTrundlers);
                 policy = regenerateCursor(options.mergePolicy, segs, i - 1, fluid.concreteTrundler);
             }
-            var thisTarget = undefined;
+
             var thisPolicy = fluid.derefMergePolicy(policy);
             var newPolicyHolder = fluid.concreteTrundler(policy, name);
             var newPolicy = fluid.derefMergePolicy(newPolicyHolder);
-            var newSources = [];
-            var start = 0, limit = sources.length;
-            if (thisPolicy.replace && lastNonEmpty !== undefined) {
-                start = lastNonEmpty; limit = lastNonEmpty + 1;
+
+            var start, limit, mul;
+            if (newPolicy.replace) {
+                start = 1 - sources.length; limit = 0; mul = -1;
             }
-            for (var j = start; j < limit; ++ j) { // TODO: try to economise on this array and on gaps
-                var thisSource = options.sourceTrundlers[j](sources[j], name);
-                newSources[j] = thisSource;
-                thisTarget = fluid.mergeOneImpl(thisTarget, thisSource, j, newSources, newPolicy, i, segs, options);
+            else {
+                start = 0; limit = sources.length - 1; mul = +1;
+            }
+            var newSources = [];
+            var thisTarget = undefined;
+            for (var j = start; j <= limit; ++j) { // TODO: try to economise on this array and on gaps
+                var k = mul * j;
+                var thisSource = options.sourceTrundlers[k](sources[k], name); // Run the RH algorithm in "driving" mode
+                if (thisSource !== undefined) {
+                    newSources[k] = thisSource;
+                    if (mul === -1) { // if we are going backwards, it is "replace"
+                        thisTarget = thisSource;
+                        break;
+                    }
+                    else {
+                        thisTarget = fluid.mergeOneImpl(thisTarget, thisSource, j, newSources, newPolicy, i, segs, options);
+                    }
+                }
             }
             target[name] = thisTarget;
-            recurse(thisTarget, i, segs, newSources, thisPolicy, options);
+            fluid.fetchMergeChildren(thisTarget, i, segs, newSources, thisPolicy, options);
         };
         options.strategy = strategy;
-        options.recurse = recurse;
         return strategy;
     };
         

@@ -98,11 +98,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluidJSTests.test("merge", function () {
-        expect(7);
         
         var bit1 = {prop1: "thing1"};
         var bit2 = {prop2: "thing2"};
         var bits = {prop1: "thing1", prop2: "thing2"};
+        
         jqUnit.assertDeepEq("Simple merge 1",
             bits, fluid.merge({}, {}, bit1, null, bit2));
         jqUnit.assertDeepEq("Simple merge 2",
@@ -113,15 +113,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             bits, fluid.merge({}, {}, {}, bit2, bit1));
            
         jqUnit.assertDeepNeq("Anticorruption check", bit1, bit2);
+
+        jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
+            fluid.merge([], [], [bit1, bit2], null, [bit2, bit1, bits]));
+        
         
         jqUnit.assertDeepEq("Replace 1", 
             bit1, fluid.merge({"": "replace"}, {}, bits, bit1));
           
-        jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
-            fluid.merge([], [], [bit1, bit2], null, [bit2, bit1, bits]));
     });
   
-    fluidJSTests.test("reverse merge at depth", function () {
+    fluidJSTests.test("reverse and replace merge at depth", function () {
         var target = {
             root: {
                 prop1: "thing1",
@@ -135,12 +137,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         var target1 = fluid.copy(target);
         fluid.reverseMerge(target1, source);
-        jqUnit.assertEquals("Property 1 should have been preserved", "thing1", target1.root.prop1);
+        jqUnit.assertEquals("prop1 should have been preserved", "thing1", target1.root.prop1);
         
         var target2 = fluid.copy(target);
         fluid.merge(null, target2, source);
-        jqUnit.assertEquals("Property 1 should have been preserved", "thing1", target2.root.prop1);
-  
+        jqUnit.assertEquals("prop1 should have been preserved", "thing1", target2.root.prop1);
+        
+        var target3 = fluid.merge({root: "replace"}, target, null, source, undefined);
+        jqUnit.assertDeepEq("prop1 should have been destroyed", source, target3);
+        
+        // "White box text" for "lastNonEmpty" issue
+        var target4 = fluid.merge({root: "replace"}, target, null, source, {otherThing: 1});
+        var expected = $.extend(true, source, {otherThing: 1});
+        jqUnit.assertDeepEq("prop1 should have been destroyed", expected, target4);
     });
     
     fluidJSTests.test("reverse merge at root", function () {
