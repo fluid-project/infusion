@@ -71,17 +71,38 @@ var fluid = fluid || fluid_1_5;
      * @param ... Additional arguments
      */
     fluid.fail = function (message /*, ... */) { // jslint:ok - whitespace in arg list
-        fluid.setLogging(true);
-        fluid.log.apply(null, ["ASSERTION FAILED: "].concat(fluid.makeArray(arguments)).concat(fluid.describeActivity()));
-        if (softFailure[0]) {
-            throw new Error(message);
-        } else {
-            message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
+        var args = fluid.makeArray(arguments);
+        var activity = fluid.describeActivity();
+
+        var topFailure = softFailure[0];
+        if (typeof(topFailure) === "boolean") {
+            fluid.setLogging(true);
+            fluid.log.apply(null, ["ASSERTION FAILED: "].concat(args).concat(activity));          
+            if (topFailure) {
+                throw new Error(message);
+            } else {
+                message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
+            }
+        } else if (typeof(topFailure) === "function") {
+            topFailure(args, activity);
         }
     };
     
+    /** 
+     * Configure the behaviour of fluid.fail by pushing or popping a disposition record onto a stack.
+     * @param {Boolean|Number|Function} condition
+     & Supply either a boolean flag choosing between built-in framework strategies to be used in fluid.fail 
+     * - <code>false</code>, the default causes a "hard failure" by using a nonexistent property on a String, which
+     * will in all known environments trigger an unhandleable exception which aids debugging. The boolean value
+     * <code>true</code> downgrades this behaviour to throw a conventional exception, which is more appropriate in
+     * test cases which need to demonstrate failure, as well as in some production environments.
+     * The argument may also be a function, which will be called with two arguments, args (the complete arguments to
+     * fluid.fail) and activity, an array of strings describing the current framework invocation state.
+     * Finally, the argument may be the number <code>-1</code> indicating that the previously supplied disposition should
+     * be popped off the stack 
+     */ 
     fluid.pushSoftFailure = function (condition) {
-        if (typeof (condition) === "boolean") {
+        if (typeof (condition) === "boolean" || typeof (condition) === "function") {
             softFailure.unshift(condition);
         } else if (condition === -1) {
             softFailure.shift();

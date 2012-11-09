@@ -349,6 +349,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNoValue("The defaults for a nonexistent component should be null.", 
                           fluid.defaults("timemachine"));
     });
+    
+    fluidJSTests.test("FLUID-4842 test - configurable 'soft failure'", function() {
+        var testArgs = [1, "thingit"];
+        function failHandle(args, activity) {
+            jqUnit.assertDeepEq("Received arguments in error handler", testArgs, args);
+        }
+        jqUnit.expect(1);
+        fluid.pushSoftFailure(failHandle);
+        fluid.fail.apply(null, testArgs);
+        fluid.pushSoftFailure(-1);
+    });
            
     fluidJSTests.test("FLUID-4285 test - prevent 'double options'", function () {
         try {
