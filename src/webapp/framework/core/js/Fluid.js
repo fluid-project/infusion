@@ -65,10 +65,11 @@ var fluid = fluid || fluid_1_5;
     };
     
     /**
-     * Causes an error message to be logged to the console and a real runtime error to be thrown.
+     * Signals an error to the framework. The default behaviour is to log a structured error message and throw a variety of
+     * exception (hard or soft) - see fluid.pushSoftFailure for configuration
      *
-     * @param {String|Error} message the error message to log
-     * @param ... Additional arguments
+     * @param {String} message the error message to log
+     * @param ... Additional arguments, suitable for being sent to native console.log function
      */
     fluid.fail = function (message /*, ... */) { // jslint:ok - whitespace in arg list
         var args = fluid.makeArray(arguments);
