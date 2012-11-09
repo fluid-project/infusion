@@ -71,15 +71,18 @@ var fluid = fluid || fluid_1_5;
      * @param ... Additional arguments
      */
     fluid.fail = function (message /*, ... */) { // jslint:ok - whitespace in arg list
-        fluid.setLogging(true);
         var args = fluid.makeArray(arguments);
         var activity = fluid.describeActivity();
-        fluid.log.apply(null, ["ASSERTION FAILED: "].concat(args).concat(activity));
+
         var topFailure = softFailure[0];
-        if (topFailure === true) {
-            throw new Error(message);
-        } else if (topFailure === false) {
-            message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
+        if (typeof(topFailure) === "boolean") {
+            fluid.setLogging(true);
+            fluid.log.apply(null, ["ASSERTION FAILED: "].concat(args).concat(activity));          
+            if (topFailure) {
+                throw new Error(message);
+            } else {
+                message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
+            }
         } else if (typeof(topFailure) === "function") {
             topFailure(args, activity);
         }
