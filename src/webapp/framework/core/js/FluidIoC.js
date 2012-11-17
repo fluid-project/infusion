@@ -1305,7 +1305,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             $.extend(true, target, expanded);
         }
         // NOTE! This expects that RHS is concrete! For material input to "expansion" this happens to be the case, but is not
-        // true for other algorithms. Inconsistently, this algorithm uses "sourceTrundler" below. In fact, this "fetchChildren"
+        // true for other algorithms. Inconsistently, this algorithm uses "sourceStrategy" below. In fact, this "fetchChildren"
         // operation looks like it is a fundamental primitive of the system. We do call "deliverer" early which enables correct
         // reference to parent nodes up the tree - however, anyone processing a tree IN THE CHAIN requires that it is produced
         // concretely at the point STRATEGY returns. Which in fact it is...............
@@ -1322,9 +1322,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     // TODO: This method is unnecessary and introduces quadratic inefficiency. The driver should detect
     // "homogeneous uni-strategy trundling" and just dispatch to the strategy in one go
-    function regenerateCursor (source, segs, limit, sourceTrundler) {
+    function regenerateCursor (source, segs, limit, sourceStrategy) {
         for (var i = 0; i < limit; ++ i) {
-            source = sourceTrundler(source, segs[i]);
+            source = sourceStrategy(source, segs[i], i, segs);
         }
         return source;
     }
@@ -1381,10 +1381,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 return;
             }
             if (source === undefined) { // recover our state in case this is an external entry point
-                source = regenerateCursor(options.source, segs, i - 1, options.sourceTrundler);
+                source = regenerateCursor(options.source, segs, i - 1, options.sourceStrategy);
                 policy = regenerateCursor(options.mergePolicy, segs, i - 1, fluid.concreteTrundler);
             }
-            var thisSource = options.sourceTrundler(source, name);
+            var thisSource = options.sourceStrategy(source, name, i, segs);
             var thisPolicy = fluid.concreteTrundler(policy, name);
             function deliverer(value) {
                 target[name] = value;
@@ -1397,21 +1397,16 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return strategy;
     };
     
-    function resolveEnvironmentImpl2(obj, options) {
-        options.sourceTrundler = fluid.concreteTrundler;
-        // TODO: With full gingerness, cache this once and for all per fluid.mergeComponentOptions
-        options.mergePolicy = fluid.compileMergePolicy(options.mergePolicy); 
-        var strategy = fluid.makeExpandStrategy(options);
-        if (typeof(obj) === "string") {
-            return fluid.expandSource(options, null, fluid.identity, obj, options.mergePolicy, false, options.recurse);
+    function resolveEnvironmentImpl2(source, options) {
+        if (typeof(source) === "string") {
+            return fluid.expandSource(options, null, fluid.identity, source, options.mergePolicy, false, options.recurse);
         }
-        else if (fluid.isUnexpandable(obj)) {
-            return obj;
+        else if (fluid.isUnexpandable(source)) {
+            return source;
         }
         else {
-            var target = fluid.freshContainer(obj);
-            fluid.fetchExpandChildren(target, obj, options.mergePolicy, false, options);
-            return target;
+            options.initter();
+            return options.target;
         }
     };
     
@@ -1421,17 +1416,26 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         bareContextRefs: true
     });
     
-    fluid.mergedResolveOptions = function(options) {
+    fluid.makeExpandOptions = function(source, options) {
         // Don't create a component here since this function is itself used in the 
         // component expansion pathway - avoid all expansion in any case to head off FLUID-4301
         options = $.extend({}, fluid.rawDefaults("fluid.resolveEnvironment"), options);
+        options.source = source;
         options.seenIds = {};
+        options.target = fluid.freshContainer(source);
+        options.initter = function () {
+            fluid.fetchExpandChildren(options.target, source, options.mergePolicy, false, options);
+        }
+        options.sourceStrategy = options.sourceStrategy || fluid.concreteTrundler;
+        // TODO: With full gingerness, cache this once and for all per fluid.mergeComponentOptions
+        options.mergePolicy = fluid.compileMergePolicy(options.mergePolicy); 
+        fluid.makeExpandStrategy(options);
         return options;
     }
     
-    fluid.resolveEnvironment = function(obj, options) {
-        var options = fluid.mergedResolveOptions(options);
-        return resolveEnvironmentImpl2(obj, options);
+    fluid.resolveEnvironment = function(source, options) {
+        var options = fluid.makeExpandOptions(source, options);
+        return resolveEnvironmentImpl2(source, options);
     };
 
     /** "light" expanders, starting with support functions for the so-called "deferredCall" expanders,

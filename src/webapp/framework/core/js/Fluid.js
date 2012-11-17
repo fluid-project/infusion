@@ -1342,17 +1342,17 @@ var fluid = fluid || fluid_1_5;
     // NB - same quadratic worry about these as in FluidIoC in the case the RHS trundler is live - 
     // the problem is that IT ITSELF might be in "regenerate" mode for each step - although in practice
     // it won't because target is cached
-    function regenerateCursor (source, segs, limit, sourceTrundler) {
+    function regenerateCursor (source, segs, limit, sourceStrategy) {
         for (var i = 0; i < limit; ++ i) {
-            source = sourceTrundler(source, segs[i]);
+            source = sourceStrategy(source, segs[i], i, segs);
         }
         return source;
     }
     
-    function regenerateSources (sources, segs, limit, sourceTrundlers) {
+    function regenerateSources (sources, segs, limit, sourceStrategies) {
         var togo = [];
         for (var i = 0; i < sources.length; ++ i) {
-            var thisSource = regenerateCursor(sources[i], segs, limit, sourceTrundlers[i]);
+            var thisSource = regenerateCursor(sources[i], segs, limit, sourceStrategies[i]);
             if (thisSource !== undefined) {
                 togo.push(thisSource);
             }
@@ -1398,7 +1398,7 @@ var fluid = fluid || fluid_1_5;
                 return target[name];
             }
             if (sources === undefined) { // recover our state in case this is an external entry point
-                sources = regenerateSources(options.sources, segs, i - 1, options.sourceTrundlers);
+                sources = regenerateSources(options.sources, segs, i - 1, options.sourceStrategies);
                 policy = regenerateCursor(options.mergePolicy, segs, i - 1, fluid.concreteTrundler);
             }
 
@@ -1417,7 +1417,7 @@ var fluid = fluid || fluid_1_5;
             var thisTarget = undefined;
             for (var j = start; j <= limit; ++j) { // TODO: try to economise on this array and on gaps
                 var k = mul * j;
-                var thisSource = options.sourceTrundlers[k](sources[k], name); // Run the RH algorithm in "driving" mode
+                var thisSource = options.sourceStrategies[k](sources[k], name, i, segs); // Run the RH algorithm in "driving" mode
                 if (thisSource !== undefined) {
                     newSources[k] = thisSource;
                     if (mul === -1) { // if we are going backwards, it is "replace"
@@ -1431,6 +1431,7 @@ var fluid = fluid || fluid_1_5;
             }
             target[name] = thisTarget;
             fluid.fetchMergeChildren(thisTarget, i, segs, newSources, thisPolicy, options);
+            return thisTarget;
         };
         options.strategy = strategy;
         return strategy;
@@ -1457,17 +1458,26 @@ var fluid = fluid || fluid_1_5;
      */
         
     fluid.merge = function (policy /*, ... sources */) {
-        var segs = [];
+        var sources = Array.prototype.slice.call(arguments, 1); 
+        var options = fluid.makeMergeOptions(policy, sources, {});
+        options.initter();
+        return options.target;
+    };
+    
+    fluid.makeMergeOptions = function (policy, sources, userOptions) {
         var options = {
             mergePolicy: fluid.compileMergePolicy(policy), // TODO: with gingerness, we can compute this early
-            sources: Array.prototype.slice.call(arguments, 1),
+            sources: sources,
             seenIds: {}
         };
-        options.target = fluid.freshContainer(options.sources[0]);
-        options.sourceTrundlers = fluid.generate(options.sources.length, fluid.concreteTrundler);
+        options = $.extend(options, userOptions);
+        options.target = options.target || fluid.freshContainer(options.sources[0]);
+        options.sourceStrategies = options.sourceStrategies || fluid.generate(options.sources.length, fluid.concreteTrundler);
+        options.initter = function () {
+            fluid.fetchMergeChildren(options.target, 0, [], options.sources, options.mergePolicy, options);          
+        }
         fluid.makeMergeStrategy(options);
-        fluid.fetchMergeChildren(options.target, 0, [], options.sources, options.mergePolicy, options);
-        return options.target;
+        return options;
     };
 
     // unsupported, NON-API function

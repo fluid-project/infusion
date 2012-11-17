@@ -507,7 +507,7 @@ fluid.registerNamespace("fluid.tests");
         }
     };
     
-    var expected = {
+    var expectedExpand = {
         outerValue: 4,
         selfValue: 4, // backward reference
         selfForward: 3, // forward reference
@@ -527,23 +527,82 @@ fluid.registerNamespace("fluid.tests");
         unexpandedTop: "{outerConfig}.value"
     };
     
-    fluidIoCTests.test("FLUID-4330 Basic Ginger Expansion Test", function () {
-        var contexts = {};
-        var fetcher = function (parsed) {
+    fluid.tests.simpleFetcher = function (contexts) {
+        return function (parsed) {
             var context = contexts[parsed.context];
             return fluid.get(context.root, parsed.path, context.config);
         };
-        var expandOptions = fluid.mergedResolveOptions( {
-            source: expandingConfig, 
-            sourceTrundler: fluid.concreteTrundler, fetcher: fetcher,
+    };
+    
+    fluidIoCTests.test("FLUID-4330 Basic Ginger Expansion Test", function () {
+        var contexts = {};
+        var expandOptions = fluid.makeExpandOptions(expandingConfig, {
+            sourceStrategy: fluid.concreteTrundler, 
+            fetcher: fluid.tests.simpleFetcher(contexts),
             mergePolicy: {}
             });
-        var expandStrategy = fluid.makeExpandStrategy(expandOptions);
-        var target = {};
+        var target = expandOptions.target;
         contexts.outerConfig = {root: outerConfig, config: {strategies: [fluid.model.defaultFetchStrategy]}};
-        contexts.self = {root: target, config: {strategies: [expandStrategy]}};
-        fluid.fetchExpandChildren(target, expandOptions.source, {}, false, expandOptions);
-        jqUnit.assertDeepEq("Properly expanded self-referential structure", expected, target);
+        contexts.self = {root: target, config: {strategies: [expandOptions.strategy]}};
+        expandOptions.initter();
+        jqUnit.assertDeepEq("Properly expanded self-referential structure", expectedExpand, target);
+    });
+    
+    var block1 = {
+        forwardRef: "{self}.mergedProperty",
+        mergedProperty: 1,
+        mergedProperty2: 1
+    };
+    
+    var block2 = {
+        mergedProperty2: 2
+    };
+    
+    var block3 = {
+        mergedProperty: 3,
+        backwardRef: "{self}.mergedProperty2"  
+    };
+    
+    var expectedMerge = {
+        forwardRef: 3,
+        mergedProperty: 3,
+        backwardRef: 2,
+        mergedProperty2: 2
+    };
+    
+    fluid.getMembers = function (holder, name) {
+        return fluid.transform(holder, function(member) {
+            return member[name];
+        });
+    };
+    
+    fluidIoCTests.test("FLUID-4330 Basic merging and expansion test", function () {
+        var blocks = [block1, block2, block3];
+        var target = {};
+        var ultimateStrategy;
+        var expandFetcher = function (parsed) {
+            if (parsed.context === "self") {
+                return fluid.get(target, parsed.path, {strategies: [ultimateStrategy]});
+            }
+        };
+        var baseExpandOptions = {
+            sourceStrategy: fluid.concreteTrundler, 
+            fetcher: expandFetcher,
+            mergePolicy: {}
+            };
+        var allExpandOptions = fluid.transform(blocks, function(block) {
+            var thisOptions = $.extend(true, {}, baseExpandOptions);
+            return fluid.makeExpandOptions(block, thisOptions);
+        });
+        var baseMergeOptions = {
+            target: target,
+            sourceStrategies: fluid.getMembers(allExpandOptions, "strategy")
+        };
+        var mergeOptions = fluid.makeMergeOptions({}, fluid.getMembers(allExpandOptions, "target"), baseMergeOptions);
+        ultimateStrategy = mergeOptions.strategy;
+        fluid.each(allExpandOptions, function(expandOption) { expandOption.initter();});
+        mergeOptions.initter();
+        jqUnit.assertDeepEq("Properly merged and expanded self-referential structure", expectedMerge, target);
     });
     
     /** FLUID-4135 - event injection and boiling test **/
