@@ -28,8 +28,19 @@ fluid.defaults("fluid.tests.myTestTree", {
         catTester: {
             type: "fluid.tests.catTester"
         }
+    },
+    listeners: {
+        onDestroy: {
+            listener: "fluid.tests.myTestTree.destroy",
+            args: "{that}"
+        }
     }
 });
+
+// Test the teardown function for the entire tree
+fluid.tests.myTestTree.destroy = function (that) {
+    that.destroyed = true;
+}
 
 /** Component under test **/
 
@@ -53,13 +64,13 @@ fluid.defaults("fluid.tests.catTester", {
             expect: 1,
             name: "Test Meow",
             type: "test",
-            path: "{that}.testMeow",
+            func: "{that}.testMeow",
             args: "{cat}"
         }, {
             expect: 1,
             name: "Test Global Meow",
             type: "test",
-            path: "fluid.tests.globalCatTest",
+            func: "fluid.tests.globalCatTest",
             args: "{cat}"
         }
         ]
@@ -74,8 +85,95 @@ fluid.tests.catTester.preInit = function (that) {
     that.testMeow = fluid.tests.globalCatTest;
 };
 
+fluid.defaults("fluid.tests.asyncTest", {
+    gradeNames: ["fluid.rendererComponent", "autoInit"],
+    selectors: {
+        button: ".flc-async-button"  
+    },
+    events: {
+        buttonClicked: null  
+    },
+    protoTree: {
+        button: {
+            decorators: {
+                type: "fluid",
+                func: "fluid.tests.buttonChild"
+            }
+        }
+    }
+});
+
+fluid.defaults("fluid.tests.buttonChild", {
+    gradeNames: ["fluid.viewComponent", "autoInit"],
+    events: {
+        buttonClicked: "{asyncTest}.events.buttonClicked"
+    }
+});
+
+fluid.tests.buttonChild.postInit = function (that) {
+    that.container.click(function() {
+        setTimeout(that.events.buttonClicked.fire, 1);  
+    });
+}
+
+fluid.defaults("fluid.tests.asyncTestTree", {
+    gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+    components: {
+        asyncTest: {
+            type: "fluid.tests.asyncTest",
+            container: ".flc-async-root"
+        },
+        asyncTester: {
+            type: "fluid.tests.asyncTester"
+        }
+    }
+});
+
+fluid.defaults("fluid.tests.asyncTester", {
+    gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+    testCases: [ {
+        name: "Async test case",
+        tests: [{
+            name: "Rendering sequence",
+            expect: 2,
+            sequence: [ {
+                func: "fluid.tests.startRendering",
+                args: ["{asyncTest}", "{instantiator}"]
+            }, {
+                listener: "fluid.tests.checkEvent",
+                event: "{asyncTest}.events.buttonClicked"
+            }]
+        }
+        ]
+    }]
+});
+
+fluid.tests.checkEvent = function () {
+    jqUnit.assert("Button event relayed");
+};
+
+fluid.tests.startRendering = function (asyncTest, instantiator) {
+    asyncTest.refreshView();
+    var decorators = fluid.renderer.getDecoratorComponents(asyncTest, instantiator);
+    var decArray = fluid.values(decorators);
+    jqUnit.assertEquals("Constructed one component", 1, decArray.length);
+    asyncTest.locate("button").click();
+};
+
+var globalTests = new jqUnit.testCase();
+
 /** Global driver function **/
 
 fluid.tests.testTests = function () {
-    fluid.tests.myTestTree();
+    var tree1 = fluid.tests.myTestTree();
+    // Note: This manual test relies on the test runner being asynchronous, which in 
+    // practice it always is
+    tree1.events.onDestroy.addListener(function() {
+        console.log("Tree 1 destroyed - now async tree");
+        setTimeout(fluid.tests.asyncTestTree, 1);
+        globalTests.test("Global tests", function() {
+            jqUnit.assertEquals("Tree destroyed after synchronous tests", true, tree1.destroyed);
+        });
+    });
+
 };
