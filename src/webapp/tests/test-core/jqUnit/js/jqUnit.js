@@ -89,66 +89,78 @@ var jqUnit = jqUnit || {};
         
         return that;
     };
-
+    
+    var messageSuffix = "";
+    var processMessage = function (message) {
+        return message + messageSuffix;  
+    };
+    
+    var pok = function (condition, message) {
+        QUnit.ok(condition, processMessage(message));
+    };
+    
+    jqUnit.setMessageSuffix = function (suffix) {
+        messageSuffix = suffix;
+    };
 
     /***********************
      * xUnit Compatibility *
      ***********************/
     
     var jsUnitCompat = {
-        assert: function(msg) {
-            ok(true, msg);  
+        assert: function (msg) {
+            pok(true, msg);  
         },
         
         assertEquals: function (msg, expected, actual) {
-            equal(actual, expected, msg);
+            QUnit.equal(actual, expected, processMessage(msg));
         },
         
         assertNotEquals: function (msg, value1, value2) {
-            ok(value1 !== value2, msg);
+            pok(value1 !== value2, msg);
         },
 
         assertTrue: function (msg, value) {
-            ok(value, msg);
+            pok(value, msg);
         },
 
         assertFalse: function (msg, value) {
-            ok(!value, msg);
+            pok(!value, msg);
         },
 
         assertUndefined: function (msg, value) {
-            ok(typeof value === 'undefined', msg);
+            pok(value === "undefined", msg);
         },
 
         assertNotUndefined: function (msg, value) {
-            ok(typeof value !== 'undefined', msg);
+            pok(value !== "undefined", msg);
         },
 
         assertValue: function (msg, value) {
-            ok(value !== null && value !== undefined, msg);
+            pok(value !== null && value !== undefined, msg);
         },
         
         assertNoValue: function (msg, value) {
-            ok(value === null || value === undefined, msg);
+            pok(value === null || value === undefined, msg);
         },
         
         assertNull: function (msg, value) {
-            equal(value, null, msg);
+            QUnit.equal(value, null, processMessage(msg));
         },
 
         assertNotNull: function (msg, value) {
-            ok(value !== null, msg);
+            pok(value !== null, msg);
         },
         
         assertDeepEq: function (msg, expected, actual) {
-            QUnit.deepEqual(actual, expected, msg);
+            QUnit.deepEqual(actual, expected, processMessage(msg));
         },
         
         assertDeepNeq: function (msg, unexpected, actual) {
-            QUnit.notDeepEqual(actual, unexpected, msg);
+            QUnit.notDeepEqual(actual, unexpected, processMessage(msg));
         },
         // Namespaced version of "expect" for civilization
-        expect: function(number) {
+        expect: function (number) {
             var oldExpect = expect();
             expect(number + oldExpect);
         }
@@ -164,19 +176,19 @@ var jqUnit = jqUnit || {};
     
     var testFns = {
         isVisible: function (msg, selector) {
-            ok($(selector).is(':visible'), msg);
+            pok($(selector).is(':visible'), msg);
         },
         
         notVisible: function (msg, selector) {
-            ok($(selector).is(':hidden'), msg);
+            pok($(selector).is(':hidden'), msg);
         },
         
         exists: function (msg, selector) {
-            ok($(selector)[0], msg);
+            pok($(selector)[0], msg);
         },
         
         notExists: function (msg, selector) {
-            ok(!$(selector)[0], msg);
+            pok(!$(selector)[0], msg);
         },
         
         // Overrides jQuery's animation routines to be synchronous. Careful!

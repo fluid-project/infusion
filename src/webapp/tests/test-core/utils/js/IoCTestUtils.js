@@ -69,12 +69,23 @@ fluid.test.testEnvironment.runTests = function (that) {
         root: that,
         instantiator: that.instantiator
     };
+    if (that.options.markupFixture) {
+        var markupContainer = fluid.container(that.options.markupFixture, false);
+        that.storedMarkup = markupContainer.html();
+        that.events.onDestroy.addListener(function() {
+            console.log("Restoring markup " + that.storedMarkup);
+            markupContainer.html(that.storedMarkup);
+        });
+    }
     fluid.each(that.testCaseHolders, function(testCaseHolder) {
         testCaseState.testCaseHolder = testCaseHolder;
         testCaseState.expand = fluid.test.makeExpander(testCaseHolder, that.instantiator);
         testCaseState.expandFunction = fluid.test.makeFuncExpander(testCaseState.expand);
         fluid.test.processTestCaseHolder(testCaseState);  
     });
+    // Fire this event so that environments which registered no tests (due to qunit filtering)
+    // will terminate immediately
+    fluid.test.noteTest(testCaseState.root, 0);
 };
 
 fluid.defaults("fluid.test.testCaseHolder", {
@@ -113,6 +124,19 @@ fluid.test.decoders.func = function (testCaseState, fixture) {
     };
 };
 
+fluid.test.decoders.jQueryTrigger = function (testCaseState, fixture) {
+    var event = fixture.jQueryTrigger;
+    var args = fluid.makeArray(testCaseState.expand(fixture.args));
+    args.unshift(event);
+    return {
+        execute: function () {
+            var element = testCaseState.expand(fixture.element);
+            var jel = fluid.wrap(element);
+            jel.trigger.apply(jel, args); 
+        }
+    };
+};
+
 fluid.test.decoders.listener = function (testCaseState, fixture) {
     var event = testCaseState.expand(fixture.event);
     var listener = testCaseState.expandFunction(fixture.listener);
@@ -130,7 +154,7 @@ fluid.test.decoders.listener = function (testCaseState, fixture) {
     return that;
 };
 
-fluid.test.decoderDucks = ["func", "listener"];
+fluid.test.decoderDucks = ["func", "listener", "jQueryTrigger"];
 
 fluid.test.decodeFixture = function (testCaseState, fixture) {
     var ducks = fluid.test.decoderDucks;
@@ -152,7 +176,7 @@ fluid.test.decodeFixture = function (testCaseState, fixture) {
 
 // Compose any number of functions expressed in the CPS style into a single
 // such function
-fluid.composeCPS = function(funcs, argpos) {
+fluid.composeCPS = function (funcs, argpos) {
     argpos = argpos || 0;
     return function (next) {
         return argpos === funcs.length - 1 ? funcs[argpos](next) :  
@@ -162,6 +186,28 @@ fluid.composeCPS = function(funcs, argpos) {
     };
 };
 
+fluid.test.execExecutor = function (executor, sequenceText) {
+    jqUnit.setMessageSuffix(" - at sequence position " + sequenceText);
+    executor.execute();
+    jqUnit.setMessageSuffix("");
+};
+
+fluid.test.composeSimple = function (f1, f2) {
+    return function () {
+        f1(); f2();
+    };
+};
+
+fluid.test.bindExecutor = function (binder, preWrap, postWrap, sequenceText) {
+    function preFunc () {
+        jqUnit.setMessageSuffix(" - at sequence position " + sequenceText);
+    }
+    function postFunc () {
+        jqUnit.setMessageSuffix("");
+    }
+    var c = fluid.test.composeSimple;
+    binder.bind(c(preWrap, preFunc), c(postFunc, postWrap));
+};
 
 fluid.test.sequenceExecutor = function (testCaseState, fixture) {
     var that = {
@@ -175,40 +221,54 @@ fluid.test.sequenceExecutor = function (testCaseState, fixture) {
         return that.executors[pos] = 
                 fluid.test.decodeFixture(that.testCaseState, that.fixture.sequence[pos]);
     };
+    that.sequenceText = function (pos) {
+        return (pos === undefined? that.sequencePos : pos) + " of " + that.count;
+    }
+    // This unfortunate style is as good as the qunit markup!
+    $("#qunit-testresult").append(" &mdash; at sequence position <span class=\"jqunit-sequence\"></span>");
+    that.sequenceElement = $("#qunit-testresult .jqunit-sequence");
+    that.renderSequence = function () {
+        that.sequenceElement.text(that.sequenceText());
+    };
+
     that.decode(0);
+    that.renderSequence();
     // this: exec, next: exec - do 1st exec, then 2nd exec (EX)
     // this: exec, next: bind - do 2nd bind (EX) FIRST, then exec [ODD - out of order]
     // this: bind, next: bind - do this bind, and send it 2nd bind (EX) as pre-wrapper
     // this: bind, next: exec - do this bind, send it exec (EX) as post-wrapper
     that.execute = function () {
         var thisExec = that.executors[that.sequencePos];
+        var tpos = that.sequencePos;
         var pos = ++that.sequencePos;
+        var thisText = that.sequenceText(pos);
+        that.renderSequence();
         var last = pos === that.count;
         if (last) {
             if (thisExec.execute) {
-                thisExec.execute();
+                fluid.test.execExecutor(thisExec, thisText);
                 testCaseState.finisher();
             }
             else {
-                thisExec.bind(fluid.identity, testCaseState.finisher);
+                fluid.test.bindExecutor(thisExec, fluid.identity, testCaseState.finisher, thisText);
             }
             return;
         }
         var nextExec = that.decode(pos); // decode the NEXT executor
 
         if (thisExec.bind) {
-            args = nextExec.bind? [that.execute, fluid.identity] : 
+            var wrappers = nextExec.bind? [that.execute, fluid.identity] : 
                 [fluid.identity, that.execute];
-            that.executors[i].bind.apply(null, args);
+            fluid.test.bindExecutor(thisExec, wrappers[0], wrappers[1], thisText);
         }
 
         if (thisExec.execute) {
             if (nextExec.bind) {
                 that.execute(); // bind first [ODD]
-                thisExec.execute();
+                fluid.test.execExecutor(thisExec, thisText);
             }
             else { 
-                thisExec.execute();
+                fluid.test.execExecutor(thisExec, thisText);
                 that.execute();
             }
         }
@@ -217,14 +277,37 @@ fluid.test.sequenceExecutor = function (testCaseState, fixture) {
     return that;
 };
 
+/** Top-level driver function for users. Supply an array of grade names holding the
+ *  list of the testing environments to be executed in sequence
+ *  @param envNames (Array of string) The testing environments to be executed
+ */
+
+fluid.test.runTests = function (envNames) {
+    var index = 0;
+    var nextLater;
+    var next = function () {
+        if (index < envNames.length) {
+            fluid.invokeGlobalFunction(envNames[index++], [{
+                listeners: {
+                    onDestroy: nextLater
+                }
+            }]);
+        }
+    };
+    nextLater = function () {
+        setTimeout(next, 1);
+    }
+    next();
+};
+
 fluid.test.processTestCase = function (testCaseState) {
     var testCase = testCaseState.testCase;
     var jCase = new jqUnit.TestCase(testCase.name);
     var fixtures = testCase.tests;
     fluid.each(fixtures, function (fixture) {
         var testType = "asyncTest";
-        fluid.test.noteTest(testCaseState.root, 1);
-        jCase[testType](fixture.name, function() {
+
+        var testFunc = function () {
             if (fixture.expect !== undefined) {
                 jqUnit.expect(fixture.expect);
             }
@@ -238,7 +321,20 @@ fluid.test.processTestCase = function (testCaseState) {
                     testCaseState.finisher();
                 }
             }
-        });
+        };
+        // Note that this test relies on an implementation detail of qunit. For those
+        // tests which fail the "validTest" test due to being filtered out in the UI, 
+        // they result in no material placed in the queue. We escape the case where they
+        // might enter the queue and immediately leave it as a result of only ever issuing
+        // asynchronous tests
+        var oldLength = QUnit.config.queue.length;
+        jCase[testType](fixture.name, testFunc);
+        if (QUnit.config.queue.length === oldLength) {
+            console.log("Skipped test " + fixture.name);
+        }
+        else {
+            fluid.test.noteTest(testCaseState.root, 1);
+        }
     });
 };
 

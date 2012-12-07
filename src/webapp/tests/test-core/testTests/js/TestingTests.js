@@ -28,19 +28,8 @@ fluid.defaults("fluid.tests.myTestTree", {
         catTester: {
             type: "fluid.tests.catTester"
         }
-    },
-    listeners: {
-        onDestroy: {
-            listener: "fluid.tests.myTestTree.destroy",
-            args: "{that}"
-        }
     }
 });
-
-// Test the teardown function for the entire tree
-fluid.tests.myTestTree.destroy = function (that) {
-    that.destroyed = true;
-}
 
 /** Component under test **/
 
@@ -118,6 +107,7 @@ fluid.tests.buttonChild.postInit = function (that) {
 
 fluid.defaults("fluid.tests.asyncTestTree", {
     gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+    markupFixture: ".flc-async-root",
     components: {
         asyncTest: {
             type: "fluid.tests.asyncTest",
@@ -135,14 +125,21 @@ fluid.defaults("fluid.tests.asyncTester", {
         name: "Async test case",
         tests: [{
             name: "Rendering sequence",
-            expect: 2,
+            expect: 3,
             sequence: [ {
                 func: "fluid.tests.startRendering",
                 args: ["{asyncTest}", "{instantiator}"]
             }, {
                 listener: "fluid.tests.checkEvent",
                 event: "{asyncTest}.events.buttonClicked"
-            }]
+            }, { // manually click on the button  
+                jQueryTrigger: "click",
+                element: "{asyncTest}.dom.button"
+            }, {
+                listener: "fluid.tests.checkEvent",
+                event: "{asyncTest}.events.buttonClicked"
+            }
+            ]
         }
         ]
     }]
@@ -165,15 +162,8 @@ var globalTests = new jqUnit.testCase();
 /** Global driver function **/
 
 fluid.tests.testTests = function () {
-    var tree1 = fluid.tests.myTestTree();
-    // Note: This manual test relies on the test runner being asynchronous, which in 
-    // practice it always is
-    tree1.events.onDestroy.addListener(function() {
-        console.log("Tree 1 destroyed - now async tree");
-        setTimeout(fluid.tests.asyncTestTree, 1);
-        globalTests.test("Global tests", function() {
-            jqUnit.assertEquals("Tree destroyed after synchronous tests", true, tree1.destroyed);
-        });
-    });
-
+    fluid.test.runTests([
+        "fluid.tests.myTestTree",
+        "fluid.tests.asyncTestTree"
+    ]);
 };
