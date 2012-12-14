@@ -126,12 +126,13 @@ fluid.defaults("fluid.tests.asyncTestTree", {
 
 fluid.defaults("fluid.tests.asyncTester", {
     gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
-    newTextValue: "newTextValue",
+    newTextValue:     "newTextValue",
+    furtherTextValue: "furtherTextValue",
     testCases: [ {
         name: "Async test case",
         tests: [{
             name: "Rendering sequence",
-            expect: 4,
+            expect: 7,
             sequence: [ {
                 func: "fluid.tests.startRendering",
                 args: ["{asyncTest}", "{instantiator}"]
@@ -144,7 +145,7 @@ fluid.defaults("fluid.tests.asyncTester", {
             }, {
                 listener: "fluid.tests.checkEvent",
                 event: "{asyncTest}.events.buttonClicked"
-            }, {
+            }, { // Issue two requests via UI to change field, and check model update
                 func: "fluid.tests.changeField",
                 args: ["{asyncTest}.dom.textField", "{asyncTester}.options.newTextValue"]  
             }, {
@@ -152,6 +153,26 @@ fluid.defaults("fluid.tests.asyncTester", {
                 args: ["{asyncTester}.options.newTextValue", "textValue"],
                 path: "textValue",
                 changeEvent: "{asyncTest}.applier.modelChanged"
+            }, {
+                func: "fluid.tests.changeField",
+                args: ["{asyncTest}.dom.textField", "{asyncTester}.options.furtherTextValue"]  
+            }, {
+                listenerMaker: "fluid.tests.makeChangeChecker",
+                args: ["{asyncTester}.options.furtherTextValue", "textValue"],
+                // alternate style for registering listener
+                spec: {path: "textValue", priority: "last"},
+                changeEvent: "{asyncTest}.applier.modelChanged"
+            }, {
+                func: "jqUnit.assertEquals",
+                args: ["Model updated", "{asyncTester}.options.furtherTextValue",
+                    "{asyncTest}.model.textValue"]  
+            }, { // manually click on the button a final time with direct listener
+                jQueryTrigger: "click",
+                element: "{asyncTest}.dom.button"
+            }, {
+                jQueryBind: "click",
+                element: "{asyncTest}.dom.button",
+                listener: "fluid.tests.checkEvent"
             }
             ]
         }

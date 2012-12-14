@@ -72,12 +72,11 @@ fluid.test.testEnvironment.runTests = function (that) {
     if (that.options.markupFixture) {
         var markupContainer = fluid.container(that.options.markupFixture, false);
         that.storedMarkup = markupContainer.html();
-        that.events.onDestroy.addListener(function() {
-            console.log("Restoring markup " + that.storedMarkup);
+        that.events.onDestroy.addListener(function () {
             markupContainer.html(that.storedMarkup);
         });
     }
-    fluid.each(that.testCaseHolders, function(testCaseHolder) {
+    fluid.each(that.testCaseHolders, function (testCaseHolder) {
         testCaseState.testCaseHolder = testCaseHolder;
         testCaseState.expand = fluid.test.makeExpander(testCaseHolder, that.instantiator);
         testCaseState.expandFunction = fluid.test.makeFuncExpander(testCaseState.expand);
@@ -101,9 +100,7 @@ fluid.test.noteTest = function (root, count) {
             " which has been destroyed");
     }
     root.activeTests += count;
-    console.log("noteTest for ", root, " with count " + count + " now " + root.activeTests);
     if (count === -1) {
-        console.log("Test finished - restarting");
         QUnit.start();
     }
     if (root.activeTests === 0) {
@@ -125,13 +122,22 @@ fluid.test.decodeListener = function (testCaseState, fixture) {
     return listener;
 };
 
+fluid.test.decodeElement = function (testCaseState, fixture) {
+    var element = testCaseState.expand(fixture.element);
+    var jel = fluid.wrap(element);
+    if (!jel) {
+        fluid.fail("Unable to decode entry \"element\" of fixture ", fixture, " to a DOM element");
+    }
+    return jel;
+};
+
 fluid.test.decoders = {};
 
 fluid.test.decoders.func = function (testCaseState, fixture) {
-    var testFunc = testCaseState.expandFunction(fixture.func);
-    var args = testCaseState.expand(fixture.args);
     return {
         execute: function () {
+            var testFunc = testCaseState.expandFunction(fixture.func);
+            var args = testCaseState.expand(fixture.args);
             testFunc.apply(null, fluid.makeArray(args));
         }
     };
@@ -139,15 +145,30 @@ fluid.test.decoders.func = function (testCaseState, fixture) {
 
 fluid.test.decoders.jQueryTrigger = function (testCaseState, fixture) {
     var event = fixture.jQueryTrigger;
-    var args = fluid.makeArray(testCaseState.expand(fixture.args));
-    args.unshift(event);
     return {
         execute: function () {
-            var element = testCaseState.expand(fixture.element);
-            var jel = fluid.wrap(element);
-            jel.trigger.apply(jel, args); 
+            var args = fluid.makeArray(testCaseState.expand(fixture.args));
+            args.unshift(event);
+            var element = fluid.test.decodeElement(testCaseState, fixture);
+            element.trigger.apply(element, args); 
         }
     };
+};
+
+fluid.test.decoders.jQueryBind = function (testCaseState, fixture) {
+    var event = fixture.jQueryBind;
+    var listener = fluid.test.decodeListener(testCaseState, fixture);
+    var element;
+    var that = fluid.test.makeBinder(listener, 
+       function (wrapped) {
+        element = fluid.test.decodeElement(testCaseState, fixture);
+        var args = fluid.makeArray(testCaseState.expand(fixture.args));
+        args.unshift(event);
+        args.push(wrapped);
+        element.one.apply(element, args)
+    }, fluid.identity  // do nothing on unbind, jQuery.one has done it
+    ); 
+    return that;
 };
 
 fluid.test.makeBinder = function (listener, innerBinder, innerRemover) {
@@ -179,7 +200,6 @@ fluid.test.decoders.event = function (testCaseState, fixture) {
 fluid.test.decoders.changeEvent = function (testCaseState, fixture) {
     var event = testCaseState.expand(fixture.changeEvent);
     var listener = fluid.test.decodeListener(testCaseState, fixture);
-    var that = {};
     var that = fluid.test.makeBinder(listener, 
        function (wrapped) {
         var spec = fixture.path === undefined ? fixture.spec : fixture.path;
@@ -194,8 +214,7 @@ fluid.test.decoders.changeEvent = function (testCaseState, fixture) {
     return that;
 };
 
-
-fluid.test.decoderDucks = ["func", "event", "changeEvent", "jQueryTrigger"];
+fluid.test.decoderDucks = ["func", "event", "changeEvent", "jQueryTrigger", "jQueryBind"];
 
 fluid.test.decodeFixture = function (testCaseState, fixture) {
     var ducks = fluid.test.decoderDucks;
@@ -212,19 +231,6 @@ fluid.test.decodeFixture = function (testCaseState, fixture) {
             " as a valid fixture type - must contain key chosen from " + 
             ducks.join(", "));
     }
-};
-
-
-// Compose any number of functions expressed in the CPS style into a single
-// such function
-fluid.composeCPS = function (funcs, argpos) {
-    argpos = argpos || 0;
-    return function (next) {
-        return argpos === funcs.length - 1 ? funcs[argpos](next) :  
-            funcs[argpos](function () {
-                fluid.composeCPS(funcs, argpos + 1)(next);
-            });
-    };
 };
 
 fluid.test.execExecutor = function (executor, sequenceText) {
@@ -384,7 +390,6 @@ fluid.test.processTestCaseHolder = function (testCaseState) {
     fluid.each(cases, function (testCase) {
         testCaseState.testCase = testCase;
         testCaseState.finisher = function () {
-            console.log("Finisher for ", testCaseState);
             fluid.test.noteTest(testCaseState.root, -1);
         };
         fluid.test.processTestCase(testCaseState);  
