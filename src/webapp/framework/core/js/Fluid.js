@@ -761,6 +761,12 @@ var fluid = fluid || fluid_1_5;
     };
     
     // unsupported, NON-API function
+    fluid.event.impersonateListener = function (origListener, newListener) {
+        fluid.event.identifyListener(origListener);
+        newListener.$$fluid_guid = origListener.$$fluid_guid;
+    };
+    
+    // unsupported, NON-API function
     fluid.event.mapPriority = function (priority, count) {
         return (priority === null || priority === undefined ? -count :
            (priority === "last" ? -Number.MAX_VALUE :

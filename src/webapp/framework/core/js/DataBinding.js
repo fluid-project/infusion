@@ -540,7 +540,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     pathSpec = pathSpec.substring(1);
                 }
             }
-            return function (changePath, fireSpec, accum) {
+            var wrapped = function (changePath, fireSpec, accum) {
                 var guid = fluid.event.identifyListener(listener);
                 var exist = fireSpec.guids[guid];
                 if (!exist) {
@@ -569,6 +569,8 @@ var fluid_1_5 = fluid_1_5 || {};
                     exist.accumulate.push(accum);
                 }
             };
+            fluid.event.impersonateListener(listener, wrapped);
+            return wrapped;
         }
         
         function fireFromSpec(name, fireSpec, args, category, wrapper) {
@@ -607,7 +609,6 @@ var fluid_1_5 = fluid_1_5 || {};
                     baseEvents[name].addListener(wrapListener(listener, spec), namespace);
                 },
                 removeListener: function (listener) {
-                    // TODO: This will surely fail!!
                     baseEvents[name].removeListener(listener);
                 }
             };
