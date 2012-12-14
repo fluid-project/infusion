@@ -129,11 +129,11 @@ var jqUnit = jqUnit || {};
         },
 
         assertUndefined: function (msg, value) {
-            pok(value === "undefined", msg);
+            pok(value === undefined, msg);
         },
 
         assertNotUndefined: function (msg, value) {
-            pok(value !== "undefined", msg);
+            pok(value !== undefined, msg);
         },
 
         assertValue: function (msg, value) {

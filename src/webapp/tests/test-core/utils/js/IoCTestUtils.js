@@ -112,6 +112,19 @@ fluid.test.noteTest = function (root, count) {
     }
 };
 
+fluid.test.decodeListener = function (testCaseState, fixture) {
+    var listener;
+    if (fixture.listener) {
+        listener = testCaseState.expandFunction(fixture.listener);
+    }
+    else if (fixture.listenerMaker) {
+        var maker = testCaseState.expandFunction(fixture.listenerMaker);
+        var args = testCaseState.expand(fixture.args);
+        listener = maker.apply(null, args);
+    }
+    return listener;
+};
+
 fluid.test.decoders = {};
 
 fluid.test.decoders.func = function (testCaseState, fixture) {
@@ -137,24 +150,52 @@ fluid.test.decoders.jQueryTrigger = function (testCaseState, fixture) {
     };
 };
 
-fluid.test.decoders.listener = function (testCaseState, fixture) {
-    var event = testCaseState.expand(fixture.event);
-    var listener = testCaseState.expandFunction(fixture.listener);
+fluid.test.makeBinder = function (listener, innerBinder, innerRemover) {
     var that = {};
     that.bind = function (preWrap, postWrap) {
         var wrapped = function () {
-            event.removeListener(wrapped);
+            innerRemover(wrapped);
             preWrap();
             listener.apply(null, arguments);
             postWrap();
             };
-        event.addListener(wrapped, fixture.namespace, null, fixture.priority);
+        innerBinder(wrapped);
     };
-
     return that;
 };
 
-fluid.test.decoderDucks = ["func", "listener", "jQueryTrigger"];
+fluid.test.decoders.event = function (testCaseState, fixture) {
+    var event = testCaseState.expand(fixture.event);
+    var listener = fluid.test.decodeListener(testCaseState, fixture);
+    var that = fluid.test.makeBinder(listener, 
+       function (wrapped) {
+        event.addListener(wrapped, fixture.namespace, null, fixture.priority);
+    }, function (wrapped) {
+        event.removeListener(wrapped);
+    }); 
+    return that;
+};
+
+fluid.test.decoders.changeEvent = function (testCaseState, fixture) {
+    var event = testCaseState.expand(fixture.changeEvent);
+    var listener = fluid.test.decodeListener(testCaseState, fixture);
+    var that = {};
+    var that = fluid.test.makeBinder(listener, 
+       function (wrapped) {
+        var spec = fixture.path === undefined ? fixture.spec : fixture.path;
+        if (spec === undefined) {
+            fluid.fail("Error in changeEvent fixture ", fixture, 
+               ": could not find path specification named \"path\" or \"spec\"")
+        }
+        event.addListener(spec, wrapped, fixture.namespace);
+    }, function (wrapped) {
+        event.removeListener(wrapped);
+    });
+    return that;
+};
+
+
+fluid.test.decoderDucks = ["func", "event", "changeEvent", "jQueryTrigger"];
 
 fluid.test.decodeFixture = function (testCaseState, fixture) {
     var ducks = fluid.test.decoderDucks;

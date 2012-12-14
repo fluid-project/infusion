@@ -892,7 +892,7 @@ var fluid = fluid || fluid_1_5;
                 if (!id) {
                     fluid.fail("Cannot remove unregistered listener function ", listener, " from event " + that.name);
                 }
-                namespace = namespace || byId[id].namespace || id;
+                namespace = namespace || (byId[id] && byId[id].namespace) || id;
                 delete byId[id];
                 delete listeners[namespace];
                 sortedListeners = fluid.event.sortListeners(listeners);

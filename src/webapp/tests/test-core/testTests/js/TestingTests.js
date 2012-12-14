@@ -76,13 +76,18 @@ fluid.tests.catTester.preInit = function (that) {
 
 fluid.defaults("fluid.tests.asyncTest", {
     gradeNames: ["fluid.rendererComponent", "autoInit"],
+    model: {
+        textValue: "initialValue"
+    },
     selectors: {
-        button: ".flc-async-button"  
+        button: ".flc-async-button",
+        textField: ".flc-async-text"
     },
     events: {
         buttonClicked: null  
     },
     protoTree: {
+        textField: "${textValue}",
         button: {
             decorators: {
                 type: "fluid",
@@ -121,11 +126,12 @@ fluid.defaults("fluid.tests.asyncTestTree", {
 
 fluid.defaults("fluid.tests.asyncTester", {
     gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+    newTextValue: "newTextValue",
     testCases: [ {
         name: "Async test case",
         tests: [{
             name: "Rendering sequence",
-            expect: 3,
+            expect: 4,
             sequence: [ {
                 func: "fluid.tests.startRendering",
                 args: ["{asyncTest}", "{instantiator}"]
@@ -138,6 +144,14 @@ fluid.defaults("fluid.tests.asyncTester", {
             }, {
                 listener: "fluid.tests.checkEvent",
                 event: "{asyncTest}.events.buttonClicked"
+            }, {
+                func: "fluid.tests.changeField",
+                args: ["{asyncTest}.dom.textField", "{asyncTester}.options.newTextValue"]  
+            }, {
+                listenerMaker: "fluid.tests.makeChangeChecker",
+                args: ["{asyncTester}.options.newTextValue", "textValue"],
+                path: "textValue",
+                changeEvent: "{asyncTest}.applier.modelChanged"
             }
             ]
         }
@@ -148,6 +162,17 @@ fluid.defaults("fluid.tests.asyncTester", {
 fluid.tests.checkEvent = function () {
     jqUnit.assert("Button event relayed");
 };
+
+fluid.tests.changeField = function (field, value) {
+    field.val(value).change();
+};
+
+fluid.tests.makeChangeChecker = function (toCheck, path) {
+    return function (newModel) {
+        var newval = fluid.get(newModel, path);
+        jqUnit.assertEquals("Expected model value " + toCheck + " at path " + path, toCheck , newval);  
+    };
+}
 
 fluid.tests.startRendering = function (asyncTest, instantiator) {
     asyncTest.refreshView();

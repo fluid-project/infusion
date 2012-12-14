@@ -607,6 +607,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     baseEvents[name].addListener(wrapListener(listener, spec), namespace);
                 },
                 removeListener: function (listener) {
+                    // TODO: This will surely fail!!
                     baseEvents[name].removeListener(listener);
                 }
             };
