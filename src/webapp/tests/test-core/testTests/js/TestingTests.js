@@ -150,7 +150,7 @@ fluid.defaults("fluid.tests.asyncTester", {
                 args: ["{asyncTest}.dom.textField", "{asyncTester}.options.newTextValue"]  
             }, {
                 listenerMaker: "fluid.tests.makeChangeChecker",
-                args: ["{asyncTester}.options.newTextValue", "textValue"],
+                makerArgs: ["{asyncTester}.options.newTextValue", "textValue"],
                 path: "textValue",
                 changeEvent: "{asyncTest}.applier.modelChanged"
             }, {
@@ -158,7 +158,7 @@ fluid.defaults("fluid.tests.asyncTester", {
                 args: ["{asyncTest}.dom.textField", "{asyncTester}.options.furtherTextValue"]  
             }, {
                 listenerMaker: "fluid.tests.makeChangeChecker",
-                args: ["{asyncTester}.options.furtherTextValue", "textValue"],
+                makerArgs: ["{asyncTester}.options.furtherTextValue", "textValue"],
                 // alternate style for registering listener
                 spec: {path: "textValue", priority: "last"},
                 changeEvent: "{asyncTest}.applier.modelChanged"
@@ -202,8 +202,6 @@ fluid.tests.startRendering = function (asyncTest, instantiator) {
     jqUnit.assertEquals("Constructed one component", 1, decArray.length);
     asyncTest.locate("button").click();
 };
-
-var globalTests = new jqUnit.testCase();
 
 /** Global driver function **/
 

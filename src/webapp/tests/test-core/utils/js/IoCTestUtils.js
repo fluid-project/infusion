@@ -116,7 +116,7 @@ fluid.test.decodeListener = function (testCaseState, fixture) {
     }
     else if (fixture.listenerMaker) {
         var maker = testCaseState.expandFunction(fixture.listenerMaker);
-        var args = testCaseState.expand(fixture.args);
+        var args = testCaseState.expand(fixture.makerArgs);
         listener = maker.apply(null, args);
     }
     return listener;
