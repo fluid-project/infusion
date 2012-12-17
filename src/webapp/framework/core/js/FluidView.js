@@ -495,6 +495,14 @@ var fluid_1_5 = fluid_1_5 || {};
         }); 
     }; 
     
+    /** Provides an abstraction for determing the current time.
+     * This is to provide a fix for FLUID-4762, where IE6 - IE8 
+     * do not support Date.now().
+     */
+    fluid.now = function () {
+        return Date.now ? Date.now() : (new Date()).getTime();
+    };
+    
     /** Sets an interation on a target control, which morally manages a "blur" for
      * a possibly composite region.
      * A timed blur listener is set on the control, which waits for a short period of
@@ -512,7 +520,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that.lastCancel = 0;
         that.canceller = function (event) {
             fluid.log("Cancellation through " + event.type + " on " + fluid.dumpEl(event.target)); 
-            that.lastCancel = Date.now();
+            that.lastCancel = fluid.now();
             that.blurPending = false;
         };
         that.noteProceeded = function () {
@@ -541,7 +549,7 @@ var fluid_1_5 = fluid_1_5 || {};
         if (!that.options.cancelByDefault) {
             $(control).bind("focusout", function (event) {
                 fluid.log("Starting blur timer for element " + fluid.dumpEl(event.target));
-                var now = Date.now();
+                var now = fluid.now();
                 fluid.log("back delay: " + (now - that.lastCancel));
                 if (now - that.lastCancel > that.options.backDelay) {
                     that.blurPending = true;
