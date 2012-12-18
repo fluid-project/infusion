@@ -20,7 +20,16 @@ fluid.registerNamespace("fluid.test");
 fluid.defaults("fluid.test.testEnvironment", {
     gradeNames: ["fluid.eventedComponent", "autoInit"],
     components: {
-        instantiator: "{instantiator}"
+        instantiator: "{instantiator}",
+        sequenceListener: {
+            type: "fluid.test.sequenceListener"
+        }
+    },
+    nickName: "testEnvironment", // FLUID-4636 - this is not honoured
+    events: {
+        onBeginSequence: null,
+        onBeginSequenceStep: null,
+        onEndSequenceStep: null  
     },
     listeners: {
         onCreate: {
@@ -30,7 +39,43 @@ fluid.defaults("fluid.test.testEnvironment", {
     }
 });
 
+fluid.demands("fluid.test.sequenceListener", [], {funcName: "fluid.emptySubcomponent"});
+
+/** In the browser only, hijack a piece of the QUnit UI in order to show the running sequence number **/
+
+fluid.demands("fluid.test.sequenceListener", "fluid.browser", {funcName: "fluid.test.browserSequenceListener"});
+
+fluid.defaults("fluid.test.browserSequenceListener", {
+    gradeNames: ["fluid.eventedComponent", "autoInit"],
+    listeners: {
+        "{testEnvironment}.events.onBeginSequence": {
+            listener: "fluid.test.browserSequenceListener.onBeginSequence",
+            args: ["{that}", "{arguments}.1"]
+        },
+        "{testEnvironment}.events.onBeginSequenceStep": {
+            listener: "fluid.test.browserSequenceListener.onBeginSequenceStep",
+            args: "{that}"
+        }
+    }
+});
+
+fluid.test.browserSequenceListener.onBeginSequence = function (that, sequenceExecutor) {
+    // This unfortunate style is as good as the qunit markup!
+    $("#qunit-testresult").append(" &mdash; at sequence position <span class=\"jqunit-sequence\"></span>");
+    that.sequenceElement = $("#qunit-testresult .jqunit-sequence");
+    that.renderSequence = function () {
+        that.sequenceElement.text(sequenceExecutor.sequenceText());
+    };
+    that.renderSequence();
+};
+
+fluid.test.browserSequenceListener.onBeginSequenceStep = function (that) {
+    that.renderSequence();
+};
+
+
 fluid.test.testEnvironment.preInit = function (that) {
+    that.nickName = "testEnvironment"; // workaround for FLUID-4636
     that.activeTests = 0;
 };
 
@@ -40,7 +85,7 @@ fluid.test.makeExpander = function (that, instantiator) {
             function () {
                 return fluid.expandOptions(toExpand, that);
             }, "Expanding Test Case", instantiator);
-        };  
+    };  
 };
 
 fluid.test.makeFuncExpander = function (expander) {
@@ -67,7 +112,8 @@ fluid.test.testEnvironment.runTests = function (that) {
     fluid.visitComponentChildren(that, visitor, visitOptions, "");
     var testCaseState = {
         root: that,
-        instantiator: that.instantiator
+        instantiator: that.instantiator,
+        events: that.events
     };
     if (that.options.markupFixture) {
         var markupContainer = fluid.container(that.options.markupFixture, false);
@@ -165,7 +211,7 @@ fluid.test.decoders.jQueryBind = function (testCaseState, fixture) {
         var args = fluid.makeArray(testCaseState.expand(fixture.args));
         args.unshift(event);
         args.push(wrapped);
-        element.one.apply(element, args)
+        element.one.apply(element, args);
     }, fluid.identity  // do nothing on unbind, jQuery.one has done it
     ); 
     return that;
@@ -179,7 +225,7 @@ fluid.test.makeBinder = function (listener, innerBinder, innerRemover) {
             preWrap();
             listener.apply(null, arguments);
             postWrap();
-            };
+        };
         innerBinder(wrapped);
     };
     return that;
@@ -205,7 +251,7 @@ fluid.test.decoders.changeEvent = function (testCaseState, fixture) {
         var spec = fixture.path === undefined ? fixture.spec : fixture.path;
         if (spec === undefined) {
             fluid.fail("Error in changeEvent fixture ", fixture, 
-               ": could not find path specification named \"path\" or \"spec\"")
+               ": could not find path specification named \"path\" or \"spec\"");
         }
         event.addListener(spec, wrapped, fixture.namespace);
     }, function (wrapped) {
@@ -246,10 +292,10 @@ fluid.test.composeSimple = function (f1, f2) {
 };
 
 fluid.test.bindExecutor = function (binder, preWrap, postWrap, sequenceText) {
-    function preFunc () {
+    function preFunc() {
         jqUnit.setMessageSuffix(" - at sequence position " + sequenceText);
     }
-    function postFunc () {
+    function postFunc() {
         jqUnit.setMessageSuffix("");
     }
     var c = fluid.test.composeSimple;
@@ -269,17 +315,11 @@ fluid.test.sequenceExecutor = function (testCaseState, fixture) {
                 fluid.test.decodeFixture(that.testCaseState, that.fixture.sequence[pos]);
     };
     that.sequenceText = function (pos) {
-        return (pos === undefined? that.sequencePos : pos) + " of " + that.count;
-    }
-    // This unfortunate style is as good as the qunit markup!
-    $("#qunit-testresult").append(" &mdash; at sequence position <span class=\"jqunit-sequence\"></span>");
-    that.sequenceElement = $("#qunit-testresult .jqunit-sequence");
-    that.renderSequence = function () {
-        that.sequenceElement.text(that.sequenceText());
+        return (pos === undefined ? that.sequencePos : pos) + " of " + that.count;
     };
+    testCaseState.events.onBeginSequence.fire(testCaseState, that);
 
     that.decode(0);
-    that.renderSequence();
     // this: exec, next: exec - do 1st exec, then 2nd exec (EX)
     // this: exec, next: bind - do 2nd bind (EX) FIRST, then exec [ODD - out of order]
     // this: bind, next: bind - do this bind, and send it 2nd bind (EX) as pre-wrapper
@@ -289,7 +329,7 @@ fluid.test.sequenceExecutor = function (testCaseState, fixture) {
         var tpos = that.sequencePos;
         var pos = ++that.sequencePos;
         var thisText = that.sequenceText(pos);
-        that.renderSequence();
+        testCaseState.events.onBeginSequenceStep.fire(testCaseState, that);
         var last = pos === that.count;
         if (last) {
             if (thisExec.execute) {
@@ -304,7 +344,7 @@ fluid.test.sequenceExecutor = function (testCaseState, fixture) {
         var nextExec = that.decode(pos); // decode the NEXT executor
 
         if (thisExec.bind) {
-            var wrappers = nextExec.bind? [that.execute, fluid.identity] : 
+            var wrappers = nextExec.bind ? [that.execute, fluid.identity] : 
                 [fluid.identity, that.execute];
             fluid.test.bindExecutor(thisExec, wrappers[0], wrappers[1], thisText);
         }
@@ -343,7 +383,7 @@ fluid.test.runTests = function (envNames) {
     };
     nextLater = function () {
         setTimeout(next, 1);
-    }
+    };
     next();
 };
 
