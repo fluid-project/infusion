@@ -81,7 +81,7 @@ fluid_1_5 = fluid_1_5 || {};
     }
   
     function fixChildren(children) {
-        if (!(children instanceof Array)) {
+        if (!fluid.isArrayable(children)) {
             var togo = [];
             for (var key in children) {
                 var value = children[key];
