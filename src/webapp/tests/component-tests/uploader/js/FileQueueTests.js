@@ -85,10 +85,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * File Queue Unit tests *
          *************************/
          
-        var fileQueueTests = new jqUnit.TestCase("FileQueue Tests");
+        jqUnit.module("FileQueue Tests");
         
-        fileQueueTests.test("sizeOfFiles", function () {
-            expect(3);
+        jqUnit.test("sizeOfFiles", function () {
+            jqUnit.expect(3);
 
             var arrayOfFilesWithoutFilesize = [{id: 1}, {id: 2}, {id: 3}];
 
@@ -106,8 +106,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 expected_NaN === 0 || expected_NaN);
         });
 
-        fileQueueTests.test("Initialize fileQueue: everything is empty", function () {
-            expect(2);
+        jqUnit.test("Initialize fileQueue: everything is empty", function () {
+            jqUnit.expect(2);
             
             var q = setupQueue();
         
@@ -118,8 +118,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
         });
 
-        fileQueueTests.test("filterFiles ", function () {
-            expect(8);
+        jqUnit.test("filterFiles ", function () {
+            jqUnit.expect(8);
 
             var testQueue = fluid.uploader.fileQueue();
             loadQueue(fileSet, testQueue);
@@ -166,8 +166,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 errorFiles[0].id);
         });
 
-        fileQueueTests.test("Test file info methods", function () {
-            expect(6);
+        jqUnit.test("Test file info methods", function () {
+            jqUnit.expect(6);
             var testQueue = fluid.uploader.fileQueue();
             /**
              * Generate an array with the given parameters defined below. 
@@ -222,8 +222,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             test_filesize(filesize_6, 50005000);
         });
 
-        fileQueueTests.test("Test fileQueue operations", function () {
-            expect(8);
+        jqUnit.test("Test fileQueue operations", function () {
+            jqUnit.expect(8);
             var testQueue = fluid.uploader.fileQueue();
             loadQueue(fileSet, testQueue);
 
@@ -255,8 +255,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 testQueue.shouldUploadNextFile());
         });
  
-        fileQueueTests.test("Test file manipulation methods", function () {
-            expect(5);
+        jqUnit.test("Test file manipulation methods", function () {
+            jqUnit.expect(5);
             var q = setupQueue();
         
             jqUnit.assertEquals("fileQueue queue is empty at the start", 0, q.totalBytes());
@@ -293,8 +293,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 q.sizeOfReadyFiles());
         };
         
-        fileQueueTests.test("fileQueue: getReadyFiles() and sizeOfReadyFiles()", function () {
-            expect(10);
+        jqUnit.test("fileQueue: getReadyFiles() and sizeOfReadyFiles()", function () {
+            jqUnit.expect(10);
             
             var q = setupQueue();
             checkReadyFiles(q, 0, 0);
@@ -327,8 +327,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 q.sizeOfUploadedFiles());
         };
         
-        fileQueueTests.test("fileQueue: getUploadedFiles() and sizeOfUploadedFiles()", function () {
-            expect(24);
+        jqUnit.test("fileQueue: getUploadedFiles() and sizeOfUploadedFiles()", function () {
+            jqUnit.expect(24);
             
             var q = setupQueue();
             
@@ -370,8 +370,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 q.currentBatch.totalBytes);
         };
         
-        fileQueueTests.test("fileQueue: setupCurrentBatch(), clearCurrentBatch() and updateCurrentBatch()", function () {
-            expect(14);
+        jqUnit.test("fileQueue: setupCurrentBatch(), clearCurrentBatch() and updateCurrentBatch()", function () {
+            jqUnit.expect(14);
             
             var q = setupQueue();
             loadQueue(fileSet, q);
@@ -398,8 +398,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkCurrentBatch(q, 3, 2400000);
         });        
 
-        fileQueueTests.test("fileQueue: updateBatchStatus()", function () {
-            expect(93);
+        jqUnit.test("fileQueue: updateBatchStatus()", function () {
+            jqUnit.expect(93);
             var checkCurrentBatch = function (q, expected) {
                 jqUnit.assertEquals("totalBytesUploaded is ",
                                     expected,

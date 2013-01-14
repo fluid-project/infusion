@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         fluid.registerNamespace("fluid.tests.uploader");
         
-        var compatTests = new jqUnit.TestCase("Uploader Compatibility Tests");
+        jqUnit.module("Uploader Compatibility Tests");
         
         /****************************************
          * Infusion 1.2-1.3 Compatibility Tests *
@@ -135,7 +135,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var testUploaderConfigs = function (rules, optionsTypes, checkFn, msg) {
             fluid.each(uploaderConfigs, function (uploaderConfig) {
                 fluid.each(optionsTypes, function (optionsType) {
-                    compatTests.test(msg + " " + uploaderConfig.label + " - " + optionsType.label, function () {
+                    jqUnit.test(msg + " " + uploaderConfig.label + " - " + optionsType.label, function () {
                         var uploader = uploaderConfig.uploader.apply(null, [optionsType.options, rules]);
                         checkFn(uploader);
                     });

@@ -19,9 +19,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
         
-        var tooltipTests = new jqUnit.TestCase("Tooltip Tests");
+        jqUnit.module("Tooltip Tests");
     
-        tooltipTests.test("Options Mapping", function () {
+        jqUnit.test("Options Mapping", function () {
             var testOptions = {
                 content: function () {
                     return "Tooltip";
@@ -45,7 +45,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tt.container.tooltip("destroy");
         });
         
-        tooltipTests.test("Stlying added", function () {
+        jqUnit.test("Stlying added", function () {
             var style = "styleClass";
             var tt = fluid.tooltip(".testTooltip", {
                 styles: {
@@ -57,7 +57,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tt.container.tooltip("destroy");
         });
         
-        tooltipTests.test("Tooltip element tests", function () {
+        jqUnit.test("Tooltip element tests", function () {
             var tt = fluid.tooltip(".testTooltip");
             var ttELM = $("[id^=ui-tooltip]");
             var newContent = "New Content";
@@ -70,7 +70,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tt.container.tooltip("destroy");
         });
         
-        tooltipTests.asyncTest("Tooltip manual open/close tests", function () {
+        jqUnit.asyncTest("Tooltip manual open/close tests", function () {
             var tt = fluid.tooltip(".testTooltip", {
                 content: "Tooltip Content",
                 delay: 0,
@@ -82,7 +82,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     afterClose: function () {
                         jqUnit.assertFalse("The tooltip should not be visible", $("[id^=ui-tooltip]").is(":visible"));
                         tt.container.tooltip("destroy");
-                        start();
+                        jqUnit.start();
                     }
                 }
             });
@@ -90,7 +90,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tt.open();
         });
         
-        tooltipTests.test("Tooltip destroy tests", function () {
+        jqUnit.test("Tooltip destroy tests", function () {
             var tt = fluid.tooltip(".testTooltip");
             
             jqUnit.assertEquals("There should be a tooltip element present", 1, $("[id^=ui-tooltip]").length);
@@ -100,7 +100,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         var testThatTooltipContentChanges = function (tt, update, expected1, expected2) {
-            expect(3);
+            jqUnit.expect(3);
             var tipEl = $("[id^=ui-tooltip]");
             jqUnit.assertTrue("The tooltip should be visible", tipEl.is(":visible"));
             jqUnit.assertEquals("Initially, the tooltip should contain first text", expected1, tipEl.text());
@@ -108,7 +108,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("After update, the tooltip should contain second text", expected2, tipEl.text());
         };
 
-        tooltipTests.test("FLUID-4780: Dynamic update of tooltip content: text", function () {
+        jqUnit.test("FLUID-4780: Dynamic update of tooltip content: text", function () {
             var testText1 = "test text 1";
             var testText2 = "test text 2";
             var tt = fluid.tooltip(".testTooltip", {
@@ -117,7 +117,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listeners: {
                     afterOpen: function () {
                         testThatTooltipContentChanges(tt, testText2, testText1, testText2);
-                        start();
+                        jqUnit.start();
                     }
                 }
             });
@@ -125,7 +125,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tt.open();
         });
 
-        tooltipTests.test("FLUID-4780: Dynamic update of tooltip content: function", function () {
+        jqUnit.test("FLUID-4780: Dynamic update of tooltip content: function", function () {
             var testText1 = "test text 1";
             var testText2 = "test text 2";
             var contentFn1 = function () {
@@ -140,7 +140,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listeners: {
                     afterOpen: function () {
                         testThatTooltipContentChanges(tt, contentFn2, testText1, testText2);
-                        start();
+                        jqUnit.start();
                     }
                 }
             });

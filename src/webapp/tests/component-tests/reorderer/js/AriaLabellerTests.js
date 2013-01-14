@@ -21,7 +21,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         fluid.registerNamespace("fluid.tests");
         
-        var ariaLabellerTests = new jqUnit.TestCase("Aria Labeller Tests");
+        jqUnit.module("Aria Labeller Tests");
+        
+        var itemIds = ["list1item1", "list1item2", "list1item3", "list1item4", "list1item5"];
+        
         var k = fluid.testUtils.reorderer.bindReorderer(itemIds);
 
         function assertItemsInOrder(message, expectOrder) {
@@ -41,13 +44,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.demands("fluid.reorderList", "fluid.tests.labellerTester", 
             ["{labellerTester}.container", "{options}"]);
         
-        ariaLabellerTests.test("IoC instantiation", function () {
+        jqUnit.test("IoC instantiation", function () {
 
             var labellerTester = fluid.tests.labellerTester("#list1");
             jqUnit.assertNotUndefined("reorderer created", labellerTester.reorderer);
 
             $("#list1item3").focus();
-            k.compositeKey(labellerTester.reorderer, fluid.testUtils.ctrlKeyEvent("DOWN"), 2);
+            k.compositeKey(labellerTester.reorderer, fluid.testUtils.reorderer.ctrlKeyEvent("DOWN"), 2);
             assertItemsInOrder("after ctrl-down, order should be ", [1, 2, 4, 3, 5]);
 
             var region = fluid.jById(fluid.defaults("fluid.ariaLabeller").liveRegionId);
