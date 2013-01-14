@@ -483,6 +483,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var value = fluid.get(dar.value, excess);
                 return value.length === 1;
             }
+            // Tests FLUID-4869
+            outerNewModel = null;
+            applier.modelChanged.removeListener(observingListener);
             
             // Tests for FLUID-4739
             applier.guards.addListener(guardPath, checkingGuard3, "checkingGuard3");
@@ -494,6 +497,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             applier.requestChange("arrayInnerProperty", newArray);
             jqUnit.assertDeepEq("The model should have updated", newArray, model.arrayInnerProperty);
             applier.guards.removeListener("checkingGuard3");
+            
+            jqUnit.assertEquals("Stopped observing model", null, outerNewModel);
         });
         
         DataBindingTests.test("FLUID-4625 test: Over-broad changes", function() {

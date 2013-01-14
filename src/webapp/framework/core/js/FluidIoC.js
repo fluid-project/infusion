@@ -751,6 +751,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 if (fluid.isPrimitive(record)) {
                     record = {listener: record};
                 }
+                else {
+                    if (!record.listener) {
+                        fluid.fail("Error in listener record ", record, " required field \"listener\" not found");
+                    }
+                }
                 var listener = fluid.expandOptions(record.listener, that);
                 if (!listener) {
                     fluid.fail("Error in listener record - could not resolve reference " + record.listener + " to a listener or firer. "
