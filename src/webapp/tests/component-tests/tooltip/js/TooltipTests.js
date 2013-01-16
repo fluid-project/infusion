@@ -19,6 +19,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
         
+        // Note that throughout these tests, an explicit tooltip "destroy" is necessary after each test, since
+        // the tooltip markup is created outside the container qunit-fixture which is operated by the standard
+        // QUnit setup/teardown cycle
+        
         jqUnit.module("Tooltip Tests");
     
         jqUnit.test("Options Mapping", function () {
@@ -108,7 +112,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("After update, the tooltip should contain second text", expected2, tipEl.text());
         };
 
-        jqUnit.test("FLUID-4780: Dynamic update of tooltip content: text", function () {
+        jqUnit.asyncTest("FLUID-4780: Dynamic update of tooltip content: text", function () {
             var testText1 = "test text 1";
             var testText2 = "test text 2";
             var tt = fluid.tooltip(".testTooltip", {
@@ -117,6 +121,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listeners: {
                     afterOpen: function () {
                         testThatTooltipContentChanges(tt, testText2, testText1, testText2);
+                        tt.container.tooltip("destroy");
                         jqUnit.start();
                     }
                 }
@@ -125,7 +130,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tt.open();
         });
 
-        jqUnit.test("FLUID-4780: Dynamic update of tooltip content: function", function () {
+        jqUnit.asyncTest("FLUID-4780: Dynamic update of tooltip content: function", function () {
             var testText1 = "test text 1";
             var testText2 = "test text 2";
             var contentFn1 = function () {
@@ -140,6 +145,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listeners: {
                     afterOpen: function () {
                         testThatTooltipContentChanges(tt, contentFn2, testText1, testText2);
+                        tt.container.tooltip("destroy");
                         jqUnit.start();
                     }
                 }

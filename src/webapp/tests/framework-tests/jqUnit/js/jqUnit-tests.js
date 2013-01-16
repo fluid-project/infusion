@@ -17,10 +17,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function () {
-    var deepEqTests = new jqUnit.TestCase ("Deep Equivalence Tests");
+    jqUnit.module("Deep Equivalence Tests");
     
-    deepEqTests.test("Test", function () {
-      expect(12);
+    jqUnit.test("Test", function () {
+      jqUnit.expect(12);
       jqUnit.assertDeepEq("eq1", {p1: "thing1"}, {p1: "thing1"});
       jqUnit.assertDeepNeq("eq2", {p1: "thing1"}, {p2: "thing1"});
       jqUnit.assertDeepNeq("eq3", {p1: "thing1"}, null);
@@ -36,8 +36,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
       });
 
 
-   deepEqTests.test("THESE TESTS SHOULD FAIL - testing message support", function() {
-     expect(4);
+   jqUnit.test("THESE TESTS SHOULD FAIL - testing message support", function() {
+     jqUnit.expect(4);
      jqUnit.assertDeepEq("eq12", [1, 2, 3, 4, 5], [1, 2, 3, 4, 6]);
      jqUnit.assertDeepEq("eq10", [1, 2], [1, 2, 3]);
      jqUnit.assertDeepEq("eq11", [1, [2, 3, 4]], [1, [2, 3, 4, 5]]);

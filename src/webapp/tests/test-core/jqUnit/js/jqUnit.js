@@ -151,11 +151,11 @@ var jqUnit = fluid.registerNamespace("jqUnit");
         },
         
         assertDeepEq: function (msg, expected, actual) {
-            QUnit.deepEqual(actual, expected, processMessage(msg));
+            QUnit.propEqual(actual, expected, processMessage(msg));
         },
         
         assertDeepNeq: function (msg, unexpected, actual) {
-            QUnit.notDeepEqual(actual, unexpected, processMessage(msg));
+            QUnit.notPropEqual(actual, unexpected, processMessage(msg));
         },
         // This version of "expect" offers the cumulative semantic we desire
         expect: function (number) {
