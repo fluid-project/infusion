@@ -23,7 +23,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // the tooltip markup is created outside the container qunit-fixture which is operated by the standard
         // QUnit setup/teardown cycle
         
-        jqUnit.module("Tooltip Tests");
+        jqUnit.module("Tooltip Tests", {teardown: function () {
+            var ttel = $(".testTooltip");
+            ttel.tooltip("destroy");
+        }});
     
         jqUnit.test("Options Mapping", function () {
             var testOptions = {
@@ -45,8 +48,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The 'content' option is set correctly", testOptions.content, uiTTOptions.content);
             jqUnit.assertEquals("The 'items' option is set correctly", testOptions.items, uiTTOptions.items);
             jqUnit.assertDeepEq("The 'position' option is set correctly", testOptions.position, uiTTOptions.position);
-            
-            tt.container.tooltip("destroy");
         });
         
         jqUnit.test("Stlying added", function () {
@@ -58,7 +59,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
             
             jqUnit.assertTrue("The css class is applied to the tooltip element", $("[id^=ui-tooltip]").hasClass(style));
-            tt.container.tooltip("destroy");
         });
         
         jqUnit.test("Tooltip element tests", function () {
@@ -70,8 +70,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             tt.updateContent(newContent);
             jqUnit.assertTrue("The tooltip content should have updated", newContent, ttELM.text());
-            
-            tt.container.tooltip("destroy");
         });
         
         jqUnit.asyncTest("Tooltip manual open/close tests", function () {
@@ -85,7 +83,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     afterClose: function () {
                         jqUnit.assertFalse("The tooltip should not be visible", $("[id^=ui-tooltip]").is(":visible"));
-                        tt.container.tooltip("destroy");
                         jqUnit.start();
                     }
                 }
@@ -100,7 +97,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("There should be a tooltip element present", 1, $("[id^=ui-tooltip]").length);
             tt.destroy();
             jqUnit.assertEquals("There should no longer be a tooltip element", 0, $("[id^=ui-tooltip]").length);
-            tt.container.tooltip("destroy");
         });
 
         var testThatTooltipContentChanges = function (tt, update, expected1, expected2) {
@@ -121,7 +117,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listeners: {
                     afterOpen: function () {
                         testThatTooltipContentChanges(tt, testText2, testText1, testText2);
-                        tt.container.tooltip("destroy");
                         jqUnit.start();
                     }
                 }
@@ -145,7 +140,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listeners: {
                     afterOpen: function () {
                         testThatTooltipContentChanges(tt, contentFn2, testText1, testText2);
-                        tt.container.tooltip("destroy");
                         jqUnit.start();
                     }
                 }
