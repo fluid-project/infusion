@@ -47,21 +47,29 @@ var fluid = fluid || fluid_1_5;
     
     var globalObject = window || {};
     
-    fluid.singleThreadLocal = function (initFunc) {
-        var value = initFunc();
-        return function () {
-            return value;
-        };
+    var softFailure = [false];
+
+    // Return an array of objects describing the current activity
+    // unsupported, non-API function
+    fluid.describeActivity = function () {
+        return fluid.globalThreadLocal().activityStack || [];
     };
     
-    // Return to the old strategy of monkey-patching this, since this is a most frequently used function within IoC
-    fluid.threadLocal = fluid.singleThreadLocal;
+    // Execute the supplied function with the specified activity description pushed onto the stack
+    // unsupported, non-API function
+    fluid.pushActivity = function (type, message, args) {
+        var root = fluid.globalThreadLocal();
+        if (!root.activityStack) {
+            root.activityStack = [];
+        }
+        root.activityStack.push({type: type, message: message, args: args});
+        //fluid.log(fluid.describeActivity());
+    };
     
-    var softFailure = [false];
-    
-    // This function will be patched from FluidIoC.js in order to describe complex activities
-    fluid.describeActivity = function () {
-        return [];
+    fluid.popActivity = function (popframes) {
+        popframes = popframes || 1;
+        var root = fluid.globalThreadLocal();      
+        root.activityStack = root.activityStack.slice(popframes);
     };
     
     /**
@@ -802,7 +810,7 @@ var fluid = fluid || fluid_1_5;
      * will be the return value of fire()
      */
     // This name will be deprecated in Fluid 2.0 for fluid.makeEventFirer (or fluid.eventFirer)
-    fluid.event.getEventFirer = function (unicast, preventable, name) {
+    fluid.makeEventFirer = function (unicast, preventable, name) {
         var listeners; // = {}
         var byId; // = {}
         var sortedListeners; // = []
@@ -902,7 +910,7 @@ var fluid = fluid || fluid_1_5;
         return that;
     };
     
-    fluid.makeEventFirer = fluid.event.getEventFirer;
+    fluid.event.getEventFirer = fluid.makeEventFirer;
     
     /** Fire the specified event with supplied arguments. This call is an optimisation utility
      * which handles the case where the firer has not been instantiated (presumably as a result
@@ -1490,7 +1498,7 @@ var fluid = fluid || fluid_1_5;
         return togo;
     };
     
-    // unsupporter, NON-API function
+    // unsupported, NON-API function
     fluid.lastTransformationRecord = function (extraArgs) {
         for (var i = extraArgs.length - 1; i >= 0; --i) {
             if (extraArgs[i] && extraArgs[i].transformOptions) {
@@ -1670,7 +1678,10 @@ var fluid = fluid || fluid_1_5;
             fluid.fail("Cannot initialise component " + componentName + " which has no gradeName registered");
         }
         var args = [componentName].concat(fluid.makeArray(initArgs)); // TODO: support different initFunction variants
-        var that = fluid.invokeGlobalFunction(options.initFunction, args);
+        var that;
+        fluid.pushActivity("initComponent", "construction of component of type %componentName with arguments %initArgs", 
+            {componentName: componentName, initArgs: initArgs});
+        that = fluid.invokeGlobalFunction(options.initFunction, args);
         fluid.diagnoseFailedView(componentName, that, options, args);
         fluid.fireEvent(that.options, "postInitFunction", that);
         if (fluid.initDependents) {
@@ -1680,7 +1691,6 @@ var fluid = fluid || fluid_1_5;
         fluid.clearLifecycleFunctions(that.options);
         that.destroy = fluid.makeRootDestroy(that); // overwritten by FluidIoC for constructed subcomponents
         fluid.fireEvent(that, "events.onCreate", that);
-        
         return that.options.returnedPath ? fluid.get(that, that.options.returnedPath) : that;
     };
 
@@ -1760,10 +1770,34 @@ var fluid = fluid || fluid_1_5;
     fluid.initSubcomponent = function (that, className, args) {
         return fluid.initSubcomponents(that, className, args)[0];
     };
+    
+    // Definitions for ThreadLocals, the static and dynamic environment - lifted here from
+    // FluidIoC.js so that we can issue calls to fluid.describeActivity for debugging purposes
+    // in the core framework
+    
+    // unsupported, non-API function
+    fluid.singleThreadLocal = function (initFunc) {
+        var value = initFunc();
+        return function (newValue) {
+            return newValue === undefined ? value : value = newValue;
+        };
+    };
+    
+    // Currently we only support single-threaded environments - ensure that this function
+    // is not used on startup so it can be successfully monkey-patched
+    // unsupported, non-API function
+    fluid.threadLocal = fluid.singleThreadLocal;
 
+    // unsupported, non-API function    
+    fluid.globalThreadLocal = fluid.threadLocal(function () {
+        return fluid.typeTag("fluid.dynamicEnvironment");
+    });
+    
+    fluid.staticEnvironment = fluid.typeTag("fluid.staticEnvironment");
+    
+    fluid.staticEnvironment.environmentClass = fluid.typeTag("fluid.browser");
 
     // Message resolution and templating
-   
    
    /**
     * Converts a string to a regexp with the specified flags given in parameters

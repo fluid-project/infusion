@@ -266,7 +266,7 @@ fluid_1_5 = fluid_1_5 || {};
     
     renderer.invokeFluidDecorator = function(func, args, ID, num, options) {
         var that;
-        if (options.instantiator && options.parentComponent) {
+        if (options.parentComponent) {
             var parent = options.parentComponent;
             var name = renderer.IDtoComponentName(ID, num);
             // TODO: The best we can do here without GRADES is to wildly guess 
@@ -275,7 +275,7 @@ fluid_1_5 = fluid_1_5 || {};
             // This MIGHT really be a variant of fluid.invoke... only we often probably DO want the component
             // itself to be inserted into the that stack. This *ALSO* requires GRADES to resolve. A 
             // "function" is that which has no grade. The gradeless grade.
-            that = fluid.initDependent(options.parentComponent, name, options.instantiator, args);
+            that = fluid.initDependent(options.parentComponent, name, args);
         }
         else {
             that = fluid.invokeGlobalFunction(func, args);

@@ -52,8 +52,12 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.checkTryCatchParameter = function () {
         var location = window.location || { search: "", protocol: "file:" };
-        var GETParams = location.search.slice(1).split('&');
-        return fluid.contains(GETParams, "notrycatch");
+        var GETparams = location.search.slice(1).split('&');
+        return fluid.find(GETparams, function (param) {
+            if (param.indexOf("notrycatch") === 0) {
+                return true;
+            }
+        }) === true;
     };
     
     fluid.notrycatch = fluid.checkTryCatchParameter();

@@ -70,36 +70,8 @@ fluid.registerNamespace("fluid.tests");
         "fluid.tests.thatStackTail":      "fluid.littleComponent",
         "fluid.tests.reinsChild":         "fluid.littleComponent" // standard blank "littleComponent" used throughout tests 
     });
+    
 
-    fluid.defaults("fluid.tests.invokerComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        template: "Every {0} has {1} {2}(s)",
-        invokers: {
-            render: {
-                funcName: "fluid.formatMessage",
-                args: ["{invokerComponent}.options.template", "@0"] 
-            }
-        },
-        events: {
-            testEvent: null
-        }
-    });
-    
-    fluid.defaults("fluid.tests.invokerComponent2", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        template: "Every {0} has {1} {2}(s)",
-        invokers: {
-            render: "stringRenderer"
-        },
-        events: {
-            testEvent: null
-        }
-    });
-    
-    fluid.demands("stringRenderer", "fluid.tests.invokerComponent2", {
-        funcName: "fluid.formatMessage",
-        args: ["{invokerComponent2}.options.template", "@0"]       
-    });
 
     fluid.defaults("fluid.tests.multiResolution", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
@@ -143,6 +115,20 @@ fluid.registerNamespace("fluid.tests");
 
     fluid.setLogging(true);
 
+    fluid.defaults("fluid.tests.invokerComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        template: "Every {0} has {1} {2}(s)",
+        invokers: {
+            render: {
+                funcName: "fluid.formatMessage",
+                args: ["{invokerComponent}.options.template", "@0"] 
+            }
+        },
+        events: {
+            testEvent: null
+        }
+    });
+
     fluidIoCTests.test("invokers", function () {
         jqUnit.expect(2);
         var that = fluid.tests.invokerComponent();
@@ -151,12 +137,29 @@ fluid.registerNamespace("fluid.tests");
             that.render(["CATT", "4", "Leg"]));
     });
 
+    
+    fluid.defaults("fluid.tests.invokerComponent2", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        template: "Every {0} has {1} {2}(s)",
+        invokers: {
+            render: "stringRenderer"
+        },
+        events: {
+            testEvent: null
+        }
+    });
+
     fluidIoCTests.test("invokers with demands", function () {
         jqUnit.expect(2);
         var that = fluid.tests.invokerComponent2();
         jqUnit.assertValue("Constructed", that);
         jqUnit.assertEquals("Rendered", "Every CATT has 4 Leg(s)", 
             that.render(["CATT", "4", "Leg"]));
+    });
+    
+        fluid.demands("stringRenderer", "fluid.tests.invokerComponent2", {
+        funcName: "fluid.formatMessage",
+        args: ["{invokerComponent2}.options.template", "@0"]       
     });
 
 
@@ -422,6 +425,11 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
+    // This is an incredibly perverse test that attempts to invoke a component's creator function
+    // as part of an expander during options, which results in an unreasonable structure holding 
+    // a component within the options structure. However, there's no good reason this should be
+    // forbidden outright, and we expect some kind of sensible results from the process
+    
     fluid.defaults("fluid.tests.deferredInvokeParent", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         child: {
@@ -639,6 +647,8 @@ fluid.registerNamespace("fluid.tests");
     
     /** FLUID-4135 - event injection and boiling test **/
     
+    // This manual init function tests framework support for (to be deprecated) components
+    // with unhelpful manual workflows (this one discards its options entirely)
     fluid.tests.listenerHolder = function () {
         var that = fluid.initLittleComponent("fluid.tests.listenerHolder");
         that.listener = function (value) {

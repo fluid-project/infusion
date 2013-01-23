@@ -71,6 +71,8 @@ QUnit.extend( QUnit, {
 QUnit.testStart(function( data ) {
 	// update the test status to show which test suite is running
 	QUnit.id( "qunit-testresult" ).innerHTML = "Running " + data.name + "...<br>&nbsp;";
+	var current = QUnit.id( QUnit.config.current.id ); // AMB
+	current.getElementsByTagName('a')[0].href = data.name; // AMB
 });
 
 QUnit.testDone(function() {
@@ -96,7 +98,7 @@ QUnit.testDone(function() {
 		}
 	});
 
-	current.getElementsByTagName('a')[0].href = src;
+	//current.getElementsByTagName('a')[0].href = src; // AMB
 });
 
 }( QUnit ) );

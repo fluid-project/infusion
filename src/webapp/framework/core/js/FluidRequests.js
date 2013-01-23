@@ -282,10 +282,12 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
+    // TODO: This framework function is a stop-gap before the "ginger world" is capable of
+    // asynchronous instantiation. It currently performs very poor fidelity expansion of a
+    // component's options to discover "resources" only held in the static environment
     fluid.fetchResources.primeCacheFromResources = function(componentName) {
         var resources = fluid.defaults(componentName).resources;
-        var that = {typeName: "fluid.fetchResources.primeCacheFromResources"};
-        var expanded = (fluid.expandOptions ? fluid.expandOptions : fluid.identity)(fluid.copy(resources), that);
+        var expanded = (fluid.expandOptions ? fluid.expandOptions : fluid.identity)(fluid.copy(resources), null);
         fluid.fetchResources(expanded);
     };
     
