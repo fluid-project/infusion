@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, deepEqual, expect, jQuery, start*/
+/*global fluid, jqUnit, QUnit, jQuery */
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -235,25 +235,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     var toModelTests = function (headingInfo, expectedModel, modelLevelFn) {
         var model = fluid.tableOfContents.modelBuilder.toModel(headingInfo, modelLevelFn);
-        deepEqual(model, expectedModel, "headingInfo converted to toModel correctly");
+        jqUnit.assertDeepEq("headingInfo converted to toModel correctly", model, expectedModel);
     };
     
     var convertToHeadingObjectsTests = function (headings, anchorInfo, expectedHeadingInfo) {
         var modelBuilder = fluid.tableOfContents.modelBuilder();
         var headingInfo = modelBuilder.convertToHeadingObjects(headings, anchorInfo);
-        deepEqual(headingInfo, expectedHeadingInfo, "Heading objects created correctly");
+        jqUnit.assertDeepEq("Heading objects created correctly", headingInfo, expectedHeadingInfo);
     };
     
     var assembleModelTests = function (headings, anchorInfo, expectedModel) {
         var modelBuilder = fluid.tableOfContents.modelBuilder();
         var model = modelBuilder.assembleModel(headings, anchorInfo);
-        deepEqual(model, expectedModel, model);
+        jqUnit.assertDeepEq("Model assembled correctly", model, expectedModel);
     };
     
     var generateTreeTests = function (model, expectedTree) {
         model = {headings: model};
         var tree = fluid.tableOfContents.levels.generateTree(model);
-        deepEqual(tree, expectedTree, "tree generated correctly");
+        jqUnit.assertDeepEq("tree generated correctly", tree, expectedTree);
     };
     
     /**
@@ -374,7 +374,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var expectedModelLevel = [{level: 5, text: 'h6', url: '#h6'}];
             
             var gradualIndentationModel = fluid.tableOfContents.modelBuilder.gradualModelLevelFn(modelLevel, subHeadings);
-            deepEqual(gradualIndentationModel, expectedModelLevel, "gradual indentation model returns the subHeadings with level decremented by exactly 1.");
+            jqUnit.assertDeepEq("gradual indentation model returns the subHeadings with level decremented by exactly 1.", gradualIndentationModel, expectedModelLevel);
             
             //reference check. The function should not modify the object with the same reference.
             jqUnit.assertFalse("This function should not modify the level value directly on the object. Returned value should not have the same reference as parameter.", subHeadings === gradualIndentationModel);
@@ -459,8 +459,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var filteredHeadings = fluid.tableOfContents.filterHeadings(allHeadings);
             jqUnit.assertEquals("The size of headings should be exactly 1 less from the original", allHeadings.size() - 1, filteredHeadings.size());
             jqUnit.assertEquals("The size of headings should be exactly the same as a sliced clone of the original", expectedHeadings.size(), filteredHeadings.size());
-            jqUnit.assertDeepEq("The headings object array should be identical between the filtered headings and the sliced clone", 
-                expectedHeadings.toArray(), filteredHeadings.toArray());
+            // Use QUnit's native deepEqual to avoid cloning problems in qunit's propEqual on Safari
+            QUnit.deepEqual(expectedHeadings.toArray(), filteredHeadings.toArray(), "The headings object array should be identical between the filtered headings and the sliced clone");
         });
         
         jqUnit.test("finalInit public function: headingTextToAnchor", function () {
