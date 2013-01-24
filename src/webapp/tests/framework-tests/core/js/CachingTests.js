@@ -88,7 +88,7 @@ fluid.registerNamespace("fluid.tests");
         var cachingTests = new jqUnit.TestCase("Caching Tests");
 
         function testSimpleCache(message, invoker, requestDelay) {
-            cachingTests.test("Simple caching test with delay " + requestDelay, function () {
+            cachingTests.test(message + ": Simple caching test with delay " + requestDelay, function () {
                 invoker(function () {
                     fluid.log("Begin with delay " + requestDelay);
                     fluid.fetchResources.clearResourceCache(fluid.tests.cacheTestUrl);

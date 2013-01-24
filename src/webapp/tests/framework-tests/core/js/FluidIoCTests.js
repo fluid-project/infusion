@@ -588,7 +588,14 @@ fluid.registerNamespace("fluid.tests");
             }, {
                 topProperty: {
                     otherProperty: 5
-                }
+                },
+                tallLateBlock: {
+                    thingInside: "{self}.topProperty"
+                },
+                unexpandable: {
+                    thingInside: "{self}.topProperty"
+                },
+                unexpandableString: "{self}.topProperty"
             }
             ],
             expected: {
@@ -599,7 +606,17 @@ fluid.registerNamespace("fluid.tests");
                 topProperty: {
                     otherProperty: 5,
                     selfProperty: 5
-                }
+                },
+                tallLateBlock: {
+                    thingInside: {
+                        otherProperty: 5,
+                        selfProperty: 5
+                    }
+                },
+                unexpandable: {
+                    thingInside: "{self}.topProperty"
+                },
+                unexpandableString: "{self}.topProperty"
             }
         }
     };
@@ -623,7 +640,7 @@ fluid.registerNamespace("fluid.tests");
             var baseExpandOptions = {
                 sourceStrategy: fluid.concreteTrundler, 
                 fetcher: expandFetcher,
-                mergePolicy: {}
+                mergePolicy: { "unexpandable" : "noexpand", "unexpandableString" : "noexpand"}
                 };
             var allExpandOptions = fluid.transform(blocks, function(block) {
                 var thisOptions = $.extend(true, {}, baseExpandOptions);

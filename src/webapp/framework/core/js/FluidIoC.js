@@ -134,7 +134,6 @@ var fluid_1_5 = fluid_1_5 || {};
             var context = parsed.context;
             var foundComponent;
             if (context === "instantiator") {
-                // special treatment for the current instantiator which used to be discovered as unique in threadLocal
                 return instantiator;
             }
             else if (context === "that") {
@@ -682,7 +681,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return fluid.merge(null, {funcName: newFuncName, args: fluid.makeArray(demandspec.args)}, fluid.censorKeys(demandspec, ["funcName", "args"]));
     };
     
-    // unsupported, non-API function
     fluid.resolveDemands = function(parentThat, funcNames, initArgs, options) {
         var demandspec = fluid.determineDemands(parentThat, funcNames);
         return fluid.embodyDemands(parentThat, demandspec, initArgs, options);
@@ -882,41 +880,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return firer;
     };
     
-        
-    fluid.registerNamespace("fluid.expander");
-    
-    /** rescue that part of a component's options which should not be subject to
-     * options expansion via IoC - this initially consists of "components" and "mergePolicy" 
-     * but will be expanded by the set of paths specified as "noexpand" within "mergePolicy" 
-     */
-    // unsupported, non-API function
-    fluid.expander.preserveFromExpansion = function (options) {
-        var preserve = {};
-        var preserveList = fluid.arrayToHash(["mergePolicy", "mergeAllOptions", "components", "invokers", "events", "listeners", "transformOptions"]);
-        fluid.each(options.mergePolicy, function(value, key) {
-            if (fluid.mergePolicyIs(value, "noexpand")) {
-                preserveList[key] = true;
-            }
-        });
-        fluid.each(preserveList, function(xvalue, path) {
-            var pen = fluid.model.accessWithStrategy(options, path, fluid.VALUE, fluid.model.defaultGetConfig, null, true);
-            var last = pen.segs[pen.segs.length - 1];
-            var value = pen.root[last];
-            delete pen.root[last];
-            fluid.set(preserve, path, value);  
-        });
-        return {
-            restore: function(target) {
-                fluid.each(preserveList, function(xvalue, path) {
-                    var preserved = fluid.get(preserve, path);
-                    if (preserved !== undefined) {
-                        fluid.set(target, path, preserved);
-                    }
-                });
-            }
-        };
-    };
-    
     /** Expand a set of component options with respect to a set of "expanders" (essentially only
      *  deferredCall) -  This substitution is destructive since it is assumed that the options are already "live" as the
      *  result of environmental substitutions. Note that options contained inside "components" will not be expanded
@@ -927,24 +890,17 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // this "outerExpandOptions" is only used in the stackFetcher, and includes {direct: true} - this governs further expansion
     // of material like {arguments}/{options} into direct values or otherwise into markers - needs to be removed and rationalised - 
     // only used in case of {directOptions}
-    fluid.expandOptions = function (args, that, localRecord, outerExpandOptions) {
+    fluid.expandOptions = function (args, that, mergePolicy, localRecord, outerExpandOptions) {
         if (!args) {
             return args;
         }
         var instantiator = fluid.getInstantiator(that);
-        fluid.pushActivity("expandOptions", "expanding options for component %that ", {that: that});
+        fluid.pushActivity("expandOptions", "expanding options %args for component %that ", {that: that, args: args});
         //fluid.log("expandOptions for " + that.typeName + " executing with instantiator " + instantiator.id);
         var expandOptions = makeStackResolverOptions(instantiator, that, localRecord, outerExpandOptions);
-        // TODO: acquire this separately through gingerness outside in expandComponentOptions
-        expandOptions.mergePolicy = args.mergePolicy; 
-        var pres;
-        if (!fluid.isArrayable(args) && !fluid.isPrimitive(args)) {
-            pres = fluid.expander.preserveFromExpansion(args);
-        }
+        expandOptions.mergePolicy = mergePolicy;
         var expanded = fluid.expander.expandLight(args, expandOptions);
-        if (pres) {
-            pres.restore(expanded);
-        }
+
         fluid.popActivity();
         return expanded;
     };
@@ -975,6 +931,13 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         });
     };
     
+    var addPolicyBuiltins = function (policy) {
+        fluid.each(["mergePolicy", "argumentMap", "mergeAllOptions", "components", "invokers", "events", "listeners", "transformOptions"], function (key) {
+            policy[key] = "noexpand";
+        });
+        return policy;
+    };
+
     // unsupported, non-API function
     fluid.expandComponentOptions = function (defaults, userOptions, that) {
         if (userOptions && userOptions.localRecord) {
@@ -995,21 +958,23 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             else {
                 instantiator.recordKnownComponent(userOptions.parentThat, that, userOptions.memberName, true);
             }
-            defaults = fluid.expandOptions(fluid.copy(defaults), that);
+            var shadow = instantiator.idToShadow[that.id];
+            shadow.expandBlocks = [];
+            var defaultCopy = fluid.copy(defaults);
+            var mergePolicy = addPolicyBuiltins(defaultCopy.mergePolicy || {});
+            
+            defaults = fluid.expandOptions(fluid.copy(defaults), that, mergePolicy);
             var localRecord = {};
             if (userOptions && userOptions.marker === fluid.EXPAND) {
                 // TODO: Somewhat perplexing... the local record itself, by any route we could get here, consists of unexpanded
                 // material taken from "componentOptions"
                 var localOptions = fluid.get(userOptions, "localRecord.options");
                 if (localOptions) {
-                    if (defaults.mergePolicy) {
-                        localOptions.mergePolicy = defaults.mergePolicy;
-                    }
-                    localRecord.options = fluid.expandOptions(localOptions, that);
+                    localRecord.options = fluid.expandOptions(localOptions, that, mergePolicy);
                 }
                 localRecord["arguments"] = fluid.get(userOptions, "localRecord.arguments");
                 var toExpand = userOptions.value;
-                userOptions = fluid.expandOptions(toExpand, that, localRecord, {direct: true});
+                userOptions = fluid.expandOptions(toExpand, that, mergePolicy, localRecord, {direct: true});
             }
             localRecord.directOptions = userOptions;
             if (!localRecord.options) {
@@ -1021,7 +986,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             var mergeOptions = (userOptions && userOptions.mergeAllOptions) || ["{directOptions}"];
             var togo = fluid.transform(mergeOptions, function(value) {
                 // Avoid use of expandOptions in simple case to avoid infinite recursion when constructing instantiator
-                return value === "{directOptions}"? localRecord.directOptions : fluid.expandOptions(value, that, localRecord, {direct: true}); 
+                return value === "{directOptions}"? localRecord.directOptions : fluid.expandOptions(value, that, mergePolicy, localRecord, {direct: true}); 
             });
             var transRec = fluid.locateTransformationRecord(that);
             if (transRec) {
@@ -1315,10 +1280,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var thisPolicy = fluid.derefMergePolicy(policy);
         fluid.guardCircularity(options.seenIds, source, "expansion", 
              " - please ensure options are not circularly connected, or protect from expansion using the \"noexpand\" policy or expander");
-        if (typeof (source) === "string") {
+        if (typeof (source) === "string" && !thisPolicy.noexpand) {
             expanded = fluid.resolveContextValue(source, options);
         }
-        else if (fluid.isUnexpandable(source)) {
+        else if (thisPolicy.noexpand || fluid.isUnexpandable(source)) {
             expanded = source;
         }
         else if (source.expander) {
@@ -1351,6 +1316,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             return fluid.fetchExpandChildren(target, source, policy, miniWorld, options);
         };
         var strategy = function (target, name, i, segs, source, policy, miniWorld) {
+            if (!target) {
+                return;
+            }
             if (!miniWorld && target.hasOwnProperty(name)) { // bail out if our work has already been done
                 return target[name];
             }
@@ -1405,6 +1373,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }
         options.sourceStrategy = options.sourceStrategy || fluid.concreteTrundler;
         // TODO: With full gingerness, cache this once and for all per fluid.mergeComponentOptions
+        // only the policy "preserve" is handled within expansion - the "noexpand" policy is handled by preprocessing in preserveFromExpansion
         options.mergePolicy = fluid.compileMergePolicy(options.mergePolicy); 
         fluid.makeExpandStrategy(options);
         return options;
@@ -1415,6 +1384,8 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return resolveEnvironmentImpl(source, options);
     };
 
+    fluid.registerNamespace("fluid.expander");
+    
     /** "light" expanders, starting with support functions for the so-called "deferredCall" expanders,
          which make an arbitrary function call (after expanding arguments) and are then replaced in
          the configuration with the call results. These will probably be abolished and replaced with

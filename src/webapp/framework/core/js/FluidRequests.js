@@ -287,7 +287,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // component's options to discover "resources" only held in the static environment
     fluid.fetchResources.primeCacheFromResources = function(componentName) {
         var resources = fluid.defaults(componentName).resources;
-        var expanded = (fluid.expandOptions ? fluid.expandOptions : fluid.identity)(fluid.copy(resources), null);
+        var expanded = (fluid.expandOptions ? fluid.expandOptions : fluid.identity)(fluid.copy(resources));
         fluid.fetchResources(expanded);
     };
     
