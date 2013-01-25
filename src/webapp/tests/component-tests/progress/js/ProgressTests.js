@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
     $(document).ready(function () {
         
-        var progressTests = new jqUnit.TestCase("Progress Tests (Defaults)");
+        jqUnit.module("Progress Tests (Defaults)");
         var text = "test text";
                
         var options, progressBar;  
@@ -71,7 +71,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.set(obj, ELPath, function () {                
                 callback(ELPath);
                 if (!stopStart) {
-                    start();
+                    jqUnit.start();
                 }
             });
             
@@ -98,7 +98,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };       
         
         // 1
-        progressTests.test("Initialization", function () {
+        jqUnit.test("Initialization", function () {
             
             // create a new progress bar with defaults
             progressBar = fluid.progress("#progress-container");
@@ -112,7 +112,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         // 2
-        progressTests.test("Show and Hide", function () {
+        jqUnit.test("Show and Hide", function () {
             
             // create a new progress bar with defaults
             progressBar = fluid.progress("#progress-container");
@@ -142,7 +142,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         // 3
-        progressTests.test("Update percent", function () {            
+        jqUnit.test("Update percent", function () {            
             progressBar = fluid.progress("#progress-container");
             
             // update with just number
@@ -160,7 +160,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         // 4
-        progressTests.test("Update text", function () {            
+        jqUnit.test("Update text", function () {            
             progressBar = fluid.progress("#progress-container");
             
             // update with just text
@@ -207,10 +207,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
          
-        progressTests = new jqUnit.TestCase("Progress Tests (No animation)");
+        jqUnit.module("Progress Tests (No animation)");
         
         // 5
-        progressTests.test("Update percent by number, null and zero", function () {            
+        jqUnit.test("Update percent by number, null and zero", function () {            
             progressBar = fluid.progress("#progress-container", {animate: "none"});
             
             var updateNum = 50;
@@ -253,7 +253,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                  
         // 6
         
-        progressTests.test("Update percent by number as string", function () {
+        jqUnit.test("Update percent by number as string", function () {
             
             var updateString = "50";
             var numericEquivalent = 50;
@@ -283,7 +283,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // 7
         
-        progressTests.test("Update percent by string with leading number", function () {            
+        jqUnit.test("Update percent by string with leading number", function () {            
             var updateString = "50%";
             var numericEquivalent = 50;
     
@@ -312,7 +312,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // 8
         
-        progressTests.test("Update text after percent", function () {            
+        jqUnit.test("Update text after percent", function () {            
             progressBar = fluid.progress("#progress-container", {animate: "none"});
             
             // update with just percentage
@@ -348,11 +348,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
        
        
-        progressTests = new jqUnit.TestCase("Progress Tests (Other Defaults)");
+        jqUnit.module("Progress Tests (Other Defaults)");
 
         // 9
         
-        progressTests.test("Min width = 0", function () {            
+        jqUnit.test("Min width = 0", function () {            
             progressBar = fluid.progress("#progress-container", {animate: "none", minWidth: 0});
             
             // show but don't update
@@ -383,11 +383,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
 
-        progressTests = new jqUnit.TestCase("Progress Tests (ARIA)");
+        jqUnit.module("Progress Tests (ARIA)");
 
         // 10
         
-        progressTests.test("ARIA initialization", function () {
+        jqUnit.test("ARIA initialization", function () {
             
             var ARIAcontainer = $(".flc-progress-bar");
             
@@ -409,7 +409,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // 11
         
-        progressTests.test("ARIA Numeric update", function () {
+        jqUnit.test("ARIA Numeric update", function () {
             
             var updateValue, busyVal;
             
@@ -446,7 +446,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // 12
         
-        progressTests.test("ARIA Text update", function () {
+        jqUnit.test("ARIA Text update", function () {
             
             var updateValue, busyVal;
             
@@ -487,7 +487,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         // 13 
         
-        progressTests.test("Changing the aria-valuetext to empty string ", function () {
+        jqUnit.test("Changing the aria-valuetext to empty string ", function () {
             
             var ARIAcontainer = $(".flc-progress-bar");
             
@@ -512,9 +512,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         // 14
          
-        progressTests.asyncTest("Using listeners object progress component fires event after the progress hides ", function () {
+        jqUnit.asyncTest("Using listeners object progress component fires event after the progress hides ", function () {
          
-            expect(4);
+            jqUnit.expect(4);
             
             progressEventTest(progressELPaths.listenersHiddenText, myProgressHide);   
             
@@ -522,9 +522,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
         // 15       
          
-        progressTests.asyncTest("Using listeners object progress component fires event after the progress is shown ", function () {
+        jqUnit.asyncTest("Using listeners object progress component fires event after the progress is shown ", function () {
         
-            expect(4);
+            jqUnit.expect(4);
             
             progressEventTest(progressELPaths.listenersShowText, myProgressShow);   
                        
@@ -532,18 +532,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
        
         // 16
          
-        progressTests.asyncTest("Using hideAnimation object in progress component fires event after the progress hides ", function () {
+        jqUnit.asyncTest("Using hideAnimation object in progress component fires event after the progress hides ", function () {
          
-            expect(4);
+            jqUnit.expect(4);
             
             progressEventTest(progressELPaths.hiddenAnimationText, myProgressHide);         
         });
     
         // 17
          
-        progressTests.asyncTest("Using showAnimation object in progress component fires event after the progress is shown ", function () {
+        jqUnit.asyncTest("Using showAnimation object in progress component fires event after the progress is shown ", function () {
         
-            expect(4);
+            jqUnit.expect(4);
             
             progressEventTest(progressELPaths.showAnimationText, myProgressShow); 
            
@@ -551,9 +551,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // 18
        
-        progressTests.asyncTest("Using hideAnimation and listener objects in progress component fires event after the progress hides ", function () {
+        jqUnit.asyncTest("Using hideAnimation and listener objects in progress component fires event after the progress hides ", function () {
             
-            expect(5);            
+            jqUnit.expect(5);            
             
             progressEventTestMultiple(progressELPaths.listenersHiddenText, progressELPaths.hiddenAnimationText, myProgressHide);
         
@@ -561,9 +561,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                    
         //19
         
-        progressTests.asyncTest("Using showAnimation and listener objects in progress component fires event after the progress is shown ", function () {
+        jqUnit.asyncTest("Using showAnimation and listener objects in progress component fires event after the progress is shown ", function () {
         
-            expect(5);
+            jqUnit.expect(5);
             
             progressEventTestMultiple(progressELPaths.listenersShowText, progressELPaths.showAnimationText, myProgressShow);
         });         

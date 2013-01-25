@@ -20,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
 
-        var tests = jqUnit.testCase("UIOptions fatPanel Tests");
+        jqUnit.module("UIOptions fatPanel Tests");
         
         fluid.tests.uiOptions.expectedFatPanel = [
             "pageEnhancer",
@@ -32,7 +32,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * UIOptions fatPanel integration tests *
          ****************************************/
 
-        tests.asyncTest("Fat Panel UIOptions Integration tests", function () {
+        jqUnit.asyncTest("Fat Panel UIOptions Integration tests", function () {
             fluid.pageEnhancer({
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
             });
@@ -60,7 +60,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     that.slidingPanel.hidePanel();
                     fluid.tests.uiOptions.checkModelSelections("panelModel from defaults", defaultSiteSettings, panelModel);
                     fluid.tests.uiOptions.checkModelSelections("pageModel from panelModel", pageModel, panelModel);  
-                    start();
+                    jqUnit.start();
                 }
                 ++sequence;
             }
@@ -118,10 +118,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                    
             jqUnit.assertEquals("classnameMap transferred to inner UIEnhancer", cMap.textFont["default"],
                    that.iframeRenderer.iframeEnhancer.options.classnameMap.textFont["default"]);
-            start();
+            jqUnit.start();
         }
         
-        fluid.tests.uiOptions.mungingIntegrationTest(tests, "fluid.uiOptions.fatPanel", ".flc-uiOptions-fatPanel", 
+        fluid.tests.uiOptions.mungingIntegrationTest("fluid.uiOptions.fatPanel", ".flc-uiOptions-fatPanel", 
             {
                 markupRenderer: {
                     options: {

@@ -65,7 +65,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.tests.uiOptions.checkModelSelections = function (message, expectedSelections, actualSelections) {
-        fluid.testUtils.assertLeftHand("Model correctly updated: " + message, expectedSelections, actualSelections);
+        jqUnit.assertLeftHand("Model correctly updated: " + message, expectedSelections, actualSelections);
     };
             
     fluid.tests.uiOptions.applierRequestChanges = function (uiOptions, selectionOptions) {
@@ -74,8 +74,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
     
-    fluid.tests.uiOptions.integrationTest = function (tests, componentName, resetShouldSave) {
-        tests.asyncTest(componentName + " Integration tests", function () {
+    fluid.tests.uiOptions.integrationTest = function (componentName, resetShouldSave) {
+        jqUnit.asyncTest(componentName + " Integration tests", function () {
             fluid.pageEnhancer({
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
             });
@@ -114,7 +114,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.tests.uiOptions.checkModelSelections("model from original (correct state after reset and cancel)", 
                     (resetShouldSave ? defaultSiteSettings : fluid.tests.uiOptions.bwSkin), uiOptions.model.selections);
                 
-                start();
+                jqUnit.start();
             }
             
             jqUnit.expect(6);
@@ -170,10 +170,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
     
-    fluid.tests.uiOptions.mungingIntegrationTest = function (tests, componentName, container, extraOpts, extraListener) {
-        extraListener = extraListener || function () { start(); };
+    fluid.tests.uiOptions.mungingIntegrationTest = function (componentName, container, extraOpts, extraListener) {
+        extraListener = extraListener || function () { jqUnit.start(); };
       
-        tests.asyncTest(componentName + " Munging Integration tests", function () {
+        jqUnit.asyncTest(componentName + " Munging Integration tests", function () {
             fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
 
             var testStrings = ["Test1", "Test2", "Test3", "Test4", "Test5"];

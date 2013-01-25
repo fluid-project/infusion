@@ -23,9 +23,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         fluid.registerNamespace("fluid.tests");
         
-        var DataBindingTests = new jqUnit.TestCase("Data Binding Tests");
+        jqUnit.module("Data Binding Tests");
         
-        DataBindingTests.test("PathUtil", function () {
+        jqUnit.test("PathUtil", function () {
             var path = "path1.path2.path3";
             jqUnit.assertEquals("getHeadPath", "path1", fluid.pathUtil.getHeadPath(path));
             jqUnit.assertEquals("getTailPath", "path3", fluid.pathUtil.getTailPath(path));
@@ -44,7 +44,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return fluid.pathUtil.matchSegments(["path3"], segs, 0, i) ? fluid.NO_VALUE : undefined;
         };
         
-        DataBindingTests.test("getBeanValue with custom strategy", function () {
+        jqUnit.test("getBeanValue with custom strategy", function () {
             var model = {path3: "thing", path4: "otherThing"};
             var value = fluid.get(model, "path3", {strategies: [customStrategy, fluid.model.defaultFetchStrategy]});
             jqUnit.assertUndefined("path3 value censored", value);
@@ -84,7 +84,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
                 
-        DataBindingTests.test("getBeanValue with resolver", function () {
+        jqUnit.test("getBeanValue with resolver", function () {
             var model = fluid.copy(fluid.tests.basicResolverModel);
             var config = $.extend(true, {}, fluid.model.defaultGetConfig, {
                 resolvers: {
@@ -114,7 +114,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
         };
 
-        DataBindingTests.test("Complex resolving and strategising", function () {
+        jqUnit.test("Complex resolving and strategising", function () {
             var model = fluid.copy(fluid.tests.basicResolverModel);
             model.fields.repeatableThing[1].value = fluid.tests.generateRepeatableThing("045167089");
             var el = {
@@ -175,7 +175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
      
         
-        DataBindingTests.test("Merge model semantics - preserve", function () {
+        jqUnit.test("Merge model semantics - preserve", function () {
             testPreservingMerge("undef1", true);
             testPreservingMerge("undef2", false);
              // defaultModel of "null" tests FLUID-3768
@@ -188,7 +188,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         // NB - this implementation is in Fluid.js, but test is grouped with the one above
-        DataBindingTests.test("FLUID 4585 test: mergeModel with nested model", function () {
+        jqUnit.test("FLUID 4585 test: mergeModel with nested model", function () {
             var defaults = {
                 twoLevels: {
                     one: 1,
@@ -212,7 +212,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertDeepEq("Model should be properly merged", expected, result);
         });
         
-        DataBindingTests.test("FLUID-3729 test: application into nothing", function () {
+        jqUnit.test("FLUID-3729 test: application into nothing", function () {
             var model = {};
             
             fluid.model.applyChangeRequest(model, {type: "ADD", path: "path1.nonexistent", value: "value"});
@@ -223,7 +223,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
             
         
-        DataBindingTests.test("ApplyChangeRequest - ADD, DELETE and MERGE", function () {
+        jqUnit.test("ApplyChangeRequest - ADD, DELETE and MERGE", function () {
             var model = {a: 1, b: 2};
             var model2 = {c: 3};
             
@@ -245,7 +245,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertDeepEq("Add at trunk", {a: 1, b: 2, c: {c: 3}}, testModel4);
         });
 
-        DataBindingTests.test("Transactional ChangeApplier - external transactions", function () {
+        jqUnit.test("Transactional ChangeApplier - external transactions", function () {
             var model = {a: 1, b: 2};
             var applier = fluid.makeChangeApplier(model);
             var initModel = fluid.copy(model);
@@ -260,7 +260,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         function makeTransTest(trans, thin) {
-            DataBindingTests.test("Transactional ChangeApplier - Transactional: " + 
+            jqUnit.test("Transactional ChangeApplier - Transactional: " + 
                 trans + " Thin: " + thin, function () {
                     var model = {
                         outerProperty: false,
@@ -303,7 +303,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         makeTransTest(true, true);
         makeTransTest(false, true);
         
-        DataBindingTests.test("Culling Applier", function () {
+        jqUnit.test("Culling Applier", function () {
             var model = {
                     outerProperty: false,
                     transWorld: {
@@ -341,7 +341,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertFalse("Low priority guard culled", lowExecuted);
         });
         
-        DataBindingTests.test("PostGuards", function () {
+        jqUnit.test("PostGuards", function () {
             var model = {
                 outerProperty: false,
                 transWorld: {
@@ -381,7 +381,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         
         
-        DataBindingTests.test("FLUID-4633 test - source tracking", function() {
+        jqUnit.test("FLUID-4633 test - source tracking", function() {
             var model = {
                 property1: 1,
                 property2: 2  
@@ -407,7 +407,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
         });
         
-        DataBindingTests.test("ChangeApplier", function () {
+        jqUnit.test("ChangeApplier", function () {
             var outerDAR = null;
             function checkingGuard(model, dar) {
                 outerDAR = dar;
@@ -483,6 +483,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var value = fluid.get(dar.value, excess);
                 return value.length === 1;
             }
+            // Tests FLUID-4869
+            outerNewModel = null;
+            applier.modelChanged.removeListener(observingListener);
             
             // Tests for FLUID-4739
             applier.guards.addListener(guardPath, checkingGuard3, "checkingGuard3");
@@ -494,9 +497,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             applier.requestChange("arrayInnerProperty", newArray);
             jqUnit.assertDeepEq("The model should have updated", newArray, model.arrayInnerProperty);
             applier.guards.removeListener("checkingGuard3");
+            
+            jqUnit.assertEquals("Stopped observing model", null, outerNewModel);
         });
         
-        DataBindingTests.test("FLUID-4625 test: Over-broad changes", function() {
+        jqUnit.test("FLUID-4625 test: Over-broad changes", function() {
             // This tests FLUID-4625 - we don't test at the utility level of matchPath since this is the functional
             // behaviour required. In practice we may want a better implementation which explodes composite changes into
             // smaller increments so that we can avoid unnecessary notifications, but this at least covers the case

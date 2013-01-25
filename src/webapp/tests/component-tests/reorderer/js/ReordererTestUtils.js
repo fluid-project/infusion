@@ -20,9 +20,10 @@ var fluid_1_5 = fluid_1_5 || {};
 var fluid = fluid || fluid_1_5;
 
 (function ($, fluid) {
-
-    fluid.testUtils = fluid.testUtils || {};
-    fluid.testUtils.reorderer = fluid.testUtils.reorderer || {};
+    
+    fluid.registerNamespace("fluid.testUtils.reorderer");
+    
+    jqUnit.bindKeySimulator(fluid.reorderer.keys, "fluid.testUtils.reorderer");
 
     fluid.testUtils.reorderer.prepend = function (prefix, indices) {
         return fluid.transform(indices, 
@@ -97,6 +98,8 @@ var fluid = fluid || fluid_1_5;
         
     fluid.testUtils.reorderer.bindReorderer = function (ids) {
         return {
+            keyEvent: fluid.testUtils.reorderer.keyEvent,
+            ctrlKeyEvent: fluid.testUtils.reorderer.ctrlKeyEvent,
             compositeKey: function (reorderer, event, targetIndex) {
                 return fluid.testUtils.reorderer.compositeKey(reorderer, event, 
                     fluid.byId(ids[targetIndex]));
@@ -119,7 +122,7 @@ var fluid = fluid || fluid_1_5;
             var focusItem = $(options.itemSelector).focus();
             var expectedOrder = options.expectedOrderArrays[i];
             jqUnit.assertTrue("focus on item " + focusItem.selector, focusItem.hasClass("fl-reorderer-movable-selected"));   
-            options.reordererOptions.key(that, fluid.testUtils.ctrlKeyEvent(options.direction), options.itemIndex ? options.itemIndex : options.itemSelector);                
+            options.reordererOptions.key(that, fluid.testUtils.reorderer.ctrlKeyEvent(options.direction), options.itemIndex ? options.itemIndex : options.itemSelector);                
             options.reordererOptions.expectOrderFn("after ctrl-" + options.direction.toLowerCase() + " the order is " + expectedOrder, expectedOrder, 
                     $(options.reordererOptions.thumbArray, that.container), options.reordererOptions.prefix);           
         }

@@ -18,14 +18,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        var tests = new jqUnit.TestCase("TextfieldSlider Tests");
+        jqUnit.module("TextfieldSlider Tests");
         
         var getTextfieldSlider = function (options) {
             return fluid.textfieldSlider(".fl-textfield-slider", options);          
         };
         
-        tests.test("Test Init", function () {
-            expect(8);
+        jqUnit.test("Test Init", function () {
+            jqUnit.expect(8);
             var textfieldSlider = getTextfieldSlider({model: {value: 15}}); 
             jqUnit.assertEquals("Slider value is set to input value", 15, $(".flc-textfieldSlider-slider").slider("value"));
             jqUnit.assertEquals("Textfield value is set", 15, $(".flc-textfieldSlider-field").val());
@@ -53,8 +53,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The ARIA value now should be " + expected, expected, thumb.attr("aria-valuenow"));          
         };
         
-        tests.test("Test Min/Max Size", function () {
-            expect(18);
+        jqUnit.test("Test Min/Max Size", function () {
+            jqUnit.expect(18);
 
             var textfieldSlider = getTextfieldSlider({model: {min: 5, max: 55}});
             testSetting(56, 55);
@@ -65,8 +65,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testSetting(5, 5);
         });
 
-        tests.test("Test Negative Scale", function () {
-            expect(15);
+        jqUnit.test("Test Negative Scale", function () {
+            jqUnit.expect(15);
             
             var textfieldSlider = getTextfieldSlider({model: {min: -15, max: -5}});
             testSetting(56, -5);
@@ -90,7 +90,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Validating value", expectedValue, changeRequest.value);
         };
         
-        tests.test("validateValue() tests", function () {
+        jqUnit.test("validateValue() tests", function () {
             checkValidatedValue(11, 10);
             checkValidatedValue(1, 2);
             checkValidatedValue(5, 5);

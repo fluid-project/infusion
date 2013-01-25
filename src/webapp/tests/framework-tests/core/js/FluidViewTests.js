@@ -24,15 +24,15 @@ fluid.registerNamespace("fluid.tests");
 
     fluid.tests.testView = function () {
  
-        var fluidViewTests = new jqUnit.TestCase("Fluid View Tests");
+        jqUnit.module("Fluid View Tests");
 
 
-        fluidViewTests.test("jById id not found", function () {
+        jqUnit.test("jById id not found", function () {
             var invalidIdElement = fluid.jById("this-id-does-not-exitst");
             jqUnit.assertEquals("element not found", 0, invalidIdElement.length);
         });
         
-        fluidViewTests.test("FLUID-3953 tests: confusion for namespaced attributes", function () {
+        jqUnit.test("FLUID-3953 tests: confusion for namespaced attributes", function () {
             jqUnit.expect(2);
             var node = fluid.byId("FLUID-3953-test");
             jqUnit.assertEquals("Plain DOM node fetched", "FLUID-3953-test", node.id);
@@ -40,17 +40,17 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("jQuery node fetched", "FLUID-3953-test", jNode.prop("id"));
         });
 
-        fluidViewTests.test("findAncestor", function () {
+        jqUnit.test("findAncestor", function () {
             var testFunc = function (elementOfArray, indexInArray) {
                 return elementOfArray.id === "top1";
             };
             jqUnit.assertEquals("Ancestor should be 'top1'", "top1", fluid.findAncestor($("#page-link-1"), testFunc).id);
         });
         
-        fluidViewTests.test("Container: bind to an id", function () {
+        jqUnit.test("Container: bind to an id", function () {
             try {
                 fluid.pushSoftFailure(true);
-                expect(2);
+                jqUnit.expect(2);
                 // Give it a valid id string.
                 var result = fluid.container("#main-container");
                 jqUnit.assertTrue("One element should be returned when specifying a selector",
@@ -67,10 +67,10 @@ fluid.registerNamespace("fluid.tests");
             }
         });
     
-        fluidViewTests.test("container(): bind to a single jQuery", function () {
+        jqUnit.test("container(): bind to a single jQuery", function () {
             try {
                 fluid.pushSoftFailure(true);
-                expect(2);
+                jqUnit.expect(2);
                 // Try with a single-item jQuery.
                 var oneContainer = jQuery("#main-container");
                 var result = fluid.container(oneContainer);
@@ -89,17 +89,17 @@ fluid.registerNamespace("fluid.tests");
             }
         });
         
-        fluidViewTests.test("container(): bind to a DOM element", function () {
+        jqUnit.test("container(): bind to a DOM element", function () {
             var container = document.getElementById("main-container");
             var result = fluid.container(container);
             jqUnit.assertEquals("If a single DOM element is used, it should be wrapped in a jQuery.",
                                 container, result[0]);
         });
         
-        fluidViewTests.test("container(): garbage object", function () {
+        jqUnit.test("container(): garbage object", function () {
             try {
                 fluid.pushSoftFailure(true);
-                expect(1);
+                jqUnit.expect(1);
                 // Random objects should fail.
                 var container = {foo: "bar"};
     
@@ -113,7 +113,7 @@ fluid.registerNamespace("fluid.tests");
             }
         });
         
-        fluidViewTests.test("DOM binder", function () {
+        jqUnit.test("DOM binder", function () {
             var container = $(".pager-top");
             var selectors = {
                 "page-link": ".page-link",
@@ -143,7 +143,7 @@ fluid.registerNamespace("fluid.tests");
         });
 
        
-        fluidViewTests.test("allocateSimpleId", function () {
+        jqUnit.test("allocateSimpleId", function () {
             var element = {};
             var fluidId = fluid.allocateSimpleId();
             jqUnit.assertEquals("Calling on allocateSimpleId with no parameter returns an ID starts with 'fluid-id-'", 0, fluidId.indexOf("fluid-id-"));
@@ -186,7 +186,7 @@ fluid.registerNamespace("fluid.tests");
             });
         };
         
-        fluidViewTests.test("initSubcomponents", function () {
+        jqUnit.test("initSubcomponents", function () {
             // First, let's check that the defaults are used if no other options are specified.
             var myComponent = fluid.tests.testComponent("#main-container");
             jqUnit.assertEquals("The subcomponent should have its default options.", 
@@ -206,7 +206,7 @@ fluid.registerNamespace("fluid.tests");
             }
         });
         
-        fluidViewTests.test("Graded View Component", function () {
+        jqUnit.test("Graded View Component", function () {
             var model = {myKey: "myValue"};
             var that = fluid.tests.testGradedView("#pager-top", {model: model});
             jqUnit.assertValue("Constructed component", that);
@@ -241,7 +241,7 @@ fluid.registerNamespace("fluid.tests");
         }
      
         function blurTest(message, provokeTarget, provokeOp, shouldBlur, excludeMaker) { 
-            fluidViewTests.test("Dead man's blur test - " + message, function () {
+            jqUnit.test("Dead man's blur test - " + message, function () {
                
                 noteTime();
                 
@@ -271,7 +271,7 @@ fluid.registerNamespace("fluid.tests");
                 var blurOutwaiter = function () {
                     jqUnit.assertTrue(message + " - Blur handler has not executed", shouldBlur ^ !blurReceived);
                     noteTime();
-                    start();
+                    jqUnit.start();
                 };
     
                 applyOp(input, "blur");
@@ -282,7 +282,7 @@ fluid.registerNamespace("fluid.tests");
                  
                 window.setTimeout(blurOutwaiter, blurrer.options.delay + 300);
                  
-                stop();
+                jqUnit.stop();
             });
         }
      
@@ -309,7 +309,7 @@ fluid.registerNamespace("fluid.tests");
         
         blurTest("excluded component excluded", "excluded", "focus", false, excludedExclusions);
      
-        fluidViewTests.test("ARIA labeller test", function () {
+        jqUnit.test("ARIA labeller test", function () {
             var target = $("#component-3");
             var labeller = fluid.updateAriaLabel(target, "Label 1");
             var attr = target.attr("aria-label");
@@ -319,7 +319,7 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Label updated", "Label 2", target.attr("aria-label"));
         });
         
-        fluidViewTests.test("ARIA labeller live region test", function () {
+        jqUnit.test("ARIA labeller live region test", function () {
             var target = $("#component-3");
             var labeller = fluid.updateAriaLabel(target, "Label 1", {
                 dynamicLabel: true

@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, deepEqual, expect, jQuery, start*/
+/*global fluid, jqUnit, QUnit, jQuery */
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -235,25 +235,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     var toModelTests = function (headingInfo, expectedModel, modelLevelFn) {
         var model = fluid.tableOfContents.modelBuilder.toModel(headingInfo, modelLevelFn);
-        deepEqual(model, expectedModel, "headingInfo converted to toModel correctly");
+        jqUnit.assertDeepEq("headingInfo converted to toModel correctly", model, expectedModel);
     };
     
     var convertToHeadingObjectsTests = function (headings, anchorInfo, expectedHeadingInfo) {
         var modelBuilder = fluid.tableOfContents.modelBuilder();
         var headingInfo = modelBuilder.convertToHeadingObjects(headings, anchorInfo);
-        deepEqual(headingInfo, expectedHeadingInfo, "Heading objects created correctly");
+        jqUnit.assertDeepEq("Heading objects created correctly", headingInfo, expectedHeadingInfo);
     };
     
     var assembleModelTests = function (headings, anchorInfo, expectedModel) {
         var modelBuilder = fluid.tableOfContents.modelBuilder();
         var model = modelBuilder.assembleModel(headings, anchorInfo);
-        deepEqual(model, expectedModel, model);
+        jqUnit.assertDeepEq("Model assembled correctly", model, expectedModel);
     };
     
     var generateTreeTests = function (model, expectedTree) {
         model = {headings: model};
         var tree = fluid.tableOfContents.levels.generateTree(model);
-        deepEqual(tree, expectedTree, "tree generated correctly");
+        jqUnit.assertDeepEq("tree generated correctly", tree, expectedTree);
     };
     
     /**
@@ -296,7 +296,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             listeners: {
                 afterRender: function (that) {
                     renderTOCTest(that, testHeadings);
-                    start();
+                    jqUnit.start();
                 }
             },
             resources: {
@@ -318,15 +318,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     $(document).ready(function () {
-
-        var tocHeadingCalc = jqUnit.testCase("Table of Contents: Heading Calculator Tests");
-        var tocMBTests = jqUnit.testCase("Table of Contents: Model Builder Tests");
-        var tocLevelsTests = jqUnit.testCase("Table of Contents: Levels Tests");
-        var tocTests = jqUnit.testCase("Table of Contents Tests");
     
-        // "fluid.tableOfContents.modelBuilder.headingCalculator" tests
+        jqUnit.module("Table of Contents: Heading Calculator Tests");
         
-        tocHeadingCalc.test("getHeadingLevel", function () {
+        jqUnit.test("getHeadingLevel", function () {
             var headingCalc = fluid.tableOfContents.modelBuilder.headingCalculator();
             
             for (var i = 1; i <= 6; i++) {
@@ -335,56 +330,57 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals(tagName + " level", i, headingCalc.getHeadingLevel(heading));
             }
         });
+
+
+        jqUnit.module("Table of Contents: Model Builder Tests");        
         
-        // "fluid.tableOfContents.modelBuilder" tests
-        
-        tocMBTests.test("toModel: linear headings with gradual indentation models", function () {
+        jqUnit.test("toModel: linear headings with gradual indentation models", function () {
             toModelTests(linearHeadings.headingInfo, linearHeadings.model, fluid.tableOfContents.modelBuilder.gradualModelLevelFn);
         });
-        tocMBTests.test("toModel: linear headings with skipped indentation models", function () {
+        jqUnit.test("toModel: linear headings with skipped indentation models", function () {
             toModelTests(linearHeadings.headingInfo, linearHeadings.model, fluid.tableOfContents.modelBuilder.skippedModelLevelFn);
         });
-        tocMBTests.test("toModel: skipped headings with gradual indentation models", function () {
+        jqUnit.test("toModel: skipped headings with gradual indentation models", function () {
             toModelTests(skippedHeadingsForGradualIndentationModel.headingInfo, skippedHeadingsForGradualIndentationModel.model,
                 fluid.tableOfContents.modelBuilder.gradualModelLevelFn);
         });
-        tocMBTests.test("toModel: skipped headings with skipped indentation models", function () {
+        jqUnit.test("toModel: skipped headings with skipped indentation models", function () {
             toModelTests(skippedHeadingsForSkippedIndentationModel.headingInfo, skippedHeadingsForSkippedIndentationModel.model,  
                 fluid.tableOfContents.modelBuilder.skippedModelLevelFn);
         });
         
-        tocMBTests.test("convertToHeadingObjects: linear headings", function () {
+        jqUnit.test("convertToHeadingObjects: linear headings", function () {
             convertToHeadingObjectsTests(createElms(linearHeadings.headingTags), linearHeadings.anchorInfo, linearHeadings.headingInfo);
         });
-        tocMBTests.test("convertToHeadingObjects: skipped headings", function () {
+        jqUnit.test("convertToHeadingObjects: skipped headings", function () {
             convertToHeadingObjectsTests(createElms(skippedHeadingsForSkippedIndentationModel.headingTags), 
                 skippedHeadingsForSkippedIndentationModel.anchorInfo, skippedHeadingsForSkippedIndentationModel.headingInfo);
             convertToHeadingObjectsTests(createElms(skippedHeadingsForGradualIndentationModel.headingTags), 
                 skippedHeadingsForGradualIndentationModel.anchorInfo, skippedHeadingsForGradualIndentationModel.headingInfo);
         });
         
-        tocMBTests.test("assembleModel: linear headings", function () {
+        jqUnit.test("assembleModel: linear headings", function () {
             assembleModelTests(createElms(linearHeadings.headingTags), linearHeadings.anchorInfo, linearHeadings.model);
         });
-        tocMBTests.test("assembleModel: skipped headings", function () {
+        jqUnit.test("assembleModel: skipped headings", function () {
             // test assembleModel with default toModel invoker - skippedHeadingsForGradualIndentationModel
             assembleModelTests(createElms(skippedHeadingsForGradualIndentationModel.headingTags), 
                 skippedHeadingsForGradualIndentationModel.anchorInfo, skippedHeadingsForGradualIndentationModel.model);
         });
         
-        tocMBTests.test("Test gradualModelLevelFn", function () {
+        jqUnit.test("Test gradualModelLevelFn", function () {
             var modelLevel = ['level1', 'level2'];
             var subHeadings = [{level: 6, text: 'h6', url: '#h6'}];
             var expectedModelLevel = [{level: 5, text: 'h6', url: '#h6'}];
             
             var gradualIndentationModel = fluid.tableOfContents.modelBuilder.gradualModelLevelFn(modelLevel, subHeadings);
-            deepEqual(gradualIndentationModel, expectedModelLevel, "gradual indentation model returns the subHeadings with level decremented by exactly 1.");
+            jqUnit.assertDeepEq("gradual indentation model returns the subHeadings with level decremented by exactly 1.", gradualIndentationModel, expectedModelLevel);
             
             //reference check. The function should not modify the object with the same reference.
             jqUnit.assertFalse("This function should not modify the level value directly on the object. Returned value should not have the same reference as parameter.", subHeadings === gradualIndentationModel);
         }); 
         
-        tocMBTests.test("Test skippedModelLevelFn", function () {
+        jqUnit.test("Test skippedModelLevelFn", function () {
             var modelLevel = ['level1', 'level2', {headings: ['subHeading1', 'subHeading2']}];
             var modelLevelClone = fluid.copy(modelLevel);
             var subHeadings = modelLevelClone.pop();
@@ -392,26 +388,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertDeepEq("skipped indentation model should always return the modelLevel with subHeadings as a child.", modelLevel, skippedIndentationModel);
         }); 
         
-        // "fluid.tableOfContents.levels" tests
         
-        tocLevelsTests.test("generateTree: skipped indentation tree, [h1, '', '', '', '', h6]", function () {
+        jqUnit.module("Table of Contents: Levels Tests");
+        
+        jqUnit.test("generateTree: skipped indentation tree, [h1, '', '', '', '', h6]", function () {
             generateTreeTests(skippedHeadingsForSkippedIndentationModel.model, skippedHeadingsForSkippedIndentationTree);
         });
-        tocLevelsTests.test("generateTree: gradual indentation tree, [h1, h6]", function () {
+        jqUnit.test("generateTree: gradual indentation tree, [h1, h6]", function () {
             generateTreeTests(skippedHeadingsForGradualIndentationModel.model, skippedHeadingsForGradualIndentationTree);
         });
-        tocLevelsTests.test("generateTree: empty tree, []", function () {
+        jqUnit.test("generateTree: empty tree, []", function () {
             generateTreeTests([], []);
         });
         
         
-        tocLevelsTests.test("objModel: test construction of the levels, items object used by generateTree", function () {
+        jqUnit.test("objModel: test construction of the levels, items object used by generateTree", function () {
             var levelObj = fluid.tableOfContents.levels.objModel('level', 1);
             jqUnit.assertEquals("The last character of the ID should be a ':'", ":", levelObj.ID.substr(levelObj.ID.length - 1));
             jqUnit.assertEquals("Should create an empty children array", 0, levelObj.children.length);
         });
         
-        tocLevelsTests.test("handleEmptyItemObj: Add decorator to item object", function () {
+        jqUnit.test("handleEmptyItemObj: Add decorator to item object", function () {
             var itemObj = {};
             fluid.tableOfContents.levels.handleEmptyItemObj(itemObj);
             var decorator = itemObj.decorators[0];
@@ -420,23 +417,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
         });
         
-        tocLevelsTests.asyncTest("Render toc: empty headings", function () {
+        jqUnit.asyncTest("Render toc: empty headings", function () {
             //FLUID-4352
             renderTOCTests(emptyHeadings);
         });
-        tocLevelsTests.asyncTest("Render toc: linear headings", function () {
+        jqUnit.asyncTest("Render toc: linear headings", function () {
             renderTOCTests(linearHeadings);
         });
-        tocLevelsTests.asyncTest("Render toc: skipped headings for skipped indentation model", function () {
+        jqUnit.asyncTest("Render toc: skipped headings for skipped indentation model", function () {
             renderTOCTests(skippedHeadingsForSkippedIndentationModel);
         });
-        tocLevelsTests.asyncTest("Render toc: skipped headings for gradual indentation model", function () {
+        jqUnit.asyncTest("Render toc: skipped headings for gradual indentation model", function () {
             renderTOCTests(skippedHeadingsForGradualIndentationModel);
         });
 
+
+        jqUnit.module("Table of Contents Tests");
         // fluid tableOfContents" tests
 
-        tocTests.test("insertAnchor", function () {
+        jqUnit.test("insertAnchor", function () {
             var tocTestAnchorName = 'tocTestAnchor';
             var tocInsertAnchorElement = $('#tocInsertAnchor');
             fluid.tableOfContents.insertAnchor(tocTestAnchorName, tocInsertAnchorElement);
@@ -447,24 +446,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("ToC insert anchor correctly: name", tocTestAnchorName, tocInsertAnchorWrapperFirstChild.attr('name'));
         });
         
-        tocTests.test("generateGUID", function () {
+        jqUnit.test("generateGUID", function () {
             var GUID = fluid.tableOfContents.generateGUID();
             var GUID2 = fluid.tableOfContents.generateGUID();
             
             jqUnit.assertNotEquals("GUID should not be the same with the same randomBaseName", GUID, GUID2);
         });
                 
-        tocTests.test("filterHeadings", function () {
+        jqUnit.test("filterHeadings", function () {
             var allHeadings = $('#tocFilterHeadings :header');
             var expectedHeadings = allHeadings.not(":hidden"); 
             var filteredHeadings = fluid.tableOfContents.filterHeadings(allHeadings);
             jqUnit.assertEquals("The size of headings should be exactly 1 less from the original", allHeadings.size() - 1, filteredHeadings.size());
             jqUnit.assertEquals("The size of headings should be exactly the same as a sliced clone of the original", expectedHeadings.size(), filteredHeadings.size());
-            jqUnit.assertDeepEq("The headings object array should be identical between the filtered headings and the sliced clone", 
-                expectedHeadings.toArray(), filteredHeadings.toArray());
+            // Use QUnit's native deepEqual to avoid cloning problems in qunit's propEqual on Safari
+            QUnit.deepEqual(expectedHeadings.toArray(), filteredHeadings.toArray(), "The headings object array should be identical between the filtered headings and the sliced clone");
         });
         
-        tocTests.test("finalInit public function: headingTextToAnchor", function () {
+        jqUnit.test("finalInit public function: headingTextToAnchor", function () {
             // setup and init the ToC component
             var toc = renderTOCComponent();
             var tocBodyHeading = $('#amphibians');
@@ -474,7 +473,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("anchor url is the same as id except url has a '#' in front", anchorInfo.url.substr(1), anchorInfo.id);
         });
         
-        tocTests.test("finalInit public function: show/hide component", function () {
+        jqUnit.test("finalInit public function: show/hide component", function () {
             //setup and init the ToC component
             var tocContainer = renderTOCComponent().locate("tocContainer");
             jqUnit.isVisible("Initially the component is visible.", tocContainer);
@@ -501,7 +500,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /**
          * Test component and make sure the number of links, text and anchors are set correctly.
          */
-        tocTests.asyncTest("Component test headings", function () {
+        jqUnit.asyncTest("Component test headings", function () {
             // craft headingInfo so renderTOCTest() can use it
             var testHeadings = {
                     headingInfo : []
@@ -524,7 +523,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     afterRender: function (that) {
                         renderTOCTest(that, testHeadings);
                         renderTOCAnchorTest();                        
-                        start();
+                        jqUnit.start();
                     }
                 }
             });
@@ -551,7 +550,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /**
          * #FLUID-4352: Test component with no headings. Make sure no <ul> is set
          */
-        tocTests.asyncTest("Component test empty headings", function () {
+        jqUnit.asyncTest("Component test empty headings", function () {
             // craft headingInfo so renderTOCTest() can use it
             var testHeadings = {
                     headingInfo : []
@@ -561,7 +560,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     afterRender: function (that) {
                         renderTOCTest(that, testHeadings);
                         renderTOCAnchorTest();
-                        start();
+                        jqUnit.start();
                     }
                 }
             });
@@ -571,14 +570,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /**
          * #FLUID-4723: Test that the output includes an actual header
          */
-        tocTests.asyncTest("Output includes a heading", function () {
+        jqUnit.asyncTest("Output includes a heading", function () {
             renderTOCComponent("#flc-toc", {
                 listeners: {
                     afterRender: function (that) {
                         var header = $("h1", that.container);
                         jqUnit.assertEquals("The output should contain exactly one H1", 1, header.length);
                         jqUnit.assertEquals("The H1 should contain the expected text", "Table of Contents", header.text());
-                        start();
+                        jqUnit.start();
                     }
                 }
             });
