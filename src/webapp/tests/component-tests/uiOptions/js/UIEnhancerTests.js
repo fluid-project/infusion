@@ -39,10 +39,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
         };
 
-        var tests = new jqUnit.TestCase("UI Enhancer Tests");
+        jqUnit.module("UI Enhancer Tests");
         
-        tests.test("Initialization", function () {
-            expect(11);
+        jqUnit.test("Initialization", function () {
+            jqUnit.expect(11);
 
             jqUnit.assertEquals("Initially font size classes exist", 3, $(".fl-font-size-90").length);
             jqUnit.assertEquals("Initially layout class exists", 3, $(".fl-layout-linear").length);
@@ -59,8 +59,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });
 
-        tests.test("getPx2EmFactor & getTextSizeInEm", function () {
-            expect(2);
+        jqUnit.test("getPx2EmFactor & getTextSizeInEm", function () {
+            jqUnit.expect(2);
             
             var container = $(".flt-baseFontSize-child");
             var uiEnhancer = fluid.uiEnhancer(container, uiEnhancerOptions);
@@ -74,7 +74,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Unable to detect the text size in em for the DOM root element <html>. Always return 1em.", 1, fontSizeInEm);
         });
 
-        tests.test("TextSizer", function () {
+        jqUnit.test("TextSizer", function () {
             var container = $(".flt-textSizer");
             var uiEnhancer = fluid.uiEnhancer(container, uiEnhancerOptions);
             var textSizer = uiEnhancer.textSize;
@@ -88,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         });
         
-        tests.test("ClassSwapper", function () {
+        jqUnit.test("ClassSwapper", function () {
             var opts = {
                 classes: {
                     "default": "",
@@ -119,7 +119,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
         });
 
-        tests.test("getLineHeight", function () {
+        jqUnit.test("getLineHeight", function () {
             // Mimic IE with its DOM lineHeight structure
             var container = [{currentStyle: {lineHeight: "10"}}];
             var lineHeight = fluid.uiEnhancer.getLineHeight(container);
@@ -135,7 +135,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         function testNumerizeLineHeight(lineHeight, expected) {
-            tests.test("numerizeLineHeight - " + lineHeight, function () { 
+            jqUnit.test("numerizeLineHeight - " + lineHeight, function () { 
                 var uiEnhancer = fluid.uiEnhancer(".flt-lineSpacer", uiEnhancerOptions);
                 var fontSize = fluid.uiEnhancer.getTextSizeInPx(uiEnhancer.container, uiEnhancer.options.fontSizeMap);
                 
@@ -161,7 +161,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
 
-        tests.test("LineSpacer", function () {
+        jqUnit.test("LineSpacer", function () {
             var uiEnhancer = fluid.uiEnhancer(".flt-lineSpacer", uiEnhancerOptions);
             var lineSpacer = uiEnhancer.lineSpacing;
       
@@ -190,7 +190,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
         
         function testIE6ColorInversion(withIt, testFunc) {
-            tests.test("IE6ColorInversion: " + withIt, function () { 
+            jqUnit.test("IE6ColorInversion: " + withIt, function () { 
                 withIE6Environment(withIt, function () {
                     fluid.pageEnhancer(uiEnhancerOptions);
                     testFunc();
@@ -205,8 +205,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("fl-inverted-color is not touched", 1, $(".fl-inverted-color").length);
         });
 
-        tests.asyncTest("Settings", function () {
-            expect(5);
+        jqUnit.asyncTest("Settings", function () {
+            jqUnit.expect(5);
 
             var body = $("body");
             var initialFontSize = parseFloat(body.css("fontSize"));
@@ -219,7 +219,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 if (refreshCount === 2) {
                     jqUnit.assertEquals("All toc links have been styled", tocLinks.length, filtered.length);
                     jqUnit.assertNotEquals("Some toc links generated on 2nd pass", 0, tocLinks.length);
-                    start();
+                    jqUnit.start();
                 }
             }
             
@@ -243,8 +243,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         });
         
-        tests.test("Options munging", function () {
-            expect(2);
+        jqUnit.test("Options munging", function () {
+            jqUnit.expect(2);
 
             uiEnhancerOptions = {
                 components: {
@@ -274,7 +274,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("The initial test theme is set correctly", body.hasClass("fl-test"));
         });
 
-        tests.test("FLUID-4703: Line height unit", function () {
+        jqUnit.test("FLUID-4703: Line height unit", function () {
             var child1El = $(".flt-lineHeight-child-1em");
             var child2El = $(".flt-lineHeight-child-2em");
 

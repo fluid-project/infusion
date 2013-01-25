@@ -18,7 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
 
-    var peTests = jqUnit.TestCase("Progressive Enhancement");
+    jqUnit.module("Progressive Enhancement");
     
     var checkerOptions = {
         defaultContextName: "food.carrots"
@@ -29,7 +29,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return fluid.progressiveChecker(options).typeName;
     };
     
-    peTests.test("progressiveChecker", function () {        
+    jqUnit.test("progressiveChecker", function () {        
         // No checks at all
         var result = invokeCheckerWithChecks([]);
         jqUnit.assertEquals("No checks, the default type tag should be returned.",

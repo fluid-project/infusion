@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(function () {
-        var tests = new jqUnit.TestCase("CSSGenerator Tests");
+        jqUnit.module("CSSGenerator Tests");
         var expectedArray = ["/* Comment */",
                         "table {",
                         "  background-color: #dddddd;",
@@ -58,11 +58,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals(msg, buildExpected(expectedArray), actual);
         };
         
-        tests.test("No modifications", function () {
+        jqUnit.test("No modifications", function () {
             testStylesheetForProcessSpec(null, expectedArray, "The stylesheet should not be modified");
         });
         
-        tests.test("Prioritize one CSS property for all rules", function () {
+        jqUnit.test("Prioritize one CSS property for all rules", function () {
             var priorities = {
                 "fluid-cssGenerator-allRules": "background-color"
             };
@@ -75,7 +75,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         
-        tests.test("Prioritize multiple CSS properties for all rules", function () {
+        jqUnit.test("Prioritize multiple CSS properties for all rules", function () {
             var priorities = {
                 "fluid-cssGenerator-allRules": ["background-color", "font-size"]
             };
@@ -90,7 +90,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "The generated style sheet should have !important added to all background colors and font sizes.");
         });
         
-        tests.test("Prioritize one CSS property for a specific selector", function () {
+        jqUnit.test("Prioritize one CSS property for a specific selector", function () {
             var priorities = {
                 ".cat a": "font-size"
             };
@@ -102,7 +102,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "The generated style sheet should have !important added only to the .cat rule.");
         });
         
-        tests.test("Namespace all selectors", function () {
+        jqUnit.test("Namespace all selectors", function () {
             var classRewriteOptions = {
                 match: "cat",
                 replace: "fl-theme-cat"
@@ -117,7 +117,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }, expected, "The .cat selector should be written as '.fl-theme-cat'.");
         });
 
-        tests.test("Rewrite Relative URLs", function () {
+        jqUnit.test("Rewrite Relative URLs", function () {
             var prefix = "../../../../framework/fss/css/";
             
             var opts = {

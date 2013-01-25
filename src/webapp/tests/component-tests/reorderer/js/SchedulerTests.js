@@ -18,7 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        var schedulerTests = new jqUnit.TestCase("Scheduler Tests");
+        jqUnit.module("Scheduler Tests");
     
         var SchedulerTests = {
             // Conference schedule constants
@@ -33,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             unmoveableClass: "fixed"
         };
         
-        schedulerTests.test("CSSOrderableFinder", function () {
+        jqUnit.test("CSSOrderableFinder", function () {
             // Create a cssOrderableFinder for the class "movableTopic."
             var orderableFinder = fluid.Scheduler.createCSSOrderableFinderForClass(SchedulerTests.moveableClass);
             var containerElement = jQuery("#" + SchedulerTests.conferenceContainerId).get(0);
@@ -53,7 +53,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("There should be no elements matched for 'foo'.", 0, foundOrderables.length);
         });
         
-        schedulerTests.test("PortalSafeFinder", function () {
+        jqUnit.test("PortalSafeFinder", function () {
             // Create an orderable finder for the core case: orderables with an id of sortableSchedule.orderable[num].
             var orderableFinder = fluid.Scheduler.createPortalSafeFinder(SchedulerTests.conferenceContainerId,
                                                                           "orderable",
@@ -79,7 +79,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("There should be no elements matched for 'nonExistentContainerId'.", 0, orderables.length);   
         });
         
-        schedulerTests.test("GenerateJSONStringForOrderables", function () {
+        jqUnit.test("GenerateJSONStringForOrderables", function () {
             var orderables = [jQuery("#" + SchedulerTests.firstMoveableId).get(0)];
             var jsonString = fluid.Scheduler.generateJSONStringForOrderables(orderables);
             jqUnit.assertTrue("The JSON string should have content.", jsonString.length > 0);
@@ -101,7 +101,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                           jsonString);
         });
         
-        schedulerTests.test("InitScheduler", function () {
+        jqUnit.test("InitScheduler", function () {
             var reorderer = fluid.Scheduler.initScheduler(SchedulerTests.conferenceContainerId);
             
             // Make sure we have a container.

@@ -23,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         fluid.setLogging(true);
         fluid.setDemandLogging(true);
-        var uploaderTests = new jqUnit.TestCase("Uploader Basic Tests");
+        jqUnit.module("Uploader Basic Tests");
 
         fluid.staticEnvironment.uploader = fluid.typeTag("fluid.uploader.tests");
         
@@ -33,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * formatFileSize() tests *
          **************************/
         
-        uploaderTests.test("formatFileSize()", function () {          
+        jqUnit.test("formatFileSize()", function () {          
             var testFileSize = function (testVal, expected) {
                 jqUnit.assertEquals("File size " + testVal + " bytes ", expected, 
                                     fluid.uploader.formatFileSize(testVal));
@@ -72,7 +72,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * derivePercent() tests *
          *************************/
         
-        uploaderTests.test("derivePercent()", function () {          
+        jqUnit.test("derivePercent()", function () {          
             var total = 5;
             var testPercentage = function (testVal, expected) {
                 jqUnit.assertEquals(testVal + "/" + total + " is " + expected + "%", expected, 
@@ -127,7 +127,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * ariaLiveRegionUpdater() tests *
          *********************************/
         
-        uploaderTests.test("ARIA Updater", function () {
+        jqUnit.test("ARIA Updater", function () {
             fluid.uploader.ariaLiveRegionUpdater(status, totalStatusText, events);
             
             jqUnit.assertEquals("The status region should be empty to start.", "", status.text());
@@ -334,7 +334,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // TODO: probably not possible to test error behaviour for single-file?
             jqUnit.assertEquals("The single-file uploader is in fact the single-file version", 
                                 "fluid.uploader.singleFileUploader", uploader.typeName);
-            start();
+            jqUnit.start();
         };
         
         var checkMultiFileUploaderOptions = function (uploader, expectedStrategy) {
@@ -443,14 +443,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkUploaderArgumentMap(uploader, 0, 1);
             mockSWFUploadLocal(uploader.strategy.local);
             checkUploaderIntegration(uploader, addFilesSWF, testset);
-            start();
+            jqUnit.start();
         };
         
         var checkHTML5Integration = function (uploader, testset) {
             checkMultiFileUploaderOptions(uploader, "fluid.uploader.html5Strategy");
             checkUploaderArgumentMap(uploader, 2, 1);
             checkUploaderIntegration(uploader, addFiles, testset);
-            start();
+            jqUnit.start();
         };        
         
         var configurations = [
@@ -568,7 +568,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.each(integrations, function (integration) {
                     var testsetLive = fluid.copy(testset);
                     testsetLive.integrationKey = integration.key;
-                    uploaderTests.asyncTest(config.label + " - " + integration.label
+                    jqUnit.asyncTest(config.label + " - " + integration.label
                         + " - " + testsetkey + " testset", function () {
                             setupIntegration(config, integration, testsetLive);
                         });

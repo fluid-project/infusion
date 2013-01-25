@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
          
-        var geometricManagerTests = new jqUnit.TestCase("geometricManagerTests");
+        jqUnit.module("Geometric Manager Tests");
         
         function assertOrder(message, parentId, required) {
             var all = $("#" + parentId + " div");
@@ -32,30 +32,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals(message, required, str);
         }
 
-        geometricManagerTests.test("Original order", function () {
-            expect(2);
+        jqUnit.test("Original order", function () {
+            jqUnit.expect(2);
             assertOrder("Original order", "permuteTest",  "0123A4567B8");
             assertOrder("Original order", "permuteTest2", "abCc");
         });
 
         function selfPermuteTest(name, source, target, position, expected) {
-            geometricManagerTests.test(name, function () {
+            jqUnit.test(name, function () {
                 var orders = $("#permuteTest .orderable");
           
                 fluid.dom.permuteDom(orders[source], orders[target], position, orders, orders);
-                expect(1);
+                jqUnit.expect(1);
                 assertOrder(name, "permuteTest", expected);
             });            
         }
         
         function crossPermuteTest(name, source, target, position, expected1, expected2) {
-            geometricManagerTests.test(name, function () {
+            jqUnit.test(name, function () {
                 var sourceElements = $("#permuteTest .orderable");
                 var targetElements = $("#permuteTest2 .orderable");
           
                 fluid.dom.permuteDom(sourceElements[source], targetElements[target], 
                        position, sourceElements, targetElements);
-                expect(2);
+                jqUnit.expect(2);
                 assertOrder(name, "permuteTest", expected1);
                 assertOrder(name, "permuteTest2", expected2);
             });            
@@ -89,9 +89,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         crossPermuteTest("0->2 AFTER",  0, 2, fluid.position.AFTER,   "1234A5678B",  "abCc0");             
         
  
-        geometricManagerTests.test("minPointRectangle", function () {
+        jqUnit.test("minPointRectangle", function () {
           
-            expect(6);
+            jqUnit.expect(6);
             
             var rect = {left: -1, right: 5, top: -1, bottom : 1};
             
@@ -115,9 +115,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
           
         });
         
-        geometricManagerTests.test("minRectRect", function () {
+        jqUnit.test("minRectRect", function () {
           
-            expect(6);
+            jqUnit.expect(6);
             
             var rect1 = {left: -1, top: -1, right: 5, bottom: 1};
             var rect2 = {left: 3, top: 2, right: 10, bottom: 3};
@@ -133,6 +133,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Dist23R", 0, fluid.geom.minRectRect(rect3, rect2));
           
         });
+        
+        fluid.registerNamespace("fluid.testUtils.reorderer");
         
         fluid.testUtils.reorderer.offsetGridTestRects = [
             // column 1, 3x3 squares spaced by 1, middle skew 1 to the right
@@ -184,15 +186,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
         };
         
-        geometricManagerTests.test("projectFrom", function () {
+        jqUnit.test("projectFrom", function () {
             var r = fluid.testUtils.reorderer;   
-            expect(r.offsetGridTestAssertions.length * 2);
+            jqUnit.expect(r.offsetGridTestAssertions.length * 2);
             fluid.testUtils.reorderer.stepProjectFrom(r.offsetGridTestRects, false, r.offsetGridTestAssertions);
         });
             
-        geometricManagerTests.test("projectFrom with disabled wrap", function () {          
+        jqUnit.test("projectFrom with disabled wrap", function () {          
             var r = fluid.testUtils.reorderer;   
-            expect(r.offsetGridTestAssertions.length * 2);
+            jqUnit.expect(r.offsetGridTestAssertions.length * 2);
             fluid.testUtils.reorderer.stepProjectFrom(r.offsetGridTestRects, true, r.offsetGridTestAssertions);
         });
         
@@ -250,7 +252,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
         };
         
-        geometricManagerTests.test("sentinelization test FLUID-4692", function () {
+        jqUnit.test("sentinelization test FLUID-4692", function () {
             var dropManager = fluid.dropManager();
             
             var zones = $(".zone", "#FLUID-4692-test");

@@ -17,58 +17,58 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        var tests = new jqUnit.TestCase("SlidingPanel Tests");
+        jqUnit.module("SlidingPanel Tests");
         
-        tests.test("Test Init", function () {
-            expect(1);
+        jqUnit.test("Test Init", function () {
+            jqUnit.expect(1);
             var slidingPanel = fluid.slidingPanel(".flc-slidingPanel");                    
             jqUnit.assertTrue("The sliding panel is initialised", slidingPanel);                      
         });
 
-        tests.asyncTest("Show Panel", function () {
-            expect(2);
+        jqUnit.asyncTest("Show Panel", function () {
+            jqUnit.expect(2);
             var slidingPanel = fluid.slidingPanel(".flc-slidingPanel");  
             slidingPanel.events.afterPanelShow.addListener(function () {
                 jqUnit.assertEquals("Show panel", "block", slidingPanel.locate("panel").css("display"));                                                       
                 jqUnit.assertEquals("Show panel button text", slidingPanel.options.strings.hideText, slidingPanel.locate("toggleButton").text());  
-                start();
+                jqUnit.start();
             });
             slidingPanel.showPanel();                                 
         });   
         
-        tests.asyncTest("Hide Panel", function () {
-            expect(2);
+        jqUnit.asyncTest("Hide Panel", function () {
+            jqUnit.expect(2);
             var slidingPanel = fluid.slidingPanel(".flc-slidingPanel", {model: {isShowing: true}});
             
             slidingPanel.events.afterPanelHide.addListener(function () {
                 jqUnit.assertEquals("Hide panel", "none", slidingPanel.locate("panel").css("display"));                      
                 jqUnit.assertEquals("Hide panel button text", slidingPanel.options.strings.showText, slidingPanel.locate("toggleButton").text());    
-                start();
+                jqUnit.start();
             });
             
             slidingPanel.hidePanel();              
         });         
               
 
-        tests.asyncTest("Toggle Panel Show", function () {
-            expect(1);
+        jqUnit.asyncTest("Toggle Panel Show", function () {
+            jqUnit.expect(1);
             var slidingPanel = fluid.slidingPanel(".flc-slidingPanel");     
             
             slidingPanel.events.afterPanelShow.addListener(function () {
                 jqUnit.assertEquals("Show panel via toggle", "block", slidingPanel.locate("panel").css("display"));                                                                                  
-                start();            
+                jqUnit.start();            
             });
             
             slidingPanel.togglePanel();            
         });    
 
-        tests.asyncTest("Toggle Panel Hide", function () {
-            expect(1);
+        jqUnit.asyncTest("Toggle Panel Hide", function () {
+            jqUnit.expect(1);
             var slidingPanel = fluid.slidingPanel(".flc-slidingPanel", {model: {isShowing: true}});         
             
             slidingPanel.events.afterPanelHide.addListener(function () {
                 jqUnit.assertEquals("Hide panel via toggle", "none",  slidingPanel.locate("panel").css("display"));                                                                       
-                start();    
+                jqUnit.start();    
             });
             
             slidingPanel.togglePanel();            
