@@ -568,7 +568,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.preInit = function (that) {
         that.fetch = function () {
-            var initialModel = that.settingsStore.fetch();
+            var initialModel = that.settingsStore.get();
             initialModel = $.extend(true, {}, that.defaultModel, initialModel);
             that.updateModel(initialModel);
             that.events.onUIOptionsRefresh.fire();
@@ -581,7 +581,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.events.onSave.fire(that.model.selections);
             
             var savedSelections = fluid.copy(that.model.selections);
-            that.settingsStore.save(savedSelections);
+            that.settingsStore.set(savedSelections);
         };
         
         that.saveAndApply = function () {

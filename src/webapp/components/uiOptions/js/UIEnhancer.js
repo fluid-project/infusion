@@ -218,7 +218,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.uiEnhancer.updateFromSettingsStore = function (that) {
-        that.updateModel(that.settingsStore.fetch());
+        that.updateModel(that.settingsStore.get());
     };
 
     fluid.uiEnhancer.updateModel = function (newModel, applier) {
