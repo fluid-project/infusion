@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
         
-        var inlineEditTests = new jqUnit.TestCase("InlineEdit Tests");
+        jqUnit.module("InlineEdit Tests");
         var customOptions = {selectors: {
                 text: ".customText",
                 editContainer: ".customEditContainer",
@@ -57,8 +57,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertVisibility(rv, "redo container", redo);
         }
      
-        inlineEditTests.test("Minimal Construction", function () {
-            expect(11);
+        jqUnit.test("Minimal Construction", function () {
+            jqUnit.expect(11);
     
             var container = $("#inline-edit");
             var display = $("#display");
@@ -81,8 +81,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
         function testCustomized(useRenderer) {
     
-            inlineEditTests.test("Customized Construction" + (useRenderer ? " (via Renderer)" : ""), function () {
-                expect(10);
+            jqUnit.test("Customized Construction" + (useRenderer ? " (via Renderer)" : ""), function () {
+                jqUnit.expect(10);
                 var root = $("#custom-renderRoot");
                 var inlineEditor;
         
@@ -131,7 +131,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
         function makeSubmittingTest(name, id, options, shouldsubmit) {
     
-            inlineEditTests.test(name, function () {
+            jqUnit.test(name, function () {
                 var inlineEditor = fluid.inlineEdit(id, $.extend(true, {}, customOptions, options));
                 inlineEditor.edit();
                 var field = inlineEditor.editField;
@@ -158,7 +158,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         function makeSubmittingTest2(name, id, options, shouldsubmit) {
             
-            inlineEditTests.test(name, function () {
+            jqUnit.test(name, function () {
                 var inlineEditor = fluid.inlineEdit(id, $.extend(true, {}, customOptions, options));
                 inlineEditor.edit();
                 var field = inlineEditor.editField;
@@ -183,8 +183,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         makeSubmittingTest2("Default Input autosubmit auto", "#inline-edit-custom-text-as-default", null, true);
         makeSubmittingTest2("Default Input autosubmit defeat", "#inline-edit-custom-text-as-default", {submitOnEnter: false}, false);
 
-        inlineEditTests.test("Invitation text (Default)", function () {
-            expect(11);
+        jqUnit.test("Invitation text (Default)", function () {
+            jqUnit.expect(11);
     
             var display = $("#empty-display");
             jqUnit.assertEquals("Before initialization of empty display, display is empty", "", display.text());
@@ -211,8 +211,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Invitation text still contains it's initial class attribute as well", display.hasClass("flc-inlineEdit-text")); // added for FLUID-1803
         });
         
-        inlineEditTests.test("Invitation text (custom)", function () {
-            expect(2);
+        jqUnit.test("Invitation text (custom)", function () {
+            jqUnit.expect(2);
     
             var display = $("#empty-display");
             var customInvitation = "This is custom invitation text";
@@ -222,8 +222,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("After initialization, display has custom invitation text.", customInvitation, display.text());
         });
         
-        inlineEditTests.test("Focussed invitation text (Default)", function () {
-            expect(3);
+        jqUnit.test("Focussed invitation text (Default)", function () {
+            jqUnit.expect(3);
 
             var display = $("#empty-display");
             var inlineEditor = fluid.inlineEdit("#empty-inline-edit");
@@ -235,8 +235,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("After blur, display has default invitation text: ", fluid.defaults("fluid.inlineEdit").strings.defaultViewText, display.text());
         });
 
-        inlineEditTests.test("Invitation text (none)", function () {
-            expect(10);
+        jqUnit.test("Invitation text (none)", function () {
+            jqUnit.expect(10);
     
             var display = $("#empty-display");
             jqUnit.assertFalse("Before initialization, display is empty", display.text());
@@ -264,8 +264,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The display field padding is ", fluid.defaults("fluid.inlineEdit").paddings.minimumView, parseFloat(display.css("padding-right")));
         });
         
-        inlineEditTests.test("isEditing", function () {
-            expect(3);
+        jqUnit.test("isEditing", function () {
+            jqUnit.expect(3);
             var inlineEditor = fluid.inlineEdit("#inline-edit");
             
             jqUnit.assertFalse("We should be in view mode by default.", inlineEditor.isEditing());
@@ -277,8 +277,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertFalse("After editing is finished, isEditing() should return false.", inlineEditor.isEditing());        
         });
         
-        inlineEditTests.test("Edit Finish", function () {
-            expect(9);
+        jqUnit.test("Edit Finish", function () {
+            jqUnit.expect(9);
     
             var display = $("#display");
             var edit = $("#edit");
@@ -303,7 +303,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.isVisible("When not in edit mode, textEditButton is visible", inlineEditor.textEditButton);
         });
         
-        inlineEditTests.test("Edit Cancel", function () {
+        jqUnit.test("Edit Cancel", function () {
             var editField = $("#edit");
             var text = $("#display");
             var defaultValue = "Click me to edit...";
@@ -324,8 +324,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 defaultValue, text.text());
         });
     
-        inlineEditTests.test("Keyboard Navigation Edit", function () {
-            expect(14);
+        jqUnit.test("Keyboard Navigation Edit", function () {
+            jqUnit.expect(14);
     
             var display = $("#display");
             var edit = $("#edit");
@@ -358,8 +358,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertFalse("After blur, display field is not focused", display.hasClass(inlineEditor.options.styles.focus));
         });
 
-        inlineEditTests.test("Hover", function () {
-            expect(3);
+        jqUnit.test("Hover", function () {
+            jqUnit.expect(3);
     
             var display = $("#display");
             var inlineEditor = fluid.inlineEdit("#inline-edit");
@@ -390,7 +390,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("After click, edit field contains same text as display field", display.text(), edit.prop("value"));
         };
         
-        inlineEditTests.test("Click on display", function () {
+        jqUnit.test("Click on display", function () {
             var display = $("#display");
             var editContainer = $("#edit-container");
             var edit = $("#edit");
@@ -401,7 +401,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertEditModeVisibility(display, editContainer, edit, inlineEditor);
         });
         
-        inlineEditTests.test("Click on textEditButton", function () {
+        jqUnit.test("Click on textEditButton", function () {
     
             var display = $("#display");
             var editContainer = $("#edit-container");
@@ -414,8 +414,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertEditModeVisibility(display, editContainer, edit, inlineEditor);
         });
         
-        inlineEditTests.test("Arrow Keys while Editing", function () {
-            expect(5);
+        jqUnit.test("Arrow Keys while Editing", function () {
+            jqUnit.expect(5);
     
             var display = $("#display");
             var edit = $("#edit");
@@ -434,8 +434,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.isVisible("After left-arrow pressed, edit field is still visible", "#edit-container");
         });
         
-        inlineEditTests.test("Finished Editing Callback", function () {
-            expect(4);
+        jqUnit.test("Finished Editing Callback", function () {
+            jqUnit.expect(4);
             var callbackCalled = false;
     
             var options = {
@@ -453,8 +453,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Callback was called", callbackCalled);
         });
     
-        inlineEditTests.test("Blur", function () {
-            expect(4);
+        jqUnit.test("Blur", function () {
+            jqUnit.expect(4);
             
             var display = $("#display");
             var edit = $("#edit");
@@ -471,8 +471,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertFalse("Blur saves the edit", edit.text() === display.text());
         });
         
-        inlineEditTests.test("ARIA", function () {
-            expect(10);
+        jqUnit.test("ARIA", function () {
+            jqUnit.expect(10);
             
             var display = $("#display");
             
@@ -496,8 +496,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertVisState(undo1, redo1, false, false); // 4
         });
         
-        inlineEditTests.test("Test overriding the tooltip text ", function () {
-            expect(2);
+        jqUnit.test("Test overriding the tooltip text ", function () {
+            jqUnit.expect(2);
             var options = {tooltipText: "Updating the default tooltip text..."};
             var editor = fluid.inlineEdit("#inline-override-tooltip", options);
             var inlineEditText = editor.locate("text");                
@@ -518,8 +518,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertNotEquals("After editing the field, the model value should change ", initialExpectedValue, inlineEditTableCell.model.value);
         };
         
-        inlineEditTests.test("Test using inline edit to edit a table cell  ", function () {
-            expect(4);
+        jqUnit.test("Test using inline edit to edit a table cell  ", function () {
+            jqUnit.expect(4);
             var editor = fluid.inlineEdits("#inline-edit-table-cell");                
             testTableCellInlineEdit(editor[0], "This is an editable table cell.", "This is test text cell one.");
             testTableCellInlineEdit(editor[1], "This is another editable table cell.", "This is test text cell two.");
@@ -544,15 +544,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 });
             };
             
-            inlineEditTests.test("inlineEdits(): instantiate more than one", function () {
-                expect(1);
+            jqUnit.test("inlineEdits(): instantiate more than one", function () {
+                jqUnit.expect(1);
                 
                 var editors = instantiateInlineEdits();
                 jqUnit.assertEquals("There should be two inline editors on the page.", 2, editors.length);
             });
             
-            inlineEditTests.test("inlineEdits(): call to edit affects only one at a time", function () {
-                expect(8);
+            jqUnit.test("inlineEdits(): call to edit affects only one at a time", function () {
+                jqUnit.expect(8);
                 
                 var editors = instantiateInlineEdits();
                 
@@ -576,8 +576,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 editor.finish();
             };
             
-            inlineEditTests.test("inlineEdits(): finished editing callback; one for all fields", function () {
-                expect(5);
+            jqUnit.test("inlineEdits(): finished editing callback; one for all fields", function () {
+                jqUnit.expect(5);
                 
                 var textFieldIds = [];
                 var finishedCallback = function (newValue, oldValue, formField) {
@@ -617,8 +617,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             };
             
-            inlineEditTests.test("Test two copies of multiple inline edits with - we need to make sure we cover containment within a group when using the multiple inline edit API ", function () {           
-                expect(12);
+            jqUnit.test("Test two copies of multiple inline edits with - we need to make sure we cover containment within a group when using the multiple inline edit API ", function () {           
+                jqUnit.expect(12);
                 var options = {componentDecorators: "fluid.undoDecorator"};        
                 testMultiInlineEdits("inline-multiple-edits", 2, true, options);                
                 testMultiInlineEdits("inline-multiple-edits-2", 3, false);
@@ -638,8 +638,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 return fluid.inlineEdit(fluid.jById(containerId));
             };
             
-            inlineEditTests.test("Self-rendering edit mode: instantiation", function () {
-                expect(3);
+            jqUnit.test("Self-rendering edit mode: instantiation", function () {
+                jqUnit.expect(3);
                 
                 var editor = selfRenderingInlineEdit();
                 var editorContainer = editor.editContainer;
@@ -663,8 +663,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.notVisible("During editing, the view mode should be hidden.", textSel);    
             };
             
-            inlineEditTests.test("Self-rendering edit mode: edit() and finish()", function () {
-                expect(7);
+            jqUnit.test("Self-rendering edit mode: edit() and finish()", function () {
+                jqUnit.expect(7);
                 
                 var editor = selfRenderingInlineEdit();
                 assertInViewMode(editor);
@@ -678,10 +678,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 assertInViewMode(editor);
             });
            
-            inlineEditTests.test("Self-rendering with undo control", function () {
+            jqUnit.test("Self-rendering with undo control", function () {
                 var initialValue = "Initial Value";
                 var newValue = "New Value";
-                expect(15);
+                jqUnit.expect(15);
                 
                 $("#display-undoable").text(initialValue);
 
@@ -710,10 +710,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("Model state should now be " + newValue, newValue, editor.model.value); // 15
             });
             
-            inlineEditTests.test("Multiple undo controls", function () {
+            jqUnit.test("Multiple undo controls", function () {
                 var initialValue = "Initial Value";
                 var newValue = "New Value";
-                expect(15);
+                jqUnit.expect(15);
                 $("#display-undoable").text(initialValue);
     
                 var editor1 = fluid.inlineEdit("#inline-edit-undo", {componentDecorators: "fluid.undoDecorator"});
@@ -747,7 +747,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 editor.finish();
             }
             
-            inlineEditTests.test("State/event FLUID-1661, FLUID-1662, FLUID-1772", function () {
+            jqUnit.test("State/event FLUID-1661, FLUID-1662, FLUID-1772", function () {
                 var changeCount = 0; // count calls to modelChanged
                 var editor = fluid.inlineEdit("#inline-edit-undo", {
                     componentDecorators: "fluid.undoDecorator",
@@ -776,13 +776,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("Undo 1", "Change 1", editor.model.value);
             });
             
-            inlineEditTests.test("Self-container", function () {
+            jqUnit.test("Self-container", function () {
                 var editor = fluid.inlineEdit("#inline-edit2");
                 var edit = $("#inline-edit2 .flc-inlineEdit-edit")[0];
                 jqUnit.assertEquals("Container is field", edit, editor.editField[0]);
             });
             
-            inlineEditTests.test("Render textEditButton", function () {
+            jqUnit.test("Render textEditButton", function () {
                 var editor = fluid.inlineEdit("#inline-edit");
                 var button = editor.textEditButton;
                 
@@ -791,7 +791,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertTrue("The textEditButton should have the fl-offScreen-hidden style", button.hasClass(editor.options.styles.textEditButton));
             });
             
-            inlineEditTests.test("Update textEditButton text", function () {
+            jqUnit.test("Update textEditButton text", function () {
                 var editor = fluid.inlineEdit("#inline-edit");
                 editor.edit();
                 var text = "the brown dog";    
@@ -802,7 +802,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("After editing, the textEditButton text should be", "Edit text " + text, button.text());
             });
             
-            inlineEditTests.test("Container styling", function () {
+            jqUnit.test("Container styling", function () {
                 var editor = fluid.inlineEdit("#inline-edit");
                 var button = editor.textEditButton;
                 var text = editor.locate("text");
@@ -812,13 +812,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-container class on focus", text.parent().hasClass(editor.options.styles.focus));
             });
             
-            inlineEditTests.test("Remove container from tab order", function () {
+            jqUnit.test("Remove container from tab order", function () {
                 var editor = fluid.inlineEdit("#inline-edit");
                 var text = editor.locate("text");
                 jqUnit.assertEquals("The tab index of the container should be", "-1", text.attr("tabindex"));
             });
             
-            inlineEditTests.test("Render keyboard instruction text", function () {
+            jqUnit.test("Render keyboard instruction text", function () {
                 var editor = fluid.inlineEdit("#inline-edit");
                 var editContainer = $("#edit-container");
                 var editField = editor.editField;
@@ -846,7 +846,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 return displayModeRenderer;                        
             };
 
-            inlineEditTests.test("Missing textEditButton", function () {
+            jqUnit.test("Missing textEditButton", function () {
                 var editor = fluid.inlineEdit("#inline-edit", {
                     displayModeRenderer: displayModeRendererNoTextEditButton
                 });
@@ -865,7 +865,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.notVisible("After mouse click, the display text is hidden", display);
             });
             
-            inlineEditTests.test("Test individual public functions", function () {
+            jqUnit.test("Test individual public functions", function () {
                 var editor = fluid.inlineEdit("#inline-edit");
                 var styles = editor.options.styles;
                 
@@ -888,7 +888,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertTrue("textEditButton has button role", "button", button.attr("role"));
             });            
 
-            inlineEditTests.test("Old-fashioned 'defaultViewText' string", function () {
+            jqUnit.test("Old-fashioned 'defaultViewText' string", function () {
                 var testString = "This is a test string";
                 var inlineEditor = fluid.inlineEdit("#empty-inline-edit", {
                     defaultViewText: testString
@@ -897,7 +897,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("Initialized with old-fashioned option, display should have text string", testString, display.text());
             });
 
-            inlineEditTests.test("Upgraded 'defaultViewText' string", function () {
+            jqUnit.test("Upgraded 'defaultViewText' string", function () {
                 var testString = "This is a test string";
                 var inlineEditor = fluid.inlineEdit("#empty-inline-edit", {
                     strings: {
@@ -908,7 +908,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("Initialized with old-fashioned option, display should have text string", testString, display.text());
             });
 
-            inlineEditTests.test("Conflicting 'defaultViewText' strings", function () {
+            jqUnit.test("Conflicting 'defaultViewText' strings", function () {
                 var oldWay = "This is the old way";
                 var newWay = "This is the new way";
                 var inlineEditor = fluid.inlineEdit("#empty-inline-edit", {
@@ -921,7 +921,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("Initialized with both strings, the new one should win out", newWay, display.text());
             });
             
-            inlineEditTests.test("IOC InlineEdit test", function () {
+            jqUnit.test("IOC InlineEdit test", function () {
                 var inlineEdit = $("#ioc-inline-edit").find(".flc-ioc-inlineEditable");
                 
                 fluid.defaults("fluid.componentWithInlineEdit", {

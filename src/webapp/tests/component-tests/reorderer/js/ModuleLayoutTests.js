@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
         
-        var moduleLayoutTests = new jqUnit.TestCase("ModuleLayout Tests");
+        jqUnit.module("ModuleLayout Tests");
     
         function isOriginalOrderTest(testStr, layoutObj) {
             var portlet = fluid.transform(fluid.testUtils.moduleLayout.portletIds, fluid.byId);
@@ -35,7 +35,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
         }
 
-        moduleLayoutTests.test("UpdateLayout", function () {
+        jqUnit.test("UpdateLayout", function () {
             var portlet = fluid.transform(fluid.testUtils.moduleLayout.portletIds, fluid.byId);
             
             var item = portlet[3];

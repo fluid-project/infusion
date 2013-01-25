@@ -136,7 +136,7 @@ fluid.test.testEnvironment.runTests = function (that) {
 fluid.defaults("fluid.test.testCaseHolder", {
     gradeNames: ["fluid.littleComponent", "autoInit"],
     mergePolicy: {
-        testCases: "noexpand"
+        modules: "noexpand"
     }
 });
 
@@ -389,7 +389,7 @@ fluid.test.runTests = function (envNames) {
 
 fluid.test.processTestCase = function (testCaseState) {
     var testCase = testCaseState.testCase;
-    var jCase = new jqUnit.TestCase(testCase.name);
+    jqUnit.module(testCase.name);
     var fixtures = testCase.tests;
     fluid.each(fixtures, function (fixture) {
         var testType = "asyncTest";
@@ -415,7 +415,7 @@ fluid.test.processTestCase = function (testCaseState) {
         // might enter the queue and immediately leave it as a result of only ever issuing
         // asynchronous tests
         var oldLength = QUnit.config.queue.length;
-        jCase[testType](fixture.name, testFunc);
+        jqUnit[testType](fixture.name, testFunc);
         if (QUnit.config.queue.length === oldLength) {
             console.log("Skipped test " + fixture.name);
         }
@@ -426,8 +426,8 @@ fluid.test.processTestCase = function (testCaseState) {
 };
 
 fluid.test.processTestCaseHolder = function (testCaseState) {
-    var cases = testCaseState.testCaseHolder.options.testCases;
-    fluid.each(cases, function (testCase) {
+    var modules = testCaseState.testCaseHolder.options.modules;
+    fluid.each(modules, function (testCase) {
         testCaseState.testCase = testCase;
         testCaseState.finisher = function () {
             fluid.test.noteTest(testCaseState.root, -1);

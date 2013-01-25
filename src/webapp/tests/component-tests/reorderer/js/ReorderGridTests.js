@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        var tests = new jqUnit.TestCase("Reorder Grid Tests");
+       jqUnit.module("Reorder Grid Tests");
         
         var k = fluid.testUtils.reorderer.bindReorderer(orderableIds);
         
@@ -38,7 +38,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return obj;
         };    
         
-        tests.test("reorderGrid API", function () {            
+        jqUnit.test("reorderGrid API", function () {            
             var options = assembleOptions(false);
             var containerSelector = "[id='" + lightboxRootId + "']";
             var gridReorderer = fluid.reorderGrid(containerSelector, options);
@@ -52,17 +52,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertTrue("focus on item2 - item5 should be default", item5.hasClass("fl-reorderer-movable-default"));
     
-            k.keyDown(gridReorderer, fluid.testUtils.keyEvent("DOWN"), 1);
+            k.keyDown(gridReorderer, k.keyEvent("DOWN"), 1);
             jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertTrue("down arrow - item3 should be default", item3.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertTrue("down arrow - grid is 3 wide - item5 should be selected", item5.hasClass("fl-reorderer-movable-selected"));
     
-            k.compositeKey(gridReorderer, fluid.testUtils.ctrlKeyEvent("DOWN"), 4);
+            k.compositeKey(gridReorderer, k.ctrlKeyEvent("DOWN"), 4);
             
             fluid.testUtils.reorderer.assertItemsInOrder("after ctrl-down", [0, 1, 2, 3, 5, 6, 7, 4, 8, 9, 10, 11, 12, 13], $("img", $(containerSelector)), "fluid.img.");
         });    
         
-        tests.test("reorderGrid with optional styles", function () {
+        jqUnit.test("reorderGrid with optional styles", function () {
             var options = {
                 selectors: {
                     movables: ".float"
@@ -83,7 +83,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
         });  
         
-        tests.test("reorderGrid, option set disabled wrap, user action ctrl+down", function () {        
+        jqUnit.test("reorderGrid, option set disabled wrap, user action ctrl+down", function () {        
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "DOWN",
@@ -96,7 +96,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
         });
         
-        tests.test("reorderGrid, option set enabled wrap, user action ctrl+down", function () {   
+        jqUnit.test("reorderGrid, option set enabled wrap, user action ctrl+down", function () {   
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "DOWN",
@@ -109,7 +109,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
         });
       
-        tests.test("reorderGrid, option set disabled wrap, user action ctrl+up", function () {   
+        jqUnit.test("reorderGrid, option set disabled wrap, user action ctrl+up", function () {   
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "UP",
@@ -122,7 +122,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
         });
         
-        tests.test("reorderGrid, option set enabled wrap, user action ctrl+up", function () {   
+        jqUnit.test("reorderGrid, option set enabled wrap, user action ctrl+up", function () {   
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "UP",
@@ -136,7 +136,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
         });
            
-        tests.test("reorderGrid, option set disabled wrap, user action ctrl+right", function () {    
+        jqUnit.test("reorderGrid, option set disabled wrap, user action ctrl+right", function () {    
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "RIGHT",
@@ -149,7 +149,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
         });
         
-        tests.test("reorderGrid, option set enabled wrap, user action ctrl+right", function () { 
+        jqUnit.test("reorderGrid, option set enabled wrap, user action ctrl+right", function () { 
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "RIGHT",
@@ -162,7 +162,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
         });        
         
-        tests.test("reorderGrid, option set disabled wrap, user action ctrl+left", function () { 
+        jqUnit.test("reorderGrid, option set disabled wrap, user action ctrl+left", function () { 
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "LEFT",
@@ -175,7 +175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
         });        
       
-        tests.test("reorderGrid, option set enabled wrap, user action ctrl+left", function () {
+        jqUnit.test("reorderGrid, option set enabled wrap, user action ctrl+left", function () {
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "LEFT",

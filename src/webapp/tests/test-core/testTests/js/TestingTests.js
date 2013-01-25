@@ -47,7 +47,7 @@ fluid.tests.cat.preInit = function (that) {
 
 fluid.defaults("fluid.tests.catTester", {
     gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
-    testCases: [ /* declarative specification of tests */ {
+    modules: [ /* declarative specification of tests */ {
         name: "Cat test case",
         tests: [{
             expect: 1,
@@ -128,7 +128,7 @@ fluid.defaults("fluid.tests.asyncTester", {
     gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
     newTextValue:     "newTextValue",
     furtherTextValue: "furtherTextValue",
-    testCases: [ {
+    modules: [ {
         name: "Async test case",
         tests: [{
             name: "Rendering sequence",

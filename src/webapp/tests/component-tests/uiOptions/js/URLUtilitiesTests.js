@@ -19,10 +19,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         fluid.setLogging(true);
         
-        var testURLs = jqUnit.testCase("URLUtilities Tests");
+        jqUnit.module("URLUtilities Tests");
 
         var testRelPath = function (options, key) {
-            testURLs.test("Expand Path " + key, function() {
+            jqUnit.test("Expand Path " + key, function() {
                 var actual =  fluid.url.computeRelativePrefix(options.outerLoc, options.iframeLoc, options.relPath);
                 jqUnit.assertEquals("Relative path computed", options.expected, actual);
             });

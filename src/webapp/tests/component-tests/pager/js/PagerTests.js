@@ -25,7 +25,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             pageChangeStats = {};
         };
         
-        var tests = new jqUnit.TestCase("Pager Tests", setUp);
+        jqUnit.module("Pager Tests", setUp);
         
         var options = {
             listeners: {
@@ -146,7 +146,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         // Just tests that the pager will initialize with only a container, and dataModel passed in.
         // The rest of the options are the defaults.
-        tests.test("Default Pager: FLUID-4213", function () {
+        jqUnit.test("Default Pager: FLUID-4213", function () {
             jqUnit.assertTrue("The default pager initialized", fluid.pager("#rendered", {
                 dataModel: [{language: "javascript"}]
             }));
@@ -154,7 +154,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
         // This is a placeholder test. It knows too much about the implementation details. 
         // This will be replaced with a better test as the public API of the Pager is developed
-        tests.test("Pager setup", function () {
+        jqUnit.test("Pager setup", function () {
             var pager = markupPager("#gradebook");
             
             // For now, the pager exposes the objects it contains.
@@ -174,7 +174,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
         });
         
-        tests.test("Initially First Selected", function () {
+        jqUnit.test("Initially First Selected", function () {
             var pager = markupPager("#gradebook", options);
             
             var firstLink = $("#top1");
@@ -195,7 +195,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertUndefined("The oldPageNum for the onPageChange event should be undefined.", pageChangeStats.oldPageNum);
         });
         
-        tests.test("Click link", function () {
+        jqUnit.test("Click link", function () {
             var pager = markupPager("#gradebook", options);
             var link1 = $("#top1");        
             var link1Bottom = $("#bottom1");        
@@ -226,7 +226,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertUndefined("Link 2 clicked again - callback not called.", pageChangeStats.oldPageNum);
         });
         
-        tests.test("Links between top and bottom", function () {
+        jqUnit.test("Links between top and bottom", function () {
             var pager = markupPager("#plants", options);
             var nonPageLink = $("#chives");
             var topLink = $("#plants-top2");
@@ -246,7 +246,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 pageLink.hasClass(fluid.defaults("fluid.pager.pagerBar").styles.currentPage));
         });
         
-        tests.test("Pager Next/Previous", function () {
+        jqUnit.test("Pager Next/Previous", function () {
             var pager = markupPager("#gradebook");
     
             var nextLink = $("#next-top");
@@ -287,7 +287,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             disabled("After clicking next on last page, next", nextLink);
         });
         
-        tests.test("Pager bodyRenderer: fluid.pager.selfRender with default columnDefs (FLUID-3793)", function () {
+        jqUnit.test("Pager bodyRenderer: fluid.pager.selfRender with default columnDefs (FLUID-3793)", function () {
             // without a fix to FLUID-3793, pager creation will fail with the default selfRender configuration
             jqUnit.expect(2);
             var afterRenderThat;
@@ -305,7 +305,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("AfterRender event fired with pager", pager, afterRenderThat);
         });
 
-        tests.test("Pager tooltip", function () {
+        jqUnit.test("Pager tooltip", function () {
             var pager = renderedPager("#rendered");
             var pageLinksTop = $("a", pager.pagerBar.locate("pageLinks"));
             var pageLinksBottom = $("a", pager.pagerBarSecondary.locate("pageLinks"));
@@ -336,7 +336,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     } else {
                         jqUnit.assertTrue("The tooltip for page link " + (idx + 1) + ", in the " + location + " page bar is visible", tooltip.is(":visible"));
                         jqUnit.assertEquals("Only 1 tooltip is visible", 1, tooltips.filter(":visible").length);
-                        fluid.testUtils.assertNode("The contents of the tooltip should be set", tooltipContents[toolTipIdx], $("b", tooltip));
+                        jqUnit.assertNode("The contents of the tooltip should be set", tooltipContents[toolTipIdx], $("b", tooltip));
                         toolTipIdx++;
                     }
                     link.blur();
@@ -348,7 +348,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             pageLinksBottom.each(tooltipTest("bottom"));
         });
         
-        tests.test("Pager Current Page label", function () {
+        jqUnit.test("Pager Current Page label", function () {
             var pager = renderedPager("#rendered");
             var currentPages = $(".fl-pager-currentPage", pager.container);
             
@@ -359,7 +359,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
         
-        tests.test("Page Table Header aria-sort, also checks if anchor titles changes accordingly ", function () {
+        jqUnit.test("Page Table Header aria-sort, also checks if anchor titles changes accordingly ", function () {
             //the following sortableColumnText strings are the same as fluid.pager.selfRender.strings.
             //redeclaring them here because we cannot get them from the pager object.
             var sortableColumnText = "Select to sort";
@@ -503,7 +503,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /** 
          * Test everyPageStrategy Strategy
          */
-        tests.test("Pager everyPageStrategy", function () {
+        jqUnit.test("Pager everyPageStrategy", function () {
             /*
              * Create n pages, check if number of pages = n
              */    
@@ -526,7 +526,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /** 
          * Test gappedPageStrategy Strategy
          */
-        tests.test("Pager gappedPageStrategy", function () {
+        jqUnit.test("Pager gappedPageStrategy", function () {
             var pageSize = 3;
             var pageList = 100;
             var expectedPages = Math.ceil(pageList / pageSize);
@@ -585,7 +585,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /** 
          * Test consistentGappedPageStrategy Strategy
          */
-        tests.test("Pager consistentGappedPageStrategy", function () {            
+        jqUnit.test("Pager consistentGappedPageStrategy", function () {            
             /*
              * Create n pages, check if number of pages = n
              * consistentGappedPageStrategy(j, m) should look like this:

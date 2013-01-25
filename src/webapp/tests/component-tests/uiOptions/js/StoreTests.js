@@ -36,9 +36,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The expected cookie string should have been assembled", expectedAssembledCookie, assembledCookie);
         };
         
-        var tests = new jqUnit.TestCase("Store Tests");
+        jqUnit.module("Store Tests");
                 
-        tests.test("assembleCookie: all cookieOptions set", function () {
+        jqUnit.test("assembleCookie: all cookieOptions set", function () {
             var expected = "cookieName=cookieValue; expires=Fri, 15 Jul 2011 16:44:24 GMT; path=/";
             var opts = {
                 name: "cookieName",
@@ -49,7 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assembleCookieTest(opts, expected);
         });
         
-        tests.test("assembleCookie: no expiry date set", function () {
+        jqUnit.test("assembleCookie: no expiry date set", function () {
             var expected = "cookieName=cookieValue; path=/";
             var opts = {
                 name: "cookieName",
@@ -59,7 +59,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assembleCookieTest(opts, expected);
         });
         
-        tests.test("assembleCookie: no path set", function () {
+        jqUnit.test("assembleCookie: no path set", function () {
             var expected = "cookieName=cookieValue; expires=Fri, 15 Jul 2011 16:44:24 GMT";
             var opts = {
                 name: "cookieName",
@@ -69,7 +69,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assembleCookieTest(opts, expected);
         });
         
-        tests.test("assembleCookie: no path or expiry date set", function () {
+        jqUnit.test("assembleCookie: no path or expiry date set", function () {
             var expected = "cookieName=cookieValue";
             var opts = {
                 name: "cookieName",
@@ -78,7 +78,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assembleCookieTest(opts, expected);
         });
         
-        tests.test("Cookie", function () {
+        jqUnit.test("Cookie", function () {
             var store = fluid.cookieStore({
                 cookie: {
                     name: cookieName
@@ -91,7 +91,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // Note that the result of "fetch" now adds default values where they don't occur - although the actual
             // stored value correctly consists of just the original values. Perhaps we should have a separate method
             // "fetchRaw" that gets the original values for some purposes (including testing)?
-            fluid.testUtils.assertLeftHand("The settings are saved and retrieved correctly.", testSettings, result);
+            jqUnit.assertLeftHand("The settings are saved and retrieved correctly.", testSettings, result);
             
             // Change the results, save again. It should work again.
             var differentSettings = fluid.copy(testSettings);
@@ -118,7 +118,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             dropCookie(store.options.cookie.name);
         });
 
-        tests.test("Temp store", function () {
+        jqUnit.test("Temp store", function () {
             var store = fluid.tempStore();
             store.save(testSettings);
             
