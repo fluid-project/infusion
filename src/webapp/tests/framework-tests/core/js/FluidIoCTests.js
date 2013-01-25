@@ -1692,4 +1692,5 @@ fluid.registerNamespace("fluid.tests");
         island1.events.outEvent2.fire();
         jqUnit.assert("No error fired on cross-island dispatch");
     });
+
 })(jQuery); 

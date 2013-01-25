@@ -73,23 +73,45 @@ var fluid = fluid || fluid_1_5;
     };
     
     /**
-     * Causes an error message to be logged to the console and a real runtime error to be thrown.
+     * Signals an error to the framework. The default behaviour is to log a structured error message and throw a variety of
+     * exception (hard or soft) - see fluid.pushSoftFailure for configuration
      *
-     * @param {String|Error} message the error message to log
-     * @param ... Additional arguments
+     * @param {String} message the error message to log
+     * @param ... Additional arguments, suitable for being sent to native console.log function
      */
     fluid.fail = function (message /*, ... */) { // jslint:ok - whitespace in arg list
-        fluid.setLogging(true);
-        fluid.log.apply(null, ["ASSERTION FAILED: "].concat(fluid.makeArray(arguments)).concat(fluid.describeActivity()));
-        if (softFailure[0]) {
-            throw new Error(message);
-        } else {
-            message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
+        var args = fluid.makeArray(arguments);
+        var activity = fluid.describeActivity();
+
+        var topFailure = softFailure[0];
+        if (typeof(topFailure) === "boolean") {
+            fluid.setLogging(true);
+            fluid.log.apply(null, ["ASSERTION FAILED: "].concat(args).concat(activity));          
+            if (topFailure) {
+                throw new Error(message);
+            } else {
+                message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
+            }
+        } else if (typeof(topFailure) === "function") {
+            topFailure(args, activity);
         }
     };
     
+    /** 
+     * Configure the behaviour of fluid.fail by pushing or popping a disposition record onto a stack.
+     * @param {Boolean|Number|Function} condition
+     & Supply either a boolean flag choosing between built-in framework strategies to be used in fluid.fail 
+     * - <code>false</code>, the default causes a "hard failure" by using a nonexistent property on a String, which
+     * will in all known environments trigger an unhandleable exception which aids debugging. The boolean value
+     * <code>true</code> downgrades this behaviour to throw a conventional exception, which is more appropriate in
+     * test cases which need to demonstrate failure, as well as in some production environments.
+     * The argument may also be a function, which will be called with two arguments, args (the complete arguments to
+     * fluid.fail) and activity, an array of strings describing the current framework invocation state.
+     * Finally, the argument may be the number <code>-1</code> indicating that the previously supplied disposition should
+     * be popped off the stack 
+     */ 
     fluid.pushSoftFailure = function (condition) {
-        if (typeof (condition) === "boolean") {
+        if (typeof (condition) === "boolean" || typeof (condition) === "function") {
             softFailure.unshift(condition);
         } else if (condition === -1) {
             softFailure.shift();
@@ -784,10 +806,10 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.event.resolveListener = function (listener) {
-        if (typeof (listener) === "string") {
-            var listenerFunc = fluid.getGlobalValue(listener);
+        if (listener.globalName) {
+            var listenerFunc = fluid.getGlobalValue(listener.globalName);
             if (!listenerFunc) {
-                fluid.fail("Unable to look up name " + listener + " as a global function");
+                fluid.fail("Unable to look up name " + listener.globalName + " as a global function");
             } else {
                 listener = listenerFunc;
             }
@@ -843,6 +865,8 @@ var fluid = fluid || fluid_1_5;
                 }
             }
         }
+        var identify = fluid.event.identifyListener;
+        
         var that;
         var lazyInit = function () { // Lazy init function to economise on object references
             listeners = {};
@@ -855,6 +879,9 @@ var fluid = fluid || fluid_1_5;
                 if (unicast) {
                     namespace = "unicast";
                 }
+                if (typeof(listener) === "string") {
+                    listener = {globalName: listener};
+                }
                 var id = identify(listener);
                 namespace = namespace || id;
                 var record = {listener: listener, predicate: predicate,
@@ -866,9 +893,6 @@ var fluid = fluid || fluid_1_5;
             };
             that.addListener.apply(null, arguments);
         };
-        
-        var identify = fluid.event.identifyListener;
-        
         that = {
             name: name,
             typeName: "fluid.event.firer",
@@ -1039,9 +1063,9 @@ var fluid = fluid || fluid_1_5;
     };
     
     // unsupported, NON-API function
-    fluid.resolveGradeStructure = function (gradeNames) {
+    fluid.resolveGradeStructure = function (defaultName, gradeNames) {
         var gradeStruct = {
-            gradeChain: [],
+            gradeChain: [defaultName],
             gradeHash: {},
             optionsChain: []
         };
@@ -1058,7 +1082,7 @@ var fluid = fluid || fluid_1_5;
     fluid.resolveGrade = function (defaults, defaultName, gradeNames) {
         var mergeArgs = [defaults];
         if (gradeNames) {
-            var gradeStruct = fluid.resolveGradeStructure(gradeNames);
+            var gradeStruct = fluid.resolveGradeStructure(defaultName, gradeNames);
             mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs).concat({gradeNames: gradeStruct.gradeChain});
         }
         var mergePolicy = {};
@@ -1645,9 +1669,14 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.initLifecycleFunctions = function (that) {
+        var gradeNames = that.options.gradeNames;
         fluid.each(fluid.lifecycleFunctions, function (func, key) {
             var value = that.options[key];
-            value = fluid.updateWithDefaultLifecycle(key, value, that.typeName);
+            for (var i = gradeNames.length - 1; i >= 0; -- i) { // most specific grades are at front
+                if (gradeNames[i] !== "autoInit") {  
+                    value = fluid.updateWithDefaultLifecycle(key, value, gradeNames[i]);
+                }
+            }
             if (value) {
                 that.options[key] = fluid.makeEventFirer(null, null, key);
                 fluid.event.addListenerToFirer(that.options[key], value);

@@ -987,6 +987,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     var checkTransformedOptions = function (that) {
         var expected = fluid.merge(null, fluid.copy(fluid.rawDefaults(that.typeName)), modernOptions);
+        expected = fluid.censorKeys(expected, ["gradeNames"]);
         fluid.testUtils.assertLeftHand("Options sucessfully transformed", expected, that.options);
     };
     

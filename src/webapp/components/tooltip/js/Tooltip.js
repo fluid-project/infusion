@@ -65,6 +65,12 @@ var fluid_1_5 = fluid_1_5 || {};
          */
         that.updateContent = function (content) {
             that.container.tooltip("option", "content", createContentFunc(content));
+
+            // FLUID-4780:
+            // The following line is a workaround for an issue we found in the VideoPlayer (FLUID-4743).
+            // jQuery UI has a fix for it: http://bugs.jqueryui.com/ticket/8544
+            // When we upgrade jQuery UI, we should clean out this workaround
+            that.container.data("tooltip").tooltip.html(content);
         };
         
         /**

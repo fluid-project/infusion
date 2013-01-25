@@ -98,5 +98,55 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("There should no longer be a tooltip element", 0, $("[id^=ui-tooltip]").length);
             tt.container.tooltip("destroy");
         });
+
+        var testThatTooltipContentChanges = function (tt, update, expected1, expected2) {
+            expect(3);
+            var tipEl = $("[id^=ui-tooltip]");
+            jqUnit.assertTrue("The tooltip should be visible", tipEl.is(":visible"));
+            jqUnit.assertEquals("Initially, the tooltip should contain first text", expected1, tipEl.text());
+            tt.updateContent(update);
+            jqUnit.assertEquals("After update, the tooltip should contain second text", expected2, tipEl.text());
+        };
+
+        tooltipTests.test("FLUID-4780: Dynamic update of tooltip content: text", function () {
+            var testText1 = "test text 1";
+            var testText2 = "test text 2";
+            var tt = fluid.tooltip(".testTooltip", {
+                content: testText1,
+                delay: 0,
+                listeners: {
+                    afterOpen: function () {
+                        testThatTooltipContentChanges(tt, testText2, testText1, testText2);
+                        start();
+                    }
+                }
+            });
+
+            tt.open();
+        });
+
+        tooltipTests.test("FLUID-4780: Dynamic update of tooltip content: function", function () {
+            var testText1 = "test text 1";
+            var testText2 = "test text 2";
+            var contentFn1 = function () {
+                return testText1;
+            };
+            var contentFn2 = function () {
+                return testText2;
+            };
+            var tt = fluid.tooltip(".testTooltip", {
+                content: contentFn1,
+                delay: 0,
+                listeners: {
+                    afterOpen: function () {
+                        testThatTooltipContentChanges(tt, contentFn2, testText1, testText2);
+                        start();
+                    }
+                }
+            });
+
+            tt.open();
+        });
+
     });
 })(jQuery);
