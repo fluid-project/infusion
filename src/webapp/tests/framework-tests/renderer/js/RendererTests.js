@@ -1570,37 +1570,41 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Recovered encoded URL", url, recovered4);
         });
 
-        renderTests.test("FLUID-4885 test: fixChildren array check", function () {
-            var iframeDoc = $(".FLUID-4885-test")[0].contentDocument;
-            var container = $(".FLUID-4885-container", iframeDoc);
-            var fossils = {};
-            var template = container.html();
-            var options = {
-                autoBind: false,
-                cutpoints: [{
-                    id: "my-paragraph",
-                    selector: ".my-paragraph"
-                }],
-                fossils: fossils,
-                document: iframeDoc
-            };
-            var resourceSpec = {
-                base: {
-                    resourceText: template,
-                    href: ".",
-                    resourceKey: ".",
-                    cutpoints: options.cutpoints
-                }
-            };
-            var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
-            var tree = {
-                children: [{
-                    ID: "my-paragraph",
-                    value: "TEST"
-                }]
-            };
-            var rendered = fluid.renderTemplates(templates, tree, options, fossils);
-            jqUnit.assertEquals("Template is rendered correctly", '<p class="my-paragraph">TEST</p>', $.trim(rendered));
+        jqUnit.asyncTest("FLUID-4885 test: fixChildren array check", function () {
+            var iframe = $(".FLUID-4885-test");
+            iframe.load(function () {
+                var iframeDoc = iframe[0].contentDocument;
+                var container = $(".FLUID-4885-container", iframeDoc);
+                var fossils = {};
+                var template = container.html();
+                var options = {
+                    autoBind: false,
+                    cutpoints: [{
+                        id: "my-paragraph",
+                        selector: ".my-paragraph"
+                    }],
+                    fossils: fossils,
+                    document: iframeDoc
+                };
+                var resourceSpec = {
+                    base: {
+                        resourceText: template,
+                        href: ".",
+                        resourceKey: ".",
+                        cutpoints: options.cutpoints
+                    }
+                };
+                var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
+                var tree = {
+                    children: [{
+                        ID: "my-paragraph",
+                        value: "TEST"
+                    }]
+                };
+                var rendered = fluid.renderTemplates(templates, tree, options, fossils);
+                jqUnit.assertEquals("Template is rendered correctly", '<p class="my-paragraph">TEST</p>', $.trim(rendered));
+                jqUnit.start();
+            });
         });
     };
 })(jQuery);
