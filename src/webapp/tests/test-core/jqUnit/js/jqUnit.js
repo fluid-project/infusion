@@ -26,7 +26,7 @@ var jqUnit = fluid.registerNamespace("jqUnit");
     for (var i = 0; i < QUnitPassthroughs.length; ++ i) {
         var method = QUnitPassthroughs[i];
         jqUnit[method] = QUnit[method];
-        delete window[method];
+        window[method] = undefined; // work around IE8 bug http://stackoverflow.com/questions/1073414/deleting-a-window-property-in-ie
     }
 
     /**

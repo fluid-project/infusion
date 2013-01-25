@@ -492,8 +492,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             defaultSource: "userSource",
             defaultTarget: "userTarget"
         }
-    }, 
-    /*
+    }/* , 
     // This test case can probably not be supported until FLUID-4392: See implementation comment in
     // fluid.applyDefaultValueMergePolicy - see also FLUID-4733
     {
