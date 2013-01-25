@@ -40,7 +40,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     var cleanSource = fluid.copy(source);
     
-    var testCase = jqUnit.TestCase("Model Transformation");
+    jqUnit.module("Model Transformation");
     
     function testOneExpander(message, model, expander, method, expected) {
         var transformed = fluid.model.transform(model, {value: {
@@ -142,7 +142,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     }
     
-    testCase.test("fluid.model.transform.value()", function () {
+    jqUnit.test("fluid.model.transform.value()", function () {
         testOneStructure(valueTests);
     });
 
@@ -153,7 +153,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
     
-    testCase.test("Transform with wildcard path and short names", function () {
+    jqUnit.test("Transform with wildcard path and short names", function () {
         var shortened = fluid.model.transform(valueTests, transformToShortNames, {isomorphic: true});
         var expected = fluid.transform(valueTests, function(config) {
              return {
@@ -185,7 +185,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: source.sheep
     }];
 
-    testCase.test("fluid.model.transform.arrayValue()", function () {
+    jqUnit.test("fluid.model.transform.arrayValue()", function () {
         testOneStructure(arrayValueTests);
     });
 
@@ -207,7 +207,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: 2
     }];
 
-    testCase.test("fluid.model.transform.count()", function () {
+    jqUnit.test("fluid.model.transform.count()", function () {
         testOneStructure(countTests);
     });
     
@@ -266,7 +266,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: source.hippo
     }];
     
-    testCase.test("fluid.model.transform.firstValue()", function () {
+    jqUnit.test("fluid.model.transform.firstValue()", function () {
         testOneStructure(firstValueTests);
     });
     
@@ -448,7 +448,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }
     };
     
-    testCase.test("fluid.model.transform.valueMapper()", function () {
+    jqUnit.test("fluid.model.transform.valueMapper()", function () {
         testOneStructure(mapperTests);
     });
     
@@ -475,7 +475,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
     }
     
-    testCase.test("valueMapper with compact value", function() {
+    jqUnit.test("valueMapper with compact value", function() {
         var source = {
             fontFace: {
                 genericFontFace: "serif",
@@ -506,7 +506,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testCompact(" - expanded", expandedRules); 
     });
 
-    testCase.test("transform with custom schema", function() {
+    jqUnit.test("transform with custom schema", function() {
         var rules = {
             "0.0.feline": "cat"
         };
@@ -523,7 +523,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Default array structure should have been created by transform", expected, result);            
     });
      
-    testCase.test("transform with isomorphic schema and wildcards", function () {
+    jqUnit.test("transform with isomorphic schema and wildcards", function () {
         var gpiiSettingsResponse = [{
         "org.gnome.desktop.a11y.magnifier": {
             "settings": {
@@ -550,7 +550,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("isomorphic structure with wildcards and recursive expander", expected, result);    
     });
     
-    testCase.test("transform with no schema, wildcards and dot-paths", function() {
+    jqUnit.test("transform with no schema, wildcards and dot-paths", function() {
          var flatterGpiiSettingsResponse = {
             "org.gnome.desktop.a11y.magnifier": {
                 "settings": {
@@ -577,7 +577,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("wildcards, recursive expander and dot-paths", expected, result);    
     });
     
-    testCase.test("transform with schema, wildcards AFTER dot-paths", function() {
+    jqUnit.test("transform with schema, wildcards AFTER dot-paths", function() {
          var modernGpiiSettingsResponse = {
             "org.gnome.desktop.a11y.magnifier": [{
                 "settings": {
@@ -604,7 +604,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("wildcards, recursive expander and dot-paths", expected, result);    
     });
 
-    testCase.test("transform with path named value and literalValue", function() {
+    jqUnit.test("transform with path named value and literalValue", function() {
         var model = {
             "Magnification": 100
         };
@@ -636,7 +636,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Model transformed with value", actual, expected);
     });
    
-    testCase.test("transform with compact inputPath", function() {
+    jqUnit.test("transform with compact inputPath", function() {
         var rules = {
             feline: "cat",
             kangaroo: {
@@ -660,7 +660,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The model should be transformed based on the specified rules", expected, result);
     });
     
-    testCase.test("transform with nested farm.goat", function() {
+    jqUnit.test("transform with nested farm.goat", function() {
         var rules = {
             "farm": {
                 "goat": {
@@ -680,7 +680,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The model should be transformed based on the specified rules", expected, result);
     });
     
-    testCase.test("invert simple transformation", function() {
+    jqUnit.test("invert simple transformation", function() {
         var rules = {
             farm: "goat"
         };
@@ -701,7 +701,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Recovered image of model", modelBit, reverse);
     });
     
-    testCase.test("invert valueMapper transformation", function() {
+    jqUnit.test("invert valueMapper transformation", function() {
         var rules = {
             expander: {
             type: "fluid.model.transform.valueMapper",
@@ -741,7 +741,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Perfectly inverted mapping", mapperModel, reverse);
     });
     
-    testCase.test("invert long form valueMapper", function() {
+    jqUnit.test("invert long form valueMapper", function() {
         var cattoo = mapperTests["nonString-long"];
         var rules = {expander: cattoo.expander};
         var inverseRules = fluid.model.transform.invertConfiguration(rules);
@@ -782,7 +782,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
     
-    testCase.test("collect inputPath from mixed transformation", function() {
+    jqUnit.test("collect inputPath from mixed transformation", function() {
         var paths = fluid.model.transform.collectInputPaths(capabilitiesTransformations);
         var expected = [
             "display.screenEnhancement.magnification",
@@ -792,7 +792,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Collected input paths", expected, paths.sort());
     });
     
-    testCase.test("fluid.model.transform()", function () {
+    jqUnit.test("fluid.model.transform()", function () {
         var rules = {
             // Rename a property
             feline: { 
@@ -873,7 +873,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The model should transformed based on the specified rules", expected, result);
     });
     
-    testCase.test("fluid.model.transform() with idempotent rules", function () {
+    jqUnit.test("fluid.model.transform() with idempotent rules", function () {
         var idempotentRules = {
             wheel: {
                 expander: {
@@ -935,7 +935,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             expected, result);
     });
     
-    testCase.test("fluid.model.transformWithRules() with multiple rules", function () {
+    jqUnit.test("fluid.model.transformWithRules() with multiple rules", function () {
         var ruleA = {
             kitten: "cat"
         };
@@ -988,10 +988,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var checkTransformedOptions = function (that) {
         var expected = fluid.merge(null, fluid.copy(fluid.rawDefaults(that.typeName)), modernOptions);
         expected = fluid.censorKeys(expected, ["gradeNames"]);
-        fluid.testUtils.assertLeftHand("Options sucessfully transformed", expected, that.options);
+        jqUnit.assertLeftHand("Options sucessfully transformed", expected, that.options);
     };
     
-    testCase.test("fluid.model.transform(): options backwards compatibility", function () {
+    jqUnit.test("fluid.model.transform(): options backwards compatibility", function () {
         var result = fluid.model.transform(oldOptions, transformRules);
         deepEqual(result, modernOptions, "Options should be transformed successfully based on the provided rules.");
     });
@@ -1008,7 +1008,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "bowl.fish": "fluid.littleComponent"
     });
     
-    testCase.test("fluid.model.transform applied automatically to component options, without IoC", function () {
+    jqUnit.test("fluid.model.transform applied automatically to component options, without IoC", function () {
         var options = fluid.copy(oldOptions);
         options.transformOptions = {
             transformer: "fluid.model.transform",
@@ -1054,7 +1054,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
     
-    testCase.test("fluid.model.transform applied automatically to component options, with IoC", function () {
+    jqUnit.test("fluid.model.transform applied automatically to component options, with IoC", function () {
         var that = fluid.tests.transform.tip();
         checkTransformedOptions(that.transformable);
     });

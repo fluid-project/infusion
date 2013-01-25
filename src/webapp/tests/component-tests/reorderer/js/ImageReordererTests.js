@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        var lightboxTests = new jqUnit.TestCase("Lightbox Tests");
+        jqUnit.module("Lightbox Tests");
     
         function findImagesInLightbox() {
             return $("img", fetchLightboxRoot());
@@ -194,39 +194,41 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return count;
         };
         
+        var k = fluid.testUtils.reorderer;
+        
         /*
          * This test tests the movement of images, and does not concern itself
          * with changes of state(i.e. dragging, etc.)
          */
-        lightboxTests.test("HandleArrowKeyDownMoveThumbDown", function () {
+        jqUnit.test("HandleArrowKeyDownMoveThumbDown", function () {
             var lightbox = createLightbox();
             focusLightbox();
             // Test: ctrl down arrow - move the first image down
-            compositeKey(lightbox, fluid.testUtils.ctrlKeyEvent("DOWN"), 0);
+            compositeKey(lightbox, k.ctrlKeyEvent("DOWN"), 0);
             assertItemsInOrder("after ctrl-down-arrow", [1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
         });
          
-        lightboxTests.test("HandleArrowKeyDownWrapThumbUp", function () {
+        jqUnit.test("HandleArrowKeyDownWrapThumbUp", function () {
             // Test: ctrl up arrow - move the first image 'up'
             var lightbox = createLightbox();
             focusLightbox();
         
-            compositeKey(lightbox, fluid.testUtils.ctrlKeyEvent("UP"), 0);
+            compositeKey(lightbox, k.ctrlKeyEvent("UP"), 0);
             assertItemsInOrder("after ctrl-up-arrow", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 13]);
         });
         
-        lightboxTests.test("HandleArrowKeyDownForUpAndDown", function () {
+        jqUnit.test("HandleArrowKeyDownForUpAndDown", function () {
             var lightbox = createLightbox();
-            verticalNavigationTest(lightbox, fluid.testUtils.keyEvent("UP"), fluid.testUtils.keyEvent("DOWN"));
+            verticalNavigationTest(lightbox, k.keyEvent("UP"), k.keyEvent("DOWN"));
         });
         
-        lightboxTests.test("HandleArrowKeyDownForLeftAndRight", function () {
+        jqUnit.test("HandleArrowKeyDownForLeftAndRight", function () {
             var lightbox = createLightbox();
         
-            horizontalNavigationTest(lightbox, fluid.testUtils.keyEvent("RIGHT"), fluid.testUtils.keyEvent("LEFT"));
+            horizontalNavigationTest(lightbox, k.keyEvent("RIGHT"), k.keyEvent("LEFT"));
         });
         
-        lightboxTests.test("HandleKeyUpAndHandleKeyDownChangesState", function () {
+        jqUnit.test("HandleKeyUpAndHandleKeyDownChangesState", function () {
             var lightbox = createLightbox();
             focusLightbox();
         
@@ -236,7 +238,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertItemDefault("Initially ", 12);
             
             // ctrl down - expect dragging state to start
-            keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("CTRL"), 0);
+            keyDown(lightbox, k.ctrlKeyEvent("CTRL"), 0);
             assertItemDragged("After ctrl-down, ", 0);
             assertItemDefault("After ctrl-down, ", 1);
             assertItemDefault("After ctrl-down, ", 12);
@@ -247,7 +249,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 
             // right arrow down - all the dragging states should remain the same
             //fluid.log("keyDown");
-            keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("RIGHT"), 0);
+            keyDown(lightbox, k.ctrlKeyEvent("RIGHT"), 0);
             //fluid.log("keyDown complete: " + fluid.dumpEl(lightbox.activeItem));
             assertItemDragged("After ctrl-down right arrow down, ", 0);
             assertItemDefault("After ctrl-down right arrow down, ", 1);
@@ -256,14 +258,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             //fluid.log("keyUp 1");
             //fluid.log("before KeyUp: " + fluid.dumpEl(lightbox.activeItem));
             // right arrow with key-up event handler. The dragging states should remain the same.
-            keyUp(lightbox, fluid.testUtils.ctrlKeyEvent("RIGHT"), 0);
+            keyUp(lightbox, k.ctrlKeyEvent("RIGHT"), 0);
             assertItemDragged("After ctrl-down right arrow up, ", 0);
             assertItemDefault("After ctrl-down right arrow up, ", 1);
             assertItemDefault("After ctrl-down right arrow up, ", 12);
         
             // ctrl up - expect dragging to end
             //fluid.log("keyUp 2");
-            keyUp(lightbox, fluid.testUtils.keyEvent("CTRL"), 0);
+            keyUp(lightbox, k.keyEvent("CTRL"), 0);
             assertItemFocused("After ctrl-up ", 0);
             assertItemDefault("After ctrl-up ", 1);
             assertItemDefault("After ctrl-up ", 12);
@@ -273,16 +275,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.jById(orderableIds[12]).attr("aria-dropeffect"));  
         });
         
-        lightboxTests.test("HandleKeyUpAndHandleKeyDownItemMovement", function () {
+        jqUnit.test("HandleKeyUpAndHandleKeyDownItemMovement", function () {
             var lightbox = createLightbox();
             focusLightbox();
         
             // after ctrl down, order should not change
-            keyDown(lightbox, fluid.testUtils.keyEvent("CTRL"), 0);
+            keyDown(lightbox, k.keyEvent("CTRL"), 0);
             assertItemsInOriginalPosition("after ctrl-down");
             
             // after ctrl up, order should not change
-            keyUp(lightbox, fluid.testUtils.keyEvent("CTRL"), 0);
+            keyUp(lightbox, k.keyEvent("CTRL"), 0);
             assertItemsInOriginalPosition("after ctrl-up");
         });
         
@@ -290,16 +292,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * This test tests the movement of images, and does not concern itself
          * with changes of state(i.e. dragging, etc.)
          */
-        lightboxTests.test("HandleArrowCtrlArrowKeyDown", function () {  
+        jqUnit.test("HandleArrowCtrlArrowKeyDown", function () {  
             var lightbox = createLightbox();
-            horizontalMovementTest(lightbox,  fluid.testUtils.ctrlKeyEvent("RIGHT"), 
-                                              fluid.testUtils.ctrlKeyEvent("LEFT"));
+            horizontalMovementTest(lightbox,  k.ctrlKeyEvent("RIGHT"), 
+                                              k.ctrlKeyEvent("LEFT"));
                                     
-            verticalMovementTest(lightbox,    fluid.testUtils.ctrlKeyEvent("UP"), 
-                                              fluid.testUtils.ctrlKeyEvent("DOWN"));
+            verticalMovementTest(lightbox,    k.ctrlKeyEvent("UP"), 
+                                              k.ctrlKeyEvent("DOWN"));
         });
         
-        lightboxTests.test("PersistFocus ", function () {
+        jqUnit.test("PersistFocus ", function () {
             var lbRoot = fetchLightboxRoot();
             var lightbox = createLightbox();
             // Create an input that we can move focus to during the test
@@ -348,7 +350,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         function testFocusBlur(initiator) {
-            lightboxTests.test("ItemFocusBlur: with " + initiator, function () {
+            jqUnit.test("ItemFocusBlur: with " + initiator, function () {
                 var lightbox = createLightbox();
                 var selected = false;
                 var selectListener = function () {
@@ -371,7 +373,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testFocusBlur("click");
         testFocusBlur("focus");
         
-        lightboxTests.test("LightboxFocussed", function () {
+        jqUnit.test("LightboxFocussed", function () {
             var lightbox = createLightbox();
         
             assertItemDefault("Initially ", 0);
@@ -384,48 +386,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertUndefined("Lightbox's activeItem should not be set ", lightboxWithNoOrderables.activeItem);
         });
         
-        lightboxTests.test("KeypressesWithNoOrderables", function () {
+        jqUnit.test("KeypressesWithNoOrderables", function () {
             var lightboxWithNoOrderables = createLightboxWithNoOrderables();
             
             focusLightbox();
             jqUnit.assertUndefined("Lightbox's activeItem member should not be set", lightboxWithNoOrderables.activeItem);
                 
             // Test left arrow, right arrow, etc. with and without control key.
-            compositeKey(lightboxWithNoOrderables, fluid.testUtils.ctrlKeyEvent("LEFT"), 0); 
+            compositeKey(lightboxWithNoOrderables, k.ctrlKeyEvent("LEFT"), 0); 
             jqUnit.assertUndefined("After ctrl-left, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
-            compositeKey(lightboxWithNoOrderables, fluid.testUtils.ctrlKeyEvent("RIGHT"), 0); 
+            compositeKey(lightboxWithNoOrderables, k.ctrlKeyEvent("RIGHT"), 0); 
             jqUnit.assertUndefined("After ctrl-right, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
-            compositeKey(lightboxWithNoOrderables, fluid.testUtils.ctrlKeyEvent("UP"), 0);
+            compositeKey(lightboxWithNoOrderables, k.ctrlKeyEvent("UP"), 0);
             jqUnit.assertUndefined("After ctrl-up, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
-            compositeKey(lightboxWithNoOrderables, fluid.testUtils.ctrlKeyEvent("DOWN"), 0);
+            compositeKey(lightboxWithNoOrderables, k.ctrlKeyEvent("DOWN"), 0);
             jqUnit.assertUndefined("After ctrl-down, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
         
-            keyDown(lightboxWithNoOrderables, fluid.testUtils.keyEvent("LEFT"), 0); 
+            keyDown(lightboxWithNoOrderables, k.keyEvent("LEFT"), 0); 
             jqUnit.assertUndefined("After left, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
-            keyDown(lightboxWithNoOrderables, fluid.testUtils.keyEvent("RIGHT"), 0); 
+            keyDown(lightboxWithNoOrderables, k.keyEvent("RIGHT"), 0); 
             jqUnit.assertUndefined("After right, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
-            keyDown(lightboxWithNoOrderables, fluid.testUtils.keyEvent("UP"), 0);
+            keyDown(lightboxWithNoOrderables, k.keyEvent("UP"), 0);
             jqUnit.assertUndefined("After up, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);   
-            keyDown(lightboxWithNoOrderables, fluid.testUtils.keyEvent("DOWN"), 0);
+            keyDown(lightboxWithNoOrderables, k.keyEvent("DOWN"), 0);
             jqUnit.assertUndefined("After down, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
             
-            keyDown(lightboxWithNoOrderables, fluid.testUtils.keyEvent("CTRL"), 0);
+            keyDown(lightboxWithNoOrderables, k.keyEvent("CTRL"), 0);
             jqUnit.assertUndefined("After ctrl pressed, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
-            keyUp(lightboxWithNoOrderables, fluid.testUtils.keyEvent("CTRL"), 0);
+            keyUp(lightboxWithNoOrderables, k.keyEvent("CTRL"), 0);
             jqUnit.assertUndefined("After key released, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
         });
         
-        lightboxTests.test("UpdateAriaStates", function () {
+        jqUnit.test("UpdateAriaStates", function () {
             var lightbox = createLightbox();
             var lbRoot = fetchLightboxRoot();
             var firstImage = fluid.jById(orderableIds[0]);
@@ -448,7 +450,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("after removing focus from lightbox, third image should not be selected", "false", thirdImage.attr("aria-selected"));
         });
         
-        lightboxTests.test("UpdateGrabProperty", function () {
+        jqUnit.test("UpdateGrabProperty", function () {
             var lightbox = createLightbox();
             var lbRoot = fetchLightboxRoot();
             var testItem = fluid.jById(orderableIds[0]);
@@ -456,171 +458,171 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("before any action, test item should have @aria-grabbed='false'", "false", testItem.attr("aria-grabbed"));
             
             focusLightbox();
-            keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("CTRL"), 0);
+            keyDown(lightbox, k.ctrlKeyEvent("CTRL"), 0);
             jqUnit.assertEquals("while CTRL held down, test item should have @aria-grabbed='true'", "true", testItem.attr("aria-grabbed"));
         
-            keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("RIGHT"), 0);
+            keyDown(lightbox, k.ctrlKeyEvent("RIGHT"), 0);
             jqUnit.assertEquals("after arrow while CTRL still held down, test item should have @aria-grabbed='true'", "true", testItem.attr("aria-grabbed"));
             
-            keyUp(lightbox, fluid.testUtils.keyEvent("CTRL"), 0);
+            keyUp(lightbox, k.keyEvent("CTRL"), 0);
             jqUnit.assertEquals("after CTRL released, test item should have @aria-grabbed='false", "false", testItem.attr("aria-grabbed"));
         });
     
-        lightboxTests.test("AlternativeKeySetDefaultKeysDontWork", function () {
+        jqUnit.test("AlternativeKeySetDefaultKeysDontWork", function () {
             var lightbox = createAltKeystrokeLightbox();
             focusLightbox();
             
             // Test arrow keys
-            keyDown(lightbox, fluid.testUtils.keyEvent("RIGHT"), 0);
+            keyDown(lightbox, k.keyEvent("RIGHT"), 0);
             assertItemFocused("After right arrow ", 0);
             assertItemDefault("After right arrow ", 1);
     
-            keyDown(lightbox, fluid.testUtils.keyEvent("LEFT"), 0);
+            keyDown(lightbox, k.keyEvent("LEFT"), 0);
             assertItemFocused("After left arrow ", 0);
             assertItemDefault("After left arrow ", 13);
     
-            keyDown(lightbox, fluid.testUtils.keyEvent("UP"), 0);
+            keyDown(lightbox, k.keyEvent("UP"), 0);
             assertItemFocused("After up arrow ", 0);
             assertItemDefault("After up arrow ", 12);
     
-            keyDown(lightbox, fluid.testUtils.keyEvent("DOWN"), 0);
+            keyDown(lightbox, k.keyEvent("DOWN"), 0);
             assertItemFocused("After down arrow ", 0);
             assertItemDefault("After down arrow ", 3);
              
             // Test CTRL
-            keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("CTRL"), 0);
+            keyDown(lightbox, k.ctrlKeyEvent("CTRL"), 0);
             assertItemFocused("After ctrl-down, ", 0);
-            keyUp(lightbox, fluid.testUtils.keyEvent("CTRL"), 0);
+            keyUp(lightbox, k.keyEvent("CTRL"), 0);
             assertItemFocused("After ctrl-up, ", 0);
     
             // Test CTRL arrow keys  
-            compositeKey(lightbox, fluid.testUtils.ctrlKeyEvent("RIGHT"), 0);
+            compositeKey(lightbox, k.ctrlKeyEvent("RIGHT"), 0);
             assertItemsInOriginalPosition("After ctrl right arrow");
     
-            compositeKey(lightbox, fluid.testUtils.ctrlKeyEvent("LEFT"), 0);
+            compositeKey(lightbox, k.ctrlKeyEvent("LEFT"), 0);
             assertItemsInOriginalPosition("After ctrl left arrow");
     
-            compositeKey(lightbox, fluid.testUtils.ctrlKeyEvent("UP"), 0);
+            compositeKey(lightbox, k.ctrlKeyEvent("UP"), 0);
             assertItemsInOriginalPosition("After ctrl up arrow");
     
-            compositeKey(lightbox, fluid.testUtils.ctrlKeyEvent("DOWN"), 0);
+            compositeKey(lightbox, k.ctrlKeyEvent("DOWN"), 0);
             assertItemsInOriginalPosition("After ctrl down arrow");
             
         });    
     
-        lightboxTests.test("AlternativeKeySetNavigation", function () {
+        jqUnit.test("AlternativeKeySetNavigation", function () {
             var lightbox = createAltKeystrokeLightbox();
             focusLightbox();
             
-            horizontalNavigationTest(lightbox, fluid.testUtils.keyEvent("k"), fluid.testUtils.keyEvent("j"));
+            horizontalNavigationTest(lightbox, k.keyEvent("k"), k.keyEvent("j"));
                                     
             fluid.jById(orderableIds[0]).focus();
-            verticalNavigationTest(lightbox, fluid.testUtils.keyEvent("i"), fluid.testUtils.keyEvent("m"));
+            verticalNavigationTest(lightbox, k.keyEvent("i"), k.keyEvent("m"));
         });
            
-        lightboxTests.test("AlternativeKeySetMovement", function () {
+        jqUnit.test("AlternativeKeySetMovement", function () {
             var lightbox = createAltKeystrokeLightbox();
             focusLightbox();
             
-            horizontalMovementTest(lightbox, fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "k"),
-                                             fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "j"));
+            horizontalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "k"),
+                                             k.modKeyEvent(["CTRL", "SHIFT"], "j"));
             fluid.jById(orderableIds[0]).focus();
-            verticalMovementTest(lightbox,   fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "i"),
-                                             fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "m"));
+            verticalMovementTest(lightbox,   k.modKeyEvent(["CTRL", "SHIFT"], "i"),
+                                             k.modKeyEvent(["CTRL", "SHIFT"], "m"));
         });
      
-        lightboxTests.test("MultiKeySetNavigation", function () {
+        jqUnit.test("MultiKeySetNavigation", function () {
             var lightbox = createMultiKeystrokeLightbox();
             focusLightbox();
             
-            horizontalNavigationTest(lightbox, fluid.testUtils.keyEvent("k"), fluid.testUtils.keyEvent("j"));
+            horizontalNavigationTest(lightbox, k.keyEvent("k"), k.keyEvent("j"));
     
             fluid.jById(orderableIds[0]).focus();
-            horizontalNavigationTest(lightbox, fluid.testUtils.keyEvent("RIGHT"), fluid.testUtils.keyEvent("LEFT"));
+            horizontalNavigationTest(lightbox, k.keyEvent("RIGHT"), k.keyEvent("LEFT"));
                                     
             fluid.jById(orderableIds[0]).focus();
-            verticalNavigationTest(lightbox, fluid.testUtils.keyEvent("i"), fluid.testUtils.keyEvent("m"));
+            verticalNavigationTest(lightbox, k.keyEvent("i"), k.keyEvent("m"));
     
             fluid.jById(orderableIds[0]).focus();
-            verticalNavigationTest(lightbox, fluid.testUtils.keyEvent("UP"), fluid.testUtils.keyEvent("DOWN"));
+            verticalNavigationTest(lightbox, k.keyEvent("UP"), k.keyEvent("DOWN"));
     
         });
            
-        lightboxTests.test("MultiKeySetMovement", function () {
+        jqUnit.test("MultiKeySetMovement", function () {
             var lightbox = createMultiKeystrokeLightbox();
             focusLightbox();
             
-            horizontalMovementTest(lightbox, fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "k"), 
-                                             fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "j"));
+            horizontalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "k"), 
+                                             k.modKeyEvent(["CTRL", "SHIFT"], "j"));
     
             fluid.jById(orderableIds[0]).focus();
-            horizontalMovementTest(lightbox, fluid.testUtils.modKeyEvent("ALT", "RIGHT"),
-                                             fluid.testUtils.modKeyEvent("ALT", "LEFT"));
+            horizontalMovementTest(lightbox, k.modKeyEvent("ALT", "RIGHT"),
+                                             k.modKeyEvent("ALT", "LEFT"));
     
             fluid.jById(orderableIds[0]).focus();
-            verticalMovementTest(lightbox,   fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "i"), 
-                                             fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "m"));
+            verticalMovementTest(lightbox,   k.modKeyEvent(["CTRL", "SHIFT"], "i"), 
+                                             k.modKeyEvent(["CTRL", "SHIFT"], "m"));
     
             fluid.jById(orderableIds[0]).focus();
-            verticalMovementTest(lightbox,   fluid.testUtils.modKeyEvent("ALT", "UP"),
-                                             fluid.testUtils.modKeyEvent("ALT", "DOWN"));
+            verticalMovementTest(lightbox,   k.modKeyEvent("ALT", "UP"),
+                                             k.modKeyEvent("ALT", "DOWN"));
         });
     
-        lightboxTests.test("MultiKeySetWrongModifier", function () {
+        jqUnit.test("MultiKeySetWrongModifier", function () {
             var lightbox = createMultiKeystrokeLightbox();
             focusLightbox();
             
             // Test: alt k - expect no movement
-            compositeKey(lightbox, fluid.testUtils.modKeyEvent("ALT", "k"), 0);
+            compositeKey(lightbox, k.modKeyEvent("ALT", "k"), 0);
             assertItemsInOriginalPosition("after alt-k");
             assertItemFocused("After failed move, ", 0);
             assertItemDefault("After failed move, ", 1);
         
             // Test: alt m - expect no movement
-            compositeKey(lightbox, fluid.testUtils.modKeyEvent("ALT", "m"), 0);
+            compositeKey(lightbox, k.modKeyEvent("ALT", "m"), 0);
             assertItemsInOriginalPosition("after alt-m");
             assertItemFocused("After failed move, ", 0);
             assertItemDefault("After failed move, ", 1);
     
             // Test: ctrl shift left arrow - expect no movement
-            compositeKey(lightbox, fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "LEFT"), 0);
+            compositeKey(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "LEFT"), 0);
             assertItemsInOriginalPosition("after ctrl shift left arrow");
             assertItemFocused("After failed move, ", 0);
             assertItemDefault("After failed move, ", 1);
     
             // Test: ctrl shift up arrow - expect no movement
-            compositeKey(lightbox, fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "UP"), 0);
+            compositeKey(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "UP"), 0);
             assertItemsInOriginalPosition("after ctrl shift up arrow");
             assertItemFocused("After failed move, ", 0);
             assertItemDefault("After failed move, ", 1);
     
         });   
         
-        lightboxTests.test("MultiKeySetOverlappingModifierMovement", function () {
+        jqUnit.test("MultiKeySetOverlappingModifierMovement", function () {
             var lightbox = createMultiOverlappingKeystrokeLightbox();
             focusLightbox();
             
-            horizontalMovementTest(lightbox, fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "k"), 
-                                             fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "j"));
+            horizontalMovementTest(lightbox, k.modKeyEvent(["CTRL", "SHIFT"], "k"), 
+                                             k.modKeyEvent(["CTRL", "SHIFT"], "j"));
     
             fluid.jById(orderableIds[0]).focus();
-            horizontalMovementTest(lightbox, fluid.testUtils.ctrlKeyEvent("RIGHT"),
-                                             fluid.testUtils.ctrlKeyEvent("LEFT"));
+            horizontalMovementTest(lightbox, k.ctrlKeyEvent("RIGHT"),
+                                             k.ctrlKeyEvent("LEFT"));
     
             fluid.jById(orderableIds[0]).focus();
-            verticalMovementTest(lightbox,   fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "i"), 
-                                             fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "m"));
+            verticalMovementTest(lightbox,   k.modKeyEvent(["CTRL", "SHIFT"], "i"), 
+                                             k.modKeyEvent(["CTRL", "SHIFT"], "m"));
     
             fluid.jById(orderableIds[0]).focus();
-            verticalMovementTest(lightbox, fluid.testUtils.ctrlKeyEvent("UP"),
-                                           fluid.testUtils.ctrlKeyEvent("DOWN"));
+            verticalMovementTest(lightbox, k.ctrlKeyEvent("UP"),
+                                           k.ctrlKeyEvent("DOWN"));
         });
         
         /*
          * Tests that the dragging style remains on the moved element when the modifier
          * key remains depressed after the move. This is used to test FLUID-3288
          */
-        lightboxTests.test("Dragging style after a move: FLUID-3288", function () {  
+        jqUnit.test("Dragging style after a move: FLUID-3288", function () {  
             var lightbox = createLightbox();
             var movables = lightbox.locate("movables");
             var draggingClass = lightbox.options.styles.dragging;
@@ -630,7 +632,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("There should be no movable elements with the dragging style", 0, numItemsWithClass(movables, draggingClass));
             
             movable.focus(); //Setting focus on the item is necessary to recreate the circumstances that caused FLUID-3288
-            compositeKey(lightbox,  fluid.testUtils.ctrlKeyEvent("RIGHT"), index, true);
+            compositeKey(lightbox,  k.ctrlKeyEvent("RIGHT"), index, true);
             
             jqUnit.assertTrue("The moved item retains the dragging class", movable.hasClass(draggingClass));
             jqUnit.assertEquals("There should only be one movable element with the dragging style", 1, numItemsWithClass(movables, draggingClass));

@@ -322,7 +322,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }};
     };
     
-    fluid.expander.deferredFetcher = function(target, source, expandOptions) {
+    fluid.expander.deferredFetcher = function(deliverer, source, expandOptions) {
         var expander = source.expander;
         var spec = fluid.copy(expander);
         // fetch the "global" collector specified in the external environment to receive
@@ -332,7 +332,7 @@ var fluid_1_5 = fluid_1_5 || {};
         delete spec.resourceSpecCollector;
         delete spec.fetchKey;
         var environmentdisposer = function(disposed) {
-            $.extend(target, disposed);
+            deliverer(disposed);
         };
         // replace the callback which is there (taking 2 arguments) with one which
         // directly responds to the request, passing in the result and OUR "disposer" - 
@@ -344,7 +344,7 @@ var fluid_1_5 = fluid_1_5 || {};
         };
         var key = expander.fetchKey || fluid.allocateGuid();
         collector[key] = spec;
-        return target;
+        return fluid.NO_VALUE;
     };
     
     

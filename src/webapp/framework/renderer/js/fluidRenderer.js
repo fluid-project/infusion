@@ -648,7 +648,7 @@ fluid_1_5 = fluid_1_5 || {};
         function isSelectedValue(torender, value) {
             var selection = torender.selection;
             return selection.value && typeof(selection.value) !== "string" && typeof(selection.value.length) === "number" ? 
-                $.inArray(value, selection.value, value) !== -1 :
+                $.inArray(value, selection.value) !== -1 :
                 selection.value === value;
         }
         

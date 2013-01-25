@@ -108,9 +108,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.subvertAnimations();
         };
         
-        var fileQueueViewTests = new jqUnit.TestCase("FileQueueView Tests", setupFunction);
+        jqUnit.module("FileQueueView Tests", {setup: setupFunction});
         
-        fileQueueViewTests.test("Add file", function () {
+        jqUnit.test("Add file", function () {
             var q = createFileQueue();
             
             // Add one file.
@@ -129,7 +129,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkFileRow(q, oceanTestFile, addedRows.eq(1));
         });
         
-        fileQueueViewTests.test("Remove file", function () {
+        jqUnit.test("Remove file", function () {
             var q = createFileQueue();
             
             // Add a file, then remove it.
@@ -170,8 +170,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                          oceanTestFile, removedFile);
         });
         
-        fileQueueViewTests.test("Prepare for upload/ Refresh for upload", function () {
-            expect(2);
+        jqUnit.test("Prepare for upload/ Refresh for upload", function () {
+            jqUnit.expect(2);
 
             var q = createFileQueue();
             q.addFile(mountainTestFile);
@@ -188,8 +188,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 rowButtons.prop("disabled"));
         });
 
-        fileQueueViewTests.test("File Progress Percentage test", function () {
-            expect(7);
+        jqUnit.test("File Progress Percentage test", function () {
+            jqUnit.expect(7);
 
             var q = createFileQueue();
             q.addFile(mountainTestFile);
@@ -224,8 +224,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
         });
 
-        fileQueueViewTests.test("Mark file complete test", function () {
-            expect(2);
+        jqUnit.test("Mark file complete test", function () {
+            jqUnit.expect(2);
 
             var q = createFileQueue();
             q.addFile(mountainTestFile);
@@ -239,8 +239,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 q.locate("fileQueue").find("#" + mountainTestFile.id).hasClass(q.options.styles.uploaded));
         });
 
-        fileQueueViewTests.test("Show error for files", function () {
-            expect(2);
+        jqUnit.test("Show error for files", function () {
+            jqUnit.expect(2);
 
             var q = createFileQueue();
             mountainTestFile.filestatus = fluid.uploader.fileStatusConstants.ERROR; //manually add an error to the file
@@ -255,8 +255,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 q.locate("fileQueue").find("#" + mountainTestFile.id).hasClass(q.options.styles.error));
         });
 
-        fileQueueViewTests.test("Hide file progress", function () {
-            expect(1);
+        jqUnit.test("Hide file progress", function () {
+            jqUnit.expect(1);
 
             var q = createFileQueue();
             mountainTestFile.filestatus = fluid.uploader.fileStatusConstants.COMPLETE; //manually set filestatus to complete
@@ -266,7 +266,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 q.locate("fileIconBtn", q.locate("fileQueue").find("#" + mountainTestFile.id)).hasClass(q.options.styles.dim));
         });
 
-        fileQueueViewTests.test("Keyboard navigation", function () {
+        jqUnit.test("Keyboard navigation", function () {
             // Setup the queue.
             var q = createFileQueue();
             q.addFile(mountainTestFile);
@@ -288,7 +288,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /********************
          * Scrollable tests *
          ********************/
-        fileQueueViewTests.test("fluid.scrollableTable", function () {
+        jqUnit.test("fluid.scrollableTable", function () {
             var table = $("#scrollableTable");
             fluid.scrollableTable(table);
 

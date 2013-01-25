@@ -25,13 +25,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.registerNamespace("fluid.tests");
     
-    var fluidJSTests = new jqUnit.TestCase("Fluid JS Tests");
+    jqUnit.module("Fluid JS Tests");
 
     function isOdd(i) {
         return i % 2 === 1;
     }
     
-    fluidJSTests.test("remove_if", function () {
+    jqUnit.test("remove_if", function () {
         jqUnit.assertDeepEq("Remove nothing", [2, 4, 6, 8], fluid.remove_if([2, 4, 6, 8], isOdd));
         jqUnit.assertDeepEq("Remove first ", [2, 4, 6, 8], fluid.remove_if([1, 2, 4, 6, 8], isOdd));
         jqUnit.assertDeepEq("Remove last ", [2, 4, 6, 8], fluid.remove_if([2, 4, 6, 8, 9], isOdd));
@@ -54,7 +54,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Remove from nothing", {}, fluid.remove_if({}, isOdd));    
     });
 
-    fluidJSTests.test("transform", function () {
+    jqUnit.test("transform", function () {
         function addOne(i) {
             return i + 1;
         }
@@ -63,8 +63,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Transform hash chain", {a: true, b: false}, fluid.transform({a: 0, b: 1}, addOne, isOdd));
     });
     
-    fluidJSTests.test("keyForValue, fluid.find, fluid.each, fluid.keys and fluid.values", function () {
-        expect(18);
+    jqUnit.test("keyForValue, fluid.find, fluid.each, fluid.keys and fluid.values", function () {
+        jqUnit.expect(18);
         var seekIt = function (seek) {
             fluid.each(seek, function (value, key) {
                 jqUnit.assertEquals("Find value with keyForValue - " + value + ": ", key, fluid.keyForValue(seek, value));
@@ -84,8 +84,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("fluid.values", [1, null, false, "Sneeze"], fluid.values(seek1));
     });
     
-    fluidJSTests.test("null iteration", function () {
-        expect(1);
+    jqUnit.test("null iteration", function () {
+        jqUnit.expect(1);
         
         fluid.each(null, function () {
             fluid.fail("This should not run");
@@ -97,8 +97,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertTrue("a null each and a null transform don't crash the framework", true);
     });
 
-    fluidJSTests.test("merge", function () {
-        
+    jqUnit.test("merge", function () {
+        jqUnit.expect(7);
+                
         var bit1 = {prop1: "thing1"};
         var bit2 = {prop2: "thing2"};
         var bits = {prop1: "thing1", prop2: "thing2"};
@@ -123,7 +124,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
           
     });
   
-    fluidJSTests.test("reverse and replace merge at depth", function () {
+    jqUnit.test("reverse and replace merge at depth", function () {
         var target = {
             root: {
                 prop1: "thing1",
@@ -152,7 +153,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("prop1 should have been destroyed", expected, target4);
     });
     
-    fluidJSTests.test("reverse merge at root", function () {
+    jqUnit.test("reverse merge at root", function () {
         var target = {
             prop2: "old"
         };
@@ -174,13 +175,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testReverseMerge(null,  source.prop2);
     });
     
-    fluidJSTests.test("copy", function () {
+    jqUnit.test("copy", function () {
         var array = [1, "thing", true, null];
         var copy = fluid.copy(array);
         jqUnit.assertDeepEq("Array copy", array, copy);
     });
     
-    fluidJSTests.test("stringTemplate: greedy", function () {
+    jqUnit.test("stringTemplate: greedy", function () {
         var template = "%tenant/%tenantname",
             tenant = "../tenant",
             tenantname = "core",
@@ -189,7 +190,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The template strings should match.", expected, result);
     });
 
-    fluidJSTests.test("stringTemplate: array of string values", function () {
+    jqUnit.test("stringTemplate: array of string values", function () {
         var template = "Paused at: %0 of %1 files (%2 of %3)";
         
         var atFile = "12";
@@ -207,7 +208,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The template strings should match.", expected, result);
     });
     
-    fluidJSTests.test("stringTemplate: array of mixed type values", function () {
+    jqUnit.test("stringTemplate: array of mixed type values", function () {
         var template = "Paused at: %0 of %1 files (%2 of %3)";
         
         var atFile = 12;
@@ -232,7 +233,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
             
-    fluidJSTests.test("stringTemplate: data object", function () {
+    jqUnit.test("stringTemplate: data object", function () {
         var template = "Paused at: %atFile of %totalFiles files (%atSize of %totalSize)";
         
         var data = {
@@ -251,7 +252,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The template strings should match.", expected, result);
     });
     
-    fluidJSTests.test("stringTemplate: empty string", function () {
+    jqUnit.test("stringTemplate: empty string", function () {
         var template = "Hello %name!";
         
         var data = {
@@ -263,7 +264,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The template strings should match.", expected, result);
     });
     
-    fluidJSTests.test("stringTemplate: missing value", function () {
+    jqUnit.test("stringTemplate: missing value", function () {
         var template = "Paused at: %atFile of %totalFiles files (%atSize of %totalSize)";
         
         var data = {
@@ -281,7 +282,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The template strings should match.", expected, result);
     });
 
-    fluidJSTests.test("stringTemplate: missing token", function () {
+    jqUnit.test("stringTemplate: missing token", function () {
         var template = "Paused at: %atFile of %totalFiles files (%atSize of %totalSize)";
         
         var data = {
@@ -300,7 +301,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The template strings should match.", expected, result);
     });
     
-    fluidJSTests.test("stringTemplate: multiple replacement", function () {
+    jqUnit.test("stringTemplate: multiple replacement", function () {
         var template = "Paused at: %0 of %0 files (%1 of %2)";
         
         var atFile = "12";
@@ -317,7 +318,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The template strings should match.", expected, result);
     });
 
-    fluidJSTests.test("stringTemplate: special character [] and ()", function () {
+    jqUnit.test("stringTemplate: special character [] and ()", function () {
         var template = "Paused at: %() of %[] files (%file[] of %file)";
         
         var data = {
@@ -344,7 +345,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("test", testDefaults); 
      
-    fluidJSTests.test("Defaults: store and retrieve default values", function () {
+    jqUnit.test("Defaults: store and retrieve default values", function () {
         // Assign a collection of defaults for the first time.
 
         jqUnit.assertDeepEq("defaults() should return the specified defaults", 
@@ -363,7 +364,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                           fluid.defaults("timemachine"));
     });
     
-    fluidJSTests.test("FLUID-4842 test - configurable 'soft failure'", function() {
+    jqUnit.test("FLUID-4842 test - configurable 'soft failure'", function() {
         var testArgs = [1, "thingit"];
         function failHandle(args, activity) {
             jqUnit.assertDeepEq("Received arguments in error handler", testArgs, args);
@@ -374,7 +375,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.pushSoftFailure(-1);
     });
            
-    fluidJSTests.test("FLUID-4285 test - prevent 'double options'", function () {
+    jqUnit.test("FLUID-4285 test - prevent 'double options'", function () {
         try {
             jqUnit.expect(1);
             fluid.pushSoftFailure(true);
@@ -391,7 +392,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
     
-    fluidJSTests.test("fluid.get and fluid.set", function () {
+    jqUnit.test("fluid.get and fluid.set", function () {
         var model = {"path3": "thing"};
         jqUnit.assertEquals("Get simple value", "thing", fluid.get(model, "path3"));
         jqUnit.assertDeepEq("Get root value", model, fluid.get(model, ""));
@@ -408,7 +409,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Call new global function", 2, fluid.newFunc());
         });
  
-        fluidJSTests.test("Globals", function () {
+        jqUnit.test("Globals", function () {
         var space = fluid.registerNamespace("fluid.engage.mccord");
         space.func = function () { 
             return 2;
@@ -428,7 +429,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertUndefined("No environment slippage", fluidd4);
     });
     
-    fluidJSTests.test("fluid.get with resolution and segments", function () {
+    jqUnit.test("fluid.get with resolution and segments", function () {
         var resolver = function (segment) {
            return "resolved";
         };
@@ -444,7 +445,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Nested resolver", "resolved", fluid.get(model2, ["nested", "resolver"]));
     });
     
-    fluidJSTests.test("messageResolver", function () {
+    jqUnit.test("messageResolver", function () {
         var bundlea = {
             key1: "value1a",
             key2: "value2a"
@@ -505,8 +506,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             defaultSource: "userSource",
             defaultTarget: "userTarget"
         }
-    }, 
-    /*
+    }/* , 
     // This test case can probably not be supported until FLUID-4392: See implementation comment in
     // fluid.applyDefaultValueMergePolicy - see also FLUID-4733
     {
@@ -520,15 +520,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     }*/];
     
-    fluidJSTests.test("FLUID-4736: Interaction of default value merge policy with grade chain", function () {
+    jqUnit.test("FLUID-4736: Interaction of default value merge policy with grade chain", function () {
         fluid.each(fluid.tests.fluid4736Tests, function (fixture) {
             var component = fluid.tests.defaultMergePolicy(fixture.options);
-            fluid.testUtils.assertLeftHand(fixture.message, fixture.expected, component.options);              
+            jqUnit.assertLeftHand(fixture.message, fixture.expected, component.options);              
         });      
     });
     
     
-    fluidJSTests.test("Sorting listeners", function () {
+    jqUnit.test("Sorting listeners", function () {
         var accumulate = [];
         var makeListener = function (i) {
             return function () {
@@ -544,7 +544,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Listeners fire in priority order", [1, 2, 3, 4], accumulate);
     });
     
-    fluidJSTests.test("Attach and remove listeners", function () {
+    jqUnit.test("Attach and remove listeners", function () {
         var testListener = function (shouldExecute) {
             jqUnit.assertTrue("Listener firing " + (shouldExecute ? "" : "not ") + "expected", shouldExecute);
         };
@@ -589,7 +589,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.values = {};
     };
     
-    fluidJSTests.test("Correctly merge optioned listeners", function() {
+    jqUnit.test("Correctly merge optioned listeners", function() {
         var options = {listeners: {
             event: fluid.tests.makeNotingListener("noNamespace2"),
             "event.namespace": fluid.tests.makeNotingListener("namespace2"),
@@ -621,7 +621,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         preInitFunction: "fluid.tests.initLifecycle"  
     });
     
-    fluidJSTests.test("Proper merging of lifecycle functions", function () {
+    jqUnit.test("Proper merging of lifecycle functions", function () {
         var model = { value: 3 };
         var that = fluid.tests.lifecycleTest({model: model});
         jqUnit.assertEquals("Grade preInit function fired", model, that.model);
@@ -659,7 +659,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ]
     });
     
-    fluidJSTests.test("Detailed interaction of priority and namespacing with lifecycle functions", function () {
+    jqUnit.test("Detailed interaction of priority and namespacing with lifecycle functions", function () {
         var model = { value: 3 };
         var that = fluid.tests.lifecycleTest2({model: model});
         jqUnit.assertUndefined("Grade preInit function defeated", that.model);
@@ -681,7 +681,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ++ that.count;  
     };
 
-    fluidJSTests.test("Registration of lifecycle functions by convention", function () {
+    jqUnit.test("Registration of lifecycle functions by convention", function () {
         var that = fluid.tests.lifecycleTest3();
         jqUnit.assertEquals("Only one call to preInitFunction", 1, that.count);
     });
@@ -698,7 +698,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["autoInit", "fluid.gradeComponent"]
     });
 
-    fluidJSTests.test("FLUID-4788 test - default lifecycle functions inherited from a grade.", function() {
+    jqUnit.test("FLUID-4788 test - default lifecycle functions inherited from a grade.", function() {
         jqUnit.expect(1);
         fluid.gradeUsingComponent();
     });

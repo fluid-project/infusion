@@ -762,7 +762,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return function () {
             fluid.pushActivity("dispatchListener", "firing to listener to event named %eventName of component %that", 
                 {eventName: eventName, that: that});
-            listener = fluid.event.resolveListener(listener); // just resolves globals
+            if (typeof(listener) === "string") {
+                listener = fluid.event.resolveListener({globalName: listener}); // just resolves globals
+            }
             var args = indirectArgs? arguments[0] : fluid.makeArray(arguments);
             var demandspec = fluid.determineDemands(that, eventName);
             if (demandspec.args.length === 0 && eventSpec.args) {
@@ -1287,7 +1289,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             expanded = source;
         }
         else if (source.expander) {
-            expanded = fluid.expandExpander(target, source, options);
+            expanded = fluid.expandExpander(deliverer, source, options);
         }
         else {
             if (thisPolicy.preserve) {
@@ -1299,13 +1301,13 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
             isTrunk = true;
         }
-        if (!isLate) {
+        if (!isLate && expanded !== fluid.NO_VALUE) {
             deliverer(expanded);
         }
         if (isTrunk) {
             recurse(expanded, source, policy, miniWorld || isLate);
         }
-        if (isLate) {
+        if (isLate && expanded !== fluid.NO_VALUE) {
             deliverer(expanded);
         }
         return expanded;
@@ -1391,7 +1393,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
          the configuration with the call results. These will probably be abolished and replaced with
          equivalent model transformation machinery **/
 
-    fluid.expander.deferredCall = function(target, source, options) {
+    fluid.expander.deferredCall = function(deliverer, source, options) {
         var expander = source.expander;
         var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : fluid.makeArray(expander.args);
         args = options.recurse([], args); 
@@ -1400,7 +1402,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.deferredCall = fluid.expander.deferredCall; // put in top namespace for convenience
     
-    fluid.deferredInvokeCall = function(target, source, options) {
+    fluid.deferredInvokeCall = function(deliverer, source, options) {
         var expander = source.expander;
         var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : fluid.makeArray(expander.args);
         args = options.recurse([], args); // TODO: risk of double expansion here. embodyDemands will sometimes expand, sometimes not... 
@@ -1408,7 +1410,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
     
     // The "noexpand" expander which simply unwraps one level of expansion and ceases.
-    fluid.expander.noexpand = function(target, source) {
+    fluid.expander.noexpand = function(deliverer, source) {
         return source.expander.value ? source.expander.value : source.expander.tree;
     };
   

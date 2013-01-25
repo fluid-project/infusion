@@ -217,7 +217,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * Setup *
          *********/
          
-        var html5UploaderTests = new jqUnit.TestCase("Uploader Basic Tests");
+        jqUnit.module("Uploader Basic Tests");
 
         var file1 = fluid.tests.uploader.html5.mockFile("file1", "emptyfile.zip", "application/zip", 0),
             file2 = fluid.tests.uploader.html5.mockFile("file2", "tinyfile.jpg", "image/jpeg", 5),
@@ -228,7 +228,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * fileSuccessHandler() Tests *
          ******************************/
         
-        html5UploaderTests.test("Ensure event sequence for fileSuccessHandler", function () {
+        jqUnit.test("Ensure event sequence for fileSuccessHandler", function () {
             var xhr = {
                 status: 200, 
                 responseText: "testing"
@@ -253,7 +253,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * fileErorrHandler() Tests *
          ****************************/
         
-        html5UploaderTests.test("Ensure event sequence for fileErrorHandler", function () {
+        jqUnit.test("Ensure event sequence for fileErrorHandler", function () {
             var xhr = {
                 status: 200, 
                 responseText: "testing"
@@ -278,7 +278,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * fileStopHandler() Tests *
          ***************************/
         
-        html5UploaderTests.test("Ensure event sequence for fileStopHandler", function () {
+        jqUnit.test("Ensure event sequence for fileStopHandler", function () {
             var xhr = {
                 status: 200, 
                 responseText: "testing"
@@ -304,7 +304,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * generateMultiPartContent() Tests *
          ************************************/
                 
-        html5UploaderTests.test("Ensure multipart content is correctly built", function () {
+        jqUnit.test("Ensure multipart content is correctly built", function () {
             var boundary = 1234567890123456789;
             var file = {
                 name: "test",
@@ -323,7 +323,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * browseButtonView() Tests *
          ****************************/
         
-        html5UploaderTests.test("Uploader HTML5 browseHandler", function () {
+        jqUnit.test("Uploader HTML5 browseHandler", function () {
             var browseButton = $("#browseButton");
             var browseButtonView = fluid.uploader.html5Strategy.browseButtonView("#browseButtonContainer", {
                 queueSettings: {
@@ -360,7 +360,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * addFiles() Tests *
          ********************/
         
-        html5UploaderTests.test("Uploader HTML5 addFiles: upload limit 3, 1MB file size limit", function () {
+        jqUnit.test("Uploader HTML5 addFiles: upload limit 3, 1MB file size limit", function () {
             var files = [
                 file1, 
                 file2, 
@@ -383,7 +383,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Sanity check: the queue should contain 3 files", 3, localUploader.queue.files.length);
         });
         
-        html5UploaderTests.test("Uploader HTML5 addFiles: upload limit 1, 100MB file size limit", function () {
+        jqUnit.test("Uploader HTML5 addFiles: upload limit 1, 100MB file size limit", function () {
             var files = [
                 file1, 
                 file2, 
@@ -406,7 +406,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Sanity check: the queue should contain 1 files", 1, localUploader.queue.files.length);        
         });
         
-        html5UploaderTests.test("Uploader HTML5 addFiles: upload limit 0 (infinity), 100MB file size limit", function () {
+        jqUnit.test("Uploader HTML5 addFiles: upload limit 0 (infinity), 100MB file size limit", function () {
             var files = [
                     file1, 
                     file2, 
@@ -429,7 +429,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Sanity check: the queue should contain 6 files", 6, localUploader.queue.files.length);
         });            
         
-        html5UploaderTests.test("Uploader HTML5 addFiles: upload limit is null, 100MB file size limit", function () {
+        jqUnit.test("Uploader HTML5 addFiles: upload limit is null, 100MB file size limit", function () {
             var files = [
                     file1, 
                     file2, 
@@ -452,7 +452,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Sanity check: the queue should contain 4 files", 6, localUploader.queue.files.length);
         });             
         
-        html5UploaderTests.test("Uploader HTML5 addFiles: upload limit is undefined, 100MB file size limit", function () {
+        jqUnit.test("Uploader HTML5 addFiles: upload limit is undefined, 100MB file size limit", function () {
             var files = [
                     file1, 
                     file2, 
@@ -475,7 +475,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Sanity check: the queue should contain 6 files", 6, localUploader.queue.files.length);
         });                 
         
-        html5UploaderTests.test("formDataSender tests", function () {
+        jqUnit.test("formDataSender tests", function () {
             var queueSettings = {
                 uploadURL: "/home/Uploader",
                 postParams: {
@@ -502,7 +502,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The FormData instance was sent via XHR.sendAsBinary()", formData, xhr.sent[0]);
         });
         
-        html5UploaderTests.test("doManualMultipartUpload tests", function () {
+        jqUnit.test("doManualMultipartUpload tests", function () {
             var queueSettings = {
                 uploadURL: "/home/Uploader"
             }; 

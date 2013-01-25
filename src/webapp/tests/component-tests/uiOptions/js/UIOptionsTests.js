@@ -107,15 +107,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             saveCalled = false;    
         };
         
-        var tests = jqUnit.testCase("UIOptions Tests");
+        jqUnit.module("UIOptions Tests");
 
         var sortByKeyLength = function (initial, expected) {
             var actual = fluid.uiOptions.sortByKeyLength(initial);
             jqUnit.assertDeepEq("Sorted correctly", expected, actual);
         };
         
-        tests.test("Sort object key by length", function () {
-            expect(2);
+        jqUnit.test("Sort object key by length", function () {
+            jqUnit.expect(2);
 
             var initial = {
                 "ddd": "1",
@@ -140,8 +140,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertDeepEq("The path is expanded correctly", expected, actual);
         };
     
-        tests.test("Expand Path", function () {
-            expect(2);
+        jqUnit.test("Expand Path", function () {
+            jqUnit.expect(2);
             var initial = "*.comp1.*.comp2.*.comp3";
             var expected = "components.comp1.options.components.comp2.options.components.comp3";
             expandPathTest(initial, expected);
@@ -150,8 +150,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expandPathTest(initial, initial);
         });
         
-        tests.test("Map Options", function () {
-            expect(3);
+        jqUnit.test("Map Options", function () {
+            jqUnit.expect(3);
             
             var config = fluid.defaults("fluid.uiOptions.inline").uiOptionsTransform.config;
 
@@ -224,8 +224,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertDeepEq("Multiple options are expanded and combined correctly", expected, actual);
         });
         
-        tests.test("Template Loader", function () {
-            expect(6);
+        jqUnit.test("Template Loader", function () {
+            jqUnit.expect(6);
 
             var testTemplatePrefix = "../test/";
             var uiOptionsTemplateName = "FullPreviewUIOptions.html";
@@ -272,8 +272,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("textControls forceCache is set", loader.templateLoader.resources.linksControls.forceCache);
         });
 
-        tests.asyncTest("Init Model and Controls", function () {
-            expect(10);
+        jqUnit.asyncTest("Init Model and Controls", function () {
+            jqUnit.expect(10);
             
             testUIOptions(function (uiOptionsLoader, uiOptions) {
                 var model = uiOptions.model;
@@ -292,12 +292,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("There are 5 font values in the control", 5, fontValues.length);
                 jqUnit.assertEquals("There is default font value", 0, jQuery.inArray("default", fontValues));
                 
-                start();
+                jqUnit.start();
             });
         });
 
-        tests.asyncTest("UIOptions Save, Reset, and Cancel", function () {
-            expect(13);
+        jqUnit.asyncTest("UIOptions Save, Reset, and Cancel", function () {
+            jqUnit.expect(13);
             
             testUIOptions(function (uiOptionsLoader, uiOptions) {
                 uiOptions.updateModel(bwSkin);
@@ -327,12 +327,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("Cancel text font change", bwSkin.textFont, uiOptions.model.selections.textFont);
                 jqUnit.assertEquals("Cancel theme change", bwSkin.theme, uiOptions.model.selections.theme);
                 
-                start();
+                jqUnit.start();
             });        
         });
         
-        tests.asyncTest("Refresh View", function () {
-            expect(5);
+        jqUnit.asyncTest("Refresh View", function () {
+            jqUnit.expect(5);
             
             testUIOptions(function (uiOptionsLoader, uiOptions) {
                 uiOptions.updateModel(bwSkin);
@@ -354,12 +354,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var contrastSelection = $(":selected", $(".flc-uiOptions-theme"));
                 jqUnit.assertEquals("Black on white is selected", "bw", contrastSelection[0].value);
                 
-                start();
+                jqUnit.start();
             });          
         });
 
-        tests.asyncTest("Init with site defaults different from UIOptions control values", function () {
-            expect(2);
+        jqUnit.asyncTest("Init with site defaults different from UIOptions control values", function () {
+            jqUnit.expect(2);
                
             fluid.staticEnvironment.uiOptionsTestsDiffInit = fluid.typeTag("fluid.uiOptions.testDiffInit");
             
@@ -383,7 +383,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("The font is set to times", "times", fontValue);
                 
                 delete fluid.staticEnvironment.uiOptionsTestsDiffInit;
-                start();
+                jqUnit.start();
             });
         });
 
@@ -391,8 +391,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * Preview tests *
          *****************/
          
-        tests.asyncTest("Preview URL", function () {
-            expect(1);
+        jqUnit.asyncTest("Preview URL", function () {
+            jqUnit.expect(1);
             
             fluid.staticEnvironment.uiOptionsTestsPreview = fluid.typeTag("fluid.uiOptions.testsPreview");
             
@@ -409,12 +409,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     templateUrl, uiOptions.preview.container.attr("src"));
                 
                 delete fluid.staticEnvironment.uiOptionsTestsPreview;
-                start();
+                jqUnit.start();
             });
         });
         
-        tests.asyncTest("UIOptions Auto-save", function () {
-            expect(2);
+        jqUnit.asyncTest("UIOptions Auto-save", function () {
+            jqUnit.expect(2);
                 
             fluid.staticEnvironment.uiOptionsTestsAutoSave = fluid.typeTag("fluid.uiOptions.testsAutoSave");
             
@@ -446,7 +446,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertDeepEq("bw setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
                 
                 delete fluid.staticEnvironment.uiOptionsTestsAutoSave;
-                start();
+                jqUnit.start();
             });
             
         });
@@ -481,7 +481,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals(message + ": Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
         };
         
-        tests.asyncTest("UIOptions Integration tests", function () {
+        jqUnit.asyncTest("UIOptions Integration tests", function () {
             fluid.staticEnvironment.uiOptionsTestsIntegration = fluid.typeTag("fluid.uiOptions.testsIntegration");
             
             fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsIntegration", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
@@ -527,7 +527,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 saveButton.click();
                 
                 delete fluid.staticEnvironment.uiOptionsTestsIntegration;
-                start();
+                jqUnit.start();
             });
         });
     });

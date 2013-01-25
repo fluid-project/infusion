@@ -69,19 +69,19 @@ fluid.registerNamespace("fluid.tests");
         "fluid.tests.childView":          "fluid.viewComponent"
     });
 
-    var fluidIoCTests = new jqUnit.TestCase("Fluid IoC View Tests");
+    jqUnit.module("Fluid IoC View Tests");
 
     fluid.setLogging(true);
 
 
-    fluidIoCTests.test("construct", function () {
+    jqUnit.test("construct", function () {
         jqUnit.expect(2);
         var that = fluid.tests.testComponent("#pager-top", {});
         jqUnit.assertValue("Constructed", that);
         jqUnit.assertEquals("Value transmitted", "testComponent value", that.test2.options.default1);
     });
 
-    fluidIoCTests.test("crossConstruct", function () {
+    jqUnit.test("crossConstruct", function () {
         jqUnit.expect(2);
         var that = fluid.tests.testComponent2("#pager-top", {});
         jqUnit.assertValue("Constructed", that);
@@ -130,7 +130,7 @@ fluid.registerNamespace("fluid.tests");
         component.events.anEvent.fire();
     }
     
-    fluidIoCTests.test("Grade resolution test", function () {
+    jqUnit.test("Grade resolution test", function () {
         fluid.each(fluid.tests.gradeTestTypes, function (typeName) {
             var that = fluid.invokeGlobalFunction(typeName, ["#pager-top"]);
             testEvent("Construction of " + typeName, that);
@@ -185,7 +185,7 @@ fluid.registerNamespace("fluid.tests");
         return that;
     };
 
-    fluidIoCTests.test("thatStack through deferredCall Tests, proleptic ginger nicknames", function () {
+    jqUnit.test("thatStack through deferredCall Tests, proleptic ginger nicknames", function () {
         function test(compName) {
             var defTest = fluid.invoke(compName, ["#pager-top", {targetTypeName: compName}]);
             jqUnit.assertValue("Constructed " + compName, defTest);
@@ -250,7 +250,7 @@ fluid.registerNamespace("fluid.tests");
         }
     ]);
     
-    fluidIoCTests.test("FLUID-4130 mergeOptions for demanded component options", function () {
+    jqUnit.test("FLUID-4130 mergeOptions for demanded component options", function () {
         var model = {key: "Head model"};
         var mergePaths = fluid.tests.mergePaths({model: model});
         var expected = {
@@ -305,7 +305,7 @@ fluid.registerNamespace("fluid.tests");
             parent.locate(containerName)[0], child.container[0]);
     };
     
-    fluidIoCTests.test("Child view's container resolved by IoC from parent's DOM Binder", function () {
+    jqUnit.test("Child view's container resolved by IoC from parent's DOM Binder", function () {
         var parent = fluid.tests.parentView(".flc-tests-parentView-container");
         checkChildContainer(parent, parent.defaultedChildView, "defaultedChildContainer", "defaults");
         checkChildContainer(parent, parent.demandedChildView, "demandedChildContainer", "demands");
@@ -335,7 +335,7 @@ fluid.registerNamespace("fluid.tests");
         });
     };
 
-    fluidIoCTests.asyncTest("Deferred expander Tests", function () {
+    jqUnit.asyncTest("Deferred expander Tests", function () {
         var pageBuilder = {
             uispec: {
                 objects: "These Objects",
@@ -396,7 +396,7 @@ fluid.registerNamespace("fluid.tests");
             }
         };
     
-        fluid.testUtils.assertCanoniseEqual("Accumulated resourceSpecs", requiredSpecs, resourceSpecs, fluid.testUtils.canonicaliseFunctions);
+        jqUnit.assertCanoniseEqual("Accumulated resourceSpecs", requiredSpecs, resourceSpecs, jqUnit.canonicaliseFunctions);
     
         var expectedRes = {
             objects: {
@@ -425,7 +425,7 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertUndefined("No fetch error", resourceSpecs.objects.fetchError);
             jqUnit.assertValue("Request completed", resourceSpecs.objects.completeTime);
             jqUnit.assertDeepEq("Resolved model", expectedRes, expanded);
-            start();
+            jqUnit.start();
         });
     });
 

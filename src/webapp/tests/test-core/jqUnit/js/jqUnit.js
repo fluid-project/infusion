@@ -18,22 +18,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
-var jqUnit = jqUnit || {};
-
-// A function to load the testswarm agent if running in the testswarm environment
-// This code was derived from testsuite.js ( http://code.google.com/p/jquery-ui/source/browse/trunk/tests/unit/testsuite.js )
-(function () {
-    var param = "swarmURL=";
-    var url = window.location.search;
-    url = decodeURIComponent(url.slice(url.indexOf(param) + param.length));
-    
-    if (url && url.indexOf("http") === 0) {
-        var injectPath = window.location.protocol + "//" + window.location.host + "/js/inject.js";
-        document.write("<scr" + "ipt src='" + injectPath + "?" + (new Date()).getTime() + "'></scr" + "ipt>");
-    }
-})();
+var jqUnit = fluid.registerNamespace("jqUnit");
 
 (function ($) {
+    var QUnitPassthroughs = ["module", "test", "asyncTest", "raises", "start", "stop", "expect"];
+    
+    for (var i = 0; i < QUnitPassthroughs.length; ++ i) {
+        var method = QUnitPassthroughs[i];
+        jqUnit[method] = QUnit[method];
+        window[method] = undefined; // work around IE8 bug http://stackoverflow.com/questions/1073414/deleting-a-window-property-in-ie
+    }
 
     /**
      * Keeps track of the order of function invocations. The transcript contains information about
@@ -89,202 +83,153 @@ var jqUnit = jqUnit || {};
         
         return that;
     };
-
+    
+    var messageSuffix = "";
+    var processMessage = function (message) {
+        return message + messageSuffix;  
+    };
+    
+    var pok = function (condition, message) {
+        QUnit.ok(condition, processMessage(message));
+    };
+    
+    // unsupported, NON-API function
+    jqUnit.okWithPrefix = pok;
+    
+    // unsupported, NON-API function
+    jqUnit.setMessageSuffix = function (suffix) {
+        messageSuffix = suffix;
+    };
 
     /***********************
      * xUnit Compatibility *
      ***********************/
     
     var jsUnitCompat = {
-        assert: function(msg) {
-            ok(true, msg);  
+        assert: function (msg) {
+            pok(true, msg);  
         },
         
         assertEquals: function (msg, expected, actual) {
-            equal(actual, expected, msg);
+            QUnit.equal(actual, expected, processMessage(msg));
         },
         
         assertNotEquals: function (msg, value1, value2) {
-            ok(value1 !== value2, msg);
+            pok(value1 !== value2, msg);
         },
 
         assertTrue: function (msg, value) {
-            ok(value, msg);
+            pok(value, msg);
         },
 
         assertFalse: function (msg, value) {
-            ok(!value, msg);
+            pok(!value, msg);
         },
 
         assertUndefined: function (msg, value) {
-            ok(typeof value === 'undefined', msg);
+            pok(value === undefined, msg);
         },
 
         assertNotUndefined: function (msg, value) {
-            ok(typeof value !== 'undefined', msg);
+            pok(value !== undefined, msg);
         },
 
         assertValue: function (msg, value) {
-            ok(value !== null && value !== undefined, msg);
+            pok(value !== null && value !== undefined, msg);
         },
         
         assertNoValue: function (msg, value) {
-            ok(value === null || value === undefined, msg);
+            pok(value === null || value === undefined, msg);
         },
         
         assertNull: function (msg, value) {
-            equal(value, null, msg);
+            QUnit.equal(value, null, processMessage(msg));
         },
 
         assertNotNull: function (msg, value) {
-            ok(value !== null, msg);
+            pok(value !== null, msg);
         },
         
         assertDeepEq: function (msg, expected, actual) {
-            QUnit.deepEqual(actual, expected, msg);
+            QUnit.propEqual(actual, expected, processMessage(msg));
         },
         
         assertDeepNeq: function (msg, unexpected, actual) {
-            QUnit.notDeepEqual(actual, unexpected, msg);
+            QUnit.notPropEqual(actual, unexpected, processMessage(msg));
         },
-        // Namespaced version of "expect" for civilization
-        expect: function(number) {
-            var oldExpect = expect();
-            expect(number + oldExpect);
+        // This version of "expect" offers the cumulative semantic we desire
+        expect: function (number) {
+            var oldExpect = QUnit.expect();
+            QUnit.expect(number + oldExpect);
         }
     };
 
     // Mix these compatibility functions into the jqUnit namespace.
     $.extend(jqUnit, jsUnitCompat);
 
-
-    /***************************
-     * Other helpful functions *
-     ***************************/
+        
+    /** Sort a component tree into canonical order, to facilitate comparison with
+     * deepEq */
     
-    var testFns = {
-        isVisible: function (msg, selector) {
-            ok($(selector).is(':visible'), msg);
-        },
-        
-        notVisible: function (msg, selector) {
-            ok($(selector).is(':hidden'), msg);
-        },
-        
-        exists: function (msg, selector) {
-            ok($(selector)[0], msg);
-        },
-        
-        notExists: function (msg, selector) {
-            ok(!$(selector)[0], msg);
-        },
-        
-        // Overrides jQuery's animation routines to be synchronous. Careful!
-        subvertAnimations: function () {
-            $.fn.fadeIn = function (speed, callback) {
-                this.show();
-                if (callback) {
-                    callback();
-                }
-            };
-            
-            $.fn.fadeOut = function (speed, callback) {
-                this.hide();
-                if (callback) {
-                    callback();
-                }
-            };
+    jqUnit.sortTree = function (tree) {
+        function comparator(ela, elb) {
+            var ida = ela.ID || "";
+            var idb = elb.ID || "";
+            var cola = ida.indexOf(":") === -1;
+            var colb = idb.indexOf(":") === -1;
+            if (cola && colb) { // if neither has a colon, compare by IDs if they have IDs
+                return ida.localeCompare(idb);
+            }
+            else {
+                return cola - colb; 
+            }
         }
+        if (fluid.isArrayable(tree)) {
+            tree.sort(comparator);
+        }
+        fluid.each(tree, function (value) {
+            if (!fluid.isPrimitive(value)) {
+                jqUnit.sortTree(value);
+            }
+        });
+          
     };
     
-    // Mix these test functions into the jqUnit namespace.
-    $.extend(jqUnit, testFns);
-    
-    /**
-     * Synchronously loads an HTML document via Ajax. This is roughly similar to jQuery.load but without the asynchrony.
-     * 
-     * @param {jQueryable} container the element into which you want put the loaded HTML
-     * @param {String} url the location of the HTML document. This can include a selector after the URL, separated by a space
-     * @param {Function} callback the callback function to run upon successful load
-     */
-    var loadSync = function (container, url, callback) {        
-        var idx = url.indexOf(" ");
-        var sel = "body";
-        if (idx >= 0) {
-            sel = url.slice(idx, url.length);
-            url = url.slice(0, idx);
-        }
-        
-        var injectFragment = function (container, sel, docTxt) {
-            var docFrag = $("<div/>").append(docTxt.replace(/<script(.|\s)*?\/script>/g, ""));
-            container.empty().append($(sel, docFrag));
-        };
-        
-        $.ajax({
-            url: url,
-            type: "GET",
-            dataType: "html",
-            async: false,
-            complete: function (res, status) {
-                if (status === "success" || status === "notmodified") {
-                    injectFragment(container, sel, res.responseText);
-                    callback.apply(null, [container, res.responseText, status, res]);
-                }   
+    jqUnit.canonicaliseFunctions = function (tree) {
+        return fluid.transform(tree, function(value) {
+            if (fluid.isPrimitive(value)) {
+                if (typeof(value) === "function") {
+                    return fluid.identity;
+                }
+                else return value;
             }
+            else return jqUnit.canonicaliseFunctions(value);
         });
     };
     
-    /***************************************************
-     * TestCase constructor for backward compatibility *
-     ***************************************************/
+    /** Assert that two trees are equal after applying a "canonicalisation function". This can be used in 
+     * cases where the criterion for equivalence is looser than exact object equivalence - for example, 
+     * when using renderer trees, "jqUnit.sortTree" can be used for canonFunc", or in the case
+     * of a resourceSpec, "jqUnit.canonicaliseFunctions". **/
     
-    jqUnit.TestCase = function (moduleName, setUpFn, tearDownFn) {
-        return jqUnit.testCase(moduleName, setUpFn, tearDownFn);  
+    jqUnit.assertCanoniseEqual = function (message, expected, actual, canonFunc) {
+        var expected2 = canonFunc(expected);
+        var actual2 = canonFunc(actual);
+        jqUnit.assertDeepEq(message, expected2, actual2);  
     };
-      
-    /******************************
-     * TestCase creator function
-     * @param {Object} moduleName
-     * @param {Object} setUpFn
-     * @param {Object} tearDownFn
-     */  
-    jqUnit.testCase = function (moduleName, setUpFn, tearDownFn) {
-        var that = {};
-        that.fetchedTemplates = [];
+    
+    /** Assert that the actual value object is a subset (considered in terms of shallow key coincidence) of the
+     * expected value object (this method is the one that will be most often used in practice) **/ 
+    
+    jqUnit.assertLeftHand = function(message, expected, actual) {
+        jqUnit.assertDeepEq(message, expected, fluid.filterKeys(actual, fluid.keys(expected)));  
+    };
+    
+    /** Assert that the actual value object is a superset of the expected value object **/
+    
+    jqUnit.assertRightHand = function(message, expected, actual) {
+        jqUnit.assertDeepEq(message, fluid.filterKeys(expected, fluid.keys(actual)), actual);  
+    };
         
-        /**
-         * Fetches a template synchronously using AJAX if it was never fetched before and stores it in that.fetchedTemplates
-         * @param {Object} templateURL URL to the document to be fetched
-         * @param {Object} selector A selector which finds the piece of the document to be fetched 
-         * @param {Object} container The container where the fetched content will be appended - default to the element with the id 'main'
-         */
-        that.fetchTemplate = function (templateURL, selector, container) {
-            container = container || $("#main");
-            var selectorToFetch = templateURL + " " + selector;
-            
-            if (!that.fetchedTemplates[selectorToFetch]) {
-                loadSync(container, selectorToFetch, function () {
-                    that.fetchedTemplates[selectorToFetch] = $(container).clone();
-                });
-            } else {
-                container.append($(selector, that.fetchedTemplates[selectorToFetch].clone()));
-            }
-        };
 
-        that.test = function (string, testFn) {
-            test(string, testFn);
-        };
-        
-        that.asyncTest = function (string, testFn) {
-            asyncTest(string, testFn);
-        };
-        
-        module(moduleName, {
-            setup: setUpFn || function () {},
-            teardown: tearDownFn || function () {}
-        });
-        
-        return that;
-    };
-    
 })(jQuery);

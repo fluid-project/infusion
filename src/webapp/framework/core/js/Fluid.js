@@ -118,7 +118,7 @@ var fluid = fluid || fluid_1_5;
         }
     };
     
-    fluid.notrycatch = false;
+    fluid.notrycatch = true;
     
     // A wrapper for the try/catch/finally language feature, to aid debugging on environments
     // such as IE, where any try will destroy stack information for errors
@@ -784,6 +784,12 @@ var fluid = fluid || fluid_1_5;
     };
     
     // unsupported, NON-API function
+    fluid.event.impersonateListener = function (origListener, newListener) {
+        fluid.event.identifyListener(origListener);
+        newListener.$$fluid_guid = origListener.$$fluid_guid;
+    };
+    
+    // unsupported, NON-API function
     fluid.event.mapPriority = function (priority, count) {
         return (priority === null || priority === undefined ? -count :
            (priority === "last" ? -Number.MAX_VALUE :
@@ -915,7 +921,7 @@ var fluid = fluid || fluid_1_5;
                 if (!id) {
                     fluid.fail("Cannot remove unregistered listener function ", listener, " from event " + that.name);
                 }
-                namespace = namespace || byId[id].namespace || id;
+                namespace = namespace || (byId[id] && byId[id].namespace) || id;
                 delete byId[id];
                 delete listeners[namespace];
                 sortedListeners = fluid.event.sortListeners(listeners);
