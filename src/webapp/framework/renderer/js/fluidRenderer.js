@@ -59,7 +59,7 @@ fluid_1_5 = fluid_1_5 || {};
     var renderer = {};
   
     renderer.isBoundPrimitive = function (value) {
-        return fluid.isPrimitive(value) || value instanceof Array 
+        return fluid.isPrimitive(value) || fluid.isArrayable(value) 
             && (value.length === 0 || typeof (value[0]) === "string"); // jslint:ok
     };
   
@@ -85,7 +85,7 @@ fluid_1_5 = fluid_1_5 || {};
             var togo = [];
             for (var key in children) {
                 var value = children[key];
-                if (value instanceof Array) {
+                if (fluid.isArrayable(value)) {
                     for (var i = 0; i < value.length; ++i) {
                         var processed = processChild(value[i], key);
           //            if (processed.componentType === "UIContainer" &&
@@ -889,7 +889,7 @@ fluid_1_5 = fluid_1_5 || {};
                     attrcopy.value = fluid.XMLEncode(underlyingValue? underlyingValue : "true");
                     rewriteLeaf(null);
                 }
-                else if (torender.value instanceof Array) {
+                else if (fluid.isArrayable(torender.value)) {
                     // Cannot be rendered directly, must be fake
                     renderUnchanged();
                 }
@@ -922,7 +922,7 @@ fluid_1_5 = fluid_1_5 || {};
                 var ishtmlselect = tagname === "select";
                 var ismultiple = false;
           
-                if (torender.selection.value instanceof Array) {
+                if (fluid.isArrayable(torender.selection.value)) {
                     ismultiple = true;
                     if (ishtmlselect) {
                         attrcopy.multiple = "multiple";
