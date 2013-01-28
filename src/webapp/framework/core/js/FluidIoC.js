@@ -417,6 +417,146 @@ var fluid_1_5 = fluid_1_5 || {};
             delete demandspec.options.mergeOptions;
         }
     }
+
+    
+    /** Expand a set of component options with respect to a set of "expanders" (essentially only
+     *  deferredCall) -  This substitution is destructive since it is assumed that the options are already "live" as the
+     *  result of environmental substitutions. Note that options contained inside "components" will not be expanded
+     *  by this call directly to avoid linearly increasing expansion depth if this call is occuring as a result of
+     *  "initDependents" */
+     // TODO: This needs to be integrated with "embodyDemands" above which makes two further calls to expandLight
+     // and with very similarly derived options (makeStackResolverOptions)
+    // this "outerExpandOptions" is only used in the stackFetcher, and includes {direct: true} - this governs further expansion
+    // of material like {arguments}/{options} into direct values or otherwise into markers - needs to be removed and rationalised - 
+    // only used in case of {directOptions}
+    fluid.expandOptions = function (args, that, mergePolicy, localRecord, outerExpandOptions) {
+        if (!args) {
+            return args;
+        }
+        var instantiator = fluid.getInstantiator(that);
+        fluid.pushActivity("expandOptions", "expanding options %args for component %that ", {that: that, args: args});
+        //fluid.log("expandOptions for " + that.typeName + " executing with instantiator " + instantiator.id);
+        var expandOptions = makeStackResolverOptions(instantiator, that, localRecord, outerExpandOptions);
+        expandOptions.mergePolicy = mergePolicy;
+        var expanded = fluid.expander.expandLight(args, expandOptions);
+
+        fluid.popActivity();
+        return expanded;
+    };
+    
+    // unsupported, non-API function    
+    fluid.locateTransformationRecord = function (that) {
+        var matches = fluid.locateAllDemands(that, ["fluid.transformOptions"]);
+        return fluid.find(matches, function(match) {
+            return match.uncess === 0 && fluid.contains(match.spec.contexts, that.typeName)? match.spec.spec : undefined;
+        });
+    };
+    
+    // unsupported, non-API function    
+    fluid.localRecordExpected = ["type", "options", "arguments", "mergeOptions",
+        "mergeAllOptions", "createOnEvent", "priority"];
+    // unsupported, non-API function    
+    fluid.checkComponentRecord = function (defaults, localRecord) {
+        var expected = fluid.arrayToHash(fluid.localRecordExpected);
+        fluid.each(defaults.argumentMap, function(value, key) {
+            expected[key] = true;
+        });
+        fluid.each(localRecord, function (value, key) {
+            if (!expected[key]) {
+                fluid.fail("Probable error in subcomponent record - key \"" + key + 
+                    "\" found, where the only legal options are " + 
+                    fluid.keys(expected).join(", "));
+            }  
+        });
+    };
+    
+    var addPolicyBuiltins = function (policy) {
+        fluid.each(["mergePolicy", "argumentMap", "mergeAllOptions", "components", "invokers", "events", "listeners", "transformOptions"], function (key) {
+            policy[key] = "noexpand";
+        });
+        return policy;
+    };
+
+    var expandComponentOptionsImpl = function (instantiator, defaults, userOptions, that) {
+        var shadow = instantiator.idToShadow[that.id];
+        shadow.expandBlocks = [];
+        var defaultCopy = fluid.copy(defaults);
+        var mergePolicy = addPolicyBuiltins(defaultCopy.mergePolicy || {});
+        
+        defaults = fluid.expandOptions(fluid.copy(defaults), that, mergePolicy);
+        var localRecord = {};
+        if (userOptions && userOptions.marker === fluid.EXPAND) {
+            // TODO: Somewhat perplexing... the local record itself, by any route we could get here, consists of unexpanded
+            // material taken from "componentOptions"
+            var localOptions = fluid.get(userOptions, "localRecord.options");
+            if (localOptions) {
+                localRecord.options = fluid.expandOptions(localOptions, that, mergePolicy);
+            }
+            localRecord["arguments"] = fluid.get(userOptions, "localRecord.arguments");
+            var toExpand = userOptions.value;
+            userOptions = fluid.expandOptions(toExpand, that, mergePolicy, localRecord, {direct: true});
+        }
+        localRecord.directOptions = userOptions;
+        if (!localRecord.options) {
+            // Catch the case where there is no demands block and everything is in the subcomponent record - 
+            // in this case, embodyDemands will not construct a localRecord and what the user refers to by "options"
+            // is really what we properly call "directOptions".
+            localRecord.options = userOptions;
+        }
+        var mergeOptions = (userOptions && userOptions.mergeAllOptions) || ["{directOptions}"];
+        var togo = fluid.transform(mergeOptions, function(value) {
+            // Avoid use of expandOptions in simple case to avoid infinite recursion when constructing instantiator
+            return value === "{directOptions}"? localRecord.directOptions : fluid.expandOptions(value, that, mergePolicy, localRecord, {direct: true}); 
+        });
+        var transRec = fluid.locateTransformationRecord(that);
+        if (transRec) {
+            togo[0].transformOptions = transRec.options;
+        }
+        return [defaults].concat(togo);
+    };
+
+    // unsupported, non-API function
+    fluid.expandComponentOptions = function (defaults, userOptions, that) {
+        // NEVER engage the withInstantiator behaviour which looks up an instantiator on the stack if one is
+        // not provided in the creation case - since otherwise "rogue" components whose memberName can't be
+        // guessed will end up in "good" instantiators. These must all be orphaned in their own instantiators - 
+        // all "good" instantiators have their component graph propagated via IoC
+        var userInstantiator = userOptions && userOptions.marker === fluid.EXPAND && userOptions.memberName !== undefined ? 
+            userOptions.instantiator : fluid.unrelatedInstantiator; 
+        // It is at this point the new component is recorded and has its own instantiator registered
+        return fluid.withInstantiator(that, function (instantiator) {
+            if (!userInstantiator || userInstantiator === fluid.unrelatedInstantiator) { 
+                // if we got no existing instantiator through, this should be treated as a root instantiation
+                instantiator.recordRoot(that);
+            }
+            else {
+                instantiator.recordKnownComponent(userOptions.parentThat, that, userOptions.memberName, true);
+            }
+            return expandComponentOptionsImpl(instantiator, defaults, userOptions, that);
+        }, ["    while expanding component options ", userOptions && userOptions.value, " with record ", userOptions, " for component ", that], 
+        userInstantiator);    
+    };
+
+
+    // The (extensible) types of merge record the system supports, with the weakest records first    
+    fluid.recordTypes = {
+        defaults:             0,
+        defaultValueMerge:  100,
+        subcomponentRecord: 200,
+        distribution:       300,
+        rendererDecorator:  400,
+        user:               500,  
+        demands:            600  
+    };
+    
+    // unsupported, non-API function
+    fluid.compareRecords = function (reca, recb) {
+        var tpa = fluid.recordTypes[reca.recordType];
+        var tpb = fluid.recordTypes[recb.recordType];
+        return tpa === tpb? 
+            (reca.recordType === "demands"? recb.intersect - reca.intersect : 0)   
+            : tpb - tpa;
+    };
     
     /** Given a concrete argument list and/or options, determine the final concrete
      * "invocation specification" which is coded by the supplied demandspec in the 
@@ -424,6 +564,12 @@ var fluid_1_5 = fluid_1_5 || {};
      * and argument list which is suitable to be executed directly by fluid.invokeGlobalFunction.
      */
     // unsupported, non-API function
+    // options is just a disposition record containing memberName, componentRecord + passArgs
+    // various built-in effects of this method 
+    // i) note that it makes no effort to actually propagate direct
+    // options from "initArgs", assuming that they will be seen again in expandComponentOptions
+    // ii) note that it makes no attempt to interpret the argument position holding presumably {options} in the
+    // demands block, and accepts that a valid argMap or {options} itself is sufficient. 
     fluid.embodyDemands = function (parentThat, demandspec, initArgs, options) {
         options = options || {};
         
@@ -470,9 +616,13 @@ var fluid_1_5 = fluid_1_5 || {};
         });
         mergeToMergeAll(localRecord.options);
         mergeToMergeAll(argMap && demands[argMap.options]);
-        var upstreamLocalRecord = $.extend({}, localRecord);
+        
+        var mergeRecords = {};
+        
         if (options.componentRecord.options !== undefined) {
-            upstreamLocalRecord.options = options.componentRecord.options;
+            mergeRecords.subcomponentRecord = {options: options.componentRecord.options};
+            fluid.checkComponentRecord(upDefaults, options.componentRecord);
+            //upstreamLocalRecord.options = options.componentRecord.options;
         }
         var instantiator = fluid.getInstantiator(parentThat);
         var expandOptions = makeStackResolverOptions(instantiator, parentThat, localRecord);
@@ -495,7 +645,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
                 if (!argMap || argMap.options !== i) {
-                    // defer expansion required if it is non-pseudoarguments demands and this argument *is* the options
+                    // expand immediately if there can be no options or this is not the options
                     args[i] = fluid.expander.expandLight(arg, expandOptions);
                 }
                 else { // It is the component options
@@ -505,8 +655,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     // ensure to copy the arg since it is an alias of the demand block material (FLUID-4223)
                     // and will be destructively expanded
                     args[i] = {marker: fluid.EXPAND, 
-                               value: fluid.copy(arg), 
-                               localRecord: upstreamLocalRecord,
+                               //value: fluid.copy(arg),
+                               mergeRecords: mergeRecords,
+                               //localRecord: upstreamLocalRecord,
                                instantiator: instantiator,
                                parentThat: parentThat,
                                memberName: options.memberName};
@@ -678,10 +829,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
         }
         
-        return fluid.merge(null, {funcName: newFuncName, args: fluid.makeArray(demandspec.args)}, fluid.censorKeys(demandspec, ["funcName", "args"]));
+        return $.extend(true, {funcName: newFuncName, args: fluid.makeArray(demandspec.args)}, fluid.censorKeys(demandspec, ["funcName", "args"]));
     };
-    
-    fluid.resolveDemands = function(parentThat, funcNames, initArgs, options) {
+    // "options" includes - passArgs, componentRecord, memberName (latter two from initDependent route)
+    fluid.resolveDemands = function (parentThat, funcNames, initArgs, options) {
         var demandspec = fluid.determineDemands(parentThat, funcNames);
         return fluid.embodyDemands(parentThat, demandspec, initArgs, options);
     };
@@ -880,123 +1031,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }
         fluid.popActivity();
         return firer;
-    };
-    
-    /** Expand a set of component options with respect to a set of "expanders" (essentially only
-     *  deferredCall) -  This substitution is destructive since it is assumed that the options are already "live" as the
-     *  result of environmental substitutions. Note that options contained inside "components" will not be expanded
-     *  by this call directly to avoid linearly increasing expansion depth if this call is occuring as a result of
-     *  "initDependents" */
-     // TODO: This needs to be integrated with "embodyDemands" above which makes two further calls to expandLight
-     // and with very similarly derived options (makeStackResolverOptions)
-    // this "outerExpandOptions" is only used in the stackFetcher, and includes {direct: true} - this governs further expansion
-    // of material like {arguments}/{options} into direct values or otherwise into markers - needs to be removed and rationalised - 
-    // only used in case of {directOptions}
-    fluid.expandOptions = function (args, that, mergePolicy, localRecord, outerExpandOptions) {
-        if (!args) {
-            return args;
-        }
-        var instantiator = fluid.getInstantiator(that);
-        fluid.pushActivity("expandOptions", "expanding options %args for component %that ", {that: that, args: args});
-        //fluid.log("expandOptions for " + that.typeName + " executing with instantiator " + instantiator.id);
-        var expandOptions = makeStackResolverOptions(instantiator, that, localRecord, outerExpandOptions);
-        expandOptions.mergePolicy = mergePolicy;
-        var expanded = fluid.expander.expandLight(args, expandOptions);
-
-        fluid.popActivity();
-        return expanded;
-    };
-    
-    // unsupported, non-API function    
-    fluid.locateTransformationRecord = function (that) {
-        var matches = fluid.locateAllDemands(that, ["fluid.transformOptions"]);
-        return fluid.find(matches, function(match) {
-            return match.uncess === 0 && fluid.contains(match.spec.contexts, that.typeName)? match.spec.spec : undefined;
-        });
-    };
-    
-    // unsupported, non-API function    
-    fluid.localRecordExpected = ["type", "options", "arguments", "mergeOptions",
-        "mergeAllOptions", "createOnEvent", "priority"];
-    // unsupported, non-API function    
-    fluid.checkComponentRecord = function (defaults, localRecord) {
-        var expected = fluid.arrayToHash(fluid.localRecordExpected);
-        fluid.each(defaults.argumentMap, function(value, key) {
-            expected[key] = true;
-        });
-        fluid.each(localRecord, function (value, key) {
-            if (!expected[key]) {
-                fluid.fail("Probable error in subcomponent record - key \"" + key + 
-                    "\" found, where the only legal options are " + 
-                    fluid.keys(expected).join(", "));
-            }  
-        });
-    };
-    
-    var addPolicyBuiltins = function (policy) {
-        fluid.each(["mergePolicy", "argumentMap", "mergeAllOptions", "components", "invokers", "events", "listeners", "transformOptions"], function (key) {
-            policy[key] = "noexpand";
-        });
-        return policy;
-    };
-
-    // unsupported, non-API function
-    fluid.expandComponentOptions = function (defaults, userOptions, that) {
-        if (userOptions && userOptions.localRecord) {
-            fluid.checkComponentRecord(defaults, userOptions.localRecord);
-        }
-        // NEVER engage the withInstantiator behaviour which looks up an instantiator on the stack if one is
-        // not provided in the creation case - since otherwise "rogue" components whose memberName can't be
-        // guessed will end up in "good" instantiators. These must all be orphaned in their own instantiators - 
-        // all "good" instantiators have their component graph propagated via IoC
-        var userInstantiator = userOptions && userOptions.marker === fluid.EXPAND && userOptions.memberName !== undefined ? 
-            userOptions.instantiator : fluid.unrelatedInstantiator; 
-        // It is at this point the new component is recorded and has its own instantiator registered
-        return fluid.withInstantiator(that, function (instantiator) {
-            if (!userInstantiator || userInstantiator === fluid.unrelatedInstantiator) { 
-                // if we got no existing instantiator through, this should be treated as a root instantiation
-                instantiator.recordRoot(that);
-            }
-            else {
-                instantiator.recordKnownComponent(userOptions.parentThat, that, userOptions.memberName, true);
-            }
-            var shadow = instantiator.idToShadow[that.id];
-            shadow.expandBlocks = [];
-            var defaultCopy = fluid.copy(defaults);
-            var mergePolicy = addPolicyBuiltins(defaultCopy.mergePolicy || {});
-            
-            defaults = fluid.expandOptions(fluid.copy(defaults), that, mergePolicy);
-            var localRecord = {};
-            if (userOptions && userOptions.marker === fluid.EXPAND) {
-                // TODO: Somewhat perplexing... the local record itself, by any route we could get here, consists of unexpanded
-                // material taken from "componentOptions"
-                var localOptions = fluid.get(userOptions, "localRecord.options");
-                if (localOptions) {
-                    localRecord.options = fluid.expandOptions(localOptions, that, mergePolicy);
-                }
-                localRecord["arguments"] = fluid.get(userOptions, "localRecord.arguments");
-                var toExpand = userOptions.value;
-                userOptions = fluid.expandOptions(toExpand, that, mergePolicy, localRecord, {direct: true});
-            }
-            localRecord.directOptions = userOptions;
-            if (!localRecord.options) {
-                // Catch the case where there is no demands block and everything is in the subcomponent record - 
-                // in this case, embodyDemands will not construct a localRecord and what the user refers to by "options"
-                // is really what we properly call "directOptions".
-                localRecord.options = userOptions;
-            }
-            var mergeOptions = (userOptions && userOptions.mergeAllOptions) || ["{directOptions}"];
-            var togo = fluid.transform(mergeOptions, function(value) {
-                // Avoid use of expandOptions in simple case to avoid infinite recursion when constructing instantiator
-                return value === "{directOptions}"? localRecord.directOptions : fluid.expandOptions(value, that, mergePolicy, localRecord, {direct: true}); 
-            });
-            var transRec = fluid.locateTransformationRecord(that);
-            if (transRec) {
-                togo[0].transformOptions = transRec.options;
-            }
-            return [defaults].concat(togo);
-        }, ["    while expanding component options ", userOptions && userOptions.value, " with record ", userOptions, " for component ", that], 
-        userInstantiator);    
     };
 
     // NON-API function
