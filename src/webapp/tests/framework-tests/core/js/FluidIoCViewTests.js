@@ -234,21 +234,18 @@ fluid.registerNamespace("fluid.tests");
     });
     
     fluid.demands("fluid.tests.mergePathsChild", "fluid.tests.mergePaths", {
-        options: {
-            mergeAllOptions: [
-                "{options}", {childOption1: "demandValue1"}, {childOption3: "{mergePaths}.options.headOption"}
-            ]
-        }
+        mergeOptions: [
+            {childOption1: "demandValue1"}, {childOption3: "{mergePaths}.options.headOption"}
+        ]
     });
     
-    fluid.demands("fluid.tests.mergePathsViewChild", "fluid.tests.mergePaths", [
-        "#pager-top", {
-            mergeOptions: { 
-                model:   "{mergePaths}.model", 
-                applier: "{mergePaths}.options.applier" 
-            }
+    fluid.demands("fluid.tests.mergePathsViewChild", "fluid.tests.mergePaths", {
+        container: "#pager-top", 
+        mergeOptions: { 
+            model:   "{mergePaths}.model", 
+            applier: "{mergePaths}.options.applier" 
         }
-    ]);
+    });
     
     jqUnit.test("FLUID-4130 mergeOptions for demanded component options", function () {
         var model = {key: "Head model"};

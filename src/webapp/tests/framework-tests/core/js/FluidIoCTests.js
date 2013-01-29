@@ -270,6 +270,7 @@ fluid.registerNamespace("fluid.tests");
         var that = fluid.tests.defaultInteraction();
         jqUnit.assertValue("Constructed", that);
         var standardDefaults = fluid.copy(fluid.defaults("fluid.tests.popup"));
+        delete standardDefaults.mergePolicy;
         fluid.clearLifecycleFunctions(standardDefaults);
         jqUnit.assertDeepEq("Default options", standardDefaults, that.popup.options);
     
@@ -1611,7 +1612,7 @@ fluid.registerNamespace("fluid.tests");
         components: {
             child: {
                 type: "fluid.tests.news.child",
-                model: "{parent}.model"
+                model: "{parent}.model" // error HERE
             }
         }
     });

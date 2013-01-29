@@ -791,14 +791,14 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.event.mapPriority = function (priority, count) {
-        return (priority === null || priority === undefined ? -count :
-           (priority === "last" ? -Number.MAX_VALUE :
-              (priority === "first" ? Number.MAX_VALUE : priority)));
+        return (priority === null || priority === undefined ? count :
+           (priority === "last" ? Number.MAX_VALUE :
+              (priority === "first" ? -Number.MAX_VALUE : -priority)));
     };
     
     // unsupported, NON-API function
-    fluid.event.listenerComparator = function (recA, recB) {
-        return recB.priority - recA.priority;
+    fluid.priorityComparator = function (recA, recB) {
+        return recA.priority - recB.priority;
     };
     
     // unsupported, NON-API function
@@ -807,7 +807,7 @@ var fluid = fluid || fluid_1_5;
         fluid.each(listeners, function (listener) {
             togo.push(listener);
         });
-        return togo.sort(fluid.event.listenerComparator);
+        return togo.sort(fluid.priorityComparator);
     };
     
     // unsupported, NON-API function
@@ -1569,6 +1569,7 @@ var fluid = fluid || fluid_1_5;
         mergeArgs = mergeArgs.concat(extraArgs);
         var merged = fluid.merge.apply(null, mergeArgs);
         merged = fluid.applyDefaultValueMergePolicy(defaults, merged);
+        delete merged.mergePolicy;
 
         that.options = merged;
     };
