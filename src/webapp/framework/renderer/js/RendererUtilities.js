@@ -431,7 +431,7 @@ fluid_1_5 = fluid_1_5 || {};
         var IDescape = options.IDescape || "\\";
         
         var expandLight = function (source) {
-            return fluid.resolveEnvironment(source, options); 
+            return fluid.expand(source, options); 
         };
 
         var expandBound = function (value, concrete) {

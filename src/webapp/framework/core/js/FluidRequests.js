@@ -327,7 +327,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var spec = fluid.copy(expander);
         // fetch the "global" collector specified in the external environment to receive
         // this resourceSpec
-        var collector = fluid.resolveEnvironment(expander.resourceSpecCollector, expandOptions);
+        var collector = fluid.expand(expander.resourceSpecCollector, expandOptions);
         delete spec.type;
         delete spec.resourceSpecCollector;
         delete spec.fetchKey;

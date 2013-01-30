@@ -402,7 +402,7 @@ fluid.registerNamespace("fluid.tests");
             params: {db: "mccord"}, 
             config: fluid.tests.envTests.config
         }, function () {
-            var resolved = fluid.resolveEnvironment(urlBuilder, {fetcher: fluid.makeEnvironmentFetcher()});
+            var resolved = fluid.expand(urlBuilder, {fetcher: fluid.makeEnvironmentFetcher()});
             var required = {
                 type: "fluid.stringTemplate",
                 template: "http://titan.atrc.utoronto.ca:5984/%dbName/%view", 

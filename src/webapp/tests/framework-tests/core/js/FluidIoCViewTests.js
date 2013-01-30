@@ -367,7 +367,7 @@ fluid.registerNamespace("fluid.tests");
             resourceSpecCollector: resourceSpecs,
             pageBuilder: pageBuilder
         }, function () {
-            expanded = fluid.expander.expandLight(dependencies, {fetcher: fluid.makeEnvironmentFetcher()});
+            expanded = fluid.expand(dependencies, {fetcher: fluid.makeEnvironmentFetcher()});
         });
     
         var func = function () {}; // dummy function to compare equality

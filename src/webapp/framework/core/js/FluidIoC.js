@@ -24,7 +24,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * completely automated instantiation of declaratively defined
      * component trees */ 
     
-    var inCreationMarker = "__CURRENTLY_IN_CREATION__";
+    fluid.inCreationMarker = {"__CURRENTLY_IN_CREATION__": true};
     
     // unsupported, non-API function
     fluid.isFireBreak = function(component) {
@@ -170,7 +170,7 @@ var fluid_1_5 = fluid_1_5 || {};
     }
      
     function makeStackResolverOptions (instantiator, parentThat, localRecord, expandOptions) {
-        return $.extend(fluid.copy(fluid.defaults("fluid.resolveEnvironment")), {
+        return $.extend(fluid.copy(fluid.defaults("fluid.makeExpandOptions")), {
             fetcher: makeStackFetcher(instantiator, parentThat, localRecord, expandOptions),
             contextThat: parentThat
         }); 
@@ -383,7 +383,7 @@ var fluid_1_5 = fluid_1_5 || {};
      *  result of environmental substitutions. Note that options contained inside "components" will not be expanded
      *  by this call directly to avoid linearly increasing expansion depth if this call is occuring as a result of
      *  "initDependents" */
-     // TODO: This needs to be integrated with "embodyDemands" above which makes two further calls to expandLight
+     // TODO: This needs to be integrated with "embodyDemands" above which makes two further calls to fluid.expand
      // and with very similarly derived options (makeStackResolverOptions)
     // this "outerExpandOptions" is only used in the stackFetcher - needs to be removed and rationalised - 
     fluid.expandOptions = function (args, that, mergePolicy, localRecord, outerExpandOptions) {
@@ -394,8 +394,7 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.pushActivity("expandOptions", "expanding options %args for component %that ", {that: that, args: args});
         var expandOptions = makeStackResolverOptions(instantiator, that, localRecord, outerExpandOptions);
         expandOptions.mergePolicy = mergePolicy;
-        var expanded = fluid.expander.expandLight(args, expandOptions);
-
+        var expanded = fluid.expand(args, expandOptions);
         fluid.popActivity();
         return expanded;
     };
@@ -544,16 +543,16 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     // unsupported, non-API function
-    fluid.argMapToDemands = function(argMap) {
+    fluid.argMapToDemands = function (argMap) {
         var togo = [];
-        fluid.each(argMap, function(value, key) {
+        fluid.each(argMap, function (value, key) {
             togo[value] = "{" + key + "}";  
         });
         return togo;
     };
     
     // unsupported, non-API function
-    fluid.makePassArgsSpec = function(initArgs) {
+    fluid.makePassArgsSpec = function (initArgs) {
         return fluid.transform(initArgs, function(arg, index) {
             return "{arguments}." + index;
         });
@@ -645,7 +644,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
                 if (!argMap || argMap.options !== i) {
                     // expand immediately if there can be no options or this is not the options
-                    args[i] = fluid.expander.expandLight(arg, expandOptions);
+                    args[i] = fluid.expand(arg, expandOptions);
                 }
                 else { // It is the component options
                     if (typeof(arg) === "object" && !arg.targetTypeName) {
@@ -660,8 +659,6 @@ var fluid_1_5 = fluid_1_5 || {};
                     if (initArgs.length > 0) {
                         mergeRecords.user = {options: localRecord.options};
                     }
-                    // ensure to copy the arg since it is an alias of the demand block material (FLUID-4223)
-                    // and will be destructively expanded
                     args[i] = {marker: fluid.EXPAND, 
                                mergeRecords: mergeRecords,
                                instantiator: instantiator,
@@ -669,7 +666,7 @@ var fluid_1_5 = fluid_1_5 || {};
                                memberName: options.memberName};
                 }
                 if (args[i] && fluid.isMarker(args[i].marker, fluid.EXPAND_NOW)) {
-                    args[i] = fluid.expander.expandLight(args[i].value, expandOptions);
+                    args[i] = fluid.expand(args[i].value, expandOptions);
                 }
             }
         }
@@ -1384,56 +1381,57 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return strategy;
     };
     
-    function resolveEnvironmentImpl(source, options) {
-        if (typeof(source) === "string") {
-            return fluid.expandSource(options, null, fluid.identity, source, options.mergePolicy, false, options.recurse);
-        }
-        else if (fluid.isUnexpandable(source)) {
-            return source;
-        }
-        else {
-            options.initter();
-            return options.target;
-        }
-    };
-    
-    fluid.defaults("fluid.resolveEnvironment", {
-        ELstyle:     "${}",
-        seenIds:     {},
-        bareContextRefs: true
+    fluid.defaults("fluid.makeExpandOptions", {
+        ELstyle:          "${}",
+        bareContextRefs:  true,
+        target:           fluid.inCreationMarker
     });
     
-    fluid.makeExpandOptions = function(source, options) {
+    fluid.makeExpandOptions = function (source, options) {
         // Don't create a component here since this function is itself used in the 
         // component expansion pathway - avoid all expansion in any case to head off FLUID-4301
-        options = $.extend({}, fluid.rawDefaults("fluid.resolveEnvironment"), options);
-        options.source = source;
-        options.seenIds = {};
-        options.target = fluid.freshContainer(source);
-        options.initter = function () {
-            fluid.fetchExpandChildren(options.target, source, options.mergePolicy, false, options);
+        options = $.extend({}, fluid.rawDefaults("fluid.makeExpandOptions"), options);
+        if (!fluid.isUnexpandable(source)) {
+            options.source = source;
+            options.seenIds = {};
+            options.target = fluid.freshContainer(source);
+            options.sourceStrategy = options.sourceStrategy || fluid.concreteTrundler;
+            // TODO: With full gingerness, cache this once and for all per fluid.mergeComponentOptions
+            // only the policy "preserve" is handled within expansion - the "noexpand" policy is handled by preprocessing in preserveFromExpansion
+            options.mergePolicy = fluid.compileMergePolicy(options.mergePolicy);
+            fluid.makeExpandStrategy(options);
         }
-        options.sourceStrategy = options.sourceStrategy || fluid.concreteTrundler;
-        // TODO: With full gingerness, cache this once and for all per fluid.mergeComponentOptions
-        // only the policy "preserve" is handled within expansion - the "noexpand" policy is handled by preprocessing in preserveFromExpansion
-        options.mergePolicy = fluid.compileMergePolicy(options.mergePolicy); 
-        fluid.makeExpandStrategy(options);
+        else { // these must be initted by priority
+            options.strategy = fluid.concreteTrundler;
+        }
+        options.initter = function () {
+            if (typeof(source) === "string") {
+                options.target = fluid.expandSource(options, null, fluid.identity, source, options.mergePolicy, false, options.recurse);
+            }
+            else if (fluid.isUnexpandable(source)) {
+                options.target = source;
+            }
+            else {
+                fluid.fetchExpandChildren(options.target, source, options.mergePolicy, false, options);
+            }
+            return options.target;
+        };
         return options;
     }
     
-    fluid.resolveEnvironment = function(source, options) {
+    fluid.expand = function (source, options) {
         var options = fluid.makeExpandOptions(source, options);
-        return resolveEnvironmentImpl(source, options);
+        return options.initter();
     };
-
+      
     fluid.registerNamespace("fluid.expander");
-    
+            
     /** "light" expanders, starting with support functions for the so-called "deferredCall" expanders,
          which make an arbitrary function call (after expanding arguments) and are then replaced in
          the configuration with the call results. These will probably be abolished and replaced with
          equivalent model transformation machinery **/
 
-    fluid.expander.deferredCall = function(deliverer, source, options) {
+    fluid.expander.deferredCall = function (deliverer, source, options) {
         var expander = source.expander;
         var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : fluid.makeArray(expander.args);
         args = options.recurse([], args); 
@@ -1442,7 +1440,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.deferredCall = fluid.expander.deferredCall; // put in top namespace for convenience
     
-    fluid.deferredInvokeCall = function(deliverer, source, options) {
+    fluid.deferredInvokeCall = function (deliverer, source, options) {
         var expander = source.expander;
         var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : fluid.makeArray(expander.args);
         args = options.recurse([], args); // TODO: risk of double expansion here. embodyDemands will sometimes expand, sometimes not... 
@@ -1450,16 +1448,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
     
     // The "noexpand" expander which simply unwraps one level of expansion and ceases.
-    fluid.expander.noexpand = function(deliverer, source) {
+    fluid.expander.noexpand = function (deliverer, source) {
         return source.expander.value ? source.expander.value : source.expander.tree;
     };
   
     fluid.noexpand = fluid.expander.noexpand; // TODO: check naming and namespacing
-        
-    // unsupported, non-API function
-    fluid.expander.expandLight = function (source, expandOptions) {
-        var options = $.extend({}, expandOptions);
-        return fluid.resolveEnvironment(source, options);       
-    };
+
           
 })(jQuery, fluid_1_5);
