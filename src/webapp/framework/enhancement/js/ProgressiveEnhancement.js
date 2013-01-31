@@ -21,7 +21,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
     
-    if (typeof(window) !== "undefined") {
+    if (typeof(window) !== "undefined" && window.document) {
         fluid.registerNamespace("fluid.browser");
      
         fluid.browser.binaryXHR = function () {
