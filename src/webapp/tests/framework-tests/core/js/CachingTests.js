@@ -119,13 +119,16 @@ fluid.registerNamespace("fluid.tests");
         }
 
         // "whitebox" testing to assess failure in the presence and absence of IoC
-        function expandOptionsCensorer(func) {
+        function IoCCensorer(func) {
             var expandComponentOptions = fluid.expandComponentOptions;
+            var deliverOptionsStrategy = fluid.deliverOptionsStrategy;
             delete fluid.expandComponentOptions;
+            fluid.deliverOptionsStrategy = fluid.identity;
             try {
                 func();
             } finally {
                 fluid.expandComponentOptions = expandComponentOptions;
+                fluid.deliverOptionsStrategy = deliverOptionsStrategy;
             }      
         }
          
@@ -133,7 +136,7 @@ fluid.registerNamespace("fluid.tests");
             func();
         }
         
-        testAllSimpleCache("No IoC", expandOptionsCensorer);
+        testAllSimpleCache("No IoC", IoCCensorer);
         testAllSimpleCache("With IoC", funcInvoker);
 
         function testProleptickJoinset(delays, message, expectedFinal) {

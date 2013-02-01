@@ -470,64 +470,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Local fallback",  bundleb.key1, resolver.resolve(["key2", "key1"]));
         jqUnit.assertEquals("Global fallback", bundlea.key2, resolver.resolve(["key4", "key2"]));
     });
-    
-    fluid.defaults("fluid.tests.defaultMergePolicy", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
-        defaultSource: "sourceValue",
-        defaultTarget: "targetValue",
-        mergePolicy: {
-            defaultTarget: "defaultSource"
-        }
-    }); 
-    
-    fluid.tests.fluid4736Tests = [{
-        message: "merge policy has no effect on plain defaults",
-        options: undefined,
-        expected: {
-            defaultSource: "sourceValue",
-            defaultTarget: "targetValue"          
-        }
-    }, {
-        message: "merge policy copies user option to default value",
-        options: {
-            defaultSource: "userSource"
-        },
-        expected: {
-            defaultSource: "userSource",
-            defaultTarget: "userSource"
-        }
-    }, {
-        message: "merge policy has no effect on full user values",
-        options: {
-            defaultSource: "userSource",
-            defaultTarget: "userTarget"
-        },
-        expected: {
-            defaultSource: "userSource",
-            defaultTarget: "userTarget"
-        }
-    }/* , 
-    // This test case can probably not be supported until FLUID-4392: See implementation comment in
-    // fluid.applyDefaultValueMergePolicy - see also FLUID-4733
-    {
-        message: "user modifies value to default",
-        options: {
-            defaultSource: "sourceValue",
-        },
-        expected: {
-            defaultSource: "sourceValue",
-            defaultTarget: "sourceValue"
-        }
-    }*/];
-    
-    jqUnit.test("FLUID-4736: Interaction of default value merge policy with grade chain", function () {
-        fluid.each(fluid.tests.fluid4736Tests, function (fixture) {
-            var component = fluid.tests.defaultMergePolicy(fixture.options);
-            jqUnit.assertLeftHand(fixture.message, fixture.expected, component.options);              
-        });      
-    });
-    
-    
+      
     jqUnit.test("Sorting listeners", function () {
         var accumulate = [];
         var makeListener = function (i) {

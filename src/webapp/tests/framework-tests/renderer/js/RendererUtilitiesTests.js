@@ -283,9 +283,9 @@ fluid.registerNamespace("fluid.tests");
         });
         fluid.demands("fluid.tests.mergeComponent", "fluid.tests.mergeRenderParent", {
             container: "{arguments}.0",
-            mergeAllOptions: [{
+            mergeOptions: {
                 model: "{mergeRenderParent}.model"
-            }, "{arguments}.1"]
+            }
         });
         jqUnit.test("Merging args and options", function () {
             var that = fluid.tests.mergeRenderParent(".mergeRenderParent");

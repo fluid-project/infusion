@@ -20,46 +20,69 @@ fluid.registerNamespace("fluid.tests");
 
 (function ($) {
 
-    fluid.defaults("fluid.tests.fluid3818head", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            child: {
-                type: "fluid.tests.fluid3818child",
-                options: {
-                    value: "{environmentalValue}.derived"
-                }
-            }  
-        }
-    });
+    jqUnit.module("Fluid IoC Tests");
 
-    fluid.defaults("fluid.tests.thatStackHead", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        headValue: "headValue",
-        components: {
-            child1: {
-                type: "fluid.tests.thatStackTail",
-                options: {
-                    invokers: {
-                        getHeadValue: {
-                            funcName: "fluid.identity",
-                            args: "{child2}.options.headValue"
-                        }
-                    }
-                }
-            },
-            child2: {
-                type: "fluid.tests.thatStackTail",
-                options: {
-                    headValue: {
-                        expander: {
-                            type: "fluid.deferredInvokeCall",
-                            func: "fluid.identity",
-                            args: "{thatStackHead}.headValue"
-                        }
-                    }
-                }
-            }
+    fluid.setLogging(true);
+
+    fluid.defaults("fluid.tests.defaultMergePolicy", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        defaultSource: "sourceValue",
+        defaultTarget: "targetValue",
+        mergePolicy: {
+            defaultTarget: "defaultSource"
         }
+    }); 
+    
+    fluid.tests.fluid4736Tests = [
+    // Before FLUID-4330, we used to support this test case and not the last one - after FLUID-4330 the
+    // position is now reversed. Supporting "non-monotonic merges" that the first case would require much more
+    // complexity in the implementation in the form of a "provenance" object holding the merge depth of each 
+    // value. In fact we don't require this support since the Reorderer defaults changed to be "monotonic" in any 
+    // case, and the current implementation should be adequate for FLUID-4409/FLUID-4636 situations in UIOptions.
+    /*{
+        message: "merge policy has no effect on plain defaults",
+        options: undefined,
+        expected: {
+            defaultSource: "sourceValue",
+            defaultTarget: "targetValue"          
+        }
+    }, */{
+        message: "merge policy copies user option to default value",
+        options: {
+            defaultSource: "userSource"
+        },
+        expected: {
+            defaultSource: "userSource",
+            defaultTarget: "userSource"
+        }
+    }, {
+        message: "merge policy has no effect on full user values",
+        options: {
+            defaultSource: "userSource",
+            defaultTarget: "userTarget"
+        },
+        expected: {
+            defaultSource: "userSource",
+            defaultTarget: "userTarget"
+        }
+    }, 
+    // With FLUID-4392, this test case can now be supported, but the first can't: see also FLUID-4733
+    {
+        message: "user modifies value to default",
+        options: {
+            defaultSource: "sourceValue",
+        },
+        expected: {
+            defaultSource: "sourceValue",
+            defaultTarget: "sourceValue"
+        }
+    }];
+    
+    jqUnit.test("FLUID-4736: Interaction of default value merge policy with grade chain", function () {
+        fluid.each(fluid.tests.fluid4736Tests, function (fixture) {
+            var component = fluid.tests.defaultMergePolicy(fixture.options);
+            jqUnit.assertLeftHand(fixture.message, fixture.expected, component.options);              
+        });      
     });
 
     fluid.makeComponents({
@@ -70,50 +93,6 @@ fluid.registerNamespace("fluid.tests");
         "fluid.tests.thatStackTail":      "fluid.littleComponent",
         "fluid.tests.reinsChild":         "fluid.littleComponent" // standard blank "littleComponent" used throughout tests 
     });
-    
-
-
-    fluid.defaults("fluid.tests.multiResolution", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            resSub: {
-                type: "fluid.tests.multiResSub"
-            }
-        }  
-    });
-
-    fluid.demands("fluid.tests.staticResolution", [], {
-        funcName: "fluid.identity",
-        args: "{fluid.tests.localFiles}"
-    });
-
-    fluid.demands("fluid.tests.multiResSub", "fluid.tests.multiResolution", {
-        funcName: "fluid.tests.multiResSub"
-    }); // TODO: should this really be necessary?  
-       // Perhaps there should be a standard demands "valence" of 1 assigned to the "defaults" configuration. 
-
-    fluid.demands("fluid.tests.multiResSub", ["fluid.tests.multiResolution", "fluid.tests.localFiles"],
-        {
-            funcName: "fluid.tests.multiResSub2",
-            args: {
-                localKey1: "localValue1",
-                localKey2: "localValue2"
-            }  
-        });
-    
-    fluid.demands("fluid.tests.multiResSub", ["fluid.tests.multiResolution", "fluid.tests.localFiles", "fluid.tests.localTest"],
-        {
-            funcName: "fluid.tests.multiResSub3",
-            args: [{
-                localKey1: "testValue1"
-            }, null]
-        });
-    
-
-
-    jqUnit.module("Fluid IoC Tests");
-
-    fluid.setLogging(true);
 
     fluid.defaults("fluid.tests.invokerComponent", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
@@ -162,6 +141,8 @@ fluid.registerNamespace("fluid.tests");
     });
 
 
+    /** Correct transmission of model references */
+
     fluid.defaults("fluid.tests.modelComponent", {
         gradeNames: ["fluid.modelComponent", "autoInit"]
     });
@@ -193,6 +174,33 @@ fluid.registerNamespace("fluid.tests");
     });
 
     
+    fluid.defaults("fluid.tests.multiResolution", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            resSub: {
+                type: "fluid.tests.multiResSub"
+            }
+        }  
+    });
+
+    /** Resolution based on increasingly specific context combinations **/
+
+    fluid.demands("fluid.tests.multiResSub", ["fluid.tests.multiResolution", "fluid.tests.localFiles"], {
+        funcName: "fluid.tests.multiResSub2",
+        args: {
+            localKey1: "localValue1",
+            localKey2: "localValue2"
+        }  
+    });
+    
+    fluid.demands("fluid.tests.multiResSub", ["fluid.tests.multiResolution", "fluid.tests.localFiles", "fluid.tests.localTest"], {
+        funcName: "fluid.tests.multiResSub3",
+        args: [{
+            localKey1: "testValue1"
+        }, null]
+    });
+    
+    
     jqUnit.test("Multi-resolution test", function () {
         var that = fluid.tests.multiResolution();
         jqUnit.assertValue("Constructed", that);
@@ -222,6 +230,11 @@ fluid.registerNamespace("fluid.tests");
             delete fluid.staticEnvironment.testEnvironment;
             delete fluid.staticEnvironment.localEnvironment;
         }
+    });
+
+    fluid.demands("fluid.tests.staticResolution", [], {
+        funcName: "fluid.identity",
+        args: "{fluid.tests.localFiles}"
     });
 
     jqUnit.test("Static resolution test", function () {
@@ -356,25 +369,20 @@ fluid.registerNamespace("fluid.tests");
         that.events.eventTwo.fire("twoFired");
         jqUnit.assertTrue("Event two listener notified", that.twoFired);
     });
-    
-    fluid.tests.initLifecycle = function (that) {
-        that.initted = true;  
-    };
-    
-    fluid.defaults("fluid.tests.lifecycleTest", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
-        preInitFunction: "fluid.tests.initLifecycle"  
-    });
 
+    /** withEnvironment tests - eventually to be deprecated **/
 
-    fluid.registerNamespace("fluid.tests.envTests");
-
-    fluid.tests.envTests.config = {
-        viewURLTemplate: "http://titan.atrc.utoronto.ca:5984/%dbName/%view",        
-        views: {
-            exhibitions: "_design/exhibitions/_view/browse"
+    fluid.defaults("fluid.tests.fluid3818head", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            child: {
+                type: "fluid.tests.fluid3818child",
+                options: {
+                    value: "{environmentalValue}.derived"
+                }
+            }  
         }
-    };
+    });
 
     jqUnit.test("Environmental Tests II - FLUID-3818", function () {
         var component = fluid.withEnvironment({
@@ -387,6 +395,15 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertValue("child component constructed", component.child);
         jqUnit.assertEquals("Resolved environmental value", "derivedValue", component.child.options.value);
     });
+
+    fluid.registerNamespace("fluid.tests.envTests");
+
+    fluid.tests.envTests.config = {
+        viewURLTemplate: "http://titan.atrc.utoronto.ca:5984/%dbName/%view",        
+        views: {
+            exhibitions: "_design/exhibitions/_view/browse"
+        }
+    };
 
     jqUnit.test("Environmental Tests", function () {
         var urlBuilder = {
@@ -413,6 +430,38 @@ fluid.registerNamespace("fluid.tests");
             };
             jqUnit.assertDeepEq("Resolved Environment", required, resolved);  
         });
+    });
+
+    /** Contextualisation of invokers **/
+
+    fluid.defaults("fluid.tests.thatStackHead", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        headValue: "headValue",
+        components: {
+            child1: {
+                type: "fluid.tests.thatStackTail",
+                options: {
+                    invokers: {
+                        getHeadValue: {
+                            funcName: "fluid.identity",
+                            args: "{child2}.options.headValue"
+                        }
+                    }
+                }
+            },
+            child2: {
+                type: "fluid.tests.thatStackTail",
+                options: {
+                    headValue: {
+                        expander: {
+                            type: "fluid.deferredInvokeCall",
+                            func: "fluid.identity",
+                            args: "{thatStackHead}.headValue"
+                        }
+                    }
+                }
+            }
+        }
     });
 
     jqUnit.test("thatStack tests", function () {
@@ -660,6 +709,37 @@ fluid.registerNamespace("fluid.tests");
     
     fluid.each(gingerTests, function (entry) {
         fluid.tests.testOneGinger(entry);
+    });
+    
+    fluid.defaults("fluid.tests.gingerMiddle", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        lowOption: "lowOption"
+    });
+    
+    fluid.defaults("fluid.tests.gingerTop", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        lowOption: "{that}.gingerMiddle.options.lowOption",
+        highOption: "highOption",
+        circuitOption: "{that}.gingerMiddle.options.highOption",
+        components: {
+            gingerMiddle: {
+                type: "fluid.tests.gingerMiddle",
+                options: {
+                    highOption: "{gingerTop}.options.highOption"
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-4330 ginger references cyclic in components", function () {
+        var gingerTop = fluid.tests.gingerTop();
+        var expected = {
+            lowOption: "lowOption",
+            highOption: "highOption",
+            circuitOption: "highOption"  
+        };
+        
+        jqUnit.assertLeftHand("Correctly circuited ginger options", expected, gingerTop.options);
     });
     
     /** FLUID-4135 - event injection and boiling test **/

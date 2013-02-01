@@ -72,6 +72,17 @@ var fluid = fluid || fluid_1_5;
         root.activityStack = root.activityStack.slice(popframes);
     };
     
+    fluid.builtinFail = function (soft, args, activity) {
+        fluid.setLogging(true);
+        fluid.log.apply(null, ["ASSERTION FAILED: "].concat(args).concat(activity));
+        var message = args[0];          
+        if (soft) {
+            throw new Error(message);
+        } else {
+            message["Assertion failure - check console for details"](); // Intentionally cause a browser error by invoking a nonexistent function.
+        }
+    };
+    
     /**
      * Signals an error to the framework. The default behaviour is to log a structured error message and throw a variety of
      * exception (hard or soft) - see fluid.pushSoftFailure for configuration
@@ -82,16 +93,9 @@ var fluid = fluid || fluid_1_5;
     fluid.fail = function (message /*, ... */) { // jslint:ok - whitespace in arg list
         var args = fluid.makeArray(arguments);
         var activity = fluid.describeActivity();
-
         var topFailure = softFailure[0];
         if (typeof(topFailure) === "boolean") {
-            fluid.setLogging(true);
-            fluid.log.apply(null, ["ASSERTION FAILED: "].concat(args).concat(activity));          
-            if (topFailure) {
-                throw new Error(message);
-            } else {
-                message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
-            }
+            fluid.builtinFail(topFailure, args, activity);
         } else if (typeof(topFailure) === "function") {
             topFailure(args, activity);
         }
@@ -1243,18 +1247,6 @@ var fluid = fluid || fluid_1_5;
     fluid.nameComponent = function (that) {
         return that ? "component with typename " + that.typeName + " and id " + that.id : "[unknown component]";
     };
-    
-    // unsupported, NON-API function
-    fluid.guardCircularity = function (seenIds, source, message1, message2) {
-        if (source && source.id) {
-            if (!seenIds[source.id]) {
-                seenIds[source.id] = source;
-            } else if (seenIds[source.id] === source) {
-                fluid.fail("Circularity in options " + message1 + " - " + fluid.nameComponent(source)
-                    + " has already been seen" + message2);
-            }
-        }
-    };
 
     // Cheapskate implementation which avoids dependency on DataBinding.js
     fluid.model.mergeModel = function (target, source, applier) {
@@ -1279,9 +1271,11 @@ var fluid = fluid || fluid_1_5;
     }
     
     fluid.compileMergePolicy = function (mergePolicy) {
-        var compiled = {};
+        var builtins = {}, defaultValues = {};
+        var togo = {builtins: builtins, defaultValues: defaultValues};
+        
         if (!mergePolicy) {
-            return compiled;
+            return togo;
         }
         fluid.each(mergePolicy, function (value, key) {
             var parsed;
@@ -1295,9 +1289,14 @@ var fluid = fluid || fluid_1_5;
                     parsed[split[i]] = true;
                 }
             }
-            fluid.set(compiled, fluid.composePath(key, "*"), parsed);
+            else {
+                // Convert to ginger self-reference - NB, this can only be parsed by IoC
+                fluid.set(defaultValues, key, "{that}.options." + value);
+                togo.hasDefaults = true;
+            }
+            fluid.set(builtins, fluid.composePath(key, "*"), parsed);
         });
-        return compiled;
+        return togo;
     };
 
     // TODO: deprecate this method of detecting default value merge policies before 1.6 in favour of
@@ -1322,33 +1321,6 @@ var fluid = fluid || fluid_1_5;
                 target[key] = fluid.copy(source[key]);
             }
         });
-    };
-    
-    // unsupported, NON-API function
-    fluid.applyDefaultValueMergePolicy = function (defaults, merged) {
-        var policy = merged.mergePolicy;
-        if (policy) {
-            for (var key in policy) {
-                var elrh = policy[key];
-                if (fluid.isDefaultValueMergePolicy(elrh)) {
-                    var defaultTarget = fluid.get(defaults, key);
-                    var mergedTarget = fluid.get(merged, key);
-                 // TODO: this implementation is faulty since it will trigger if a user modifies a source value to its default value
-                 // - and also will still copy over a target if user modifies it to its default value
-                 // probably needs FLUID-4392 for a proper fix since the algorithm will need a fundamental change to progress from
-                 // R2L rather than L2R (is that even possible!)
-                    if (defaultTarget === mergedTarget) {
-                        var defaultSource = fluid.get(defaults, elrh);
-                        var mergedSource = fluid.get(merged, elrh);
-                        // NB: This line represents a change in policy - will not apply default value policy to defaults themselves
-                        if (defaultSource !== mergedSource) {
-                            fluid.set(merged, key, mergedSource);
-                        }
-                    }
-                }
-            }
-        }
-        return merged;
     };
     
     fluid.mergeOneImpl = function (thisTarget, thisSource, j, sources, newPolicy, i, segs, options) {
@@ -1427,10 +1399,12 @@ var fluid = fluid || fluid_1_5;
     
     fluid.makeMergeStrategy = function (options) {
         var strategy = function (target, name, i, segs, sources, policy) {
+            if (i > 50) {
+                fluid.fail("Overflow/circularity in options merging, current path is ", segs, " at depth " , i, " - please protect components from merging using the \"nomerge\" merge policy");
+            }
             if (fluid.isTracing) {
                 fluid.tracing.pathCount.push(fluid.path(segs.slice(0, i)));
             }
-            //fluid.guardCircularity(options.seenIds, source, "merging", " when evaluating path " + segs + " - please protect components from merging using the \"nomerge\" merge policy");
       
             if (target.hasOwnProperty(name)) { // bail out if our work has already been done
                 return target[name];
@@ -1468,7 +1442,7 @@ var fluid = fluid || fluid_1_5;
                 }
             }
             target[name] = thisTarget;
-            fluid.fetchMergeChildren(thisTarget, i, segs, newSources, thisPolicy, options);
+            fluid.fetchMergeChildren(thisTarget, i, segs, newSources, newPolicyHolder, options);
             return thisTarget;
         };
         options.strategy = strategy;
@@ -1496,15 +1470,32 @@ var fluid = fluid || fluid_1_5;
      */
         
     fluid.merge = function (policy /*, ... sources */) {
-        var sources = Array.prototype.slice.call(arguments, 1); 
-        var options = fluid.makeMergeOptions(policy, sources, {});
+        var sources = Array.prototype.slice.call(arguments, 1);
+        var compiled = fluid.compileMergePolicy(policy).builtins;
+        var options = fluid.makeMergeOptions(compiled, sources, {});
         options.initter();
         return options.target;
     };
     
+    fluid.getMembers = function (holder, name) {
+        return fluid.transform(holder, function(member) {
+            return member[name];
+        });
+    };
+    
+    fluid.simpleGingerBlock = function (source, recordType) {
+        return {
+            target: source,
+            strategy: fluid.concreteTrundler,
+            initter: fluid.identity,
+            recordType: recordType,
+            priority: fluid.mergeRecordTypes[recordType]
+        };
+    };
+    
     fluid.makeMergeOptions = function (policy, sources, userOptions) {
         var options = {
-            mergePolicy: fluid.compileMergePolicy(policy), // TODO: with gingerness, we can compute this early
+            mergePolicy: policy, // TODO: with gingerness, we can compute this early
             sources: sources,
             seenIds: {}
         };
@@ -1536,6 +1527,21 @@ var fluid = fluid || fluid_1_5;
             }
         }
     };
+    
+    // unsupported, NON-API function
+    fluid.deliverOptionsStrategy = fluid.identity;
+
+    // The (extensible) types of merge record the system supports, with the weakest records first    
+    fluid.mergeRecordTypes = {
+        defaults:             0,
+        localOptions:        50, // provisional
+        defaultValueMerge:  100,
+        subcomponentRecord: 200,
+        distribution:       300,
+        rendererDecorator:  400,
+        user:               500,  
+        demands:            600 // and above
+    };
 
     /**
      * Merges the component's declared defaults, as obtained from fluid.defaults(),
@@ -1551,27 +1557,46 @@ var fluid = fluid || fluid_1_5;
     fluid.mergeComponentOptions = function (that, componentName, userOptions, localOptions) {
         var defaults = fluid.defaults(componentName) || {};
         var mergePolicy = $.extend({}, fluid.rootMergePolicy, defaults.mergePolicy);
-        var defaultGrades = defaults.gradeNames;
-
-        localOptions = defaultGrades ? {} : fluid.copy(fluid.getGradedDefaults({}, "", localOptions.gradeNames));
-        var mergeArgs = [mergePolicy, localOptions];
+        var compiledPolicy = fluid.compileMergePolicy(mergePolicy);
+        var mergeBlocks = [];
         
-        var extraArgs;
-        if (fluid.expandComponentOptions) {
-            extraArgs = fluid.expandComponentOptions(defaults, userOptions, that);
-        } else {
-            extraArgs = [defaults, userOptions];
+        var defaultGrades = defaults.gradeNames;
+        if (!defaultGrades) {
+            mergeBlocks.push(fluid.simpleGingerBlock(fluid.copy(fluid.getGradedDefaults({}, "", localOptions.gradeNames), "localOptions")));
         }
-        var transRec = fluid.lastTransformationRecord(extraArgs);
-        if (transRec) {
-            extraArgs = fluid.transformOptions(extraArgs, transRec);
-        }
-        mergeArgs = mergeArgs.concat(extraArgs);
-        var merged = fluid.merge.apply(null, mergeArgs);
-        merged = fluid.applyDefaultValueMergePolicy(defaults, merged);
-        delete merged.mergePolicy;
 
-        that.options = merged;
+        if (fluid.expandComponentOptions) {
+            var highRecords = compiledPolicy.hasDefaults ? {defaultValueMerge: {options: compiledPolicy.defaultValues}} : {};
+            mergeBlocks = mergeBlocks.concat(fluid.expandComponentOptions(defaults, userOptions, that, highRecords));
+        }
+        else {
+            if (compiledPolicy.hasDefaults) {
+                fluid.fail("Cannot operate mergePolicy ", mergePolicy, " for component ", that, " without including FluidIoC.js"); 
+            }
+            mergeBlocks = mergeBlocks.concat([fluid.simpleGingerBlock(defaults, "defaults"), 
+                                              fluid.simpleGingerBlock(userOptions, "user")]);
+        }
+        
+        mergeBlocks.sort(fluid.priorityComparator);
+        
+        // var transRec = fluid.lastTransformationRecord(extraArgs);
+        // if (transRec) {
+        //    extraArgs = fluid.transformOptions(extraArgs, transRec);
+        //}
+        var target = {};
+        var baseMergeOptions = {
+            target: target,
+            sourceStrategies: fluid.getMembers(mergeBlocks, "strategy")
+            };
+        var mergeOptions = fluid.makeMergeOptions(compiledPolicy.builtins, fluid.getMembers(mergeBlocks, "target"), baseMergeOptions);
+
+        //merged = fluid.applyDefaultValueMergePolicy(defaults, merged);
+
+        that.options = target;
+        fluid.deliverOptionsStrategy(that, target, mergeOptions.strategy);
+        fluid.each(mergeBlocks, function (mergeBlock) { mergeBlock.initter();});
+        mergeOptions.initter();
+        delete target.mergePolicy;
     };
     
     // The Fluid Component System proper
@@ -1705,7 +1730,7 @@ var fluid = fluid || fluid_1_5;
         return function () {
             fluid.fireEvent(that, "events.onClear", [that, "", null]);
             fluid.fireEvent(that, "events.onDestroy", [that, "", null]);
-        };  
+        }; 
     };
     
     fluid.initComponent = function (componentName, initArgs) {
@@ -1727,6 +1752,7 @@ var fluid = fluid || fluid_1_5;
         fluid.clearLifecycleFunctions(that.options);
         that.destroy = fluid.makeRootDestroy(that); // overwritten by FluidIoC for constructed subcomponents
         fluid.fireEvent(that, "events.onCreate", that);
+        // TODO: This needs to be ginger, or else unsupportable
         return that.options.returnedPath ? fluid.get(that, that.options.returnedPath) : that;
     };
 
