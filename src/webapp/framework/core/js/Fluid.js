@@ -858,18 +858,14 @@ var fluid = fluid || fluid_1_5;
                 if (lisrec.predicate && !lisrec.predicate(listener, args)) {
                     continue;
                 }
-                var value = fluid.tryCatch(function () {
-                    var ret = (wrapper ? wrapper(listener) : listener).apply(null, args);
-                    if (preventable && ret === false) {
-                        return false;
-                    }
-                    if (unicast) {
-                        return ret;
-                    }
-                }, function (e) { // jslint:ok - function within a loop, only invoked synchronously
-                    fluid.log("FireEvent received exception " + e.message + " e " + e + " firing to listener " + i);
-                    throw (e);
-                }); // jslint:ok - function within loop
+                var value;
+                var ret = (wrapper ? wrapper(listener) : listener).apply(null, args);
+                if (preventable && ret === false) {
+                    value = false;
+                }
+                if (unicast) {
+                    value = ret;
+                }
                 if (value !== undefined) {
                     return value;
                 }
@@ -1005,6 +1001,22 @@ var fluid = fluid || fluid_1_5;
         });
     };
     
+    fluid.eventFromRecord = function (eventSpec, eventKey, that) {
+        var isIoCEvent = eventSpec && (typeof (eventSpec) !== "string" || eventSpec.charAt(0) === "{");
+        var event;
+        if (isIoCEvent) {
+            if (!fluid.event.resolveEvent) {
+                fluid.fail("fluid.event.resolveEvent could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor ",
+                    eventSpec);
+            } else {
+                event = fluid.event.resolveEvent(that, eventKey, eventSpec);
+            }
+        } else {
+            event = fluid.makeEventFirer(eventSpec === "unicast", eventSpec === "preventable", fluid.event.nameEvent(that, eventKey));
+        }
+        return event; 
+    }
+    
     function initEvents(that, events, pass) {
         fluid.each(events, function (eventSpec, eventKey) {
             var isIoCEvent = eventSpec && (typeof (eventSpec) !== "string" || eventSpec.charAt(0) === "{");
@@ -1025,15 +1037,11 @@ var fluid = fluid || fluid_1_5;
         });
     }
     
-    // unsupported, NON-API function
+    // unsupported, NON-API function - this is patched from FluidIoC.js
     fluid.instantiateFirers = function (that, options) {
-        that.events = {};
-        // TODO: manual 2-phase instantiation since we have no GINGER WORLD
-        initEvents(that, options.events, "flat");
-        initEvents(that, options.events, "IoC");
-        // TODO: manually expand these late so that members attached to ourselves with preInitFunction can be detected
-        //var listeners = fluid.expandOptions ? fluid.expandOptions(options.listeners, that) : options.listeners;
-        fluid.mergeListeners(that, that.events, options.listeners);
+        fluid.each(options.events, function (eventSpec, eventKey) {
+            that.events[eventKey] = fluid.eventFromRecord(eventSpec, eventKey, that);
+        });
     };
     
     fluid.mergeListenerPolicy = function (target, source, key) {
@@ -1139,23 +1147,15 @@ var fluid = fluid || fluid_1_5;
     
      /**
      * Retrieves and stores a component's default settings centrally.
-     * @param {boolean} (options) if true, manipulate a global option (for the head
-     *   component) rather than instance options. NB - the use of "global options"
-     *   is deprecated and will be removed from the framework in release 1.6
      * @param {String} componentName the name of the component
      * @param {Object} (optional) an container of key/value pairs to set
      */
      
-    fluid.defaults = function () {
-        var offset = 0;
-        if (typeof arguments[0] === "boolean") {
-            offset = 1;
-        }
-        var componentName = (offset === 0 ? "" : "*.global-") + arguments[offset];
-        var options = arguments[offset + 1];
+    fluid.defaults = function (componentName, options) {
         if (options === undefined) {
             return fluid.resolveGradedOptions(componentName);
-        } else {
+        } 
+        else {
             if (options && options.options) {
                 fluid.fail("Probable error in options structure for " + componentName +
                     " with option named \"options\" - perhaps you meant to write these options at top level in fluid.defaults? - ", options);
@@ -1215,9 +1215,9 @@ var fluid = fluid || fluid_1_5;
     fluid.defaults("fluid.eventedComponent", {
         gradeNames: ["fluid.littleComponent"],
         events: { // Four standard lifecycle points common to all components
-            onCreate: null,
-            onAttach: null, // events other than onCreate are only fired for IoC-configured components
-            onClear: null,
+            onCreate:  null,
+            onAttach:  null, // events other than onCreate are only fired for IoC-configured components
+            onClear:   null,
             onDestroy: null
         },
         mergePolicy: {
@@ -1410,6 +1410,7 @@ var fluid = fluid || fluid_1_5;
                 return target[name];
             }
             if (sources === undefined) { // recover our state in case this is an external entry point
+                segs = fluid.makeArray(segs); // avoid trashing caller's segs
                 sources = regenerateSources(options.sources, segs, i - 1, options.sourceStrategies);
                 policy = regenerateCursor(options.mergePolicy, segs, i - 1, fluid.concreteTrundler);
             }
@@ -1441,14 +1442,28 @@ var fluid = fluid || fluid_1_5;
                     }
                 }
             }
-            target[name] = thisTarget;
-            fluid.fetchMergeChildren(thisTarget, i, segs, newSources, newPolicyHolder, options);
+            if (newSources.length > 0) {
+                target[name] = thisTarget;
+                fluid.fetchMergeChildren(thisTarget, i, segs, newSources, newPolicyHolder, options);
+            }
             return thisTarget;
         };
         options.strategy = strategy;
         return strategy;
     };
-        
+    
+    // A simple stand-in for "fluid.get" where the material is covered by a single strategy  
+    fluid.driveStrategy = function (root, pathSegs, strategy) {
+        pathSegs = fluid.makeArray(pathSegs);
+        for (var i = 0; i < pathSegs.length; ++ i) {
+            if (!root) {
+                return undefined;
+            }
+            root = strategy(root, pathSegs[i], i + 1, pathSegs);
+        }
+        return root;
+    };
+    
     // A very simple "new inner trundler" that just performs concrete property access
     // Note that every "strategy" is also a "trundler" of this type, considering just the first two arguments
     fluid.concreteTrundler = function (source, seg) {
@@ -1538,7 +1553,7 @@ var fluid = fluid || fluid_1_5;
         defaultValueMerge:  100,
         subcomponentRecord: 200,
         distribution:       300,
-        rendererDecorator:  400,
+        // rendererDecorator:  400, // TODO, these are probably honoured already as "user"
         user:               500,  
         demands:            600 // and above
     };
@@ -1577,26 +1592,32 @@ var fluid = fluid || fluid_1_5;
                                               fluid.simpleGingerBlock(userOptions, "user")]);
         }
         
-        mergeBlocks.sort(fluid.priorityComparator);
-        
         // var transRec = fluid.lastTransformationRecord(extraArgs);
         // if (transRec) {
         //    extraArgs = fluid.transformOptions(extraArgs, transRec);
         //}
         var target = {};
+        var sourceStrategies = [], sources = [];
         var baseMergeOptions = {
             target: target,
-            sourceStrategies: fluid.getMembers(mergeBlocks, "strategy")
+            sourceStrategies: sourceStrategies
             };
-        var mergeOptions = fluid.makeMergeOptions(compiledPolicy.builtins, fluid.getMembers(mergeBlocks, "target"), baseMergeOptions);
-
-        //merged = fluid.applyDefaultValueMergePolicy(defaults, merged);
+        var updateBlocks = function () {
+            mergeBlocks.sort(fluid.priorityComparator);
+            sourceStrategies.length = 0; sources.length = 0;
+            fluid.each(mergeBlocks, function (block) {
+                sourceStrategies.push(block.strategy);
+                sources.push(block.target);
+            });
+        };
+        updateBlocks();
+        var mergeOptions = fluid.makeMergeOptions(compiledPolicy.builtins, sources, baseMergeOptions);
+        mergeOptions.mergeBlocks = mergeBlocks;
+        mergeOptions.updateBlocks = updateBlocks;
 
         that.options = target;
-        fluid.deliverOptionsStrategy(that, target, mergeOptions.strategy);
-        fluid.each(mergeBlocks, function (mergeBlock) { mergeBlock.initter();});
-        mergeOptions.initter();
-        delete target.mergePolicy;
+        fluid.deliverOptionsStrategy(that, target, mergeOptions);
+        return mergeOptions;
     };
     
     // The Fluid Component System proper
@@ -1660,22 +1681,37 @@ var fluid = fluid || fluid_1_5;
      * @param {Object} options user-supplied options to merge with the defaults
      */
     // NOTE: the 3rd argument localOptions is NOT to be advertised as part of the stable API, it is present
-    // just to allow backward compatibility whilst grade specifications are not mandatory
-    fluid.initLittleComponent = function (name, options, localOptions) {
+    // just to allow backward compatibility whilst grade specifications are not mandatory - similarly for 4th arg "receiver"
+    fluid.initLittleComponent = function (name, userOptions, localOptions, receiver) {
         var that = fluid.typeTag(name);
-        // TODO: nickName must be available earlier than other merged options so that component may resolve to itself
-        that.nickName = options && options.nickName ? options.nickName : fluid.computeNickName(that.typeName);
         localOptions = localOptions || {gradeNames: "fluid.littleComponent"};
         
-        fluid.mergeComponentOptions(that, name, options, localOptions);
-        fluid.initLifecycleFunctions(that);
-        fluid.fireEvent(that.options, "preInitFunction", that);
-
-        if (fluid.hasGrade(that.options, "fluid.eventedComponent")) {
-            fluid.instantiateFirers(that, that.options);
+        var mergeOptions = fluid.mergeComponentOptions(that, name, userOptions, localOptions);
+        var options = that.options;
+        var optionsNickName = fluid.driveStrategy(options, "nickName", mergeOptions.strategy);
+        that.nickName = optionsNickName || fluid.computeNickName(that.typeName);
+        fluid.driveStrategy(options, "gradeNames", mergeOptions.strategy);
+        var evented = fluid.hasGrade(options, "fluid.eventedComponent");
+        if (evented) {
+            that.events = {};
         }
-        if (!fluid.hasGrade(that.options, "autoInit")) {
-            fluid.clearLifecycleFunctions(that.options);
+        (receiver || fluid.identity)(that, options, mergeOptions.strategy);
+        
+        // TODO: ****THIS**** is the point we must deliver and suspend!! Construct the "component skeleton" first, and then continue
+        // for as long as we can continue to find components.
+        fluid.each(mergeOptions.mergeBlocks, function (mergeBlock) { mergeBlock.initter();});
+        mergeOptions.initter();
+        delete options.mergePolicy;
+        
+        fluid.initLifecycleFunctions(that);
+        fluid.fireEvent(options, "preInitFunction", that);
+
+        if (evented) {
+            fluid.instantiateFirers(that, options);
+            fluid.mergeListeners(that, that.events, options.listeners);
+        }
+        if (!fluid.hasGrade(options, "autoInit")) {
+            fluid.clearLifecycleFunctions(options);
         }
         return that;
     };
@@ -1761,12 +1797,6 @@ var fluid = fluid || fluid_1_5;
         var togo;
         if (typeof (entry) !== "function") {
             var entryType = typeof (entry) === "string" ? entry : entry.type;
-            var globDef = fluid.defaults(true, entryType);
-            if (globDef !== undefined) {
-            // TODO: remove "reverse merge" and "global defaults" from framework which is only used in Reorderer
-            // due to change in semantics of fluid.merge we now need this algorithm as a stopgap
-                fluid.reverseMerge(that.options, globDef);
-            }
             togo = entryType === "fluid.emptySubcomponent" ?
                 fluid.emptySubcomponent(entry.options) :
                 fluid.invokeGlobalFunction(entryType, args);
@@ -1776,11 +1806,8 @@ var fluid = fluid || fluid_1_5;
 
         // TODO: deprecate "returnedOptions" and incorporate into regular ginger world system
         var returnedOptions = togo ? togo.returnedOptions : null;
-        if (returnedOptions) {
-            fluid.merge(that.options.mergePolicy, that.options, returnedOptions);
-            if (returnedOptions.listeners) {
-                fluid.mergeListeners(that, that.events, returnedOptions.listeners);
-            }
+        if (returnedOptions && returnedOptions.listeners) {
+            fluid.mergeListeners(that, that.events, returnedOptions.listeners);
         }
         return togo;
     };

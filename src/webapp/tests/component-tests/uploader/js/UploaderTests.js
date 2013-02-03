@@ -481,7 +481,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {   
                 key: "single",
                 label: "Single-file integration tests",
-                supportsBinaryXHR: {
+                contextTag: {
                     type: "typeTag",
                     typeName: "fluid.uploader.singleFile"
                 },          
@@ -491,7 +491,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {   
                 key: "HTML5",
                 label: "HTML5 integration tests",
-                supportsBinaryXHR: {
+                contextTag: {
                     type: "typeTag",
                     typeName: "fluid.browser.supportsBinaryXHR"
                 },
@@ -505,7 +505,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {   
                 key: "Flash",
                 label: "Flash integration tests",
-                supportsBinaryXHR: {
+                contextTag: {
                     type: "typeTag",
                     typeName: "fluid.browser.supportsFlash"
                 },
@@ -523,7 +523,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ];
                             
         var setStaticEnvironment = function (integration) {
-            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag(integration.supportsBinaryXHR.typeName);
+            fluid.staticEnvironment.contextTag = fluid.typeTag(integration.contextTag.typeName);
             
             if (integration.uploaderConfig) {
                 fluid.staticEnvironment.uploaderConfig = fluid.progressiveCheckerForComponent({

@@ -756,12 +756,13 @@ fluid.registerNamespace("fluid.tests");
     
     fluid.defaults("fluid.tests.eventParent", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
+        childType: "fluid.tests.eventChild", // test resolved type reference
         events: {
-            parentEvent: null  
+            parentEvent: null
         },
         components: {
             eventChild: {
-                type: "fluid.tests.eventChild"
+                type: "{that}.options.childType"
             },
             listenerHolder: {
                 type: "fluid.tests.listenerHolder"
@@ -829,11 +830,24 @@ fluid.registerNamespace("fluid.tests");
     
     /** FLUID-4398 - event injection and event/listener boiling test **/
     
+    fluid.tests.invokerListener = function (injectThat, transmitThat) {
+        injectThat.invokerListenerCheck = injectThat === transmitThat;
+    };
+    
     fluid.defaults("fluid.tests.eventParent3", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         events: {
             parentEvent1: null,
             parentEvent2: null  
+        },
+        listeners: { // This tests FLUID-4709
+            parentEvent1: "{that}.invokerListener"
+        },
+        invokers: {
+            invokerListener: {
+                funcName: "fluid.tests.invokerListener",
+                args: ["{that}", "{arguments}.0"]
+            }
         },
         components: {
             eventChild: {
@@ -865,7 +879,7 @@ fluid.registerNamespace("fluid.tests");
         }
     });
     
-    fluid.tests.globalListener = function(parent, arg2) {
+    fluid.tests.globalListener = function (parent, arg2) {
         if (!parent.listenerRecord) {
             parent.listenerRecord = [];
         };
@@ -878,9 +892,10 @@ fluid.registerNamespace("fluid.tests");
         that.eventChild.events.relayEvent.addListener(function(arg) {
             received.arg = arg;
         });
-        that.events.parentEvent1.fire(that); // first event does nothing
+        that.events.parentEvent1.fire(that); // first event only fires to invoker
         jqUnit.assertNoValue("No event on first fire", that.listenerRecord);
         jqUnit.assertNoValue("No relay on first fire", received.arg);
+        jqUnit.assertTrue("Listener fired to invoker", that.invokerListenerCheck); // FLUID-4709
         that.events.parentEvent2.fire(3, 4);
         jqUnit.assertDeepEq("Received boiled argument after dual fire", [4], that.listenerRecord);
         jqUnit.assertEquals("Received relayed fire after dual fire", 4, received.arg);

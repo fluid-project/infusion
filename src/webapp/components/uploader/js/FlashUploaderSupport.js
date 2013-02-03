@@ -21,6 +21,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    // TODO: This context name is required, but has no visible detection support
+    fluid.staticEnvironment.supportsFlash10 = fluid.typeTag("fluid.uploader.flash.10"); 
 
     fluid.uploader = fluid.uploader || {};
     
