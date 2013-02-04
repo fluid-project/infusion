@@ -124,7 +124,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
           
     });
   
-    jqUnit.test("reverse and replace merge at depth", function () {
+    jqUnit.test("replace merge at depth", function () {
         var target = {
             root: {
                 prop1: "thing1",
@@ -136,10 +136,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 prop2: "thing3"
             }
         };
-        var target1 = fluid.copy(target);
-        fluid.reverseMerge(target1, source);
-        jqUnit.assertEquals("prop1 should have been preserved", "thing1", target1.root.prop1);
-        
+
         var target2 = fluid.copy(target);
         fluid.merge(null, target2, source);
         jqUnit.assertEquals("prop1 should have been preserved", "thing1", target2.root.prop1);
@@ -151,28 +148,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var target4 = fluid.merge({root: "replace"}, target, null, source, {otherThing: 1});
         var expected = $.extend(true, source, {otherThing: 1});
         jqUnit.assertDeepEq("prop1 should have been destroyed", expected, target4);
-    });
-    
-    jqUnit.test("reverse merge at root", function () {
-        var target = {
-            prop2: "old"
-        };
-        var source = {
-            prop2: "new"
-        };
-
-        var testReverseMerge = function (policy, expected) {
-            var thisTarget = fluid.copy(target);
-            var reverse = policy === "reverse";
-            // Note change in semantic in new framework - we no longer destructively merge onto target, it behaves just
-            // like another source. We could not do this consistently and maintain semantics of mergePolicies as well as 
-            // tracking work
-            var result = reverse ? fluid.reverseMerge(thisTarget, source) : fluid.merge(policy, thisTarget, source); 
-            jqUnit.assertEquals("\"" + policy + "\" policy", expected, (reverse ? thisTarget : result).prop2);
-        };
-
-        testReverseMerge("reverse", target.prop2);
-        testReverseMerge(null,  source.prop2);
     });
     
     jqUnit.test("copy", function () {

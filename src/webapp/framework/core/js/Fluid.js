@@ -1234,7 +1234,7 @@ var fluid = fluid || fluid_1_5;
         }
     });
     
-        
+    
     fluid.preInitModelComponent = function (that) {
         that.model = that.options.model || {};
         that.applier = that.options.applier || (fluid.makeChangeApplier ? fluid.makeChangeApplier(that.model, that.options.changeApplierOptions) : null);
@@ -1268,10 +1268,12 @@ var fluid = fluid || fluid_1_5;
     };
     
     var emptyPolicy = {};
+    // unsupported, NON-API function
     fluid.derefMergePolicy = function (policy) {
         return (policy? policy["*"]: emptyPolicy) || emptyPolicy;
     }
     
+    // unsupported, NON-API function
     fluid.compileMergePolicy = function (mergePolicy) {
         var builtins = {}, defaultValues = {};
         var togo = {builtins: builtins, defaultValues: defaultValues};
@@ -1312,23 +1314,8 @@ var fluid = fluid || fluid_1_5;
         return typeof(policy) === "string"
             && (policy.indexOf(",") === -1 && !/replace|preserve|nomerge|noexpand/.test(policy));
     };
-    
-    // unsupported, NON-API function
-    // This function will be removed once the Reorderer no longer requires "reverse merge"
-    fluid.reverseMerge = function (target, source) {
-        fluid.each(source, function (value, key) {
-            var existing = target[key];
-            if (existing !== undefined) {
-                if (!fluid.isPrimitive(target[key])) {
-                    fluid.reverseMerge(target[key], source[key]);
-                }
-            }
-            else {
-                target[key] = fluid.copy(source[key]);
-            }
-        });
-    };
-    
+
+    // unsupported, NON-API function    
     fluid.mergeOneImpl = function (thisTarget, thisSource, j, sources, newPolicy, i, segs, options) {
         var togo = thisTarget;
 
@@ -1375,6 +1362,7 @@ var fluid = fluid || fluid_1_5;
         return togo;
     }
     
+    // unsupported, NON-API function
     fluid.fetchMergeChildren = function (target, i, segs, sources, mergePolicy, options) {
         var thisPolicy = fluid.derefMergePolicy(mergePolicy);
         for (var j = sources.length - 1; j >= 0; -- j) { // this direction now irrelevant - control is in the strategy
@@ -1402,6 +1390,7 @@ var fluid = fluid || fluid_1_5;
         return target;
     };
     
+    // unsupported, NON-API function
     fluid.makeMergeStrategy = function (options) {
         var strategy = function (target, name, i, segs, sources, policy) {
             if (i > 50) {
@@ -1497,6 +1486,7 @@ var fluid = fluid || fluid_1_5;
         return options.target;
     };
     
+    // unsupported, NON-API function    
     fluid.simpleGingerBlock = function (source, recordType) {
         var block = {
             target: source,
@@ -1509,6 +1499,7 @@ var fluid = fluid || fluid_1_5;
         return block;
     };
     
+    // unsupported, NON-API function    
     fluid.makeMergeOptions = function (policy, sources, userOptions) {
         var options = {
             mergePolicy: policy,
@@ -1532,6 +1523,7 @@ var fluid = fluid || fluid_1_5;
         return transFunc.call(null, options, transRec.config);
     };
     
+    // unsupported, NON-API function    
     fluid.transformOptionsBlocks = function(mergeBlocks, transformOptions, recordTypes) {
         fluid.each(recordTypes, function (recordType) {       
             var block = fluid.find_if(mergeBlocks, function (block) { return block.recordType === recordType; });
@@ -1778,14 +1770,16 @@ var fluid = fluid || fluid_1_5;
     };
 
     fluid.diagnoseFailedView = fluid.identity;
-    
+
+    // unsupported, NON-API function    
     fluid.makeRootDestroy = function (that) {
         return function () {
             fluid.fireEvent(that, "events.onClear", [that, "", null]);
             fluid.fireEvent(that, "events.onDestroy", [that, "", null]);
         }; 
     };
-    
+
+    // unsupported, NON-API function    
     fluid.initComponent = function (componentName, initArgs) {
         var options = fluid.defaults(componentName);
         if (!options.gradeNames) {
@@ -1972,7 +1966,8 @@ var fluid = fluid || fluid_1_5;
         messageBase: {},
         parents: []
     });
-    
+
+    // unsupported, NON-API function    
     fluid.messageResolver.resolveOne = function (messageBase, messagecodes) {
         for (var i = 0; i < messagecodes.length; ++i) {
             var code = messagecodes[i];
