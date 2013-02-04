@@ -20,22 +20,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
-    /**
-     * A Generic store grade that defines base uiOptions store API.
-     */
-    fluid.defaults("fluid.uiOptions.store", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        invokers: {
-            get: "fluid.uiOptions.store.get",
-            set: "fluid.uiOptions.store.set"
-        },
-        nickName: "store" // framework bug FLUID-4636 - this is not resolved
-    });
-
-    fluid.uiOptions.store.preInit = function (that) {
-        that.nickName = "store"; // work around FLUID-4636
-    };
-
     /****************
      * Cookie Store *
      ****************/
@@ -45,7 +29,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.cookieStore", {
-        gradeNames: ["fluid.uiOptions.store", "autoInit"],
+        gradeNames: ["fluid.dataSource", "autoInit"],
         cookie: {
             name: "fluid-ui-settings",
             path: "/",
@@ -53,14 +37,14 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.demands("fluid.uiOptions.store.get", "fluid.cookieStore", {
+    fluid.demands("fluid.dataSource.get", "fluid.cookieStore", {
         funcName: "fluid.cookieStore.get",
-        args: "{store}.options.cookie.name"
+        args: "{that}.options.cookie.name"
     });
 
-    fluid.demands("fluid.uiOptions.store.set", "fluid.cookieStore", {
+    fluid.demands("fluid.dataSource.set", "fluid.cookieStore", {
         funcName: "fluid.cookieStore.set",
-        args: ["{arguments}.0", "{store}.options.cookie"]
+        args: ["{arguments}.0", "{that}.options.cookie"]
     });
 
     /**
@@ -126,17 +110,17 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.tempStore", {
-        gradeNames: ["fluid.uiOptions.store", "fluid.modelComponent", "autoInit"]
+        gradeNames: ["fluid.dataSource", "fluid.modelComponent", "autoInit"]
     });
 
-    fluid.demands("fluid.uiOptions.store.get", "fluid.tempStore", {
+    fluid.demands("fluid.dataSource.get", "fluid.tempStore", {
         funcName: "fluid.identity",
-        args: "{store}.model"
+        args: "{that}.model"
     });
 
-    fluid.demands("fluid.uiOptions.store.set", "fluid.tempStore", {
+    fluid.demands("fluid.dataSource.set", "fluid.tempStore", {
         funcName: "fluid.tempStore.set",
-        args: ["{arguments}.0", "{store}.applier"]
+        args: ["{arguments}.0", "{that}.applier"]
     });
 
     fluid.tempStore.set = function (settings, applier) {
