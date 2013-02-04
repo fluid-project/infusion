@@ -1423,7 +1423,7 @@ var fluid = fluid || fluid_1_5;
      */
     fluid.emptySubcomponent = function (options) {
         var that = {};
-        options = $.makeArray(options);
+        options = fluid.makeArray(options);
         for (var i = 0; i < options.length; ++i) {
             that[options[i]] = fluid.identity;
         }
