@@ -174,6 +174,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         fluid.registerNamespace("fluid.tests.uploader");
         
+        // TODO: manually delete the type tags that are put there by ProgressiveEnhancement so we can put in our own simulations
+        // Awaiting better system in FLUID-4794
+        delete fluid.staticEnvironment["supportsBinaryXHR"];
+        delete fluid.staticEnvironment["supportsFormData"];
+        delete fluid.staticEnvironment["supportsFlash"]
+        
         fluid.tests.uploader.noIoC = function (options) {
             var that = fluid.uploader(".flc-uploader", options);
             return that;
@@ -505,10 +511,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {   
                 key: "Flash",
                 label: "Flash integration tests",
-                contextTag: {
+                contextTag: [{
                     type: "typeTag",
                     typeName: "fluid.browser.supportsFlash"
-                },
+                }, {
+                    type: "typeTag",
+                    typeName: "fluid.uploader.flash.10"
+                }
+                ],
                 demoRemote: {
                     type: "typeTag",
                     typeName: "fluid.tests.demoRemote"
@@ -523,7 +533,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ];
                             
         var setStaticEnvironment = function (integration) {
-            fluid.staticEnvironment.contextTag = fluid.typeTag(integration.contextTag.typeName);
+            var contexts = fluid.makeArray(integration.contextTag);
+            fluid.each(contexts, function (context, index) {
+                fluid.staticEnvironment["contextTag"+index] = fluid.typeTag(context.typeName);
+            });
             
             if (integration.uploaderConfig) {
                 fluid.staticEnvironment.uploaderConfig = fluid.progressiveCheckerForComponent({
@@ -542,8 +555,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return that;
         };
         
-        var cleanupEnvironment = function () {
-            delete fluid.staticEnvironment.supportsBinaryXHR;
+        var cleanupEnvironment = function (integration) {
+            var contexts = fluid.makeArray(integration.contextTag);
+            fluid.each(contexts, function (context, index) {
+                delete fluid.staticEnvironment["contextTag"+index];
+            });
             delete fluid.staticEnvironment.uploaderConfig;
             delete fluid.staticEnvironment.demo;            
         };
@@ -558,7 +574,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 that.uploaderTestSet = testset;
                 integration.test(that, testset);
             } finally {
-                cleanupEnvironment();
+                cleanupEnvironment(integration);
             }
         };
         

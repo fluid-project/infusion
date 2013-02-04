@@ -506,14 +506,6 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     // unsupported, non-API function    
-    fluid.locateTransformationRecord = function (that) {
-        var matches = fluid.locateAllDemands(that, ["fluid.transformOptions"]);
-        return fluid.find(matches, function(match) {
-            return match.uncess === 0 && fluid.contains(match.spec.contexts, that.typeName)? match.spec.spec : undefined;
-        });
-    };
-    
-    // unsupported, non-API function    
     fluid.localRecordExpected = ["type", "options", "args", "mergeOptions", "createOnEvent", "priority"];
     // unsupported, non-API function    
     fluid.checkComponentRecord = function (defaults, localRecord) {
@@ -616,10 +608,6 @@ var fluid_1_5 = fluid_1_5 || {};
         var togo = fluid.transform(expandList, function (value) {
             return fluid.generateExpandBlock(value, that, mergePolicy);
         });
-        // var transRec = fluid.locateTransformationRecord(that);
-        // if (transRec) {
-        //    togo[0].transformOptions = transRec.options;
-        // }
         return togo;
     };
 
@@ -679,9 +667,20 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.fail("demandspec ", demandspec, 
                     " is invalid - cannot specify literal options together with mergeOptions"); 
         }
+        if (demandspec.transformOptions) {
+            demandspec.options = $.extend(true, {}, demandspec.options, {
+                transformOptions: demandspec.transformOptions
+            });
+        }
 
         options.componentRecord = $.extend(true, {}, options.componentRecord, 
-            fluid.censorKeys(demandspec, ["funcName", "registeredFrom"]));
+            fluid.censorKeys(demandspec, ["funcName", "registeredFrom", "transformOptions"]));
+            
+        // temporary hack to keep Uploader broadly working until we rewrite its very nonstandard options workflow using Skywalker
+        if (options.componentRecord.preOptions) { 
+            options.componentRecord.options = fluid.expandOptions(options.componentRecord.preOptions, parentThat);
+            delete options.componentRecord.preOptions;
+        }
         
         var demands = fluid.makeArray(demandspec.args);
         if (demands.length === 0) {
@@ -1531,7 +1530,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             options.mergePolicy = fluid.compileMergePolicy(options.mergePolicy).builtins;
             fluid.makeExpandStrategy(options);
             options.initter = function () {
-                options.target = fluid.fetchExpandChildren(options.target, source, options.mergePolicy, false, options);
+                options.target = fluid.fetchExpandChildren(options.target, options.source, options.mergePolicy, false, options);
             };
         }
         else { // these init immediately since we must deliver a valid root target

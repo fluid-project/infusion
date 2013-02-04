@@ -7,7 +7,6 @@
  * For information on copyright, see the individual Infusion source code files: 
  * https://github.com/fluid-project/infusion/
  */
-
 /*
 Copyright 2007-2010 University of Cambridge
 Copyright 2007-2009 University of Toronto
@@ -333,6 +332,29 @@ var fluid = fluid || fluid_1_5;
         }
     };
     
+    fluid.make_find = function (find_if) {
+        var target = find_if ? false : undefined;
+        return function (source, func, deffolt) {
+            var disp;
+            if (fluid.isArrayable(source)) {
+                for (var i = 0; i < source.length; ++i) {
+                    disp = func(source[i], i);
+                    if (disp !== target) {
+                        return find_if ? source[i] : disp;
+                    }
+                }
+            } else {
+                for (var key in source) {
+                    disp = func(source[key], key);
+                    if (disp !== target) {
+                        return find_if ? source[key] : disp;
+                    }
+                }
+            }
+            return deffolt;
+        };
+    };
+    
     /** Scan through a list or hash of objects, terminating on the first member which
      * matches a predicate function.
      * @param source {Arrayable or Object} The list or hash of objects to be searched.
@@ -343,28 +365,15 @@ var fluid = fluid || fluid_1_5;
      * a list member. The default will be the natural value of <code>undefined</code>
      * @return The first return value from the predicate function which is not <code>undefined</code>
      */
-    fluid.find = function (source, func, deflt) {
-        var disp;
-        if (fluid.isArrayable(source)) {
-            for (var i = 0; i < source.length; ++i) {
-                disp = func(source[i], i);
-                if (disp !== undefined) {
-                    return disp;
-                }
-            }
-        } else {
-            for (var key in source) {
-                disp = func(source[key], key);
-                if (disp !== undefined) {
-                    return disp;
-                }
-            }
-        }
-        return deflt;
-    };
+    fluid.find = fluid.make_find(false);
+    /** The same signature as fluid.find, only the return value is the actual element for which the
+     * predicate returns a value different from <code>false</code> 
+     */
+    fluid.find_if = fluid.make_find(true); 
     
     /** Scan through a list of objects, "accumulating" a value over them
-     * (may be a straightforward "sum" or some other chained computation).
+     * (may be a straightforward "sum" or some other chained computation). "accumulate" is the name derived
+     * from the C++ STL, other names for this algorithm are "reduce" or "fold".
      * @param list {Array} The list of objects to be accumulated over.
      * @param fn {Function} An "accumulation function" accepting the signature (object, total, index) where
      * object is the list member, total is the "running total" object (which is the return value from the previous function),
@@ -1499,13 +1508,15 @@ var fluid = fluid || fluid_1_5;
     };
     
     fluid.simpleGingerBlock = function (source, recordType) {
-        return {
+        var block = {
             target: source,
+            simple: true,
             strategy: fluid.concreteTrundler,
             initter: fluid.identity,
             recordType: recordType,
             priority: fluid.mergeRecordTypes[recordType]
         };
+        return block;
     };
     
     fluid.makeMergeOptions = function (policy, sources, userOptions) {
@@ -1525,22 +1536,19 @@ var fluid = fluid || fluid_1_5;
     };
 
     // unsupported, NON-API function
-    fluid.transformOptions = function (mergeArgs, transRec) {
+    fluid.transformOptions = function (options, transRec) {
         fluid.expect("Options transformation record", ["transformer", "config"], transRec);
         var transFunc = fluid.getGlobalValue(transRec.transformer);
-        var togo = fluid.transform(mergeArgs, function (value, key) {
-            return key === 0 ? value : transFunc.call(null, value, transRec.config);
-        });
-        return togo;
+        return transFunc.call(null, options, transRec.config);
     };
     
-    // unsupported, NON-API function
-    fluid.lastTransformationRecord = function (extraArgs) {
-        for (var i = extraArgs.length - 1; i >= 0; --i) {
-            if (extraArgs[i] && extraArgs[i].transformOptions) {
-                return extraArgs[i].transformOptions;
+    fluid.transformBlocks = function(mergeBlocks, transformOptions, recordTypes) {
+        fluid.each(recordTypes, function (recordType) {       
+            var block = fluid.find_if(mergeBlocks, function (block) { return block.recordType === recordType; });
+            if (block) {
+                block[block.simple? "target": "source"] = fluid.transformOptions(block.source, transformOptions);
             }
-        }
+        });
     };
     
     // unsupported, NON-API function
@@ -1591,11 +1599,6 @@ var fluid = fluid || fluid_1_5;
             mergeBlocks = mergeBlocks.concat([fluid.simpleGingerBlock(defaults, "defaults"), 
                                               fluid.simpleGingerBlock(userOptions, "user")]);
         }
-        
-        // var transRec = fluid.lastTransformationRecord(extraArgs);
-        // if (transRec) {
-        //    extraArgs = fluid.transformOptions(extraArgs, transRec);
-        //}
         var target = {};
         var sourceStrategies = [], sources = [];
         var baseMergeOptions = {
@@ -1614,6 +1617,12 @@ var fluid = fluid || fluid_1_5;
         var mergeOptions = fluid.makeMergeOptions(compiledPolicy.builtins, sources, baseMergeOptions);
         mergeOptions.mergeBlocks = mergeBlocks;
         mergeOptions.updateBlocks = updateBlocks;
+        
+        var transformOptions = fluid.driveStrategy(target, "transformOptions", mergeOptions.strategy);
+        if (transformOptions) {
+            fluid.transformBlocks(mergeBlocks, transformOptions, ["user", "subcomponentRecord"]);
+            updateBlocks();
+        }
 
         that.options = target;
         fluid.deliverOptionsStrategy(that, target, mergeOptions);
@@ -1690,7 +1699,7 @@ var fluid = fluid || fluid_1_5;
         var options = that.options;
         var optionsNickName = fluid.driveStrategy(options, "nickName", mergeOptions.strategy);
         that.nickName = optionsNickName || fluid.computeNickName(that.typeName);
-        fluid.driveStrategy(options, "gradeNames", mergeOptions.strategy);
+        var gradeNames = fluid.driveStrategy(options, "gradeNames", mergeOptions.strategy);
         var evented = fluid.hasGrade(options, "fluid.eventedComponent");
         if (evented) {
             that.events = {};
@@ -1737,7 +1746,7 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.initLifecycleFunctions = function (that) {
-        var gradeNames = that.options.gradeNames;
+        var gradeNames = that.options.gradeNames || [];
         fluid.each(fluid.lifecycleFunctions, function (func, key) {
             var value = that.options[key];
             for (var i = gradeNames.length - 1; i >= 0; -- i) { // most specific grades are at front

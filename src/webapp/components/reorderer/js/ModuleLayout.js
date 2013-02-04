@@ -173,6 +173,9 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         invokers: { // Use very specific arguments for selectors to avoid circularity
+            // also, do not share our DOM binder for our own selectors with parent, to avoid inability to 
+            // update DOM binder's selectors after initialisation - and since we require a DOM binder in order to compute
+            // the modified selectors for upward injection
             computeLayout: {
                 funcName: "fluid.moduleLayout.computeLayout",
                 args: ["{that}", "{reorderer}.options.selectors.modules", "{that}.dom"]
