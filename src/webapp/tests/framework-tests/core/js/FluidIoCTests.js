@@ -689,7 +689,7 @@ fluid.registerNamespace("fluid.tests");
             var baseExpandOptions = {
                 sourceStrategy: fluid.concreteTrundler, 
                 fetcher: expandFetcher,
-                mergePolicy: { "unexpandable" : "noexpand", "unexpandableString" : "noexpand"}
+                mergePolicy: fluid.compileMergePolicy({ "unexpandable" : "noexpand", "unexpandableString" : "noexpand"}).builtins
                 };
             var allExpandOptions = fluid.transform(blocks, function(block) {
                 var thisOptions = $.extend(true, {}, baseExpandOptions);
@@ -1170,7 +1170,11 @@ fluid.registerNamespace("fluid.tests");
             mergeChild: {
                 type: "fluid.tests.mergeChild",
                 options: {
-                    dangerousParams: "{mergeComponent}.nothingUseful"
+                    mergePolicy: {
+                        dangerousParamsII: "noexpand"  
+                    },
+                    dangerousParams: "{mergeComponent}.nothingUseful",
+                    dangerousParamsII: "{mergeComponent}.nothingUseful"
                 }
             }
         }  
@@ -1179,9 +1183,11 @@ fluid.registerNamespace("fluid.tests");
     jqUnit.test("FLUID-4129 merge policy for component options", function () {
         var mergeComp = fluid.tests.mergeComponent();
         var defs = fluid.defaults("fluid.tests.mergeComponent");
-        jqUnit.assertEquals("Dangerous parameters unexpanded",
-            defs.components.mergeChild.options.dangerousParams, 
-            mergeComp.mergeChild.options.dangerousParams);
+        var options = mergeComp.mergeChild.options;
+        jqUnit.assertEquals("Dangerous parameters via grade defaults unexpanded",
+            "{mergeComponent}.nothingUseful", options.dangerousParams);
+        jqUnit.assertEquals("Dangerous parameters via grade defaults unexpanded",
+            "{mergeComponent}.nothingUseful", options.dangerousParamsII);
     });
 
     /** Component lifecycle functions and merging test - includes FLUID-4257 **/
@@ -1424,7 +1430,6 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.littleComponent", "autoInit"],
         mergePolicy: {
             parent: "nomerge",
-            mergeAllOptions: "nomerge" // TODO: This should not be necessary!!
         },
         finalInitFunction: "fluid.tests.guidedChildInit"
     });

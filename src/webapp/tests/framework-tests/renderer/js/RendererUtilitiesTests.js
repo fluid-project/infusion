@@ -146,14 +146,6 @@ fluid.registerNamespace("fluid.tests");
          * expansion, not both */
         
         fluid.defaults("fluid.tests.rendererMiddle", {
-            mergePolicy: {
-                "rendererOptions.instantiator": "nomerge",
-                "rendererOptions.parentComponent": "nomerge"  
-            },
-            rendererOptions: {
-                instantiator: "{instantiator}",
-                parentComponent: "{rendererMiddle}"
-            },
             selectors: {
                 decorated: ".decorated-component"
             },
@@ -162,7 +154,11 @@ fluid.registerNamespace("fluid.tests");
                     decorators: {
                         type: "fluid",
                         func: "fluid.tests.rendererChild",
-                        options: { decoratorValue: "{rendererParent}.options.parentValue"}
+                        options: { decoratorValue: "decoratorValue" 
+                        // "{rendererParent}.options.parentValue" - this type of reference can no longer be supported at all - 
+                        // since FLUID-4129 was resolved, we can no longer fake out the grade resolution system and avoid the
+                        // mergePolicy of "noexpand" applied to all protoTree material
+                        }
                     }
                 }
             }
@@ -302,7 +298,7 @@ fluid.registerNamespace("fluid.tests");
             var decorated = component.middle.locate("decorated");
             jqUnit.assertEquals("Decorated text resolved from top level", parentValue, decorated.text());
             var child = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
-            jqUnit.assertEquals("Located decorator with IoC-resolved value", parentValue, child.options.decoratorValue);
+            jqUnit.assertEquals("Located decorator without IoC-resolved value", "decoratorValue", child.options.decoratorValue);
             component.middle.refreshView();
             var child2 = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
             jqUnit.assertNotEquals("Rendering has produced new component", child, child2);

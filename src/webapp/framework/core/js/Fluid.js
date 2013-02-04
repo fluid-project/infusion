@@ -1266,13 +1266,6 @@ var fluid = fluid || fluid_1_5;
         }
         return source;
     };
-
-    // TODO: so far, profiling does not suggest that this implementation is a performance risk, but we really should start
-    // "precompiling" these.
-    // unsupported, NON-API function
-    fluid.mergePolicyIs = function (policy, test) {
-        return typeof (policy) === "string" && $.inArray(test, policy.split(/\s*,\s*/)) !== -1;
-    };
     
     var emptyPolicy = {};
     fluid.derefMergePolicy = function (policy) {
@@ -1287,9 +1280,10 @@ var fluid = fluid || fluid_1_5;
             return togo;
         }
         fluid.each(mergePolicy, function (value, key) {
-            var parsed;
+            var parsed = {}, builtin;
             if (typeof(value) === "function") {
-                parsed = value;
+                parsed.func = value;
+                builtin = true;
             }
             else if (!fluid.isDefaultValueMergePolicy(value)) {
                 var split = value.split(/\s*,\s*/);
@@ -1297,13 +1291,16 @@ var fluid = fluid || fluid_1_5;
                 for (var i = 0; i < split.length; ++ i) {
                     parsed[split[i]] = true;
                 }
+                builtin = true;
             }
             else {
                 // Convert to ginger self-reference - NB, this can only be parsed by IoC
                 fluid.set(defaultValues, key, "{that}.options." + value);
                 togo.hasDefaults = true;
             }
-            fluid.set(builtins, fluid.composePath(key, "*"), parsed);
+            if (builtin) {
+                fluid.set(builtins, fluid.composePath(key, "*"), parsed);
+            }
         });
         return togo;
     };
@@ -1335,11 +1332,10 @@ var fluid = fluid || fluid_1_5;
     fluid.mergeOneImpl = function (thisTarget, thisSource, j, sources, newPolicy, i, segs, options) {
         var togo = thisTarget;
 
-        var funcPolicy = typeof (newPolicy) === "function";
         var primitiveTarget = fluid.isPrimitive(thisTarget);
 
         if (thisSource !== undefined) {
-            if (!funcPolicy && thisSource !== null && typeof (thisSource) === "object" &&
+            if (!newPolicy.func && thisSource !== null && typeof (thisSource) === "object" &&
                     !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
                     !newPolicy.preserve && !newPolicy.nomerge) {
                 if (primitiveTarget) {
@@ -1349,8 +1345,8 @@ var fluid = fluid || fluid_1_5;
                 //options.recurse(thisTarget, i + 1, segs, sources, newPolicyHolder, options);
             } else {
                 sources[j] = undefined;
-                if (funcPolicy) {
-                    togo = newPolicy.call(null, thisTarget, thisSource, segs[i - 1], segs, i); // NB - change in this mostly unused argument
+                if (newPolicy.func) {
+                    togo = newPolicy.func.call(null, thisTarget, thisSource, segs[i - 1], segs, i); // NB - change in this mostly unused argument
                 } else {
                     togo = fluid.isValue(thisTarget) && newPolicy.preserve ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
                 }
@@ -1521,7 +1517,7 @@ var fluid = fluid || fluid_1_5;
     
     fluid.makeMergeOptions = function (policy, sources, userOptions) {
         var options = {
-            mergePolicy: policy, // TODO: with gingerness, we can compute this early
+            mergePolicy: policy,
             sources: sources,
             seenIds: {}
         };
@@ -1542,7 +1538,7 @@ var fluid = fluid || fluid_1_5;
         return transFunc.call(null, options, transRec.config);
     };
     
-    fluid.transformBlocks = function(mergeBlocks, transformOptions, recordTypes) {
+    fluid.transformOptionsBlocks = function(mergeBlocks, transformOptions, recordTypes) {
         fluid.each(recordTypes, function (recordType) {       
             var block = fluid.find_if(mergeBlocks, function (block) { return block.recordType === recordType; });
             if (block) {
@@ -1579,23 +1575,19 @@ var fluid = fluid || fluid_1_5;
     // unsupported, NON-API function
     fluid.mergeComponentOptions = function (that, componentName, userOptions, localOptions) {
         var defaults = fluid.defaults(componentName) || {};
-        var mergePolicy = $.extend({}, fluid.rootMergePolicy, defaults.mergePolicy);
-        var compiledPolicy = fluid.compileMergePolicy(mergePolicy);
+        var sharedMergePolicy = {};
+
         var mergeBlocks = [];
         
         var defaultGrades = defaults.gradeNames;
         if (!defaultGrades) {
-            mergeBlocks.push(fluid.simpleGingerBlock(fluid.copy(fluid.getGradedDefaults({}, "", localOptions.gradeNames), "localOptions")));
+            mergeBlocks.push(fluid.simpleGingerBlock(fluid.copy(fluid.getGradedDefaults({}, componentName, localOptions.gradeNames), "localOptions")));
         }
 
         if (fluid.expandComponentOptions) {
-            var highRecords = compiledPolicy.hasDefaults ? {defaultValueMerge: {options: compiledPolicy.defaultValues}} : {};
-            mergeBlocks = mergeBlocks.concat(fluid.expandComponentOptions(defaults, userOptions, that, highRecords));
+            mergeBlocks = mergeBlocks.concat(fluid.expandComponentOptions(sharedMergePolicy, defaults, userOptions, that));
         }
         else {
-            if (compiledPolicy.hasDefaults) {
-                fluid.fail("Cannot operate mergePolicy ", mergePolicy, " for component ", that, " without including FluidIoC.js"); 
-            }
             mergeBlocks = mergeBlocks.concat([fluid.simpleGingerBlock(defaults, "defaults"), 
                                               fluid.simpleGingerBlock(userOptions, "user")]);
         }
@@ -1614,14 +1606,36 @@ var fluid = fluid || fluid_1_5;
             });
         };
         updateBlocks();
-        var mergeOptions = fluid.makeMergeOptions(compiledPolicy.builtins, sources, baseMergeOptions);
+        var mergeOptions = fluid.makeMergeOptions(sharedMergePolicy, sources, baseMergeOptions);
         mergeOptions.mergeBlocks = mergeBlocks;
         mergeOptions.updateBlocks = updateBlocks;
         
+        // Decode the now available mergePolicy
+        var mergePolicy = fluid.driveStrategy(target, "mergePolicy", mergeOptions.strategy);
+        mergePolicy = $.extend({}, fluid.rootMergePolicy, mergePolicy);
+        var compiledPolicy = fluid.compileMergePolicy(mergePolicy);
+        // TODO: expandComponentOptions has already put some builtins here - performance implications of the now huge
+        // default mergePolicy material need to be investigated as well as this deep merge
+        $.extend(true, sharedMergePolicy, compiledPolicy.builtins); // ensure it gets broadcast to all sharers
+        
+        if (compiledPolicy.hasDefaults) {
+            if (fluid.generateExpandBlock) {
+                mergeBlocks.push(fluid.generateExpandBlock({
+                    options: compiledPolicy.defaultValues, 
+                    recordType: "defaultValueMerge",
+                    priority: fluid.mergeRecordTypes.defaultValueMerge
+                    }, that, {}));
+                updateBlocks();
+                }
+            else {
+                fluid.fail("Cannot operate mergePolicy ", mergePolicy, " for component ", that, " without including FluidIoC.js"); 
+            }
+        }
+        
         var transformOptions = fluid.driveStrategy(target, "transformOptions", mergeOptions.strategy);
         if (transformOptions) {
-            fluid.transformBlocks(mergeBlocks, transformOptions, ["user", "subcomponentRecord"]);
-            updateBlocks();
+            fluid.transformOptionsBlocks(mergeBlocks, transformOptions, ["user", "subcomponentRecord"]);
+            updateBlocks(); // because the possibly simple blocks may have changed target
         }
 
         that.options = target;

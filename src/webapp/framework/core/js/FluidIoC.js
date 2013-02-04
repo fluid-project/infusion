@@ -159,7 +159,8 @@ var fluid_1_5 = fluid_1_5 || {};
             mergeOptions.updateBlocks();
         });
     };
-    
+    // Main sequence point where the mergeOptions strategy is delivered from Fluid.js - here we construct all further
+    // strategies required on the IoC side and mount them into the shadow's getConfig for universal use
     fluid.deliverOptionsStrategy = function (that, target, mergeOptions) {
         var strategy = mergeOptions.strategy;
         var shadow = fluid.shadowForComponent(that);
@@ -569,7 +570,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     var addPolicyBuiltins = function (policy) {
         fluid.each(["mergePolicy", "argumentMap", "components", "invokers", "events", "listeners", "distributeOptions", "transformOptions"], function (key) {
-            policy[key] = "noexpand";
+            fluid.set(policy, [key, "*", "noexpand"], true);
         });
         return policy;
     };
@@ -581,15 +582,14 @@ var fluid_1_5 = fluid_1_5 || {};
         return expanded;
     };
 
-    var expandComponentOptionsImpl = function (defaults, userOptions, that, highRecords) {
+    var expandComponentOptionsImpl = function (mergePolicy, defaults, userOptions, that) {
         var defaultCopy = fluid.copy(defaults);
-        var mergePolicy = addPolicyBuiltins(defaultCopy.mergePolicy || {}); // TODO: extract mergePolicy from itself
+        addPolicyBuiltins(mergePolicy);
         var shadow = fluid.shadowForComponent(that);
         shadow.mergePolicy = mergePolicy;
         var mergeRecords = {
             defaults: {options: defaultCopy}
         };
-        $.extend(mergeRecords, highRecords);
         
         if (userOptions) {
             if (userOptions.marker === fluid.EXPAND) {
@@ -612,7 +612,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     // unsupported, non-API function
-    fluid.expandComponentOptions = function (defaults, userOptions, that, highRecords) {
+    fluid.expandComponentOptions = function (mergePolicy, defaults, userOptions, that) {
         // NEVER engage the withInstantiator behaviour which looks up an instantiator on the stack if one is
         // not provided in the creation case - since otherwise "rogue" components whose memberName can't be
         // guessed will end up in "good" instantiators. These must all be orphaned in their own instantiators - 
@@ -629,7 +629,7 @@ var fluid_1_5 = fluid_1_5 || {};
             else {
                 instantiator.recordKnownComponent(userOptions.parentThat, that, userOptions.memberName, true);
             }
-            return expandComponentOptionsImpl(defaults, userOptions, that, highRecords);
+            return expandComponentOptionsImpl(mergePolicy, defaults, userOptions, that);
         }, ["    while expanding component options ", userOptions && userOptions.value, " with record ", userOptions, " for component ", that], 
         userInstantiator);    
     };
@@ -1526,8 +1526,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             options.seenIds = {};
             options.target = fluid.freshContainer(source);
             options.sourceStrategy = options.sourceStrategy || fluid.concreteTrundler;
-            // TODO: With full gingerness, cache this once and for all per fluid.mergeComponentOptions
-            options.mergePolicy = fluid.compileMergePolicy(options.mergePolicy).builtins;
             fluid.makeExpandStrategy(options);
             options.initter = function () {
                 options.target = fluid.fetchExpandChildren(options.target, options.source, options.mergePolicy, false, options);
