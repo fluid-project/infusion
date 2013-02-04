@@ -48,6 +48,10 @@ var fluid_1_5 = fluid_1_5 || {};
         schema: "{schema}"
     });
 
+    fluid.uiOptions.accessor.finalInit = function (that) {
+        that.options.config.strategies.push(that.strategy);
+    };
+
     fluid.defaults("fluid.uiOptions.accessor.defaults", {
         gradeNames: ["fluid.uiOptions.accessor", "autoInit"],
         invokers: {
@@ -58,10 +62,6 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-
-    fluid.uiOptions.accessor.defaults.finalInit = function (that) {
-        that.options.config.strategies.push(that.strategy);
-    };
 
     fluid.registerNamespace("fluid.uiOptions.strategies");
 
