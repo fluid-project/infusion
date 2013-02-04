@@ -1497,12 +1497,6 @@ var fluid = fluid || fluid_1_5;
         return options.target;
     };
     
-    fluid.getMembers = function (holder, name) {
-        return fluid.transform(holder, function(member) {
-            return member[name];
-        });
-    };
-    
     fluid.simpleGingerBlock = function (source, recordType) {
         var block = {
             target: source,

@@ -248,6 +248,74 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
+    /** FLUID-4129 demands block merging tests **/
+
+    fluid.demands("fluid.tests.demandMerge", ["fluid.tests.context1"], {
+        funcName: "fluid.tests.demandMerge1",
+        options: {
+            mergeKey1: "topValue1",
+            mergeKey2: "topValue2",
+            mergeKey3: "topValue3"
+        }  
+    });
+    
+    fluid.demands("fluid.tests.demandMerge", ["fluid.tests.context1", "fluid.tests.context2"], {
+        funcName: "fluid.tests.demandMerge2",
+        options: {
+            mergeKey1: "middleValue1",
+            mergeKey2: "middleValue2"
+        }  
+    });
+
+    fluid.demands("fluid.tests.demandMerge", ["fluid.tests.context1", "fluid.tests.context2", "fluid.tests.context3"], {
+        funcName: "fluid.tests.demandMerge3",
+        options: {
+            mergeKey1: "bottomValue1",
+        }  
+    });
+    
+    // We only create the most specific component since the most specific demands block will win on funcName
+    fluid.defaults("fluid.tests.demandMerge3", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]  
+    });
+    
+    fluid.defaults("fluid.tests.demandHolder", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            context1: {
+                type: "fluid.typeFount",
+                options: {
+                    targetTypeName: "fluid.tests.context1"
+                }
+            },
+            context2: {
+                type: "fluid.typeFount",
+                options: {
+                    targetTypeName: "fluid.tests.context2"
+                }
+            },
+            context3: {
+                type: "fluid.typeFount",
+                options: {
+                    targetTypeName: "fluid.tests.context3"
+                }
+            },
+            demandMerge: {
+                type: "fluid.tests.demandMerge"
+            }
+        } 
+    });    
+    
+    jqUnit.test("FLUID-4392 Demands block merging", function () {
+        var that = fluid.tests.demandHolder();
+        var expected = {
+            mergeKey1: "bottomValue1",
+            mergeKey2: "middleValue2",
+            mergeKey3: "topValue3"
+        };
+        jqUnit.assertLeftHand("Correctly merged demands block options", expected, that.demandMerge.options); 
+    });
+
     /** Basic IoC Tests **/
 
     fluid.defaults("fluid.tests.defaultInteraction", {
@@ -668,12 +736,6 @@ fluid.registerNamespace("fluid.tests");
                 unexpandableString: "{self}.topProperty"
             }
         }
-    };
-    
-    fluid.getMembers = function (holder, name) {
-        return fluid.transform(holder, function(member) {
-            return member[name];
-        });
     };
     
     fluid.tests.testOneGinger = function (entry) {

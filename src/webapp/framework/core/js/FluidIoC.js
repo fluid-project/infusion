@@ -650,6 +650,15 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
+    fluid.pushDemandSpec = function (record, options, mergeOptions) {
+        if (options && options !== "{options}") {
+            record.push({options: options});
+        }
+        else if (mergeOptions) {
+            record.push({mergeOptions: mergeOptions});
+        }
+    };
+    
     /** Given a concrete argument list and/or options, determine the final concrete
      * "invocation specification" which is coded by the supplied demandspec in the 
      * environment "thatStack" - the return is a package of concrete global function name
@@ -674,7 +683,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
 
         options.componentRecord = $.extend(true, {}, options.componentRecord, 
-            fluid.censorKeys(demandspec, ["funcName", "registeredFrom", "transformOptions"]));
+            fluid.censorKeys(demandspec, ["funcName", "registeredFrom", "transformOptions", "backSpecs"]));
             
         // temporary hack to keep Uploader broadly working until we rewrite its very nonstandard options workflow using Skywalker
         if (options.componentRecord.preOptions) { 
@@ -759,12 +768,11 @@ var fluid_1_5 = fluid_1_5 || {};
                     if (typeof(arg) === "object" && !arg.targetTypeName) {
                         arg.targetTypeName = demandspec.funcName;
                     }
-                    if (arg !== "{options}") {
-                        mergeRecords.demands = {options: arg}; // TODO: supply multiple candidates here
-                    }
-                    else if (demandspec.mergeOptions) {
-                        mergeRecords.demands = {mergeOptions: demandspec.mergeOptions};
-                    }
+                    mergeRecords.demands = [];
+                    fluid.each(demandspec.backSpecs.reverse(), function (backSpec) {
+                        fluid.pushDemandSpec(mergeRecords.demands, backSpec.options, backSpec.mergeOptions);  
+                    });
+                    fluid.pushDemandSpec(mergeRecords.demands, demandspec.options || arg, demandspec.mergeOptions);
                     if (initArgs.length > 0) {
                         mergeRecords.user = {options: localRecord.options};
                     }
@@ -996,12 +1004,18 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return matches;   
     };
 
+    fluid.getMembers = function (holder, name) {
+        return fluid.transform(holder, function(member) {
+            return fluid.get(member, name);
+        });
+    };
+
     // unsupported, non-API function
     fluid.locateDemands = function (parentThat, demandingNames) {
         var matches = fluid.locateAllDemands(parentThat, demandingNames);
-        var demandspec = matches.length === 0 || matches[0].intersect === 0? null : matches[0].spec.spec;
+        var demandspec = fluid.getMembers(matches, ["spec", "spec"]);
         if (fluid.isDemandLogging(demandingNames)) {
-            if (demandspec) {
+            if (demandspec.length) {
                 fluid.log("Located " + matches.length + " potential match" + (matches.length === 1? "" : "es") + ", selected best match with " + matches[0].intersect 
                     + " matched context names: ", demandspec);
             }
@@ -1019,9 +1033,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.determineDemands = function (parentThat, funcNames) {
         funcNames = fluid.makeArray(funcNames);
         var newFuncName = funcNames[0];
-        var demandspec = fluid.locateDemands(parentThat, funcNames) || {};
-        if (demandspec.funcName) {
-            newFuncName = demandspec.funcName;
+        var demandspec = fluid.locateDemands(parentThat, funcNames);
+        if (demandspec.length && demandspec[0].funcName) {
+            newFuncName = demandspec[0].funcName;
         }
         
         var aliasTo = fluid.alias(newFuncName);
@@ -1029,9 +1043,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         if (aliasTo) {
             newFuncName = aliasTo;
             fluid.log("Following redirect from function name " + newFuncName + " to " + aliasTo);
-            var demandspec2 = fluid.locateDemands(parentThat, [aliasTo]);
+            var demandspec2 = fluid.locateDemands(parentThat, [aliasTo])[0];
             if (demandspec2) {
-                fluid.each(demandspec2, function(value, key) {
+                fluid.each(demandspec2, function(value, key) { // TODO: appears totally disused
                     if (localRecordExpected.test(key)) {
                         fluid.fail("Error in demands block ", demandspec2, " - content with key \"" + key 
                             + "\" is not supported since this demands block was resolved via an alias from \"" + newFuncName + "\"");
@@ -1044,7 +1058,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
         }
         
-        return $.extend(true, {funcName: newFuncName, args: fluid.makeArray(demandspec.args)}, fluid.censorKeys(demandspec, ["funcName", "args"]));
+        return $.extend(true, {funcName: newFuncName, 
+                                args: demandspec[0] ? fluid.makeArray(demandspec[0].args) : [],
+                                backSpecs: demandspec.slice(1)
+                                },
+            fluid.censorKeys(demandspec[0], ["funcName", "args"]));
     };
     // "options" includes - passArgs, componentRecord, memberName (latter two from initDependent route)
     fluid.resolveDemands = function (parentThat, funcNames, initArgs, options) {
