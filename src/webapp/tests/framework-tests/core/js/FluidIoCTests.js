@@ -248,7 +248,7 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
-    /** FLUID-4129 demands block merging tests **/
+    /** FLUID-4392 demands block merging tests **/
 
     fluid.demands("fluid.tests.demandMerge", ["fluid.tests.context1"], {
         funcName: "fluid.tests.demandMerge1",
