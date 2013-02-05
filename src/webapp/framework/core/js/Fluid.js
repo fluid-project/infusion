@@ -1577,10 +1577,10 @@ var fluid = fluid || fluid_1_5;
             mergeBlocks = mergeBlocks.concat([fluid.simpleGingerBlock(defaults, "defaults"), 
                                               fluid.simpleGingerBlock(userOptions, "user")]);
         }
-        var target = {};
+        var options = {}; // ultimate target
         var sourceStrategies = [], sources = [];
         var baseMergeOptions = {
-            target: target,
+            target: options,
             sourceStrategies: sourceStrategies
             };
         var updateBlocks = function () {
@@ -1597,7 +1597,7 @@ var fluid = fluid || fluid_1_5;
         mergeOptions.updateBlocks = updateBlocks;
         
         // Decode the now available mergePolicy
-        var mergePolicy = fluid.driveStrategy(target, "mergePolicy", mergeOptions.strategy);
+        var mergePolicy = fluid.driveStrategy(options, "mergePolicy", mergeOptions.strategy);
         mergePolicy = $.extend({}, fluid.rootMergePolicy, mergePolicy);
         var compiledPolicy = fluid.compileMergePolicy(mergePolicy);
         // TODO: expandComponentOptions has already put some builtins here - performance implications of the now huge
@@ -1618,14 +1618,18 @@ var fluid = fluid || fluid_1_5;
             }
         }
         
-        var transformOptions = fluid.driveStrategy(target, "transformOptions", mergeOptions.strategy);
+        var transformOptions = fluid.driveStrategy(options, "transformOptions", mergeOptions.strategy);
         if (transformOptions) {
             fluid.transformOptionsBlocks(mergeBlocks, transformOptions, ["user", "subcomponentRecord"]);
             updateBlocks(); // because the possibly simple blocks may have changed target
         }
-
-        that.options = target;
-        fluid.deliverOptionsStrategy(that, target, mergeOptions);
+        that.options = options;
+        
+        var optionsNickName = fluid.driveStrategy(options, "nickName", mergeOptions.strategy);
+        that.nickName = optionsNickName || fluid.computeNickName(that.typeName);
+        fluid.driveStrategy(options, "gradeNames", mergeOptions.strategy);
+        
+        fluid.deliverOptionsStrategy(that, options, mergeOptions);
         return mergeOptions;
     };
     
@@ -1697,13 +1701,11 @@ var fluid = fluid || fluid_1_5;
         
         var mergeOptions = fluid.mergeComponentOptions(that, name, userOptions, localOptions);
         var options = that.options;
-        var optionsNickName = fluid.driveStrategy(options, "nickName", mergeOptions.strategy);
-        that.nickName = optionsNickName || fluid.computeNickName(that.typeName);
-        var gradeNames = fluid.driveStrategy(options, "gradeNames", mergeOptions.strategy);
         var evented = fluid.hasGrade(options, "fluid.eventedComponent");
         if (evented) {
             that.events = {};
         }
+        // deliver to a non-IoC side early receiver of the component (currently only initView)
         (receiver || fluid.identity)(that, options, mergeOptions.strategy);
         
         // TODO: ****THIS**** is the point we must deliver and suspend!! Construct the "component skeleton" first, and then continue
@@ -1894,8 +1896,6 @@ var fluid = fluid || fluid_1_5;
     });
     
     fluid.staticEnvironment = fluid.typeTag("fluid.staticEnvironment");
-    
-    fluid.staticEnvironment.environmentClass = fluid.typeTag("fluid.browser");
 
     // Message resolution and templating
    

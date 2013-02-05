@@ -355,6 +355,41 @@ fluid.registerNamespace("fluid.tests");
         that.events.someEvent.fire(origArg0, origArg1);
     });
     
+    /** FLUID-4914 derived grade resolution tests **/
+    
+    fluid.defaults("fluid.tests.dataSource", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        invokers: {
+            get: "fluid.tests.dataSource.get"
+        }  
+    });
+    
+    fluid.defaults("fluid.tests.URLDataSource", {
+        gradeNames: ["fluid.tests.dataSource", "autoInit"],
+        url: "http://jsforcats.com",
+        invokers: {
+            resolve: "fluid.tests.dataSource.urlResolver.resolve"
+        }
+    });
+    
+    fluid.demands("fluid.tests.dataSource.urlResolver.resolve", "fluid.tests.URLDataSource", {
+        funcName: "fluid.identity",
+        args: "{dataSource}.options.url"
+    });
+    
+    fluid.demands("fluid.tests.dataSource.get", "fluid.tests.dataSource", {
+        funcName: "fluid.identity",
+        args: {value: 4}
+    });
+    
+    jqUnit.test("FLUID-4914 - resolve grade as context name", function () {
+        var dataSource = fluid.tests.URLDataSource();
+        var url = dataSource.resolve();
+        jqUnit.assertEquals("Resolved grade context name via invoker", dataSource.options.url, url);
+        var data = dataSource.get();
+        jqUnit.assertDeepEq("Resolved grade context name as demands context", {value: 4}, data); 
+    });
+    
 
     /** FLUID-4392 demands block merging tests **/
 
@@ -1162,6 +1197,7 @@ fluid.registerNamespace("fluid.tests");
                 type: "fluid.tests.reinsChild2"
             }
         },
+        // TODO: This cannot be supported and will cause bugs in clearing shadow record when the improper return is processed
         returnedPath: "gchild"
     });
     

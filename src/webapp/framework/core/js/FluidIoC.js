@@ -169,9 +169,17 @@ var fluid_1_5 = fluid_1_5 || {};
     // strategies required on the IoC side and mount them into the shadow's getConfig for universal use
     // unsupported, NON-API function
     fluid.deliverOptionsStrategy = function (that, target, mergeOptions) {
-        var strategy = mergeOptions.strategy;
         var shadow = fluid.shadowForComponent(that);
         shadow.mergeOptions = mergeOptions;
+        var contextHash = {};
+        fluid.each(that.options.gradeNames, function (gradeName) {
+            contextHash[gradeName] = true;
+            contextHash[fluid.computeNickName(gradeName)] = true;  
+        });
+        contextHash[that.nickName] = true;
+        shadow.contextHash = contextHash;
+
+        var strategy = mergeOptions.strategy;
         var optionsStrategy = fluid.mountStrategy(["options"], target, strategy);
         shadow.invokerStrategy = fluid.recordStrategy(that, target, strategy, "invokers", fluid.invokerFromRecord);
         shadow.eventStrategyBlock = fluid.recordStrategy(that, target, strategy, "events", fluid.eventFromRecord, ["events"]);
@@ -252,7 +260,9 @@ var fluid_1_5 = fluid_1_5 || {};
         var foundComponent;
         var thatStack = instantiator.getFullStack(that);
         visitComponents(instantiator, thatStack, function(component, name) {
-            if (context === name || context === component.typeName || context === component.nickName) {
+            var shadow = fluid.shadowForComponent(component);
+            // TODO: Some components, e.g. the static environment and typeTags do not have a shadow, which slows us down here 
+            if (context === name || shadow && shadow.contextHash && shadow.contextHash[context] || context === component.typeName || context === component.nickName) {
                 foundComponent = component;
                 return true; // YOUR VISIT IS AT AN END!!
             }
@@ -917,8 +927,12 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var visited = [];
         var instantiator = fluid.getInstantiator(parentThat);
         var thatStack = instantiator.getFullStack(parentThat);
-        visitComponents(instantiator, thatStack, function(component, xname, path) {
+        visitComponents(instantiator, thatStack, function (component, xname, path) {
             contextNames[component.typeName] = true;
+            var gradeNames = fluid.makeArray(fluid.get(component, ["options", "gradeNames"]));
+            fluid.each(gradeNames, function (gradeName) {
+                contextNames[gradeName] = true;  
+            });
             visited.push(component);
         });
         if (demandLogging) {
