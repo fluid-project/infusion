@@ -61,7 +61,31 @@ var fluid_1_5 = fluid_1_5 || {};
         
         $.extend(fluid.staticEnvironment, features);
     }
+    /*
+     * takes an object of key/value pairs where the key will be the key in the static enivronment and the value is a function or function name to run.
+     * {staticEnvKey: "progressiveCheckFunc"}
+     */
+    fluid.check = function (stuffToCheck) {
+        fluid.each(stuffToCheck, function (val, key) {
+            var results = val && typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val();
+            
+            if (results) {
+                fluid.staticEnvironment[key] = fluid.typeTag(key);
+            }
+        });
+    };
     
+    /*
+     * takes an array of static environemnt keys to remove
+     * ["staticEnvKey1", "staticEnvKey2"]
+     */
+    fluid.forget = function (stuffToForget) {
+        fluid.each(stuffToForget, function (val) {
+            delete fluid.staticEnvironment[val];
+        });
+    };
+    
+    // Note: deprecated as of 1.5. Use fluid.check, fluid.forget, and fluid.demands instead
     fluid.progressiveChecker = function (options) {
         var that = fluid.initLittleComponent("fluid.progressiveChecker", options);
         return fluid.typeTag(fluid.find(that.options.checks, function(check) {
@@ -71,18 +95,21 @@ var fluid_1_5 = fluid_1_5 || {};
         ));
     };
     
+    // Note: deprecated as of 1.5. Use fluid.check, fluid.forget, and fluid.demands instead
     fluid.defaults("fluid.progressiveChecker", {
         gradeNames: "fluid.typeFount",
         checks: [], // [{"feature": "{IoC Expression}", "contextName": "context.name"}]
         defaultContextName: undefined
     });
     
+    // Note: deprecated as of 1.5. Use fluid.check, fluid.forget, and fluid.demands instead
     fluid.progressiveCheckerForComponent = function (options) {
         var that = fluid.initLittleComponent("fluid.progressiveCheckerForComponent", options);
         var defaults = fluid.defaults(that.options.componentName);
         return fluid.progressiveChecker(fluid.expandOptions(fluid.copy(defaults.progressiveCheckerOptions), that));  
     };
 
+    // Note: deprecated as of 1.5. Use fluid.check, fluid.forget, and fluid.demands instead
     fluid.defaults("fluid.progressiveCheckerForComponent", {
         gradeNames: "fluid.typeFount"
     });
