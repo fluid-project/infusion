@@ -30,8 +30,9 @@ var fluid_1_5 = fluid_1_5 || {};
     // Currently still uses manual traversal - once we ban manually instantiated components,
     // it will use the instantiator's records instead.
     fluid.visitComponentChildren = function (that, visitor, options, path) {
+        var instantiator = fluid.getInstantiator(that);
         for (var name in that) {
-            var newPath = options.instantiator.composePath(path, name);
+            var newPath = instantiator.composePath(path, name);
             var component = that[name];
             //Every component *should* have an id, but some clients may not yet be compliant
             //if (component && component.typeName && !component.id) {
@@ -311,8 +312,6 @@ var fluid_1_5 = fluid_1_5 || {};
     // into IoC issues. The structures idToShadow and pathToComponent contain a complete map of the component tree
     // forming the surrounding scope
     fluid.instantiator = function (freeInstantiator) {
-        // NB: We may not use the options merging framework itself here, since "withInstantiator" below
-        // will blow up, as it tries to resolve the instantiator which we are instantiating *NOW*
         var that = {
             nickName: "instantiator",
             pathToComponent: {},
@@ -420,80 +419,11 @@ var fluid_1_5 = fluid_1_5 || {};
     // An instantiator to be used in the "free environment", unattached to any component tree
     fluid.freeInstantiator = fluid.instantiator(true);
     
-    // A special code used in signalling to fluid.withInstantiator that a fresh instantiator is required
-    fluid.unrelatedInstantiator = {};
-    
     // Look up the globally registered instantiator for a particular component
     fluid.getInstantiator = function (component) {
         return component && idToInstantiator[component.id] || fluid.freeInstantiator;
     };
       
-    // NON-API function 
-    fluid.getInstantiators = function () {
-        var root = fluid.globalThreadLocal();
-        var ins = root["fluid.instantiator"];
-        if (!ins) {
-            ins = root["fluid.instantiator"] = [];
-        }
-        return ins;    
-    };
-    
-    // NON-API function
-    fluid.withInstantiator = function (that, func, activity, userInstantiator) {
-        var ins = fluid.getInstantiators();
-        var oldLength;
-        if (!userInstantiator && that) {
-            userInstantiator = idToInstantiator[that.id];
-        } 
-        var instantiator = userInstantiator;
-        // Quick default case when instantiator is correct gives minimal stack pollution
-        // This will lead to global instantiator corruption in the event of an error
-        if (ins.length > 0 && (userInstantiator === undefined || ins[ins.length -1] === userInstantiator)) {
-            fluid.pushActivity.apply(null, activity);
-            var togo = func(ins[ins.length - 1]);
-            fluid.popActivity(frames);
-            return togo;
-        }
-        var unrelated = userInstantiator === fluid.unrelatedInstantiator;
-        
-        return fluid.tryCatch(function () {
-            fluid.pushActivity.apply(null, activity);
-            if (!instantiator || unrelated) {
-                if (ins.length === 0 || unrelated) {
-                    instantiator = fluid.instantiator();
-                    fluid.log("Created new instantiator with id " + instantiator.id + " in order to operate on component " + (that? that.typeName : "[none]"));
-                    }
-                else {
-                    instantiator = ins[ins.length - 1];
-                }
-            }
-            // TODO: We still need to support people making a manual call to initDependents at a component root a little longer - 
-            // the fact that this never did work anywhere but at the root gives us licence to deprecate this very soon
-            if (that && !instantiator.idToShadow[that]) {
-                instantiator.recordRoot(that);
-            }
-            ins.push(instantiator);
-            oldLength = ins.length;
-          
-            //fluid.log("Instantiator stack +1 to " + instantiator.stackCount + " for " + typeName);
-            return func(instantiator);
-        }, null, function() {
-            fluid.popActivity();
-            if (ins.length !== oldLength) {
-                fluid.fail("Instantiator stack corrupted - old length " + oldLength + " new length " + ins.length);
-            }
-            if (ins[ins.length - 1] != instantiator) {
-                fluid.fail("Instantiator stack corrupted at stack top - old id " + instantiator.id + " new id " + ins[ins.length-1].id); 
-            }
-            ins.length--;
-            //fluid.log("Instantiator stack -1 to " + instantiator.stackCount + " for " + typeName);
-            if (ins.length === 0) {
-                fluid.log("Cleared instantiators (last id " + instantiator.id + ") from threadLocal for end of " + (that? that.typeName : "[none]"));
-            }
-        });
-
-    };
-    
     /** Expand a set of component options with respect to a set of "expanders" (essentially only
      *  deferredCall) -  This substitution is destructive since it is assumed that the options are already "live" as the
      *  result of environmental substitutions. Note that options contained inside "components" will not be expanded
@@ -623,25 +553,25 @@ var fluid_1_5 = fluid_1_5 || {};
 
     // unsupported, non-API function
     fluid.expandComponentOptions = function (mergePolicy, defaults, userOptions, that) {
-        // NEVER engage the withInstantiator behaviour which looks up an instantiator on the stack if one is
-        // not provided in the creation case - since otherwise "rogue" components whose memberName can't be
-        // guessed will end up in "good" instantiators. These must all be orphaned in their own instantiators - 
-        // all "good" instantiators have their component graph propagated via IoC
-        var userInstantiator = userOptions && userOptions.marker === fluid.EXPAND && userOptions.memberName !== undefined ? 
-            userOptions.instantiator : fluid.unrelatedInstantiator; 
-        // It is at this point the new component is recorded and has its own instantiator registered
-        // note that NO ACTIVITY now occurs on this frame... we may as well special-case the "unrelatedInstantiator" branch which only occurs here
-        return fluid.withInstantiator(that, function (instantiator) {
-            if (!userInstantiator || userInstantiator === fluid.unrelatedInstantiator) { 
-                // if we got no existing instantiator through, this should be treated as a root instantiation
-                instantiator.recordRoot(that);
-            }
-            else {
-                instantiator.recordKnownComponent(userOptions.parentThat, that, userOptions.memberName, true);
-            }
-            return expandComponentOptionsImpl(mergePolicy, defaults, userOptions, that);
-        }, ["    while expanding component options ", userOptions && userOptions.value, " with record ", userOptions, " for component ", that], 
-        userInstantiator);    
+        var instantiator = userOptions && userOptions.marker === fluid.EXPAND && userOptions.memberName !== undefined ? 
+            userOptions.instantiator : null;
+        var fresh;
+        if (!instantiator) {
+            instantiator = fluid.instantiator();
+            fresh = true;
+            fluid.log("Created new instantiator with id " + instantiator.id + " in order to operate on component " + (that? that.typeName : "[none]"));
+        }
+        fluid.pushActivity("expandComponentOptions", "expanding component options %options with record %record for component %that", 
+            {options: userOptions && userOptions.value, record: userOptions, that: that});
+        if (fresh) { 
+            instantiator.recordRoot(that);
+        }
+        else {
+            instantiator.recordKnownComponent(userOptions.parentThat, that, userOptions.memberName, true);
+        }
+        var togo = expandComponentOptionsImpl(mergePolicy, defaults, userOptions, that);
+        fluid.popActivity();
+        return togo;
     };
     
     // unsupported, non-API function
@@ -1187,10 +1117,12 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             if (!listener) {
                 badRec(record, "");
             }
+            var firer;
             if (listener.typeName === "fluid.event.firer") {
                 listener = listener.fire;
+                firer = true;
             }
-            expanded.listener = fluid.event.dispatchListener(that, listener, eventName, expanded);
+            expanded.listener = expanded.args || firer ? fluid.event.dispatchListener(that, listener, eventName, expanded) : listener;
             return expanded;
         });
         var togo = {
@@ -1261,10 +1193,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             firer = {typeName: "fluid.event.firer"}; // jslint:ok - already defined
             firer.fire = function () {
                 var outerArgs = fluid.makeArray(arguments);
-                // TODO: this resolution should really be supplied for ALL events!
-                return fluid.withInstantiator(that, function () {
-                    return origin.fire.apply(null, outerArgs);
-                }, {type: "fireSynthetic", message: "firing synthetic event %eventName ", args: {eventName: eventName}});
+                fluid.pushActivity("fireSynthetic", "firing synthetic event %eventName ", {eventName: eventName});  
+                return origin.fire.apply(null, outerArgs);
+                fluid.popActivity();
             };
             firer.addListener = function (listener, namespace, predicate, priority) {
                 var dispatcher = fluid.event.dispatchListener(that, listener, eventName, eventSpec);

@@ -248,6 +248,114 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
+    /** FLUID-4634 demands exclusion test **/
+
+    fluid.defaults("fluid.tests.demandedEvent1", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            event1: null
+        }
+    });
+    
+    fluid.defaults("fluid.tests.demandedEvent2", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            event2: null
+        }
+    });
+    
+    fluid.demands("testDemandedEvent", ["fluid.tests.testContext", "fluid.tests.demandedEvent2"], ["demanded"]);
+    
+    jqUnit.test("FLUID-4634: mulitple components with the same boiled event name", function () {
+        fluid.staticEnvironment.currentTestEnvironment = fluid.typeTag("fluid.tests.testContext");
+        var orig = "original";
+        var e1 = fluid.tests.demandedEvent1({
+            events: {
+                testDemandedEvent: {
+                    event: "event1"
+                }
+            }
+        });
+        var e2 = fluid.tests.demandedEvent2({
+            events: {
+                testDemandedEvent: {
+                    event: "event2"
+                }
+            }
+        });
+        
+        e1.events.testDemandedEvent.addListener(function (arg) {
+            jqUnit.assertEquals("The original argument should be passeed in.", orig, arg);
+        });
+        e2.events.testDemandedEvent.addListener(function (arg) {
+            jqUnit.assertEquals("The demanded argument should be passed in.", "demanded", arg);
+        });
+        
+        e1.events.event1.fire(orig);
+        e2.events.event2.fire(orig);
+        delete fluid.staticEnvironment.currentTestEnvironment;
+    });
+    
+    /** FLUID-4631 argument transmission test **/
+
+    fluid.defaults("fluid.tests.demandsEvents", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            someEvent: null
+        }
+    });
+
+    fluid.demands("testEvent", ["fluid.tests.demandsEvents"], [
+        "newArg", 
+        "{arguments}.0"
+    ]);
+    
+    jqUnit.test("FLUID-4631 - double event dispatch issue", function () {
+        jqUnit.expect(3);
+        var origArg0 = "origArg";
+        var assertEvent = function (arg0, arg1) {
+            jqUnit.assertNotEquals("The two arguments should be different", arg0, arg1);
+            jqUnit.assertEquals("Injection of new first argument", "newArg", arg0);
+            jqUnit.assertEquals("Transmission of the original first arguement", origArg0, arg1);
+        };
+        var that = fluid.tests.demandsEvents({
+            events: {
+                testEvent: {
+                    event: "someEvent"
+                }
+            },
+            listeners: {
+                testEvent: assertEvent
+            }
+        });
+        that.events.someEvent.fire(origArg0);
+    });
+
+    fluid.demands("testEvent2", ["fluid.tests.demandsEvents"], [
+        "{arguments}.1"
+    ]);
+    
+    jqUnit.test("FLUID-4631 - multiple to single argument", function () {
+        jqUnit.expect(1);
+        var origArg0 = "origArg0";
+        var origArg1 = "origArg1";
+        var assertEvent = function (arg0) {
+            jqUnit.assertEquals("Transmission of the original second argument", origArg1, arg0);
+        };
+        var that = fluid.tests.demandsEvents({
+            events: {
+                testEvent2: {
+                    event: "someEvent"
+                }
+            },
+            listeners: {
+                testEvent2: assertEvent
+            }
+        });
+        that.events.someEvent.fire(origArg0, origArg1);
+    });
+    
+
     /** FLUID-4392 demands block merging tests **/
 
     fluid.demands("fluid.tests.demandMerge", ["fluid.tests.context1"], {
