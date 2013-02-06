@@ -355,6 +355,50 @@ fluid.registerNamespace("fluid.tests");
         that.events.someEvent.fire(origArg0, origArg1);
     });
     
+    /** FLUID-4637 component proximity resolution test **/
+
+    fluid.defaults("fluid.tests.twinSubComponent", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        preInitFunction: "fluid.tests.twinSubComponent.preInit",
+        events: {
+            childEvent: null,
+        },
+        listeners: {
+            childEvent: "{twinSubComponent}.testRealName"
+        },
+        realName: ""
+    });
+    
+    fluid.tests.twinSubComponent.preInit = function (that) {
+        that.testRealName = function (expectedName) {
+            jqUnit.assertEquals("The correct component should be triggered", expectedName, that.options.realName);
+        };
+    };
+    
+    fluid.defaults("fluid.tests.twinParent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            twin1: {
+                type: "fluid.tests.twinSubComponent",
+                options: {
+                    realName: "twin1"
+                }
+            },
+            twin2: {
+                type: "fluid.tests.twinSubComponent",
+                options: {
+                    realName: "twin2"
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-4637: Listener mix up with injected events in twin subcomponents", function () {
+        var that = fluid.tests.twinParent();
+        
+        that.twin1.events.childEvent.fire(that.twin1.options.realName);
+    });
+    
     /** FLUID-4914 derived grade resolution tests **/
     
     fluid.defaults("fluid.tests.dataSource", {

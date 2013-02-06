@@ -471,7 +471,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var sources = threadLocal().sources;
             var args = arguments;
             var source = changeRequest.source || "";
-            fluid.tryCatch(function() {
+            fluid.tryCatch(function () {
                 if (sources[source] === undefined) {
                     sources[source] = 0;
                 }

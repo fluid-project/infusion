@@ -50,6 +50,7 @@ var fluid = fluid || fluid_1_5;
 
     // Return an array of objects describing the current activity
     // unsupported, non-API function
+    // TODO: Write at least a console renderer here
     fluid.describeActivity = function () {
         return fluid.globalThreadLocal().activityStack || [];
     };
@@ -65,12 +66,15 @@ var fluid = fluid || fluid_1_5;
         //fluid.log(fluid.describeActivity());
     };
     
+    // Undo the effect of the most recent pushActivity, or multiple frames if an argument is supplied
     fluid.popActivity = function (popframes) {
         popframes = popframes || 1;
         var root = fluid.globalThreadLocal();      
         root.activityStack = root.activityStack.slice(popframes);
     };
     
+    // The framework's built-in "fail" policy, in case a user-defined handler would like to
+    // defer to it
     fluid.builtinFail = function (soft, args, activity) {
         fluid.setLogging(true);
         fluid.log.apply(null, ["ASSERTION FAILED: "].concat(args).concat(activity));
@@ -125,6 +129,9 @@ var fluid = fluid || fluid_1_5;
     
     // A wrapper for the try/catch/finally language feature, to aid debugging on environments
     // such as IE, where any try will destroy stack information for errors
+    // TODO: The only non-deprecated call to this annoying utility is left in DataBinding.js to deal with
+    // cleanup in source tracking. We should really review whether we mean to abolish all exception handling
+    // code throughout the framework - on several considerations this is desirable.
     fluid.tryCatch = function (tryfun, catchfun, finallyfun) {
         finallyfun = finallyfun || fluid.identity;
         if (fluid.notrycatch) {
@@ -654,7 +661,8 @@ var fluid = fluid || fluid_1_5;
     fluid.model.accessSimple = function (root, EL, newValue, environment, initSegs, returnSegs) {
         return fluid.model.accessImpl(root, EL, newValue, environment, initSegs, returnSegs, fluid.model.traverseSimple);
     };
-    
+
+    // unsupported, NON-API function    
     fluid.model.traverseSimple = function (root, segs, initPos, environment, uncess) {
         var origEnv = environment;
         var limit = segs.length - uncess;
@@ -850,7 +858,6 @@ var fluid = fluid || fluid_1_5;
      * be checked for <code>false</code> in which case further listeners will be shortcircuited, and this
      * will be the return value of fire()
      */
-    // This name will be deprecated in Fluid 2.0 for fluid.makeEventFirer (or fluid.eventFirer)
     fluid.makeEventFirer = function (unicast, preventable, name) {
         var listeners; // = {}
         var byId; // = {}
@@ -949,11 +956,12 @@ var fluid = fluid || fluid_1_5;
         return that;
     };
     
+    // This name will be deprecated in Fluid 2.0 for fluid.makeEventFirer (or fluid.eventFirer)
     fluid.event.getEventFirer = fluid.makeEventFirer;
     
     /** Fire the specified event with supplied arguments. This call is an optimisation utility
      * which handles the case where the firer has not been instantiated (presumably as a result
-     * of having no listeners registered
+     * of having no listeners registered)
      */
      
     fluid.fireEvent = function (component, path, args) {
@@ -1010,6 +1018,7 @@ var fluid = fluid || fluid_1_5;
         });
     };
     
+    // unsupported, NON-API function
     fluid.eventFromRecord = function (eventSpec, eventKey, that) {
         var isIoCEvent = eventSpec && (typeof (eventSpec) !== "string" || eventSpec.charAt(0) === "{");
         var event;
@@ -1100,7 +1109,8 @@ var fluid = fluid || fluid_1_5;
     };
         
     var mergedDefaultsCache = {};
-    
+
+    // unsupported, NON-API function    
     fluid.gradeNamesToKey = function (gradeNames, defaultName) {
         return defaultName + "|" + fluid.makeArray(gradeNames).sort().join("|");
     };
@@ -1120,7 +1130,8 @@ var fluid = fluid || fluid_1_5;
         var mergedDefaults = fluid.merge.apply(null, mergeArgs);
         return mergedDefaults;
     };
-    
+
+    // unsupported, NON-API function    
     fluid.getGradedDefaults = function (defaults, defaultName, gradeNames) {
         var key = fluid.gradeNamesToKey(gradeNames, defaultName);
         var mergedDefaults = mergedDefaultsCache[key];
@@ -1342,8 +1353,9 @@ var fluid = fluid || fluid_1_5;
         return togo;
     };
     // NB - same quadratic worry about these as in FluidIoC in the case the RHS trundler is live - 
-    // the problem is that IT ITSELF might be in "regenerate" mode for each step - although in practice
-    // it won't because target is cached
+    // since at each regeneration step driving the RHS we are discarding the "cursor arguments" these
+    // would have to be regenerated at each step - although in practice this can only happen once for
+    // each object for all time, since after first resolution it will be concrete.
     function regenerateCursor (source, segs, limit, sourceStrategy) {
         for (var i = 0; i < limit; ++ i) {
             source = sourceStrategy(source, segs[i], i, segs);
@@ -1390,10 +1402,16 @@ var fluid = fluid || fluid_1_5;
         return target;
     };
     
+    // A path depth above which the core "process strategies" will bail out, assuming that the 
+    // structure has become circularly linked. Helpful in environments such as Firebug which will
+    // kill the browser process if they happen to be open when a stack overflow occurs. Also provides
+    // a more helpful diagnostic.
+    fluid.strategyRecursionBailout = 50;
+    
     // unsupported, NON-API function
     fluid.makeMergeStrategy = function (options) {
         var strategy = function (target, name, i, segs, sources, policy) {
-            if (i > 50) {
+            if (i > fluid.strategyRecursionBailout) {
                 fluid.fail("Overflow/circularity in options merging, current path is ", segs, " at depth " , i, " - please protect components from merging using the \"nomerge\" merge policy");
             }
             if (fluid.isTracing) {
@@ -1465,8 +1483,12 @@ var fluid = fluid || fluid_1_5;
     };
     
     /** Merge a collection of options structures onto a target, following an optional policy.
-     * This function is typically called automatically, as a result of an invocation of
-     * <code>fluid.initLittleComponent</code>. The behaviour of this function is explained more fully on
+     * This method is now used only for the purpose of merging "dead" option documents in order to
+     * cache graded component defaults. Component option merging is now performed by the 
+     * fluid.makeMergeOptions pathway which sets up a deferred merging process. This function
+     * will not be removed in the Fluid 2.0 release but it is recommended that users not call it
+     * directly.
+     * The behaviour of this function is explained more fully on
      * the page http://wiki.fluidproject.org/display/fluid/Options+Merging+for+Fluid+Components .
      * @param policy {Object/String} A "policy object" specifiying the type of merge to be performed.
      * If policy is of type {String} it should take on the value "replace" representing
@@ -1583,6 +1605,8 @@ var fluid = fluid || fluid_1_5;
             target: options,
             sourceStrategies: sourceStrategies
             };
+        // Called both from here and from IoC whenever there is a change of block content or arguments which
+        // requires them to be resorted and rebound
         var updateBlocks = function () {
             mergeBlocks.sort(fluid.priorityComparator);
             sourceStrategies.length = 0; sources.length = 0;
@@ -1649,6 +1673,7 @@ var fluid = fluid || fluid_1_5;
     /** Construct a dummy or "placeholder" subcomponent, that optionally provides empty
      * implementations for a set of methods.
      */
+    // TODO: this method is inefficient and inappropriate, should simply discard options entirely pending review 
     fluid.emptySubcomponent = function (options) {
         var that = {};
         options = fluid.makeArray(options);
@@ -1678,7 +1703,8 @@ var fluid = fluid || fluid_1_5;
     };
     
     /** A combined "component and grade name" which allows type tags to be declaratively constructed
-     * from options material */
+     * from options material. Any component found bearing this grade will be instantiated first amongst
+     * its set of siblings, since it is likely to bear a context-forming type name */
     
     fluid.typeFount = function (options) {
         var that = fluid.initLittleComponent("fluid.typeFount", options);
@@ -1826,7 +1852,9 @@ var fluid = fluid || fluid_1_5;
     };
     
     /** Initialise all the "subcomponents" which are configured to be attached to
-     * the supplied top-level component, which share a particular "class name".
+     * the supplied top-level component, which share a particular "class name". This method
+     * of instantiating components is deprecated and will be removed in favour of the automated
+     * IoC system in the Fluid 2.0 release.
      * @param {Component} that The top-level component for which sub-components are
      * to be instantiated. It contains specifications for these subcomponents in its
      * <code>options</code> structure.

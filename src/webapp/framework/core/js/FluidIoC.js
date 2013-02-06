@@ -434,14 +434,15 @@ var fluid_1_5 = fluid_1_5 || {};
         return component && idToInstantiator[component.id] || fluid.freeInstantiator;
     };
       
-    /** Expand a set of component options with respect to a set of "expanders" (essentially only
-     *  deferredCall) -  This substitution is destructive since it is assumed that the options are already "live" as the
-     *  result of environmental substitutions. Note that options contained inside "components" will not be expanded
-     *  by this call directly to avoid linearly increasing expansion depth if this call is occuring as a result of
-     *  "initDependents" */
-     // TODO: This needs to be integrated with "embodyDemands" above which makes two further calls to fluid.expand
-     // and with very similarly derived options (makeStackResolverOptions)
-     // this "outerExpandOptions" is only used in the stackFetcher - needs to be removed and rationalised - 
+    /** Expand a set of component options either immediately, or with deferred effect.
+     *  The current policy is to expand immediately function arguments within fluid.embodyDemands which are not the main options of a 
+     *  component. The component's own options take <code>{defer: true}</code> as part of 
+     *  <code>outerExpandOptions</code> which produces an "expandOptions" structure holding the "strategy" and "initter" pattern
+     *  common to ginger participants.
+     *  Probably not to be advertised as part of a public API, but is considerably more stable than most of the rest
+     *  of the IoC API structure especially with respect to the first arguments.  
+     */
+
     fluid.expandOptions = function (args, that, mergePolicy, localRecord, outerExpandOptions) {
         if (!args) {
             return args;
@@ -982,7 +983,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
     
     /** Determine the appropriate demand specification held in the fluid.demands environment 
-     * relative to "thatStack" for the function name(s) funcNames.
+     * relative the supplied component position for the function name(s) funcNames.
      */
     // unsupported, non-API function
     fluid.determineDemands = function (parentThat, funcNames) {
@@ -1394,8 +1395,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return target;
     };
     
-    // TODO: This method is unnecessary and introduces quadratic inefficiency. The driver should detect
-    // "homogeneous uni-strategy trundling" and just dispatch to the strategy in one go
+    // TODO: This method is unnecessary and will quadratic inefficiency if RHS block is not concrete. 
+    // The driver should detect "homogeneous uni-strategy trundling" and agree to preserve the extra 
+    // "cursor arguments" which should be advertised somehow (at least their number)
     function regenerateCursor (source, segs, limit, sourceStrategy) {
         for (var i = 0; i < limit; ++ i) {
             source = sourceStrategy(source, segs[i], i, segs);
