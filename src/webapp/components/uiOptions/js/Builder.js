@@ -65,7 +65,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.registerNamespace("fluid.uiOptions.strategies");
 
-    var lookupSchema = function (schema, index, segments) {
+    var regenerateSchema = function (schema, index, segments) {
         var i, seg, thisSchema = schema;
         for (i = 0; i < index; ++i) {
             seg = segments[i];
@@ -84,7 +84,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.strategies.defaults = function (schema, root, segment, index, segments) {
-        var thisSchema = lookupSchema(schema, index, segments);
+        var thisSchema = regenerateSchema(schema, index, segments);
         if (!thisSchema) {
             return;
         }
