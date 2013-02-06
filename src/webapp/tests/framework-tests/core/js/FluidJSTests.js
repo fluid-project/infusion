@@ -431,6 +431,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Nested resolver", "resolved", fluid.get(model2, ["nested", "resolver"]));
     });
     
+    jqUnit.test("FLUID-4915: fluid.invokeGlobalFunction", function () {
+        jqUnit.expect(3);
+        
+        var testArg = "test arg";
+        fluid.tests.igf = {
+            withArgs: function (arg1) {
+                jqUnit.assertEquals("A single argument should have been passed in", 1, arguments.length);
+                jqUnit.assertEquals("The correct argument should have been passed in", testArg, arg1);
+            },
+            withoutArgs: function () {
+                jqUnit.assertEquals("There should not have been any arguments passed in", 0, arguments.length);
+            }
+        };
+        
+        fluid.invokeGlobalFunction("fluid.tests.igf.withArgs", [testArg]);
+        fluid.invokeGlobalFunction("fluid.tests.igf.withoutArgs");
+        
+        // clean up after test
+        delete fluid.tests.igf;
+    });
+    
     jqUnit.test("messageResolver", function () {
         var bundlea = {
             key1: "value1a",
