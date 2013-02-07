@@ -376,31 +376,21 @@ var fluid_1_5 = fluid_1_5 || {};
             "static environment or else is visible in the current component tree");
     };
     
+    fluid.check({
+        "fluid.browser.supportsBinaryXHR": "fluid.browser.binaryXHR",
+        "fluid.browser.supportsFormData": "fluid.browser.formData",
+        "fluid.browser.supportsFlash": "fluid.browser.flash",
+        "fluid.browser.isBrowser": "fluid.browser.isBrowser"
+    });
+    
     fluid.defaults("fluid.uploader", {
         gradeNames: ["fluid.viewComponent"],
         components: {
-            uploaderContext: {
-                type: "fluid.progressiveCheckerForComponent",
-                options: {componentName: "fluid.uploader"}
-            },
             uploaderImpl: {
-                type: "fluid.uploaderImpl",
+                type: "fluid.uploader.singleFileUploader",
                 container: "{uploader}.container",
                 options: "{uploader}.uploaderOptions"
             }
-        },
-        progressiveCheckerOptions: {
-            checks: [
-                {
-                    feature: "{fluid.browser.supportsBinaryXHR}",
-                    contextName: "fluid.uploader.html5"
-                },
-                {
-                    feature: "{fluid.browser.supportsFlash}",
-                    contextName: "fluid.uploader.swfUpload"
-                }
-            ],
-            defaultContextName: "fluid.uploader.singleFile"
         }
     });
     
@@ -743,10 +733,6 @@ var fluid_1_5 = fluid_1_5 || {};
         selectors: {
             basicUpload: ".fl-progEnhance-basic"
         }
-    });
-
-    fluid.demands("fluid.uploaderImpl", "fluid.uploader.singleFile", {
-        funcName: "fluid.uploader.singleFileUploader"
     });
     
 })(jQuery, fluid_1_5);
