@@ -24,7 +24,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uploader = fluid.uploader || {};
     
-    fluid.demands("fluid.uploaderImpl", "fluid.uploader.swfUpload", {
+    fluid.demands("fluid.uploader.singleFileUploader", "fluid.browser.supportsFlash", {
         funcName: "fluid.uploader.multiFileUploader"
     });
     
@@ -79,7 +79,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    fluid.demands("fluid.uploader.progressiveStrategy", "fluid.uploader.swfUpload", {
+    fluid.demands("fluid.uploader.progressiveStrategy", "fluid.browser.supportsFlash", {
         funcName: "fluid.uploader.swfUploadStrategy"
     });
     

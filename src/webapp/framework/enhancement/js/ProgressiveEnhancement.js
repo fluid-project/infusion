@@ -59,15 +59,20 @@ var fluid_1_5 = fluid_1_5 || {};
             isBrowser: fluid.typeTag("fluid.browser")
         };
         
-        $.extend(fluid.staticEnvironment, features);
+        fluid.browser.isBrowser = function () {
+            return typeof(window) !== "undefined" && window.document;
+        };
+        
+        // $.extend(fluid.staticEnvironment, features);
     }
+    
     /*
      * takes an object of key/value pairs where the key will be the key in the static enivronment and the value is a function or function name to run.
      * {staticEnvKey: "progressiveCheckFunc"}
      */
     fluid.check = function (stuffToCheck) {
         fluid.each(stuffToCheck, function (val, key) {
-            var results = val && typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val();
+            var results = !fluid.staticEnvironment[key] && (typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val());
             
             if (results) {
                 fluid.staticEnvironment[key] = fluid.typeTag(key);

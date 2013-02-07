@@ -20,11 +20,11 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
-    fluid.demands("fluid.uploaderImpl", "fluid.uploader.html5", {
+    fluid.demands("fluid.uploader.singleFileUploader", "fluid.browser.supportsBinaryXHR", {
         funcName: "fluid.uploader.multiFileUploader"
     });
     
-    fluid.demands("fluid.uploader.progressiveStrategy", "fluid.uploader.html5", {
+    fluid.demands("fluid.uploader.progressiveStrategy", "fluid.browser.supportsBinaryXHR", {
         funcName: "fluid.uploader.html5Strategy"
     });
     
