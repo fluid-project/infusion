@@ -67,7 +67,7 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.check = function (stuffToCheck) {
         fluid.each(stuffToCheck, function (val, key) {
-            var results = val && typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val();
+            var results = !fluid.staticEnvironment[key] && (typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val());
             
             if (results) {
                 fluid.staticEnvironment[key] = fluid.typeTag(key);

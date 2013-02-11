@@ -82,12 +82,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.test");
     
     jqUnit.test("fluid.check", function () {
-        jqUnit.expect(4);
+        jqUnit.expect(9);
         fluid.test.setEnvironment = function () {
+            jqUnit.assertTrue("The setEnvironment check was run", true);
             return true;
         };
         
         fluid.test.notSetEnvironment = function () {
+            jqUnit.assertTrue("The notSetEnvironment test was run", true);
             return false;
         };
         
@@ -114,6 +116,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.each(checksNotSet, function (val, key) {
             jqUnit.assertUndefined("The key '" + key + "', should not exist in the static environment", fluid.staticEnvironment[key]);
         });
+
+        // Rerun a check that has been run before. It should not execute the check func.
+        fluid.check({set1: "fluid.test.setEnvironment"});
+        // Verify that the key is still in the static environment
+        jqUnit.assertValue("The key 'set1', should exist in the static environment", fluid.staticEnvironment.set1);
     }); 
     
     jqUnit.test("fluid.forget", function () {
