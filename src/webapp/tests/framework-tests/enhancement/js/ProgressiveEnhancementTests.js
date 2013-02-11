@@ -166,5 +166,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The static enivonment should not have changed", origSE, fluid.staticEnvironment);
         jqUnit.assertDeepEq("fluid.progressiveEnhancement.checked should not have changed", origChecked, fluid.progressiveEnhancement.checked);
     });
+    
+    jqUnit.test("fluid.progressiveEnhancement.forgetAll", function () {
+        jqUnit.expect(8);
+        var typeNames = ["check.one", "check.two"];
+        var keys = [];
+        
+        // Add keys to the static environment
+        fluid.each(typeNames, function (val) {
+            var key = fluid.progressiveEnhancement.typeToKey(val);
+            keys.push(key);
+            fluid.staticEnvironment[key] = fluid.typeTag(val);
+            fluid.progressiveEnhancement.checked[key] = true;
+            jqUnit.assertValue("The key '" + key + "', should exist in the static environment", fluid.staticEnvironment[key]);
+            jqUnit.assertValue("The key '" + key + "', should exist in fluid.progressiveEnhancement.checked", fluid.progressiveEnhancement.checked[key]);
+        });
+        
+        // Remove all checked keys
+        fluid.progressiveEnhancement.forgetAll();
+        
+        // Verify that the checked keys have been removed
+        fluid.each(keys, function (val) {
+            jqUnit.assertNoValue("The key '" + val + "', should not exist in the static environment", fluid.staticEnvironment[val]);
+            jqUnit.assertNoValue("The key '" + val + "', should not exist in fluid.progressiveEnhancement.checked", fluid.progressiveEnhancement.checked[val]);
+        });
+    });
 
 })(jQuery);

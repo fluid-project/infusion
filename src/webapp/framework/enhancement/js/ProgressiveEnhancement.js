@@ -100,8 +100,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     /*
-     * takes an array of static environemnt keys to remove
-     * ["staticEnvKey1", "staticEnvKey2"]
+     * forgets a single item based on the typeName
      */
     fluid.progressiveEnhancement.forget = function (typeName) {
         var key = fluid.progressiveEnhancement.typeToKey(typeName);
@@ -110,6 +109,15 @@ var fluid_1_5 = fluid_1_5 || {};
             delete fluid.staticEnvironment[key];
             delete fluid.progressiveEnhancement.checked[key];
         }
+    };
+    
+    /*
+     * forgets all of the keys added by fluid.progressiveEnhancement.check
+     */
+    fluid.progressiveEnhancement.forgetAll = function () {
+        fluid.each(fluid.progressiveEnhancement.checked, function (val, key) {
+            fluid.progressiveEnhancement.forget(key);
+        });
     };
     
     fluid.progressiveChecker = function (options) {
