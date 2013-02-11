@@ -85,7 +85,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expect(2);
         
         var typeName = "fluid.type.name";
-        var expectedName = "fluid-type-name";
+        var expectedName = "fluid--type--name";
         var otherName = "otherName";
         
         jqUnit.assertEquals("The typeName should be converted", expectedName, fluid.progressiveEnhancement.typeToKey(typeName));

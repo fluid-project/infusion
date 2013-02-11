@@ -72,10 +72,16 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.progressiveEnhancement.checked = {};
     
     /*
+     * The segment separator used by fluid.progressiveEnhancement.typeToKey
+     */
+    fluid.progressiveEnhancement.sep = "--";
+    
+    /*
      * Converts a type tag name to one that is safe to use as a key in an object, by replacing all of the "."
+     * with the separator specified at fluid.progressiveEnhancement.sep
      */
     fluid.progressiveEnhancement.typeToKey = function (typeName) {
-        return typeName.replace(/[.]/gi, "-");
+        return typeName.replace(/[.]/gi, fluid.progressiveEnhancement.sep);
     };
     
     /*
