@@ -62,19 +62,19 @@ var fluid_1_5 = fluid_1_5 || {};
         $.extend(fluid.staticEnvironment, features);
     }
     
-    fluid.registerNamespace("fluid.progressiveEnhancment");
+    fluid.registerNamespace("fluid.progressiveEnhancement");
     
     /*
      * An object to hold the results of the progressive enhancement checks.
      * Keys represent the key into the static environment
      * Values represent the result of the check
      */
-    fluid.progressiveEnhancment.checked = {};
+    fluid.progressiveEnhancement.checked = {};
     
     /*
      * Converts a type tag name to one that is safe to use as a key in an object, by replacing all of the "."
      */
-    fluid.progressiveEnhancment.typeToKey = function (typeName) {
+    fluid.progressiveEnhancement.typeToKey = function (typeName) {
         return typeName.replace(/[.]/gi, "-");
     };
     
@@ -83,14 +83,14 @@ var fluid_1_5 = fluid_1_5 || {};
      * {staticEnvKey: "progressiveCheckFunc"}
      * Note that the function will not be run if it's result is already recorded.
      */
-    fluid.progressiveEnhancment.check = function (stuffToCheck) {
+    fluid.progressiveEnhancement.check = function (stuffToCheck) {
         fluid.each(stuffToCheck, function (val, key) {
-            var staticKey = fluid.progressiveEnhancment.typeToKey(key);
+            var staticKey = fluid.progressiveEnhancement.typeToKey(key);
             
-            if (!fluid.progressiveEnhancment.checked.hasOwnProperty(staticKey)) {
+            if (!fluid.progressiveEnhancement.checked.hasOwnProperty(staticKey)) {
                 var results = typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val();
                 
-                fluid.progressiveEnhancment.checked[staticKey] = results;
+                fluid.progressiveEnhancement.checked[staticKey] = results;
                 
                 if (results) {
                     fluid.staticEnvironment[staticKey] = fluid.typeTag(key);
@@ -103,10 +103,13 @@ var fluid_1_5 = fluid_1_5 || {};
      * takes an array of static environemnt keys to remove
      * ["staticEnvKey1", "staticEnvKey2"]
      */
-    fluid.progressiveEnhancment.forget = function (stuffToForget) {
-        fluid.each(stuffToForget, function (val) {
-            delete fluid.staticEnvironment[val];
-        });
+    fluid.progressiveEnhancement.forget = function (typeName) {
+        var key = fluid.progressiveEnhancement.typeToKey(typeName);
+        
+        if (fluid.progressiveEnhancement.checked.hasOwnProperty(key)) {
+            delete fluid.staticEnvironment[key];
+            delete fluid.progressiveEnhancement.checked[key];
+        }
     };
     
     fluid.progressiveChecker = function (options) {

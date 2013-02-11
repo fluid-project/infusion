@@ -81,18 +81,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.registerNamespace("fluid.test");
     
-    jqUnit.test("fluid.progressiveEnhancment.typeToKey", function () {
+    jqUnit.test("fluid.progressiveEnhancement.typeToKey", function () {
         jqUnit.expect(2);
         
         var typeName = "fluid.type.name";
         var expectedName = "fluid-type-name";
         var otherName = "otherName";
         
-        jqUnit.assertEquals("The typeName should be converted", expectedName, fluid.progressiveEnhancment.typeToKey(typeName));
-        jqUnit.assertEquals("The name should not be modified", otherName, fluid.progressiveEnhancment.typeToKey(otherName));
+        jqUnit.assertEquals("The typeName should be converted", expectedName, fluid.progressiveEnhancement.typeToKey(typeName));
+        jqUnit.assertEquals("The name should not be modified", otherName, fluid.progressiveEnhancement.typeToKey(otherName));
     });
     
-    jqUnit.test("fluid.progressiveEnhancment.check", function () {
+    jqUnit.test("fluid.progressiveEnhancement.check", function () {
         jqUnit.expect(9);
         fluid.test.setEnvironment = function () {
             jqUnit.assertTrue("The setEnvironment check was run", true);
@@ -115,49 +115,56 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
         
         // Run the check and add keys to the static environment
-        fluid.progressiveEnhancment.check(checkSet);
+        fluid.progressiveEnhancement.check(checkSet);
         // Verify that the keys have been added to the static environment 
         fluid.each(checkSet, function (val, key) {
-            var staticKey = fluid.progressiveEnhancment.typeToKey(key);
+            var staticKey = fluid.progressiveEnhancement.typeToKey(key);
             jqUnit.assertValue("The key '" + staticKey + "', should exist in the static environment", fluid.staticEnvironment[staticKey]);
         });
         
         // Run the check but don't add keys to the static environment
-        fluid.progressiveEnhancment.check(checksNotSet);
+        fluid.progressiveEnhancement.check(checksNotSet);
         // Verify that the keys have not been added to the static environment
         fluid.each(checksNotSet, function (val, key) {
-            var staticKey = fluid.progressiveEnhancment.typeToKey(key);
+            var staticKey = fluid.progressiveEnhancement.typeToKey(key);
             jqUnit.assertUndefined("The key '" + staticKey + "', should not exist in the static environment", fluid.staticEnvironment[staticKey]);
         });
 
         // Rerun a check that has been run before. It should not execute the check func.
         var origSE = fluid.copy(fluid.staticEnvironment);
-        fluid.progressiveEnhancment.check({"check.set.one": "fluid.test.setEnvironment", "check.notSet.one": "fluid.test.notSetEnvironment"});
+        fluid.progressiveEnhancement.check({"check.set.one": "fluid.test.setEnvironment", "check.notSet.one": "fluid.test.notSetEnvironment"});
         // Verify that the static environment hasn't changed
         jqUnit.assertDeepEq("The static environment should not have been changed", origSE, fluid.staticEnvironment);
     }); 
     
     jqUnit.test("fluid.forget", function () {
-        jqUnit.expect(5);
-        var toForget = ["toForget1", "toForget2"];
-        var neverAdded = "neverAdded";
+        jqUnit.expect(8);
+        var checked = "checked.key";
+        var unChecked = "static.unChecked";
+        var neverAdded = "never.added";
         
         // Add and verify that keys are in the static environment
-        fluid.each(toForget, function (val) {
-            fluid.staticEnvironment[val] = fluid.typeTag(val);
-            jqUnit.assertValue("The key '" + val + "', should exist in the static environment", fluid.staticEnvironment[val]);
-        });
+        var checkedKey = fluid.progressiveEnhancement.typeToKey(checked);
+        fluid.staticEnvironment[checkedKey] = fluid.typeTag(checked);
+        fluid.progressiveEnhancement.checked[checkedKey] = true;
+        jqUnit.assertValue("The key '" + checkedKey + "', should exist in the static environment", fluid.staticEnvironment[checkedKey]);
+        jqUnit.assertValue("The key '" + checkedKey + "', should exist in fluid.progressiveEnhancement.checked", fluid.progressiveEnhancement.checked[checkedKey]);
         
-        // Add a key to test, that isn't in the static environment
-        toForget.push(neverAdded);
+        var unCheckedKey = fluid.progressiveEnhancement.typeToKey(unChecked);
+        fluid.staticEnvironment[unCheckedKey] = fluid.typeTag(unChecked);
+        jqUnit.assertValue("The key '" + unCheckedKey + "', should exist in the static environment", fluid.staticEnvironment[unCheckedKey]);
+        jqUnit.assertNoValue("The key '" + unCheckedKey + "', should not exist in fluid.progressiveEnhancement.checked", fluid.progressiveEnhancement.checked[unCheckedKey]);
         
-        // Remove keys from the static environment
-        fluid.progressiveEnhancment.forget(toForget);
+        // forget keys
+        fluid.progressiveEnhancement.forget(checked);
+        jqUnit.assertNoValue("The key '" + checkedKey + "', should not exist in the static environment", fluid.staticEnvironment[checkedKey]);
+        jqUnit.assertNoValue("The key '" + checkedKey + "', should not exist in fluid.progressiveEnhancement.checked", fluid.progressiveEnhancement.checked[checkedKey]);
         
-        // Verify that keys have been removed form the static environment
-        fluid.each(toForget, function (val) {
-            jqUnit.assertUndefined("The key '" + val + "', should not exist in the static environment", fluid.staticEnvironment[val]);
-        });
+        var origSE = fluid.copy(fluid.staticEnvironment);
+        var origChecked = fluid.copy(fluid.progressiveEnhancement.checked);
+        
+        jqUnit.assertDeepEq("The static enivonment should not have changed", origSE, fluid.staticEnvironment);
+        jqUnit.assertDeepEq("fluid.progressiveEnhancement.checked should not have changed", origChecked, fluid.progressiveEnhancement.checked);
     });
 
 })(jQuery);
