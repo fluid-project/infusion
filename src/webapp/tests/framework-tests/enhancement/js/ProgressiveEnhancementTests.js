@@ -81,7 +81,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.registerNamespace("fluid.test");
     
-    jqUnit.test("fluid.check", function () {
+    jqUnit.test("fluid.progressiveEnhancment.check", function () {
         jqUnit.expect(9);
         fluid.test.setEnvironment = function () {
             jqUnit.assertTrue("The setEnvironment check was run", true);
@@ -104,21 +104,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
         
         // Run the check and add keys to the static environment
-        fluid.check(checkSet);
+        fluid.progressiveEnhancment.check(checkSet);
         // Verify that the keys have been added to the static environment 
         fluid.each(checkSet, function (val, key) {
             jqUnit.assertValue("The key '" + key + "', should exist in the static environment", fluid.staticEnvironment[key]);
         });
         
         // Run the check but don't add keys to the static environment
-        fluid.check(checksNotSet);
+        fluid.progressiveEnhancment.check(checksNotSet);
         // Verify that the keys have not been added to the static environment
         fluid.each(checksNotSet, function (val, key) {
             jqUnit.assertUndefined("The key '" + key + "', should not exist in the static environment", fluid.staticEnvironment[key]);
         });
 
         // Rerun a check that has been run before. It should not execute the check func.
-        fluid.check({set1: "fluid.test.setEnvironment"});
+        fluid.progressiveEnhancment.check({set1: "fluid.test.setEnvironment"});
         // Verify that the key is still in the static environment
         jqUnit.assertValue("The key 'set1', should exist in the static environment", fluid.staticEnvironment.set1);
     }); 
@@ -138,7 +138,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         toForget.push(neverAdded);
         
         // Remove keys from the static environment
-        fluid.forget(toForget);
+        fluid.progressiveEnhancment.forget(toForget);
         
         // Verify that keys have been removed form the static environment
         fluid.each(toForget, function (val) {

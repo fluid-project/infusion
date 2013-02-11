@@ -61,11 +61,14 @@ var fluid_1_5 = fluid_1_5 || {};
         
         $.extend(fluid.staticEnvironment, features);
     }
+    
+    fluid.registerNamespace("fluid.progressiveEnhancment");
+    
     /*
      * takes an object of key/value pairs where the key will be the key in the static enivronment and the value is a function or function name to run.
      * {staticEnvKey: "progressiveCheckFunc"}
      */
-    fluid.check = function (stuffToCheck) {
+    fluid.progressiveEnhancment.check = function (stuffToCheck) {
         fluid.each(stuffToCheck, function (val, key) {
             var results = !fluid.staticEnvironment[key] && (typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val());
             
@@ -79,7 +82,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * takes an array of static environemnt keys to remove
      * ["staticEnvKey1", "staticEnvKey2"]
      */
-    fluid.forget = function (stuffToForget) {
+    fluid.progressiveEnhancment.forget = function (stuffToForget) {
         fluid.each(stuffToForget, function (val) {
             delete fluid.staticEnvironment[val];
         });
