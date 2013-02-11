@@ -65,6 +65,20 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.registerNamespace("fluid.progressiveEnhancment");
     
     /*
+     * An object to hold the results of the progressive enhancement checks.
+     * Keys represent the key into the static environment
+     * Values represent the result of the check
+     */
+    fluid.progressiveEnhancment.checked = {};
+    
+    /*
+     * Converts a type tag name to one that is safe to use as a key in an object, by replacing all of the "."
+     */
+    fluid.progressiveEnhancment.typeToKey = function (typeName) {
+        return typeName.replace(/[.]/gi, "-");
+    };
+    
+    /*
      * takes an object of key/value pairs where the key will be the key in the static enivronment and the value is a function or function name to run.
      * {staticEnvKey: "progressiveCheckFunc"}
      */

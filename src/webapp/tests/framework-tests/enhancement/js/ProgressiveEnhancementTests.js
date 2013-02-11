@@ -81,6 +81,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.registerNamespace("fluid.test");
     
+    jqUnit.test("fluid.progressiveEnhancment.typeToKey", function () {
+        jqUnit.expect(2);
+        
+        var typeName = "fluid.type.name";
+        var expectedName = "fluid-type-name";
+        var otherName = "otherName";
+        
+        jqUnit.assertEquals("The typeName should be converted", expectedName, fluid.progressiveEnhancment.typeToKey(typeName));
+        jqUnit.assertEquals("The name should not be modified", otherName, fluid.progressiveEnhancment.typeToKey(otherName));
+    });
+    
     jqUnit.test("fluid.progressiveEnhancment.check", function () {
         jqUnit.expect(9);
         fluid.test.setEnvironment = function () {
