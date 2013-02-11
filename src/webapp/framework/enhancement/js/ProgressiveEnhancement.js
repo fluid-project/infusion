@@ -79,15 +79,22 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     /*
-     * takes an object of key/value pairs where the key will be the key in the static enivronment and the value is a function or function name to run.
+     * Takes an object of key/value pairs where the key will be the key in the static enivronment and the value is a function or function name to run.
      * {staticEnvKey: "progressiveCheckFunc"}
+     * Note that the function will not be run if it's result is already recorded.
      */
     fluid.progressiveEnhancment.check = function (stuffToCheck) {
         fluid.each(stuffToCheck, function (val, key) {
-            var results = !fluid.staticEnvironment[key] && (typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val());
+            var staticKey = fluid.progressiveEnhancment.typeToKey(key);
             
-            if (results) {
-                fluid.staticEnvironment[key] = fluid.typeTag(key);
+            if (!fluid.progressiveEnhancment.checked.hasOwnProperty(staticKey)) {
+                var results = typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val();
+                
+                fluid.progressiveEnhancment.checked[staticKey] = results;
+                
+                if (results) {
+                    fluid.staticEnvironment[staticKey] = fluid.typeTag(key);
+                }
             }
         });
     };

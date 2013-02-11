@@ -105,33 +105,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         
         var checkSet = {
-            set1: "fluid.test.setEnvironment",
-            set2: fluid.test.setEnvironment
+            "check.set.one": "fluid.test.setEnvironment",
+            "check.set.two": fluid.test.setEnvironment
         };
         
         var checksNotSet = {
-            notSet1: "fluid.test.notSetEnvironment",
-            notSet2: fluid.test.notSetEnvironment
+            "check.notSet.one": "fluid.test.notSetEnvironment",
+            "check.notSet.two": fluid.test.notSetEnvironment
         }
         
         // Run the check and add keys to the static environment
         fluid.progressiveEnhancment.check(checkSet);
         // Verify that the keys have been added to the static environment 
         fluid.each(checkSet, function (val, key) {
-            jqUnit.assertValue("The key '" + key + "', should exist in the static environment", fluid.staticEnvironment[key]);
+            var staticKey = fluid.progressiveEnhancment.typeToKey(key);
+            jqUnit.assertValue("The key '" + staticKey + "', should exist in the static environment", fluid.staticEnvironment[staticKey]);
         });
         
         // Run the check but don't add keys to the static environment
         fluid.progressiveEnhancment.check(checksNotSet);
         // Verify that the keys have not been added to the static environment
         fluid.each(checksNotSet, function (val, key) {
-            jqUnit.assertUndefined("The key '" + key + "', should not exist in the static environment", fluid.staticEnvironment[key]);
+            var staticKey = fluid.progressiveEnhancment.typeToKey(key);
+            jqUnit.assertUndefined("The key '" + staticKey + "', should not exist in the static environment", fluid.staticEnvironment[staticKey]);
         });
 
         // Rerun a check that has been run before. It should not execute the check func.
-        fluid.progressiveEnhancment.check({set1: "fluid.test.setEnvironment"});
-        // Verify that the key is still in the static environment
-        jqUnit.assertValue("The key 'set1', should exist in the static environment", fluid.staticEnvironment.set1);
+        var origSE = fluid.copy(fluid.staticEnvironment);
+        fluid.progressiveEnhancment.check({"check.set.one": "fluid.test.setEnvironment", "check.notSet.one": "fluid.test.notSetEnvironment"});
+        // Verify that the static environment hasn't changed
+        jqUnit.assertDeepEq("The static environment should not have been changed", origSE, fluid.staticEnvironment);
     }); 
     
     jqUnit.test("fluid.forget", function () {
