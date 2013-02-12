@@ -376,10 +376,10 @@ var fluid_1_5 = fluid_1_5 || {};
             "static environment or else is visible in the current component tree");
     };
     
-    fluid.progressiveEnhancement.check({
-        "fluid.browser.supportsBinaryXHR": "fluid.progressiveEnhancement.supportsBinaryXHR",
-        "fluid.browser.supportsFormData": "fluid.progressiveEnhancement.supportsFormData",
-        "fluid.browser.supportsFlash": "fluid.progressiveEnhancement.supportsFlash"
+    fluid.enhance.check({
+        "fluid.browser.supportsBinaryXHR": "fluid.enhance.supportsBinaryXHR",
+        "fluid.browser.supportsFormData": "fluid.enhance.supportsFormData",
+        "fluid.browser.supportsFlash": "fluid.enhance.supportsFlash"
     });
     
     fluid.defaults("fluid.uploader", {

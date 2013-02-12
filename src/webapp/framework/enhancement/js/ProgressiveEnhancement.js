@@ -21,19 +21,19 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
     
-    fluid.registerNamespace("fluid.progressiveEnhancement");
+    fluid.registerNamespace("fluid.enhance");
     
     // Feature Detection Functions
-    fluid.progressiveEnhancement.isBrowser = function () {
+    fluid.enhance.isBrowser = function () {
         return typeof(window) !== "undefined" && window.document;
     };
-    fluid.progressiveEnhancement.supportsBinaryXHR = function () {
+    fluid.enhance.supportsBinaryXHR = function () {
         return window.FormData || (window.XMLHttpRequest && window.XMLHttpRequest.prototype && window.XMLHttpRequest.prototype.sendAsBinary);
     };
-    fluid.progressiveEnhancement.supportsFormData = function () {
+    fluid.enhance.supportsFormData = function () {
         return !!window.FormData;
     };
-    fluid.progressiveEnhancement.supportsFlash = function () {
+    fluid.enhance.supportsFlash = function () {
         return (typeof(swfobject) !== "undefined") && (swfobject.getFlashPlayerVersion().major > 8);
     };
     
@@ -42,19 +42,19 @@ var fluid_1_5 = fluid_1_5 || {};
      * Keys represent the key into the static environment
      * Values represent the result of the check
      */
-    fluid.progressiveEnhancement.checked = {};
+    fluid.enhance.checked = {};
     
     /*
-     * The segment separator used by fluid.progressiveEnhancement.typeToKey
+     * The segment separator used by fluid.enhance.typeToKey
      */
-    fluid.progressiveEnhancement.sep = "--";
+    fluid.enhance.sep = "--";
     
     /*
      * Converts a type tag name to one that is safe to use as a key in an object, by replacing all of the "."
-     * with the separator specified at fluid.progressiveEnhancement.sep
+     * with the separator specified at fluid.enhance.sep
      */
-    fluid.progressiveEnhancement.typeToKey = function (typeName) {
-        return typeName.replace(/[.]/gi, fluid.progressiveEnhancement.sep);
+    fluid.enhance.typeToKey = function (typeName) {
+        return typeName.replace(/[.]/gi, fluid.enhance.sep);
     };
     
     /*
@@ -62,14 +62,14 @@ var fluid_1_5 = fluid_1_5 || {};
      * {staticEnvKey: "progressiveCheckFunc"}
      * Note that the function will not be run if it's result is already recorded.
      */
-    fluid.progressiveEnhancement.check = function (stuffToCheck) {
+    fluid.enhance.check = function (stuffToCheck) {
         fluid.each(stuffToCheck, function (val, key) {
-            var staticKey = fluid.progressiveEnhancement.typeToKey(key);
+            var staticKey = fluid.enhance.typeToKey(key);
             
-            if (!fluid.progressiveEnhancement.checked.hasOwnProperty(staticKey)) {
+            if (!fluid.enhance.checked.hasOwnProperty(staticKey)) {
                 var results = typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val();
                 
-                fluid.progressiveEnhancement.checked[staticKey] = results;
+                fluid.enhance.checked[staticKey] = results;
                 
                 if (results) {
                     fluid.staticEnvironment[staticKey] = fluid.typeTag(key);
@@ -81,21 +81,21 @@ var fluid_1_5 = fluid_1_5 || {};
     /*
      * forgets a single item based on the typeName
      */
-    fluid.progressiveEnhancement.forget = function (typeName) {
-        var key = fluid.progressiveEnhancement.typeToKey(typeName);
+    fluid.enhance.forget = function (typeName) {
+        var key = fluid.enhance.typeToKey(typeName);
         
-        if (fluid.progressiveEnhancement.checked.hasOwnProperty(key)) {
+        if (fluid.enhance.checked.hasOwnProperty(key)) {
             delete fluid.staticEnvironment[key];
-            delete fluid.progressiveEnhancement.checked[key];
+            delete fluid.enhance.checked[key];
         }
     };
     
     /*
-     * forgets all of the keys added by fluid.progressiveEnhancement.check
+     * forgets all of the keys added by fluid.enhance.check
      */
-    fluid.progressiveEnhancement.forgetAll = function () {
-        fluid.each(fluid.progressiveEnhancement.checked, function (val, key) {
-            fluid.progressiveEnhancement.forget(key);
+    fluid.enhance.forgetAll = function () {
+        fluid.each(fluid.enhance.checked, function (val, key) {
+            fluid.enhance.forget(key);
         });
     };
     
@@ -131,7 +131,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // Use JavaScript to hide any markup that is specifically in place for cases when JavaScript is off.
     // Note: the use of fl-ProgEnhance-basic is deprecated, and replaced by fl-progEnhance-basic.
     // It is included here for backward compatibility only.
-    if (fluid.progressiveEnhancement.isBrowser()) {
+    if (fluid.enhance.isBrowser()) {
         $("head").append("<style type='text/css'>.fl-progEnhance-basic, .fl-ProgEnhance-basic { display: none; } .fl-progEnhance-enhanced, .fl-ProgEnhance-enhanced { display: block; }</style>");
     }
     
