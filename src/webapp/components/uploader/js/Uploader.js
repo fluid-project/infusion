@@ -376,6 +376,12 @@ var fluid_1_5 = fluid_1_5 || {};
             "static environment or else is visible in the current component tree");
     };
     
+    fluid.progressiveEnhancement.check({
+        "fluid.browser.supportsBinaryXHR": "fluid.progressiveEnhancement.supportsBinaryXHR",
+        "fluid.browser.supportsFormData": "fluid.progressiveEnhancement.supportsFormData",
+        "fluid.browser.supportsFlash": "fluid.progressiveEnhancement.supportsFlash"
+    });
+    
     fluid.defaults("fluid.uploader", {
         gradeNames: ["fluid.viewComponent"],
         components: {
