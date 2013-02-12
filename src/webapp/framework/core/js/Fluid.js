@@ -704,7 +704,8 @@ var fluid = fluid || fluid_1_5;
         if (!func) {
             fluid.fail("Error invoking global function: " + functionPath + " could not be located");
         } else {
-            return func.apply(null, args);
+            // FLUID-4915: Fixes an issue for IE8 by defaulting to an empty array when args are falsey.
+            return func.apply(null, args || []);
         }
     };
     
