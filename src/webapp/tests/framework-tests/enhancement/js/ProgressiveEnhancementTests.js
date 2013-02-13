@@ -78,5 +78,130 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Neither feature matches, default value should be returned.", 
                             "food.carrots", result);
     });
+    
+    fluid.registerNamespace("fluid.test");
+    
+    var STATIC_ENV_NOT_SET = NOT_CHECKED = false;
+    var STATIC_ENV_SET = CHECKED = true;
+    
+    var assertEnvKey = function (env, key, shouldExist) {
+        jqUnit.expect(1);
+        var val = fluid.getGlobalValue(env)[key];
+        if (shouldExist) {
+            jqUnit.assertValue("The key '" + key + "' should exist in " + env, val);
+        } else {
+            jqUnit.assertNoValue("The key '" + key + "' should not exist in " + env, val);
+        }
+    };
+    
+    var assertKeyInEnvironments = function (key, staticShoulExist, checkedShouldExist) {
+        assertEnvKey("fluid.staticEnvironment", key, staticShoulExist);
+        assertEnvKey("fluid.enhance.checked", key, checkedShouldExist);
+    };
+    
+    jqUnit.test("fluid.enhance.typeToKey", function () {
+        jqUnit.expect(2);
+        
+        var typeName = "fluid.type.name";
+        var expectedName = "fluid--type--name";
+        var otherName = "otherName";
+        
+        jqUnit.assertEquals("The typeName should be converted", expectedName, fluid.enhance.typeToKey(typeName));
+        jqUnit.assertEquals("The name should not be modified", otherName, fluid.enhance.typeToKey(otherName));
+    });
+    
+    jqUnit.test("fluid.enhance.check", function () {
+        jqUnit.expect(5);
+        fluid.test.setEnvironment = function () {
+            jqUnit.assertTrue("The setEnvironment check was run", true);
+            return true;
+        };
+        
+        fluid.test.notSetEnvironment = function () {
+            jqUnit.assertTrue("The notSetEnvironment test was run", true);
+            return false;
+        };
+        
+        var checkSet = {
+            "check.set.one": "fluid.test.setEnvironment",
+            "check.set.two": fluid.test.setEnvironment
+        };
+        
+        var checksNotSet = {
+            "check.notSet.one": "fluid.test.notSetEnvironment",
+            "check.notSet.two": fluid.test.notSetEnvironment
+        }
+        
+        // Run the check and add keys to the static environment
+        fluid.enhance.check(checkSet);
+        // Verify that the keys have been added to the static environment and the checked obj
+        fluid.each(checkSet, function (val, key) {
+            var staticKey = fluid.enhance.typeToKey(key);
+            assertKeyInEnvironments(staticKey, STATIC_ENV_SET, CHECKED);
+        });
+        
+        // Run the check but don't add keys to the static environment
+        fluid.enhance.check(checksNotSet);
+        // Verify that the keys have not been added to the static environment, but have are in the checked obj
+        fluid.each(checksNotSet, function (val, key) {
+            var staticKey = fluid.enhance.typeToKey(key);
+            assertKeyInEnvironments(staticKey, STATIC_ENV_NOT_SET, CHECKED);
+        });
+
+        // Rerun a check that has been run before. It should not execute the check func.
+        var origSE = fluid.copy(fluid.staticEnvironment);
+        fluid.enhance.check({"check.set.one": "fluid.test.setEnvironment", "check.notSet.one": "fluid.test.notSetEnvironment"});
+        // Verify that the static environment hasn't changed
+        jqUnit.assertDeepEq("The static environment should not have been changed", origSE, fluid.staticEnvironment);
+    }); 
+    
+    jqUnit.test("fluid.forget", function () {
+        jqUnit.expect(2);
+        var checked = "checked.key";
+        var unChecked = "static.unChecked";
+        var neverAdded = "never.added";
+        
+        // Add and verify that keys are in the static environment and checked
+        var checkedKey = fluid.enhance.typeToKey(checked);
+        fluid.staticEnvironment[checkedKey] = fluid.typeTag(checked);
+        fluid.enhance.checked[checkedKey] = true;
+        assertKeyInEnvironments(checkedKey, STATIC_ENV_SET, CHECKED);
+        
+        var unCheckedKey = fluid.enhance.typeToKey(unChecked);
+        fluid.staticEnvironment[unCheckedKey] = fluid.typeTag(unChecked);
+        assertKeyInEnvironments(unCheckedKey, STATIC_ENV_SET, NOT_CHECKED);
+        
+        // forget keys
+        fluid.enhance.forget(checked);
+        assertKeyInEnvironments(checkedKey, STATIC_ENV_NOT_SET, NOT_CHECKED);
+        
+        var origSE = fluid.copy(fluid.staticEnvironment);
+        var origChecked = fluid.copy(fluid.enhance.checked);
+        
+        jqUnit.assertDeepEq("The static environment should not have changed", origSE, fluid.staticEnvironment);
+        jqUnit.assertDeepEq("fluid.enhance.checked should not have changed", origChecked, fluid.enhance.checked);
+    });
+    
+    jqUnit.test("fluid.enhance.forgetAll", function () {
+        var typeNames = ["check.one", "check.two"];
+        var keys = [];
+        
+        // Add keys to the static environment
+        fluid.each(typeNames, function (val) {
+            var key = fluid.enhance.typeToKey(val);
+            keys.push(key);
+            fluid.staticEnvironment[key] = fluid.typeTag(val);
+            fluid.enhance.checked[key] = true;
+            assertKeyInEnvironments(key, STATIC_ENV_SET, CHECKED);
+        });
+        
+        // Remove all checked keys
+        fluid.enhance.forgetAll();
+        
+        // Verify that the checked keys have been removed
+        fluid.each(keys, function (val) {
+            assertKeyInEnvironments(val, STATIC_ENV_NOT_SET, NOT_CHECKED);
+        });
+    });
 
 })(jQuery);
