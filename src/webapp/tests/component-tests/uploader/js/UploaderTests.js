@@ -201,7 +201,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var that = fluid.initLittleComponent("fluid.tests.uploader.parent.loadDemands", options);
             fluid.initDependents(that);
             return that.uploader;
-        };        
+        };      
         
         fluid.defaults("fluid.tests.uploader.parent", {
             gradeNames: ["fluid.littleComponent"],

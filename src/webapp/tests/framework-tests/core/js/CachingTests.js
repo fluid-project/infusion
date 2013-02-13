@@ -119,16 +119,20 @@ fluid.registerNamespace("fluid.tests");
         }
 
         // "whitebox" testing to assess failure in the presence and absence of IoC
+        // TODO: This test is getting increasingly silly
         function IoCCensorer(func) {
             var expandComponentOptions = fluid.expandComponentOptions;
             var deliverOptionsStrategy = fluid.deliverOptionsStrategy;
+            var computeComponentAccessor = fluid.computeComponentAccessor;
             delete fluid.expandComponentOptions;
             fluid.deliverOptionsStrategy = fluid.identity;
+            fluid.computeComponentAccessor = fluid.identity;
             try {
                 func();
             } finally {
                 fluid.expandComponentOptions = expandComponentOptions;
                 fluid.deliverOptionsStrategy = deliverOptionsStrategy;
+                fluid.computeComponentAccessor = computeComponentAccessor;
             }      
         }
          

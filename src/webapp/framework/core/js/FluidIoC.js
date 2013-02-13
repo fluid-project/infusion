@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2013 OCAD University
 Copyright 2010-2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -51,6 +51,14 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
+    // unsupported, non-API function
+    fluid.getMemberNames = function (instantiator, thatStack) {
+        var path = instantiator.idToPath(thatStack[thatStack.length - 1].id);
+        var segs = fluid.model.parseEL(path);
+        segs.unshift.apply(segs, fluid.generate(thatStack.length - segs.length, ""));
+        return segs;
+    };
+    
     // thatStack contains an increasing list of MORE SPECIFIC thats.
     // this visits all components starting from the current location (end of stack)
     // in visibility order up the tree.
@@ -60,13 +68,13 @@ var fluid_1_5 = fluid_1_5 || {};
             flat: true,
             instantiator: instantiator
         };
+        var memberNames = fluid.getMemberNames(instantiator, thatStack);
         for (var i = thatStack.length - 1; i >= 0; --i) {
             var that = thatStack[i];
-            var path = instantiator.idToPath(that.id); // This resolves FLUID-4338
             if (that.typeName) {
                 options.visited[that.id] = true;
-                var memberName = fluid.pathUtil.getTailPath(path);
-                if (visitor(that, memberName, path)) {
+                var path = instantiator.idToPath[that.id];
+                if (visitor(that, memberNames[i], path)) {
                     return;
                 }
             }
@@ -140,37 +148,187 @@ var fluid_1_5 = fluid_1_5 || {};
         initter();
     };
 
+    // unsupported, NON-API function
+    fluid.makeDistributionRecord = function (sourceRecord, sourcePath, targetPath, exclusions, offset) {
+        offset = offset || 0;
+
+        var source = fluid.copy(fluid.get(sourceRecord, sourcePath));
+        fluid.each(exclusions, function (exclusion) {
+            fluid.model.applyChangeRequest(source, {path: exclusion, type: "DELETE"});
+        });
+
+        var options = {};        
+        fluid.model.applyChangeRequest(options, {path: targetPath, type: "ADD", value: source});
+        return {options: options, recordType: "distribution", priority: fluid.mergeRecordTypes.distribution + offset};
+    };
+
     // unsupported, NON-API function    
-    fluid.distributeOptions = function (that) {
-        var records = fluid.makeArray(fluid.getForComponent(that, ["options", "distributeOptions"]));
+    fluid.filterBlocks = function (sourceBlocks, sourcePath, targetPath, exclusions) {
+        var togo = [], offset = 0;
+        fluid.each(sourceBlocks, function (block) {
+            var source = fluid.get(block.source, sourcePath);
+            if (source) {
+                togo.push(fluid.makeDistributionRecord(block.source, sourcePath, targetPath, exclusions, offset++));
+                var rescued = $.extend({}, source);
+                fluid.model.applyChangeRequest(block.source, {path: sourcePath, type: "DELETE"});
+                fluid.each(exclusions, function (exclusion) {
+                    var orig = fluid.get(rescued, exclusion);
+                    fluid.set(block.source, sourcePath.concat(exclusion), orig);
+                });
+            }
+        });
+        return togo; 
+    };
+    
+    // unsupported, NON-API function    
+    fluid.matchIoCSelector = function (selector, thatStack, shadows, memberNames, i) {
+        var thatpos = thatStack.length - 1;
+        var selpos = selector.length - 1;
+        while (true) {
+            var mustMatchHere = thatpos === thatStack.length - 1 || selector[selpos].child;
+            
+            var that = thatStack[thatpos];  
+            var selel = selector[selpos];
+            var match = true;
+            for (var j = 0; j < selel.predList.length; ++j) {
+                var pred = selel.predList[j];
+                if (pred.context && !(shadows[thatpos].contextHash[pred.context] || memberNames[thatpos] === pred.context)) {
+                    match = false;
+                    break;
+                }
+                if (pred.id && that.id !== pred.id) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                if (selpos === 0) {
+                    return true;
+                }
+                --thatpos;
+                --selpos;
+            }
+            if (!match) {
+                if (mustMatchHere) {
+                    return false;
+                }
+                else {
+                    --thatpos;
+                }
+            }
+            if (thatpos < i) {
+                return false;
+            }
+        }
+    };
+    
+    // unsupported, NON-API function
+    fluid.pushDistributions = function (distributedBlocks, distribution, thatStack, shadows, memberNames, i) {
+        if (fluid.matchIoCSelector(distribution.selector, thatStack, shadows, memberNames, i)) {
+            distributedBlocks.push.apply(distributedBlocks, distribution.blocks);
+        }
+    };
+
+    // unsupported, NON-API function 
+    fluid.receiveDistributions = function (that) {
+        var instantiator = fluid.getInstantiator(that);
+        var thatStack = instantiator.getThatStack(that); // most specific is at end
+        var memberNames = fluid.getMemberNames(instantiator, thatStack);
+        var distributedBlocks = [];
+        var shadows = fluid.transform(thatStack, function (thisThat) {
+            return instantiator.idToShadow[thisThat.id];  
+        });
+        for (var i = 0; i < thatStack.length; ++ i) {
+            var thisThat = thatStack[i];
+            fluid.each(shadows[i].distributions, function (distribution) {
+                fluid.pushDistributions(distributedBlocks, distribution, thatStack, shadows, memberNames, i);
+            });
+        }
+        fluid.applyDistributions(that, distributedBlocks, shadow);
+    };
+
+    // unsupported, NON-API function 
+    fluid.applyDistributions = function (that, preBlocks, targetShadow) {
+        var distributedBlocks = fluid.transform(preBlocks, function (preBlock) {
+            return fluid.generateExpandBlock(preBlock, that, targetShadow.mergePolicy);
+        });
+        var mergeOptions = targetShadow.mergeOptions;
+        mergeOptions.mergeBlocks.push.apply(mergeOptions.mergeBlocks, distributedBlocks);
+        mergeOptions.updateBlocks();  
+    };
+
+    // unsupported, NON-API function
+    fluid.parseExpectedOptionsPath = function (path, role) {
+        var segs = fluid.model.parseEL(path);
+        if (segs.length > 1 && segs[0] !== "options") {
+                fluid.fail("Error in options distribution record ", record, " - only " + role + " paths beginning with \"options\" are supported");
+        }
+        return segs.slice(1);  
+    };
+
+    fluid.undistributableOptions = ["gradeNames", "distributeOptions", "argumentMap", "initFunction", "mergePolicy", "progressiveCheckerOptions"]; // automatically added to "exclusions" of every distribution
+
+    // unsupported, NON-API function    
+    fluid.distributeOptions = function (that, optionsStrategy) {
+        var records = fluid.makeArray(fluid.driveStrategy(that.options, "distributeOptions", optionsStrategy));
         fluid.each(records, function (record) {
-            var targetRef = fluid.parseContextReference(record.target, 0);
-            var targetComp = fluid.resolveContext(targetRef.context, that);
-            if (!targetComp) {
-                fluid.fail("Error in options distribution record ", record, " - could not resolve context selector {"+targetRef+"} to a root component");
+            var targetRef = fluid.parseContextReference(record.target);
+            var targetComp, selector;
+            if (targetRef.context.indexOf(" ") !== -1) { // simple-minded check for an IoCSS reference
+                selector = fluid.parseSelector(targetRef.context, fluid.IoCSSMatcher)
+                var head = selector[0].predList;
+                if (head.length !== 1 || head[0].context !== "that") {
+                    fluid.fail("Downwards options distribution not supported from component other than \"that\"");
+                }
+                head.length = 0;
+                targetComp = that;
             }
-            var segs = fluid.model.parseEL(targetRef.path);
-            if (segs.length > 1 && segs[0] !== "options") {
-               fluid.fail("Error in options distribution record ", record, " - only target paths beginning with \"options\" are supported");
+            else {
+                targetComp = fluid.resolveContext(targetRef.context, that);
+                if (!targetComp) {
+                    fluid.fail("Error in options distribution record ", record, " - could not resolve context selector {"+targetRef.context+"} to a root component");
+                }
             }
-            segs = segs.slice(1);
-            var options = {};
-            fluid.model.applyChangeRequest(options, {path: segs, type: "ADD", value: record.record});
-            var targetShadow = fluid.shadowForComponent(targetComp);
-            var record = {options: options, recordType: "distribution", priority: fluid.mergeRecordTypes.distribution};
+            var segs = fluid.parseExpectedOptionsPath(targetRef.path, "target");
+            var preBlocks;
+            if (record.record) {
+                preBlocks = [(fluid.makeDistributionRecord(record.record, [], segs, [], 0))];
+            }
+            else {
+                var thatShadow = fluid.shadowForComponent(that);
+                var source = fluid.parseContextReference(record.source || "{that}.options");
+                if (source.context !== "that") {
+                    fluid.fail("Error in options distribution record ", record, " only a context of {that} is supported");
+                }
+                var sourcePath = fluid.parseExpectedOptionsPath(source.path, "source");
+                var fullExclusions = record.exclusions.concat(sourcePath.length === 0 ? fluid.undistributableOptions : []); 
+                
+                var exclusions = fluid.transform(fullExclusions, function (exclusion) {
+                    return fluid.model.parseEL(exclusion);  
+                });
+                
+                preBlocks = fluid.filterBlocks(thatShadow.mergeOptions.mergeBlocks, sourcePath, segs, exclusions);
+                thatShadow.mergeOptions.updateBlocks(); // perhaps unnecessary
+            }
             // TODO: inline material has to be expanded in its original context!
-            var distributedBlock = fluid.generateExpandBlock(record, that, targetShadow.mergePolicy);
-            var mergeOptions = targetShadow.mergeOptions;
-            mergeOptions.mergeBlocks.push(distributedBlock);
-            mergeOptions.updateBlocks();
+            var targetShadow = fluid.shadowForComponent(targetComp);
+            if (selector) {
+                var distributions = (targetShadow.distributions = targetShadow.distributions || []);
+                distributions.push({
+                    selector: selector,
+                    blocks: preBlocks
+                });
+            }
+            else {
+                fluid.applyDistributions(that, preBlocks, targetShadow);
+            }
         });
     };
-    // Main sequence point where the mergeOptions strategy is delivered from Fluid.js - here we construct all further
-    // strategies required on the IoC side and mount them into the shadow's getConfig for universal use
+    // First sequence point where the mergeOptions strategy is delivered from Fluid.js - here we take care
+    // of both receiving and transmitting options distributions
     // unsupported, NON-API function
     fluid.deliverOptionsStrategy = function (that, target, mergeOptions) {
         var shadow = fluid.shadowForComponent(that);
-        shadow.mergeOptions = mergeOptions;
         var contextHash = {};
         fluid.each(that.options.gradeNames, function (gradeName) {
             contextHash[gradeName] = true;
@@ -178,18 +336,28 @@ var fluid_1_5 = fluid_1_5 || {};
         });
         contextHash[that.nickName] = true;
         shadow.contextHash = contextHash;
+        shadow.mergeOptions = mergeOptions;
 
-        var strategy = mergeOptions.strategy;
-        var optionsStrategy = fluid.mountStrategy(["options"], target, strategy);
-        shadow.invokerStrategy = fluid.recordStrategy(that, target, strategy, "invokers", fluid.invokerFromRecord);
-        shadow.eventStrategyBlock = fluid.recordStrategy(that, target, strategy, "events", fluid.eventFromRecord, ["events"]);
+        fluid.distributeOptions(that, mergeOptions.strategy);
+        fluid.receiveDistributions(that);
+    };
+    
+    // Second sequence point for mergeOptions from Fluid.js - here we construct all further
+    // strategies required on the IoC side and mount them into the shadow's getConfig for universal use
+    // unsupported, NON-API function
+    fluid.computeComponentAccessor = function (that) {
+        var shadow = fluid.shadowForComponent(that);
+        var options = that.options;
+        var strategy = shadow.mergeOptions.strategy;
+        var optionsStrategy = fluid.mountStrategy(["options"], options, strategy);
+        shadow.invokerStrategy = fluid.recordStrategy(that, options, strategy, "invokers", fluid.invokerFromRecord);
+        shadow.eventStrategyBlock = fluid.recordStrategy(that, options, strategy, "events", fluid.eventFromRecord, ["events"]);
         var eventStrategy = fluid.mountStrategy(["events"], that, shadow.eventStrategyBlock.strategy, ["events"]);
-        shadow.memberStrategy = fluid.recordStrategy(that, target, strategy, "members", fluid.memberFromRecord);
+        shadow.memberStrategy = fluid.recordStrategy(that, options, strategy, "members", fluid.memberFromRecord);
         
         // NB - ginger strategy handles concrete, rationalise
         shadow.getConfig = {strategies: [fluid.model.funcResolverStrategy, fluid.makeGingerStrategy(that), 
             optionsStrategy, shadow.invokerStrategy.strategy, shadow.memberStrategy.strategy, eventStrategy]};
-        fluid.distributeOptions(that);
         return shadow.getConfig;
     };
     
@@ -259,7 +427,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         var foundComponent;
         var thatStack = instantiator.getFullStack(that);
-        visitComponents(instantiator, thatStack, function(component, name) {
+        visitComponents(instantiator, thatStack, function (component, name) {
             var shadow = fluid.shadowForComponent(component);
             // TODO: Some components, e.g. the static environment and typeTags do not have a shadow, which slows us down here 
             if (context === name || shadow && shadow.contextHash && shadow.contextHash[context] || context === component.typeName || context === component.nickName) {
@@ -298,7 +466,7 @@ var fluid_1_5 = fluid_1_5 || {};
             return fluid.getForComponent(foundComponent, parsed.path);
         };
         return fetcher;
-    }
+    };
 
     // unsupported, NON-API function     
     fluid.makeStackResolverOptions = function (parentThat, localRecord) {
@@ -306,7 +474,7 @@ var fluid_1_5 = fluid_1_5 || {};
             fetcher: fluid.makeStackFetcher(parentThat, localRecord),
             contextThat: parentThat
         }); 
-    }
+    };
     
     // unsupported, non-API function
     fluid.clearListeners = function (shadow) {
@@ -346,7 +514,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (shadow) {
                 var path = shadow.path;
                 var parsed = fluid.model.parseEL(path);
-                var togo = fluid.transform(parsed, function(value, i) {
+                var togo = fluid.transform(parsed, function (value, i) {
                     var parentPath = fluid.model.composeSegments.apply(null, parsed.slice(0, i + 1));
                     return that.pathToComponent[parentPath];
                 });
@@ -516,7 +684,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
         return list; 
-    }
+    };
 
     var addPolicyBuiltins = function (policy) {
         fluid.each(["mergePolicy", "argumentMap", "components", "invokers", "events", "listeners", "distributeOptions", "transformOptions"], function (key) {
@@ -1276,12 +1444,13 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.extractELWithContext = function (string, options) {
         var EL = fluid.extractEL(string, options);
         if (EL && EL.charAt(0) === "{") {
-            return fluid.parseContextReference(EL, 0);
+            return fluid.parseContextReference(EL);
         }
         return EL? {path: EL} : EL;
     };
 
     fluid.parseContextReference = function (reference, index, delimiter) {
+        index = index || 0;
         var endcpos = reference.indexOf("}", index + 1);
         if (endcpos === -1) {
             fluid.fail("Cannot parse context reference \"" + reference + "\": Malformed context reference without }");
@@ -1316,7 +1485,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         fluid.pushActivity("resolveContextValue", "resolving context value %string", {string: string});
         var togo, parsed;
         if (options.bareContextRefs && string.charAt(0) === "{") {
-            parsed = fluid.parseContextReference(string, 0);
+            parsed = fluid.parseContextReference(string);
             togo = options.fetcher(parsed);        
         }
         else if (options.ELstyle && options.ELstyle !== "${}") {
@@ -1362,7 +1531,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         if (expander) {
             return expander.call(null, target, source, options);
         }
-    }
+    };
     
     // This function appears somewhat reusable, but not entirely - it probably needs to be packaged
     // along with the particular "strategy". Very similar to the old "filter"... the "outer driver" needs

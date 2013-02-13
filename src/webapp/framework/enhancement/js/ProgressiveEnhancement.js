@@ -45,10 +45,13 @@ var fluid_1_5 = fluid_1_5 || {};
          * This code runs immediately upon inclusion of this file *
          **********************************************************/
         
-        // Use JavaScript to hide any markup that is specifically in place for cases when JavaScript is off.
-        // Note: the use of fl-ProgEnhance-basic is deprecated, and replaced by fl-progEnhance-basic.
-        // It is included here for backward compatibility only.
-        $("head").append("<style type='text/css'>.fl-progEnhance-basic, .fl-ProgEnhance-basic { display: none; } .fl-progEnhance-enhanced, .fl-ProgEnhance-enhanced { display: block; }</style>");
+        // Distinguish the standalone jQuery from the real one so that this can be included in IoC standalone tests
+        if ($.fn) {
+            // Use JavaScript to hide any markup that is specifically in place for cases when JavaScript is off.
+            // Note: the use of fl-ProgEnhance-basic is deprecated, and replaced by fl-progEnhance-basic.
+            // It is included here for backward compatibility only.
+            $("head").append("<style type='text/css'>.fl-progEnhance-basic, .fl-ProgEnhance-basic { display: none; } .fl-progEnhance-enhanced, .fl-ProgEnhance-enhanced { display: block; }</style>");
+        }
         
         // Browser feature detection--adds corresponding type tags to the static environment,
         // which can be used to define appropriate demands blocks for components using the IoC system.

@@ -433,7 +433,7 @@ var fluid = fluid || fluid_1_5;
     fluid.generate = function (n, generator, applyFunc) {
         var togo = [];
         for (var i = 0; i < n; ++ i) {
-            togo[i] = applyFunc? generator.call(null, i) : generator;
+            togo[i] = applyFunc? generator(i) : generator;
         }
         return togo;       
     };
@@ -1557,6 +1557,7 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.deliverOptionsStrategy = fluid.identity;
+    fluid.computeComponentAccessor = fluid.identity;
 
     // The (extensible) types of merge record the system supports, with the weakest records first    
     fluid.mergeRecordTypes = {
@@ -1641,19 +1642,20 @@ var fluid = fluid || fluid_1_5;
                 fluid.fail("Cannot operate mergePolicy ", mergePolicy, " for component ", that, " without including FluidIoC.js"); 
             }
         }
+        that.options = options;
+        var optionsNickName = fluid.driveStrategy(options, "nickName", mergeOptions.strategy);
+        that.nickName = optionsNickName || fluid.computeNickName(that.typeName);
+        fluid.driveStrategy(options, "gradeNames", mergeOptions.strategy);
+        fluid.deliverOptionsStrategy(that, options, mergeOptions); // do this early to broadcast and receive "distributeOptions"
         
         var transformOptions = fluid.driveStrategy(options, "transformOptions", mergeOptions.strategy);
         if (transformOptions) {
             fluid.transformOptionsBlocks(mergeBlocks, transformOptions, ["user", "subcomponentRecord"]);
             updateBlocks(); // because the possibly simple blocks may have changed target
         }
-        that.options = options;
-        
-        var optionsNickName = fluid.driveStrategy(options, "nickName", mergeOptions.strategy);
-        that.nickName = optionsNickName || fluid.computeNickName(that.typeName);
-        fluid.driveStrategy(options, "gradeNames", mergeOptions.strategy);
-        
-        fluid.deliverOptionsStrategy(that, options, mergeOptions);
+                
+        fluid.computeComponentAccessor(that);
+
         return mergeOptions;
     };
     
@@ -1924,6 +1926,92 @@ var fluid = fluid || fluid_1_5;
     });
     
     fluid.staticEnvironment = fluid.typeTag("fluid.staticEnvironment");
+
+  
+    // ******* SELECTOR ENGINE *********
+      
+    // selector regexps copied from jQuery - recent versions correct the range to start C0
+    // The initial portion of the main character selector "just add water" to add on extra 
+    // accepted characters, as well as the "\\\\." -> "\." portion necessary for matching 
+    // period characters escaped in selectors
+    var charStart = "(?:[\\w\u00c0-\uFFFF*_-";
+  
+    fluid.simpleCSSMatcher = {
+        regexp: new RegExp("([#.]?)(" + charStart + "]|\\\\.)+)", "g"),
+        charToTag: {
+            "": "tag",
+            "#": "id",
+            ".": "clazz"
+        }
+    };
+    
+    fluid.IoCSSMatcher = {
+        regexp: new RegExp("([&#]?)(" + charStart + "]|\\.)+)", "g"),
+        charToTag: {
+            "": "context",
+            "&": "context",
+            "#": "id"
+        }
+    };
+    
+    var childSeg = new RegExp("\\s*(>)?\\s*", "g");
+//    var whiteSpace = new RegExp("^\\w*$");
+  
+    // Parses a selector expression into a data structure holding a list of predicates
+    // 2nd argument is a "strategy" structure, e.g.  fluid.simpleCSSMatcher or fluid.IoCSSMatcher
+    // unsupported, non-API function
+    fluid.parseSelector = function (selstring, strategy) {
+        var togo = [];
+        selstring = $.trim(selstring);
+        //ws-(ss*)[ws/>]
+        var regexp = strategy.regexp;
+        regexp.lastIndex = 0;
+        var lastIndex = 0;
+        while (true) {
+            var atNode = []; // a list of predicates at a particular node
+            var first = true;
+            while (true) {
+                var segMatch = regexp.exec(selstring);
+                if (!segMatch) {
+                    break;
+                }
+                if (segMatch.index !== lastIndex) {
+                    if (first) {
+                        fluid.fail("Error in selector string - cannot match child selector expression starting at " + selstring.substring(lastIndex));
+                    }
+                    else {
+                        break;
+                    }
+                }
+                var thisNode = {};
+                var text = segMatch[2];
+                var targetTag = strategy.charToTag[segMatch[1]];
+                if (targetTag) {
+                    thisNode[targetTag] = text;
+                }
+                atNode[atNode.length] = thisNode;
+                lastIndex = regexp.lastIndex;
+                first = false;
+            }
+            childSeg.lastIndex = lastIndex;
+            var fullAtNode = {predList: atNode};
+            var childMatch = childSeg.exec(selstring);
+            if (!childMatch || childMatch.index !== lastIndex) {
+                fluid.fail("Error in selector string - can not match child selector expression at " + selstring.substring(lastIndex));
+            }
+            if (childMatch[1] === ">") {
+                fullAtNode.child = true;
+            }
+            togo[togo.length] = fullAtNode;
+            // >= test here to compensate for IE bug http://blog.stevenlevithan.com/archives/exec-bugs
+            if (childSeg.lastIndex >= selstring.length) {
+                break;
+            }
+            lastIndex = childSeg.lastIndex;
+            regexp.lastIndex = childSeg.lastIndex; 
+        }
+        return togo;
+    };
 
     // Message resolution and templating
    

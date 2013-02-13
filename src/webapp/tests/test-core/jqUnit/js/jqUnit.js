@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var jqUnit = fluid.registerNamespace("jqUnit");
 
 (function ($) {
-    var QUnitPassthroughs = ["module", "test", "asyncTest", "raises", "start", "stop", "expect"];
+    var QUnitPassthroughs = ["module", "test", "asyncTest", "throws", "raises", "start", "stop", "expect"];
     
     for (var i = 0; i < QUnitPassthroughs.length; ++ i) {
         var method = QUnitPassthroughs[i];

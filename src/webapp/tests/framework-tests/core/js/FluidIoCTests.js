@@ -21,6 +21,8 @@ fluid.registerNamespace("fluid.tests");
 (function ($) {
 
     jqUnit.module("Fluid IoC Tests");
+    
+    fluid.staticEnvironment.isTest = fluid.typeTag("fluid.test");
 
     fluid.setLogging(true);
 
@@ -554,11 +556,105 @@ fluid.registerNamespace("fluid.tests");
         }
     });
     
+    /** FLUID-4873 distributeOptions tests **/
+    
+    fluid.tests.IoCSSParsing = [
+        {selector: "fluid.tests.contextName",
+         expected: [ {predList: [{
+             "context": "fluid.tests.contextName"
+         }]}
+         ]
+        }, 
+        {selector: "fluid.tests.contextName & fluid.tests.contextName2",
+         expected: "fail"
+        },
+        {selector: "fluid.tests.contextName&fluid.tests.contextName2",
+         expected: [ {predList: [{
+                 "context": "fluid.tests.contextName"
+             }, {
+                 "context": "fluid.tests.contextName2"
+             }
+         ]}
+         ]
+        },
+        {selector: "fluid.tests.contextName#35 > fluid.tests.contextName2",
+         expected: [ {
+             child: true,
+             predList: [{
+                 "context": "fluid.tests.contextName"
+             }, {
+                 "id": "35"
+             }
+         ]}, {
+             predList: [{
+                 "context": "fluid.tests.contextName2"
+             }
+         ]}
+         ]
+        }
+    ];
+    
+    jqUnit.test("FLUID-4873 IoCSS selector parsing tests", function () {
+        fluid.pushSoftFailure(true);
+        fluid.each(fluid.tests.IoCSSParsing, function (fixture) {
+            var parser = function () { return fluid.parseSelector(fixture.selector, fluid.IoCSSMatcher);};
+            if (fixture.expected === "fail") {
+                jqUnit["throws"](parser, "Selector " + fixture.selector + " is invalid");
+            }
+            else {
+                var parsed = parser();
+                jqUnit.assertDeepEq("Parsed selector " + fixture.selector, fixture.expected, parsed);
+            }  
+        });
+        fluid.pushSoftFailure(-1);
+    });
+    
+    fluid.defaults("fluid.tests.uploader", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            uploaderContext: {
+                type: "fluid.progressiveCheckerForComponent",
+                options: {componentName: "fluid.tests.uploader"}
+            },
+            uploaderImpl: {
+                type: "fluid.tests.uploaderImpl",
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options",
+            exclusions: ["components.uploaderContext", "components.uploaderImpl"],
+            target: "{that > uploaderImpl}.options"
+        },
+        progressiveCheckerOptions: {
+            checks: [
+                {
+                    feature: "{fluid.test}",
+                    contextName: "fluid.uploader.html5"
+                }
+            ]
+        }
+    });
+    
+    fluid.demands("fluid.tests.uploaderImpl", "fluid.uploader.html5", {
+        funcName: "fluid.tests.uploader.multiFileUploader"
+    });
+    
+    fluid.defaults("fluid.tests.uploader.multiFileUploader", { 
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("FLUID-4873 Total Skywalker Options Distribution", function () {
+        var uploader = fluid.tests.uploader({userOption: 5}).uploaderImpl;
+        jqUnit.assertEquals("Skywalker options transmission", 5, uploader.options.userOption);
+        jqUnit.assertNoValue("Options exclusion", uploader.uploaderContext);
+    });
+    
     /** Expansion order test **/
     
     // Example liberated from UIOptions implementation, which revealed requirement for
     // "expansion before merging" when constructing the new framework. This is a perverse
-    // but probably valid usage of the framework
+    // but probably valid usage of the framework. These kinds of "wholesale options transmissions"
+    // cases are intended to be handled by FLUID-4873 "Luke Skywalker Options" ("distributeOptions")
     
     fluid.defaults("fluid.tests.uiEnhancer", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
