@@ -66,7 +66,7 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.each(stuffToCheck, function (val, key) {
             var staticKey = fluid.enhance.typeToKey(key);
             
-            if (!fluid.enhance.checked.hasOwnProperty(staticKey)) {
+            if (fluid.enhance.checked[staticKey] === undefined) {
                 var results = typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val();
                 
                 fluid.enhance.checked[staticKey] = results;
@@ -84,7 +84,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.enhance.forget = function (typeName) {
         var key = fluid.enhance.typeToKey(typeName);
         
-        if (fluid.enhance.checked.hasOwnProperty(key)) {
+        if (fluid.enhance.checked[key] !== undefined) {
             delete fluid.staticEnvironment[key];
             delete fluid.enhance.checked[key];
         }
