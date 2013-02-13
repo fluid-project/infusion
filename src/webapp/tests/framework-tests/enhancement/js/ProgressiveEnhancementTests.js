@@ -163,7 +163,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var origSE = fluid.copy(fluid.staticEnvironment);
         var origChecked = fluid.copy(fluid.enhance.checked);
         
-        jqUnit.assertDeepEq("The static enivonment should not have changed", origSE, fluid.staticEnvironment);
+        jqUnit.assertDeepEq("The static environment should not have changed", origSE, fluid.staticEnvironment);
         jqUnit.assertDeepEq("fluid.enhance.checked should not have changed", origChecked, fluid.enhance.checked);
     });
     
