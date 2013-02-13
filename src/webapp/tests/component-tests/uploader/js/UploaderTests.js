@@ -523,7 +523,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ];
                             
         var setStaticEnvironment = function (integration) {
-            fluid.staticEnvironment.supportsBinaryXHR = fluid.typeTag(integration.supportsBinaryXHR.typeName);
+            fluid.staticEnvironment["fluid--browser--supportsBinaryXHR"] = fluid.typeTag(integration.supportsBinaryXHR.typeName);
             
             if (integration.uploaderConfig) {
                 fluid.staticEnvironment.uploaderConfig = fluid.progressiveCheckerForComponent({
