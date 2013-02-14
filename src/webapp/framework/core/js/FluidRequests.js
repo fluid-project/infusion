@@ -194,8 +194,9 @@ var fluid_1_5 = fluid_1_5 || {};
     // Compose callbacks in such a way that the 2nd, marked "external" will be applied
     // first if it exists, but in all cases, the first, marked internal, will be 
     // CALLED WITHOUT FAIL
-    fluid.fetchResources.composeCallbacks = function(internal, external) {
-        return external? function() {
+    fluid.fetchResources.composeCallbacks = function (internal, external) {
+        return external ? (internal ? 
+        function () {
             try {
                 external.apply(null, arguments);
             }
@@ -203,12 +204,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.log("Exception applying external fetchResources callback: " + e);
             }
             internal.apply(null, arguments); // call the internal callback without fail
-        } : internal;
+        } : external ) : internal;
     };
     
-    /*
-     * This function is unsupported: It is not really intended for use by implementors.
-     */
+    // unsupported, NON-API function
     fluid.fetchResources.composePolicy = function(target, source, key) {
         return fluid.fetchResources.composeCallbacks(target, source);
     };
@@ -221,9 +220,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    /*
-     * This function is unsupported: It is not really intended for use by implementors.
-     */
+    // unsupported, NON-API function
     fluid.fetchResources.issueRequest = function(resourceSpec, key) {
         var thisCallback = fluid.fetchResources.makeResourceCallback(resourceSpec);
         var options = {  
@@ -232,7 +229,7 @@ var fluid_1_5 = fluid_1_5 || {};
              error:   thisCallback.error,
              dataType: "text"};
         fluid.fetchResources.timeSuccessCallback(resourceSpec);
-        fluid.merge(fluid.defaults("fluid.fetchResources.issueRequest").mergePolicy,
+        options = fluid.merge(fluid.defaults("fluid.fetchResources.issueRequest").mergePolicy,
                       options, resourceSpec.options);
         resourceSpec.queued = true;
         resourceSpec.initTime = new Date();
@@ -285,10 +282,12 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
+    // TODO: This framework function is a stop-gap before the "ginger world" is capable of
+    // asynchronous instantiation. It currently performs very poor fidelity expansion of a
+    // component's options to discover "resources" only held in the static environment
     fluid.fetchResources.primeCacheFromResources = function(componentName) {
         var resources = fluid.defaults(componentName).resources;
-        var that = {typeName: "fluid.fetchResources.primeCacheFromResources"};
-        var expanded = (fluid.expandOptions ? fluid.expandOptions : fluid.identity)(fluid.copy(resources), that);
+        var expanded = (fluid.expandOptions ? fluid.expandOptions : fluid.identity)(fluid.copy(resources));
         fluid.fetchResources(expanded);
     };
     
@@ -323,17 +322,17 @@ var fluid_1_5 = fluid_1_5 || {};
         }};
     };
     
-    fluid.expander.deferredFetcher = function(target, source, recurse, expandOptions) {
+    fluid.expander.deferredFetcher = function(deliverer, source, expandOptions) {
         var expander = source.expander;
         var spec = fluid.copy(expander);
         // fetch the "global" collector specified in the external environment to receive
         // this resourceSpec
-        var collector = fluid.resolveEnvironment(expander.resourceSpecCollector, expandOptions);
+        var collector = fluid.expand(expander.resourceSpecCollector, expandOptions);
         delete spec.type;
         delete spec.resourceSpecCollector;
         delete spec.fetchKey;
         var environmentdisposer = function(disposed) {
-            $.extend(target, disposed);
+            deliverer(disposed);
         };
         // replace the callback which is there (taking 2 arguments) with one which
         // directly responds to the request, passing in the result and OUR "disposer" - 
@@ -345,7 +344,7 @@ var fluid_1_5 = fluid_1_5 || {};
         };
         var key = expander.fetchKey || fluid.allocateGuid();
         collector[key] = spec;
-        return target;
+        return fluid.NO_VALUE;
     };
     
     

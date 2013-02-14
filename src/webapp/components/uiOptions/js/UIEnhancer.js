@@ -54,8 +54,8 @@ var fluid_1_5 = fluid_1_5 || {};
     // Temporary solution pending revised IoC system in 1.5
     
     fluid.hasFeature = function (tagName) {
-        return fluid.find(fluid.staticEnvironment, function (value) {
-            return value && value.typeName === tagName ? true : undefined;
+        return fluid.find_if(fluid.staticEnvironment, function (value) {
+            return value && value.typeName === tagName;
         });
     };
 

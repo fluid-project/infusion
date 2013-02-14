@@ -122,7 +122,7 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
     
-    var defaultOnShowKeyboardDropWarning = function (item, dropWarning) {
+    fluid.moduleLayout.defaultOnShowKeyboardDropWarning = function (item, dropWarning) {
         if (dropWarning) {
             var offset = $(item).offset();
             dropWarning = $(dropWarning);
@@ -132,13 +132,6 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
-    fluid.defaults(true, "fluid.moduleLayoutHandler", {
-        orientation: fluid.orientation.VERTICAL,
-        containerRole: fluid.reorderer.roles.REGIONS,
-        selectablesTabindex: -1,
-        sentinelize:         true
-    });
-       
     /**
      * Module Layout Handler for reordering content modules.
      * 
@@ -148,51 +141,153 @@ var fluid_1_5 = fluid_1_5 || {};
      * - Moving sideways will always move to the top available drop target in the column
      * - Wrapping is not necessary at this first pass, but is ok
      */
-    fluid.moduleLayoutHandler = function (container, options, dropManager, dom) {
-        var that = {};
-        
-        function computeLayout() {
-            var togo;
-            if (options.selectors.modules) {
-                togo = fluid.moduleLayout.layoutFromFlat(container, dom.locate("columns"), dom.locate("modules"));
+    
+    fluid.defaults("fluid.moduleLayoutHandler", {
+        gradeNames: ["fluid.layoutHandler", "autoInit"],
+        orientation:         fluid.orientation.VERTICAL,
+        containerRole:       fluid.reorderer.roles.REGIONS,
+        selectablesTabindex: -1,
+        sentinelize:         true,
+        events: {
+            onMove: "{reorderer}.events.onMove",
+            onRefresh: "{reorderer}.events.onRefresh",
+            onShowKeyboardDropWarning: "{reorderer}.events.onShowKeyboardDropWarning"
+        },
+        listeners: {
+            "onShowKeyboardDropWarning.setPosition": "fluid.moduleLayout.defaultOnShowKeyboardDropWarning",
+            onRefresh: {
+                priority: "first", 
+                listener: "{that}.computeLayout"
+            },
+            onMove: {
+                priority: "last",
+                listener: "fluid.moduleLayout.onMoveListener",
+                args: ["{arguments}.0", "{arguments}.1", "{that}.layout"]
             }
-            if (!togo) {
-                var idLayout = fluid.get(options, "moduleLayout.layout");
-                fluid.moduleLayout.layoutFromIds(idLayout);
+        },
+        members: {
+            layout: {
+                expander: {
+                    func: "{that}.computeLayout"
+                }
             }
-            return togo;
+        },
+        invokers: { // Use very specific arguments for selectors to avoid circularity
+            // also, do not share our DOM binder for our own selectors with parent, to avoid inability to 
+            // update DOM binder's selectors after initialisation - and since we require a DOM binder in order to compute
+            // the modified selectors for upward injection
+            computeLayout: {
+                funcName: "fluid.moduleLayout.computeLayout",
+                args: ["{that}", "{reorderer}.options.selectors.modules", "{that}.dom"]
+            },
+            computeModules: { // guarantees to read "layout" on every call
+                funcName: "fluid.moduleLayout.computeModules",
+                args: ["{that}.layout", "{that}.isLocked", "{arguments}.0"]
+            },
+            makeComputeModules: { // expander function to create DOM locators
+                funcName: "fluid.moduleLayout.makeComputeModules",
+                args: ["{that}", "{arguments}.0"]
+            },
+            isLocked: {
+                funcName: "fluid.moduleLayout.isLocked",
+                args: ["{arguments}.0", "{reorderer}.options.selectors.lockedModules", "{that}.reordererDom"]
+            }
+        },
+        selectors: {
+            modules: "{reorderer}.options.selectors.modules",
+            columns: "{reorderer}.options.selectors.columns",  
+        },
+        distributeOptions: {
+            target: "{reorderer}.options",
+            record: {
+                selectors: {
+                    movables: {
+                        expander: {
+                            func: "{that}.makeComputeModules",
+                            args: [false],
+                        }
+                    },
+                    dropTargets: {
+                        expander: {
+                            func: "{that}.makeComputeModules",
+                            args: [false],
+                        }
+                    },
+                    selectables: {
+                        expander: {
+                            func: "{that}.makeComputeModules",
+                            args: [true],
+                        }
+                    }
+                }
+            }
         }
-        var layout = computeLayout();
-        that.layout = layout;
-        
-        function isLocked(item) {
-            var lockedModules = options.selectors.lockedModules ? dom.fastLocate("lockedModules") : [];
-            return $.inArray(item, lockedModules) !== -1;
+    });
+     
+    fluid.moduleLayout.computeLayout = function (that, modulesSelector, dom) {
+        var togo;
+        if (modulesSelector) {
+            togo = fluid.moduleLayout.layoutFromFlat(that.container, dom.locate("columns"), dom.locate("modules"));
         }
+        if (!togo) { // TODO: this branch appears to be unspecified and untested
+            var idLayout = fluid.get(that.options, "moduleLayout.layout");
+            togo = fluid.moduleLayout.layoutFromIds(idLayout);
+        }
+        that.layout = togo;
+        return togo;
+    };
 
+    fluid.moduleLayout.computeModules = function (layout, isLocked, all) {
+        var modules = fluid.accumulate(layout.columns, function (column, list) {
+            return list.concat(column.elements); // note that concat will not work on a jQuery
+        }, []);
+        if (!all) {
+            fluid.remove_if(modules, isLocked);
+        }
+        return modules;
+    };
+    
+    fluid.moduleLayout.makeComputeModules = function (that, all) {
+        return function () {
+            return that.computeModules(all);
+        }
+    };
+    
+    fluid.moduleLayout.isLocked = function (item, lockedModulesSelector, dom) {
+        var lockedModules = lockedModulesSelector ? dom.fastLocate("lockedModules") : [];
+        return $.inArray(item, lockedModules) !== -1;
+    };
+    
+    fluid.moduleLayout.onMoveListener = function (item, requestedPosition, layout) {
+        fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
+    };
+
+    fluid.moduleLayoutHandler.finalInit = function (that) {
+        var options = that.options;
+        
         that.getRelativePosition  = 
             fluid.reorderer.relativeInfoGetter(options.orientation, 
                  fluid.reorderer.WRAP_LOCKED_STRATEGY, fluid.reorderer.GEOMETRIC_STRATEGY, 
-                 dropManager, dom, options.disableWrap);
+                 that.dropManager, options.disableWrap);
                  
         that.getGeometricInfo = function () {
             var extents = [];
             var togo = {extents: extents,
                         sentinelize: options.sentinelize};
             togo.elementMapper = function (element) {
-                return isLocked(element) ? "locked" : null;
+                return that.isLocked(element) ? "locked" : null;
             };
             togo.elementIndexer = function (element) {
                 var indices = fluid.moduleLayout.findColumnAndItemIndices(element, that.layout);
                 return {
                     index:        indices.itemIndex,
-                    length:       layout.columns[indices.columnIndex].elements.length,
+                    length:       that.layout.columns[indices.columnIndex].elements.length,
                     moduleIndex:  indices.columnIndex,
-                    moduleLength: layout.columns.length
+                    moduleLength: that.layout.columns.length
                 };
             };
-            for (var col = 0; col < layout.columns.length; col++) {
-                var column = layout.columns[col];
+            for (var col = 0; col < that.layout.columns.length; col++) {
+                var column = that.layout.columns[col];
                 var thisEls = {
                     orientation: options.orientation,
                     elements: $.makeArray(column.elements),
@@ -202,47 +297,11 @@ var fluid_1_5 = fluid_1_5 || {};
               //       fluid.transform(thisEls.elements, togo.elementMapper).join(", ") + "]");
                 extents.push(thisEls);
             }
-
             return togo;
         };
         
-        function computeModules(all) {
-            return function () {
-                var modules = fluid.accumulate(layout.columns, function (column, list) {
-                    return list.concat(column.elements); // note that concat will not work on a jQuery
-                }, []);
-                if (!all) {
-                    fluid.remove_if(modules, isLocked);
-                }
-                return modules;
-            };
-        }
-        
-        that.returnedOptions = {
-            selectors: {
-                movables: computeModules(false),
-                dropTargets: computeModules(false),
-                selectables: computeModules(true)
-            },
-            listeners: {
-                onMove: {
-                    priority: "last",
-                    listener: function (item, requestedPosition) {
-                        fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
-                    }
-                },
-                onRefresh: function () {
-                    layout = computeLayout();
-                    that.layout = layout;
-                },
-                "onShowKeyboardDropWarning.setPosition": defaultOnShowKeyboardDropWarning
-            }
-        };
-        
         that.getModel = function () {
-            return fluid.moduleLayout.layoutToIds(layout);
+            return fluid.moduleLayout.layoutToIds(that.layout);
         };
-              
-        return that;
     };
 })(jQuery, fluid_1_5);

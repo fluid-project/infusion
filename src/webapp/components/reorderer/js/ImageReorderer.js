@@ -22,11 +22,13 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
     
-    var deriveLightboxCellBase = function (namebase, index) {
+    fluid.registerNamespace("fluid.reorderImages");
+    
+    fluid.reorderImages.deriveLightboxCellBase = function (namebase, index) {
         return namebase + "lightbox-cell:" + index + ":";
     };
             
-    var addThumbnailActivateHandler = function (container) {
+    fluid.reorderImages.addThumbnailActivateHandler = function (container) {
         var enterKeyHandler = function (evt) {
             if (evt.which === fluid.reorderer.keys.ENTER) {
                 var thumbnailAnchors = $("a", evt.target);
@@ -39,7 +41,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     // Custom query method seeks all tags descended from a given root with a 
     // particular tag name, whose id matches a regex.
-    var seekNodesById = function (rootnode, tagname, idmatch) {
+    fluid.reorderImages.seekNodesById = function (rootnode, tagname, idmatch) {
         var inputs = rootnode.getElementsByTagName(tagname);
         var togo = [];
         for (var i = 0; i < inputs.length; i += 1) {
@@ -52,31 +54,32 @@ var fluid_1_5 = fluid_1_5 || {};
         return togo;
     };
     
-    var createImageCellFinder = function (parentNode, containerId) {
+    fluid.reorderImages.createImageCellFinder = function (parentNode, containerId) {
+        containerId = containerId || parentNode.prop("id")
         parentNode = fluid.unwrap(parentNode);
         
-        var lightboxCellNamePattern = "^" + deriveLightboxCellBase(containerId, "[0-9]+") + "$";
+        var lightboxCellNamePattern = "^" + fluid.reorderImages.deriveLightboxCellBase(containerId, "[0-9]+") + "$";
         
         return function () {
             // This orderable finder assumes that the lightbox thumbnails are 'div' elements
-            return seekNodesById(parentNode, "div", lightboxCellNamePattern);
+            return fluid.reorderImages.seekNodesById(parentNode, "div", lightboxCellNamePattern);
         };
     };
     
-    var seekForm = function (container) {
+    fluid.reorderImages.seekForm = function (container) {
         return fluid.findAncestor(container, function (element) {
             return $(element).is("form");
         });
     };
     
-    var seekInputs = function (container, reorderform) {
-        return seekNodesById(reorderform, 
+    fluid.reorderImages.seekInputs = function (container, reorderform) {
+        return fluid.reorderImages.seekNodesById(reorderform, 
                              "input", 
-                             "^" + deriveLightboxCellBase(container.prop("id"), "[^:]*") + "reorder-index$");
+                             "^" + fluid.reorderImages.deriveLightboxCellBase(container.prop("id"), "[^:]*") + "reorder-index$");
     };
     
-    var mapIdsToNames = function (container, reorderform) {
-        var inputs = seekInputs(container, reorderform);
+    fluid.reorderImages.mapIdsToNames = function (container, reorderform) {
+        var inputs = fluid.reorderImages.seekInputs(container, reorderform);
         for (var i = 0; i < inputs.length; i++) {
             var input = inputs[i];
             var name = input.name;
@@ -92,13 +95,13 @@ var fluid_1_5 = fluid_1_5 || {};
      * 
      * @param {jQueryable} container the Image Reorderer's container element 
      */
-    var createIDAfterMoveListener = function (container) {
-        var reorderform = seekForm(container);
-        mapIdsToNames(container, reorderform);
+    fluid.reorderImages.createIDAfterMoveListener = function (container) {
+        var reorderform = fluid.reorderImages.seekForm(container);
+        fluid.reorderImages.mapIdsToNames(container, reorderform);
         
         return function () {
             var inputs, i;
-            inputs = seekInputs(container, reorderform);
+            inputs = fluid.reorderImages.seekInputs(container, reorderform);
             
             for (i = 0; i < inputs.length; i += 1) {
                 inputs[i].value = i;
@@ -113,13 +116,6 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
 
-    
-    var setDefaultValue = function (target, path, value) {
-        var previousValue = fluid.get(target, path);
-        var valueToSet = previousValue || value;
-        fluid.set(target, path, valueToSet);
-    };
-    
     // Public Lightbox API
     /**
      * Creates a new Lightbox instance from the specified parameters, providing full control over how
@@ -128,39 +124,31 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} container 
      * @param {Object} options 
      */
-    fluid.reorderImages = function (container, options) {
-       // TODO: fix up this nonstandard workflow once we IoC-ify reorderer and implement standard
-       // wrapper facility
-        var defaults = fluid.defaults("fluid.reorderImages");
-        var mergedOptions = fluid.merge(defaults.mergePolicy, {}, defaults, options);
-        container = fluid.container(container);
-        
-        // If the user didn't specify their own afterMove or movables options,
-        // set up defaults for them using the old id-based scheme.
-        // Backwards API compatiblity. Remove references to afterMoveCallback by Infusion 1.5.
-        setDefaultValue(mergedOptions, "listeners.afterMove", 
-                        mergedOptions.afterMoveCallback || createIDAfterMoveListener(container));
-        setDefaultValue(mergedOptions, "selectors.movables", 
-                        createImageCellFinder(container, container.prop("id")));
-        
-        var reorderer = fluid.reorderer(container, mergedOptions);
-        
-        fluid.tabindex($("a", container), -1);
-        addThumbnailActivateHandler(container);
-        
-        return reorderer;
-    };
    
-    // This function now deprecated. Please use fluid.reorderImages() instead.
-    fluid.lightbox = fluid.reorderImages;
-    
     fluid.defaults("fluid.reorderImages", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.reorderer", "autoInit"],
         layoutHandler: "fluid.gridLayoutHandler",
-
+        listeners: {
+            "afterMove.postModel": {
+                expander: {
+                    funcName: "fluid.reorderImages.createIDAfterMoveListener",
+                    args: "{that}.container"
+                }
+            }
+        },
         selectors: {
+            movables: {
+                expander: {
+                    funcName: "fluid.reorderImages.createImageCellFinder",
+                    args: "{that}.container"
+                }
+            },
             labelSource: ".flc-reorderer-imageTitle"
         }
     });
+    
+    // This function now deprecated. Please use fluid.reorderImages() instead.
+    fluid.lightbox = fluid.reorderImages;
+    
 
 })(jQuery, fluid_1_5);

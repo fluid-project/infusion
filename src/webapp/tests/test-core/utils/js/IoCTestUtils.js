@@ -85,11 +85,8 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.test.makeExpander = function (that, instantiator) {
         return function (toExpand) {
-            return fluid.withInstantiator(that,
-                function () {
-                    return fluid.expandOptions(toExpand, that);
-                }, "Expanding Test Case", instantiator);
-        };
+            return fluid.expandOptions(toExpand, that);
+        };  
     };
 
     fluid.test.makeFuncExpander = function (expander) {
