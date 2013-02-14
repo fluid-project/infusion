@@ -25,6 +25,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.setDemandLogging(true);
         jqUnit.module("Uploader Basic Tests");
 
+        fluid.enhance.forgetAll();
         fluid.staticEnvironment.uploader = fluid.typeTag("fluid.uploader.tests");
         
         var container = ".flc-uploader";
@@ -173,12 +174,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         
         fluid.registerNamespace("fluid.tests.uploader");
-        
-        // TODO: manually delete the type tags that are put there by ProgressiveEnhancement so we can put in our own simulations
-        // Awaiting better system in FLUID-4794
-        delete fluid.staticEnvironment["supportsBinaryXHR"];
-        delete fluid.staticEnvironment["supportsFormData"];
-        delete fluid.staticEnvironment["supportsFlash"]
         
         fluid.tests.uploader.noIoC = function (options) {
             var that = fluid.uploader(".flc-uploader", options);
@@ -570,7 +565,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 setStaticEnvironment(integration);
                 var that = constructUploader(configuration, integration);
                 // We stash this here on the uploader so that it is easier to access via IoC and other parts of
-                // the infrastructure - a better design would have "IoC test cases"
+                // the infrastructure - a better design would have "IoC test cases" (now FLUID-4850)
                 that.uploaderTestSet = testset;
                 integration.test(that, testset);
             } finally {

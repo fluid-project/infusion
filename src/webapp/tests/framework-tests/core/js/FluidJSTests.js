@@ -306,7 +306,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expected = "Paused at: " + data["()"] + 
                             " of " + data["[]"] +
                             " files (" + data["file[]"] + 
-                            " of " + data["file"] + ")";
+                            " of " + data.file + ")";
 
                             
         var result = fluid.stringTemplate(template, data);
@@ -327,7 +327,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             testDefaults, fluid.filterKeys(fluid.defaults("test"), ["foo"]));
         
         // Re-assign the defaults with a new collection.
-        testDefaults2 = {
+        var testDefaults2 = {
             baz: "foo"
         };
         fluid.defaults("test", testDefaults2);
@@ -339,7 +339,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                           fluid.defaults("timemachine"));
     });
     
-    jqUnit.test("FLUID-4842 test - configurable 'soft failure'", function() {
+    jqUnit.test("FLUID-4842 test - configurable 'soft failure'", function () {
         var testArgs = [1, "thingit"];
         function failHandle(args, activity) {
             jqUnit.assertDeepEq("Received arguments in error handler", testArgs, args);
@@ -382,9 +382,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return 2;
         });
         jqUnit.assertEquals("Call new global function", 2, fluid.newFunc());
-        });
+    });
  
-        jqUnit.test("Globals", function () {
+    jqUnit.test("Globals", function () {
         var space = fluid.registerNamespace("fluid.engage.mccord");
         space.func = function () { 
             return 2;
@@ -406,10 +406,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     jqUnit.test("fluid.get with resolution and segments", function () {
         var resolver = function (segment) {
-           return "resolved";
+            return "resolved";
         };
         var model = {
-            resolvePathSegment: resolver,
+            resolvePathSegment: resolver
         };
         jqUnit.assertEquals("Root resolver", "resolved", fluid.get(model, "resolver"));
         var model2 = {
@@ -418,6 +418,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
         jqUnit.assertEquals("Nested resolver", "resolved", fluid.get(model2, ["nested", "resolver"]));
+    });
+    
+    jqUnit.test("FLUID-4915: fluid.invokeGlobalFunction", function () {
+        jqUnit.expect(3);
+        
+        var testArg = "test arg";
+        fluid.tests.igf = {
+            withArgs: function (arg1) {
+                jqUnit.assertEquals("A single argument should have been passed in", 1, arguments.length);
+                jqUnit.assertEquals("The correct argument should have been passed in", testArg, arg1);
+            },
+            withoutArgs: function () {
+                jqUnit.assertEquals("There should not have been any arguments passed in", 0, arguments.length);
+            }
+        };
+        
+        fluid.invokeGlobalFunction("fluid.tests.igf.withArgs", [testArg]);
+        fluid.invokeGlobalFunction("fluid.tests.igf.withoutArgs");
+        
+        // clean up after test
+        delete fluid.tests.igf;
     });
     
     jqUnit.test("messageResolver", function () {
@@ -482,10 +503,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         firer.fire(false);
     });
     
-    fluid.tests.makeNotingListener = function(key, value) {
-        return function(that) {
+    fluid.tests.makeNotingListener = function (key, value) {
+        return function (that) {
             var existing = that.values[key];
-            that.values[key] = existing === undefined? 1 : existing + 1;
+            that.values[key] = existing === undefined ? 1 : existing + 1;
         };
     };
     
@@ -507,7 +528,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.values = {};
     };
     
-    jqUnit.test("Correctly merge optioned listeners", function() {
+    jqUnit.test("Correctly merge optioned listeners", function () {
         var options = {listeners: {
             event: fluid.tests.makeNotingListener("noNamespace2"),
             "event.namespace": fluid.tests.makeNotingListener("namespace2"),
@@ -525,7 +546,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expected2 = {
             noNamespace: 1,
             noNamespace2: 1,
-            namespace2: 1,
+            namespace2: 1
         };
         jqUnit.assertDeepEq("Listeners correctly merged", $.extend(expected2, expected1), that.values); 
     });
@@ -592,11 +613,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         preInitFunction: "fluid.tests.lifecycleTest3.preInit"   
     });
     
-    fluid.tests.lifecycleTest3.preInit = function(that) {
+    fluid.tests.lifecycleTest3.preInit = function (that) {
         if (!that.count) {
             that.count = 0;
         }
-        ++ that.count;  
+        ++that.count;  
     };
 
     jqUnit.test("Registration of lifecycle functions by convention", function () {
@@ -616,7 +637,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["autoInit", "fluid.gradeComponent"]
     });
 
-    jqUnit.test("FLUID-4788 test - default lifecycle functions inherited from a grade.", function() {
+    jqUnit.test("FLUID-4788 test - default lifecycle functions inherited from a grade.", function () {
         jqUnit.expect(1);
         fluid.gradeUsingComponent();
     });
