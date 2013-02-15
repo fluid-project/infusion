@@ -364,7 +364,6 @@ var fluid_1_5 = fluid_1_5 || {};
         if (fluid.uploader.transformOptions) {
             uploaderOptions = fluid.uploader.transformOptions(uploaderOptions);
         }
-
         that.uploaderOptions = uploaderOptions;
         fluid.initDependents(that);
         return that.uploaderImpl;
@@ -392,7 +391,7 @@ var fluid_1_5 = fluid_1_5 || {};
             uploaderImpl: {
                 type: "fluid.uploaderImpl",
                 container: "{uploader}.container",
-                options: "{uploader}.uploaderOptions"
+                preOptions: "{uploader}.uploaderOptions" // makes use of temporary framework hack to embodyOptions
             }
         },
         progressiveCheckerOptions: {

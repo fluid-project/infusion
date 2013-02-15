@@ -24,7 +24,16 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uploader = fluid.uploader || {};
     
-    var startUploading; // Define early due to subtle circular dependency.
+    var startUploading = function (that) {
+        // Reset our upload stats for each new file.
+        that.demoState.currentFile = that.queue.files[that.demoState.fileIdx];
+        that.demoState.chunksForCurrentFile = Math.ceil(that.demoState.currentFile / that.demoState.chunkSize);
+        that.demoState.bytesUploaded = 0;
+        that.queue.isUploading = true;
+        
+        that.events.onFileStart.fire(that.demoState.currentFile);
+        simulateUpload(that);
+    };
     
     var updateProgress = function (file, events, demoState, isUploading) {
         if (!isUploading) {
@@ -75,17 +84,6 @@ var fluid_1_5 = fluid_1_5 || {};
         } else {
             finishUploading(that);
         } 
-    };
-    
-    startUploading = function (that) {
-        // Reset our upload stats for each new file.
-        that.demoState.currentFile = that.queue.files[that.demoState.fileIdx];
-        that.demoState.chunksForCurrentFile = Math.ceil(that.demoState.currentFile / that.demoState.chunkSize);
-        that.demoState.bytesUploaded = 0;
-        that.queue.isUploading = true;
-        
-        that.events.onFileStart.fire(that.demoState.currentFile);
-        simulateUpload(that);
     };
 
     var stopDemo = function (that) {
@@ -147,7 +145,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Function} fn the function to invoke
      */
     fluid.invokeAfterRandomDelay = function (fn) {
-        var delay = Math.floor(Math.random() * 1000 + 100);
+        var delay = Math.floor(Math.random() * 200 + 100);
         setTimeout(fn, delay);
     };
     

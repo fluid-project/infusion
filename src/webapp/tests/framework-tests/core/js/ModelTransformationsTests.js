@@ -1018,8 +1018,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         checkTransformedOptions(that);
     });
     
-    fluid.demands("fluid.transformOptions", ["fluid.tests.testTransformableIoC", "fluid.tests.transform.version.old"], {
-        options: {
+    fluid.demands("fluid.tests.testTransformableIoC", ["fluid.tests.transform.version.old"], {
+        transformOptions: {
             transformer: "fluid.model.transform",
             config: transformRules
         }

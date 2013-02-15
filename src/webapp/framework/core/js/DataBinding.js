@@ -124,9 +124,9 @@ var fluid_1_5 = fluid_1_5 || {};
             }
             var accepted = undefined;
             for (var j = 0; j < strategies.length; ++ j) {
-                var value = strategies[j](root, segs[i], i + 1, segs);
-                if (accepted === undefined) {
-                    accepted = value;
+                accepted = strategies[j](root, segs[i], i + 1, segs);
+                if (accepted !== undefined) {
+                    break; // May now short-circuit with stateless strategies
                 }
             }
             if (accepted === fluid.NO_VALUE) {
@@ -394,18 +394,18 @@ var fluid_1_5 = fluid_1_5 || {};
         var last = pen.segs[pen.segs.length - 1];
         
         if (request.type === "ADD" || request.type === "MERGE") {
-            if (request.path === "" || request.type === "MERGE") {
+            if (pen.segs.length === 0 || request.type === "MERGE") {
                 if (request.type === "ADD") {
                     fluid.clear(pen.root);
                 }
-                $.extend(true, request.path === "" ? pen.root : pen.root[last], request.value);
+                $.extend(true, pen.segs.length === 0 ? pen.root : pen.root[last], request.value);
             }
             else {
                 pen.root[last] = request.value;
             }
         }
         else if (request.type === "DELETE") {
-            if (request.path === "") {
+            if (pen.segs.length === 0) {
                 fluid.clear(pen.root);
             }
             else {
@@ -471,7 +471,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var sources = threadLocal().sources;
             var args = arguments;
             var source = changeRequest.source || "";
-            fluid.tryCatch(function() {
+            fluid.tryCatch(function () {
                 if (sources[source] === undefined) {
                     sources[source] = 0;
                 }

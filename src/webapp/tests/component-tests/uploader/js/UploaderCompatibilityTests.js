@@ -70,12 +70,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
         
+        // TODO: manually delete the type tags that are put there by ProgressiveEnhancement so we can put in our own simulations
+        // Awaiting better system in FLUID-4794
+        delete fluid.staticEnvironment["supportsBinaryXHR"];
+        delete fluid.staticEnvironment["supportsFormData"];
+        delete fluid.staticEnvironment["supportsFlash"]
+        
         // Choose html5 configuration for all tests since it will cause resolution of multiFileUpload
         // and not complain about absence of SWF
         fluid.staticEnvironment.uploaderConfig = fluid.typeTag("fluid.browser.supportsBinaryXHR");
         
         fluid.defaults("fluid.tests.uploader.parent", {
             gradeNames: ["fluid.littleComponent", "autoInit"],
+            mergePolicy: {
+                uploaderOptions: "noexpand"  
+            },
             components: {
                 uploaderContext: {
                     type: "fluid.typeFount",
@@ -86,7 +95,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 uploader: {
                     type: "fluid.uploader",
                     container: ".flc-uploader",
-                    options: "{parent}.options.uploaderOptions"
+                    preOptions: "{parent}.options.uploaderOptions"
                 }
             }
         });

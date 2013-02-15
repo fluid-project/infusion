@@ -25,6 +25,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.setDemandLogging(true);
         jqUnit.module("Uploader Basic Tests");
 
+        fluid.enhance.forgetAll();
         fluid.staticEnvironment.uploader = fluid.typeTag("fluid.uploader.tests");
         
         var container = ".flc-uploader";
@@ -195,7 +196,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var that = fluid.initLittleComponent("fluid.tests.uploader.parent.loadDemands", options);
             fluid.initDependents(that);
             return that.uploader;
-        };        
+        };      
         
         fluid.defaults("fluid.tests.uploader.parent", {
             gradeNames: ["fluid.littleComponent"],
@@ -481,7 +482,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {   
                 key: "single",
                 label: "Single-file integration tests",
-                supportsBinaryXHR: {
+                contextTag: {
                     type: "typeTag",
                     typeName: "fluid.uploader.singleFile"
                 },          
@@ -491,7 +492,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {   
                 key: "HTML5",
                 label: "HTML5 integration tests",
-                supportsBinaryXHR: {
+                contextTag: {
                     type: "typeTag",
                     typeName: "fluid.browser.supportsBinaryXHR"
                 },
@@ -505,10 +506,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {   
                 key: "Flash",
                 label: "Flash integration tests",
-                supportsBinaryXHR: {
+                contextTag: [{
                     type: "typeTag",
                     typeName: "fluid.browser.supportsFlash"
-                },
+                }, {
+                    type: "typeTag",
+                    typeName: "fluid.uploader.flash.10"
+                }
+                ],
                 demoRemote: {
                     type: "typeTag",
                     typeName: "fluid.tests.demoRemote"
@@ -523,7 +528,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ];
                             
         var setStaticEnvironment = function (integration) {
-            fluid.staticEnvironment["fluid--browser--supportsBinaryXHR"] = fluid.typeTag(integration.supportsBinaryXHR.typeName);
+            var contexts = fluid.makeArray(integration.contextTag);
+            fluid.each(contexts, function (context, index) {
+                fluid.staticEnvironment["contextTag"+index] = fluid.typeTag(context.typeName);
+            });
             
             if (integration.uploaderConfig) {
                 fluid.staticEnvironment.uploaderConfig = fluid.progressiveCheckerForComponent({
@@ -542,8 +550,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return that;
         };
         
-        var cleanupEnvironment = function () {
-            delete fluid.staticEnvironment.supportsBinaryXHR;
+        var cleanupEnvironment = function (integration) {
+            var contexts = fluid.makeArray(integration.contextTag);
+            fluid.each(contexts, function (context, index) {
+                delete fluid.staticEnvironment["contextTag"+index];
+            });
             delete fluid.staticEnvironment.uploaderConfig;
             delete fluid.staticEnvironment.demo;            
         };
@@ -554,11 +565,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 setStaticEnvironment(integration);
                 var that = constructUploader(configuration, integration);
                 // We stash this here on the uploader so that it is easier to access via IoC and other parts of
-                // the infrastructure - a better design would have "IoC test cases"
+                // the infrastructure - a better design would have "IoC test cases" (now FLUID-4850)
                 that.uploaderTestSet = testset;
                 integration.test(that, testset);
             } finally {
-                cleanupEnvironment();
+                cleanupEnvironment(integration);
             }
         };
         

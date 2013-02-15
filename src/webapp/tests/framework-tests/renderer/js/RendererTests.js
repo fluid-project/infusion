@@ -63,7 +63,7 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.module("Selector Parser Test");
         
         jqUnit.test("Test", function () {
-            var tree = fluid.parseSelector("  div span#id  > .class");
+            var tree = fluid.parseSelector("  div span#id  > .class", fluid.simpleCSSMatcher);
             jqUnit.assertEquals("treeLength", 3, tree.length);
             var expected = [{
                 predList: [{
@@ -81,7 +81,7 @@ fluid.registerNamespace("fluid.tests");
                     clazz: "class"
                 }]
             }];
-            jqUnit.assertDeepEq("Misparse: Tree was " + JSON.stringify(tree), expected, tree);
+            jqUnit.assertDeepEq("Parsed compound CSS selector", expected, tree);
         });
         
         jqUnit.module("Parser Tests");

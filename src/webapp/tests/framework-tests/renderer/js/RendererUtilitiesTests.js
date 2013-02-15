@@ -137,15 +137,15 @@ fluid.registerNamespace("fluid.tests");
         fluid.demands("fluid.tests.rendererMiddle", "fluid.tests.rendererParent",
             ["{rendererParent}.dom.middle", fluid.COMPONENT_OPTIONS]);
         
+        /** This test is a fake! The advertised functionality - that of using an IoC-resolved 
+         * expression like {rendererParent}.options.parentValue in a protoTree is not really
+         * available. This only works in this test as a result of not giving the component 
+         * the standard renderer component grade, which would bring in a mergePolicy of 
+         * protoTree: "noexpand, replace" which would prevent the protoTree from being subject
+         * to IoC expansion. You can choose between either IoC expansion or renderer protoTree
+         * expansion, not both */
+        
         fluid.defaults("fluid.tests.rendererMiddle", {
-            mergePolicy: {
-                "rendererOptions.instantiator": "nomerge",
-                "rendererOptions.parentComponent": "nomerge"  
-            },
-            rendererOptions: {
-                instantiator: "{instantiator}",
-                parentComponent: "{rendererMiddle}"
-            },
             selectors: {
                 decorated: ".decorated-component"
             },
@@ -154,7 +154,11 @@ fluid.registerNamespace("fluid.tests");
                     decorators: {
                         type: "fluid",
                         func: "fluid.tests.rendererChild",
-                        options: { decoratorValue: "{rendererParent}.options.parentValue"}
+                        options: { decoratorValue: "decoratorValue" 
+                        // "{rendererParent}.options.parentValue" - this type of reference can no longer be supported at all - 
+                        // since FLUID-4129 was resolved, we can no longer fake out the grade resolution system and avoid the
+                        // mergePolicy of "noexpand" applied to all protoTree material
+                        }
                     }
                 }
             }
@@ -189,6 +193,7 @@ fluid.registerNamespace("fluid.tests");
             finalInitFunction: "fluid.tests.identicalComponentParent.finalInitFunction",
             produceTree: "fluid.tests.identicalComponentParent.produceTree"
         });
+        
         fluid.tests.identicalComponentParent.produceTree = function (that) {
             return {
                 identicalComponent1: {
@@ -274,9 +279,9 @@ fluid.registerNamespace("fluid.tests");
         });
         fluid.demands("fluid.tests.mergeComponent", "fluid.tests.mergeRenderParent", {
             container: "{arguments}.0",
-            mergeAllOptions: [{
+            mergeOptions: {
                 model: "{mergeRenderParent}.model"
-            }, "{arguments}.1"]
+            }
         });
         jqUnit.test("Merging args and options", function () {
             var that = fluid.tests.mergeRenderParent(".mergeRenderParent");
@@ -293,7 +298,7 @@ fluid.registerNamespace("fluid.tests");
             var decorated = component.middle.locate("decorated");
             jqUnit.assertEquals("Decorated text resolved from top level", parentValue, decorated.text());
             var child = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
-            jqUnit.assertEquals("Located decorator with IoC-resolved value", parentValue, child.options.decoratorValue);
+            jqUnit.assertEquals("Located decorator without IoC-resolved value", "decoratorValue", child.options.decoratorValue);
             component.middle.refreshView();
             var child2 = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
             jqUnit.assertNotEquals("Rendering has produced new component", child, child2);
@@ -324,32 +329,7 @@ fluid.registerNamespace("fluid.tests");
             });
             assertRenderedText(renderRecs, array);
         });
-    
-        var censorFunc = function (types) {
-            var togo = [];
-            fluid.each(types, function (type) {
-                if (type.charAt(0) === "o") {
-                    togo.push(type);
-                }
-            });
-            return togo;
-        };
         
-        var testFilteredRecords = function (that) {
-            that.refreshView();
-            var renderRecs = that.locate("recordType");
-            var censored = censorFunc(that.model.recordlist.deffolt);
-            jqUnit.assertEquals("Rendered elements", censored.length, renderRecs.length);
-            assertRenderedText(renderRecs, censored);      
-        };
-        
-        var testMessageRepeat = function (that) {
-            that.refreshView();
-            var tablinks = that.locate("tabLink");
-            jqUnit.assertEquals("Existing string relative should be found", "Acquisition", tablinks.eq(0).text());
-            jqUnit.assertEquals("Nonexisting string relative should be notified ", "[No messagecodes provided]", tablinks.eq(1).text());
-            jqUnit.assertEquals("Nonexisting string relative should be notified ", "[No messagecodes provided]", that.locate("unmatchedMessage").text());
-        };
         
         var testMultipleExpanders = function (that) {
             that.refreshView();
@@ -418,6 +398,15 @@ fluid.registerNamespace("fluid.tests");
             testMultipleExpanders(that);
         });
         
+        
+        var testMessageRepeat = function (that) {
+            that.refreshView();
+            var tablinks = that.locate("tabLink");
+            jqUnit.assertEquals("Existing string relative should be found", "Acquisition", tablinks.eq(0).text());
+            jqUnit.assertEquals("Nonexisting string relative should be notified ", "[No messagecodes provided]", tablinks.eq(1).text());
+            jqUnit.assertEquals("Nonexisting string relative should be notified ", "[No messagecodes provided]", that.locate("unmatchedMessage").text());
+        };
+        
         jqUnit.test("FLUID-3819 test: messagekey with no value", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test-repeat", {
                 resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]},
@@ -466,6 +455,24 @@ fluid.registerNamespace("fluid.tests");
             testMessageRepeat(that);
         });
         
+        var censorFunc = function (types) {
+            var togo = [];
+            fluid.each(types, function (type) {
+                if (type.charAt(0) === "o") {
+                    togo.push(type);
+                }
+            });
+            return togo;
+        };
+        
+        var testFilteredRecords = function (that) {
+            that.refreshView();
+            var renderRecs = that.locate("recordType");
+            var censored = censorFunc(that.model.recordlist.deffolt);
+            jqUnit.assertEquals("Rendered elements", censored.length, renderRecs.length);
+            assertRenderedText(renderRecs, censored);      
+        };
+               
         jqUnit.test("Renderer component with custom resolver", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
                 resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]}

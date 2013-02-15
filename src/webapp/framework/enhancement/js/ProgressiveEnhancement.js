@@ -131,7 +131,8 @@ var fluid_1_5 = fluid_1_5 || {};
     // Use JavaScript to hide any markup that is specifically in place for cases when JavaScript is off.
     // Note: the use of fl-ProgEnhance-basic is deprecated, and replaced by fl-progEnhance-basic.
     // It is included here for backward compatibility only.
-    if (fluid.enhance.isBrowser()) {
+    // Distinguish the standalone jQuery from the real one so that this can be included in IoC standalone tests
+    if (fluid.enhance.isBrowser() && $.fn) {
         $("head").append("<style type='text/css'>.fl-progEnhance-basic, .fl-ProgEnhance-basic { display: none; } .fl-progEnhance-enhanced, .fl-ProgEnhance-enhanced { display: block; }</style>");
     }
     

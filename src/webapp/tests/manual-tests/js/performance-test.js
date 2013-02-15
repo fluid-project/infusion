@@ -53,6 +53,10 @@ var makePaths = function () {
 
 var paths = makePaths();
 
+var config = {
+    strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy]
+    };
+
 for (var j = 0; j < 5; ++ j) {
 
     var now = Date.now();

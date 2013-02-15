@@ -99,10 +99,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("merge", function () {
         jqUnit.expect(7);
-        
+                
         var bit1 = {prop1: "thing1"};
         var bit2 = {prop2: "thing2"};
         var bits = {prop1: "thing1", prop2: "thing2"};
+        
         jqUnit.assertDeepEq("Simple merge 1",
             bits, fluid.merge({}, {}, bit1, null, bit2));
         jqUnit.assertDeepEq("Simple merge 2",
@@ -113,15 +114,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             bits, fluid.merge({}, {}, {}, bit2, bit1));
            
         jqUnit.assertDeepNeq("Anticorruption check", bit1, bit2);
+
+        jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
+            fluid.merge([], [], [bit1, bit2], null, [bit2, bit1, bits]));
+        
         
         jqUnit.assertDeepEq("Replace 1", 
             bit1, fluid.merge({"": "replace"}, {}, bits, bit1));
           
-        jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
-            fluid.merge([], [], [bit1, bit2], null, [bit2, bit1, bits]));
     });
   
-    jqUnit.test("reverse merge at depth", function () {
+    jqUnit.test("replace merge at depth", function () {
         var target = {
             root: {
                 prop1: "thing1",
@@ -133,32 +136,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 prop2: "thing3"
             }
         };
-        var target1 = fluid.copy(target);
-        fluid.merge("reverse", target1, source);
-        jqUnit.assertEquals("Property 1 should have been preserved", "thing1", target1.root.prop1);
-        
+
         var target2 = fluid.copy(target);
         fluid.merge(null, target2, source);
-        jqUnit.assertEquals("Property 1 should have been preserved", "thing1", target2.root.prop1);
-  
-    });
-    
-    jqUnit.test("reverse merge at root", function () {
-        var target = {
-            prop2: "old"
-        };
-        var source = {
-            prop2: "new"
-        };
-
-        var testReverseMerge = function (policy, expected) {
-            var thisTarget = fluid.copy(target);
-            fluid.merge(policy, thisTarget, source);
-            jqUnit.assertEquals("\"" + policy + "\" policy", expected, thisTarget.prop2);
-        };
-
-        testReverseMerge("reverse", target.prop2);
-        testReverseMerge(null,  source.prop2);
+        jqUnit.assertEquals("prop1 should have been preserved", "thing1", target2.root.prop1);
+        
+        var target3 = fluid.merge({root: "replace"}, target, null, source, undefined);
+        jqUnit.assertDeepEq("prop1 should have been destroyed", source, target3);
+        
+        // "White box text" for "lastNonEmpty" issue
+        var target4 = fluid.merge({root: "replace"}, target, null, source, {otherThing: 1});
+        var expected = $.extend(true, source, {otherThing: 1});
+        jqUnit.assertDeepEq("prop1 should have been destroyed", expected, target4);
     });
     
     jqUnit.test("copy", function () {
@@ -477,64 +466,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Local fallback",  bundleb.key1, resolver.resolve(["key2", "key1"]));
         jqUnit.assertEquals("Global fallback", bundlea.key2, resolver.resolve(["key4", "key2"]));
     });
-    
-    fluid.defaults("fluid.tests.defaultMergePolicy", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
-        defaultSource: "sourceValue",
-        defaultTarget: "targetValue",
-        mergePolicy: {
-            defaultTarget: "defaultSource"
-        }
-    }); 
-    
-    fluid.tests.fluid4736Tests = [{
-        message: "merge policy has no effect on plain defaults",
-        options: undefined,
-        expected: {
-            defaultSource: "sourceValue",
-            defaultTarget: "targetValue"          
-        }
-    }, {
-        message: "merge policy copies user option to default value",
-        options: {
-            defaultSource: "userSource"
-        },
-        expected: {
-            defaultSource: "userSource",
-            defaultTarget: "userSource"
-        }
-    }, {
-        message: "merge policy has no effect on full user values",
-        options: {
-            defaultSource: "userSource",
-            defaultTarget: "userTarget"
-        },
-        expected: {
-            defaultSource: "userSource",
-            defaultTarget: "userTarget"
-        }
-    }/* , 
-    // This test case can probably not be supported until FLUID-4392: See implementation comment in
-    // fluid.applyDefaultValueMergePolicy - see also FLUID-4733
-    {
-        message: "user modifies value to default",
-        options: {
-            defaultSource: "sourceValue",
-        },
-        expected: {
-            defaultSource: "sourceValue",
-            defaultTarget: "sourceValue"
-        }
-    }*/];
-    
-    jqUnit.test("FLUID-4736: Interaction of default value merge policy with grade chain", function () {
-        fluid.each(fluid.tests.fluid4736Tests, function (fixture) {
-            var component = fluid.tests.defaultMergePolicy(fixture.options);
-            jqUnit.assertLeftHand(fixture.message, fixture.expected, component.options);              
-        });      
-    });
-    
-    
+      
     jqUnit.test("Sorting listeners", function () {
         var accumulate = [];
         var makeListener = function (i) {

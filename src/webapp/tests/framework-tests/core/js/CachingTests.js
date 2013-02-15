@@ -88,7 +88,7 @@ fluid.registerNamespace("fluid.tests");
         new jqUnit.module("Caching Tests");
 
         function testSimpleCache(message, invoker, requestDelay) {
-            jqUnit.test("Simple caching test with delay " + requestDelay, function () {
+            jqUnit.test(message + ": Simple caching test with delay " + requestDelay, function () {
                 invoker(function () {
                     fluid.log("Begin with delay " + requestDelay);
                     fluid.fetchResources.clearResourceCache(fluid.tests.cacheTestUrl);
@@ -119,13 +119,20 @@ fluid.registerNamespace("fluid.tests");
         }
 
         // "whitebox" testing to assess failure in the presence and absence of IoC
-        function expandOptionsCensorer(func) {
+        // TODO: This test is getting increasingly silly
+        function IoCCensorer(func) {
             var expandComponentOptions = fluid.expandComponentOptions;
+            var deliverOptionsStrategy = fluid.deliverOptionsStrategy;
+            var computeComponentAccessor = fluid.computeComponentAccessor;
             delete fluid.expandComponentOptions;
+            fluid.deliverOptionsStrategy = fluid.identity;
+            fluid.computeComponentAccessor = fluid.identity;
             try {
                 func();
             } finally {
                 fluid.expandComponentOptions = expandComponentOptions;
+                fluid.deliverOptionsStrategy = deliverOptionsStrategy;
+                fluid.computeComponentAccessor = computeComponentAccessor;
             }      
         }
          
@@ -133,7 +140,7 @@ fluid.registerNamespace("fluid.tests");
             func();
         }
         
-        testAllSimpleCache("No IoC", expandOptionsCensorer);
+        testAllSimpleCache("No IoC", IoCCensorer);
         testAllSimpleCache("With IoC", funcInvoker);
 
         function testProleptickJoinset(delays, message, expectedFinal) {
