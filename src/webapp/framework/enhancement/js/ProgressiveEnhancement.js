@@ -42,17 +42,20 @@ var fluid_1_5 = fluid_1_5 || {};
      * Keys represent the key into the static environment
      * Values represent the result of the check
      */
+    // unsupported, NON-API value
     fluid.enhance.checked = {};
     
     /*
      * The segment separator used by fluid.enhance.typeToKey
      */
+    // unsupported, NON-API value
     fluid.enhance.sep = "--";
     
     /*
      * Converts a type tag name to one that is safe to use as a key in an object, by replacing all of the "."
      * with the separator specified at fluid.enhance.sep
      */
+    // unsupported, NON-API function
     fluid.enhance.typeToKey = function (typeName) {
         return typeName.replace(/[.]/gi, fluid.enhance.sep);
     };
@@ -67,7 +70,8 @@ var fluid_1_5 = fluid_1_5 || {};
             var staticKey = fluid.enhance.typeToKey(key);
             
             if (fluid.enhance.checked[staticKey] === undefined) {
-                var results = typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val();
+                var results = typeof(val) === "boolean" ? val : 
+                    (typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val());
                 
                 fluid.enhance.checked[staticKey] = results;
                 
@@ -99,30 +103,46 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
-    fluid.progressiveChecker = function (options) {
-        var that = fluid.initLittleComponent("fluid.progressiveChecker", options);
-        return fluid.typeTag(fluid.find(that.options.checks, function(check) {
+    fluid.defaults("fluid.progressiveChecker", {
+        gradeNames: ["fluid.typeFount", "fluid.littleComponent", "autoInit", "{that}.check"],
+        checks: [], // [{"feature": "{IoC Expression}", "contextName": "context.name"}]
+        defaultContextName: undefined,
+        invokers: {
+            check: {
+                funcName: "fluid.progressiveChecker.check",
+                args: ["{that}.options.checks", "{that}.options.defaultContextName"]
+            }
+        }
+    });    
+    
+    fluid.progressiveChecker.check = function (checks, defaultContextName) {
+        return fluid.find(checks, function(check) {
             if (check.feature) {
                 return check.contextName;
-            }}, that.options.defaultContextName
-        ));
+            }}, defaultContextName
+        )
     };
     
-    fluid.defaults("fluid.progressiveChecker", {
-        gradeNames: "fluid.typeFount",
-        checks: [], // [{"feature": "{IoC Expression}", "contextName": "context.name"}]
-        defaultContextName: undefined
-    });
-    
-    fluid.progressiveCheckerForComponent = function (options) {
-        var that = fluid.initLittleComponent("fluid.progressiveCheckerForComponent", options);
-        var defaults = fluid.defaults(that.options.componentName);
-        return fluid.progressiveChecker(fluid.expandOptions(fluid.copy(defaults.progressiveCheckerOptions), that));  
+    fluid.progressiveChecker.forComponent = function (that, componentName) {
+        var defaults = fluid.defaults(componentName);
+        var expanded = fluid.expandOptions(fluid.copy(defaults.progressiveCheckerOptions), that);
+        var checkTag = fluid.progressiveChecker.check(expanded.checks, expanded.defaultContextName);
+        var horizon = componentName + ".progressiveCheck";
+        return [horizon, checkTag];      
     };
 
     fluid.defaults("fluid.progressiveCheckerForComponent", {
-        gradeNames: "fluid.typeFount"
+        gradeNames: ["fluid.typeFount", "fluid.littleComponent", "autoInit", "{that}.check"],
+        invokers: {
+            check: {
+                funcName: "fluid.progressiveChecker.forComponent",
+                args: ["{that}", "{that}.options.componentName"]
+            }
+        }
+        // componentName
     });
+
+
     
     /**********************************************************
      * This code runs immediately upon inclusion of this file *

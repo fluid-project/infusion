@@ -349,26 +349,6 @@ var fluid_1_5 = fluid_1_5 || {};
         that.container.attr("role", "application");
     };
     
-    /**
-     * Instantiates a new Uploader component.
-     * 
-     * @param {Object} container the DOM element in which the Uploader lives
-     * @param {Object} options configuration options for the component.
-     */
-    fluid.uploader = function (container, uploaderOptions) {
-      // Do not try to expand uploaderOptions here or else our subcomponents will end up
-      // nested inside uploaderImpl
-        var that = fluid.initView("fluid.uploader", container);
-        
-        // Unsupported, non-API function fluid.uploader.transformOptions
-        if (fluid.uploader.transformOptions) {
-            uploaderOptions = fluid.uploader.transformOptions(uploaderOptions);
-        }
-        that.uploaderOptions = uploaderOptions;
-        fluid.initDependents(that);
-        return that.uploaderImpl;
-    };
-    
     fluid.uploaderImpl = function () {
         fluid.fail("Error creating uploader component - please make sure that a " + 
             "progressiveCheckerForComponent for \"fluid.uploader\" is registered either in the " + 
@@ -381,8 +361,15 @@ var fluid_1_5 = fluid_1_5 || {};
         "fluid.browser.supportsFlash": "fluid.enhance.supportsFlash"
     });
     
+    /**
+     * Instantiates a new Uploader component.
+     * 
+     * @param {Object} container the DOM element in which the Uploader lives
+     * @param {Object} options configuration options for the component.
+     */
+    
     fluid.defaults("fluid.uploader", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             uploaderContext: {
                 type: "fluid.progressiveCheckerForComponent",
@@ -391,8 +378,13 @@ var fluid_1_5 = fluid_1_5 || {};
             uploaderImpl: {
                 type: "fluid.uploaderImpl",
                 container: "{uploader}.container",
-                preOptions: "{uploader}.uploaderOptions" // makes use of temporary framework hack to embodyOptions
             }
+        },
+        returnedPath: "uploaderImpl", // compatibility courtesy for manual construction
+        distributeOptions: {
+            source: "{that}.options",
+            exclusions: ["components.uploaderContext", "components.uploaderImpl"],
+            target: "{that > uploaderImpl}.options"
         },
         progressiveCheckerOptions: {
             checks: [
@@ -408,10 +400,7 @@ var fluid_1_5 = fluid_1_5 || {};
             defaultContextName: "fluid.uploader.singleFile"
         }
     });
-    
-    // Ensure that for all uploaders created via IoC, we bypass the wrapper and directly create the concrete uploader
-    fluid.alias("fluid.uploader", "fluid.uploaderImpl");
-    
+       
     // This method has been deprecated as of Infusion 1.3. Use fluid.uploader() instead, 
     // which now includes built-in support for progressive enhancement.
     fluid.progressiveEnhanceableUploader = function (container, enhanceable, options) {

@@ -109,7 +109,7 @@ var fluid = fluid || fluid_1_5;
         var outputPath = fluid.model.composePaths(expander.outputPrefix, userOutputPath);
         // TODO: custom resolver config here to create non-hash output model structure
         if (toset !== undefined) {
-            expander.applier.requestChange(outputPath, toset);
+            expander.applier.requestChange(outputPath, toset, expander.merge? "MERGE": undefined);
         }
         return userOutputPath ? fluid.model.transform.NONDEFAULT_OUTPUT_PATH_RETURN : toset;
     };
@@ -672,5 +672,23 @@ var fluid = fluid || fluid_1_5;
     
     $.extend(fluid.model.transformWithRules, fluid.model.transform);
     fluid.model.transform = fluid.model.transformWithRules;
+
+    /** Utility function to produce a standard options transformation record for a single set of rules **/    
+    fluid.transformOne = function (rules) {
+        return {transformOptions: {
+            transformer: "fluid.model.transformWithRules",
+            config: rules
+            }
+        };
+    };
+    
+    /** Utility function to produce a standard options transformation record for multiple rules to be applied in sequence **/    
+    fluid.transformMany = function (rules) {
+        return {transformOptions: {
+            transformer: "fluid.model.transform.sequence",
+            config: rules
+            }
+        };
+    };
     
 })(jQuery, fluid_1_5);

@@ -395,20 +395,25 @@ var fluid = fluid || fluid_1_5;
         return arg;
     };
     
-    /** Can through a list of objects, removing those which match a predicate. Similar to
+    /** Scan through a list or hash of objects, removing those which match a predicate. Similar to
      * jQuery.grep, only acts on the list in-place by removal, rather than by creating
      * a new list by inclusion.
-     * @param source {Array|Object} The list of objects to be scanned over.
+     * @param source {Array|Object} The list or hash of objects to be scanned over.
      * @param fn {Function} A predicate function determining whether an element should be
      * removed. This accepts the standard signature (object, index) and returns a "truthy"
      * result in order to determine that the supplied object should be removed from the list.
-     * @return The list, transformed by the operation of removing the matched elements. The
-     * supplied list is modified by this operation.
+     * @param target {Array|Object} (optional) A target object of the same type as <code>source</code>, which will
+     * receive any objects removed from it.
+     * @return <code>target</code>, containing the removed elements, if it was supplied, or else <code>source</code>
+     * modified by the operation of removing the matched elements.
      */
-    fluid.remove_if = function (source, fn) {
+    fluid.remove_if = function (source, fn, target) {
         if (fluid.isArrayable(source)) {
             for (var i = 0; i < source.length; ++i) {
                 if (fn(source[i], i)) {
+                    if (target) {
+                        target.push(source[i]);
+                    }
                     source.splice(i, 1);
                     --i;
                 }
@@ -416,11 +421,14 @@ var fluid = fluid || fluid_1_5;
         } else {
             for (var key in source) {
                 if (fn(source[key], key)) {
+                    if (target) {
+                        target[key] = source[key];
+                    }
                     delete source[key];
                 }
             }
         }
-        return source;
+        return target || source;
     };
     
     /** Fills an array of given size with copies of a value or result of a function invocation
@@ -1036,26 +1044,6 @@ var fluid = fluid || fluid_1_5;
         return event; 
     }
     
-    function initEvents(that, events, pass) {
-        fluid.each(events, function (eventSpec, eventKey) {
-            var isIoCEvent = eventSpec && (typeof (eventSpec) !== "string" || eventSpec.charAt(0) === "{");
-            var event;
-            if (isIoCEvent && pass === "IoC") {
-                if (!fluid.event.resolveEvent) {
-                    fluid.fail("fluid.event.resolveEvent could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor ",
-                        eventSpec);
-                } else {
-                    event = fluid.event.resolveEvent(that, eventKey, eventSpec);
-                }
-            } else if (pass === "flat") {
-                event = fluid.makeEventFirer(eventSpec === "unicast", eventSpec === "preventable", fluid.event.nameEvent(that, eventKey));
-            }
-            if (event) {
-                that.events[eventKey] = event;
-            }
-        });
-    }
-    
     // unsupported, NON-API function - this is patched from FluidIoC.js
     fluid.instantiateFirers = function (that, options) {
         fluid.each(options.events, function (eventSpec, eventKey) {
@@ -1078,6 +1066,19 @@ var fluid = fluid || fluid_1_5;
         return target;
     };
     
+    /** Removes duplicated and empty elements from an already sorted array **/
+    fluid.unique = function (array) {
+        return fluid.remove_if(array, function (element, i) {
+            return !element || i > 0 && element === array[i - 1];
+        });
+    };
+    
+    fluid.uniqueArrayConcatPolicy = function (target, source) {
+        target = (target || []).concat(source);
+        fluid.unique(target.sort());
+        return target;  
+    };
+    
     /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
     
     var defaultsStore = {};
@@ -1090,9 +1091,9 @@ var fluid = fluid || fluid_1_5;
             gs.gradeChain.push(gradeName);
             gs.optionsChain.push(options);
             var oGradeNames = fluid.makeArray(options.gradeNames);
-            fluid.each(oGradeNames, function (parent) {
-                if (!gs.gradeHash[parent]) {
-                    resolveGradesImpl(gs, parent);
+            fluid.each(oGradeNames, function (gradeName) {
+                if (gradeName.charAt(0) !== "{" && !gs.gradeHash[gradeName]) {
+                    resolveGradesImpl(gs, gradeName);
                 }
             });
         });
@@ -1190,7 +1191,7 @@ var fluid = fluid || fluid_1_5;
     
     fluid.makeComponent = function (componentName, options) {
         if (!options.initFunction || !options.gradeNames) {
-            fluid.fail("Cannot autoInit component " + componentName + " which does not have an initFunction and gradeName defined");
+            fluid.fail("Cannot autoInit component " + componentName + " which does not have an initFunction and gradeNames defined");
         }
         var creator = function () {
             return fluid.initComponent(componentName, arguments);
@@ -1221,9 +1222,13 @@ var fluid = fluid || fluid_1_5;
         finalInitFunction: true
     };
     
-    fluid.rootMergePolicy = fluid.transform(fluid.lifecycleFunctions, function () {
-        return fluid.mergeListenerPolicy;
-    });
+    fluid.rootMergePolicy = $.extend({
+        gradeNames: fluid.uniqueArrayConcatPolicy,
+        transformOptions: "replace",
+        }, 
+        fluid.transform(fluid.lifecycleFunctions, function () {
+            return fluid.mergeListenerPolicy;
+    }));
     
     fluid.defaults("fluid.littleComponent", {
         initFunction: "fluid.initLittleComponent",
@@ -1647,6 +1652,7 @@ var fluid = fluid || fluid_1_5;
         var optionsNickName = fluid.driveStrategy(options, "nickName", mergeOptions.strategy);
         that.nickName = optionsNickName || fluid.computeNickName(that.typeName);
         fluid.driveStrategy(options, "gradeNames", mergeOptions.strategy);
+        
         fluid.deliverOptionsStrategy(that, options, mergeOptions); // do this early to broadcast and receive "distributeOptions"
         
         var transformOptions = fluid.driveStrategy(options, "transformOptions", mergeOptions.strategy);
@@ -1809,6 +1815,8 @@ var fluid = fluid || fluid_1_5;
             fluid.fireEvent(that, "events.onDestroy", [that, "", null]);
         }; 
     };
+    
+    fluid.resolveReturnedPath = fluid.identity;
 
     // unsupported, NON-API function    
     fluid.initComponent = function (componentName, initArgs) {
@@ -1830,8 +1838,7 @@ var fluid = fluid || fluid_1_5;
         fluid.clearLifecycleFunctions(that.options);
         that.destroy = fluid.makeRootDestroy(that); // overwritten by FluidIoC for constructed subcomponents
         fluid.fireEvent(that, "events.onCreate", that);
-        // TODO: This needs to be ginger, or else unsupportable
-        return that.options.returnedPath ? fluid.get(that, that.options.returnedPath) : that;
+        return fluid.resolveReturnedPath(that.options.returnedPath, that) ? fluid.get(that, that.options.returnedPath) : that;
     };
 
     // unsupported, NON-API function

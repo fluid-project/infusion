@@ -149,8 +149,9 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     // unsupported, NON-API function
-    fluid.makeDistributionRecord = function (sourceRecord, sourcePath, targetPath, exclusions, offset) {
+    fluid.makeDistributionRecord = function (sourceRecord, sourcePath, targetPath, exclusions, offset, sourceType) {
         offset = offset || 0;
+        sourceType = sourceType || "distribution";
 
         var source = fluid.copy(fluid.get(sourceRecord, sourcePath));
         fluid.each(exclusions, function (exclusion) {
@@ -159,7 +160,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
         var options = {};        
         fluid.model.applyChangeRequest(options, {path: targetPath, type: "ADD", value: source});
-        return {options: options, recordType: "distribution", priority: fluid.mergeRecordTypes.distribution + offset};
+        return {options: options, recordType: sourceType, priority: fluid.mergeRecordTypes.distribution + offset};
     };
 
     // unsupported, NON-API function    
@@ -168,7 +169,7 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.each(sourceBlocks, function (block) {
             var source = fluid.get(block.source, sourcePath);
             if (source) {
-                togo.push(fluid.makeDistributionRecord(block.source, sourcePath, targetPath, exclusions, offset++));
+                togo.push(fluid.makeDistributionRecord(block.source, sourcePath, targetPath, exclusions, offset++, block.recordType));
                 var rescued = $.extend({}, source);
                 fluid.model.applyChangeRequest(block.source, {path: sourcePath, type: "DELETE"});
                 fluid.each(exclusions, function (exclusion) {
@@ -266,7 +267,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return segs.slice(1);  
     };
 
-    fluid.undistributableOptions = ["gradeNames", "distributeOptions", "argumentMap", "initFunction", "mergePolicy", "progressiveCheckerOptions"]; // automatically added to "exclusions" of every distribution
+    fluid.undistributableOptions = ["gradeNames", "distributeOptions", "returnedPath", "argumentMap", "initFunction", "mergePolicy", "progressiveCheckerOptions"]; // automatically added to "exclusions" of every distribution
 
     // unsupported, NON-API function    
     fluid.distributeOptions = function (that, optionsStrategy) {
@@ -338,8 +339,32 @@ var fluid_1_5 = fluid_1_5 || {};
         shadow.contextHash = contextHash;
         shadow.mergeOptions = mergeOptions;
 
-        fluid.distributeOptions(that, mergeOptions.strategy);
         fluid.receiveDistributions(that);
+        fluid.distributeOptions(that, mergeOptions.strategy);
+    };
+
+    // unsupported, NON-API function    
+    fluid.resolveReturnedPath = function (returnedPath, that) {
+        var shadow = fluid.shadowForComponent(that);
+        // This prevents corruption of instantiator records by defeating effect of "returnedPath" for non-roots 
+        return shadow && shadow.path !== "" ? null : returnedPath;
+    };
+    
+    fluid.computeDynamicGrades = function (that, strategy, mergeBlocks) {
+        var gradeNames = that.options.gradeNames;
+        var dynamicGrades = fluid.remove_if(gradeNames, function (gradeName) {
+            return gradeName.charAt(0) === "{"
+        }, []);
+        var resolved = [];
+        fluid.each(dynamicGrades, function (dynamicGrade) {
+            var func = fluid.expandOptions(dynamicGrade, that);
+            resolved = resolved.concat(typeof(func) === "function" ? func() : func);
+        });
+        if (resolved.length !== 0) {
+            gradeNames.push.apply(gradeNames, resolved);
+            // TODO: acquire extra defaults from "nonce grade" and replace defaults block
+        }
+        fluid.unique(gradeNames.sort());
     };
     
     // Second sequence point for mergeOptions from Fluid.js - here we construct all further
@@ -354,10 +379,11 @@ var fluid_1_5 = fluid_1_5 || {};
         shadow.eventStrategyBlock = fluid.recordStrategy(that, options, strategy, "events", fluid.eventFromRecord, ["events"]);
         var eventStrategy = fluid.mountStrategy(["events"], that, shadow.eventStrategyBlock.strategy, ["events"]);
         shadow.memberStrategy = fluid.recordStrategy(that, options, strategy, "members", fluid.memberFromRecord);
-        
         // NB - ginger strategy handles concrete, rationalise
         shadow.getConfig = {strategies: [fluid.model.funcResolverStrategy, fluid.makeGingerStrategy(that), 
             optionsStrategy, shadow.invokerStrategy.strategy, shadow.memberStrategy.strategy, eventStrategy]};
+            
+        fluid.computeDynamicGrades(that, strategy, shadow.mergeOptions.mergeBlocks);
         return shadow.getConfig;
     };
     
@@ -687,7 +713,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     var addPolicyBuiltins = function (policy) {
-        fluid.each(["mergePolicy", "argumentMap", "components", "invokers", "events", "listeners", "distributeOptions", "transformOptions"], function (key) {
+        fluid.each(["gradeNames", "mergePolicy", "argumentMap", "components", "invokers", "events", "listeners", "distributeOptions", "transformOptions"], function (key) {
             fluid.set(policy, [key, "*", "noexpand"], true);
         });
         return policy;
@@ -804,12 +830,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
         options.componentRecord = $.extend(true, {}, options.componentRecord, 
             fluid.censorKeys(demandspec, ["funcName", "registeredFrom", "transformOptions", "backSpecs"]));
-            
-        // temporary hack to keep Uploader broadly working until we rewrite its very nonstandard options workflow using Skywalker
-        if (options.componentRecord.preOptions) { 
-            options.componentRecord.options = fluid.expandOptions(options.componentRecord.preOptions, parentThat);
-            delete options.componentRecord.preOptions;
-        }
         
         var demands = fluid.makeArray(demandspec.args);
         if (demands.length === 0) {
@@ -1020,17 +1040,6 @@ var fluid_1_5 = fluid_1_5 || {};
         shadow.invokerStrategy.initter();
         fluid.popActivity();
     };   
-    
-    var aliasTable = {};
-    
-    fluid.alias = function (demandingName, aliasName) {
-        if (aliasName) {
-            aliasTable[demandingName] = aliasName;
-        }
-        else {
-            return aliasTable[demandingName];
-        }
-    };
    
     var dependentStore = {};
     
@@ -1160,26 +1169,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var demandspec = fluid.locateDemands(parentThat, funcNames);
         if (demandspec.length && demandspec[0].funcName) {
             newFuncName = demandspec[0].funcName;
-        }
-        
-        var aliasTo = fluid.alias(newFuncName);
-        
-        if (aliasTo) {
-            newFuncName = aliasTo;
-            fluid.log("Following redirect from function name " + newFuncName + " to " + aliasTo);
-            var demandspec2 = fluid.locateDemands(parentThat, [aliasTo])[0];
-            if (demandspec2) {
-                fluid.each(demandspec2, function(value, key) { // TODO: appears totally disused
-                    if (localRecordExpected.test(key)) {
-                        fluid.fail("Error in demands block ", demandspec2, " - content with key \"" + key 
-                            + "\" is not supported since this demands block was resolved via an alias from \"" + newFuncName + "\"");
-                    }  
-                });
-                if (demandspec2.funcName) {
-                    newFuncName = demandspec2.funcName;
-                    fluid.log("Followed final inner demands to function name \"" + newFuncName + "\"");
-                }
-            }
         }
         
         return $.extend(true, {funcName: newFuncName, 

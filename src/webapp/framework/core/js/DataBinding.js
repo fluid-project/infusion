@@ -467,7 +467,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // Utility used for source tracking in changeApplier
     
     function sourceWrapModelChanged(modelChanged, threadLocal) {
-        return function(changeRequest) {
+        return function (changeRequest) {
             var sources = threadLocal().sources;
             var args = arguments;
             var source = changeRequest.source || "";
