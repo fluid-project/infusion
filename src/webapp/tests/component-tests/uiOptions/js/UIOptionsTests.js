@@ -530,37 +530,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.start();
             });
         });
-
-        jqUnit.test("FLUID-4718: label and id are out of sync in select controls of ui options panel.", function () {
-            fluid.defaults("fluid.uiOptions.textControls.test", {
-                gradeNames: ["autoInit", "fluid.rendererComponent"],
-                produceTree: "fluid.uiOptions.textControls.produceTree",
-                model: {
-                    selections: {
-                        textFont: "test"
-                    },
-                    labelMap: {
-                        textFont: {
-                            names: "test",
-                            values: "test"
-                        }
-                    }
-                },
-                classnameMap: {
-                    textFont: ""
-                },
-                selectors: {
-                    textFont: ".flc-uiOptions-text-font"
-                },
-                renderOnInit: true
-            });
-
-            var testTextControls = fluid.uiOptions.textControls.test(".flc-uiOptions-text-controls-test");
-            var select = testTextControls.locate("textFont");
-            var label = select.parent().find("label");
-            jqUnit.assertEquals("Label for select should match the id of the select itself: ",
-                label.attr("for"), select.attr("id"));
-        });
     });
     
 })(jQuery);
