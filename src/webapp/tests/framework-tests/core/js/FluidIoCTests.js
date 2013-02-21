@@ -527,8 +527,43 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("Correctly resolved options from parent grade", 1, that.options.parentOption);
         jqUnit.assertEquals("Correctly resolved parent-contextualised invoker", 1, that.respondParent());
     });
+    
+    /** FLUID-4917 demands block horizon support **/
+    
+    fluid.defaults("fluid.tests.horizonParent", {
+        gradeNames: ["fluid.littleComponent", "fluid.tests.horizonExtraParent", "autoInit"],
+        components: {
+            horizonMiddle: {
+                type: "fluid.tests.horizonMiddle"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.horizonMiddle", {
+        gradeNames: ["fluid.littleComponent", "fluid.tests.horizonExtra", "autoInit"],
+        invokers: {
+            horizonOp: "fluid.tests.horizonOp"
+        }
+    });
+    
+    // This demands block would have force 3 and win if it were not horizoned
+    fluid.demands("fluid.tests.horizonOp", ["fluid.tests.horizonMiddle", "fluid.tests.horizonParent", "fluid.tests.horizonExtraParent"], {
+        horizon: "fluid.tests.horizonMiddle",
+        funcName: "fluid.tests.horizonByParent"
+    });
+    
+    // As a result of the prior block eliminating itself down to force one through horizon, this one will win
+    fluid.demands("fluid.tests.horizonOp", ["fluid.tests.horizonMiddle", "fluid.tests.horizonExtra"], {
+        funcName: "fluid.tests.horizonByExtra"
+    });
+    
+    fluid.tests.horizonByExtra = fluid.identity;
 
-    /** FLUID-4392 demands block merging tests **/
+    jqUnit.test("FLUID-4917 Demands block horizon support", function () {
+        var that = fluid.tests.horizonParent();
+        jqUnit.assertTrue("Correctly resolved horizoned demands block", that.horizonMiddle.horizonOp(true));
+    });
+    
 
     /** Basic IoC Tests **/
 

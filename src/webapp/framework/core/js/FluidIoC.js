@@ -29,7 +29,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // unsupported, non-API function
     // Currently still uses manual traversal - once we ban manually instantiated components,
     // it will use the instantiator's records instead.
-    fluid.visitComponentChildren = function (that, visitor, options, path) {
+    fluid.visitComponentChildren = function (that, visitor, options, path, i) {
         var instantiator = fluid.getInstantiator(that);
         for (var name in that) {
             var newPath = instantiator.composePath(path, name);
@@ -42,7 +42,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (options.visited) {
                 options.visited[component.id] = true;
             }
-            if (visitor(component, name, newPath, path)) {
+            if (visitor(component, name, newPath, path, i)) {
                 return true;
             }
             if (!options.flat) {
@@ -74,11 +74,11 @@ var fluid_1_5 = fluid_1_5 || {};
             if (that.typeName) {
                 options.visited[that.id] = true;
                 var path = instantiator.idToPath[that.id];
-                if (visitor(that, memberNames[i], path)) {
+                if (visitor(that, memberNames[i], path, path, i)) {
                     return;
                 }
             }
-            if (fluid.visitComponentChildren(that, visitor, options, path)) {
+            if (fluid.visitComponentChildren(that, visitor, options, path, i)) {
                 return;
             }
         }
@@ -1118,12 +1118,12 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var visited = [];
         var instantiator = fluid.getInstantiator(parentThat);
         var thatStack = instantiator.getFullStack(parentThat);
-        visitComponents(instantiator, thatStack, function (component, xname, path) {
+        visitComponents(instantiator, thatStack, function (component, xname, path, xpath, depth) {
             // NB - don't use shadow's cache here because we allow fewer names for demand resolution than for value resolution
-            contextNames[component.typeName] = true;
+            contextNames[component.typeName] = depth;
             var gradeNames = fluid.makeArray(fluid.get(component, ["options", "gradeNames"]));
             fluid.each(gradeNames, function (gradeName) {
-                contextNames[gradeName] = true;  
+                contextNames[gradeName] = depth;  
             });
             visited.push(component);
         });
@@ -1135,9 +1135,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             var rec = dependentStore[demandingNames[i]] || [];
             for (var j = 0; j < rec.length; ++j) {
                 var spec = rec[j];
+                var horizonLevel = spec.spec.horizon ? contextNames[spec.spec.horizon] : -1;
                 var record = {spec: spec, intersect: 0, uncess: 0};
                 for (var k = 0; k < spec.contexts.length; ++k) {
-                    record[contextNames[spec.contexts[k]]? "intersect" : "uncess"] += 2;
+                    var depth = contextNames[spec.contexts[k]]; 
+                    record[depth !== undefined && depth >= horizonLevel ? "intersect" : "uncess"] += 2;
                 }
                 if (spec.contexts.length === 0) { // allow weak priority for contextless matches
                     record.intersect++;
