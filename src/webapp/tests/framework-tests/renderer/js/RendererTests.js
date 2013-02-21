@@ -671,6 +671,9 @@ fluid.registerNamespace("fluid.tests");
             }, opts));
             singleSelectionRenderTests(node);
             var select = $("select", node);
+            var label = $("label", node);
+            jqUnit.assertEquals("Label for select should match the id of the select itself",
+                label.attr("for"), select.attr("id"));
             select.val("Enchiridion");
             select.change();
             if (!opts) {
