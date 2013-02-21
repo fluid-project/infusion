@@ -224,7 +224,7 @@ fluid_1_5 = fluid_1_5 || {};
         
                 var componentType = child.componentType;
                 if (componentType === "UISelect") {
-                    child.selection.fullID = child.fullID + "-selection";
+                    child.selection.fullID = child.fullID;
                 }
                 else if (componentType === "UIInitBlock") {
                     var call = child.functionname + '(';
@@ -381,9 +381,6 @@ fluid_1_5 = fluid_1_5 || {};
                             var resolved = fetchComponent(basecontainer, lump.rsfID); //jslint:ok - scoping
                             if (resolved !== null) {
                                 var resolveID = resolved.fullID;
-                                if (resolved.componentType === "UISelect") {
-                                    resolveID = resolveID + "-selection";
-                                }
                                 rewritemap[getRewriteKey(parentlump.parent, basecontainer,
                                     lumpid)] = resolveID;
                             }
@@ -931,11 +928,7 @@ fluid_1_5 = fluid_1_5 || {};
                 // assignSubmittingName is now the definitive trigger point for uniquifying output IDs
                 // However, if id is already assigned it is probably through attempt to decorate root select.
                 // in this case restore it.
-                var oldid = attrcopy.id;
                 assignSubmittingName(attrcopy, torender.selection);
-                if (oldid !== undefined) {
-                    attrcopy.id = oldid;
-                }
                 
                 if (ishtmlselect) {
                     // The HTML submitted value from a <select> actually corresponds
