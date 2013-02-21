@@ -325,18 +325,24 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
     };
-    // First sequence point where the mergeOptions strategy is delivered from Fluid.js - here we take care
-    // of both receiving and transmitting options distributions
-    // unsupported, NON-API function
-    fluid.deliverOptionsStrategy = function (that, target, mergeOptions) {
-        var shadow = fluid.shadowForComponent(that);
+
+    // unsupported, NON-API function    
+    fluid.cacheShadowGrades = function (that, shadow) {
         var contextHash = {};
         fluid.each(that.options.gradeNames, function (gradeName) {
             contextHash[gradeName] = true;
             contextHash[fluid.computeNickName(gradeName)] = true;  
         });
         contextHash[that.nickName] = true;
-        shadow.contextHash = contextHash;
+        shadow.contextHash = contextHash;      
+    };
+    
+    // First sequence point where the mergeOptions strategy is delivered from Fluid.js - here we take care
+    // of both receiving and transmitting options distributions
+    // unsupported, NON-API function
+    fluid.deliverOptionsStrategy = function (that, target, mergeOptions) {
+        var shadow = fluid.shadowForComponent(that, shadow);
+        fluid.cacheShadowGrades(that, shadow);
         shadow.mergeOptions = mergeOptions;
 
         fluid.receiveDistributions(that);
@@ -350,7 +356,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return shadow && shadow.path !== "" ? null : returnedPath;
     };
     
-    fluid.computeDynamicGrades = function (that, strategy, mergeBlocks) {
+    fluid.computeDynamicGrades = function (that, shadow, strategy, mergeBlocks) {
         var gradeNames = that.options.gradeNames;
         var dynamicGrades = fluid.remove_if(gradeNames, function (gradeName) {
             return gradeName.charAt(0) === "{"
@@ -362,9 +368,14 @@ var fluid_1_5 = fluid_1_5 || {};
         });
         if (resolved.length !== 0) {
             gradeNames.push.apply(gradeNames, resolved);
-            // TODO: acquire extra defaults from "nonce grade" and replace defaults block
+            fluid.unique(gradeNames.sort());
+            fluid.cacheShadowGrades(that, shadow);
+            var baseDefaults = fluid.rawDefaults(that.typeName);
+            var newDefaults = fluid.getGradedDefaults(baseDefaults, that.typeName, gradeNames);
+            var defaultsBlock = fluid.findMergeBlock(shadow.mergeOptions.mergeBlocks, "defaults");
+            defaultsBlock.source = newDefaults;
+            shadow.mergeOptions.updateBlocks();
         }
-        fluid.unique(gradeNames.sort());
     };
     
     // Second sequence point for mergeOptions from Fluid.js - here we construct all further
@@ -383,7 +394,8 @@ var fluid_1_5 = fluid_1_5 || {};
         shadow.getConfig = {strategies: [fluid.model.funcResolverStrategy, fluid.makeGingerStrategy(that), 
             optionsStrategy, shadow.invokerStrategy.strategy, shadow.memberStrategy.strategy, eventStrategy]};
             
-        fluid.computeDynamicGrades(that, strategy, shadow.mergeOptions.mergeBlocks);
+        fluid.computeDynamicGrades(that, shadow, strategy, shadow.mergeOptions.mergeBlocks);
+        
         return shadow.getConfig;
     };
     
@@ -517,6 +529,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // forming the surrounding scope
     fluid.instantiator = function (freeInstantiator) {
         var that = {
+            id: fluid.allocateGuid(),
             nickName: "instantiator",
             pathToComponent: {},
             idToShadow: {},
@@ -1106,6 +1119,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var instantiator = fluid.getInstantiator(parentThat);
         var thatStack = instantiator.getFullStack(parentThat);
         visitComponents(instantiator, thatStack, function (component, xname, path) {
+            // NB - don't use shadow's cache here because we allow fewer names for demand resolution than for value resolution
             contextNames[component.typeName] = true;
             var gradeNames = fluid.makeArray(fluid.get(component, ["options", "gradeNames"]));
             fluid.each(gradeNames, function (gradeName) {
@@ -1243,8 +1257,8 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 fluid.clear(argstruc);
             }
         }
-        fluid.each(eventSpec, function(event, eventName) {
-            adder(event).addListener(function() {
+        fluid.each(eventSpec, function (event, eventName) {
+            adder(event).addListener(function () {
                 argstruc[eventName] = fluid.makeArray(arguments);
                 checkFire();
             });

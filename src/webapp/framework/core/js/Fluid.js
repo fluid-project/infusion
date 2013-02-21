@@ -1550,11 +1550,16 @@ var fluid = fluid || fluid_1_5;
         var transFunc = fluid.getGlobalValue(transRec.transformer);
         return transFunc.call(null, options, transRec.config);
     };
+
+    // unsupported, NON-API function    
+    fluid.findMergeBlock = function (mergeBlocks, recordType) {
+        return fluid.find_if(mergeBlocks, function (block) { return block.recordType === recordType; });
+    };
     
     // unsupported, NON-API function    
-    fluid.transformOptionsBlocks = function(mergeBlocks, transformOptions, recordTypes) {
+    fluid.transformOptionsBlocks = function (mergeBlocks, transformOptions, recordTypes) {
         fluid.each(recordTypes, function (recordType) {       
-            var block = fluid.find_if(mergeBlocks, function (block) { return block.recordType === recordType; });
+            var block = fluid.findMergeBlock(mergeBlocks, recordType);
             if (block) {
                 block[block.simple? "target": "source"] = fluid.transformOptions(block.source, transformOptions);
             }
