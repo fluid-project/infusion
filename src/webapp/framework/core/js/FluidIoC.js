@@ -842,7 +842,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
 
         options.componentRecord = $.extend(true, {}, options.componentRecord, 
-            fluid.censorKeys(demandspec, ["funcName", "registeredFrom", "transformOptions", "backSpecs"]));
+            fluid.censorKeys(demandspec, ["funcName", "registeredFrom", "transformOptions", "backSpecs", "horizon"]));
         
         var demands = fluid.makeArray(demandspec.args);
         if (demands.length === 0) {

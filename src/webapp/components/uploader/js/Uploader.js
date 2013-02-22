@@ -331,24 +331,6 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
-    var setupUploader = function (that) {
-        that.demo = fluid.typeTag(that.options.demo ? "fluid.uploader.demo" : "fluid.uploader.live");
-        
-        fluid.initDependents(that);
-
-        // Upload button should not be enabled until there are files to upload
-        disableElement(that, that.locate("uploadButton"));
-        bindDOMEvents(that);
-        bindEvents(that);
-        
-        updateQueueSummaryText(that);
-        that.statusUpdater();
-        renderFileUploadLimit(that);
-        
-        // Uploader uses application-style keyboard conventions, so give it a suitable role.
-        that.container.attr("role", "application");
-    };
-    
     fluid.uploaderImpl = function () {
         fluid.fail("Error creating uploader component - please make sure that a " + 
             "progressiveCheckerForComponent for \"fluid.uploader\" is registered either in the " + 
@@ -400,13 +382,36 @@ var fluid_1_5 = fluid_1_5 || {};
             defaultContextName: "fluid.uploader.singleFile"
         }
     });
-       
-    // This method has been deprecated as of Infusion 1.3. Use fluid.uploader() instead, 
-    // which now includes built-in support for progressive enhancement.
-    fluid.progressiveEnhanceableUploader = function (container, enhanceable, options) {
-        return fluid.uploader(container, options);
+
+    fluid.uploader.demoTypeTag = function (demo) {
+        return demo ? "fluid.uploader.demo" : "fluid.uploader.live";
     };
 
+    // Implementation of standard public invoker methods
+    
+    fluid.uploader.browse = function (queue, localStrategy) {
+        if (!queue.isUploading) {
+            localStrategy.browse();
+        }    
+    };
+
+    fluid.uploader.removeFile = function (queue, localStrategy, afterFileRemoved, file) {
+        queue.removeFile(file);
+        localStrategy.removeFile(file);
+        afterFileRemoved.fire(file);      
+    };
+
+    fluid.uploader.start = function (queue, remoteStrategy, onUploadStart) {
+        queue.start();
+        onUploadStart.fire(queue.currentBatch.files);           
+        remoteStrategy.uploadNextFile();      
+    };
+    
+    fluid.uploader.stop = function (remoteStrategy, onUploadStop) {
+        onUploadStop.fire();
+        remoteStrategy.stop();      
+    };
+    
     /**
      * Multiple file Uploader implementation. Use fluid.uploader() for IoC-resolved, progressively
      * enhanceable Uploader, or call this directly if you don't want support for old-style single uploads
@@ -414,58 +419,64 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {jQueryable} container the component's container
      * @param {Object} options configuration options
      */
-    fluid.uploader.multiFileUploader = function (container, options) {
-        var that = fluid.initView("fluid.uploader.multiFileUploader", container, options);
-        that.queue = fluid.uploader.fileQueue();
-        
-        /**
-         * Opens the native OS browse file dialog.
-         */
-        that.browse = function () {
-            if (!that.queue.isUploading) {
-                that.strategy.local.browse();
-            }
-        };
-        
-        /**
-         * Removes the specified file from the upload queue.
-         * 
-         * @param {File} file the file to remove
-         */
-        that.removeFile = function (file) {
-            that.queue.removeFile(file);
-            that.strategy.local.removeFile(file);
-            that.events.afterFileRemoved.fire(file);
-        };
-        
-        /**
-         * Starts uploading all queued files to the server.
-         */
-        that.start = function () {
-            that.queue.start();
-            that.events.onUploadStart.fire(that.queue.currentBatch.files);           
-            that.strategy.remote.uploadNextFile();
-        };
-        
-        /**
-         * Cancels an in-progress upload.
-         */
-        that.stop = function () {
-            that.events.onUploadStop.fire();
-            that.strategy.remote.stop();
-        };
-        
-        setupUploader(that);
-        return that;  
-    };
-    
     fluid.defaults("fluid.uploader.multiFileUploader", {
-        gradeNames: "fluid.viewComponent",
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+                
+        invokers: {
+            /**
+             * Opens the native OS browse file dialog.
+             */
+            browse: {
+                funcName: "fluid.uploader.browse",
+                args: ["{that}.queue", "{that}.strategy.local"]
+            },
+            /**
+             * Removes the specified file from the upload queue.
+             * 
+             * @param {File} file the file to remove
+             */
+            removeFile: {
+                funcName: "fluid.uploader.removeFile",
+                args: ["{that}.queue", "{that}.strategy.local", "{that}.events.afterFileRemoved", "{arguments}.0"]  
+            },
+            /**
+             * Starts uploading all queued files to the server.
+             */
+            start: {
+                funcName: "fluid.uploader.start",
+                args: ["{that}.queue", "{that}.strategy.remote", "{that}.events.onUploadStart"]
+            },
+            /**
+             * Cancels an in-progress upload.
+             */
+            stop: {
+                funcName: "fluid.uploader.stop",
+                args: ["{that}.strategy.remote", "{that}.events.onUploadStop"]
+            },
+            statusUpdater: {
+                funcName: "fluid.uploader.ariaLiveRegionUpdater",
+                args: ["{that}.dom.statusRegion", "{that}.dom.totalFileStatusText", "{that}.events"]
+            }
+        },
+        
         components: {
+            demoTag: {
+                type: "fluid.typeFount",
+                options: {
+                    targetTypeName: {
+                        expander: {
+                            funcName: "fluid.uploader.demoTypeTag",
+                            args: "{multiFileUploader}.options.demo"
+                        }
+                    }
+                }  
+            },
+            queue: {
+                type: "fluid.uploader.fileQueue"  
+            },
             strategy: {
                 type: "fluid.uploader.progressiveStrategy"
             },
-
             errorPanel: {
                 type: "fluid.uploader.errorPanel"
             },
@@ -490,10 +501,6 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             }
-        },
-        
-        invokers: {
-            statusUpdater: "fluid.uploader.ariaLiveRegionUpdater"
         },
         
         queueSettings: {
@@ -580,14 +587,24 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             queue: {
                 emptyQueue: "File list: No files waiting to be uploaded.",
-                queueSummary: "File list:  %totalUploaded files uploaded, %totalInUploadQueue file waiting to be uploaded." 
+                queueSummary: "File list: %totalUploaded files uploaded, %totalInUploadQueue file waiting to be uploaded." 
             }
-        },
-        
-        mergePolicy: {
-            "fileQueueView.options.model": "preserve"
         }
     });
+    
+    fluid.uploader.multiFileUploader.finalInit = function (that) {
+        // Upload button should not be enabled until there are files to upload
+        disableElement(that, that.locate("uploadButton"));
+        bindDOMEvents(that);
+        bindEvents(that);
+        
+        updateQueueSummaryText(that);
+        that.statusUpdater();
+        renderFileUploadLimit(that);
+        
+        // Uploader uses application-style keyboard conventions, so give it a suitable role.
+        that.container.attr("role", "application");
+    };
     
     fluid.demands("fluid.uploader.totalProgressBar", "fluid.uploader.multiFileUploader", {
         funcName: "fluid.progress",
@@ -663,26 +680,15 @@ var fluid_1_5 = fluid_1_5 || {};
         events.afterUploadComplete.addListener(regionUpdater);
     };
     
-    fluid.demands("fluid.uploader.ariaLiveRegionUpdater", "fluid.uploader.multiFileUploader", {
-        funcName: "fluid.uploader.ariaLiveRegionUpdater",
-        args: [
-            "{multiFileUploader}.dom.statusRegion",
-            "{multiFileUploader}.dom.totalFileStatusText",
-            "{multiFileUploader}.events"
-        ]
-    });
-
-    
     /**************************************************
      * Error constants for the Uploader               *
      * TODO: These are SWFUpload-specific error codes *
      **************************************************/
-    // TODO: Change these opaque numerical constants into strings which are easy to interpret
     fluid.uploader.queueErrorConstants = {
-        QUEUE_LIMIT_EXCEEDED: -100,
-        FILE_EXCEEDS_SIZE_LIMIT: -110,
-        ZERO_BYTE_FILE: -120,
-        INVALID_FILETYPE: -130
+        QUEUE_LIMIT_EXCEEDED:    "queue limit exceeded",
+        FILE_EXCEEDS_SIZE_LIMIT: "file exceeds size limit",
+        ZERO_BYTE_FILE:          "zero byte file",
+        INVALID_FILETYPE:        "invalid filetype"
     };
     
     fluid.uploader.errorConstants = {
@@ -699,11 +705,11 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.uploader.fileStatusConstants = {
-        QUEUED: -1,
-        IN_PROGRESS: -2,
-        ERROR: -3,
-        COMPLETE: -4,
-        CANCELLED: -5
+        QUEUED:      "queued",
+        IN_PROGRESS: "in progress",
+        ERROR:       "error",
+        COMPLETE:    "complete",
+        CANCELLED:   "cancelled"
     };
 
     var toggleVisibility = function (toShow, toHide) {
@@ -725,19 +731,18 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {jQueryable} container the component's container
      * @param {Object} options configuration options
      */
-    fluid.uploader.singleFileUploader = function (container, options) {
-        var that = fluid.initView("fluid.uploader.singleFileUploader", container, options);
-        // TODO: direct DOM fascism that will fail with multiple uploaders on a single page.
-        toggleVisibility($(that.options.selectors.basicUpload), that.container);
-        return that;
-    };
 
     fluid.defaults("fluid.uploader.singleFileUploader", {
-        gradeNames: "fluid.viewComponent",
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         selectors: {
             basicUpload: ".fl-progEnhance-basic"
         }
     });
+
+    fluid.uploader.singleFileUploader.finalInit = function (that) {
+        // TODO: direct DOM fascism that will fail with multiple uploaders on a single page.
+        toggleVisibility($(that.options.selectors.basicUpload), that.container);
+    };
 
     fluid.demands("fluid.uploaderImpl", "fluid.uploader.singleFile", {
         funcName: "fluid.uploader.singleFileUploader"
