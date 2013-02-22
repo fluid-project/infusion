@@ -376,8 +376,8 @@ fluid_1_5 = fluid_1_5 || {};
                     var lumps = parentlump.downmap[id];
                     for (var i = 0; i < lumps.length; ++i) { // jslint:ok - scoping
                         var lump = lumps[i];
-                        var lumpid = lump.attributemap.id;
-                        if (lumpid !== undefined && lump.rsfID !== undefined) {
+                        var lumpid = lump.attributemap.id || lump.rsfID;
+                        if (lumpid !== undefined) {
                             var resolved = fetchComponent(basecontainer, lump.rsfID); //jslint:ok - scoping
                             if (resolved !== null) {
                                 var resolveID = resolved.fullID;
