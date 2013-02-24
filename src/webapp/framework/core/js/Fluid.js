@@ -47,6 +47,9 @@ var fluid = fluid || fluid_1_5;
     var globalObject = window || {};
     
     var softFailure = [false];
+    
+    fluid.activityTracing = false;
+    fluid.activityTrace = [];
 
     // Return an array of objects describing the current activity
     // unsupported, non-API function
@@ -62,15 +65,22 @@ var fluid = fluid || fluid_1_5;
         if (!root.activityStack) {
             root.activityStack = [];
         }
-        root.activityStack.push({type: type, message: message, args: args});
+        var record = {type: type, message: message, args: args};
+        root.activityStack.push(record);
+        if (fluid.activityTracing) {
+            fluid.activityTrace.push(record);
+        }
         //fluid.log(fluid.describeActivity());
     };
     
     // Undo the effect of the most recent pushActivity, or multiple frames if an argument is supplied
     fluid.popActivity = function (popframes) {
         popframes = popframes || 1;
-        var root = fluid.globalThreadLocal();      
+        var root = fluid.globalThreadLocal();
         root.activityStack = root.activityStack.slice(popframes);
+        if (fluid.activityTracing) {
+            fluid.activityTrace.push({pop: popframes});  
+        }
     };
     
     // The framework's built-in "fail" policy, in case a user-defined handler would like to
@@ -1843,6 +1853,7 @@ var fluid = fluid || fluid_1_5;
         fluid.clearLifecycleFunctions(that.options);
         that.destroy = fluid.makeRootDestroy(that); // overwritten by FluidIoC for constructed subcomponents
         fluid.fireEvent(that, "events.onCreate", that);
+        fluid.popActivity();
         return fluid.resolveReturnedPath(that.options.returnedPath, that) ? fluid.get(that, that.options.returnedPath) : that;
     };
 

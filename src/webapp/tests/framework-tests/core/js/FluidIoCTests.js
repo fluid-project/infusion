@@ -25,6 +25,7 @@ fluid.registerNamespace("fluid.tests");
     fluid.staticEnvironment.isTest = fluid.typeTag("fluid.test");
 
     fluid.setLogging(true);
+    fluid.activityTracing = true;
 
     fluid.defaults("fluid.tests.defaultMergePolicy", {
         gradeNames: ["fluid.modelComponent", "autoInit"],
