@@ -114,6 +114,16 @@ var fluid = fluid || fluid_1_5;
         return userOutputPath ? fluid.model.transform.NONDEFAULT_OUTPUT_PATH_RETURN : toset;
     };
     
+    /* Resolves the <key> given as parameter by looking up the path <key>Path in the object
+     * to be transformed. If not present, it resolves the <key> by using the literal value if primitive,
+     * or expanding otherwise. <def> defines the default value if unableto resolve the key. If no
+     * default value is given undefined is returned
+     */
+    fluid.model.transform.resolveParam = function (expander, expandSpec, key, def) {
+        var val = fluid.model.transform.getValue(expandSpec[key+"Path"], expandSpec[key], expander);
+        return (val !== undefined) ? val : def;
+    };
+
     /**********************************
      * Standard transformer functions *
      **********************************/
@@ -173,19 +183,50 @@ var fluid = fluid || fluid_1_5;
         gradeNames: "fluid.transformFunction"
     });
     
+    /* simple linear transformation */
     fluid.model.transform.scaleValue = function (value, expander, expandSpec) {
          if (typeof (value) !== "number") {
              return undefined;
          }
          
-         var factor = expandSpec.factor === undefined ? 1.0 : expandSpec.factor;
-         var offset = expandSpec.offset === undefined ? 0 : expandSpec.offset;
+         var factor = fluid.model.transform.resolveParam(expander, expandSpec, "factor", 1);
+         var offset = fluid.model.transform.resolveParam(expander, expandSpec, "offset", 0);
          return value * factor + offset;
      };
      
-     fluid.defaults("fluid.model.transform.scaleValue", {
-         gradeNames: "fluid.standardTransformFunction"
-     });
+    fluid.defaults("fluid.model.transform.scaleValue", {
+        gradeNames: "fluid.standardTransformFunction"
+    });
+
+    var binaryLookup = {
+        "==": function (a, b) { return a == b },
+        "!=": function (a, b) { return a == b },
+        "<=": function (a, b) { return a <= b },
+        "<": function (a, b) { return a < b },
+        ">=": function (a, b) { return a >= b },
+        ">": function (a, b) { return a > b },
+        "+": function (a, b) { return a + b },
+        "-": function (a, b) { return a - b },
+        "*": function (a, b) { return a * b },
+        "/": function (a, b) { return a / b },
+        "%": function (a, b) { return a % b },
+        "&&": function (a, b) { return a && b },
+        "||": function (a, b) { return a || b }
+    };
+
+    fluid.model.transform.binaryOp = function (expandSpec, expander) {
+        var left = fluid.model.transform.resolveParam(expander, expandSpec, "left", undefined);
+        var right = fluid.model.transform.resolveParam(expander, expandSpec, "right", undefined);  
+        var operator = fluid.model.transform.resolveParam(expander, expandSpec, "operator", undefined);
+
+        var fun = binaryLookup[operator];
+        return (fun === undefined || left === undefined || right === undefined) ? undefined : fun(left, right);
+    };
+
+
+    fluid.defaults("fluid.model.transform.binaryOp", { 
+        gradeNames: "fluid.standardOutputTransformFunction"
+    });
 
     // TODO: Incomplete implementation which only checks expected paths
     fluid.deepEquals = function (expected, actual, stats) {

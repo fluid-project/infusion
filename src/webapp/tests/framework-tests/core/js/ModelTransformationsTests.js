@@ -37,7 +37,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ],
         hippo: 0,
         polar: "grrr",
-        rats: 1000
+        dozen: 12,
+        hundred: 100,
+        halfdozen: 6,
+        lt: "<",
+        catsSuck: true
     };
     var cleanSource = fluid.copy(source);
     
@@ -59,33 +63,179 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         message: "scaleValue - no parameters given",
         expander: {
             type: "fluid.model.transform.scaleValue",
-            inputPath: "rats"
+            inputPath: "dozen"
         },
         method: "assertEquals",
-        expected: 1000
+        expected: 12
     },{
        message: "scaleValue - factor parameter only",
         expander: {
             type: "fluid.model.transform.scaleValue",
-            inputPath: "rats",
-            factor: 0.05
+            inputPath: "dozen",
+            factor: 0.25
         },
         method: "assertEquals",
-        expected: 50
+        expected: 3
     }, {
-       message: "scaleValue - factor parameter only",
+       message: "scaleValue - factor parameter and offset",
         expander: {
             type: "fluid.model.transform.scaleValue",
-            inputPath: "rats",
-            factor: 0.05,
+            inputPath: "dozen",
+            factor: 0.50,
             offset: 100
         },
         method: "assertEquals",
-        expected: 150        
+        expected: 106
+    }, {
+       message: "scaleValue - everything by path",
+        expander: {
+            type: "fluid.model.transform.scaleValue",
+            inputPath: "dozen",
+            factorPath: "halfdozen",
+            offsetPath: "hundred"
+        },
+        method: "assertEquals",
+        expected: 172
     }];
 
     jqUnit.test("fluid.model.transform.scaleValue()", function () {
         testOneStructure(scaleValueTests);
+    });
+
+    var binaryOpTests = [{
+        message: "binaryOp - ==",
+        expander: {
+            type: "fluid.model.transform.binaryOp",
+            leftPath: "dozen",
+            operator: "==",
+            right: 12
+        },
+        method: "assertEquals",
+        expected: true
+    }, {
+        message: "binaryOp - !=",
+        expander: {
+            type: "fluid.model.transform.binaryOp",
+            leftPath: 100,
+            operator: "!=",
+            rightPath: "hundred"
+        },
+        method: "assertEquals",
+        expected: false
+    }, {
+        message: "binaryOp - <=",
+        expander: {
+            type: "fluid.model.transform.binaryOp",
+            leftPath: "dozen",
+            operator: "<=",
+            right: 13
+        },
+        method: "assertEquals",
+        expected: true
+    }, {
+        message: "binaryOp - <",
+        expander: {
+            type: "fluid.model.transform.binaryOp",
+            leftPath: "hundred",
+            operatorPath: "lt",
+            rightPath: "dozen"
+        },
+        method: "assertEquals",
+        expected: false
+    }, {
+        message: "binaryOp - >=",
+        expander: {
+            type: "fluid.model.transform.binaryOp",
+            leftPath: "dozen",
+            operator: ">=",
+            right: 13
+        },
+        method: "assertEquals",
+        expected: false
+    }, {
+        message: "binaryOp - >",
+        expander: {
+            type: "fluid.model.transform.binaryOp",
+            leftPath: "hundred",
+            operator: ">",
+            rightPath: "dozen"
+        },
+        method: "assertEquals",
+        expected: true
+    }, {
+        message: "binaryOp - +",
+        expander: {
+            type: "fluid.model.transform.binaryOp",
+            leftPath: "dozen",
+            operator: "+",
+            right: 13
+        },
+        method: "assertEquals",
+        expected: 25
+    }, {
+        message: "binaryOp - -",
+        expander: {
+            type: "fluid.model.transform.binaryOp",
+            leftPath: "hundred",
+            operator: "-",
+            rightPath: "dozen"
+        },
+        method: "assertEquals",
+        expected: 88
+    }, {
+        message: "binaryOp - *",
+        expander: {
+            type: "fluid.model.transform.binaryOp",
+            leftPath: "dozen",
+            operator: "*",
+            right: 13
+        },
+        method: "assertEquals",
+        expected: 156
+    }, {
+        message: "binaryOp - /",
+        expander: {
+            type: "fluid.model.transform.binaryOp",
+            left: 96,
+            operator: "/",
+            rightPath: "dozen"
+        },
+        method: "assertEquals",
+        expected: 8
+    }, {
+        message: "binaryOp - %",
+        expander: {
+            type: "fluid.model.transform.binaryOp",
+            leftPath: "hundred",
+            operator: "%",
+            rightPath: "dozen"
+        },
+        method: "assertEquals",
+        expected: 4
+    }, {
+        message: "binaryOp - &&",
+        expander: {
+            type: "fluid.model.transform.binaryOp",
+            leftPath: "catsSuck",
+            operator: "&&",
+            right: false
+        },
+        method: "assertEquals",
+        expected: false
+    }, {
+        message: "binaryOp - ||",
+        expander: {
+            type: "fluid.model.transform.binaryOp",
+            left: false,
+            operator: "||",
+            rightPath: "catsSuck"
+        },
+        method: "assertEquals",
+        expected: true
+    }];
+
+    jqUnit.test("fluid.model.transform.binaryOp()", function () {
+        testOneStructure(binaryOpTests);
     });
 
     var valueTests = [{
