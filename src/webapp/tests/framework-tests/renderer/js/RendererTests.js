@@ -669,6 +669,14 @@ fluid.registerNamespace("fluid.tests");
             var template = fluid.selfRender(node, fluid.copy(binding_tree), merge({
                 model: model1
             }, opts));
+            singleSelectionBindingTests(node, opts, model1, "choice");
+            fluid.reRender(template, node, fluid.copy(binding_tree), merge({
+                model: model1
+            }, opts));
+        });
+
+        function singleSelectionBindingTests(node, opts, model, path) {
+            node = $(node);
             singleSelectionRenderTests(node);
             var select = $("select", node);
             var label = $("label", node);
@@ -679,11 +687,8 @@ fluid.registerNamespace("fluid.tests");
             if (!opts) {
                 fluid.applyBoundChange(select);
             }
-            jqUnit.assertEquals("Applied value to model", "Enchiridion", model1.choice);
-            fluid.reRender(template, node, fluid.copy(binding_tree), merge({
-                model: model1
-            }, opts));
-        });
+            jqUnit.assertEquals("Applied value to model", "Enchiridion", model[path]);
+        }
 
         makeBindingTest("Repeating UISelect (with labels) binding tests with HTML select", function (opts) {
             var node = $(".UISelect-test-select-repeatable");
@@ -696,18 +701,7 @@ fluid.registerNamespace("fluid.tests");
                 model: model1
             }, opts));
             fluid.each($("div", node), function (repeated, index) {
-                repeated = $(repeated);
-                singleSelectionRenderTests(repeated);
-                var select = $("select", repeated);
-                var label = $("label", repeated);
-                jqUnit.assertEquals("Label for select should match the id of the select itself",
-                    label.attr("for"), select.attr("id"));
-                select.val("Enchiridion");
-                select.change();
-                if (!opts) {
-                    fluid.applyBoundChange(select);
-                }
-                jqUnit.assertEquals("Applied value to model", "Enchiridion", model1["choice" + index]);
+                singleSelectionBindingTests(repeated, opts, model1, "choice" + index);
             });
             fluid.reRender(template, node, fluid.copy(repeatBinding_tree), merge({
                 model: model1
