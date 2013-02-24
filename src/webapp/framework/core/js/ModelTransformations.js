@@ -173,6 +173,20 @@ var fluid = fluid || fluid_1_5;
         gradeNames: "fluid.transformFunction"
     });
     
+    fluid.model.transform.scaleValue = function (value, expander, expandSpec) {
+         if (typeof (value) !== "number") {
+             return undefined;
+         }
+         
+         var factor = expandSpec.factor === undefined ? 1.0 : expandSpec.factor;
+         var offset = expandSpec.offset === undefined ? 0 : expandSpec.offset;
+         return value * factor + offset;
+     };
+     
+     fluid.defaults("fluid.model.transform.scaleValue", {
+         gradeNames: "fluid.standardTransformFunction"
+     });
+
     // TODO: Incomplete implementation which only checks expected paths
     fluid.deepEquals = function (expected, actual, stats) {
         if (fluid.isPrimitive(expected)) {

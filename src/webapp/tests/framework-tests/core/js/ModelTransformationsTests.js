@@ -36,7 +36,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "wooooool"
         ],
         hippo: 0,
-        polar: "grrr"
+        polar: "grrr",
+        rats: 1000
     };
     var cleanSource = fluid.copy(source);
     
@@ -47,7 +48,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expander: expander}});
         jqUnit[method].apply(null, [message, expected, transformed.value]); 
     }
+
+    var testOneStructure = function (tests) {
+        fluid.each(tests, function(v) {
+            testOneExpander(v.message, v.model || source, v.expander, v.method, v.expected);
+        });
+    }
     
+    var scaleValueTests = [{
+        message: "scaleValue - no parameters given",
+        expander: {
+            type: "fluid.model.transform.scaleValue",
+            inputPath: "rats"
+        },
+        method: "assertEquals",
+        expected: 1000
+    },{
+       message: "scaleValue - factor parameter only",
+        expander: {
+            type: "fluid.model.transform.scaleValue",
+            inputPath: "rats",
+            factor: 0.05
+        },
+        method: "assertEquals",
+        expected: 50
+    }, {
+       message: "scaleValue - factor parameter only",
+        expander: {
+            type: "fluid.model.transform.scaleValue",
+            inputPath: "rats",
+            factor: 0.05,
+            offset: 100
+        },
+        method: "assertEquals",
+        expected: 150        
+    }];
+
+    jqUnit.test("fluid.model.transform.scaleValue()", function () {
+        testOneStructure(scaleValueTests);
+    });
+
     var valueTests = [{
         message: "A value transform should resolve the specified path.", 
         expander: {
@@ -135,12 +175,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     }
     ];
-    
-    var testOneStructure = function (tests) {
-        fluid.each(tests, function(v) {
-            testOneExpander(v.message, v.model || source, v.expander, v.method, v.expected);
-        });
-    }
     
     jqUnit.test("fluid.model.transform.value()", function () {
         testOneStructure(valueTests);
