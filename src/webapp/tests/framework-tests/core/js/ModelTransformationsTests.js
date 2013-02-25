@@ -1196,17 +1196,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         numFish: 2
     };
     
-    var modernOptions = {
-        components: {
-            cat: {
-                type: "farm.cat"
-            },
-            fish: {
-                type: "bowl.fish",
-                options: {
-                    quantity: 2
-                }
-            }
+    var expectedDelete = {
+        cat: {
+            type: "farm.cat"
         }
     };
     
@@ -1221,16 +1213,75 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "components.fish.options.quantity": "numFish",
         "food": "food"
     };
-
-    var checkTransformedOptions = function (that) {
-        var expected = fluid.merge(null, fluid.copy(fluid.rawDefaults(that.typeName)), modernOptions);
-        expected = fluid.censorKeys(expected, ["gradeNames"]);
-        jqUnit.assertLeftHand("Options sucessfully transformed", expected, that.options);
+    
+    var modernOptions = {
+        components: {
+            cat: {
+                type: "farm.cat"
+            },
+            fish: {
+                type: "bowl.fish",
+                options: {
+                    quantity: 2
+                }
+            }
+        }
     };
     
-    jqUnit.test("fluid.model.transform(): options backwards compatibility", function () {
-        var result = fluid.model.transform(oldOptions, transformRules);
-        deepEqual(result, modernOptions, "Options should be transformed successfully based on the provided rules.");
+    var transformFixtures = [ {
+        message: "options backwards compatibility",
+        rules: transformRules,
+        expected: modernOptions
+    }, {
+        message: "root transform rules, delete and sorting reverse",
+        rules: {
+            expander: {
+                outputPath: "numFish",
+                type: "fluid.model.transform.delete",
+            },
+            "" : "",
+        },
+        expected: expectedDelete
+    }, {
+        message: "root transform rules, delete and sorting forward",
+        rules: {
+            "" : "",
+            expander: {
+                outputPath: "numFish",
+                type: "fluid.model.transform.delete",
+            }
+        },
+        expected: expectedDelete
+    }, {
+        message: "merge directive",
+        rules: {
+            "" : "",
+            expander: {
+                outputPath: "cat",
+                inputPath: "",
+                merge: true,
+                type: "fluid.model.transform.value",
+            }
+        },
+        expected: {
+            cat: {
+                type: "farm.cat",
+                numFish: 2,
+                cat: {
+                    type: "farm.cat"
+                }
+            },
+            numFish: 2
+        }
+    }
+        
+    ];
+    
+    fluid.each(transformFixtures, function (fixture) {
+        jqUnit.test("fluid.model.transform(): " + fixture.message, function () {
+            var result = fluid.model.transform(oldOptions, fixture.rules);
+            jqUnit.assertDeepEq("Options should be transformed successfully based on the provided rules.", fixture.expected, result);
+        });      
     });
     
     fluid.registerNamespace("fluid.tests.transform");
@@ -1244,6 +1295,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "farm.cat": "fluid.littleComponent",
         "bowl.fish": "fluid.littleComponent"
     });
+    
+    var checkTransformedOptions = function (that) {
+        var expected = fluid.merge(null, fluid.copy(fluid.rawDefaults(that.typeName)), modernOptions);
+        expected = fluid.censorKeys(expected, ["gradeNames"]);
+        jqUnit.assertLeftHand("Options sucessfully transformed", expected, that.options);
+    };
     
     jqUnit.test("fluid.model.transform applied automatically to component options, without IoC", function () {
         var options = fluid.copy(oldOptions);

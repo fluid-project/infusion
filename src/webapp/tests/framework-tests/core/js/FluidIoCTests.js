@@ -25,6 +25,7 @@ fluid.registerNamespace("fluid.tests");
     fluid.staticEnvironment.isTest = fluid.typeTag("fluid.test");
 
     fluid.setLogging(true);
+    fluid.activityTracing = true;
 
     fluid.defaults("fluid.tests.defaultMergePolicy", {
         gradeNames: ["fluid.modelComponent", "autoInit"],
@@ -312,7 +313,7 @@ fluid.registerNamespace("fluid.tests");
         "{arguments}.0"
     ]);
     
-    jqUnit.test("FLUID-4631 - double event dispatch issue", function () {
+    jqUnit.test("FLUID-4631: double event dispatch issue", function () {
         jqUnit.expect(3);
         var origArg0 = "origArg";
         var assertEvent = function (arg0, arg1) {
@@ -337,7 +338,7 @@ fluid.registerNamespace("fluid.tests");
         "{arguments}.1"
     ]);
     
-    jqUnit.test("FLUID-4631 - multiple to single argument", function () {
+    jqUnit.test("FLUID-4631: multiple to single argument", function () {
         jqUnit.expect(1);
         var origArg0 = "origArg0";
         var origArg1 = "origArg1";
@@ -428,7 +429,7 @@ fluid.registerNamespace("fluid.tests");
         args: {value: 4}
     });
     
-    jqUnit.test("FLUID-4914 - resolve grade as context name", function () {
+    jqUnit.test("FLUID-4914: resolve grade as context name", function () {
         var dataSource = fluid.tests.URLDataSource();
         var url = dataSource.resolve();
         jqUnit.assertEquals("Resolved grade context name via invoker", dataSource.options.url, url);
@@ -494,16 +495,76 @@ fluid.registerNamespace("fluid.tests");
             }
         } 
     });    
+
+    /** FLUID-4916 dynamic grade support tests **/
     
-    jqUnit.test("FLUID-4392 Demands block merging", function () {
-        var that = fluid.tests.demandHolder();
-        var expected = {
-            mergeKey1: "bottomValue1",
-            mergeKey2: "middleValue2",
-            mergeKey3: "topValue3"
-        };
-        jqUnit.assertLeftHand("Correctly merged demands block options", expected, that.demandMerge.options); 
+    fluid.defaults("fluid.tests.dynamicParent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        parentOption: 1  
     });
+    
+    fluid.defaults("fluid.tests.dynamicGrade", {
+        gradeNames: ["fluid.littleComponent", "autoInit", "{that}.computeGrade"],
+        invokers: {
+            computeGrade: "fluid.tests.computeDynamicParent",
+            respondParent: "fluid.tests.respondParent"
+        }
+    });
+    
+    fluid.tests.computeDynamicParent = function () {
+        return "fluid.tests.dynamicParent";
+    };
+    
+    fluid.demands("fluid.tests.respondParent", "fluid.tests.dynamicParent", {
+        funcName: "fluid.tests.respondParentImpl",
+        args: "{dynamicParent}.options.parentOption"
+    });
+    
+    fluid.tests.respondParentImpl = fluid.identity;
+    
+    jqUnit.test("FLUID-4916 Dynamic grade support", function () {
+        var that = fluid.tests.dynamicGrade();
+        jqUnit.assertTrue("Correctly resolved parent grade", fluid.hasGrade(that.options, "fluid.tests.dynamicParent"));
+        jqUnit.assertEquals("Correctly resolved options from parent grade", 1, that.options.parentOption);
+        jqUnit.assertEquals("Correctly resolved parent-contextualised invoker", 1, that.respondParent());
+    });
+    
+    /** FLUID-4917 demands block horizon support **/
+    
+    fluid.defaults("fluid.tests.horizonParent", {
+        gradeNames: ["fluid.littleComponent", "fluid.tests.horizonExtraParent", "autoInit"],
+        components: {
+            horizonMiddle: {
+                type: "fluid.tests.horizonMiddle"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.horizonMiddle", {
+        gradeNames: ["fluid.littleComponent", "fluid.tests.horizonExtra", "autoInit"],
+        invokers: {
+            horizonOp: "fluid.tests.horizonOp"
+        }
+    });
+    
+    // This demands block would have force 3 and win if it were not horizoned
+    fluid.demands("fluid.tests.horizonOp", ["fluid.tests.horizonMiddle", "fluid.tests.horizonParent", "fluid.tests.horizonExtraParent"], {
+        horizon: "fluid.tests.horizonMiddle",
+        funcName: "fluid.tests.horizonByParent"
+    });
+    
+    // As a result of the prior block eliminating itself down to force one through horizon, this one will win
+    fluid.demands("fluid.tests.horizonOp", ["fluid.tests.horizonMiddle", "fluid.tests.horizonExtra"], {
+        funcName: "fluid.tests.horizonByExtra"
+    });
+    
+    fluid.tests.horizonByExtra = fluid.identity;
+
+    jqUnit.test("FLUID-4917 Demands block horizon support", function () {
+        var that = fluid.tests.horizonParent();
+        jqUnit.assertTrue("Correctly resolved horizoned demands block", that.horizonMiddle.horizonOp(true));
+    });
+    
 
     /** Basic IoC Tests **/
 

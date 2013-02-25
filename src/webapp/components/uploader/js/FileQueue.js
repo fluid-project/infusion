@@ -20,145 +20,182 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    fluid.registerNamespace("fluid.uploader");
     
-    fluid.uploader = fluid.uploader || {};
-    
-    var filterFiles = function (files, filterFn) {
-        var filteredFiles = [];
-        for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-            if (filterFn(file) === true) {
-                filteredFiles.push(file);
+    fluid.defaults("fluid.uploader.fileQueue", { 
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+            files: [],
+            isUploading: false
+        },
+        invokers: {
+            /********************
+             * Queue Operations *
+             ********************/
+            start: {
+                funcName: "fluid.uploader.fileQueue.start",
+                args: "{that}"
+            },
+            startFile: {
+                funcName: "fluid.uploader.fileQueue.startFile",
+                args: "{that}.currentBatch"
+            },
+            finishFile: {
+                funcName: "fluid.uploader.fileQueue.finishFile",
+                args: "{that}.currentBatch"
+            },
+            shouldUploadNextFile: {
+                funcName: "fluid.uploader.fileQueue.shouldUploadNextFile",
+                args: "{that}"
+            },
+            /*****************************
+             * File manipulation methods *
+             *****************************/
+            addFile: {
+                funcName: "fluid.uploader.fileQueue.addFile",
+                args: ["{that}.files", "{arguments}.0"]
+            },
+            removeFile: {
+                funcName: "fluid.uploader.fileQueue.removeFile",
+                args: ["{that}.files", "{arguments}.0"]
+            },
+            /**********************
+             * Queue Info Methods *
+             **********************/
+            totalBytes: {
+                funcName: "fluid.uploader.fileQueue.sizeOfFiles",
+                args: "{that}.files"
+            },
+            getReadyFiles: {
+                funcName: "fluid.uploader.fileQueue.filesByStatus",
+                args: ["{that}.files", ["QUEUED", "CANCELLED"]]
+            },
+            getErroredFiles: {
+                funcName: "fluid.uploader.fileQueue.filesByStatus",
+                args: ["{that}.files", "ERROR"]
+            },
+            getUploadedFiles: {
+                funcName: "fluid.uploader.fileQueue.filesByStatus",
+                args: ["{that}.files", "COMPLETE"]
+            },
+            sizeOfReadyFiles: {
+                funcName: "fluid.uploader.fileQueue.sizeOfFilesByStatus",
+                args: ["{that}.files", ["QUEUED", "CANCELLED"]]
+            },
+            sizeOfUploadedFiles: {
+                funcName: "fluid.uploader.fileQueue.sizeOfFilesByStatus",
+                args: ["{that}.files", "COMPLETE"]
+            },
+            /*****************
+             * Batch Methods *
+             *****************/
+            setupCurrentBatch:  {
+                funcName: "fluid.uploader.fileQueue.setupCurrentBatch",
+                args: "{that}"
+            },
+            clearCurrentBatch:  {
+                funcName: "fluid.uploader.fileQueue.clearCurrentBatch",
+                args: "{that}"
+            },
+            updateCurrentBatch:  {
+                // dynamic: true
+                funcName: "fluid.uploader.fileQueue.updateCurrentBatch",
+                args: [{expander: {func: "{that}.getReadyFiles"}}, "{that}.currentBatch"]
+            },
+            updateBatchStatus:  {
+                funcName: "fluid.uploader.fileQueue.updateBatchStatus",
+                args: ["{arguments}.0", "{that}.currentBatch"]
             }
         }
-        
-        return filteredFiles;
+    });
+
+    fluid.uploader.fileQueue.start = function (that) {
+        that.setupCurrentBatch();
+        that.isUploading = true;
+        that.shouldStop = false;
+    }; 
+
+    fluid.uploader.fileQueue.startFile = function (currentBatch) {
+        currentBatch.fileIdx++;
+        currentBatch.bytesUploadedForFile = 0;
+        currentBatch.previousBytesUploadedForFile = 0; 
     };
-     
-    fluid.uploader.fileQueue = function () {
-        var that = {};
-        that.files = [];
-        that.isUploading = false;
-        
-        /********************
-         * Queue Operations *
-         ********************/
-         
-        that.start = function () {
-            that.setupCurrentBatch();
-            that.isUploading = true;
-            that.shouldStop = false;
-        };
-        
-        that.startFile = function () {
-            that.currentBatch.fileIdx++;
-            that.currentBatch.bytesUploadedForFile = 0;
-            that.currentBatch.previousBytesUploadedForFile = 0; 
-        };
-                
-        that.finishFile = function (file) {
-            that.currentBatch.numFilesCompleted++;
-        };
-        
-        that.shouldUploadNextFile = function () {
-            return !that.shouldStop && 
-                that.isUploading && 
-                (that.currentBatch.numFilesCompleted + that.currentBatch.numFilesErrored) 
-                < that.currentBatch.files.length;
-        };
-        
-        /*****************************
-         * File manipulation methods *
-         *****************************/
-         
-        that.addFile = function (file) {
-            that.files.push(file);    
-        };
-        
-        that.removeFile = function (file) {
-            var idx = $.inArray(file, that.files);
-            that.files.splice(idx, 1);        
-        };
-        
-        /**********************
-         * Queue Info Methods *
-         **********************/
-         
-        that.totalBytes = function () {
-            return fluid.uploader.fileQueue.sizeOfFiles(that.files);
-        };
 
-        that.getReadyFiles = function () {
-            return filterFiles(that.files, function (file) {
-                return (file.filestatus === fluid.uploader.fileStatusConstants.QUEUED || file.filestatus === fluid.uploader.fileStatusConstants.CANCELLED);
-            });        
-        };
-        
-        that.getErroredFiles = function () {
-            return filterFiles(that.files, function (file) {
-                return (file.filestatus === fluid.uploader.fileStatusConstants.ERROR);
-            });        
-        };
-        
-        that.sizeOfReadyFiles = function () {
-            return fluid.uploader.fileQueue.sizeOfFiles(that.getReadyFiles());
-        };
-        
-        that.getUploadedFiles = function () {
-            return filterFiles(that.files, function (file) {
-                return (file.filestatus === fluid.uploader.fileStatusConstants.COMPLETE);
-            });        
-        };
-
-        that.sizeOfUploadedFiles = function () {
-            return fluid.uploader.fileQueue.sizeOfFiles(that.getUploadedFiles());
-        };
-
-        /*****************
-         * Batch Methods *
-         *****************/
-         
-        that.setupCurrentBatch = function () {
-            that.clearCurrentBatch();
-            that.updateCurrentBatch();
-        };
-        
-        that.clearCurrentBatch = function () {
-            that.currentBatch = {
-                fileIdx: 0,
-                files: [],
-                totalBytes: 0,
-                numFilesCompleted: 0,
-                numFilesErrored: 0,
-                bytesUploadedForFile: 0,
-                previousBytesUploadedForFile: 0,
-                totalBytesUploaded: 0
-            };
-        };
-        
-        that.updateCurrentBatch = function () {
-            var readyFiles = that.getReadyFiles();
-            that.currentBatch.files = readyFiles;
-            that.currentBatch.totalBytes = fluid.uploader.fileQueue.sizeOfFiles(readyFiles);
-        };
-        
-        that.updateBatchStatus = function (currentBytes) {
-            var byteIncrement = currentBytes - that.currentBatch.previousBytesUploadedForFile;
-            that.currentBatch.totalBytesUploaded += byteIncrement;
-            that.currentBatch.bytesUploadedForFile += byteIncrement;
-            that.currentBatch.previousBytesUploadedForFile = currentBytes;
-        };
-                
-        return that;
+    fluid.uploader.fileQueue.finishFile = function (currentBatch) {
+        currentBatch.numFilesCompleted++;
+    };
+    
+    fluid.uploader.fileQueue.shouldUploadNextFile = function (that) {
+        return !that.shouldStop && 
+            that.isUploading && 
+            (that.currentBatch.numFilesCompleted + that.currentBatch.numFilesErrored) 
+            < that.currentBatch.files.length;
+    };
+    
+    fluid.uploader.fileQueue.addFile = function (files, file) {
+        files.push(file);
+    };
+    
+    fluid.uploader.fileQueue.removeFile = function (files, file) {
+        fluid.remove_if(files, function (thisFile) {
+            return file === thisFile;
+        });
     };
     
     fluid.uploader.fileQueue.sizeOfFiles = function (files) {
-        var totalBytes = 0;
-        for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-            totalBytes += file.size;
-        }        
-        return totalBytes;
+        return fluid.accumulate(files, function (file, totalBytes) {
+            return totalBytes + file.size;
+        }, 0);
     };
+    
+    fluid.uploader.fileQueue.filterFiles = function (files, filterFn) {
+        var filteredFiles = []; // filterFn returns TRUE for the files we want
+        return fluid.remove_if(fluid.makeArray(files), filterFn, filteredFiles); 
+    };
+    
+    fluid.uploader.fileQueue.filesByStatus = function (files, statuses) {
+        statuses = fluid.makeArray(statuses);
+        return fluid.uploader.fileQueue.filterFiles(files, function (file) {
+            return fluid.find_if(statuses, function (status) {
+                return file.filestatus === fluid.uploader.fileStatusConstants[status];
+            });
+        });
+    };
+    
+    fluid.uploader.fileQueue.sizeOfFilesByStatus = function (files, statuses) {
+        var files = fluid.uploader.fileQueue.filesByStatus(files, statuses);
+        return fluid.uploader.fileQueue.sizeOfFiles(files);
+    };
+    
+    fluid.uploader.fileQueue.setupCurrentBatch = function (that) {
+        that.clearCurrentBatch();
+        that.updateCurrentBatch();
+    };
+
+    fluid.uploader.fileQueue.clearCurrentBatch = function (that) {
+        that.currentBatch = {
+            fileIdx: 0,
+            files: [],
+            totalBytes: 0,
+            numFilesCompleted: 0,
+            numFilesErrored: 0,
+            bytesUploadedForFile: 0,
+            previousBytesUploadedForFile: 0,
+            totalBytesUploaded: 0
+        };
+    };
+
+    fluid.uploader.fileQueue.updateCurrentBatch = function (readyFiles, currentBatch) {
+        currentBatch.files = readyFiles;
+        currentBatch.totalBytes = fluid.uploader.fileQueue.sizeOfFiles(readyFiles);
+    };
+    
+    fluid.uploader.fileQueue.updateBatchStatus = function (currentBytes, currentBatch) {
+        var byteIncrement = currentBytes - currentBatch.previousBytesUploadedForFile;
+        currentBatch.totalBytesUploaded += byteIncrement;
+        currentBatch.bytesUploadedForFile += byteIncrement;
+        currentBatch.previousBytesUploadedForFile = currentBytes;      
+    };
+
           
 })(jQuery, fluid_1_5);
