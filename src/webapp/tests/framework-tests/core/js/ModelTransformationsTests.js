@@ -629,6 +629,59 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         method: "assertDeepEq",
         expected: undefined
+    }, 
+    "nested-mapping": {
+        message: "valueMapper with unmatched input value and no default or undefined values specified.",
+        model: {
+            animals: {
+                mammals: {
+                    elephant: "big",
+                    mouse: "small"
+                }
+            }
+        },
+        expander: {
+            type: "fluid.model.transform.valueMapper",
+            inputPath: "animals.mammals.elephant",
+            options: {
+                big: {
+                    outputPath: "correct",
+                    outputValue: {
+                        expander: {
+                            type: "fluid.model.transform.literalValue",
+                            value: "Elephant - Brilliant work, it is indeed big"
+                        }
+                    }
+                }
+            }
+        },
+        method: "assertDeepEq",
+        expected: "Elephant - Brilliant work, it is indeed big"
+    }, 
+    "value-mapping-inputPath": {
+        message: "valueMapper with unmatched input value and no default or undefined values specified.",
+        model: {
+            animals: {
+                mammals: {
+                    elephant: "big",
+                    mouse: "small"
+                }
+            }
+        },
+        expander: {
+            type: "fluid.model.transform.valueMapper",
+            inputPath: "animals.mammals.elephant",
+            options: {
+                big: {
+                    outputPath: "correct",
+                    outputValuePath: "animals.mammals.mouse"
+                }
+            }
+        },
+        method: "assertDeepEq",
+        expected: {
+            correct: "small"
+        }
     }
     };
     

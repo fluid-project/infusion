@@ -320,9 +320,18 @@ var fluid = fluid || fluid_1_5;
         if (!indexed) {
             return;
         }
-        var outputValue = fluid.isPrimitive(indexed) ? indexed : 
-            (indexed.undefinedOutputValue ? undefined : 
-                (indexed.outputValue === undefined ? expandSpec.defaultOutputValue : indexed.outputValue));
+
+        var outputValue;
+        if (fluid.isPrimitive(indexed)) {
+            outputValue = indexed;
+        } else {
+            if (indexed.undefinedOutputValue) {
+                outputValue = undefined;
+            } else {
+                var outputValue = fluid.model.transform.resolveParam(expander, indexed, "outputValue", undefined);
+                outputValue = (outputValue === undefined) ? expandSpec.defaultOutputValue : outputValue;
+            }
+        }
         var outputPath = indexed.outputPath === undefined ? expandSpec.outputPath : indexed.outputPath;
         return fluid.model.transform.setValue(outputPath, outputValue, expander); 
     };
