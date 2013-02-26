@@ -331,19 +331,24 @@ var fluid = fluid || fluid_1_5;
             return;
         }
 
+        var outputPath = indexed.outputPath === undefined ? expandSpec.defaultOutputPath : indexed.outputPath;
+        expander.outputPrefixOp.push(outputPath);
         var outputValue;
         if (fluid.isPrimitive(indexed)) {
             outputValue = indexed;
         } else {
+            //if undefinedOutputValue is set, output undefined
             if (indexed.undefinedOutputValue) {
                 outputValue = undefined;
             } else {
+                //get value from outputValue or outputValuePath. If none is found set the outputValue to be that of defaultOutputValue (or undefined)
                 var outputValue = fluid.model.transform.resolveParam(expander, indexed, "outputValue", undefined);
                 outputValue = (outputValue === undefined) ? expandSpec.defaultOutputValue : outputValue;
             }
         }
-        var outputPath = indexed.outputPath === undefined ? expandSpec.outputPath : indexed.outputPath;
-        return fluid.model.transform.setValue(outputPath, outputValue, expander, expandSpec.merge); 
+        var togo = fluid.model.transform.setValue(undefined, outputValue, expander, expandSpec.merge);
+        expander.outputPrefixOp.pop();
+        return togo; 
     };
     
     fluid.model.transform.valueMapper.invert = function (expandSpec, expander) {
@@ -366,7 +371,7 @@ var fluid = fluid || fluid_1_5;
             togo.inputPath = fluid.model.composePaths(expander.outputPrefix, expandSpec.outputPath);
         }
         if (!anyCustomInput) {
-            togo.outputPath = fluid.model.composePaths(expander.inputPrefix, expandSpec.inputPath);
+            togo.defaultOutputPath = fluid.model.composePaths(expander.inputPrefix, expandSpec.inputPath);
         }
         var def = fluid.firstDefined;
         fluid.each(expandSpec.options, function (option, key) {

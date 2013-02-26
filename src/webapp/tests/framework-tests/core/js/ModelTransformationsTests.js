@@ -609,6 +609,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         method: "assertDeepEq",
         expected: undefined
     },
+    "unmatched-defaultOutpath": {
+        message: "Valuemapper with defaultOutputPath",
+        model: {
+            foo: "bar"
+        }, 
+        expander: {
+            type: "fluid.model.transform.valueMapper",
+            inputPath: "foo",
+            defaultOutputPath: "stupidCATT",
+            options: {
+                bar: {
+                    outputValue: "it works",
+                }
+            }
+        },
+        method: "assertDeepEq",
+        expected: {
+            stupidCATT: "it works"
+        }
+    },
     "unmatched-nodefaults": {
         message: "valueMapper with unmatched input value and no default or undefined values specified.",
         model: {
@@ -631,7 +651,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: undefined
     }, 
     "nested-mapping": {
-        message: "valueMapper with unmatched input value and no default or undefined values specified.",
+        message: "valueMapper with nested expanders.",
         model: {
             animals: {
                 mammals: {
@@ -649,17 +669,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     outputValue: {
                         expander: {
                             type: "fluid.model.transform.literalValue",
-                            value: "Elephant - Brilliant work, it is indeed big"
+                            value: "Elephant - Brilliant work, it is indeed big",
+                            outputPath: "path"
                         }
                     }
                 }
             }
         },
         method: "assertDeepEq",
-        expected: "Elephant - Brilliant work, it is indeed big"
+        expected: {
+            correct: {
+                path: "Elephant - Brilliant work, it is indeed big"
+            }
+        }
     }, 
-    "value-mapping-inputPath": {
-        message: "valueMapper with unmatched input value and no default or undefined values specified.",
+    "value-mapping-outputValuePath": {
+        message: "valueMapper using outputValuePath.",
         model: {
             animals: {
                 mammals: {
@@ -681,6 +706,41 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         method: "assertDeepEq",
         expected: {
             correct: "small"
+        }
+    },
+    "valueMapping-multiout": {
+        message: "valueMapper with multiple outputs.",
+        model: {
+            screenReaderTTSEnabled: false
+        },
+        expander: {
+            type: "fluid.model.transform.valueMapper",
+            inputPath: "screenReaderTTSEnabled",
+            options: {
+                "false": {
+                    outputValue: {
+                        expander: [
+                            {
+                                type: "fluid.model.transform.literalValue",
+                                value: "silence",
+                                outputPath: "speech.synth"
+                            },
+                            {
+                                type: "fluid.model.transform.literalValue",
+                                value: "Microsoft Sound Mapper",
+                                outputPath: "speech.outputDevice"  
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        method: "assertDeepEq",
+        expected: {
+            speech: {
+                synth: "silence",
+                outputDevice: "Microsoft Sound Mapper"
+            }
         }
     }
     };
@@ -937,14 +997,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         jqUnit.assertDeepEq("Recovered image of model", modelBit, reverse);
     });
-    
+
     jqUnit.test("invert valueMapper transformation", function() {
         var rules = {
-            expander: {
-            type: "fluid.model.transform.valueMapper",
-            inputPath: "tracking",
-            options: mapperOptions
-        },
+                expander: {
+                type: "fluid.model.transform.valueMapper",
+                inputPath: "tracking",
+                options: mapperOptions
+            },
         };
         var mapperModel = {
             tracking: "focus"  
@@ -954,7 +1014,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expectedInverse = {
             expander: [{
                 type: "fluid.model.transform.valueMapper",
-                outputPath: "tracking",
+                defaultOutputPath: "tracking",
                 options: [{
                     inputPath: "FollowMouse",
                     inputValue: true,
@@ -985,7 +1045,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expectedInverse = {
             expander: [{
                 type: "fluid.model.transform.valueMapper",
-                outputPath: "condition",
+                defaultOutputPath: "condition",
                 options: [ {
                     outputValue: true,
                     inputValue: "CATTOO",
@@ -1002,7 +1062,52 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var reverse = fluid.model.transform(forward, inverseRules);
         jqUnit.assertDeepEq("Perfectly inverted mapping", cattoo.model, reverse);
     });
-    
+
+    //     method: "assertDeepEq",
+    //     expected: {
+    //         correct: "small"
+    //     }
+    // },
+    jqUnit.test("invert valueMapper with outputValuePath", function() {
+        var rules = {
+            expander: {
+                type: "fluid.model.transform.valueMapper",
+                inputPath: "animals.mammals.elephant",
+                options: {
+                    big: {
+                        outputPath: "correct",
+                        outputValuePath: "animals.mammals.mouse"
+                    }
+                }
+            }
+        };
+        var mapperModel = {
+            animals: {
+                mammals: {
+                    elephant: "big",
+                    mouse: "small"
+                }
+            }  
+        };        
+        var inverseRules = fluid.model.transform.invertConfiguration(rules);
+        var expectedInverse = {
+            expander: [{
+                type: "fluid.model.transform.valueMapper",
+                defaultOutputPath: "animals.mammals.elephant",
+                options: [{
+                    inputPath: "correct",
+                    inputValue: "small",
+                    inputValuePath: "animals.mammals.mouse", //<---- ANTRANIG! IS THIS CRAZY
+                    outputValue: "big"
+                }]
+            }]
+        };
+        jqUnit.assertDeepEq("Inverted valueMapper", expectedInverse, inverseRules);
+        var forward = fluid.model.transform(mapperModel, rules);
+        var reverse = fluid.model.transform(forward, inverseRules);
+        jqUnit.assertDeepEq("Perfectly inverted mapping", mapperModel, reverse);
+    });
+
     var capabilitiesTransformations = {
         "mag-factor": "display.screenEnhancement.magnification",
         "show-cross-hairs": "display.screenEnhancement.showCrosshairs",
