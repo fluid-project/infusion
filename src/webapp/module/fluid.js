@@ -42,13 +42,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         vm.runInContext(data, context, fullpath);
     };
 
-    var includes = fs.readFileSync(buildPath("includes.json"));
+    var readJSONFile = function (path) {
+        var data = fs.readFileSync(buildPath(path));
+        return JSON.parse(data);
+    };
 
-    includes = JSON.parse(includes);
+    var loadIncludes = function (path) {
+        var includes = readJSONFile(path);
+        for (var i = 0; i < includes.length; ++i) {
+            loadInContext(includes[i]);
+        }
+    };
 
-    for (var i = 0; i < includes.length; ++i) {
-        loadInContext(includes[i]);
-    }
+    loadIncludes("includes.json");
     
     var fluid = context.fluid;
     
@@ -82,6 +88,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 return fluid.require(moduleName, foreignRequire, namespace);
             }
         }
+    };
+
+    /**
+     * Setup testing environment with jqUnit and IoC Test Utils in node.
+     * This function will load everything necessary for running node jqUnit.
+     */
+    fluid.setTesting = function () {
+        loadIncludes("devIncludes.json");
     };
 
     module.exports = fluid;

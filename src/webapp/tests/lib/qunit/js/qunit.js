@@ -1,5 +1,5 @@
 /**
- * QUnit v1.12.0pre - A JavaScript Unit Testing Framework
+ * QUnit v1.11.0pre - A JavaScript Unit Testing Framework
  *
  * http://qunitjs.com
  *
@@ -1044,7 +1044,6 @@ QUnit.load = function() {
 	var banner, filter, i, label, len, main, ol, toolbar, userAgent, val,
 		urlConfigCheckboxesContainer, urlConfigCheckboxes, moduleFilter,
 		numModules = 0,
-		moduleNames = [],
 		moduleFilterHtml = "",
 		urlConfigHtml = "",
 		oldconfig = extend( {}, config );
@@ -1073,24 +1072,18 @@ QUnit.load = function() {
 			"'><label for='qunit-urlconfig-" + escapeText( val.id ) +
 			"' title='" + escapeText( val.tooltip ) + "'>" + val.label + "</label>";
 	}
-	for ( i in config.modules ) {
-		if ( config.modules.hasOwnProperty( i ) ) {
-			moduleNames.push(i);
-		}
-	}
-	numModules = moduleNames.length;
-	moduleNames.sort( function( a, b ) {
-		return a.localeCompare( b );
-	});
+
 	moduleFilterHtml += "<label for='qunit-modulefilter'>Module: </label><select id='qunit-modulefilter' name='modulefilter'><option value='' " +
 		( config.module === undefined  ? "selected='selected'" : "" ) +
 		">< All Modules ></option>";
 
-
-	for ( i = 0; i < numModules; i++) {
-			moduleFilterHtml += "<option value='" + escapeText( encodeURIComponent(moduleNames[i]) ) + "' " +
-				( config.module === moduleNames[i] ? "selected='selected'" : "" ) +
-				">" + escapeText(moduleNames[i]) + "</option>";
+	for ( i in config.modules ) {
+		if ( config.modules.hasOwnProperty( i ) ) {
+			numModules += 1;
+			moduleFilterHtml += "<option value='" + escapeText( encodeURIComponent(i) ) + "' " +
+				( config.module === i ? "selected='selected'" : "" ) +
+				">" + escapeText(i) + "</option>";
+		}
 	}
 	moduleFilterHtml += "</select>";
 
@@ -1505,12 +1498,12 @@ function extend( a, b ) {
  * @param {Function} fn
  */
 function addEvent( elem, type, fn ) {
-	// Standards-based browsers
 	if ( elem.addEventListener ) {
 		elem.addEventListener( type, fn, false );
-	// IE
-	} else {
+	} else if ( elem.attachEvent ) {
 		elem.attachEvent( "on" + type, fn );
+	} else {
+		fn(); // WTF
 	}
 }
 
@@ -1592,7 +1585,6 @@ QUnit.equiv = (function() {
 		callers = [],
 		// stack to avoiding loops from circular referencing
 		parents = [],
-		parentsB = [],
 
 		getProto = Object.getPrototypeOf || function ( obj ) {
 			return obj.__proto__;
@@ -1649,7 +1641,7 @@ QUnit.equiv = (function() {
 				},
 
 				"array": function( b, a ) {
-					var i, j, len, loop, aCircular, bCircular;
+					var i, j, len, loop;
 
 					// b could be an object literal here
 					if ( QUnit.objectType( b ) !== "array" ) {
@@ -1664,35 +1656,24 @@ QUnit.equiv = (function() {
 
 					// track reference to avoid circular references
 					parents.push( a );
-					parentsB.push( b );
 					for ( i = 0; i < len; i++ ) {
 						loop = false;
 						for ( j = 0; j < parents.length; j++ ) {
-							aCircular = parents[j] === a[i];
-							bCircular = parentsB[j] === b[i];
-							if ( aCircular || bCircular ) {
-								if ( a[i] === b[i] || aCircular && bCircular ) {
-									loop = true;
-								} else {
-									parents.pop();
-									parentsB.pop();
-									return false;
-								}
+							if ( parents[j] === a[i] ) {
+								loop = true;// dont rewalk array
 							}
 						}
 						if ( !loop && !innerEquiv(a[i], b[i]) ) {
 							parents.pop();
-							parentsB.pop();
 							return false;
 						}
 					}
 					parents.pop();
-					parentsB.pop();
 					return true;
 				},
 
 				"object": function( b, a ) {
-					var i, j, loop, aCircular, bCircular,
+					var i, j, loop,
 						// Default to true
 						eq = true,
 						aProperties = [],
@@ -1711,36 +1692,28 @@ QUnit.equiv = (function() {
 
 					// stack constructor before traversing properties
 					callers.push( a.constructor );
-
 					// track reference to avoid circular references
 					parents.push( a );
-					parentsB.push( b );
 
-					// be strict: don't ensures hasOwnProperty and go deep
-					for ( i in a ) {
+					for ( i in a ) { // be strict: don't ensures hasOwnProperty
+									// and go deep
 						loop = false;
 						for ( j = 0; j < parents.length; j++ ) {
-							aCircular = parents[j] === a[i];
-							bCircular = parentsB[j] === b[i];
-							if ( aCircular || bCircular ) {
-								if ( a[i] === b[i] || aCircular && bCircular ) {
-									loop = true;
-								} else {
-									eq = false;
-									break;
-								}
+							if ( parents[j] === a[i] ) {
+								// don't go down the same path twice
+								loop = true;
 							}
 						}
-						aProperties.push(i);
-						if ( !loop && !innerEquiv(a[i], b[i]) ) {
+						aProperties.push(i); // collect a's properties
+
+						if (!loop && !innerEquiv( a[i], b[i] ) ) {
 							eq = false;
 							break;
 						}
 					}
 
-					parents.pop();
-					parentsB.pop();
 					callers.pop(); // unstack, we are done
+					parents.pop();
 
 					for ( i in b ) {
 						bProperties.push( i ); // collect b's properties
@@ -2043,7 +2016,7 @@ QUnit.diff = (function() {
 			os = {};
 
 		for ( i = 0; i < n.length; i++ ) {
-			if ( !hasOwn.call( ns, n[i] ) ) {
+			if ( ns[ n[i] ] == null ) {
 				ns[ n[i] ] = {
 					rows: [],
 					o: null
@@ -2053,7 +2026,7 @@ QUnit.diff = (function() {
 		}
 
 		for ( i = 0; i < o.length; i++ ) {
-			if ( !hasOwn.call( os, o[i] ) ) {
+			if ( os[ o[i] ] == null ) {
 				os[ o[i] ] = {
 					rows: [],
 					n: null
@@ -2066,7 +2039,7 @@ QUnit.diff = (function() {
 			if ( !hasOwn.call( ns, i ) ) {
 				continue;
 			}
-			if ( ns[i].rows.length === 1 && hasOwn.call( os, i ) && os[i].rows.length === 1 ) {
+			if ( ns[i].rows.length === 1 && os[i] !== undefined && os[i].rows.length === 1 ) {
 				n[ ns[i].rows[0] ] = {
 					text: n[ ns[i].rows[0] ],
 					row: os[i].rows[0]
