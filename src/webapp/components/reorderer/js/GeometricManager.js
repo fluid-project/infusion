@@ -440,7 +440,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var owner = cache[fluid.dropManager.cacheKey(element)].owner; 
             var elements = position === fluid.position.INSIDE ? [owner.parentElement] : owner.elements;
             if (!includeLocked && lastGeometry.elementMapper) {
-                elements = $.makeArray(elements);
+                elements = fluid.makeArray(elements);
                 fluid.remove_if(elements, function (element) {
                     return lastGeometry.elementMapper(element) === "locked";
                 });

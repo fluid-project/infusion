@@ -83,7 +83,7 @@ var fluid_1_5 = fluid_1_5 || {};
             function (column) {
                 return {
                     container: column,
-                    elements: $.makeArray(portlets.filter(function () {
+                    elements: fluid.makeArray(portlets.filter(function () {
                           // is this a bug in filter? would have expected "this" to be 1st arg
                         return fluid.dom.isContainer(column, this);
                     }))
@@ -290,7 +290,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 var column = that.layout.columns[col];
                 var thisEls = {
                     orientation: options.orientation,
-                    elements: $.makeArray(column.elements),
+                    elements: fluid.makeArray(column.elements),
                     parentElement: column.container
                 };
               //  fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements) + " isLocked [" + 
