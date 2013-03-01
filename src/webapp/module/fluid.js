@@ -42,13 +42,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         vm.runInContext(data, context, fullpath);
     };
 
-    var readJSONFile = function (path) {
-        var data = fs.readFileSync(buildPath(path));
-        return JSON.parse(data);
-    };
-
     var loadIncludes = function (path) {
-        var includes = readJSONFile(path);
+        var includes = require(path);
         for (var i = 0; i < includes.length; ++i) {
             loadInContext(includes[i]);
         }
@@ -59,6 +54,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var fluid = context.fluid;
     
     fluid.loadInContext = loadInContext;
+    fluid.loadIncludes = loadIncludes;
     
     /** Load a node-aware JavaScript file using either a supplied or the native
       * Fluid require function (the difference relates primarily to the base
@@ -94,8 +90,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Setup testing environment with jqUnit and IoC Test Utils in node.
      * This function will load everything necessary for running node jqUnit.
      */
-    fluid.setTesting = function () {
-        loadIncludes("devIncludes.json");
+    fluid.loadTestingSupport = function () {
+        fluid.loadIncludes("devIncludes.json");
     };
 
     module.exports = fluid;
