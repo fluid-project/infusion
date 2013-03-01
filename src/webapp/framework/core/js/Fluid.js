@@ -1678,7 +1678,10 @@ var fluid = fluid || fluid_1_5;
      */
     // TODO: this method is inefficient and inappropriate, should simply discard options entirely pending review 
     fluid.emptySubcomponent = function (options) {
-        var that = {};
+        var that = fluid.typeTag("fluid.emptySubcomponent");
+        that.options = options || {};
+        that.options.gradeNames = [that.typeName];
+        
         options = fluid.makeArray(options);
         for (var i = 0; i < options.length; ++i) {
             that[options[i]] = fluid.identity;
@@ -1881,10 +1884,10 @@ var fluid = fluid || fluid_1_5;
         if (!entry) {
             return;
         }
-        var entries = $.makeArray(entry);
+        var entries = fluid.makeArray(entry);
         var optindex = -1;
         var togo = [];
-        args = $.makeArray(args);
+        args = fluid.makeArray(args);
         for (var i = 0; i < args.length; ++i) {
             if (args[i] === fluid.COMPONENT_OPTIONS) {
                 optindex = i;
