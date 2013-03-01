@@ -34,11 +34,11 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             applyStyle: {
                 funcName: "fluid.uiOptions.actionAnts.styleElementsEnactor.applyStyle",
-                args: "{that}"
+                args: ["{arguments}.0", "{arguments}.1"]
             },
             resetStyle: {
                 funcName: "fluid.uiOptions.actionAnts.styleElementsEnactor.resetStyle",
-                args: "{that}"
+                args: ["{arguments}.0", "{arguments}.1"]
             },
             
             // API, must be defined by implementors
@@ -49,34 +49,27 @@ var fluid_1_5 = fluid_1_5 || {};
             args: "{that}"
         }*/
     });
-    fluid.uiOptions.test = function () {
-        alert("a");
-    };
     
-    fluid.uiOptions.actionAnts.styleElementsEnactor.applyStyle = function (that) {
-        if (typeof that.getElements !== 'function') {
-            return;
-        }
-        
-        var elements = that.getElements();
-        elements.addClass(that.options.cssClass);
+    fluid.uiOptions.actionAnts.styleElementsEnactor.applyStyle = function (elements, cssClass) {
+        elements.addClass(cssClass);
     };
 
-    fluid.uiOptions.actionAnts.styleElementsEnactor.resetStyle = function (that) {
-        if (typeof that.getElements !== 'function') {
-            return;
-        }
-        
-        var elements = that.getElements();
-        $("." + that.options.cssClass, elements).andSelf().removeClass(that.options.cssClass);
+    fluid.uiOptions.actionAnts.styleElementsEnactor.resetStyle = function (elements, cssClass) {
+        $("." + cssClass, elements).andSelf().removeClass(cssClass);
     };
 
 //    fluid.uiOptions.actionAnts.styleElementsEnactor.handleStyle = function (that) {
     fluid.uiOptions.actionAnts.styleElementsEnactor.finalInit = function (that) {
+        if (typeof that.getElements !== 'function') {
+            return;
+        }
+        
+        var elements = that.getElements();
+        
         if (that.options.setting) {
-            that.applyStyle(that);
+            that.applyStyle(elements, that.options.cssClass);
         } else {
-            that.resetStyle(that);
+            that.resetStyle(elements, that.options.cssClass);
         }
     };
 
@@ -91,7 +84,7 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             getElements: {
                 funcName: "fluid.uiOptions.actionAnts.emphasizeLinksEnactor.getLinks",
-                args: ["{that}.options.container"]
+                args: "{that}.options.container"
             }
         }
     });
@@ -111,7 +104,7 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             getElements: {
                 funcName: "fluid.uiOptions.actionAnts.inputsLargerEnactor.getInputs",
-                args: ["{that}.options.container"]
+                args: "{that}.options.container"
             }
         }
     });

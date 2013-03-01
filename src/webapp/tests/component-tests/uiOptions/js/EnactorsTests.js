@@ -38,7 +38,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     invokers: {
                         getElements: {
                             funcName: "fluid.tests.getElements",
-                            args: [".flc-styleElementsEnactor-true"]
+                            args: ".flc-styleElementsEnactor-true"
                         }
                     }
                 }
@@ -51,7 +51,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     invokers: {
                         getElements: {
                             funcName: "fluid.tests.getElements",
-                            args: [".flc-styleElementsEnactor-false"]
+                            args: ".flc-styleElementsEnactor-false"
                         }
                     }
                 }
