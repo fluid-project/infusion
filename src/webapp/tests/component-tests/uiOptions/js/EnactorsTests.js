@@ -18,6 +18,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     fluid.registerNamespace("fluid.tests");
 
+    fluid.tests.testStyleEnactor = function (that, container, expectedDefaultFlag, expectedCssClass) {
+        var elements = that.getElements();
+        
+        jqUnit.assertEquals("Default setting: " + expectedDefaultFlag, expectedDefaultFlag, that.model.setting);
+        jqUnit.assertEquals("Default css class: " + expectedCssClass, expectedCssClass, that.options.cssClass);
+        jqUnit.assertEquals("Default - css class is not applied", undefined, elements.attr("class"));
+        
+        that.applier.requestChange("setting", true);
+        jqUnit.assertEquals("True setting - Css class has been applied", expectedCssClass, elements.attr("class"));
+
+        that.applier.requestChange("setting", false);
+        jqUnit.assertEquals("False setting - Css class has been removed", "", elements.attr("class"));
+    }; 
+
     /*******************************************************************************
      * Unit tests for fluid.uiOptions.styleElementsEnactor
      *******************************************************************************/
@@ -25,38 +39,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.styleElementsEnactor", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         expectedCssClass: "fl-style-test",
-        expectedFlagFalse: false,
-        expectedFlagTrue: true,
-        applyStyleContainer: ".flc-styleElementsEnactor-true",
-        removeStyleContainer: ".flc-styleElementsEnactor-false",
+        expectedDefaultFlag: false,
+        container: ".flc-styleElementsEnactor",
         components: {
-            applyStyle: {
+            styleElements: {
                 type: "fluid.uiOptions.actionAnts.styleElementsEnactor",
                 options: {
-                    setting: true,
                     cssClass: "fl-style-test",
                     invokers: {
                         getElements: {
                             funcName: "fluid.tests.getElements",
-                            args: ".flc-styleElementsEnactor-true"
+                            args: ".flc-styleElementsEnactor"
                         }
                     }
                 }
             },
-            removeStyle: {
-                type: "fluid.uiOptions.actionAnts.styleElementsEnactor",
-                options: {
-                    setting: false,
-                    cssClass: "fl-style-test",
-                    invokers: {
-                        getElements: {
-                            funcName: "fluid.tests.getElements",
-                            args: ".flc-styleElementsEnactor-false"
-                        }
-                    }
-                }
-            },
-            emphasizeLinksEnactorTester: {
+            styleElementsEnactorTester: {
                 type: "fluid.tests.styleElementsEnactorTester"
             }
         }
@@ -66,30 +64,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return $(container).children();
     };
     
-    fluid.tests.testStyleElementsEnactor = function (that, desc, container, expectedFlag, expectedCssClass, expectedActualStyle) {
-        var elements = fluid.tests.getElements(container);
-        
-        jqUnit.assertEquals("Expected flag - " + desc + ": " + expectedFlag, expectedFlag, that.options.setting);
-        jqUnit.assertEquals("Expected css class - " + desc + ": " + expectedCssClass, expectedCssClass, that.options.cssClass);
-        jqUnit.assertEquals("Actual applied css class" + ": " + expectedActualStyle, expectedActualStyle, elements.attr("class"));
-    }; 
-
     fluid.defaults("fluid.tests.styleElementsEnactorTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
             name: "Test style element component",
             tests: [{
-                expect: 3,
-                name: "Apply style",
+                expect: 5,
+                name: "Apply and reset the style",
                 type: "test",
-                func: "fluid.tests.testStyleElementsEnactor",
-                args: ["{applyStyle}", "apply style", "{fluid.tests.styleElementsEnactor}.options.applyStyleContainer", "{fluid.tests.styleElementsEnactor}.options.expectedFlagTrue", "{fluid.tests.styleElementsEnactor}.options.expectedCssClass", "{fluid.tests.styleElementsEnactor}.options.expectedCssClass"]
-            }, {
-                expect: 3,
-                name: "Remove style",
-                type: "test",
-                func: "fluid.tests.testStyleElementsEnactor",
-                args: ["{removeStyle}", "remove style", "{fluid.tests.styleElementsEnactor}.options.removeStyleContainer", "{fluid.tests.styleElementsEnactor}.options.expectedFlagFalse", "{fluid.tests.styleElementsEnactor}.options.expectedCssClass", undefined]
+                func: "fluid.tests.testStyleEnactor",
+                args: ["{styleElements}", "{fluid.tests.styleElementsEnactor}.options.container", "{fluid.tests.styleElementsEnactor}.options.expectedDefaultFlag", "{fluid.tests.styleElementsEnactor}.options.expectedCssClass"]
             }]
         }]
     });
@@ -100,30 +84,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.emphasizeLinksEnactor", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        container: ".flc-emphasizeLinksEnactor",
         expectedEmphasizeLinksClass: "fl-emphasizeLinks-test",
-        expectedFlagFalse: false,
-        expectedFlagTrue: true,
-        expectedDefaultCssStyle: "fl-link-enhanced",
+        expectedDefaultFlag: false,
         components: {
-            emphasizeLinksEnactorDefault: {
+            emphasizeLinks: {
                 type: "fluid.uiOptions.actionAnts.emphasizeLinksEnactor",
                 options: {
-                    container: ".flc-emphasizeLinksEnactor-default"
-                }
-            },
-            emphasizeLinksEnactorInTrue: {
-                type: "fluid.uiOptions.actionAnts.emphasizeLinksEnactor",
-                options: {
-                    container: ".flc-emphasizeLinksEnactor-true",
-                    setting: true,
-                    cssClass: "fl-emphasizeLinks-test"
-                }
-            },
-            emphasizeLinksEnactorInFalse: {
-                type: "fluid.uiOptions.actionAnts.emphasizeLinksEnactor",
-                options: {
-                    container: ".flc-emphasizeLinksEnactor-false",
-                    setting: false,
+                    container: ".flc-emphasizeLinksEnactor",
                     cssClass: "fl-emphasizeLinks-test"
                 }
             },
@@ -133,36 +101,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.testEmphasizeLinks = function (that, desc, expectedFlag, expectedCssClass, expectedActualStyle) {
-        var elements = fluid.uiOptions.actionAnts.emphasizeLinksEnactor.getLinks(that.options.container);
-        
-        jqUnit.assertEquals("Expected flag - " + desc + ": " + expectedFlag, expectedFlag, that.options.setting);
-        jqUnit.assertEquals("Expected css class - " + desc + ": " + expectedCssClass, expectedCssClass, that.options.cssClass);
-        jqUnit.assertEquals("Actual applied css class" + ": " + expectedActualStyle, expectedActualStyle, elements.attr("class"));
-    }; 
-
     fluid.defaults("fluid.tests.emphasizeLinksEnactorTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
             name: "Test emphasize links enactor",
             tests: [{
-                expect: 3,
-                name: "Defaults",
+                expect: 5,
+                name: "Apply and reset emphasized links",
                 type: "test",
-                func: "fluid.tests.testEmphasizeLinks",
-                args: ["{emphasizeLinksEnactorDefault}", "default", "{fluid.tests.emphasizeLinksEnactor}.options.expectedFlagFalse", "{fluid.tests.emphasizeLinksEnactor}.options.expectedDefaultCssStyle", undefined]
-            }, {
-                expect: 3,
-                name: "Apply emphasized links",
-                type: "test",
-                func: "fluid.tests.testEmphasizeLinks",
-                args: ["{emphasizeLinksEnactorInTrue}", "true condition", "{fluid.tests.emphasizeLinksEnactor}.options.expectedFlagTrue", "{fluid.tests.emphasizeLinksEnactor}.options.expectedEmphasizeLinksClass", "{fluid.tests.emphasizeLinksEnactor}.options.expectedEmphasizeLinksClass"]
-            }, {
-                expect: 3,
-                name: "Remove emphasized links",
-                type: "test",
-                func: "fluid.tests.testEmphasizeLinks",
-                args: ["{emphasizeLinksEnactorInFalse}", "false condition", "{fluid.tests.emphasizeLinksEnactor}.options.expectedFlagFalse", "{fluid.tests.emphasizeLinksEnactor}.options.expectedEmphasizeLinksClass", undefined]
+                func: "fluid.tests.testStyleEnactor",
+                args: ["{emphasizeLinks}", "{fluid.tests.emphasizeLinksEnactor}.options.container", "{fluid.tests.emphasizeLinksEnactor}.options.expectedDefaultFlag", "{fluid.tests.emphasizeLinksEnactor}.options.expectedEmphasizeLinksClass"]
             }]
         }]
     });
@@ -173,31 +121,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.inputsLargerEnactor", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
-        expectedInputsLargerClass: "fl-inputsLarger-test",
-        expectedFlagFalse: false,
-        expectedFlagTrue: true,
-        expectedDefaultCssStyle: "fl-text-larger",
+        container: ".flc-inputsLargerEnactor",
+        expectedDefaultFlag: false,
+        expectedInputsLargerClass: "fl-text-larger",
         components: {
-            inputsLargerEnactorDefault: {
+            inputsLarger: {
                 type: "fluid.uiOptions.actionAnts.inputsLargerEnactor",
                 options: {
-                    container: ".flc-inputsLargerEnactor-default"
-                }
-            },
-            inputsLargerEnactorInTrue: {
-                type: "fluid.uiOptions.actionAnts.inputsLargerEnactor",
-                options: {
-                    container: ".flc-inputsLargerEnactor-true",
-                    setting: true,
-                    cssClass: "fl-inputsLarger-test"
-                }
-            },
-            inputsLargerEnactorInFalse: {
-                type: "fluid.uiOptions.actionAnts.inputsLargerEnactor",
-                options: {
-                    container: ".flc-inputsLargerEnactor-false",
-                    setting: false,
-                    cssClass: "fl-inputsLarger-test"
+                    container: ".flc-inputsLargerEnactor"
                 }
             },
             inputsLargerEnactorTester: {
@@ -206,36 +137,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.testInputsLarger = function (that, desc, expectedFlag, expectedCssClass, expectedActualStyle) {
-        var elements = fluid.uiOptions.actionAnts.inputsLargerEnactor.getInputs(that.options.container);
-        
-        jqUnit.assertEquals("Expected flag - " + desc + ": " + expectedFlag, expectedFlag, that.options.setting);
-        jqUnit.assertEquals("Expected css class - " + desc + ": " + expectedCssClass, expectedCssClass, that.options.cssClass);
-        jqUnit.assertEquals("Actual applied css class" + ": " + expectedActualStyle, expectedActualStyle, elements.attr("class"));
-    }; 
-
     fluid.defaults("fluid.tests.inputsLargerEnactorTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
             name: "Test inputs larger enactor",
             tests: [{
-                expect: 3,
-                name: "Defaults",
+                expect: 5,
+                name: "Apply and reset larger inputs",
                 type: "test",
-                func: "fluid.tests.testInputsLarger",
-                args: ["{inputsLargerEnactorDefault}", "default", "{fluid.tests.inputsLargerEnactor}.options.expectedFlagFalse", "{fluid.tests.inputsLargerEnactor}.options.expectedDefaultCssStyle", undefined]
-            }, {
-                expect: 3,
-                name: "Apply larger inputs",
-                type: "test",
-                func: "fluid.tests.testInputsLarger",
-                args: ["{inputsLargerEnactorInTrue}", "true condition", "{fluid.tests.inputsLargerEnactor}.options.expectedFlagTrue", "{fluid.tests.inputsLargerEnactor}.options.expectedInputsLargerClass", "{fluid.tests.inputsLargerEnactor}.options.expectedInputsLargerClass"]
-            }, {
-                expect: 3,
-                name: "Remove larger inputs",
-                type: "test",
-                func: "fluid.tests.testInputsLarger",
-                args: ["{inputsLargerEnactorInFalse}", "false condition", "{fluid.tests.inputsLargerEnactor}.options.expectedFlagFalse", "{fluid.tests.inputsLargerEnactor}.options.expectedInputsLargerClass", undefined]
+                func: "fluid.tests.testStyleEnactor",
+                args: ["{inputsLarger}", "{fluid.tests.inputsLargerEnactor}.options.container", "{fluid.tests.inputsLargerEnactor}.options.expectedDefaultFlag", "{fluid.tests.inputsLargerEnactor}.options.expectedInputsLargerClass"]
             }]
         }]
     });

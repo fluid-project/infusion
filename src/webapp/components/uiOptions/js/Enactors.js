@@ -20,7 +20,7 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     fluid.defaults("fluid.uiOptions.actionAnts", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+        gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"]
     });
     
     /*******************************************************************************
@@ -29,8 +29,10 @@ var fluid_1_5 = fluid_1_5 || {};
      *******************************************************************************/
     fluid.defaults("fluid.uiOptions.actionAnts.styleElementsEnactor", {
         gradeNames: ["fluid.uiOptions.actionAnts", "autoInit"],
-        setting: false,
         cssClass: null,
+        model: {
+            setting: false
+        },
         invokers: {
             applyStyle: {
                 funcName: "fluid.uiOptions.actionAnts.styleElementsEnactor.applyStyle",
@@ -40,14 +42,21 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.uiOptions.actionAnts.styleElementsEnactor.resetStyle",
                 args: ["{arguments}.0", "{arguments}.1"]
             },
+            handleStyle: {
+                funcName: "fluid.uiOptions.actionAnts.styleElementsEnactor.handleStyle",
+                args: "{that}"
+            },
             
-            // API, must be defined by implementors
-            getElements: {},
-        }/*,
-        expander: {
-            func: "fluid.uiOptions.actionAnts.styleElementsEnactor.handleStyle",
-            args: "{that}"
-        }*/
+            // Must be defined by implementors
+            getElements: {}
+        },
+        events: {
+            onReady: null,
+            onApplyStyle: null,
+            afterApplyStyle: null,
+            onResetStyle: null,
+            afterResetStyle: null
+        }
     });
     
     fluid.uiOptions.actionAnts.styleElementsEnactor.applyStyle = function (elements, cssClass) {
@@ -58,28 +67,37 @@ var fluid_1_5 = fluid_1_5 || {};
         $("." + cssClass, elements).andSelf().removeClass(cssClass);
     };
 
-//    fluid.uiOptions.actionAnts.styleElementsEnactor.handleStyle = function (that) {
-    fluid.uiOptions.actionAnts.styleElementsEnactor.finalInit = function (that) {
+    fluid.uiOptions.actionAnts.styleElementsEnactor.handleStyle = function (that) {
         if (typeof that.getElements !== 'function') {
             return;
         }
         
         var elements = that.getElements();
         
-        if (that.options.setting) {
+        if (that.model.setting) {
+            that.events.onApplyStyle.fire();
             that.applyStyle(elements, that.options.cssClass);
+            that.events.afterApplyStyle.fire();
         } else {
+            that.events.onResetStyle.fire();
             that.resetStyle(elements, that.options.cssClass);
+            that.events.afterResetStyle.fire();
         }
     };
 
+    fluid.uiOptions.actionAnts.styleElementsEnactor.finalInit = function (that) {
+        that.applier.modelChanged.addListener("setting", that.handleStyle);
+        
+        that.handleStyle();
+        that.events.onReady.fire(that);
+    };
+    
     /*******************************************************************************
      * The enactor to emphasize links in the container according to the setting
      *******************************************************************************/
     fluid.defaults("fluid.uiOptions.actionAnts.emphasizeLinksEnactor", {
         gradeNames: ["fluid.uiOptions.actionAnts.styleElementsEnactor", "autoInit"],
         container: null,
-        setting: false,
         cssClass: "fl-link-enhanced",
         invokers: {
             getElements: {
@@ -99,7 +117,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.actionAnts.inputsLargerEnactor", {
         gradeNames: ["fluid.uiOptions.actionAnts.styleElementsEnactor", "autoInit"],
         container: null,
-        setting: false,
         cssClass: "fl-text-larger",
         invokers: {
             getElements: {
