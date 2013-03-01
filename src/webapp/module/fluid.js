@@ -43,7 +43,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     var loadIncludes = function (path) {
-        var includes = require(path);
+        var includes = require(buildPath(path));
         for (var i = 0; i < includes.length; ++i) {
             loadInContext(includes[i]);
         }
