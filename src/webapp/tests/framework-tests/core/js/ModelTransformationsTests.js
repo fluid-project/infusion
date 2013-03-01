@@ -137,7 +137,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expander: {
             type: "fluid.model.transform.binaryOp",
             leftPath: "hundred",
-            operatorPath: "lt",
+            operator: "<",
             rightPath: "dozen"
         },
         method: "assertEquals",
@@ -236,6 +236,68 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("fluid.model.transform.binaryOp()", function () {
         testOneStructure(binaryOpTests);
+    });
+
+
+    var conditionTests = [{
+        message: "simple condition",
+        expander: {
+            type: "fluid.model.transform.condition",
+            conditionPath: "catsSuck",
+            "true": "it was true",
+            "false": "it was false"
+        },
+        method: "assertEquals",
+        expected: "it was true"
+    }, {
+        message: "truePath condition",
+        expander: {
+            type: "fluid.model.transform.condition",
+            condition: true,
+            "truePath": "cow"
+        },
+        method: "assertDeepEq",
+        expected: {
+            grass: "chew"
+        }
+    }, {
+        message: "invalid truePath",
+        expander: {
+            type: "fluid.model.transform.condition",
+            conditionPath: "catsSuck",
+            "true": source.bow
+        },
+        method: "assertEquals",
+        expected: undefined
+    }, {
+        message: "Nesting",
+        expander: {
+            type: "fluid.model.transform.condition",
+            condition: {
+                expander: {
+                    type: "fluid.model.transform.binaryOp",
+                    left: true,
+                    operator: "&&",
+                    right: false
+                }
+            },
+            "false": {
+                expander: {
+                    type: "fluid.model.transform.literalValue",
+                    value: "Congratulations, you are a genius",
+                    outputPath: "conclusion"
+                }
+            }              
+        },
+        method: "assertDeepEq",
+        expected: {
+            conclusion: "Congratulations, you are a genius"
+        }
+    }
+    ];
+
+    jqUnit.test("fluid.model.transform.condition()", function () {
+        testOneStructure(conditionTests);
     });
 
     var valueTests = [{
@@ -682,31 +744,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 path: "Elephant - Brilliant work, it is indeed big"
             }
         }
-    }, 
-    "value-mapping-outputValuePath": {
-        message: "valueMapper using outputValuePath.",
-        model: {
-            animals: {
-                mammals: {
-                    elephant: "big",
-                    mouse: "small"
-                }
-            }
-        },
-        expander: {
-            type: "fluid.model.transform.valueMapper",
-            inputPath: "animals.mammals.elephant",
-            options: {
-                big: {
-                    outputPath: "correct",
-                    outputValuePath: "animals.mammals.mouse"
-                }
-            }
-        },
-        method: "assertDeepEq",
-        expected: {
-            correct: "small"
-        }
     },
     "valueMapping-multiout": {
         message: "valueMapper with multiple outputs.",
@@ -1061,51 +1098,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var forward = fluid.model.transform(cattoo.model, rules);
         var reverse = fluid.model.transform(forward, inverseRules);
         jqUnit.assertDeepEq("Perfectly inverted mapping", cattoo.model, reverse);
-    });
-
-    //     method: "assertDeepEq",
-    //     expected: {
-    //         correct: "small"
-    //     }
-    // },
-    jqUnit.test("invert valueMapper with outputValuePath", function() {
-        var rules = {
-            expander: {
-                type: "fluid.model.transform.valueMapper",
-                inputPath: "animals.mammals.elephant",
-                options: {
-                    big: {
-                        outputPath: "correct",
-                        outputValuePath: "animals.mammals.mouse"
-                    }
-                }
-            }
-        };
-        var mapperModel = {
-            animals: {
-                mammals: {
-                    elephant: "big",
-                    mouse: "small"
-                }
-            }  
-        };        
-        var inverseRules = fluid.model.transform.invertConfiguration(rules);
-        var expectedInverse = {
-            expander: [{
-                type: "fluid.model.transform.valueMapper",
-                defaultOutputPath: "animals.mammals.elephant",
-                options: [{
-                    inputPath: "correct",
-                    inputValue: "small",
-                    inputValuePath: "animals.mammals.mouse", //<---- ANTRANIG! IS THIS CRAZY
-                    outputValue: "big"
-                }]
-            }]
-        };
-        jqUnit.assertDeepEq("Inverted valueMapper", expectedInverse, inverseRules);
-        var forward = fluid.model.transform(mapperModel, rules);
-        var reverse = fluid.model.transform(forward, inverseRules);
-        jqUnit.assertDeepEq("Perfectly inverted mapping", mapperModel, reverse);
     });
 
     var capabilitiesTransformations = {
