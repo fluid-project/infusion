@@ -103,28 +103,36 @@ var fluid = fluid || fluid_1_5;
 
      
     fluid.defaults("fluid.model.transform.scaleValue", {
-        gradeNames: "fluid.standardTransformFunction"
+        gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction" ],
+        inputVariables: { 
+            value: null, 
+            factor: 1,
+            offset: 0
+        }
     });
 
     /* simple linear transformation */
-    fluid.model.transform.scaleValue = function (value, expander, expandSpec) {
-         if (typeof (value) !== "number") {
-             return undefined;
-         }
-         
-         var factor = fluid.model.transform.resolveParam(expander, expandSpec, "factor", 1);
-         var offset = fluid.model.transform.resolveParam(expander, expandSpec, "offset", 0);
-         return value * factor + offset;
+    fluid.model.transform.scaleValue = function (inputs, expander, expandSpec) {        
+        if (typeof (inputs.value) !== "number" || typeof inputs.factor !== "number" || typeof inputs.offset !== "number") {
+            return undefined;
+        }
+
+        return inputs.value * inputs.factor + inputs.offset;
     };
 
 
     fluid.defaults("fluid.model.transform.binaryOp", { 
-        gradeNames: "fluid.standardOutputTransformFunction"
+        gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction" ],
+        inputVariables: {
+            left: null,
+            right: null,
+            operator: null
+        }
     });
     
     var binaryLookup = {
-        "==": function (a, b) { return a == b },
-        "!=": function (a, b) { return a == b },
+        "===": function (a, b) { return a === b },
+        "!==": function (a, b) { return a !== b },
         "<=": function (a, b) { return a <= b },
         "<": function (a, b) { return a < b },
         ">=": function (a, b) { return a >= b },
@@ -138,26 +146,29 @@ var fluid = fluid || fluid_1_5;
         "||": function (a, b) { return a || b }
     };
 
-    fluid.model.transform.binaryOp = function (expandSpec, expander) {
-        var left = fluid.model.transform.resolveParam(expander, expandSpec, "left", undefined);
-        var right = fluid.model.transform.resolveParam(expander, expandSpec, "right", undefined);  
-        var operator = expandSpec.operator;
-
-        var fun = binaryLookup[operator];
-        return (fun === undefined || left === undefined || right === undefined) ? undefined : fun(left, right);
+    fluid.model.transform.binaryOp = function (inputs, expandSpec, expander) {
+        var fun = binaryLookup[inputs.operator];
+        return (fun === undefined || inputs.left === null || inputs.right === null) ? undefined : fun(inputs.left, inputs.right);
     };
 
 
     fluid.defaults("fluid.model.transform.condition", { 
-        gradeNames: "fluid.standardOutputTransformFunction"
+        gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction" ],
+        inputVariables: {
+            "true": null,
+            "false": null,
+            "condition": null
+        }
     });
     
-    fluid.model.transform.condition = function (expandSpec, expander) {
-        var condition = fluid.model.transform.resolveParam(expander, expandSpec, "condition", undefined);
+    fluid.model.transform.condition = function (inputs, expandSpec, expander) {
+        if (inputs.condition === null) {
+            return undefined;
+        }
 
-        return (condition) ?
-            fluid.model.transform.resolveParam(expander, expandSpec, "true", undefined) :
-            fluid.model.transform.resolveParam(expander, expandSpec, "false", undefined);
+        return (inputs.condition) ? 
+            (inputs.true === null ? undefined : inputs.true) : 
+            (inputs.false === null ? undefined : inputs.false);
     };
 
 
@@ -218,7 +229,7 @@ var fluid = fluid || fluid_1_5;
         if (fluid.isPrimitive(indexed)) {
             outputValue = indexed;
         } else {
-            //if undefinedOutputValue is set, output undefined
+            //if undefinedOutputValue is set, outputValue should be undefined
             if (indexed.undefinedOutputValue) {
                 outputValue = undefined;
             } else {

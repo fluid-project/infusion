@@ -37,6 +37,10 @@ var fluid = fluid || fluid_1_5;
     fluid.defaults("fluid.standardOutputTransformFunction", {
         gradeNames: "fluid.transformFunction"  
     });
+
+    fluid.defaults("fluid.multiInputTransformFunction", {
+        gradeNames: "fluid.transformFunction"
+    });
     
     // uses the standard layout and workflow involving inputPath and outputPath
     fluid.defaults("fluid.standardTransformFunction", {
@@ -233,6 +237,14 @@ var fluid = fluid || fluid_1_5;
         if (fluid.hasGrade(expdef, "fluid.standardInputTransformFunction")) {
             var expanded = fluid.model.transform.getValue(expandSpec.inputPath, expandSpec.value, expander);
             expanderArgs[0] = expanded;
+            expanderArgs[2] = expandSpec;
+        } else if (fluid.hasGrade(expdef, "fluid.multiInputTransformFunction")) {
+            var inputs = {};
+            fluid.each(expdef.inputVariables, function (v, k) {
+                var input = fluid.model.transform.getValue(expandSpec[k+"Path"], expandSpec[k], expander);
+                inputs[k] = (input !== undefined) ? input : v; //if no match, assign default
+            });
+            expanderArgs[0] = inputs;
             expanderArgs[2] = expandSpec;
         }
         var transformed = expanderFn.apply(null, expanderArgs);

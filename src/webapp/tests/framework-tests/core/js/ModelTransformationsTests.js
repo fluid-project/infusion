@@ -63,7 +63,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         message: "scaleValue - no parameters given",
         expander: {
             type: "fluid.model.transform.scaleValue",
-            inputPath: "dozen"
+            valuePath: "dozen"
         },
         method: "assertEquals",
         expected: 12
@@ -71,7 +71,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
        message: "scaleValue - factor parameter only",
         expander: {
             type: "fluid.model.transform.scaleValue",
-            inputPath: "dozen",
+            valuePath: "dozen",
             factor: 0.25
         },
         method: "assertEquals",
@@ -80,7 +80,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
        message: "scaleValue - factor parameter and offset",
         expander: {
             type: "fluid.model.transform.scaleValue",
-            inputPath: "dozen",
+            value: 12,
             factor: 0.50,
             offset: 100
         },
@@ -90,7 +90,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
        message: "scaleValue - everything by path",
         expander: {
             type: "fluid.model.transform.scaleValue",
-            inputPath: "dozen",
+            valuePath: "dozen",
             factorPath: "halfdozen",
             offsetPath: "hundred"
         },
@@ -103,21 +103,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     var binaryOpTests = [{
-        message: "binaryOp - ==",
+        message: "binaryOp - ===",
         expander: {
             type: "fluid.model.transform.binaryOp",
             leftPath: "dozen",
-            operator: "==",
+            operator: "===",
             right: 12
         },
         method: "assertEquals",
         expected: true
     }, {
-        message: "binaryOp - !=",
+        message: "binaryOp - !==",
         expander: {
             type: "fluid.model.transform.binaryOp",
-            leftPath: 100,
-            operator: "!=",
+            left: 100,
+            operator: "!==",
             rightPath: "hundred"
         },
         method: "assertEquals",
@@ -232,6 +232,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         method: "assertEquals",
         expected: true
+    }, {
+        message: "binaryOp - invalid operator",
+        expander: {
+            type: "fluid.model.transform.binaryOp",
+            left: false,
+            operator: "-+",
+            rightPath: "catsSuck"
+        },
+        method: "assertEquals",
+        expected: undefined
     }];
 
     jqUnit.test("fluid.model.transform.binaryOp()", function () {
@@ -1037,7 +1047,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("invert valueMapper transformation", function() {
         var rules = {
-                expander: {
+            expander: {
                 type: "fluid.model.transform.valueMapper",
                 inputPath: "tracking",
                 options: mapperOptions
