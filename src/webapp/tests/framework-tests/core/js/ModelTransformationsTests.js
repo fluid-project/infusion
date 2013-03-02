@@ -323,7 +323,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expander: {
             type: "fluid.model.transform.value", 
             inputPath: "hamster.wheel",
-            value: "hello!"
+            input: "hello!"
         }, 
         method: "assertNotEquals", 
         expected: "hello!"
@@ -332,7 +332,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expander: {
             type: "fluid.model.transform.value", 
             inputPath: "dog",
-            value: "hello!"
+            input: "hello!"
         }, 
         method: "assertNotEquals", 
         expected: "hello!"
@@ -341,7 +341,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expander: {
             type: "fluid.model.transform.value", 
             inputPath: "goat",
-            value: "hello!"
+            input: "hello!"
         }, 
         method: "assertNotEquals", 
         expected: "hello!"
@@ -350,7 +350,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expander: {
             type: "fluid.model.transform.value", 
             inputPath: "gerbil",
-            value: "hello!"
+            input: "hello!"
         }, 
         method: "assertEquals", 
         expected: "hello!"
@@ -358,7 +358,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         message: "When the path's value is not specified, the value option should be returned.",
         expander: {
             type: "fluid.model.transform.value", 
-            value: "toothpick"
+            input: "toothpick"
         }, 
         method: "assertEquals", 
         expected: "toothpick"
@@ -367,7 +367,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expander: {
             type: "fluid.model.transform.value", 
             inputPath: "cat",
-            value: "rrrrr"
+            input: "rrrrr"
         }, 
         method: "assertEquals", 
         expected: source.cat
@@ -375,7 +375,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         message: "Where the path is a rules object, the result should be an expanded version of it.",
         expander: {
             type: "fluid.model.transform.value", 
-            value: {
+            input: {
                alligator: {
                    expander: {
                        type: "fluid.model.transform.value",
@@ -1123,6 +1123,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             }
+        },
+        "foo-bar": {
+            expander: {
+                type: "fluid.model.transform.value",
+                input: {
+                    expander: {
+                        type: "fluid.model.transform.value",
+                        inputPath: "im.nested"
+                    }
+                } 
+            }
         }
     };
     
@@ -1131,7 +1142,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expected = [
             "display.screenEnhancement.magnification",
             "display.screenEnhancement.showCrosshairs",
-            "display.screenEnhancement.tracking"
+            "display.screenEnhancement.tracking",
+            "im.nested"
+        ];
+        jqUnit.assertDeepEq("Collected input paths", expected, paths.sort());
+    });
+
+    var multiInputTransformations = {
+        expander: {
+            type: "fluid.model.transform.condition",
+            condition: {
+                expander: {
+                    type: "fluid.model.transform.binaryOp",
+                    leftPath: "hello.world",
+                    operator: "&&",
+                    right: false
+                }
+            },
+            "false": {
+                expander: {
+                    type: "fluid.model.transform.value",
+                    inputPath: "falsey.goes.here",
+                    outputPath: "conclusion"
+                }
+            },
+            truePath: "kasper.rocks"
+        }
+    };
+    
+    jqUnit.test("collect inputPath from multiInput transformations", function() {
+        var paths = fluid.model.transform.collectInputPaths(multiInputTransformations);
+        var expected = [
+            "falsey.goes.here",
+            "hello.world",
+            "kasper.rocks"
         ];
         jqUnit.assertDeepEq("Collected input paths", expected, paths.sort());
     });

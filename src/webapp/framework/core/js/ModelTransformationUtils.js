@@ -87,9 +87,20 @@ var fluid = fluid || fluid_1_5;
 
     fluid.model.transform.accumulateInputPath = function (inputPath, expander, paths) {
         if (inputPath !== undefined) {
-            paths.push(fluid.model.composePaths(expander.inputPrefix, inputPath));
+            paths.push(fluid.model.composePaths(expander.inputPrefix, inputPath));            
         }
+    }
+
+    fluid.model.transform.accumulateStandardInputPath = function (input, expandSpec, expander, paths) {
+        fluid.model.transform.getValue(undefined, expandSpec[input], expander);    
+        fluid.model.transform.accumulateInputPath(expandSpec[input+"Path"], expander, paths);
     };
+
+    fluid.model.transform.accumulateMultiInputPaths = function (inputVariables, expandSpec, expander, paths) {
+        fluid.each(inputVariables, function (v, k) {
+            fluid.model.transform.accumulateStandardInputPath(k, expandSpec, expander, paths);
+        });
+    }
 
     fluid.model.transform.getValue = function (inputPath, value, expander) {
         var togo;
@@ -235,17 +246,18 @@ var fluid = fluid || fluid_1_5;
         }
         var expanderArgs = [expandSpec, expander];
         if (fluid.hasGrade(expdef, "fluid.standardInputTransformFunction")) {
+            if (expandSpec.input !== undefined) { 
+                expandSpec.value = expandSpec.input; //alias input and value
+            }
             var expanded = fluid.model.transform.getValue(expandSpec.inputPath, expandSpec.value, expander);
-            expanderArgs[0] = expanded;
-            expanderArgs[2] = expandSpec;
+            expanderArgs.unshift(expanded);
         } else if (fluid.hasGrade(expdef, "fluid.multiInputTransformFunction")) {
             var inputs = {};
             fluid.each(expdef.inputVariables, function (v, k) {
                 var input = fluid.model.transform.getValue(expandSpec[k+"Path"], expandSpec[k], expander);
                 inputs[k] = (input !== undefined) ? input : v; //if no match, assign default
             });
-            expanderArgs[0] = inputs;
-            expanderArgs[2] = expandSpec;
+            expanderArgs.unshift(inputs);
         }
         var transformed = expanderFn.apply(null, expanderArgs);
         if (fluid.hasGrade(expdef, "fluid.standardOutputTransformFunction")) {
@@ -331,10 +343,13 @@ var fluid = fluid || fluid_1_5;
     // unsupported, NON-API function
     fluid.model.transform.handlerCollectExpander = function (expander, expandSpec, expdef) {
         var standardInput = fluid.hasGrade(expdef, "fluid.standardInputTransformFunction");
+        var multiInput = fluid.hasGrade(expdef, "fluid.multiInputTransformFunction");
+
         if (standardInput) {
-            fluid.model.transform.accumulateInputPath(expandSpec.inputPath, expander, expander.inputPaths);
-        }
-        else {
+            fluid.model.transform.accumulateStandardInputPath("input", expandSpec, expander, expander.inputPaths);
+        } else if (multiInput) {
+            fluid.model.transform.accumulateMultiInputPaths(expdef.inputVariables, expandSpec, expander, expander.inputPaths);
+        } else {
             var collector = expdef.collectInputPaths;
             if (collector) {
                 var collected = fluid.makeArray(fluid.invokeGlobalFunction(collector, [expandSpec, expander]));

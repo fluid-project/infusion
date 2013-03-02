@@ -112,7 +112,7 @@ var fluid = fluid || fluid_1_5;
     });
 
     /* simple linear transformation */
-    fluid.model.transform.scaleValue = function (inputs, expander, expandSpec) {        
+    fluid.model.transform.scaleValue = function (inputs, expandSpec, expander) {        
         if (typeof (inputs.value) !== "number" || typeof inputs.factor !== "number" || typeof inputs.offset !== "number") {
             return undefined;
         }
@@ -125,8 +125,7 @@ var fluid = fluid || fluid_1_5;
         gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction" ],
         inputVariables: {
             left: null,
-            right: null,
-            operator: null
+            right: null
         }
     });
     
@@ -147,7 +146,9 @@ var fluid = fluid || fluid_1_5;
     };
 
     fluid.model.transform.binaryOp = function (inputs, expandSpec, expander) {
-        var fun = binaryLookup[inputs.operator];
+        var operator = fluid.model.transform.getValue(undefined, expandSpec.operator, expander);
+
+        var fun = binaryLookup[operator];
         return (fun === undefined || inputs.left === null || inputs.right === null) ? undefined : fun(inputs.left, inputs.right);
     };
 
@@ -179,7 +180,7 @@ var fluid = fluid || fluid_1_5;
     });
 
     // unsupported, NON-API function    
-    fluid.model.transform.matchValueMapperFull = function (outerValue, expander, expandSpec) {
+    fluid.model.transform.matchValueMapperFull = function (outerValue, expandSpec, expander) {
         var o = expandSpec.options;
         if (o.length === 0) {
             fluid.fail("valueMapper supplied empty list of options: ", expandSpec);
@@ -206,7 +207,7 @@ var fluid = fluid || fluid_1_5;
         var value = fluid.model.transform.getValue(expandSpec.inputPath, undefined, expander);
         var deref = fluid.isArrayable(expandSpec.options) ? // long form with list of records    
             function (testVal) {
-                var index = fluid.model.transform.matchValueMapperFull(testVal, expander, expandSpec);
+                var index = fluid.model.transform.matchValueMapperFull(testVal, expandSpec, expander);
                 return index === -1 ? null : expandSpec.options[index];
             } : 
             function (testVal) {
