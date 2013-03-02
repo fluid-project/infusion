@@ -299,6 +299,141 @@ var fluid = fluid || fluid_1_5;
         return togo;
     };
 
+    /* -------- objectToArray and arrayToObject -------------------- */
+    
+    /**
+     * Transforms the given array to an object.
+     * Uses the expandSpec.options.key values from each object within the array as new keys.
+     *
+     * For example, with expandSpec.options.key = "name" and an input object like this:
+     *
+     * {
+     *   b: [
+     *     { name: b1, v: v1 },
+     *     { name: b2, v: v2 }
+     *   ]
+     * }
+     *
+     * The output will be:
+     * {
+     *   b: {
+     *     b1: {
+     *       v: v1
+     *     }
+     *   },
+     *   {
+     *     b2: {
+     *       v: v2
+     *     }
+     *   }
+     * }
+     */
+    fluid.model.transform.applyPaths = function (operation, pathOp, paths) {
+        for (var i = 0; i < paths.length; ++ i) {
+            operation === "push" ? pathOp.push(paths[i]) : pathOp.pop();
+        }
+    };
+    
+    fluid.model.transform.expandInnerValues = function (inputPath, outputPath, expander, innerValues) {
+        var inputPrefixOp = expander.inputPrefixOp;
+        var outputPrefixOp = expander.outputPrefixOp;
+        var apply = fluid.model.transform.applyPaths;
+        
+        apply("push", inputPrefixOp, inputPath);
+        apply("push", outputPrefixOp, outputPath);
+        var expanded = {};
+        fluid.each(innerValues, function (innerValue) {
+            var expandedInner = expander.expand(innerValue);
+            $.extend(true, expanded, expandedInner);
+        });
+        apply("pop", outputPrefixOp, outputPath);
+        apply("pop", inputPrefixOp, inputPath);
+        
+        return expanded;
+    };
 
 
+    fluid.defaults("fluid.model.transform.arrayToObject", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens" ],
+        invertConfiguration: "fluid.model.transform.arrayToObject.invertRules"
+    });
+
+    fluid.model.transform.arrayToObject = function (arr, expandSpec, expander) {
+        if (fluid.get(expandSpec, "options.key") === undefined) {
+            fluid.fail("arrayToObject requires a 'key' option.", expandSpec);
+        }
+        if (!fluid.isArrayable(arr)) {
+            fluid.fail("arrayToObject didn't find array at inputPath.", expandSpec);
+        }
+        var newHash = {};
+        var pivot = expandSpec.options.key;
+
+        fluid.each(arr, function (v, k) {
+            //check that we have a pivot entry in the object and it's a valid type:            
+            var newKey = v[pivot];
+            var keyType = typeof(newKey);
+            if (keyType !== "string" && keyType !== "boolean" && keyType !== "number") {
+                fluid.fail("arrayToObject encountered untransformable array due to missing or invalid key", v);
+            }
+            //use the value of the key element as key and use the remaining content as value
+            var content = fluid.copy(v);
+            delete content[pivot];
+            //fix sub Arrays if needed:
+            if (expandSpec.options.innerValue) {
+                content = fluid.model.transform.expandInnerValues([expander.outputPrefix, k.toString()], 
+                    [newKey], expander, expandSpec.options.innerValue);
+            }
+            newHash[newKey] = content;
+        });
+        return newHash;
+    };
+
+    fluid.model.transform.arrayToObject.invertRules = function (expandSpec, expander) {
+        var togo = fluid.copy(expandSpec);
+        togo.type = "fluid.model.transform.objectToArray";
+        togo.inputPath = fluid.model.composePaths(expander.outputPrefix, expandSpec.outputPath);
+        togo.outputPath = fluid.model.composePaths(expander.inputPrefix, expandSpec.inputPath);
+        //invert expanders from innerValue as well:
+        // TODO: The Model Transformations framework should be capable of this, but right now the
+        // issue is that we use a "private contract" to operate the "innerValue" slot. We need to
+        // spend time thinking of how this should be formalised
+        if (togo.options && togo.options.innerValue) {
+            var innerValue = togo.options.innerValue;
+            for (var i = 0; i < innerValue.length; ++i) {
+                innerValue[i] = fluid.model.transform.invertConfiguration(innerValue[i]);
+            }            
+        }
+        return togo;
+    };
+    
+
+    fluid.defaults("fluid.model.transform.objectToArray", {
+        gradeNames: "fluid.standardTransformFunction"
+    });
+
+    /**
+     * Transforms an object into array of objects.
+     * This performs the inverse transform of fluid.model.transform.arrayToObject.
+     */
+    fluid.model.transform.objectToArray = function (hash, expandSpec, expander) {
+        if (fluid.get(expandSpec, "options.key") === undefined) {
+            fluid.fail("objectToArray requires a 'key' option.", expandSpec);
+        }
+        
+        var newArray = [];
+        var pivot = expandSpec.options.key;
+
+        fluid.each(hash, function (v, k) {
+            var content = {};
+            content[pivot] = k;
+            if (expandSpec.options.innerValue) {
+                v = fluid.model.transform.expandInnerValues([expandSpec.inputPath, k], [expandSpec.inputPath, newArray.length.toString()], 
+                    expander, expandSpec.options.innerValue);
+            }
+            // TODO: remove this use of fluid.merge which will not be valid in 1.5 Infusion framework
+            content = fluid.merge("replace", content, v);
+            newArray.push(content);
+        });
+        return newArray;
+    };
 })(jQuery, fluid_1_5);

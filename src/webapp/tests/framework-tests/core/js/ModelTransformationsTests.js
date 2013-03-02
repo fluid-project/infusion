@@ -1503,4 +1503,339 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.transform.tip();
         checkTransformedOptions(that.transformable);
     });
+
+    /* --------------- arrayToObject and objectToArray tests -------------------- */
+    var basicArrayTest = {
+        raw: {
+            a: {
+                c: [ 
+                { name: "c1", val: "vc1" },
+                { name: "c2", val: "vc2" }
+                ]
+            }
+        }, 
+        rules: {
+            "a.c": {
+                "expander": {
+                    type: "fluid.model.transform.arrayToObject",
+                    inputPath: "a.c",
+                    options: {
+                        key: "name"
+                    }
+                }
+            }
+        },
+        expected: {                
+            a: {
+                c: {
+                    c1: { val: "vc1" },
+                    c2: { val: "vc2" }
+                } 
+            }
+        },
+        invertedRules: {
+            expander: [ 
+            {
+                type: "fluid.model.transform.objectToArray",
+                inputPath: "a.c",
+                outputPath: "a.c",
+                options: {
+                    key: "name"
+                }
+            }
+            ]
+        }        
+    };
+    var complexArrayTest = {
+        raw: {
+            b: {
+                b1: "hello",
+                b2: "hello"
+            },
+            a: {
+                "dotted.key": [ 
+                { "uni.que": "u.q1", val: { first: "vc1.1", second: "vc1.2" }},
+                { "uni.que": "u.q2", val: { first: "vc2.1", second: "vc2.2" }}
+                ]
+            }
+        }, 
+        rules: {
+            b: "b",
+            "c.dotted\\.key": {
+                "expander": {
+                    type: "fluid.model.transform.arrayToObject",
+                    inputPath: "a.dotted\\.key",
+                    options: {
+                        key: "uni.que"
+                    }
+                }
+            }
+        },
+        expected: {
+            b: {
+                b1: "hello",
+                b2: "hello"
+            },
+            c: {
+                "dotted.key": {
+                    "u.q1": { val: { first: "vc1.1", second: "vc1.2" } },
+                    "u.q2": { val: { first: "vc2.1", second: "vc2.2" } }
+                } 
+            }
+        },
+        invertedRules: {
+            expander: [ 
+            { 
+                type: 'fluid.model.transform.value',
+                inputPath: 'b',
+                outputPath: 'b' 
+            },{
+                type: "fluid.model.transform.objectToArray",
+                inputPath: "c.dotted\\.key",
+                outputPath: "a.dotted\\.key",
+                options: {
+                    key: "uni.que"
+                }
+            }
+            ]
+        }
+    };
+
+    var nestedArrayTest = {
+        raw: {
+            outer: [
+            { 
+                outerpivot: "outerkey1",
+                outervar:  [
+                {
+                    innerpivot: "innerkey1.1",
+                    innervar: "innerval1.1.1",
+                    innervarx: "innerval1.1.2"
+                },
+                {
+                    innerpivot: "innerkey1.2",
+                    innervar: "innerval1.2.1"
+                }]
+            }, {
+                outerpivot: "outerkey2",
+                outervar: [
+                {
+                    innerpivot: "innerkey2.1",
+                    innervar: "innerval2.1.1",
+                    innervarx: "innerval2.1.2"
+                },
+                {
+                    innerpivot: "innerkey2.2",
+                    innervar: "innerval2.2.1"
+                }]
+            }
+            ]
+        }, 
+        rules: {
+            "outer": {
+                "expander": {
+                    type: "fluid.model.transform.arrayToObject",
+                    inputPath: "outer",
+                    options: {
+                        key: "outerpivot",
+                        innerValue: [
+                        {
+                            "outervar": {
+                                "expander": {
+                                    type: "fluid.model.transform.arrayToObject",
+                                    inputPath: "outervar",
+                                    options: {
+                                        key: "innerpivot"
+                                    }
+                                }
+                            }
+                        }
+                        ]
+                    }
+                }
+            }
+        },
+        expected: {
+            "outer": {
+                "outerkey1": {
+                    "outervar": {
+                        "innerkey1.1": {
+                            "innervar": "innerval1.1.1",
+                            "innervarx": "innerval1.1.2"
+                        },
+                        "innerkey1.2": {
+                            "innervar": "innerval1.2.1"
+                        }
+                    }
+                },
+                "outerkey2": {
+                    "outervar": {
+                        "innerkey2.1": {
+                            "innervar": "innerval2.1.1",
+                            "innervarx": "innerval2.1.2"
+                        },
+                        "innerkey2.2": {
+                            "innervar": "innerval2.2.1"
+                        }
+                    }
+                }
+            }
+        },
+        invertedRules: {
+            "expander": [{
+                type: "fluid.model.transform.objectToArray",
+                inputPath: "outer",
+                outputPath: "outer",
+                options: {
+                    key: "outerpivot",
+                    innerValue: [{
+                        expander: [{
+                            type: "fluid.model.transform.objectToArray",
+                            inputPath: "outervar",
+                            outputPath: "outervar",
+                            options: {
+                                key: "innerpivot"
+                            }
+                        }]
+                    }]
+                }
+            }]
+        }
+    };
+
+    var multiNestedArrayTest = {
+        raw: {
+            outer: [
+            { 
+                outerpivot: "outerkey1",
+                outervar:  {
+                    arr1: [
+                    {
+                        innerpivot1: "arr1.1",
+                        innervar: "arr1.1.1"
+                    },
+                    {
+                        innerpivot1: "arr1.2",
+                        innervar: "arr1.2.1"
+                    }],
+                    arr2: [
+                    {
+                        innerpivot2: "arr2.1",
+                        innervar: "arr2.1.1"
+                    },
+                    {
+                        innerpivot2: "arr2.2",
+                        innervar: "arr2.2.1"
+                    }]
+                }
+            }
+            ]
+        }, 
+        rules: {
+            "outer": {
+                "expander": {
+                    type: "fluid.model.transform.arrayToObject",
+                    inputPath: "outer",
+                    options: {
+                        key: "outerpivot",
+                        innerValue: [
+                        {
+                            "outervar.arr1": {
+                                "expander": {
+                                    type: "fluid.model.transform.arrayToObject",
+                                    inputPath: "outervar.arr1",
+                                    options: {
+                                        key: "innerpivot1"
+                                    }
+                                }
+                            }
+                        }, 
+                        {
+                            "outervar.arr2": {
+                                "expander": {
+                                    type: "fluid.model.transform.arrayToObject",
+                                    inputPath: "outervar.arr2",
+                                    options: {
+                                        key: "innerpivot2"
+                                    }
+                                }
+                            }
+                        }
+                        ]
+                    }
+                }
+            }
+        },
+        expected: {
+            "outer": {
+                "outerkey1": {
+                    "outervar": {
+                        "arr1": {
+                            "arr1.1": { "innervar": "arr1.1.1" },
+                            "arr1.2": { "innervar": "arr1.2.1" }
+                        },
+                        "arr2": {
+                            "arr2.1": { "innervar": "arr2.1.1" },
+                            "arr2.2": { "innervar": "arr2.2.1" }
+                        }
+                    }
+                }
+            }
+        },
+        invertedRules: {
+            "expander": [{
+                type: "fluid.model.transform.objectToArray",
+                inputPath: "outer",
+                outputPath: "outer",
+                options: {
+                    key: "outerpivot",
+                    innerValue: [{
+                        expander: [{
+                            type: "fluid.model.transform.objectToArray",
+                            inputPath: "outervar.arr1",
+                            outputPath: "outervar.arr1",
+                            options: {
+                                key: "innerpivot1"
+                            }
+                        }]
+                    }, {
+                        expander: [{
+                            type: "fluid.model.transform.objectToArray",
+                            inputPath: "outervar.arr2",
+                            outputPath: "outervar.arr2",
+                            options: {
+                                key: "innerpivot2"
+                            }
+                        }]
+                    }]
+                }
+            }]
+        }
+    };
+            
+    var arrayTest = function (json, description) {
+        var transformed = fluid.model.transformWithRules(json.raw, json.rules);
+        jqUnit.assertDeepEq(description+" array->object transformation", json.expected, transformed);
+        var inverseRules = fluid.model.transform.invertConfiguration(json.rules);
+        jqUnit.assertDeepEq(description+" inverted rules", json.invertedRules, inverseRules);
+        var inverseTransformed = fluid.model.transformWithRules(json.expected, json.invertedRules);
+        jqUnit.assertDeepEq(description+" object->array transformation", json.raw, inverseTransformed);
+    };
+
+    jqUnit.test("Basic Array transformations", function () {
+        arrayTest(basicArrayTest, "Basic Array");
+    });
+
+    jqUnit.test("More Complex Array transformations", function () {
+        arrayTest(complexArrayTest, "Complex Array");
+    });
+
+    jqUnit.test("Nested Array transformations", function () {
+        arrayTest(nestedArrayTest, "Nested Array");
+    });
+
+    jqUnit.test("Multiple Nested Array transformations", function () {
+        arrayTest(multiNestedArrayTest, "Multiple Nested Array");
+    });
+
 })(jQuery);
