@@ -1525,6 +1525,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         },
+        expectedInputPaths: [
+            "a.c"
+        ],    
         expected: {                
             a: {
                 c: {
@@ -1544,7 +1547,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
             ]
-        }        
+        }    
     };
     var complexArrayTest = {
         raw: {
@@ -1571,6 +1574,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         },
+        expectedInputPaths: [
+            "b",
+            "a.dotted\\.key"
+        ], 
         expected: {
             b: {
                 b1: "hello",
@@ -1655,6 +1662,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         },
+        expectedInputPaths: [
+            "outer",
+            "outervar"
+        ], 
         expected: {
             "outer": {
                 "outerkey1": {
@@ -1766,6 +1777,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         },
+        expectedInputPaths: [
+            "outer",
+            "outervar.arr1",
+            "outervar.arr2"
+        ],
         expected: {
             "outer": {
                 "outerkey1": {
@@ -1816,6 +1832,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var arrayTest = function (json, description) {
         var transformed = fluid.model.transformWithRules(json.raw, json.rules);
         jqUnit.assertDeepEq(description+" array->object transformation", json.expected, transformed);
+        // var paths = fluid.model.transform.collectInputPaths(json.rules);
+        // jqUnit.assertDeepEq(description+" path collection", json.expectedInputPaths, paths);
         var inverseRules = fluid.model.transform.invertConfiguration(json.rules);
         jqUnit.assertDeepEq(description+" inverted rules", json.invertedRules, inverseRules);
         var inverseTransformed = fluid.model.transformWithRules(json.expected, json.invertedRules);

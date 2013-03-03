@@ -129,7 +129,7 @@ var fluid = fluid || fluid_1_5;
         }
     });
     
-    var binaryLookup = {
+    fluid.model.transform.binaryLookup = {
         "===": function (a, b) { return a === b },
         "!==": function (a, b) { return a !== b },
         "<=": function (a, b) { return a <= b },
@@ -148,7 +148,7 @@ var fluid = fluid || fluid_1_5;
     fluid.model.transform.binaryOp = function (inputs, expandSpec, expander) {
         var operator = fluid.model.transform.getValue(undefined, expandSpec.operator, expander);
 
-        var fun = binaryLookup[operator];
+        var fun = fluid.model.transform.binaryLookup[operator];
         return (fun === undefined || inputs.left === null || inputs.right === null) ? undefined : fun(inputs.left, inputs.right);
     };
 
