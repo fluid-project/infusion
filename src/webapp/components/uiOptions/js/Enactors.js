@@ -23,10 +23,10 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"]
     });
     
-    /*******************************************************************************
+    /**********************************************************************************
      * Adds or removes the classname to/from the elements based upon the setting.
-     * The grade component used by emphasizeLinksEnactor and inputsLargerEnactor
-     *******************************************************************************/
+     * This component is used as a grade by emphasizeLinksEnactor & inputsLargerEnactor
+     **********************************************************************************/
     fluid.defaults("fluid.uiOptions.actionAnts.styleElementsEnactor", {
         gradeNames: ["fluid.uiOptions.actionAnts", "autoInit"],
         cssClass: null,
@@ -128,6 +128,75 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.actionAnts.inputsLargerEnactor.getInputs = function (container) {
         return $("input, button", container);
+    };
+    
+    /*******************************************************************************
+     * ClassSwapperEnactor
+     *
+     * Has a hash of classes it cares about and will remove all those classes from
+     * its container before setting the new class.
+     * This component is used as a grade by textFontEnactor and themeEnactor
+     *******************************************************************************/
+    
+    fluid.defaults("fluid.uiOptions.actionAnts.classSwapperEnactor", {
+        gradeNames: ["fluid.uiOptions.actionAnts", "autoInit"],
+        container: null,  // Must be provided by implementors
+        classes: {},  // Must be provided by implementors
+        classStr: {
+            expander: {
+                func: "fluid.uiOptions.actionAnts.classSwapperEnactor.joinClassStr",
+                args: "{that}.options.classes"
+            }
+        },
+        model: {
+            className: ""
+        },
+        invokers: {
+            clearClasses: {
+                funcName: "fluid.uiOptions.actionAnts.classSwapperEnactor.clearClasses",
+                args: "{that}"
+            },
+            swap: {
+                funcName: "fluid.uiOptions.actionAnts.classSwapperEnactor.swap",
+                args: ["{that}.model.className", "{that}"]
+            }
+        },
+        events: {
+            onReady: null
+        }
+    });
+    
+    fluid.uiOptions.actionAnts.classSwapperEnactor.clearClasses = function (that) {
+        that.options.container.removeClass(that.options.classStr);
+    };
+    
+    fluid.uiOptions.actionAnts.classSwapperEnactor.swap = function (className, that) {
+        that.clearClasses(that);
+        that.options.container.addClass(that.options.classes[className]);
+    };
+    
+    fluid.uiOptions.actionAnts.classSwapperEnactor.joinClassStr = function (classes) {
+        var classStr = "";
+        
+        fluid.each(classes, function (className) {
+            if (className) {
+                classStr += classStr ? " " + className : className;
+            }
+        });
+        return classStr;
+    };
+    
+    fluid.uiOptions.actionAnts.classSwapperEnactor.finalInit = function (that) {
+        if (!that.options.container) {
+            return;
+        } else {
+            that.options.container = $(that.options.container);
+        }
+        
+        that.applier.modelChanged.addListener("className", that.swap);
+        that.swap();
+        
+        that.events.onReady.fire(that);
     };
     
 })(jQuery, fluid_1_5);

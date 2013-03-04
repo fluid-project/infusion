@@ -151,11 +151,63 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    /*******************************************************************************
+     * Unit tests for fluid.uiOptions.actionAnts.inputsLargerEnactor
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.classSwapperEnactor", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        container: ".flc-classSwapperEnactor",
+        expectedClass: "fl-test",
+        components: {
+            classSwapper: {
+                type: "fluid.uiOptions.actionAnts.classSwapperEnactor",
+                options: {
+                    container: ".flc-classSwapperEnactor",
+                    classes: {
+                        "default": "",
+                        "test": "fl-test"
+                    }
+                }
+            },
+            classSwapperEnactorTester: {
+                type: "fluid.tests.classSwapperEnactorTester"
+            }
+        }
+    });
+
+    fluid.tests.testClassSwapper = function (that, container, expectedClass) {
+        var defaultStyle = $(container).attr("class");
+        
+        jqUnit.assertEquals("The style class is not applied by default", defaultStyle, $(container).attr("class"));
+        
+        that.applier.requestChange("className", "test");
+        jqUnit.assertEquals("The style class has been applied", defaultStyle + " " + expectedClass, $(container).attr("class"));
+
+        that.applier.requestChange("className", "");
+        jqUnit.assertEquals("The style class has been removed", defaultStyle, $(container).attr("class"));
+    }; 
+
+    fluid.defaults("fluid.tests.classSwapperEnactorTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        modules: [{
+            name: "Test class swapper enactor",
+            tests: [{
+                expect: 3,
+                name: "Swap css class",
+                type: "test",
+                func: "fluid.tests.testClassSwapper",
+                args: ["{classSwapper}", "{fluid.tests.classSwapperEnactor}.options.container", "{fluid.tests.classSwapperEnactor}.options.expectedClass"]
+            }]
+        }]
+    });
+
     $(document).ready(function () {
         fluid.test.runTests([
             "fluid.tests.styleElementsEnactor",
             "fluid.tests.emphasizeLinksEnactor",
-            "fluid.tests.inputsLargerEnactor"
+            "fluid.tests.inputsLargerEnactor",
+            "fluid.tests.classSwapperEnactor"
         ]);
     });
 
