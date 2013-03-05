@@ -202,12 +202,119 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    /*******************************************************************************
+     * Unit tests for getPx2EmFactor & getTextSizeInEm
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.getSize", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        container: ".flc-getSize-child",
+        fontSizeMap: {
+            "xx-small": "9px",
+            "x-small":  "11px",
+            "small":    "13px",
+            "medium":   "15px",
+            "large":    "18px",
+            "x-large":  "23px",
+            "xx-large": "30px"
+        },
+        expectedTestSize: 8,
+        expectedSizeAtUndetected: 1,
+        components: {
+            getSizeTester: {
+                type: "fluid.tests.getSizeTester"
+            }
+        }
+    });
+
+    fluid.tests.testGetSize = function (container, fontSizeMap, expectedTestSize, expectedSizeAtUndetected) {
+        var container = $(container);
+        
+        var px2emFactor = fluid.uiOptions.actionAnts.getPx2EmFactor(container, fontSizeMap);
+        jqUnit.assertEquals("Check that the factor is pulled from the container correctly", expectedTestSize, px2emFactor);
+
+        var container = $("html");
+        var fontSizeInEm = fluid.uiOptions.actionAnts.getTextSizeInEm(container, fontSizeMap);
+
+        jqUnit.assertEquals("Unable to detect the text size in em for the DOM root element <html>. Always return 1em.", expectedSizeAtUndetected, fontSizeInEm);
+    }; 
+
+    fluid.defaults("fluid.tests.getSizeTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        modules: [{
+            name: "Test getPx2EmFactor & getTextSizeInEm",
+            tests: [{
+                expect: 2,
+                name: "Get text size in em",
+                type: "test",
+                func: "fluid.tests.testGetSize",
+                args: ["{fluid.tests.getSize}.options.container", "{fluid.tests.getSize}.options.fontSizeMap", "{fluid.tests.getSize}.options.expectedTestSize", "{fluid.tests.getSize}.options.expectedSizeAtUndetected"]
+            }]
+        }]
+    });
+
+    /*******************************************************************************
+     * Unit tests for fluid.uiOptions.actionAnts.textSizerEnactor
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.textSizerEnactor", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        container: ".flc-textSizerEnactor",
+        components: {
+            textSizer: {
+                type: "fluid.uiOptions.actionAnts.textSizerEnactor",
+                options: {
+                    container: ".flc-textSizerEnactor",
+                    fontSizeMap: {
+                        "xx-small": "9px",
+                        "x-small":  "11px",
+                        "small":    "13px",
+                        "medium":   "15px",
+                        "large":    "18px",
+                        "x-large":  "23px",
+                        "xx-large": "30px"
+                    }
+                }
+            },
+            textSizerEnactorTester: {
+                type: "fluid.tests.textSizerEnactorTester"
+            }
+        }
+    });
+
+    fluid.tests.testTextSizer = function (that, container) {
+        var container = $(container);
+        
+        var px2emFactor = fluid.uiOptions.actionAnts.getPx2EmFactor(container, that.options.fontSizeMap);
+        var expectedInitialSize = Math.round(8 / px2emFactor * 10000) / 10000;
+        
+        jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, that.initialSize);
+        that.applier.requestChange("textSizeIntimes", 2);
+        jqUnit.assertEquals("The size should be doubled", "16px", container.css("fontSize"));
+    }; 
+
+    fluid.defaults("fluid.tests.textSizerEnactorTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        modules: [{
+            name: "Test text sizer enactor",
+            tests: [{
+                expect: 2,
+                name: "Apply text size in times",
+                type: "test",
+                func: "fluid.tests.testTextSizer",
+                args: ["{textSizer}", "{fluid.tests.textSizerEnactor}.options.container"]
+            }]
+        }]
+    });
+
     $(document).ready(function () {
         fluid.test.runTests([
             "fluid.tests.styleElementsEnactor",
             "fluid.tests.emphasizeLinksEnactor",
             "fluid.tests.inputsLargerEnactor",
-            "fluid.tests.classSwapperEnactor"
+            "fluid.tests.classSwapperEnactor",
+            "fluid.tests.getSize",
+            "fluid.tests.textSizerEnactor"
         ]);
     });
 
