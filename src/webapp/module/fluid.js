@@ -52,6 +52,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     loadIncludes("includes.json");
     
     var fluid = context.fluid;
+    // FLUID-4913: QUnit calls window.addEventListener on load. We need to add
+    // it to the context it will be loaded in.
+    context.addEventListener = fluid.identity;
     
     fluid.loadInContext = loadInContext;
     fluid.loadIncludes = loadIncludes;
