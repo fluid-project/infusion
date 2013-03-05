@@ -206,18 +206,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Unit tests for getPx2EmFactor & getTextSizeInEm
      *******************************************************************************/
 
+    var fontSizeMap = {
+        "xx-small": "9px",
+        "x-small":  "11px",
+        "small":    "13px",
+        "medium":   "15px",
+        "large":    "18px",
+        "x-large":  "23px",
+        "xx-large": "30px"
+    };
+    
     fluid.defaults("fluid.tests.getSize", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
-        container: ".flc-getSize-child",
-        fontSizeMap: {
-            "xx-small": "9px",
-            "x-small":  "11px",
-            "small":    "13px",
-            "medium":   "15px",
-            "large":    "18px",
-            "x-large":  "23px",
-            "xx-large": "30px"
-        },
+        container: ".flc-getSize",
+        fontSizeMap: fontSizeMap,
         expectedTestSize: 8,
         expectedSizeAtUndetected: 1,
         components: {
@@ -265,15 +267,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.actionAnts.textSizerEnactor",
                 options: {
                     container: ".flc-textSizerEnactor",
-                    fontSizeMap: {
-                        "xx-small": "9px",
-                        "x-small":  "11px",
-                        "small":    "13px",
-                        "medium":   "15px",
-                        "large":    "18px",
-                        "x-large":  "23px",
-                        "xx-large": "30px"
-                    }
+                    fontSizeMap: fontSizeMap
                 }
             },
             textSizerEnactorTester: {
@@ -289,7 +283,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expectedInitialSize = Math.round(8 / px2emFactor * 10000) / 10000;
         
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, that.initialSize);
-        that.applier.requestChange("textSizeIntimes", 2);
+        that.applier.requestChange("textSizeInTimes", 2);
         jqUnit.assertEquals("The size should be doubled", "16px", container.css("fontSize"));
     }; 
 
@@ -307,6 +301,130 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    /*******************************************************************************
+     * Unit tests for getLineHeight & numerizeLineHeight
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.getLineHeight", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        container: ".flc-lineSpacerEnactor",
+        fontSizeMap: fontSizeMap,
+        expectedTestSize: 8,
+        expectedSizeAtUndetected: 1,
+        components: {
+            getLineHeightTester: {
+                type: "fluid.tests.getLineHeightTester"
+            }
+        }
+    });
+
+    fluid.tests.testGetLineHeight = function () {
+        // Mimic IE with its DOM lineHeight structure
+        var container = [{currentStyle: {lineHeight: "10"}}];
+        var lineHeight = fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight(container);
+        jqUnit.assertEquals("getLineHeight with IE simulation", "10", lineHeight);
+
+        var container = [{currentStyle: {lineHeight: "14pt"}}];
+        var lineHeight = fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight(container);
+        jqUnit.assertEquals("getLineHeight with IE simulation", "14pt", lineHeight);
+
+        container = $(".flc-lineSpacerEnactor");
+        lineHeight = fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight(container);
+        jqUnit.assertEquals("getLineHeight without IE simulation", "12px", lineHeight);
+    }; 
+
+    var testNumerizeLineHeight = function (lineHeight, expected) {
+        var container = $(".flc-lineSpacerEnactor");
+        var fontSize = fluid.uiOptions.actionAnts.getTextSizeInPx(container, fontSizeMap);
+        
+        var numerizedLineHeight = fluid.uiOptions.actionAnts.lineSpacerEnactor.numerizeLineHeight(lineHeight, Math.round(fontSize));
+
+        jqUnit.assertEquals("line-height value '" + lineHeight + "' has been converted correctly", expected, numerizedLineHeight);
+    };
+    
+    fluid.tests.testNumerizeLineHeight = function () {
+        var undefinedLineHeight;
+        testNumerizeLineHeight(undefinedLineHeight, 0);
+        testNumerizeLineHeight("normal", 1.2);
+        testNumerizeLineHeight("6px", 1);
+        testNumerizeLineHeight("1.5", 1.5);
+    };
+    
+    fluid.defaults("fluid.tests.getLineHeightTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        modules: [{
+            name: "Test getLineHeight",
+            tests: [{
+                expect: 3,
+                name: "Get line height",
+                type: "test",
+                func: "fluid.tests.testGetLineHeight"
+            }]
+        }, {
+            name: "Test getLineHeight",
+            tests: [{
+                expect: 4,
+                name: "Get numerized line height",
+                type: "test",
+                func: "fluid.tests.testNumerizeLineHeight"
+            }]
+        }]
+    });
+
+    /*******************************************************************************
+     * Unit tests for fluid.uiOptions.actionAnts.lineSpacerEnactor
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.lineSpacerEnactor", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        container: ".flc-lineSpacerEnactor",
+        components: {
+            lineSpacer: {
+                type: "fluid.uiOptions.actionAnts.lineSpacerEnactor",
+                options: {
+                    container: ".flc-lineSpacerEnactor",
+                    fontSizeMap: fontSizeMap
+                }
+            },
+            lineSpacerEnactorTester: {
+                type: "fluid.tests.lineSpacerEnactorTester"
+            }
+        }
+    });
+
+    // This is necessary to work around IE differences in handling line-height unitless factors
+    var convertLineHeightFactor = function (lineHeight, fontSize) {
+        // Continuing the work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
+        if (lineHeight.match(/[0-9]$/)) {
+            return Math.round(lineHeight * parseFloat(fontSize)) + "px";
+        } else {
+            return lineHeight;
+        }
+    };
+
+    fluid.tests.testLineSpacerEnactor = function (that, container) {
+        var container = $(container);
+        
+        jqUnit.assertEquals("Check that the size is pulled from the container correctly", 2, Math.round(that.initialSize));
+        jqUnit.assertEquals("Check the line spacing size in pixels", "12px", convertLineHeightFactor(container.css("lineHeight"), container.css("fontSize")));
+        that.applier.requestChange("lineSpaceInTimes", 2);
+        jqUnit.assertEquals("The size should be doubled", "24px", convertLineHeightFactor(container.css("lineHeight"), container.css("fontSize")));
+    }; 
+
+    fluid.defaults("fluid.tests.lineSpacerEnactorTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        modules: [{
+            name: "Test line spacer enactor",
+            tests: [{
+                expect: 3,
+                name: "Apply line spacing in times",
+                type: "test",
+                func: "fluid.tests.testLineSpacerEnactor",
+                args: ["{lineSpacer}", "{fluid.tests.lineSpacerEnactor}.options.container"]
+            }]
+        }]
+    });
+
     $(document).ready(function () {
         fluid.test.runTests([
             "fluid.tests.styleElementsEnactor",
@@ -314,7 +432,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.tests.inputsLargerEnactor",
             "fluid.tests.classSwapperEnactor",
             "fluid.tests.getSize",
-            "fluid.tests.textSizerEnactor"
+            "fluid.tests.textSizerEnactor",
+            "fluid.tests.getLineHeight",
+            "fluid.tests.lineSpacerEnactor"
         ]);
     });
 

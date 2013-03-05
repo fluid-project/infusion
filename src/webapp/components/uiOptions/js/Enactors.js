@@ -200,7 +200,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     /*******************************************************************************
-     * Functions shared by textSizerEnactor and lineSpacingEnactor
+     * Functions shared by textSizerEnactor and lineSpacerEnactor
      *******************************************************************************/
     
     /**
@@ -251,12 +251,12 @@ var fluid_1_5 = fluid_1_5 || {};
         container: null,  // must be supplied by implementors
         fontSizeMap: {},  // must be supplied by implementors
         model: {
-            textSizeIntimes: null
+            textSizeInTimes: 1
         },
         invokers: {
             set: {
                 funcName: "fluid.uiOptions.actionAnts.textSizerEnactor.set",
-                args: ["{that}.model.textSizeIntimes", "{that}"]
+                args: ["{that}.model.textSizeInTimes", "{that}"]
             },
             calcInitSize: {
                 funcName: "fluid.uiOptions.actionAnts.textSizerEnactor.calcInitSize",
@@ -290,7 +290,105 @@ var fluid_1_5 = fluid_1_5 || {};
             that.options.container = $(that.options.container);
         }
         
-        that.applier.modelChanged.addListener("textSizeIntimes", that.set);
+        that.applier.modelChanged.addListener("textSizeInTimes", that.set);
+        that.set();
+    };
+    
+    /*******************************************************************************
+     * lineSpacerEnactor
+     *
+     * Sets the line spacing on the container to the multiple provided.
+     *******************************************************************************/
+    
+    fluid.defaults("fluid.uiOptions.actionAnts.lineSpacerEnactor", {
+        gradeNames: ["fluid.uiOptions.actionAnts", "autoInit"],
+        container: null,  // must be supplied by implementors
+        fontSizeMap: {},  // must be supplied by implementors
+        model: {
+            lineSpaceInTimes: 1
+        },
+        invokers: {
+            set: {
+                funcName: "fluid.uiOptions.actionAnts.lineSpacerEnactor.set",
+                args: ["{that}.model.lineSpaceInTimes", "{that}"]
+            },
+            calcInitSize: {
+                funcName: "fluid.uiOptions.actionAnts.lineSpacerEnactor.calcInitSize",
+                args: ["{that}.options.container", "{that}.options.fontSizeMap"]
+            }
+        },
+        events: {
+            onReady: null
+        }
+    });
+    
+    // Return "line-height" css value
+    fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight = function (container) {
+        var lineHeight;
+        
+        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
+        if (container[0].currentStyle) {
+            lineHeight = container[0].currentStyle.lineHeight;
+        } else {
+            lineHeight = container.css("line-height");
+        }
+        
+        return lineHeight;
+    };
+    
+    // Interprets browser returned "line-height" value, either a string "normal", a number with "px" suffix or "undefined" 
+    // into a numeric value in em. 
+    // Return 0 when the given "lineHeight" argument is "undefined" (http://issues.fluidproject.org/browse/FLUID-4500).
+    fluid.uiOptions.actionAnts.lineSpacerEnactor.numerizeLineHeight = function (lineHeight, fontSize) {
+        // Handel the given "lineHeight" argument is "undefined", which occurs when firefox detects 
+        // "line-height" css value on a hidden container. (http://issues.fluidproject.org/browse/FLUID-4500)
+        if (!lineHeight) {
+            return 0;
+        }
+
+        // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1.2em
+        // according to https://developer.mozilla.org/en/CSS/line-height
+        if (lineHeight === "normal") {
+            return 1.2;
+        }
+        
+        // Continuing the work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
+        if (lineHeight.match(/[0-9]$/)) {
+            return lineHeight;
+        }
+        
+        return Math.round(parseFloat(lineHeight) / fontSize * 100) / 100;
+    };
+
+    fluid.uiOptions.actionAnts.lineSpacerEnactor.set = function (times, that) {
+        if (!that.initialSize) {
+            that.initialSize = that.calcInitSize();
+        }
+
+        // that.initialSize === 0 when the browser returned "lineHeight" css value is undefined,
+        // which occurs when firefox detects "line-height" value on a hidden container.
+        // @ See numerizeLineHeight() & http://issues.fluidproject.org/browse/FLUID-4500
+        if (that.initialSize) {
+            var targetLineSpacing = times * that.initialSize;
+            that.options.container.css("line-height", targetLineSpacing);
+        }
+    };
+    
+    fluid.uiOptions.actionAnts.lineSpacerEnactor.calcInitSize = function (container, fontSizeMap) {
+        var lineHeight = fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight(container);
+        var fontSize = fluid.uiOptions.actionAnts.getTextSizeInPx(container, fontSizeMap);
+
+        return fluid.uiOptions.actionAnts.lineSpacerEnactor.numerizeLineHeight(lineHeight, fontSize);
+    };
+
+    fluid.uiOptions.actionAnts.lineSpacerEnactor.finalInit = function (that) {
+        if (!that.options.container) {
+            return;
+        } else {
+            that.options.container = $(that.options.container);
+        }
+        
+        that.applier.modelChanged.addListener("lineSpaceInTimes", that.set);
         that.set();
     };
     
