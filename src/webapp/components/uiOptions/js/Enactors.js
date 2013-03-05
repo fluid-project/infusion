@@ -24,14 +24,14 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     /**********************************************************************************
-     * Adds or removes the classname to/from the elements based upon the setting.
+     * Adds or removes the classname to/from the elements based upon the model value.
      * This component is used as a grade by emphasizeLinksEnactor & inputsLargerEnactor
      **********************************************************************************/
     fluid.defaults("fluid.uiOptions.actionAnts.styleElementsEnactor", {
         gradeNames: ["fluid.uiOptions.actionAnts", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
         model: {
-            setting: false
+            value: false
         },
         invokers: {
             applyStyle: {
@@ -44,18 +44,14 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             handleStyle: {
                 funcName: "fluid.uiOptions.actionAnts.styleElementsEnactor.handleStyle",
-                args: "{that}"
+                args: ["{that}.model.value", {expander: {func: "{that}.getElements"}}, "{that}"]
             },
             
             // Must be supplied by implementors
-            getElements: {}
+            getElements: "fluid.uiOptions.actionAnts.getElements"
         },
-        events: {
-            onReady: null,
-            onApplyStyle: null,
-            afterApplyStyle: null,
-            onResetStyle: null,
-            afterResetStyle: null
+        listeners: {
+            onCreate: "{that}.handleStyle"
         }
     });
     
@@ -67,33 +63,20 @@ var fluid_1_5 = fluid_1_5 || {};
         $("." + cssClass, elements).andSelf().removeClass(cssClass);
     };
 
-    fluid.uiOptions.actionAnts.styleElementsEnactor.handleStyle = function (that) {
-        if (typeof that.getElements !== 'function') {
-            return;
-        }
-        
-        var elements = that.getElements();
-        
-        if (that.model.setting) {
-            that.events.onApplyStyle.fire();
+    fluid.uiOptions.actionAnts.styleElementsEnactor.handleStyle = function (value, elements, that) {
+        if (value) {
             that.applyStyle(elements, that.options.cssClass);
-            that.events.afterApplyStyle.fire();
         } else {
-            that.events.onResetStyle.fire();
             that.resetStyle(elements, that.options.cssClass);
-            that.events.afterResetStyle.fire();
         }
     };
 
     fluid.uiOptions.actionAnts.styleElementsEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener("setting", that.handleStyle);
-        
-        that.handleStyle();
-        that.events.onReady.fire(that);
+        that.applier.modelChanged.addListener("value", that.handleStyle);
     };
     
     /*******************************************************************************
-     * The enactor to emphasize links in the container according to the setting
+     * The enactor to emphasize links in the container according to the value
      *******************************************************************************/
     fluid.defaults("fluid.uiOptions.actionAnts.emphasizeLinksEnactor", {
         gradeNames: ["fluid.uiOptions.actionAnts.styleElementsEnactor", "autoInit"],
@@ -112,7 +95,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     /*******************************************************************************
-     * The enactor to enlarge inputs in the container according to the setting
+     * The enactor to enlarge inputs in the container according to the value
      *******************************************************************************/
     fluid.defaults("fluid.uiOptions.actionAnts.inputsLargerEnactor", {
         gradeNames: ["fluid.uiOptions.actionAnts.styleElementsEnactor", "autoInit"],

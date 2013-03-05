@@ -21,15 +21,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testStyleEnactor = function (that, container, expectedDefaultFlag, expectedCssClass) {
         var elements = that.getElements();
         
-        jqUnit.assertEquals("Default setting: " + expectedDefaultFlag, expectedDefaultFlag, that.model.setting);
+        jqUnit.assertEquals("Default value: " + expectedDefaultFlag, expectedDefaultFlag, that.model.value);
         jqUnit.assertEquals("Default css class: " + expectedCssClass, expectedCssClass, that.options.cssClass);
         jqUnit.assertEquals("Default - css class is not applied", undefined, elements.attr("class"));
         
-        that.applier.requestChange("setting", true);
-        jqUnit.assertEquals("True setting - Css class has been applied", expectedCssClass, elements.attr("class"));
+        that.applier.requestChange("value", true);
+        jqUnit.assertEquals("True value - Css class has been applied", expectedCssClass, elements.attr("class"));
 
-        that.applier.requestChange("setting", false);
-        jqUnit.assertEquals("False setting - Css class has been removed", "", elements.attr("class"));
+        that.applier.requestChange("value", false);
+        jqUnit.assertEquals("False value - Css class has been removed", "", elements.attr("class"));
     }; 
 
     /*******************************************************************************
