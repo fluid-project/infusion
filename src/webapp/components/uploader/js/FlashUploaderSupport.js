@@ -21,6 +21,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    // TODO: This context name is required, but has no visible detection support
+    fluid.staticEnvironment.supportsFlash10 = fluid.typeTag("fluid.uploader.flash.10"); 
 
     fluid.uploader = fluid.uploader || {};
     
@@ -357,7 +359,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uploader.swfUploadStrategy.bindFileEventListeners = function (model, events) {
         // Manually update our public model to keep it in sync with SWFUpload's insane,
         // always-changing references to its internal model.        
-        var manualModelUpdater = function (file) {
+        var manualModelUpdater = function (file) { // TODO: this is an abuse of the find algorithm, side-effects should occur outside the loop
             fluid.find(model, function (potentialMatch) {
                 if (potentialMatch.id === file.id) {
                     potentialMatch.filestatus = file.filestatus;

@@ -21,13 +21,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var jqUnit = fluid.registerNamespace("jqUnit");
 
 (function ($) {
-    var QUnitPassthroughs = ["module", "test", "asyncTest", "raises", "start", "stop", "expect"];
+    var QUnitPassthroughs = ["module", "test", "asyncTest", "throws", "raises", "start", "stop", "expect"];
     
     for (var i = 0; i < QUnitPassthroughs.length; ++ i) {
         var method = QUnitPassthroughs[i];
         jqUnit[method] = QUnit[method];
         window[method] = undefined; // work around IE8 bug http://stackoverflow.com/questions/1073414/deleting-a-window-property-in-ie
     }
+    
+    fluid.pushSoftFailure(function (args, activity) {
+        if (QUnit.config.current) {
+            QUnit.ok(false, "Assertion failure (see console.log for expanded message): ".concat(args));
+        }
+        fluid.builtinFail(false, args, activity);
+    });
 
     /**
      * Keeps track of the order of function invocations. The transcript contains information about

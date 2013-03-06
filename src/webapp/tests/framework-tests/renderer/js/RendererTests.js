@@ -63,7 +63,7 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.module("Selector Parser Test");
         
         jqUnit.test("Test", function () {
-            var tree = fluid.parseSelector("  div span#id  > .class");
+            var tree = fluid.parseSelector("  div span#id  > .class", fluid.simpleCSSMatcher);
             jqUnit.assertEquals("treeLength", 3, tree.length);
             var expected = [{
                 predList: [{
@@ -81,7 +81,7 @@ fluid.registerNamespace("fluid.tests");
                     clazz: "class"
                 }]
             }];
-            jqUnit.assertDeepEq("Misparse: Tree was " + JSON.stringify(tree), expected, tree);
+            jqUnit.assertDeepEq("Parsed compound CSS selector", expected, tree);
         });
         
         jqUnit.module("Parser Tests");
@@ -574,6 +574,38 @@ fluid.registerNamespace("fluid.tests");
                 }
             }]
         };
+
+        var repeatBinding_tree = {
+            children: [{
+                ID: "select-parent:",
+                children: [{
+                    ID: "select",
+                    selection: {
+                        valuebinding: "choice0"
+                    },
+                    optionlist: {
+                        valuebinding: "values"
+                    },
+                    optionnames: {
+                        valuebinding: "names"
+                    }
+                }]
+            }, {
+                ID: "select-parent:",
+                children: [{
+                    ID: "select",
+                    selection: {
+                        valuebinding: "choice1"
+                    },
+                    optionlist: {
+                        valuebinding: "values"
+                    },
+                    optionnames: {
+                        valuebinding: "names"
+                    }
+                }]
+            }]
+        };
         
         var multiple_selection_tree = fluid.copy(selection_tree);
         multiple_selection_tree.selection = ["Enchiridion", "Apocatastasis"];
@@ -637,15 +669,41 @@ fluid.registerNamespace("fluid.tests");
             var template = fluid.selfRender(node, fluid.copy(binding_tree), merge({
                 model: model1
             }, opts));
+            singleSelectionBindingTests(node, opts, model1, "choice");
+            fluid.reRender(template, node, fluid.copy(binding_tree), merge({
+                model: model1
+            }, opts));
+        });
+
+        function singleSelectionBindingTests(node, opts, model, path) {
+            node = $(node);
             singleSelectionRenderTests(node);
             var select = $("select", node);
+            var label = $("label", node);
+            jqUnit.assertEquals("Label for select should match the id of the select itself",
+                label.attr("for"), select.attr("id"));
             select.val("Enchiridion");
             select.change();
             if (!opts) {
                 fluid.applyBoundChange(select);
             }
-            jqUnit.assertEquals("Applied value to model", "Enchiridion", model1.choice);
-            fluid.reRender(template, node, fluid.copy(binding_tree), merge({
+            jqUnit.assertEquals("Applied value to model", "Enchiridion", model[path]);
+        }
+
+        makeBindingTest("Repeating UISelect (with labels) binding tests with HTML select", function (opts) {
+            var node = $(".UISelect-test-select-repeatable");
+            var model1 = $.extend(true, {}, model, {
+                choice0: "Apocatastasis",
+                choice1: "Apocatastasis"
+            });
+
+            var template = fluid.selfRender(node, fluid.copy(repeatBinding_tree), merge({
+                model: model1
+            }, opts));
+            fluid.each($("div", node), function (repeated, index) {
+                singleSelectionBindingTests(repeated, opts, model1, "choice" + index);
+            });
+            fluid.reRender(template, node, fluid.copy(repeatBinding_tree), merge({
                 model: model1
             }, opts));
         });
