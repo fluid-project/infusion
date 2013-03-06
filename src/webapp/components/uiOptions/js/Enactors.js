@@ -44,14 +44,17 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             handleStyle: {
                 funcName: "fluid.uiOptions.actionAnts.styleElementsEnactor.handleStyle",
-                args: ["{that}.model.value", {expander: {func: "{that}.getElements"}}, "{that}"]
+                args: ["{arguments}.0.value", {expander: {func: "{that}.getElements"}}, "{that}"]
             },
             
             // Must be supplied by implementors
             getElements: "fluid.uiOptions.actionAnts.getElements"
         },
         listeners: {
-            onCreate: "{that}.handleStyle"
+            onCreate: {
+                listener: "{that}.handleStyle",
+                args: "{that}.model.value"
+            }
         }
     });
     
@@ -141,11 +144,14 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             swap: {
                 funcName: "fluid.uiOptions.actionAnts.classSwapperEnactor.swap",
-                args: ["{that}.model.className", "{that}"]
+                args: ["{arguments}.0.className", "{that}"]
             }
         },
-        events: {
-            onReady: null
+        listeners: {
+            onCreate: {
+                listener: "{that}.swap",
+                args: "{that}.model.className"
+            }
         }
     });
     
@@ -177,9 +183,6 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         
         that.applier.modelChanged.addListener("className", that.swap);
-        that.swap();
-        
-        that.events.onReady.fire(that);
     };
     
     /*******************************************************************************
@@ -207,11 +210,9 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param (Object) container
      * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
      */
-    fluid.uiOptions.actionAnts.getTextSizeInEm = function (container, fontSizeMap) {
-        var px2emFactor = fluid.uiOptions.actionAnts.getPx2EmFactor(container, fontSizeMap);
-
+    fluid.uiOptions.actionAnts.getTextSizeInEm = function (textSizeInPx, px2emFactor) {
         // retrieve fontSize in px, convert and return in em 
-        return Math.round(fluid.uiOptions.actionAnts.getTextSizeInPx(container, fontSizeMap) / px2emFactor * 10000) / 10000;
+        return Math.round(textSizeInPx / px2emFactor * 10000) / 10000;
     };
     
     fluid.uiOptions.actionAnts.getPx2EmFactor = function (container, fontSizeMap) {
@@ -230,8 +231,8 @@ var fluid_1_5 = fluid_1_5 || {};
      *******************************************************************************/
     
     fluid.defaults("fluid.uiOptions.actionAnts.textSizerEnactor", {
-        gradeNames: ["fluid.uiOptions.actionAnts", "autoInit"],
-        container: null,  // must be supplied by implementors
+        gradeNames: ["fluid.uiOptions.actionAnts", "fluid.viewComponent", "autoInit"],
+//        container: null,  // must be supplied by implementors
         fontSizeMap: {},  // must be supplied by implementors
         model: {
             textSizeInTimes: 1
@@ -239,15 +240,30 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             set: {
                 funcName: "fluid.uiOptions.actionAnts.textSizerEnactor.set",
-                args: ["{that}.model.textSizeInTimes", "{that}"]
+                args: ["{arguments}.0.textSizeInTimes", "{that}"]
             },
             calcInitSize: {
                 funcName: "fluid.uiOptions.actionAnts.textSizerEnactor.calcInitSize",
-                args: ["{that}.options.container", "{that}.options.fontSizeMap"]
+                args: ["{that}.container", "{that}.options.fontSizeMap"]
+            },
+            getTextSizeInPx: {
+                funcName: "fluid.uiOptions.actionAnts.getTextSizeInPx",
+                args: ["{that}.container", "{that}.options.fontSizeMap"]
+            },
+            getTextSizeInEm: {
+                funcName: "fluid.uiOptions.actionAnts.getTextSizeInEm",
+                args: [{expander: {func: "{that}.getTextSizeInPx"}}, {expander: {func: "{that}.getPx2EmFactor"}}]
+            },
+            getPx2EmFactor: {
+                funcName: "fluid.uiOptions.actionAnts.getPx2EmFactor",
+                args: ["{that}.container", "{that}.options.fontSizeMap"]
             }
         },
-        events: {
-            onReady: null
+        listeners: {
+            onCreate: {
+                listener: "{that}.set",
+                args: "{that}.model.textSizeInTimes"
+            }
         }
     });
     
@@ -258,7 +274,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
         if (that.initialSize) {
             var targetSize = times * that.initialSize;
-            that.options.container.css("font-size", targetSize + "em");
+            that.container.css("font-size", targetSize + "em");
         }
     };
     
@@ -267,14 +283,13 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.actionAnts.textSizerEnactor.finalInit = function (that) {
-        if (!that.options.container) {
-            return;
-        } else {
-            that.options.container = $(that.options.container);
-        }
+//        if (!that.container) {
+//            return;
+//        } else {
+//            that.container = $(that.container);
+//        }
         
         that.applier.modelChanged.addListener("textSizeInTimes", that.set);
-        that.set();
     };
     
     /*******************************************************************************
@@ -293,15 +308,18 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             set: {
                 funcName: "fluid.uiOptions.actionAnts.lineSpacerEnactor.set",
-                args: ["{that}.model.lineSpaceInTimes", "{that}"]
+                args: ["{arguments}.0.lineSpaceInTimes", "{that}"]
             },
             calcInitSize: {
                 funcName: "fluid.uiOptions.actionAnts.lineSpacerEnactor.calcInitSize",
                 args: ["{that}.options.container", "{that}.options.fontSizeMap"]
             }
         },
-        events: {
-            onReady: null
+        listeners: {
+            onCreate: {
+                listener: "{that}.set",
+                args: "{that}.model.lineSpaceInTimes"
+            }
         }
     });
     
@@ -372,7 +390,6 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         
         that.applier.modelChanged.addListener("lineSpaceInTimes", that.set);
-        that.set();
     };
     
 })(jQuery, fluid_1_5);

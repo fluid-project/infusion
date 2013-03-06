@@ -236,7 +236,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Check that the factor is pulled from the container correctly", expectedTestSize, px2emFactor);
 
         var container = $("html");
-        var fontSizeInEm = fluid.uiOptions.actionAnts.getTextSizeInEm(container, fontSizeMap);
+        var textSizeInPx = fluid.uiOptions.actionAnts.getTextSizeInPx(container, fontSizeMap);
+        px2emFactor = fluid.uiOptions.actionAnts.getPx2EmFactor(container, fontSizeMap);
+        var fontSizeInEm = fluid.uiOptions.actionAnts.getTextSizeInEm(textSizeInPx, px2emFactor);
 
         jqUnit.assertEquals("Unable to detect the text size in em for the DOM root element <html>. Always return 1em.", expectedSizeAtUndetected, fontSizeInEm);
     }; 
@@ -259,14 +261,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Unit tests for fluid.uiOptions.actionAnts.textSizerEnactor
      *******************************************************************************/
 
+    var textSizerContainer = $(".flc-textSizerEnactor");
     fluid.defaults("fluid.tests.textSizerEnactor", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         container: ".flc-textSizerEnactor",
         components: {
             textSizer: {
                 type: "fluid.uiOptions.actionAnts.textSizerEnactor",
+                container: textSizerContainer,
                 options: {
-                    container: ".flc-textSizerEnactor",
                     fontSizeMap: fontSizeMap
                 }
             },
@@ -381,8 +384,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             lineSpacer: {
                 type: "fluid.uiOptions.actionAnts.lineSpacerEnactor",
+                container: ".flc-lineSpacerEnactor",
                 options: {
-                    container: ".flc-lineSpacerEnactor",
                     fontSizeMap: fontSizeMap
                 }
             },
@@ -427,14 +430,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.tests.styleElementsEnactor",
-            "fluid.tests.emphasizeLinksEnactor",
-            "fluid.tests.inputsLargerEnactor",
-            "fluid.tests.classSwapperEnactor",
-            "fluid.tests.getSize",
+//            "fluid.tests.styleElementsEnactor",
+//            "fluid.tests.emphasizeLinksEnactor",
+//            "fluid.tests.inputsLargerEnactor",
+//            "fluid.tests.classSwapperEnactor",
+//            "fluid.tests.getSize",
             "fluid.tests.textSizerEnactor",
-            "fluid.tests.getLineHeight",
-            "fluid.tests.lineSpacerEnactor"
+//            "fluid.tests.getLineHeight",
+//            "fluid.tests.lineSpacerEnactor"
         ]);
     });
 
