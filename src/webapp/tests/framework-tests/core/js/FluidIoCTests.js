@@ -710,6 +710,25 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertNoValue("Options exclusion", uploader.uploaderContext);
     });
     
+    /** FLUID-4926 Invoker tests **/
+    
+    fluid.defaults("fluid.tests.invokerFunc", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        invokers: {
+            targetInvoker: "fluid.identity",
+            sourceInvoker: {
+                func: "{that}.targetInvoker",
+                args: false
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-4926 Invoker resolution test", function () {
+        var that = fluid.tests.invokerFunc();
+        var result = that.sourceInvoker();
+        jqUnit.assertEquals("Invoker relay of false argument", false, result);
+    });
+    
     /** Expansion order test **/
     
     // Example liberated from UIOptions implementation, which revealed requirement for

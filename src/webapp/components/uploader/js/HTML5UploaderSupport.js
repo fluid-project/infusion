@@ -25,50 +25,18 @@ var fluid_1_5 = fluid_1_5 || {};
         funcName: "fluid.uploader.multiFileUploader"
     });
     
-    fluid.demands("fluid.uploader.progressiveStrategy", "fluid.uploader.html5", {
+    fluid.demands("fluid.uploader.strategy", "fluid.uploader.html5", {
         horizon: "fluid.uploader.progressiveCheck",
         funcName: "fluid.uploader.html5Strategy"
     });
     
     fluid.defaults("fluid.uploader.html5Strategy", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            local: {
-                type: "fluid.uploader.local",
-                options: {
-                    queueSettings: "{multiFileUploader}.options.queueSettings",
-                    events: {
-                        onFileDialog: "{multiFileUploader}.events.onFileDialog",
-                        onFilesSelected: "{multiFileUploader}.events.onFilesSelected",
-                        afterFileDialog: "{multiFileUploader}.events.afterFileDialog",
-                        afterFileQueued: "{multiFileUploader}.events.afterFileQueued",
-                        onQueueError: "{multiFileUploader}.events.onQueueError"
-                    }
-                }
-            },
-            
-            remote: {
-                type: "fluid.uploader.remote",
-                options: {
-                    queueSettings: "{multiFileUploader}.options.queueSettings",
-                    events: {
-                        afterReady: "{multiFileUploader}.events.afterReady",
-                        onFileStart: "{multiFileUploader}.events.onFileStart",
-                        onFileProgress: "{multiFileUploader}.events.onFileProgress",
-                        onFileSuccess: "{multiFileUploader}.events.onFileSuccess",
-                        onFileError: "{multiFileUploader}.events.onFileError",
-                        onFileComplete: "{multiFileUploader}.events.onFileComplete"
-                    }
-                }
-            }
-        },
-        
+        gradeNames: ["fluid.uploader.strategy", "autoInit"],
         // Used for browsers that rely on File.getAsBinary(), such as Firefox 3.6,
         // which load the entire file to be loaded into memory.
         // Set this option to a sane limit (100MB) so your users won't experience crashes or slowdowns (FLUID-3937).
         legacyBrowserFileLimit: 100000
     });
-    
     
     // TODO: The following two or three functions probably ultimately belong on a that responsible for
     // coordinating with the XHR. A fileConnection object or something similar.
@@ -114,61 +82,52 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
     
+    fluid.uploader.html5Strategy.uploadNextFile = function (queue, uploadFile) {
+        var batch = queue.currentBatch;
+        var file = batch.files[batch.fileIdx];                        
+        uploadFile(file);
+    };
     
-    /*************************************
-     * HTML5 Strategy's remote behaviour *
-     *************************************/
-     
-    fluid.uploader.html5Strategy.remote = function (queue, options) {
-        var that = fluid.initLittleComponent("fluid.uploader.html5Strategy.remote", options);
-        that.queue = queue;
-        that.queueSettings = that.options.queueSettings;
-        
-        // Upload files in the current batch without exceeding the fileUploadLimit
-        that.uploadNextFile = function () {
-            var batch = that.queue.currentBatch;
-            var file = batch.files[batch.fileIdx];                        
-            that.uploadFile(file);
-        };
-        
-        that.uploadFile = function (file) {
-            that.events.onFileStart.fire(file);
-            that.currentXHR = that.createXHR();
-            fluid.uploader.html5Strategy.monitorFileUploadXHR(file, that.events, that.currentXHR);
-            that.fileSender.send(file, that.queueSettings, that.currentXHR);            
-        };
-
-        that.stop = function () {
-            that.queue.isUploading = false;
-            that.currentXHR.abort();         
-        };
-        
-        fluid.initDependents(that);
-        that.events.afterReady.fire();
-        return that;
+    fluid.uploader.html5Strategy.uploadFile = function (that, file) {
+        that.events.onFileStart.fire(file);
+        that.currentXHR = that.createXHR();
+        fluid.uploader.html5Strategy.monitorFileUploadXHR(file, that.events, that.currentXHR);
+        that.fileSender.send(file, that.queueSettings, that.currentXHR); 
+    };
+    
+    fluid.uploader.html5Strategy.stop = function (that) {
+        that.queue.isUploading = false;
+        that.currentXHR.abort();
+        that.events.onUploadStop.fire();
     };
     
     fluid.defaults("fluid.uploader.html5Strategy.remote", {
-        gradeNames: ["fluid.eventedComponent"],
-        argumentMap: {
-            options: 1  
-        },                
+        gradeNames: ["fluid.uploader.remote", "autoInit"],
         components: {
             fileSender: {
                 type: "fluid.uploader.html5Strategy.fileSender"
             }
         },
         invokers: {
-            createXHR: "fluid.uploader.html5Strategy.createXHR"
+            createXHR: "fluid.uploader.html5Strategy.createXHR",
+            // Upload files in the current batch without exceeding the fileUploadLimit
+            uploadNextFile: {
+                funcName: "fluid.uploader.html5Strategy.uploadNextFile",
+                args: ["{that}.queue", "{that}.uploadFile"]
+            },
+            uploadFile: {
+                funcName: "fluid.uploader.html5Strategy.uploadFile",
+                args: ["{that}", "{arguments}.0"]
+            },
+            stop: {
+                funcName: "fluid.uploader.html5Strategy.stop",
+                args: ["{that}"]
+            },
         }
     });
     
     fluid.demands("fluid.uploader.remote", ["fluid.uploader.html5Strategy", "fluid.uploader.live"], {
-        funcName: "fluid.uploader.html5Strategy.remote",
-        args: [
-            "{multiFileUploader}.queue", 
-            fluid.COMPONENT_OPTIONS
-        ]
+        funcName: "fluid.uploader.html5Strategy.remote"
     });
 
 
@@ -181,8 +140,8 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     // Set additional POST parameters for xhr  
-    var setPostParams =  function (formData, postParams) {
-        $.each(postParams,  function (key, value) {
+    var setPostParams = function (formData, postParams) {
+        $.each(postParams, function (key, value) {
             formData.append(key, value);
         });
     };
@@ -327,10 +286,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.defaults("fluid.uploader.html5Strategy.local", {
-        argumentMap: {
-            options: 2  
-        },
-        gradeNames: ["fluid.eventedComponent"],
+        gradeNames: ["fluid.uploader.local"],
         
         components: {
             browseButtonView: {

@@ -1228,7 +1228,12 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return function () {
             var args = fluid.makeArray(arguments);
             var invokeSpec = fluid.embodyDemands(that, demandspec, args, {passArgs: true});
-            return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
+            var func = invokeSpec.funcName? fluid.getGlobalValue(invokeSpec.funcName, environment)
+                : fluid.expandOptions(demandspec.func, that);
+            if (!func) {
+                fluid.fail("Error in invoker record: could not resolve either func or funcName to a function implementation", demandspec);
+            }
+            return func.apply(null, invokeSpec.args);
         };
     };
     
