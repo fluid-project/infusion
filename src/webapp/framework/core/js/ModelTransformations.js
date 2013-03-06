@@ -299,13 +299,74 @@ var fluid = fluid || fluid_1_5;
         return togo;
     };
 
+    /* -------- arrayToOutputs and inputsToArray ---------------- */
+    fluid.defaults("fluid.model.transform.arrayToOutputs", { 
+        gradeNames: ["fluid.standardInputTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.model.transform.arrayToOutputs.invert",
+    });
+
+ 
+    fluid.model.transform.arrayToOutputs = function (value, expandSpec, expander) {
+        var options = expandSpec.options;
+
+        if (!fluid.isArrayable(value)) {
+            fluid.fail("arrayToOutputs didn't find array at inputPath.", expandSpec);
+        } 
+        if (expandSpec.presentValue === undefined || expandSpec.missingValue === undefined || expandSpec.options === undefined) {
+            fluid.fail("arrayToOutputs requires both presentValue, missingValue and an options block specified");
+        }        
+
+        fluid.each(options, function (outPath, key) {
+            //write to output path given in options the value <presentValue> or <missingValue> depending on whether key is found in user input
+            var outVal = (value.indexOf(key) !== -1) ? expandSpec.presentValue : expandSpec.missingValue;
+            fluid.model.transform.setValue(outPath, outVal, expander);
+        });
+        return undefined;
+    };
+
+    fluid.model.transform.arrayToOutputs.invert = function (expandSpec, expander) {
+        var togo = fluid.copy(expandSpec);
+        delete togo.inputPath;
+        togo.type = "fluid.model.transform.inputsToArray";
+        togo.outputPath = fluid.model.composePaths(expander.inputPrefix, expandSpec.inputPath);
+        var newOptions = {};
+        fluid.each(expandSpec.options, function (path, oldKey) {
+            var newKey = fluid.model.composePaths(expander.outputPrefix, path);
+            newOptions[newKey] = oldKey;
+        });
+        togo.options = newOptions;
+        return togo;
+    };
+
+    /* -------- arrayToOutputs and inputsToArray ---------------- */
+    fluid.defaults("fluid.model.transform.inputsToArray", { 
+        gradeNames: ["fluid.standardOutputTransformFunction"]
+    });
+
+    fluid.model.transform.inputsToArray = function (expandSpec, expander) {
+        var options = expandSpec.options;
+
+        if (expandSpec.presentValue === undefined || expandSpec.missingValue === undefined || expandSpec.options === undefined) {
+            fluid.fail("inputsToArray requires both presentValue, missingValue and an options block specified");
+        }        
+
+        var outputArr = [];
+        fluid.each(options, function (arrVal, inPath) {
+            var val = fluid.model.transform.getValue(inPath, undefined, expander);
+            if (val === expandSpec.presentValue) {
+                outputArr.push(arrVal)
+            }
+        });
+        return outputArr;
+    };    
+
     /* -------- objectToArray and arrayToObject -------------------- */
     
     /**
      * Transforms the given array to an object.
      * Uses the expandSpec.options.key values from each object within the array as new keys.
      *
-     * For example, with expandSpec.options.key = "name" and an input object like this:
+     * For example, with expandSpec.key = "name" and an input object like this:
      *
      * {
      *   b: [
@@ -359,14 +420,14 @@ var fluid = fluid || fluid_1_5;
     });
 
     fluid.model.transform.arrayToObject = function (arr, expandSpec, expander) {
-        if (fluid.get(expandSpec, "options.key") === undefined) {
+        if (expandSpec.key === undefined) {
             fluid.fail("arrayToObject requires a 'key' option.", expandSpec);
         }
         if (!fluid.isArrayable(arr)) {
             fluid.fail("arrayToObject didn't find array at inputPath.", expandSpec);
         }
         var newHash = {};
-        var pivot = expandSpec.options.key;
+        var pivot = expandSpec.key;
 
         fluid.each(arr, function (v, k) {
             //check that we have a pivot entry in the object and it's a valid type:            
@@ -379,9 +440,9 @@ var fluid = fluid || fluid_1_5;
             var content = fluid.copy(v);
             delete content[pivot];
             //fix sub Arrays if needed:
-            if (expandSpec.options.innerValue) {
+            if (expandSpec.innerValue) {
                 content = fluid.model.transform.expandInnerValues([expander.outputPrefix, k.toString()], 
-                    [newKey], expander, expandSpec.options.innerValue);
+                    [newKey], expander, expandSpec.innerValue);
             }
             newHash[newKey] = content;
         });
@@ -397,8 +458,8 @@ var fluid = fluid || fluid_1_5;
         // TODO: The Model Transformations framework should be capable of this, but right now the
         // issue is that we use a "private contract" to operate the "innerValue" slot. We need to
         // spend time thinking of how this should be formalised
-        if (togo.options && togo.options.innerValue) {
-            var innerValue = togo.options.innerValue;
+        if (togo.innerValue) {
+            var innerValue = togo.innerValue;
             for (var i = 0; i < innerValue.length; ++i) {
                 innerValue[i] = fluid.model.transform.invertConfiguration(innerValue[i]);
             }            
@@ -416,19 +477,19 @@ var fluid = fluid || fluid_1_5;
      * This performs the inverse transform of fluid.model.transform.arrayToObject.
      */
     fluid.model.transform.objectToArray = function (hash, expandSpec, expander) {
-        if (fluid.get(expandSpec, "options.key") === undefined) {
+        if (expandSpec.key === undefined) {
             fluid.fail("objectToArray requires a 'key' option.", expandSpec);
         }
         
         var newArray = [];
-        var pivot = expandSpec.options.key;
+        var pivot = expandSpec.key;
 
         fluid.each(hash, function (v, k) {
             var content = {};
             content[pivot] = k;
-            if (expandSpec.options.innerValue) {
+            if (expandSpec.innerValue) {
                 v = fluid.model.transform.expandInnerValues([expandSpec.inputPath, k], [expandSpec.inputPath, newArray.length.toString()], 
-                    expander, expandSpec.options.innerValue);
+                    expander, expandSpec.innerValue);
             }
             // TODO: remove this use of fluid.merge which will not be valid in 1.5 Infusion framework
             content = fluid.merge("replace", content, v);

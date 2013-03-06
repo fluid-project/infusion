@@ -1505,145 +1505,137 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /* --------------- arrayToObject and objectToArray tests -------------------- */
-    var basicArrayTest = {
-        raw: {
-            a: {
-                c: [ 
-                { name: "c1", val: "vc1" },
-                { name: "c2", val: "vc2" }
-                ]
-            }
-        }, 
-        rules: {
-            "a.c": {
-                "expander": {
-                    type: "fluid.model.transform.arrayToObject",
-                    inputPath: "a.c",
-                    options: {
+    var arrayObjectArrayTests = [
+        {
+            name: "Basic Array transformations",
+            raw: {
+                a: {
+                    c: [ 
+                    { name: "c1", val: "vc1" },
+                    { name: "c2", val: "vc2" }
+                    ]
+                }
+            }, 
+            rules: {
+                "a.c": {
+                    "expander": {
+                        type: "fluid.model.transform.arrayToObject",
+                        inputPath: "a.c",
                         key: "name"
                     }
                 }
-            }
-        },
-        expectedInputPaths: [
-            "a.c"
-        ],    
-        expected: {                
-            a: {
-                c: {
-                    c1: { val: "vc1" },
-                    c2: { val: "vc2" }
-                } 
-            }
-        },
-        invertedRules: {
-            expander: [ 
-            {
-                type: "fluid.model.transform.objectToArray",
-                inputPath: "a.c",
-                outputPath: "a.c",
-                options: {
+            },
+            expectedInputPaths: [
+                "a.c"
+            ],    
+            expected: {                
+                a: {
+                    c: {
+                        c1: { val: "vc1" },
+                        c2: { val: "vc2" }
+                    } 
+                }
+            },
+            invertedRules: {
+                expander: [ 
+                {
+                    type: "fluid.model.transform.objectToArray",
+                    inputPath: "a.c",
+                    outputPath: "a.c",
                     key: "name"
                 }
-            }
-            ]
-        }    
-    };
-    var complexArrayTest = {
-        raw: {
-            b: {
-                b1: "hello",
-                b2: "hello"
-            },
-            a: {
-                "dotted.key": [ 
-                { "uni.que": "u.q1", val: { first: "vc1.1", second: "vc1.2" }},
-                { "uni.que": "u.q2", val: { first: "vc2.1", second: "vc2.2" }}
                 ]
-            }
-        }, 
-        rules: {
-            b: "b",
-            "c.dotted\\.key": {
-                "expander": {
-                    type: "fluid.model.transform.arrayToObject",
-                    inputPath: "a.dotted\\.key",
-                    options: {
+            }    
+        }, {
+            name: "More Complex Array transformations",
+            raw: {
+                b: {
+                    b1: "hello",
+                    b2: "hello"
+                },
+                a: {
+                    "dotted.key": [ 
+                    { "uni.que": "u.q1", val: { first: "vc1.1", second: "vc1.2" }},
+                    { "uni.que": "u.q2", val: { first: "vc2.1", second: "vc2.2" }}
+                    ]
+                }
+            }, 
+            rules: {
+                b: "b",
+                "c.dotted\\.key": {
+                    "expander": {
+                        type: "fluid.model.transform.arrayToObject",
+                        inputPath: "a.dotted\\.key",
                         key: "uni.que"
                     }
                 }
-            }
-        },
-        expectedInputPaths: [
-            "b",
-            "a.dotted\\.key"
-        ], 
-        expected: {
-            b: {
-                b1: "hello",
-                b2: "hello"
             },
-            c: {
-                "dotted.key": {
-                    "u.q1": { val: { first: "vc1.1", second: "vc1.2" } },
-                    "u.q2": { val: { first: "vc2.1", second: "vc2.2" } }
-                } 
-            }
-        },
-        invertedRules: {
-            expander: [ 
-            { 
-                type: 'fluid.model.transform.value',
-                inputPath: 'b',
-                outputPath: 'b' 
-            },{
-                type: "fluid.model.transform.objectToArray",
-                inputPath: "c.dotted\\.key",
-                outputPath: "a.dotted\\.key",
-                options: {
+            expectedInputPaths: [
+                "b",
+                "a.dotted\\.key"
+            ], 
+            expected: {
+                b: {
+                    b1: "hello",
+                    b2: "hello"
+                },
+                c: {
+                    "dotted.key": {
+                        "u.q1": { val: { first: "vc1.1", second: "vc1.2" } },
+                        "u.q2": { val: { first: "vc2.1", second: "vc2.2" } }
+                    } 
+                }
+            },
+            invertedRules: {
+                expander: [ 
+                { 
+                    type: 'fluid.model.transform.value',
+                    inputPath: 'b',
+                    outputPath: 'b' 
+                },{
+                    type: "fluid.model.transform.objectToArray",
+                    inputPath: "c.dotted\\.key",
+                    outputPath: "a.dotted\\.key",
                     key: "uni.que"
                 }
+                ]
             }
-            ]
-        }
-    };
-
-    var nestedArrayTest = {
-        raw: {
-            outer: [
-            { 
-                outerpivot: "outerkey1",
-                outervar:  [
-                {
-                    innerpivot: "innerkey1.1",
-                    innervar: "innerval1.1.1",
-                    innervarx: "innerval1.1.2"
-                },
-                {
-                    innerpivot: "innerkey1.2",
-                    innervar: "innerval1.2.1"
-                }]
-            }, {
-                outerpivot: "outerkey2",
-                outervar: [
-                {
-                    innerpivot: "innerkey2.1",
-                    innervar: "innerval2.1.1",
-                    innervarx: "innerval2.1.2"
-                },
-                {
-                    innerpivot: "innerkey2.2",
-                    innervar: "innerval2.2.1"
-                }]
-            }
-            ]
-        }, 
-        rules: {
-            "outer": {
-                "expander": {
-                    type: "fluid.model.transform.arrayToObject",
-                    inputPath: "outer",
-                    options: {
+        }, {
+            name: "Nested Array transformations",
+            raw: {
+                outer: [
+                { 
+                    outerpivot: "outerkey1",
+                    outervar:  [
+                    {
+                        innerpivot: "innerkey1.1",
+                        innervar: "innerval1.1.1",
+                        innervarx: "innerval1.1.2"
+                    },
+                    {
+                        innerpivot: "innerkey1.2",
+                        innervar: "innerval1.2.1"
+                    }]
+                }, {
+                    outerpivot: "outerkey2",
+                    outervar: [
+                    {
+                        innerpivot: "innerkey2.1",
+                        innervar: "innerval2.1.1",
+                        innervarx: "innerval2.1.2"
+                    },
+                    {
+                        innerpivot: "innerkey2.2",
+                        innervar: "innerval2.2.1"
+                    }]
+                }
+                ]
+            }, 
+            rules: {
+                "outer": {
+                    "expander": {
+                        type: "fluid.model.transform.arrayToObject",
+                        inputPath: "outer",
                         key: "outerpivot",
                         innerValue: [
                         {
@@ -1651,103 +1643,94 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 "expander": {
                                     type: "fluid.model.transform.arrayToObject",
                                     inputPath: "outervar",
-                                    options: {
-                                        key: "innerpivot"
-                                    }
+                                    key: "innerpivot"
                                 }
                             }
                         }
                         ]
                     }
                 }
-            }
-        },
-        expectedInputPaths: [
-            "outer",
-            "outervar"
-        ], 
-        expected: {
-            "outer": {
-                "outerkey1": {
-                    "outervar": {
-                        "innerkey1.1": {
-                            "innervar": "innerval1.1.1",
-                            "innervarx": "innerval1.1.2"
-                        },
-                        "innerkey1.2": {
-                            "innervar": "innerval1.2.1"
+            },
+            expectedInputPaths: [
+                "outer",
+                "outervar"
+            ], 
+            expected: {
+                "outer": {
+                    "outerkey1": {
+                        "outervar": {
+                            "innerkey1.1": {
+                                "innervar": "innerval1.1.1",
+                                "innervarx": "innerval1.1.2"
+                            },
+                            "innerkey1.2": {
+                                "innervar": "innerval1.2.1"
+                            }
                         }
-                    }
-                },
-                "outerkey2": {
-                    "outervar": {
-                        "innerkey2.1": {
-                            "innervar": "innerval2.1.1",
-                            "innervarx": "innerval2.1.2"
-                        },
-                        "innerkey2.2": {
-                            "innervar": "innerval2.2.1"
+                    },
+                    "outerkey2": {
+                        "outervar": {
+                            "innerkey2.1": {
+                                "innervar": "innerval2.1.1",
+                                "innervarx": "innerval2.1.2"
+                            },
+                            "innerkey2.2": {
+                                "innervar": "innerval2.2.1"
+                            }
                         }
                     }
                 }
-            }
-        },
-        invertedRules: {
-            "expander": [{
-                type: "fluid.model.transform.objectToArray",
-                inputPath: "outer",
-                outputPath: "outer",
-                options: {
+            },
+            invertedRules: {
+                "expander": [{
+                    type: "fluid.model.transform.objectToArray",
+                    inputPath: "outer",
+                    outputPath: "outer",
                     key: "outerpivot",
                     innerValue: [{
                         expander: [{
                             type: "fluid.model.transform.objectToArray",
                             inputPath: "outervar",
                             outputPath: "outervar",
-                            options: {
-                                key: "innerpivot"
-                            }
+                            key: "innerpivot"
                         }]
                     }]
-                }
-            }]
-        }
-    };
-
-    var multiNestedArrayTest = {
-        raw: {
-            outer: [
-            { 
-                outerpivot: "outerkey1",
-                outervar:  {
-                    arr1: [
-                    {
-                        innerpivot1: "arr1.1",
-                        innervar: "arr1.1.1"
-                    },
-                    {
-                        innerpivot1: "arr1.2",
-                        innervar: "arr1.2.1"
-                    }],
-                    arr2: [
-                    {
-                        innerpivot2: "arr2.1",
-                        innervar: "arr2.1.1"
-                    },
-                    {
-                        innerpivot2: "arr2.2",
-                        innervar: "arr2.2.1"
-                    }]
-                }
+                }]
             }
-            ]
-        }, 
-        rules: {
-            "outer": {
-                "expander": {
-                    type: "fluid.model.transform.arrayToObject",
-                    inputPath: "outer",
-                    options: {
+        }, {
+            name: "Multiple Nested Array transformations",
+            raw: {
+                outer: [
+                { 
+                    outerpivot: "outerkey1",
+                    outervar:  {
+                        arr1: [
+                        {
+                            innerpivot1: "arr1.1",
+                            innervar: "arr1.1.1"
+                        },
+                        {
+                            innerpivot1: "arr1.2",
+                            innervar: "arr1.2.1"
+                        }],
+                        arr2: [
+                        {
+                            innerpivot2: "arr2.1",
+                            innervar: "arr2.1.1"
+                        },
+                        {
+                            innerpivot2: "arr2.2",
+                            innervar: "arr2.2.1"
+                        }]
+                    }
+                }
+                ]
+            }, 
+            rules: {
+                "outer": {
+                    "expander": {
+                        type: "fluid.model.transform.arrayToObject",
+                        inputPath: "outer",
                         key: "outerpivot",
                         innerValue: [
                         {
@@ -1755,9 +1738,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 "expander": {
                                     type: "fluid.model.transform.arrayToObject",
                                     inputPath: "outervar.arr1",
-                                    options: {
-                                        key: "innerpivot1"
-                                    }
+                                    key: "innerpivot1"
                                 }
                             }
                         }, 
@@ -1766,70 +1747,63 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 "expander": {
                                     type: "fluid.model.transform.arrayToObject",
                                     inputPath: "outervar.arr2",
-                                    options: {
-                                        key: "innerpivot2"
-                                    }
+                                    key: "innerpivot2"
                                 }
                             }
                         }
                         ]
                     }
                 }
-            }
-        },
-        expectedInputPaths: [
-            "outer",
-            "outervar.arr1",
-            "outervar.arr2"
-        ],
-        expected: {
-            "outer": {
-                "outerkey1": {
-                    "outervar": {
-                        "arr1": {
-                            "arr1.1": { "innervar": "arr1.1.1" },
-                            "arr1.2": { "innervar": "arr1.2.1" }
-                        },
-                        "arr2": {
-                            "arr2.1": { "innervar": "arr2.1.1" },
-                            "arr2.2": { "innervar": "arr2.2.1" }
+            },
+            expectedInputPaths: [
+                "outer",
+                "outervar.arr1",
+                "outervar.arr2"
+            ],
+            expected: {
+                "outer": {
+                    "outerkey1": {
+                        "outervar": {
+                            "arr1": {
+                                "arr1.1": { "innervar": "arr1.1.1" },
+                                "arr1.2": { "innervar": "arr1.2.1" }
+                            },
+                            "arr2": {
+                                "arr2.1": { "innervar": "arr2.1.1" },
+                                "arr2.2": { "innervar": "arr2.2.1" }
+                            }
                         }
                     }
                 }
-            }
-        },
-        invertedRules: {
-            "expander": [{
-                type: "fluid.model.transform.objectToArray",
-                inputPath: "outer",
-                outputPath: "outer",
-                options: {
+            },
+            invertedRules: {
+                "expander": [{
+                    type: "fluid.model.transform.objectToArray",
+                    inputPath: "outer",
+                    outputPath: "outer",
                     key: "outerpivot",
                     innerValue: [{
                         expander: [{
                             type: "fluid.model.transform.objectToArray",
                             inputPath: "outervar.arr1",
                             outputPath: "outervar.arr1",
-                            options: {
-                                key: "innerpivot1"
-                            }
+                            key: "innerpivot1"
                         }]
                     }, {
                         expander: [{
                             type: "fluid.model.transform.objectToArray",
                             inputPath: "outervar.arr2",
                             outputPath: "outervar.arr2",
-                            options: {
-                                key: "innerpivot2"
-                            }
+                            key: "innerpivot2"
                         }]
                     }]
-                }
-            }]
+                }]
+            }
         }
-    };
+    ];
             
-    var arrayTest = function (json, description) {
+    var arrayTest = function (json) {
+        var description = json.name;
         var transformed = fluid.model.transformWithRules(json.raw, json.rules);
         jqUnit.assertDeepEq(description+" array->object transformation", json.expected, transformed);
         // var paths = fluid.model.transform.collectInputPaths(json.rules);
@@ -1840,20 +1814,70 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq(description+" object->array transformation", json.raw, inverseTransformed);
     };
 
-    jqUnit.test("Basic Array transformations", function () {
-        arrayTest(basicArrayTest, "Basic Array");
+    jqUnit.test("arrayToObject and objectToArray transformation tests", function () {
+        fluid.each(arrayObjectArrayTests, function (v) {
+            arrayTest(v);
+        });
     });
 
-    jqUnit.test("More Complex Array transformations", function () {
-        arrayTest(complexArrayTest, "Complex Array");
+/* --------------- fixedArray to outputs -------------------- */
+    var arrayToOutputsTests = {
+        name: "basic test",
+        raw: {
+            a: [ "foo", "bar" ]
+        }, 
+        rules: {
+            "b": {
+                "expander": {
+                    type: "fluid.model.transform.arrayToOutputs",
+                    inputPath: "a",
+                    presentValue: true,
+                    missingValue: false,
+                    options: { //(paths)
+                        "foo": "settingF", 
+                        "bar": "settingB",
+                        "tar": "settingT"
+                    }
+                }
+            }
+        },
+        expected: {
+            b: {
+                settingF: true,
+                settingB: true,
+                settingT: false
+            }
+        },
+        invertedRules: {
+            expander: [ 
+            {
+                type: "fluid.model.transform.inputsToArray",
+                outputPath: "a",
+                presentValue: true,
+                missingValue: false,
+                options: {
+                    "b.settingF": "foo", 
+                    "b.settingB": "bar",
+                    "b.settingT": "tar"
+                }
+            }
+            ]
+        }
+
+    };
+    jqUnit.test("arrayToOutputs and inputsToArray transformation tests", function () {
+        arrayTest(arrayToOutputsTests);
     });
 
-    jqUnit.test("Nested Array transformations", function () {
-        arrayTest(nestedArrayTest, "Nested Array");
-    });
-
-    jqUnit.test("Multiple Nested Array transformations", function () {
-        arrayTest(multiNestedArrayTest, "Multiple Nested Array");
-    });
-
+    var arrayTest = function (json) {
+        var description = json.name;
+        var transformed = fluid.model.transformWithRules(json.raw, json.rules);
+        jqUnit.assertDeepEq(description+" array->outputs transformation", json.expected, transformed);
+        // var paths = fluid.model.transform.collectInputPaths(json.rules);
+        // jqUnit.assertDeepEq(description+" path collection", json.expectedInputPaths, paths);
+        var inverseRules = fluid.model.transform.invertConfiguration(json.rules);
+        jqUnit.assertDeepEq(description+" inverted rules", json.invertedRules, inverseRules);
+        var inverseTransformed = fluid.model.transformWithRules(json.expected, json.invertedRules);
+        jqUnit.assertDeepEq(description+" inputs->array transformation", json.raw, inverseTransformed);
+    };
 })(jQuery);
