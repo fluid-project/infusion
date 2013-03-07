@@ -124,23 +124,17 @@ var fluid_1_5 = fluid_1_5 || {};
      * This component is used as a grade by textFontEnactor and themeEnactor
      *******************************************************************************/
     
+    // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.uiOptions.actionAnts.classSwapperEnactor", {
-        gradeNames: ["fluid.uiOptions.actionAnts", "autoInit"],
-        container: null,  // Must be supplied by implementors
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
         classes: {},  // Must be supplied by implementors
-        classStr: {
-            expander: {
-                func: "fluid.uiOptions.actionAnts.classSwapperEnactor.joinClassStr",
-                args: "{that}.options.classes"
-            }
-        },
         model: {
             className: ""
         },
         invokers: {
             clearClasses: {
                 funcName: "fluid.uiOptions.actionAnts.classSwapperEnactor.clearClasses",
-                args: "{that}"
+                args: ["{that}.container", "{that}.classStr"]
             },
             swap: {
                 funcName: "fluid.uiOptions.actionAnts.classSwapperEnactor.swap",
@@ -152,16 +146,24 @@ var fluid_1_5 = fluid_1_5 || {};
                 listener: "{that}.swap",
                 args: "{that}.model.className"
             }
+        },
+        members: {
+            classStr: {
+                expander: {
+                    func: "fluid.uiOptions.actionAnts.classSwapperEnactor.joinClassStr",
+                    args: "{that}.options.classes"
+                }
+            }
         }
     });
     
-    fluid.uiOptions.actionAnts.classSwapperEnactor.clearClasses = function (that) {
-        that.options.container.removeClass(that.options.classStr);
+    fluid.uiOptions.actionAnts.classSwapperEnactor.clearClasses = function (container, classStr) {
+        container.removeClass(classStr);
     };
     
     fluid.uiOptions.actionAnts.classSwapperEnactor.swap = function (className, that) {
-        that.clearClasses(that);
-        that.options.container.addClass(that.options.classes[className]);
+        that.clearClasses();
+        that.container.addClass(that.options.classes[className]);
     };
     
     fluid.uiOptions.actionAnts.classSwapperEnactor.joinClassStr = function (classes) {
@@ -176,12 +178,6 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.uiOptions.actionAnts.classSwapperEnactor.finalInit = function (that) {
-        if (!that.options.container) {
-            return;
-        } else {
-            that.options.container = $(that.options.container);
-        }
-        
         that.applier.modelChanged.addListener("className", that.swap);
     };
     
@@ -205,34 +201,15 @@ var fluid_1_5 = fluid_1_5 || {};
         return parseFloat(fontSize);
     };
 
-    /**
-     * return "font-size" in em
-     * @param (Object) container
-     * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
-     */
-    fluid.uiOptions.actionAnts.getTextSizeInEm = function (textSizeInPx, px2emFactor) {
-        // retrieve fontSize in px, convert and return in em 
-        return Math.round(textSizeInPx / px2emFactor * 10000) / 10000;
-    };
-    
-    fluid.uiOptions.actionAnts.getPx2EmFactor = function (container, fontSizeMap) {
-        // The base font size is the computed font size of the container's parent element unless the container itself 
-        // has been the DOM root element "HTML" which is NOT detectable with this algorithm
-        if (container.get(0).tagName !== "HTML") {
-            container = container.parent();
-        }
-        return fluid.uiOptions.actionAnts.getTextSizeInPx(container, fontSizeMap);
-    };
-
     /*******************************************************************************
      * textSizerEnactor
      *
      * Sets the text size on the container to the multiple provided.
      *******************************************************************************/
     
+    // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.uiOptions.actionAnts.textSizerEnactor", {
-        gradeNames: ["fluid.uiOptions.actionAnts", "fluid.viewComponent", "autoInit"],
-//        container: null,  // must be supplied by implementors
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
         fontSizeMap: {},  // must be supplied by implementors
         model: {
             textSizeInTimes: 1
@@ -242,20 +219,16 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.uiOptions.actionAnts.textSizerEnactor.set",
                 args: ["{arguments}.0.textSizeInTimes", "{that}"]
             },
-            calcInitSize: {
-                funcName: "fluid.uiOptions.actionAnts.textSizerEnactor.calcInitSize",
-                args: ["{that}.container", "{that}.options.fontSizeMap"]
-            },
             getTextSizeInPx: {
                 funcName: "fluid.uiOptions.actionAnts.getTextSizeInPx",
                 args: ["{that}.container", "{that}.options.fontSizeMap"]
             },
             getTextSizeInEm: {
-                funcName: "fluid.uiOptions.actionAnts.getTextSizeInEm",
+                funcName: "fluid.uiOptions.actionAnts.textSizerEnactor.getTextSizeInEm",
                 args: [{expander: {func: "{that}.getTextSizeInPx"}}, {expander: {func: "{that}.getPx2EmFactor"}}]
             },
             getPx2EmFactor: {
-                funcName: "fluid.uiOptions.actionAnts.getPx2EmFactor",
+                funcName: "fluid.uiOptions.actionAnts.textSizerEnactor.getPx2EmFactor",
                 args: ["{that}.container", "{that}.options.fontSizeMap"]
             }
         },
@@ -264,31 +237,43 @@ var fluid_1_5 = fluid_1_5 || {};
                 listener: "{that}.set",
                 args: "{that}.model.textSizeInTimes"
             }
+        },
+        members: {
+            initialSize: {
+                expander: {
+                    func: "{that}.getTextSizeInEm"
+                }
+            }
         }
     });
     
     fluid.uiOptions.actionAnts.textSizerEnactor.set = function (times, that) {
-        if (!that.initialSize) {
-            that.initialSize = that.calcInitSize();
-        }
-
         if (that.initialSize) {
             var targetSize = times * that.initialSize;
             that.container.css("font-size", targetSize + "em");
         }
     };
+
+    /**
+     * return "font-size" in em
+     * @param (Object) container
+     * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
+     */
+    fluid.uiOptions.actionAnts.textSizerEnactor.getTextSizeInEm = function (textSizeInPx, px2emFactor) {
+        // retrieve fontSize in px, convert and return in em 
+        return Math.round(textSizeInPx / px2emFactor * 10000) / 10000;
+    };
     
-    fluid.uiOptions.actionAnts.textSizerEnactor.calcInitSize = function (container, fontSizeMap) {
-        return fluid.uiOptions.actionAnts.getTextSizeInEm(container, fontSizeMap);
+    fluid.uiOptions.actionAnts.textSizerEnactor.getPx2EmFactor = function (container, fontSizeMap) {
+        // The base font size is the computed font size of the container's parent element unless the container itself 
+        // has been the DOM root element "HTML" which is NOT detectable with this algorithm
+        if (container.get(0).tagName !== "HTML") {
+            container = container.parent();
+        }
+        return fluid.uiOptions.actionAnts.getTextSizeInPx(container, fontSizeMap);
     };
 
     fluid.uiOptions.actionAnts.textSizerEnactor.finalInit = function (that) {
-//        if (!that.container) {
-//            return;
-//        } else {
-//            that.container = $(that.container);
-//        }
-        
         that.applier.modelChanged.addListener("textSizeInTimes", that.set);
     };
     
@@ -298,9 +283,9 @@ var fluid_1_5 = fluid_1_5 || {};
      * Sets the line spacing on the container to the multiple provided.
      *******************************************************************************/
     
+    // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.uiOptions.actionAnts.lineSpacerEnactor", {
-        gradeNames: ["fluid.uiOptions.actionAnts", "autoInit"],
-        container: null,  // must be supplied by implementors
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
         fontSizeMap: {},  // must be supplied by implementors
         model: {
             lineSpaceInTimes: 1
@@ -310,15 +295,30 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.uiOptions.actionAnts.lineSpacerEnactor.set",
                 args: ["{arguments}.0.lineSpaceInTimes", "{that}"]
             },
-            calcInitSize: {
-                funcName: "fluid.uiOptions.actionAnts.lineSpacerEnactor.calcInitSize",
-                args: ["{that}.options.container", "{that}.options.fontSizeMap"]
+            getTextSizeInPx: {
+                funcName: "fluid.uiOptions.actionAnts.getTextSizeInPx",
+                args: ["{that}.container", "{that}.options.fontSizeMap"]
+            },
+            getLineHeight: {
+                funcName: "fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight",
+                args: "{that}.container"
+            },
+            numerizeLineHeight: {
+                funcName: "fluid.uiOptions.actionAnts.lineSpacerEnactor.numerizeLineHeight",
+                args: [{expander: {func: "{that}.getLineHeight"}}, {expander: {func: "{that}.getTextSizeInPx"}}]
             }
         },
         listeners: {
             onCreate: {
                 listener: "{that}.set",
                 args: "{that}.model.lineSpaceInTimes"
+            }
+        },
+        members: {
+            initialSize: {
+                expander: {
+                    func: "{that}.numerizeLineHeight"
+                }
             }
         }
     });
@@ -362,33 +362,16 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.actionAnts.lineSpacerEnactor.set = function (times, that) {
-        if (!that.initialSize) {
-            that.initialSize = that.calcInitSize();
-        }
-
         // that.initialSize === 0 when the browser returned "lineHeight" css value is undefined,
         // which occurs when firefox detects "line-height" value on a hidden container.
         // @ See numerizeLineHeight() & http://issues.fluidproject.org/browse/FLUID-4500
         if (that.initialSize) {
             var targetLineSpacing = times * that.initialSize;
-            that.options.container.css("line-height", targetLineSpacing);
+            that.container.css("line-height", targetLineSpacing);
         }
     };
     
-    fluid.uiOptions.actionAnts.lineSpacerEnactor.calcInitSize = function (container, fontSizeMap) {
-        var lineHeight = fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight(container);
-        var fontSize = fluid.uiOptions.actionAnts.getTextSizeInPx(container, fontSizeMap);
-
-        return fluid.uiOptions.actionAnts.lineSpacerEnactor.numerizeLineHeight(lineHeight, fontSize);
-    };
-
     fluid.uiOptions.actionAnts.lineSpacerEnactor.finalInit = function (that) {
-        if (!that.options.container) {
-            return;
-        } else {
-            that.options.container = $(that.options.container);
-        }
-        
         that.applier.modelChanged.addListener("lineSpaceInTimes", that.set);
     };
     

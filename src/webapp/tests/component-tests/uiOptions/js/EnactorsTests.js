@@ -157,13 +157,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.classSwapperEnactor", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
-        container: ".flc-classSwapperEnactor",
         expectedClass: "fl-test",
         components: {
             classSwapper: {
                 type: "fluid.uiOptions.actionAnts.classSwapperEnactor",
+                container: ".flc-classSwapperEnactor",
                 options: {
-                    container: ".flc-classSwapperEnactor",
                     classes: {
                         "default": "",
                         "test": "fl-test"
@@ -176,16 +175,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.testClassSwapper = function (that, container, expectedClass) {
-        var defaultStyle = $(container).attr("class");
+    fluid.tests.testClassSwapper = function (that, expectedClass) {
+        var defaultStyle = that.container.attr("class");
         
-        jqUnit.assertEquals("The style class is not applied by default", defaultStyle, $(container).attr("class"));
+        jqUnit.assertEquals("The style class is not applied by default", defaultStyle, that.container.attr("class"));
         
         that.applier.requestChange("className", "test");
-        jqUnit.assertEquals("The style class has been applied", defaultStyle + " " + expectedClass, $(container).attr("class"));
+        jqUnit.assertEquals("The style class has been applied", defaultStyle + " " + expectedClass, that.container.attr("class"));
 
         that.applier.requestChange("className", "");
-        jqUnit.assertEquals("The style class has been removed", defaultStyle, $(container).attr("class"));
+        jqUnit.assertEquals("The style class has been removed", defaultStyle, that.container.attr("class"));
     }; 
 
     fluid.defaults("fluid.tests.classSwapperEnactorTester", {
@@ -197,7 +196,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Swap css class",
                 type: "test",
                 func: "fluid.tests.testClassSwapper",
-                args: ["{classSwapper}", "{fluid.tests.classSwapperEnactor}.options.container", "{fluid.tests.classSwapperEnactor}.options.expectedClass"]
+                args: ["{classSwapper}", "{fluid.tests.classSwapperEnactor}.options.expectedClass"]
             }]
         }]
     });
@@ -230,15 +229,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.testGetSize = function (container, fontSizeMap, expectedTestSize, expectedSizeAtUndetected) {
-        var container = $(container);
+        container = $(container);
         
-        var px2emFactor = fluid.uiOptions.actionAnts.getPx2EmFactor(container, fontSizeMap);
+        var px2emFactor = fluid.uiOptions.actionAnts.textSizerEnactor.getPx2EmFactor(container, fontSizeMap);
         jqUnit.assertEquals("Check that the factor is pulled from the container correctly", expectedTestSize, px2emFactor);
 
-        var container = $("html");
+        container = $("html");
         var textSizeInPx = fluid.uiOptions.actionAnts.getTextSizeInPx(container, fontSizeMap);
-        px2emFactor = fluid.uiOptions.actionAnts.getPx2EmFactor(container, fontSizeMap);
-        var fontSizeInEm = fluid.uiOptions.actionAnts.getTextSizeInEm(textSizeInPx, px2emFactor);
+        px2emFactor = fluid.uiOptions.actionAnts.textSizerEnactor.getPx2EmFactor(container, fontSizeMap);
+        var fontSizeInEm = fluid.uiOptions.actionAnts.textSizerEnactor.getTextSizeInEm(textSizeInPx, px2emFactor);
 
         jqUnit.assertEquals("Unable to detect the text size in em for the DOM root element <html>. Always return 1em.", expectedSizeAtUndetected, fontSizeInEm);
     }; 
@@ -261,14 +260,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Unit tests for fluid.uiOptions.actionAnts.textSizerEnactor
      *******************************************************************************/
 
-    var textSizerContainer = $(".flc-textSizerEnactor");
     fluid.defaults("fluid.tests.textSizerEnactor", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
-        container: ".flc-textSizerEnactor",
         components: {
             textSizer: {
                 type: "fluid.uiOptions.actionAnts.textSizerEnactor",
-                container: textSizerContainer,
+                container: ".flc-textSizerEnactor",
                 options: {
                     fontSizeMap: fontSizeMap
                 }
@@ -279,15 +276,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.testTextSizer = function (that, container) {
-        var container = $(container);
-        
-        var px2emFactor = fluid.uiOptions.actionAnts.getPx2EmFactor(container, that.options.fontSizeMap);
+    fluid.tests.testTextSizer = function (that) {
+        var px2emFactor = fluid.uiOptions.actionAnts.textSizerEnactor.getPx2EmFactor(that.container, that.options.fontSizeMap);
         var expectedInitialSize = Math.round(8 / px2emFactor * 10000) / 10000;
         
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, that.initialSize);
         that.applier.requestChange("textSizeInTimes", 2);
-        jqUnit.assertEquals("The size should be doubled", "16px", container.css("fontSize"));
+        jqUnit.assertEquals("The size should be doubled", "16px", that.container.css("fontSize"));
     }; 
 
     fluid.defaults("fluid.tests.textSizerEnactorTester", {
@@ -299,7 +294,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Apply text size in times",
                 type: "test",
                 func: "fluid.tests.testTextSizer",
-                args: ["{textSizer}", "{fluid.tests.textSizerEnactor}.options.container"]
+                args: ["{textSizer}"]
             }]
         }]
     });
@@ -327,8 +322,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var lineHeight = fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight(container);
         jqUnit.assertEquals("getLineHeight with IE simulation", "10", lineHeight);
 
-        var container = [{currentStyle: {lineHeight: "14pt"}}];
-        var lineHeight = fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight(container);
+        container = [{currentStyle: {lineHeight: "14pt"}}];
+        lineHeight = fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight(container);
         jqUnit.assertEquals("getLineHeight with IE simulation", "14pt", lineHeight);
 
         container = $(".flc-lineSpacerEnactor");
@@ -380,7 +375,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.lineSpacerEnactor", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
-        container: ".flc-lineSpacerEnactor",
         components: {
             lineSpacer: {
                 type: "fluid.uiOptions.actionAnts.lineSpacerEnactor",
@@ -405,13 +399,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    fluid.tests.testLineSpacerEnactor = function (that, container) {
-        var container = $(container);
-        
+    fluid.tests.testLineSpacerEnactor = function (that) {
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", 2, Math.round(that.initialSize));
-        jqUnit.assertEquals("Check the line spacing size in pixels", "12px", convertLineHeightFactor(container.css("lineHeight"), container.css("fontSize")));
+        jqUnit.assertEquals("Check the line spacing size in pixels", "12px", convertLineHeightFactor(that.container.css("lineHeight"), that.container.css("fontSize")));
         that.applier.requestChange("lineSpaceInTimes", 2);
-        jqUnit.assertEquals("The size should be doubled", "24px", convertLineHeightFactor(container.css("lineHeight"), container.css("fontSize")));
+        jqUnit.assertEquals("The size should be doubled", "24px", convertLineHeightFactor(that.container.css("lineHeight"), that.container.css("fontSize")));
     }; 
 
     fluid.defaults("fluid.tests.lineSpacerEnactorTester", {
@@ -423,21 +415,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Apply line spacing in times",
                 type: "test",
                 func: "fluid.tests.testLineSpacerEnactor",
-                args: ["{lineSpacer}", "{fluid.tests.lineSpacerEnactor}.options.container"]
+                args: ["{lineSpacer}"]
             }]
         }]
     });
 
     $(document).ready(function () {
         fluid.test.runTests([
-//            "fluid.tests.styleElementsEnactor",
-//            "fluid.tests.emphasizeLinksEnactor",
-//            "fluid.tests.inputsLargerEnactor",
-//            "fluid.tests.classSwapperEnactor",
-//            "fluid.tests.getSize",
+            "fluid.tests.styleElementsEnactor",
+            "fluid.tests.emphasizeLinksEnactor",
+            "fluid.tests.inputsLargerEnactor",
+            "fluid.tests.classSwapperEnactor",
+            "fluid.tests.getSize",
             "fluid.tests.textSizerEnactor",
-//            "fluid.tests.getLineHeight",
-//            "fluid.tests.lineSpacerEnactor"
+            "fluid.tests.getLineHeight",
+            "fluid.tests.lineSpacerEnactor"
         ]);
     });
 
