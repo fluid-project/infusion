@@ -203,11 +203,58 @@ fluid.tests.startRendering = function (asyncTest, instantiator) {
     asyncTest.locate("button").click();
 };
 
+fluid.defaults("fluid.tests.initTree", {
+    gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+    components: {
+        initTest: {
+            type: "fluid.tests.initTest"
+        },
+        initTester: {
+            type: "fluid.tests.initTester"
+        }
+    }
+});
+
+fluid.tests.setup = function (that) {
+    //do some setup, for test purpose just fire onReady
+    that.events.onReady.fire();
+}
+
+fluid.defaults("fluid.tests.initTest", {
+    gradeNames: ["fluid.eventedComponent", "autoInit"],
+    events: {
+        onReady: null
+    },
+    listeners: {
+        onCreate: "{that}.initialSetup"
+    },
+    invokers: {
+        initialSetup: "fluid.tests.setup",
+        args: ["{that}"]
+    }
+});
+
+fluid.defaults("fluid.tests.initTester", {
+    gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+    modules: [ {
+        name: "Init test case",
+        tests: [{
+            name: "Init sequence",
+            expect: 1,
+            sequence: [{
+                listener: "fluid.tests.checkEvent",
+                event: "{initTest}.events.onReady"
+            }]
+        }]
+    }]
+});
+
 /** Global driver function **/
 
 fluid.tests.testTests = function () {
     fluid.test.runTests([
         "fluid.tests.myTestTree",
-        "fluid.tests.asyncTestTree"
+        "fluid.tests.asyncTestTree",
+        "fluid.tests.initTree"
     ]);
 };
