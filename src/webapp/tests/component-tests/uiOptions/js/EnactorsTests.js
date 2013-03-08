@@ -25,10 +25,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Default css class: " + expectedCssClass, expectedCssClass, that.options.cssClass);
         jqUnit.assertEquals("Default - css class is not applied", undefined, elements.attr("class"));
         
-        that.applier.requestChange("value", true);
+        that.applier.requestChange(that.options.modelPath, true);
         jqUnit.assertEquals("True value - Css class has been applied", expectedCssClass, elements.attr("class"));
 
-        that.applier.requestChange("value", false);
+        that.applier.requestChange(that.options.modelPath, false);
         jqUnit.assertEquals("False value - Css class has been removed", "", elements.attr("class"));
     }; 
 
@@ -90,8 +90,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             emphasizeLinks: {
                 type: "fluid.uiOptions.actionAnts.emphasizeLinksEnactor",
+                container: ".flc-emphasizeLinksEnactor",
                 options: {
-                    container: ".flc-emphasizeLinksEnactor",
                     cssClass: "fl-emphasizeLinks-test"
                 }
             },
@@ -127,8 +127,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             inputsLarger: {
                 type: "fluid.uiOptions.actionAnts.inputsLargerEnactor",
+                container: ".flc-inputsLargerEnactor",
                 options: {
-                    container: ".flc-inputsLargerEnactor"
+                    cssClass: "fl-text-larger"
                 }
             },
             inputsLargerEnactorTester: {
@@ -281,7 +282,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expectedInitialSize = Math.round(8 / px2emFactor * 10000) / 10000;
         
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, that.initialSize);
-        that.applier.requestChange("textSizeInTimes", 2);
+        that.applier.requestChange("textSize", 2);
         jqUnit.assertEquals("The size should be doubled", "16px", that.container.css("fontSize"));
     }; 
 
@@ -402,7 +403,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testLineSpacerEnactor = function (that) {
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", 2, Math.round(that.initialSize));
         jqUnit.assertEquals("Check the line spacing size in pixels", "12px", convertLineHeightFactor(that.container.css("lineHeight"), that.container.css("fontSize")));
-        that.applier.requestChange("lineSpaceInTimes", 2);
+        that.applier.requestChange("lineSpacing", 2);
         jqUnit.assertEquals("The size should be doubled", "24px", convertLineHeightFactor(that.container.css("lineHeight"), that.container.css("fontSize")));
     }; 
 

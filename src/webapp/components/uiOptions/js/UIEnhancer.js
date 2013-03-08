@@ -69,15 +69,12 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             textSize: {
-                type: "fluid.uiEnhancer.textSizer",
+                type: "fluid.uiOptions.actionAnts.textSizerEnactor",
                 container: "{uiEnhancer}.container",
                 options: {
-                    invokers: {
-                        calcInitSize: {
-                            funcName: "fluid.uiEnhancer.textSizer.calcInitSize",
-                            args: ["{that}.container", "{uiEnhancer}.options.fontSizeMap"]
-                        }
-                    }
+                    fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
+                    model: "{uiEnhancer}.model",
+                    applier: "{uiEnhancer}.applier"
                 }
             },
             tableOfContents: {
@@ -105,29 +102,52 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             textFont: {
-                type: "fluid.uiEnhancer.classSwapper",
+                type: "fluid.uiOptions.actionAnts.classSwapperEnactor",
                 container: "{uiEnhancer}.container",
                 options: {
-                    classes: "{uiEnhancer}.options.classnameMap.textFont"
+                    classes: "{uiEnhancer}.options.classnameMap.textFont",
+                    modelPath: "textFont",
+                    model: "{uiEnhancer}.model",
+                    applier: "{uiEnhancer}.applier"
                 }
             },
             lineSpacing: {
-                type: "fluid.uiEnhancer.lineSpacer",
+                type: "fluid.uiOptions.actionAnts.lineSpacerEnactor",
                 container: "{uiEnhancer}.container",
                 options: {
-                    invokers: {
-                        calcInitSize: {
-                            funcName: "fluid.uiEnhancer.lineSpacer.calcInitSize",
-                            args: ["{that}.container", "{uiEnhancer}.options.fontSizeMap"]
-                        }
-                    }
+                    fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
+                    model: "{uiEnhancer}.model",
+                    applier: "{uiEnhancer}.applier"
                 }
             },
             theme: {
-                type: "fluid.uiEnhancer.classSwapper",
+                type: "fluid.uiOptions.actionAnts.classSwapperEnactor",
                 container: "{uiEnhancer}.container",
                 options: {
-                    classes: "{uiEnhancer}.options.classnameMap.theme"
+                    classes: "{uiEnhancer}.options.classnameMap.theme",
+                    modelPath: "theme",
+                    model: "{uiEnhancer}.model",
+                    applier: "{uiEnhancer}.applier"
+                }
+            },
+            emphasizeLinks: {
+                type: "fluid.uiOptions.actionAnts.emphasizeLinksEnactor",
+                container: "{uiEnhancer}.container",
+                options: {
+                    cssClass: "{uiEnhancer}.options.classnameMap.links",
+                    modelPath: "links",
+                    model: "{uiEnhancer}.model",
+                    applier: "{uiEnhancer}.applier"
+                }
+            },
+            inputsLarger: {
+                type: "fluid.uiOptions.actionAnts.inputsLargerEnactor",
+                container: "{uiEnhancer}.container",
+                options: {
+                    cssClass: "{uiEnhancer}.options.classnameMap.inputsLarger",
+                    modelPath: "inputsLarger",
+                    model: "{uiEnhancer}.model",
+                    applier: "{uiEnhancer}.applier"
                 }
             },
             settingsStore: {
@@ -150,12 +170,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.uiEnhancer.refreshView",
                 args: ["{uiEnhancer}"]
             },
-            styleElements: "fluid.uiEnhancer.styleElements",
-            
-            // NOTE: when we do the ants refactoring each of these will be half an ant
-            setLayout: "fluid.uiEnhancer.setLayout",
-            styleLinks: "fluid.uiEnhancer.styleLinks",
-            styleInputs: "fluid.uiEnhancer.styleInputs",
             setIE6ColorInversion: "fluid.uiEnhancer.setIE6ColorInversion"
         },
         events: {
@@ -247,9 +261,8 @@ var fluid_1_5 = fluid_1_5 || {};
     // Apply those UIEnhancer settings which require reading elements from the DOM - 
     // as opposed to those which may be honoured by static CSS styles
     fluid.uiEnhancer.applyDomReadingSettings = function (that) {
-        that.setLayout(that);
-        that.styleLinks(that);
-        that.styleInputs(that);
+        that.emphasizeLinks.handleStyle(that.model);
+        that.inputsLarger.handleStyle(that.model);
         that.setIE6ColorInversion(that); 
     };
 
@@ -282,31 +295,6 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     /**
-     * Style layout in the container according to the settings
-     * @param {Object} that - the uiEnhancer
-     */
-    fluid.uiEnhancer.setLayout = function (that) {
-        that.styleElements(that.container, that.model.layout, that.options.classnameMap.layout);
-    };
-
-    /**
-     * Style links in the container according to the settings
-     * @param {Object} that - the uiEnhancer
-     */
-    fluid.uiEnhancer.styleLinks = function (that) {
-        var links = $("a", that.container);
-        that.styleElements(links, that.model.links, that.options.classnameMap.links);
-    };
-
-    /**
-     * Style inputs in the container according to the settings
-     * @param {Object} that - the uiEnhancer
-     */
-    fluid.uiEnhancer.styleInputs = function (that) {
-        that.styleElements($("input, button", that.container), that.model.inputsLarger, that.options.classnameMap.inputsLarger);
-    };
-
-    /**
      * remove the instances of fl-inverted-color when the default theme is selected. 
      * This prevents a bug in IE6 where the default theme will have elements styled 
      * with the theme color.
@@ -321,198 +309,6 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
 
-    /**
-     * return "font-size" in px
-     * @param (Object) container
-     * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
-     */
-    fluid.uiEnhancer.getTextSizeInPx = function (container, fontSizeMap) {
-        var fontSize = container.css("font-size");
-
-        if (fontSizeMap[fontSize]) {
-            fontSize = fontSizeMap[fontSize];
-        }
-
-        // return fontSize in px
-        return parseFloat(fontSize);
-    };
-
-    /**
-     * return "font-size" in em
-     * @param (Object) container
-     * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
-     */
-    fluid.uiEnhancer.getTextSizeInEm = function (container, fontSizeMap) {
-        var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container, fontSizeMap);
-
-        // retrieve fontSize in px, convert and return in em 
-        return Math.round(fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap) / px2emFactor * 10000) / 10000;
-    };
-    
-    fluid.uiEnhancer.getPx2EmFactor = function (container, fontSizeMap) {
-        // The base font size is the computed font size of the container's parent element unless the container itself 
-        // has been the DOM root element "HTML" which is NOT detectable with this algorithm
-        if (container.get(0).tagName !== "HTML") {
-            container = container.parent();
-        }
-        return fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap);
-    };
-
-    // Return "line-height" css value
-    fluid.uiEnhancer.getLineHeight = function (container) {
-        var lineHeight;
-        
-        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
-        if (container[0].currentStyle) {
-            lineHeight = container[0].currentStyle.lineHeight;
-        } else {
-            lineHeight = container.css("line-height");
-        }
-        
-        return lineHeight;
-    };
-    
-    // Interprets browser returned "line-height" value, either a string "normal", a number with "px" suffix or "undefined" 
-    // into a numeric value in em. 
-    // Return 0 when the given "lineHeight" argument is "undefined" (http://issues.fluidproject.org/browse/FLUID-4500).
-    fluid.uiEnhancer.numerizeLineHeight = function (lineHeight, fontSize) {
-        // Handel the given "lineHeight" argument is "undefined", which occurs when firefox detects 
-        // "line-height" css value on a hidden container. (http://issues.fluidproject.org/browse/FLUID-4500)
-        if (!lineHeight) {
-            return 0;
-        }
-
-        // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1.2em
-        // according to https://developer.mozilla.org/en/CSS/line-height
-        if (lineHeight === "normal") {
-            return 1.2;
-        }
-        
-        // Continuing the work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
-        if (lineHeight.match(/[0-9]$/)) {
-            return lineHeight;
-        }
-        
-        return Math.round(parseFloat(lineHeight) / fontSize * 100) / 100;
-    };
-
-    /*******************************************************************************
-     * TextSizer                                                                   *
-     *                                                                             *
-     * Sets the text size on the container to the multiple provided.               *
-     * Note: This will become half an ant                                          *
-     *******************************************************************************/
-    
-    fluid.defaults("fluid.uiEnhancer.textSizer", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        invokers: {
-            set: {
-                funcName: "fluid.uiEnhancer.textSizer.set",
-                args: ["@0", "{textSizer}"]
-            }
-        }
-    });
-       
-    fluid.uiEnhancer.textSizer.set = function (times, that) {
-        if (!that.initialSize) {
-            that.initialSize = that.calcInitSize();
-        }
-
-        if (that.initialSize) {
-            var targetSize = times * that.initialSize;
-            that.container.css("font-size", targetSize + "em");
-        }
-    };
-    
-    fluid.uiEnhancer.textSizer.calcInitSize = function (container, fontSizeMap) {
-        return fluid.uiEnhancer.getTextSizeInEm(container, fontSizeMap);
-    };
-
-    /*******************************************************************************
-     * ClassSwapper                                                                *
-     *                                                                             *
-     * Has a hash of classes it cares about and will remove all those classes from *
-     * its container before setting the new class.                                 *
-     * Note: This will become half an ant                                          *
-     *******************************************************************************/
-    
-    fluid.defaults("fluid.uiEnhancer.classSwapper", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        invokers: {
-            clearClasses: {
-                funcName: "fluid.uiEnhancer.classSwapper.clearClasses",
-                args: ["{classSwapper}"]
-            },
-            swap: {
-                funcName: "fluid.uiEnhancer.classSwapper.swap",
-                args: ["@0", "{classSwapper}"]
-            }
-        },
-        classes: {},
-        finalInitFunction: "fluid.uiEnhancer.classSwapper.finalInit"
-    });
-    
-    fluid.uiEnhancer.classSwapper.finalInit = function (that) {
-        that.classSelector = "";
-        that.classStr = "";
-        
-        fluid.each(that.options.classes, function (className) {
-            if (className) {
-                that.classSelector += that.classSelector ? ", ." + className : "." + className;
-                that.classStr += that.classStr ? " " + className : className;
-            }
-        });
-    };
-    
-    fluid.uiEnhancer.classSwapper.clearClasses = function (that) {
-        that.container.removeClass(that.classStr);
-    };
-    
-    fluid.uiEnhancer.classSwapper.swap = function (classname, that) {
-        that.clearClasses(that);
-        that.container.addClass(that.options.classes[classname]);
-    };
-    
-    /*******************************************************************************
-     * LineSpacer                                                                  *
-     *                                                                             *
-     * Sets the line spacing on the container to the multiple provided.            *
-     * Note: This will become half an ant                                          *
-     *******************************************************************************/
-    
-    fluid.defaults("fluid.uiEnhancer.lineSpacer", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        invokers: {
-            set: {
-                funcName: "fluid.uiEnhancer.lineSpacer.set",
-                args: ["@0", "{lineSpacer}"]
-            }
-        }
-    });
-    
-    // TODO: this might be almost the same as textSize setting - can we share?
-    fluid.uiEnhancer.lineSpacer.set = function (times, that) {
-        if (!that.initialSize) {
-            that.initialSize = that.calcInitSize();
-        }
-        
-        // that.initialSize === 0 when the browser returned "lineHeight" css value is undefined,
-        // which occurs when firefox detects this value on a hidden container.
-        // @ See fluid.uiEnhancer.numerizeLineHeight() & http://issues.fluidproject.org/browse/FLUID-4500
-        if (that.initialSize) {
-            var targetLineSpacing = times * that.initialSize;
-            that.container.css("line-height", targetLineSpacing);
-        }
-    };
-    
-    // Returns the value of css style "line-height" in em 
-    fluid.uiEnhancer.lineSpacer.calcInitSize = function (container, fontSizeMap) {
-        var lineHeight = fluid.uiEnhancer.getLineHeight(container);
-        var fontSize = fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap);
-
-        return fluid.uiEnhancer.numerizeLineHeight(lineHeight, fontSize);
-    };
-    
     /*******************************************************************************
      * PageEnhancer                                                                *
      *                                                                             *
