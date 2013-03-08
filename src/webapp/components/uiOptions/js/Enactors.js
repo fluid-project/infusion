@@ -24,6 +24,8 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     /**********************************************************************************
+     * styleElementsEnactor
+     * 
      * Adds or removes the classname to/from the elements based upon the model value.
      * This component is used as a grade by emphasizeLinksEnactor & inputsLargerEnactor
      **********************************************************************************/
@@ -79,6 +81,8 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     /*******************************************************************************
+     * emphasizeLinksEnactor
+     * 
      * The enactor to emphasize links in the container according to the value
      *******************************************************************************/
     fluid.defaults("fluid.uiOptions.actionAnts.emphasizeLinksEnactor", {
@@ -98,6 +102,8 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     /*******************************************************************************
+     * inputsLargerEnactor
+     * 
      * The enactor to enlarge inputs in the container according to the value
      *******************************************************************************/
     fluid.defaults("fluid.uiOptions.actionAnts.inputsLargerEnactor", {
@@ -121,7 +127,7 @@ var fluid_1_5 = fluid_1_5 || {};
      *
      * Has a hash of classes it cares about and will remove all those classes from
      * its container before setting the new class.
-     * This component is used as a grade by textFontEnactor and themeEnactor
+     * This component tends to be used as a grade by textFontEnactor and themeEnactor
      *******************************************************************************/
     
     // Note that the implementors need to provide the container for this view component
@@ -373,6 +379,82 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.actionAnts.lineSpacerEnactor.finalInit = function (that) {
         that.applier.modelChanged.addListener("lineSpaceInTimes", that.set);
+    };
+    
+    /*******************************************************************************
+     * tableOfContentsEnactor
+     *
+     * To create and show/hide table of contents
+     *******************************************************************************/
+    
+    // Note that the implementors need to provide the container for this view component
+    fluid.defaults("fluid.uiOptions.actionAnts.tableOfContentsEnactor", {
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
+        tocTemplate: null,  // must be supplied by implementors
+        model: {
+            toc: false
+        },
+        components: {
+            tableOfContents: {
+                type: "fluid.tableOfContents",
+                container: "{tableOfContentsEnactor}.container",
+                createOnEvent: "onCreateTOCReady",
+                options: {
+                    components: {
+                        levels: {
+                            type: "fluid.tableOfContents.levels",
+                            options: {
+                                resources: {
+                                    template: {
+                                        forceCache: true,
+                                        url: "{tableOfContentsEnactor}.options.tocTemplate"
+                                    }
+                                }
+                            } 
+                        }
+                    }
+                }
+            }
+        },
+        invokers: {
+            applyToc: {
+                funcName: "fluid.uiOptions.actionAnts.tableOfContentsEnactor.applyToc",
+                args: ["{arguments}.0.toc", "{that}"]
+            }
+        },
+        events: {
+            onCreateTOCReady: null,
+            onLateRefreshRelay: null
+        },
+        listeners: {
+            onCreate: {
+                listener: "{that}.applyToc",
+                args: "{that}.model.toc"
+            }
+        }
+    });
+    
+    fluid.uiOptions.actionAnts.tableOfContentsEnactor.applyToc = function (toc, that) {
+        var async = false;
+        if (toc) {
+            if (that.tableOfContents) {
+                that.tableOfContents.show();
+            } else {
+                that.events.onCreateTOCReady.fire();
+                async = true;
+            }
+        } else {
+            if (that.tableOfContents) {
+                that.tableOfContents.hide();
+            }
+        }
+        if (!async) {
+            that.events.onLateRefreshRelay.fire(that);
+        }
+    };
+    
+    fluid.uiOptions.actionAnts.tableOfContentsEnactor.finalInit = function (that) {
+        that.applier.modelChanged.addListener("toc", that.applyToc);
     };
     
 })(jQuery, fluid_1_5);

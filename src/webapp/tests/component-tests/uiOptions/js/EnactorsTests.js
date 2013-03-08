@@ -420,6 +420,73 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    /*******************************************************************************
+     * Unit tests for fluid.uiOptions.actionAnts.tableOfContentsEnactor
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.tableOfContentsEnactor", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            toc: {
+                type: "fluid.uiOptions.actionAnts.tableOfContentsEnactor",
+                container: ".flc-tableOfContentsEnactor",
+                options: {
+                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                }
+            },
+            tableOfContentsEnactorTester: {
+                type: "fluid.tests.tableOfContentsEnactorTester"
+            }
+        }
+    });
+
+    fluid.tests.tableOfContentsEnactor.checkTocLevels = function (that, expectedTocLevels) {
+        jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
+    };
+    
+    fluid.tests.tableOfContentsEnactor.makeTocVisibilityChecker = function (that, expectedTocLevels, tocContainer, isShown) {
+        return function () {
+            jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
+            jqUnit.assertEquals("The visibility of the table of contents is " + isShown, isShown, $(tocContainer).is(":visible"));
+        };
+    };
+    
+    fluid.defaults("fluid.tests.tableOfContentsEnactorTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        testOptions: {
+            trueValue: true,
+            falseValue: false,
+            tocContainer: ".flc-toc-tocContainer",
+            expectedNoTocLevels: 0,
+            expectedTocLevelsAtTrue: 1
+        },
+        modules: [{
+            name: "Test table of contents enactor",
+            tests: [{
+                expect: 5,
+                name: "Test in order: default, toc is on, toc is off",
+                sequence: [{
+                    func: "fluid.tests.tableOfContentsEnactor.checkTocLevels",
+                    args: ["{toc}", "{that}.options.testOptions.expectedNoTocLevels"]
+                }, {
+                    func: "{toc}.applier.requestChange",
+                    args: ["toc", "{that}.options.testOptions.trueValue"]
+                }, {
+                    listenerMaker: "fluid.tests.tableOfContentsEnactor.makeTocVisibilityChecker",
+                    makerArgs: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", true],
+                    event: "{toc}.tableOfContents.events.afterRender"
+                }, {
+                    func: "{toc}.applier.requestChange",
+                    args: ["toc", "{that}.options.testOptions.falseValue"]
+                }, {
+                    listenerMaker: "fluid.tests.tableOfContentsEnactor.makeTocVisibilityChecker",
+                    makerArgs: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", false],
+                    event: "{toc}.events.onLateRefreshRelay"
+                }]
+            }]
+        }]
+    });
+
     $(document).ready(function () {
         fluid.test.runTests([
             "fluid.tests.styleElementsEnactor",
@@ -429,7 +496,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.tests.getSize",
             "fluid.tests.textSizerEnactor",
             "fluid.tests.getLineHeight",
-            "fluid.tests.lineSpacerEnactor"
+            "fluid.tests.lineSpacerEnactor",
+            "fluid.tests.tableOfContentsEnactor"
         ]);
     });
 
