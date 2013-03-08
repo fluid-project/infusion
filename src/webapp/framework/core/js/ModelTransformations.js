@@ -441,7 +441,7 @@ var fluid = fluid || fluid_1_5;
             delete content[pivot];
             //fix sub Arrays if needed:
             if (expandSpec.innerValue) {
-                content = fluid.model.transform.expandInnerValues([expander.outputPrefix, k.toString()], 
+                content = fluid.model.transform.expandInnerValues([expander.inputPrefix, expandSpec.inputPath, k.toString()], 
                     [newKey], expander, expandSpec.innerValue);
             }
             newHash[newKey] = content;
@@ -488,7 +488,7 @@ var fluid = fluid || fluid_1_5;
             var content = {};
             content[pivot] = k;
             if (expandSpec.innerValue) {
-                v = fluid.model.transform.expandInnerValues([expandSpec.inputPath, k], [expandSpec.inputPath, newArray.length.toString()], 
+                v = fluid.model.transform.expandInnerValues([expandSpec.inputPath, k], [expandSpec.outputPath, newArray.length.toString()], 
                     expander, expandSpec.innerValue);
             }
             // TODO: remove this use of fluid.merge which will not be valid in 1.5 Infusion framework

@@ -1508,6 +1508,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var arrayObjectArrayTests = [
         {
             name: "Basic Array transformations",
+            expectPerfectInversion: true,
             raw: {
                 a: {
                     c: [ 
@@ -1548,6 +1549,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }    
         }, {
             name: "More Complex Array transformations",
+            expectPerfectInversion: true,
             raw: {
                 b: {
                     b1: "hello",
@@ -1601,7 +1603,52 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 ]
             }
         }, {
+            name: "basic Nested Transformation",
+            expectPerfectInversion: false,
+            raw: {
+                foo: {
+                    bar: [ 
+                        { product: "salad", info: { price: 10, healthy: "yes" }},
+                        { product: "candy", info: { price: 18, healthy: "no", tasty: "yes" }}
+                    ]
+                }
+            }, 
+            rules: {
+                expander: {
+                    type: "fluid.model.transform.arrayToObject",
+                    inputPath: "foo.bar",
+                    key: "product",
+                    innerValue: [{
+                        expander: {
+                            type: "fluid.model.transform.value",
+                            inputPath: "info.healthy",
+                        }
+
+                    }]
+                }
+            },
+            expected: {
+                "candy": "no",
+                "salad": "yes"
+            },
+            invertedRules: {
+                expander: [{
+                    type: "fluid.model.transform.objectToArray",
+                    outputPath: "foo.bar",
+                    key: "product",
+                    innerValue: [{
+                        expander: [{
+                            type: "fluid.model.transform.value",
+                            inputPath: "",
+                            outputPath: "info.healthy"
+                        }]
+                    }],
+                    inputPath: ""
+                }]
+            }
+        }, {
             name: "Nested Array transformations",
+            expectPerfectInversion: true,
             raw: {
                 outer: [
                 { 
@@ -1699,6 +1746,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }, {
             name: "Multiple Nested Array transformations",
+            expectPerfectInversion: true,
             raw: {
                 outer: [
                 { 
@@ -1805,13 +1853,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var arrayTest = function (json) {
         var description = json.name;
         var transformed = fluid.model.transformWithRules(json.raw, json.rules);
-        jqUnit.assertDeepEq(description+" array->object transformation", json.expected, transformed);
+        jqUnit.assertDeepEq(description+" forward transformation", json.expected, transformed);
+        // NOT YET IMPLEMENTED: FLUID-XXXX
         // var paths = fluid.model.transform.collectInputPaths(json.rules);
         // jqUnit.assertDeepEq(description+" path collection", json.expectedInputPaths, paths);
         var inverseRules = fluid.model.transform.invertConfiguration(json.rules);
-        jqUnit.assertDeepEq(description+" inverted rules", json.invertedRules, inverseRules);
-        var inverseTransformed = fluid.model.transformWithRules(json.expected, json.invertedRules);
-        jqUnit.assertDeepEq(description+" object->array transformation", json.raw, inverseTransformed);
+        jqUnit.assertDeepEq(description+" inverted rules", json.invertedRules, inverseRules);        
+        if (json.expectPerfectInversion === true) {
+            var inverseTransformed = fluid.model.transformWithRules(json.expected, json.invertedRules);
+            jqUnit.assertDeepEq(description+" inverted transformation", json.raw, inverseTransformed);
+        }
     };
 
     jqUnit.test("arrayToObject and objectToArray transformation tests", function () {
@@ -1868,16 +1919,4 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("arrayToOutputs and inputsToArray transformation tests", function () {
         arrayTest(arrayToOutputsTests);
     });
-
-    var arrayTest = function (json) {
-        var description = json.name;
-        var transformed = fluid.model.transformWithRules(json.raw, json.rules);
-        jqUnit.assertDeepEq(description+" array->outputs transformation", json.expected, transformed);
-        // var paths = fluid.model.transform.collectInputPaths(json.rules);
-        // jqUnit.assertDeepEq(description+" path collection", json.expectedInputPaths, paths);
-        var inverseRules = fluid.model.transform.invertConfiguration(json.rules);
-        jqUnit.assertDeepEq(description+" inverted rules", json.invertedRules, inverseRules);
-        var inverseTransformed = fluid.model.transformWithRules(json.expected, json.invertedRules);
-        jqUnit.assertDeepEq(description+" inputs->array transformation", json.raw, inverseTransformed);
-    };
 })(jQuery);
