@@ -47,37 +47,84 @@ var fluid = fluid || fluid_1_5;
     var globalObject = window || {};
     
     var softFailure = [false];
+    
+    var activityParser = /(%\w+)/g;
+
+    // Renders a single activity element in a form suitable to be sent to a modern browser's console
+    // unsupported, non-API function
+    fluid.renderOneActivity = function (activity) {
+        var togo = ["    while"];
+        var message = activity.message;
+        var index = activityParser.lastIndex = 0;
+        while (true) {
+            var match = activityParser.exec(message);
+            if (match) {
+                var key = match[1].substring(1);
+                togo.push(message.substring(index, match.index));
+                togo.push(activity.args[key]);
+                index = activityParser.lastIndex;
+            }
+            else {
+                break;
+            }
+        }
+        if (index < message.length) {
+            togo.push(message.substring(index));
+        }
+        return togo;  
+    };
+    
+    // Renders an activity stack in a form suitable to be sent to a modern browser's console
+    // unsupported, non-API function
+    fluid.renderActivity = function (activityStack, renderer) {
+        renderer = renderer || fluid.renderOneActivity;
+        return fluid.transform(activityStack, renderer); 
+    };
+
+    // Return an array of objects describing the current activity
+    // unsupported, non-API function    
+    fluid.getActivityStack = function () {
+        var root = fluid.globalThreadLocal();
+        if (!root.activityStack) {
+            root.activityStack = [];
+        }
+        return root.activityStack;  
+    }
 
     // Return an array of objects describing the current activity
     // unsupported, non-API function
-    // TODO: Write at least a console renderer here
-    fluid.describeActivity = function () {
-        return fluid.globalThreadLocal().activityStack || [];
+    fluid.describeActivity = fluid.getActivityStack;
+    
+    // Renders either the current activity or the supplied activity to the console
+    fluid.logActivity = function (activity) {
+        activity = activity || fluid.describeActivity();
+        var rendered = fluid.renderActivity(activity).reverse();
+        fluid.log("Current activity: ");
+        fluid.each(rendered, function (args) {
+            fluid.applyHostFunction(console, console.log, args);
+        });
     };
     
     // Execute the supplied function with the specified activity description pushed onto the stack
     // unsupported, non-API function
     fluid.pushActivity = function (type, message, args) {
-        var root = fluid.globalThreadLocal();
-        if (!root.activityStack) {
-            root.activityStack = [];
-        }
-        root.activityStack.push({type: type, message: message, args: args});
-        //fluid.log(fluid.describeActivity());
+        var activityStack = fluid.getActivityStack();
+        activityStack.push({type: type, message: message, args: args, time: new Date().getTime()});
     };
     
     // Undo the effect of the most recent pushActivity, or multiple frames if an argument is supplied
     fluid.popActivity = function (popframes) {
         popframes = popframes || 1;
-        var root = fluid.globalThreadLocal();      
-        root.activityStack = root.activityStack.slice(popframes);
+        var activityStack = fluid.getActivityStack();
+        var popped = activityStack.length - popframes;
+        activityStack.length = popped < 0 ? 0 : popped;
     };
     
     // The framework's built-in "fail" policy, in case a user-defined handler would like to
     // defer to it
     fluid.builtinFail = function (soft, args, activity) {
         fluid.setLogging(true);
-        fluid.log.apply(null, ["ASSERTION FAILED: "].concat(args).concat(activity));
+        fluid.log.apply(null, ["ASSERTION FAILED: "].concat(args).concat(fluid.renderActivity(activity).reverse()));
         var message = args[0];          
         if (soft) {
             throw new Error(message);
@@ -96,6 +143,7 @@ var fluid = fluid || fluid_1_5;
     fluid.fail = function (message /*, ... */) { // jslint:ok - whitespace in arg list
         var args = fluid.makeArray(arguments);
         var activity = fluid.describeActivity();
+        fluid.popActivity(activity.length);
         var topFailure = softFailure[0];
         if (typeof(topFailure) === "boolean") {
             fluid.builtinFail(topFailure, args, activity);
@@ -1821,7 +1869,7 @@ var fluid = fluid || fluid_1_5;
         }
         var args = [componentName].concat(fluid.makeArray(initArgs)); // TODO: support different initFunction variants
         var that;
-        fluid.pushActivity("initComponent", "construction of component of type %componentName with arguments %initArgs", 
+        fluid.pushActivity("initComponent", "constructing component of type %componentName with arguments %initArgs", 
             {componentName: componentName, initArgs: initArgs});
         that = fluid.invokeGlobalFunction(options.initFunction, args);
         fluid.diagnoseFailedView(componentName, that, options, args);
@@ -1833,6 +1881,7 @@ var fluid = fluid || fluid_1_5;
         fluid.clearLifecycleFunctions(that.options);
         that.destroy = fluid.makeRootDestroy(that); // overwritten by FluidIoC for constructed subcomponents
         fluid.fireEvent(that, "events.onCreate", that);
+        fluid.popActivity();
         // TODO: This needs to be ginger, or else unsupportable
         return that.options.returnedPath ? fluid.get(that, that.options.returnedPath) : that;
     };

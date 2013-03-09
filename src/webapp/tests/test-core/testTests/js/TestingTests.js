@@ -207,16 +207,17 @@ fluid.defaults("fluid.tests.initTree", {
     gradeNames: ["fluid.test.testEnvironment", "autoInit"],
     components: {
         initTest: {
-            type: "fluid.tests.initTest"
+            type: "fluid.tests.initTest",
+            createOnEvent: "{initTester}.events.onTestCaseStart"
         },
         initTester: {
-            type: "fluid.tests.initTester"
+            type: "fluid.tests.initTester",
         }
     }
 });
 
 fluid.tests.setup = function (that) {
-    //do some setup, for test purpose just fire onReady
+    // do some setup, for test purpose just fire onReady
     that.events.onReady.fire();
 }
 
@@ -243,7 +244,7 @@ fluid.defaults("fluid.tests.initTester", {
             expect: 1,
             sequence: [{
                 listener: "fluid.tests.checkEvent",
-                event: "{initTest}.events.onReady"
+                event: "{initTree initTest}.events.onReady"
             }]
         }]
     }]
