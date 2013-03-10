@@ -77,7 +77,7 @@ var fluid = fluid || fluid_1_5;
     fluid.popActivity = function (popframes) {
         popframes = popframes || 1;
         var root = fluid.globalThreadLocal();
-        root.activityStack = root.activityStack.slice(popframes);
+        root.activityStack = root.activityStack.slice(0, -popframes);
         if (fluid.activityTracing) {
             fluid.activityTrace.push({pop: popframes});  
         }

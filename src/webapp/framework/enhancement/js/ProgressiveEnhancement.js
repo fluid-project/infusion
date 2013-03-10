@@ -36,6 +36,9 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.enhance.supportsFlash = function () {
         return (typeof(swfobject) !== "undefined") && (swfobject.getFlashPlayerVersion().major > 8);
     };
+    fluid.enhance.majorFlashVersion = function () {
+        return typeof(swfobject) === "undefined" ? 0 : swfobject.getFlashPlayerVersion().major;
+    };
     
     /*
      * An object to hold the results of the progressive enhancement checks.
@@ -61,7 +64,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     /*
-     * Takes an object of key/value pairs where the key will be the key in the static enivronment and the value is a function or function name to run.
+     * Takes an object of key/value pairs where the key will be the key in the static environment and the value is a function or function name to run.
      * {staticEnvKey: "progressiveCheckFunc"}
      * Note that the function will not be run if it's result is already recorded.
      */

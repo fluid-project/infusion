@@ -32,10 +32,11 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.defaults("fluid.uploader.html5Strategy", {
         gradeNames: ["fluid.uploader.strategy", "autoInit"],
-        // Used for browsers that rely on File.getAsBinary(), such as Firefox 3.6,
-        // which load the entire file to be loaded into memory.
-        // Set this option to a sane limit (100MB) so your users won't experience crashes or slowdowns (FLUID-3937).
-        legacyBrowserFileLimit: 100000
+        components: {
+            local: { // TODO: Would be nice to have some way to express that this is a "natural covariant refinement"
+                type: "fluid.uploader.html5Strategy.local"
+            }
+        }
     });
     
     // TODO: The following two or three functions probably ultimately belong on a that responsible for
@@ -66,7 +67,6 @@ var fluid_1_5 = fluid_1_5 || {};
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 var status = xhr.status;
-                // TODO: See a pattern here? Fix it.
                 if (status >= 200 && status <= 204) {
                     fluid.uploader.html5Strategy.fileSuccessHandler(file, events, xhr);
                 } else if (status === 0) {
@@ -140,7 +140,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     // Set additional POST parameters for xhr  
-    var setPostParams = function (formData, postParams) {
+    fluid.uploader.html5Strategy.setPostParams = function (formData, postParams) {
         $.each(postParams, function (key, value) {
             formData.append(key, value);
         });
@@ -152,149 +152,56 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.defaults("fluid.uploader.html5Strategy.formDataSender", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
-        finalInitFunction: "fluid.uploader.html5Strategy.formDataSender.init",
         invokers: {
-            createFormData: "fluid.uploader.html5Strategy.createFormData"
+            createFormData: "fluid.uploader.html5Strategy.createFormData",
+            send: {
+                funcName: "fluid.uploader.html5Strategy.sendFormData",
+                args: ["{that}.createFormData", "{arguments}.0", "{arguments}.1", "{arguments}.2"], 
+            }
         }
     });
-    
-    fluid.uploader.html5Strategy.formDataSender.init = function (that) {
-        /**
-         * Uploads the file using the HTML5 FormData object.
-         */
-        that.send = function (file, queueSettings, xhr) {
-            var formData = that.createFormData();
-            formData.append("file", file);
-            setPostParams(formData, queueSettings.postParams);
-            xhr.open("POST", queueSettings.uploadURL, true);
-            xhr.send(formData);
-            return formData;
-        };
+
+    /**
+     * Uploads the file using the HTML5 FormData object.
+     */    
+    fluid.uploader.html5Strategy.sendFormData = function (formCreator, file, queueSettings, xhr) {
+        var formData = formCreator();
+        formData.append("file", file);
+        fluid.uploader.html5Strategy.setPostParams(formData, queueSettings.postParams);
+        xhr.open("POST", queueSettings.uploadURL, true);
+        xhr.send(formData);
+        return formData;
     };
-    
+
     fluid.demands("fluid.uploader.html5Strategy.fileSender", [
         "fluid.uploader.html5Strategy.remote", 
         "fluid.browser.supportsFormData"
     ], {
         funcName: "fluid.uploader.html5Strategy.formDataSender"
     });
-    
-    /********************************************
-     * Raw MIME Sender, required by Firefox 3.6 *
-     ********************************************/
-     
-    fluid.uploader.html5Strategy.generateMultipartBoundary = function () {
-        var boundary = "---------------------------";
-        boundary += Math.floor(Math.random() * 32768);
-        boundary += Math.floor(Math.random() * 32768);
-        boundary += Math.floor(Math.random() * 32768);
-        return boundary;
-    };
-    
-    fluid.uploader.html5Strategy.generateMultiPartContent = function (boundary, file) {
-        var CRLF = "\r\n";
-        var multipart = "";
-        multipart += "--" + boundary + CRLF;
-        multipart += "Content-Disposition: form-data;" +
-            " name=\"fileData\";" + 
-            " filename=\"" + file.name + 
-            "\"" + CRLF;
-        multipart += "Content-Type: " + file.type + CRLF + CRLF;
-        multipart += file.getAsBinary(); // Concatting binary data to JS String; yes, FF will handle it.
-        multipart += CRLF + "--" + boundary + "--" + CRLF;
-        return multipart;
-    };
-    
-    fluid.defaults("fluid.uploader.html5Strategy.rawMIMESender", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        finalInitFunction: "fluid.uploader.html5Strategy.rawMIMESender.init"
-    });
-    
-    fluid.uploader.html5Strategy.rawMIMESender.init = function (that) {
-        /**
-         * Uploads the file by manually creating the multipart/form-data request. Required by Firefox 3.6.
-         */
-        that.send = function (file, queueSettings, xhr) {
-            var boundary =  fluid.uploader.html5Strategy.generateMultipartBoundary();
-            var multipart = fluid.uploader.html5Strategy.generateMultiPartContent(boundary, file);
-            xhr.open("POST", queueSettings.uploadURL, true);
-            xhr.setRequestHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
-            xhr.sendAsBinary(multipart);
-            return multipart;
-        };
-    };
-    
-    fluid.demands("fluid.uploader.html5Strategy.fileSender", "fluid.uploader.html5Strategy.remote", {
-        funcName: "fluid.uploader.html5Strategy.rawMIMESender"
-    });
-
 
     /************************************
      * HTML5 Strategy's Local Behaviour *
      ************************************/
-     
-    fluid.uploader.html5Strategy.local = function (queue, legacyBrowserFileLimit, options) {
-        var that = fluid.initLittleComponent("fluid.uploader.html5Strategy.local", options);
-        that.queue = queue;
-        that.queueSettings = that.options.queueSettings;
-
-        // Add files to the file queue without exceeding the fileUploadLimit and the fileSizeLimit
-        // NOTE:  fileSizeLimit set to bytes for HTML5 Uploader (KB for SWF Uploader).  
-        that.addFiles = function (files) {
-            // TODO: These look like they should be part of a real model.
-            var sizeLimit = (legacyBrowserFileLimit || that.queueSettings.fileSizeLimit) * 1024;
-            var fileLimit = that.queueSettings.fileUploadLimit;
-            var uploaded = that.queue.getUploadedFiles().length;
-            var queued = that.queue.getReadyFiles().length;
-            var remainingUploadLimit = fileLimit - uploaded - queued;
-            
-            that.events.onFilesSelected.fire(files.length);
-            
-            // Provide feedback to the user if the file size is too large and isn't added to the file queue
-            var numFilesAdded = 0;
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                if (fileLimit && remainingUploadLimit === 0) {
-                    that.events.onQueueError.fire(file, fluid.uploader.queueErrorConstants.QUEUE_LIMIT_EXCEEDED);
-                } else if (file.size >= sizeLimit) {
-                    file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
-                    that.events.onQueueError.fire(file, fluid.uploader.queueErrorConstants.FILE_EXCEEDS_SIZE_LIMIT);
-                } else if (!fileLimit || remainingUploadLimit > 0) {
-                    file.id = "file-" + fluid.allocateGuid();
-                    file.filestatus = fluid.uploader.fileStatusConstants.QUEUED;
-                    that.events.afterFileQueued.fire(file);
-                    remainingUploadLimit--;
-                    numFilesAdded++;
-                }
-            }            
-            that.events.afterFileDialog.fire(numFilesAdded);
-        };
-        
-        that.removeFile = function (file) {
-        };
-        
-        that.enableBrowseButton = function () {
-            that.browseButtonView.enable();
-        };
-        
-        that.disableBrowseButton = function () {
-            that.browseButtonView.disable();
-        };
-        
-        fluid.initDependents(that);
-        return that;
-    };
     
     fluid.defaults("fluid.uploader.html5Strategy.local", {
-        gradeNames: ["fluid.uploader.local"],
-        
+        gradeNames: ["fluid.uploader.local", "autoInit"],
+        invokers: {
+            addFiles: {
+                funcName: "fluid.uploader.html5Strategy.local.addFiles",
+                args: ["{that}", "{arguments}.0"] // files
+            },
+            removeFile: "fluid.identity", // it appears this was never implemented
+            enableBrowseButton: "{that}.browseButtonView.enable",
+            disableBrowseButton: "{that}.browseButtonView.disable"
+        },
         components: {
             browseButtonView: {
                 type: "fluid.uploader.html5Strategy.browseButtonView",
                 options: {
-                    queueSettings: "{multiFileUploader}.options.queueSettings",
+                    queueSettings: "{uploader}.options.queueSettings",
                     selectors: {
-                        browseButton: "{multiFileUploader}.options.selectors.browseButton"
+                        browseButton: "{uploader}.options.selectors.browseButton"
                     },
                     listeners: {
                         onFilesQueued: "{local}.addFiles"
@@ -303,28 +210,38 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-    
-    fluid.demands("fluid.uploader.local", "fluid.uploader.html5Strategy", {
-        funcName: "fluid.uploader.html5Strategy.local",
-        args: [
-            "{multiFileUploader}.queue",
-            "{html5Strategy}.options.legacyBrowserFileLimit",
-            "{options}"
-        ]
-    });
-    
-    fluid.demands("fluid.uploader.local", [
-        "fluid.uploader.html5Strategy",
-        "fluid.browser.supportsFormData"
-    ], {
-        funcName: "fluid.uploader.html5Strategy.local",
-        args: [
-            "{multiFileUploader}.queue",
-            undefined,
-            "{options}"
-        ]
-    });
-    
+     
+    fluid.uploader.html5Strategy.local.addFiles = function (that, files) {
+        // Add files to the file queue without exceeding the fileUploadLimit and the fileSizeLimit
+        // NOTE:  fileSizeLimit set to bytes for HTML5 Uploader (KB for SWF Uploader).  
+        // TODO: These look like they should be part of a real model.
+        var sizeLimit = that.queueSettings.fileSizeLimit * 1024;
+        var fileLimit = that.queueSettings.fileUploadLimit;
+        var uploaded = that.queue.getUploadedFiles().length;
+        var queued = that.queue.getReadyFiles().length;
+        var remainingUploadLimit = fileLimit - uploaded - queued;
+        
+        that.events.onFilesSelected.fire(files.length);
+        
+        // Provide feedback to the user if the file size is too large and isn't added to the file queue
+        var numFilesAdded = 0;
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            if (fileLimit && remainingUploadLimit === 0) {
+                that.events.onQueueError.fire(file, fluid.uploader.queueErrorConstants.QUEUE_LIMIT_EXCEEDED);
+            } else if (file.size >= sizeLimit) {
+                file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
+                that.events.onQueueError.fire(file, fluid.uploader.queueErrorConstants.FILE_EXCEEDS_SIZE_LIMIT);
+            } else if (!fileLimit || remainingUploadLimit > 0) {
+                file.id = "file-" + fluid.allocateGuid();
+                file.filestatus = fluid.uploader.fileStatusConstants.QUEUED;
+                that.events.afterFileQueued.fire(file);
+                remainingUploadLimit--;
+                numFilesAdded++;
+            }
+        }            
+        that.events.afterFileDialog.fire(numFilesAdded);
+    };
     
     /********************
      * browseButtonView *

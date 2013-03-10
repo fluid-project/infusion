@@ -31,6 +31,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.options.strings.progress.pluralFiles;
     };
     
+    // TODO: Use of these four utilities should be replaced by use of the "visibility model" described in FLUID-4928
     var enableElement = function (that, elm) {
         elm.prop("disabled", false);
         elm.removeClass(that.options.styles.dim);
@@ -608,14 +609,19 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uploader.strategy", {
         gradeNames: ["fluid.littleComponent"],
         components: {
-            local: "fluid.uploader.local",
-            remote: "fluid.uploader.remote"
+            local: {
+                type: "fluid.uploader.local"
+            },
+            remote: {
+                type: "fluid.uploader.remote"
+            }
         }  
     });
     
     fluid.defaults("fluid.uploader.local", {
         gradeNames: ["fluid.eventedComponent"],
         members: {
+            queue: "{uploader}.queue",
             queueSettings: "{uploader}.options.queueSettings"
         },
         events: {
@@ -624,6 +630,10 @@ var fluid_1_5 = fluid_1_5 || {};
             afterFileDialog: "{uploader}.events.afterFileDialog",
             afterFileQueued: "{uploader}.events.afterFileQueued",
             onQueueError: "{uploader}.events.onQueueError"
+        },
+        invokers: {
+            enableBrowseButton: "fluid.uploader.local.enableBrowseButton", // TODO: FLUID-4928 "visibility model"
+            disableBrowseButton: "fluid.uploader.local.disableBrowseButton"
         }
     });
     
