@@ -20,18 +20,9 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     fluid.defaults("fluid.uiOptions.actionAnts", {
-        gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"]
+        gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "fluid.uiOptions.modelRelay", "autoInit"]
     });
     
-    /**********************************************************************************
-     * Functions shared by various enactors
-     **********************************************************************************/
-    
-    fluid.uiOptions.actionAnts.getModelValueByPath = function (model, path) {
-        return model[path];
-    };
-    
-
     /**********************************************************************************
      * styleElementsEnactor
      * 
@@ -41,15 +32,10 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.actionAnts.styleElementsEnactor", {
         gradeNames: ["fluid.uiOptions.actionAnts", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
-        modelPath: "value",  // Must be supplied by implementors
         model: {
             value: false
         },
         invokers: {
-            getModelValueByPath: {
-                funcName: "fluid.uiOptions.actionAnts.getModelValueByPath",
-                args: ["{that}.model", "{that}.options.modelPath"]
-            },
             applyStyle: {
                 funcName: "fluid.uiOptions.actionAnts.styleElementsEnactor.applyStyle",
                 args: ["{arguments}.0", "{arguments}.1"]
@@ -60,7 +46,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             handleStyle: {
                 funcName: "fluid.uiOptions.actionAnts.styleElementsEnactor.handleStyle",
-                args: [{expander: {func: "{that}.getModelValueByPath", args: "{arguments}.0"}}, {expander: {func: "{that}.getElements"}}, "{that}"]
+                args: ["{arguments}.0.value", {expander: {func: "{that}.getElements"}}, "{that}"]
             },
             
             // Must be supplied by implementors
@@ -69,7 +55,7 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             onCreate: {
                 listener: "{that}.handleStyle",
-                args: [{expander: {func: "{that}.getModelValueByPath", args: "{that}.model"}}]
+                args: ["{that}.model.value"]
             }
         }
     });
@@ -91,7 +77,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.actionAnts.styleElementsEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener(that.options.modelPath, that.handleStyle);
+        that.applier.modelChanged.addListener("value", that.handleStyle);
     };
     
     /*******************************************************************************
@@ -104,9 +90,8 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.actionAnts.emphasizeLinksEnactor", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts.styleElementsEnactor", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
-        modelPath: "links",  // Must be supplied by implementors
         model: {
-            links: false
+            value: false
         },
         invokers: {
             getElements: {
@@ -130,9 +115,8 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.actionAnts.inputsLargerEnactor", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts.styleElementsEnactor", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
-        modelPath: "inputsLarger",  // Must be supplied by implementors if different
         model: {
-            inputsLarger: false
+            value: false
         },
         invokers: {
             getElements: {
@@ -158,28 +142,23 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.actionAnts.classSwapperEnactor", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
         classes: {},  // Must be supplied by implementors
-        modelPath: "className",  // Must be supplied by implementors to identify the EL path to the model key
         model: {
-            className: ""
+            value: ""
         },
         invokers: {
             clearClasses: {
                 funcName: "fluid.uiOptions.actionAnts.classSwapperEnactor.clearClasses",
                 args: ["{that}.container", "{that}.classStr"]
             },
-            getModelValueByPath: {
-                funcName: "fluid.uiOptions.actionAnts.getModelValueByPath",
-                args: ["{that}.model", "{that}.options.modelPath"]
-            },
             swap: {
                 funcName: "fluid.uiOptions.actionAnts.classSwapperEnactor.swap",
-                args: [{expander: {func: "{that}.getModelValueByPath", args: "{arguments}.0"}}, "{that}"]
+                args: ["{arguments}.0.value", "{that}"]
             }
         },
         listeners: {
             onCreate: {
                 listener: "{that}.swap",
-                args: [{expander: {func: "{that}.getModelValueByPath", args: "{that}.model"}}]
+                args: ["{that}.model.value"]
             }
         },
         members: {
@@ -196,9 +175,9 @@ var fluid_1_5 = fluid_1_5 || {};
         container.removeClass(classStr);
     };
     
-    fluid.uiOptions.actionAnts.classSwapperEnactor.swap = function (className, that) {
+    fluid.uiOptions.actionAnts.classSwapperEnactor.swap = function (value, that) {
         that.clearClasses();
-        that.container.addClass(that.options.classes[className]);
+        that.container.addClass(that.options.classes[value]);
     };
     
     fluid.uiOptions.actionAnts.classSwapperEnactor.joinClassStr = function (classes) {
@@ -212,8 +191,14 @@ var fluid_1_5 = fluid_1_5 || {};
         return classStr;
     };
     
+    fluid.uiOptions.actionAnts.classSwapperEnactor.validateValue = function (model, changeRequest, applier) {
+        console.log("a");
+    };
+    
     fluid.uiOptions.actionAnts.classSwapperEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener(that.options.modelPath, that.swap);
+        that.applier.guards.addListener({path: "value", transactional: true}, fluid.uiOptions.actionAnts.classSwapperEnactor.validateValue);
+        
+        that.applier.modelChanged.addListener("value", that.swap);
     };
     
     /*******************************************************************************
@@ -247,12 +232,12 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
         fontSizeMap: {},  // must be supplied by implementors
         model: {
-            textSize: 1
+            value: 1
         },
         invokers: {
             set: {
                 funcName: "fluid.uiOptions.actionAnts.textSizerEnactor.set",
-                args: ["{arguments}.0.textSize", "{that}"]
+                args: ["{arguments}.0.value", "{that}"]
             },
             getTextSizeInPx: {
                 funcName: "fluid.uiOptions.actionAnts.getTextSizeInPx",
@@ -270,7 +255,7 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             onCreate: {
                 listener: "{that}.set",
-                args: "{that}.model.textSize"
+                args: "{that}.model.value"
             }
         },
         members: {
@@ -309,7 +294,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.actionAnts.textSizerEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener("textSize", that.set);
+        that.applier.modelChanged.addListener("value", that.set);
     };
     
     /*******************************************************************************
@@ -323,12 +308,12 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
         fontSizeMap: {},  // must be supplied by implementors
         model: {
-            lineSpacing: 1
+            value: 1
         },
         invokers: {
             set: {
                 funcName: "fluid.uiOptions.actionAnts.lineSpacerEnactor.set",
-                args: ["{arguments}.0.lineSpacing", "{that}"]
+                args: ["{arguments}.0.value", "{that}"]
             },
             getTextSizeInPx: {
                 funcName: "fluid.uiOptions.actionAnts.getTextSizeInPx",
@@ -346,7 +331,7 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             onCreate: {
                 listener: "{that}.set",
-                args: "{that}.model.lineSpacing"
+                args: "{that}.model.value"
             }
         },
         members: {
@@ -407,7 +392,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.uiOptions.actionAnts.lineSpacerEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener("lineSpacing", that.set);
+        that.applier.modelChanged.addListener("value", that.set);
     };
     
     /*******************************************************************************
@@ -421,7 +406,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
         tocTemplate: null,  // must be supplied by implementors
         model: {
-            toc: false
+            value: false
         },
         components: {
             tableOfContents: {
@@ -441,6 +426,9 @@ var fluid_1_5 = fluid_1_5 || {};
                                 }
                             } 
                         }
+                    },
+                    listeners: {
+                        afterRender: "{tableOfContentsEnactor}.events.afterTocRender"
                     }
                 }
             }
@@ -448,24 +436,25 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             applyToc: {
                 funcName: "fluid.uiOptions.actionAnts.tableOfContentsEnactor.applyToc",
-                args: ["{arguments}.0.toc", "{that}"]
+                args: ["{arguments}.0.value", "{that}"]
             }
         },
         events: {
             onCreateTOCReady: null,
+            afterTocRender: null,
             onLateRefreshRelay: null
         },
         listeners: {
             onCreate: {
                 listener: "{that}.applyToc",
-                args: "{that}.model.toc"
+                args: "{that}.model.value"
             }
         }
     });
     
-    fluid.uiOptions.actionAnts.tableOfContentsEnactor.applyToc = function (toc, that) {
+    fluid.uiOptions.actionAnts.tableOfContentsEnactor.applyToc = function (value, that) {
         var async = false;
-        if (toc) {
+        if (value) {
             if (that.tableOfContents) {
                 that.tableOfContents.show();
             } else {
@@ -483,7 +472,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.uiOptions.actionAnts.tableOfContentsEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener("toc", that.applyToc);
+        that.applier.modelChanged.addListener("value", that.applyToc);
     };
     
 })(jQuery, fluid_1_5);

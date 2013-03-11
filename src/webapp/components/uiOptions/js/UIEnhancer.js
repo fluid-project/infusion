@@ -73,11 +73,26 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
-                    model: "{uiEnhancer}.model",
-                    applier: "{uiEnhancer}.applier"
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "textSize": "value"
+                    }
                 }
             },
             tableOfContents: {
+//                type: "fluid.uiOptions.actionAnts.tableOfContentsEnactor",
+//                container: "{uiEnhancer}.container",
+//                createOnEvent: "onCreateToc",
+////                priority: "last",
+//                options: {
+//                    tocTemplate: "{uiEnhancer}.options.tocTemplate",
+//                    model: "{uiEnhancer}.model",
+//                    applier: "{uiEnhancer}.applier",
+//                    listeners: {
+//                        afterTocRender: "{uiEnhancer}.events.onTocReady",
+//                        onLateRefreshRelay: "{uiEnhancer}.events.onTocReady"
+//                    }
+//                }
                 type: "fluid.tableOfContents",
                 container: "{uiEnhancer}.container",
                 createOnEvent: "onCreateTOCReady",
@@ -96,7 +111,6 @@ var fluid_1_5 = fluid_1_5 || {};
                         }
                     },
                     listeners: {
-                      // TODO: This is as a result of lack of FLUID-4398, event relay
                         afterRender: "{uiEnhancer}.lateRefreshRelay"
                     }
                 }
@@ -106,9 +120,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.textFont",
-                    modelPath: "textFont",
-                    model: "{uiEnhancer}.model",
-                    applier: "{uiEnhancer}.applier"
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "textFont": "value"
+                    }
                 }
             },
             lineSpacing: {
@@ -116,8 +131,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
-                    model: "{uiEnhancer}.model",
-                    applier: "{uiEnhancer}.applier"
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "lineSpacing": "value"
+                    }
                 }
             },
             theme: {
@@ -125,9 +142,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.theme",
-                    modelPath: "theme",
-                    model: "{uiEnhancer}.model",
-                    applier: "{uiEnhancer}.applier"
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "theme": "value"
+                    }
                 }
             },
             emphasizeLinks: {
@@ -135,9 +153,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.links",
-                    modelPath: "links",
-                    model: "{uiEnhancer}.model",
-                    applier: "{uiEnhancer}.applier"
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "links": "value"
+                    }
                 }
             },
             inputsLarger: {
@@ -145,9 +164,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.inputsLarger",
-                    modelPath: "inputsLarger",
-                    model: "{uiEnhancer}.model",
-                    applier: "{uiEnhancer}.applier"
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "inputsLarger": "value"
+                    }
                 }
             },
             settingsStore: {
@@ -170,15 +190,34 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.uiEnhancer.refreshView",
                 args: ["{uiEnhancer}"]
             },
-            setIE6ColorInversion: "fluid.uiEnhancer.setIE6ColorInversion"
+            setIE6ColorInversion: {
+                funcName: "fluid.uiEnhancer.setIE6ColorInversion",
+                args: "{uiEnhancer}"
+            },
+            applyDomReadingSettings: {
+                funcName: "fluid.uiEnhancer.applyDomReadingSettings",
+                args: "{uiEnhancer}"
+            }
         },
         events: {
             onCreateTOCReady: null,
             lateRefreshView: null,
+            onCreateToc: null,
+            onTocReady: null,
             modelChanged: null
         },
         listeners: {
-            "lateRefreshView.domReading": "fluid.uiEnhancer.applyDomReadingSettings"
+            "lateRefreshView.domReading": "fluid.uiEnhancer.applyDomReadingSettings",
+            onTocReady: "{that}.applyDomReadingSettings"//,
+//            onTocReady: [{
+//                listener: "{that}.emphasizeLinks.handleStyle",
+//                args: "{that}.model"
+//            }, {
+//                listener: "{that}.inputsLarger.handleStyle",
+//                args: "{that}.model"
+//            }, {
+//                listener: "{that}.setIE6ColorInversion"
+//            }]
         },
         classnameMap: {
             "textFont": {
@@ -275,24 +314,24 @@ var fluid_1_5 = fluid_1_5 || {};
         that.lineSpacing.set(that.model.lineSpacing);
         that.theme.swap(that.model.theme);
         $(document).ready(function () {
-            fluid.uiEnhancer.applyTocSetting(that);
+            that.events.onCreateToc.fire();
         });
     };
 
 
-    /**
-     * Adds or removes the classname to/from the elements based upon the setting.
-     * @param {Object} elements
-     * @param {Object} setting
-     * @param {Object} classname
-     */
-    fluid.uiEnhancer.styleElements = function (elements, setting, classname) {
-        if (setting) {
-            elements.addClass(classname);
-        } else {
-            $("." + classname, elements).andSelf().removeClass(classname);
-        }        
-    };
+//    /**
+//     * Adds or removes the classname to/from the elements based upon the setting.
+//     * @param {Object} elements
+//     * @param {Object} setting
+//     * @param {Object} classname
+//     */
+//    fluid.uiEnhancer.styleElements = function (elements, setting, classname) {
+//        if (setting) {
+//            elements.addClass(classname);
+//        } else {
+//            $("." + classname, elements).andSelf().removeClass(classname);
+//        }        
+//    };
 
     /**
      * remove the instances of fl-inverted-color when the default theme is selected. 
