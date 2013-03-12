@@ -65,7 +65,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.actionAnts.styleElementsEnactor.resetStyle = function (elements, cssClass) {
-        $("." + cssClass, elements).andSelf().removeClass(cssClass);
+        $(elements, "." + cssClass).andSelf().removeClass(cssClass);
     };
 
     fluid.uiOptions.actionAnts.styleElementsEnactor.handleStyle = function (value, elements, that) {
