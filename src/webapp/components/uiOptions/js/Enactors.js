@@ -46,7 +46,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             handleStyle: {
                 funcName: "fluid.uiOptions.actionAnts.styleElementsEnactor.handleStyle",
-                args: ["{arguments}.0.value", {expander: {func: "{that}.getElements"}}, "{that}"]
+                args: ["{arguments}.0", {expander: {func: "{that}.getElements"}}, "{that}"]
             },
             
             // Must be supplied by implementors
@@ -77,7 +77,9 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.actionAnts.styleElementsEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener("value", that.handleStyle);
+        that.applier.modelChanged.addListener("value", function (newModel) {
+            that.handleStyle(newModel.value);
+        });
     };
     
     /*******************************************************************************
@@ -152,7 +154,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             swap: {
                 funcName: "fluid.uiOptions.actionAnts.classSwapperEnactor.swap",
-                args: ["{arguments}.0.value", "{that}"]
+                args: ["{arguments}.0", "{that}"]
             }
         },
         listeners: {
@@ -191,14 +193,10 @@ var fluid_1_5 = fluid_1_5 || {};
         return classStr;
     };
     
-    fluid.uiOptions.actionAnts.classSwapperEnactor.validateValue = function (model, changeRequest, applier) {
-        console.log("a");
-    };
-    
     fluid.uiOptions.actionAnts.classSwapperEnactor.finalInit = function (that) {
-        that.applier.guards.addListener({path: "value", transactional: true}, fluid.uiOptions.actionAnts.classSwapperEnactor.validateValue);
-        
-        that.applier.modelChanged.addListener("value", that.swap);
+        that.applier.modelChanged.addListener("value", function (newModel) {
+            that.swap(newModel.value);
+        });
     };
     
     /*******************************************************************************
@@ -237,7 +235,7 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             set: {
                 funcName: "fluid.uiOptions.actionAnts.textSizerEnactor.set",
-                args: ["{arguments}.0.value", "{that}"]
+                args: ["{arguments}.0", "{that}"]
             },
             getTextSizeInPx: {
                 funcName: "fluid.uiOptions.actionAnts.getTextSizeInPx",
@@ -294,7 +292,9 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.actionAnts.textSizerEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener("value", that.set);
+        that.applier.modelChanged.addListener("value", function (newModel) {
+            that.set(newModel.value);
+        });
     };
     
     /*******************************************************************************
@@ -313,7 +313,7 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             set: {
                 funcName: "fluid.uiOptions.actionAnts.lineSpacerEnactor.set",
-                args: ["{arguments}.0.value", "{that}"]
+                args: ["{arguments}.0", "{that}"]
             },
             getTextSizeInPx: {
                 funcName: "fluid.uiOptions.actionAnts.getTextSizeInPx",
@@ -392,7 +392,9 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.uiOptions.actionAnts.lineSpacerEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener("value", that.set);
+        that.applier.modelChanged.addListener("value", function (newModel) {
+            that.set(newModel.value);
+        });
     };
     
     /*******************************************************************************
@@ -436,7 +438,7 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             applyToc: {
                 funcName: "fluid.uiOptions.actionAnts.tableOfContentsEnactor.applyToc",
-                args: ["{arguments}.0.value", "{that}"]
+                args: ["{arguments}.0", "{that}"]
             }
         },
         events: {
@@ -472,7 +474,9 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.uiOptions.actionAnts.tableOfContentsEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener("value", that.applyToc);
+        that.applier.modelChanged.addListener("value", function (newModel) {
+            that.applyToc(newModel.value);
+        });
     };
     
 })(jQuery, fluid_1_5);
