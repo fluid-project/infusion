@@ -52,7 +52,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that.events.afterFileComplete.fire(file);
         
         if (that.queue.shouldUploadNextFile()) {
-            fluid.uploader.demo.startUploading(that);
+            fluid.uploader.demo.uploadNextFile(that);
         } else {
             that.events.afterUploadComplete.fire(that.queue.currentBatch.files);
             if (file.status !== fluid.uploader.fileStatusConstants.CANCELLED) {

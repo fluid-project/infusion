@@ -209,7 +209,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 --thatpos;
                 --selpos;
             }
-            if (!match) {
+            else {
                 if (mustMatchHere) {
                     return false;
                 }
@@ -756,8 +756,10 @@ var fluid_1_5 = fluid_1_5 || {};
         return list; 
     };
 
+    // TODO: overall efficiency could huge be improved by resorting to the hated PROTOTYPALISM as an optimisation
+    // for this mergePolicy which occurs in every component. Although it is a deep structure, the root keys are all we need 
     var addPolicyBuiltins = function (policy) {
-        fluid.each(["gradeNames", "mergePolicy", "argumentMap", "components", "invokers", "events", "listeners", "distributeOptions", "transformOptions"], function (key) {
+        fluid.each(["gradeNames", "mergePolicy", "argumentMap", "components", "members", "invokers", "events", "listeners", "distributeOptions", "transformOptions"], function (key) {
             fluid.set(policy, [key, "*", "noexpand"], true);
         });
         return policy;
@@ -866,7 +868,7 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.fail("demandspec ", demandspec, 
                     " is invalid - cannot specify literal options together with mergeOptions"); 
         }
-        if (demandspec.transformOptions) {
+        if (demandspec.transformOptions) { // Support for "transformOptions" at top level in a demands record
             demandspec.options = $.extend(true, {}, demandspec.options, {
                 transformOptions: demandspec.transformOptions
             });
@@ -1256,6 +1258,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
     
     fluid.makeInvoker = function (that, demandspec, functionName, environment) {
+        if (typeof(functionName) === "string" && functionName.charAt(0) === "{") { // shorthand case for direct function invokers
+            demandspec = {func: functionName}
+        }
         demandspec = demandspec || fluid.determineDemands(that, functionName);
         return function () {
             var args = fluid.makeArray(arguments);

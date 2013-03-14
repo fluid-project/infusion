@@ -134,7 +134,8 @@ var fluid = fluid || fluid_1_5;
     // defer to it
     fluid.builtinFail = function (soft, args, activity) {
         fluid.setLogging(true);
-        fluid.log.apply(null, ["ASSERTION FAILED: "].concat(args).concat(fluid.renderActivity(activity).reverse()));
+        fluid.log.apply(null, ["ASSERTION FAILED: "].concat(args));
+        fluid.logActivity(activity);
         var message = args[0];          
         if (soft) {
             throw new Error(message);
@@ -152,7 +153,7 @@ var fluid = fluid || fluid_1_5;
      */
     fluid.fail = function (message /*, ... */) { // jslint:ok - whitespace in arg list
         var args = fluid.makeArray(arguments);
-        var activity = fluid.describeActivity();
+        var activity = fluid.makeArray(fluid.describeActivity()); // Take copy since we will destructively modify
         fluid.popActivity(activity.length);
         var topFailure = softFailure[0];
         if (typeof(topFailure) === "boolean") {
@@ -1481,16 +1482,19 @@ var fluid = fluid || fluid_1_5;
             if (fluid.isTracing) {
                 fluid.tracing.pathCount.push(fluid.path(segs.slice(0, i)));
             }
-      
+
+            var oldTarget = undefined;
             if (target.hasOwnProperty(name)) { // bail out if our work has already been done
-                return target[name];
+                oldTarget = target[name];
+                if (!options.evaluateFully) { // see notes on this hack in "initter" - early attempt to deal with FLUID-4930
+                    return oldTarget;
+                }
             }
             if (sources === undefined) { // recover our state in case this is an external entry point
                 segs = fluid.makeArray(segs); // avoid trashing caller's segs
                 sources = regenerateSources(options.sources, segs, i - 1, options.sourceStrategies);
                 policy = regenerateCursor(options.mergePolicy, segs, i - 1, fluid.concreteTrundler);
             }
-
             var thisPolicy = fluid.derefMergePolicy(policy);
             var newPolicyHolder = fluid.concreteTrundler(policy, name);
             var newPolicy = fluid.derefMergePolicy(newPolicyHolder);
@@ -1504,23 +1508,31 @@ var fluid = fluid || fluid_1_5;
             }
             var newSources = [];
             var thisTarget = undefined;
+
             for (var j = start; j <= limit; ++j) { // TODO: try to economise on this array and on gaps
                 var k = mul * j;
                 var thisSource = options.sourceStrategies[k](sources[k], name, i, segs); // Run the RH algorithm in "driving" mode
                 if (thisSource !== undefined) {
                     newSources[k] = thisSource;
-                    if (mul === -1) { // if we are going backwards, it is "replace"
-                        thisTarget = thisSource;
-                        break;
-                    }
-                    else {
-                        thisTarget = fluid.mergeOneImpl(thisTarget, thisSource, j, newSources, newPolicy, i, segs, options);
+                    if (oldTarget === undefined) {
+                        if (mul === -1) { // if we are going backwards, it is "replace"
+                            thisTarget = thisSource;
+                            break;
+                        }
+                        else {
+                            thisTarget = fluid.mergeOneImpl(thisTarget, thisSource, j, newSources, newPolicy, i, segs, options);
+                        }
                     }
                 }
             }
+            if (oldTarget !== undefined) {
+                thisTarget = oldTarget;
+            }
             if (newSources.length > 0) {
                 target[name] = thisTarget;
-                fluid.fetchMergeChildren(thisTarget, i, segs, newSources, newPolicyHolder, options);
+                if (!fluid.isPrimitive(thisTarget)) {
+                    fluid.fetchMergeChildren(thisTarget, i, segs, newSources, newPolicyHolder, options);
+                }
             }
             return thisTarget;
         };
@@ -1596,7 +1608,11 @@ var fluid = fluid || fluid_1_5;
         options.target = options.target || fluid.freshContainer(options.sources[0]);
         options.sourceStrategies = options.sourceStrategies || fluid.generate(options.sources.length, fluid.concreteTrundler);
         options.initter = function () {
-            fluid.fetchMergeChildren(options.target, 0, [], options.sources, options.mergePolicy, options);          
+            // This hack is necessary to ensure that the FINAL evaluation doesn't balk when discovering a trunk path which was already 
+            // visited during self-driving via the expander. This bi-modality is sort of rubbish, but we currently don't have "room" 
+            // in the strategy API to express when full evaluation is required - and the "flooding API" is not standardised.
+            options.evaluateFully = true;
+            fluid.fetchMergeChildren(options.target, 0, [], options.sources, options.mergePolicy, options);
         }
         fluid.makeMergeStrategy(options);
         return options;

@@ -150,6 +150,10 @@ var fluid_1_5 = fluid_1_5 || {};
      * HTML5 FormData Sender, used by most modern browsers *
      *******************************************************/
     
+    fluid.uploader.html5Strategy.fileSender = function () {
+        fluid.fail("Error instantiating HTML5 Uploader - browser does not support FormData feature. Please try version 1.4 or earlier of Uploader which has Firefox 3.x support")  
+    };
+    
     fluid.defaults("fluid.uploader.html5Strategy.formDataSender", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         invokers: {

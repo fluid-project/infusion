@@ -41,6 +41,9 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uploader.swfUploadStrategy", {
         gradeNames: ["fluid.uploader.strategy", "autoInit"],
         components: {
+            local: {
+                type: "fluid.uploader.swfUploadStrategy.local"  
+            },
             engine: {
                 type: "fluid.uploader.swfUploadStrategy.engine",
                 options: {
@@ -131,7 +134,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uploader.swfUploadStrategy.mergeSwfConfig = function (queueSettings, flashMovieSettings) {
-        return $.extend({}, that.options.queueSettings, that.options.flashMovieSettings);
+        return $.extend({}, queueSettings, flashMovieSettings);
     };
     
     fluid.uploader.swfUploadStrategy.makeSwfUpload = function (swfUploadConfig) {

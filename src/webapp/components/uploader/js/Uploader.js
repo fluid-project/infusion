@@ -654,8 +654,8 @@ var fluid_1_5 = fluid_1_5 || {};
             afterUploadComplete: "{uploader}.events.afterUploadComplete"
         },
         invokers: {
-            uploadNextFile: "fluid.uploader.remote.uploadNextFile",
-            stop: "fluid.uploader.remote.stop"
+            uploadNextFile: "fluid.uploader.uploadNextFile",
+            stop: "fluid.uploader.stop"
         }     
     });
     

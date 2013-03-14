@@ -251,6 +251,27 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
+    // This is identical to a test in Fluid.js, but exposed a bug in the alternative workflow that was triggered by FLUID-4930 work - "evaluateFully"
+    fluid.defaults("fluid.tests.eventMerge", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+           event: "preventable"
+        }
+    });
+    
+    jqUnit.test("Merge over named listener", function () {
+        var that = fluid.tests.eventMerge({
+            events: {
+               event: null
+            },
+            listeners: {
+               event: "fluid.identity"
+            }
+        });
+        var result = that.events.event.fire(false);
+        jqUnit.assertUndefined("Event returned to nonpreventable through merge", result);
+    });
+
     /** FLUID-4634 demands exclusion test **/
 
     fluid.defaults("fluid.tests.demandedEvent1", {
@@ -269,7 +290,7 @@ fluid.registerNamespace("fluid.tests");
     
     fluid.demands("testDemandedEvent", ["fluid.tests.testContext", "fluid.tests.demandedEvent2"], ["demanded"]);
     
-    jqUnit.test("FLUID-4634: mulitple components with the same boiled event name", function () {
+    jqUnit.test("FLUID-4634: multiple components with the same boiled event name", function () {
         fluid.staticEnvironment.currentTestEnvironment = fluid.typeTag("fluid.tests.testContext");
         var orig = "original";
         var e1 = fluid.tests.demandedEvent1({
@@ -564,7 +585,48 @@ fluid.registerNamespace("fluid.tests");
         var that = fluid.tests.horizonParent();
         jqUnit.assertTrue("Correctly resolved horizoned demands block", that.horizonMiddle.horizonOp(true));
     });
+
+    // NOTE! This test must be left COMPLETELY undisturbed - as well as testing support for "members" itself, it exposed
+    // a bug in the ginger pathway itself, whereby the driving effect of the "members" expander failed to cause "expanded" 
+    // to be expanded as a result of its trunk path already being seen during the previous driving during options expansion
+    // which evaluated the expander, causing "emptyArray" to be driven and hence the trunk path for "members". This was 
+    // patched in the merge strategy to ensure that any evaluations which occur after "initter" cause full evalution, 
+    // but we expect similar such bugs in the future until we understand the ginger process properly.
     
+    // The idea was also to be able to verify reference equality of "expanded" and "emptyArray" but this seems not to be 
+    // possible right now as a result of the recursion by the expander copying its arguments at args = options.recurse([], args);
+    fluid.defaults("fluid.tests.memberTest", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+           expanded: {
+               expander: {
+                   func: "{that}.identity",
+                   args: "{that}.emptyArray"
+               }  
+           },
+           emptyArray: [],
+           doubleTest: "{that}.options.invokers.dummy" // double expansion tester - will explode on double expansion
+        },
+        invokers: {
+            identity: "fluid.identity",
+            dummy: {
+               funcName: "fluid.identity",
+               args: "{arguments}.0"
+            }
+        }  
+    });
+    
+    jqUnit.test("FLUID-4918 Support for \"members\" directive", function () {
+        var member1 = fluid.tests.memberTest();
+        function testEmptyArray(that) {
+            jqUnit.assertDeepEq("Correctly instantiated member from literal", [], that.emptyArray);
+            jqUnit.assertDeepEq("Correctly instantiated member through expander", that.emptyArray, that.expanded);
+        }
+        testEmptyArray(member1);
+        member1.emptyArray.push("corruption");
+        var member2 = fluid.tests.memberTest(); // Ensure that expanded material in "members" has not become aliased
+        testEmptyArray(member2); 
+    });
 
     /** Basic IoC Tests **/
 
