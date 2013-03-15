@@ -45,9 +45,7 @@ var fluid = fluid || fluid_1_5;
     };
     
     var globalObject = window || {};
-    
-    var softFailure = [false];
-    
+
     var activityParser = /(%\w+)/g;
 
     // Renders a single activity element in a form suitable to be sent to a modern browser's console
@@ -89,7 +87,7 @@ var fluid = fluid || fluid_1_5;
             root.activityStack = [];
         }
         return root.activityStack;  
-    }
+    };
 
     // Return an array of objects describing the current activity
     // unsupported, non-API function
@@ -123,8 +121,7 @@ var fluid = fluid || fluid_1_5;
     // The framework's built-in "fail" policy, in case a user-defined handler would like to
     // defer to it
     fluid.builtinFail = function (soft, args, activity) {
-        fluid.setLogging(true);
-        fluid.log.apply(null, ["ASSERTION FAILED: "].concat(args).concat(fluid.renderActivity(activity).reverse()));
+        fluid.log.apply(null, [fluid.logLevel.FAIL, "ASSERTION FAILED: "].concat(args).concat(fluid.renderActivity(activity).reverse()));
         var message = args[0];          
         if (soft) {
             throw new Error(message);
@@ -132,6 +129,8 @@ var fluid = fluid || fluid_1_5;
             message["Assertion failure - check console for details"](); // Intentionally cause a browser error by invoking a nonexistent function.
         }
     };
+    
+    var softFailure = [false];
     
     /**
      * Signals an error to the framework. The default behaviour is to log a structured error message and throw a variety of
@@ -211,21 +210,47 @@ var fluid = fluid || fluid_1_5;
     };
 
     // Logging
-
-    var logging;
-        
+    
     /** Returns whether logging is enabled **/
     fluid.isLogging = function () {
-        return logging;
+        return logLevelStack[0].priority > fluid.logLevel.IMPORTANT;
+    };
+    
+    /** Determines whether the supplied argument is a valid logLevel marker **/    
+    fluid.isLogLevel = function (arg) {
+        return fluid.isMarker(arg) && arg.priority !== undefined;  
+    };
+    
+    /** Accepts one of the members of the <code>fluid.logLevel</code> structure. Returns <code>true</code> if
+     *  a message supplied at that log priority would be accepted at the current logging level. Clients who
+     *  issue particularly expensive log payload arguments are recommended to guard their logging statements with this
+     *  function */
+     
+    fluid.passLogLevel = function (testLogLevel) {
+        return testLogLevel.priority <= logLevelStack[0].priority;
     };
 
-    /** method to allow user to enable logging (off by default) */
+    /** Method to allow user to control the logging level. Accepts either a boolean, for which <code>true</code>
+      * represents <code>fluid.logLevel.INFO</code> and <code>false</code> represents <code>fluid.logLevel.IMPORTANT</code> (the default), 
+      * or else any other member of the structure <code>fluid.logLevel</code>
+      * Messages whose priority is strictly less than the current logging level will not be shown*/
     fluid.setLogging = function (enabled) {
+        var logLevel;
         if (typeof enabled === "boolean") {
-            logging = enabled;
+            logLevel = fluid.logLevel[enabled? "INFO" : "IMPORTANT"];
+        } else if (fluid.isLogLevel(enabled)) {
+            logLevel = enabled;
         } else {
-            logging = false;
+            fluid.fail("Unrecognised fluid logging level ", enabled);
         }
+        logLevelStack.unshift(logLevel);
+    };
+    
+    fluid.setLogLevel = fluid.setLogging;
+    
+    /** Undo the effect of the most recent "setLogging", returning the logging system to its previous state **/    
+    fluid.popLogging = function () {
+        return logLevelStack.length === 1? logLevelStack[0] : logLevelStack.shift();
     };
 
     // On some dodgy environments (notably IE9 and recent alphas of Firebug 1.8),
@@ -242,13 +267,21 @@ var fluid = fluid || fluid_1_5;
 
     /** Log a message to a suitable environmental console. If the standard "console"
      * stream is available, the message will be sent there - otherwise either the
-     * YAHOO logger or the Opera "postError" stream will be used. Logging must first
-     * be enabled with a call to the fluid.setLogging(true) function.
+     * YAHOO logger or the Opera "postError" stream will be used. If the first argument to fluid.log is
+     * one of the members of the <code>fluid.logLevel</code> structure, this will be taken as the priority 
+     * of the logged message - else if will default to <code>fluid.logLevel.INFO</code>. If the logged message
+     * priority does not exceed that set by the most recent call to the <code>fluid.setLogging</code> function,
+     * the message will not appear.
      */
     fluid.log = function (message /*, ... */) { // jslint:ok - whitespace in arg list
-        if (logging) {
+        var directArgs = fluid.makeArray(arguments);
+        var userLogLevel = fluid.logLevel.INFO;
+        if (fluid.isLogLevel(directArgs[0])) {
+            userLogLevel = directArgs.shift();
+        }
+        if (fluid.passLogLevel(userLogLevel)) {
             var arg0 = fluid.renderTimestamp(new Date()) + ":  ";
-            var args = [arg0].concat(fluid.makeArray(arguments));
+            var args = [arg0].concat(directArgs);
             var str = args.join("");
             if (typeof (console) !== "undefined") {
                 if (console.debug) {
@@ -594,22 +627,42 @@ var fluid = fluid || fluid_1_5;
             return b.length - a.length;
         };
     };
-        
-    // Model functions
-    fluid.model = {}; // cannot call registerNamespace yet since it depends on fluid.model
-       
-    /** Another special "marker object" representing that a distinguished
+    
+    fluid.logLevelsSpec = {
+        "FATAL":      0,
+        "FAIL":       5,
+        "WARN":      10,
+        "IMPORTANT": 12, // The default logging "off" level - corresponds to the old "false"
+        "INFO":      15, // The default logging "on" level - corresponds to the old "true"
+        "TRACE":     20
+    };
+
+    /** A structure holding all supported log levels as supplied as a possible first argument to fluid.log
+     * Members with a higher value of the "priority" field represent lower priority logging levels */
+    // Moved down here since it uses fluid.transform on startup
+    fluid.logLevel = fluid.transform(fluid.logLevelsSpec, function (value, key) {
+        return {type: "fluid.marker", value: key, priority: value};
+    });
+    var logLevelStack = [fluid.logLevel.IMPORTANT]; // The stack of active logging levels, with the current level at index 0
+    
+    /** A set of special "marker values" used in signalling in function arguments and return values,
+      * to partially compensate for JavaScript's lack of distinguished types. These should never appear
+      * in JSON structures or other kinds of static configuration. An API specifically documents if it
+      * accepts or returns any of these values, and if so, what its semantic is  - most are of private
+      * use internal to the framework **/
+    
+    /** A special "marker object" representing that a distinguished
      * (probably context-dependent) value should be substituted.
      */
     fluid.VALUE = {type: "fluid.marker", value: "VALUE"};
     
-    /** Another special "marker object" representing that no value is present (where
-     * signalling using the value "undefined" is not possible) */
+    /** A special "marker object" representing that no value is present (where
+     * signalling using the value "undefined" is not possible - e.g. the return value from a "strategy") */
     fluid.NO_VALUE = {type: "fluid.marker", value: "NO_VALUE"};
     
     /** A marker indicating that a value requires to be expanded after component construction begins **/
     fluid.EXPAND = {type: "fluid.marker", value: "EXPAND"};
-    /** A marker indicating that a value requires to be expanded immediately**/
+    /** A marker indicating that a value requires to be expanded immediately **/
     fluid.EXPAND_NOW = {type: "fluid.marker", value: "EXPAND_NOW"};
     
     /** Determine whether an object is any marker, or a particular marker - omit the
@@ -624,6 +677,9 @@ var fluid = fluid || fluid_1_5;
         }
         return totest === type;
     };
+    
+    // Model functions
+    fluid.model = {}; // cannot call registerNamespace yet since it depends on fluid.model
    
     /** Copy a source "model" onto a target **/
     fluid.model.copyModel = function (target, source) {
