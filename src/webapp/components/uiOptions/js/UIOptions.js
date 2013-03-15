@@ -476,11 +476,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
-            preview: {
-                type: "fluid.uiOptions.preview",
-                createOnEvent: "onUIOptionsComponentReady",
-                container: "{uiOptions}.dom.previewFrame"
-            },
             eventBinder: {
                 type: "fluid.uiOptions.eventBinder"
             }

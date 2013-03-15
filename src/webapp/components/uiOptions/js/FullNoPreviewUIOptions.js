@@ -65,9 +65,6 @@ var fluid_1_5 = fluid_1_5 || {};
                             options: {
                                 classnameMap: "{uiEnhancer}.options.classnameMap"
                             }
-                        },
-                        preview: {
-                            type: "fluid.emptySubcomponent"
                         }
                     },
                     listeners: {
