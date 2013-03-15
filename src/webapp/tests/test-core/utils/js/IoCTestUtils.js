@@ -20,9 +20,6 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     fluid.registerNamespace("fluid.test");
-    
-    fluid.setDemandLogging(true);
-    fluid.setLogging(true);
 
     fluid.defaults("fluid.test.testEnvironment", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
@@ -150,7 +147,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         root.activeTests += count;
         if (count === -1) {
-            console.log("Starting QUnit due to destruction of tree ", root);
+            fluid.log(fluid.logLevel.IMPORTANT, "Starting QUnit due to destruction of tree ", root);
             QUnit.start();
         }
         if (root.activeTests === 0) {
@@ -474,10 +471,10 @@ var fluid_1_5 = fluid_1_5 || {};
             var oldLength = QUnit.config.queue.length;
             jqUnit[testType](fixture.name, testFunc);
             if (QUnit.config.queue.length === oldLength) {
-                console.log("Skipped test " + fixture.name);
+                fluid.log(fluid.logLevel.IMPORTANT, "Skipped test " + fixture.name);
             }
             else {
-                console.log("Successfully queued test " + fixture.name);
+                fluid.log(fluid.logLevel.IMPORTANT, "Successfully queued test " + fixture.name);
                 fluid.test.noteTest(testCaseState.root, 1);
             }
         });

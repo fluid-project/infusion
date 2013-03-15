@@ -353,6 +353,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.fail.apply(null, testArgs);
         fluid.pushSoftFailure(-1);
     });
+    
+    function passTestLog(level, expected) {
+        jqUnit.assertEquals("Should " + (expected ? "not " : "") + "pass debug level " + level, expected, fluid.passLogLevel(fluid.logLevel[level])); 
+    }
+    
+    jqUnit.test("FLUID-4936 test - support for logging levels", function () {
+        fluid.setLogging(true);
+        passTestLog("INFO", true);
+        passTestLog("IMPORTANT", true);
+        passTestLog("TRACE", false);
+        fluid.popLogging();
+        fluid.setLogging(false);
+        passTestLog("INFO", false);
+        passTestLog("IMPORTANT", true);
+        fluid.popLogging();
+        fluid.setLogging(fluid.logLevel.TRACE);
+        passTestLog("TRACE", true);
+        fluid.popLogging();
+    });
            
     jqUnit.test("FLUID-4285 test - prevent 'double options'", function () {
         try {
