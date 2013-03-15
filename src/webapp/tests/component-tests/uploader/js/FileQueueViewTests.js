@@ -245,7 +245,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var q = createFileQueue();
             mountainTestFile.filestatus = fluid.uploader.fileStatusConstants.ERROR; //manually add an error to the file
             q.addFile(mountainTestFile);
-            q.showErrorForFile(mountainTestFile, fluid.uploader.errorConstants.UPLOAD_FAILED); //fire a UPLOAD_FAILED error
+            q.showErrorForFile(mountainTestFile, -250); //fire a UPLOAD_FAILED error
 
             jqUnit.assertEquals("Error message should print upload failed ",
                                 q.options.strings.errors.UPLOAD_FAILED,

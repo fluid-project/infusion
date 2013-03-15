@@ -26,11 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.module("Uploader Basic Tests");
 
         fluid.enhance.forgetAll();
-        
-        fluid.enhance.check({
-            "fluid.uploader.tests": true,
-            "fluid.browser.supportsFormData": true
-        });
+        fluid.staticEnvironment.uploader = fluid.typeTag("fluid.uploader.tests");
         
         var container = ".flc-uploader";
         
@@ -364,6 +360,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The " + buttonName + " is " + (state ? "enabled" : "disabled"), state, !button.prop("disabled"));
         };
         
+        var checkUploaderArgumentMap = function (uploader, expectedLocal, expectedRemote) {
+            jqUnit.assertEquals("Check local component argumentMap options value", 
+                                expectedLocal, uploader.strategy.local.options.argumentMap.options);
+            jqUnit.assertEquals("Check remote component argumentMap options value", 
+                                expectedRemote, uploader.strategy.remote.options.argumentMap.options);            
+        };
+        
         fluid.tests.uploader.removeUploadPause = function (uploader, statusRegion, testset) {
             // remove file, check status region update            
             var addFilesStatusRegionText = statusRegion.text();
@@ -437,6 +440,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         var checkFlashIntegration = function (uploader, testset) {
             checkMultiFileUploaderOptions(uploader, "fluid.uploader.swfUploadStrategy");            
+            checkUploaderArgumentMap(uploader, 0, 1);
             mockSWFUploadLocal(uploader.strategy.local);
             checkUploaderIntegration(uploader, addFilesSWF, testset);
             jqUnit.start();
@@ -444,6 +448,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         var checkHTML5Integration = function (uploader, testset) {
             checkMultiFileUploaderOptions(uploader, "fluid.uploader.html5Strategy");
+            checkUploaderArgumentMap(uploader, 2, 1);
             checkUploaderIntegration(uploader, addFiles, testset);
             jqUnit.start();
         };        
