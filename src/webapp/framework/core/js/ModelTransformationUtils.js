@@ -134,7 +134,7 @@ var fluid = fluid || fluid_1_5;
      * or expanding otherwise. <def> defines the default value if unableto resolve the key. If no
      * default value is given undefined is returned
      */
-    fluid.model.transform.resolveParam = function (expander, expandSpec, key, def) {
+    fluid.model.transform.resolveParam = function (expandSpec, expander, key, def) {
         var val = fluid.model.transform.getValue(expandSpec[key+"Path"], expandSpec[key], expander);
         return (val !== undefined) ? val : def;
     };
@@ -298,7 +298,7 @@ var fluid = fluid || fluid_1_5;
     };
     
     // unsupported, NON-API function
-    fluid.model.transform.maybePushWildcard = function (expander, expandSpec) {
+    fluid.model.transform.maybePushWildcard = function (expandSpec, expander) {
         var hw = fluid.model.transform.hasWildcard;
         var matchPath;
         if (hw(expandSpec.inputPath)) {
@@ -323,8 +323,8 @@ var fluid = fluid || fluid_1_5;
     
     // Three handler functions operating the (currently) three different processing modes
     // unsupported, NON-API function
-    fluid.model.transform.handleExpandExpander = function (expander, expandSpec) {
-        if (fluid.model.transform.maybePushWildcard(expander, expandSpec)) {
+    fluid.model.transform.handleExpandExpander = function (expandSpec, expander) {
+        if (fluid.model.transform.maybePushWildcard(expandSpec, expander)) {
             return;
         }
         else {
@@ -332,7 +332,7 @@ var fluid = fluid || fluid_1_5;
         }
     };
     // unsupported, NON-API function
-    fluid.model.transform.handleInvertExpander = function (expander, expandSpec, expdef) {
+    fluid.model.transform.handleInvertExpander = function (expandSpec, expander, expdef) {
         var invertor = expdef.invertConfiguration;
         if (invertor) {
             var inverted = fluid.invokeGlobalFunction(invertor, [expandSpec, expander]);
@@ -341,7 +341,7 @@ var fluid = fluid || fluid_1_5;
     };
     
     // unsupported, NON-API function
-    fluid.model.transform.handlerCollectExpander = function (expander, expandSpec, expdef) {
+    fluid.model.transform.handlerCollectExpander = function (expandSpec, expander, expdef) {
         var standardInput = fluid.hasGrade(expdef, "fluid.standardInputTransformFunction");
         var multiInput = fluid.hasGrade(expdef, "fluid.multiInputTransformFunction");
 
@@ -374,7 +374,7 @@ var fluid = fluid || fluid_1_5;
             for (var i = 0; i < expanders.length; ++i) {
                 var expandSpec = expanders[i];
                 var expdef = fluid.defaults(expandSpec.type);
-                var returned = expander.expanderHandler(expander, expandSpec, expdef);
+                var returned = expander.expanderHandler(expandSpec, expander, expdef);
                 if (returned !== undefined) {
                     togo = returned;
                 }

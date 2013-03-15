@@ -235,7 +235,7 @@ var fluid = fluid || fluid_1_5;
                 outputValue = undefined;
             } else {
                 //get value from outputValue or outputValuePath. If none is found set the outputValue to be that of defaultOutputValue (or undefined)
-                var outputValue = fluid.model.transform.resolveParam(expander, indexed, "outputValue", undefined);
+                var outputValue = fluid.model.transform.resolveParam(indexed, expander, "outputValue", undefined);
                 outputValue = (outputValue === undefined) ? expandSpec.defaultOutputValue : outputValue;
             }
         }
