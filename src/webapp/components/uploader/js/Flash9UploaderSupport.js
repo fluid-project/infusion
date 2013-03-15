@@ -60,7 +60,7 @@ var fluid_1_5 = fluid_1_5 || {};
         args: [
             "{engine}.flashContainer",
             "{engine}.config",
-            "{multiFileUploader}.events"
+            "{uploader}.events"
         ]
     });
 
@@ -78,10 +78,10 @@ var fluid_1_5 = fluid_1_5 || {};
     ], {
         funcName: "fluid.uploader.swfUploadStrategy.flash9EventBinder",
         args: [
-            "{multiFileUploader}.queue.files",
-            "{multiFileUploader}.events",
+            "{uploader}.queue.files",
+            "{uploader}.events",
             "{local}",
-            "{multiFileUploader}.dom.browseButton"
+            "{uploader}.dom.browseButton"
         ]
     });
 

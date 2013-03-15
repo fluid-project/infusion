@@ -31,6 +31,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.options.strings.progress.pluralFiles;
     };
     
+    // TODO: Use of these four utilities should be replaced by use of the "visibility model" described in FLUID-4928
     var enableElement = function (that, elm) {
         elm.prop("disabled", false);
         elm.removeClass(that.options.styles.dim);
@@ -421,7 +422,7 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uploader.multiFileUploader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-                
+        nickName: "uploader",       
         invokers: {
             /**
              * Opens the native OS browse file dialog.
@@ -466,7 +467,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     targetTypeName: {
                         expander: {
                             funcName: "fluid.uploader.demoTypeTag",
-                            args: "{multiFileUploader}.options.demo"
+                            args: "{uploader}.options.demo"
                         }
                     }
                 }  
@@ -475,22 +476,21 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uploader.fileQueue"  
             },
             strategy: {
-                type: "fluid.uploader.progressiveStrategy"
+                type: "fluid.uploader.strategy"
             },
             errorPanel: {
                 type: "fluid.uploader.errorPanel"
             },
-
             fileQueueView: {
                 type: "fluid.uploader.fileQueueView",
                 options: {
-                    model: "{multiFileUploader}.queue.files",
-                    uploaderContainer: "{multiFileUploader}.container"
+                    model: "{uploader}.queue.files",
+                    uploaderContainer: "{uploader}.container"
                 }
             },
-            
             totalProgress: {
-                type: "fluid.uploader.totalProgressBar",
+                type: "fluid.progress",
+                container: "{uploader}.container",
                 options: {
                     selectors: {
                         progressBar: ".flc-uploader-queue-footer",
@@ -546,7 +546,6 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         
         events: {
-            afterReady: null,
             onFileDialog: null,
             onFilesSelected: null,
             onFileQueued: null,
@@ -606,18 +605,68 @@ var fluid_1_5 = fluid_1_5 || {};
         that.container.attr("role", "application");
     };
     
-    fluid.demands("fluid.uploader.totalProgressBar", "fluid.uploader.multiFileUploader", {
-        funcName: "fluid.progress",
-        container: "{multiFileUploader}.container"
+    
+    fluid.defaults("fluid.uploader.strategy", {
+        gradeNames: ["fluid.littleComponent"],
+        components: {
+            local: {
+                type: "fluid.uploader.local"
+            },
+            remote: {
+                type: "fluid.uploader.remote"
+            }
+        }  
     });
+    
+    fluid.defaults("fluid.uploader.local", {
+        gradeNames: ["fluid.eventedComponent"],
+        members: {
+            queue: "{uploader}.queue",
+            queueSettings: "{uploader}.options.queueSettings"
+        },
+        events: {
+            onFileDialog: "{uploader}.events.onFileDialog",
+            onFilesSelected: "{uploader}.events.onFilesSelected",
+            afterFileDialog: "{uploader}.events.afterFileDialog",
+            afterFileQueued: "{uploader}.events.afterFileQueued",
+            onQueueError: "{uploader}.events.onQueueError"
+        },
+        invokers: {
+            enableBrowseButton: "fluid.uploader.local.enableBrowseButton", // TODO: FLUID-4928 "visibility model"
+            disableBrowseButton: "fluid.uploader.local.disableBrowseButton"
+        }
+    });
+    
+    fluid.defaults("fluid.uploader.remote", {
+        gradeNames: ["fluid.eventedComponent"],
+        members: {
+            queue: "{uploader}.queue", // TODO: explosions, see FLUID-4925
+            queueSettings: "{uploader}.options.queueSettings"
+        },
+        events: {
+            onFileStart: "{uploader}.events.onFileStart",
+            onFileProgress: "{uploader}.events.onFileProgress",
+            onFileSuccess: "{uploader}.events.onFileSuccess",
+            onFileError: "{uploader}.events.onFileError",
+            onFileComplete: "{uploader}.events.onFileComplete",
+            onUploadStop: "{uploader}.events.onUploadStop",
+            afterFileComplete: "{uploader}.events.afterFileComplete",
+            afterUploadComplete: "{uploader}.events.afterUploadComplete"
+        },
+        invokers: {
+            uploadNextFile: "fluid.uploader.uploadNextFile",
+            stop: "fluid.uploader.stop"
+        }     
+    });
+    
     
     /** Demands blocks for binding to fileQueueView **/
             
     fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader.multiFileUploader", {
-        container: "{multiFileUploader}.dom.fileQueue",
+        container: "{uploader}.dom.fileQueue",
         options: {
             events: {
-                onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
+                onFileRemoved: "{uploader}.events.onFileRemoved"
             }
         }
     });
@@ -628,14 +677,14 @@ var fluid_1_5 = fluid_1_5 || {};
     ], {
         options: {
             listeners: {
-                "{multiFileUploader}.events.afterFileQueued": "{fileQueueView}.addFile",
-                "{multiFileUploader}.events.onUploadStart": "{fileQueueView}.prepareForUpload",
-                "{multiFileUploader}.events.onFileStart": "{fileQueueView}.showFileProgress",
-                "{multiFileUploader}.events.onFileProgress": "{fileQueueView}.updateFileProgress",
-                "{multiFileUploader}.events.onFileSuccess": "{fileQueueView}.markFileComplete",
-                "{multiFileUploader}.events.onFileError": "{fileQueueView}.showErrorForFile",
-                "{multiFileUploader}.events.afterFileComplete": "{fileQueueView}.hideFileProgress",
-                "{multiFileUploader}.events.afterUploadComplete": "{fileQueueView}.refreshAfterUpload"
+                "{uploader}.events.afterFileQueued": "{fileQueueView}.addFile",
+                "{uploader}.events.onUploadStart": "{fileQueueView}.prepareForUpload",
+                "{uploader}.events.onFileStart": "{fileQueueView}.showFileProgress",
+                "{uploader}.events.onFileProgress": "{fileQueueView}.updateFileProgress",
+                "{uploader}.events.onFileSuccess": "{fileQueueView}.markFileComplete",
+                "{uploader}.events.onFileError": "{fileQueueView}.showErrorForFile",
+                "{uploader}.events.afterFileComplete": "{fileQueueView}.hideFileProgress",
+                "{uploader}.events.afterUploadComplete": "{fileQueueView}.refreshAfterUpload"
             }
         }
     });
@@ -692,16 +741,16 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.uploader.errorConstants = {
-        HTTP_ERROR: -200,
-        MISSING_UPLOAD_URL: -210,
-        IO_ERROR: -220,
-        SECURITY_ERROR: -230,
-        UPLOAD_LIMIT_EXCEEDED: -240,
-        UPLOAD_FAILED: -250,
-        SPECIFIED_FILE_ID_NOT_FOUND: -260,
-        FILE_VALIDATION_FAILED: -270,
-        FILE_CANCELLED: -280,
-        UPLOAD_STOPPED: -290
+        HTTP_ERROR:                  "HTTP error",
+        MISSING_UPLOAD_URL:          "Missing upload URL",
+        IO_ERROR:                    "I/O error",
+        SECURITY_ERROR:              "Security error",
+        UPLOAD_LIMIT_EXCEEDED:       "Upload limit exceeded",
+        UPLOAD_FAILED:               "Uploader failed",
+        SPECIFIED_FILE_ID_NOT_FOUND: "Specified file ID not found",
+        FILE_VALIDATION_FAILED:      "File validation failed",
+        FILE_CANCELLED:              "File cancelled",
+        UPLOAD_STOPPED:              "Upload stopped"
     };
     
     fluid.uploader.fileStatusConstants = {
