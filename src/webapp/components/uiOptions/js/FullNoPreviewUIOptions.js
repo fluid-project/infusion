@@ -36,7 +36,36 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             uiOptions: {
                 options: {
+                    selectors: {
+                        textControls: ".flc-uiOptions-text-controls",
+                        layoutControls: ".flc-uiOptions-layout-controls",
+                        linksControls: ".flc-uiOptions-links-controls"
+                    },
                     components: {
+                        textControls: {
+                            type: "fluid.uiOptions.textControls",
+                            container: "{uiOptions}.dom.textControls",
+                            createOnEvent: "onUIOptionsMarkupReady",
+                            options: {
+                                classnameMap: "{uiEnhancer}.options.classnameMap"
+                            }
+                        },
+                        layoutControls: {
+                            type: "fluid.uiOptions.layoutControls",
+                            container: "{uiOptions}.dom.layoutControls",
+                            createOnEvent: "onUIOptionsMarkupReady",
+                            options: {
+                                classnameMap: "{uiEnhancer}.options.classnameMap"
+                            }
+                        },
+                        linksControls: {
+                            type: "fluid.uiOptions.linksControls",
+                            container: "{uiOptions}.dom.linksControls",
+                            createOnEvent: "onUIOptionsMarkupReady",
+                            options: {
+                                classnameMap: "{uiEnhancer}.options.classnameMap"
+                            }
+                        },
                         preview: {
                             type: "fluid.emptySubcomponent"
                         }
