@@ -48,12 +48,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         lineSpacing: 1.5
     };  
     
-    fluid.tests.uiOptions.expectedInline = [ 
-        "layoutControls",
-        "linksControls",
-        "preview",
-        "settingsStore",
-        "eventBinder"];
+    fluid.tests.uiOptions.expectedComponents = {
+        "fluid.uiOptions.fatPanel": [
+            "layoutControls",
+            "linksControls",
+            "settingsStore",
+            "eventBinder"
+        ],
+        "fluid.uiOptions.fullNoPreview": [
+            "layoutControls",
+            "linksControls",
+            "settingsStore",
+            "eventBinder"
+        ],
+        "fluid.uiOptions.fullPreview": [
+            "layoutControls",
+            "linksControls",
+            "preview",
+            "settingsStore",
+            "eventBinder"
+        ]
+    };
          
     
     fluid.tests.uiOptions.assertPresent = function (uiOptions, expecteds) {
@@ -91,7 +106,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             function testComponent(uiOptionsLoader, uiOptions) {
                 var defaultSiteSettings = uiOptions.settingsStore.options.defaultSiteSettings;
                 
-                fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedInline);
+                fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents[componentName]);
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
     
                 var saveButton = uiOptions.locate("save");

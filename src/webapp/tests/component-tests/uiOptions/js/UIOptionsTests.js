@@ -23,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var templatePrefix = "../../../../components/uiOptions/html/";
         
-        fluid.defaults("fluid.uiOptionsTests", {
+        fluid.defaults("fluid.uiOptionsDefaultTests", {
             gradeNames: ["fluid.viewComponent", "autoInit"],            
             components: {
                 uiOptionsLoader: {
@@ -43,14 +43,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             prefix: templatePrefix
         });
         
+        // use "fluid.uiOptionsDefaultTests" configuration but will specify different demands to test the full config with settings
+        fluid.defaults("fluid.uiOptionsTests", {
+            gradeNames: ["fluid.uiOptionsDefaultTests", "autoInit"]
+        });
+        
         // Supply the templates
-        fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptionsTests", {
+        fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptionsDefaultTests", {
             options: {
                 value: "{uiOptionsTests}.options.prefix"
             }
         });
         
-        fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptionsTests", {
+        fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptionsDefaultTests", {
             options: {
                 templates: {
                     uiOptions: "%prefix/FullPreviewUIOptions.html"
@@ -63,13 +68,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
             options: {
+                selectors: {
+                    textControls: ".flc-uiOptions-text-controls",
+                    layoutControls: ".flc-uiOptions-layout-controls",
+                    linksControls: ".flc-uiOptions-links-controls"
+                },
                 components: {
                     uiEnhancer: {
                         type: "fluid.uiEnhancer",
                         container: "body",
                         priority: "first"
                     },
-                    settingsStore: "{uiEnhancer}.settingsStore"
+                    settingsStore: "{uiEnhancer}.settingsStore",
+                    textControls: {
+                        type: "fluid.uiOptions.textControls",
+                        container: "{uiOptions}.dom.textControls",
+                        createOnEvent: "onUIOptionsMarkupReady",
+                        options: {
+                            classnameMap: "{uiEnhancer}.options.classnameMap"
+                        }
+                    },
+                    layoutControls: {
+                        type: "fluid.uiOptions.layoutControls",
+                        container: "{uiOptions}.dom.layoutControls",
+                        createOnEvent: "onUIOptionsMarkupReady",
+                        options: {
+                            classnameMap: "{uiEnhancer}.options.classnameMap"
+                        }
+                    },
+                    linksControls: {
+                        type: "fluid.uiOptions.linksControls",
+                        container: "{uiOptions}.dom.linksControls",
+                        createOnEvent: "onUIOptionsMarkupReady",
+                        options: {
+                            classnameMap: "{uiEnhancer}.options.classnameMap"
+                        }
+                    },
+                    preview: {
+                        type: "fluid.uiOptions.preview",
+                        createOnEvent: "onUIOptionsComponentReady",
+                        container: "{uiOptions}.dom.previewFrame"
+                    }
                 },
                 listeners: {
                     onSave: function () {
@@ -98,9 +137,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             lineSpacing: 1
         };
             
-        var testUIOptions = function (testFn) {
-            fluid.uiOptionsTests.testFn = testFn;
-            fluid.uiOptionsTests("#ui-options");
+        var testUIOptions = function (testFn, uio) {
+            uio = uio || fluid.uiOptionsTests;
+            uio.testFn = testFn;
+            uio("#ui-options");
         };
         
         var resetSaveCalled = function () {
@@ -271,18 +311,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("textControls template url is set correctly", testTemplatePrefix + linksControlsDefaultTemplateName, loader.templateLoader.resources.linksControls.url);
             jqUnit.assertTrue("textControls forceCache is set", loader.templateLoader.resources.linksControls.forceCache);
         });
+        
+        var assertDefaultModel = function (model) {
+            jqUnit.expect(6);
+            jqUnit.assertNotNull("Model is not null", model);
+            jqUnit.assertNotUndefined("Model is not undefined", model);
+            jqUnit.assertFalse("Min text size is not set", !!model.textSize);
+            jqUnit.assertEquals("Text font is set", "default", model.selections.textFont);
+            jqUnit.assertEquals("Colour scheme is set", "default", model.selections.theme);
+            jqUnit.assertEquals("Layout value is set", false, model.selections.layout);
+        };
+        
+        jqUnit.asyncTest("Init Model - default", function () {
+            testUIOptions(function (uiOptionsLoader, uiOptions) {
+                assertDefaultModel(uiOptions.model);
+                jqUnit.start();
+            });
+        });
 
         jqUnit.asyncTest("Init Model and Controls", function () {
-            jqUnit.expect(10);
+            jqUnit.expect(4);
             
             testUIOptions(function (uiOptionsLoader, uiOptions) {
-                var model = uiOptions.model;
-                jqUnit.assertNotNull("Model is not null", model);
-                jqUnit.assertNotUndefined("Model is not undefined", model);
-                jqUnit.assertFalse("Min text size is not set", !!model.textSize);
-                jqUnit.assertEquals("Text font is set", "default", model.selections.textFont);
-                jqUnit.assertEquals("Colour scheme is set", "default", model.selections.theme);
-                jqUnit.assertEquals("Layout value is set", false, model.selections.layout);
+                assertDefaultModel(uiOptions.model);
 
                 var themeValues = uiOptions.textControls.options.controlValues.theme;
                 jqUnit.assertEquals("There are 5 themes in the control", 5, themeValues.length);
