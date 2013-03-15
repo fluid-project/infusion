@@ -125,7 +125,8 @@ fluid_1_5 = fluid_1_5 || {};
         initFunction: "fluid.initRendererComponent",
         mergePolicy: {
             protoTree: "noexpand, replace",
-            parentBundle: "nomerge"
+            parentBundle: "nomerge",
+            "changeApplierOptions.resolverSetConfig": "resolverSetConfig"
         },
         rendererOptions: {
             autoBind: true

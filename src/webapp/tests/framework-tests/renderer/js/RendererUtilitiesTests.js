@@ -1641,5 +1641,47 @@ fluid.registerNamespace("fluid.tests");
                 jqUnit.assertEquals("Path should not be expanded into value", "rows." + comp.options.val, comp.options.path);
             });
         });
+
+        fluid.defaults("fluid.tests.customSetConfigRendererComponent", {
+            gradeNames: ["autoInit", "fluid.rendererComponent"],
+            model: {
+                "a.b.c": {
+                    val: "OLD"
+                }
+            },
+            selectors: {
+                escaped: ".escaped"
+            },
+            protoTree: {
+                escaped: "${a\\.b\\.c.val}"
+            },
+            renderOnInit: true,
+            resolverGetConfig: {
+                parser: {
+                    parse: fluid.pathUtil.parseEL,
+                    compose: fluid.pathUtil.composePath
+                },
+                strategies: [fluid.model.defaultFetchStrategy]
+            },
+            resolverSetConfig: {
+                parser: {
+                    parse: fluid.pathUtil.parseEL,
+                    compose: fluid.pathUtil.composePath
+                },
+                strategies: [fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
+            }
+        });
+        jqUnit.test("FLUID-4935: resolverSetConfig propagation to changeApplierOptions.resolverSetConfig option", function () {
+            var customSetConfigRendererComponent = fluid.tests.customSetConfigRendererComponent(".FLUID-4935");
+            var escaped = customSetConfigRendererComponent.locate("escaped");
+            function checkDataBind(expected) {
+                jqUnit.assertEquals("Selector is rendered correctly", expected, escaped.val());
+                jqUnit.assertEquals("Model is up to date", expected,
+                    customSetConfigRendererComponent.model["a.b.c"].val);
+            }
+            checkDataBind("OLD");
+            escaped.val("NEW").change();
+            checkDataBind("NEW");
+        });
     }; 
 })(jQuery); 
