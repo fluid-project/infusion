@@ -166,6 +166,9 @@ var fluid_1_5 = fluid_1_5 || {};
         
         $(document).ready(function () {
             that.events.onCreateTocEnactor.fire();
+            
+            // Update toc enactor model when it's created
+            that.applier.requestChange("toc", that.model.toc);
         });
     };
     
