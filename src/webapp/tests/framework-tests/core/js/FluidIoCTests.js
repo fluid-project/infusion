@@ -2138,5 +2138,28 @@ fluid.registerNamespace("fluid.tests");
         island1.events.outEvent2.fire();
         jqUnit.assert("No error fired on cross-island dispatch");
     });
+    
+    fluid.defaults("fluid.tests.grade", {
+            gradeNames: ["fluid.littleComponent", "autoInit"],
+            gradeOpt: {
+                gradeOpt: "gradeOpt"
+            }
+        });
+
+        fluid.defaults("fluid.tests.comp", {
+            gradeNames: ["fluid.littleComponent", "autoInit"],
+            opt: {
+                opt: "opt"
+            }
+        });
+
+        jqUnit.test("FLUID-4937: gradeName merging at instantiation", function () {
+            jqUnit.expect(2);
+            that = fluid.tests.comp({
+                gradeNames: ["fluid.tests.grade"]
+            });
+            jqUnit.assertTrue("The original option should exist", fluid.get(that, "options.opt.opt"));
+            jqUnit.assertTrue("The merged grade option should exist", fluid.get(that, "options.gradeOpt.gradeOpt"));
+        });
 
 })(jQuery); 
