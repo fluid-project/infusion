@@ -223,7 +223,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     // unsupported, NON-API function
-    fluid.pushDistributions = function (distributedBlocks, distribution, thatStack, shadows, memberNames, i) {
+    fluid.collectDistributions = function (distributedBlocks, distribution, thatStack, shadows, memberNames, i) {
         if (fluid.matchIoCSelector(distribution.selector, thatStack, shadows, memberNames, i)) {
             distributedBlocks.push.apply(distributedBlocks, distribution.blocks);
         }
@@ -241,7 +241,7 @@ var fluid_1_5 = fluid_1_5 || {};
         for (var i = 0; i < thatStack.length; ++ i) {
             var thisThat = thatStack[i];
             fluid.each(shadows[i].distributions, function (distribution) {
-                fluid.pushDistributions(distributedBlocks, distribution, thatStack, shadows, memberNames, i);
+                fluid.collectDistributions(distributedBlocks, distribution, thatStack, shadows, memberNames, i);
             });
         }
         fluid.applyDistributions(that, distributedBlocks, shadow);
@@ -265,6 +265,41 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return segs.slice(1);  
     };
+    
+    // unsupported, NON-API function    
+    fluid.isIoCSSSelector = function (context) {
+        return context.indexOf(" ") !== -1; // simple-minded check for an IoCSS reference  
+    };
+
+    // unsupported, NON-API function     
+    fluid.pushDistributions = function (targetHead, selector, blocks) {
+        var targetShadow = fluid.shadowForComponent(targetHead);
+        var id = fluid.allocateGuid();
+        var distributions = (targetShadow.distributions = targetShadow.distributions || []);
+        distributions.push({
+            id: id,
+            selector: selector,
+            blocks: blocks
+        });
+        return id;
+    };
+
+    // unsupported, NON-API function    
+    fluid.clearDistributions = function (targetHead, id) {
+        var targetShadow = fluid.shadowForComponent(targetHead);
+        fluid.remove_if(targetShadow.distributions, function (distribution) {
+            return distribution.id === id;
+        });
+    };
+    
+    // unsupported, NON-API function
+    // Modifies a parsed selector to extra its head context which will be matched upwards     
+    fluid.extractSelectorHead = function (parsedSelector) {
+        var predList = parsedSelector[0].predList;
+        var context = predList[0].context;
+        predList.length = 0;
+        return context; 
+    };
 
     fluid.undistributableOptions = ["gradeNames", "distributeOptions", "argumentMap", "initFunction", "mergePolicy", "progressiveCheckerOptions"]; // automatically added to "exclusions" of every distribution
 
@@ -274,13 +309,12 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.each(records, function (record) {
             var targetRef = fluid.parseContextReference(record.target);
             var targetComp, selector;
-            if (targetRef.context.indexOf(" ") !== -1) { // simple-minded check for an IoCSS reference
+            if (fluid.isIoCSSSelector(targetRef.context)) {
                 selector = fluid.parseSelector(targetRef.context, fluid.IoCSSMatcher)
-                var head = selector[0].predList;
-                if (head.length !== 1 || head[0].context !== "that") {
+                var headContext = fluid.extractSelectorHead(selector);
+                if (headContext !== "that") {
                     fluid.fail("Downwards options distribution not supported from component other than \"that\"");
                 }
-                head.length = 0;
                 targetComp = that;
             }
             else {
@@ -311,15 +345,12 @@ var fluid_1_5 = fluid_1_5 || {};
                 thatShadow.mergeOptions.updateBlocks(); // perhaps unnecessary
             }
             // TODO: inline material has to be expanded in its original context!
-            var targetShadow = fluid.shadowForComponent(targetComp);
+            
             if (selector) {
-                var distributions = (targetShadow.distributions = targetShadow.distributions || []);
-                distributions.push({
-                    selector: selector,
-                    blocks: preBlocks
-                });
+                fluid.pushDistributions(targetComp, selector, preBlocks);
             }
-            else {
+            else { // The component exists now, we must rebalance it
+                var targetShadow = fluid.shadowForComponent(targetComp);
                 fluid.applyDistributions(that, preBlocks, targetShadow);
             }
         });
@@ -929,7 +960,7 @@ var fluid_1_5 = fluid_1_5 || {};
         if (that[name]) { return; } // TODO: move this into strategy
         directArgs = directArgs || [];
         var component = that.options.components[name];
-        fluid.pushActivity("initDependent", "instantiation of dependent component with name \"%name\" with record %record as child of %parent", 
+        fluid.pushActivity("initDependent", "instantiating dependent component with name \"%name\" with record %record as child of %parent", 
             {name: name, record: component, parent: that});
         var instance;
         var instantiator = idToInstantiator[that.id];
@@ -974,8 +1005,9 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.bindDeferredComponent = function (that, componentName, component) {
         var events = fluid.makeArray(component.createOnEvent);
         fluid.each(events, function(eventName) {
-            that.events[eventName].addListener(function() {
-                fluid.pushActivity("initDeferred", "Beginning instantiation of deferred component %componentName of parent %that due to event %eventName",
+            var event = eventName.charAt(0) === "{" ? fluid.expandOptions(eventName, that) : that.events[eventName];
+            event.addListener(function () {
+                fluid.pushActivity("initDeferred", "instantiating deferred component %componentName of parent %that due to event %eventName",
                  {componentName: componentName, that: that, eventName: eventName});
                 if (that[componentName]) {
                     var instantiator = idToInstantiator[that.id];
@@ -1197,7 +1229,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // TODO: make a *slightly* more performant version of fluid.invoke that perhaps caches the demands
     // after the first successful invocation
     fluid.invoke = function (functionName, args, that, environment) {
-        fluid.pushActivity("invoke", "while invoking function with name \"%functionName\" from component %that", {functionName: functionName, that: that})  
+        fluid.pushActivity("invoke", "invoking function with name \"%functionName\" from component %that", {functionName: functionName, that: that})  
         var invokeSpec = fluid.resolveDemands(that, functionName, fluid.makeArray(args), {passArgs: true});
         var togo = fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
         fluid.popActivity();
@@ -1343,7 +1375,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     // unsupported, non-API function
     fluid.event.resolveEvent = function (that, eventName, eventSpec) {
-        fluid.pushActivity("resolveEvent", "while resolving event with name %eventName attached to component %that", 
+        fluid.pushActivity("resolveEvent", "resolving event with name %eventName attached to component %that", 
             {eventName: eventName, that: that});
         var adder = fluid.event.makeTrackedListenerAdder(that);
         if (typeof(eventSpec) === "string") {

@@ -60,7 +60,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /*
      * Takes an object of key/value pairs where the key will be the key in the static enivronment and the value is a function or function name to run.
      * {staticEnvKey: "progressiveCheckFunc"}
-     * Note that the function will not be run if it's result is already recorded.
+     * Note that the function will not be run if its result is already recorded.
      */
     fluid.enhance.check = function (stuffToCheck) {
         fluid.each(stuffToCheck, function (val, key) {
@@ -122,6 +122,10 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.progressiveCheckerForComponent", {
         gradeNames: "fluid.typeFount"
+    });
+    
+    fluid.enhance.check({
+        "fluid.browser" : "fluid.enhance.isBrowser"
     });
     
     /**********************************************************
