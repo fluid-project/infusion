@@ -144,6 +144,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 uiOptions: {
+                    type: "fluid.uiOptions.defaultSettingsPanels",
                     options: {
                         listeners: {
                             "onSave.munged": testSave
@@ -244,6 +245,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             ]
                         }
                     }
+                },
+                uiOptions: {
+                    type: "fluid.uiOptions.defaultSettingsPanels"
                 }
             };
             

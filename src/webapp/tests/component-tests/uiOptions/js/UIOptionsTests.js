@@ -67,12 +67,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var saveCalled = false;
 
         fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
+            funcName: "fluid.uiOptions.defaultSettingsPanels",
             options: {
-                selectors: {
-                    textControls: ".flc-uiOptions-text-controls",
-                    layoutControls: ".flc-uiOptions-layout-controls",
-                    linksControls: ".flc-uiOptions-links-controls"
-                },
                 components: {
                     uiEnhancer: {
                         type: "fluid.uiEnhancer",
@@ -80,30 +76,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         priority: "first"
                     },
                     settingsStore: "{uiEnhancer}.settingsStore",
-                    textControls: {
-                        type: "fluid.uiOptions.textControls",
-                        container: "{uiOptions}.dom.textControls",
-                        createOnEvent: "onUIOptionsMarkupReady",
-                        options: {
-                            classnameMap: "{uiEnhancer}.options.classnameMap"
-                        }
-                    },
-                    layoutControls: {
-                        type: "fluid.uiOptions.layoutControls",
-                        container: "{uiOptions}.dom.layoutControls",
-                        createOnEvent: "onUIOptionsMarkupReady",
-                        options: {
-                            classnameMap: "{uiEnhancer}.options.classnameMap"
-                        }
-                    },
-                    linksControls: {
-                        type: "fluid.uiOptions.linksControls",
-                        container: "{uiOptions}.dom.linksControls",
-                        createOnEvent: "onUIOptionsMarkupReady",
-                        options: {
-                            classnameMap: "{uiEnhancer}.options.classnameMap"
-                        }
-                    },
                     preview: {
                         type: "fluid.uiOptions.preview",
                         createOnEvent: "onUIOptionsComponentReady",
@@ -536,6 +508,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.staticEnvironment.uiOptionsTestsIntegration = fluid.typeTag("fluid.uiOptions.testsIntegration");
             
             fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsIntegration", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
+                funcName: "fluid.uiOptions.defaultSettingsPanels",
                 options: {
                     components: {
                         uiEnhancer: {
