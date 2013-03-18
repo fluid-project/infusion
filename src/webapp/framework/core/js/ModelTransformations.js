@@ -130,19 +130,19 @@ var fluid = fluid || fluid_1_5;
     });
     
     fluid.model.transform.binaryLookup = {
-        "===": function (a, b) { return a === b },
-        "!==": function (a, b) { return a !== b },
-        "<=": function (a, b) { return a <= b },
-        "<": function (a, b) { return a < b },
-        ">=": function (a, b) { return a >= b },
-        ">": function (a, b) { return a > b },
-        "+": function (a, b) { return a + b },
-        "-": function (a, b) { return a - b },
-        "*": function (a, b) { return a * b },
-        "/": function (a, b) { return a / b },
-        "%": function (a, b) { return a % b },
-        "&&": function (a, b) { return a && b },
-        "||": function (a, b) { return a || b }
+        "===": function (a, b) { return a === b; },
+        "!==": function (a, b) { return a !== b; },
+        "<=": function (a, b) { return a <= b; },
+        "<": function (a, b) { return a < b; },
+        ">=": function (a, b) { return a >= b; },
+        ">": function (a, b) { return a > b; },
+        "+": function (a, b) { return a + b; },
+        "-": function (a, b) { return a - b; },
+        "*": function (a, b) { return a * b; },
+        "/": function (a, b) { return a / b; },
+        "%": function (a, b) { return a % b; },
+        "&&": function (a, b) { return a && b; },
+        "||": function (a, b) { return a || b; }
     };
 
     fluid.model.transform.binaryOp = function (inputs, expandSpec, expander) {
@@ -168,8 +168,8 @@ var fluid = fluid || fluid_1_5;
         }
 
         return (inputs.condition) ? 
-            (inputs.true === null ? undefined : inputs.true) : 
-            (inputs.false === null ? undefined : inputs.false);
+            (inputs["true"] === null ? undefined : inputs["true"]) : 
+            (inputs["false"] === null ? undefined : inputs["false"]);
     };
 
 
@@ -235,7 +235,7 @@ var fluid = fluid || fluid_1_5;
                 outputValue = undefined;
             } else {
                 //get value from outputValue or outputValuePath. If none is found set the outputValue to be that of defaultOutputValue (or undefined)
-                var outputValue = fluid.model.transform.resolveParam(indexed, expander, "outputValue", undefined);
+                outputValue = fluid.model.transform.resolveParam(indexed, expander, "outputValue", undefined);
                 outputValue = (outputValue === undefined) ? expandSpec.defaultOutputValue : outputValue;
             }
         }
@@ -302,7 +302,7 @@ var fluid = fluid || fluid_1_5;
     /* -------- arrayToOutputs and inputsToArray ---------------- */
     fluid.defaults("fluid.model.transform.arrayToOutputs", { 
         gradeNames: ["fluid.standardInputTransformFunction", "fluid.lens"],
-        invertConfiguration: "fluid.model.transform.arrayToOutputs.invert",
+        invertConfiguration: "fluid.model.transform.arrayToOutputs.invert"
     });
 
  
@@ -354,7 +354,7 @@ var fluid = fluid || fluid_1_5;
         fluid.each(options, function (arrVal, inPath) {
             var val = fluid.model.transform.getValue(inPath, undefined, expander);
             if (val === expandSpec.presentValue) {
-                outputArr.push(arrVal)
+                outputArr.push(arrVal);
             }
         });
         return outputArr;
@@ -390,7 +390,7 @@ var fluid = fluid || fluid_1_5;
      * }
      */
     fluid.model.transform.applyPaths = function (operation, pathOp, paths) {
-        for (var i = 0; i < paths.length; ++ i) {
+        for (var i = 0; i < paths.length; ++i) {
             operation === "push" ? pathOp.push(paths[i]) : pathOp.pop();
         }
     };
@@ -432,7 +432,7 @@ var fluid = fluid || fluid_1_5;
         fluid.each(arr, function (v, k) {
             //check that we have a pivot entry in the object and it's a valid type:            
             var newKey = v[pivot];
-            var keyType = typeof(newKey);
+            var keyType = typeof newKey;
             if (keyType !== "string" && keyType !== "boolean" && keyType !== "number") {
                 fluid.fail("arrayToObject encountered untransformable array due to missing or invalid key", v);
             }
