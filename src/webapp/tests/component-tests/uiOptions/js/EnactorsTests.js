@@ -488,6 +488,75 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    /*******************************************************************************
+     * Unit tests for fluid.uiOptions.IE6ColorInversionEnactor
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.IE6ColorInversionEnactor", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            setIE6ColorInversion: {
+                type: "fluid.uiOptions.actionAnts.IE6ColorInversionEnactor",
+                container: ".flc-IE6ColorInversionEnactor"
+            },
+            IE6ColorInversionEnactorTester: {
+                type: "fluid.tests.IE6ColorInversionEnactorTester"
+            }
+        }
+    });
+
+    function cleanStaticEnvironment() {
+        delete fluid.staticEnvironment.browserIE;
+        delete fluid.staticEnvironment.browserMajorVersion;
+    }
+
+    function withIE6Environment(withIt, testFunc) {
+        try {
+            cleanStaticEnvironment();
+            if (withIt) {
+                fluid.staticEnvironment.browserIE = fluid.typeTag("fluid.browser.msie");
+                fluid.staticEnvironment.browserMajorVersion = fluid.typeTag("fluid.browser.majorVersion.6");
+            }
+            testFunc();
+        } finally {
+            cleanStaticEnvironment();
+        }
+    }
+    
+    function testIE6ColorInversion(withIt, testFunc) {
+        withIE6Environment(withIt, function () {
+            testFunc();
+        });
+    }
+    
+    fluid.tests.testIE6ColorInversionEnactor = function (that, container) {
+        testIE6ColorInversion(false, function () {
+            that.applier.requestChange("value", "default");
+            jqUnit.assertEquals("fl-inverted-color is not touched", 1, $(container).has("." + that.options.styles.colorInversionClass).length);
+        });
+        testIE6ColorInversion(true, function () {  
+            that.applier.requestChange("value", "default");
+            jqUnit.assertEquals("fl-inverted-color has been removed", 0, $(container).has("." + that.options.styles.colorInversionClass).length);
+        });
+    };
+
+    fluid.defaults("fluid.tests.IE6ColorInversionEnactorTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        testOptions: {
+            container: ".flc-IE6ColorInversionEnactor"
+        },
+        modules: [{
+            name: "Test style element component",
+            tests: [{
+                expect: 2,
+                name: "IE6 style is handled properly",
+                type: "test",
+                func: "fluid.tests.testIE6ColorInversionEnactor",
+                args: ["{setIE6ColorInversion}", "{that}.options.testOptions.container"]
+            }]
+        }]
+    });
+
     $(document).ready(function () {
         fluid.test.runTests([
             "fluid.tests.styleElementsEnactor",
@@ -498,7 +567,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.tests.textSizerEnactor",
             "fluid.tests.getLineHeight",
             "fluid.tests.lineSpacerEnactor",
-            "fluid.tests.tableOfContentsEnactor"
+            "fluid.tests.tableOfContentsEnactor",
+            "fluid.tests.IE6ColorInversionEnactor"
         ]);
     });
 

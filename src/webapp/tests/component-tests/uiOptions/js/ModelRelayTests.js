@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Unit tests for fluid.uiOptions.modelRelay
      *******************************************************************************/
 
-    var resultContainer = ".flc-modelRelay";
+    var resultValue;
     
     fluid.defaults("fluid.tests.modelRelay", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
@@ -45,8 +45,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             modelRelayImpl: {
                 type: "fluid.uiOptions.modelRelay",
                 options: {
-                    container: resultContainer,
                     sourceApplier: "{modelRelayWrapper}.applier",
+                    sourceModel: "{modelRelayWrapper}.model",
                     rules: {
                         "wrapperValue": "value"
                     },
@@ -61,34 +61,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.uiOptions.modelRelay.finalInit = function (that) {
         that.applier.modelChanged.addListener("value", function (newModel) {
-            $(that.options.container).text(newModel.value);
+            resultValue = newModel.value;
         });
     };
     
-    fluid.tests.checkResult = function (modelRelayImpl, newValue) {
+    fluid.tests.checkResult = function (expectedValue) {
         return function () {
-            jqUnit.assertEquals("The model change request on the modelRelay has been fired", newValue, $(modelRelayImpl.options.container).text());
+            jqUnit.assertEquals("The model change request on the modelRelay has been fired", expectedValue, resultValue);
         };
     };
     
     fluid.defaults("fluid.tests.modelRelayTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
-            newValue: "This is a test string."
+            newValue1: "This is a test string 1.",
+            newValue2: "This is a test string 2."
         },
         modules: [{
             name: "Test model relay component",
             tests: [{
-                expect: 1,
+                expect: 2,
                 name: "The applier change request on the modelRelay wrapper triggers the request on the modelRelay itself",
                 sequence: [{
                     func: "{modelRelayWrapper}.applier.requestChange",
-                    args: ["wrapperValue", "{that}.options.testOptions.newValue"]
+                    args: ["wrapperValue", "{that}.options.testOptions.newValue1"]
                 }, {
                     listenerMaker: "fluid.tests.checkResult",
-                    makerArgs: ["{modelRelayWrapper}.modelRelayImpl", "{that}.options.testOptions.newValue"],
+                    makerArgs: ["{that}.options.testOptions.newValue1"],
                     spec: {path: "wrapperValue", priority: "last"},
                     changeEvent: "{modelRelayWrapper}.applier.modelChanged"
+                }, {
+                    func: "{modelRelayWrapper}.modelRelayImpl.applier.requestChange",
+                    args: ["value", "{that}.options.testOptions.newValue2"]
+                }, {
+                    listenerMaker: "fluid.tests.checkResult",
+                    makerArgs: ["{that}.options.testOptions.newValue2"],
+                    spec: {path: "value", priority: "last"},
+                    changeEvent: "{modelRelayWrapper}.modelRelayImpl.applier.modelChanged"
                 }]
             }]
         }]

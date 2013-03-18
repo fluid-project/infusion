@@ -58,40 +58,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });
 
-        function cleanStaticEnvironment() {
-            delete fluid.staticEnvironment.browserIE;
-            delete fluid.staticEnvironment.browserMajorVersion;
-        }
-
-        function withIE6Environment(withIt, testFunc) {
-            try {
-                cleanStaticEnvironment();
-                if (withIt) {
-                    fluid.staticEnvironment.browserIE = fluid.typeTag("fluid.browser.msie");
-                    fluid.staticEnvironment.browserMajorVersion = fluid.typeTag("fluid.browser.majorVersion.6");
-                }
-                testFunc();
-            } finally {
-                cleanStaticEnvironment();
-            }
-        }
-        
-        function testIE6ColorInversion(withIt, testFunc) {
-            jqUnit.test("IE6ColorInversion: " + withIt, function () { 
-                withIE6Environment(withIt, function () {
-                    fluid.pageEnhancer(uiEnhancerOptions);
-                    testFunc();
-                });
-            });
-        }
-        
-        testIE6ColorInversion(true, function () {  
-            jqUnit.assertEquals("fl-inverted-color has been removed", 0, $(".fl-inverted-color").length);
-        });
-        testIE6ColorInversion(false, function () {
-            jqUnit.assertEquals("fl-inverted-color is not touched", 1, $(".fl-inverted-color").length);
-        });
-
         jqUnit.asyncTest("Settings", function () {
             jqUnit.expect(5);
 

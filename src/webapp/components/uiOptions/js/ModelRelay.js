@@ -29,18 +29,39 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.modelRelay", {
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
+        sourceModel: null,  // must be supplied by implementors
         sourceApplier: null,  // must be supplied by implementors
         rules: {},  // must be supplied by implementors, in format: "sourceModelKey": "targetModelKey"
-        postInitFunction: "fluid.uiOptions.modelRelay.postInit"
+        
+        // The two options below keep track of the latest values on two models since the actual model 
+        // value doesn't get updated until all the registered listeners are executed. This is to prevent  
+        // the recursive calls in btw the listeners registered for each other.
+        latestSourceModelValues: {},
+        latestSelfModelValues: {},
+        
+        postInitFunction: "fluid.uiOptions.modelRelay.postInit",
     });
+    
+    fluid.uiOptions.modelRelay.createListener = function (targetApplier, newModel, sourceModelTracker, targetModelTracker, from, to) {
+        var newValue = fluid.get(newModel, from);
+        var lastTargetValue = fluid.get(targetModelTracker, to);
+        
+        if (newValue !== lastTargetValue) {
+            fluid.set(sourceModelTracker, from, newValue);
+            targetApplier.requestChange(to, newValue);
+        }
+    };
     
     fluid.uiOptions.modelRelay.postInit = function (that) {
         fluid.transform(that.options.rules, function (value, key) {
-            var listener = function (newModel, oldModel, changeList) {
-                var newValue = fluid.get(newModel, key);
-                that.applier.requestChange(value, newValue);
+            var listenerForSourceModel = function (newModel, oldModel) {
+                fluid.uiOptions.modelRelay.createListener(that.applier, newModel, that.options.latestSourceModelValues, that.options.latestSelfModelValues, key, value);
             };
-            that.options.sourceApplier.modelChanged.addListener(key, listener);
+            var listenerForInternalModel = function (newModel, oldModel) {
+                fluid.uiOptions.modelRelay.createListener(that.options.sourceApplier, newModel, that.options.latestSelfModelValues, that.options.latestSourceModelValues, value, key);
+            };
+            that.options.sourceApplier.modelChanged.addListener(key, listenerForSourceModel);
+            that.applier.modelChanged.addListener(value, listenerForInternalModel);
         });
     };
 

@@ -273,7 +273,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     /**
-     * return "font-size" in em
+     * Return "font-size" in em
      * @param (Object) container
      * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
      */
@@ -282,9 +282,13 @@ var fluid_1_5 = fluid_1_5 || {};
         return Math.round(textSizeInPx / px2emFactor * 10000) / 10000;
     };
     
+    /**
+     * Return the base font size used for converting text size from px to em
+     */
     fluid.uiOptions.actionAnts.textSizerEnactor.getPx2EmFactor = function (container, fontSizeMap) {
-        // The base font size is the computed font size of the container's parent element unless the container itself 
-        // has been the DOM root element "HTML" which is NOT detectable with this algorithm
+        // The base font size for converting text size to em is the computed font size of the container's 
+        // parent element unless the container itself has been the DOM root element "HTML"
+        // The reference to this algorithm: http://clagnut.com/blog/348/
         if (container.get(0).tagName !== "HTML") {
             container = container.parent();
         }
@@ -479,4 +483,91 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
+    /*******************************************************************************
+     * Browser type and version detection.                                         *
+     *                                                                             *
+     * Add type tags of IE and browser version into static environment for the     * 
+     * spcial handling on IE6.                                                     *
+     *******************************************************************************/
+    
+    fluid.registerNamespace("fluid.browser.version");
+
+    fluid.browser.msie = function () {
+        var isIE = ($.browser.msie);
+        return isIE ? fluid.typeTag("fluid.browser.msie") : undefined;
+    };
+
+    fluid.browser.majorVersion = function () {
+    // From http://www.useragentstring.com/pages/Internet%20Explorer/ several variants are possible
+    // for IE6 - and in general we probably just want to detect major versions
+        var version = $.browser.version;
+        var dotpos = version.indexOf(".");
+        var majorVersion = version.substring(0, dotpos);
+        return fluid.typeTag("fluid.browser.majorVersion." + majorVersion);
+    };
+
+    var features = {
+        browserIE: fluid.browser.msie(),
+        browserMajorVersion: fluid.browser.majorVersion()
+    };
+    
+    fluid.merge(null, fluid.staticEnvironment, features);
+    
+    // Temporary solution pending revised IoC system in 1.5
+    
+    fluid.hasFeature = function (tagName) {
+        return fluid.find_if(fluid.staticEnvironment, function (value) {
+            return value && value.typeName === tagName;
+        });
+    };
+
+    /********************************************************************************************
+     * setIE6ColorInversionEnactor
+     * 
+     * Remove the instances of fl-inverted-color when the default theme is selected. 
+     * This prevents a bug in IE6 where the default theme will have elements styled 
+     * with the theme color.
+     *
+     * Caused by:
+     * http://thunderguy.com/semicolon/2005/05/16/multiple-class-selectors-in-internet-explorer/
+     ********************************************************************************************/
+
+    // Note that the implementors need to provide the container for this view component
+    fluid.defaults("fluid.uiOptions.actionAnts.IE6ColorInversionEnactor", {
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
+        selectors: {
+            colorInversion: ".fl-inverted-color"
+        },
+        styles: {
+            colorInversionClass: "fl-inverted-color"
+        },
+        model: {
+            value: null
+        },
+        invokers: {
+            setIE6ColorInversion: {
+                funcName: "fluid.uiOptions.actionAnts.IE6ColorInversionEnactor.setIE6ColorInversion",
+                args: ["{arguments}.0", "{that}"]
+            }
+        },
+        listeners: {
+            onCreate: {
+                listener: "{that}.setIE6ColorInversion",
+                args: ["{that}.model.value"]
+            }
+        }
+    });
+    
+    fluid.uiOptions.actionAnts.IE6ColorInversionEnactor.setIE6ColorInversion = function (value, that) {
+        if (fluid.hasFeature("fluid.browser.msie") && fluid.hasFeature("fluid.browser.majorVersion.6") && value === "default") {
+            that.locate("colorInversion").removeClass(that.options.styles.colorInversionClass);
+        }
+    };
+    
+    fluid.uiOptions.actionAnts.IE6ColorInversionEnactor.finalInit = function (that) {
+        that.applier.modelChanged.addListener("value", function (newModel) {
+            that.setIE6ColorInversion(newModel.value);
+        });
+    };
+
 })(jQuery, fluid_1_5);

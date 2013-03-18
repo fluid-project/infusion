@@ -22,50 +22,15 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     /*******************************************************************************
-     * Browser type and version detection.                                         *
-     *                                                                             *
-     * Add type tags of IE and browser version into static environment for the     * 
-     * spcial handling on IE6.                                                     *
+     * UI Enhancer Default Actions
+     *
+     * A grade component for UIEnhancer. It is a collection of default UI Enhancer 
+     * action ants.
      *******************************************************************************/
     
-    fluid.registerNamespace("fluid.browser.version");
-
-    fluid.browser.msie = function () {
-        var isIE = ($.browser.msie);
-        return isIE ? fluid.typeTag("fluid.browser.msie") : undefined;
-    };
-
-    fluid.browser.majorVersion = function () {
-    // From http://www.useragentstring.com/pages/Internet%20Explorer/ several variants are possible
-    // for IE6 - and in general we probably just want to detect major versions
-        var version = $.browser.version;
-        var dotpos = version.indexOf(".");
-        var majorVersion = version.substring(0, dotpos);
-        return fluid.typeTag("fluid.browser.majorVersion." + majorVersion);
-    };
-
-    var features = {
-        browserIE: fluid.browser.msie(),
-        browserMajorVersion: fluid.browser.majorVersion()
-    };
+    fluid.registerNamespace("fluid.uiEnhancer");
     
-    fluid.merge(null, fluid.staticEnvironment, features);
-    
-    // Temporary solution pending revised IoC system in 1.5
-    
-    fluid.hasFeature = function (tagName) {
-        return fluid.find_if(fluid.staticEnvironment, function (value) {
-            return value && value.typeName === tagName;
-        });
-    };
-
-    /*******************************************************************************
-     * UI Enhancer                                                                 *
-     *                                                                             *
-     * Works in conjunction with FSS to transform the page based on user settings. *
-     *******************************************************************************/
-    
-    fluid.defaults("fluid.uiEnhancer", {
+    fluid.defaults("fluid.uiEnhancer.defaultActions", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             textSize: {
@@ -76,22 +41,6 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "textSize": "value"
-                    }
-                }
-            },
-            tableOfContents: {
-                type: "fluid.uiOptions.actionAnts.tableOfContentsEnactor",
-                container: "{uiEnhancer}.container",
-                createOnEvent: "onCreateTocEnactor",
-                options: {
-                    tocTemplate: "{uiEnhancer}.options.tocTemplate",
-                    sourceApplier: "{uiEnhancer}.applier",
-                    rules: {
-                        "toc": "value"
-                    },
-                    listeners: {
-                        afterTocRender: "{uiEnhancer}.events.onTocReady",
-                        onLateRefreshRelay: "{uiEnhancer}.events.onTocReady"
                     }
                 }
             },
@@ -150,6 +99,32 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             },
+            tableOfContents: {
+                type: "fluid.uiOptions.actionAnts.tableOfContentsEnactor",
+                container: "{uiEnhancer}.container",
+                createOnEvent: "onCreateTocEnactor",
+                options: {
+                    tocTemplate: "{uiEnhancer}.options.tocTemplate",
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "toc": "value"
+                    },
+                    listeners: {
+                        afterTocRender: "{uiEnhancer}.events.onTocReady",
+                        onLateRefreshRelay: "{uiEnhancer}.events.onTocReady"
+                    }
+                }
+            },
+            IE6ColorInversion: {
+                type: "fluid.uiOptions.actionAnts.IE6ColorInversionEnactor",
+                container: "{uiEnhancer}.container",
+                options: {
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "theme": "value"
+                    }
+                }
+            },
             settingsStore: {
                 type: "fluid.uiOptions.store",
                 options: {
@@ -159,22 +134,17 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         invokers: {
             updateModel: {
-                funcName: "fluid.uiEnhancer.updateModel",
+                funcName: "fluid.uiEnhancer.defaultActions.updateModel",
                 args: ["{arguments}.0", "{uiEnhancer}.applier"]
             },
             updateFromSettingsStore: {
-                funcName: "fluid.uiEnhancer.updateFromSettingsStore",
+                funcName: "fluid.uiEnhancer.defaultActions.updateFromSettingsStore",
                 args: ["{uiEnhancer}"]
-            },
-            setIE6ColorInversion: {
-                funcName: "fluid.uiEnhancer.setIE6ColorInversion",
-                args: "{uiEnhancer}"
             }
         },
         events: {
-            onCreateTocEnactor: null,
             onTocReady: null,
-            modelChanged: null
+            onCreateTocEnactor: null
         },
         listeners: {
             onTocReady: [{
@@ -184,9 +154,38 @@ var fluid_1_5 = fluid_1_5 || {};
                 listener: "{that}.inputsLarger.handleStyle",
                 args: "{that}.model.inputsLarger"
             }, {
-                listener: "{that}.setIE6ColorInversion"
+                listener: "{that}.IE6ColorInversion.setIE6ColorInversion",
+                args: "{that}.model.theme"
             }]
         },
+        finalInitFunction: "fluid.uiEnhancer.defaultActions.finalInit"
+    });
+
+    fluid.uiEnhancer.defaultActions.finalInit = function (that) {
+        that.updateFromSettingsStore();
+        
+        $(document).ready(function () {
+            that.events.onCreateTocEnactor.fire();
+        });
+    };
+    
+    fluid.uiEnhancer.defaultActions.updateFromSettingsStore = function (that) {
+        that.updateModel(that.settingsStore.fetch());
+    };
+
+    fluid.uiEnhancer.defaultActions.updateModel = function (newModel, applier) {
+        applier.requestChange("", newModel);
+    };
+
+    /*******************************************************************************
+     * CSSClassEnhancerBase
+     *
+     * Provides the map between the settings and css classes to be applied. 
+     * Used as a UIEnhancer base grade that can be pulled in as requestd.
+     *******************************************************************************/
+    
+    fluid.defaults("fluid.uiEnhancer.CSSClassEnhancerBase", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         classnameMap: {
             "textFont": {
                 "default": "",
@@ -205,7 +204,18 @@ var fluid_1_5 = fluid_1_5 || {};
             "layout": "fl-layout-linear",
             "links": "fl-link-enhanced",
             "inputsLarger": "fl-text-larger"
-        },
+        }
+    });
+
+    /*******************************************************************************
+     * BrowserTextEnhancerBase
+     *
+     * Provides the default font size translation between the strings and actual pixels. 
+     * Used as a UIEnhancer base grade that can be pulled in as requestd.
+     *******************************************************************************/
+    
+    fluid.defaults("fluid.uiEnhancer.BrowserTextEnhancerBase", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         fontSizeMap: {
             "xx-small": "9px",
             "x-small":  "11px",
@@ -214,46 +224,18 @@ var fluid_1_5 = fluid_1_5 || {};
             "large":    "18px",
             "x-large":  "23px",
             "xx-large": "30px"
-        },
-        selectors: {
-            colorInversion: ".fl-inverted-color"
-        },
-        styles: {
-            colorInversionClass: "fl-inverted-color"
-        },
-        finalInitFunction: "fluid.uiEnhancer.finalInit"
+        }
     });
 
-    fluid.uiEnhancer.finalInit = function (that) {
-        that.updateFromSettingsStore();
-        
-        $(document).ready(function () {
-            that.events.onCreateTocEnactor.fire();
-        });
-    };
+    /*******************************************************************************
+     * UI Enhancer                                                                 *
+     *                                                                             *
+     * Works in conjunction with FSS to transform the page based on user settings. *
+     *******************************************************************************/
     
-    fluid.uiEnhancer.updateFromSettingsStore = function (that) {
-        that.updateModel(that.settingsStore.fetch());
-    };
-
-    fluid.uiEnhancer.updateModel = function (newModel, applier) {
-        applier.requestChange("", newModel);
-    };
-
-    /**
-     * remove the instances of fl-inverted-color when the default theme is selected. 
-     * This prevents a bug in IE6 where the default theme will have elements styled 
-     * with the theme color.
-     *
-     * Caused by:
-     * http://thunderguy.com/semicolon/2005/05/16/multiple-class-selectors-in-internet-explorer/
-     * @param {Object} that - the uiEnhancer
-     */
-    fluid.uiEnhancer.setIE6ColorInversion = function (that) {
-        if (fluid.hasFeature("fluid.browser.msie") && fluid.hasFeature("fluid.browser.majorVersion.6") && that.model.theme === "default") {
-            that.locate("colorInversion").removeClass(that.options.styles.colorInversionClass);
-        }
-    };
+    fluid.defaults("fluid.uiEnhancer", {
+        gradeNames: ["fluid.uiEnhancer.defaultActions", "fluid.uiEnhancer.CSSClassEnhancerBase", "fluid.uiEnhancer.BrowserTextEnhancerBase", "autoInit"]
+    });
 
     /*******************************************************************************
      * PageEnhancer                                                                *
