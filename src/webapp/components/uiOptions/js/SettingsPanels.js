@@ -102,7 +102,8 @@ var fluid_1_5 = fluid_1_5 || {};
             max: 2,
             sliderOptions: {
                 orientation: "horizontal",
-                step: 0.1
+                step: 0.1,
+                range: "min"
             } 
         },
         selectors: {
@@ -189,7 +190,8 @@ var fluid_1_5 = fluid_1_5 || {};
             max: 2,
             sliderOptions: {
                 orientation: "horizontal",
-                step: 0.1
+                step: 0.1,
+                range: "min"
             } 
         },
         selectors: {

@@ -51,17 +51,39 @@ ul.fl-uiOptions-topContainer {
 
 /* Sliders */
 .fl-uiOptions-fatPanel .fl-slider {
-    background-color: #433F3D;
+	border: 1px solid #b3b3b3;
+	border-radius: 5px;	
+    background-color: #dad6d3;
     padding: 0;
     position: relative;
-    float: left;
+    height: 1em;
+    margin-top: 0;
 }
 
 .fl-uiOptions-fatPanel .fl-slider .fl-handle, 
 .fl-uiOptions-fatPanel .fl-slider a {
-	height: 42px;
-	width: 42px;
-	background-color: grey;
+	height: 35px;
+	width: 35px;
+	margin-top: -10px;
+	margin-left: -5px;
+	background-color: #fff;
+	border: 1px solid #b3b3b3;	
+	border-radius: 2em;
+	box-shadow: 4px 2px 3px rgba(0,0,0,0.3);	
+	
+	background-image: linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
+	background-image: -o-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
+	background-image: -moz-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
+	background-image: -webkit-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
+	background-image: -ms-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
+	
+	background-image: -webkit-gradient(
+		linear,
+		right top,
+		left bottom,
+		color-stop(0.46, rgb(255,255,255)),
+		color-stop(0.73, rgb(233,234,234))
+	);	
 }
 .fl-uiOptions-fatPanel .fl-slider a { 
     background-image: none;
@@ -70,7 +92,12 @@ ul.fl-uiOptions-topContainer {
 .fl-uiOptions-fatPanel .fl-slider-horz {
 }
 .fl-uiOptions-fatPanel .fl-slider-input {
-    margin-top: 3em;
+    margin-top: 2em;
+}
+
+.fl-uiOptions-fatPanel .ui-slider-range { 
+	background-color: #62bb3d; 
+	height: 100%;	
 }
 
 /* Theming */
