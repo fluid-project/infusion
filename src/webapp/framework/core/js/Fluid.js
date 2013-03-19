@@ -1241,7 +1241,9 @@ var fluid = fluid || fluid_1_5;
         }
         var mergePolicy = {};
         for (var i = 0; i < mergeArgs.length; ++ i) {
-            mergePolicy = $.extend(true, mergePolicy, mergeArgs[i].mergePolicy);
+            if (mergeArgs[i] && mergeArgs[i].mergePolicy) {
+                mergePolicy = $.extend(true, mergePolicy, mergeArgs[i].mergePolicy);
+            }
         }
         mergeArgs = [mergePolicy, {}].concat(mergeArgs);
         var mergedDefaults = fluid.merge.apply(null, mergeArgs);
