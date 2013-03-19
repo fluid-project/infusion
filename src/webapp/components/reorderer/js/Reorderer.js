@@ -764,6 +764,9 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.reorderer.labeller", {
         gradeNames: ["fluid.littleComponent"],
+        mergePolicy: {
+            dom: "nomerge"  
+        },
         strings: {
             overallTemplate: "%recentStatus %item %position %movable",
             position:        "%index of %length",

@@ -419,10 +419,6 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         events: {
             onFileRemoved: null
-        },
-        
-        mergePolicy: {
-            model: "preserve"
         }
     });
     
