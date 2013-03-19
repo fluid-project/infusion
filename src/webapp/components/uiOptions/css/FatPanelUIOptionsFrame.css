@@ -51,30 +51,23 @@ ul.fl-uiOptions-topContainer {
 
 /* Sliders */
 .fl-uiOptions-fatPanel .fl-slider {
-    background-color: red;
+    background-color: #433F3D;
     padding: 0;
     position: relative;
-}
-
-.fl-uiOptions-fatPanel .fl-slider {
     float: left;
-    margin-right: 10px;
 }
 
 .fl-uiOptions-fatPanel .fl-slider .fl-handle, 
 .fl-uiOptions-fatPanel .fl-slider a {
-	/*height: 42px;
-	width: 42px;*/
+	height: 42px;
+	width: 42px;
+	background-color: grey;
 }
 .fl-uiOptions-fatPanel .fl-slider a { 
-   /* background-image:url('../images/default/uio_icon_sliderhandle_panel.png'); 
-    background-repeat:no-repeat; 
-    background-position:center center; */
-    bottom: 16px;
+    background-image: none;
 }
 
 .fl-uiOptions-fatPanel .fl-slider-horz {
-    width: 75%;
 }
 .fl-uiOptions-fatPanel .fl-slider-input {
     margin-top: 3em;
