@@ -348,7 +348,10 @@ var fluid_1_5 = fluid_1_5 || {};
         finalInitFunction: "fluid.uiOptions.templateLoader.resolveTemplates",
         templates: {
             uiOptions: "%prefix/FatPanelUIOptions.html",
-            textControls: "%prefix/UIOptionsTemplate-text.html",
+            textSizer: "%prefix/UIOptionsTemplate-textSizer.html",
+            textFont: "%prefix/UIOptionsTemplate-textFont.html",
+            lineSpacer: "%prefix/UIOptionsTemplate-lineSpacer.html",
+            contrast: "%prefix/UIOptionsTemplate-contrast.html",
             layoutControls: "%prefix/UIOptionsTemplate-layout.html",
             linksControls: "%prefix/UIOptionsTemplate-links.html"
         },
@@ -511,14 +514,36 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.defaultSettingsPanels", {
         gradeNames: ["fluid.uiOptions", "autoInit"],
         selectors: {
+            textSizer: ".flc-uiOptions-text-sizer",
+            textFont: ".flc-uiOptions-text-font",
+            lineSpacer: ".flc-uiOptions-line-spacer",
+            contrast: ".flc-uiOptions-contrast",
             textControls: ".flc-uiOptions-text-controls",
             layoutControls: ".flc-uiOptions-layout-controls",
             linksControls: ".flc-uiOptions-links-controls"
         },
         components: {
+            textSizer: {
+                type: "fluid.uiOptions.textSizer",
+                container: "{uiOptions}.dom.textSizer",
+                createOnEvent: "onUIOptionsMarkupReady"
+            },
+            lineSpacer: {
+                type: "fluid.uiOptions.lineSpacer",
+                container: "{uiOptions}.dom.lineSpacer",
+                createOnEvent: "onUIOptionsMarkupReady"
+            },
             textControls: {
-                type: "fluid.uiOptions.textControls",
-                container: "{uiOptions}.dom.textControls",
+                type: "fluid.uiOptions.textFont",
+                container: "{uiOptions}.dom.textFont",
+                createOnEvent: "onUIOptionsMarkupReady",
+                options: {
+                    classnameMap: "{uiEnhancer}.options.classnameMap"
+                }
+            },
+            contrast: {
+                type: "fluid.uiOptions.contrast",
+                container: "{uiOptions}.dom.contrast",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
                     classnameMap: "{uiEnhancer}.options.classnameMap"
@@ -716,27 +741,16 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     /****************************
-     * UI Options Text Controls *
+     * UI Options Text Sizer
      ****************************/
 
     /**
-     * A sub-component of fluid.uiOptions that renders the "text and display" panel of the user preferences interface.
+     * A sub-component of fluid.uiOptions that renders the "text size" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.textControls", {
+    fluid.defaults("fluid.uiOptions.textSizer", {
         gradeNames: ["fluid.uiOptions.ant", "autoInit"], 
         defaultModel: {
-            textFont: "default",          // key from classname map
-            theme: "default",             // key from classname map
-            textSize: 1,                  // in points
-            lineSpacing: 1                // in ems
-        },
-        strings: {
-            textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"],
-            theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
-        },
-        controlValues: { 
-            textFont: ["default", "times", "comic", "arial", "verdana"],
-            theme: ["default", "bw", "wb", "by", "yb"]
+            textSize: 1  // in points
         },
         textSize: {
             min: 1,
@@ -745,6 +759,85 @@ var fluid_1_5 = fluid_1_5 || {};
                 orientation: "horizontal",
                 step: 0.1
             } 
+        },
+        selectors: {
+            textSize: ".flc-uiOptions-min-text-size",
+        },
+        produceTree: "fluid.uiOptions.textSizer.produceTree",
+        resources: {
+            template: "{templateLoader}.resources.textSizer"
+        }
+    });
+    
+    fluid.uiOptions.textSizer.produceTree = function (that) {
+        var tree = {};
+        
+        for (var item in that.model.selections) {
+            if (item === "textSize") {
+                // textfield sliders
+                tree[item] = fluid.uiOptions.createSliderNode(that, item, "fluid.textfieldSlider");
+            }
+        }
+        
+        return tree;
+    };
+    
+    /****************************
+     * UI Options Text Controls *
+     ****************************/
+
+    /**
+     * A sub-component of fluid.uiOptions that renders the "text font" panel of the user preferences interface.
+     */
+    fluid.defaults("fluid.uiOptions.textFont", {
+        gradeNames: ["fluid.uiOptions.ant", "autoInit"], 
+        defaultModel: {
+            textFont: "default"  // key from classname map
+        },
+        strings: {
+            textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"]
+        },
+        controlValues: { 
+            textFont: ["default", "times", "comic", "arial", "verdana"]
+        },
+        selectors: {
+            textFont: ".flc-uiOptions-text-font"
+        },
+        produceTree: "fluid.uiOptions.textFont.produceTree",
+        resources: {
+            template: "{templateLoader}.resources.textFont"
+        }
+    });
+    
+    fluid.uiOptions.textFont.produceTree = function (that) {
+        // render drop down list box
+        return {
+            textFont: {
+                optionnames: "${labelMap.textFont.names}",
+                optionlist: "${labelMap.textFont.values}",
+                selection: "${selections.textFont}",
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.uiOptions.selectDecorator",
+                    options: {
+                        styles: that.options.classnameMap.textFont
+                    }
+                }
+            }
+        };
+    };
+    
+    /****************************
+     * UI Options Text Controls *
+     ****************************/
+
+    /**
+     * A sub-component of fluid.uiOptions that renders the "line spacing" panel of the user preferences interface.
+     */
+    fluid.defaults("fluid.uiOptions.lineSpacer", {
+        gradeNames: ["fluid.uiOptions.ant", "autoInit"], 
+        defaultModel: {
+            lineSpacing: 1  // in ems
         },
         lineSpacing: {
             min: 1,
@@ -755,42 +848,63 @@ var fluid_1_5 = fluid_1_5 || {};
             } 
         },
         selectors: {
-            textFont: ".flc-uiOptions-text-font",
-            theme: ".flc-uiOptions-theme",
-            textSize: ".flc-uiOptions-min-text-size",
             lineSpacing: ".flc-uiOptions-line-spacing"
         },
-        produceTree: "fluid.uiOptions.textControls.produceTree",
+        produceTree: "fluid.uiOptions.lineSpacer.produceTree",
         resources: {
-            template: "{templateLoader}.resources.textControls"
+            template: "{templateLoader}.resources.lineSpacer"
         }
     });
     
-    fluid.uiOptions.textControls.produceTree = function (that) {
-        var tree = {};
-        
-        for (var item in that.model.selections) {
-            if (item === "textFont" || item === "theme") {
-                // render drop down list box
-                tree[item] = {
-                    optionnames: "${labelMap." + item + ".names}",
-                    optionlist: "${labelMap." + item + ".values}",
-                    selection: "${selections." + item + "}",
-                    decorators: {
-                        type: "fluid",
-                        func: "fluid.uiOptions.selectDecorator",
-                        options: {
-                            styles: that.options.classnameMap[item]
-                        }
-                    }
-                };
-            } else if (item === "textSize" || item === "lineSpacing") {
-                // textfield sliders
-                tree[item] = fluid.uiOptions.createSliderNode(that, item, "fluid.textfieldSlider");
-            }
+    fluid.uiOptions.lineSpacer.produceTree = function (that) {
+        return {
+            lineSpacing: fluid.uiOptions.createSliderNode(that, "lineSpacing", "fluid.textfieldSlider")
+        };
+    };
+    
+    /****************************
+     * UI Options Text Controls *
+     ****************************/
+
+    /**
+     * A sub-component of fluid.uiOptions that renders the "contrast" panel of the user preferences interface.
+     */
+    fluid.defaults("fluid.uiOptions.contrast", {
+        gradeNames: ["fluid.uiOptions.ant", "autoInit"], 
+        defaultModel: {
+            theme: "default"  // key from classname map
+        },
+        strings: {
+            theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
+        },
+        controlValues: { 
+            theme: ["default", "bw", "wb", "by", "yb"]
+        },
+        selectors: {
+            theme: ".flc-uiOptions-theme"
+        },
+        produceTree: "fluid.uiOptions.contrast.produceTree",
+        resources: {
+            template: "{templateLoader}.resources.contrast"
         }
-        
-        return tree;
+    });
+    
+    fluid.uiOptions.contrast.produceTree = function (that) {
+        return {
+            theme: {
+                optionnames: "${labelMap.theme.names}",
+                optionlist: "${labelMap.theme.values}",
+                selection: "${selections.theme}",
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.uiOptions.selectDecorator",
+                    options: {
+                        styles: that.options.classnameMap.theme
+                    }
+                }
+            }
+        };
+
     };
     
     /******************************
