@@ -43,6 +43,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     components: {
                         preview: {
+//                            type: "fluid.emptySubcomponent"
                             type: "fluid.uiOptions.preview",
                             createOnEvent: "onUIOptionsComponentReady",
                             container: "{uiOptions}.dom.previewFrame"
