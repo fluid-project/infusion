@@ -388,8 +388,9 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.computeDynamicGrades = function (that, shadow, strategy) {
         var gradeNames = that.options.gradeNames;
+        var defaultsBlock = fluid.findMergeBlock(shadow.mergeOptions.mergeBlocks, "defaults");
         var dynamicGrades = fluid.remove_if(gradeNames, function (gradeName) {
-            return gradeName.charAt(0) === "{";
+            return gradeName.charAt(0) === "{" || !fluid.hasGrade(defaultsBlock.target, gradeName);
         }, []);
         var resolved = [];
         fluid.each(dynamicGrades, function (dynamicGrade) {
