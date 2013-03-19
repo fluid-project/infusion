@@ -59,6 +59,7 @@ var demo = demo || {};
 
         // Tell UIOptions where to redirect to if the user cancels the operation
         uiOptions: {
+            type: "fluid.uiOptions.defaultSettingsPanels",
             options: {
                 listeners: {
                     onCancel: function () {
@@ -90,7 +91,10 @@ var demo = demo || {};
     demo.initFatPanel = function (container) {        
         fluid.uiOptions.fatPanel(container, {
             // Tell UIOptions where to find all the templates, relative to this file
-            prefix: pathToTemplates
+            prefix: pathToTemplates,
+            uiOptions: {
+                type: "fluid.uiOptions.defaultSettingsPanels"
+            }
         });
     };
 
