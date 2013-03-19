@@ -31,37 +31,30 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
         sourceModel: null,  // must be supplied by implementors
         sourceApplier: null,  // must be supplied by implementors
-        rules: {},  // must be supplied by implementors, in format: "sourceModelKey": "targetModelKey"
+        rules: {},  // must be supplied by implementors, in format: "sourceModelKey": "internalModelKey"
         
-        // The two options below keep track of the latest values on two models since the actual model 
-        // value doesn't get updated until all the registered listeners are executed. This is to prevent  
-        // the recursive calls in btw the listeners registered for each other.
-        latestSourceModelValues: {},
-        latestSelfModelValues: {},
-        
-        postInitFunction: "fluid.uiOptions.modelRelay.postInit",
+        postInitFunction: "fluid.uiOptions.modelRelay.postInit"
     });
     
-    fluid.uiOptions.modelRelay.createListener = function (targetApplier, newModel, sourceModelTracker, targetModelTracker, from, to) {
-        var newValue = fluid.get(newModel, from);
-        var lastTargetValue = fluid.get(targetModelTracker, to);
-        
-        if (newValue !== lastTargetValue) {
-            fluid.set(sourceModelTracker, from, newValue);
-            targetApplier.requestChange(to, newValue);
-        }
-    };
-    
     fluid.uiOptions.modelRelay.postInit = function (that) {
-        fluid.transform(that.options.rules, function (value, key) {
-            var listenerForSourceModel = function (newModel, oldModel) {
-                fluid.uiOptions.modelRelay.createListener(that.applier, newModel, that.options.latestSourceModelValues, that.options.latestSelfModelValues, key, value);
-            };
-            var listenerForInternalModel = function (newModel, oldModel) {
-                fluid.uiOptions.modelRelay.createListener(that.options.sourceApplier, newModel, that.options.latestSelfModelValues, that.options.latestSourceModelValues, value, key);
-            };
-            that.options.sourceApplier.modelChanged.addListener(key, listenerForSourceModel);
-            that.applier.modelChanged.addListener(value, listenerForInternalModel);
+        fluid.transform(that.options.rules, function (internalKey, sourceKey) {
+            that.options.sourceApplier.guards.addListener(sourceKey, function (model, changeRequest) {
+                if (changeRequest.value === model[sourceKey]) {
+                    return false;
+                }
+            });
+            that.options.sourceApplier.modelChanged.addListener(sourceKey, function (newModel, oldModel) {
+                that.applier.requestChange(internalKey, fluid.get(newModel, sourceKey));
+            });
+            
+            that.applier.guards.addListener(internalKey, function (model, changeRequest) {
+                if (changeRequest.value === model[internalKey]) {
+                    return false;
+                }
+            });
+            that.applier.modelChanged.addListener(internalKey, function (newModel, oldModel) {
+                that.options.sourceApplier.requestChange(sourceKey, fluid.get(newModel, internalKey));
+            });
         });
     };
 
