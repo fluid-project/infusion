@@ -22,7 +22,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
     
-    fluid.uploader = fluid.uploader || {};
+    fluid.registerNamespace("fluid.uploader");
     
     var startUploading = function (that) {
         // Reset our upload stats for each new file.
