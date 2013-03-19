@@ -103,13 +103,13 @@ var fluid = fluid || fluid_1_5;
     // in a compound expander definition
     fluid.model.transform.NONDEFAULT_OUTPUT_PATH_RETURN = {};
     
-    fluid.model.transform.setValue = function (userOutputPath, value, expander) {
+    fluid.model.transform.setValue = function (userOutputPath, value, expander, merge) {
         // avoid crosslinking to input object - this might be controlled by a "nocopy" option in future
         var toset = fluid.copy(value); 
         var outputPath = fluid.model.composePaths(expander.outputPrefix, userOutputPath);
         // TODO: custom resolver config here to create non-hash output model structure
         if (toset !== undefined) {
-            expander.applier.requestChange(outputPath, toset);
+            expander.applier.requestChange(outputPath, toset, merge? "MERGE": undefined);
         }
         return userOutputPath ? fluid.model.transform.NONDEFAULT_OUTPUT_PATH_RETURN : toset;
     };
@@ -155,6 +155,15 @@ var fluid = fluid || fluid_1_5;
     fluid.defaults("fluid.model.transform.count", { 
         gradeNames: "fluid.standardTransformFunction"
     });
+    
+    fluid.model.transform["delete"] = function (expandSpec, expander) {
+        var outputPath = fluid.model.composePaths(expander.outputPrefix, expandSpec.outputPath);
+        expander.applier.requestChange(outputPath, null, "DELETE");
+    };
+
+    fluid.defaults("fluid.model.transform.delete", { 
+        gradeNames: "fluid.transformFunction"
+    });
      
     fluid.model.transform.firstValue = function (expandSpec, expander) {
         if (!expandSpec.values || !expandSpec.values.length) {
@@ -162,6 +171,7 @@ var fluid = fluid || fluid_1_5;
         }
         for (var i = 0; i < expandSpec.values.length; i++) {
             var value = expandSpec.values[i];
+            // TODO: problem here - all of these expanders will have their side-effects (setValue) even if only one is chosen 
             var expanded = expander.expand(value);
             if (expanded !== undefined) {
                 return expanded;
@@ -269,7 +279,7 @@ var fluid = fluid || fluid_1_5;
             (indexed.undefinedOutputValue ? undefined : 
                 (indexed.outputValue === undefined ? expandSpec.defaultOutputValue : indexed.outputValue));
         var outputPath = indexed.outputPath === undefined ? expandSpec.outputPath : indexed.outputPath;
-        return fluid.model.transform.setValue(outputPath, outputValue, expander); 
+        return fluid.model.transform.setValue(outputPath, outputValue, expander, expandSpec.merge); 
     };
     
     fluid.model.transform.valueMapper.invert = function (expandSpec, expander) {
@@ -394,7 +404,7 @@ var fluid = fluid || fluid_1_5;
         }
         var transformed = expanderFn.apply(null, expanderArgs);
         if (fluid.hasGrade(expdef, "fluid.standardOutputTransformFunction")) {
-            transformed = fluid.model.transform.setValue(expandSpec.outputPath, transformed, expander);
+            transformed = fluid.model.transform.setValue(expandSpec.outputPath, transformed, expander, expandSpec.merge);
         }
         return transformed;
     };
@@ -402,7 +412,7 @@ var fluid = fluid || fluid_1_5;
     // unsupported, NON-API function    
     fluid.model.transform.expandWildcards = function (expander, source) {
         fluid.each(source, function (value, key) {
-            var q = expander.queued;
+            var q = expander.queuedExpanders;
             expander.pathOp.push(fluid.pathUtil.escapeSegment(key.toString()));
             for (var i = 0; i < q.length; ++i) {
                 if (fluid.pathUtil.matchPath(q[i].matchPath, expander.path, true)) {
@@ -442,7 +452,7 @@ var fluid = fluid || fluid_1_5;
         }
                          
         if (matchPath) {
-            expander.queued.push({expandSpec: expandSpec, outputPrefix: expander.outputPrefix, inputPrefix: expander.inputPrefix, matchPath: matchPath});
+            expander.queuedExpanders.push({expandSpec: expandSpec, outputPrefix: expander.outputPrefix, inputPrefix: expander.inputPrefix, matchPath: matchPath});
             return true;
         }
         return false;
@@ -510,18 +520,14 @@ var fluid = fluid || fluid_1_5;
                 }
             }
         }
-        // always apply rules with shortest keys first
-        var keys = fluid.model.sortByKeyLength(rule);
-        for (var i = 0; i < keys.length; ++i) { // jslint:ok - already defined
-            var key = keys[i];
+        fluid.each(rule, function (value, key) {
             if (key !== "expander") {
-                var value = rule[key];
                 expander.outputPrefixOp.push(key);
-                expander.expand(value, expander);
+                // TODO: Note that result by convention is discarded otherwise value expanders will cascade in a faulty way 
+                var result = expander.expand(value, expander); 
                 expander.outputPrefixOp.pop();
             }
-        }
-        togo = fluid.get(expander.target, expander.outputPrefix);
+        });
         return togo;
     };
     
@@ -615,6 +621,18 @@ var fluid = fluid || fluid_1_5;
         return source;
     };
     
+    fluid.model.compareByPathLength = function (changea, changeb) {
+        var pdiff = changea.path.length - changeb.path.length; 
+        return pdiff === 0? changea.sequence - changeb.sequence : pdiff;
+    };
+    
+   /** Fires an accumulated set of change requests in increasing order of target pathlength
+     */
+    fluid.model.fireSortedChanges = function (changes, applier) {
+        changes.sort(fluid.model.compareByPathLength);
+        fluid.requestChanges(applier, changes);  
+    };
+    
     /**
      * Transforms a model based on a specified expansion rules objects.
      * Rules objects take the form of:
@@ -655,22 +673,49 @@ var fluid = fluid || fluid_1_5;
             source: source,
             target: schemaStrategy ? fluid.model.transform.defaultSchemaValue(schemaStrategy(null, "", 0, [""])) : {},
             resolverGetConfig: getConfig,
-            queued: []
+            queuedChanges: [],
+            queuedExpanders: [] // TODO: This is used only by wildcard applier - explain its operation
         };
         fluid.model.transform.makeExpander(expander, fluid.model.transform.handleExpandExpander);
-        expander.applier = fluid.makeChangeApplier(expander.target, {resolverSetConfig: setConfig});
+        expander.applier = {
+            fireChangeRequest: function (changeRequest) {
+                changeRequest.sequence = expander.queuedChanges.length;
+                expander.queuedChanges.push(changeRequest);
+            }
+        };
+        fluid.bindRequestChange(expander.applier);
+        expander.finalApplier = fluid.makeChangeApplier(expander.target, {resolverSetConfig: setConfig});
         
         expander.expand(rules);
-        if (expander.queued.length > 0) {
+        if (expander.queuedExpanders.length > 0) {
             expander.typeStack = [];
             expander.pathOp = fluid.model.makePathStack(expander, "path");
             fluid.model.transform.expandWildcards(expander, source);
         }
+        fluid.model.fireSortedChanges(expander.queuedChanges, expander.finalApplier);
         return expander.target;
         
     };
     
     $.extend(fluid.model.transformWithRules, fluid.model.transform);
     fluid.model.transform = fluid.model.transformWithRules;
+
+    /** Utility function to produce a standard options transformation record for a single set of rules **/    
+    fluid.transformOne = function (rules) {
+        return {transformOptions: {
+            transformer: "fluid.model.transformWithRules",
+            config: rules
+            }
+        };
+    };
+    
+    /** Utility function to produce a standard options transformation record for multiple rules to be applied in sequence **/    
+    fluid.transformMany = function (rules) {
+        return {transformOptions: {
+            transformer: "fluid.model.transform.sequence",
+            config: rules
+            }
+        };
+    };
     
 })(jQuery, fluid_1_5);
