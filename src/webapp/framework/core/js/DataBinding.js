@@ -320,7 +320,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         for (var i = start; i < end; ++ i) {
             if (segs[i] !== toMatch[i - start]) {
-               return false;
+                return false;
             }
         }
         return true;
@@ -462,7 +462,7 @@ var fluid_1_5 = fluid_1_5 || {};
             };
             that.fireChangeRequest(changeRequest);
         };
-    }
+    };
     
     // Utility used for source tracking in changeApplier
     
