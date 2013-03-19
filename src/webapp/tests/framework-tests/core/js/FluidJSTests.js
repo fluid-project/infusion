@@ -98,7 +98,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("merge", function () {
-        jqUnit.expect(7);
+        jqUnit.expect(8);
                 
         var bit1 = {prop1: "thing1"};
         var bit2 = {prop2: "thing2"};
@@ -118,6 +118,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
             fluid.merge([], [], [bit1, bit2], null, [bit2, bit1, bits]));
         
+        var null1 = {prop1: null};
+        
+        jqUnit.assertDeepEq("Null onto property", null1,
+            fluid.merge({}, bit1, null1));
         
         jqUnit.assertDeepEq("Replace 1", 
             bit1, fluid.merge({"": "replace"}, {}, bits, bit1));
@@ -349,6 +353,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.fail.apply(null, testArgs);
         fluid.pushSoftFailure(-1);
     });
+    
+    function passTestLog(level, expected) {
+        jqUnit.assertEquals("Should " + (expected ? "not " : "") + "pass debug level " + level, expected, fluid.passLogLevel(fluid.logLevel[level])); 
+    }
+    
+    jqUnit.test("FLUID-4936 test - support for logging levels", function () {
+        fluid.setLogging(true);
+        passTestLog("INFO", true);
+        passTestLog("IMPORTANT", true);
+        passTestLog("TRACE", false);
+        fluid.popLogging();
+        fluid.setLogging(false);
+        passTestLog("INFO", false);
+        passTestLog("IMPORTANT", true);
+        fluid.popLogging();
+        fluid.setLogging(fluid.logLevel.TRACE);
+        passTestLog("TRACE", true);
+        fluid.popLogging();
+    });
            
     jqUnit.test("FLUID-4285 test - prevent 'double options'", function () {
         try {
@@ -501,6 +524,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         firer.fire(false);
         firer.removeListener("toRemoveNonExistent"); // for FLUID-4791
         firer.fire(false);
+    });
+            
+    fluid.defaults("fluid.tests.eventMerge", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+           event: "preventable"
+        }
+    });
+    
+    jqUnit.test("Merge over named listener", function () {
+        var that = fluid.tests.eventMerge({
+            events: {
+               event: null
+            },
+            listeners: {
+               event: "fluid.identity"
+            }
+        });
+        var result = that.events.event.fire(false);
+        jqUnit.assertUndefined("Event returned to nonpreventable through merge", result);
     });
     
     fluid.tests.makeNotingListener = function (key, value) {
