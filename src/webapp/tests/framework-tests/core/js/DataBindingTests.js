@@ -237,12 +237,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             var testModel3 = fluid.copy(model);
             testModel3.c = fluid.copy(model);
-            var testModel4 = fluid.copy(testModel3);
+            var testModel5 = fluid.copy(testModel3);
             fluid.model.applyChangeRequest(testModel3, {type: "MERGE", path: "c", value: fluid.copy(model2)});
             jqUnit.assertDeepEq("Merge at trunk", {a: 1, b: 2, c: {a: 1, b: 2, c: 3}}, testModel3);
             
-            fluid.model.applyChangeRequest(testModel4, {type: "ADD", path: "c", value: fluid.copy(model2)});
-            jqUnit.assertDeepEq("Add at trunk", {a: 1, b: 2, c: {c: 3}}, testModel4);
+            var testModel4 = fluid.copy(model);
+            fluid.model.applyChangeRequest(testModel4, {type: "MERGE", path: "c", value: fluid.copy(model2)});
+            jqUnit.assertDeepEq("Merge into nothing", {a: 1, b: 2, c: {c: 3}}, testModel4);
+            
+            fluid.model.applyChangeRequest(testModel5, {type: "ADD", path: "c", value: fluid.copy(model2)});
+            jqUnit.assertDeepEq("Add at trunk", {a: 1, b: 2, c: {c: 3}}, testModel5);
         });
 
         jqUnit.test("Transactional ChangeApplier - external transactions", function () {

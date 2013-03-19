@@ -186,7 +186,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.uploader.parent = function (options) {
             var that = fluid.initLittleComponent("fluid.tests.uploader.parent", options);
             fluid.initDependents(that);
-            return that.uploader;
+            // TODO: this should really use an event, or IoCSS query
+            return that.uploader.uploaderImpl;
         };
         
         /*
@@ -195,7 +196,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.uploader.parent.loadDemands = function (options) {
             var that = fluid.initLittleComponent("fluid.tests.uploader.parent.loadDemands", options);
             fluid.initDependents(that);
-            return that.uploader;
+            // TODO: this should really use an event, or IoCSS query
+            return that.uploader.uploaderImpl;
         };      
         
         fluid.defaults("fluid.tests.uploader.parent", {
@@ -222,10 +224,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 demo: true
             }     
         });
-        
-        // Beat the above demands block since demands resolution is still broken in 1.4
-        fluid.demands("fluid.uploader", ["fluid.tests.uploader.parent"], { });
-        
+                
         fluid.demands("fluid.uploader", "fluid.tests.uploader.parent.loadDemands", {
             container: ".flc-uploader"
         });             
