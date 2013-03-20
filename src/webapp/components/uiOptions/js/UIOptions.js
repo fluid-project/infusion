@@ -456,6 +456,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     rules: {
                         "selections.textSize": "value"
+                    },
+                    resources: {
+                        template: "{templateLoader}.resources.textSizer"
                     }
                 }
             },
@@ -466,6 +469,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     rules: {
                         "selections.lineSpacing": "value"
+                    },
+                    resources: {
+                        template: "{templateLoader}.resources.lineSpacer"
                     }
                 }
             },
@@ -477,6 +483,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "selections.textFont": "value"
+                    },
+                    resources: {
+                        template: "{templateLoader}.resources.textFont"
                     }
                 }
             },
@@ -488,6 +497,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "selections.theme": "value"
+                    },
+                    resources: {
+                        template: "{templateLoader}.resources.contrast"
                     }
                 }
             },
@@ -500,6 +512,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     rules: {
                         "selections.toc": "toc",
                         "selections.layout": "layout"
+                    },
+                    resources: {                    
+                        template: "{templateLoader}.resources.layoutControls"
                     }
                 }
             },
@@ -512,6 +527,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     rules: {
                         "selections.links": "links",
                         "selections.inputsLarger": "inputsLarger"
+                    },
+                    resources: {
+                        template: "{templateLoader}.resources.linksControls"
                     }
                 }
             }

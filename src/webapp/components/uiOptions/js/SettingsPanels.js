@@ -110,7 +110,9 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         produceTree: "fluid.uiOptions.textSizer.produceTree",
         resources: {
-            template: "{templateLoader}.resources.textSizer"
+            template: {
+                url: "../html/UIOptionsTemplate-textSizer.html"
+            }
         }
     });
     
@@ -146,7 +148,9 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         produceTree: "fluid.uiOptions.textFont.produceTree",
         resources: {
-            template: "{templateLoader}.resources.textFont"
+            template: {
+                url: "../html/UIOptionsTemplate-textFont.html"
+            }
         }
     });
     
@@ -194,7 +198,9 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         produceTree: "fluid.uiOptions.lineSpacer.produceTree",
         resources: {
-            template: "{templateLoader}.resources.lineSpacer"
+            template: {
+                url: "../html/UIOptionsTemplate-lineSpacer.html"
+            }
         }
     });
     
@@ -231,7 +237,9 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         produceTree: "fluid.uiOptions.contrast.produceTree",
         resources: {
-            template: "{templateLoader}.resources.contrast"
+            template: {
+                url: "../html/UIOptionsTemplate-contrast.html"
+            }
         }
     });
     
@@ -278,7 +286,9 @@ var fluid_1_5 = fluid_1_5 || {};
             layout: "${layout}"        
         },
         resources: {                    
-            template: "{templateLoader}.resources.layoutControls"
+            template: {
+                url: "../html/UIOptionsTemplate-layout.html"
+            }
         }
     });
 
@@ -307,7 +317,9 @@ var fluid_1_5 = fluid_1_5 || {};
             inputsLarger: "${inputsLarger}"          
         },
         resources: {
-            template: "{templateLoader}.resources.linksControls"
+            template: {
+                url: "../html/UIOptionsTemplate-links.html"
+            }
         }
     });
 
