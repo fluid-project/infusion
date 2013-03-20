@@ -5,14 +5,11 @@
     background-color: #fff;
     background-image: url('../images/default/fatpanelbg.png');
     background-repeat: repeat;
-    height: 10em;    
-    overflow: scroll-y;
+    height: 12em;    
+    overflow-x: scroll;
+   /* overflow-y: hidden;*/
     color: #433F3D;
-}
-
-ul.fl-uiOptions-topContainer {
-    margin: 0em;
-    padding-top: 0.5em;
+    margin-top: 15px;
 }
 
 /* Reset link */
@@ -27,26 +24,41 @@ ul.fl-uiOptions-topContainer {
 .fl-uiOptions-fatPanel #reset { background-image: url('../images/default/uio_icon_reset_defaultInverted_16x16.png'); }
 
 /* Preference Panels */
-.fl-uiOptions-fatPanel li {
+.fl-uiOptions-fatPanel ul.fl-uiOptions-panels {
+	margin: 0 20px;
+    width: 181em;	
+}
+
+.fl-uiOptions-fatPanel .fl-uiOptions-panels li.fl-uiOptions-panel {
 	border: 1px solid #615e59;
 	border-radius: 5px;
  	box-shadow: 2px 2px #7a766d;
  	display: inline-block;
  	padding: 1em;
- 	min-height: 7.5em;
- 	width: 22%;
+ 	min-height: 8em;
+ 	width: 27em;
  	background-color: #fff;
+	margin-right: 10px;
+	float: left;
  }
 
-.fl-uiOptions-fatPanel label {
-    padding-bottom: 0.5em;
-    margin-bottom: 1em;   
+.fl-uiOptions-fatPanel h2 {
+	color: #433F3D;
+    padding: 0 0 0.5em 0;
+    margin: 0 0 1em 0;   
     width: 100%; 
     border-bottom: solid #ccc 1px;
 	box-shadow: 0px 6px 7px -6px rgba(0,0,0,0.3);
+	font-size: 1.2em;
+	text-transform: lowercase;
 }
 
 .fl-uiOptions-fatPanel .fl-inputs {
+	float: none;
+}
+
+.fl-uiOptions-fatPanel label {
+    font-size: 1em;
 }
 
 /* Sliders */
@@ -60,7 +72,6 @@ ul.fl-uiOptions-topContainer {
     margin-top: 0;
 }
 
-.fl-uiOptions-fatPanel .fl-slider .fl-handle, 
 .fl-uiOptions-fatPanel .fl-slider a {
 	height: 35px;
 	width: 35px;
@@ -92,7 +103,8 @@ ul.fl-uiOptions-topContainer {
 .fl-uiOptions-fatPanel .fl-slider-horz {
 }
 .fl-uiOptions-fatPanel .fl-slider-input {
-    margin-top: 2em;
+    margin-left: 2em;
+    float:left; 
 }
 
 .fl-uiOptions-fatPanel .ui-slider-range { 
