@@ -462,14 +462,22 @@ var fluid_1_5 = fluid_1_5 || {};
             lineSpacer: {
                 type: "fluid.uiOptions.lineSpacer",
                 container: "{uiOptions}.dom.lineSpacer",
-                createOnEvent: "onUIOptionsMarkupReady"
+                createOnEvent: "onUIOptionsMarkupReady",
+                options: {
+                    rules: {
+                        "selections.lineSpacing": "value"
+                    }
+                }
             },
             textFont: {
                 type: "fluid.uiOptions.textFont",
                 container: "{uiOptions}.dom.textFont",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    classnameMap: "{uiEnhancer}.options.classnameMap"
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
+                    rules: {
+                        "selections.textFont": "value"
+                    }
                 }
             },
             contrast: {
@@ -477,7 +485,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.contrast",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    classnameMap: "{uiEnhancer}.options.classnameMap"
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
+                    rules: {
+                        "selections.theme": "value"
+                    }
                 }
             },
             layoutControls: {
@@ -485,7 +496,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.layoutControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    classnameMap: "{uiEnhancer}.options.classnameMap"
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
+                    rules: {
+                        "selections.toc": "toc",
+                        "selections.layout": "layout"
+                    }
                 }
             },
             linksControls: {
@@ -493,7 +508,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.linksControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    classnameMap: "{uiEnhancer}.options.classnameMap"
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
+                    rules: {
+                        "selections.links": "links",
+                        "selections.inputsLarger": "inputsLarger"
+                    }
                 }
             }
         }

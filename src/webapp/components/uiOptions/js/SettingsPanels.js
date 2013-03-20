@@ -115,16 +115,6 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     fluid.uiOptions.textSizer.produceTree = function (that) {
-//        var tree = {};
-//        
-//        for (var item in that.model.selections) {
-//            if (item === "textSize") {
-//                // textfield sliders
-//                tree[item] = fluid.uiOptions.createSliderNode(that, item, "fluid.textfieldSlider");
-//            }
-//        }
-//        
-//        return tree;
         return {
             textSize: fluid.uiOptions.createSliderNode(that, "value", "fluid.textfieldSlider")
         }
@@ -141,6 +131,9 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
         defaultModel: {
             textFont: "default"  // key from classname map
+        },
+        model: {
+            value: null
         },
         strings: {
             textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"]
@@ -161,9 +154,9 @@ var fluid_1_5 = fluid_1_5 || {};
         // render drop down list box
         return {
             textFont: {
-                optionnames: "${labelMap.textFont.names}",
-                optionlist: "${labelMap.textFont.values}",
-                selection: "${selections.textFont}",
+                optionnames: that.options.strings.textFont,
+                optionlist: that.options.controlValues.textFont,
+                selection: "${value}",
                 decorators: {
                     type: "fluid",
                     func: "fluid.uiOptions.selectDecorator",
@@ -187,13 +180,14 @@ var fluid_1_5 = fluid_1_5 || {};
         defaultModel: {
             lineSpacing: 1  // in ems
         },
-        lineSpacing: {
-            min: 1,
-            max: 2,
-            sliderOptions: {
-                orientation: "horizontal",
-                step: 0.1
-            } 
+        model: {
+            value: null
+        },
+        min: 1,
+        max: 2,
+        sliderOptions: {
+            orientation: "horizontal",
+            step: 0.1
         },
         selectors: {
             lineSpacing: ".flc-uiOptions-line-spacing"
@@ -206,7 +200,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.lineSpacer.produceTree = function (that) {
         var tree = {
-            lineSpacing: fluid.uiOptions.createSliderNode(that, "lineSpacing", "fluid.textfieldSlider")
+            lineSpacing: fluid.uiOptions.createSliderNode(that, "value", "fluid.textfieldSlider")
         };
         return tree;
     };
@@ -222,6 +216,9 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
         defaultModel: {
             theme: "default"  // key from classname map
+        },
+        model: {
+            value: null
         },
         strings: {
             theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
@@ -241,9 +238,9 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uiOptions.contrast.produceTree = function (that) {
         return {
             theme: {
-                optionnames: "${labelMap.theme.names}",
-                optionlist: "${labelMap.theme.values}",
-                selection: "${selections.theme}",
+                optionnames: that.options.strings.theme,
+                optionlist: that.options.controlValues.theme,
+                selection: "${value}",
                 decorators: {
                     type: "fluid",
                     func: "fluid.uiOptions.selectDecorator",
@@ -253,7 +250,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
         };
-
     };
     
     /******************************
@@ -269,13 +265,17 @@ var fluid_1_5 = fluid_1_5 || {};
             layout: false,                // boolean
             toc: false                   // boolean
         },
+        model: {
+            toc: "null",
+            layout: "null"
+        },
         selectors: {
             layout: ".flc-uiOptions-layout",
             toc: ".flc-uiOptions-toc"
         },
         protoTree: {
-            toc: "${selections.toc}",
-            layout: "${selections.layout}"        
+            toc: "${toc}",
+            layout: "${layout}"        
         },
         resources: {                    
             template: "{templateLoader}.resources.layoutControls"
@@ -294,13 +294,17 @@ var fluid_1_5 = fluid_1_5 || {};
             links: false,                 // boolean
             inputsLarger: false           // boolean
         },
+        model: {
+            links: null,
+            inputsLarger: null
+        },
         selectors: {
             links: ".flc-uiOptions-links",
             inputsLarger: ".flc-uiOptions-inputs-larger"
         },
         protoTree: {
-            links: "${selections.links}",
-            inputsLarger: "${selections.inputsLarger}"          
+            links: "${links}",
+            inputsLarger: "${inputsLarger}"          
         },
         resources: {
             template: "{templateLoader}.resources.linksControls"
