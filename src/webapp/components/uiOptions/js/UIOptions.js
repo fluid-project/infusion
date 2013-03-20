@@ -279,16 +279,6 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
-        
-    // This function compensates for a framework deficiency that due to lack of gingerness, the "refreshView"
-    // function synthesized by rendererComponent is not available during listener registration which only 
-    // occurs after component init functions have completed (http://issues.fluidproject.org/browse/FLUID-4334)
-    fluid.uiOptions.lateRefreshViewBinder = function (that) {
-        that.refreshView = function () {
-            that.renderer.refreshView();
-        };
-    };
-    
     /**
      * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
      * to allow users to set personal user interface preferences. The UI Options component provides a user 

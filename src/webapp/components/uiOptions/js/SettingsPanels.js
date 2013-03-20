@@ -25,19 +25,30 @@ var fluid_1_5 = fluid_1_5 || {};
     /***********************************************
      * UI Options Select Dropdown Options Decorator*
      ***********************************************/
+     
+    fluid.registerNamespace("fluid.uiOptions.settingsPanels");
+    
+    // This function compensates for a framework deficiency that due to lack of gingerness, the "refreshView"
+    // function synthesized by rendererComponent is not available during listener registration which only 
+    // occurs after component init functions have completed (http://issues.fluidproject.org/browse/FLUID-4334)
+    fluid.uiOptions.settingsPanels.lateRefreshViewBinder = function (that) {
+        that.refreshView = function () {
+            that.renderer.refreshView();
+        };
+    };
 
     // Temporary, encapsulation-violating definition of an Ant - currently these can't
     // be deployed outside the direct environment of a UIOptions component
     fluid.defaults("fluid.uiOptions.settingsPanels", {
         gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay"],
+        preInitFunction: "fluid.uiOptions.settingsPanels.lateRefreshViewBinder",
         sourceApplier: "{uiOptions}.applier",
         events: {
             onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
         },
         listeners: {
             onUIOptionsRefresh: "{that}.refreshView"
-        },
-        preInitFunction: "fluid.uiOptions.lateRefreshViewBinder"
+        }
     });
     
     fluid.uiOptions.createSliderNode = function (that, path, type, options) {
