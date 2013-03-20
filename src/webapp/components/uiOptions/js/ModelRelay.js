@@ -29,9 +29,8 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.modelRelay", {
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
-        sourceModel: null,  // must be supplied by implementors
         sourceApplier: null,  // must be supplied by implementors
-        rules: {},  // must be supplied by implementors, in format: "sourceModelKey": "internalModelKey"
+        rules: {},  // must be supplied by implementors, in format: "externalModelKey": "internalModelKey"
         
         postInitFunction: "fluid.uiOptions.modelRelay.postInit"
     });
