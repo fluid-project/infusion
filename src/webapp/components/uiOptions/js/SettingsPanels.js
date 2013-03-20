@@ -28,10 +28,9 @@ var fluid_1_5 = fluid_1_5 || {};
 
     // Temporary, encapsulation-violating definition of an Ant - currently these can't
     // be deployed outside the direct environment of a UIOptions component
-    fluid.defaults("fluid.uiOptions.settingPanels", {
-        gradeNames: ["fluid.rendererComponent"],
-        model: "{uiOptions}.model",
-        applier: "{uiOptions}.applier",
+    fluid.defaults("fluid.uiOptions.settingsPanels", {
+        gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay"],
+        sourceApplier: "{uiOptions}.applier",
         events: {
             onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
         },
@@ -58,7 +57,7 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
-    fluid.uiOptions.createSliderNode = function (that, item, type, options) {
+    fluid.uiOptions.createSliderNode = function (that, path, type, options) {
         return {
             decorators: {
                 type: "fluid",
@@ -66,16 +65,16 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     listeners: {
                         modelChanged: function (value) {
-                            that.applier.requestChange("selections." + item, value);
+                            that.applier.requestChange(path, value);
                         }
                     },
                     model: {
-                        min: that.options[item].min,
-                        max: that.options[item].max,
-                        value: that.model.selections[item]
+                        min: that.options.min,
+                        max: that.options.max,
+                        value: fluid.get(that.model, path)
                         
                     },
-                    sliderOptions: that.options[item].sliderOptions
+                    sliderOptions: that.options.sliderOptions
                 }
             }
         };
@@ -93,17 +92,18 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "text size" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.textSizer", {
-        gradeNames: ["fluid.uiOptions.settingPanels", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
         defaultModel: {
             textSize: 1  // in points
         },
-        textSize: {
-            min: 1,
-            max: 2,
-            sliderOptions: {
-                orientation: "horizontal",
-                step: 0.1
-            } 
+        model: {
+            value: null
+        },
+        min: 1,
+        max: 2,
+        sliderOptions: {
+            orientation: "horizontal",
+            step: 0.1
         },
         selectors: {
             textSize: ".flc-uiOptions-min-text-size",
@@ -115,16 +115,19 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     fluid.uiOptions.textSizer.produceTree = function (that) {
-        var tree = {};
-        
-        for (var item in that.model.selections) {
-            if (item === "textSize") {
-                // textfield sliders
-                tree[item] = fluid.uiOptions.createSliderNode(that, item, "fluid.textfieldSlider");
-            }
+//        var tree = {};
+//        
+//        for (var item in that.model.selections) {
+//            if (item === "textSize") {
+//                // textfield sliders
+//                tree[item] = fluid.uiOptions.createSliderNode(that, item, "fluid.textfieldSlider");
+//            }
+//        }
+//        
+//        return tree;
+        return {
+            textSize: fluid.uiOptions.createSliderNode(that, "value", "fluid.textfieldSlider")
         }
-        
-        return tree;
     };
     
     /****************************
@@ -135,7 +138,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "text font" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.textFont", {
-        gradeNames: ["fluid.uiOptions.settingPanels", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
         defaultModel: {
             textFont: "default"  // key from classname map
         },
@@ -180,7 +183,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "line spacing" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.lineSpacer", {
-        gradeNames: ["fluid.uiOptions.settingPanels", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
         defaultModel: {
             lineSpacing: 1  // in ems
         },
@@ -216,7 +219,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "contrast" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.contrast", {
-        gradeNames: ["fluid.uiOptions.settingPanels", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
         defaultModel: {
             theme: "default"  // key from classname map
         },
@@ -261,7 +264,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "layout and navigation" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.layoutControls", {
-        gradeNames: ["fluid.uiOptions.settingPanels", "autoInit"],
+        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"],
         defaultModel: {
             layout: false,                // boolean
             toc: false                   // boolean
@@ -286,7 +289,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "links and buttons" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.linksControls", {
-        gradeNames: ["fluid.uiOptions.settingPanels", "autoInit"],
+        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"],
         defaultModel: {
             links: false,                 // boolean
             inputsLarger: false           // boolean

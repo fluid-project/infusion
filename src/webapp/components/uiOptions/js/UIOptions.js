@@ -452,7 +452,12 @@ var fluid_1_5 = fluid_1_5 || {};
             textSizer: {
                 type: "fluid.uiOptions.textSizer",
                 container: "{uiOptions}.dom.textSizer",
-                createOnEvent: "onUIOptionsMarkupReady"
+                createOnEvent: "onUIOptionsMarkupReady",
+                options: {
+                    rules: {
+                        "selections.textSize": "value"
+                    }
+                }
             },
             lineSpacer: {
                 type: "fluid.uiOptions.lineSpacer",
