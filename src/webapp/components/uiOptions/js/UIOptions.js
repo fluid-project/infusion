@@ -438,8 +438,12 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.textSizer",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
+                    sourceApplier: "{uiOptions}.applier",
                     rules: {
                         "selections.textSize": "value"
+                    },
+                    listeners: {
+                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
                     },
                     resources: {
                         template: "{templateLoader}.resources.textSizer"
@@ -451,8 +455,12 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.lineSpacer",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
+                    sourceApplier: "{uiOptions}.applier",
                     rules: {
                         "selections.lineSpacing": "value"
+                    },
+                    listeners: {
+                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
                     },
                     resources: {
                         template: "{templateLoader}.resources.lineSpacer"
@@ -464,9 +472,13 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.textFont",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
+                    sourceApplier: "{uiOptions}.applier",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "selections.textFont": "value"
+                    },
+                    listeners: {
+                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
                     },
                     resources: {
                         template: "{templateLoader}.resources.textFont"
@@ -478,9 +490,13 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.contrast",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
+                    sourceApplier: "{uiOptions}.applier",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "selections.theme": "value"
+                    },
+                    listeners: {
+                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
                     },
                     resources: {
                         template: "{templateLoader}.resources.contrast"
@@ -492,9 +508,13 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.layoutControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
+                    sourceApplier: "{uiOptions}.applier",
                     rules: {
                         "selections.toc": "toc",
                         "selections.layout": "layout"
+                    },
+                    listeners: {
+                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
                     },
                     resources: {                    
                         template: "{templateLoader}.resources.layoutControls"
@@ -506,9 +526,13 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.linksControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
+                    sourceApplier: "{uiOptions}.applier",
                     rules: {
                         "selections.links": "links",
                         "selections.inputsLarger": "inputsLarger"
+                    },
+                    listeners: {
+                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
                     },
                     resources: {
                         template: "{templateLoader}.resources.linksControls"

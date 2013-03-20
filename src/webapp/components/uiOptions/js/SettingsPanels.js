@@ -37,18 +37,9 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
 
-    // Temporary, encapsulation-violating definition of an Ant - currently these can't
-    // be deployed outside the direct environment of a UIOptions component
     fluid.defaults("fluid.uiOptions.settingsPanels", {
         gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay"],
-        preInitFunction: "fluid.uiOptions.settingsPanels.lateRefreshViewBinder",
-        sourceApplier: "{uiOptions}.applier",
-        events: {
-            onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
-        },
-        listeners: {
-            onUIOptionsRefresh: "{that}.refreshView"
-        }
+        preInitFunction: "fluid.uiOptions.settingsPanels.lateRefreshViewBinder"
     });
     
     fluid.uiOptions.createSliderNode = function (that, path, type, options) {
@@ -74,9 +65,9 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
 
-    /****************************
-     * UI Options Text Sizer
-     ****************************/
+    /*************************
+     * UI Options Text Sizer *
+     *************************/
 
     /**
      * A sub-component of fluid.uiOptions that renders the "text size" panel of the user preferences interface.
@@ -109,9 +100,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
-    /****************************
-     * UI Options Text Font
-     ****************************/
+    /************************
+     * UI Options Text Font *
+     ************************/
 
     /**
      * A sub-component of fluid.uiOptions that renders the "text font" panel of the user preferences interface.
@@ -156,9 +147,9 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
     
-    /****************************
-     * UI Options Line Spacer
-     ****************************/
+    /**************************
+     * UI Options Line Spacer *
+     **************************/
 
     /**
      * A sub-component of fluid.uiOptions that renders the "line spacing" panel of the user preferences interface.
@@ -192,9 +183,9 @@ var fluid_1_5 = fluid_1_5 || {};
         return tree;
     };
     
-    /****************************
-     * UI Options Contrast
-     ****************************/
+    /***********************
+     * UI Options Contrast *
+     ***********************/
 
     /**
      * A sub-component of fluid.uiOptions that renders the "contrast" panel of the user preferences interface.
@@ -293,9 +284,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    /*******************
-     * Textfield Slider
-     *******************/
+    /********************
+     * Textfield Slider *
+     ********************/
 
     fluid.defaults("fluid.textfieldSlider", {
         gradeNames: ["fluid.viewComponent", "autoInit"], 
@@ -439,9 +430,9 @@ var fluid_1_5 = fluid_1_5 || {};
         
     };
 
-    /***********************************************
-     * UI Options Select Dropdown Options Decorator*
-     ***********************************************/
+    /************************************************
+     * UI Options Select Dropdown Options Decorator *
+     ************************************************/
 
     /**
      * A sub-component that decorates the options on the select dropdown list box with the css style
