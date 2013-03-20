@@ -279,20 +279,6 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
-        
-    // This function compensates for a framework deficiency that due to lack of gingerness, the "refreshView"
-    // function synthesized by rendererComponent is not available during listener registration which only 
-    // occurs after component init functions have completed (http://issues.fluidproject.org/browse/FLUID-4334)
-    fluid.uiOptions.lateRefreshViewBinder = function (that) {
-        that.refreshView = function () {
-            that.renderer.refreshView();
-        };
-    };
-    
-    fluid.uiOptions.defaultModelMerger = function (target, source) {
-        $.extend(true, target, source);
-    };
-    
     /**
      * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
      * to allow users to set personal user interface preferences. The UI Options component provides a user 
@@ -323,8 +309,7 @@ var fluid_1_5 = fluid_1_5 || {};
             modelChanged: null,
             onUIOptionsRefresh: null,
             onUIOptionsMarkupReady: null,
-            onUIOptionsComponentReady: null,
-            contributeDefaultModel: null
+            onUIOptionsComponentReady: null
         },
         listeners: {
             onAutoSave: "{that}.save"
@@ -358,7 +343,6 @@ var fluid_1_5 = fluid_1_5 || {};
         that.events.onUIOptionsMarkupReady.fire(that);
         
         that.defaultModel = {};
-        that.events.contributeDefaultModel.fire(that.defaultModel);
         that.fetch();
         that.events.onUIOptionsComponentReady.fire(that);
     };
@@ -452,19 +436,53 @@ var fluid_1_5 = fluid_1_5 || {};
             textSizer: {
                 type: "fluid.uiOptions.textSizer",
                 container: "{uiOptions}.dom.textSizer",
-                createOnEvent: "onUIOptionsMarkupReady"
+                createOnEvent: "onUIOptionsMarkupReady",
+                options: {
+                    sourceApplier: "{uiOptions}.applier",
+                    rules: {
+                        "selections.textSize": "value"
+                    },
+                    listeners: {
+                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
+                    },
+                    resources: {
+                        template: "{templateLoader}.resources.textSizer"
+                    }
+                }
             },
             lineSpacer: {
                 type: "fluid.uiOptions.lineSpacer",
                 container: "{uiOptions}.dom.lineSpacer",
-                createOnEvent: "onUIOptionsMarkupReady"
+                createOnEvent: "onUIOptionsMarkupReady",
+                options: {
+                    sourceApplier: "{uiOptions}.applier",
+                    rules: {
+                        "selections.lineSpacing": "value"
+                    },
+                    listeners: {
+                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
+                    },
+                    resources: {
+                        template: "{templateLoader}.resources.lineSpacer"
+                    }
+                }
             },
             textFont: {
                 type: "fluid.uiOptions.textFont",
                 container: "{uiOptions}.dom.textFont",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    classnameMap: "{uiEnhancer}.options.classnameMap"
+                    sourceApplier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
+                    rules: {
+                        "selections.textFont": "value"
+                    },
+                    listeners: {
+                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
+                    },
+                    resources: {
+                        template: "{templateLoader}.resources.textFont"
+                    }
                 }
             },
             contrast: {
@@ -472,7 +490,17 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.contrast",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    classnameMap: "{uiEnhancer}.options.classnameMap"
+                    sourceApplier: "{uiOptions}.applier",
+                    classnameMap: "{uiEnhancer}.options.classnameMap",
+                    rules: {
+                        "selections.theme": "value"
+                    },
+                    listeners: {
+                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
+                    },
+                    resources: {
+                        template: "{templateLoader}.resources.contrast"
+                    }
                 }
             },
             layoutControls: {
@@ -480,7 +508,17 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.layoutControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    classnameMap: "{uiEnhancer}.options.classnameMap"
+                    sourceApplier: "{uiOptions}.applier",
+                    rules: {
+                        "selections.toc": "toc",
+                        "selections.layout": "layout"
+                    },
+                    listeners: {
+                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
+                    },
+                    resources: {                    
+                        template: "{templateLoader}.resources.layoutControls"
+                    }
                 }
             },
             linksControls: {
@@ -488,7 +526,17 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.linksControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    classnameMap: "{uiEnhancer}.options.classnameMap"
+                    sourceApplier: "{uiOptions}.applier",
+                    rules: {
+                        "selections.links": "links",
+                        "selections.inputsLarger": "inputsLarger"
+                    },
+                    listeners: {
+                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
+                    },
+                    resources: {
+                        template: "{templateLoader}.resources.linksControls"
+                    }
                 }
             }
         }

@@ -26,49 +26,45 @@ var fluid_1_5 = fluid_1_5 || {};
 (function (fluid) {
     
     fluid.registerNamespace("fluid.compat.fluid_1_2.uploader");
-    fluid.staticEnvironment.uploader_1_2_Compatibility = fluid.typeTag("fluid.uploader.fluid_1_2");
+    
+    fluid.enhance.check({"fluid.uploader.fluid_1_2" : true});
 
     fluid.compat.fluid_1_2.uploader.optionsRules = {
         "components": {
-            expander: {
-                type: "fluid.model.transform.firstValue",
-                values: [
-                    {
-                        expander: {
-                            type: "fluid.model.transform.value",
-                            inputPath: "components"
-                        }
-                    },
-                    {
-                        expander: {
-                            type: "fluid.model.transform.value",
-                            value: {
-                                "strategy": {
-                                    "options": {
-                                        "flashMovieSettings": {
-                                            expander: {
-                                                type: "fluid.model.transform.value",
-                                                value: {
-                                                    "flashURL": "uploadManager.options.flashURL",
-                                                    "flashButtonPeerId": "decorators.0.options.flashButtonPeerId",
-                                                    "flashButtonAlwaysVisible": "decorators.0.options.flashButtonAlwaysVisible",
-                                                    "flashButtonTransparentEvenInIE": "decorators.0.options.flashButtonTransparentEvenInIE",
-                                                    "flashButtonImageURL": "decorators.0.options.flashButtonImageURL",
-                                                    "flashButtonCursorEffect": "decorators.0.options.flashButtonCursorEffect",
-                                                    "debug": "decorators.0.options.debug"
-                                                }
-                                            }
-                                        },
-                                        "styles": "decorators.0.options.styles"
+            expander: [
+                {
+                    type: "fluid.model.transform.value",
+                    inputPath: "components",
+                    merge: true
+                },
+                {
+                    type: "fluid.model.transform.value",
+                    merge: true,
+                    value: {
+                        "strategy": {
+                            "options": {
+                                "flashMovieSettings": {
+                                    expander: {
+                                        type: "fluid.model.transform.value",
+                                        value: {
+                                            "flashURL": "uploadManager.options.flashURL",
+                                            "flashButtonPeerId": "decorators.0.options.flashButtonPeerId",
+                                            "flashButtonAlwaysVisible": "decorators.0.options.flashButtonAlwaysVisible",
+                                            "flashButtonTransparentEvenInIE": "decorators.0.options.flashButtonTransparentEvenInIE",
+                                            "flashButtonImageURL": "decorators.0.options.flashButtonImageURL",
+                                            "flashButtonCursorEffect": "decorators.0.options.flashButtonCursorEffect",
+                                            "debug": "decorators.0.options.debug"
+                                        }
                                     }
                                 },
-                                "fileQueueView": "fileQueueView",
-                                "totalProgressBar": "totalProgressBar"
+                                "styles": "decorators.0.options.styles"
                             }
-                        }
+                        },
+                        "fileQueueView": "fileQueueView",
+                        "totalProgressBar": "totalProgressBar"
                     }
-                ]
-            }
+                }
+            ]
         },
         "queueSettings": {
             expander: {
@@ -87,24 +83,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.demands("fluid.uploader", "fluid.uploader.fluid_1_2", {
-        mergeOptions: {
-            transformOptions: {
-                transformer: "fluid.model.transformWithRules",
-                config: fluid.compat.fluid_1_2.uploader.optionsRules
-            }
-        }
+        options: fluid.transformOne(fluid.compat.fluid_1_2.uploader.optionsRules)
     });
-    
-    fluid.uploader.transformOptions = function (options) {
-        if (!options) {
-            return;
-        }
-        
-        options.transformOptions = {
-            transformer: "fluid.model.transformWithRules",
-            config: fluid.compat.fluid_1_2.uploader.optionsRules
-        };
-        
-        return options;
-    };
+
 })(fluid_1_5);

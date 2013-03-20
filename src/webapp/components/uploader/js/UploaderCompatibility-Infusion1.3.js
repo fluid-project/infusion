@@ -25,7 +25,8 @@ var fluid_1_5 = fluid_1_5 || {};
 (function (fluid) {
     
     fluid.registerNamespace("fluid.compat.fluid_1_3.uploader");
-    fluid.staticEnvironment.uploader_1_3_Compatibility = fluid.typeTag("fluid.uploader.fluid_1_3");
+    
+    fluid.enhance.check({"fluid.uploader.fluid_1_3" : true});
 
     fluid.compat.fluid_1_3.uploader.fileTypeTransformer = function (val) {
         var mimeTypeMap = fluid.uploader.mimeTypeRegistry;
@@ -74,37 +75,13 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.demands("fluid.uploader", "fluid.uploader.fluid_1_3", {
-        mergeOptions: {
-            transformOptions: {
-                transformer: "fluid.model.transformWithRules",
-                config: fluid.compat.fluid_1_3.uploader.optionsRules
-            }
-        }
+        options: fluid.transformOne(fluid.compat.fluid_1_3.uploader.optionsRules)
     });
     
+    // TODO: In theory, this could be done with a mergePolicy on "transformOptions", if only we could ensure a scheme
+    // for ordering fluid_1_2.uploader before fluid_1_3.uploader in the sequence
     fluid.demands("fluid.uploader", ["fluid.uploader.fluid_1_2", "fluid.uploader.fluid_1_3"], {
-        mergeOptions: {
-            transformOptions: {
-                transformer: "fluid.model.transform.sequence",
-                config: [fluid.compat.fluid_1_2.uploader.optionsRules, fluid.compat.fluid_1_3.uploader.optionsRules]
-            }
-        }
+        options: fluid.transformMany([fluid.compat.fluid_1_2.uploader.optionsRules, fluid.compat.fluid_1_3.uploader.optionsRules])
     });
-    
-    fluid.uploader.transformOptions = function (options) {
-        if (!options) {
-            return;
-        }
-        
-        var rules = typeof (fluid.compat.fluid_1_2.uploader) !== "undefined" ? 
-            [fluid.compat.fluid_1_2.uploader.optionsRules, fluid.compat.fluid_1_3.uploader.optionsRules] :
-            fluid.compat.fluid_1_3.uploader.optionsRules;
-        
-        options.transformOptions = {
-            transformer: "fluid.model.transform.sequence",
-            config: rules
-        };
-        
-        return options;
-    };
+
 })(fluid_1_5);

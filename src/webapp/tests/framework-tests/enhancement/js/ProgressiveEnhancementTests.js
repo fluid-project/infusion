@@ -26,7 +26,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     var invokeCheckerWithChecks = function (checks) {
         var options = fluid.expandOptions($.extend({}, checkerOptions, {checks: checks}), null);
-        return fluid.progressiveChecker(options).typeName;
+        var names = fluid.progressiveChecker(options).options.gradeNames;
+        return fluid.find(names, function (name) {
+            return /fluid\.progressiveChecker|fluid\.littleComponent|fluid\.typeFount|autoInit/.test(name) ? undefined : name  
+        });
     };
     
     jqUnit.test("progressiveChecker", function () {        
@@ -77,6 +80,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]);
         jqUnit.assertEquals("Neither feature matches, default value should be returned.", 
                             "food.carrots", result);
+        delete fluid.staticEnvironment.cat;
+        delete fluid.staticEnvironment.dog;
     });
     
     fluid.registerNamespace("fluid.test");
@@ -202,6 +207,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.each(keys, function (val) {
             assertKeyInEnvironments(val, STATIC_ENV_NOT_SET, NOT_CHECKED);
         });
+    });
+
+    fluid.staticEnvironment.testEnv = fluid.typeTag("fluid.test");
+
+    fluid.defaults("fluid.tests.enhanceTarget", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            progressiveChecker: {
+                type: "fluid.progressiveCheckerForComponent",
+                options: {componentName: "fluid.tests.enhanceTarget"}
+            }
+        },
+        progressiveCheckerOptions: {
+            checks: [
+                {
+                    feature: "{fluid.test}",
+                    contextName: "fluid.enhanceTarget.test"
+                }
+            ]
+        }
+    });
+
+    jqUnit.test("progressiveCheckerForComponent", function () {
+        var that = fluid.tests.enhanceTarget();
+        var checkerGrades = that.progressiveChecker.options.gradeNames;
+        jqUnit.assertTrue("Context name resolved into checker grade", checkerGrades.indexOf("fluid.enhanceTarget.test") !== -1);
+        jqUnit.assertTrue("Horizon name resolved into checker grade", checkerGrades.indexOf("fluid.tests.enhanceTarget.progressiveCheck") !== -1);
     });
 
 })(jQuery);
