@@ -289,10 +289,6 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
     
-    fluid.uiOptions.defaultModelMerger = function (target, source) {
-        $.extend(true, target, source);
-    };
-    
     /**
      * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
      * to allow users to set personal user interface preferences. The UI Options component provides a user 
@@ -323,8 +319,7 @@ var fluid_1_5 = fluid_1_5 || {};
             modelChanged: null,
             onUIOptionsRefresh: null,
             onUIOptionsMarkupReady: null,
-            onUIOptionsComponentReady: null,
-            contributeDefaultModel: null
+            onUIOptionsComponentReady: null
         },
         listeners: {
             onAutoSave: "{that}.save"
@@ -358,7 +353,6 @@ var fluid_1_5 = fluid_1_5 || {};
         that.events.onUIOptionsMarkupReady.fire(that);
         
         that.defaultModel = {};
-        that.events.contributeDefaultModel.fire(that.defaultModel);
         that.fetch();
         that.events.onUIOptionsComponentReady.fire(that);
     };

@@ -35,11 +35,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
         },
         listeners: {
-            onUIOptionsRefresh: "{that}.refreshView",     
-            "{uiOptions}.events.contributeDefaultModel": {
-                listener: "fluid.uiOptions.defaultModelMerger",
-                args: ["{arguments}.0", "{that}.options.defaultModel"]
-            }
+            onUIOptionsRefresh: "{that}.refreshView"
         },
         preInitFunction: "fluid.uiOptions.lateRefreshViewBinder"
     });
@@ -76,11 +72,8 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.textSizer", {
         gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
-        defaultModel: {
-            textSize: 1  // in points
-        },
         model: {
-            value: null
+            value: 1
         },
         min: 1,
         max: 2,
@@ -114,11 +107,8 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.textFont", {
         gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
-        defaultModel: {
-            textFont: "default"  // key from classname map
-        },
         model: {
-            value: null
+            value: "default"
         },
         strings: {
             textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"]
@@ -164,11 +154,8 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.lineSpacer", {
         gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
-        defaultModel: {
-            lineSpacing: 1  // in ems
-        },
         model: {
-            value: null
+            value: 1
         },
         min: 1,
         max: 2,
@@ -203,11 +190,8 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.contrast", {
         gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
-        defaultModel: {
-            theme: "default"  // key from classname map
-        },
         model: {
-            value: null
+            value: "default"
         },
         strings: {
             theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
@@ -252,13 +236,9 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.layoutControls", {
         gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"],
-        defaultModel: {
-            layout: false,                // boolean
-            toc: false                   // boolean
-        },
         model: {
-            toc: "null",
-            layout: "null"
+            toc: false,
+            layout: false
         },
         selectors: {
             layout: ".flc-uiOptions-layout",
@@ -283,13 +263,9 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.linksControls", {
         gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"],
-        defaultModel: {
-            links: false,                 // boolean
-            inputsLarger: false           // boolean
-        },
         model: {
-            links: null,
-            inputsLarger: null
+            links: false,
+            inputsLarger: false
         },
         selectors: {
             links: ".flc-uiOptions-links",
