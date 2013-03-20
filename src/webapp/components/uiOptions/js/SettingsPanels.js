@@ -41,21 +41,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{arguments}.0", "{that}.options.defaultModel"]
             }
         },
-        preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
-        finalInitFunction: "fluid.uiOptions.controlsFinalInit"
+        preInitFunction: "fluid.uiOptions.lateRefreshViewBinder"
     });
-
-    // Utility function which assembles material in the model suitable for rendering
-    // style-based selection dropdowns
-    var optionsToLabelMap = function (that) {
-        fluid.each(that.options.controlValues, function (item, key) {
-            that.applier.requestChange("labelMap." + key, {
-                values: that.options.controlValues[key],
-                names: that.options.strings[key],
-                classes: fluid.get(that, "options.classnameMap." + key)
-            });
-        });
-    };
     
     fluid.uiOptions.createSliderNode = function (that, path, type, options) {
         return {
@@ -78,10 +65,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
         };
-    };
-    
-    fluid.uiOptions.controlsFinalInit = function (that) {
-        optionsToLabelMap(that);
     };
 
     /****************************
