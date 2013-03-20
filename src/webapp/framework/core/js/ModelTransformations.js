@@ -309,12 +309,14 @@ var fluid = fluid || fluid_1_5;
     fluid.model.transform.arrayToOutputs = function (value, expandSpec, expander) {
         var options = expandSpec.options;
 
-        if (!fluid.isArrayable(value)) {
-            fluid.fail("arrayToOutputs didn't find array at inputPath.", expandSpec);
-        } 
-        if (expandSpec.presentValue === undefined || expandSpec.missingValue === undefined || expandSpec.options === undefined) {
-            fluid.fail("arrayToOutputs requires both presentValue, missingValue and an options block specified");
-        }        
+        if (value === undefined || !fluid.isArrayable(value)) {
+            fluid.log("arrayToOutputs didn't find array at inputPath nor passed as value.", expandSpec);
+            return undefined;
+        }
+        if (expandSpec.presentValue === undefined || expandSpec.missingValue === undefined || options === undefined) {
+            fluid.log("arrayToOutputs requires both presentValue, missingValue and an options block set");
+            return undefined;
+        }
 
         fluid.each(options, function (outPath, key) {
             //write to output path given in options the value <presentValue> or <missingValue> depending on whether key is found in user input
