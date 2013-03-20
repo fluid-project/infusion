@@ -508,7 +508,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.layoutControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "selections.toc": "toc",
                         "selections.layout": "layout"
@@ -523,7 +522,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiOptions}.dom.linksControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "selections.links": "links",
                         "selections.inputsLarger": "inputsLarger"
