@@ -195,8 +195,11 @@ var fluid_1_5 = fluid_1_5 || {};
             theme: ["default", "bw", "wb", "by", "yb"]
         },
         selectors: {
-            theme: ".flc-uiOptions-theme"
+            themeRow: ".flc-uiOptions-themeRow",
+            themeLabel: ".flc-uiOptions-themeLabel",
+            themeInput: ".flc-uiOptions-themeInput"
         },
+        repeatingSelectors: ["themeRow"],
         produceTree: "fluid.uiOptions.contrast.produceTree",
         resources: {
             template: {
@@ -207,16 +210,23 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.contrast.produceTree = function (that) {
         return {
-            theme: {
-                optionnames: that.options.strings.theme,
-                optionlist: that.options.controlValues.theme,
-                selection: "${value}",
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.uiOptions.selectDecorator",
-                    options: {
-                        styles: that.options.classnameMap.theme
-                    }
+            expander: {
+                type: "fluid.renderer.selection.inputs",
+                rowID: "themeRow",
+                labelID: "themeLabel",
+                inputID: "themeInput",
+                selectID: "theme-radio",
+                tree: {
+                    optionnames: that.options.strings.theme,
+                    optionlist: that.options.controlValues.theme,
+                    selection: "${value}"//,
+                    //decorators: {
+                    //    type: "fluid",
+                    //    func: "fluid.uiOptions.selectDecorator",
+                    //    options: {
+                    //        styles: that.options.classnameMap.theme
+                    //    }
+                    //}
                 }
             }
         };
