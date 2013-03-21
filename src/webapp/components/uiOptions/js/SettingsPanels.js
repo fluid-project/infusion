@@ -27,19 +27,12 @@ var fluid_1_5 = fluid_1_5 || {};
      ***********************************************/
      
     fluid.registerNamespace("fluid.uiOptions.settingsPanel");
-    
-    // This function compensates for a framework deficiency that due to lack of gingerness, the "refreshView"
-    // function synthesized by rendererComponent is not available during listener registration which only 
-    // occurs after component init functions have completed (http://issues.fluidproject.org/browse/FLUID-4334)
-    fluid.uiOptions.settingsPanel.lateRefreshViewBinder = function (that) {
-        that.refreshView = function () {
-            that.renderer.refreshView();
-        };
-    };
 
     fluid.defaults("fluid.uiOptions.settingsPanel", {
         gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay"],
-        preInitFunction: "fluid.uiOptions.settingsPanel.lateRefreshViewBinder"
+        invokers: {
+            refreshView: "{that}.renderer.refreshView"
+        }
     });
     
     fluid.uiOptions.createSliderNode = function (that, path, type, options) {
