@@ -110,8 +110,8 @@ var fluid_1_5 = fluid_1_5 || {};
                         "toc": "value"
                     },
                     listeners: {
-                        afterTocRender: "{uiEnhancer}.events.onTocReady",
-                        onLateRefreshRelay: "{uiEnhancer}.events.onTocReady"
+                        afterTocRender: "{uiEnhancer}.events.onAsyncEnactorsReady",
+                        onLateRefreshRelay: "{uiEnhancer}.events.onAsyncEnactorsReady"
                     }
                 }
             },
@@ -124,30 +124,13 @@ var fluid_1_5 = fluid_1_5 || {};
                         "theme": "value"
                     }
                 }
-            },
-            settingsStore: {
-                type: "fluid.uiOptions.store",
-                options: {
-                    defaultSiteSettings: "{uiEnhancer}.options.defaultSiteSettings"
-                }
-            }
-        },
-        invokers: {
-            updateModel: {
-                funcName: "fluid.uiEnhancer.defaultActions.updateModel",
-                args: ["{arguments}.0", "{uiEnhancer}.applier"]
-            },
-            updateFromSettingsStore: {
-                funcName: "fluid.uiEnhancer.defaultActions.updateFromSettingsStore",
-                args: ["{uiEnhancer}"]
             }
         },
         events: {
-            onTocReady: null,
             onCreateTocEnactor: null
         },
         listeners: {
-            onTocReady: [{
+            onAsyncEnactorsReady: [{
                 listener: "{that}.emphasizeLinks.handleStyle",
                 args: "{that}.model.links"
             }, {
@@ -167,19 +150,12 @@ var fluid_1_5 = fluid_1_5 || {};
         $(document).ready(function () {
             that.events.onCreateTocEnactor.fire();
             
-            // Update toc enactor model after the enactor is created
-            that.applier.requestChange("toc", that.model.toc);
+            // Directly calling toc apply function rather than firing a model change request
+            // is because the modelRelay component prevents the relay on the unchanged value.
+            that.tableOfContents.applyToc(that.model.toc);
         });
     };
     
-    fluid.uiEnhancer.defaultActions.updateFromSettingsStore = function (that) {
-        that.updateModel(that.settingsStore.fetch());
-    };
-
-    fluid.uiEnhancer.defaultActions.updateModel = function (newModel, applier) {
-        applier.requestChange("", newModel);
-    };
-
     /*******************************************************************************
      * CSSClassEnhancerBase
      *
@@ -187,7 +163,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * Used as a UIEnhancer base grade that can be pulled in as requestd.
      *******************************************************************************/
     
-    fluid.defaults("fluid.uiEnhancer.CSSClassEnhancerBase", {
+    fluid.defaults("fluid.uiEnhancer.cssClassEnhancerBase", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         classnameMap: {
             "textFont": {
@@ -217,7 +193,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * Used as a UIEnhancer base grade that can be pulled in as requestd.
      *******************************************************************************/
     
-    fluid.defaults("fluid.uiEnhancer.BrowserTextEnhancerBase", {
+    fluid.defaults("fluid.uiEnhancer.browserTextEnhancerBase", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         fontSizeMap: {
             "xx-small": "9px",
@@ -237,8 +213,37 @@ var fluid_1_5 = fluid_1_5 || {};
      *******************************************************************************/
     
     fluid.defaults("fluid.uiEnhancer", {
-        gradeNames: ["fluid.uiEnhancer.defaultActions", "fluid.uiEnhancer.CSSClassEnhancerBase", "fluid.uiEnhancer.BrowserTextEnhancerBase", "autoInit"]
+        gradeNames: ["fluid.uiEnhancer.defaultActions", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
+        components: {
+            settingsStore: {
+                type: "fluid.uiOptions.store",
+                options: {
+                    defaultSiteSettings: "{uiEnhancer}.options.defaultSiteSettings"
+                }
+            }
+        },
+        invokers: {
+            updateModel: {
+                funcName: "fluid.uiEnhancer.updateModel",
+                args: ["{arguments}.0", "{uiEnhancer}.applier"]
+            },
+            updateFromSettingsStore: {
+                funcName: "fluid.uiEnhancer.updateFromSettingsStore",
+                args: ["{uiEnhancer}"]
+            }
+        },
+        events: {
+            onAsyncEnactorsReady: null
+        }
     });
+
+    fluid.uiEnhancer.updateFromSettingsStore = function (that) {
+        that.updateModel(that.settingsStore.fetch());
+    };
+
+    fluid.uiEnhancer.updateModel = function (newModel, applier) {
+        applier.requestChange("", newModel);
+    };
 
     /*******************************************************************************
      * PageEnhancer                                                                *
