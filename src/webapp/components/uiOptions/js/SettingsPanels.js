@@ -26,20 +26,20 @@ var fluid_1_5 = fluid_1_5 || {};
      * UI Options Select Dropdown Options Decorator*
      ***********************************************/
      
-    fluid.registerNamespace("fluid.uiOptions.settingsPanels");
+    fluid.registerNamespace("fluid.uiOptions.settingsPanel");
     
     // This function compensates for a framework deficiency that due to lack of gingerness, the "refreshView"
     // function synthesized by rendererComponent is not available during listener registration which only 
     // occurs after component init functions have completed (http://issues.fluidproject.org/browse/FLUID-4334)
-    fluid.uiOptions.settingsPanels.lateRefreshViewBinder = function (that) {
+    fluid.uiOptions.settingsPanel.lateRefreshViewBinder = function (that) {
         that.refreshView = function () {
             that.renderer.refreshView();
         };
     };
 
-    fluid.defaults("fluid.uiOptions.settingsPanels", {
+    fluid.defaults("fluid.uiOptions.settingsPanel", {
         gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay"],
-        preInitFunction: "fluid.uiOptions.settingsPanels.lateRefreshViewBinder"
+        preInitFunction: "fluid.uiOptions.settingsPanel.lateRefreshViewBinder"
     });
     
     fluid.uiOptions.createSliderNode = function (that, path, type, options) {
@@ -73,7 +73,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "text size" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.textSizer", {
-        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
             value: 1
         },
@@ -108,7 +108,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "text font" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.textFont", {
-        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
             value: "default"
         },
@@ -155,7 +155,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "line spacing" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.lineSpacer", {
-        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
             value: 1
         },
@@ -191,7 +191,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "contrast" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.contrast", {
-        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
             value: "default"
         },
@@ -237,7 +237,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "layout and navigation" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.layoutControls", {
-        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"],
+        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
             toc: false,
             layout: false
@@ -264,7 +264,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "links and buttons" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.linksControls", {
-        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"],
+        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
             links: false,
             inputsLarger: false
