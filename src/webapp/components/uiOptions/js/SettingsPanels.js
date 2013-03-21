@@ -199,6 +199,19 @@ var fluid_1_5 = fluid_1_5 || {};
             themeLabel: ".flc-uiOptions-themeLabel",
             themeInput: ".flc-uiOptions-themeInput"
         },
+        markup: {
+            label: "<span class=\"fl-preview-A\">A</span><span>%theme</span>"
+        },
+        invokers: {
+            style: {
+                funcName: "fluid.uiOptions.contrast.style",
+                args: ["{that}.dom.themeLabel", "{that}.options.strings.theme",
+                    "{that}.options.markup.label"]
+            }
+        },
+        listeners: {
+            afterRender: "{that}.style"
+        },
         repeatingSelectors: ["themeRow"],
         produceTree: "fluid.uiOptions.contrast.produceTree",
         resources: {
@@ -207,6 +220,13 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
+
+    fluid.uiOptions.contrast.style = function (labels, strings, markup) {
+        fluid.each(labels, function (label, index) {
+            label = $(label);
+            label.html(fluid.stringTemplate(markup, {theme: strings[index]}));
+        });
+    };
     
     fluid.uiOptions.contrast.produceTree = function (that) {
         return {
@@ -219,14 +239,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 tree: {
                     optionnames: that.options.strings.theme,
                     optionlist: that.options.controlValues.theme,
-                    selection: "${value}"//,
-                    //decorators: {
-                    //    type: "fluid",
-                    //    func: "fluid.uiOptions.selectDecorator",
-                    //    options: {
-                    //        styles: that.options.classnameMap.theme
-                    //    }
-                    //}
+                    selection: "${value}"
                 }
             }
         };
