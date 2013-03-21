@@ -85,7 +85,10 @@ var fluid_1_5 = fluid_1_5 || {};
                                     settingsStore: "{pageEnhancer}.settingsStore"  
                                 },
                                 jQuery: "{iframeRenderer}.jQuery",
-                                tocTemplate: "{pageEnhancer}.options.tocTemplate"
+                                tocTemplate: "{pageEnhancer}.options.tocTemplate",
+                                events: {
+                                    onIframeVisible: null
+                                }
                             }
                         }
                     }
@@ -219,6 +222,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component - and also uiOptionsLoader which is another child
         fatPanel.slidingPanel.events.afterPanelShow.addListener(function () {
+            iframeEnhancer.events.onIframeVisible.fire(iframeEnhancer);
             fluid.uiOptions.fatPanel.updateView(uiOptions, iframeEnhancer);
         });  
     
@@ -237,6 +241,13 @@ var fluid_1_5 = fluid_1_5 || {};
             var panel = fatPanel.slidingPanel.locate("panel");
             panel.css({height: ""});
             iframe.animate(attrs, 400);
+        });
+        
+        // Re-apply text size and line spacing to iframe content since these initial css values are not detectable
+        // when the iframe is hidden.
+        iframeEnhancer.events.onIframeVisible.addListener(function () {
+            iframeEnhancer.textSize.set(iframeEnhancer.model.textSize);
+            iframeEnhancer.lineSpacing.set(iframeEnhancer.model.lineSpacing);
         });
         
         fatPanel.slidingPanel.events.afterPanelHide.addListener(function () {
