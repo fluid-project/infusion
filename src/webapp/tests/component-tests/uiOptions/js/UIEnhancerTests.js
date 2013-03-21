@@ -69,7 +69,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var tocLinks = $(".flc-toc-tocContainer a");
                 var filtered = tocLinks.filter(".fl-link-enhanced");
                 ++refreshCount;
-                if (refreshCount === 2) {
+                if (refreshCount === 3) {
                     jqUnit.assertEquals("All toc links have been styled", tocLinks.length, filtered.length);
                     jqUnit.assertNotEquals("Some toc links generated on 2nd pass", 0, tocLinks.length);
                     jqUnit.start();
@@ -78,7 +78,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             var options = fluid.merge(null, {}, uiEnhancerOptions, {
                 listeners: {
-                    onTocReady: {
+                    onAsyncEnactorsReady: {
                         priority: "last",
                         listener: testTocStyling
                     }
