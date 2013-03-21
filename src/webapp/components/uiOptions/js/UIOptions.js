@@ -57,7 +57,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 "*.uiOptionsLoader":                                  "uiOptionsLoader",
                 "*.uiOptionsLoader.container":                        "container",
                 "*.uiOptionsLoader.*.uiOptions":                      "uiOptions",
-                "*.uiOptionsLoader.*.uiOptions.*.textControls":       "textControls",
+                "*.uiOptionsLoader.*.uiOptions.*.textSizer":          "textSizer",
+                "*.uiOptionsLoader.*.uiOptions.*.lineSpacer":         "lineSpacer",
+                "*.uiOptionsLoader.*.uiOptions.*.textFont":           "textFont",
+                "*.uiOptionsLoader.*.uiOptions.*.contrast":           "contrast",
                 "*.uiOptionsLoader.*.uiOptions.*.layoutControls":     "layoutControls",
                 "*.uiOptionsLoader.*.uiOptions.*.linksControls":      "linksControls",
                 "*.uiOptionsLoader.*.uiOptions.*.preview":            "preview",
@@ -295,6 +298,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uiOptions.eventBinder"
             }
         },
+        members: {
+            // TODO: FLUID-4686 - his will be replaced by the mechanism of
+            // extracting defaults from the schema.
+            defaultModel: "{uiEnhancer}.settingsStore.options.defaultSiteSettings"
+        },
         selectors: {
             cancel: ".flc-uiOptions-cancel",
             reset: ".flc-uiOptions-reset",
@@ -341,8 +349,7 @@ var fluid_1_5 = fluid_1_5 || {};
         bindHandlers(that);
         // This creates subcomponents - we can find default model afterwards
         that.events.onUIOptionsMarkupReady.fire(that);
-        
-        that.defaultModel = {};
+
         that.fetch();
         that.events.onUIOptionsComponentReady.fire(that);
     };

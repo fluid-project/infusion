@@ -29,6 +29,9 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.modelRelay", {
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
+        mergePolicy: {
+            sourceApplier: "nomerge"
+        },
         sourceApplier: null,  // must be supplied by implementors
         rules: {},  // must be supplied by implementors, in format: "externalModelKey": "internalModelKey"
         
