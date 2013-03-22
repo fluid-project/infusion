@@ -39,22 +39,16 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.modelRelay.postInit = function (that) {
         fluid.transform(that.options.rules, function (internalKey, sourceKey) {
-            that.options.sourceApplier.guards.addListener(sourceKey, function (model, changeRequest) {
-                if (changeRequest.value === fluid.get(model, sourceKey)) {
-                    return false;
+            that.applier.modelChanged.addListener(internalKey, function (newModel, oldModel) {
+                if (!that.applier.hasChangeSource(sourceKey)) {
+                    fluid.fireSourcedChange(that.options.sourceApplier, sourceKey, fluid.get(newModel, internalKey), internalKey);
                 }
-            });
-            that.options.sourceApplier.modelChanged.addListener(sourceKey, function (newModel, oldModel) {
-                that.applier.requestChange(internalKey, fluid.get(newModel, sourceKey));
             });
             
-            that.applier.guards.addListener(internalKey, function (model, changeRequest) {
-                if (changeRequest.value === fluid.get(model, internalKey)) {
-                    return false;
+            that.options.sourceApplier.modelChanged.addListener(sourceKey, function (newModel, oldModel) {
+                if (!that.options.sourceApplier.hasChangeSource(internalKey)) {
+                    fluid.fireSourcedChange(that.applier, internalKey, fluid.get(newModel, sourceKey), sourceKey);
                 }
-            });
-            that.applier.modelChanged.addListener(internalKey, function (newModel, oldModel) {
-                that.options.sourceApplier.requestChange(sourceKey, fluid.get(newModel, internalKey));
             });
         });
     };
