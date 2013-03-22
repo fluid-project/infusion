@@ -22,16 +22,107 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     /*******************************************************************************
+     * CSSClassEnhancerBase
+     *
+     * Provides the map between the settings and css classes to be applied. 
+     * Used as a UIEnhancer base grade that can be pulled in as requestd.
+     *******************************************************************************/
+    
+    fluid.defaults("fluid.uiEnhancer.cssClassEnhancerBase", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        classnameMap: {
+            "textFont": {
+                "default": "",
+                "times": "fl-font-uio-times",
+                "comic": "fl-font-uio-comic-sans",
+                "arial": "fl-font-uio-arial",
+                "verdana": "fl-font-uio-verdana"
+            },
+            "theme": {
+                "default": "fl-uio-default-theme",
+                "bw": "fl-theme-uio-bw fl-theme-bw",
+                "wb": "fl-theme-uio-wb fl-theme-wb",
+                "by": "fl-theme-uio-by fl-theme-by",
+                "yb": "fl-theme-uio-yb fl-theme-yb"
+            },
+            "layout": "fl-layout-linear",
+            "links": "fl-link-enhanced",
+            "inputsLarger": "fl-text-larger"
+        }
+    });
+
+    /*******************************************************************************
+     * BrowserTextEnhancerBase
+     *
+     * Provides the default font size translation between the strings and actual pixels. 
+     * Used as a UIEnhancer base grade that can be pulled in as requestd.
+     *******************************************************************************/
+    
+    fluid.defaults("fluid.uiEnhancer.browserTextEnhancerBase", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        fontSizeMap: {
+            "xx-small": "9px",
+            "x-small":  "11px",
+            "small":    "13px",
+            "medium":   "15px",
+            "large":    "18px",
+            "x-large":  "23px",
+            "xx-large": "30px"
+        }
+    });
+
+    /*******************************************************************************
+     * UI Enhancer                                                                 *
+     *                                                                             *
+     * Works in conjunction with FSS to transform the page based on user settings. *
+     *******************************************************************************/
+    
+    fluid.defaults("fluid.uiEnhancer", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        components: {
+            settingsStore: {
+                type: "fluid.uiOptions.store",
+                options: {
+                    defaultSiteSettings: "{uiEnhancer}.options.defaultSiteSettings"
+                }
+            }
+        },
+        invokers: {
+            updateModel: {
+                funcName: "fluid.uiEnhancer.updateModel",
+                args: ["{arguments}.0", "{uiEnhancer}.applier"]
+            },
+            updateFromSettingsStore: {
+                funcName: "fluid.uiEnhancer.updateFromSettingsStore",
+                args: ["{uiEnhancer}"]
+            }
+        },
+        events: {
+            onAsyncEnactorsReady: null
+        }
+    });
+
+    fluid.uiEnhancer.updateFromSettingsStore = function (that) {
+        that.updateModel(that.settingsStore.fetch());
+    };
+
+    fluid.uiEnhancer.updateModel = function (newModel, applier) {
+        applier.requestChange("", newModel);
+    };
+    
+    fluid.uiEnhancer.finalInit = function (that) {
+        that.updateFromSettingsStore();
+    };
+
+    /*******************************************************************************
      * UI Enhancer Default Actions
      *
      * A grade component for UIEnhancer. It is a collection of default UI Enhancer 
      * action ants.
      *******************************************************************************/
     
-    fluid.registerNamespace("fluid.uiEnhancer");
-    
     fluid.defaults("fluid.uiEnhancer.defaultActions", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
         components: {
             textSize: {
                 type: "fluid.uiOptions.actionAnts.textSizerEnactor",
@@ -145,8 +236,6 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     fluid.uiEnhancer.defaultActions.finalInit = function (that) {
-        that.updateFromSettingsStore();
-        
         $(document).ready(function () {
             that.events.onCreateTocEnactor.fire();
             
@@ -156,95 +245,6 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
-    /*******************************************************************************
-     * CSSClassEnhancerBase
-     *
-     * Provides the map between the settings and css classes to be applied. 
-     * Used as a UIEnhancer base grade that can be pulled in as requestd.
-     *******************************************************************************/
-    
-    fluid.defaults("fluid.uiEnhancer.cssClassEnhancerBase", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        classnameMap: {
-            "textFont": {
-                "default": "",
-                "times": "fl-font-uio-times",
-                "comic": "fl-font-uio-comic-sans",
-                "arial": "fl-font-uio-arial",
-                "verdana": "fl-font-uio-verdana"
-            },
-            "theme": {
-                "default": "fl-uio-default-theme",
-                "bw": "fl-theme-uio-bw fl-theme-bw",
-                "wb": "fl-theme-uio-wb fl-theme-wb",
-                "by": "fl-theme-uio-by fl-theme-by",
-                "yb": "fl-theme-uio-yb fl-theme-yb"
-            },
-            "layout": "fl-layout-linear",
-            "links": "fl-link-enhanced",
-            "inputsLarger": "fl-text-larger"
-        }
-    });
-
-    /*******************************************************************************
-     * BrowserTextEnhancerBase
-     *
-     * Provides the default font size translation between the strings and actual pixels. 
-     * Used as a UIEnhancer base grade that can be pulled in as requestd.
-     *******************************************************************************/
-    
-    fluid.defaults("fluid.uiEnhancer.browserTextEnhancerBase", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        fontSizeMap: {
-            "xx-small": "9px",
-            "x-small":  "11px",
-            "small":    "13px",
-            "medium":   "15px",
-            "large":    "18px",
-            "x-large":  "23px",
-            "xx-large": "30px"
-        }
-    });
-
-    /*******************************************************************************
-     * UI Enhancer                                                                 *
-     *                                                                             *
-     * Works in conjunction with FSS to transform the page based on user settings. *
-     *******************************************************************************/
-    
-    fluid.defaults("fluid.uiEnhancer", {
-        gradeNames: ["fluid.uiEnhancer.defaultActions", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
-        components: {
-            settingsStore: {
-                type: "fluid.uiOptions.store",
-                options: {
-                    defaultSiteSettings: "{uiEnhancer}.options.defaultSiteSettings"
-                }
-            }
-        },
-        invokers: {
-            updateModel: {
-                funcName: "fluid.uiEnhancer.updateModel",
-                args: ["{arguments}.0", "{uiEnhancer}.applier"]
-            },
-            updateFromSettingsStore: {
-                funcName: "fluid.uiEnhancer.updateFromSettingsStore",
-                args: ["{uiEnhancer}"]
-            }
-        },
-        events: {
-            onAsyncEnactorsReady: null
-        }
-    });
-
-    fluid.uiEnhancer.updateFromSettingsStore = function (that) {
-        that.updateModel(that.settingsStore.fetch());
-    };
-
-    fluid.uiEnhancer.updateModel = function (newModel, applier) {
-        applier.requestChange("", newModel);
-    };
-
     /*******************************************************************************
      * PageEnhancer                                                                *
      *                                                                             *
