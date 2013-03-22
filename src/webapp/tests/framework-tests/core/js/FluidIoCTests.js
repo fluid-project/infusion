@@ -2331,5 +2331,17 @@ fluid.registerNamespace("fluid.tests");
             gradeNames: ["fluid.tests.grade"]
         });
     });
+    
+    fluid.defaults("fluid.tests.circularGrade", {
+        gradeNames: ["fluid.tests.initFuncs", "autoInit"],
+        extraOpt: "extraOpt"
+    });
+    
+    jqUnit.test("FLUID-4939: init functions with gradeName modification - circular grades", function () {
+        jqUnit.expect(3);
+        fluid.tests.initFuncs({
+            gradeNames: ["fluid.tests.circularGrade"]
+        });
+    });
 
 })(jQuery); 
