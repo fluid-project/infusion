@@ -34,25 +34,13 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         sourceApplier: null,  // must be supplied by implementors
         rules: {},  // must be supplied by implementors, in format: "externalModelKey": "internalModelKey"
-        invokers: {
-            guardFunc: {
-                funcName: "fluid.uiOptions.modelRelay.guardFunc",
-                args: ["{arguments}.0", "{arguments}.1", "{arguments}.2"]
-            }
-        },
         postInitFunction: "fluid.uiOptions.modelRelay.postInit"
     });
-    
-    fluid.uiOptions.modelRelay.guardFunc = function (model, changeRequest, path) {
-        if (changeRequest.value === fluid.get(model, path)) {
-            return false;
-        }
-    };
     
     fluid.uiOptions.modelRelay.postInit = function (that) {
         fluid.transform(that.options.rules, function (internalKey, sourceKey) {
             that.options.sourceApplier.guards.addListener(sourceKey, function (model, changeRequest) {
-                if (that.guardFunc(model, changeRequest, sourceKey) === false) {
+                if (changeRequest.value === fluid.get(model, sourceKey)) {
                     return false;
                 }
             });
@@ -61,7 +49,7 @@ var fluid_1_5 = fluid_1_5 || {};
             });
             
             that.applier.guards.addListener(internalKey, function (model, changeRequest) {
-                if (that.guardFunc(model, changeRequest, internalKey) === false) {
+                if (changeRequest.value === fluid.get(model, internalKey)) {
                     return false;
                 }
             });
