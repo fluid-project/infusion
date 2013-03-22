@@ -2282,26 +2282,54 @@ fluid.registerNamespace("fluid.tests");
     });
     
     fluid.defaults("fluid.tests.grade", {
-            gradeNames: ["fluid.littleComponent", "autoInit"],
-            gradeOpt: {
-                gradeOpt: "gradeOpt"
-            }
-        });
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeOpt: {
+            gradeOpt: "gradeOpt"
+        }
+    });
 
-        fluid.defaults("fluid.tests.comp", {
-            gradeNames: ["fluid.littleComponent", "autoInit"],
-            opt: {
-                opt: "opt"
-            }
-        });
+    fluid.defaults("fluid.tests.comp", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        opt: {
+            opt: "opt"
+        }
+    });
 
-        jqUnit.test("FLUID-4937: gradeName merging at instantiation", function () {
-            jqUnit.expect(2);
-            that = fluid.tests.comp({
-                gradeNames: ["fluid.tests.grade"]
-            });
-            jqUnit.assertTrue("The original option should exist", fluid.get(that, "options.opt.opt"));
-            jqUnit.assertTrue("The merged grade option should exist", fluid.get(that, "options.gradeOpt.gradeOpt"));
+    jqUnit.test("FLUID-4937: gradeName merging at instantiation", function () {
+        jqUnit.expect(2);
+        that = fluid.tests.comp({
+            gradeNames: ["fluid.tests.grade"]
         });
+        jqUnit.assertTrue("The original option should exist", fluid.get(that, "options.opt.opt"));
+        jqUnit.assertTrue("The merged grade option should exist", fluid.get(that, "options.gradeOpt.gradeOpt"));
+    });
+    
+    fluid.registerNamespace("fluid.tests.initFuncs");
+    
+    fluid.defaults("fluid.tests.initFuncs", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        preInitFunction: "fluid.tests.initFuncs.preInit",
+        postInitFunction: "fluid.tests.initFuncs.postInit",
+        finalInitFunction: "fluid.tests.initFuncs.finalInit"
+    });
+    
+    fluid.tests.initFuncs.preInit = function (that) {
+        jqUnit.assert("The preInit function fired");
+    };
+    
+    fluid.tests.initFuncs.postInit = function (that) {
+        jqUnit.assert("The postInit function fired");
+    };
+    
+    fluid.tests.initFuncs.finalInit = function (that) {
+        jqUnit.assert("The finalInit function fired");
+    };
+    
+    jqUnit.test("FLUID-4939: init functions with gradeName modification", function () {
+        jqUnit.expect(3);
+        fluid.tests.initFuncs({
+            gradeNames: ["fluid.tests.grade"]
+        });
+    });
 
 })(jQuery); 
