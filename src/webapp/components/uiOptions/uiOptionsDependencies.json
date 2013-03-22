@@ -17,7 +17,8 @@
             "FatPanelUIOptions.js",
             "FullNoPreviewUIOptions.js",
             "FullPreviewUIOptions.js",
-            "SlidingPanel.js"
+            "SlidingPanel.js",
+            "SettingsPanels.js"
         ],
         "dependencies": [
             "fss",
