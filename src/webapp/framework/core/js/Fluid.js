@@ -1732,7 +1732,7 @@ var fluid = fluid || fluid_1_5;
         
         var defaultGrades = defaults.gradeNames;
         if (!defaultGrades) {
-            mergeBlocks.push(fluid.simpleGingerBlock(fluid.copy(fluid.getGradedDefaults({}, componentName, localOptions.gradeNames), "localOptions")));
+            mergeBlocks.push(fluid.simpleGingerBlock(fluid.copy(fluid.getGradedDefaults(defaults, componentName, localOptions.gradeNames), "localOptions")));
         }
 
         if (fluid.expandComponentOptions) {
@@ -2201,7 +2201,7 @@ var fluid = fluid || fluid_1_5;
             var resolved = fluid.messageResolver.resolveOne(that.messageBase, messagecodes);
             if (resolved === undefined) {
                 return fluid.find(that.options.parents, function (parent) {
-                    return parent.lookup(messagecodes);
+                    return parent ? parent.lookup(messagecodes) : undefined;
                 });
             } else {
                 return {template: resolved, resolveFunc: that.options.resolveFunc};
