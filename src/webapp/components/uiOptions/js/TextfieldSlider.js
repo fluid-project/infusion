@@ -48,7 +48,11 @@ fluid.defaults("fluid.textfieldSlider", {
         slider: ".flc-textfieldSlider-slider"
     },
     events: {
-        modelChanged: null
+        modelChanged: null,
+        afterRender: null
+    },
+    listeners: {
+        modelChanged: "{that}.refreshView"
     },
     model: {
         value: null,
@@ -58,29 +62,33 @@ fluid.defaults("fluid.textfieldSlider", {
     sliderOptions: {
         orientation: "horizontal",
         step: 1.0
-    }, 
-    finalInitFunction: "fluid.textfieldSlider.finalInit"
+    },
+    invokers: {
+        refreshView: {
+            funcName: "fluid.textfieldSlider.refreshView",
+            args: ["{that}"]
+        }
+    },
+    finalInitFunction: "fluid.textfieldSlider.finalInit",
+    renderOnInit: true
 });    
 
 fluid.textfieldSlider.finalInit = function (that) {
-
-    that.refreshView = function () {
-        var val = that.model.value;
-        that.textfield.container.val(val);
-    };
     
-    // TODO: replace this with "model events relay" system.
-    // problem: if we place these directly in "events", this will destroy all
-    // existing events named "modelChanged".
     that.applier.modelChanged.addListener("value", 
         function (newModel) {
             that.events.modelChanged.fire(newModel.value);
         }
     );
 
-    that.events.modelChanged.addListener(that.refreshView);
+    if (that.options.renderOnInit) {
+        that.refreshView();
+    }
+};
 
-    that.refreshView();
+fluid.textfieldSlider.refreshView = function (that) {
+    that.textfield.container.val(that.model.value);
+    that.events.afterRender.fire(that);
 };
 
 fluid.defaults("fluid.textfieldSlider.textfield", {
