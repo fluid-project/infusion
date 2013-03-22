@@ -20,6 +20,7 @@
             "FullNoPreviewUIOptions.js",
             "FullPreviewUIOptions.js",
             "SlidingPanel.js",
+            "TextfieldSlider.js",
             "SettingsPanels.js"
         ],
         "dependencies": [
