@@ -177,7 +177,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             
             options = {
-                textControls: {
+                textFont: {
                     opt1: "food"
                 }
             };
@@ -190,7 +190,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 uiOptions: {
                                     options: {
                                         components: {
-                                            textControls: {
+                                            textFont: {
                                                 opt1: "food"
                                             }
                                         }
@@ -209,7 +209,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 uiOptions: {
                     opt: "drink"
                 },
-                textControls: {
+                contrast: {
                     opt1: "food"
                 }
             };
@@ -223,7 +223,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     opt: "drink",
                                     options: {
                                         components: {
-                                            textControls: {
+                                            contrast: {
                                                 opt1: "food"
                                             }
                                         }
@@ -310,11 +310,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testUIOptions(function (uiOptionsLoader, uiOptions) {
                 assertDefaultModel(uiOptions.model);
 
-                var themeValues = uiOptions.textControls.options.controlValues.theme;
+                var themeValues = uiOptions.contrast.options.controlValues.theme;
                 jqUnit.assertEquals("There are 5 themes in the control", 5, themeValues.length);
                 jqUnit.assertEquals("The first theme is default", "default", themeValues[0]);
 
-                var fontValues = uiOptions.textControls.options.controlValues.textFont;
+                var fontValues = uiOptions.textFont.options.controlValues.textFont;
                 jqUnit.assertEquals("There are 5 font values in the control", 5, fontValues.length);
                 jqUnit.assertEquals("There is default font value", 0, jQuery.inArray("default", fontValues));
                 
@@ -377,11 +377,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("Small font size selected", "1.8", fontSizeSetting);
                 var fontStyleSelection = $(":selected", $(".flc-uiOptions-text-font"));
                 jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
-                var contrastSelection = $(":selected", $(".flc-uiOptions-theme"));
+                var contrastSelection = $(":checked", $(".flc-uiOptions-contrast"));
                 jqUnit.assertEquals("Black on white is selected", "bw", contrastSelection[0].value);
                 
                 jqUnit.start();
-            });          
+            });
         });
 
         jqUnit.asyncTest("Init with site defaults different from UIOptions control values", function () {
@@ -489,12 +489,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
             uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
             uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
-            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);            
+            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);
         };
         
         var checkUIOComponents = function (uiOptionsLoader, uiOptions) {
             jqUnit.assertTrue("Check that uiEnhancer is present", uiOptions.uiEnhancer);
-            jqUnit.assertTrue("Check that textControls sub-component is present", uiOptions.textControls);
+            jqUnit.assertTrue("Check that textSizer sub-component is present", uiOptions.textSizer);
+            jqUnit.assertTrue("Check that lineSpacer sub-component is present", uiOptions.lineSpacer);
+            jqUnit.assertTrue("Check that textFont sub-component is present", uiOptions.textFont);
+            jqUnit.assertTrue("Check that contrast sub-component is present", uiOptions.contrast);
             jqUnit.assertTrue("Check that layoutControls sub-component is present", uiOptions.layoutControls);
             jqUnit.assertTrue("Check that linkControls sub-component is present", uiOptions.linksControls);
             jqUnit.assertTrue("Check that preview sub-component is present", uiOptions.options.components.preview);
@@ -507,7 +510,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals(message + ": Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
             jqUnit.assertEquals(message + ": Theme correctly updated", expectedSelections.theme, actualSelections.theme);
             jqUnit.assertEquals(message + ": Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
-            jqUnit.assertEquals(message + ": Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
+            jqUnit.assertEquals(message + ": Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);
         };
         
         jqUnit.asyncTest("UIOptions Integration tests", function () {
