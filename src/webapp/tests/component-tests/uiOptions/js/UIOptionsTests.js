@@ -73,7 +73,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     uiEnhancer: {
                         type: "fluid.uiEnhancer",
                         container: "body",
-                        priority: "first"
+                        priority: "first",
+                        options: {
+                            gradeNames: ["fluid.uiEnhancer.defaultActions"]
+                        }
                     },
                     settingsStore: "{uiEnhancer}.settingsStore",
                     preview: {
@@ -447,7 +450,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         uiEnhancer: {
                             type: "fluid.uiEnhancer",
                             container: "body",
-                            priority: "first"
+                            priority: "first",
+                            options: {
+                                gradeNames: ["fluid.uiEnhancer.defaultActions"],
+                            }
                         },
                         settingsStore: "{uiEnhancer}.settingsStore"
                     },
@@ -514,7 +520,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         uiEnhancer: {
                             type: "fluid.uiEnhancer",
                             container: "body",
-                            priority: "first"
+                            priority: "first",
+                            options: {
+                                gradeNames: ["fluid.uiEnhancer.defaultActions"],
+                            }
                         },
                         settingsStore: "{uiEnhancer}.settingsStore"
                     },

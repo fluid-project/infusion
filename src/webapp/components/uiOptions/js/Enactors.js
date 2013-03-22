@@ -255,17 +255,16 @@ var fluid_1_5 = fluid_1_5 || {};
                 listener: "{that}.set",
                 args: "{that}.model.value"
             }
-        },
-        members: {
-            initialSize: {
-                expander: {
-                    func: "{that}.getTextSizeInEm"
-                }
-            }
         }
     });
     
     fluid.uiOptions.actionAnts.textSizerEnactor.set = function (times, that) {
+        // Calculating the initial size here rather than using a members expand because the "font-size"
+        // cannot be detected on hidden containers such as fat paenl iframe.
+        if (!that.initialSize) {
+            that.initialSize = that.getTextSizeInEm();
+        }
+        
         if (that.initialSize) {
             var targetSize = times * that.initialSize;
             that.container.css("font-size", targetSize + "em");
@@ -337,13 +336,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 listener: "{that}.set",
                 args: "{that}.model.value"
             }
-        },
-        members: {
-            initialSize: {
-                expander: {
-                    func: "{that}.numerizeLineHeight"
-                }
-            }
         }
     });
     
@@ -386,6 +378,12 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.actionAnts.lineSpacerEnactor.set = function (times, that) {
+        // Calculating the initial size here rather than using a members expand because the "line-height"
+        // cannot be detected on hidden containers such as fat paenl iframe.
+        if (!that.initialSize) {
+            that.initialSize = that.numerizeLineHeight();
+        }
+        
         // that.initialSize === 0 when the browser returned "lineHeight" css value is undefined,
         // which occurs when firefox detects "line-height" value on a hidden container.
         // @ See numerizeLineHeight() & http://issues.fluidproject.org/browse/FLUID-4500

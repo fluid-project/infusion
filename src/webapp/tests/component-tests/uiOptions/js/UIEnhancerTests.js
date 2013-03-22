@@ -18,123 +18,264 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
-    $(document).ready(function () {
-        fluid.staticEnvironment.uiEnhancerTests = fluid.typeTag("fluid.uiOptions.uiEnhancerTests");
+    fluid.registerNamespace("fluid.tests");
 
-        var testSettings = {
-            textSize: "1.5",
-            textFont: "verdana",
-            theme: "bw",
-            layout: false,
-            toc: true,
-            links: true
-        };
-        
-        var uiEnhancerOptions = {
-            components: {
-                settingsStore: {
-                    type: "fluid.tempStore"
-                }
-            },
-            tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
-        };
-
-        jqUnit.module("UI Enhancer Tests");
-        
-        jqUnit.test("Initialization", function () {
-            jqUnit.expect(10);
-
-            jqUnit.assertEquals("Initially font size classes exist", 3, $(".fl-font-size-90").length);
-            jqUnit.assertEquals("Initially layout class exists", 3, $(".fl-layout-linear").length);
-            jqUnit.assertEquals("Initially white on black class exists", 1, $(".fl-theme-wb").length);
-            jqUnit.assertEquals("Initially font-sans class exists", 1, $(".fl-font-sans").length);
-            jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
-            jqUnit.assertEquals("Initially text-spacing class exists", 1, $(".fl-font-spacing-3").length);
-
-            fluid.pageEnhancer(uiEnhancerOptions);
-            jqUnit.assertEquals("font size classes should not be removed", 3, $(".fl-font-size-90").length);
-            jqUnit.assertEquals("FSS theme class has not been removed", 1, $(".fl-theme-wb").length);
-            jqUnit.assertEquals("Things are still styled with 'first-class' ", 3, $(".first-class").length);
-            jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
-        });
-
-        jqUnit.asyncTest("Settings", function () {
-            jqUnit.expect(5);
-
-            var body = $("body");
-            var initialFontSize = parseFloat(body.css("fontSize"));
-            var refreshCount = 0;
-            
-            function testTocStyling() {
-                var tocLinks = $(".flc-toc-tocContainer a");
-                var filtered = tocLinks.filter(".fl-link-enhanced");
-                ++refreshCount;
-                if (refreshCount === 2) {
-                    jqUnit.assertEquals("All toc links have been styled", tocLinks.length, filtered.length);
-                    jqUnit.assertNotEquals("Some toc links generated on 2nd pass", 0, tocLinks.length);
-                    jqUnit.start();
+    /*******************************************************************************
+     * Empty uiEnhancer works with customized actions grades
+     *******************************************************************************/
+    
+    var emphasizeLinksClass = "fl-emphasize-links";
+    
+    fluid.defaults("fluid.uiEnhancer.customizedActions", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        components: {
+            emphasizeLinks: {
+                type: "fluid.uiOptions.actionAnts.emphasizeLinksEnactor",
+                container: "{uiEnhancer}.container",
+                options: {
+                    cssClass: emphasizeLinksClass,
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "emphasizeLinks": "value"
+                    }
                 }
             }
-            
-            var options = fluid.merge(null, {}, uiEnhancerOptions, {
-                listeners: {
-                    onTocReady: {
-                        priority: "last",
-                        listener: testTocStyling
-                    }
-                }
-            });
-            
-            var uiEnhancer = fluid.pageEnhancer(options).uiEnhancer;
-            uiEnhancer.updateModel(testSettings);
-            
-            var expectedTextSize = initialFontSize * testSettings.textSize;
-            
-            jqUnit.assertEquals("Large text size is set", expectedTextSize.toFixed(0) + "px", body.css("fontSize"));
-            jqUnit.assertTrue("Verdana font is set", body.hasClass("fl-font-uio-verdana"));
-            jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-bw"));
-
-        });
-        
-        jqUnit.test("Options munging", function () {
-            jqUnit.expect(2);
-
-            uiEnhancerOptions = {
-                components: {
-                    settingsStore: {
-                        type: "fluid.tempStore"
-                    }
-                },
-                tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
-                classnameMap: {
-                    "textFont": {
-                        "default": "fl-font-times"
-                    },
-                    "theme": {
-                        "yb": "fl-test"
-                    }
-                },
-                defaultSiteSettings: {
-                    theme: "yb"
-                }
-            };
-
-            fluid.pageEnhancer(uiEnhancerOptions);
-
-            var body = $("body");
-                
-            jqUnit.assertTrue("The initial times font is set correctly", body.hasClass("fl-font-times"));
-            jqUnit.assertTrue("The initial test theme is set correctly", body.hasClass("fl-test"));
-        });
-
-        jqUnit.test("FLUID-4703: Line height unit", function () {
-            var child1El = $(".flt-lineHeight-child-1em");
-            var child2El = $(".flt-lineHeight-child-2em");
-
-            var child1emHeight = child1El.height() - 1; // adjusted to account for rounding by jQuery
-            var child2emHeight = child2El.height();
-            jqUnit.assertTrue("The line height of the 2em child should be close to twice the size of the 1em child", 2*child1emHeight < child2emHeight);
-        });
-
+        }
     });
+
+    fluid.defaults("fluid.tests.customizedActions", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            uiEnhancer: {
+                type: "fluid.uiEnhancer",
+                container: ".flt-customizedActions",
+                options: {
+                    gradeNames: ["fluid.uiEnhancer.customizedActions"],
+                    components: {
+                        settingsStore: {
+                            type: "fluid.tempStore"
+                        }
+                    },
+                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                }
+            },
+            styleElementsEnactorTester: {
+                type: "fluid.tests.customizedActionsTester"
+            }
+        }
+    });
+
+    fluid.tests.testCustomizedActions = function (container, cssClass, expectedValue) {
+        jqUnit.assertEquals("The emphasized links are applied - " + expectedValue, expectedValue, $(container).children("a").hasClass(cssClass));
+    };
+    
+    fluid.defaults("fluid.tests.customizedActionsTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        testOpts: {
+            cssClass: emphasizeLinksClass
+        },
+        modules: [{
+            name: "Customized actions grade with empty UIEnhancer",
+            tests: [{
+                expect: 3,
+                name: "Apply customized actions grade",
+                sequence: [{
+                    func: "fluid.tests.testCustomizedActions",
+                    args: ["{uiEnhancer}.container", "{that}.options.testOpts.cssClass", false]
+                }, {
+                    func: "{uiEnhancer}.applier.requestChange",
+                    args: ["emphasizeLinks", true]
+                }, {
+                    func: "fluid.tests.testCustomizedActions",
+                    args: ["{uiEnhancer}.container", "{that}.options.testOpts.cssClass", true]
+                }, {
+                    func: "{uiEnhancer}.applier.requestChange",
+                    args: ["emphasizeLinks", false]
+                }, {
+                    func: "fluid.tests.testCustomizedActions",
+                    args: ["{uiEnhancer}.container", "{that}.options.testOpts.cssClass", false]
+                }]
+            }]
+        }]
+    });
+
+    /*******************************************************************************
+     * Apply default settings
+     *******************************************************************************/
+    
+    fluid.defaults("fluid.tests.settings", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            uiEnhancer: {
+                type: "fluid.uiEnhancer",
+                container: "body",
+                options: {
+                    gradeNames: ["fluid.uiEnhancer.defaultActions"],
+                    components: {
+                        settingsStore: {
+                            type: "fluid.tempStore"
+                        }
+                    },
+                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                }
+            },
+            settingsTester: {
+                type: "fluid.tests.settingsTester"
+            }
+        }
+    });
+    fluid.tests.getInitialFontSize = function (container, tester) {
+        tester.options.testOpts.initialFontSize = parseFloat(container.css("fontSize"));
+    };
+    
+    fluid.tests.testTocStyling = function () {
+        var tocLinks = $(".flc-toc-tocContainer a");
+        var filtered = tocLinks.filter(".fl-link-enhanced");
+        jqUnit.assertEquals("All toc links have been styled", tocLinks.length, filtered.length);
+        jqUnit.assertNotEquals("Some toc links generated on 2nd pass", 0, tocLinks.length);
+    };
+
+    fluid.tests.testSettings = function (uiEnhancer, testSettings, initialFontSize) {
+        var expectedTextSize = initialFontSize * testSettings.textSize;
+        
+        jqUnit.assertEquals("Large text size is set", expectedTextSize.toFixed(0) + "px", uiEnhancer.container.css("fontSize"));
+        jqUnit.assertTrue("Verdana font is set", uiEnhancer.container.hasClass("fl-font-uio-verdana"));
+        jqUnit.assertTrue("High contrast is set", uiEnhancer.container.hasClass("fl-theme-bw"));
+    };
+
+    fluid.defaults("fluid.tests.settingsTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        testOpts: {
+            testSettings: {
+                textSize: "1.5",
+                textFont: "verdana",
+                theme: "bw",
+                layout: false,
+                toc: true,
+                links: true
+            }
+        },
+        modules: [{
+            name: "Test apply settings",
+            tests: [{
+                expect: 5,
+                name: "Apply settings",
+                sequence: [{
+                    func: "fluid.tests.getInitialFontSize",
+                    args: ["{uiEnhancer}.container", "{that}"]
+                }, {
+                    func: "{uiEnhancer}.updateModel",
+                    args: ["{that}.options.testOpts.testSettings"]
+                }, {
+                    listener: "fluid.tests.testTocStyling",
+                    spec: {priority: "last"},
+                    event: "{uiEnhancer}.events.onAsyncEnactorsReady"
+                }, {
+                    func: "fluid.tests.testSettings",
+                    args: ["{uiEnhancer}", "{that}.options.testOpts.testSettings", "{that}.options.testOpts.initialFontSize"]
+                }]
+            }]
+        }]
+    });
+
+    /*******************************************************************************
+     * Options munging
+     *******************************************************************************/
+    
+    fluid.defaults("fluid.tests.optionsMunging", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            uiEnhancer: {
+                type: "fluid.uiEnhancer",
+                container: "body",
+                options: {
+                    gradeNames: ["fluid.uiEnhancer.defaultActions"],
+                    components: {
+                        settingsStore: {
+                            type: "fluid.tempStore"
+                        }
+                    },
+                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
+                    classnameMap: {
+                        "textFont": {
+                            "default": "fl-font-times"
+                        },
+                        "theme": {
+                            "yb": "fl-test"
+                        }
+                    },
+                    defaultSiteSettings: {
+                        theme: "yb"
+                    }
+                }
+            },
+            styleElementsEnactorTester: {
+                type: "fluid.tests.optionsMungingTester"
+            }
+        }
+    });
+
+    fluid.tests.testOptionsMunging = function (uiEnhancer) {
+        jqUnit.assertTrue("The initial times font is set correctly", uiEnhancer.container.hasClass("fl-font-times"));
+        jqUnit.assertTrue("The initial test theme is set correctly", uiEnhancer.container.hasClass("fl-test"));
+    };
+    
+    fluid.defaults("fluid.tests.optionsMungingTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        modules: [{
+            name: "Test options munging",
+            tests: [{
+                expect: 2,
+                name: "Options munging",
+                type: "test",
+                func: "fluid.tests.testOptionsMunging",
+                args: ["{uiEnhancer}"]
+            }]
+        }]
+    });
+
+    /*******************************************************************************
+     * FLUID-4703: Line height unit
+     *******************************************************************************/
+    
+    fluid.defaults("fluid.tests.lineHeightUnit", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            lineHeightUnitTester: {
+                type: "fluid.tests.lineHeightUnitTester"
+            }
+        }
+    });
+
+    fluid.tests.testLineHeightUnit = function () {
+        var child1El = $(".flt-lineHeight-child-1em");
+        var child2El = $(".flt-lineHeight-child-2em");
+
+        var child1emHeight = child1El.height() - 1; // adjusted to account for rounding by jQuery
+        var child2emHeight = child2El.height();
+        jqUnit.assertTrue("The line height of the 2em child should be close to twice the size of the 1em child", 2 * child1emHeight < child2emHeight);
+    };
+    
+    fluid.defaults("fluid.tests.lineHeightUnitTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        modules: [{
+            name: "Test line height unit",
+            tests: [{
+                expect: 1,
+                name: "Line Height Unit",
+                type: "test",
+                func: "fluid.tests.testLineHeightUnit"
+            }]
+        }]
+    });
+
+    $(document).ready(function () {
+        fluid.test.runTests([
+            "fluid.tests.customizedActions",
+            "fluid.tests.settings",
+            "fluid.tests.optionsMunging",
+            "fluid.tests.lineHeightUnit"
+        ]);
+    });
+
 })(jQuery);
