@@ -118,6 +118,16 @@
 	float: left;	
 }
 
+.fl-uiOptions-fatPanel .fl-choice-current {
+	width: 0; 
+	height: 0; 
+	border-left: 0.75em solid transparent;
+	border-right: 0.75em solid transparent;	
+	border-top: 0.75em solid #433F3D;	
+	margin-left: 0.75em;
+	margin-bottom: 0.5em;
+}
+
 .fl-uiOptions-fatPanel .fl-choice label {
 	margin-right: 5px;
 	
@@ -143,10 +153,12 @@
 }
 
 .fl-uiOptions-fatPanel .fl-choice input:focus + label {
-	border: 2px solid blue;
+	outline: 2px solid black;
 }
+/*.fl-uiOptions-fatPanel .fl-choice input:checked + label:before {
+	content: "<div class='fl-choice-current'></div>";
+}*/
 
-=======
 /** Table of Contents switch **/
 
 .fl-uiOptions .fl-uiOptions-fatPanel-switch { 
