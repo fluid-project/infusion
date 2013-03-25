@@ -41,32 +41,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             uiOptions = innerUIOptions;
         }
         
-        function testToCEnhancement2() {
+        function requestApplierChange() {
             fluid.tests.uiOptions.applierRequestChanges(uiOptions, testSettings);
+        }
+        
+        var refreshCount = 0;
+        function testToCEnhancement2() {
             jqUnit.expect(1);
-            // TODO: Very unsatisfactory - the TOC resources are the final thing we wait on, and the
-            // event for this is very deeply buried
-            setTimeout(function () {
-                var container = uiOptions.preview.enhancerContainer;
-                var links = $(".flc-toc-tocContainer a", container);
-                jqUnit.assertTrue("ToC links created", links.length > 0); 
-                jqUnit.start();
-            }, 200);
+            var container = uiOptions.preview.enhancerContainer;
+            var links = $(".flc-toc-tocContainer a", container);
+            jqUnit.assertTrue("ToC links created", links.length > 0); 
+            jqUnit.start();
         }
         
         that = fluid.tests.uiOptions.mungingIntegrationTest("fluid.uiOptions.fullPreview", "#myUIOptions", {
+            previewEnhancer: {
+                options: {
+                    components: {
+                        tableOfContents: {
+                            options: {
+                                listeners: {
+                                    afterTocRender: {
+                                        listener: testToCEnhancement2,
+                                        priority: "last"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             preview: {
                 options: {
                     templateUrl: "TestPreviewTemplate.html",
                     listeners: {
                         "onReady.toc2": {
-                            listener: testToCEnhancement2,
+                            listener: requestApplierChange,
                             priority: "last"
                         }
                     }
                 }
             }
-        }, testToCEnhancement);    
+        }, testToCEnhancement);
     });
 
 })(jQuery);
