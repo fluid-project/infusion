@@ -142,9 +142,10 @@
 	font-size: 2.5em;
 }
 
-.fl-uiOptions-fatPanel .fl-choice input {
-	
+.fl-uiOptions-fatPanel .fl-choice input:focus + label {
+	border: 2px solid blue;
 }
+
 
 /* Theming */
 /* Override theme tab rounding */
