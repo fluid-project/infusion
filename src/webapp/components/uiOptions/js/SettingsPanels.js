@@ -25,40 +25,24 @@ var fluid_1_5 = fluid_1_5 || {};
     /***********************************************
      * UI Options Select Dropdown Options Decorator*
      ***********************************************/
-
-    // Temporary, encapsulation-violating definition of an Ant - currently these can't
-    // be deployed outside the direct environment of a UIOptions component
-    fluid.defaults("fluid.uiOptions.settingPanels", {
-        gradeNames: ["fluid.rendererComponent"],
-        model: "{uiOptions}.model",
-        applier: "{uiOptions}.applier",
-        events: {
-            onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
-        },
-        listeners: {
-            onUIOptionsRefresh: "{that}.refreshView",     
-            "{uiOptions}.events.contributeDefaultModel": {
-                listener: "fluid.uiOptions.defaultModelMerger",
-                args: ["{arguments}.0", "{that}.options.defaultModel"]
-            }
-        },
-        preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
-        finalInitFunction: "fluid.uiOptions.controlsFinalInit"
-    });
-
-    // Utility function which assembles material in the model suitable for rendering
-    // style-based selection dropdowns
-    var optionsToLabelMap = function (that) {
-        fluid.each(that.options.controlValues, function (item, key) {
-            that.applier.requestChange("labelMap." + key, {
-                values: that.options.controlValues[key],
-                names: that.options.strings[key],
-                classes: fluid.get(that, "options.classnameMap." + key)
-            });
-        });
-    };
+     
+    fluid.registerNamespace("fluid.uiOptions.settingsPanels");
     
-    fluid.uiOptions.createSliderNode = function (that, item, type, options) {
+    // This function compensates for a framework deficiency that due to lack of gingerness, the "refreshView"
+    // function synthesized by rendererComponent is not available during listener registration which only 
+    // occurs after component init functions have completed (http://issues.fluidproject.org/browse/FLUID-4334)
+    fluid.uiOptions.settingsPanels.lateRefreshViewBinder = function (that) {
+        that.refreshView = function () {
+            that.renderer.refreshView();
+        };
+    };
+
+    fluid.defaults("fluid.uiOptions.settingsPanels", {
+        gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay"],
+        preInitFunction: "fluid.uiOptions.settingsPanels.lateRefreshViewBinder"
+    });
+    
+    fluid.uiOptions.createSliderNode = function (that, path, type, options) {
         return {
             decorators: {
                 type: "fluid",
@@ -66,43 +50,40 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     listeners: {
                         modelChanged: function (value) {
-                            that.applier.requestChange("selections." + item, value);
+                            that.applier.requestChange(path, value);
                         }
                     },
                     model: {
-                        min: that.options[item].min,
-                        max: that.options[item].max,
-                        value: that.model.selections[item]
+                        min: that.options.min,
+                        max: that.options.max,
+                        value: fluid.get(that.model, path)
                         
                     },
-                    sliderOptions: that.options[item].sliderOptions
+                    sliderOptions: that.options.sliderOptions
                 }
             }
         };
     };
-    
-    fluid.uiOptions.controlsFinalInit = function (that) {
-        optionsToLabelMap(that);
-    };
 
-    /****************************
-     * UI Options Text Sizer
-     ****************************/
+    /*************************
+     * UI Options Text Sizer *
+     *************************/
 
     /**
      * A sub-component of fluid.uiOptions that renders the "text size" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.textSizer", {
-        gradeNames: ["fluid.uiOptions.settingPanels", "autoInit"], 
-        defaultModel: {
-            textSize: 1  // in points
+        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
+        model: {
+            value: 1
         },
         textSize: {
             min: 1,
             max: 2,
             sliderOptions: {
                 orientation: "horizontal",
-                step: 0.1
+                step: 0.1,
+                range: "min"
             } 
         },
         selectors: {
@@ -110,34 +91,29 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         produceTree: "fluid.uiOptions.textSizer.produceTree",
         resources: {
-            template: "{templateLoader}.resources.textSizer"
+            template: {
+                url: "../html/UIOptionsTemplate-textSizer.html"
+            }
         }
     });
     
     fluid.uiOptions.textSizer.produceTree = function (that) {
-        var tree = {};
-        
-        for (var item in that.model.selections) {
-            if (item === "textSize") {
-                // textfield sliders
-                tree[item] = fluid.uiOptions.createSliderNode(that, item, "fluid.textfieldSlider");
-            }
+        return {
+            textSize: fluid.uiOptions.createSliderNode(that, "value", "fluid.textfieldSlider")
         }
-        
-        return tree;
     };
     
-    /****************************
-     * UI Options Text Font
-     ****************************/
+    /************************
+     * UI Options Text Font *
+     ************************/
 
     /**
      * A sub-component of fluid.uiOptions that renders the "text font" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.textFont", {
-        gradeNames: ["fluid.uiOptions.settingPanels", "autoInit"], 
-        defaultModel: {
-            textFont: "default"  // key from classname map
+        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
+        model: {
+            value: "default"
         },
         strings: {
             textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"]
@@ -150,7 +126,9 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         produceTree: "fluid.uiOptions.textFont.produceTree",
         resources: {
-            template: "{templateLoader}.resources.textFont"
+            template: {
+                url: "../html/UIOptionsTemplate-textFont.html"
+            }
         }
     });
     
@@ -158,9 +136,9 @@ var fluid_1_5 = fluid_1_5 || {};
         // render drop down list box
         return {
             textFont: {
-                optionnames: "${labelMap.textFont.names}",
-                optionlist: "${labelMap.textFont.values}",
-                selection: "${selections.textFont}",
+                optionnames: that.options.strings.textFont,
+                optionlist: that.options.controlValues.textFont,
+                selection: "${value}",
                 decorators: {
                     type: "fluid",
                     func: "fluid.uiOptions.selectDecorator",
@@ -172,24 +150,25 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
     
-    /****************************
-     * UI Options Line Spacer
-     ****************************/
+    /**************************
+     * UI Options Line Spacer *
+     **************************/
 
     /**
      * A sub-component of fluid.uiOptions that renders the "line spacing" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.lineSpacer", {
-        gradeNames: ["fluid.uiOptions.settingPanels", "autoInit"], 
-        defaultModel: {
-            lineSpacing: 1  // in ems
+        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
+        model: {
+            value: 1
         },
         lineSpacing: {
             min: 1,
             max: 2,
             sliderOptions: {
                 orientation: "horizontal",
-                step: 0.1
+                step: 0.1,
+                range: "min"
             } 
         },
         selectors: {
@@ -197,28 +176,30 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         produceTree: "fluid.uiOptions.lineSpacer.produceTree",
         resources: {
-            template: "{templateLoader}.resources.lineSpacer"
+            template: {
+                url: "../html/UIOptionsTemplate-lineSpacer.html"
+            }
         }
     });
     
     fluid.uiOptions.lineSpacer.produceTree = function (that) {
         var tree = {
-            lineSpacing: fluid.uiOptions.createSliderNode(that, "lineSpacing", "fluid.textfieldSlider")
+            lineSpacing: fluid.uiOptions.createSliderNode(that, "value", "fluid.textfieldSlider")
         };
         return tree;
     };
     
-    /****************************
-     * UI Options Contrast
-     ****************************/
+    /***********************
+     * UI Options Contrast *
+     ***********************/
 
     /**
      * A sub-component of fluid.uiOptions that renders the "contrast" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.contrast", {
-        gradeNames: ["fluid.uiOptions.settingPanels", "autoInit"], 
-        defaultModel: {
-            theme: "default"  // key from classname map
+        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
+        model: {
+            value: "default"
         },
         strings: {
             theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
@@ -231,16 +212,18 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         produceTree: "fluid.uiOptions.contrast.produceTree",
         resources: {
-            template: "{templateLoader}.resources.contrast"
+            template: {
+                url: "../html/UIOptionsTemplate-contrast.html"
+            }
         }
     });
     
     fluid.uiOptions.contrast.produceTree = function (that) {
         return {
             theme: {
-                optionnames: "${labelMap.theme.names}",
-                optionlist: "${labelMap.theme.values}",
-                selection: "${selections.theme}",
+                optionnames: that.options.strings.theme,
+                optionlist: that.options.controlValues.theme,
+                selection: "${value}",
                 decorators: {
                     type: "fluid",
                     func: "fluid.uiOptions.selectDecorator",
@@ -250,7 +233,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
         };
-
     };
     
     /******************************
@@ -261,21 +243,23 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "layout and navigation" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.layoutControls", {
-        gradeNames: ["fluid.uiOptions.settingPanels", "autoInit"],
-        defaultModel: {
-            layout: false,                // boolean
-            toc: false                   // boolean
+        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"],
+        model: {
+            toc: false,
+            layout: false
         },
         selectors: {
             layout: ".flc-uiOptions-layout",
             toc: ".flc-uiOptions-toc"
         },
         protoTree: {
-            toc: "${selections.toc}",
-            layout: "${selections.layout}"        
+            toc: "${toc}",
+            layout: "${layout}"        
         },
         resources: {                    
-            template: "{templateLoader}.resources.layoutControls"
+            template: {
+                url: "../html/UIOptionsTemplate-layout.html"
+            }
         }
     });
 
@@ -286,27 +270,29 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "links and buttons" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.linksControls", {
-        gradeNames: ["fluid.uiOptions.settingPanels", "autoInit"],
-        defaultModel: {
-            links: false,                 // boolean
-            inputsLarger: false           // boolean
+        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"],
+        model: {
+            links: false,
+            inputsLarger: false
         },
         selectors: {
             links: ".flc-uiOptions-links",
             inputsLarger: ".flc-uiOptions-inputs-larger"
         },
         protoTree: {
-            links: "${selections.links}",
-            inputsLarger: "${selections.inputsLarger}"          
+            links: "${links}",
+            inputsLarger: "${inputsLarger}"          
         },
         resources: {
-            template: "{templateLoader}.resources.linksControls"
+            template: {
+                url: "../html/UIOptionsTemplate-links.html"
+            }
         }
     });
 
-    /*******************
-     * Textfield Slider
-     *******************/
+    /********************
+     * Textfield Slider *
+     ********************/
 
     fluid.defaults("fluid.textfieldSlider", {
         gradeNames: ["fluid.viewComponent", "autoInit"], 
@@ -450,9 +436,9 @@ var fluid_1_5 = fluid_1_5 || {};
         
     };
 
-    /***********************************************
-     * UI Options Select Dropdown Options Decorator*
-     ***********************************************/
+    /************************************************
+     * UI Options Select Dropdown Options Decorator *
+     ************************************************/
 
     /**
      * A sub-component that decorates the options on the select dropdown list box with the css style
