@@ -154,14 +154,6 @@
 	margin-right: 10px;
 }
 
-.fl-uiOptions .fl-toc:focus, .fl-uiOptions .fl-toc + label:focus {
-	border: 3px solid #00ff00;
-}
-
-.fl-uiOptions .fl-toc + label:focus {
-	border: 3px solid #00ff00;
-}
-
 .fl-uiOptions .fl-toc:checked + label .fl-switch {
 	padding-left: 1.6em;
 	width: 1.4em;
