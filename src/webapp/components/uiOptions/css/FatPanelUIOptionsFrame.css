@@ -171,6 +171,7 @@
 
 .fl-uiOptions .fl-toc + label .fl-switch:before {
 	content:"ON";
+	color: #fff;
 	border: 1px solid #776D67;
 	border-radius: 50px;
 	float:left;
@@ -197,7 +198,7 @@
 .fl-uiOptions .fl-toc + label .fl-switch:after {
 	content:"OFF";
 	float:left;
-	margin-top: -0.6em;	
+	margin-top: -0.59em;	
 	margin-left: 0.05em;
 }
 
