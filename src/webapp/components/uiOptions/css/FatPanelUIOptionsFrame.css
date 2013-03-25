@@ -112,6 +112,31 @@
 	height: 100%;	
 }
 
+/* Radio buttons */
+.fl-uiOptions-fatPanel .fl-choice {
+	display: inline;
+}
+
+.fl-uiOptions-fatPanel .fl-choice label {
+	float: left;
+	margin-right: 5px;
+	
+	border: 1px solid black;
+	border-radius: 5px;
+	height: 3em;
+	width: 3em;
+	text-align: center;
+	vertical-align: middle
+}
+.fl-uiOptions-fatPanel .fl-choice label span {
+	display: block;
+	text-indent: -1000em;
+}
+
+.fl-uiOptions-fatPanel .fl-choice input {
+	display: none;
+}
+
 /* Theming */
 /* Override theme tab rounding */
 .fl-theme-bw .fl-uiOptions-fatPanel .fl-tab .ui-corner-all, 
