@@ -138,6 +138,7 @@
 }
 
 /** Table of Contents switch **/
+
 .fl-uiOptions .fl-toc + .fl-switch { 
 	border-radius:50px;
 	border: 1px solid #000;
@@ -149,9 +150,8 @@
 	vertical-align: middle;
 	display:inline-block;
 	transition-duration: 0.3s;
-	transition-property: padding-left, width, background-color, margin-left;
-	
-	transition-duration: 
+	transition-property: padding-left, width, background-color, margin-left, top, left;
+	margin-right: 10px;
 }
 
 .fl-uiOptions .fl-toc:checked + .fl-switch {
@@ -191,10 +191,15 @@
 	width: 0.65em;
 	height: 0.65em;
 	position:relative;
-	left:-1.32em;
+	left:-1.15em;
 	top:0.33em;
 	background-image: linear-gradient(0deg, rgb(200,200,200), rgb(103,82,67));
-	display:block;
+	display:inline-block;
+}
+
+.fl-uiOptions .fl-toc:checked + .fl-switch .fl-switch-inner {
+	top:-1.14em;
+	left: 0.36em;
 }
 
 
