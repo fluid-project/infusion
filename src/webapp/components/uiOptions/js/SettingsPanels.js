@@ -1,6 +1,6 @@
 /*
 Copyright 2009 University of Toronto
-Copyright 2010-2011 OCAD University
+Copyright 2010-2013 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -26,20 +26,13 @@ var fluid_1_5 = fluid_1_5 || {};
      * UI Options Select Dropdown Options Decorator*
      ***********************************************/
      
-    fluid.registerNamespace("fluid.uiOptions.settingsPanels");
-    
-    // This function compensates for a framework deficiency that due to lack of gingerness, the "refreshView"
-    // function synthesized by rendererComponent is not available during listener registration which only 
-    // occurs after component init functions have completed (http://issues.fluidproject.org/browse/FLUID-4334)
-    fluid.uiOptions.settingsPanels.lateRefreshViewBinder = function (that) {
-        that.refreshView = function () {
-            that.renderer.refreshView();
-        };
-    };
+    fluid.registerNamespace("fluid.uiOptions.settingsPanel");
 
-    fluid.defaults("fluid.uiOptions.settingsPanels", {
+    fluid.defaults("fluid.uiOptions.settingsPanel", {
         gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay"],
-        preInitFunction: "fluid.uiOptions.settingsPanels.lateRefreshViewBinder"
+        invokers: {
+            refreshView: "{that}.renderer.refreshView"
+        }
     });
     
     fluid.uiOptions.createSliderNode = function (that, path, type, options) {
@@ -73,19 +66,19 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "text size" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.textSizer", {
-        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
             value: 1
         },
-        textSize: {
-            min: 1,
-            max: 2,
-            sliderOptions: {
-                orientation: "horizontal",
-                step: 0.1,
-                range: "min"
-            } 
-        },
+
+		min: 1,
+		max: 2,
+		sliderOptions: {
+			orientation: "horizontal",
+			step: 0.1,
+			range: "min"
+		}, 
+
         selectors: {
             textSize: ".flc-uiOptions-min-text-size",
         },
@@ -111,7 +104,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "text font" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.textFont", {
-        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
             value: "default"
         },
@@ -158,19 +151,17 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "line spacing" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.lineSpacer", {
-        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
             value: 1
         },
-        lineSpacing: {
-            min: 1,
-            max: 2,
-            sliderOptions: {
-                orientation: "horizontal",
-                step: 0.1,
-                range: "min"
-            } 
-        },
+		min: 1,
+		max: 2,
+		sliderOptions: {
+			orientation: "horizontal",
+			step: 0.1,
+			range: "min"
+		}, 
         selectors: {
             lineSpacing: ".flc-uiOptions-line-spacing"
         },
@@ -197,7 +188,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "contrast" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.contrast", {
-        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"], 
+        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
             value: "default"
         },
@@ -208,8 +199,24 @@ var fluid_1_5 = fluid_1_5 || {};
             theme: ["default", "bw", "wb", "by", "yb"]
         },
         selectors: {
-            theme: ".flc-uiOptions-theme"
+            themeRow: ".flc-uiOptions-themeRow",
+            themeLabel: ".flc-uiOptions-themeLabel",
+            themeInput: ".flc-uiOptions-themeInput"
         },
+        markup: {
+            label: "<span class=\"fl-preview-A\">A</span><span class=\"fl-hidden-accessible\">%theme</span>"
+        },
+        invokers: {
+            style: {
+                funcName: "fluid.uiOptions.contrast.style",
+                args: ["{that}.dom.themeLabel", "{that}.options.strings.theme",
+                    "{that}.options.markup.label"]
+            }
+        },
+        listeners: {
+            afterRender: "{that}.style"
+        },
+        repeatingSelectors: ["themeRow"],
         produceTree: "fluid.uiOptions.contrast.produceTree",
         resources: {
             template: {
@@ -217,19 +224,26 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
+
+    fluid.uiOptions.contrast.style = function (labels, strings, markup) {
+        fluid.each(labels, function (label, index) {
+            label = $(label);
+            label.html(fluid.stringTemplate(markup, {theme: strings[index]}));
+        });
+    };
     
     fluid.uiOptions.contrast.produceTree = function (that) {
         return {
-            theme: {
-                optionnames: that.options.strings.theme,
-                optionlist: that.options.controlValues.theme,
-                selection: "${value}",
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.uiOptions.selectDecorator",
-                    options: {
-                        styles: that.options.classnameMap.theme
-                    }
+            expander: {
+                type: "fluid.renderer.selection.inputs",
+                rowID: "themeRow",
+                labelID: "themeLabel",
+                inputID: "themeInput",
+                selectID: "theme-radio",
+                tree: {
+                    optionnames: that.options.strings.theme,
+                    optionlist: that.options.controlValues.theme,
+                    selection: "${value}"
                 }
             }
         };
@@ -243,7 +257,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "layout and navigation" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.layoutControls", {
-        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"],
+        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
             toc: false,
             layout: false
@@ -270,7 +284,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "links and buttons" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.linksControls", {
-        gradeNames: ["fluid.uiOptions.settingsPanels", "autoInit"],
+        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
             links: false,
             inputsLarger: false
@@ -289,152 +303,6 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-
-    /********************
-     * Textfield Slider *
-     ********************/
-
-    fluid.defaults("fluid.textfieldSlider", {
-        gradeNames: ["fluid.viewComponent", "autoInit"], 
-        components: {
-            textfield: {
-                type: "fluid.textfieldSlider.textfield",
-                container: "{textfieldSlider}.dom.textfield",
-                options: {
-                    model: "{textfieldSlider}.model",
-                    applier: "{textfieldSlider}.applier"
-                }
-            },
-            slider: {
-                type: "fluid.textfieldSlider.slider",
-                container: "{textfieldSlider}.dom.slider",
-                options: {
-                    model: "{textfieldSlider}.model",
-                    applier: "{textfieldSlider}.applier",
-                    sliderOptions: "{textfieldSlider}.options.sliderOptions"
-                }
-            }
-        },
-        selectors: {
-            textfield: ".flc-textfieldSlider-field",
-            slider: ".flc-textfieldSlider-slider"
-        },
-        events: {
-            modelChanged: null
-        },
-        model: {
-            value: null,
-            min: 0,
-            max: 100
-        },
-        sliderOptions: {
-            orientation: "horizontal",
-            step: 1.0
-        }, 
-        finalInitFunction: "fluid.textfieldSlider.finalInit"
-    });    
-    
-    fluid.textfieldSlider.finalInit = function (that) {
-
-        that.refreshView = function () {
-            var val = that.model.value;
-            that.textfield.container.val(val);
-        };
-        
-        // TODO: replace this with "model events relay" system.
-        // problem: if we place these directly in "events", this will destroy all
-        // existing events named "modelChanged".
-        that.applier.modelChanged.addListener("value", 
-            function (newModel) {
-                that.events.modelChanged.fire(newModel.value);
-            }
-        );
-
-        that.events.modelChanged.addListener(that.refreshView);
-
-        that.refreshView();
-    };
-    
-    fluid.defaults("fluid.textfieldSlider.textfield", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        finalInitFunction: "fluid.textfieldSlider.textfield.finalInit"
-    });
-
-    fluid.textfieldSlider.validateValue = function (model, changeRequest, applier) {
-        var oldValue = model.value;
-        var newValue = changeRequest.value;
-        
-        var isValidNum = !isNaN(parseInt(newValue, 10));
-
-        if (isValidNum) {
-            if (newValue < model.min) {
-                newValue = model.min;
-            } else if (newValue > model.max) {
-                newValue = model.max;
-            }
-            changeRequest.value = newValue;
-        } else {
-            changeRequest.value = oldValue;
-        }
-    };
-
-    fluid.textfieldSlider.textfield.finalInit = function (that) {
-        that.applier.guards.addListener({path: "value", transactional: true}, fluid.textfieldSlider.validateValue);
-        
-        that.container.change(function (source) {
-            that.applier.requestChange("value", source.target.value);
-        });
-    };
-
-    fluid.defaults("fluid.textfieldSlider.slider", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        finalInitFunction: "fluid.textfieldSlider.slider.finalInit",
-        selectors: {
-            thumb: ".ui-slider-handle"
-        },
-        events: {
-            modelChanged: null
-        }
-    });
-    
-    // This will be removed once the jQuery UI slider has built in ARIA 
-    var initSliderAria = function (thumb, opts) {
-        var ariaDefaults = {
-            role: "slider",
-            "aria-valuenow": opts.value,
-            "aria-valuemin": opts.min,
-            "aria-valuemax": opts.max
-        };
-        thumb.attr(ariaDefaults);
-    };
-    
-    fluid.textfieldSlider.slider.finalInit = function (that) {
-        var sliderOptions = $.extend(true, {}, that.options.sliderOptions, that.model);
-        
-        that.slider = that.container.slider(sliderOptions);
-        initSliderAria(that.locate("thumb"), sliderOptions);
-        
-        that.setSliderValue = function (value) {
-            that.slider.slider("value", value);
-        };
-        
-        that.setSliderAria = function (value) {
-            that.locate("thumb").attr("aria-valuenow", value);
-        };
-        
-        that.slider.bind("slide", function (e, ui) {
-            that.applier.requestChange("value", ui.value);
-        });
-        
-        that.applier.modelChanged.addListener("value", 
-            function (newModel) {
-                that.setSliderValue(newModel.value);
-                that.setSliderAria(newModel.value);
-                that.events.modelChanged.fire(newModel.value);
-            }
-        );
-        
-    };
 
     /************************************************
      * UI Options Select Dropdown Options Decorator *

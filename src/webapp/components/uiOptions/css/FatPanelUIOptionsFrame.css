@@ -36,7 +36,7 @@
  	display: inline-block;
  	padding: 1em;
  	min-height: 8em;
- 	width: 27em;
+ 	width: 25em;
  	background-color: #fff;
 	margin-right: 10px;
 	float: left;
@@ -103,7 +103,7 @@
 .fl-uiOptions-fatPanel .fl-slider-horz {
 }
 .fl-uiOptions-fatPanel .fl-slider-input {
-    margin-left: 2em;
+    /* margin-left: 2em;*/
     float:left; 
 }
 
@@ -115,10 +115,10 @@
 /* Radio buttons */
 .fl-uiOptions-fatPanel .fl-choice {
 	display: inline;
+	float: left;	
 }
 
 .fl-uiOptions-fatPanel .fl-choice label {
-	float: left;
 	margin-right: 5px;
 	
 	border: 1px solid black;
@@ -128,13 +128,22 @@
 	text-align: center;
 	vertical-align: middle
 }
-.fl-uiOptions-fatPanel .fl-choice label span {
-	display: block;
-	text-indent: -1000em;
+
+.fl-uiOptions-fatPanel .fl-choice .fl-preview-default {
+	/* diagonal line through option */
+	border-bottom: 1px dashed #ddbdc0;
+	-webkit-transform: rotate(45deg); 
+    -moz-transform: rotate(45deg);  
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=5); /*for IE*/	
 }
 
-.fl-uiOptions-fatPanel .fl-choice input {
-	display: none;
+
+.fl-uiOptions-fatPanel .fl-choice .fl-preview-A {
+	font-size: 2.5em;
+}
+
+.fl-uiOptions-fatPanel .fl-choice input:focus + label {
+	border: 2px solid blue;
 }
 
 /** Table of Contents switch **/
@@ -233,7 +242,6 @@
 	top:-1.14em;
 	left: 0.36em;
 }
-
 
 /* Theming */
 /* Override theme tab rounding */

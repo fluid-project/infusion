@@ -34,6 +34,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.asyncTest("Fat Panel UIOptions Integration tests", function () {
             fluid.pageEnhancer({
+                gradeNames: ["fluid.uiEnhancer.defaultActions"],
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
             });
             var that, uiOptions;
@@ -77,7 +78,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             that = fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
                 prefix: "../../../../components/uiOptions/html/",
-                markupRenderer: {
+                iframeRenderer: {
                     options: {
                         markupProps: {
                             src: "./FatPanelUIOptionsFrame.html"
@@ -126,7 +127,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         fluid.tests.uiOptions.mungingIntegrationTest("fluid.uiOptions.fatPanel", ".flc-uiOptions-fatPanel", 
             {
-                markupRenderer: {
+                iframeRenderer: {
                     options: {
                         markupProps: {
                             src: "./FatPanelUIOptionsFrame.html"

@@ -402,7 +402,11 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.unique(gradeNames.sort());
             fluid.cacheShadowGrades(that, shadow);
             var baseDefaults = fluid.rawDefaults(that.typeName);
-            var newDefaults = fluid.getGradedDefaults(baseDefaults, that.typeName, gradeNames);
+            var otherGrades = fluid.makeArray(gradeNames);
+            fluid.remove_if(otherGrades, function (gradeName) {
+                return gradeName === that.typeName;
+            }); // Remove our own typeName which getGradedDefaults is not expecting (FLUID-4939)
+            var newDefaults = fluid.getGradedDefaults(baseDefaults, that.typeName, otherGrades);
             var defaultsBlock = fluid.findMergeBlock(shadow.mergeOptions.mergeBlocks, "defaults");
             defaultsBlock.source = newDefaults;
             shadow.mergeOptions.updateBlocks();
