@@ -291,6 +291,46 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
+    /*****************************
+     * UI Options Media Controls *
+     *****************************/
+    /**
+     * A sub-component of fluid.uiOptions that renders the media language.
+     */
+
+    fluid.dedaults("fluid.uiOptions.language", {
+        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
+        model: {
+            value: "en"
+        },
+        strings: {
+            language: ["English", "French"]
+        },
+        controlValues: {
+            language: ["en", "fr"]
+        },
+        selectors: {
+            language: ".flc-uiOptions-language"
+        },
+        produceTree: "fluid.uiOptions.language.produceTree",
+        resources: {
+            template: {
+                url: "../html/UIOptionsTemplate-language.html"
+            }
+        }
+    });
+
+    fluid.uiOptions.language.produceTree = function (that) {
+        // render drop down list box
+        return {
+            textFont: {
+                optionnames: that.options.strings.language,
+                optionlist: that.options.controlValues.language,
+                selection: "${value}"
+            }
+        };
+    };
+
     /************************************************
      * UI Options Select Dropdown Options Decorator *
      ************************************************/
