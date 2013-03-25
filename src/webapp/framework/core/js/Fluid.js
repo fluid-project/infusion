@@ -1201,16 +1201,18 @@ var fluid = fluid || fluid_1_5;
     var resolveGradesImpl = function (gs, gradeNames) {
         gradeNames = fluid.makeArray(gradeNames);
         fluid.each(gradeNames, function (gradeName) {
-            var options = fluid.rawDefaults(gradeName) || {};
-            gs.gradeHash[gradeName] = true;
-            gs.gradeChain.push(gradeName);
-            gs.optionsChain.push(options);
-            var oGradeNames = fluid.makeArray(options.gradeNames);
-            fluid.each(oGradeNames, function (gradeName) {
-                if (gradeName.charAt(0) !== "{" && !gs.gradeHash[gradeName]) {
-                    resolveGradesImpl(gs, gradeName);
-                }
-            });
+            if (!gs.gradeHash[gradeName]) {
+                var options = fluid.rawDefaults(gradeName) || {};
+                gs.gradeHash[gradeName] = true;
+                gs.gradeChain.push(gradeName);
+                gs.optionsChain.push(options);
+                var oGradeNames = fluid.makeArray(options.gradeNames);
+                fluid.each(oGradeNames, function (gradeName) {
+                    if (gradeName.charAt(0) !== "{" ) {
+                        resolveGradesImpl(gs, gradeName);
+                    }
+                });
+            }
         });
         return gs;
     };
@@ -1220,8 +1222,9 @@ var fluid = fluid || fluid_1_5;
         var gradeStruct = {
             gradeChain: [defaultName],
             gradeHash: {},
-            optionsChain: []
+            optionsChain: [] // this has already been fetched in resolveGrade
         };
+        gradeStruct.gradeHash[defaultName] = true;
         return resolveGradesImpl(gradeStruct, gradeNames);
     };
         
