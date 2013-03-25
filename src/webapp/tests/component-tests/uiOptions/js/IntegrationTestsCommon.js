@@ -50,18 +50,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.tests.uiOptions.expectedComponents = {
         "fluid.uiOptions.fatPanel": [
+            "textSizer",
+            "lineSpacer",
+            "textFont",
+            "contrast",
             "layoutControls",
             "linksControls",
             "settingsStore",
             "eventBinder"
         ],
         "fluid.uiOptions.fullNoPreview": [
+            "textSizer",
+            "lineSpacer",
+            "textFont",
+            "contrast",
             "layoutControls",
             "linksControls",
             "settingsStore",
             "eventBinder"
         ],
         "fluid.uiOptions.fullPreview": [
+            "textSizer",
+            "lineSpacer",
+            "textFont",
+            "contrast",
             "layoutControls",
             "linksControls",
             "preview",
@@ -92,6 +104,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.uiOptions.integrationTest = function (componentName, resetShouldSave) {
         jqUnit.asyncTest(componentName + " Integration tests", function () {
             fluid.pageEnhancer({
+                gradeNames: ["fluid.uiEnhancer.defaultActions"],
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
             });
             var savedSelections;
@@ -172,6 +185,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.tests.uiOptions.enhancerOptions = {
+        gradeNames: ["fluid.uiEnhancer.defaultActions"],
         tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
         classnameMap: {
             "textFont": {
@@ -203,8 +217,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertTrue("Times font is set", body.hasClass("fl-font-times"));
                 jqUnit.assertTrue("The default test theme is set", body.hasClass("fl-test"));
                 
-                var actualTextFontStrings = uiOptions.textControls.options.strings.textFont;
-                var actualTextFontControlValues = uiOptions.textControls.options.controlValues.textFont;
+                var actualTextFontStrings = uiOptions.textFont.options.strings.textFont;
+                var actualTextFontControlValues = uiOptions.textFont.options.controlValues.textFont;
                 
                 jqUnit.assertEquals("There are 5 elements in the text font string list", 5, actualTextFontStrings.length);
                 jqUnit.assertEquals("The first text font string value matches", testStrings[0], actualTextFontStrings[0]);
@@ -226,7 +240,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             var baseOptions = {
                 prefix: "../../../../components/uiOptions/html/",
-                textControls: {
+                textFont: {
                     options: {
                         strings: {
                             textFont: testStrings

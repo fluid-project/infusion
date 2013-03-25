@@ -36,7 +36,7 @@
  	display: inline-block;
  	padding: 1em;
  	min-height: 8em;
- 	width: 27em;
+ 	width: 25em;
  	background-color: #fff;
 	margin-right: 10px;
 	float: left;
@@ -115,10 +115,10 @@
 /* Radio buttons */
 .fl-uiOptions-fatPanel .fl-choice {
 	display: inline;
+	float: left;	
 }
 
 .fl-uiOptions-fatPanel .fl-choice label {
-	float: left;
 	margin-right: 5px;
 	
 	border: 1px solid black;
@@ -143,7 +143,7 @@
 }
 
 .fl-uiOptions-fatPanel .fl-choice input {
-	display: none;
+	
 }
 
 /* Theming */
