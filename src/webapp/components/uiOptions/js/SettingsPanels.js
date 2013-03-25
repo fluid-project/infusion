@@ -200,13 +200,14 @@ var fluid_1_5 = fluid_1_5 || {};
             themeInput: ".flc-uiOptions-themeInput"
         },
         markup: {
-            label: "<span class=\"fl-preview-A\">A</span><span>%theme</span>"
+            label: "<span class=\"fl-preview-A %classname\">A</span><span>%theme</span>"
         },
         invokers: {
             style: {
                 funcName: "fluid.uiOptions.contrast.style",
                 args: ["{that}.dom.themeLabel", "{that}.options.strings.theme",
-                    "{that}.options.markup.label"]
+                    "{that}.options.markup.label", "{that}.options.controlValues.theme",
+                    "{that}.options.classnameMap.theme"]
             }
         },
         listeners: {
@@ -221,10 +222,13 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.uiOptions.contrast.style = function (labels, strings, markup) {
+    fluid.uiOptions.contrast.style = function (labels, strings, markup, theme, style) {
         fluid.each(labels, function (label, index) {
             label = $(label);
-            label.html(fluid.stringTemplate(markup, {theme: strings[index]}));
+            label.html(fluid.stringTemplate(markup, {
+                theme: strings[index],
+                classname: style[theme[index]]
+            }));
         });
     };
     
