@@ -740,6 +740,7 @@ body.fl-theme-uio-wb, body.fl-theme-uio-bw {
 	width: 68em;
 	top: 2em;
 	margin: auto;
+	background-color: #ffffff;
 	}
 	#container {
 
@@ -3216,4 +3217,10 @@ img.icon
 	width: 0.3125em;
 	height: 21px;
 	background:url(images/tab_right_side.png);
+}
+.toc {
+    position:relative;
+    width: 68em;
+    margin: auto;
+    background-color: #ffffff;
 }
