@@ -200,7 +200,7 @@ var fluid_1_5 = fluid_1_5 || {};
             themeInput: ".flc-uiOptions-themeInput"
         },
         markup: {
-            label: "<span class=\"fl-preview-A %classname\">A</span><span>%theme</span>"
+            label: "<span class=\"fl-preview-A\">A</span><span>%theme</span>"
         },
         invokers: {
             style: {
@@ -226,9 +226,9 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.each(labels, function (label, index) {
             label = $(label);
             label.html(fluid.stringTemplate(markup, {
-                theme: strings[index],
-                classname: style[theme[index]]
+                theme: strings[index]
             }));
+            label.addClass(style[theme[index]]);
         });
     };
     
