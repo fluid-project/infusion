@@ -157,8 +157,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 uiOptions: {
-                    type: "fluid.uiOptions.defaultSettingsPanels",
                     options: {
+                        gradeNames: ["fluid.uiOptions.defaultSettingsPanels"],
                         listeners: {
                             "onSave.munged": testSave
                         }
@@ -261,7 +261,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 uiOptions: {
-                    type: "fluid.uiOptions.defaultSettingsPanels"
+                    options: {
+                        gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
+                    }
                 }
             };
             
