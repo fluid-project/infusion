@@ -143,21 +143,27 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     fluid.uiOptions.actionAnts.simplifiedContentEnactor.set = function (value, that) {
-        if (!that.initialContent) {
+        if (!that.initialContent || !that.article) {
             that.initialContent = that.container.html();
+            var article = that.container.find("article").html();
+            that.article = article ? article : that.initialContent;
         }
         
         if (value) {
-            that.container.html(that.container("article").html());
+            if (that.container.html() !== that.article) {
+                that.container.html(that.article);
+            }
         } else {
-            that.container.html(that.initialContent);
+            if (that.container.html() !== that.initialContent) {
+                that.container.html(that.initialContent);
+            }
         }
     };
 
     fluid.uiOptions.actionAnts.simplifiedContentEnactor.finalInit = function (that) {
-//        that.applier.modelChanged.addListener("value", function (newModel) {
-//            that.set(newModel.value);
-//        });
+        that.applier.modelChanged.addListener("value", function (newModel) {
+            that.set(newModel.value);
+        });
     };
     
     /*******************************************************************************
@@ -171,7 +177,6 @@ var fluid_1_5 = fluid_1_5 || {};
         components: {
             simplifiedContentEnactor: {
                 type: "fluid.uiOptions.actionAnts.simplifiedContentEnactor",
-                container: "{uiEnhancer}.container",
                 options: {
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
