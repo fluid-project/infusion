@@ -105,6 +105,7 @@ var fluid_1_5 = fluid_1_5 || {};
         model: {
             value: "default"
         },
+        classnameMap: null, // must be supplied by implementors
         strings: {
             textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"]
         },
