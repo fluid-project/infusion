@@ -157,9 +157,9 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.actionAnts.simplifiedContentEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener("value", function (newModel) {
-            that.set(newModel.value);
-        });
+//        that.applier.modelChanged.addListener("value", function (newModel) {
+//            that.set(newModel.value);
+//        });
     };
     
     /*******************************************************************************
