@@ -223,6 +223,9 @@ var fluid_1_5 = fluid_1_5 || {};
             }));
             label.addClass(style[theme[index]]);
         });
+        
+		//$("input:checked").before("<div class='fl-choice-current'></div>");        
+        
     };
     
     fluid.uiOptions.contrast.produceTree = function (that) {
@@ -304,7 +307,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the media language.
      */
 
-    fluid.dedaults("fluid.uiOptions.language", {
+    fluid.defaults("fluid.uiOptions.language", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
             value: "en"
