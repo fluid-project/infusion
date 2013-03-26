@@ -150,6 +150,7 @@ var fluid_1_5 = fluid_1_5 || {};
         
         if (!that.initialContent || !that.article) {
             that.initialContent = contentContainer.html();
+            $("aside", that.container).addClass("fl-hidden");
             var article = contentContainer.find("article").html();
             that.article = article ? article : that.initialContent;
         }
