@@ -60,8 +60,8 @@ var demo = demo || {};
 
         // Tell UIOptions where to redirect to if the user cancels the operation
         uiOptions: {
-            type: "fluid.uiOptions.defaultSettingsPanels",
             options: {
+                gradeNames: ["fluid.uiOptions.defaultSettingsPanels"],
                 listeners: {
                     onCancel: function () {
                         window.location = "uiOptions.html";
@@ -94,7 +94,9 @@ var demo = demo || {};
             // Tell UIOptions where to find all the templates, relative to this file
             prefix: pathToTemplates,
             uiOptions: {
-                type: "fluid.uiOptions.defaultSettingsPanels"
+                options: {
+                    gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
+                }
             }
         });
     };

@@ -385,7 +385,7 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         preInitFunction: "fluid.tests.twinSubComponent.preInit",
         events: {
-            childEvent: null,
+            childEvent: null
         },
         listeners: {
             childEvent: "{twinSubComponent}.testRealName"
@@ -481,7 +481,7 @@ fluid.registerNamespace("fluid.tests");
     fluid.demands("fluid.tests.demandMerge", ["fluid.tests.context1", "fluid.tests.context2", "fluid.tests.context3"], {
         funcName: "fluid.tests.demandMerge3",
         options: {
-            mergeKey1: "bottomValue1",
+            mergeKey1: "bottomValue1"
         }  
     });
     
@@ -598,14 +598,14 @@ fluid.registerNamespace("fluid.tests");
     fluid.defaults("fluid.tests.memberTest", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         members: {
-           expanded: {
-               expander: {
-                   func: "{that}.identity",
-                   args: "{that}.emptyArray"
-               }  
-           },
-           emptyArray: [],
-           doubleTest: "{that}.options.invokers.dummy" // double expansion tester - will explode on double expansion
+            expanded: {
+                expander: {
+                    func: "{that}.identity",
+                    args: "{that}.emptyArray"
+                }  
+            },
+            emptyArray: [],
+            doubleTest: "{that}.options.invokers.dummy" // double expansion tester - will explode on double expansion
         },
         invokers: {
             identity: "fluid.identity",
@@ -740,7 +740,7 @@ fluid.registerNamespace("fluid.tests");
                 options: {componentName: "fluid.tests.uploader"}
             },
             uploaderImpl: {
-                type: "fluid.tests.uploaderImpl",
+                type: "fluid.tests.uploaderImpl"
             }
         },
         distributeOptions: {
@@ -1348,8 +1348,8 @@ fluid.registerNamespace("fluid.tests");
         events: {
             boiledDouble: {
                 events: {
-                   event1: "{eventParent3}.events.parentEvent1",
-                   event2: "{eventParent3}.events.parentEvent2"
+                    event1: "{eventParent3}.events.parentEvent1",
+                    event2: "{eventParent3}.events.parentEvent2"
                 },
                 args: ["{arguments}.event1.0", "{arguments}.event2.1"]
             },
@@ -1357,19 +1357,19 @@ fluid.registerNamespace("fluid.tests");
         },
         listeners: {
             boiledDouble: [
-                 "fluid.tests.globalListener", // This tests FLUID-4337
-                 {                             // This tests FLUID-4398
-                     listener: "{eventChild3}.events.relayEvent",
-                     args: "{arguments}.1" 
-                 }
-             ]
+                "fluid.tests.globalListener", // This tests FLUID-4337
+                {                             // This tests FLUID-4398
+                    listener: "{eventChild3}.events.relayEvent",
+                    args: "{arguments}.1" 
+                }
+            ]
         }
     });
     
     fluid.tests.globalListener = function (parent, arg2) {
         if (!parent.listenerRecord) {
             parent.listenerRecord = [];
-        };
+        }
         parent.listenerRecord.push(arg2);
     };
     
@@ -1400,7 +1400,7 @@ fluid.registerNamespace("fluid.tests");
             baseEvent: null,
             baseEvent2: null,
             boiledEvent: {
-                event: "baseEvent",
+                event: "baseEvent"
             }
         },
         listeners: {
@@ -1412,8 +1412,8 @@ fluid.registerNamespace("fluid.tests");
         var count = 0;
         // Tests i) inter-event reference using unqualified local names
         // ii) listener reference to a non-composite boiled event without using "fire" suffix
-        var baseListener = function() {
-           ++ count;
+        var baseListener = function () {
+            ++ count;
         };
         var that = fluid.tests.eventBoiling2({
             listeners: {
@@ -1566,7 +1566,7 @@ fluid.registerNamespace("fluid.tests");
             "child1.child2.child3.options.value", 
             "child1.child2.child3.otherValue",
             "child1.child2.child8.options.value"
-            ];
+        ];
         checkValue("Original value", reins, reins.options.headValue, expectedPaths);
         reins.options.headValue = "headValue2"; // in poor style, modify options to verify reexpansion
         reins.child1.options.components.child2 = fluid.copy(fluid.defaults("fluid.tests.reinstantiation").components.child1.options.components.child2);
@@ -2275,7 +2275,7 @@ fluid.registerNamespace("fluid.tests");
         var island1 = fluid.tests.island1();
         var island2 = fluid.tests.island2();
         island1.events.outEvent2.addListener(function() {
-            island2.events.inEvent.fire()
+            island2.events.inEvent.fire();
         });
         island1.events.outEvent2.fire();
         jqUnit.assert("No error fired on cross-island dispatch");
@@ -2297,6 +2297,7 @@ fluid.registerNamespace("fluid.tests");
 
     jqUnit.test("FLUID-4937: gradeName merging at instantiation", function () {
         jqUnit.expect(2);
+<<<<<<< .merge_file_E34j18
         that = fluid.tests.comp({
             gradeNames: ["fluid.tests.grade"]
         });
@@ -2330,6 +2331,47 @@ fluid.registerNamespace("fluid.tests");
         fluid.tests.initFuncs({
             gradeNames: ["fluid.tests.grade"]
         });
+=======
+        var that = fluid.tests.comp({
+            gradeNames: ["fluid.tests.grade"]
+        });
+        jqUnit.assertTrue("The original option should exist", fluid.get(that, "options.opt.opt"));
+        jqUnit.assertTrue("The merged grade option should exist", fluid.get(that, "options.gradeOpt.gradeOpt"));
+    });
+    
+    fluid.registerNamespace("fluid.tests.initFuncs");
+    
+    fluid.defaults("fluid.tests.initFuncs", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        preInitFunction: "fluid.tests.initFuncs.preInit",
+        postInitFunction: "fluid.tests.initFuncs.postInit",
+        finalInitFunction: "fluid.tests.initFuncs.finalInit"
+    });
+    
+    fluid.each(["preInit", "postInit", "finalInit"], function (init) {
+        fluid.tests.initFuncs[init] = function () {
+            jqUnit.assert("The " + init + " function fired");
+        };
+    });
+    
+    jqUnit.test("FLUID-4939: init functions with gradeName modification", function () {
+        jqUnit.expect(3);
+        fluid.tests.initFuncs({
+            gradeNames: ["fluid.tests.grade"]
+        });
+    });
+    
+    fluid.defaults("fluid.tests.circularGrade", {
+        gradeNames: ["fluid.tests.initFuncs", "autoInit"],
+        extraOpt: "extraOpt"
+    });
+    
+    jqUnit.test("FLUID-4939: init functions with gradeName modification - circular grades", function () {
+        jqUnit.expect(3);
+        fluid.tests.initFuncs({
+            gradeNames: ["fluid.tests.circularGrade"]
+        });
+>>>>>>> .merge_file_9KkPQz
     });
 
 })(jQuery); 
