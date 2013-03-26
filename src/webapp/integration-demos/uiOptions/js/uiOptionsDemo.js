@@ -22,7 +22,9 @@
             },
             components: {
                 simplifiedContentEnactor: {
-                    container: "#content"
+                    options: {
+                        contentSelector: "#container"
+                    }
                 }
             }
         });

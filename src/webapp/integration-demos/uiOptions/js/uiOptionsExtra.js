@@ -125,6 +125,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.uiOptions.actionAnts.simplifiedContentEnactor", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
+        contentSelector: null, // must be supplied by implementors
         model: {
             value: false
         },
@@ -143,19 +144,21 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     fluid.uiOptions.actionAnts.simplifiedContentEnactor.set = function (value, that) {
+        contentContainer = that.container.find(that.options.contentSelector);
+        
         if (!that.initialContent || !that.article) {
-            that.initialContent = that.container.html();
-            var article = that.container.find("article").html();
+            that.initialContent = contentContainer.html();
+            var article = contentContainer.find("article").html();
             that.article = article ? article : that.initialContent;
         }
         
         if (value) {
-            if (that.container.html() !== that.article) {
-                that.container.html(that.article);
+            if (contentContainer.html() !== that.article) {
+                contentContainer.html(that.article);
             }
         } else {
-            if (that.container.html() !== that.initialContent) {
-                that.container.html(that.initialContent);
+            if (contentContainer.html() !== that.initialContent) {
+                contentContainer.html(that.initialContent);
             }
         }
     };
@@ -177,6 +180,7 @@ var fluid_1_5 = fluid_1_5 || {};
         components: {
             simplifiedContentEnactor: {
                 type: "fluid.uiOptions.actionAnts.simplifiedContentEnactor",
+                container: "{uiEnhancer}.container",
                 options: {
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
