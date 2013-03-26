@@ -19,13 +19,6 @@
                 theme: {
                     "default": customThemeName
                 }
-            },
-            components: {
-                simplifiedContentEnactor: {
-                    options: {
-                        contentSelector: "#container"
-                    }
-                }
             }
         });
     };

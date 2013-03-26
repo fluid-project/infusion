@@ -125,7 +125,9 @@ var fluid_1_5 = fluid_1_5 || {};
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.uiOptions.actionAnts.simplifiedContentEnactor", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
-        contentSelector: null, // must be supplied by implementors
+        selectors: {
+            content: ".flc-uiOptions-content"
+        },
         model: {
             value: false
         },
@@ -144,7 +146,7 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     fluid.uiOptions.actionAnts.simplifiedContentEnactor.set = function (value, that) {
-        contentContainer = that.container.find(that.options.contentSelector);
+        contentContainer = that.container.find(that.options.selectors.content);
         
         if (!that.initialContent || !that.article) {
             that.initialContent = contentContainer.html();
