@@ -125,6 +125,9 @@ var fluid_1_5 = fluid_1_5 || {};
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.uiOptions.actionAnts.simplifiedContentEnactor", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
+        selectors: {
+            content: ".flc-uiOptions-content"
+        },
         model: {
             value: false
         },
@@ -143,21 +146,29 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     fluid.uiOptions.actionAnts.simplifiedContentEnactor.set = function (value, that) {
-        if (!that.initialContent) {
-            that.initialContent = that.container.html();
+        contentContainer = that.container.find(that.options.selectors.content);
+        
+        if (!that.initialContent || !that.article) {
+            that.initialContent = contentContainer.html();
+            var article = contentContainer.find("article").html();
+            that.article = article ? article : that.initialContent;
         }
         
         if (value) {
-            that.container.html(that.container("article").html());
+            if (contentContainer.html() !== that.article) {
+                contentContainer.html(that.article);
+            }
         } else {
-            that.container.html(that.initialContent);
+            if (contentContainer.html() !== that.initialContent) {
+                contentContainer.html(that.initialContent);
+            }
         }
     };
 
     fluid.uiOptions.actionAnts.simplifiedContentEnactor.finalInit = function (that) {
-//        that.applier.modelChanged.addListener("value", function (newModel) {
-//            that.set(newModel.value);
-//        });
+        that.applier.modelChanged.addListener("value", function (newModel) {
+            that.set(newModel.value);
+        });
     };
     
     /*******************************************************************************
