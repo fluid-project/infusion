@@ -34,7 +34,7 @@
 .fl-uiOptions-fatPanel h2 {
 	color: #766d68;
     padding: 0 0 0.5em 0;
-    margin: 0 0 1em 0;   
+    margin: 0 0 1.5em 0;   
     width: 100%; 
     border-bottom: solid #ccc 1px;
 	box-shadow: 0px 6px 7px -6px rgba(0,0,0,0.3);
@@ -150,9 +150,26 @@
 .fl-uiOptions-fatPanel .fl-choice input:focus + label {
 	outline: 2px solid black;
 }
-/*.fl-uiOptions-fatPanel .fl-choice input:checked + label:before {
-	content: "X";
-}*/
+.fl-uiOptions-fatPanel .fl-choice input:checked + label:before {
+	font-family: 'UIO';
+		speak: none;
+	/* Enable Ligatures */
+	-webkit-font-feature-settings:"liga","dlig";-moz-font-feature-settings:"liga=1, dlig=1";-moz-font-feature-settings:"liga","dlig";-ms-font-feature-settings:"liga","dlig";-o-font-feature-settings:"liga","dlig";
+	font-feature-settings:"liga","dlig";
+	text-rendering:optimizeLegibility;
+		font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	float:left;
+	font-size: 1.7em;
+	content: "\69\6e\64\69\63\61\74\6f\72";
+	
+	margin-top: -1em;
+	margin-left: 0.25em;
+}
 
 /* Table of Contents switch */
 .fl-uiOptions-fatPanel .fl-uiOptions .fl-uiOptions-fatPanel-toc {
