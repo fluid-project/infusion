@@ -151,16 +151,21 @@ var fluid_1_5 = fluid_1_5 || {};
         if (!that.initialContent || !that.article) {
             that.initialContent = contentContainer.html();
             $("aside", that.container).addClass("fl-hidden");
+            $("img", that.container).css("float", "none");
+            $("figure", that.container).css("float", "none");
             var article = contentContainer.find("article").html();
             that.article = article ? article : that.initialContent;
+            that.origBg = $("body").css("background-image");
         }
         
         if (value) {
             if (contentContainer.html() !== that.article) {
+                $("body").css("background-image", "none");
                 contentContainer.html(that.article);
             }
         } else {
             if (contentContainer.html() !== that.initialContent) {
+                $("body").css("background-image", that.origBg);
                 contentContainer.html(that.initialContent);
             }
         }
