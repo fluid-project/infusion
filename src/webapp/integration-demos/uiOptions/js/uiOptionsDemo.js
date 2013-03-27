@@ -5,6 +5,10 @@
     var pathToTocTemplate = "../../components/tableOfContents/html/TableOfContents.html";
     var pathToTemplates = "../../components/uiOptions/html/";
 
+    var extraSiteSettings = {
+        selfVoicing: false
+    };
+    
     demo.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
             gradeNames: ["fluid.uiEnhancer.defaultActions", "fluid.uiEnhancer.extraActions"],
@@ -22,15 +26,13 @@
             prefix: pathToTemplates,
             uiOptions: {
                 options: {
-                    gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.extraSettingsPanels"]
+                    gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
                 }
             },
-            templateLoader: {
+             templateLoader: {
                 options: {
                     templates: {
-                        uiOptions: "templates/FatPanelUIOptions.html",
-                        simplifiedContent: "templates/UIOptionsTemplate-simplifiedContent.html",
-                        selfVoicing: "templates/UIOptionsTemplate-selfVoicing.html"
+                        uiOptions: "templates/FatPanelUIOptions.html"
                     }
                 }
             }

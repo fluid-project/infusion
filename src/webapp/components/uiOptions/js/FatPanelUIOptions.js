@@ -124,19 +124,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     },
                     components: {
                         iframeRenderer: "{fatPanel}.iframeRenderer",
-                        settingsStore: "{uiEnhancer}.settingsStore",
-                        tabs: {
-                            type: "fluid.tabs",
-                            container: "{uiOptions}.container",
-                            createOnEvent: "onUIOptionsComponentReady",
-                            options: {
-                                listeners: {
-                                    tabsshow: {
-                                        listener: "{uiOptions}.events.onSignificantDOMChange"
-                                    }
-                                }
-                            }
-                        }
+                        settingsStore: "{uiEnhancer}.settingsStore"
                     }
                 }
             }

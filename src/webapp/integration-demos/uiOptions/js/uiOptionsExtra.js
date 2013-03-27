@@ -79,23 +79,6 @@ var fluid_1_5 = fluid_1_5 || {};
             selfVoicing: ".flc-uiOptions-self-voicing"
         },
         components: {
-            simplifiedContent: {
-                type: "fluid.uiOptions.simplifiedContent",
-                container: "{uiOptions}.dom.simplifiedContent",
-                createOnEvent: "onUIOptionsMarkupReady",
-                options: {
-                    sourceApplier: "{uiOptions}.applier",
-                    rules: {
-                        "selections.simplifiedContent": "value"
-                    },
-                    listeners: {
-                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
-                    },
-                    resources: {
-                        template: "{templateLoader}.resources.simplifiedContent"
-                    }
-                }
-            },
             selfVoicing: {
                 type: "fluid.uiOptions.selfVoicing",
                 container: "{uiOptions}.dom.selfVoicing",
@@ -125,6 +108,9 @@ var fluid_1_5 = fluid_1_5 || {};
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.uiOptions.actionAnts.simplifiedContentEnactor", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
+        selectors: {
+            content: ".flc-uiOptions-content"
+        },
         model: {
             value: false
         },
@@ -143,21 +129,30 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     fluid.uiOptions.actionAnts.simplifiedContentEnactor.set = function (value, that) {
-        if (!that.initialContent) {
-            that.initialContent = that.container.html();
+        var contentContainer = that.container.find(that.options.selectors.content);
+        
+        if (!that.initialContent || !that.article) {
+            that.initialContent = contentContainer.html();
+            $("aside", that.container).addClass("fl-hidden");
+            var article = contentContainer.find("article").html();
+            that.article = article ? article : that.initialContent;
         }
         
         if (value) {
-            that.container.html(that.container("article").html());
+            if (contentContainer.html() !== that.article) {
+                contentContainer.html(that.article);
+            }
         } else {
-            that.container.html(that.initialContent);
+            if (contentContainer.html() !== that.initialContent) {
+                contentContainer.html(that.initialContent);
+            }
         }
     };
 
     fluid.uiOptions.actionAnts.simplifiedContentEnactor.finalInit = function (that) {
-//        that.applier.modelChanged.addListener("value", function (newModel) {
-//            that.set(newModel.value);
-//        });
+        that.applier.modelChanged.addListener("value", function (newModel) {
+            that.set(newModel.value);
+        });
     };
     
     /*******************************************************************************
@@ -175,7 +170,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
-                        "simplifiedContent": "value"
+                        "toc": "value"
                     }
                 }
             },
