@@ -5,9 +5,9 @@
     background-color: #fff;
     background-image: url('../images/default/fatpanelbg.png');
     background-repeat: repeat;
-    height: 14em;    
+    height: 13em;    
     overflow-x: scroll;
-   /* overflow-y: hidden;*/
+   	overflow-y: hidden;
     color: #433F3D;
     margin-top: 15px;
 }

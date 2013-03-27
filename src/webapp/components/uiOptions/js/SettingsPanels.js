@@ -220,9 +220,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 theme: strings[index]
             }));
             label.addClass(style[theme[index]]);
-        });
-        
-        $("input:checked").before("<div class=\"fl-choice-current\"></div>");
+        });        
     };
     
     fluid.uiOptions.contrast.produceTree = function (that) {
