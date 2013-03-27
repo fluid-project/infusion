@@ -63,8 +63,8 @@
 }
 
 .fl-uiOptions-fatPanel .fl-slider a {
-	height: 35px;
-	width: 35px;
+	height: 2.2em;
+	width: 2.2em;
 	margin-top: -10px;
 	margin-left: -5px;
 	background-color: #fff;
@@ -172,19 +172,19 @@
 }
 
 /* Table of Contents switch */
-.fl-uiOptions-fatPanel .fl-uiOptions .fl-uiOptions-fatPanel-toc {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc {
 	width: 5.6em;
 	height:2em;
 	margin-right:10px;
 	float:left;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions .fl-uiOptions-fatPanel-option-description {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-option-description {
 	padding: 0; /* override .fl-uiOptions-option-description style. */
 }
 
 /* The container for the toggle, which is also a label for the hidden checkbox. */
-.fl-uiOptions-fatPanel .fl-uiOptions .fl-uiOptions-fatPanel-switch { 
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-switch { 
 	border-radius:50px;
 	border: 1px solid #776D67;
 	width: 4.6em;
@@ -199,11 +199,11 @@
 	font-size: 1.2em;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions .fl-uiOptions-fatPanel-toc-input:focus + label {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc-input:focus + label {
 	outline: 2px solid black;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switch {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switch {
 	padding-left: 2.6em;
 	width: 2em;
 	background-color: #2da750;
@@ -211,7 +211,7 @@
 }
 
 /* The "on" portion of the toggle and the knob. */
-.fl-uiOptions-fatPanel .fl-uiOptions .fl-uiOptions-fatPanel-toc-input + label .fl-uiOptions-fatPanel-switch:before {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc-input + label .fl-uiOptions-fatPanel-switch:before {
 	content:"ON";
 	color: #fff;
 	border: 1px solid #776D67;
@@ -239,7 +239,7 @@
 }
 
 /* The "off" portion of the toggle. */
-.fl-uiOptions-fatPanel .fl-uiOptions .fl-uiOptions-fatPanel-toc-input + label .fl-uiOptions-fatPanel-switch:after {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc-input + label .fl-uiOptions-fatPanel-switch:after {
 	content:"OFF";
 	float:left;
 	position:relative;
@@ -247,12 +247,12 @@
 	left: 0.5em;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switch:after {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switch:after {
 	display:hidden;
 }
 
 /* The dark inner circle to the toggle knob. */
-.fl-uiOptions-fatPanel .fl-uiOptions .fl-uiOptions-fatPanel-switch-inner {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-switch-inner {
 	border: 1px solid #493A30;
 	border-radius: 50px;
 	width: 1em;
@@ -267,39 +267,85 @@
 	display:inline-block;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switch .fl-uiOptions-fatPanel-switch-inner {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switch .fl-uiOptions-fatPanel-switch-inner {
 	top:-1.6em;
 	left: 0.5em;
 }
 
 
 /* Theming */
+.fl-uiOptions-fatPanel.fl-theme-bw,
+.fl-uiOptions-fatPanel.fl-theme-wb,
+.fl-uiOptions-fatPanel.fl-theme-by,
+.fl-uiOptions-fatPanel.fl-theme-yb {
+	background-image: none;
+}
+
+.fl-uiOptions-fatPanel.fl-theme-bw .fl-uiOptions-fatPanel-switch,
+.fl-uiOptions-fatPanel.fl-theme-bw .fl-uiOptions-fatPanel-toc-input + label .fl-uiOptions-fatPanel-switch:before,
+.fl-uiOptions-fatPanel.fl-theme-bw .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switchs,
+.fl-uiOptions-fatPanel.fl-theme-wb .fl-uiOptions-fatPanel-switch,
+.fl-uiOptions-fatPanel.fl-theme-wb .fl-uiOptions-fatPanel-toc-input + label .fl-uiOptions-fatPanel-switch:before,
+.fl-uiOptions-fatPanel.fl-theme-wb .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switchs,
+.fl-uiOptions-fatPanel.fl-theme-by .fl-uiOptions-fatPanel-switch,
+.fl-uiOptions-fatPanel.fl-theme-by .fl-uiOptions-fatPanel-toc-input + label .fl-uiOptions-fatPanel-switch:before,
+.fl-uiOptions-fatPanel.fl-theme-by .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switchs,
+.fl-uiOptions-fatPanel.fl-theme-yb .fl-uiOptions-fatPanel-switch,
+.fl-uiOptions-fatPanel.fl-theme-yb .fl-uiOptions-fatPanel-toc-input + label .fl-uiOptions-fatPanel-switch:before,
+.fl-uiOptions-fatPanel.fl-theme-yb .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switchs {
+	box-shadow: none !important;
+	text-shadow: none;
+	color: inherit;
+	background-image: none;
+	background-color: inherit;
+}
+
+.fl-uiOptions-fatPanel.fl-theme-bw .fl-uiOptions-fatPanel-switch-inner,
+.fl-uiOptions-fatPanel.fl-theme-wb .fl-uiOptions-fatPanel-switch-inner,
+.fl-uiOptions-fatPanel.fl-theme-by .fl-uiOptions-fatPanel-switch-inner,
+.fl-uiOptions-fatPanel.fl-theme-yb .fl-uiOptions-fatPanel-switch-inner {
+	box-shadow: none;
+} 
+
+.fl-theme-bw .ui-slider .ui-slider-handle,
+.fl-theme-wb .ui-slider .ui-slider-handle,
+.fl-theme-by .ui-slider .ui-slider-handle,
+.fl-theme-yb .ui-slider .ui-slider-handle {
+	height: 2.2em;
+	width: 2.2em;
+}
+
 .fl-uiOptions-fatPanel .fl-choice label.uio-demo-theme,
-.fl-uiOptions-fatPanel .fl-choice label.uio-demo-theme span {
+.fl-uiOptions-fatPanel .fl-choice label.uio-demo-theme span,
+.fl-uiOptions-fatPanel .fl-choice label.uio-demo-theme .fl-crossout {
 	background-color: #FFFFFF !important;
     border-color: #433F3D !important;
     color: #433F3D !important;	
 }
 .fl-uiOptions-fatPanel .fl-choice label.fl-theme-bw,
-.fl-uiOptions-fatPanel .fl-choice label.fl-theme-bw span {
+.fl-uiOptions-fatPanel .fl-choice label.fl-theme-bw span,
+.fl-uiOptions-fatPanel .fl-choice label.fl-theme-bw .fl-crossout {
 	background-color: #FFFFFF !important;
     border-color: #000000 !important;
     color: #000000 !important;	
 }
 .fl-uiOptions-fatPanel .fl-choice label.fl-theme-wb,
-.fl-uiOptions-fatPanel .fl-choice label.fl-theme-wb span {
+.fl-uiOptions-fatPanel .fl-choice label.fl-theme-wb span,
+.fl-uiOptions-fatPanel .fl-choice label.fl-theme-wb .fl-crossout {
     background-color: #000000 !important;
     border-color: #FFFFFF !important;
     color: #FFFFFF !important;
 }
 .fl-uiOptions-fatPanel .fl-choice label.fl-theme-by,
-.fl-uiOptions-fatPanel .fl-choice label.fl-theme-by span {
+.fl-uiOptions-fatPanel .fl-choice label.fl-theme-by span,
+.fl-uiOptions-fatPanel .fl-choice label.fl-theme-by .fl-crossout {
     background-color: #FFFF00 !important;
     border-color: #000000 !important;
     color: #000000 !important;
 }
 .fl-uiOptions-fatPanel .fl-choice label.fl-theme-yb,
-.fl-uiOptions-fatPanel .fl-choice label.fl-theme-yb span {
+.fl-uiOptions-fatPanel .fl-choice label.fl-theme-yb span,
+.fl-uiOptions-fatPanel .fl-choice label.fl-theme-yb .fl-crossout {
     background-color: #000000 !important;
     border-color: #FFFF00 !important;
     color: #FFFF00 !important;
