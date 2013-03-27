@@ -6,13 +6,12 @@
     var pathToTemplates = "../../components/uiOptions/html/";
 
     var extraSiteSettings = {
-            simplifiedContent: false,
-            selfVoicing: false
-        };
+        selfVoicing: false
+    };
     
     demo.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
-            gradeNames: ["fluid.uiEnhancer.defaultActions"],
+            gradeNames: ["fluid.uiEnhancer.defaultActions", "fluid.uiEnhancer.extraActions"],
             tocTemplate: pathToTocTemplate,
             classnameMap: {
                 theme: {
@@ -28,6 +27,13 @@
             uiOptions: {
                 options: {
                     gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
+                }
+            },
+             templateLoader: {
+                options: {
+                    templates: {
+                        uiOptions: "templates/FatPanelUIOptions.html"
+                    }
                 }
             }
         });

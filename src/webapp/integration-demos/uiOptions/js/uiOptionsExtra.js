@@ -79,23 +79,6 @@ var fluid_1_5 = fluid_1_5 || {};
             selfVoicing: ".flc-uiOptions-self-voicing"
         },
         components: {
-            simplifiedContent: {
-                type: "fluid.uiOptions.simplifiedContent",
-                container: "{uiOptions}.dom.simplifiedContent",
-                createOnEvent: "onUIOptionsMarkupReady",
-                options: {
-                    sourceApplier: "{uiOptions}.applier",
-                    rules: {
-                        "selections.simplifiedContent": "value"
-                    },
-                    listeners: {
-                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
-                    },
-                    resources: {
-                        template: "{templateLoader}.resources.simplifiedContent"
-                    }
-                }
-            },
             selfVoicing: {
                 type: "fluid.uiOptions.selfVoicing",
                 container: "{uiOptions}.dom.selfVoicing",
@@ -187,7 +170,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
-                        "simplifiedContent": "value"
+                        "toc": "value"
                     }
                 }
             }
