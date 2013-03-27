@@ -20,31 +20,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
-    /***********************************************
-     * UI Options Content Simplication
-     ***********************************************/
-     
-    /**
-     * A sub-component of fluid.uiOptions that renders the "content simplication" panel of the user preferences interface.
-     */
-    fluid.defaults("fluid.uiOptions.simplifiedContent", {
-        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
-        model: {
-            value: false
-        },
-        selectors: {
-            simplifiedContent: ".flc-uiOptions-simplifiedContent"
-        },
-        protoTree: {
-            simplifiedContent: "${value}"
-        },
-        resources: {
-            template: {
-                url: "../templates/UIOptionsTemplate-simplifiedContent.html"
-            }
-        }
-    });
-
     /*****************************
      * UI Options Self Voicing
      *****************************/
@@ -75,7 +50,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.extraSettingsPanels", {
         gradeNames: ["fluid.uiOptions", "autoInit"],
         selectors: {
-            simplifiedContent: ".flc-uiOptions-simplified-content",
             selfVoicing: ".flc-uiOptions-self-voicing"
         },
         components: {
@@ -164,7 +138,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiEnhancer.extraActions", {
         gradeNames: ["fluid.uiEnhancer", "autoInit"],
         components: {
-            simplifiedContentEnactor: {
+            simplifiedContent: {
                 type: "fluid.uiOptions.actionAnts.simplifiedContentEnactor",
                 container: "{uiEnhancer}.container",
                 options: {
