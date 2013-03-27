@@ -738,8 +738,7 @@ body.fl-theme-uio-wb, body.fl-theme-uio-bw {
 	position:relative;
 	background:none;
 	width: 68em;
-	top: 2em;
-	margin: auto;
+	margin: 2em auto auto;
 	background-color: #ffffff;
 	}
 	#container {
@@ -3223,4 +3222,10 @@ img.icon
     width: 68em;
     margin: auto;
     background-color: #ffffff;
+    margin-top: 2em;
+    padding: 1em;
+    border: 1px solid #CCCCCC;
+}
+.toc ul {
+    margin-left: 2em;
 }
