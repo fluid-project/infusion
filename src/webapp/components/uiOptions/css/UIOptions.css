@@ -240,7 +240,7 @@
 	font-style: normal;
 }
 
-.fl-icon-size, .fl-icon-contrast, .fl-icon-triangle, .fl-icon-simplify, .fl-icon-line-space, .fl-icon-links, .fl-icon-font-style {
+.fl-icon-size, .fl-icon-contrast, .fl-icon-triangle, .fl-icon-simplify, .fl-icon-line-space, .fl-icon-links, .fl-icon-font-style, .fl-icon-list, .fl-icon-text-to-speech{
 	font-family: 'UIO';
 		speak: none;
 	/* Enable Ligatures */
@@ -288,4 +288,12 @@
 
 .fl-icon-line-space:before {
 	content: "\6c\69\6e\65\73\70\61\63\65";
+}
+
+.fl-icon-list:before {
+	content: "\6c\69\73\74";
+}
+
+.fl-icon-text-to-speech:before {
+	content: "\74\74\73";
 }
