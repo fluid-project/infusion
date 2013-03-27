@@ -56,7 +56,7 @@ var fluid_1_5 = fluid_1_5 || {};
             ]
         },
         events: {
-            afterAnnounce: 
+            afterAnnounce: null
         },
         invokers: {
             handleSelfVoicing: {
