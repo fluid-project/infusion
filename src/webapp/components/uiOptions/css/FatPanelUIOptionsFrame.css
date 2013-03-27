@@ -5,9 +5,8 @@
     background-color: #fff;
     background-image: url('../images/default/fatpanelbg.png');
     background-repeat: repeat;
-    height: 13em;    
+    height: 26em;
     overflow-x: scroll;
-   	overflow-y: hidden;
     color: #766d68;
     margin-top: 15px;
 }
@@ -15,7 +14,7 @@
 /* Preference Panels */
 .fl-uiOptions-fatPanel ul.fl-uiOptions-panels {
 	margin: 0 20px;
-    width: 168em;	
+    width: 115em;
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions-panels li.fl-uiOptions-panel {
@@ -24,10 +23,11 @@
  	box-shadow: 2px 2px #7a766d;
  	display: inline-block;
  	padding: 1em;
- 	min-height: 8em;
+ 	min-height: 9em;
  	width: 25em;
  	background-color: #fff;
 	margin-right: 10px;
+    margin-bottom: 10px;
 	float: left;
  }
 
@@ -132,10 +132,7 @@
 }
 
 .fl-uiOptions-fatPanel .fl-choice .uio-demo-theme .fl-crossout {
-	width: 3em;
-	height: 3em;
-	margin-top:-4em;
-	margin-left: 1em;
+	margin-top:-1.5em;
 	border-bottom: 1px dashed #ddbdc0;
 	-webkit-transform: rotate(45deg); 
     -moz-transform: rotate(45deg);  
@@ -150,25 +147,27 @@
 .fl-uiOptions-fatPanel .fl-choice input:focus + label {
 	outline: 2px solid black;
 }
-.fl-uiOptions-fatPanel .fl-choice input:checked + label:before {
+.fl-uiOptions-fatPanel .fl-choice .fl-indicator {
 	font-family: 'UIO';
-		speak: none;
+	speak: none;
 	/* Enable Ligatures */
 	-webkit-font-feature-settings:"liga","dlig";-moz-font-feature-settings:"liga=1, dlig=1";-moz-font-feature-settings:"liga","dlig";-ms-font-feature-settings:"liga","dlig";-o-font-feature-settings:"liga","dlig";
 	font-feature-settings:"liga","dlig";
 	text-rendering:optimizeLegibility;
-		font-style: normal;
+	font-style: normal;
 	font-weight: normal;
 	font-variant: normal;
 	text-transform: none;
 	line-height: 1;
 	-webkit-font-smoothing: antialiased;
 	float:left;
-	font-size: 1.7em;
-	content: "\69\6e\64\69\63\61\74\6f\72";
-	
+	font-size: 1.7em;	
 	margin-top: -1em;
-	margin-left: 0.25em;
+	margin-left: 0.35em;
+	width: 0px;
+}
+.fl-uiOptions-fatPanel .fl-choice input:checked + div:before {
+	content: "\69\6e\64\69\63\61\74\6f\72";
 }
 
 /* Table of Contents switch */
