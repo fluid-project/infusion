@@ -127,6 +127,7 @@
 	text-align: center;
 	vertical-align: middle;
 	display: inline-block;
+	line-height: 3em !important;
 }
 
 .fl-uiOptions-fatPanel .fl-choice .uio-demo-theme .fl-crossout {
