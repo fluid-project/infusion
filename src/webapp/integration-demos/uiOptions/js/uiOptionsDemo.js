@@ -25,13 +25,13 @@
                     gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.extraSettingsPanels"]
                 }
             },
-            templateLoader: {
+             templateLoader: {
                 options: {
                     templates: {
                         uiOptions: "templates/FatPanelUIOptions.html",
                         simplifiedContent: "templates/UIOptionsTemplate-simplifiedContent.html",
                         selfVoicing: "templates/UIOptionsTemplate-selfVoicing.html"
-                    }
+                     }
                 }
             }
         });

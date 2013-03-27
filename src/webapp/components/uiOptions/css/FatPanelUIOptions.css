@@ -6,7 +6,8 @@
 	border-bottom: 1px solid #ccc;	
 }
 
-.fl-uiOptions-fatPanel .fl-toggleButton {
+.fl-uiOptions-fatPanel .fl-toggleButton,
+.fl-uiOptions-fatPanel .fl-uiOptions-reset {
 	float:right;
 	text-transform: uppercase;
 	font-weight: bold;	
@@ -28,13 +29,17 @@
 
 /* Theming */
 .fl-theme-bw .fl-uiOptions-fatPanel .fl-panelBar, 
-.fl-theme-bw .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #fff; border-color: #000; }
+.fl-theme-bw .fl-uiOptions-fatPanel .fl-toggleButton,
+.fl-uiOptions-fatPanel .fl-uiOptions-reset { background-color: #fff; border-color: #000; }
 
 .fl-theme-wb .fl-uiOptions-fatPanel .fl-panelBar, 
-.fl-theme-wb .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #000; border-color: #fff; color: #fff; }
+.fl-theme-wb .fl-uiOptions-fatPanel .fl-toggleButton,
+.fl-uiOptions-fatPanel .fl-uiOptions-reset { background-color: #000; border-color: #fff; color: #fff; }
 
 .fl-theme-by .fl-uiOptions-fatPanel .fl-panelBar, 
-.fl-theme-by .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #FFFF00; border-color: #000; }
+.fl-theme-by .fl-uiOptions-fatPanel .fl-toggleButton,
+.fl-uiOptions-fatPanel .fl-uiOptions-reset { background-color: #FFFF00; border-color: #000; }
 
 .fl-theme-yb .fl-uiOptions-fatPanel .fl-panelBar, 
-.fl-theme-yb .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #000; border-color: #ffff00; color: #ffff00 }
+.fl-theme-yb .fl-uiOptions-fatPanel .fl-toggleButton,
+.fl-uiOptions-fatPanel .fl-uiOptions-reset { background-color: #000; border-color: #ffff00; color: #ffff00 }

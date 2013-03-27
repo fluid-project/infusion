@@ -46,7 +46,11 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         selectors: {
+            reset: ".flc-uiOptions-reset",
             iframe: ".flc-uiOptions-iframe"
+        },
+        invokers: {
+            bindReset: "fluid.uiOptions.fatPanel.bindReset"
         },
         components: {
             pageEnhancer: "{uiEnhancer}",
@@ -122,6 +126,12 @@ var fluid_1_5 = fluid_1_5 || {};
                     events: {
                         onSignificantDOMChange: null  
                     },
+                    listeners: {
+                        onCreate: {
+                            listener: "{fatPanel}.bindReset",
+                            args: ["{fatPanel}.dom.reset", "{that}.reset"]
+                        }
+                    },
                     components: {
                         iframeRenderer: "{fatPanel}.iframeRenderer",
                         settingsStore: "{uiEnhancer}.settingsStore"
@@ -139,6 +149,10 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
+    
+    fluid.uiOptions.fatPanel.bindReset = function (elm, resetFn) {
+        $(elm).click(resetFn);
+    };
     
     fluid.uiOptions.fatPanel.optionsProcessor = function (options) {
         var enhancerOptions = fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions");
