@@ -5,7 +5,7 @@
     background-color: #fff;
     background-image: url('../images/default/fatpanelbg.png');
     background-repeat: repeat;
-    height: 12em;    
+    height: 14em;    
     overflow-x: scroll;
    /* overflow-y: hidden;*/
     color: #433F3D;
@@ -14,14 +14,16 @@
 
 /* Reset link */
 .fl-uiOptions-fatPanel #reset {
-    background-color: #333333;
-    color: #fff;    
+    color: #000;    
     text-transform: uppercase;
     font-weight: bold;
     display: block;
-    padding: 8px 15px 8px 3em;
+    width:5em;
+    margin: 0 2em 1em;
+    padding-left: 1.6em;
+    background-image: url('../images/default/uio_icon_reset_defaultInverted_16x16.png'); 
+	background-repeat: no-repeat;    
 }
-.fl-uiOptions-fatPanel #reset { background-image: url('../images/default/uio_icon_reset_defaultInverted_16x16.png'); }
 
 /* Preference Panels */
 .fl-uiOptions-fatPanel ul.fl-uiOptions-panels {
