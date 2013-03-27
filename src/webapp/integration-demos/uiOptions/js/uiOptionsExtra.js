@@ -131,6 +131,9 @@ var fluid_1_5 = fluid_1_5 || {};
         model: {
             value: false
         },
+        events: {
+            settingChanged: null
+        },
         invokers: {
             set: {
                 funcName: "fluid.uiOptions.actionAnts.simplifiedContentEnactor.set",
@@ -150,7 +153,7 @@ var fluid_1_5 = fluid_1_5 || {};
         
         if (!that.initialContent || !that.article) {
             that.initialContent = contentContainer.html();
-            $("aside", that.container).addClass("fl-hidden");
+            $("aside", that.container).remove();
             $("img", that.container).css("float", "none");
             $("figure", that.container).css("float", "none");
             var article = contentContainer.find("article").html();
@@ -169,6 +172,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 contentContainer.html(that.initialContent);
             }
         }
+        that.events.settingChanged.fire();
     };
 
     fluid.uiOptions.actionAnts.simplifiedContentEnactor.finalInit = function (that) {
@@ -189,6 +193,7 @@ var fluid_1_5 = fluid_1_5 || {};
             simplifiedContent: {
                 type: "fluid.uiOptions.actionAnts.simplifiedContentEnactor",
                 container: "{uiEnhancer}.container",
+                createOnEvent: "onCreateSimplifiedContent",
                 options: {
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
@@ -196,7 +201,15 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             }
+        },
+        events: {
+            onCreateSimplifiedContent: null
         }
     });
+    fluid.uiEnhancer.extraActions.finalInit = function (that) {
+        $(document).ready(function () {
+            that.events.onCreateSimplifiedContent.fire();
+        });
+    };
 
 })(jQuery, fluid_1_5);
