@@ -20,6 +20,31 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
+    /***********************************************
+     * UI Options Content Simplication
+     ***********************************************/
+
+    /**
+     * A sub-component of fluid.uiOptions that renders the "content simplication" panel of the user preferences interface.
+     */
+    fluid.defaults("fluid.uiOptions.simplifiedContent", {
+        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
+        model: {
+            value: false
+        },
+        selectors: {
+            simplifiedContent: ".flc-uiOptions-simplifiedContent"
+        },
+        protoTree: {
+            simplifiedContent: "${value}"
+        },
+        resources: {
+            template: {
+                url: "../templates/UIOptionsTemplate-simplifiedContent.html"
+            }
+        }
+    });
+
     /*****************************
      * UI Options Self Voicing
      *****************************/
@@ -50,9 +75,27 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.extraSettingsPanels", {
         gradeNames: ["fluid.uiOptions", "autoInit"],
         selectors: {
-            selfVoicing: ".flc-uiOptions-self-voicing"
+             simplifiedContent: ".flc-uiOptions-simplified-content",
+             selfVoicing: ".flc-uiOptions-self-voicing"
         },
         components: {
+            simplifiedContent: {
+                type: "fluid.uiOptions.simplifiedContent",
+                container: "{uiOptions}.dom.simplifiedContent",
+                createOnEvent: "onUIOptionsMarkupReady",
+                options: {
+                    sourceApplier: "{uiOptions}.applier",
+                    rules: {
+                        "selections.simplifiedContent": "value"
+                    },
+                    listeners: {
+                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
+                    },
+                    resources: {
+                        template: "{templateLoader}.resources.simplifiedContent"
+                    }
+                }
+            },
             selfVoicing: {
                 type: "fluid.uiOptions.selfVoicing",
                 container: "{uiOptions}.dom.selfVoicing",
@@ -144,7 +187,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
-                        "toc": "value"
+                         "simplifiedContent": "value"
                     }
                 }
             }
