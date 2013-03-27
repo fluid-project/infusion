@@ -26,14 +26,15 @@
             prefix: pathToTemplates,
             uiOptions: {
                 options: {
-                    gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
+                    gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.extraSettingsPanels"]
                 }
             },
              templateLoader: {
                 options: {
                     templates: {
-                        uiOptions: "templates/FatPanelUIOptions.html"
-                    }
+                        uiOptions: "templates/FatPanelUIOptions.html",
+                        selfVoicing: "templates/UIOptionsTemplate-selfVoicing.html"
+                     }
                 }
             }
         });
