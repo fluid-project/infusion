@@ -28,26 +28,9 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.actionAnts.selfVoicingEnactor", {
         gradeNames: ["fluid.uiOptions.actionAnts", "autoInit"],
         model: {
-            value: true
+            value: false
         },
-        events: {
-            onSelfVoicingUpdate: null
-        },
-        components: {
-            selfVoicer: {
-                type: "fluid.selfVoicer"
-            }
-        }
-    });
-
-    fluid.uiOptions.actionAnts.selfVoicingEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener("value", that.events.onSelfVoicingUpdate.fire);
-    };
-
-    fluid.defaults("fluid.selfVoicer", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
         listeners: {
-            "{selfVoicingEnactor}.events.onSelfVoicingUpdate": "{that}.handleSelfVoicing",
             "onCreate": [
                 "{that}.attachAudio", {
                     listener: "{that}.announce",
@@ -61,33 +44,35 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         invokers: {
             handleSelfVoicing: {
-                funcName: "fluid.selfVoicer.handleSelfVoicing",
-                args: ["{that}.selfVoicingEnabled", "{that}"]
+                funcName: "fluid.uiOptions.actionAnts.selfVoicingEnactor.handleSelfVoicing",
+                args: "{that}"
             },
             attachAudio: {
-                funcName: "fluid.selfVoicer.attachAudio",
+                funcName: "fluid.uiOptions.actionAnts.selfVoicingEnactor.attachAudio",
                 args: ["{that}"]
             },
             announce: {
-                funcName: "fluid.selfVoicer.announce",
-                args: ["{that}.selfVoicingEnabled", "{that}.audio", "{that}.options.ttsUrl", "{that}.options.lang", "{arguments}.0"]
+                funcName: "fluid.uiOptions.actionAnts.selfVoicingEnactor.announce",
+                args: ["{that}.audio", "{that}.options.ttsUrl", "{that}.options.lang", "{arguments}.0"]
             },
             buildSpeechQueue: {
-                funcName: "fluid.selfVoicer.buildSpeechQueue",
+                funcName: "fluid.uiOptions.actionAnts.selfVoicingEnactor.buildSpeechQueue",
                 args: ["{that}.queue", "{arguments}.0"]
             },
             announceNext: {
-                funcName: "fluid.selfVoicer.announceNext",
+                funcName: "fluid.uiOptions.actionAnts.selfVoicingEnactor.announceNext",
                 args: "{that}"
             }
         },
         members: {
-            selfVoicingEnabled: "{selfVoicingEnactor}.model.value",
             seen: [],
             queue: []
         },
         strings: {
-            loaded: "Self Voicing Enabled"
+            loaded: "Text to Speech Enabled"
+        },
+        styles: {
+            current: "fl-selfVoicing-current"
         },
 
         // HTML5 Audio configuration
@@ -99,7 +84,13 @@ var fluid_1_5 = fluid_1_5 || {};
         ttsUrl: "http://translate.google.com/translate_tts?q=%text&tl=%lang"
     });
 
-    fluid.selfVoicer.attachAudio = function (that) {
+    fluid.uiOptions.actionAnts.selfVoicingEnactor.finalInit = function (that) {
+        that.applier.modelChanged.addListener("value", function () {
+            that.handleSelfVoicing();
+        });
+    };
+
+    fluid.uiOptions.actionAnts.selfVoicingEnactor.attachAudio = function (that) {
         that.audio = $(that.options.markup);
         that.audio.attr("id", that.options.audioSelector);
         that.audio.hide();
@@ -107,21 +98,25 @@ var fluid_1_5 = fluid_1_5 || {};
         $("body").append(that.audio);
         var audioElement = that.audio[0];
         audioElement.addEventListener("loadedmetadata", function () {
+            if (!that.model.value) {
+                return;
+            }
             audioElement.play();
             setTimeout(that.events.afterAnnounce.fire, audioElement.duration * 1000);
         });
     };
 
-    fluid.selfVoicer.handleSelfVoicing = function (enabled) {
-        if (!enabled) {
+    fluid.uiOptions.actionAnts.selfVoicingEnactor.handleSelfVoicing = function (that) {
+        if (that.model.value) {
+            that.announce(that.options.strings.loaded);
+        } else {
             delete that.currentElement;
             that.seen = [];
             that.queue = [];
         }
     };
 
-    fluid.selfVoicer.announce = function (enabled, audio, url, lang, text) {
-        if (!enabled) {return;}
+    fluid.uiOptions.actionAnts.selfVoicingEnactor.announce = function (audio, url, lang, text) {
         audio.attr("src", fluid.stringTemplate(url, {
             lang: lang,
             text: text
@@ -144,18 +139,18 @@ var fluid_1_5 = fluid_1_5 || {};
         buildSpeechQueueImpl(queue, text.substring(sIndex + 1));
     };
 
-    fluid.selfVoicer.buildSpeechQueue = function (queue, text) {
+    fluid.uiOptions.actionAnts.selfVoicingEnactor.buildSpeechQueue = function (queue, text) {
         buildSpeechQueueImpl(queue, text);
     };
 
-    fluid.selfVoicer.announceNext = function (that) {
+    fluid.uiOptions.actionAnts.selfVoicingEnactor.announceNext = function (that) {
         if (that.queue.length > 0) {
             that.announce(that.queue.shift())
             return;
         }
         var announcement = "";
         that.currentElement = that.currentElement ||
-            $("article p")[5];//document.activeElement;
+            document.activeElement;
         var nodes = $(that.currentElement).contents();
         var next = fluid.find(nodes, function (node) {
             if (that.seen.indexOf(node) > -1) {return;}
