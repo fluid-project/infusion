@@ -1,6 +1,6 @@
 @font-face {
 	font-family: 'OpenSans';
-	src:url('fonts/OpenSans-Regular.ttf');
+	src:url('fonts/OpenSans-Light.ttf');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -13,7 +13,7 @@
 	border-bottom: 1px solid #ccc;  
 }
 
-.fl-uiOptions-fatPanel .fl-panelBar span {
+.fl-uiOptions-fatPanel .fl-panelBar .fl-uio-tabs {
 	box-shadow: 2px 2px 3px 0px #6f6f6f;
 	border-bottom: 1px solid #ccc;
 	border-left: 1px solid #ccc;
@@ -41,7 +41,11 @@
 
 .uio-demo-theme .fl-uiOptions-fatPanel .fl-uiOptions-reset {
 	border-right: 1px solid #ccc;
-	margin-left: 0.5em;
+}
+
+.fl-uiOptions-reset {
+	width: 10em;
+	display:inline-block;
 }
 
 /* IFrame */
