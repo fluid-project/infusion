@@ -5,7 +5,7 @@
     background-color: #fff;
     background-image: url('../images/default/fatpanelbg.png');
     background-repeat: repeat;
-    height: 26em;
+    height: 12.5em;
     overflow-x: scroll;
    	overflow-y: hidden;
     color: #766d68;
@@ -15,7 +15,7 @@
 /* Preference Panels */
 .fl-uiOptions-fatPanel ul.fl-uiOptions-panels {
 	margin: 0 20px;
-    width: 115em;
+    width: 225em;
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions-panels li.fl-uiOptions-panel {
