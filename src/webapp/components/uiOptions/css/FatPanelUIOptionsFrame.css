@@ -1,12 +1,23 @@
+@font-face {
+	font-family: 'OpenSans';
+	src:url('fonts/OpenSans-Regular.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.fl-uiOptions-fatPanel .fl-uiOptions {
+    font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
+}
+
 /* UI Options Fat Panel styles */
 .fl-uiOptions-fatPanel {
     min-width: 960px;
-	min-width: inherit;
-    background-color: #fff;
+	background-color: #fff;
     background-image: url('../images/default/fatpanelbg.png');
     background-repeat: repeat;
-    height: 26em;
+    height: 14em;
     overflow-x: scroll;
+    overflow-y: hidden;
     color: #766d68;
     margin-top: 15px;
 }
@@ -14,7 +25,7 @@
 /* Preference Panels */
 .fl-uiOptions-fatPanel ul.fl-uiOptions-panels {
 	margin: 0 20px;
-    width: 115em;
+    width: 225em;
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions-panels li.fl-uiOptions-panel {
@@ -23,12 +34,11 @@
  	box-shadow: 2px 2px #7a766d;
  	display: inline-block;
  	padding: 1em;
- 	min-height: 9.2em;
+ 	min-height: 9.6em;
  	width: 25em;
  	background-color: #fff;
 	margin-right: 10px;
-    margin-bottom: 10px;
-	float: left;
+    float: left;
  }
 
 .fl-uiOptions-fatPanel h2 {
@@ -141,7 +151,7 @@
 }
 
 .fl-uiOptions-fatPanel .fl-choice .fl-preview-A {
-	font-size: 2.5em;
+	font-size: 2.1em;
 }
 
 .fl-uiOptions-fatPanel .fl-choice input:focus + label {
@@ -173,7 +183,7 @@
 
 /* Table of Contents switch */
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc {
-	width: 5.6em;
+	width: 6em;
 	height:2em;
 	margin-right:10px;
 	float:left;
@@ -181,13 +191,15 @@
 
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-option-description {
 	padding: 0; /* override .fl-uiOptions-option-description style. */
+	display: inline-block;
+	width: 16.5em;
 }
 
 /* The container for the toggle, which is also a label for the hidden checkbox. */
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-switch { 
 	border-radius:50px;
 	border: 1px solid #776D67;
-	width: 4.6em;
+	width: 5em;
 	height: 2em;
 	background-color: #E6E6E6;
 	box-shadow: 1em 1.1em 0 0 rgba(250,250,250,0.53) inset;
@@ -204,7 +216,7 @@
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switch {
-	padding-left: 2.6em;
+	padding-left: 3em;
 	width: 2em;
 	background-color: #2da750;
 	box-shadow: -1em 1.1em 0.1em 0 rgba(172, 216, 92, 0.63) inset;
@@ -220,7 +232,7 @@
 	width:1.9em; 
 	height: 1.9em; /* Width and height of the knob. */
 	text-indent:-1.6em;
-	line-height:2em;
+	line-height:1.7em;
 	text-shadow: 1px 1px 1px #000;
 	background-color: #fff;
 	background-image: linear-gradient(bottom, rgb(205,204,202) 0%, rgb(244,244,244) 100%);
@@ -243,7 +255,7 @@
 	content:"OFF";
 	float:left;
 	position:relative;
-	top: 0.5em;	
+	top: 0.36em;	
 	left: 0.5em;
 }
 
@@ -258,7 +270,7 @@
 	width: 1em;
 	height: 1em;
 	position:relative;
-	left:-2.7em;
+	left:-2.85em;
 	top:0.46em;
 	
 	background-color: #675243;
@@ -269,10 +281,18 @@
 
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switch .fl-uiOptions-fatPanel-switch-inner {
 	top:-1.6em;
-	left: 0.5em;
+	left: 0.46em;
 }
 
+/* Emphasize links & buttons panel */
+.fl-uiOptions-fatPanel .fl-uiOptions .fl-links-buttons-options label {
+	width: 22em;
+	display:inline-block;
+}
 
+.fl-uiOptions-fatPanel .fl-uiOptions .fl-links-buttons-options li {
+	margin-bottom: 0.4em;
+}
 /* Theming */
 .fl-uiOptions-fatPanel.fl-theme-bw,
 .fl-uiOptions-fatPanel.fl-theme-wb,
