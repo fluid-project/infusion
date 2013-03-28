@@ -33,6 +33,22 @@
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.tabs.js"></script>  
         <script type="text/javascript" src="../../../lib/jquery/plugins/ariaTabs/js/ui.ariaTabs.js"></script>          
         <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
+        
+        <script type="text/javascript">
+            var ua = navigator.userAgent.toLowerCase();
+            var uaClass = "webkit";
+            if (ua.indexOf("safari") >= 0 || ua.indexOf("chrome") >= 0) {
+                jQuery("document").ready(function () {
+                    jQuery("body").addClass(uaClass);
+                });
+            }
+        </script>
+        
+        <style type="text/css">
+            .webkit.fl-uiOptions-fatPanel {
+                width: 225em;
+            }
+        </style>
 
      </head>
 
