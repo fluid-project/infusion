@@ -134,6 +134,10 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     var buildSpeechQueueImpl = function (queue, text) {
+        if (text.length <= 100) {
+            queue.push(text);
+            return;
+        }
         var currentText = text.substr(0, 100);
         var sIndex = currentText.lastIndexOf("\s");
         queue.push(currentText.substring(0, sIndex));
@@ -192,7 +196,7 @@ var fluid_1_5 = fluid_1_5 || {};
         };
         that.currentElement = next;
         if (announcement) {
-            buildSpeechQueue(announcement);
+            that.buildSpeechQueue(announcement);
             that.announce(that.queue.shift());
         } else {
             that.announceNext();
