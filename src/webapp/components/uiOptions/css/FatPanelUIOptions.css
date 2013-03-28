@@ -37,15 +37,15 @@
     font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
     font-size: 1.1em;
     margin-right: 0.5em;
+    margin-left: 0.5em;
 }
 
-.uio-demo-theme .fl-uiOptions-fatPanel .fl-uiOptions-reset {
-	border-right: 1px solid #ccc;
+.fl-uiOptions-fatPanel .fl-uiOptions-reset {
+	border-right: 1px solid #ccc;	
 }
 
-.fl-uiOptions-reset {
-	width: 10em;
-	display:inline-block;
+.fl-uiOptions-fatPanel .fl-toggleButton {
+	width: 15em;
 }
 
 /* IFrame */

@@ -149,8 +149,12 @@ img {
 }
 
 /* Overriding some of the default Fat Panel UI Options colours */
-.fl-uiOptions-fatPanel .fl-panelBar span {
+.fl-uiOptions-fatPanel .fl-panelBar .fl-uio-tabs {
     background-color: #0071BC;
+}
+
+.fl-uiOptions-fatPanel .fl-toggleButton {
+	width: 16em;
 }
 
 .uio-demo-theme .fl-uiOptions-fatPanel .fl-toggleButton,
