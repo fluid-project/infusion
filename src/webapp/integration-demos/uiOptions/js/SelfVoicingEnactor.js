@@ -72,6 +72,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.selfVoicer.announce",
                 args: ["{that}.selfVoicingEnabled", "{that}.audio", "{that}.options.ttsUrl", "{that}.options.lang", "{arguments}.0"]
             },
+            buildSpeechQueue: {
+                funcName: "fluid.selfVoicer.buildSpeechQueue",
+                args: ["{that}.queue", "{arguments}.0"]
+            },
             announceNext: {
                 funcName: "fluid.selfVoicer.announceNext",
                 args: "{that}"
@@ -79,6 +83,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         members: {
             selfVoicingEnabled: "{selfVoicingEnactor}.model.value",
+            seen: [],
             queue: []
         },
         strings: {
@@ -110,6 +115,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.selfVoicer.handleSelfVoicing = function (enabled) {
         if (!enabled) {
             delete that.currentElement;
+            that.seen = [];
             that.queue = [];
         }
     };
@@ -122,23 +128,43 @@ var fluid_1_5 = fluid_1_5 || {};
         }));
     };
 
+    var fullTrim = function (string) {
+        string = string.trim();
+        return string.replace(/\s{2,}/gi, " ");
+    };
+
+    var buildSpeechQueueImpl = function (queue, text) {
+        var currentText = text.substr(0, 100);
+        var sIndex = currentText.lastIndexOf("\s");
+        queue.push(currentText.substring(0, sIndex));
+        buildSpeechQueueImpl(queue, text.substring(sIndex + 1));
+    };
+
+    fluid.selfVoicer.buildSpeechQueue = function (queue, text) {
+        buildSpeechQueueImpl(queue, text);
+    };
+
     fluid.selfVoicer.announceNext = function (that) {
+        if (that.queue.length > 0) {
+            that.announce(that.queue.shift())
+            return;
+        }
         var announcement = "";
         that.currentElement = that.currentElement ||
-            document.activeElement;
+            $("article p")[5];//document.activeElement;
         var nodes = $(that.currentElement).contents();
         var next = fluid.find(nodes, function (node) {
-            if (that.queue.indexOf(node) > -1) {return;}
+            if (that.seen.indexOf(node) > -1) {return;}
 
             if (node.nodeType === 8 || node.nodeName === "SCRIPT" ||
                 node.nodeName === "IFRAME") {
-                that.queue.push(node);
+                that.seen.push(node);
                 return;
             }
 
             if (node.nodeType === 3) {
-                announcement = node.nodeValue.trim();
-                that.queue.push(node);
+                announcement = fullTrim(node.nodeValue);
+                that.seen.push(node);
                 if (announcement) {
                     return node;
                 }
@@ -147,19 +173,27 @@ var fluid_1_5 = fluid_1_5 || {};
 
             if (node.nodeType === 1) {
                 if (window.getComputedStyle(node).display === "none") {
-                    that.queue.push(node);
+                    that.seen.push(node);
                     return;
+                }
+                if (node.nodeName === "IMG") {
+                    announcement = fluid.find(node.attributes, function (attr) {
+                        if (attr.name === "alt") {
+                            return fullTrim(attr.value);
+                        }
+                    });
                 }
                 return node;
             }
         });
         if (!next && !that.currentElement.parentNode.nodeName !== "HTML") {
-            that.queue.push(that.currentElement);
+            that.seen.push(that.currentElement);
             next = that.currentElement.parentNode;
         };
         that.currentElement = next;
         if (announcement) {
-            that.announce(announcement);
+            buildSpeechQueue(announcement);
+            that.announce(that.queue.shift());
         } else {
             that.announceNext();
         }
