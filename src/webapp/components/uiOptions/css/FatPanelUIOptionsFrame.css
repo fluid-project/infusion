@@ -12,12 +12,12 @@
 /* UI Options Fat Panel styles */
 .fl-uiOptions-fatPanel {
     min-width: 960px;
-	min-width: inherit;
-    background-color: #fff;
+	background-color: #fff;
     background-image: url('../images/default/fatpanelbg.png');
     background-repeat: repeat;
     height: 14em;
     overflow-x: scroll;
+    overflow-y: hidden;
     color: #766d68;
     margin-top: 15px;
 }
@@ -38,8 +38,7 @@
  	width: 25em;
  	background-color: #fff;
 	margin-right: 10px;
-    margin-bottom: 10px;
-	float: left;
+    float: left;
  }
 
 .fl-uiOptions-fatPanel h2 {
