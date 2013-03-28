@@ -1,22 +1,33 @@
 /* Top bar and show/hide button */
 .fl-uiOptions-fatPanel .fl-panelBar {
-	width: 100%;
-	height: 5px;
-	background-color: #fff;
-	border-bottom: 1px solid #ccc;	
+	height: 1em;
+}
+
+.fl-uiOptions-fatPanel .fl-panelBar ul {
+	border-radius: 8px;	
+	border-bottom: 1px solid #ccc;
+	display:inline-block;
+	box-shadow: 2px 2px 3px 0px #6f6f6f;
+ 	float: right;
+ 	margin-right: 10em;
+}
+
+.fl-uiOptions-fatPanel .fl-panelBar ul li {
+	display:inline;
 }
 
 .fl-uiOptions-fatPanel .fl-toggleButton,
 .fl-uiOptions-fatPanel .fl-uiOptions-reset {
 	float:right;
-	text-transform: uppercase;
+	text-transform: lowercase;
 	font-weight: bold;	
 	border: 0px;
 	background-color: white;	
-	padding: 5px;
-	margin-right: 10px;
-	border-radius: 8px;	
-	border-bottom: 1px solid #ccc;
+	padding: 0.5em;
+}
+
+.fl-uiOptions-fatPanel .fl-uiOptions-reset {
+	border-right: 1px solid #ccc;
 }
 
 /* IFrame */
