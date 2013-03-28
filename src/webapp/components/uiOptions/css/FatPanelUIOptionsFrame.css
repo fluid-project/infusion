@@ -1,3 +1,14 @@
+@font-face {
+	font-family: 'OpenSans';
+	src:url('fonts/OpenSans-Regular.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.fl-uiOptions-fatPanel .fl-uiOptions {
+    font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
+}
+
 /* UI Options Fat Panel styles */
 .fl-uiOptions-fatPanel {
     min-width: 960px;
@@ -145,7 +156,7 @@
 }
 
 .fl-uiOptions-fatPanel .fl-choice .fl-preview-A {
-	font-size: 2.5em;
+	font-size: 2.1em;
 }
 
 .fl-uiOptions-fatPanel .fl-choice input:focus + label {
@@ -204,7 +215,7 @@
 	width:1.9em; 
 	height: 1.9em; /* Width and height of the knob. */
 	text-indent:-1.6em;
-	line-height:2em;
+	line-height:1.7em;
 	text-shadow: 1px 1px 1px #000;
 	background-color: #fff;
 	background-image: linear-gradient(bottom, rgb(205,204,202) 0%, rgb(244,244,244) 100%);
@@ -227,7 +238,7 @@
 	content:"OFF";
 	float:left;
 	position:relative;
-	top: 0.5em;	
+	top: 0.36em;	
 	left: 0.5em;
 }
 
@@ -242,7 +253,7 @@
 	width: 1em;
 	height: 1em;
 	position:relative;
-	left:-2.7em;
+	left:-2.8em;
 	top:0.46em;
 	
 	background-color: #675243;
