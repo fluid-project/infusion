@@ -1,33 +1,51 @@
+@font-face {
+	font-family: 'OpenSans';
+	src:url('fonts/OpenSans-Light.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+
 /* Top bar and show/hide button */
+
 .fl-uiOptions-fatPanel .fl-panelBar {
-	height: 1em;
+	width: 100%;
+	background-color: #fff;
+	border-bottom: 1px solid #ccc;  
 }
 
-.fl-uiOptions-fatPanel .fl-panelBar ul {
-	border-radius: 8px;	
-	border-bottom: 1px solid #ccc;
-	display:inline-block;
+.fl-uiOptions-fatPanel .fl-panelBar .fl-uio-tabs {
 	box-shadow: 2px 2px 3px 0px #6f6f6f;
- 	float: right;
- 	margin-right: 10em;
-}
-
-.fl-uiOptions-fatPanel .fl-panelBar ul li {
-	display:inline;
+	border-bottom: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-bottom-left-radius:8px;
+	border-bottom-right-radius:8px;	
+	background-color: white;
+	height: 2.2em;
+	margin-right: 10em;
+	display:block;
+	float:right;
 }
 
 .fl-uiOptions-fatPanel .fl-toggleButton,
 .fl-uiOptions-fatPanel .fl-uiOptions-reset {
-	float:right;
 	text-transform: lowercase;
 	font-weight: bold;	
-	border: 0px;
-	background-color: white;	
-	padding: 0.5em;
+	border:0;
+	background-color: white;
+	height: 100%;
+	color: #2f2b2a
+    font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
+    font-size: 1.1em;
+    margin-right: 0.5em;
+    margin-left: 0.5em;
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions-reset {
-	border-right: 1px solid #ccc;
+	border-right: 1px solid #ccc;	
+}
+
+.fl-uiOptions-fatPanel .fl-toggleButton {
+	width: 15em;
 }
 
 /* IFrame */
