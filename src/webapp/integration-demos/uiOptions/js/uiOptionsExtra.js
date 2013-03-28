@@ -195,6 +195,15 @@ var fluid_1_5 = fluid_1_5 || {};
                          "simplifiedContent": "value"
                     }
                 }
+            },
+            selfVoicingEnactor: {
+                type: "fluid.uiOptions.actionAnts.selfVoicingEnactor",
+                options: {
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "selfVoicing": "value"
+                    }
+                }
             }
         }
     });
