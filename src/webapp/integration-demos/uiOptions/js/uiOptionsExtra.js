@@ -23,7 +23,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /***********************************************
      * UI Options Content Simplication
      ***********************************************/
-     
+
     /**
      * A sub-component of fluid.uiOptions that renders the "content simplication" panel of the user preferences interface.
      */
@@ -75,10 +75,27 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.extraSettingsPanels", {
         gradeNames: ["fluid.uiOptions", "autoInit"],
         selectors: {
-            simplifiedContent: ".flc-uiOptions-simplified-content",
-            selfVoicing: ".flc-uiOptions-self-voicing"
+             simplifiedContent: ".flc-uiOptions-simplified-content",
+             selfVoicing: ".flc-uiOptions-self-voicing"
         },
         components: {
+            simplifiedContent: {
+                type: "fluid.uiOptions.simplifiedContent",
+                container: "{uiOptions}.dom.simplifiedContent",
+                createOnEvent: "onUIOptionsMarkupReady",
+                options: {
+                    sourceApplier: "{uiOptions}.applier",
+                    rules: {
+                        "selections.simplifiedContent": "value"
+                    },
+                    listeners: {
+                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
+                    },
+                    resources: {
+                        template: "{templateLoader}.resources.simplifiedContent"
+                    }
+                }
+            },
             selfVoicing: {
                 type: "fluid.uiOptions.selfVoicing",
                 container: "{uiOptions}.dom.selfVoicing",
@@ -134,16 +151,21 @@ var fluid_1_5 = fluid_1_5 || {};
         if (!that.initialContent || !that.article) {
             that.initialContent = contentContainer.html();
             $("aside", that.container).addClass("fl-hidden");
+            $("img", that.container).css("float", "none");
+            $("figure", that.container).css("float", "none");
             var article = contentContainer.find("article").html();
             that.article = article ? article : that.initialContent;
+            that.origBg = $("body").css("background-image");
         }
         
         if (value) {
             if (contentContainer.html() !== that.article) {
+                $("body").css("background-image", "none");
                 contentContainer.html(that.article);
             }
         } else {
             if (contentContainer.html() !== that.initialContent) {
+                $("body").css("background-image", that.origBg);
                 contentContainer.html(that.initialContent);
             }
         }
@@ -164,13 +186,13 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiEnhancer.extraActions", {
         gradeNames: ["fluid.uiEnhancer", "autoInit"],
         components: {
-            simplifiedContentEnactor: {
+            simplifiedContent: {
                 type: "fluid.uiOptions.actionAnts.simplifiedContentEnactor",
                 container: "{uiEnhancer}.container",
                 options: {
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
-                        "toc": "value"
+                         "simplifiedContent": "value"
                     }
                 }
             },

@@ -6,12 +6,14 @@
     var pathToTemplates = "../../components/uiOptions/html/";
 
     var extraSiteSettings = {
-        selfVoicing: false
-    };
-    
+            simplifiedContent: false,
+            selfVoicing: false
+        };
+
     demo.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
             gradeNames: ["fluid.uiEnhancer.defaultActions", "fluid.uiEnhancer.extraActions"],
+            defaultSiteSettings: extraSiteSettings,
             tocTemplate: pathToTocTemplate,
             classnameMap: {
                 theme: {
@@ -26,15 +28,20 @@
             prefix: pathToTemplates,
             uiOptions: {
                 options: {
-                    gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
+                    gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.extraSettingsPanels"]
                 }
             },
              templateLoader: {
                 options: {
                     templates: {
-                        uiOptions: "templates/FatPanelUIOptions.html"
-                    }
+                        uiOptions: "templates/FatPanelUIOptions.html",
+                        simplifiedContent: "templates/UIOptionsTemplate-simplifiedContent.html",
+                        selfVoicing: "templates/UIOptionsTemplate-selfVoicing.html"
+                     }
                 }
+            },
+            outerEnhancerOptions: {
+                defaultSiteSettings: extraSiteSettings
             }
         });
     };

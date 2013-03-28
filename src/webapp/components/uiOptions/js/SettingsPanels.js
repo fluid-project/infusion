@@ -64,7 +64,8 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         sliderOptions: {
             orientation: "horizontal",
-            step: 0.1
+            step: 0.1,
+            range: "min"
         },
         selectors: {
             textSize: ".flc-uiOptions-min-text-size",
@@ -147,7 +148,8 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         sliderOptions: {
             orientation: "horizontal",
-            step: 0.1
+            step: 0.1,
+            range: "min"
         },
         selectors: {
             lineSpacing: ".flc-uiOptions-line-spacing"
@@ -191,7 +193,7 @@ var fluid_1_5 = fluid_1_5 || {};
             themeInput: ".flc-uiOptions-themeInput"
         },
         markup: {
-            label: "<span class=\"fl-preview-A\">A</span><span class=\"fl-hidden-accessible\">%theme</span>"
+            label: "<span class=\"fl-preview-A\" role=\"presentation\">A</span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\"></div>"
         },
         invokers: {
             style: {
@@ -220,7 +222,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 theme: strings[index]
             }));
             label.addClass(style[theme[index]]);
-        });
+        });        
     };
     
     fluid.uiOptions.contrast.produceTree = function (that) {
