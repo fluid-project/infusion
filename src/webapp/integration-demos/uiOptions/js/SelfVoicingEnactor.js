@@ -53,7 +53,8 @@ var fluid_1_5 = fluid_1_5 || {};
                     listener: "{that}.announce",
                     args: "{that}.options.strings.loaded"
                 }
-            ]
+            ],
+            afterAnnounce: "{that}.announceNext"
         },
         events: {
             afterAnnounce: null
@@ -70,10 +71,15 @@ var fluid_1_5 = fluid_1_5 || {};
             announce: {
                 funcName: "fluid.selfVoicer.announce",
                 args: ["{that}.selfVoicingEnabled", "{that}.audio", "{that}.options.ttsUrl", "{that}.options.lang", "{arguments}.0"]
+            },
+            announceNext: {
+                funcName: "fluid.selfVoicer.announceNext",
+                args: "{that}"
             }
         },
         members: {
-            selfVoicingEnabled: "{selfVoicingEnactor}.model.value"
+            selfVoicingEnabled: "{selfVoicingEnactor}.model.value",
+            queue: []
         },
         strings: {
             loaded: "Self Voicing Enabled"
@@ -88,23 +94,6 @@ var fluid_1_5 = fluid_1_5 || {};
         ttsUrl: "http://translate.google.com/translate_tts?q=%text&tl=%lang"
     });
 
-    fluid.selfVoicer.finalInit = function (that) {
-/*
-        function keyCode(evt) {
-            // Fix for handling arrow key presses. See FLUID-760.
-            return evt.keyCode ? evt.keyCode : (evt.which ? evt.which : 0);          
-        }
-        function getActiveElement () {
-            that.currentElement = that.currentElement || $(document.activeElement);
-        }
-        $("body").keypress(function (event) {
-            if (keyCode(event) !== $.ui.keyCode.SPACE) {return;}
-            getActiveElement();
-            that.announce(that.currentElement.text().trim());
-        });
-*/
-    };
-
     fluid.selfVoicer.attachAudio = function (that) {
         that.audio = $(that.options.markup);
         that.audio.attr("id", that.options.audioSelector);
@@ -114,13 +103,14 @@ var fluid_1_5 = fluid_1_5 || {};
         var audioElement = that.audio[0];
         audioElement.addEventListener("loadedmetadata", function () {
             audioElement.play();
-            setTimeout(that.events.afterAnnounce.fire, audioElement.duration);
+            setTimeout(that.events.afterAnnounce.fire, audioElement.duration * 1000);
         });
     };
 
     fluid.selfVoicer.handleSelfVoicing = function (enabled) {
         if (!enabled) {
             delete that.currentElement;
+            that.queue = [];
         }
     };
 
@@ -130,6 +120,49 @@ var fluid_1_5 = fluid_1_5 || {};
             lang: lang,
             text: text
         }));
+    };
+
+    fluid.selfVoicer.announceNext = function (that) {
+        var announcement = "";
+        that.currentElement = that.currentElement ||
+            document.activeElement;
+        var nodes = $(that.currentElement).contents();
+        var next = fluid.find(nodes, function (node) {
+            if (that.queue.indexOf(node) > -1) {return;}
+
+            if (node.nodeType === 8 || node.nodeName === "SCRIPT" ||
+                node.nodeName === "IFRAME") {
+                that.queue.push(node);
+                return;
+            }
+
+            if (node.nodeType === 3) {
+                announcement = node.nodeValue.trim();
+                that.queue.push(node);
+                if (announcement) {
+                    return node;
+                }
+                return;
+            }
+
+            if (node.nodeType === 1) {
+                if (window.getComputedStyle(node).display === "none") {
+                    that.queue.push(node);
+                    return;
+                }
+                return node;
+            }
+        });
+        if (!next && !that.currentElement.parentNode.nodeName !== "HTML") {
+            that.queue.push(that.currentElement);
+            next = that.currentElement.parentNode;
+        };
+        that.currentElement = next;
+        if (announcement) {
+            that.announce(announcement);
+        } else {
+            that.announceNext();
+        }
     };
 
 })(jQuery, fluid_1_5);
