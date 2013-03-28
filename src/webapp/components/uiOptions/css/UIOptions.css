@@ -240,7 +240,7 @@
 	font-style: normal;
 }
 
-.fl-icon-size, .fl-icon-contrast, .fl-icon-triangle, .fl-icon-simplify, .fl-icon-line-space, .fl-icon-links, .fl-icon-font-style, .fl-icon-list, .fl-icon-text-to-speech, .fl-icon-prefrences{
+.fl-icon-size, .fl-icon-contrast, .fl-icon-triangle, .fl-icon-simplify, .fl-icon-line-space, .fl-icon-links, .fl-icon-font-style, .fl-icon-list, .fl-icon-text-to-speech, .fl-icon-prefrences, .fl-icon-undo {
 	font-family: 'UIO';
 		speak: none;
 	/* Enable Ligatures */
@@ -300,4 +300,8 @@
 
 .fl-icon-prefrences:after {
 	content: "\6f\70\74\69\6f\6e\73";
+}
+
+.fl-icon-undo:after {
+	content: "\75\6e\64\6f";
 }
