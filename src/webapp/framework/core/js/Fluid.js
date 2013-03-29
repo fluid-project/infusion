@@ -794,7 +794,7 @@ var fluid = fluid || fluid_1_4;
         var sortedListeners = [];
         
         function fireToListeners(listeners, args, wrapper) {
-            for (var i in listeners) {
+            for (var i = 0; i < listeners.length; ++i) {
                 var lisrec = listeners[i];
                 var listener = lisrec.listener;
                 if (typeof (listener) === "string") {
