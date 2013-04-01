@@ -6,9 +6,15 @@
     var pathToTemplates = "../../components/uiOptions/html/";
 
     var extraSiteSettings = {
-            simplifiedContent: false,
-            selfVoicing: false
-        };
+        simplifiedContent: false,
+        selfVoicing: false
+    };
+
+    demo.updateToc = function (tocEnactor) {
+        if (tocEnactor.tableOfContents) {
+            tocEnactor.tableOfContents.regenerateToc();
+        }
+    };
 
     demo.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
@@ -18,6 +24,24 @@
             classnameMap: {
                 theme: {
                     "default": customThemeName
+                }
+            },
+            components: {
+                simplifiedContent: {
+                    options: {
+                        listeners: {
+                            settingChanged: "{uiEnhancer}.events.simplifyContentChanged"
+                        }
+                    }
+                }
+            },
+            events: {
+                simplifyContentChanged: null
+            },
+            listeners: {
+                simplifyContentChanged: {
+                    listener: "demo.updateToc",
+                    args: "{that}.tableOfContents"
                 }
             }
         });
