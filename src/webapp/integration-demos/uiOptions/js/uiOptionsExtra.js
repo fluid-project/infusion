@@ -128,6 +128,9 @@ var fluid_1_5 = fluid_1_5 || {};
         selectors: {
             content: ".flc-uiOptions-content"
         },
+        styles: {
+            simplified: "fl-uiOptins-content-simplified"
+        },
         model: {
             value: false
         },
@@ -150,29 +153,34 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.actionAnts.simplifiedContentEnactor.set = function (value, that) {
         var contentContainer = that.container.find(that.options.selectors.content);
+        var simplified = contentContainer.hasClass(that.options.styles.simplified);
         
         if (!that.initialContent || !that.article) {
             that.initialContent = contentContainer.html();
-            $("aside", that.container).remove();
-            $("img", that.container).css("float", "none");
-            $("figure", that.container).css("float", "none");
-            var article = contentContainer.find("article").html();
+            var articleDom = contentContainer.find("article").clone();
+            $("aside", articleDom).remove();
+            $("img", articleDom).css("float", "none");
+            $("figure", articleDom).css("float", "none");
+            var article = articleDom.html();
             that.article = article ? article : that.initialContent;
             that.origBg = $("body").css("background-image");
         }
         
         if (value) {
-            if (contentContainer.html() !== that.article) {
+            if (!simplified) {
                 $("body").css("background-image", "none");
                 contentContainer.html(that.article);
+                contentContainer.addClass(that.options.styles.simplified);
+                that.events.settingChanged.fire();
             }
         } else {
-            if (contentContainer.html() !== that.initialContent) {
+            if (simplified) {
                 $("body").css("background-image", that.origBg);
                 contentContainer.html(that.initialContent);
+                contentContainer.removeClass(that.options.styles.simplified);
+                that.events.settingChanged.fire();
             }
         }
-        that.events.settingChanged.fire();
     };
 
     fluid.uiOptions.actionAnts.simplifiedContentEnactor.finalInit = function (that) {
