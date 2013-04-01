@@ -130,8 +130,7 @@
 }
 
 .fl-uiOptions-fatPanel .fl-choice label {
-	margin-right: 5px;
-	
+	margin-right: 5px;	
 	border: 1px solid black;
 	border-radius: 5px;
 	height: 3em;
@@ -141,7 +140,6 @@
 	display: inline-block;
 	line-height: 3em !important;
 }
-
 .fl-uiOptions-fatPanel .fl-choice .uio-demo-theme .fl-crossout {
 	margin-top:-1.5em;
 	border-bottom: 1px dashed #ddbdc0;
@@ -155,9 +153,10 @@
 	font-size: 2.1em;
 }
 
-.fl-uiOptions-fatPanel .fl-choice input:focus + label {
+.fl-uiOptions-fatPanel .fl-choice input:focus ~ label {
 	outline: 2px solid black;
 }
+
 .fl-uiOptions-fatPanel .fl-choice .fl-indicator {
 	font-family: 'UIO';
 	speak: none;
@@ -374,4 +373,15 @@
     background-color: #000000 !important;
     border-color: #FFFF00 !important;
     color: #FFFF00 !important;
+}
+
+.fl-uiOptions-fatPanel.fl-theme-bw .fl-uiOptions-fatPanel-toc-input:focus + label,
+.fl-uiOptions-fatPanel.fl-theme-wb .fl-uiOptions-fatPanel-toc-input:focus + label,
+.fl-uiOptions-fatPanel.fl-theme-by .fl-uiOptions-fatPanel-toc-input:focus + label,
+.fl-uiOptions-fatPanel.fl-theme-yb .fl-uiOptions-fatPanel-toc-input:focus + label,
+.fl-uiOptions-fatPanel.fl-theme-bw .fl-choice input:focus ~ label,
+.fl-uiOptions-fatPanel.fl-theme-wb .fl-choice input:focus ~ label,
+.fl-uiOptions-fatPanel.fl-theme-by .fl-choice input:focus ~ label,
+.fl-uiOptions-fatPanel.fl-theme-yb .fl-choice input:focus ~ label {
+	outline: 0.2em solid #00AAFF;
 }
