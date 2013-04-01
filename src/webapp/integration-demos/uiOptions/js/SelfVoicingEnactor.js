@@ -81,7 +81,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
         // Google Translate TTS Proxy
         lang: "en",
-        ttsUrl: "http://ec2-107-21-143-113.compute-1.amazonaws.com?q=%text&tl=%lang"
+        ttsUrl: "http://ec2-23-23-52-224.compute-1.amazonaws.com?q=%text&tl=%lang"
     });
 
     fluid.uiOptions.actionAnts.selfVoicingEnactor.finalInit = function (that) {
