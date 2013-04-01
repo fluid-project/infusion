@@ -41,12 +41,11 @@
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions-reset {
-	/*border-right: 1px solid #ccc;	*/
+	border-right: 1px solid #ccc;
 }
 
 .fl-uiOptions-fatPanel .fl-toggleButton {
-	width: 15em;
-	border-left:  1px solid #ccc;	
+	min-width: 15em;
 }
 
 /* IFrame */
