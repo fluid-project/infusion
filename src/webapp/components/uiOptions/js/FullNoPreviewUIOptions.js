@@ -36,11 +36,6 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             uiOptions: {
                 options: {
-                    components: {
-                        preview: {
-                            type: "fluid.emptySubcomponent"
-                        }
-                    },
                     listeners: {
                         onReset: function (uiOptions) {
                             uiOptions.save();

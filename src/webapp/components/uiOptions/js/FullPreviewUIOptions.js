@@ -38,6 +38,17 @@ var fluid_1_5 = fluid_1_5 || {};
                         uiOptions: "%prefix/FullPreviewUIOptions.html"
                     }
                 }
+            },
+            uiOptions: {
+                options: {
+                    components: {
+                        preview: {
+                            type: "fluid.uiOptions.preview",
+                            createOnEvent: "onUIOptionsComponentReady",
+                            container: "{uiOptions}.dom.previewFrame"
+                        }
+                    }
+                }
             }
         }
     });

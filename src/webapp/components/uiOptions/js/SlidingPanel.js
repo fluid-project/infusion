@@ -31,7 +31,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         strings: {
             showText: "+ Show Display Preferences",
-            hideText: "- Hide"
+            hideText: "- Hide Display Preferences"
         },          
         events: {
             onPanelHide: null,
