@@ -69,7 +69,7 @@ var fluid_1_5 = fluid_1_5 || {};
             queue: []
         },
         strings: {
-            loaded: "Text to Speech Enabled"
+            loaded: "text to speech enabled"
         },
         styles: {
             current: "fl-selfVoicing-current"
@@ -97,12 +97,18 @@ var fluid_1_5 = fluid_1_5 || {};
         $("body").remove(that.options.audioSelector);
         $("body").append(that.audio);
         var audioElement = that.audio[0];
-        audioElement.addEventListener("loadedmetadata", function () {
+        audioElement.addEventListener("canplaythrough", function () {
             if (!that.model.value) {
                 return;
             }
             audioElement.play();
-            setTimeout(that.events.afterAnnounce.fire, audioElement.duration * 1000);
+            setTimeout(that.events.afterAnnounce.fire, audioElement.duration * 1000 + 500);
+        });
+        audioElement.addEventListener("error", function () {
+            if (!that.model.value) {
+                return;
+            }
+            setTimeout(that.events.afterAnnounce.fire, 1500);
         });
     };
 
@@ -134,7 +140,7 @@ var fluid_1_5 = fluid_1_5 || {};
             return;
         }
         var currentText = text.substr(0, 100);
-        var sIndex = currentText.lastIndexOf("\s");
+        var sIndex = currentText.lastIndexOf(" ");
         queue.push(currentText.substring(0, sIndex));
         buildSpeechQueueImpl(queue, text.substring(sIndex + 1));
     };
