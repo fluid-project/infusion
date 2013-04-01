@@ -153,10 +153,6 @@ img {
     background-color: #0071BC;
 }
 
-.fl-uiOptions-fatPanel .fl-toggleButton {
-	width: 17.6em;
-}
-
 .uio-demo-theme .fl-uiOptions-fatPanel .fl-toggleButton,
 .uio-demo-theme .fl-uiOptions-fatPanel .fl-uiOptions-reset  {
     font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
