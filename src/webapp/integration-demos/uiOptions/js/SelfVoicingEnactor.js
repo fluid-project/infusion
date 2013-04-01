@@ -79,9 +79,9 @@ var fluid_1_5 = fluid_1_5 || {};
         audioSelector: "#selfVoicer-audio",
         markup: '<audio type="audio/mpeg"></audio>',
 
-        // Google Translate TTS
+        // Google Translate TTS Proxy
         lang: "en",
-        ttsUrl: "http://translate.google.com/translate_tts?q=%text&tl=%lang"
+        ttsUrl: "http://ec2-107-21-143-113.compute-1.amazonaws.com?q=%text&tl=%lang"
     });
 
     fluid.uiOptions.actionAnts.selfVoicingEnactor.finalInit = function (that) {
