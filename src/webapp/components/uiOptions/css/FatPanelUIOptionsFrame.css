@@ -1,12 +1,13 @@
 @font-face {
 	font-family: 'OpenSans';
-	src:url('fonts/OpenSans-Regular.ttf');
+	src:url('fonts/OpenSans-Light.ttf');
 	font-weight: normal;
 	font-style: normal;
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions {
     font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
+    line-height: 1.2em !important; /* FLUID-4959: fix the line height so it doesn't scale with the UIO line spacing scaling. */
 }
 
 /* UI Options Fat Panel styles */
@@ -187,6 +188,10 @@
 	height:2em;
 	margin-right:10px;
 	float:left;
+}
+
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc label {
+	line-height: 1.7em !important;
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-option-description {
