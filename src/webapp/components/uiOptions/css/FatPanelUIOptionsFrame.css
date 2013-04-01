@@ -370,3 +370,19 @@
     border-color: #FFFF00 !important;
     color: #FFFF00 !important;
 }
+
+
+/* FLUID-4961: Over-riding UIO font style adjustments so icon fonts are rendered properly. */
+
+.fl-font-uio-serif [class*='fl-icon-'],
+.fl-font-uio-sans [class*='fl-icon-'],
+.fl-font-uio-monospace [class*='fl-icon-'],
+.fl-font-uio-arial [class*='fl-icon-'],
+.fl-font-uio-verdana [class*='fl-icon-'],
+.fl-font-uio-times [class*='fl-icon-'],
+.fl-font-uio-courier [class*='fl-icon-'],
+.fl-font-uio-comic-sans [class*='fl-icon-'],
+.fl-uiOptions-fatPanel .fl-choice .fl-indicator
+{
+	font-family:'UIO'!important; 	
+}
