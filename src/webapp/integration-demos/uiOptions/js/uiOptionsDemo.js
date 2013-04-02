@@ -70,4 +70,14 @@
         });
     };
 
+    fluid.demands("iframeEnhancer", null, {
+        options: {
+            components: {
+                selfVoicingEnactor: {
+                    type: "fluid.emptySubcomponent"
+                }
+            }
+        }
+    });
+
 })(jQuery, fluid);

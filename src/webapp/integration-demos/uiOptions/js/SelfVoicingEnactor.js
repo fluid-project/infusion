@@ -94,9 +94,9 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uiOptions.actionAnts.selfVoicingEnactor.attachAudio = function (that) {
         that.audio = $(that.options.markup);
-        that.audio.attr("id", that.options.audioSelector);
+        that.audio.attr("id", that.options.audioSelector.substr(1));
         that.audio.hide();
-        $("body").remove(that.options.audioSelector);
+        $(that.options.audioSelector).remove();
         $("body").append(that.audio);
         var audioElement = that.audio[0];
         audioElement.addEventListener("canplaythrough", function () {
