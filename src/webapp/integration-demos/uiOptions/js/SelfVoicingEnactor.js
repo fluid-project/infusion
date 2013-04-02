@@ -77,11 +77,13 @@ var fluid_1_5 = fluid_1_5 || {};
 
         // HTML5 Audio configuration
         audioSelector: "#selfVoicer-audio",
-        markup: '<audio type="audio/mpeg"></audio>',
+        markup: '<audio type="audio/x-wav"></audio>',
 
+        // Fireworks Server
+        ttsUrl: "http://ec2-23-23-52-224.compute-1.amazonaws.com?q=%text"
         // Google Translate TTS Proxy
-        lang: "en",
-        ttsUrl: "http://ec2-23-23-52-224.compute-1.amazonaws.com?q=%text&tl=%lang"
+        // lang: "en",
+        // ttsUrl: "http://ec2-23-23-52-224.compute-1.amazonaws.com?q=%text&tl=%lang"
     });
 
     fluid.uiOptions.actionAnts.selfVoicingEnactor.finalInit = function (that) {
