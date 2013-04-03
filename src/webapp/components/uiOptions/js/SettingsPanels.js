@@ -115,12 +115,7 @@ var fluid_1_5 = fluid_1_5 || {};
         selectors: {
             textFont: ".flc-uiOptions-text-font"
         },
-        produceTree: "fluid.uiOptions.textFont.produceTree",
-        resources: {
-            template: {
-                url: "../html/UIOptionsTemplate-textFont.html"
-            }
-        }
+        produceTree: "fluid.uiOptions.textFont.produceTree"
     });
     
     fluid.uiOptions.textFont.produceTree = function (that) {
@@ -214,12 +209,7 @@ var fluid_1_5 = fluid_1_5 || {};
             afterRender: "{that}.style"
         },
         repeatingSelectors: ["themeRow"],
-        produceTree: "fluid.uiOptions.contrast.produceTree",
-        resources: {
-            template: {
-                url: "../html/UIOptionsTemplate-contrast.html"
-            }
-        }
+        produceTree: "fluid.uiOptions.contrast.produceTree"
     });
 
     fluid.uiOptions.contrast.style = function (labels, strings, markup) {
