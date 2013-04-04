@@ -34,33 +34,23 @@ var fluid_1_5 = fluid_1_5 || {};
             refreshView: "{that}.renderer.refreshView"
         }
     });
-    
-    fluid.uiOptions.createSliderNode = function (that, path, type, options) {
-        return {
-            decorators: {
-                type: "fluid",
-                func: type,
-                options: {
-                    listeners: {
-                        modelChanged: function (value) {
-                            that.applier.requestChange(path, value);
-                        }
-                    },
-                    model: {
-                        min: that.options.min,
-                        max: that.options.max,
-                        value: fluid.get(that.model, path)
-                        
-                    },
-                    sliderOptions: that.options.sliderOptions
-                }
-            }
-        };
-    };
 
     /*************************
      * UI Options Text Sizer *
      *************************/
+
+    fluid.defaults("fluid.uiOptions.textfieldSlider", {
+        gradeNames: ["fluid.textfieldSlider", "autoInit"],
+        path: "value",
+        listeners: {
+            modelChanged: {
+                listener: "{fluid.uiOptions.settingsPanel}.applier.requestChange",
+                args: ["{that}.options.path", "{arguments}.0"]
+            }
+        },
+        model: "{fluid.uiOptions.settingsPanel}.model",
+        sliderOptions: "{fluid.uiOptions.settingsPanel}.options.sliderOptions"
+    });
 
     /**
      * A sub-component of fluid.uiOptions that renders the "text size" panel of the user preferences interface.
@@ -68,10 +58,10 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.textSizer", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
-            value: 1
+            value: 1,
+            min: 1,
+            max: 2
         },
-        min: 1,
-        max: 2,
         sliderOptions: {
             orientation: "horizontal",
             step: 0.1
@@ -79,19 +69,20 @@ var fluid_1_5 = fluid_1_5 || {};
         selectors: {
             textSize: ".flc-uiOptions-min-text-size",
         },
-        produceTree: "fluid.uiOptions.textSizer.produceTree",
+        protoTree: {
+            textSize: {
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.uiOptions.textfieldSlider"
+                }
+            }
+        },
         resources: {
             template: {
                 url: "../html/UIOptionsTemplate-textSizer.html"
             }
         }
     });
-    
-    fluid.uiOptions.textSizer.produceTree = function (that) {
-        return {
-            textSize: fluid.uiOptions.createSliderNode(that, "value", "fluid.textfieldSlider")
-        }
-    };
     
     /************************
      * UI Options Text Font *
@@ -146,10 +137,10 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.lineSpacer", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
-            value: 1
+            value: 1,
+            min: 1,
+            max: 2
         },
-        min: 1,
-        max: 2,
         sliderOptions: {
             orientation: "horizontal",
             step: 0.1
@@ -157,20 +148,20 @@ var fluid_1_5 = fluid_1_5 || {};
         selectors: {
             lineSpacing: ".flc-uiOptions-line-spacing"
         },
-        produceTree: "fluid.uiOptions.lineSpacer.produceTree",
+        protoTree: {
+            lineSpacing: {
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.uiOptions.textfieldSlider"
+                }
+            }
+        },
         resources: {
             template: {
                 url: "../html/UIOptionsTemplate-lineSpacer.html"
             }
         }
     });
-    
-    fluid.uiOptions.lineSpacer.produceTree = function (that) {
-        var tree = {
-            lineSpacing: fluid.uiOptions.createSliderNode(that, "value", "fluid.textfieldSlider")
-        };
-        return tree;
-    };
     
     /***********************
      * UI Options Contrast *
@@ -202,7 +193,8 @@ var fluid_1_5 = fluid_1_5 || {};
             style: {
                 funcName: "fluid.uiOptions.contrast.style",
                 args: ["{that}.dom.themeLabel", "{that}.options.strings.theme",
-                    "{that}.options.markup.label"]
+                    "{that}.options.markup.label", "{that}.options.controlValues.theme",
+                    "{that}.options.classnameMap.theme"]
             }
         },
         listeners: {
@@ -212,10 +204,13 @@ var fluid_1_5 = fluid_1_5 || {};
         produceTree: "fluid.uiOptions.contrast.produceTree"
     });
 
-    fluid.uiOptions.contrast.style = function (labels, strings, markup) {
+    fluid.uiOptions.contrast.style = function (labels, strings, markup, theme, style) {
         fluid.each(labels, function (label, index) {
             label = $(label);
-            label.html(fluid.stringTemplate(markup, {theme: strings[index]}));
+            label.html(fluid.stringTemplate(markup, {
+                theme: strings[index]
+            }));
+            label.addClass(style[theme[index]]);
         });
     };
     
