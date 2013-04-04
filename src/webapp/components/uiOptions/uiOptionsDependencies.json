@@ -12,6 +12,8 @@
         "files": [
             "URLUtilities.js",
             "Store.js",
+            "Enactors.js",
+            "ModelRelay.js",
             "UIEnhancer.js",
             "UIOptions.js",
             "FatPanelUIOptions.js",

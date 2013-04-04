@@ -36,6 +36,9 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.enhance.supportsFlash = function () {
         return (typeof(swfobject) !== "undefined") && (swfobject.getFlashPlayerVersion().major > 8);
     };
+    fluid.enhance.majorFlashVersion = function () {
+        return typeof(swfobject) === "undefined" ? 0 : swfobject.getFlashPlayerVersion().major;
+    };
     
     /*
      * An object to hold the results of the progressive enhancement checks.
@@ -61,9 +64,9 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     /*
-     * Takes an object of key/value pairs where the key will be the key in the static enivronment and the value is a function or function name to run.
+     * Takes an object of key/value pairs where the key will be the key in the static environment and the value is a function or function name to run.
      * {staticEnvKey: "progressiveCheckFunc"}
-     * Note that the function will not be run if it's result is already recorded.
+     * Note that the function will not be run if its result is already recorded.
      */
     fluid.enhance.check = function (stuffToCheck) {
         fluid.each(stuffToCheck, function (val, key) {
@@ -73,7 +76,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 var results = typeof(val) === "boolean" ? val : 
                     (typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val());
                 
-                fluid.enhance.checked[staticKey] = results;
+                fluid.enhance.checked[staticKey] = !!results;
                 
                 if (results) {
                     fluid.staticEnvironment[staticKey] = fluid.typeTag(key);
@@ -120,7 +123,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (check.feature) {
                 return check.contextName;
             }}, defaultContextName
-        )
+        );
     };
     
     fluid.progressiveChecker.forComponent = function (that, componentName) {
@@ -143,6 +146,10 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
 
+    
+    fluid.enhance.check({
+        "fluid.browser" : "fluid.enhance.isBrowser"
+    });
     
     /**********************************************************
      * This code runs immediately upon inclusion of this file *
