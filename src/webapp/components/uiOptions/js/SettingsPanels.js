@@ -67,7 +67,7 @@ var fluid_1_5 = fluid_1_5 || {};
             step: 0.1
         },
         selectors: {
-            textSize: ".flc-uiOptions-min-text-size",
+            textSize: ".flc-uiOptions-min-text-size"
         },
         protoTree: {
             textSize: {
@@ -75,11 +75,6 @@ var fluid_1_5 = fluid_1_5 || {};
                     type: "fluid",
                     func: "fluid.uiOptions.textfieldSlider"
                 }
-            }
-        },
-        resources: {
-            template: {
-                url: "../html/UIOptionsTemplate-textSizer.html"
             }
         }
     });
@@ -154,11 +149,6 @@ var fluid_1_5 = fluid_1_5 || {};
                     type: "fluid",
                     func: "fluid.uiOptions.textfieldSlider"
                 }
-            }
-        },
-        resources: {
-            template: {
-                url: "../html/UIOptionsTemplate-lineSpacer.html"
             }
         }
     });
@@ -241,21 +231,13 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.layoutControls", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
         model: {
-            toc: false,
-            layout: false
+            toc: false
         },
         selectors: {
-            layout: ".flc-uiOptions-layout",
             toc: ".flc-uiOptions-toc"
         },
         protoTree: {
-            toc: "${toc}",
-            layout: "${layout}"        
-        },
-        resources: {                    
-            template: {
-                url: "../html/UIOptionsTemplate-layout.html"
-            }
+            toc: "${toc}"
         }
     });
 
@@ -277,12 +259,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         protoTree: {
             links: "${links}",
-            inputsLarger: "${inputsLarger}"          
-        },
-        resources: {
-            template: {
-                url: "../html/UIOptionsTemplate-links.html"
-            }
+            inputsLarger: "${inputsLarger}"
         }
     });
 
