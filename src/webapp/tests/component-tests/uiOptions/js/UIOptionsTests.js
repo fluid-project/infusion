@@ -460,7 +460,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             container: "body",
                             priority: "first",
                             options: {
-                                gradeNames: ["fluid.uiEnhancer.defaultActions"],
+                                gradeNames: ["fluid.uiEnhancer.defaultActions"]
                             }
                         },
                         settingsStore: "{uiEnhancer}.settingsStore"
@@ -500,32 +500,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);
         };
         
-        var checkUIOComponents = function (uiOptionsLoader, uiOptions) {
-            jqUnit.assertTrue("Check that uiEnhancer is present", uiOptions.uiEnhancer);
-            jqUnit.assertTrue("Check that textSizer sub-component is present", uiOptions.textSizer);
-            jqUnit.assertTrue("Check that lineSpacer sub-component is present", uiOptions.lineSpacer);
-            jqUnit.assertTrue("Check that textFont sub-component is present", uiOptions.textFont);
-            jqUnit.assertTrue("Check that contrast sub-component is present", uiOptions.contrast);
-            jqUnit.assertTrue("Check that layoutControls sub-component is present", uiOptions.layoutControls);
-            jqUnit.assertTrue("Check that linkControls sub-component is present", uiOptions.linksControls);
-            jqUnit.assertTrue("Check that preview sub-component is present", uiOptions.options.components.preview);
-            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.options.components.settingsStore);
-            jqUnit.assertTrue("Check that tableOfContents sub-component is present", uiOptions.uiEnhancer.options.components.tableOfContents);
-            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.uiEnhancer.options.components.settingsStore);
-        };
-
-        var checkNonDefaultUIOComponents = function (uiOptionsLoader, uiOptions) {
-            jqUnit.assertTrue("Check that uiEnhancer is present", uiOptions.uiEnhancer);
-            jqUnit.assertTrue("Check that textSizer sub-component is present", uiOptions.textSizer);
-            jqUnit.assertFalse("Check that lineSpacer sub-component is not present", uiOptions.lineSpacer);
-            jqUnit.assertFalse("Check that textFont sub-component is not present", uiOptions.textFont);
-            jqUnit.assertFalse("Check that contrast sub-component is not present", uiOptions.contrast);
-            jqUnit.assertFalse("Check that layoutControls sub-component is not present", uiOptions.layoutControls);
-            jqUnit.assertFalse("Check that linkControls sub-component is not present", uiOptions.linksControls);
-            jqUnit.assertTrue("Check that preview sub-component is present", uiOptions.options.components.preview);
-            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.options.components.settingsStore);
-            jqUnit.assertTrue("Check that tableOfContents sub-component is present", uiOptions.uiEnhancer.options.components.tableOfContents);
-            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.uiEnhancer.options.components.settingsStore);
+        var checkPaths = function (uiOptions, paths) {
+            fluid.each(paths, function (exists, path) {
+                jqUnit.assertEquals("Check existence of path " + path, exists, !!fluid.get(uiOptions, path));
+            });
         };
         
         var checkModelSelections = function (message, expectedSelections, actualSelections) {
@@ -612,7 +590,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
 
             testUIOptions(function (uiOptionsLoader, uiOptions) {
-                checkNonDefaultUIOComponents(uiOptionsLoader, uiOptions);
+                var customizedPanelPaths = {
+                    "uiEnhancer": true,
+                    "textSizer": true,
+                    "lineSpacer": false,
+                    "textFont": false,
+                    "contrast": false,
+                    "layoutControls": false,
+                    "linksControls": false,
+                    "options.components.preview": true,
+                    "options.components.settingsStore": true,
+                    "uiEnhancer.options.components.tableOfContents": true,
+                    "uiEnhancer.options.components.settingsStore": true
+                };
+
+                checkPaths(uiOptions, customizedPanelPaths);
                 checkSaveCancel(uiOptions, maxTextSize, minTextSize);
                 delete fluid.staticEnvironment.testsNonDefaultIntegration;
                 jqUnit.start();
@@ -631,7 +623,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             container: "body",
                             priority: "first",
                             options: {
-                                gradeNames: ["fluid.uiEnhancer.defaultActions"],
+                                gradeNames: ["fluid.uiEnhancer.defaultActions"]
                             }
                         },
                         settingsStore: "{uiEnhancer}.settingsStore"
@@ -646,7 +638,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
      
             testUIOptions(function (uiOptionsLoader, uiOptions) {
-                checkUIOComponents(uiOptionsLoader, uiOptions);
+                var defaultPanelsPaths = {
+                    "uiEnhancer": true,
+                    "textSizer": true,
+                    "lineSpacer": true,
+                    "textFont": true,
+                    "contrast": true,
+                    "layoutControls": true,
+                    "linksControls": true,
+                    "options.components.preview": true,
+                    "options.components.settingsStore": true,
+                    "uiEnhancer.options.components.tableOfContents": true,
+                    "uiEnhancer.options.components.settingsStore": true
+                };
+
+                checkPaths(uiOptions, defaultPanelsPaths);
                 checkSaveCancel(uiOptions, bwSkin, bwSkin2);
                 delete fluid.staticEnvironment.uiOptionsTestsIntegration;
                 jqUnit.start();
