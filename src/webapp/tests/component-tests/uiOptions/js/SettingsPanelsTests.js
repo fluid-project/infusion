@@ -154,7 +154,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.tests.contrastPanel.changeChecked = function (inputs, newValue) {
-        inputs.filter("[value='" + newValue + "']").click();
+        inputs.removeAttr("checked");
+        inputs.filter("[value='" + newValue + "']").attr("checked", "checked").change();
     };
     
     fluid.defaults("fluid.tests.contrastTester", {
@@ -297,7 +298,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Test functions shared by checkbox panels: layoutPanel & linkPanel 
      *******************************************************************************/
     fluid.tests.changeCheckboxSelection = function (element) {
-        element.click();
+        element.attr("checked", "checked").change();
     };
     
     /*******************************************************************************
