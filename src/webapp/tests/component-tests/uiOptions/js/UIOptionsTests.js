@@ -37,8 +37,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 templateLoader: {
                     priority: "first",
-                    type: "fluid.uiOptions.templateLoader"
-                }                  
+                    type: "fluid.uiOptions.templateLoader",
+                    options: {
+                        templates: {
+                            uiOptions: templatePrefix + "FullNoPreviewUIOptions.html"
+                        }
+                    }
+                }
             },
             prefix: templatePrefix
         });
@@ -49,20 +54,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         // Supply the templates
-        fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptionsDefaultTests", {
+        fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptions.tests", {
             options: {
                 value: "{uiOptionsTests}.options.prefix"
             }
         });
         
-        fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptionsDefaultTests", {
-            options: {
-                templates: {
-                    uiOptions: "%prefix/FullPreviewUIOptions.html"
-                }
-            }
-        });
-    
         // Options for UIOptions
         var saveCalled = false;
 
@@ -78,12 +75,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             gradeNames: ["fluid.uiEnhancer.defaultActions"]
                         }
                     },
-                    settingsStore: "{uiEnhancer}.settingsStore",
-                    preview: {
-                        type: "fluid.uiOptions.preview",
-                        createOnEvent: "onUIOptionsComponentReady",
-                        container: "{uiOptions}.dom.previewFrame"
-                    }
+                    settingsStore: "{uiEnhancer}.settingsStore"
                 },
                 listeners: {
                     onSave: function () {
@@ -430,6 +422,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             fluid.staticEnvironment.uiOptionsTestsPreview = fluid.typeTag("fluid.uiOptions.testsPreview");
             
+            fluid.demands("fluid.uiOptions.templateLoader", ["fluid.uiOptionsDefaultTests", "fluid.uiOptions.testsPreview"], {
+                options: {
+                    templates: {
+                        uiOptions: templatePrefix + "FullPreviewUIOptions.html"
+                    }
+                }
+            });
+        
+            fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
+                options: {
+                    components: {
+                        preview: {
+                            type: "fluid.uiOptions.preview",
+                            createOnEvent: "onUIOptionsComponentReady",
+                            container: "{uiOptions}.dom.previewFrame",
+                            options: {
+                                templateUrl: "TestPreviewTemplate.html"
+                            }
+                        }
+                    }
+                }
+            });
+         
             var templateUrl = "TestPreviewTemplate.html";
             fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions"], {
                 container: "{uiOptions}.dom.previewFrame",
@@ -454,22 +469,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsAutoSave", "fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
                 options: {
-                    components: {
-                        uiEnhancer: {
-                            type: "fluid.uiEnhancer",
-                            container: "body",
-                            priority: "first",
-                            options: {
-                                gradeNames: ["fluid.uiEnhancer.defaultActions"]
-                            }
-                        },
-                        settingsStore: "{uiEnhancer}.settingsStore"
-                    },
-                    listeners: {
-                        onSave: function () {
-                            saveCalled = true;
-                        }
-                    },
                     autoSave: true
                 }
             });
@@ -598,7 +597,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "contrast": false,
                     "layoutControls": false,
                     "linksControls": false,
-                    "options.components.preview": true,
                     "options.components.settingsStore": true,
                     "uiEnhancer.options.components.tableOfContents": true,
                     "uiEnhancer.options.components.settingsStore": true
@@ -646,7 +644,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "contrast": true,
                     "layoutControls": true,
                     "linksControls": true,
-                    "options.components.preview": true,
                     "options.components.settingsStore": true,
                     "uiEnhancer.options.components.tableOfContents": true,
                     "uiEnhancer.options.components.settingsStore": true
