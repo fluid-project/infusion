@@ -271,6 +271,30 @@ var fluid = fluid || fluid_1_5;
         if (func.apply) {
             func.apply(obj, args);
         } else {
+            
+            // IE8 doesn't natively support Function.prototype.bind, this workaround provided MDN ( licensed to the Public Domain ) should enable it function
+            // https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function/bind
+            if (!Function.prototype.bind) {
+              Function.prototype.bind = function (oThis) {
+                if (typeof this !== "function") {
+                  // closest thing possible to the ECMAScript 5 internal IsCallable function
+                  throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+                }
+
+                var aArgs = Array.prototype.slice.call(arguments, 1),
+                    fToBind = this, 
+                    fNOP = function () {},
+                    fBound = function () {
+                      return fToBind.apply(this instanceof fNOP && oThis ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
+                    };
+
+                fNOP.prototype = this.prototype;
+                fBound.prototype = new fNOP();
+
+                return fBound;
+              };
+            }
+            
             var applier = Function.prototype.bind.call(func, obj);
             applier.apply(obj, args);
         }
