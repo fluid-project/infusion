@@ -57,6 +57,9 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.textSizer", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
+        // The default model values reprsent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
+        // i.e. from the settings store, or specific defaults derived from schema.
+        // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
         model: {
             value: 1,
             min: 1,
@@ -88,6 +91,9 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.textFont", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
+        // The default model value reprsents both the expected format as well as the setting to be applied in the absence of a value passed down to the component.
+        // i.e. from the settings store, or specific defaults derived from schema.
+        // Note: This default value is not contributed and shared out
         model: {
             value: "default"
         },
@@ -131,6 +137,9 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.lineSpacer", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
+        // The default model values reprsent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
+        // i.e. from the settings store, or specific defaults derived from schema.
+        // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
         model: {
             value: 1,
             min: 1,
@@ -162,6 +171,9 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.contrast", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
+        // The default model value reprsents both the expected format as well as the setting to be applied in the absence of a value passed down to the component.
+        // i.e. from the settings store, or specific defaults derived from schema.
+        // Note: This default value is not contributed and shared out
         model: {
             value: "default"
         },
@@ -230,6 +242,9 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.layoutControls", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
+        // The default model value reprsents both the expected format as well as the setting to be applied in the absence of a value passed down to the component.
+        // i.e. from the settings store, or specific defaults derived from schema.
+        // Note: This default value is not contributed and shared out
         model: {
             toc: false
         },
@@ -249,6 +264,9 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.linksControls", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
+        // The default model values reprsent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
+        // i.e. from the settings store, or specific defaults derived from schema.
+        // Note: These default values are not contributed and shared out
         model: {
             links: false,
             inputsLarger: false
