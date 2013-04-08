@@ -54,7 +54,7 @@ var fluid = fluid || fluid_1_5;
     // Renders a single activity element in a form suitable to be sent to a modern browser's console
     // unsupported, non-API function
     fluid.renderOneActivity = function (activity) {
-        var togo = ["    while"];
+        var togo = ["    while "];
         var message = activity.message;
         var index = activityParser.lastIndex = 0;
         while (true) {
@@ -100,9 +100,9 @@ var fluid = fluid || fluid_1_5;
     fluid.logActivity = function (activity) {
         activity = activity || fluid.describeActivity();
         var rendered = fluid.renderActivity(activity).reverse();
-        fluid.log("Current activity: ");
+        fluid.log(["Current activity: "]);
         fluid.each(rendered, function (args) {
-            fluid.applyHostFunction(console, console.log, args);
+            fluid.doLog(args);
         });
     };
     
@@ -263,22 +263,31 @@ var fluid = fluid || fluid_1_5;
     fluid.popLogging = function () {
         return logLevelStack.length === 1? logLevelStack[0] : logLevelStack.shift();
     };
-
-    // On some dodgy environments (notably IE9 and recent alphas of Firebug 1.8),
-    // console.log/debug are incomplete function objects and need to be operated via
-    // this trick: http://stackoverflow.com/questions/5472938/does-ie9-support-console-log-and-is-it-a-real-function
-    fluid.applyHostFunction = function (obj, func, args) {
-        if (func.apply) {
-            func.apply(obj, args);
-        } else {
-            var applier = Function.prototype.bind.call(func, obj);
-            applier.apply(obj, args);
-        }
+    
+    /** Actually do the work of logging <code>args</code> to the environment's console. If the standard "console"
+     * stream is available, the message will be sent there - otherwise either the
+     * YAHOO logger or the Opera "postError" stream will be used. On capable environments (those other than
+     * IE8 or IE9) the entire argument set will be dispatched to the logger - otherwise they will be flattened into
+     * a string first, destroying any information held in non-primitive values. 
+     */ 
+    fluid.doLog = function (args) {
+        var str = args.join("");
+        if (typeof (console) !== "undefined") {
+            if (console.debug) {
+                console.debug.apply(console, args);
+            } else if (typeof (console.log) === "function") {
+                console.log.apply(console, args);
+            } else {
+                console.log(str); // this branch executes on old IE, fully synthetic console.log
+            }
+        } else if (typeof (YAHOO) !== "undefined") {
+            YAHOO.log(str);
+        } else if (typeof (opera) !== "undefined") {
+            opera.postError(str);
+        }      
     };
 
-    /** Log a message to a suitable environmental console. If the standard "console"
-     * stream is available, the message will be sent there - otherwise either the
-     * YAHOO logger or the Opera "postError" stream will be used. If the first argument to fluid.log is
+    /** Log a message to a suitable environmental console. If the first argument to fluid.log is
      * one of the members of the <code>fluid.logLevel</code> structure, this will be taken as the priority 
      * of the logged message - else if will default to <code>fluid.logLevel.INFO</code>. If the logged message
      * priority does not exceed that set by the most recent call to the <code>fluid.setLogging</code> function,
@@ -293,20 +302,7 @@ var fluid = fluid || fluid_1_5;
         if (fluid.passLogLevel(userLogLevel)) {
             var arg0 = fluid.renderTimestamp(new Date()) + ":  ";
             var args = [arg0].concat(directArgs);
-            var str = args.join("");
-            if (typeof (console) !== "undefined") {
-                if (console.debug) {
-                    fluid.applyHostFunction(console, console.debug, args);
-                } else if (typeof (console.log) === "function") {
-                    fluid.applyHostFunction(console, console.log, args);
-                } else {
-                    console.log(str); // this branch executes on old IE, fully synthetic console.log
-                }
-            } else if (typeof (YAHOO) !== "undefined") {
-                YAHOO.log(str);
-            } else if (typeof (opera) !== "undefined") {
-                opera.postError(str);
-            }
+            fluid.doLog(args);
         }
     };
      
