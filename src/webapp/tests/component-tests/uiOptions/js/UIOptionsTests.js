@@ -413,55 +413,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-        /*****************
-         * Preview tests *
-         *****************/
-         
-        jqUnit.asyncTest("Preview URL", function () {
-            jqUnit.expect(1);
-            
-            fluid.staticEnvironment.uiOptionsTestsPreview = fluid.typeTag("fluid.uiOptions.testsPreview");
-            
-            fluid.demands("fluid.uiOptions.templateLoader", ["fluid.uiOptionsDefaultTests", "fluid.uiOptions.testsPreview"], {
-                options: {
-                    templates: {
-                        uiOptions: templatePrefix + "FullPreviewUIOptions.html"
-                    }
-                }
-            });
-        
-            fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
-                options: {
-                    components: {
-                        preview: {
-                            type: "fluid.uiOptions.preview",
-                            createOnEvent: "onUIOptionsComponentReady",
-                            container: "{uiOptions}.dom.previewFrame",
-                            options: {
-                                templateUrl: "TestPreviewTemplate.html"
-                            }
-                        }
-                    }
-                }
-            });
-         
-            var templateUrl = "TestPreviewTemplate.html";
-            fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions"], {
-                container: "{uiOptions}.dom.previewFrame",
-                options: {
-                    templateUrl: templateUrl
-                }
-            });     
-    
-            testUIOptions(function (uiOptionsLoader, uiOptions) {
-                jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
-                    templateUrl, uiOptions.preview.container.attr("src"));
-                
-                delete fluid.staticEnvironment.uiOptionsTestsPreview;
-                jqUnit.start();
-            });
-        });
-        
         jqUnit.asyncTest("UIOptions Auto-save", function () {
             jqUnit.expect(2);
                 
@@ -655,6 +606,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.start();
             });
         });
+
+        /*****************
+         * Preview tests *
+         *****************/
+         
+        jqUnit.asyncTest("Preview URL", function () {
+            jqUnit.expect(1);
+            
+            fluid.staticEnvironment.uiOptionsTestsPreview = fluid.typeTag("fluid.uiOptions.testsPreview");
+            
+            fluid.demands("fluid.uiOptions.templateLoader", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
+                options: {
+                    templates: {
+                        uiOptions: templatePrefix + "FullPreviewUIOptions.html"
+                    }
+                }
+            });
+        
+            var templateUrl = "TestPreviewTemplate.html";
+            fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
+                options: {
+                    components: {
+                        preview: {
+                            type: "fluid.uiOptions.preview",
+                            createOnEvent: "onUIOptionsComponentReady",
+                            container: "{uiOptions}.dom.previewFrame",
+                            options: {
+                                templateUrl: templateUrl
+                            }
+                        }
+                    }
+                }
+            });
+         
+            testUIOptions(function (uiOptionsLoader, uiOptions) {
+                jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
+                    templateUrl, uiOptions.preview.container.attr("src"));
+                
+                delete fluid.staticEnvironment.uiOptionsTestsPreview;
+                jqUnit.start();
+            });
+        });
+        
     });
-    
 })(jQuery);
