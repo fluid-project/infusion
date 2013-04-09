@@ -125,9 +125,6 @@ var fluid_1_5 = fluid_1_5 || {};
                     components: {
                         iframeRenderer: "{fatPanel}.iframeRenderer",
                         settingsStore: "{uiEnhancer}.settingsStore",
-                        preview: {
-                            type: "fluid.emptySubcomponent"
-                        },
                         tabs: {
                             type: "fluid.tabs",
                             container: "{uiOptions}.container",

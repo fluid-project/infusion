@@ -34,7 +34,7 @@ fluid.defaults("fluid.tests.myTestTree", {
 /** Component under test **/
 
 fluid.defaults("fluid.tests.cat", {
-    gradeNames: ["fluid.littleComponent", "autoInit"],
+    gradeNames: ["fluid.littleComponent", "autoInit"]
 });
 
 fluid.tests.cat.preInit = function (that) {
@@ -61,8 +61,7 @@ fluid.defaults("fluid.tests.catTester", {
             type: "test",
             func: "fluid.tests.globalCatTest",
             args: "{cat}"
-        }
-        ]
+        }]
     }]
 });
 
@@ -105,10 +104,10 @@ fluid.defaults("fluid.tests.buttonChild", {
 });
 
 fluid.tests.buttonChild.postInit = function (that) {
-    that.container.click(function() {
-        setTimeout(that.events.buttonClicked.fire, 1);  
+    that.container.click(function () {
+        setTimeout(that.events.buttonClicked.fire, 1);
     });
-}
+};
 
 fluid.defaults("fluid.tests.asyncTestTree", {
     gradeNames: ["fluid.test.testEnvironment", "autoInit"],
@@ -173,10 +172,8 @@ fluid.defaults("fluid.tests.asyncTester", {
                 jQueryBind: "click",
                 element: "{asyncTest}.dom.button",
                 listener: "fluid.tests.checkEvent"
-            }
-            ]
-        }
-        ]
+            }]
+        }]
     }]
 });
 
@@ -191,9 +188,9 @@ fluid.tests.changeField = function (field, value) {
 fluid.tests.makeChangeChecker = function (toCheck, path) {
     return function (newModel) {
         var newval = fluid.get(newModel, path);
-        jqUnit.assertEquals("Expected model value " + toCheck + " at path " + path, toCheck , newval);  
+        jqUnit.assertEquals("Expected model value " + toCheck + " at path " + path, toCheck, newval);
     };
-}
+};
 
 fluid.tests.startRendering = function (asyncTest, instantiator) {
     asyncTest.refreshView();
@@ -211,7 +208,7 @@ fluid.defaults("fluid.tests.initTree", {
             createOnEvent: "{initTester}.events.onTestCaseStart"
         },
         initTester: {
-            type: "fluid.tests.initTester",
+            type: "fluid.tests.initTester"
         }
     }
 });
@@ -219,7 +216,7 @@ fluid.defaults("fluid.tests.initTree", {
 fluid.tests.setup = function (that) {
     // do some setup, for test purpose just fire onReady
     that.events.onReady.fire();
-}
+};
 
 fluid.defaults("fluid.tests.initTest", {
     gradeNames: ["fluid.eventedComponent", "autoInit"],

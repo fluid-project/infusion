@@ -71,14 +71,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 
                 jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, uiOptions.iframeRenderer.iframe.is(":visible"));
 
-                fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedInline);
+                fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents["fluid.uiOptions.fatPanel"]);
                 fluid.tests.uiOptions.assertPresent(that, fluid.tests.uiOptions.expectedFatPanel);
                 that.slidingPanel.showPanel();
             }
 
             that = fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
                 prefix: "../../../../components/uiOptions/html/",
-                markupRenderer: {
+                iframeRenderer: {
                     options: {
                         markupProps: {
                             src: "./FatPanelUIOptionsFrame.html"
@@ -100,6 +100,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 priority: "last"
                             }
                         }
+                    }
+                },
+                uiOptions: {
+                    options: {
+                        gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
                     }
                 }
             });
@@ -124,7 +129,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         fluid.tests.uiOptions.mungingIntegrationTest("fluid.uiOptions.fatPanel", ".flc-uiOptions-fatPanel", 
             {
-                markupRenderer: {
+                iframeRenderer: {
                     options: {
                         markupProps: {
                             src: "./FatPanelUIOptionsFrame.html"
