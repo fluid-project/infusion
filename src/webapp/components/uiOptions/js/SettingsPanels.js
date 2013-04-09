@@ -189,7 +189,7 @@ var fluid_1_5 = fluid_1_5 || {};
             themeInput: ".flc-uiOptions-themeInput"
         },
         markup: {
-            label: "<span class=\"fl-preview-A\">A</span><span class=\"fl-hidden-accessible\">%theme</span>"
+            label: "<span class=\"fl-preview-A\">A</span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\"></div>"
         },
         invokers: {
             style: {

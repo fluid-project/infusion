@@ -45,6 +45,7 @@
 	font-size: 1.2em;
 	text-transform: lowercase;
 	line-height:1.7em;
+	height: 2em;
 }
 
 .fl-uiOptions-fatPanel .fl-inputs {
@@ -152,16 +153,14 @@
 
 .fl-uiOptions-fatPanel .fl-choice .fl-indicator {	
 	font-size: 1.7em;	
-	margin-top: -1em;
+	margin-top: -0.7em;
 	margin-left: 0.35em;
-	width: 0px;
-	height: 0px;
 	padding-bottom: 1em;
 }
-.fl-uiOptions-fatPanel .fl-choice input:checked + div:before {
-	/*content: "\69\6e\64\69\63\61\74\6f\72"; */
-	background-image: url("../images/default/arrow.png");
+.fl-uiOptions-fatPanel .fl-choice input:checked + div {
+	background-image: url("../images/default/uio_icon_indicator.png");
 	background-repeat: no-repeat;
+	background-position: 0 70% 
 }
 
 /* Table of Contents switch */
@@ -280,6 +279,29 @@
 .fl-uiOptions-fatPanel .fl-uiOptions .fl-links-buttons-options li {
 	margin-bottom: 0.4em;
 }
+
+/* Header icons */
+.fl-uiOptions-fatPanel h2 label,
+.fl-uiOptions-fatPanel h2 .heading-text {
+	float:left;
+	padding-top: 0.3em;
+}
+
+.fl-icon-size, .fl-icon-font-style, .fl-icon-line-space, .fl-icon-contrast, .fl-icon-list, .fl-icon-links {	
+	background-repeat: no-repeat;
+	display: inline-block;
+	height: 2em;
+	width: 2.5em;
+	float:left;
+}
+
+.fl-icon-size {	background-image: url("../images/default/uio_icon_textSize.png"); }
+.fl-icon-font-style { background-image: url("../images/default/uio_icon_textStyle.png"); }
+.fl-icon-line-space { background-image: url("../images/default/uio_icon_lineSpace.png"); }
+.fl-icon-contrast { background-image: url("../images/default/uio_icon_contrast.png"); }
+.fl-icon-list { background-image: url("../images/default/uio_icon_list.png"); }
+.fl-icon-links { background-image: url("../images/default/uio_icon_button.png"); }
+
 /* Theming */
 .fl-uiOptions-fatPanel.fl-theme-bw,
 .fl-uiOptions-fatPanel.fl-theme-wb,
@@ -359,18 +381,6 @@
 }
 
 
-.fl-font-uio-serif [class*='fl-icon-'],
-.fl-font-uio-sans [class*='fl-icon-'],
-.fl-font-uio-monospace [class*='fl-icon-'],
-.fl-font-uio-arial [class*='fl-icon-'],
-.fl-font-uio-verdana [class*='fl-icon-'],
-.fl-font-uio-times [class*='fl-icon-'],
-.fl-font-uio-courier [class*='fl-icon-'],
-.fl-font-uio-comic-sans [class*='fl-icon-'],
-.fl-uiOptions-fatPanel .fl-choice .fl-indicator {
-	font-family:'UIO'!important; /* FLUID-4961: Over-riding UIO font style adjustments so icon fonts are rendered properly. */
-}
-
 .fl-uiOptions-fatPanel.fl-theme-bw .fl-uiOptions-fatPanel-toc-input:focus + label,
 .fl-uiOptions-fatPanel.fl-theme-wb .fl-uiOptions-fatPanel-toc-input:focus + label,
 .fl-uiOptions-fatPanel.fl-theme-by .fl-uiOptions-fatPanel-toc-input:focus + label,
@@ -381,3 +391,36 @@
 .fl-uiOptions-fatPanel.fl-theme-yb .fl-choice input:focus ~ label {
 	outline: 0.2em solid #00AAFF;
 }
+
+.fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-size {	background-image: url("../images/bw/uio_icon_textSize.png"); }
+.fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-font-style { background-image: url("../images/bw/uio_icon_textStyle.png"); }
+.fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-line-space { background-image: url("../images/bw/uio_icon_lineSpace.png"); }
+.fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-contrast { background-image: url("../images/bw/uio_icon_contrast.png"); }
+.fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-list { background-image: url("../images/bw/uio_icon_list.png"); }
+.fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-links { background-image: url("../images/bw/uio_icon_button.png"); }
+.fl-uiOptions-fatPanel.fl-theme-bw .fl-choice input:checked + div { background-image: url("../images/bw/uio_icon_indicator.png"); }
+	
+.fl-uiOptions-fatPanel.fl-theme-wb .fl-icon-size {	background-image: url("../images/wb/uio_icon_textSize.png"); }
+.fl-uiOptions-fatPanel.fl-theme-wb .fl-icon-font-style { background-image: url("../images/wb/uio_icon_textStyle.png"); }
+.fl-uiOptions-fatPanel.fl-theme-wb .fl-icon-line-space { background-image: url("../images/wb/uio_icon_lineSpace.png"); }
+.fl-uiOptions-fatPanel.fl-theme-wb .fl-icon-contrast { background-image: url("../images/wb/uio_icon_contrast.png"); }
+.fl-uiOptions-fatPanel.fl-theme-wb .fl-icon-list { background-image: url("../images/wb/uio_icon_list.png"); }
+.fl-uiOptions-fatPanel.fl-theme-wb .fl-icon-links { background-image: url("../images/wb/uio_icon_button.png"); }
+.fl-uiOptions-fatPanel.fl-theme-wb .fl-choice input:checked + div { background-image: url("../images/wb/uio_icon_indicator.png"); }
+
+.fl-uiOptions-fatPanel.fl-theme-by .fl-icon-size {	background-image: url("../images/by/uio_icon_textSize.png"); }
+.fl-uiOptions-fatPanel.fl-theme-by .fl-icon-font-style { background-image: url("../images/by/uio_icon_textStyle.png"); }
+.fl-uiOptions-fatPanel.fl-theme-by .fl-icon-line-space { background-image: url("../images/by/uio_icon_lineSpace.png"); }
+.fl-uiOptions-fatPanel.fl-theme-by .fl-icon-contrast { background-image: url("../images/by/uio_icon_contrast.png"); }
+.fl-uiOptions-fatPanel.fl-theme-by .fl-icon-list { background-image: url("../images/by/uio_icon_list.png"); }
+.fl-uiOptions-fatPanel.fl-theme-by .fl-icon-links { background-image: url("../images/by/uio_icon_button.png"); }
+.fl-uiOptions-fatPanel.fl-theme-by .fl-choice input:checked + div { background-image: url("../images/by/uio_icon_indicator.png"); }
+
+.fl-uiOptions-fatPanel.fl-theme-yb .fl-icon-size {	background-image: url("../images/yb/uio_icon_textSize.png"); }
+.fl-uiOptions-fatPanel.fl-theme-yb .fl-icon-font-style { background-image: url("../images/yb/uio_icon_textStyle.png"); }
+.fl-uiOptions-fatPanel.fl-theme-yb .fl-icon-line-space { background-image: url("../images/yb/uio_icon_lineSpace.png"); }
+.fl-uiOptions-fatPanel.fl-theme-yb .fl-icon-contrast { background-image: url("../images/yb/uio_icon_contrast.png"); }
+.fl-uiOptions-fatPanel.fl-theme-yb .fl-icon-list { background-image: url("../images/yb/uio_icon_list.png"); }
+.fl-uiOptions-fatPanel.fl-theme-yb .fl-icon-links { background-image: url("../images/yb/uio_icon_button.png"); }
+.fl-uiOptions-fatPanel.fl-theme-yb .fl-choice input:checked + div { background-image: url("../images/yb/uio_icon_indicator.png"); }
+
