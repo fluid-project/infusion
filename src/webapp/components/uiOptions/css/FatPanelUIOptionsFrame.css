@@ -1,3 +1,9 @@
+@font-face {
+    font-family: "OpenSans";
+    font-style: normal;
+    font-weight: normal;
+    src: url("fonts/OpenSans-Light.ttf");
+}
 .fl-uiOptions-fatPanel .fl-uiOptions {
     font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
     line-height: 1.2em !important; /* FLUID-4959: fix the line height so it doesn't scale with the UIO line spacing scaling. */
@@ -70,7 +76,7 @@
 .fl-uiOptions-fatPanel .fl-slider a {
 	height: 2.2em;
 	width: 2.2em;
-	margin-top: -0.625em;
+	margin-top: -0.75em;
 	margin-left: -0.4em;
 	background-color: #fff;
 	border: 1px solid #b3b3b3;	
@@ -340,8 +346,8 @@
 .fl-theme-wb .ui-slider .ui-slider-handle,
 .fl-theme-by .ui-slider .ui-slider-handle,
 .fl-theme-yb .ui-slider .ui-slider-handle {
-	height: 2.2em;
-	width: 2.2em;
+	height: 1.8em;
+	width: 1.8em;
 }
 
 .fl-uiOptions-fatPanel .fl-choice label.uio-demo-theme,
@@ -379,7 +385,6 @@
     border-color: #FFFF00 !important;
     color: #FFFF00 !important;
 }
-
 
 .fl-uiOptions-fatPanel.fl-theme-bw .fl-uiOptions-fatPanel-toc-input:focus + label,
 .fl-uiOptions-fatPanel.fl-theme-wb .fl-uiOptions-fatPanel-toc-input:focus + label,

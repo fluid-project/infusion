@@ -67,7 +67,8 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         sliderOptions: {
             orientation: "horizontal",
-            step: 0.1
+            step: 0.1,
+            range: "min"
         },
         selectors: {
             textSize: ".flc-uiOptions-min-text-size"
@@ -147,7 +148,8 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         sliderOptions: {
             orientation: "horizontal",
-            step: 0.1
+            step: 0.1,
+            range: "min"
         },
         selectors: {
             lineSpacing: ".flc-uiOptions-line-spacing"
