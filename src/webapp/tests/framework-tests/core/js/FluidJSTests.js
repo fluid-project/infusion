@@ -372,6 +372,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         passTestLog("TRACE", true);
         fluid.popLogging();
     });
+    
+    jqUnit.test("FLUID-4973 test - activity logging does not crash", function () {
+        fluid.pushActivity("testActivity", "testing my activity with argument %argument", {argument: 3});
+        var activity = fluid.describeActivity();
+        jqUnit.assertTrue("One activity in progress", activity.length === 1);
+        var rendered = fluid.renderActivity(activity)[0].join("");
+        jqUnit.assertTrue("Activity string rendered", rendered.indexOf("testing my activity with argument 3") !== -1);
+        fluid.logActivity(activity); // This would previously crash on IE8
+        fluid.popActivity();  
+    });
            
     jqUnit.test("FLUID-4285 test - prevent 'double options'", function () {
         try {
