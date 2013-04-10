@@ -55,6 +55,7 @@ var demo = demo || {};
      * full-page version, with and without Preview.
      */
     var basicFullPageOpts = {
+        gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
         // Tell UIOptions where to find all the templates, relative to this file
         prefix: pathToTemplates,
 
@@ -91,6 +92,7 @@ var demo = demo || {};
      */
     demo.initFatPanel = function (container) {        
         fluid.uiOptions.fatPanel(container, {
+            gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
             // Tell UIOptions where to find all the templates, relative to this file
             prefix: pathToTemplates,
             uiOptions: {

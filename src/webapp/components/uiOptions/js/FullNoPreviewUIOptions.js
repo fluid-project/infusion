@@ -24,7 +24,7 @@ var fluid_1_5 = fluid_1_5 || {};
      ******************************/
 
     fluid.defaults("fluid.uiOptions.fullNoPreview", {
-        gradeNames: ["fluid.uiOptions.inline"],
+        gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         container: "{fullNoPreview}.container",
         derivedDefaults: {
             templateLoader: {
@@ -45,7 +45,5 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-    
-    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.fullNoPreview", fluid.identity); 
     
 })(jQuery, fluid_1_5);

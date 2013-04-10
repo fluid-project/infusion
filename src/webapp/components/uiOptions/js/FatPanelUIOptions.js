@@ -34,7 +34,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.registerNamespace("fluid.uiOptions.fatPanel"); 
 
     fluid.defaults("fluid.uiOptions.fatPanel", {
-        gradeNames: ["fluid.uiOptions.inline"],
+        gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         events: {
             afterRender: null,
             onReady: null
@@ -149,18 +149,19 @@ var fluid_1_5 = fluid_1_5 || {};
                 "*.iframeRenderer.options.prefix":             "prefix",
                 "selectors.iframe":                            "iframe"
             }
+        },
+        outerEnhancerOptions: {
+            expander: {
+                funcName: "fluid.get",
+                args: [{
+                    expander: {
+                        type: "fluid.noexpand",
+                        value: fluid.staticEnvironment
+                    }
+                }, "uiEnhancer.options.originalUserOptions"]
+            }
         }
     });
-    
-    fluid.uiOptions.fatPanel.optionsProcessor = function (options) {
-        var enhancerOptions = fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions");
-        options.outerEnhancerOptions = enhancerOptions;
-        // Necessary to make IoC self-references work in the absence of FLUID-4392. Also see FLUID-4636
-        options.nickName = "fatPanel"; 
-        return options;
-    };
-        
-    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.fatPanel", fluid.uiOptions.fatPanel.optionsProcessor);
     
     /*****************************************
      * fluid.uiOptions.fatPanel.renderIframe *

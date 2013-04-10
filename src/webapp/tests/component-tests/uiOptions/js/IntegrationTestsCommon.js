@@ -148,6 +148,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(6);
                        
             var that = fluid.invokeGlobalFunction(componentName, ["#myUIOptions", {
+                gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
                 prefix: "../../../../components/uiOptions/html/",
                 uiOptionsLoader: {
                     options: {
@@ -239,6 +240,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
             
             var baseOptions = {
+                gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
                 prefix: "../../../../components/uiOptions/html/",
                 textFont: {
                     options: {

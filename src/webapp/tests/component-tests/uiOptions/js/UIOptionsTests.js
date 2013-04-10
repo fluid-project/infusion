@@ -175,7 +175,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var actual = fluid.uiOptions.mapOptions(options, config, "preserve");
             jqUnit.assertDeepEq("The path is expanded correctly", {}, actual);
 
-            
+            config = fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions").uiOptionsTransform.config;
+
             options = {
                 textFont: {
                     opt1: "food"

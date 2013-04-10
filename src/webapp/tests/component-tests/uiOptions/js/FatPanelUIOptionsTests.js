@@ -77,6 +77,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
 
             that = fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
+                gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
                 prefix: "../../../../components/uiOptions/html/",
                 iframeRenderer: {
                     options: {
