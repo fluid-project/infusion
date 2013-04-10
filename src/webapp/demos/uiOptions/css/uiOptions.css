@@ -152,12 +152,16 @@ img {
 .fl-uiOptions-fatPanel .fl-panelBar .fl-uio-tabs {
     background-color: #0071BC;
 }
+.fl-uiOptions-fatPanel .fl-panelBar button {
+    font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
+    border: 0;
+    border-radius: 0;
+    text-transform: uppercase;
+    font-weight: bold;
+}
 
 .uio-demo-theme .fl-uiOptions-fatPanel .fl-toggleButton,
 .uio-demo-theme .fl-uiOptions-fatPanel .fl-uiOptions-reset  {
-    font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
-    border-radius: 0;
     background-color: #0071BC;
     color: white;
-    text-transform: uppercase;
 }
