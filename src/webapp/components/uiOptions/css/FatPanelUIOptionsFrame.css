@@ -15,11 +15,12 @@
 	background-color: #fff;
     background-image: url('../images/default/fatpanelbg.png');
     background-repeat: repeat;
-    height: 14em;
+    height: 100%;
     overflow-x: scroll;
     overflow-y: hidden;
     color: #766d68;
-    margin-top: 15px;
+    padding: 10px 0px;
+	margin: 0px;
 }
 
 /* Preference Panels */
@@ -158,15 +159,15 @@
 }
 
 .fl-uiOptions-fatPanel .fl-choice .fl-indicator {	
-	font-size: 1.7em;	
-	margin-top: -0.7em;
-	margin-left: 0.35em;
+	margin: -1em 0 5px 1em;
 	padding-bottom: 1em;
 }
 .fl-uiOptions-fatPanel .fl-choice input:checked + div {
 	background-image: url("../images/default/uio_icon_indicator.png");
 	background-repeat: no-repeat;
-	background-position: 0 70% 
+	background-size: cover;
+	width: 1.8em;
+	font-size: 0.8em; 
 }
 
 /* Table of Contents switch */
@@ -290,7 +291,7 @@
 .fl-uiOptions-fatPanel h2 label,
 .fl-uiOptions-fatPanel h2 .heading-text {
 	float:left;
-	padding-top: 0.3em;
+	padding-top: 0.2em;
 }
 
 .fl-icon-size, .fl-icon-font-style, .fl-icon-line-space, .fl-icon-contrast, .fl-icon-list, .fl-icon-links {	
@@ -299,6 +300,7 @@
 	height: 2em;
 	width: 2.5em;
 	float:left;
+	background-size: cover;
 }
 
 .fl-icon-size {	background-image: url("../images/default/uio_icon_textSize.png"); }

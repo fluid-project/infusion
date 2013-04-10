@@ -223,7 +223,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var dokkument = uiOptions.container[0].ownerDocument;
             var height = fluid.dom.getDocumentHeight(dokkument);
             var iframe = fatPanel.iframeRenderer.iframe;
-            var attrs = {height: height + 15}; // TODO: Configurable padding here
+            var attrs = {height: height};
             var panel = fatPanel.slidingPanel.locate("panel");
             panel.css({height: ""});
             iframe.animate(attrs, 400);
