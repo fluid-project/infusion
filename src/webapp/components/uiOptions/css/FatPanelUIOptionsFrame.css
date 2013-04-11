@@ -294,6 +294,9 @@
 .no-generatedcontent .fl-uiOptions-fatPanel-onoff .fl-uiOptions-fatPanel-switch {
 	display: none;
 }
+.no-generatedcontent .fl-uiOptions-fatPanel-onoff input:focus + label {
+	outline: none;
+}
 
 /* Emphasize links & buttons panel */
 .fl-uiOptions-fatPanel .fl-links-buttons-options label {
