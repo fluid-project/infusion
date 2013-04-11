@@ -182,12 +182,6 @@
 	line-height: 1.7em !important;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-option-description {
-	padding: 0; /* override .fl-uiOptions-option-description style. */
-	display: inline-block;
-	width: 16.5em;
-}
-
 /* The container for the toggle, which is also a label for the hidden checkbox. */
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff .fl-uiOptions-fatPanel-switch { 
 	border-radius:50px;
@@ -287,6 +281,18 @@
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input:checked + label .fl-uiOptions-fatPanel-switch .fl-uiOptions-fatPanel-switch-inner {
 	top:-1.6em;
 	left: 0.46em;
+}
+
+/* Graceful degradation for browsers that don't support :before :after, like IE8 */
+.no-generatedcontent .fl-uiOptions-fatPanel-onoff input {
+    clip: auto;
+    height: 1em;
+    width: 1em;    
+    margin: 0;
+    position: relative;
+}
+.no-generatedcontent .fl-uiOptions-fatPanel-onoff .fl-uiOptions-fatPanel-switch {
+	display: none;
 }
 
 /* Emphasize links & buttons panel */
