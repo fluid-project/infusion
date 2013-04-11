@@ -19,38 +19,38 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
-    fluid.defaults("fluid.uiOptions.actionAnts", {
+    fluid.defaults("fluid.uiOptions.enactors", {
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "fluid.uiOptions.modelRelay", "autoInit"]
     });
     
     /**********************************************************************************
-     * styleElementsEnactor
+     * styleElements
      * 
      * Adds or removes the classname to/from the elements based upon the model value.
-     * This component is used as a grade by emphasizeLinksEnactor & inputsLargerEnactor
+     * This component is used as a grade by emphasizeLinks & inputsLarger
      **********************************************************************************/
-    fluid.defaults("fluid.uiOptions.actionAnts.styleElementsEnactor", {
-        gradeNames: ["fluid.uiOptions.actionAnts", "autoInit"],
+    fluid.defaults("fluid.uiOptions.enactors.styleElements", {
+        gradeNames: ["fluid.uiOptions.enactors", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
         model: {
             value: false
         },
         invokers: {
             applyStyle: {
-                funcName: "fluid.uiOptions.actionAnts.styleElementsEnactor.applyStyle",
+                funcName: "fluid.uiOptions.enactors.styleElements.applyStyle",
                 args: ["{arguments}.0", "{arguments}.1"]
             },
             resetStyle: {
-                funcName: "fluid.uiOptions.actionAnts.styleElementsEnactor.resetStyle",
+                funcName: "fluid.uiOptions.enactors.styleElements.resetStyle",
                 args: ["{arguments}.0", "{arguments}.1"]
             },
             handleStyle: {
-                funcName: "fluid.uiOptions.actionAnts.styleElementsEnactor.handleStyle",
+                funcName: "fluid.uiOptions.enactors.styleElements.handleStyle",
                 args: ["{arguments}.0", {expander: {func: "{that}.getElements"}}, "{that}"]
             },
             
             // Must be supplied by implementors
-            getElements: "fluid.uiOptions.actionAnts.getElements"
+            getElements: "fluid.uiOptions.enactors.getElements"
         },
         listeners: {
             onCreate: {
@@ -60,15 +60,15 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    fluid.uiOptions.actionAnts.styleElementsEnactor.applyStyle = function (elements, cssClass) {
+    fluid.uiOptions.enactors.styleElements.applyStyle = function (elements, cssClass) {
         elements.addClass(cssClass);
     };
 
-    fluid.uiOptions.actionAnts.styleElementsEnactor.resetStyle = function (elements, cssClass) {
+    fluid.uiOptions.enactors.styleElements.resetStyle = function (elements, cssClass) {
         $(elements, "." + cssClass).andSelf().removeClass(cssClass);
     };
 
-    fluid.uiOptions.actionAnts.styleElementsEnactor.handleStyle = function (value, elements, that) {
+    fluid.uiOptions.enactors.styleElements.handleStyle = function (value, elements, that) {
         if (value) {
             that.applyStyle(elements, that.options.cssClass);
         } else {
@@ -76,84 +76,84 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
 
-    fluid.uiOptions.actionAnts.styleElementsEnactor.finalInit = function (that) {
+    fluid.uiOptions.enactors.styleElements.finalInit = function (that) {
         that.applier.modelChanged.addListener("value", function (newModel) {
             that.handleStyle(newModel.value);
         });
     };
     
     /*******************************************************************************
-     * emphasizeLinksEnactor
+     * emphasizeLinks
      * 
      * The enactor to emphasize links in the container according to the value
      *******************************************************************************/
 
     // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.uiOptions.actionAnts.emphasizeLinksEnactor", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts.styleElementsEnactor", "autoInit"],
+    fluid.defaults("fluid.uiOptions.enactors.emphasizeLinks", {
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors.styleElements", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
         model: {
             value: false
         },
         invokers: {
             getElements: {
-                funcName: "fluid.uiOptions.actionAnts.emphasizeLinksEnactor.getLinks",
+                funcName: "fluid.uiOptions.enactors.emphasizeLinks.getLinks",
                 args: "{that}.container"
             }
         }
     });
     
-    fluid.uiOptions.actionAnts.emphasizeLinksEnactor.getLinks = function (container) {
+    fluid.uiOptions.enactors.emphasizeLinks.getLinks = function (container) {
         return $("a", container);
     };
     
     /*******************************************************************************
-     * inputsLargerEnactor
+     * inputsLarger
      * 
      * The enactor to enlarge inputs in the container according to the value
      *******************************************************************************/
 
     // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.uiOptions.actionAnts.inputsLargerEnactor", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts.styleElementsEnactor", "autoInit"],
+    fluid.defaults("fluid.uiOptions.enactors.inputsLarger", {
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors.styleElements", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
         model: {
             value: false
         },
         invokers: {
             getElements: {
-                funcName: "fluid.uiOptions.actionAnts.inputsLargerEnactor.getInputs",
+                funcName: "fluid.uiOptions.enactors.inputsLarger.getInputs",
                 args: "{that}.container"
             }
         }
     });
     
-    fluid.uiOptions.actionAnts.inputsLargerEnactor.getInputs = function (container) {
+    fluid.uiOptions.enactors.inputsLarger.getInputs = function (container) {
         return $("input, button", container);
     };
     
     /*******************************************************************************
-     * ClassSwapperEnactor
+     * ClassSwapper
      *
      * Has a hash of classes it cares about and will remove all those classes from
      * its container before setting the new class.
-     * This component tends to be used as a grade by textFontEnactor and themeEnactor
+     * This component tends to be used as a grade by textFont and theme
      *******************************************************************************/
     
     // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.uiOptions.actionAnts.classSwapperEnactor", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
+    fluid.defaults("fluid.uiOptions.enactors.classSwapper", {
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors", "autoInit"],
         classes: {},  // Must be supplied by implementors
         model: {
             value: ""
         },
         invokers: {
             clearClasses: {
-                funcName: "fluid.uiOptions.actionAnts.classSwapperEnactor.clearClasses",
+                funcName: "fluid.uiOptions.enactors.classSwapper.clearClasses",
                 args: ["{that}.container", "{that}.classStr"]
             },
             swap: {
-                funcName: "fluid.uiOptions.actionAnts.classSwapperEnactor.swap",
+                funcName: "fluid.uiOptions.enactors.classSwapper.swap",
                 args: ["{arguments}.0", "{that}"]
             }
         },
@@ -166,23 +166,23 @@ var fluid_1_5 = fluid_1_5 || {};
         members: {
             classStr: {
                 expander: {
-                    func: "fluid.uiOptions.actionAnts.classSwapperEnactor.joinClassStr",
+                    func: "fluid.uiOptions.enactors.classSwapper.joinClassStr",
                     args: "{that}.options.classes"
                 }
             }
         }
     });
     
-    fluid.uiOptions.actionAnts.classSwapperEnactor.clearClasses = function (container, classStr) {
+    fluid.uiOptions.enactors.classSwapper.clearClasses = function (container, classStr) {
         container.removeClass(classStr);
     };
     
-    fluid.uiOptions.actionAnts.classSwapperEnactor.swap = function (value, that) {
+    fluid.uiOptions.enactors.classSwapper.swap = function (value, that) {
         that.clearClasses();
         that.container.addClass(that.options.classes[value]);
     };
     
-    fluid.uiOptions.actionAnts.classSwapperEnactor.joinClassStr = function (classes) {
+    fluid.uiOptions.enactors.classSwapper.joinClassStr = function (classes) {
         var classStr = "";
         
         fluid.each(classes, function (oneClassName) {
@@ -193,14 +193,14 @@ var fluid_1_5 = fluid_1_5 || {};
         return classStr;
     };
     
-    fluid.uiOptions.actionAnts.classSwapperEnactor.finalInit = function (that) {
+    fluid.uiOptions.enactors.classSwapper.finalInit = function (that) {
         that.applier.modelChanged.addListener("value", function (newModel) {
             that.swap(newModel.value);
         });
     };
     
     /*******************************************************************************
-     * Functions shared by textSizerEnactor and lineSpacerEnactor
+     * Functions shared by textSizer and lineSpacer
      *******************************************************************************/
     
     /**
@@ -208,7 +208,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param (Object) container
      * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
      */
-    fluid.uiOptions.actionAnts.getTextSizeInPx = function (container, fontSizeMap) {
+    fluid.uiOptions.enactors.getTextSizeInPx = function (container, fontSizeMap) {
         var fontSize = container.css("font-size");
 
         if (fontSizeMap[fontSize]) {
@@ -220,33 +220,33 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     /*******************************************************************************
-     * textSizerEnactor
+     * textSizer
      *
      * Sets the text size on the container to the multiple provided.
      *******************************************************************************/
     
     // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.uiOptions.actionAnts.textSizerEnactor", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
+    fluid.defaults("fluid.uiOptions.enactors.textSizer", {
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors", "autoInit"],
         fontSizeMap: {},  // must be supplied by implementors
         model: {
             value: 1
         },
         invokers: {
             set: {
-                funcName: "fluid.uiOptions.actionAnts.textSizerEnactor.set",
+                funcName: "fluid.uiOptions.enactors.textSizer.set",
                 args: ["{arguments}.0", "{that}"]
             },
             getTextSizeInPx: {
-                funcName: "fluid.uiOptions.actionAnts.getTextSizeInPx",
+                funcName: "fluid.uiOptions.enactors.getTextSizeInPx",
                 args: ["{that}.container", "{that}.options.fontSizeMap"]
             },
             getTextSizeInEm: {
-                funcName: "fluid.uiOptions.actionAnts.textSizerEnactor.getTextSizeInEm",
+                funcName: "fluid.uiOptions.enactors.textSizer.getTextSizeInEm",
                 args: [{expander: {func: "{that}.getTextSizeInPx"}}, {expander: {func: "{that}.getPx2EmFactor"}}]
             },
             getPx2EmFactor: {
-                funcName: "fluid.uiOptions.actionAnts.textSizerEnactor.getPx2EmFactor",
+                funcName: "fluid.uiOptions.enactors.textSizer.getPx2EmFactor",
                 args: ["{that}.container", "{that}.options.fontSizeMap"]
             }
         },
@@ -258,7 +258,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    fluid.uiOptions.actionAnts.textSizerEnactor.set = function (times, that) {
+    fluid.uiOptions.enactors.textSizer.set = function (times, that) {
         // Calculating the initial size here rather than using a members expand because the "font-size"
         // cannot be detected on hidden containers such as fat paenl iframe.
         if (!that.initialSize) {
@@ -276,7 +276,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param (Object) container
      * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
      */
-    fluid.uiOptions.actionAnts.textSizerEnactor.getTextSizeInEm = function (textSizeInPx, px2emFactor) {
+    fluid.uiOptions.enactors.textSizer.getTextSizeInEm = function (textSizeInPx, px2emFactor) {
         // retrieve fontSize in px, convert and return in em 
         return Math.round(textSizeInPx / px2emFactor * 10000) / 10000;
     };
@@ -284,50 +284,50 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * Return the base font size used for converting text size from px to em
      */
-    fluid.uiOptions.actionAnts.textSizerEnactor.getPx2EmFactor = function (container, fontSizeMap) {
+    fluid.uiOptions.enactors.textSizer.getPx2EmFactor = function (container, fontSizeMap) {
         // The base font size for converting text size to em is the computed font size of the container's 
         // parent element unless the container itself has been the DOM root element "HTML"
         // The reference to this algorithm: http://clagnut.com/blog/348/
         if (container.get(0).tagName !== "HTML") {
             container = container.parent();
         }
-        return fluid.uiOptions.actionAnts.getTextSizeInPx(container, fontSizeMap);
+        return fluid.uiOptions.enactors.getTextSizeInPx(container, fontSizeMap);
     };
 
-    fluid.uiOptions.actionAnts.textSizerEnactor.finalInit = function (that) {
+    fluid.uiOptions.enactors.textSizer.finalInit = function (that) {
         that.applier.modelChanged.addListener("value", function (newModel) {
             that.set(newModel.value);
         });
     };
     
     /*******************************************************************************
-     * lineSpacerEnactor
+     * lineSpacer
      *
      * Sets the line spacing on the container to the multiple provided.
      *******************************************************************************/
     
     // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.uiOptions.actionAnts.lineSpacerEnactor", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
+    fluid.defaults("fluid.uiOptions.enactors.lineSpacer", {
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors", "autoInit"],
         fontSizeMap: {},  // must be supplied by implementors
         model: {
             value: 1
         },
         invokers: {
             set: {
-                funcName: "fluid.uiOptions.actionAnts.lineSpacerEnactor.set",
+                funcName: "fluid.uiOptions.enactors.lineSpacer.set",
                 args: ["{arguments}.0", "{that}"]
             },
             getTextSizeInPx: {
-                funcName: "fluid.uiOptions.actionAnts.getTextSizeInPx",
+                funcName: "fluid.uiOptions.enactors.getTextSizeInPx",
                 args: ["{that}.container", "{that}.options.fontSizeMap"]
             },
             getLineHeight: {
-                funcName: "fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight",
+                funcName: "fluid.uiOptions.enactors.lineSpacer.getLineHeight",
                 args: "{that}.container"
             },
             numerizeLineHeight: {
-                funcName: "fluid.uiOptions.actionAnts.lineSpacerEnactor.numerizeLineHeight",
+                funcName: "fluid.uiOptions.enactors.lineSpacer.numerizeLineHeight",
                 args: [{expander: {func: "{that}.getLineHeight"}}, {expander: {func: "{that}.getTextSizeInPx"}}]
             }
         },
@@ -340,7 +340,7 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     // Return "line-height" css value
-    fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight = function (container) {
+    fluid.uiOptions.enactors.lineSpacer.getLineHeight = function (container) {
         var lineHeight;
         
         // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
@@ -356,7 +356,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // Interprets browser returned "line-height" value, either a string "normal", a number with "px" suffix or "undefined" 
     // into a numeric value in em. 
     // Return 0 when the given "lineHeight" argument is "undefined" (http://issues.fluidproject.org/browse/FLUID-4500).
-    fluid.uiOptions.actionAnts.lineSpacerEnactor.numerizeLineHeight = function (lineHeight, fontSize) {
+    fluid.uiOptions.enactors.lineSpacer.numerizeLineHeight = function (lineHeight, fontSize) {
         // Handel the given "lineHeight" argument is "undefined", which occurs when firefox detects 
         // "line-height" css value on a hidden container. (http://issues.fluidproject.org/browse/FLUID-4500)
         if (!lineHeight) {
@@ -377,7 +377,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return Math.round(parseFloat(lineHeight) / fontSize * 100) / 100;
     };
 
-    fluid.uiOptions.actionAnts.lineSpacerEnactor.set = function (times, that) {
+    fluid.uiOptions.enactors.lineSpacer.set = function (times, that) {
         // Calculating the initial size here rather than using a members expand because the "line-height"
         // cannot be detected on hidden containers such as fat paenl iframe.
         if (!that.initialSize) {
@@ -393,21 +393,21 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
-    fluid.uiOptions.actionAnts.lineSpacerEnactor.finalInit = function (that) {
+    fluid.uiOptions.enactors.lineSpacer.finalInit = function (that) {
         that.applier.modelChanged.addListener("value", function (newModel) {
             that.set(newModel.value);
         });
     };
     
     /*******************************************************************************
-     * tableOfContentsEnactor
+     * tableOfContents
      *
      * To create and show/hide table of contents
      *******************************************************************************/
     
     // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.uiOptions.actionAnts.tableOfContentsEnactor", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
+    fluid.defaults("fluid.uiOptions.enactors.tableOfContents", {
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors", "autoInit"],
         tocTemplate: null,  // must be supplied by implementors
         model: {
             value: false
@@ -415,7 +415,7 @@ var fluid_1_5 = fluid_1_5 || {};
         components: {
             tableOfContents: {
                 type: "fluid.tableOfContents",
-                container: "{tableOfContentsEnactor}.container",
+                container: "{tableOfContents}.container",
                 createOnEvent: "onCreateTOCReady",
                 options: {
                     components: {
@@ -425,21 +425,21 @@ var fluid_1_5 = fluid_1_5 || {};
                                 resources: {
                                     template: {
                                         forceCache: true,
-                                        url: "{tableOfContentsEnactor}.options.tocTemplate"
+                                        url: "{fluid.uiOptions.enactors.tableOfContents}.options.tocTemplate"
                                     }
                                 }
                             } 
                         }
                     },
                     listeners: {
-                        afterRender: "{tableOfContentsEnactor}.events.afterTocRender"
+                        afterRender: "{fluid.uiOptions.enactors.tableOfContents}.events.afterTocRender"
                     }
                 }
             }
         },
         invokers: {
             applyToc: {
-                funcName: "fluid.uiOptions.actionAnts.tableOfContentsEnactor.applyToc",
+                funcName: "fluid.uiOptions.enactors.tableOfContents.applyToc",
                 args: ["{arguments}.0", "{that}"]
             }
         },
@@ -456,7 +456,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    fluid.uiOptions.actionAnts.tableOfContentsEnactor.applyToc = function (value, that) {
+    fluid.uiOptions.enactors.tableOfContents.applyToc = function (value, that) {
         var async = false;
         if (value) {
             if (that.tableOfContents) {
@@ -475,7 +475,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
-    fluid.uiOptions.actionAnts.tableOfContentsEnactor.finalInit = function (that) {
+    fluid.uiOptions.enactors.tableOfContents.finalInit = function (that) {
         that.applier.modelChanged.addListener("value", function (newModel) {
             that.applyToc(newModel.value);
         });
@@ -520,7 +520,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     /********************************************************************************************
-     * setIE6ColorInversionEnactor
+     * setIE6ColorInversion
      * 
      * Remove the instances of fl-inverted-color when the default theme is selected. 
      * This prevents a bug in IE6 where the default theme will have elements styled 
@@ -531,8 +531,8 @@ var fluid_1_5 = fluid_1_5 || {};
      ********************************************************************************************/
 
     // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.uiOptions.actionAnts.IE6ColorInversionEnactor", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.actionAnts", "autoInit"],
+    fluid.defaults("fluid.uiOptions.enactors.IE6ColorInversion", {
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors", "autoInit"],
         selectors: {
             colorInversion: ".fl-inverted-color"
         },
@@ -544,7 +544,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         invokers: {
             setIE6ColorInversion: {
-                funcName: "fluid.uiOptions.actionAnts.IE6ColorInversionEnactor.setIE6ColorInversion",
+                funcName: "fluid.uiOptions.enactors.IE6ColorInversion.setIE6ColorInversion",
                 args: ["{arguments}.0", "{that}"]
             }
         },
@@ -556,13 +556,13 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    fluid.uiOptions.actionAnts.IE6ColorInversionEnactor.setIE6ColorInversion = function (value, that) {
+    fluid.uiOptions.enactors.IE6ColorInversion.setIE6ColorInversion = function (value, that) {
         if (fluid.hasFeature("fluid.browser.msie") && fluid.hasFeature("fluid.browser.majorVersion.6") && value === "default") {
             that.locate("colorInversion").removeClass(that.options.styles.colorInversionClass);
         }
     };
     
-    fluid.uiOptions.actionAnts.IE6ColorInversionEnactor.finalInit = function (that) {
+    fluid.uiOptions.enactors.IE6ColorInversion.finalInit = function (that) {
         that.applier.modelChanged.addListener("value", function (newModel) {
             that.setIE6ColorInversion(newModel.value);
         });
