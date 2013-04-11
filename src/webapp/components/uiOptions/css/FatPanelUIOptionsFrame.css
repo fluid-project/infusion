@@ -142,7 +142,7 @@
 	line-height: 3em !important;
 }
 .fl-uiOptions-fatPanel .fl-choice .uio-demo-theme .fl-crossout {
-	margin-top:-1.5em;
+	margin-top:-2em;
 	border-bottom: 1px dashed #ddbdc0;
 	-webkit-transform: rotate(45deg); 
     -moz-transform: rotate(45deg);  
@@ -281,21 +281,6 @@
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input:checked + label .fl-uiOptions-fatPanel-switch .fl-uiOptions-fatPanel-switch-inner {
 	top:-1.6em;
 	left: 0.46em;
-}
-
-/* Graceful degradation for browsers that don't support :before :after, like IE8 */
-.no-generatedcontent .fl-uiOptions-fatPanel-onoff input {
-    clip: auto;
-    height: 1em;
-    width: 1em;    
-    margin: 0;
-    position: relative;
-}
-.no-generatedcontent .fl-uiOptions-fatPanel-onoff .fl-uiOptions-fatPanel-switch {
-	display: none;
-}
-.no-generatedcontent .fl-uiOptions-fatPanel-onoff input:focus + label {
-	outline: none;
 }
 
 /* Emphasize links & buttons panel */
