@@ -413,6 +413,16 @@ var fluid_1_5 = fluid_1_5 || {};
         remoteStrategy.stop();      
     };
     
+    fluid.uploader.defaultQueueSettings = {
+        uploadURL: "",
+        postParams: {},
+        fileSizeLimit: "20480",
+        fileTypes: null,
+        fileTypesDescription: null,
+        fileUploadLimit: 0,
+        fileQueueLimit: 0
+    };
+    
     /**
      * Multiple file Uploader implementation. Use fluid.uploader() for IoC-resolved, progressively
      * enhanceable Uploader, or call this directly if you don't want support for old-style single uploads
@@ -503,15 +513,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         
-        queueSettings: {
-            uploadURL: "",
-            postParams: {},
-            fileSizeLimit: "20480",
-            fileTypes: null,
-            fileTypesDescription: null,
-            fileUploadLimit: 0,
-            fileQueueLimit: 0
-        },
+        queueSettings: fluid.uploader.defaultQueueSettings,
 
         demo: false,
         
@@ -620,9 +622,9 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.defaults("fluid.uploader.local", {
         gradeNames: ["fluid.eventedComponent"],
+        queueSettings: "{uploader}.options.queueSettings",
         members: {
             queue: "{uploader}.queue",
-            queueSettings: "{uploader}.options.queueSettings"
         },
         events: {
             onFileDialog: "{uploader}.events.onFileDialog",
