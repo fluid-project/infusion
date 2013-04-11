@@ -189,7 +189,7 @@
 }
 
 /* The container for the toggle, which is also a label for the hidden checkbox. */
-.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-switch { 
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff .fl-uiOptions-fatPanel-switch { 
 	border-radius:50px;
 	border: 1px solid #776D67;
 	width: 5em;
@@ -204,11 +204,23 @@
 	font-size: 1.2em;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc-input:focus + label {
+/* Hide input */
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input {
+    border: 0 none;
+    clip: rect(0px, 0px, 0px, 0px);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input:focus + label {
 	outline: 2px solid black;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switch {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input:checked + label .fl-uiOptions-fatPanel-switch {
 	padding-left: 3em;
 	width: 2em;
 	background-color: #2da750;
@@ -216,7 +228,7 @@
 }
 
 /* The "on" portion of the toggle and the knob. */
-.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc-input + label .fl-uiOptions-fatPanel-switch:before {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input + label .fl-uiOptions-fatPanel-switch:before {
 	content:"ON";
 	color: #fff;
 	border: 1px solid #776D67;
@@ -244,7 +256,7 @@
 }
 
 /* The "off" portion of the toggle. */
-.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc-input + label .fl-uiOptions-fatPanel-switch:after {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input + label .fl-uiOptions-fatPanel-switch:after {
 	content:"OFF";
 	float:left;
 	position:relative;
@@ -252,12 +264,12 @@
 	left: 0.5em;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switch:after {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input:checked + label .fl-uiOptions-fatPanel-switch:after {
 	display:hidden;
 }
 
 /* The dark inner circle to the toggle knob. */
-.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-switch-inner {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff .fl-uiOptions-fatPanel-switch-inner {
 	border: 1px solid #493A30;
 	border-radius: 50px;
 	width: 1em;
@@ -272,18 +284,18 @@
 	display:inline-block;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switch .fl-uiOptions-fatPanel-switch-inner {
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input:checked + label .fl-uiOptions-fatPanel-switch .fl-uiOptions-fatPanel-switch-inner {
 	top:-1.6em;
 	left: 0.46em;
 }
 
 /* Emphasize links & buttons panel */
-.fl-uiOptions-fatPanel .fl-uiOptions .fl-links-buttons-options label {
+.fl-uiOptions-fatPanel .fl-links-buttons-options label {
 	width: 22em;
 	display:inline-block;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions .fl-links-buttons-options li {
+.fl-uiOptions-fatPanel .fl-links-buttons-options li {
 	margin-bottom: 0.4em;
 }
 
@@ -319,17 +331,17 @@
 }
 
 .fl-uiOptions-fatPanel.fl-theme-bw .fl-uiOptions-fatPanel-switch,
-.fl-uiOptions-fatPanel.fl-theme-bw .fl-uiOptions-fatPanel-toc-input + label .fl-uiOptions-fatPanel-switch:before,
-.fl-uiOptions-fatPanel.fl-theme-bw .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switchs,
+.fl-uiOptions-fatPanel.fl-theme-bw input + label .fl-uiOptions-fatPanel-switch:before,
+.fl-uiOptions-fatPanel.fl-theme-bw input:checked + label .fl-uiOptions-fatPanel-switchs,
 .fl-uiOptions-fatPanel.fl-theme-wb .fl-uiOptions-fatPanel-switch,
-.fl-uiOptions-fatPanel.fl-theme-wb .fl-uiOptions-fatPanel-toc-input + label .fl-uiOptions-fatPanel-switch:before,
-.fl-uiOptions-fatPanel.fl-theme-wb .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switchs,
+.fl-uiOptions-fatPanel.fl-theme-wb input + label .fl-uiOptions-fatPanel-switch:before,
+.fl-uiOptions-fatPanel.fl-theme-wb input:checked + label .fl-uiOptions-fatPanel-switchs,
 .fl-uiOptions-fatPanel.fl-theme-by .fl-uiOptions-fatPanel-switch,
-.fl-uiOptions-fatPanel.fl-theme-by .fl-uiOptions-fatPanel-toc-input + label .fl-uiOptions-fatPanel-switch:before,
-.fl-uiOptions-fatPanel.fl-theme-by .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switchs,
+.fl-uiOptions-fatPanel.fl-theme-by input + label .fl-uiOptions-fatPanel-switch:before,
+.fl-uiOptions-fatPanel.fl-theme-by input:checked + label .fl-uiOptions-fatPanel-switchs,
 .fl-uiOptions-fatPanel.fl-theme-yb .fl-uiOptions-fatPanel-switch,
-.fl-uiOptions-fatPanel.fl-theme-yb .fl-uiOptions-fatPanel-toc-input + label .fl-uiOptions-fatPanel-switch:before,
-.fl-uiOptions-fatPanel.fl-theme-yb .fl-uiOptions-fatPanel-toc-input:checked + label .fl-uiOptions-fatPanel-switchs {
+.fl-uiOptions-fatPanel.fl-theme-yb input + label .fl-uiOptions-fatPanel-switch:before,
+.fl-uiOptions-fatPanel.fl-theme-yb input:checked + label .fl-uiOptions-fatPanel-switchs {
 	box-shadow: none !important;
 	text-shadow: none;
 	color: inherit;
@@ -388,10 +400,10 @@
     color: #FFFF00 !important;
 }
 
-.fl-uiOptions-fatPanel.fl-theme-bw .fl-uiOptions-fatPanel-toc-input:focus + label,
-.fl-uiOptions-fatPanel.fl-theme-wb .fl-uiOptions-fatPanel-toc-input:focus + label,
-.fl-uiOptions-fatPanel.fl-theme-by .fl-uiOptions-fatPanel-toc-input:focus + label,
-.fl-uiOptions-fatPanel.fl-theme-yb .fl-uiOptions-fatPanel-toc-input:focus + label,
+.fl-uiOptions-fatPanel.fl-theme-bw input:focus + label,
+.fl-uiOptions-fatPanel.fl-theme-wb input:focus + label,
+.fl-uiOptions-fatPanel.fl-theme-by input:focus + label,
+.fl-uiOptions-fatPanel.fl-theme-yb input:focus + label,
 .fl-uiOptions-fatPanel.fl-theme-bw .fl-choice input:focus ~ label,
 .fl-uiOptions-fatPanel.fl-theme-wb .fl-choice input:focus ~ label,
 .fl-uiOptions-fatPanel.fl-theme-by .fl-choice input:focus ~ label,
