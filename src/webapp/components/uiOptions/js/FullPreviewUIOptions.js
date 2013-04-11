@@ -35,13 +35,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         outerPreviewEnhancerOptions: {
             expander: {
-                funcName: "fluid.get",
-                args: [{
-                    expander: {
-                        type: "fluid.noexpand",
-                        value: fluid.staticEnvironment
-                    }
-                }, "uiEnhancer.options.originalUserOptions"]
+                func: "fluid.uiOptions.fullPreview.getUIEnhancerOptions"
             }
         },
         derivedDefaults: {
@@ -66,4 +60,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
+    fluid.uiOptions.fullPreview.getUIEnhancerOptions = function () {
+        return fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions")
+    };
 })(jQuery, fluid_1_5);
