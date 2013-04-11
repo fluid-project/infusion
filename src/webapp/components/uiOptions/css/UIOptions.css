@@ -226,3 +226,9 @@
     height: auto !important;
     padding-bottom: 20px;
 }
+
+/* FLUID-4966: Fix horizontal scroll bar */
+.fl-hidden-accessible  {
+	top: 0px;
+	left: 0px;
+}
