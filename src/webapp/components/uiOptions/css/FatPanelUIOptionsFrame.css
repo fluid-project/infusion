@@ -11,8 +11,7 @@
 
 /* UI Options Fat Panel styles */
 .fl-uiOptions-fatPanel {
-    min-width: 960px;
-	background-color: #fff;
+    background-color: #fff;
     background-image: url('../images/default/fatpanelbg.png');
     background-repeat: repeat;
     height: 100%;
@@ -21,12 +20,13 @@
     color: #766d68;
     padding: 10px 0px;
 	margin: 0px;
+	
 }
 
 /* Preference Panels */
 .fl-uiOptions-fatPanel ul.fl-uiOptions-panels {
 	margin: 0 20px;
-    width: 225em;
+    white-space: nowrap;
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions-panels li.fl-uiOptions-panel {
@@ -39,7 +39,8 @@
  	width: 25em;
  	background-color: #fff;
 	margin-right: 10px;
-    float: left;
+    white-space: normal;
+    vertical-align:middle;
  }
 
 .fl-uiOptions-fatPanel h2 {

@@ -160,8 +160,12 @@ img {
     font-weight: bold;
 }
 
-.uio-demo-theme .fl-uiOptions-fatPanel .fl-toggleButton,
+.uio-demo-theme .fl-uiOptions-fatPanel .fl-uiOptions-showHide,
 .uio-demo-theme .fl-uiOptions-fatPanel .fl-uiOptions-reset  {
     background-color: #0071BC;
     color: white;
+}
+
+.uio-demo-theme .fl-uiOptions-fatPanel .fl-uiOptions-reset  {
+	border-right: 1px solid #fff;
 }
