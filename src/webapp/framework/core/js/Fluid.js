@@ -224,7 +224,7 @@ var fluid = fluid || fluid_1_5;
     
     /** Returns whether logging is enabled **/
     fluid.isLogging = function () {
-        return logLevelStack[0].priority > fluid.logLevel.IMPORTANT;
+        return logLevelStack[0].priority > fluid.logLevel.IMPORTANT.priority;
     };
     
     /** Determines whether the supplied argument is a valid logLevel marker **/    
@@ -1682,17 +1682,17 @@ var fluid = fluid || fluid_1_5;
     };
 
     // unsupported, NON-API function    
-    fluid.findMergeBlock = function (mergeBlocks, recordType) {
-        return fluid.find_if(mergeBlocks, function (block) { return block.recordType === recordType; });
+    fluid.findMergeBlocks = function (mergeBlocks, recordType) {
+        return fluid.remove_if(fluid.makeArray(mergeBlocks), function (block) { return block.recordType !== recordType; });
     };
     
     // unsupported, NON-API function    
     fluid.transformOptionsBlocks = function (mergeBlocks, transformOptions, recordTypes) {
         fluid.each(recordTypes, function (recordType) {       
-            var block = fluid.findMergeBlock(mergeBlocks, recordType);
-            if (block) {
+            var blocks = fluid.findMergeBlocks(mergeBlocks, recordType);
+            fluid.each(blocks, function (block) {
                 block[block.simple? "target": "source"] = fluid.transformOptions(block.source, transformOptions);
-            }
+            });
         });
     };
     

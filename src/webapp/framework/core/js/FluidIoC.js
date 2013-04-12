@@ -403,7 +403,8 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.cacheShadowGrades(that, shadow);
             var baseDefaults = fluid.rawDefaults(that.typeName);
             var newDefaults = fluid.getGradedDefaults(baseDefaults, that.typeName, gradeNames);
-            var defaultsBlock = fluid.findMergeBlock(shadow.mergeOptions.mergeBlocks, "defaults");
+            // TODO: In complex distribution cases, a component might end up with multiple default blocks
+            var defaultsBlock = fluid.findMergeBlocks(shadow.mergeOptions.mergeBlocks, "defaults")[0];
             defaultsBlock.source = newDefaults;
             shadow.mergeOptions.updateBlocks();
         }

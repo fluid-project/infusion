@@ -22,7 +22,7 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     // TODO: This context name is required, but has no visible detection support
-    fluid.staticEnvironment.supportsFlash9 = fluid.typeTag("fluid.uploader.flash.9"); 
+    fluid.enhance.check({"fluid.uploader.flash.9": true});
 
     fluid.registerNamespace("fluid.uploader.swfUploadStrategy");
     
