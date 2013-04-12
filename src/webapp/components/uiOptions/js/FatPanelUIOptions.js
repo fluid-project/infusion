@@ -46,7 +46,14 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         selectors: {
+            reset: ".flc-uiOptions-reset",
             iframe: ".flc-uiOptions-iframe"
+        },
+        invokers: {
+            bindReset: {
+                funcName: "fluid.uiOptions.fatPanel.jqFn",
+                args: ["{fatPanel}.dom.reset", "click", "{arguments}.0"]
+            }
         },
         components: {
             pageEnhancer: "{uiEnhancer}",
@@ -122,6 +129,12 @@ var fluid_1_5 = fluid_1_5 || {};
                     events: {
                         onSignificantDOMChange: null  
                     },
+                    listeners: {
+                        onCreate: {
+                            listener: "{fatPanel}.bindReset",
+                            args: ["{that}.reset"]
+                        }
+                    },
                     components: {
                         iframeRenderer: "{fatPanel}.iframeRenderer",
                         settingsStore: "{uiEnhancer}.settingsStore",
@@ -162,6 +175,12 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
+    
+    fluid.uiOptions.fatPanel.jqFn = function (elm, jqFn, args) {
+        var elm = $(elm);
+        elm[jqFn].apply(elm, fluid.makeArray(args));
+        console.log(elm.data('events'));
+    };
     
     /*****************************************
      * fluid.uiOptions.fatPanel.renderIframe *

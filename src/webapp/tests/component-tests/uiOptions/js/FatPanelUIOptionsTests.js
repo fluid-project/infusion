@@ -56,7 +56,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     that.slidingPanel.showPanel();
                 } else if (sequence === 2) {
                   // Open the Fat Panel, click "Reset All", and close the panel
-                    uiOptions.locate("reset").click();
+                    that.locate("reset").click();
                     fluid.tests.uiOptions.checkModelSelections("pageModel from defaults", defaultSiteSettings, pageModel);
                     that.slidingPanel.hidePanel();
                     fluid.tests.uiOptions.checkModelSelections("panelModel from defaults", defaultSiteSettings, panelModel);
