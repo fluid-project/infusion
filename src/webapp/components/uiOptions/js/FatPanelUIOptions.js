@@ -34,7 +34,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.registerNamespace("fluid.uiOptions.fatPanel"); 
 
     fluid.defaults("fluid.uiOptions.fatPanel", {
-        gradeNames: ["fluid.uiOptions.inline"],
+        gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         events: {
             afterRender: null,
             onReady: null
@@ -46,7 +46,14 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         selectors: {
+            reset: ".flc-uiOptions-reset",
             iframe: ".flc-uiOptions-iframe"
+        },
+        invokers: {
+            bindReset: {
+                funcName: "fluid.uiOptions.fatPanel.jqFn",
+                args: ["{fatPanel}.dom.reset", "click", "{arguments}.0"]
+            }
         },
         components: {
             pageEnhancer: "{uiEnhancer}",
@@ -122,6 +129,12 @@ var fluid_1_5 = fluid_1_5 || {};
                     events: {
                         onSignificantDOMChange: null  
                     },
+                    listeners: {
+                        onCreate: {
+                            listener: "{fatPanel}.bindReset",
+                            args: ["{that}.reset"]
+                        }
+                    },
                     components: {
                         iframeRenderer: "{fatPanel}.iframeRenderer",
                         settingsStore: "{uiEnhancer}.settingsStore",
@@ -137,18 +150,25 @@ var fluid_1_5 = fluid_1_5 || {};
                 "*.iframeRenderer.options.prefix":             "prefix",
                 "selectors.iframe":                            "iframe"
             }
+        },
+        outerEnhancerOptions: {
+            expander: {
+                funcName: "fluid.get",
+                args: [{
+                    expander: {
+                        type: "fluid.noexpand",
+                        value: fluid.staticEnvironment
+                    }
+                }, "uiEnhancer.options.originalUserOptions"]
+            }
         }
     });
     
-    fluid.uiOptions.fatPanel.optionsProcessor = function (options) {
-        var enhancerOptions = fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions");
-        options.outerEnhancerOptions = enhancerOptions;
-        // Necessary to make IoC self-references work in the absence of FLUID-4392. Also see FLUID-4636
-        options.nickName = "fatPanel"; 
-        return options;
+    fluid.uiOptions.fatPanel.jqFn = function (elm, jqFn, args) {
+        var elm = $(elm);
+        elm[jqFn].apply(elm, fluid.makeArray(args));
+        console.log(elm.data('events'));
     };
-        
-    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.fatPanel", fluid.uiOptions.fatPanel.optionsProcessor);
     
     /*****************************************
      * fluid.uiOptions.fatPanel.renderIframe *

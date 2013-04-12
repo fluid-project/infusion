@@ -24,11 +24,18 @@ var fluid_1_5 = fluid_1_5 || {};
      ***************************/
 
     fluid.defaults("fluid.uiOptions.fullPreview", {
-        gradeNames: ["fluid.uiOptions.inline"],
+        gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         container: "{fullPreview}.container",
         uiOptionsTransform: {
             config: {
-                "!*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer.options": "outerPreviewEnhancerOptions"
+                "!*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer.options": "outerPreviewEnhancerOptions",
+                "*.uiOptionsLoader.*.uiOptions.*.preview":            "preview",
+                "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
+            }
+        },
+        outerPreviewEnhancerOptions: {
+            expander: {
+                func: "fluid.uiOptions.fullPreview.getUIEnhancerOptions"
             }
         },
         derivedDefaults: {
@@ -53,14 +60,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.fullPreview", function (options) {
-        // This is a terrible hack for FLUID-4409. Since it is impossible for us to be invoked via IoC, the only
-        // source of this configuration could be the static pageEnhancer
-        // The correct way to resolve the problem is to refactor UIEnhancer so that all of its configuration other than
-        // the container to be bound to be enhanced is kept in a separate, shared component, "UIEnhancerConfig".
-        var enhancerOptions = fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions");
-        options.outerPreviewEnhancerOptions = enhancerOptions;
-        return options;
-    });
-    
+    fluid.uiOptions.fullPreview.getUIEnhancerOptions = function () {
+        return fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions")
+    };
 })(jQuery, fluid_1_5);

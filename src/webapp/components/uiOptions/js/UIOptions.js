@@ -35,7 +35,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */    
     fluid.defaults("fluid.uiOptions.inline", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         mergePolicy: {
             uiOptionsTransform: "noexpand",
             derivedDefaults: "noexpand"
@@ -56,15 +56,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "*.templateLoader.*.templatePath.options.value":      "prefix",
                 "*.uiOptionsLoader":                                  "uiOptionsLoader",
                 "*.uiOptionsLoader.container":                        "container",
-                "*.uiOptionsLoader.*.uiOptions":                      "uiOptions",
-                "*.uiOptionsLoader.*.uiOptions.*.textSizer":          "textSizer",
-                "*.uiOptionsLoader.*.uiOptions.*.lineSpacer":         "lineSpacer",
-                "*.uiOptionsLoader.*.uiOptions.*.textFont":           "textFont",
-                "*.uiOptionsLoader.*.uiOptions.*.contrast":           "contrast",
-                "*.uiOptionsLoader.*.uiOptions.*.layoutControls":     "layoutControls",
-                "*.uiOptionsLoader.*.uiOptions.*.linksControls":      "linksControls",
-                "*.uiOptionsLoader.*.uiOptions.*.preview":            "preview",
-                "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
+                "*.uiOptionsLoader.*.uiOptions":                      "uiOptions"
             }
         },
         derivedDefaults: {
@@ -81,35 +73,26 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    // A temporary function to automate the work of making a creator function for a UIOptions configuration.
-    // These creator functions accept literal options from the user (via direct function call) and
-    // apply a mapping transformation to them to make some deeply nested configuration more accessible.
-    
-    // Unfortunately this operation conflicts with the workflow of the IoC system in constructing a component - 
-    // so these UIOptions configurations are not suitable for use as IoC-driven subcomponents. 
-    fluid.uiOptions.inline.makeCreator = function (componentName, processor) {
-        var creator = function (container, options) {
-            // make "container" one of the options so it can be munged by the uiOptions.mapOptions.
-            // This container is passed down to be used as uiOptionsLoader.container
-            var defaults = fluid.defaults(componentName);
-            options.container = container;
-            options = processor(options);
-            
-            var mappedOptions = fluid.uiOptions.mapOptions(options, defaults.uiOptionsTransform.config, defaults.mergePolicy, 
-                fluid.copy(defaults.derivedDefaults));
-            var that = fluid.initView(componentName, container, mappedOptions);
-            // This workflow copied from fluid.initView
-            fluid.diagnoseFailedView(componentName, that, fluid.defaults(componentName), [componentName, container, mappedOptions]);
-            fluid.initDependents(that);
-            return that;
-        };
-        // This workflow taken from framework fluid.makeComponent
-        var existing = fluid.getGlobalValue(componentName);
-        if (existing) {
-            $.extend(creator, existing);
-        }
-        fluid.setGlobalValue(componentName, creator);
+    fluid.uiOptions.inline.preInit = function (that) {
+        that.options.container = that.container;
+        that.options = fluid.uiOptions.mapOptions(that.options, that.options.uiOptionsTransform.config, that.options.mergePolicy, 
+                fluid.copy(that.options.derivedDefaults));
     };
+    
+    fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions", {
+        gradeNames: ["fluid.uiOptions.inline", "autoInit"],
+        uiOptionsTransform: {
+            transformer: "fluid.uiOptions.mapOptions",
+            config: {
+                "*.uiOptionsLoader.*.uiOptions.*.textSizer":          "textSizer",
+                "*.uiOptionsLoader.*.uiOptions.*.lineSpacer":         "lineSpacer",
+                "*.uiOptionsLoader.*.uiOptions.*.textFont":           "textFont",
+                "*.uiOptionsLoader.*.uiOptions.*.contrast":           "contrast",
+                "*.uiOptionsLoader.*.uiOptions.*.layoutControls":     "layoutControls",
+                "*.uiOptionsLoader.*.uiOptions.*.linksControls":      "linksControls"
+            }
+        }
+    });
     
     /**
     * @param {Object} inObject, the element on inObject is in the pair of key -> value

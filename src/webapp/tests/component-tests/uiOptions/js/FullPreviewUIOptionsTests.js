@@ -23,7 +23,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         /**************************************************
          * fluid.fullPreviewUIOptions Integration Tests *
-         **************************************************/        
+         **************************************************/
+        fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptions.fullPreview"], {
+            options: {
+                templateUrl: "TestPreviewTemplate.html"
+            }
+        });
+
         fluid.tests.uiOptions.integrationTest("fluid.uiOptions.fullPreview", false);
         
         var testSettings = {

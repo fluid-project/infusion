@@ -19,12 +19,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        fluid.staticEnvironment.uiOptionsTests = fluid.typeTag("fluid.uiOptions.tests");
+        fluid.enhance.check({"fluid.uiOptions.tests": true});
 
         var templatePrefix = "../../../../components/uiOptions/html/";
         
         fluid.defaults("fluid.uiOptionsDefaultTests", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],            
+            gradeNames: ["fluid.viewComponent", "autoInit"],
             components: {
                 uiOptionsLoader: {
                     type: "fluid.uiOptions.loader",
@@ -54,7 +54,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         // Supply the templates
-        fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptions.tests", {
+        fluid.demands("fluid.uiOptions.templatePath", ["fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
             options: {
                 value: "{uiOptionsTests}.options.prefix"
             }
@@ -175,7 +175,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var actual = fluid.uiOptions.mapOptions(options, config, "preserve");
             jqUnit.assertDeepEq("The path is expanded correctly", {}, actual);
 
-            
+            config = fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions").uiOptionsTransform.config;
+
             options = {
                 textFont: {
                     opt1: "food"
@@ -386,9 +387,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.asyncTest("Init with site defaults different from UIOptions control values", function () {
             jqUnit.expect(2);
-               
-            fluid.staticEnvironment.uiOptionsTestsDiffInit = fluid.typeTag("fluid.uiOptions.testDiffInit");
             
+            fluid.enhance.check({"fluid.uiOptions.testDiffInit": true});
+
             fluid.demands("settingsStore", ["fluid.uiOptionsTests", "fluid.uiOptions.testDiffInit", "fluid.uiEnhancer"], {
                 funcName: "fluid.tempStore",
                 options: {
@@ -408,85 +409,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var fontValue = settings.textFont;
                 jqUnit.assertEquals("The font is set to times", "times", fontValue);
                 
-                delete fluid.staticEnvironment.uiOptionsTestsDiffInit;
+                fluid.enhance.forget("fluid.uiOptions.testDiffInit");
                 jqUnit.start();
             });
         });
 
-        /*****************
-         * Preview tests *
-         *****************/
-         
-        jqUnit.asyncTest("Preview URL", function () {
-            jqUnit.expect(1);
-            
-            fluid.staticEnvironment.uiOptionsTestsPreview = fluid.typeTag("fluid.uiOptions.testsPreview");
-            
-            fluid.demands("fluid.uiOptions.templateLoader", ["fluid.uiOptionsDefaultTests", "fluid.uiOptions.testsPreview"], {
-                options: {
-                    templates: {
-                        uiOptions: templatePrefix + "FullPreviewUIOptions.html"
-                    }
-                }
-            });
-        
-            fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
-                options: {
-                    components: {
-                        preview: {
-                            type: "fluid.uiOptions.preview",
-                            createOnEvent: "onUIOptionsComponentReady",
-                            container: "{uiOptions}.dom.previewFrame",
-                            options: {
-                                templateUrl: "TestPreviewTemplate.html"
-                            }
-                        }
-                    }
-                }
-            });
-         
-            var templateUrl = "TestPreviewTemplate.html";
-            fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions"], {
-                container: "{uiOptions}.dom.previewFrame",
-                options: {
-                    templateUrl: templateUrl
-                }
-            });     
-    
-            testUIOptions(function (uiOptionsLoader, uiOptions) {
-                jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
-                    templateUrl, uiOptions.preview.container.attr("src"));
-                
-                delete fluid.staticEnvironment.uiOptionsTestsPreview;
-                jqUnit.start();
-            });
-        });
-        
-        jqUnit.asyncTest("UIOptions Auto-save", function () {
-            jqUnit.expect(2);
-                
-            fluid.staticEnvironment.uiOptionsTestsAutoSave = fluid.typeTag("fluid.uiOptions.testsAutoSave");
-            
-            fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsAutoSave", "fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
-                options: {
-                    autoSave: true
-                }
-            });
-     
-            testUIOptions(function (uiOptionsLoader, uiOptions) {
-                resetSaveCalled();
-                uiOptions.updateModel(bwSkin);
-                jqUnit.assertTrue("Model has changed, auto-save changes", saveCalled);
-                
-                var uiEnhancerSettings = uiOptions.settingsStore.fetch();
-                jqUnit.assertDeepEq("bw setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
-                
-                delete fluid.staticEnvironment.uiOptionsTestsAutoSave;
-                jqUnit.start();
-            });
-            
-        });
-        
         /********************************
          * UI Options Integration tests *
          * ******************************
@@ -536,7 +463,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Non-default UIOptions Integration tests", function () {
-            fluid.staticEnvironment.uiOptionsTestsIntegration = fluid.typeTag("fluid.uiOptions.testsNonDefaultIntegration");
+            fluid.enhance.check({"fluid.uiOptions.testsNonDefaultIntegration": true});
 
             fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsNonDefaultIntegration", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
                 funcName: "fluid.uiOptions",
@@ -604,13 +531,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 checkPaths(uiOptions, customizedPanelPaths);
                 checkSaveCancel(uiOptions, maxTextSize, minTextSize);
-                delete fluid.staticEnvironment.testsNonDefaultIntegration;
+                fluid.enhance.forget("fluid.uiOptions.testsNonDefaultIntegration");
                 jqUnit.start();
             });
         });
 
         jqUnit.asyncTest("UIOptions Integration tests", function () {
-            fluid.staticEnvironment.uiOptionsTestsIntegration = fluid.typeTag("fluid.uiOptions.testsIntegration");
+            fluid.enhance.check({"fluid.uiOptions.testsIntegration": true});
             
             fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsIntegration", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
                 funcName: "fluid.uiOptions.defaultSettingsPanels",
@@ -651,10 +578,83 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 checkPaths(uiOptions, defaultPanelsPaths);
                 checkSaveCancel(uiOptions, bwSkin, bwSkin2);
-                delete fluid.staticEnvironment.uiOptionsTestsIntegration;
+                fluid.enhance.forget("fluid.uiOptions.testsIntegration");
                 jqUnit.start();
             });
         });
-    });
-    
+
+        // The following two tests (preview and auto-save) need to run at the end because they causes failures on the subsequent
+        // unit tests due to possibility that the demands blocks issued specifically within their own staticEnvironment are still
+        // in effect on the subsequent tests.
+        /*****************
+         * Preview tests *
+         *****************/
+        
+        jqUnit.asyncTest("Preview URL", function () {
+            jqUnit.expect(1);
+            
+            fluid.enhance.check({"fluid.uiOptions.testsPreview": true});
+            
+            fluid.demands("fluid.uiOptions.templateLoader", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
+                options: {
+                    templates: {
+                        uiOptions: templatePrefix + "FullPreviewUIOptions.html"
+                    }
+                }
+            });
+        
+            var templateUrl = "TestPreviewTemplate.html";
+            fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
+                options: {
+                    components: {
+                        preview: {
+                            type: "fluid.uiOptions.preview",
+                            createOnEvent: "onUIOptionsComponentReady",
+                            container: "{uiOptions}.dom.previewFrame",
+                            options: {
+                                templateUrl: templateUrl
+                            }
+                        }
+                    }
+                }
+            });
+         
+            testUIOptions(function (uiOptionsLoader, uiOptions) {
+                jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
+                    templateUrl, uiOptions.preview.container.attr("src"));
+                
+                fluid.enhance.forget("fluid.uiOptions.testsPreview");
+                jqUnit.start();
+            });
+        });
+        
+        /*******************
+         * Auto-save tests *
+         *******************/
+        jqUnit.asyncTest("UIOptions Auto-save", function () {
+            jqUnit.expect(2);
+            
+            fluid.enhance.check({"fluid.uiOptions.testsAutoSave": true});
+            
+            fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsAutoSave", "fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
+                options: {
+                    autoSave: true
+                }
+            });
+     
+            testUIOptions(function (uiOptionsLoader, uiOptions) {
+                resetSaveCalled();
+                uiOptions.updateModel(bwSkin);
+                jqUnit.assertTrue("Model has changed, auto-save changes", saveCalled);
+                
+                var uiEnhancerSettings = uiOptions.settingsStore.fetch();
+                jqUnit.assertDeepEq("bw setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
+                
+                fluid.enhance.forget("fluid.uiOptions.uiOptionsTestsAutoSave");
+                jqUnit.start();
+            });
+            
+        });
+        
+});
 })(jQuery);
