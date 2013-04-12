@@ -39,6 +39,7 @@ var demo = demo || {};
      */
     demo.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
+            gradeNames: ["fluid.uiEnhancer.defaultActions"],
             tocTemplate: pathToTocTemplate,
             classnameMap: {
                 theme: {

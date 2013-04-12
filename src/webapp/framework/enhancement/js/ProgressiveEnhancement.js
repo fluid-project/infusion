@@ -76,7 +76,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 var results = typeof(val) === "boolean" ? val : 
                     (typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val());
                 
-                fluid.enhance.checked[staticKey] = results;
+                fluid.enhance.checked[staticKey] = !!results;
                 
                 if (results) {
                     fluid.staticEnvironment[staticKey] = fluid.typeTag(key);
@@ -123,7 +123,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (check.feature) {
                 return check.contextName;
             }}, defaultContextName
-        )
+        );
     };
     
     fluid.progressiveChecker.forComponent = function (that, componentName) {

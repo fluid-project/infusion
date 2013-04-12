@@ -34,6 +34,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.asyncTest("Fat Panel UIOptions Integration tests", function () {
             fluid.pageEnhancer({
+                gradeNames: ["fluid.uiEnhancer.defaultActions"],
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
             });
             var that, uiOptions;
