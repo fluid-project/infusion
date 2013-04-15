@@ -149,7 +149,7 @@ img {
 }
 
 /* Overriding some of the default Fat Panel UI Options colours */
-.fl-uiOptions-fatPanel .fl-panelBar .fl-uio-tabs {
+.uio-demo-theme .fl-uiOptions-fatPanel .fl-panelBar .fl-uio-tabs {
     background-color: #0071BC;
 }
 .fl-uiOptions-fatPanel .fl-panelBar button {
@@ -167,5 +167,9 @@ img {
 }
 
 .uio-demo-theme .fl-uiOptions-fatPanel .fl-uiOptions-reset  {
+	border-right: 1px solid #fff;
+}
+
+.fl-uiOptions-fatPanel .fl-panelBar .fl-uiOptions-reset  {
 	border-right: 1px solid #fff;
 }
