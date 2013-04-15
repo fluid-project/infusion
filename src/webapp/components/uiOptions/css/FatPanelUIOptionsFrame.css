@@ -4,6 +4,11 @@
     font-weight: normal;
     src: url("fonts/OpenSans-Light.ttf");
 }
+
+html {
+	overflow: visible;
+}
+
 .fl-uiOptions-fatPanel .fl-uiOptions {
     font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
     line-height: 1.2em !important; /* FLUID-4959: fix the line height so it doesn't scale with the UIO line spacing scaling. */
