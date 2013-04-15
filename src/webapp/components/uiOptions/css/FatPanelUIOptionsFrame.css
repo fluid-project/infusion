@@ -7,6 +7,7 @@
 
 html {
 	overflow: scroll;
+	overflow-y: hidden;
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions {
