@@ -185,8 +185,6 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         prefix: "./",
         markupProps: {
-            // This overflow specification fixes anomalous x overflow on FF, but may not on IE
-            style: "overflow-x:hidden; overflow-y:auto;",
             "class": "flc-iframe",
             src: "%prefix/uiOptionsIframe.html"
         }
@@ -242,7 +240,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var dokkument = uiOptions.container[0].ownerDocument;
             var height = fluid.dom.getDocumentHeight(dokkument);
             var iframe = fatPanel.iframeRenderer.iframe;
-            var attrs = {height: height};
+            var attrs = {height: height + 15}; // TODO: Configurable padding here
             var panel = fatPanel.slidingPanel.locate("panel");
             panel.css({height: ""});
             iframe.animate(attrs, 400);
