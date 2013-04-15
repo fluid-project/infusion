@@ -43,7 +43,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         container: ".flc-styleElements",
         components: {
             styleElements: {
-                type: "fluid.uiOptions.enactors.styleElements",
+                type: "fluid.uiOptions.enactor.styleElements",
                 options: {
                     cssClass: "fl-style-test",
                     invokers: {
@@ -79,7 +79,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.enactors.emphasizeLinks
+     * Unit tests for fluid.uiOptions.enactor.emphasizeLinks
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.emphasizeLinksTests", {
@@ -89,7 +89,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expectedDefaultFlag: false,
         components: {
             emphasizeLinks: {
-                type: "fluid.uiOptions.enactors.emphasizeLinks",
+                type: "fluid.uiOptions.enactor.emphasizeLinks",
                 container: ".flc-emphasizeLinks",
                 options: {
                     cssClass: "fl-emphasizeLinks-test"
@@ -116,7 +116,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.enactors.inputsLarger
+     * Unit tests for fluid.uiOptions.enactor.inputsLarger
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.inputsLargerTests", {
@@ -126,7 +126,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expectedInputsLargerClass: "fl-text-larger",
         components: {
             inputsLarger: {
-                type: "fluid.uiOptions.enactors.inputsLarger",
+                type: "fluid.uiOptions.enactor.inputsLarger",
                 container: ".flc-inputsLarger",
                 options: {
                     cssClass: "fl-text-larger"
@@ -153,7 +153,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.enactors.inputsLarger
+     * Unit tests for fluid.uiOptions.enactor.inputsLarger
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.classSwapperTests", {
@@ -161,7 +161,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expectedClass: "fl-test",
         components: {
             classSwapper: {
-                type: "fluid.uiOptions.enactors.classSwapper",
+                type: "fluid.uiOptions.enactor.classSwapper",
                 container: ".flc-classSwapper",
                 options: {
                     classes: {
@@ -232,13 +232,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testGetSize = function (container, fontSizeMap, expectedTestSize, expectedSizeAtUndetected) {
         container = $(container);
         
-        var px2emFactor = fluid.uiOptions.enactors.textSizer.getPx2EmFactor(container, fontSizeMap);
+        var px2emFactor = fluid.uiOptions.enactor.textSizer.getPx2EmFactor(container, fontSizeMap);
         jqUnit.assertEquals("Check that the factor is pulled from the container correctly", expectedTestSize, px2emFactor);
 
         container = $("html");
-        var textSizeInPx = fluid.uiOptions.enactors.getTextSizeInPx(container, fontSizeMap);
-        px2emFactor = fluid.uiOptions.enactors.textSizer.getPx2EmFactor(container, fontSizeMap);
-        var fontSizeInEm = fluid.uiOptions.enactors.textSizer.getTextSizeInEm(textSizeInPx, px2emFactor);
+        var textSizeInPx = fluid.uiOptions.enactor.getTextSizeInPx(container, fontSizeMap);
+        px2emFactor = fluid.uiOptions.enactor.textSizer.getPx2EmFactor(container, fontSizeMap);
+        var fontSizeInEm = fluid.uiOptions.enactor.textSizer.getTextSizeInEm(textSizeInPx, px2emFactor);
 
         jqUnit.assertEquals("Unable to detect the text size in em for the DOM root element <html>. Always return 1em.", expectedSizeAtUndetected, fontSizeInEm);
     }; 
@@ -258,14 +258,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.enactors.textSizer
+     * Unit tests for fluid.uiOptions.enactor.textSizer
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.textSizerTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             textSizer: {
-                type: "fluid.uiOptions.enactors.textSizer",
+                type: "fluid.uiOptions.enactor.textSizer",
                 container: ".flc-textSizer",
                 options: {
                     fontSizeMap: fontSizeMap
@@ -278,7 +278,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.testTextSizer = function (that) {
-        var px2emFactor = fluid.uiOptions.enactors.textSizer.getPx2EmFactor(that.container, that.options.fontSizeMap);
+        var px2emFactor = fluid.uiOptions.enactor.textSizer.getPx2EmFactor(that.container, that.options.fontSizeMap);
         var expectedInitialSize = Math.round(8 / px2emFactor * 10000) / 10000;
         
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, that.initialSize);
@@ -320,23 +320,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testGetLineHeight = function () {
         // Mimic IE with its DOM lineHeight structure
         var container = [{currentStyle: {lineHeight: "10"}}];
-        var lineHeight = fluid.uiOptions.enactors.lineSpacer.getLineHeight(container);
+        var lineHeight = fluid.uiOptions.enactor.lineSpacer.getLineHeight(container);
         jqUnit.assertEquals("getLineHeight with IE simulation", "10", lineHeight);
 
         container = [{currentStyle: {lineHeight: "14pt"}}];
-        lineHeight = fluid.uiOptions.enactors.lineSpacer.getLineHeight(container);
+        lineHeight = fluid.uiOptions.enactor.lineSpacer.getLineHeight(container);
         jqUnit.assertEquals("getLineHeight with IE simulation", "14pt", lineHeight);
 
         container = $(".flc-lineSpacer");
-        lineHeight = fluid.uiOptions.enactors.lineSpacer.getLineHeight(container);
+        lineHeight = fluid.uiOptions.enactor.lineSpacer.getLineHeight(container);
         jqUnit.assertEquals("getLineHeight without IE simulation", "12px", lineHeight);
     }; 
 
     var testNumerizeLineHeight = function (lineHeight, expected) {
         var container = $(".flc-lineSpacer");
-        var fontSize = fluid.uiOptions.enactors.getTextSizeInPx(container, fontSizeMap);
+        var fontSize = fluid.uiOptions.enactor.getTextSizeInPx(container, fontSizeMap);
         
-        var numerizedLineHeight = fluid.uiOptions.enactors.lineSpacer.numerizeLineHeight(lineHeight, Math.round(fontSize));
+        var numerizedLineHeight = fluid.uiOptions.enactor.lineSpacer.numerizeLineHeight(lineHeight, Math.round(fontSize));
 
         jqUnit.assertEquals("line-height value '" + lineHeight + "' has been converted correctly", expected, numerizedLineHeight);
     };
@@ -371,14 +371,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.enactors.lineSpacer
+     * Unit tests for fluid.uiOptions.enactor.lineSpacer
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.lineSpacerTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             lineSpacer: {
-                type: "fluid.uiOptions.enactors.lineSpacer",
+                type: "fluid.uiOptions.enactor.lineSpacer",
                 container: ".flc-lineSpacer",
                 options: {
                     fontSizeMap: fontSizeMap
@@ -422,14 +422,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.enactors.tableOfContents
+     * Unit tests for fluid.uiOptions.enactor.tableOfContents
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.tableOfContentsTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             toc: {
-                type: "fluid.uiOptions.enactors.tableOfContents",
+                type: "fluid.uiOptions.enactor.tableOfContentsEnactor",
                 container: ".flc-tableOfContents",
                 options: {
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
@@ -496,7 +496,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             setIE6ColorInversion: {
-                type: "fluid.uiOptions.enactors.IE6ColorInversion",
+                type: "fluid.uiOptions.enactor.IE6ColorInversion",
                 container: ".flc-IE6ColorInversion"
             },
             IE6ColorInversionTester: {

@@ -125,7 +125,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
         components: {
             textSize: {
-                type: "fluid.uiOptions.enactors.textSizer",
+                type: "fluid.uiOptions.enactor.textSizer",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
@@ -136,7 +136,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             textFont: {
-                type: "fluid.uiOptions.enactors.classSwapper",
+                type: "fluid.uiOptions.enactor.classSwapper",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.textFont",
@@ -147,7 +147,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             lineSpacing: {
-                type: "fluid.uiOptions.enactors.lineSpacer",
+                type: "fluid.uiOptions.enactor.lineSpacer",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
@@ -158,7 +158,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             theme: {
-                type: "fluid.uiOptions.enactors.classSwapper",
+                type: "fluid.uiOptions.enactor.classSwapper",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.theme",
@@ -169,7 +169,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             emphasizeLinks: {
-                type: "fluid.uiOptions.enactors.emphasizeLinks",
+                type: "fluid.uiOptions.enactor.emphasizeLinks",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.links",
@@ -180,7 +180,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             inputsLarger: {
-                type: "fluid.uiOptions.enactors.inputsLarger",
+                type: "fluid.uiOptions.enactor.inputsLarger",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.inputsLarger",
@@ -190,8 +190,8 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             },
-            tableOfContents: {
-                type: "fluid.uiOptions.enactors.tableOfContents",
+            tableOfContentsEnactor: {
+                type: "fluid.uiOptions.enactor.tableOfContentsEnactor",
                 container: "{uiEnhancer}.container",
                 createOnEvent: "onCreateToc",
                 options: {
@@ -207,7 +207,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             IE6ColorInversion: {
-                type: "fluid.uiOptions.enactors.IE6ColorInversion",
+                type: "fluid.uiOptions.enactor.IE6ColorInversion",
                 container: "{uiEnhancer}.container",
                 options: {
                     sourceApplier: "{uiEnhancer}.applier",
@@ -241,7 +241,7 @@ var fluid_1_5 = fluid_1_5 || {};
             
             // Directly calling toc apply function rather than firing a model change request
             // is because the modelRelay component prevents the relay on the unchanged value.
-            that.tableOfContents.applyToc(that.model.toc);
+            that.tableOfContentsEnactor.applyToc(that.model.toc);
         });
     };
     
