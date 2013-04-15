@@ -165,7 +165,7 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     fluid.uiOptions.fatPanel.jqFn = function (elm, jqFn, args) {
-        var elm = $(elm);
+        elm = $(elm);
         elm[jqFn].apply(elm, fluid.makeArray(args));
     };
     
