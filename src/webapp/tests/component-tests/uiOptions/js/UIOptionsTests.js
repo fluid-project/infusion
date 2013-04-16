@@ -476,7 +476,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Check that linkControls sub-component is present", uiOptions.linksControls);
             jqUnit.assertTrue("Check that preview sub-component is present", uiOptions.options.components.preview);
             jqUnit.assertTrue("Check that store sub-component is present", uiOptions.options.components.settingsStore);
-            jqUnit.assertTrue("Check that tableOfContents sub-component is present", uiOptions.uiEnhancer.options.components.tableOfContents);
+            jqUnit.assertTrue("Check that tableOfContents sub-component is present", uiOptions.uiEnhancer.options.components.tableOfContentsEnactor);
             jqUnit.assertTrue("Check that store sub-component is present", uiOptions.uiEnhancer.options.components.settingsStore);
         };
         
