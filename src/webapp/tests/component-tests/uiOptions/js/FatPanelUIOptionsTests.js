@@ -35,6 +35,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fatPanel: {
                 type: "fluid.uiOptions.fatPanel",
                 container: ".flc-uiOptions-fatPanel",
+                createOnEvent: "{fatPanelIntegrationTester}.events.onTestCaseStart",
                 options: {
                     gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
                     prefix: "../../../../components/uiOptions/html/",
@@ -58,32 +59,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    var uiOptions;
     var sequence = 0;
     
-    fluid.tests.afterShowFunc1 = function (fatPanel) {
-        console.log("in afterShowFunc1");
-        fluid.tests.uiOptions.applierRequestChanges(fatPanel.uiOptionsLoader.uiOptions, fluid.tests.uiOptions.bwSkin);
-        fluid.tests.uiOptions.checkModelSelections("pageModel from bwSkin", fluid.tests.uiOptions.bwSkin, fatPanel.pageEnhancer.model);
-    };
+    var uiOptions;
     
-    fluid.tests.afterShowFunc2 = function (that) {
-        console.log("in afterShowFunc2");
-        fluid.tests.uiOptions.checkModelSelections("panelModel from bwSkin", fluid.tests.uiOptions.bwSkin, panelModel);
-        fluid.tests.uiOptions.checkModelSelections("panelModel from pageModel", pageModel, panelModel);
-//        that.slidingPanel.hidePanel();
-//        that.slidingPanel.showPanel();
-    };
-    
-    fluid.tests.testComponent = function (fatPanel) {
-        console.log("in testComponent");
-        uiOptions = fatPanel.uiOptionsLoader.uiOptions;
-        
+    fluid.tests.testComponent = function (uiOptionsLoader, uiOptions) {
         jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, uiOptions.iframeRenderer.iframe.is(":visible"));
 
         fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents["fluid.uiOptions.fatPanel"]);
+    };
+    
+    fluid.tests.testFatPanel = function (fatPanel) {
         fluid.tests.uiOptions.assertPresent(fatPanel, fluid.tests.uiOptions.expectedFatPanel);
-        fatPanel.slidingPanel.showPanel();
     };
     
     fluid.tests.showPanel = function (fatPanel) {
@@ -91,6 +78,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     fluid.tests.hidePanel = function (fatPanel) {
         fatPanel.slidingPanel.hidePanel();
+    };
+    
+    fluid.tests.afterShowFunc1 = function (fatPanel) {
+        console.log("in afterShowFunc1");
+        fluid.tests.uiOptions.applierRequestChanges(fatPanel.uiOptionsLoader.uiOptions, fluid.tests.uiOptions.bwSkin);
+//        console.log("after requesting changes");
+        fluid.tests.uiOptions.checkModelSelections("pageModel from bwSkin", fluid.tests.uiOptions.bwSkin, fatPanel.pageEnhancer.model);
+//        console.log("after checking model");
+//        console.log(fluid.tests.uiOptions.bwSkin);
+//        console.log(fatPanel.pageEnhancer.model);
+    };
+    
+    fluid.tests.afterShowFunc2 = function (that) {
+        console.log("in afterShowFunc2");
+        fluid.tests.uiOptions.checkModelSelections("panelModel from bwSkin", fluid.tests.uiOptions.bwSkin, panelModel);
+        fluid.tests.uiOptions.checkModelSelections("panelModel from pageModel", pageModel, panelModel);
     };
     
     fluid.defaults("fluid.tests.fatPanelIntegrationTester", {
@@ -103,17 +106,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 7,
                 name: "Fat panel integration tests",
                 sequence: [{
-                    listenerMaker: "fluid.tests.testComponent",
-                    makerArgs: ["{fatPanel}"],
-                    spec: {priority: "last"},
-                    event: "{fatPanel}.events.onReady"
-                }, /*{
-                    func: "fluid.tests.testComponent",
+                    listener: "fluid.tests.testComponent",
+                    event: "{fatPanelIntegration fatPanel uiOptionsLoader}.events.onReady"
+                }, {
+                    func: "fluid.tests.testFatPanel",
                     args: "{fatPanel}"
-                },{
+                }, {
+                    func: "{fatPanel}.slidingPanel.hidePanel"
+                }, {
+                    func: "{fatPanel}.slidingPanel.showPanel"
+                }/*, {
                     listenerMaker: "fluid.tests.afterShowFunc1",
                     makerArgs: ["{fatPanel}"],
-                    event: "{fatPanel}.slidingPanel.events.afterPanelShow"
+//                    listenerMaker: "fluid.tests.afterShowFunc1",
+                    event: "{fatPanelIntegration fatPanel slidingPanel}.events.afterPanelShow"
                 }, {
                     func: "fluid.tests.hidePanel",
                     args: "{fatPanel}"
