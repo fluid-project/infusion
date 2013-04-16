@@ -18,7 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     fluid.registerNamespace("fluid.tests");
 
-    fluid.tests.testStyleEnactor = function (that, container, expectedDefaultFlag, expectedCssClass) {
+    fluid.tests.testStyle = function (that, container, expectedDefaultFlag, expectedCssClass) {
         var elements = that.getElements();
         
         jqUnit.assertEquals("Default value: " + expectedDefaultFlag, expectedDefaultFlag, that.model.value);
@@ -33,29 +33,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }; 
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.styleElementsEnactor
+     * Unit tests for fluid.uiOptions.styleElements
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.styleElementsEnactor", {
+    fluid.defaults("fluid.tests.styleElementsTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         expectedCssClass: "fl-style-test",
         expectedDefaultFlag: false,
-        container: ".flc-styleElementsEnactor",
+        container: ".flc-styleElements",
         components: {
             styleElements: {
-                type: "fluid.uiOptions.actionAnts.styleElementsEnactor",
+                type: "fluid.uiOptions.enactor.styleElements",
                 options: {
                     cssClass: "fl-style-test",
                     invokers: {
                         getElements: {
                             funcName: "fluid.tests.getElements",
-                            args: ".flc-styleElementsEnactor"
+                            args: ".flc-styleElements"
                         }
                     }
                 }
             },
-            styleElementsEnactorTester: {
-                type: "fluid.tests.styleElementsEnactorTester"
+            styleElementsTester: {
+                type: "fluid.tests.styleElementsTester"
             }
         }
     });
@@ -64,7 +64,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return $(container).children();
     };
     
-    fluid.defaults("fluid.tests.styleElementsEnactorTester", {
+    fluid.defaults("fluid.tests.styleElementsTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
             name: "Test style element component",
@@ -72,36 +72,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 5,
                 name: "Apply and reset the style",
                 type: "test",
-                func: "fluid.tests.testStyleEnactor",
-                args: ["{styleElements}", "{fluid.tests.styleElementsEnactor}.options.container", "{fluid.tests.styleElementsEnactor}.options.expectedDefaultFlag", "{fluid.tests.styleElementsEnactor}.options.expectedCssClass"]
+                func: "fluid.tests.testStyle",
+                args: ["{styleElements}", "{fluid.tests.styleElementsTests}.options.container", "{fluid.tests.styleElementsTests}.options.expectedDefaultFlag", "{fluid.tests.styleElementsTests}.options.expectedCssClass"]
             }]
         }]
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.actionAnts.emphasizeLinksEnactor
+     * Unit tests for fluid.uiOptions.enactor.emphasizeLinks
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.emphasizeLinksEnactor", {
+    fluid.defaults("fluid.tests.emphasizeLinksTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
-        container: ".flc-emphasizeLinksEnactor",
+        container: ".flc-emphasizeLinks",
         expectedEmphasizeLinksClass: "fl-emphasizeLinks-test",
         expectedDefaultFlag: false,
         components: {
             emphasizeLinks: {
-                type: "fluid.uiOptions.actionAnts.emphasizeLinksEnactor",
-                container: ".flc-emphasizeLinksEnactor",
+                type: "fluid.uiOptions.enactor.emphasizeLinks",
+                container: ".flc-emphasizeLinks",
                 options: {
                     cssClass: "fl-emphasizeLinks-test"
                 }
             },
-            emphasizeLinksEnactorTester: {
-                type: "fluid.tests.emphasizeLinksEnactorTester"
+            emphasizeLinksTester: {
+                type: "fluid.tests.emphasizeLinksTester"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.emphasizeLinksEnactorTester", {
+    fluid.defaults("fluid.tests.emphasizeLinksTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
             name: "Test emphasize links enactor",
@@ -109,36 +109,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 5,
                 name: "Apply and reset emphasized links",
                 type: "test",
-                func: "fluid.tests.testStyleEnactor",
-                args: ["{emphasizeLinks}", "{fluid.tests.emphasizeLinksEnactor}.options.container", "{fluid.tests.emphasizeLinksEnactor}.options.expectedDefaultFlag", "{fluid.tests.emphasizeLinksEnactor}.options.expectedEmphasizeLinksClass"]
+                func: "fluid.tests.testStyle",
+                args: ["{emphasizeLinks}", "{fluid.tests.emphasizeLinksTests}.options.container", "{fluid.tests.emphasizeLinksTests}.options.expectedDefaultFlag", "{fluid.tests.emphasizeLinksTests}.options.expectedEmphasizeLinksClass"]
             }]
         }]
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.actionAnts.inputsLargerEnactor
+     * Unit tests for fluid.uiOptions.enactor.inputsLarger
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.inputsLargerEnactor", {
+    fluid.defaults("fluid.tests.inputsLargerTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
-        container: ".flc-inputsLargerEnactor",
+        container: ".flc-inputsLarger",
         expectedDefaultFlag: false,
         expectedInputsLargerClass: "fl-text-larger",
         components: {
             inputsLarger: {
-                type: "fluid.uiOptions.actionAnts.inputsLargerEnactor",
-                container: ".flc-inputsLargerEnactor",
+                type: "fluid.uiOptions.enactor.inputsLarger",
+                container: ".flc-inputsLarger",
                 options: {
                     cssClass: "fl-text-larger"
                 }
             },
-            inputsLargerEnactorTester: {
-                type: "fluid.tests.inputsLargerEnactorTester"
+            inputsLargerTester: {
+                type: "fluid.tests.inputsLargerTester"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.inputsLargerEnactorTester", {
+    fluid.defaults("fluid.tests.inputsLargerTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
             name: "Test inputs larger enactor",
@@ -146,23 +146,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 5,
                 name: "Apply and reset larger inputs",
                 type: "test",
-                func: "fluid.tests.testStyleEnactor",
-                args: ["{inputsLarger}", "{fluid.tests.inputsLargerEnactor}.options.container", "{fluid.tests.inputsLargerEnactor}.options.expectedDefaultFlag", "{fluid.tests.inputsLargerEnactor}.options.expectedInputsLargerClass"]
+                func: "fluid.tests.testStyle",
+                args: ["{inputsLarger}", "{fluid.tests.inputsLargerTests}.options.container", "{fluid.tests.inputsLargerTests}.options.expectedDefaultFlag", "{fluid.tests.inputsLargerTests}.options.expectedInputsLargerClass"]
             }]
         }]
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.actionAnts.inputsLargerEnactor
+     * Unit tests for fluid.uiOptions.enactor.inputsLarger
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.classSwapperEnactor", {
+    fluid.defaults("fluid.tests.classSwapperTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         expectedClass: "fl-test",
         components: {
             classSwapper: {
-                type: "fluid.uiOptions.actionAnts.classSwapperEnactor",
-                container: ".flc-classSwapperEnactor",
+                type: "fluid.uiOptions.enactor.classSwapper",
+                container: ".flc-classSwapper",
                 options: {
                     classes: {
                         "default": "",
@@ -170,8 +170,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             },
-            classSwapperEnactorTester: {
-                type: "fluid.tests.classSwapperEnactorTester"
+            classSwapperTester: {
+                type: "fluid.tests.classSwapperTester"
             }
         }
     });
@@ -188,7 +188,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The style class has been removed", defaultStyle, that.container.attr("class"));
     }; 
 
-    fluid.defaults("fluid.tests.classSwapperEnactorTester", {
+    fluid.defaults("fluid.tests.classSwapperTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
             name: "Test class swapper enactor",
@@ -197,7 +197,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Swap css class",
                 type: "test",
                 func: "fluid.tests.testClassSwapper",
-                args: ["{classSwapper}", "{fluid.tests.classSwapperEnactor}.options.expectedClass"]
+                args: ["{classSwapper}", "{fluid.tests.classSwapperTests}.options.expectedClass"]
             }]
         }]
     });
@@ -216,7 +216,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "xx-large": "30px"
     };
     
-    fluid.defaults("fluid.tests.getSize", {
+    fluid.defaults("fluid.tests.getSizeTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         container: ".flc-getSize",
         fontSizeMap: fontSizeMap,
@@ -232,13 +232,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testGetSize = function (container, fontSizeMap, expectedTestSize, expectedSizeAtUndetected) {
         container = $(container);
         
-        var px2emFactor = fluid.uiOptions.actionAnts.textSizerEnactor.getPx2EmFactor(container, fontSizeMap);
+        var px2emFactor = fluid.uiOptions.enactor.textSizer.getPx2EmFactor(container, fontSizeMap);
         jqUnit.assertEquals("Check that the factor is pulled from the container correctly", expectedTestSize, px2emFactor);
 
         container = $("html");
-        var textSizeInPx = fluid.uiOptions.actionAnts.getTextSizeInPx(container, fontSizeMap);
-        px2emFactor = fluid.uiOptions.actionAnts.textSizerEnactor.getPx2EmFactor(container, fontSizeMap);
-        var fontSizeInEm = fluid.uiOptions.actionAnts.textSizerEnactor.getTextSizeInEm(textSizeInPx, px2emFactor);
+        var textSizeInPx = fluid.uiOptions.enactor.getTextSizeInPx(container, fontSizeMap);
+        px2emFactor = fluid.uiOptions.enactor.textSizer.getPx2EmFactor(container, fontSizeMap);
+        var fontSizeInEm = fluid.uiOptions.enactor.textSizer.getTextSizeInEm(textSizeInPx, px2emFactor);
 
         jqUnit.assertEquals("Unable to detect the text size in em for the DOM root element <html>. Always return 1em.", expectedSizeAtUndetected, fontSizeInEm);
     }; 
@@ -252,33 +252,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Get text size in em",
                 type: "test",
                 func: "fluid.tests.testGetSize",
-                args: ["{fluid.tests.getSize}.options.container", "{fluid.tests.getSize}.options.fontSizeMap", "{fluid.tests.getSize}.options.expectedTestSize", "{fluid.tests.getSize}.options.expectedSizeAtUndetected"]
+                args: ["{fluid.tests.getSizeTests}.options.container", "{fluid.tests.getSizeTests}.options.fontSizeMap", "{fluid.tests.getSizeTests}.options.expectedTestSize", "{fluid.tests.getSizeTests}.options.expectedSizeAtUndetected"]
             }]
         }]
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.actionAnts.textSizerEnactor
+     * Unit tests for fluid.uiOptions.enactor.textSizer
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.textSizerEnactor", {
+    fluid.defaults("fluid.tests.textSizerTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             textSizer: {
-                type: "fluid.uiOptions.actionAnts.textSizerEnactor",
-                container: ".flc-textSizerEnactor",
+                type: "fluid.uiOptions.enactor.textSizer",
+                container: ".flc-textSizer",
                 options: {
                     fontSizeMap: fontSizeMap
                 }
             },
-            textSizerEnactorTester: {
-                type: "fluid.tests.textSizerEnactorTester"
+            textSizerTester: {
+                type: "fluid.tests.textSizerTester"
             }
         }
     });
 
     fluid.tests.testTextSizer = function (that) {
-        var px2emFactor = fluid.uiOptions.actionAnts.textSizerEnactor.getPx2EmFactor(that.container, that.options.fontSizeMap);
+        var px2emFactor = fluid.uiOptions.enactor.textSizer.getPx2EmFactor(that.container, that.options.fontSizeMap);
         var expectedInitialSize = Math.round(8 / px2emFactor * 10000) / 10000;
         
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, that.initialSize);
@@ -286,7 +286,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The size should be doubled", "16px", that.container.css("fontSize"));
     }; 
 
-    fluid.defaults("fluid.tests.textSizerEnactorTester", {
+    fluid.defaults("fluid.tests.textSizerTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
             name: "Test text sizer enactor",
@@ -304,9 +304,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Unit tests for getLineHeight & numerizeLineHeight
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.getLineHeight", {
+    fluid.defaults("fluid.tests.getLineHeightTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
-        container: ".flc-lineSpacerEnactor",
+        container: ".flc-lineSpacer",
         fontSizeMap: fontSizeMap,
         expectedTestSize: 8,
         expectedSizeAtUndetected: 1,
@@ -320,23 +320,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testGetLineHeight = function () {
         // Mimic IE with its DOM lineHeight structure
         var container = [{currentStyle: {lineHeight: "10"}}];
-        var lineHeight = fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight(container);
+        var lineHeight = fluid.uiOptions.enactor.lineSpacer.getLineHeight(container);
         jqUnit.assertEquals("getLineHeight with IE simulation", "10", lineHeight);
 
         container = [{currentStyle: {lineHeight: "14pt"}}];
-        lineHeight = fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight(container);
+        lineHeight = fluid.uiOptions.enactor.lineSpacer.getLineHeight(container);
         jqUnit.assertEquals("getLineHeight with IE simulation", "14pt", lineHeight);
 
-        container = $(".flc-lineSpacerEnactor");
-        lineHeight = fluid.uiOptions.actionAnts.lineSpacerEnactor.getLineHeight(container);
+        container = $(".flc-lineSpacer");
+        lineHeight = fluid.uiOptions.enactor.lineSpacer.getLineHeight(container);
         jqUnit.assertEquals("getLineHeight without IE simulation", "12px", lineHeight);
     }; 
 
     var testNumerizeLineHeight = function (lineHeight, expected) {
-        var container = $(".flc-lineSpacerEnactor");
-        var fontSize = fluid.uiOptions.actionAnts.getTextSizeInPx(container, fontSizeMap);
+        var container = $(".flc-lineSpacer");
+        var fontSize = fluid.uiOptions.enactor.getTextSizeInPx(container, fontSizeMap);
         
-        var numerizedLineHeight = fluid.uiOptions.actionAnts.lineSpacerEnactor.numerizeLineHeight(lineHeight, Math.round(fontSize));
+        var numerizedLineHeight = fluid.uiOptions.enactor.lineSpacer.numerizeLineHeight(lineHeight, Math.round(fontSize));
 
         jqUnit.assertEquals("line-height value '" + lineHeight + "' has been converted correctly", expected, numerizedLineHeight);
     };
@@ -371,21 +371,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.actionAnts.lineSpacerEnactor
+     * Unit tests for fluid.uiOptions.enactor.lineSpacer
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.lineSpacerEnactor", {
+    fluid.defaults("fluid.tests.lineSpacerTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             lineSpacer: {
-                type: "fluid.uiOptions.actionAnts.lineSpacerEnactor",
-                container: ".flc-lineSpacerEnactor",
+                type: "fluid.uiOptions.enactor.lineSpacer",
+                container: ".flc-lineSpacer",
                 options: {
                     fontSizeMap: fontSizeMap
                 }
             },
-            lineSpacerEnactorTester: {
-                type: "fluid.tests.lineSpacerEnactorTester"
+            lineSpacerTester: {
+                type: "fluid.tests.lineSpacerTester"
             }
         }
     });
@@ -400,14 +400,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    fluid.tests.testLineSpacerEnactor = function (that) {
+    fluid.tests.testLineSpacer = function (that) {
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", 2, Math.round(that.initialSize));
         jqUnit.assertEquals("Check the line spacing size in pixels", "12px", convertLineHeightFactor(that.container.css("lineHeight"), that.container.css("fontSize")));
         that.applier.requestChange("value", 2);
         jqUnit.assertEquals("The size should be doubled", "24px", convertLineHeightFactor(that.container.css("lineHeight"), that.container.css("fontSize")));
     }; 
 
-    fluid.defaults("fluid.tests.lineSpacerEnactorTester", {
+    fluid.defaults("fluid.tests.lineSpacerTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
             name: "Test line spacer enactor",
@@ -415,44 +415,44 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 3,
                 name: "Apply line spacing in times",
                 type: "test",
-                func: "fluid.tests.testLineSpacerEnactor",
+                func: "fluid.tests.testLineSpacer",
                 args: ["{lineSpacer}"]
             }]
         }]
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.actionAnts.tableOfContentsEnactor
+     * Unit tests for fluid.uiOptions.enactor.tableOfContents
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.tableOfContentsEnactor", {
+    fluid.defaults("fluid.tests.tableOfContentsTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             toc: {
-                type: "fluid.uiOptions.actionAnts.tableOfContentsEnactor",
-                container: ".flc-tableOfContentsEnactor",
+                type: "fluid.uiOptions.enactor.tableOfContentsEnactor",
+                container: ".flc-tableOfContents",
                 options: {
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
                 }
             },
-            tableOfContentsEnactorTester: {
-                type: "fluid.tests.tableOfContentsEnactorTester"
+            tableOfContentsTester: {
+                type: "fluid.tests.tableOfContentsTester"
             }
         }
     });
 
-    fluid.tests.tableOfContentsEnactor.checkTocLevels = function (that, expectedTocLevels) {
+    fluid.tests.checkTocLevels = function (that, expectedTocLevels) {
         jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
     };
     
-    fluid.tests.tableOfContentsEnactor.makeTocVisibilityChecker = function (that, expectedTocLevels, tocContainer, isShown) {
+    fluid.tests.makeTocVisibilityChecker = function (that, expectedTocLevels, tocContainer, isShown) {
         return function () {
             jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
             jqUnit.assertEquals("The visibility of the table of contents is " + isShown, isShown, $(tocContainer).is(":visible"));
         };
     };
     
-    fluid.defaults("fluid.tests.tableOfContentsEnactorTester", {
+    fluid.defaults("fluid.tests.tableOfContentsTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
             trueValue: true,
@@ -467,20 +467,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 5,
                 name: "Test in order: default, toc is on, toc is off",
                 sequence: [{
-                    func: "fluid.tests.tableOfContentsEnactor.checkTocLevels",
+                    func: "fluid.tests.checkTocLevels",
                     args: ["{toc}", "{that}.options.testOptions.expectedNoTocLevels"]
                 }, {
                     func: "{toc}.applier.requestChange",
                     args: ["value", "{that}.options.testOptions.trueValue"]
                 }, {
-                    listenerMaker: "fluid.tests.tableOfContentsEnactor.makeTocVisibilityChecker",
+                    listenerMaker: "fluid.tests.makeTocVisibilityChecker",
                     makerArgs: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", true],
                     event: "{toc}.events.afterTocRender"
                 }, {
                     func: "{toc}.applier.requestChange",
                     args: ["value", "{that}.options.testOptions.falseValue"]
                 }, {
-                    listenerMaker: "fluid.tests.tableOfContentsEnactor.makeTocVisibilityChecker",
+                    listenerMaker: "fluid.tests.makeTocVisibilityChecker",
                     makerArgs: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", false],
                     event: "{toc}.events.onLateRefreshRelay"
                 }]
@@ -489,18 +489,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.IE6ColorInversionEnactor
+     * Unit tests for fluid.uiOptions.IE6ColorInversion
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.IE6ColorInversionEnactor", {
+    fluid.defaults("fluid.tests.IE6ColorInversionTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             setIE6ColorInversion: {
-                type: "fluid.uiOptions.actionAnts.IE6ColorInversionEnactor",
-                container: ".flc-IE6ColorInversionEnactor"
+                type: "fluid.uiOptions.enactor.IE6ColorInversion",
+                container: ".flc-IE6ColorInversion"
             },
-            IE6ColorInversionEnactorTester: {
-                type: "fluid.tests.IE6ColorInversionEnactorTester"
+            IE6ColorInversionTester: {
+                type: "fluid.tests.IE6ColorInversionTester"
             }
         }
     });
@@ -529,7 +529,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     }
     
-    fluid.tests.testIE6ColorInversionEnactor = function (that, container) {
+    fluid.tests.testIE6ColorInversion = function (that, container) {
         testIE6ColorInversion(false, function () {
             that.applier.requestChange("value", "default");
             jqUnit.assertEquals("fl-inverted-color is not touched", 1, $(container).has("." + that.options.styles.colorInversionClass).length);
@@ -540,10 +540,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.defaults("fluid.tests.IE6ColorInversionEnactorTester", {
+    fluid.defaults("fluid.tests.IE6ColorInversionTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
-            container: ".flc-IE6ColorInversionEnactor"
+            container: ".flc-IE6ColorInversion"
         },
         modules: [{
             name: "Test style element component",
@@ -551,7 +551,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "IE6 style is handled properly",
                 type: "test",
-                func: "fluid.tests.testIE6ColorInversionEnactor",
+                func: "fluid.tests.testIE6ColorInversion",
                 args: ["{setIE6ColorInversion}", "{that}.options.testOptions.container"]
             }]
         }]
@@ -559,16 +559,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.tests.styleElementsEnactor",
-            "fluid.tests.emphasizeLinksEnactor",
-            "fluid.tests.inputsLargerEnactor",
-            "fluid.tests.classSwapperEnactor",
-            "fluid.tests.getSize",
-            "fluid.tests.textSizerEnactor",
-            "fluid.tests.getLineHeight",
-            "fluid.tests.lineSpacerEnactor",
-            "fluid.tests.tableOfContentsEnactor",
-            "fluid.tests.IE6ColorInversionEnactor"
+            "fluid.tests.styleElementsTests",
+            "fluid.tests.emphasizeLinksTests",
+            "fluid.tests.inputsLargerTests",
+            "fluid.tests.classSwapperTests",
+            "fluid.tests.getSizeTests",
+            "fluid.tests.textSizerTests",
+            "fluid.tests.getLineHeightTests",
+            "fluid.tests.lineSpacerTests",
+            "fluid.tests.tableOfContentsTests",
+            "fluid.tests.IE6ColorInversionTests"
         ]);
     });
 
