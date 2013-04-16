@@ -59,10 +59,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    var sequence = 0;
-    
-    var uiOptions;
-    
     fluid.tests.testComponent = function (uiOptionsLoader, uiOptions) {
         jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, uiOptions.iframeRenderer.iframe.is(":visible"));
 
@@ -73,27 +69,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.uiOptions.assertPresent(fatPanel, fluid.tests.uiOptions.expectedFatPanel);
     };
     
-    fluid.tests.showPanel = function (fatPanel) {
-        fatPanel.slidingPanel.showPanel();
-    };
-    fluid.tests.hidePanel = function (fatPanel) {
-        fatPanel.slidingPanel.hidePanel();
-    };
-    
     fluid.tests.afterShowFunc1 = function (fatPanel) {
-        console.log("in afterShowFunc1");
-        fluid.tests.uiOptions.applierRequestChanges(fatPanel.uiOptionsLoader.uiOptions, fluid.tests.uiOptions.bwSkin);
-//        console.log("after requesting changes");
-        fluid.tests.uiOptions.checkModelSelections("pageModel from bwSkin", fluid.tests.uiOptions.bwSkin, fatPanel.pageEnhancer.model);
-//        console.log("after checking model");
-//        console.log(fluid.tests.uiOptions.bwSkin);
-//        console.log(fatPanel.pageEnhancer.model);
+        return function () {
+            fluid.tests.uiOptions.applierRequestChanges(fatPanel.uiOptionsLoader.uiOptions, fluid.tests.uiOptions.bwSkin);
+            fluid.tests.uiOptions.checkModelSelections("pageModel from bwSkin", fluid.tests.uiOptions.bwSkin, fatPanel.pageEnhancer.model);
+        };
     };
     
-    fluid.tests.afterShowFunc2 = function (that) {
-        console.log("in afterShowFunc2");
-        fluid.tests.uiOptions.checkModelSelections("panelModel from bwSkin", fluid.tests.uiOptions.bwSkin, panelModel);
-        fluid.tests.uiOptions.checkModelSelections("panelModel from pageModel", pageModel, panelModel);
+    fluid.tests.afterShowFunc2 = function (fatPanel) {
+        return function () {
+            var pageModel = fatPanel.pageEnhancer.model;
+            var panelModel = fatPanel.iframeRenderer.iframeEnhancer.model;
+            
+            fluid.tests.uiOptions.checkModelSelections("panelModel from bwSkin", fluid.tests.uiOptions.bwSkin, panelModel);
+            fluid.tests.uiOptions.checkModelSelections("panelModel from pageModel", pageModel, panelModel);
+        };
+    };
+    
+    fluid.tests.afterShowFunc3 = function (fatPanel) {
+        return function () {
+            var defaultSiteSettings = fatPanel.pageEnhancer.settingsStore.options.defaultSiteSettings;
+            var pageModel = fatPanel.pageEnhancer.model;
+            var panelModel = fatPanel.iframeRenderer.iframeEnhancer.model;
+            
+            fatPanel.uiOptionsLoader.uiOptions.locate("reset").click();
+            fluid.tests.uiOptions.checkModelSelections("pageModel from defaults", defaultSiteSettings, pageModel);
+            fatPanel.slidingPanel.hidePanel();
+            fluid.tests.uiOptions.checkModelSelections("panelModel from defaults", defaultSiteSettings, panelModel);
+            fluid.tests.uiOptions.checkModelSelections("pageModel from panelModel", pageModel, panelModel);  
+        };
     };
     
     fluid.defaults("fluid.tests.fatPanelIntegrationTester", {
@@ -103,7 +107,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Fat panel integration tests",
             tests: [{
-                expect: 7,
+                expect: 19,
                 name: "Fat panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testComponent",
@@ -115,22 +119,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{fatPanel}.slidingPanel.hidePanel"
                 }, {
                     func: "{fatPanel}.slidingPanel.showPanel"
-                }/*, {
+                }, {
                     listenerMaker: "fluid.tests.afterShowFunc1",
                     makerArgs: ["{fatPanel}"],
-//                    listenerMaker: "fluid.tests.afterShowFunc1",
-                    event: "{fatPanelIntegration fatPanel slidingPanel}.events.afterPanelShow"
+                    event: "{fatPanel}.slidingPanel.events.afterPanelShow"
                 }, {
-                    func: "fluid.tests.hidePanel",
-                    args: "{fatPanel}"
+                    func: "{fatPanel}.slidingPanel.hidePanel"
                 }, {
-                    func: "fluid.tests.showPanel",
-                    args: "{fatPanel}"
+                    func: "{fatPanel}.slidingPanel.showPanel"
                 }, {
                     listenerMaker: "fluid.tests.afterShowFunc2",
                     makerArgs: ["{fatPanel}"],
                     event: "{fatPanel}.slidingPanel.events.afterPanelShow"
-                }*/]
+                }, {
+                    func: "{fatPanel}.slidingPanel.hidePanel"
+                }, {
+                    func: "{fatPanel}.slidingPanel.showPanel"
+                }, {
+                    listenerMaker: "fluid.tests.afterShowFunc3",
+                    makerArgs: ["{fatPanel}"],
+                    event: "{fatPanel}.slidingPanel.events.afterPanelShow"
+                }]
             }]
         }]
     });

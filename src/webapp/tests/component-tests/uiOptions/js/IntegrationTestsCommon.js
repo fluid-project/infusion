@@ -84,7 +84,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          
     
     fluid.tests.uiOptions.assertPresent = function (uiOptions, expecteds) {
-        jqUnit.expect(expecteds.length);
         fluid.each(expecteds, function (expected) {
             var value = fluid.get(uiOptions, expected);
             jqUnit.assertTrue("Expected component at path " + expected, value);
@@ -145,8 +144,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.start();
             }
             
-            jqUnit.expect(6);
-                       
             var that = fluid.invokeGlobalFunction(componentName, ["#myUIOptions", {
                 gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
                 prefix: "../../../../components/uiOptions/html/",
@@ -209,8 +206,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             var testStrings = ["Test1", "Test2", "Test3", "Test4", "Test5"];
             var testControlValues = ["a", "b", "c", "d", "e"];
-            
-            jqUnit.expect(8);
 
             function testComponent(uiOptionsLoader, uiOptions) {
                 var body = $("body");
