@@ -221,10 +221,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The fifth text font control value matches", testControlValues[4], actualTextFontControlValues[4]);
     };
 
-    fluid.tests.uiOptions.testAdditionalIntegration = function () {
-        jqUnit.start();
-    };
-
     fluid.tests.uiOptions.mungingIntegrationOptions = {
         gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
         prefix: "../../../../components/uiOptions/html/",
@@ -241,10 +237,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         uiOptionsLoader: {
             options: {
                 listeners: {
-                    onReady: [
-                        {listener: "fluid.tests.uiOptions.testComponentIntegration"},
-                        {listener: "fluid.tests.uiOptions.testAdditionalIntegration"}
-                    ]
+                    onReady: "fluid.tests.uiOptions.testComponentIntegration"
                 }
             }
         },
@@ -258,7 +251,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.uiOptions.mungingIntegrationTest = function (componentName, container, extraOpts, extraListener) {
         jqUnit.asyncTest(componentName + " Munging Integration tests", function () {
             fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
-            var options = fluid.merge(null, fluid.tests.uiOptions.mungingIntegrationOptions, extraOpts);
+            var options = fluid.merge(null, fluid.tests.uiOptions.mungingIntegrationOptions, {
+                uiOptionsLoader: {
+                    options: {
+                        listeners: {
+                            onReady: [
+                                "fluid.tests.uiOptions.testComponentIntegration",
+                                jqUnit.start
+                            ]
+                        }
+                    }
+                }
+            }, extraOpts);
             fluid.invokeGlobalFunction(componentName, [container, options]);
         });
     };
