@@ -51,7 +51,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         invokers: {
             bindReset: {
-                funcName: "fluid.uiOptions.fatPanel.jqFn",
+                funcName: "fluid.bind",
                 args: ["{fatPanel}.dom.reset", "click", "{arguments}.0"]
             }
         },
@@ -175,11 +175,6 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-    
-    fluid.uiOptions.fatPanel.jqFn = function (elm, jqFn, args) {
-        elm = $(elm);
-        elm[jqFn].apply(elm, fluid.makeArray(args));
-    };
     
     /*****************************************
      * fluid.uiOptions.fatPanel.renderIframe *
