@@ -748,4 +748,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ]);
     });
     
+    jqUnit.test("fluid.bind", function () {
+        jqUnit.expect(3);
+        var expectedText = "New Text";
+        var jqElm = $("<div></div>");
+        var testObj = {
+            baseVal: 3,
+            fn: function (a, b) {
+                return this.baseVal + a + b
+            }
+        };
+        
+        fluid.bind(jqElm, "text", expectedText)
+        jqUnit.assertEquals("The text should have been set", expectedText, jqElm.text());
+        jqUnit.assertEquals("The value returned from the bind should be the same as the native call", jqElm.text(), fluid.bind(jqElm, "text"));
+        jqUnit.assertEquals("The correct value should be returned", 6, fluid.bind(testObj, "fn", [1, 2]));
+    });
+    
 })(jQuery);

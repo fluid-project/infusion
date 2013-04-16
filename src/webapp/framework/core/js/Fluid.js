@@ -857,6 +857,16 @@ var fluid = fluid || fluid_1_5;
     };
     
     /**
+     * Allows for the binding to a "this-ist" function
+     * @param {Object} obj, "this-ist" object to bind to
+     * @param {Object} fnName, the name of the function to call
+     * @param {Object} args, arguments to call the function with
+     */
+    fluid.bind = function (obj, fnName, args) {
+        return obj[fnName].apply(obj, fluid.makeArray(args));
+    }
+    
+    /**
      * Allows for the calling of a function from an EL expression "functionPath", with the arguments "args", scoped to an framework version "environment".
      * @param {Object} functionPath - An EL expression
      * @param {Object} args - An array of arguments to be applied to the function, specified in functionPath
