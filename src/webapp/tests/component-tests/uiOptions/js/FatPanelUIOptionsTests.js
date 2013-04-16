@@ -59,6 +59,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.defaults("fluid.tests.fatPanelMungingIntegration", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            fatPanel: {
+                type: "fluid.uiOptions.fatPanel",
+                container: ".flc-uiOptions-fatPanel",
+                createOnEvent: "{mungingIntegrationTester}.events.onTestCaseStart",
+                options: fluid.merge(null, fluid.tests.uiOptions.mungingIntegrationOptions, {
+                    iframeRenderer: {
+                        options: {
+                            markupProps: {
+                                src: "./FatPanelUIOptionsFrame.html"
+                            }
+                        }
+                    }
+                })
+            },
+            mungingIntegrationTester: {
+                type: "fluid.tests.mungingIntegrationTester"
+            }
+        }
+    });
+
     fluid.tests.testComponent = function (uiOptionsLoader, uiOptions) {
         jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, uiOptions.iframeRenderer.iframe.is(":visible"));
 
@@ -99,11 +122,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.tests.uiOptions.checkModelSelections("pageModel from panelModel", pageModel, panelModel);  
         };
     };
-    
+
+    fluid.tests.testEnhancerTransit = function testEnhancerTransit(uiOptions) {
+        var cMap = fluid.tests.uiOptions.enhancerOptions.classnameMap;
+        jqUnit.assertEquals("classnameMap transferred to outer UIEnhancer", cMap.textFont["default"],
+             uiOptions.pageEnhancer.options.classnameMap.textFont["default"]);
+        jqUnit.assertEquals("classnameMap transferred to inner UIEnhancer", cMap.textFont["default"],
+             uiOptions.iframeRenderer.iframeEnhancer.options.classnameMap.textFont["default"]);
+    };
+
     fluid.defaults("fluid.tests.fatPanelIntegrationTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
-        testOptions: {
-        },
         modules: [{
             name: "Fat panel integration tests",
             tests: [{
@@ -144,15 +173,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    fluid.defaults("fluid.tests.mungingIntegrationTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        modules: [{
+            name: "Fat panel munging integration tests",
+            tests: [{
+                expect: 9,
+                name: "Fat panel munging integration tests",
+                sequence: [{
+                    listener: "fluid.tests.uiOptions.testComponentIntegration",
+                    event: "{fatPanelMungingIntegration fatPanel uiOptionsLoader}.events.onReady"
+                }, {
+                    func: "fluid.tests.testEnhancerTransit",
+                    args: "{fatPanel}"
+                }]
+            }]
+        }]
+    });
+
     $(document).ready(function () {
 
-        fluid.pageEnhancer({
-            gradeNames: ["fluid.uiEnhancer.defaultActions"],
-            tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
-        });
+        fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
     
         fluid.test.runTests([
-            "fluid.tests.fatPanelIntegration"
+            "fluid.tests.fatPanelIntegration",
+            "fluid.tests.fatPanelMungingIntegration"
         ]);
     });
 
