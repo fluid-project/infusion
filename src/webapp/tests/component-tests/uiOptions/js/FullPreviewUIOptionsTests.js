@@ -64,7 +64,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             previewEnhancer: {
                 options: {
                     components: {
-                        tableOfContents: {
+                        tableOfContentsEnactor: {
                             options: {
                                 listeners: {
                                     afterTocRender: {

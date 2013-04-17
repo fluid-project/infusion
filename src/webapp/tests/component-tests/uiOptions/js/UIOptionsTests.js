@@ -496,7 +496,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 components: {
                                     textSize: {
-                                        type: "fluid.uiOptions.actionAnts.textSizerEnactor",
+                                        type: "fluid.uiOptions.enactor.textSizer",
                                         container: "{uiEnhancer}.container",
                                         options: {
                                             fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
@@ -525,7 +525,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "layoutControls": false,
                     "linksControls": false,
                     "options.components.settingsStore": true,
-                    "uiEnhancer.options.components.tableOfContents": true,
+                    "uiEnhancer.options.components.tableOfContentsEnactor": true,
                     "uiEnhancer.options.components.settingsStore": true
                 };
 
@@ -536,6 +536,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
+        var applierRequestChanges = function (uiOptions, selectionOptions) {
+            uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
+            uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
+            uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
+            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);            
+        };
+        
+        var checkUIOComponents = function (uiOptionsLoader, uiOptions) {
+            jqUnit.assertTrue("Check that uiEnhancer is present", uiOptions.uiEnhancer);
+            jqUnit.assertTrue("Check that textControls sub-component is present", uiOptions.textControls);
+            jqUnit.assertTrue("Check that layoutControls sub-component is present", uiOptions.layoutControls);
+            jqUnit.assertTrue("Check that linkControls sub-component is present", uiOptions.linksControls);
+            jqUnit.assertTrue("Check that preview sub-component is present", uiOptions.options.components.preview);
+            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.options.components.settingsStore);
+            jqUnit.assertTrue("Check that tableOfContentsEnactor sub-component is present", uiOptions.uiEnhancer.options.components.tableOfContentsEnactor);
+            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.uiEnhancer.options.components.settingsStore);
+        };
+        
+        var checkModelSelections = function (message, expectedSelections, actualSelections) {
+            jqUnit.assertEquals(message + ": Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
+            jqUnit.assertEquals(message + ": Theme correctly updated", expectedSelections.theme, actualSelections.theme);
+            jqUnit.assertEquals(message + ": Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
+            jqUnit.assertEquals(message + ": Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
+        };
+        
         jqUnit.asyncTest("UIOptions Integration tests", function () {
             fluid.enhance.check({"fluid.uiOptions.testsIntegration": true});
             
@@ -572,7 +597,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "layoutControls": true,
                     "linksControls": true,
                     "options.components.settingsStore": true,
-                    "uiEnhancer.options.components.tableOfContents": true,
+                    "uiEnhancer.options.components.tableOfContentsEnactor": true,
                     "uiEnhancer.options.components.settingsStore": true
                 };
 

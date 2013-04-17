@@ -30,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             emphasizeLinks: {
-                type: "fluid.uiOptions.actionAnts.emphasizeLinksEnactor",
+                type: "fluid.uiOptions.enactor.emphasizeLinks",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: emphasizeLinksClass,
@@ -59,7 +59,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
                 }
             },
-            styleElementsEnactorTester: {
+            styleElementsTester: {
                 type: "fluid.tests.customizedActionsTester"
             }
         }
@@ -209,7 +209,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             },
-            styleElementsEnactorTester: {
+            styleElementsTester: {
                 type: "fluid.tests.optionsMungingTester"
             }
         }
