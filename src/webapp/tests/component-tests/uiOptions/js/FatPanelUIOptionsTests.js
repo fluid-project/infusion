@@ -182,7 +182,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Fat panel munging integration tests",
             tests: [{
-                expect: 9,
+                expect: 10,
                 name: "Fat panel munging integration tests",
                 sequence: [{
                     listener: "fluid.tests.uiOptions.testComponentIntegration",

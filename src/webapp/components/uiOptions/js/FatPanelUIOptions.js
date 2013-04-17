@@ -42,7 +42,7 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             onReady: {
                 listener: "fluid.uiOptions.fatPanel.bindEvents",
-                args: ["{arguments}.0.uiOptions", "{uiEnhancer}", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
+                args: ["{fatPanel}.uiOptionsLoader.uiOptions", "{uiEnhancer}", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
             }
         },
         selectors: {

@@ -234,13 +234,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         },
-        uiOptionsLoader: {
-            options: {
-                listeners: {
-                    onReady: "fluid.tests.uiOptions.testComponentIntegration"
-                }
-            }
-        },
         uiOptions: {
             options: {
                 gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
@@ -249,6 +242,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.uiOptions.mungingIntegrationTest = function (componentName, container, extraOpts, extraListener) {
+        extraListener = extraListener || function () { jqUnit.start(); };
+        
         jqUnit.asyncTest(componentName + " Munging Integration tests", function () {
             fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
             var options = fluid.merge(null, fluid.tests.uiOptions.mungingIntegrationOptions, {
@@ -257,7 +252,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         listeners: {
                             onReady: [
                                 "fluid.tests.uiOptions.testComponentIntegration",
-                                jqUnit.start
+                                extraListener
                             ]
                         }
                     }
