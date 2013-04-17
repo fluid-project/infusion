@@ -123,12 +123,12 @@
     -webkit-border-radius: 65%;
 }
 
-.fl-uiOptions- .fl-slider-input {
+.fl-uiOptions .fl-slider-input {
     margin-left: 1em;
     float:left; 
 }
 
-.fl-uiOptions- .ui-slider-range { 
+.fl-uiOptions .ui-slider-range { 
 	background-color: #62bb3d; 
 	height: 100%;	
 }
