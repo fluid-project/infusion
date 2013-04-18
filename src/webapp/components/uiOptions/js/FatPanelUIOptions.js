@@ -165,16 +165,14 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         outerEnhancerOptions: {
             expander: {
-                funcName: "fluid.get",
-                args: [{
-                    expander: {
-                        type: "fluid.noexpand",
-                        value: fluid.staticEnvironment
-                    }
-                }, "uiEnhancer.options.originalUserOptions"]
+                func: "fluid.uiOptions.fatPanel.getUIEnhancerOptions"
             }
         }
     });
+    
+    fluid.uiOptions.fatPanel.getUIEnhancerOptions = function () {
+        return fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions")
+    };
     
     /*****************************************
      * fluid.uiOptions.fatPanel.renderIframe *
