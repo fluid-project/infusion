@@ -536,29 +536,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-        var applierRequestChanges = function (uiOptions, selectionOptions) {
+        applierRequestChanges = function (uiOptions, selectionOptions) {
             uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
             uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
             uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
-            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);            
+            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);
         };
         
-        var checkUIOComponents = function (uiOptionsLoader, uiOptions) {
-            jqUnit.assertTrue("Check that uiEnhancer is present", uiOptions.uiEnhancer);
-            jqUnit.assertTrue("Check that textControls sub-component is present", uiOptions.textControls);
-            jqUnit.assertTrue("Check that layoutControls sub-component is present", uiOptions.layoutControls);
-            jqUnit.assertTrue("Check that linkControls sub-component is present", uiOptions.linksControls);
-            jqUnit.assertTrue("Check that preview sub-component is present", uiOptions.options.components.preview);
-            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.options.components.settingsStore);
-            jqUnit.assertTrue("Check that tableOfContentsEnactor sub-component is present", uiOptions.uiEnhancer.options.components.tableOfContentsEnactor);
-            jqUnit.assertTrue("Check that store sub-component is present", uiOptions.uiEnhancer.options.components.settingsStore);
-        };
-        
-        var checkModelSelections = function (message, expectedSelections, actualSelections) {
+        checkModelSelections = function (message, expectedSelections, actualSelections) {
             jqUnit.assertEquals(message + ": Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
             jqUnit.assertEquals(message + ": Theme correctly updated", expectedSelections.theme, actualSelections.theme);
             jqUnit.assertEquals(message + ": Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
-            jqUnit.assertEquals(message + ": Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);            
+            jqUnit.assertEquals(message + ": Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);
         };
         
         jqUnit.asyncTest("UIOptions Integration tests", function () {
@@ -608,51 +597,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-        // The following two tests (preview and auto-save) need to run at the end because they causes failures on the subsequent
-        // unit tests due to possibility that the demands blocks issued specifically within their own staticEnvironment are still
-        // in effect on the subsequent tests.
-        /*****************
-         * Preview tests *
-         *****************/
-        
-        jqUnit.asyncTest("Preview URL", function () {
-            jqUnit.expect(1);
-            
-            fluid.enhance.check({"fluid.uiOptions.testsPreview": true});
-            
-            fluid.demands("fluid.uiOptions.templateLoader", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
-                options: {
-                    templates: {
-                        uiOptions: templatePrefix + "FullPreviewUIOptions.html"
-                    }
-                }
-            });
-        
-            var templateUrl = "TestPreviewTemplate.html";
-            fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
-                options: {
-                    components: {
-                        preview: {
-                            type: "fluid.uiOptions.preview",
-                            createOnEvent: "onUIOptionsComponentReady",
-                            container: "{uiOptions}.dom.previewFrame",
-                            options: {
-                                templateUrl: templateUrl
-                            }
-                        }
-                    }
-                }
-            });
-         
-            testUIOptions(function (uiOptionsLoader, uiOptions) {
-                jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
-                    templateUrl, uiOptions.preview.container.attr("src"));
-                
-                fluid.enhance.forget("fluid.uiOptions.testsPreview");
-                jqUnit.start();
-            });
-        });
-        
+        // The following two tests (auto-save and preview) need to run at the end of the test file because they cause failures 
+        // on the subsequent unit tests when they were placed before other tests, due to the possibility that the demands blocks
+        // issued specifically within their own staticEnvironment are still in effect on the subsequent tests.
         /*******************
          * Auto-save tests *
          *******************/
@@ -681,5 +628,56 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
         });
         
-});
+        /*****************
+         * Preview tests *
+         *****************/
+        
+        jqUnit.asyncTest("Preview URL", function () {
+            jqUnit.expect(1);
+            
+            fluid.enhance.check({"fluid.uiOptions.testsPreview": true});
+            
+            fluid.demands("fluid.uiOptions.templateLoader", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
+                options: {
+                    templates: {
+                        uiOptions: templatePrefix + "FullPreviewUIOptions.html"
+                    }
+                }
+            });
+        
+            var templateUrl = "TestPreviewTemplate.html";
+            var uiOptions;
+            
+            var testPreview = function () {
+                jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
+                        templateUrl, uiOptions.preview.container.attr("src"));
+                    
+                fluid.enhance.forget("fluid.uiOptions.testsPreview");
+                jqUnit.start();
+            };
+            
+            fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
+                options: {
+                    components: {
+                        preview: {
+                            type: "fluid.uiOptions.preview",
+                            createOnEvent: "onUIOptionsComponentReady",
+                            container: "{uiOptions}.dom.previewFrame",
+                            options: {
+                                templateUrl: templateUrl,
+                                listeners: {
+                                    onReady: testPreview
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+         
+            testUIOptions(function (uiOptionsLoader, uiOptionsIn) {
+                uiOptions = uiOptionsIn;
+            });
+        });
+        
+    });
 })(jQuery);
