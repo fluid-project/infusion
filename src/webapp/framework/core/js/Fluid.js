@@ -53,8 +53,8 @@ var fluid = fluid || fluid_1_5;
 
     // Renders a single activity element in a form suitable to be sent to a modern browser's console
     // unsupported, non-API function
-    fluid.renderOneActivity = function (activity) {
-        var togo = ["    while "];
+    fluid.renderOneActivity = function (activity, nowhile) {
+        var togo = nowhile? [] : ["    while "];
         var message = activity.message;
         var index = activityParser.lastIndex = 0;
         while (true) {
@@ -112,6 +112,9 @@ var fluid = fluid || fluid_1_5;
         var record = {type: type, message: message, args: args, time: new Date().getTime()};
         if (fluid.activityTracing) {
             fluid.activityTrace.push(record);
+        }
+        if (fluid.passLogLevel(fluid.logLevel.TRACE)) {
+            fluid.doLog(fluid.renderOneActivity(record, true));  
         }
         var activityStack = fluid.getActivityStack();
         activityStack.push(record);

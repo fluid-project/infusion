@@ -1535,15 +1535,16 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     // unsupported, non-API function
     fluid.resolveContextValue = function (string, options) {
-        fluid.pushActivity("resolveContextValue", "resolving context value %string", {string: string});
         var togo, parsed;
         if (options.bareContextRefs && string.charAt(0) === "{") {
             parsed = fluid.parseContextReference(string);
+            fluid.pushActivity("resolveContextValue", "resolving context value %string", {string: string});
             togo = options.fetcher(parsed);        
         }
         else if (options.ELstyle && options.ELstyle !== "${}") {
             parsed = fluid.extractELWithContext(string, options); // jslint:ok
             if (parsed) {
+                fluid.pushActivity("resolveContextValue", "resolving context value %string", {string: string});
                 togo = options.fetcher(parsed);
             }
         }
@@ -1568,13 +1569,13 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                     }
                     string = all? subs : string.substring(0, i1) + subs + string.substring(i2 + 1);
                 }
-              else {
-                  break;
-              }
-          }
-          togo = string;
+                else {
+                    break;
+                }
+            }
+            togo = string;
+            fluid.popActivity();
         }
-        fluid.popActivity();
         return togo;
     };
 

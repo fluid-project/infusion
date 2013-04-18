@@ -25,7 +25,7 @@ var fluid_1_5 = fluid_1_5 || {};
  ************/
 
 (function ($, fluid) {
-    fluid.setLogging(true);
+    fluid.setLogging(fluid.logLevel.TRACE);
     fluid.setDemandLogging(true);
 
     var fileOrFiles = function (that, numFiles) {
