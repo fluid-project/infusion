@@ -95,6 +95,9 @@ BSD License:
 
 ECL 2.0:
     * Sample markup and stylesheets from Sakai v2.5 (http://sakaiproject.org)
+    
+Apache 2.0:
+	* Open Sans Light font (http://www.google.com/fonts/specimen/Open+Sans)
 
 Other licenses:
     * Douglas Crockford's JSON.js (from 2007-11-06): http://www.json.org/ (Public Domain)
