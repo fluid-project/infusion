@@ -22,9 +22,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     /** The Fluid "IoC System proper" - resolution of references and 
      * completely automated instantiation of declaratively defined
-     * component trees */ 
-    
-    fluid.inCreationMarker = {"__CURRENTLY_IN_CREATION__": true};
+     * component trees */
     
     // unsupported, non-API function
     // Currently still uses manual traversal - once we ban manually instantiated components,
@@ -34,10 +32,8 @@ var fluid_1_5 = fluid_1_5 || {};
         for (var name in that) {
             var newPath = instantiator.composePath(path, name);
             var component = that[name];
-            //Every component *should* have an id, but some clients may not yet be compliant
-            //if (component && component.typeName && !component.id) {
-            //    fluid.fail("No id");
-            //}
+            // Every component *should* have an id, but some clients (e.g. DOM binder) may not yet be compliant
+            // This entire algorithm is primitive and expensive and will be removed once we can abolish manual init components
             if (!component || !component.typeName || (component.id && options.visited && options.visited[component.id])) {continue; }
             if (options.visited) {
                 options.visited[component.id] = true;
@@ -127,8 +123,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 if (record === undefined) {
                     return;
                 }
+                fluid.set(target, [name], fluid.inEvaluationMarker);
                 var member = recordMaker(record, name, that);
-                fluid.set(target, ([name]), member);
+                fluid.set(target, [name], member);
                 return member;
             },
             initter: function () {
@@ -452,8 +449,12 @@ var fluid_1_5 = fluid_1_5 || {};
     // unsupported, NON-API function
     fluid.makeGingerStrategy = function (that) {
         var instantiator = fluid.getInstantiator(that);
-        return function (component, thisSeg, index) {
+        return function (component, thisSeg, index, segs) {
             var atval = component[thisSeg];
+            if (atval === fluid.inEvaluationMarker && index === segs.length) {
+                fluid.fail("Error in component configuration - a circular reference was found during evaluation of path segment \"" + thisSeg
+                + "\": for more details, see the activity records following this message in the console, or issue fluid.setLogging(fluid.logLevel.TRACE) when running your application"); 
+            }
             if (index > 1) {
                 return atval;
             }

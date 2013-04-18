@@ -22,6 +22,7 @@ var jqUnit = fluid.registerNamespace("jqUnit");
 
 (function ($) {
     var QUnitPassthroughs = ["module", "test", "asyncTest", "throws", "raises", "start", "stop", "expect"];
+    QUnit.config.reorder = false; // defeat this QUnit feature which frequently just causes confusion
     
     for (var i = 0; i < QUnitPassthroughs.length; ++ i) {
         var method = QUnitPassthroughs[i];
@@ -113,6 +114,10 @@ var jqUnit = fluid.registerNamespace("jqUnit");
      ***********************/
     
     var jsUnitCompat = {
+        fail: function (msg) {
+            pok(false, msg);  
+        },
+        
         assert: function (msg) {
             pok(true, msg);  
         },

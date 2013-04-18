@@ -1969,8 +1969,48 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertDeepEq("Children constructed in sort order", [1, 2, 3, 4], testComp.constructRecord);
     });
     
-    /** Tree circularity test (early detection of stack overflow **/
-        
+    /** Tree circularity tests (early detection of stack overflow) **/
+    
+    fluid.defaults("fluid.tests.circularEvent", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            circular: {
+                event: "circular"
+            }
+        }
+    });
+    
+    function circularTest(componentName, message) {
+        jqUnit.test("FLUID-4978 " + message, function () {
+            try {
+                fluid.pushSoftFailure(true);
+                jqUnit.expect(1);
+                var circular = fluid.invokeGlobalFunction(componentName);
+            }
+            catch (e) {
+                if (e instanceof fluid.FluidError) {
+                    jqUnit.assert("Circular construction guarded");
+                }
+                else {
+                    jqUnit.fail("Received raw exception " + e + ": circular construction guard failed");
+                }
+            }
+            finally {
+                fluid.pushSoftFailure(-1);
+            }
+        });
+    };
+    
+    circularTest("fluid.tests.circularEvent", "event circularity test");
+    
+    fluid.defaults("fluid.tests.circularOptions", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        circular1: "{that}.options.circular2",
+        circular2: "{that}.options.circular1"  
+    });
+    
+    circularTest("fluid.tests.circularOptions", "options circularity test");
+    
     fluid.defaults("fluid.tests.circularity", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -2000,19 +2040,10 @@ fluid.registerNamespace("fluid.tests");
             var circular = fluid.tests.circularity();
             // if this test fails, the browser will bomb with a stack overflow 
             jqUnit.assertValue("Circular test delivered instantiator", circular.child1.options.instantiator);
-            
-            // This part of the test can no longer run since FLUID-4563 no longer allows us to dynamically modify options
-            // var rawDefaults = fluid.rawDefaults("fluid.tests.circChild");
-            // delete rawDefaults.mergePolicy;
-            // try {
-            //     var circular2 = fluid.tests.circularity();
-            // } catch (e) {
-            //     jqUnit.assert("Exception caught in circular instantiation");
-            //}
             try {
                 fluid.expandOptions(circular, circular);
             } catch (e2) {
-                jqUnit.assert("Exception caught in circular expansion");
+                jqUnit.assertTrue("Exception caught in circular expansion", e2 instanceof fluid.FluidError);
             }
         } finally {
             fluid.pushSoftFailure(-1);  
@@ -2021,7 +2052,8 @@ fluid.registerNamespace("fluid.tests");
     
     
     /** This test case reproduces a circular reference condition found in the Flash
-     *  implementation of the uploader, which the framework did not properly detect */
+     *  implementation of the uploader, which the framework did not properly detect. In the
+     *  FLUID-4330 framework, this is no longer an error */
      
     fluid.registerNamespace("fluid.tests.circular");
     
@@ -2042,8 +2074,7 @@ fluid.registerNamespace("fluid.tests");
     });
     
     fluid.tests.circular.initEngine = function (that) {
-      // This line, which is a somewhat illegal use of an invoker before construction is complete,
-      // will trigger failure
+        // This line, use of an invoker before construction is complete would once trigger failure
         that.bindEvents();
     };
     
@@ -2074,6 +2105,7 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
+    // NB - this is an old-style "non-merging" demands block, use is deprecated
     fluid.demands("fluid.tests.circular.local", "fluid.tests.circular.strategy", {
         args: [
             "{engine}.swfUpload",
@@ -2082,19 +2114,9 @@ fluid.registerNamespace("fluid.tests");
     });
     
     jqUnit.test("Advanced circularity test I", function () {
-        // If this test fails, it will bomb the browser with an infinite recursion
-        // TODO: In the new framework, this no longer fails! But it probably shouldn't in the
-        // long run anyway
-        try {
-            fluid.pushSoftFailure(true);
-            jqUnit.expect(1);
-            var comp = fluid.tests.circular.strategy();
-            jqUnit.assertValue("Component constructed", comp);
-        } catch (e) {
-            jqUnit.assert("Circular construction guarded");  
-        } finally {
-            fluid.pushSoftFailure(-1);
-        }
+        jqUnit.expect(1);
+        var comp = fluid.tests.circular.strategy();
+        jqUnit.assertValue("Component constructed", comp);
     });
 
     /** Correct resolution of invoker arguments through the tree **/
