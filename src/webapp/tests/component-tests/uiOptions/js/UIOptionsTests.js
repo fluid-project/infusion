@@ -36,9 +36,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 templateLoader: {
-                    priority: "first",
                     type: "fluid.uiOptions.templateLoader",
+                    priority: "first",
                     options: {
+                        gradeNames: ["fluid.uiOptions.defaultTemplateLoader"],
                         templates: {
                             uiOptions: templatePrefix + "FullNoPreviewUIOptions.html"
                         }
@@ -244,9 +245,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(6);
 
             var testTemplatePrefix = "../test/";
-            var uiOptionsTemplateName = "FullPreviewUIOptions.html";
+            var uiOptionsDefaultTemplateName = "FatPanelUIOptions.html";
             var textControlsFullTemplatePath = "../../../../components/uiOptions/html/UIOptionsTemplate-text.html";
-            var linksControlsDefaultTemplateName = "UIOptionsTemplate-links.html";
+            var linksControlsTemplateName = "links.html";
 
             // Supply the templates
             fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptionsTestTemplateLoader", {
@@ -258,7 +259,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.demands("fluid.uiOptions.templateLoader", "fluid.uiOptionsTestTemplateLoader", {
                 options: {
                     templates: {
-                        uiOptions: "%prefix/" + uiOptionsTemplateName,
+                        linksControls: "%prefix/" + linksControlsTemplateName,
                         textControls: textControlsFullTemplatePath
                     }
                 }
@@ -275,17 +276,59 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             var loader = fluid.uiOptionsTestTemplateLoader(null);
 
-            // The template with prefix + a customized name
-            jqUnit.assertEquals("uiOptions template url is set correctly", testTemplatePrefix + uiOptionsTemplateName, loader.templateLoader.resources.uiOptions.url);
+            // The template with prefix + default name
+            jqUnit.assertEquals("uiOptions template url is set correctly", testTemplatePrefix + uiOptionsDefaultTemplateName, loader.templateLoader.resources.uiOptions.url);
             jqUnit.assertTrue("uiOptions forceCache is set", loader.templateLoader.resources.uiOptions.forceCache);
 
             // The template with a customized full url
             jqUnit.assertEquals("textControls template url is set correctly", textControlsFullTemplatePath, loader.templateLoader.resources.textControls.url);
             jqUnit.assertTrue("textControls forceCache is set", loader.templateLoader.resources.textControls.forceCache);
 
-            // The template with prefix + default name
-            jqUnit.assertEquals("textControls template url is set correctly", testTemplatePrefix + linksControlsDefaultTemplateName, loader.templateLoader.resources.linksControls.url);
-            jqUnit.assertTrue("textControls forceCache is set", loader.templateLoader.resources.linksControls.forceCache);
+            // The template with prefix + customized name
+            jqUnit.assertEquals("linksControls template url is set correctly", testTemplatePrefix + linksControlsTemplateName, loader.templateLoader.resources.linksControls.url);
+            jqUnit.assertTrue("linksControls forceCache is set", loader.templateLoader.resources.linksControls.forceCache);
+        });
+        
+        jqUnit.test("Customized Template Loader", function () {
+            jqUnit.expect(4);
+
+            var testTemplatePrefix = "../test/";
+            var uiOptionsDefaultTemplateName = "FatPanelUIOptions.html";
+            var lineSpacerTemplateName = "UIOptionsTemplate-lineSpacer.html";
+
+            // Supply the templates
+            fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptionsCustomizedTemplateLoader", {
+                options: {
+                    value: testTemplatePrefix
+                }
+            });
+
+            fluid.defaults("fluid.uiOptions.customizedTemplateLoader", {
+                gradeNames: ["fluid.uiOptions.templateLoader", "autoInit"],
+                templates: {
+                    lineSpacer: "%prefix/" + lineSpacerTemplateName
+                }
+            });
+
+            fluid.defaults("fluid.uiOptionsCustomizedTemplateLoader", {
+                gradeNames: ["fluid.littleComponent", "autoInit"],
+                components: {
+                    templateLoader: {
+                        type: "fluid.uiOptions.templateLoader",
+                        options: {
+                            gradeNames: ["fluid.uiOptions.customizedTemplateLoader"],
+                        }
+                    }
+                }
+            });
+
+            var loader = fluid.uiOptionsCustomizedTemplateLoader(null);
+
+            jqUnit.assertEquals("uiOptions template url is set correctly", testTemplatePrefix + uiOptionsDefaultTemplateName, loader.templateLoader.resources.uiOptions.url);
+            jqUnit.assertTrue("uiOptions forceCache is set", loader.templateLoader.resources.uiOptions.forceCache);
+
+            jqUnit.assertEquals("lineSpacer template url is set correctly", testTemplatePrefix + lineSpacerTemplateName, loader.templateLoader.resources.lineSpacer.url);
+            jqUnit.assertTrue("lineSpacer forceCache is set", loader.templateLoader.resources.lineSpacer.forceCache);
         });
         
         var assertDefaultModel = function (model) {

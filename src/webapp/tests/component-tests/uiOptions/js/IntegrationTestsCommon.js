@@ -154,6 +154,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     }
                 },
+                templateLoader: {
+                    options: {
+                        gradeNames: ["fluid.uiOptions.defaultTemplateLoader"]
+                    }
+                },
                 uiOptions: {
                     options: {
                         gradeNames: ["fluid.uiOptions.defaultSettingsPanels"],
@@ -232,6 +237,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 controlValues: {
                     textFont: fluid.tests.uiOptions.testControlValues
                 }
+            }
+        },
+        templateLoader: {
+            options: {
+                gradeNames: ["fluid.uiOptions.defaultTemplateLoader"]
             }
         },
         uiOptions: {

@@ -177,13 +177,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         finalInitFunction: "fluid.uiOptions.templateLoader.resolveTemplates",
         templates: {
-            uiOptions: "%prefix/FatPanelUIOptions.html",
-            textSizer: "%prefix/UIOptionsTemplate-textSizer.html",
-            textFont: "%prefix/UIOptionsTemplate-textFont.html",
-            lineSpacer: "%prefix/UIOptionsTemplate-lineSpacer.html",
-            contrast: "%prefix/UIOptionsTemplate-contrast.html",
-            layoutControls: "%prefix/UIOptionsTemplate-layout.html",
-            linksControls: "%prefix/UIOptionsTemplate-links.html"
+            uiOptions: "%prefix/FatPanelUIOptions.html"
         },
         // Unsupported, non-API option
         components: {
@@ -282,7 +276,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         members: {
-            // TODO: FLUID-4686 - his will be replaced by the mechanism of
+            // TODO: FLUID-4686 - this will be replaced by the mechanism of
             // extracting defaults from the schema.
             defaultModel: "{uiEnhancer}.settingsStore.options.defaultSiteSettings"
         },
@@ -406,129 +400,16 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
 
-    /*********************************************************************************************************
-     * defaultSettingsPanels
-     * 
-     * A collection of all the default UIO setting panels.
-     *********************************************************************************************************/
-    fluid.defaults("fluid.uiOptions.defaultSettingsPanels", {
-        gradeNames: ["fluid.uiOptions", "autoInit"],
-        selectors: {
-            textSizer: ".flc-uiOptions-text-sizer",
-            textFont: ".flc-uiOptions-text-font",
-            lineSpacer: ".flc-uiOptions-line-spacer",
-            contrast: ".flc-uiOptions-contrast",
-            textControls: ".flc-uiOptions-text-controls",
-            layoutControls: ".flc-uiOptions-layout-controls",
-            linksControls: ".flc-uiOptions-links-controls"
-        },
-        components: {
-            textSizer: {
-                type: "fluid.uiOptions.textSizer",
-                container: "{uiOptions}.dom.textSizer",
-                createOnEvent: "onUIOptionsMarkupReady",
-                options: {
-                    sourceApplier: "{uiOptions}.applier",
-                    rules: {
-                        "selections.textSize": "value"
-                    },
-                    listeners: {
-                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
-                    },
-                    resources: {
-                        template: "{templateLoader}.resources.textSizer"
-                    }
-                }
-            },
-            lineSpacer: {
-                type: "fluid.uiOptions.lineSpacer",
-                container: "{uiOptions}.dom.lineSpacer",
-                createOnEvent: "onUIOptionsMarkupReady",
-                options: {
-                    sourceApplier: "{uiOptions}.applier",
-                    rules: {
-                        "selections.lineSpacing": "value"
-                    },
-                    listeners: {
-                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
-                    },
-                    resources: {
-                        template: "{templateLoader}.resources.lineSpacer"
-                    }
-                }
-            },
-            textFont: {
-                type: "fluid.uiOptions.textFont",
-                container: "{uiOptions}.dom.textFont",
-                createOnEvent: "onUIOptionsMarkupReady",
-                options: {
-                    sourceApplier: "{uiOptions}.applier",
-                    classnameMap: "{uiEnhancer}.options.classnameMap",
-                    rules: {
-                        "selections.textFont": "value"
-                    },
-                    listeners: {
-                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
-                    },
-                    resources: {
-                        template: "{templateLoader}.resources.textFont"
-                    }
-                }
-            },
-            contrast: {
-                type: "fluid.uiOptions.contrast",
-                container: "{uiOptions}.dom.contrast",
-                createOnEvent: "onUIOptionsMarkupReady",
-                options: {
-                    sourceApplier: "{uiOptions}.applier",
-                    classnameMap: "{uiEnhancer}.options.classnameMap",
-                    rules: {
-                        "selections.theme": "value"
-                    },
-                    listeners: {
-                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
-                    },
-                    resources: {
-                        template: "{templateLoader}.resources.contrast"
-                    }
-                }
-            },
-            layoutControls: {
-                type: "fluid.uiOptions.layoutControls",
-                container: "{uiOptions}.dom.layoutControls",
-                createOnEvent: "onUIOptionsMarkupReady",
-                options: {
-                    sourceApplier: "{uiOptions}.applier",
-                    rules: {
-                        "selections.toc": "toc",
-                        "selections.layout": "layout"
-                    },
-                    listeners: {
-                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
-                    },
-                    resources: {                    
-                        template: "{templateLoader}.resources.layoutControls"
-                    }
-                }
-            },
-            linksControls: {
-                type: "fluid.uiOptions.linksControls",
-                container: "{uiOptions}.dom.linksControls",
-                createOnEvent: "onUIOptionsMarkupReady",
-                options: {
-                    sourceApplier: "{uiOptions}.applier",
-                    rules: {
-                        "selections.links": "links",
-                        "selections.inputsLarger": "inputsLarger"
-                    },
-                    listeners: {
-                        "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
-                    },
-                    resources: {
-                        template: "{templateLoader}.resources.linksControls"
-                    }
-                }
-            }
+    /***********************************************
+     * Base grade settingsPanel
+     ***********************************************/
+     
+    fluid.registerNamespace("fluid.uiOptions.settingsPanel");
+
+    fluid.defaults("fluid.uiOptions.settingsPanel", {
+        gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay"],
+        invokers: {
+            refreshView: "{that}.renderer.refreshView"
         }
     });
 
