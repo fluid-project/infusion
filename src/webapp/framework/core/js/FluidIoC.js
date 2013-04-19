@@ -475,9 +475,21 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
     
+    fluid.filterBuiltinGrades = function (gradeNames) {
+        return fluid.remove_if(fluid.makeArray(gradeNames), function (gradeName) {
+            return /autoInit|fluid.littleComponent|fluid.modelComponent|fluid.eventedComponent|fluid.viewComponent|fluid.typeFount/.test(gradeName);
+        });
+    };
+    
+    fluid.dumpGradeNames = function (that) {
+        return that.options && that.options.gradeNames ? 
+            " gradeNames: " + JSON.stringify(fluid.filterBuiltinGrades(that.options.gradeNames)) : ""; 
+    };
+    
     // unsupported, non-API function
     fluid.dumpThat = function (that) {
-        return "{ typeName: \"" + that.typeName + "\" id: " + that.id + "}";
+        return "{ typeName: \"" + that.typeName + "\"" + 
+             fluid.dumpGradeNames(that) + " id: " + that.id + "}";
     };
     
     // unsupported, non-API function
@@ -819,7 +831,7 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.log("Created new instantiator with id " + instantiator.id + " in order to operate on component " + (that? that.typeName : "[none]"));
         }
         fluid.pushActivity("expandComponentOptions", "expanding component options %options with record %record for component %that", 
-            {options: userOptions && userOptions.value, record: userOptions, that: that});
+            {options: userOptions && userOptions.mergeRecords, record: userOptions, that: that});
         if (fresh) { 
             instantiator.recordRoot(that);
         }
@@ -1536,48 +1548,48 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     // unsupported, non-API function
     fluid.resolveContextValue = function (string, options) {
-        var togo, parsed;
-        if (options.bareContextRefs && string.charAt(0) === "{") {
-            parsed = fluid.parseContextReference(string);
+        function fetch(parsed) {
             fluid.pushActivity("resolveContextValue", "resolving context value %string", {string: string});
-            togo = options.fetcher(parsed);        
+            var togo = options.fetcher(parsed);
+            fluid.pushActivity("resolvedContextValue", "resolved value %string to value %value", {string: string, value: togo});
+            fluid.popActivity(2);
+            return togo;
+        }
+        if (options.bareContextRefs && string.charAt(0) === "{") {
+            var parsed = fluid.parseContextReference(string);
+            return fetch(parsed);        
         }
         else if (options.ELstyle && options.ELstyle !== "${}") {
-            parsed = fluid.extractELWithContext(string, options); // jslint:ok
+            var parsed = fluid.extractELWithContext(string, options); // jslint:ok, redefinition
             if (parsed) {
-                fluid.pushActivity("resolveContextValue", "resolving context value %string", {string: string});
-                togo = options.fetcher(parsed);
+                return fetch(parsed);
             }
         }
-        if (parsed === undefined) {
-            while (typeof(string) === "string") {
-                var i1 = string.indexOf("${");
-                var i2 = string.indexOf("}", i1 + 2);
-                if (i1 !== -1 && i2 !== -1) {
-                    var parsed; // jslint:ok
-                    if (string.charAt(i1 + 2) === "{") {
-                        parsed = fluid.parseContextReference(string, i1 + 2, "}");
-                        i2 = parsed.endpos;
-                    }
-                    else {
-                        parsed = {path: string.substring(i1 + 2, i2)};
-                    }
-                    var subs = options.fetcher(parsed);
-                    var all = (i1 === 0 && i2 === string.length - 1); 
-                    // TODO: test case for all undefined substitution
-                    if (subs === undefined || subs === null) {
-                        return subs;
-                    }
-                    string = all? subs : string.substring(0, i1) + subs + string.substring(i2 + 1);
+        while (typeof(string) === "string") {
+            var i1 = string.indexOf("${");
+            var i2 = string.indexOf("}", i1 + 2);
+            if (i1 !== -1 && i2 !== -1) {
+                var parsed; // jslint:ok
+                if (string.charAt(i1 + 2) === "{") {
+                    parsed = fluid.parseContextReference(string, i1 + 2, "}");
+                    i2 = parsed.endpos;
                 }
                 else {
-                    break;
+                    parsed = {path: string.substring(i1 + 2, i2)};
                 }
+                var subs = fetch(parsed);
+                var all = (i1 === 0 && i2 === string.length - 1); 
+                // TODO: test case for all undefined substitution
+                if (subs === undefined || subs === null) {
+                    return subs;
+                }
+                string = all? subs : string.substring(0, i1) + subs + string.substring(i2 + 1);
             }
-            togo = string;
-            fluid.popActivity();
+            else {
+                break;
+            }
         }
-        return togo;
+        return string;
     };
 
     // unsupported, NON-API function
