@@ -98,7 +98,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         events: {
-            onAsyncEnactorsReady: null
+            onAsyncEnactorReady: null
         }
     });
 
@@ -201,8 +201,8 @@ var fluid_1_5 = fluid_1_5 || {};
                         "toc": "value"
                     },
                     listeners: {
-                        afterTocRender: "{uiEnhancer}.events.onAsyncEnactorsReady",
-                        onLateRefreshRelay: "{uiEnhancer}.events.onAsyncEnactorsReady"
+                        afterTocRender: "{uiEnhancer}.events.onAsyncEnactorReady",
+                        onLateRefreshRelay: "{uiEnhancer}.events.onAsyncEnactorReady"
                     }
                 }
             },
@@ -221,7 +221,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onCreateToc: null
         },
         listeners: {
-            onAsyncEnactorsReady: [{
+            onAsyncEnactorReady: [{
                 listener: "{that}.emphasizeLinks.handleStyle",
                 args: "{that}.model.links"
             }, {
