@@ -735,8 +735,10 @@ var fluid_1_5 = fluid_1_5 || {};
     
     /**************************************************
      * Error constants for the Uploader               *
-     * TODO: These are SWFUpload-specific error codes *
+     * 
      **************************************************/
+     // Partial TODO: The values of these keys are now our own - however, the key
+     // values themselves still align with those in SWFUpload
     fluid.uploader.queueErrorConstants = {
         QUEUE_LIMIT_EXCEEDED:    "queue limit exceeded",
         FILE_EXCEEDS_SIZE_LIMIT: "file exceeds size limit",

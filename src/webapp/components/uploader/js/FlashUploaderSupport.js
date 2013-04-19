@@ -143,7 +143,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     
     fluid.defaults("fluid.uploader.swfUploadStrategy.engine", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
         components: {
         // Get the Flash version from swfobject and setup a new context so that the appropriate
             versionTag: {
@@ -370,7 +370,14 @@ var fluid_1_5 = fluid_1_5 || {};
         events.onFileSuccess.addListener(manualModelUpdater);
     };
     
-    var filterErroredFiles = function (file, events, queue, queueSettings) {
+    fluid.uploader.swfUploadStrategy.convertCode = function (value, uploaderCodes, swfCodes) {
+        var key = fluid.keyForValue(swfCodes, value);
+        return uploaderCodes[key];
+    };
+    
+    fluid.uploader.swfUploadStrategy.mapQueuedFile = function (origFile, events, queue, queueSettings) {
+        var file = $.extend({}, origFile); // shallow copy of file to avoid corrupting SWF's instance
+        file.filestatus = fluid.uploader.swfUploadStrategy.convertCode(origFile.filestatus, fluid.uploader.fileStatusConstants, SWFUpload.FILE_STATUS);
         var fileSizeLimit = queueSettings.fileSizeLimit * 1000;
         var fileUploadLimit = queueSettings.fileUploadLimit;
         var processedFiles = queue.getReadyFiles().length + queue.getUploadedFiles().length; 
@@ -390,7 +397,7 @@ var fluid_1_5 = fluid_1_5 || {};
         unbindSWFUploadSelectFiles();      
               
         events.onFileQueued.addListener(function (file) {
-            filterErroredFiles(file, events, queue, queueSettings);
+            fluid.uploader.swfUploadStrategy.mapQueuedFile(file, events, queue, queueSettings);
         });        
         
         fluid.uploader.swfUploadStrategy.bindFileEventListeners(model, events);
