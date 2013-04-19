@@ -19,7 +19,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
-    fluid.defaults("fluid.uiOptions.enactors", {
+    fluid.defaults("fluid.uiOptions.enactor", {
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "fluid.uiOptions.modelRelay", "autoInit"]
     });
     
@@ -30,7 +30,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * This component is used as a grade by emphasizeLinks & inputsLarger
      **********************************************************************************/
     fluid.defaults("fluid.uiOptions.enactor.styleElements", {
-        gradeNames: ["fluid.uiOptions.enactors", "autoInit"],
+        gradeNames: ["fluid.uiOptions.enactor", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
         model: {
             value: false
@@ -142,7 +142,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.uiOptions.enactor.classSwapper", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor", "autoInit"],
         classes: {},  // Must be supplied by implementors
         model: {
             value: ""
@@ -227,7 +227,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.uiOptions.enactor.textSizer", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor", "autoInit"],
         fontSizeMap: {},  // must be supplied by implementors
         model: {
             value: 1
@@ -308,7 +308,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.uiOptions.enactor.lineSpacer", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor", "autoInit"],
         fontSizeMap: {},  // must be supplied by implementors
         model: {
             value: 1
@@ -407,7 +407,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.uiOptions.enactor.tableOfContentsEnactor", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor", "autoInit"],
         tocTemplate: null,  // must be supplied by implementors
         model: {
             value: false
@@ -532,7 +532,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.uiOptions.enactor.IE6ColorInversion", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor", "autoInit"],
         selectors: {
             colorInversion: ".fl-inverted-color"
         },

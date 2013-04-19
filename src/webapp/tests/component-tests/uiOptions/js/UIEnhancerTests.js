@@ -169,7 +169,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.testTocStyling",
                     spec: {priority: "last"},
-                    event: "{uiEnhancer}.events.onAsyncEnactorsReady"
+                    event: "{uiEnhancer}.events.onAsyncEnactorReady"
                 }, {
                     func: "fluid.tests.testSettings",
                     args: ["{uiEnhancer}", "{that}.options.testOpts.testSettings", "{that}.options.testOpts.initialFontSize"]
