@@ -89,13 +89,10 @@ html {
 	border: 1px solid #b3b3b3;	
 	border-radius: 2em;
 	box-shadow: 4px 2px 3px rgba(0,0,0,0.3);	
-
-	background-image: linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
 	background-image: -o-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
 	background-image: -moz-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
 	background-image: -webkit-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
 	background-image: -ms-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
-
 	background-image: -webkit-gradient(
 		linear,
 		right top,
@@ -103,6 +100,7 @@ html {
 		color-stop(0.46, rgb(255,255,255)),
 		color-stop(0.73, rgb(233,234,234))
 	);	
+	background-image: linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);	
 }
 .fl-uiOptions-fatPanel .fl-slider a { 
     background-image: none;
@@ -227,9 +225,16 @@ html {
 	box-shadow: -1em 1.1em 0.1em 0 rgba(172, 216, 92, 0.63) inset;
 }
 
+/* With data attributes defining the on/off text, localizing the templates is easier */
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input + label [data-checkboxStateOn]:before {
+    content: attr(data-checkboxStateOn);
+}
+.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input + label [data-checkboxStateOff]:after {
+    content: attr(data-checkboxStateOff);
+}
+
 /* The "on" portion of the toggle and the knob. */
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input + label .fl-uiOptions-fatPanel-switch:before {
-	content:"ON";
 	color: #fff;
 	border: 1px solid #776D67;
 	border-radius: 50px;
@@ -239,7 +244,6 @@ html {
 	text-indent:-1.6em;
 	line-height:1.7em;
 	text-shadow: 1px 1px 1px #000;
-	background-image: linear-gradient(bottom, rgb(205,204,202) 0%, rgb(244,244,244) 100%);
 	background-image: -o-linear-gradient(bottom, rgb(205,204,202) 0%, rgb(244,244,244) 100%);
 	background-image: -moz-linear-gradient(bottom, rgb(205,204,202) 0%, rgb(244,244,244) 100%);
 	background-image: -webkit-linear-gradient(bottom, rgb(205,204,202) 0%, rgb(244,244,244) 100%);
@@ -251,12 +255,12 @@ html {
 		color-stop(0, rgb(205,204,202)),
 		color-stop(1, rgb(244,244,244))
 	);
+	background-image: linear-gradient(bottom, rgb(205,204,202) 0%, rgb(244,244,244) 100%);	
 	box-shadow: 0.2em 0.2em 0.5em #888;
 }
 
 /* The "off" portion of the toggle. */
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input + label .fl-uiOptions-fatPanel-switch:after {
-	content:"OFF";
 	float:left;
 	position:relative;
 	top: 0.36em;	
