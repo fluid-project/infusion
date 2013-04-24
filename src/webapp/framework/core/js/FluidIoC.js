@@ -97,10 +97,9 @@ var fluid_1_5 = fluid_1_5 || {};
     
     // unsupported, NON-API function    
     fluid.invokerFromRecord = function (invokerec, name, that) {
-        var funcName = typeof(invokerec) === "string" ? invokerec : null;
         fluid.pushActivity("makeInvoker", "beginning instantiation of invoker with name %name and record %record as child of %that", 
             {name: name, record: invokerec, that: that});
-        var invoker = fluid.makeInvoker(that, funcName? null : invokerec, funcName);
+        var invoker = fluid.makeInvoker(that, invokerec, name);
         fluid.popActivity();
         return invoker;
     };
@@ -1246,15 +1245,44 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             fluid.censorKeys(demandspec[0], ["funcName", "args"]));
     };
     // "options" includes - passArgs, componentRecord, memberName (latter two from initDependent route)
+    // unsupported, non-API function
     fluid.resolveDemands = function (parentThat, funcNames, initArgs, options) {
         var demandspec = fluid.determineDemands(parentThat, funcNames);
         return fluid.embodyDemands(parentThat, demandspec, initArgs, options);
     };
     
+    // Convert a record which may harbour a "this/method" pair into an object which mocks the function.apply operation, pre-bound (for FLUID-4878)
+    // unsupported, non-API function
+    fluid.recordToApplicable = function (record, that) {
+        var recthis = record["this"];
+        if (record.method ^ recthis) {
+            fluid.fail("Record ", that, " must contain both entries \"method\" and \"this\" if it contains either");
+        }
+        if (!record.method) {
+           return null;
+        }
+        return {
+            apply: function (noThis, args) {
+                // Resolve this material late, to deal with cases where the target has only just been brought into existence
+                // (e.g. a jQuery target for rendered material) - TODO: Possibly implement cached versions of these as we might do for invokers
+                var resolvedThis = fluid.expandOptions(recthis, that);
+                if (!resolvedThis) {
+                    fluid.fail("Could not resolve reference " + recthis + " to a value"); 
+                }
+                var resolvedFunc = resolvedThis[record.method];
+                if (typeof(resolvedFunc) !== "function") {
+                    fluid.fail("Object ", resolvedThis, " at reference " + recthis + " has no member named " + record.method + " which is a function ");
+                }
+                fluid.log("Applying arguments ", args, " to method " + record.method + " of instance ", resolvedThis);
+                return resolvedFunc.apply(resolvedThis, args);
+            }
+        };
+    };
+    
     // TODO: make a *slightly* more performant version of fluid.invoke that perhaps caches the demands
     // after the first successful invocation
     fluid.invoke = function (functionName, args, that, environment) {
-        fluid.pushActivity("invoke", "invoking function with name \"%functionName\" from component %that", {functionName: functionName, that: that});
+        fluid.pushActivity("invokeFunc", "invoking function with name \"%functionName\" from component %that", {functionName: functionName, that: that});
         var invokeSpec = fluid.resolveDemands(that, functionName, fluid.makeArray(args), {passArgs: true});
         var togo = fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
         fluid.popActivity();
@@ -1266,7 +1294,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
      * environment is assumed to be constant, the dispatch of the call will be evaluated at the
      * time this call is made, as an optimisation.
      */
-    
+    // unsupported, non-API function    
     fluid.makeFreeInvoker = function (functionName, environment) {
         var demandSpec = fluid.determineDemands(null, functionName);
         return function () {
@@ -1275,20 +1303,30 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         };
     };
     
-    fluid.makeInvoker = function (that, demandspec, functionName, environment) {
-        if (typeof(functionName) === "string" && functionName.charAt(0) === "{") { // shorthand case for direct function invokers
-            demandspec = {func: functionName};
+    // unsupported, non-API function
+    fluid.makeInvoker = function (that, invokerec, name, environment) {
+        var functionName;
+        if (typeof(invokerec) === "string") {
+            if (invokerec.charAt(0) === "{") { // shorthand case for direct function invokers (FLUID-4926)
+                invokerec = {func: invokerec};
+            } else {
+                functionName = invokerec;
+            }
         }
-        demandspec = demandspec || fluid.determineDemands(that, functionName);
+        var demandspec = functionName? fluid.determineDemands(that, functionName) : invokerec;
         return function () {
+            fluid.pushActivity("invokeInvoker", "invoking invoker with name %name and record %record from component %that", {name: name, record: invokerec, that: that});
+            var func = fluid.recordToApplicable(invokerec, that);
             var args = fluid.makeArray(arguments);
             var invokeSpec = fluid.embodyDemands(that, demandspec, args, {passArgs: true});
-            var func = invokeSpec.funcName? fluid.getGlobalValue(invokeSpec.funcName, environment)
-                : fluid.expandOptions(demandspec.func, that);
+            func = func || (invokeSpec.funcName? fluid.getGlobalValue(invokeSpec.funcName, environment)
+                : fluid.expandOptions(demandspec.func, that));
             if (!func) {
-                fluid.fail("Error in invoker record: could not resolve either func or funcName to a function implementation", demandspec);
+                fluid.fail("Error in invoker record: could not resolve members func, funcName or method to a function implementation", demandspec);
             }
-            return func.apply(null, invokeSpec.args);
+            var togo = func.apply(null, invokeSpec.args);
+            fluid.popActivity();
+            return togo;
         };
     };
     
@@ -1336,7 +1374,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 listener = fluid.event.resolveListener({globalName: listener}); // just resolves globals
             }
             var args = indirectArgs? arguments[0] : fluid.makeArray(arguments);
-            var demandspec = fluid.determineDemands(that, eventName);
+            var demandspec = fluid.determineDemands(that, eventName); // TODO: This name may contain a namespace
             if (demandspec.args.length === 0 && eventSpec.args) {
                 demandspec.args = eventSpec.args;
             }
@@ -1357,9 +1395,13 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             {eventName: eventName, that: that});
         var records = fluid.makeArray(lisrec);
         var transRecs = fluid.transform(records, function (record) {
-            var expanded = record.listener ? record : {listener: record};
+            var expanded = fluid.isPrimitive(record) || record.expander ? {listener: record} : record;
+            var methodist = fluid.recordToApplicable(record, that);
+            if (methodist) {
+                expanded.listener = methodist;
+            }
             if (!expanded.listener) {
-                badRec(record, "Listener record must contain a member named \"listener\"");
+                badRec(record, "Listener record must contain a member named \"listener\" or \"method\"");
             }
             var listener = expanded.listener = fluid.expandOptions(expanded.listener, that);
             if (!listener) {

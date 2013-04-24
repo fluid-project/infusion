@@ -208,7 +208,7 @@ var jqUnit = fluid.registerNamespace("jqUnit");
     };
     
     jqUnit.canonicaliseFunctions = function (tree) {
-        return fluid.transform(tree, function(value) {
+        return fluid.transform(tree, function (value) {
             if (fluid.isPrimitive(value)) {
                 if (typeof(value) === "function") {
                     return fluid.identity;
@@ -233,13 +233,13 @@ var jqUnit = fluid.registerNamespace("jqUnit");
     /** Assert that the actual value object is a subset (considered in terms of shallow key coincidence) of the
      * expected value object (this method is the one that will be most often used in practice) **/ 
     
-    jqUnit.assertLeftHand = function(message, expected, actual) {
+    jqUnit.assertLeftHand = function (message, expected, actual) {
         jqUnit.assertDeepEq(message, expected, fluid.filterKeys(actual, fluid.keys(expected)));  
     };
     
     /** Assert that the actual value object is a superset of the expected value object **/
     
-    jqUnit.assertRightHand = function(message, expected, actual) {
+    jqUnit.assertRightHand = function (message, expected, actual) {
         jqUnit.assertDeepEq(message, fluid.filterKeys(expected, fluid.keys(actual)), actual);  
     };
         

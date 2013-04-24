@@ -55,6 +55,7 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertNotUndefined("selectorsToCutpoints should not eat other people's selectors", selectors.selector2);
         });
         
+        // TODO: reform this manual init component once we drop support for them
         fluid.tests.rendererComponentTest = function (container, options) {
             var that = fluid.initRendererComponent("fluid.tests.rendererComponentTest", container, options);
             return that;
@@ -699,13 +700,39 @@ fluid.registerNamespace("fluid.tests");
                 input: ".flc-renderUtils-test",
                 input2: ".flc-renderUtils-test2"
             },
-            produceTree: "fluid.tests.FLUID4189Component.produceTree"
+            produceTree: "fluid.tests.FLUID4189Component.produceTree",
+            members: {
+                clicked: []
+            },
+            invokers: {
+                clickField: {
+                    funcName: "fluid.tests.FLUID4189Click",
+                    args: ["{that}", "{arguments}.0"]
+                }
+            },
+            listeners: { // Test binding of FLUID-4878 style "this-ist" jQuery listeners
+                afterRender: [ {
+                    "this": "{that}.dom.input",
+                    method: "click",
+                    args: "{that}.clickField"
+                },
+                {
+                    "this": "{that}.dom.input2",
+                    method: "click",
+                    args: "{that}.clickField"
+                }
+                ]
+            }
         });
         
         fluid.tests.FLUID4189Component.produceTree = function () {
             return {
                 input: "${value}"
             };
+        };
+        
+        fluid.tests.FLUID4189Click = function (that, event) {
+            that.clicked.push(event.target);
         };
         
         jqUnit.test("FLUID-4189 - refined workflow for renderer component", function () {
@@ -731,11 +758,14 @@ fluid.registerNamespace("fluid.tests");
                 }
             });
             that.refreshView();
-            jqUnit.expect(3);
+            jqUnit.expect(4);
             var input = that.locate("input");
             jqUnit.assertEquals("Field 1 rendered", model.value, input.val());
             var input2 = that.locate("input2");
             jqUnit.assertEquals("Field 2 rendered", "value2", input2.val());
+            var inputs = [input, input2];
+            fluid.each(inputs, function (element) {element.click();});
+            jqUnit.assertDomEquals("Click handlers registered by afterRender", inputs, that.clicked);
         });
     
         jqUnit.module("Protocomponent Expander Tests");

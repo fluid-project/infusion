@@ -1464,6 +1464,50 @@ fluid.registerNamespace("fluid.tests");
         
     });
 
+    /** FLUID-4878 - "this-ist" binding tests **/
+    
+    var NastyThisistThing = function () { };
+    
+    NastyThisistThing.prototype.thisistMethod = function (arg) {
+        this.storedArg = arg; 
+    };
+    
+    // Not worth making a framework facility for this, since most "this-ist" constructors are written by OTHERS
+    // and hence will not be placed in a suitable global namespace. 
+    fluid.tests.makeThisistThing = function () {
+        return new NastyThisistThing();
+    };
+    
+    fluid.defaults("fluid.tests.invokerThis", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        members: {
+            "thisistThing": {
+                 expander: { funcName: "fluid.tests.makeThisistThing" }
+            }  
+        },
+        invokers: {
+            callThisist: {
+                "this": "{that}.thisistThing",
+                method: "thisistMethod",
+                args: "{arguments}.0"
+            }
+        },
+        listeners: {
+            onCreate: {
+                "this": "{that}.thisistThing",
+                method: "thisistMethod",
+                args: 5
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-4878 this-ist invoker", function () {
+        var that = fluid.tests.invokerThis();
+        jqUnit.assertEquals("This-ist method called by onCreate listener", 5, that.thisistThing.storedArg);  
+        that.callThisist(7);
+        jqUnit.assertEquals("This-ist method called by invoker", 7, that.thisistThing.storedArg);  
+    });
+
     /** FLUID-4055 - reinstantiation test **/
     
     fluid.tests.reinsNonComponent = function () {

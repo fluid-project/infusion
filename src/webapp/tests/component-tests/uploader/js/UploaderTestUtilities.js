@@ -37,7 +37,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             onFilesSelected: null,
             afterFileDialog: null,
             afterFileQueued: null,
-            onQueueError: null
+            onQueueError: null,
+            
+            afterReady: null, // special event from SWF local
+            onFileQueued: null
         },
         components: {
             queue: {
