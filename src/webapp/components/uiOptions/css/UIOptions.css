@@ -266,9 +266,16 @@
 	box-shadow: -1em 1.1em 0.1em 0 rgba(172, 216, 92, 0.63) inset;
 }
 
+/* With data attributes defining the on/off text, localizing the templates is easier */
+.fl-uiOptions .fl-uiOptions-onoff input + label [data-checkboxStateOn]:before {
+    content: attr(data-checkboxStateOn);
+}
+.fl-uiOptions .fl-uiOptions-onoff input + label [data-checkboxStateOff]:after {
+    content: attr(data-checkboxStateOff);
+}
+
 /* The "on" portion of the toggle and the knob. */
 .fl-uiOptions .fl-uiOptions-onoff input + label .fl-uiOptions-switch:before {
-	content:"ON";
 	color: #fff;
 	border: 1px solid #776D67;
 	border-radius: 50px;
@@ -296,15 +303,10 @@
 
 /* The "off" portion of the toggle. */
 .fl-uiOptions .fl-uiOptions-onoff input + label .fl-uiOptions-switch:after {
-	content:"OFF";
 	float:left;
 	position:relative;
 	top: 0.36em;	
 	left: 0.5em;
-}
-
-.fl-uiOptions .fl-uiOptions-onoff input:checked + label .fl-uiOptions-switch:after {
-	display:hidden;
 }
 
 /* The dark inner circle to the toggle knob. */
