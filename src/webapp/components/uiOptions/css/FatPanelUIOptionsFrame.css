@@ -122,23 +122,6 @@ html {
 	background-image: none;
 }
 
-.fl-uiOptions-fatPanel .fl-choice label.uio-demo-theme,
-.fl-uiOptions-fatPanel .fl-choice label.uio-demo-theme span,
-.fl-uiOptions-fatPanel .fl-choice label.uio-demo-theme .fl-crossout {
-	background-color: #FFFFFF !important;
-    border-color: #433F3D !important;
-    color: #433F3D !important;	
-}
-
-.fl-uiOptions .fl-choice .uio-demo-theme .fl-crossout {
-	margin-top:-2em;
-	border-bottom: 1px dashed #ddbdc0;
-	-webkit-transform: rotate(45deg); 
-    -moz-transform: rotate(45deg);  
-    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=5); 	
-    background-color: transparent !important;
-}
-
 .fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-size {	background-image: url("../images/bw/uio_icon_textSize.png"); }
 .fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-font-style { background-image: url("../images/bw/uio_icon_textStyle.png"); }
 .fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-line-space { background-image: url("../images/bw/uio_icon_lineSpace.png"); }

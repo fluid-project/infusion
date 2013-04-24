@@ -62,7 +62,7 @@ var demo = demo || {};
                 gradeNames: ["fluid.uiOptions.defaultSettingsPanels"],
                 listeners: {
                     onCancel: function () {
-                        window.location = "uiOptions.html";
+                        alert("Cancelled - would normally cancel any unsaved changes and return to the previous page.");
                     }
                 }
             }

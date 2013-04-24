@@ -39,7 +39,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "verdana": "fl-font-uio-verdana"
             },
             "theme": {
-                "default": "fl-uio-default-theme",
+                "default": "fl-theme-uio-default",
                 "bw": "fl-theme-uio-bw fl-theme-bw",
                 "wb": "fl-theme-uio-wb fl-theme-wb",
                 "by": "fl-theme-uio-by fl-theme-by",

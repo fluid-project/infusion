@@ -196,8 +196,8 @@
 	display: inline-block;
 	line-height: 3em !important;
 }
-.fl-uiOptions .fl-choice .fl-uio-default-theme .fl-crossout {
-	margin-top:-1.5em;
+.fl-uiOptions .fl-choice .fl-theme-uio-default .fl-crossout {
+	margin-top:-1.75em;
 	border-bottom: 1px dashed #ddbdc0;
 	-webkit-transform: rotate(45deg); 
     -moz-transform: rotate(45deg);  
@@ -440,9 +440,9 @@
     color: #FFFF00 !important;
 }
 
-.fl-uiOptions .fl-choice label.fl-uio-default-theme,
-.fl-uiOptions .fl-choice label.fl-uio-default-theme span,
-.fl-uiOptions .fl-choice label.fl-uio-default-theme .fl-crossout {
+.fl-uiOptions .fl-choice label.fl-theme-uio-default,
+.fl-uiOptions .fl-choice label.fl-theme-uio-default span,
+.fl-uiOptions .fl-choice label.fl-theme-uio-default .fl-crossout {
 	background-color: #FFFFFF !important;
     border-color: #433F3D !important;
     color: #433F3D !important;	
