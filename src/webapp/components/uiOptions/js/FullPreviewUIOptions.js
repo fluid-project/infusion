@@ -33,11 +33,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
             }
         },
-        outerPreviewEnhancerOptions: {
-            expander: {
-                func: "fluid.uiOptions.fullPreview.getUIEnhancerOptions"
-            }
-        },
+        outerPreviewEnhancerOptions:"{uiEnhancer}.options.originalUserOptions",
         derivedDefaults: {
             templateLoader: {
                 options: {
@@ -60,7 +56,4 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    fluid.uiOptions.fullPreview.getUIEnhancerOptions = function () {
-        return fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions")
-    };
 })(jQuery, fluid_1_5);

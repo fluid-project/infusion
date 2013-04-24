@@ -163,16 +163,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 "selectors.iframe":                            "iframe"
             }
         },
-        outerEnhancerOptions: {
-            expander: {
-                func: "fluid.uiOptions.fatPanel.getUIEnhancerOptions"
-            }
-        }
+        outerEnhancerOptions:"{uiEnhancer}.options.originalUserOptions"
     });
-    
-    fluid.uiOptions.fatPanel.getUIEnhancerOptions = function () {
-        return fluid.get(fluid, "staticEnvironment.uiEnhancer.options.originalUserOptions")
-    };
     
     /*****************************************
      * fluid.uiOptions.fatPanel.renderIframe *
