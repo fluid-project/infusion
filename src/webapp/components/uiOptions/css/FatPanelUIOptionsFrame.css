@@ -6,7 +6,7 @@
 }
 
 html {
-	overflow: visible;
+    overflow: visible;
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions {
@@ -24,45 +24,45 @@ html {
     overflow-y: hidden;
     color: #766d68;
     padding: 10px 0px;
-	margin: 0px;
-	
+    margin: 0px;
+    
 }
 
 /* Preference Panels */
 .fl-uiOptions-fatPanel ul.fl-uiOptions-panels {
-	margin: 0 20px;
+    margin: 0 20px;
     white-space: nowrap;
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions-panels li.fl-uiOptions-panel {
-	border: 1px solid #615e59;
-	border-radius: 5px;
- 	box-shadow: 2px 2px #7a766d;
- 	display: inline-block;
- 	padding: 1em;
- 	min-height: 9.6em;
- 	width: 25em;
- 	background-color: #fff;
-	margin-right: 10px;
+    border: 1px solid #615e59;
+    border-radius: 5px;
+    box-shadow: 2px 2px #7a766d;
+    display: inline-block;
+    padding: 1em;
+    min-height: 9.6em;
+    width: 25em;
+    background-color: #fff;
+    margin-right: 10px;
     white-space: normal;
     vertical-align:middle;
  }
 
 .fl-uiOptions-fatPanel h2 {
-	color: #766d68;
+    color: #766d68;
     padding: 0 0 0.5em 0;
     margin: 0 0 1.5em 0;   
     width: 100%; 
     border-bottom: solid #ccc 1px;
-	box-shadow: 0px 6px 7px -6px rgba(0,0,0,0.3);
-	font-size: 1.2em;
-	text-transform: lowercase;
-	line-height:1.7em;
-	height: 2em;
+    box-shadow: 0px 6px 7px -6px rgba(0,0,0,0.3);
+    font-size: 1.2em;
+    text-transform: lowercase;
+    line-height:1.7em;
+    height: 2em;
 }
 
 .fl-uiOptions-fatPanel .fl-inputs {
-	float: none;
+    float: none;
 }
 
 .fl-uiOptions-fatPanel label {
@@ -71,43 +71,43 @@ html {
 
 /* Table of Contents switch */
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc {
-	width: 6em;
-	height:2em;
-	margin-right:10px;
-	float:left;
+    width: 6em;
+    height:2em;
+    margin-right:10px;
+    float:left;
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc label {
-	line-height: 1.7em !important;
+    line-height: 1.7em !important;
 }
 
 /* Emphasize links & buttons panel */
 .fl-uiOptions-fatPanel .fl-links-buttons-options label {
-	width: 22em;
-	display:inline-block;
+    width: 22em;
+    display:inline-block;
 }
 
 .fl-uiOptions-fatPanel .fl-links-buttons-options li {
-	margin-bottom: 0.4em;
+    margin-bottom: 0.4em;
 }
 
 /* Header icons */
 .fl-uiOptions-fatPanel h2 label,
 .fl-uiOptions-fatPanel h2 .heading-text {
-	float:left;
-	padding-top: 0.2em;
+    float:left;
+    padding-top: 0.2em;
 }
 
-.fl-icon-size, .fl-icon-font-style, .fl-icon-line-space, .fl-icon-contrast, .fl-icon-list, .fl-icon-links {	
-	background-repeat: no-repeat;
-	display: inline-block;
-	height: 2em;
-	width: 2.5em;
-	float:left;
-	background-size: cover;
+.fl-icon-size, .fl-icon-font-style, .fl-icon-line-space, .fl-icon-contrast, .fl-icon-list, .fl-icon-links { 
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 2em;
+    width: 2.5em;
+    float:left;
+    background-size: cover;
 }
 
-.fl-icon-size {	background-image: url("../images/default/uio_icon_textSize.png"); }
+.fl-icon-size { background-image: url("../images/default/uio_icon_textSize.png"); }
 .fl-icon-font-style { background-image: url("../images/default/uio_icon_textStyle.png"); }
 .fl-icon-line-space { background-image: url("../images/default/uio_icon_lineSpace.png"); }
 .fl-icon-contrast { background-image: url("../images/default/uio_icon_contrast.png"); }
@@ -119,31 +119,31 @@ html {
 .fl-uiOptions-fatPanel.fl-theme-wb,
 .fl-uiOptions-fatPanel.fl-theme-by,
 .fl-uiOptions-fatPanel.fl-theme-yb {
-	background-image: none;
+    background-image: none;
 }
 
-.fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-size {	background-image: url("../images/bw/uio_icon_textSize.png"); }
+.fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-size {  background-image: url("../images/bw/uio_icon_textSize.png"); }
 .fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-font-style { background-image: url("../images/bw/uio_icon_textStyle.png"); }
 .fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-line-space { background-image: url("../images/bw/uio_icon_lineSpace.png"); }
 .fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-contrast { background-image: url("../images/bw/uio_icon_contrast.png"); }
 .fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-list { background-image: url("../images/bw/uio_icon_list.png"); }
 .fl-uiOptions-fatPanel.fl-theme-bw .fl-icon-links { background-image: url("../images/bw/uio_icon_button.png"); }
-	
-.fl-uiOptions-fatPanel.fl-theme-wb .fl-icon-size {	background-image: url("../images/wb/uio_icon_textSize.png"); }
+    
+.fl-uiOptions-fatPanel.fl-theme-wb .fl-icon-size {  background-image: url("../images/wb/uio_icon_textSize.png"); }
 .fl-uiOptions-fatPanel.fl-theme-wb .fl-icon-font-style { background-image: url("../images/wb/uio_icon_textStyle.png"); }
 .fl-uiOptions-fatPanel.fl-theme-wb .fl-icon-line-space { background-image: url("../images/wb/uio_icon_lineSpace.png"); }
 .fl-uiOptions-fatPanel.fl-theme-wb .fl-icon-contrast { background-image: url("../images/wb/uio_icon_contrast.png"); }
 .fl-uiOptions-fatPanel.fl-theme-wb .fl-icon-list { background-image: url("../images/wb/uio_icon_list.png"); }
 .fl-uiOptions-fatPanel.fl-theme-wb .fl-icon-links { background-image: url("../images/wb/uio_icon_button.png"); }
 
-.fl-uiOptions-fatPanel.fl-theme-by .fl-icon-size {	background-image: url("../images/by/uio_icon_textSize.png"); }
+.fl-uiOptions-fatPanel.fl-theme-by .fl-icon-size {  background-image: url("../images/by/uio_icon_textSize.png"); }
 .fl-uiOptions-fatPanel.fl-theme-by .fl-icon-font-style { background-image: url("../images/by/uio_icon_textStyle.png"); }
 .fl-uiOptions-fatPanel.fl-theme-by .fl-icon-line-space { background-image: url("../images/by/uio_icon_lineSpace.png"); }
 .fl-uiOptions-fatPanel.fl-theme-by .fl-icon-contrast { background-image: url("../images/by/uio_icon_contrast.png"); }
 .fl-uiOptions-fatPanel.fl-theme-by .fl-icon-list { background-image: url("../images/by/uio_icon_list.png"); }
 .fl-uiOptions-fatPanel.fl-theme-by .fl-icon-links { background-image: url("../images/by/uio_icon_button.png"); }
 
-.fl-uiOptions-fatPanel.fl-theme-yb .fl-icon-size {	background-image: url("../images/yb/uio_icon_textSize.png"); }
+.fl-uiOptions-fatPanel.fl-theme-yb .fl-icon-size {  background-image: url("../images/yb/uio_icon_textSize.png"); }
 .fl-uiOptions-fatPanel.fl-theme-yb .fl-icon-font-style { background-image: url("../images/yb/uio_icon_textStyle.png"); }
 .fl-uiOptions-fatPanel.fl-theme-yb .fl-icon-line-space { background-image: url("../images/yb/uio_icon_lineSpace.png"); }
 .fl-uiOptions-fatPanel.fl-theme-yb .fl-icon-contrast { background-image: url("../images/yb/uio_icon_contrast.png"); }
