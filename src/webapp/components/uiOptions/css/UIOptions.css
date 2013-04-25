@@ -91,7 +91,6 @@
     display:block; 
     top:0; 
     left:0;
-    
 	height: 2.2em;
 	width: 2.2em;
 	margin-top: -0.75em;
@@ -100,13 +99,10 @@
 	border: 1px solid #b3b3b3;	
 	border-radius: 2em;
 	box-shadow: 4px 2px 3px rgba(0,0,0,0.3);	
-
-	background-image: linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
 	background-image: -o-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
 	background-image: -moz-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
 	background-image: -webkit-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
 	background-image: -ms-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
-
 	background-image: -webkit-gradient(
 		linear,
 		right top,
@@ -114,6 +110,7 @@
 		color-stop(0.46, rgb(255,255,255)),
 		color-stop(0.73, rgb(233,234,234))
 	);    
+	background-image: linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);	
 }
 .fl-uiOptions .fl-slider a:active { outline: none; }
 
@@ -175,16 +172,6 @@
 	float: left;	
 }
 
-.fl-uiOptions .fl-choice-current {
-	width: 0; 
-	height: 0; 
-	border-left: 0.75em solid transparent;
-	border-right: 0.75em solid transparent;	
-	border-top: 0.75em solid #433F3D;	
-	margin-left: 0.75em;
-	margin-bottom: 0.5em;
-}
-
 .fl-uiOptions .fl-choice label {
 	margin-right: 5px;	
 	border: 1px solid black;
@@ -201,7 +188,7 @@
 	border-bottom: 1px dashed #ddbdc0;
 	-webkit-transform: rotate(45deg); 
     -moz-transform: rotate(45deg);  
-    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=5); 	
+    -ms-transform: rotate(45deg);
     background-color: transparent !important;
 }
 
@@ -286,7 +273,6 @@
 	line-height:1.7em;
 	text-shadow: 1px 1px 1px #000;
 	background-color: #fff;
-	background-image: linear-gradient(bottom, rgb(205,204,202) 0%, rgb(244,244,244) 100%);
 	background-image: -o-linear-gradient(bottom, rgb(205,204,202) 0%, rgb(244,244,244) 100%);
 	background-image: -moz-linear-gradient(bottom, rgb(205,204,202) 0%, rgb(244,244,244) 100%);
 	background-image: -webkit-linear-gradient(bottom, rgb(205,204,202) 0%, rgb(244,244,244) 100%);
@@ -298,6 +284,7 @@
 		color-stop(0, rgb(205,204,202)),
 		color-stop(1, rgb(244,244,244))
 	);
+	background-image: linear-gradient(bottom, rgb(205,204,202) 0%, rgb(244,244,244) 100%);	
 	box-shadow: 0.2em 0.2em 0.5em #888;
 }
 
