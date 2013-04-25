@@ -1722,6 +1722,36 @@ fluid.registerNamespace("fluid.tests");
             "{mergeComponent}.nothingUseful", options.dangerousParamsII);
     });
 
+    /** FLUID-4987 - double listeners added by demands block **/
+    
+    fluid.defaults("fluid.tests.demandListeners", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        members: {
+            listenerCount: 0  
+        },
+        events: {
+            demandEvent: null
+        }
+    });
+    
+    fluid.tests.demandRecording = function (that) {
+        that.listenerCount ++;
+    };
+    
+    fluid.demands("fluid.tests.demandListeners", [], {
+        options: {
+            listeners: {
+                demandEvent: "fluid.tests.demandRecording"
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-4987 double listener from demands block", function () {
+        var that = fluid.invoke("fluid.tests.demandListeners"); // TODO: Allow components to be "self-reactive"
+        that.events.demandEvent.fire(that);
+        jqUnit.assertEquals("Just one listener notified", 1, that.listenerCount);  
+    });
+
     /** Component lifecycle functions and merging test - includes FLUID-4257 **/
     
     function pushRecord(target, name, extra, that, childName, parent) {

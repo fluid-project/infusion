@@ -712,7 +712,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     // unsupported, non-API function    
-    fluid.localRecordExpected = ["type", "options", "args", "mergeOptions", "createOnEvent", "priority"];
+    fluid.localRecordExpected = ["type", "options", "args", "mergeOptions", "createOnEvent", "priority", "recordType"]; // last element unavoidably polluting
     // unsupported, non-API function    
     fluid.checkComponentRecord = function (defaults, localRecord) {
         var expected = fluid.arrayToHash(fluid.localRecordExpected);
@@ -863,7 +863,7 @@ var fluid_1_5 = fluid_1_5 || {};
         if (options && options !== "{options}") {
             record.push({options: options});
         }
-        else if (mergeOptions) {
+        if (mergeOptions) {
             record.push({mergeOptions: mergeOptions});
         }
     };
@@ -890,14 +890,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 transformOptions: demandspec.transformOptions
             });
         }
-
-        options.componentRecord = $.extend(true, {}, options.componentRecord, 
-            fluid.censorKeys(demandspec, ["funcName", "registeredFrom", "transformOptions", "backSpecs", "horizon"]));
-        
         var demands = fluid.makeArray(demandspec.args);
-        if (demands.length === 0) {
-            demands = fluid.makeArray(options.componentRecord.args);
-        }
+        
         var upDefaults = fluid.defaults(demandspec.funcName); // I can SEE into TIME!!
         var argMap = upDefaults? upDefaults.argumentMap : null;
         var inferMap = false;
@@ -917,7 +911,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         options = options || {};
         if (demands.length === 0) {
-            if (options.componentRecord && argMap) {
+            if (argMap) {
                 demands = fluid.argMapToDemands(argMap);
             }
             else if (options.passArgs) {
@@ -942,7 +936,7 @@ var fluid_1_5 = fluid_1_5 || {};
         
         if (options.componentRecord !== undefined) {
             // Deliberately put too many things here so they can be checked in expandComponentOptions (FLUID-4285)
-            mergeRecords.subcomponentRecord = options.componentRecord;
+            mergeRecords.subcomponentRecord = $.extend({}, options.componentRecord);
         }
         var expandOptions = fluid.makeStackResolverOptions(parentThat, localRecord);
         var args = [];
@@ -1144,6 +1138,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 spec.registeredFrom = callerInfo;
             }
         }
+        spec.demandId = fluid.allocateGuid();
         var exist = dependentStore[demandingName];
         if (!exist) {
             exist = [];
@@ -1378,7 +1373,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             if (demandspec.args.length === 0 && eventSpec.args) {
                 demandspec.args = eventSpec.args;
             }
-            var resolved = fluid.embodyDemands(that, demandspec, args, {passArgs: true, componentOptions: eventSpec});
+            var resolved = fluid.embodyDemands(that, demandspec, args, {passArgs: true});
             var togo = listener.apply(null, resolved.args);
             fluid.popActivity();  
             return togo;
