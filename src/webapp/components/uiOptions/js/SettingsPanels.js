@@ -273,19 +273,17 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A sub-component that decorates the options on the select dropdown list box with the css style
      */
-    fluid.demands("fluid.uiOptions.selectDecorator", "fluid.uiOptions", {
-        container: "{arguments}.0"
-    });
-    
     fluid.defaults("fluid.uiOptions.selectDecorator", {
         gradeNames: ["fluid.viewComponent", "autoInit"], 
-        finalInitFunction: "fluid.uiOptions.selectDecorator.finalInit",
         styles: {
             preview: "fl-preview-theme"
+        },
+        listeners: {
+            onCreate: "fluid.uiOptions.selectDecorator.decorateOptions"
         }
     });
     
-    fluid.uiOptions.selectDecorator.finalInit = function (that) {
+    fluid.uiOptions.selectDecorator.decorateOptions = function (that) {
         fluid.each($("option", that.container), function (option) {
             var styles = that.options.styles;
             $(option).addClass(styles.preview + " " + styles[fluid.value(option)]);
@@ -297,6 +295,10 @@ var fluid_1_5 = fluid_1_5 || {};
      ************************************************************************/
     
     fluid.defaults("fluid.uiOptions.defaultSettingsPanel", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        mergePolicy: {
+            sourceApplier: "nomerge"
+        },
         sourceApplier: "{fluid.uiOptions}.applier",
         listeners: {
             "{uiOptions}.events.onUIOptionsRefresh": "{fluid.uiOptions.settingsPanel}.refreshView"
