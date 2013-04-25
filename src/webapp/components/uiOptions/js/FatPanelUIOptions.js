@@ -163,7 +163,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "selectors.iframe":                            "iframe"
             }
         },
-        outerEnhancerOptions:"{uiEnhancer}.options.originalUserOptions"
+        outerEnhancerOptions:"{originalEnhancerOptions}.options.originalUserOptions"
     });
     
     /*****************************************

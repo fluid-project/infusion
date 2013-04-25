@@ -249,21 +249,19 @@ var fluid_1_5 = fluid_1_5 || {};
      * PageEnhancer                                                                *
      *                                                                             *
      * A UIEnhancer wrapper that concerns itself with the entire page.             *
-     *******************************************************************************/    
-    
+     *******************************************************************************/
     fluid.pageEnhancer = function (uiEnhancerOptions) {
         var that = fluid.initLittleComponent("fluid.pageEnhancer");
-        uiEnhancerOptions = fluid.copy(uiEnhancerOptions);
         // This hack is required to resolve FLUID-4409 - much improved framework support is required
-        uiEnhancerOptions.originalUserOptions = fluid.copy(uiEnhancerOptions);
-        that.uiEnhancerOptions = uiEnhancerOptions;
+        that.options.originalUserOptions = fluid.copy(uiEnhancerOptions);
+        that.uiEnhancerOptions = fluid.copy(uiEnhancerOptions);
         fluid.initDependents(that);
         fluid.staticEnvironment.uiEnhancer = that.uiEnhancer;
         return that;
     };
 
     fluid.defaults("fluid.pageEnhancer", {
-        gradeNames: ["fluid.littleComponent"],
+        gradeNames: ["fluid.originalEnhancerOptions"],
         components: {
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
@@ -272,6 +270,19 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
+    
+    /*******************************************************************************
+     * originalEnhancerOptions
+     *
+     * A grade component for pageEnhancer to keep track of the original user options
+     *******************************************************************************/
+    fluid.defaults("fluid.originalEnhancerOptions", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.originalEnhancerOptions.preInit = function (that) {
+        fluid.staticEnvironment.originalEnhancerOptions = that;
+    };
     
     fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer"], {
         funcName: "fluid.cookieStore"

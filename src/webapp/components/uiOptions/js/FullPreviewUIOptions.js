@@ -33,7 +33,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
             }
         },
-        outerPreviewEnhancerOptions:"{uiEnhancer}.options.originalUserOptions",
+        outerPreviewEnhancerOptions:"{originalEnhancerOptions}.options.originalUserOptions",
         derivedDefaults: {
             templateLoader: {
                 options: {
