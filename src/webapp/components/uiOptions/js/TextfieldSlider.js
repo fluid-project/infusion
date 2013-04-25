@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid_1_5:true, jQuery*/
+/*global fluid_1_5:true, fluid, jQuery, $*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
@@ -73,11 +73,9 @@ fluid.defaults("fluid.textfieldSlider", {
 
 fluid.textfieldSlider.finalInit = function (that) {
     
-    that.applier.modelChanged.addListener("value", 
-        function (newModel) {
-            that.events.modelChanged.fire(newModel.value);
-        }
-    );
+    that.applier.modelChanged.addListener("value", function (newModel) {
+        that.events.modelChanged.fire(newModel.value);
+    });
 
     if (that.options.renderOnInit) {
         that.refreshView();
@@ -122,12 +120,17 @@ fluid.textfieldSlider.textfield.finalInit = function (that) {
 
 fluid.defaults("fluid.textfieldSlider.slider", {
     gradeNames: ["fluid.viewComponent", "autoInit"],
-    finalInitFunction: "fluid.textfieldSlider.slider.finalInit",
     selectors: {
         thumb: ".ui-slider-handle"
     },
     events: {
         modelChanged: null
+    },
+    listeners: {
+        onCreate: {
+            listener: "fluid.textfieldSlider.slider.init",
+            args: "{that}"
+        }
     }
 });
 
@@ -142,7 +145,7 @@ var initSliderAria = function (thumb, opts) {
     thumb.attr(ariaDefaults);
 };
 
-fluid.textfieldSlider.slider.finalInit = function (that) {
+fluid.textfieldSlider.slider.init = function (that) {
     var sliderOptions = $.extend(true, {}, that.options.sliderOptions, that.model);
     
     that.slider = that.container.slider(sliderOptions);
@@ -159,13 +162,11 @@ fluid.textfieldSlider.slider.finalInit = function (that) {
     that.slider.bind("slide", function (e, ui) {
         that.applier.requestChange("value", ui.value);
     });
-    
-    that.applier.modelChanged.addListener("value", 
-        function (newModel) {
-            that.setSliderValue(newModel.value);
-            that.setSliderAria(newModel.value);
-            that.events.modelChanged.fire(newModel.value);
-        }
-    );
+
+    that.applier.modelChanged.addListener("value", function (newModel) {
+        that.setSliderValue(newModel.value);
+        that.setSliderAria(newModel.value);
+        that.events.modelChanged.fire(newModel.value);
+    });
     
 };
