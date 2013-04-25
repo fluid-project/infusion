@@ -24,7 +24,7 @@ fluid.registerNamespace("fluid.tests");
     
     fluid.staticEnvironment.isTest = fluid.typeTag("fluid.test");
 
-    fluid.setLogging(true);
+    fluid.setLogging(fluid.logLevel.TRACE);
     fluid.activityTracing = true;
 
     fluid.defaults("fluid.tests.defaultMergePolicy", {
@@ -166,7 +166,7 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
-    jqUnit.test("Aliasing expander test", function () {
+    jqUnit.test("Model reference aliasing test", function () {
         jqUnit.expect(3);
         var model = {unpollute: 1};
         var that = fluid.tests.dependentModel({model: model});
@@ -949,7 +949,7 @@ fluid.registerNamespace("fluid.tests");
                         expander: {
                             type: "fluid.deferredInvokeCall",
                             func: "fluid.identity",
-                            args: "{thatStackHead}.headValue"
+                            args: "{thatStackHead}.options.headValue"
                         }
                     }
                 }
@@ -960,7 +960,7 @@ fluid.registerNamespace("fluid.tests");
     jqUnit.test("thatStack tests", function () {
         var component = fluid.tests.thatStackHead();
         var value = component.child1.getHeadValue();
-        jqUnit.assertValue("Correctly resolved head value through invoker", fluid.defaults("fluid.tests.thatStackHead").headValue, value);
+        jqUnit.assertEquals("Correctly resolved head value through invoker", fluid.defaults("fluid.tests.thatStackHead").headValue, value);
     });
 
     fluid.defaults("fluid.tests.deferredInvoke", {

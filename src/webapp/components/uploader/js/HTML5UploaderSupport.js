@@ -252,7 +252,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * browseButtonView *
      ********************/
     
-    var bindEventsToFileInput = function (that, fileInput) {
+    fluid.uploader.bindEventsToFileInput = function (that, fileInput) {
         fileInput.click(function () {
             that.events.onBrowse.fire();
         });
@@ -272,66 +272,76 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
-    var renderMultiFileInput = function (that) {
+    fluid.uploader.renderMultiFileInput = function (that) {
         var multiFileInput = $(that.options.multiFileInputMarkup);
         var fileTypes = that.options.queueSettings.fileTypes;
         if (fluid.isArrayable(fileTypes)) {
             fileTypes = fileTypes.join();
             multiFileInput.attr("accept", fileTypes);
         }
-        bindEventsToFileInput(that, multiFileInput);
+        fluid.uploader.bindEventsToFileInput(that, multiFileInput);
         return multiFileInput;
     };
     
-    var setupBrowseButtonView = function (that) {
-        var multiFileInput = renderMultiFileInput(that);        
+    fluid.uploader.renderFreshMultiFileInput = function (that) {
+        var previousInput = that.locate("fileInputs").last();
+        previousInput.hide();
+        previousInput.attr("tabindex", -1);
+        var newInput = fluid.uploader.renderMultiFileInput(that);
+        previousInput.after(newInput);      
+    };
+    
+    fluid.uploader.setupBrowseButtonView = function (that) {
+        var multiFileInput = fluid.uploader.renderMultiFileInput(that);        
         that.browseButton.append(multiFileInput);
         that.browseButton.attr("tabindex", -1);
     };
     
-    fluid.uploader.html5Strategy.browseButtonView = function (container, options) {
-        var that = fluid.initView("fluid.uploader.html5Strategy.browseButtonView", container, options);
-        that.browseButton = that.locate("browseButton");
-        
-        that.renderFreshMultiFileInput = function () {
-            var previousInput = that.locate("fileInputs").last();
-            previousInput.hide();
-            previousInput.attr("tabindex", -1);
-            var newInput = renderMultiFileInput(that);
-            previousInput.after(newInput);
-        };
-        
-        that.enable = function () {
-            that.locate("fileInputs").prop("disabled", false);
-        };
-        
-        that.disable = function () {
-            that.locate("fileInputs").prop("disabled", true);
-        };
-        
-        that.isEnabled = function () {
-            return !that.locate("fileInputs").prop("disabled");  
-        };
-        
-        setupBrowseButtonView(that);
-        return that;
+    fluid.uploader.isEnabled = function (element) {
+        return !element.prop("disabled");   
     };
     
     fluid.defaults("fluid.uploader.html5Strategy.browseButtonView", {
-        gradeNames: "fluid.viewComponent",
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         multiFileInputMarkup: "<input type='file' multiple='' class='flc-uploader-html5-input' />",
-        
         queueSettings: {},
-        
+        members: {
+            browseButton: "{that}.dom.browseButton"
+        },
+        invokers: {
+            enable: { // TODO: FLUID-4928
+                "this": "{that}.dom.fileInputs",
+                method: "prop",
+                args: ["disabled", false]
+            },
+            disable: {
+                "this": "{that}.dom.fileInputs",
+                method: "prop",
+                args: ["disabled", true]
+            },
+            isEnabled: {
+                funcName: "fluid.uploader.isEnabled",
+                args: "{that}.dom.fileInputs"
+            },
+            renderFreshMultiFileInput: {
+                funcName: "fluid.uploader.renderFreshMultiFileInput",
+                args: "{that}"
+            }
+        },
         selectors: {
             browseButton: ".flc-uploader-button-browse",
             fileInputs: ".flc-uploader-html5-input"
         },
-        
         events: {
             onBrowse: null,
             onFilesQueued: null
-        }        
+        },
+        listeners: {
+            onCreate: {
+                funcName: "fluid.uploader.setupBrowseButtonView",
+                args: "{that}"
+            }  
+        }
     });
 
     fluid.demands("fluid.uploader.html5Strategy.browseButtonView", "fluid.uploader.html5Strategy.local", {

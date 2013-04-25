@@ -25,9 +25,6 @@ var fluid_1_5 = fluid_1_5 || {};
  ************/
 
 (function ($, fluid) {
-    fluid.setLogging(fluid.logLevel.TRACE);
-    fluid.setDemandLogging(true);
-    
     fluid.registerNamespace("fluid.uploader");
 
     fluid.uploader.fileOrFiles = function (that, numFiles) {

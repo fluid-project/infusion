@@ -1383,7 +1383,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // unsupported, non-API function
     fluid.event.resolveListenerRecord = function (lisrec, that, eventName) {
         var badRec = function (record, extra) {
-            fluid.fail("Error in listener record - could not resolve reference " + record + " to a listener or firer. "
+            fluid.fail("Error in listener record - could not resolve reference ", record, " to a listener or firer. "
                     + "Did you miss out \"events.\" when referring to an event firer?" + extra);
         };
         fluid.pushActivity("resolveListenerRecord", "resolving listener record for event named %eventName for component %that",
@@ -1395,8 +1395,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             if (methodist) {
                 expanded.listener = methodist;
             }
+            else {
+                expanded.listener = expanded.listener || expanded.func || expanded.funcName;
+            }
             if (!expanded.listener) {
-                badRec(record, "Listener record must contain a member named \"listener\" or \"method\"");
+                badRec(record, " Listener record must contain a member named \"listener\" or \"method\"");
             }
             var listener = expanded.listener = fluid.expandOptions(expanded.listener, that);
             if (!listener) {
@@ -1827,11 +1830,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var args = fluid.makeArray(expander.args);
         args = options.recurse([], args); // TODO: risk of double expansion here. embodyDemands will sometimes expand, sometimes not...
         var funcEntry = expander.func || expander.funcName; 
-        var func = options.expandSource(funcEntry);
+        var func = options.expandSource(funcEntry) || fluid.recordToApplicable(expander, options.contextThat);
         if (!func) {
             fluid.fail("Error in expander record - " + funcEntry + " could not be resolved to a function for component ", options.contextThat);
         }
-        return typeof(func) === "function" ? func.apply(null, args) : fluid.invoke(func, args, options.contextThat);
+        return func.apply ? func.apply(null, args) : fluid.invoke(func, args, options.contextThat);
     };
     
     // The "noexpand" expander which simply unwraps one level of expansion and ceases.

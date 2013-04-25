@@ -238,7 +238,9 @@ var fluid_1_5 = fluid_1_5 || {};
             labeller: {
                 type: "fluid.reorderer.labeller",
                 options: {
-                    dom: "{reorderer}.dom",
+                    members: {
+                        dom: "{reorderer}.dom"
+                    },
                     getGeometricInfo: "{reorderer}.layoutHandler.getGeometricInfo",
                     orientation: "{reorderer}.layoutHandler.options.orientation",
                     layoutType: "{reorderer}.options.layoutHandler"
@@ -761,11 +763,36 @@ var fluid_1_5 = fluid_1_5 || {};
         
         that.getGeometricInfo = fluid.reorderer.makeGeometricInfoGetter(options.orientation, options.sentinelize, that.reordererDom);
     };
-
+    
+    /*************
+     * Labelling *
+     *************/
+    
+    /** ARIA labeller component which decorates the reorderer with the function of announcing the current
+      * focused position of the reorderer as well as the coordinates of any requested move */
+    
     fluid.defaults("fluid.reorderer.labeller", {
-        gradeNames: ["fluid.littleComponent"],
-        mergePolicy: {
-            dom: "nomerge"  
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        members: {
+            movedMap: {},
+            moduleCell: {
+                expander: {
+                    funcName: "fluid.reorderer.labeller.computeModuleCell",
+                    args: ["{that}.resolver", "{that}.options.orientation"]
+                }
+            },
+            layoutType: {
+                expander: {
+                    funcName: "fluid.computeNickName",
+                    args: "{that}.options.layoutType"
+                }
+            },
+            positionTemplate: {
+                expander: {
+                    funcName: "fluid.reorderer.labeller.computePositionTemplate",
+                    args: ["{that}.resolver", "{that}.layoutType"]
+                }
+            }
         },
         strings: {
             overallTemplate: "%recentStatus %item %position %movable",
@@ -790,8 +817,67 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.reorderer.labeller.renderLabel",
                 args: ["{labeller}", "{arguments}.0", "{arguments}.1"]
             }  
+        },
+        listeners: {
+            "{reorderer}.events.onRefresh": {
+                listener: "fluid.reorderer.labeller.onRefresh",
+                args: "{that}"
+            },
+            "{reorderer}.events.onMove": {
+                listener: "fluid.reorderer.labeller.onMove",
+                args: ["{that}", "{arguments}.0", "{arguments}.1"] // item, newPosition
+            }
         }
     });
+
+    // unsupported, NON-API function    
+    fluid.reorderer.labeller.computeModuleCell = function (resolver, orientation) {
+        return resolver.resolve("moduleCell_" + orientation);
+    };
+    
+    // unsupported, NON-API function
+    fluid.reorderer.labeller.computePositionTemplate = function (resolver, layoutType) {
+        return resolver.lookup(["position_" + layoutType, "position"]);
+    };
+
+    // unsupported, NON-API function
+    fluid.reorderer.labeller.onRefresh = function (that) {
+        var selectables = that.dom.locate("selectables");
+        var movedMap = that.movedMap;
+        fluid.each(selectables, function (selectable) {
+            var labelOptions = {};
+            var id = fluid.allocateSimpleId(selectable);
+            var moved = movedMap[id];
+            var label = that.renderLabel(selectable);
+            var plainLabel = label;
+            if (moved) {
+                moved.newRender = plainLabel;
+                label = that.renderLabel(selectable, moved.oldRender.position);
+                // once we move focus out of the element which just moved, return its ARIA label to be the new plain label
+                $(selectable).one("focusout.ariaLabeller", function () {
+                    if (movedMap[id]) {
+                        var oldLabel = movedMap[id].newRender.label;
+                        delete movedMap[id];
+                        fluid.updateAriaLabel(selectable, oldLabel);
+                    }
+                });
+                labelOptions.dynamicLabel = true;
+            }
+            fluid.updateAriaLabel(selectable, label.label, labelOptions);
+        });      
+    };
+
+    // unsupported, NON-API function    
+    fluid.reorderer.labeller.onMove = function (that, item, newPosition) {
+        fluid.clear(that.movedMap); // if we somehow were fooled into missing a defocus, at least clear the map on a 2nd move
+        // This unbind is needed for FLUID-4693 with Chrome 18, which generates a focusOut when
+        // simply doing the DOM manipulation to move the element to a new position.   
+        $(item).unbind("focusout.ariaLabeller");
+        var movingId = fluid.allocateSimpleId(item);
+        that.movedMap[movingId] = {
+            oldRender: that.renderLabel(item)
+        };
+    }
 
     // unsupported, NON-API function
     // Convert from 0-based to 1-based indices for announcement
@@ -803,62 +889,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return indices;
     };
 
-    /*************
-     * Labelling *
-     *************/
-     
-    fluid.reorderer.labeller = function (options) {
-        var that = fluid.initLittleComponent("fluid.reorderer.labeller", options);
-        fluid.initDependents(that);
-        that.dom = that.options.dom;
-        
-        that.moduleCell = that.resolver.resolve("moduleCell_" + that.options.orientation);
-        var layoutType = fluid.computeNickName(that.options.layoutType);
-        that.positionTemplate = that.resolver.lookup(["position_" + layoutType, "position"]);
-        
-        var movedMap = {};
-        
-        that.returnedOptions = {
-            listeners: {
-                onRefresh: function () {
-                    var selectables = that.dom.locate("selectables");
-                    fluid.each(selectables, function (selectable) {
-                        var labelOptions = {};
-                        var id = fluid.allocateSimpleId(selectable);
-                        var moved = movedMap[id];
-                        var label = that.renderLabel(selectable);
-                        var plainLabel = label;
-                        if (moved) {
-                            moved.newRender = plainLabel;
-                            label = that.renderLabel(selectable, moved.oldRender.position);
-                            // once we move focus out of the element which just moved, return its ARIA label to be the new plain label
-                            $(selectable).one("focusout.ariaLabeller", function () {
-                                if (movedMap[id]) {
-                                    var oldLabel = movedMap[id].newRender.label;
-                                    delete movedMap[id];
-                                    fluid.updateAriaLabel(selectable, oldLabel);
-                                }
-                            });
-                            labelOptions.dynamicLabel = true;
-                        }
-                        fluid.updateAriaLabel(selectable, label.label, labelOptions);
-                    });
-                },
-                onMove: function (item, newPosition) {
-                    fluid.clear(movedMap); // if we somehow were fooled into missing a defocus, at least clear the map on a 2nd move
-                    // This unbind is needed for FLUID-4693 with Chrome 18, which generates a focusOut when
-                    // simply doing the DOM manipulation to move the element to a new position.   
-                    $(item).unbind("focusout.ariaLabeller");
-                    var movingId = fluid.allocateSimpleId(item);
-                    movedMap[movingId] = {
-                        oldRender: that.renderLabel(item)
-                    };
-                }
-            }
-        };
-        return that;
-    };
-    
+    // unsupported, NON-API function    
     fluid.reorderer.labeller.renderLabel = function (that, selectable, recentPosition) {
         var geom = that.options.getGeometricInfo();
         var indices = fluid.reorderer.indexRebaser(geom.elementIndexer(selectable));

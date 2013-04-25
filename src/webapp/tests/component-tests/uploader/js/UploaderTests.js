@@ -21,8 +21,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
   
     $(document).ready(function () {
-        fluid.setLogging(true);
-        fluid.setDemandLogging(true);
         jqUnit.module("Uploader Basic Tests");
 
         fluid.enhance.forgetAll();

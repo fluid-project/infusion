@@ -143,7 +143,7 @@ var fluid = fluid || fluid_1_5;
     fluid.builtinFail = function (soft, args, activity) {
         fluid.log.apply(null, [fluid.logLevel.FAIL, "ASSERTION FAILED: "].concat(args));
         fluid.logActivity(activity);
-        var message = args[0];
+        var message = args.join("");
         if (soft) {
             throw new fluid.FluidError(message);
         } else {
@@ -1130,6 +1130,9 @@ var fluid = fluid || fluid_1_5;
                         key);
                 }
                 firer = fluid.expandOptions(key, that);
+                if (!firer) {
+                    fluid.fail("Error in listener record: key " + key + " could not be looked up to an event firer - did you miss out \"events.\" when referring to an event firer?");
+                }
             } else {
                 var keydot = key.indexOf(".");
             
