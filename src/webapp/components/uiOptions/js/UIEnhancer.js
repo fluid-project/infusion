@@ -254,7 +254,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var that = fluid.initLittleComponent("fluid.pageEnhancer");
         // This hack is required to resolve FLUID-4409 - much improved framework support is required
         that.options.originalUserOptions = fluid.copy(uiEnhancerOptions);
-        that.uiEnhancerOptions = fluid.copy(uiEnhancerOptions);
+        that.uiEnhancerOptions = uiEnhancerOptions;
         fluid.initDependents(that);
         fluid.staticEnvironment.uiEnhancer = that.uiEnhancer;
         return that;
