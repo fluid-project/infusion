@@ -163,7 +163,7 @@ var fluid_1_5 = fluid_1_5 || {};
             value: "default"
         },
         strings: {
-            theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
+            theme: "{globalBundle}.options.messageBase.theme"
         },
         controlValues: { 
             theme: ["default", "bw", "wb", "by", "yb"]

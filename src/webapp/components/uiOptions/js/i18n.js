@@ -24,7 +24,16 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uiOptions.messages = {
 
         // UI Options Text Font Settings Panel
-        textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"]
+        // Note: if you modify these, you need to update the appropriate
+        // controlValues in fluid.uiOptions.textFont component options.
+        textFont: ["Default", "Times New Roman", "Comic Sans", "Arial",
+            "Verdana"],
+
+        // UI Options Contrast Settings Panel
+        // Note: if you modify these, you need to update the appropriate
+        // controlValues in fluid.uiOptions.contrast component options.
+        theme: ["Default", "Black on white", "White on black", "Black on yellow",
+            "Yellow on black"]
     };
 
     fluid.staticEnvironment.globalBundle = fluid.messageResolver({
