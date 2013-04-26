@@ -14,7 +14,7 @@
 }
 
 .fl-uiOptions label {
-    text-transform: uppercase;
+    text-transform: lowercase;
     font-size: 1.2em;
 }
 
@@ -57,8 +57,6 @@
 /* Text and display controls */
 .fl-uiOptions .fl-uiOptions-text label {
     display: block;
-    float: left;
-    width: 14em;    
 }
 
 .fl-uiOptions .fl-uiOptions-text .fl-inputs {
@@ -68,7 +66,6 @@
 
 /* Layout and links controls */
 .fl-uiOptions .fl-uiOptions-option-description {
-    color: #4D4D4D;
     padding-top: 5px;
     font-size: 1.1em;
 }
@@ -228,4 +225,10 @@
 .fl-layout-linear .fl-uiOptions li {
     height: auto !important;
     padding-bottom: 20px;
+}
+
+/* FLUID-4966: Fix horizontal scroll bar */
+.fl-hidden-accessible  {
+	top: 0px;
+	left: 0px;
 }

@@ -138,18 +138,6 @@ var fluid_1_5 = fluid_1_5 || {};
                     components: {
                         iframeRenderer: "{fatPanel}.iframeRenderer",
                         settingsStore: "{uiEnhancer}.settingsStore",
-                        tabs: {
-                            type: "fluid.tabs",
-                            container: "{uiOptions}.container",
-                            createOnEvent: "onUIOptionsComponentReady",
-                            options: {
-                                listeners: {
-                                    tabsshow: {
-                                        listener: "{uiOptions}.events.onSignificantDOMChange"
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -182,8 +170,6 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         prefix: "./",
         markupProps: {
-            // This overflow specification fixes anomalous x overflow on FF, but may not on IE
-            style: "overflow-x:hidden; overflow-y:auto;",
             "class": "flc-iframe",
             src: "%prefix/uiOptionsIframe.html"
         }
