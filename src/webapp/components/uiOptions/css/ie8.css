@@ -1,16 +1,16 @@
 /* Graceful degradation of on/off switch for browsers that don't support :before :after, like IE8 */
 
-.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input {
+.fl-uiOptions .fl-uiOptions-onoff input {
     clip: auto;
     height: 1em;
     width: 1em;    
     margin: 0;
     position: relative;
 }
-.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff .fl-uiOptions-fatPanel-switch {
+.fl-uiOptions .fl-uiOptions-onoff .fl-uiOptions-switch {
 	display: none;
 }
-.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-onoff input:focus + label {
+.fl-uiOptions .fl-uiOptions-onoff input:focus + label {
 	outline: none;
 }
 
