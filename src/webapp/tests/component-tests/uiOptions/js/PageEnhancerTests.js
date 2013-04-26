@@ -20,6 +20,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
         var uiEnhancerOptions = {
+            gradeNames: ["fluid.uiEnhancer.defaultActions"],
             components: {
                 settingsStore: {
                     type: "fluid.tempStore"

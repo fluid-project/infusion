@@ -23,7 +23,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         /**************************************************
          * fluid.fullPreviewUIOptions Integration Tests *
-         **************************************************/        
+         **************************************************/
+        fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptions.fullPreview"], {
+            options: {
+                templateUrl: "TestPreviewTemplate.html"
+            }
+        });
+
         fluid.tests.uiOptions.integrationTest("fluid.uiOptions.fullPreview", false);
         
         var testSettings = {
@@ -37,7 +43,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         // TODO: we need MUCH better event boiling support in order to avoid rubbish like this
         var that, uiOptions;
-        function testToCEnhancement(innerThat, uiOptionsLoader, innerUIOptions) {
+        function testToCEnhancement(uiOptionsLoader, innerUIOptions) {
             uiOptions = innerUIOptions;
         }
         
@@ -47,7 +53,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         var refreshCount = 0;
         function testToCEnhancement2() {
-            jqUnit.expect(1);
             var container = uiOptions.preview.enhancerContainer;
             var links = $(".flc-toc-tocContainer a", container);
             jqUnit.assertTrue("ToC links created", links.length > 0); 

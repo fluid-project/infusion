@@ -22,6 +22,7 @@ var skon = skon || {};
     skon.slidingUIOptions = function (panel, uioptions) {
         // First, start up Page Enhancer
         fluid.pageEnhancer({
+            gradeNames: ["fluid.uiEnhancer.defaultActions"],
             classnameMap: {
                 theme: {
                     "default": "skon-theme-basic"
@@ -32,7 +33,18 @@ var skon = skon || {};
         
         // Next, start up UI Options
         fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
+            gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
             prefix: "../../../components/uiOptions/html/",
+            templateLoader: {
+                options: {
+                    gradeNames: ["fluid.uiOptions.defaultTemplateLoader"]
+                }
+            },
+            uiOptions: {
+                options: {
+                    gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
+                }
+            },
             markupRenderer: {
                 options: {
                     markupProps: {
