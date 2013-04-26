@@ -521,7 +521,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 return true; // YOUR VISIT IS AT AN END!!
             }
             if (fluid.getForComponent(component, ["options", "components", context, "type"]) && !component[context]) {
-  // This is an expensive guess since we make it for every component up the stack - must apply the WAVE OF EXPLOSION to discover all components first
+  // This is an expensive guess since we make it for every component up the stack - must apply the WAVE OF EXPLOSION (FLUID-4925) to discover all components first
   // This line attempts a hopeful construction of components that could be guessed by nickname through finding them unconstructed
   // in options. In the near future we should eagerly BEGIN the process of constructing components, discovering their
   // types and then attaching them to the tree VERY EARLY so that we get consistent results from different strategies.
@@ -1498,7 +1498,8 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return firer;
     };
 
-    // Although the following two functions are unsupported and not part of the IoC
+    /** BEGIN unofficial IoC material **/
+    // Although the following three functions are unsupported and not part of the IoC
     // implementation proper, they are still used in the renderer
     // expander as well as in some old-style tests and various places in CSpace.
     
@@ -1518,14 +1519,31 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         });
     };
     
+    // unsupported, NON-API function    
+    fluid.fetchContextReference = function (parsed, directModel, env, elResolver, externalFetcher) {
+        // The "elResolver" is a hack to make certain common idioms in protoTrees work correctly, where a contextualised EL
+        // path actually resolves onto a further EL reference rather than directly onto a value target 
+        if (elResolver) {
+            parsed = elResolver(parsed, env);
+        }
+        var base = parsed.context? env[parsed.context] : directModel;
+        if (!base) {
+            var resolveExternal = externalFetcher && externalFetcher(parsed);
+            return resolveExternal || base;
+        }
+        return parsed.noDereference? parsed.path : fluid.get(base, parsed.path);
+    };
+    
     // unsupported, non-API function  
-    fluid.makeEnvironmentFetcher = function (directModel, elResolver, envGetter) {
+    fluid.makeEnvironmentFetcher = function (directModel, elResolver, envGetter, externalFetcher) {
         envGetter = envGetter || fluid.globalThreadLocal;
         return function(parsed) {
             var env = envGetter();
-            return fluid.fetchContextReference(parsed, directModel, env, elResolver);
+            return fluid.fetchContextReference(parsed, directModel, env, elResolver, externalFetcher);
         };
     };
+    
+    /** END of unofficial IoC material **/
 
     // unsupported, non-API function  
     fluid.extractEL = function (string, options) {
@@ -1572,18 +1590,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     
     fluid.renderContextReference = function (parsed) {
         return "{" + parsed.context + "}." + parsed.path;  
-    };
-
-    // unsupported, NON-API function    
-    fluid.fetchContextReference = function (parsed, directModel, env, elResolver) {
-        if (elResolver) {
-            parsed = elResolver(parsed, env);
-        }
-        var base = parsed.context? env[parsed.context] : directModel;
-        if (!base) {
-            return base;
-        }
-        return parsed.noDereference? parsed.path : fluid.get(base, parsed.path);
     };
     
     // unsupported, non-API function

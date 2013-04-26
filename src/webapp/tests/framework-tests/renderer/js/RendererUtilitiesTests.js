@@ -14,7 +14,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*global fluid, jqUnit, jQuery*/
 
 // JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, indent: 4 */
 
 fluid.registerNamespace("fluid.tests");
 
@@ -54,135 +54,7 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertDeepEq("Selector Map generation, with repeating items and ignored selectors", expected, actual);
             jqUnit.assertNotUndefined("selectorsToCutpoints should not eat other people's selectors", selectors.selector2);
         });
-        
-        // TODO: reform this manual init component once we drop support for them
-        fluid.tests.rendererComponentTest = function (container, options) {
-            var that = fluid.initRendererComponent("fluid.tests.rendererComponentTest", container, options);
-            return that;
-        };
-        
-        fluid.tests.censoringStrategy = function (listCensor) {
-            var matchPath = ["recordlist", "deffolt"];
-            return function (root, segment, index, segs) {
-                var orig = root[segment];
-                return fluid.pathUtil.matchSegments(matchPath, segs, 0, index) ? listCensor(orig) : orig;
-            };
-        };
-        
-        fluid.defaults("fluid.tests.rendererComponentTest", {
-            mergePolicy: {
-                model: "preserve",
-                protoTree: "noexpand, replace"
-            },
-            model: {
-                recordlist: {
-                    deffolt: ["person", "intake", "loanin", "loanout", "acquisition", "organization", "objects", "movement"]
-                }
-            },
-            protoTree: {
-                expander: {
-                    type: "fluid.renderer.repeat",
-                    controlledBy: "recordlist.deffolt",
-                    pathAs: "elementPath",
-                    repeatID: "recordType",
-                    tree: { value: "${{elementPath}}" }
-                },
-                message: {
-                    messagekey: "message",
-                    decorators: {"addClass": "{styles}.applicableStyle"}
-                },
-                deffoltmessage: {
-                    messagekey: "deffolt"
-                }
-            },
-            selectors: {
-                recordType: ".csc-searchBox-recordType",
-                message: ".csc-searchBox-message",
-                deffoltmessage: ".csc-searchBox-deffoltmessage",
-                toIgnore: ".csc-searchBox-ignore"
-            },
-            repeatingSelectors: ["recordType"],
-            selectorsToIgnore: ["toIgnore"],
-            parentBundle: "{globalBundle}",
-            strings: {
-                message: "A mess of messuage"          
-            },
-            styles: {
-                applicableStyle: ".fl-applicable-style"  
-            }
-        });
-        
-        function assertRenderedText(els, array) {
-            fluid.each(els, function (el, index) {
-                jqUnit.assertEquals("Element " + index + " text", array[index], $(el).text());
-            });
-        }
-        
-        fluid.defaults("fluid.tests.rendererParent", {
-            components: {
-                middle: {
-                    type: "fluid.tests.rendererMiddle"
-                }
-            },
-            selectors: {
-                middle: ".middle-component"  
-            }
-        });
-        
-        fluid.tests.rendererParent = function (container, options) {
-            var that = fluid.initView("fluid.tests.rendererParent", container, options);
-            fluid.initDependents(that);
-            return that;  
-        };
-        
-        fluid.demands("fluid.tests.rendererMiddle", "fluid.tests.rendererParent",
-            ["{rendererParent}.dom.middle", fluid.COMPONENT_OPTIONS]);
-        
-        /** This test is a fake! The advertised functionality - that of using an IoC-resolved 
-         * expression like {rendererParent}.options.parentValue in a protoTree is not really
-         * available. This only works in this test as a result of not giving the component 
-         * the standard renderer component grade, which would bring in a mergePolicy of 
-         * protoTree: "noexpand, replace" which would prevent the protoTree from being subject
-         * to IoC expansion. You can choose between either IoC expansion or renderer protoTree
-         * expansion, not both */
-        
-        fluid.defaults("fluid.tests.rendererMiddle", {
-            selectors: {
-                decorated: ".decorated-component"
-            },
-            protoTree: {
-                decorated: {
-                    decorators: {
-                        type: "fluid",
-                        func: "fluid.tests.rendererChild",
-                        options: { decoratorValue: "decoratorValue" 
-                        // "{rendererParent}.options.parentValue" - this type of reference can no longer be supported at all - 
-                        // since FLUID-4129 was resolved, we can no longer fake out the grade resolution system and avoid the
-                        // mergePolicy of "noexpand" applied to all protoTree material
-                        }
-                    }
-                }
-            }
-        });
-        
-        fluid.tests.rendererMiddle = function (container, options) {
-            var that = fluid.initRendererComponent("fluid.tests.rendererMiddle", container, options);
-            return that;
-        };
 
-        fluid.defaults("fluid.tests.rendererChild", {
-            value: "{rendererParent}.options.parentValue"  
-        });
-        
-        fluid.demands("fluid.tests.rendererChild", "fluid.tests.rendererMiddle", 
-            ["@0", fluid.COMPONENT_OPTIONS]);
-             
-        fluid.tests.rendererChild = function (container, options) {
-            var that = fluid.initView("fluid.tests.rendererChild", container, options);
-            $(container).text(that.options.value);
-            return that;
-        };
-        
         jqUnit.module("IoC Renderer tests");
         
         fluid.defaults("fluid.tests.identicalComponentParent", {
@@ -284,11 +156,75 @@ fluid.registerNamespace("fluid.tests");
                 model: "{mergeRenderParent}.model"
             }
         });
+        
         jqUnit.test("Merging args and options", function () {
             var that = fluid.tests.mergeRenderParent(".mergeRenderParent");
             jqUnit.assertEquals("Subcomponent arg option is", "OPTION1", that["**-renderer-mergeComponent-0"].options.option);
             jqUnit.assertEquals("Subcomponent option is", that.model, that["**-renderer-mergeComponent-0"].options.model);
         });
+        
+        
+        
+        function assertRenderedText(els, array) {
+            fluid.each(els, function (el, index) {
+                jqUnit.assertEquals("Element " + index + " text", array[index], $(el).text());
+            });
+        }
+        
+        fluid.defaults("fluid.tests.rendererParent", {
+            components: {
+                middle: {
+                    type: "fluid.tests.rendererMiddle"
+                }
+            },
+            selectors: {
+                middle: ".middle-component"  
+            }
+        });
+        
+        fluid.tests.rendererParent = function (container, options) {
+            var that = fluid.initView("fluid.tests.rendererParent", container, options);
+            fluid.initDependents(that);
+            return that;  
+        };
+        
+        fluid.demands("fluid.tests.rendererMiddle", "fluid.tests.rendererParent",
+            ["{rendererParent}.dom.middle", fluid.COMPONENT_OPTIONS]);
+        
+        fluid.defaults("fluid.tests.rendererMiddle", {
+            selectors: {
+                decorated: ".decorated-component"
+            },
+            protoTree: {
+                decorated: {
+                    decorators: {
+                        type: "fluid",
+                        func: "fluid.tests.rendererChild",
+                        options: { decoratorValue: "{rendererParent}.options.parentValue" // with FLUID-4986 we can support this reference properly
+                        }
+                    }
+                }
+            }
+        });
+        
+        fluid.tests.rendererMiddle = function (container, options) {
+            var that = fluid.initRendererComponent("fluid.tests.rendererMiddle", container, options);
+            return that;
+        };
+
+        fluid.defaults("fluid.tests.rendererChild", {
+            value: "{rendererParent}.options.parentValue"  
+        });
+        
+        fluid.demands("fluid.tests.rendererChild", "fluid.tests.rendererMiddle", 
+            ["@0", fluid.COMPONENT_OPTIONS]);
+             
+        fluid.tests.rendererChild = function (container, options) {
+            var that = fluid.initView("fluid.tests.rendererChild", container, options);
+            $(container).text(that.options.value);
+            return that;
+        };
+        
         
         jqUnit.test("initDependent upgrade test", function () {
             var parentValue = "parentValue";
@@ -299,13 +235,68 @@ fluid.registerNamespace("fluid.tests");
             var decorated = component.middle.locate("decorated");
             jqUnit.assertEquals("Decorated text resolved from top level", parentValue, decorated.text());
             var child = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
-            jqUnit.assertEquals("Located decorator without IoC-resolved value", "decoratorValue", child.options.decoratorValue);
+            jqUnit.assertEquals("Located decorator with IoC-resolved value", "parentValue", child.options.decoratorValue);
             component.middle.refreshView();
             var child2 = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
             jqUnit.assertNotEquals("Rendering has produced new component", child, child2);
         });
         
+                
         jqUnit.module("Renderer component tests");
+                
+        // TODO: reform this manual init component once we drop support for them
+        fluid.tests.rendererComponentTest = function (container, options) {
+            var that = fluid.initRendererComponent("fluid.tests.rendererComponentTest", container, options);
+            return that;
+        };
+        
+        fluid.tests.censoringStrategy = function (listCensor) {
+            var matchPath = ["recordlist", "deffolt"];
+            return function (root, segment, index, segs) {
+                var orig = root[segment];
+                return fluid.pathUtil.matchSegments(matchPath, segs, 0, index) ? listCensor(orig) : orig;
+            };
+        };
+        
+        fluid.defaults("fluid.tests.rendererComponentTest", {
+            model: {
+                recordlist: {
+                    deffolt: ["person", "intake", "loanin", "loanout", "acquisition", "organization", "objects", "movement"]
+                }
+            },
+            protoTree: {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    controlledBy: "recordlist.deffolt",
+                    pathAs: "elementPath",
+                    repeatID: "recordType",
+                    tree: { value: "${{elementPath}}" }
+                },
+                message: {
+                    messagekey: "message",
+                    decorators: {"addClass": "{that}.options.styles.applicableStyle"} // new-style FLUID-4986 reference - formerly "{styles}"
+                },
+                deffoltmessage: {
+                    messagekey: "deffolt"
+                }
+            },
+            selectors: {
+                recordType: ".csc-searchBox-recordType",
+                message: ".csc-searchBox-message",
+                deffoltmessage: ".csc-searchBox-deffoltmessage",
+                toIgnore: ".csc-searchBox-ignore"
+            },
+            repeatingSelectors: ["recordType"],
+            selectorsToIgnore: ["toIgnore"],
+            parentBundle: "{globalBundle}",
+            strings: {
+                message: "A mess of messuage"          
+            },
+            styles: {
+                applicableStyle: ".fl-applicable-style"  
+            }
+        });
+        
         
         jqUnit.test("Renderer component without resolver", function () {
             var globalMessages = {deffolt: "A globbal messuage"};
@@ -494,8 +485,7 @@ fluid.registerNamespace("fluid.tests");
         
         fluid.defaults("fluid.tests.rendererComponentWithNoInstantiator", {
             gradeNames: ["fluid.rendererComponent", "autoInit"],
-            produceTree: "fluid.tests.littleComponentWithInstantiator.produceTree",
-            finalInitFunction: "fluid.tests.littleComponentWithInstantiator.finalInitFunction",
+            produceTree: "fluid.tests.rendererComponentWithNoInstantiator.produceTree",
             selectors: {
                 text1: ".csc-footer-text1",
                 text2: ".csc-footer-text2",
@@ -507,8 +497,8 @@ fluid.registerNamespace("fluid.tests");
                 about: "http://www.collectionspace.org",
                 currentRelease: "http://www.collectionspace.org/current_release",
                 feedback: "http://wiki.collectionspace.org/display/collectionspace/Release+1.6+Feedback",
-                version: "1.6"
             },
+            version: "1.6", // moved this out to top level to test FLUID-4986
             strings: {
                 text1: "2009 - 2011",
                 text2: "CollectionSpace",
@@ -518,11 +508,11 @@ fluid.registerNamespace("fluid.tests");
             }
         });
         
-        fluid.tests.littleComponentWithInstantiator.finalInitFunction = function (that) {
+        fluid.tests.rendererComponentWithNoInstantiator.finalInit = function (that) {
             that.renderer.refreshView();
         };
         
-        fluid.tests.littleComponentWithInstantiator.produceTree = function () {
+        fluid.tests.rendererComponentWithNoInstantiator.produceTree = function () {
             return {
                 text1: {
                     messagekey: "text1"
@@ -534,7 +524,7 @@ fluid.registerNamespace("fluid.tests");
                     target: "${currentRelease}",
                     linktext: {
                         messagekey: "currentRelease",
-                        args: {version: "${version}"}
+                        args: {version: "${{that}.options.version}"}
                     }
                 },
                 about: {
@@ -554,7 +544,8 @@ fluid.registerNamespace("fluid.tests");
         
         jqUnit.test("FLUID-4200 test: Renderer component with infinite expansion (if there's an instantiator in the tree)", function () {
             var that = fluid.tests.littleComponentWithInstantiator();
-            jqUnit.assertTrue("That with subcomponents was created", true);
+            var releaseText = that.rendererComponent.locate("currentRelease").text();
+            jqUnit.assertEquals("Rendered release text", "Release 1.6", releaseText);
         });
         
         jqUnit.test("Renderer component with custom resolver and renderer fixup", function () {
