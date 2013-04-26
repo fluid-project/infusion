@@ -89,7 +89,12 @@ fluid.textfieldSlider.refreshView = function (that) {
 
 fluid.defaults("fluid.textfieldSlider.textfield", {
     gradeNames: ["fluid.viewComponent", "autoInit"],
-    finalInitFunction: "fluid.textfieldSlider.textfield.finalInit"
+    listeners: {
+        onCreate: {
+            listener: "fluid.textfieldSlider.textfield.init",
+            args: "{that}"
+        }
+    }
 });
 
 fluid.textfieldSlider.validateValue = function (model, changeRequest, applier) {
@@ -110,7 +115,7 @@ fluid.textfieldSlider.validateValue = function (model, changeRequest, applier) {
     }
 };
 
-fluid.textfieldSlider.textfield.finalInit = function (that) {
+fluid.textfieldSlider.textfield.init = function (that) {
     that.applier.guards.addListener({path: "value", transactional: true}, fluid.textfieldSlider.validateValue);
     
     that.container.change(function (source) {

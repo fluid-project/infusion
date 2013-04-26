@@ -223,7 +223,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.loader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         resources: "{templateLoader}.resources",
-        finalInitFunction: "fluid.uiOptions.loader.finalInit",
         events: {
             // These two are events private to uiOptions
             onUIOptionsTemplateReady: null, // templates are loaded - construct UIOptions itself
@@ -237,6 +236,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 listener: "{loader}.events.onReady",
                 args: ["{fluid.uiOptions.loader}", "{arguments}.0"],
                 priority: "last"
+            },
+            onCreate: {
+                listener: "fluid.uiOptions.loader.init",
+                args: "{that}"
             }
         },
         components: {
@@ -253,7 +256,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    fluid.uiOptions.loader.finalInit = function (that) {
+    fluid.uiOptions.loader.init = function (that) {
         fluid.fetchResources(that.options.resources, function () {
             that.events.onUIOptionsTemplateReady.fire();
         });
@@ -310,7 +313,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // called once markup is applied to the document containing tab component roots
     fluid.uiOptions.finishInit = function (that) {
         var bindHandlers = function (that) {
-            var saveButton = that.locate("save");            
+            var saveButton = that.locate("save");
             if (saveButton.length > 0) {
                 saveButton.click(that.saveAndApply);
                 var form = fluid.findForm(saveButton);
@@ -404,10 +407,8 @@ var fluid_1_5 = fluid_1_5 || {};
      * Base grade settingsPanel
      ***********************************************/
      
-    fluid.registerNamespace("fluid.uiOptions.settingsPanel");
-
     fluid.defaults("fluid.uiOptions.settingsPanel", {
-        gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay"],
+        gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay", "autoInit"],
         invokers: {
             refreshView: "{that}.renderer.refreshView"
         }
