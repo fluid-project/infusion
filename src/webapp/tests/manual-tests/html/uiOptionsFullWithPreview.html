@@ -54,14 +54,14 @@
         <script type="text/javascript" src="../../../components/uiOptions/js/FullPreviewUIOptions.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
 
-        <script type="text/javascript" src="../js/uiOptionsDemo.js"></script>
+        <script type="text/javascript" src="../js/uiOptionsFullPage.js"></script>
     </head>
 
     <body>
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             $(document).ready(function () {
-                demo.initPageEnhancer("uio-demo-theme");
+                demo.initPageEnhancer();
                 demo.initFullWithPreview("#myUIOptions", {
                     preview: {
                         options: {
@@ -71,10 +71,6 @@
                 });
             });
         </script>
-
-        <div class="backButton fl-inverted-color">
-            <a href="uiOptions.html">Return To Site</a> 
-        </div>
 
         <div class="content">
             <span class="fl-hidden">
