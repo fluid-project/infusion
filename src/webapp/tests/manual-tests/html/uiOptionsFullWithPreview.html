@@ -20,12 +20,12 @@
 
         <!-- Component styles -->
         <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/UIOptions.css" />
-		<link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/FullUIOptions.css" />
-        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/FullNoPreviewUIOptions.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/FullUIOptions.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/FullPreviewUIOptions.css" />
 
         <link rel="stylesheet" type="text/css" href="../css/UIOptionsFullPage.css" /> <!-- Demo style -->
 
-        <title>UI Options: Full Page, Without Preview</title>
+        <title>UI Options: Full Page, With Preview</title>
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
@@ -49,12 +49,12 @@
         <script type="text/javascript" src="../../../components/uiOptions/js/Enactor.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIEnhancer.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/TextfieldSlider.js"></script>
-		<script type="text/javascript" src="../../../components/uiOptions/js/SettingsPanels.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
-        <script type="text/javascript" src="../../../components/uiOptions/js/FullNoPreviewUIOptions.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/SettingsPanels.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/FullPreviewUIOptions.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
 
-        <script type="text/javascript" src="../js/uiOptionsDemo.js"></script>
+        <script type="text/javascript" src="../js/uiOptionsFullPage.js"></script>
     </head>
 
     <body>
@@ -62,13 +62,15 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 demo.initPageEnhancer();
-                demo.initFullNoPreview("#myUIOptions");
+                demo.initFullWithPreview("#myUIOptions", {
+                    preview: {
+                        options: {
+                            templateUrl: "UIOptionsPreview.html"
+                        }
+                    }
+                });
             });
         </script>
-
-        <div class="backButton fl-inverted-color">
-            <a href="uiOptions.html">Return To Site</a> 
-        </div>
 
         <div class="content">
             <span class="fl-hidden">
@@ -76,10 +78,10 @@
                 </div>
             </span>
     
-            <h1>User Interface Options</h1>        
-            <div id="myUIOptions"></div>     
+            <h1>User Interface Options</h1>
+            <div id="myUIOptions"></div>
         </div>
-
+        
     </body>
 </html>
 

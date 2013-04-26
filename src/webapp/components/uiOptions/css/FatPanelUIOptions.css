@@ -1,52 +1,52 @@
 @font-face {
-	font-family: 'OpenSans';
-	src:url('fonts/OpenSans-Light.ttf');
-	font-weight: normal;
-	font-style: normal;
+    font-family: 'OpenSans';
+    src:url('fonts/OpenSans-Light.ttf');
+    font-weight: normal;
+    font-style: normal;
 }
 
 /* Top bar and show/hide button */
 .fl-uiOptions-fatPanel .fl-panelBar {
-	width: 100%;
-	background-color: #fff;
-	border-bottom: 1px solid #ccc;	
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;  
 }
 
 .fl-uiOptions-fatPanel .fl-panelBar .fl-uio-tabs {
-	box-shadow: 2px 2px 3px 0px #6f6f6f;
-	border-bottom: 1px solid #ccc;
-	border-left: 1px solid #ccc;
-	border-bottom-left-radius:8px;
-	border-bottom-right-radius:8px;	
-	background-color: white;
-	min-height: 2em;
-	margin-right: 10em;
-	display:block;
-	float:right;	
+    box-shadow: 2px 2px 3px 0px #6f6f6f;
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-bottom-left-radius:8px;
+    border-bottom-right-radius:8px; 
+    background-color: white;
+    min-height: 2em;
+    margin-right: 10em;
+    display:block;
+    float:right;    
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions-showHide,
 .fl-uiOptions-fatPanel .fl-uiOptions-reset {
-	text-transform: lowercase;
-	font-weight: bold;
-	border:0;
-	background-color: white;
-	height: 1.8em;
-	color: #2f2b2a;
-	font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
-	font-size: 1.1em;
-	margin-right: 0.5em;
-	margin-left: 0.5em;
+    text-transform: lowercase;
+    font-weight: bold;
+    border:0;
+    background-color: white;
+    height: 1.8em;
+    color: #2f2b2a;
+    font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
+    font-size: 1.1em;
+    margin-right: 0.5em;
+    margin-left: 0.5em;
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions-reset {
-	border-right: 1px solid #ccc;
+    border-right: 1px solid #ccc;
 }
 
 .fl-uiOptions-fatPanel .fl-uiOptions-showHide{
-	min-width: 15em;
+    min-width: 15em;
 }
-	
+    
 
 /* IFrame */
 .fl-uiOptions-fatPanel-iframe {
