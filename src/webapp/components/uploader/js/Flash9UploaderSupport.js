@@ -22,7 +22,7 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     // TODO: This context name is required, but has no visible detection support
-    fluid.staticEnvironment.supportsFlash9 = fluid.typeTag("fluid.uploader.flash.9"); 
+    fluid.enhance.check({"fluid.uploader.flash.9": true});
 
     fluid.registerNamespace("fluid.uploader.swfUploadStrategy");
     
@@ -60,7 +60,7 @@ var fluid_1_5 = fluid_1_5 || {};
         args: [
             "{engine}.flashContainer",
             "{engine}.config",
-            "{multiFileUploader}.events"
+            "{uploader}.events"
         ]
     });
 
@@ -78,10 +78,10 @@ var fluid_1_5 = fluid_1_5 || {};
     ], {
         funcName: "fluid.uploader.swfUploadStrategy.flash9EventBinder",
         args: [
-            "{multiFileUploader}.queue.files",
-            "{multiFileUploader}.events",
+            "{uploader}.queue.files",
+            "{uploader}.events",
             "{local}",
-            "{multiFileUploader}.dom.browseButton"
+            "{uploader}.dom.browseButton"
         ]
     });
 

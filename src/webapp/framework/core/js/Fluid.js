@@ -53,8 +53,8 @@ var fluid = fluid || fluid_1_5;
 
     // Renders a single activity element in a form suitable to be sent to a modern browser's console
     // unsupported, non-API function
-    fluid.renderOneActivity = function (activity) {
-        var togo = ["    while "];
+    fluid.renderOneActivity = function (activity, nowhile) {
+        var togo = nowhile === true ? [] : ["    while "];
         var message = activity.message;
         var index = activityParser.lastIndex = 0;
         while (true) {
@@ -100,7 +100,7 @@ var fluid = fluid || fluid_1_5;
     fluid.logActivity = function (activity) {
         activity = activity || fluid.describeActivity();
         var rendered = fluid.renderActivity(activity).reverse();
-        fluid.log(["Current activity: "]);
+        fluid.log("Current activity: ");
         fluid.each(rendered, function (args) {
             fluid.doLog(args);
         });
@@ -112,6 +112,9 @@ var fluid = fluid || fluid_1_5;
         var record = {type: type, message: message, args: args, time: new Date().getTime()};
         if (fluid.activityTracing) {
             fluid.activityTrace.push(record);
+        }
+        if (fluid.passLogLevel(fluid.logLevel.TRACE)) {
+            fluid.doLog(fluid.renderOneActivity(record, true));  
         }
         var activityStack = fluid.getActivityStack();
         activityStack.push(record);
@@ -127,15 +130,22 @@ var fluid = fluid || fluid_1_5;
         var popped = activityStack.length - popframes;
         activityStack.length = popped < 0 ? 0 : popped;
     };
+    // "this-ist" style Error so that we can distinguish framework errors whilst still retaining access to platform Error features
+    // unsupported, non-API function
+    fluid.FluidError = function (message) {
+        this.message = message;
+        this.stack = new Error().stack;
+    };
+    fluid.FluidError.prototype = new Error();
     
     // The framework's built-in "fail" policy, in case a user-defined handler would like to
     // defer to it
     fluid.builtinFail = function (soft, args, activity) {
         fluid.log.apply(null, [fluid.logLevel.FAIL, "ASSERTION FAILED: "].concat(args));
         fluid.logActivity(activity);
-        var message = args[0];
+        var message = args.join("");
         if (soft) {
-            throw new Error(message);
+            throw new fluid.FluidError(message);
         } else {
             message["Assertion failure - check console for details"](); // Intentionally cause a browser error by invoking a nonexistent function.
         }
@@ -224,7 +234,7 @@ var fluid = fluid || fluid_1_5;
     
     /** Returns whether logging is enabled **/
     fluid.isLogging = function () {
-        return logLevelStack[0].priority > fluid.logLevel.IMPORTANT;
+        return logLevelStack[0].priority > fluid.logLevel.IMPORTANT.priority;
     };
     
     /** Determines whether the supplied argument is a valid logLevel marker **/
@@ -1130,6 +1140,9 @@ var fluid = fluid || fluid_1_5;
                         key);
                 }
                 firer = fluid.expandOptions(key, that);
+                if (!firer) {
+                    fluid.fail("Error in listener record: key " + key + " could not be looked up to an event firer - did you miss out \"events.\" when referring to an event firer?");
+                }
             } else {
                 var keydot = key.indexOf(".");
             
@@ -1533,6 +1546,10 @@ var fluid = fluid || fluid_1_5;
         return target;
     };
     
+    // A special marker object which will be placed at a current evaluation point in the tree in order
+    // to protect against circular evaluation
+    fluid.inEvaluationMarker = {"__CURRENTLY_IN_EVALUATION__": true};
+    
     // A path depth above which the core "process strategies" will bail out, assuming that the 
     // structure has become circularly linked. Helpful in environments such as Firebug which will
     // kill the browser process if they happen to be open when a stack overflow occurs. Also provides
@@ -1555,6 +1572,9 @@ var fluid = fluid || fluid_1_5;
                 if (!options.evaluateFully) { // see notes on this hack in "initter" - early attempt to deal with FLUID-4930
                     return oldTarget;
                 }
+            }
+            else { // This is hardwired here for performance reasons - no need to protect deeper strategies
+                target[name] = fluid.inEvaluationMarker;
             }
             if (sources === undefined) { // recover our state in case this is an external entry point
                 segs = fluid.makeArray(segs); // avoid trashing caller's segs
@@ -1582,11 +1602,12 @@ var fluid = fluid || fluid_1_5;
                     newSources[k] = thisSource;
                     if (oldTarget === undefined) {
                         if (mul === -1) { // if we are going backwards, it is "replace"
-                            thisTarget = thisSource;
+                            thisTarget = target[name] = thisSource;
                             break;
                         }
                         else {
-                            thisTarget = fluid.mergeOneImpl(thisTarget, thisSource, j, newSources, newPolicy, i, segs, options);
+                            // write this in early, since early expansions may generate a trunk object which is written in to by later ones
+                            thisTarget = target[name] = fluid.mergeOneImpl(thisTarget, thisSource, j, newSources, newPolicy, i, segs, options);
                         }
                     }
                 }
@@ -1595,10 +1616,12 @@ var fluid = fluid || fluid_1_5;
                 thisTarget = oldTarget;
             }
             if (newSources.length > 0) {
-                target[name] = thisTarget;
                 if (!fluid.isPrimitive(thisTarget)) {
                     fluid.fetchMergeChildren(thisTarget, i, segs, newSources, newPolicyHolder, options);
                 }
+            }
+            if (oldTarget === undefined && newSources.length === 0) {
+                delete target[name]; // remove the evaluation marker - nothing to evaluate
             }
             return thisTarget;
         };
@@ -1692,17 +1715,17 @@ var fluid = fluid || fluid_1_5;
     };
 
     // unsupported, NON-API function    
-    fluid.findMergeBlock = function (mergeBlocks, recordType) {
-        return fluid.find_if(mergeBlocks, function (block) { return block.recordType === recordType; });
+    fluid.findMergeBlocks = function (mergeBlocks, recordType) {
+        return fluid.remove_if(fluid.makeArray(mergeBlocks), function (block) { return block.recordType !== recordType; });
     };
     
     // unsupported, NON-API function    
     fluid.transformOptionsBlocks = function (mergeBlocks, transformOptions, recordTypes) {
-        fluid.each(recordTypes, function (recordType) {
-            var block = fluid.findMergeBlock(mergeBlocks, recordType);
-            if (block) {
+        fluid.each(recordTypes, function (recordType) {       
+            var blocks = fluid.findMergeBlocks(mergeBlocks, recordType);
+            fluid.each(blocks, function (block) {
                 block[block.simple? "target": "source"] = fluid.transformOptions(block.source, transformOptions);
-            }
+            });
         });
     };
     
@@ -1893,7 +1916,9 @@ var fluid = fluid || fluid_1_5;
         
         // TODO: ****THIS**** is the point we must deliver and suspend!! Construct the "component skeleton" first, and then continue
         // for as long as we can continue to find components.
-        fluid.each(mergeOptions.mergeBlocks, function (mergeBlock) { mergeBlock.initter();});
+        for (var i = 0; i < mergeOptions.mergeBlocks.length; ++ i) {
+            mergeOptions.mergeBlocks[i].initter();
+        }
         mergeOptions.initter();
         delete options.mergePolicy;
         

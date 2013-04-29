@@ -50,7 +50,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertDeepEq("The 'position' option is set correctly", testOptions.position, uiTTOptions.position);
         });
         
-        jqUnit.test("Stlying added", function () {
+        jqUnit.test("Styling added", function () {
             var style = "styleClass";
             var tt = fluid.tooltip(".testTooltip", {
                 styles: {
@@ -93,7 +93,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         jqUnit.test("Tooltip destroy tests", function () {
             var tt = fluid.tooltip(".testTooltip");
-            
             jqUnit.assertEquals("There should be a tooltip element present", 1, $("[id^=ui-tooltip]").length);
             tt.destroy();
             jqUnit.assertEquals("There should no longer be a tooltip element", 0, $("[id^=ui-tooltip]").length);
