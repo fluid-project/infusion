@@ -2,7 +2,7 @@
     font-family: "OpenSans";
     font-style: normal;
     font-weight: normal;
-    src: url("fonts/OpenSans-Light.ttf");
+    src: url("../../../lib/fonts/OpenSans-Light.ttf");
 }
 
 html {

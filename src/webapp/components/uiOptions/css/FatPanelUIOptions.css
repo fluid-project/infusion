@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'OpenSans';
-    src:url('fonts/OpenSans-Light.ttf');
+    src:url('../../../lib/fonts/OpenSans-Light.ttf');
     font-weight: normal;
     font-style: normal;
 }
