@@ -383,47 +383,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // Now, test it with no reorderables.
             var lightboxWithNoOrderables = createLightboxWithNoOrderables();
             focusLightbox();
-            jqUnit.assertUndefined("Lightbox's activeItem should not be set ", lightboxWithNoOrderables.activeItem);
+            jqUnit.assertNoValue("Lightbox's activeItem should not be set ", lightboxWithNoOrderables.activeItem);
         });
         
         jqUnit.test("KeypressesWithNoOrderables", function () {
             var lightboxWithNoOrderables = createLightboxWithNoOrderables();
             
             focusLightbox();
-            jqUnit.assertUndefined("Lightbox's activeItem member should not be set", lightboxWithNoOrderables.activeItem);
+            jqUnit.assertNoValue("Lightbox's activeItem member should not be set", lightboxWithNoOrderables.activeItem);
                 
             // Test left arrow, right arrow, etc. with and without control key.
             compositeKey(lightboxWithNoOrderables, k.ctrlKeyEvent("LEFT"), 0); 
-            jqUnit.assertUndefined("After ctrl-left, activeItem member should not be set",
+            jqUnit.assertNoValue("After ctrl-left, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
             compositeKey(lightboxWithNoOrderables, k.ctrlKeyEvent("RIGHT"), 0); 
-            jqUnit.assertUndefined("After ctrl-right, activeItem member should not be set",
+            jqUnit.assertNoValue("After ctrl-right, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
             compositeKey(lightboxWithNoOrderables, k.ctrlKeyEvent("UP"), 0);
-            jqUnit.assertUndefined("After ctrl-up, activeItem member should not be set",
+            jqUnit.assertNoValue("After ctrl-up, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
             compositeKey(lightboxWithNoOrderables, k.ctrlKeyEvent("DOWN"), 0);
-            jqUnit.assertUndefined("After ctrl-down, activeItem member should not be set",
+            jqUnit.assertNoValue("After ctrl-down, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
         
             keyDown(lightboxWithNoOrderables, k.keyEvent("LEFT"), 0); 
-            jqUnit.assertUndefined("After left, activeItem member should not be set",
+            jqUnit.assertNoValue("After left, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
             keyDown(lightboxWithNoOrderables, k.keyEvent("RIGHT"), 0); 
-            jqUnit.assertUndefined("After right, activeItem member should not be set",
+            jqUnit.assertNoValue("After right, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
             keyDown(lightboxWithNoOrderables, k.keyEvent("UP"), 0);
-            jqUnit.assertUndefined("After up, activeItem member should not be set",
+            jqUnit.assertNoValue("After up, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);   
             keyDown(lightboxWithNoOrderables, k.keyEvent("DOWN"), 0);
-            jqUnit.assertUndefined("After down, activeItem member should not be set",
+            jqUnit.assertNoValue("After down, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
             
             keyDown(lightboxWithNoOrderables, k.keyEvent("CTRL"), 0);
-            jqUnit.assertUndefined("After ctrl pressed, activeItem member should not be set",
+            jqUnit.assertNoValue("After ctrl pressed, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
             keyUp(lightboxWithNoOrderables, k.keyEvent("CTRL"), 0);
-            jqUnit.assertUndefined("After key released, activeItem member should not be set",
+            jqUnit.assertNoValue("After key released, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
         });
         
