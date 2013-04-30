@@ -67,7 +67,10 @@ html {
 
 .fl-uiOptions-fatPanel label {
     font-size: 1em;
+    font-weight: 400;
 }
+
+.fl-ui
 
 /* Table of Contents switch */
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc {
@@ -96,6 +99,8 @@ html {
 .fl-uiOptions-fatPanel h2 .heading-text {
     float:left;
     padding-top: 0.2em;
+    font-size: 1.3em;
+    font-weight: 600;
 }
 
 .fl-icon-size, .fl-icon-font-style, .fl-icon-line-space, .fl-icon-contrast, .fl-icon-list, .fl-icon-links { 
