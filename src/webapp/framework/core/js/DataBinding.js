@@ -798,4 +798,21 @@ var fluid_1_5 = fluid_1_5 || {};
         return togo;
     };
 
+    /**
+     * A Generic data source grade that defines an API for getting and setting
+     * data.
+     */
+    fluid.defaults("fluid.dataSource", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        invokers: {
+            get: "fluid.dataSource.get",
+            set: "fluid.dataSource.set"
+        },
+        nickName: "dataSource" // framework bug FLUID-4636 - this is not resolved
+    });
+
+    fluid.dataSource.preInit = function (that) {
+        that.nickName = "dataSource"; // work around FLUID-4636
+    };
+
 })(jQuery, fluid_1_5);

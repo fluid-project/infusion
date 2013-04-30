@@ -1,6 +1,6 @@
 /*
 Copyright 2009 University of Toronto
-Copyright 2011 OCAD University
+Copyright 2011-2013 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -19,26 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
-    
-    fluid.defaults("fluid.uiOptions.store", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        defaultSiteSettings: {
-        // TODO: Note that since antification is not complete, this information now
-        // duplicates that kept within the "halfway ants" which are registered as the panels
-        // in UIOptions, so that when we create a "bare UIEnhancer" we can still get at them.
-        // In time, the UIEnhancer will be abolished and replaced with a relay system similar
-        // to the one used in the Video Player
-            textFont: "default",          // key from classname map
-            theme: "default",             // key from classname map
-            textSize: 1,                  // in points
-            lineSpacing: 1,               // in ems
-            layout: false,                // boolean
-            toc: false,                   // boolean
-            links: false,                 // boolean
-            inputsLarger: false           // boolean
-        }
-    });
-    
+
     /****************
      * Cookie Store *
      ****************/
@@ -48,17 +29,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.cookieStore", {
-        gradeNames: ["fluid.uiOptions.store", "autoInit"],
-        invokers: {
-            fetch: {
-                funcName: "fluid.cookieStore.fetch",
-                args: ["{cookieStore}.options.cookie.name", "{cookieStore}.options.defaultSiteSettings"]
-            },
-            save: {
-                funcName: "fluid.cookieStore.save",
-                args: ["{arguments}.0", "{cookieStore}.options.cookie"]
-            }
-        },
+        gradeNames: ["fluid.dataSource", "autoInit"],
         cookie: {
             name: "fluid-ui-settings",
             path: "/",
@@ -66,27 +37,39 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
+    fluid.demands("fluid.dataSource.get", "fluid.cookieStore", {
+        funcName: "fluid.cookieStore.get",
+        args: "{that}.options.cookie.name"
+    });
+
+    fluid.demands("fluid.dataSource.set", "fluid.cookieStore", {
+        funcName: "fluid.cookieStore.set",
+        args: ["{arguments}.0", "{that}.options.cookie"]
+    });
+
     /**
      * Retrieve and return the value of the cookie
      */
-    fluid.cookieStore.fetch = function (cookieName, defaults) {
+    fluid.cookieStore.get = function (cookieName) {
         var cookie = document.cookie;
-        var cookiePrefix = cookieName + "=";
-        var retObj, startIndex, endIndex;
-        
-        if (cookie.length > 0) {
-            startIndex = cookie.indexOf(cookiePrefix);
-            if (startIndex > -1) { 
-                startIndex = startIndex + cookiePrefix.length; 
-                endIndex = cookie.indexOf(";", startIndex);
-                if (endIndex < startIndex) {
-                    endIndex = cookie.length;
-                }
-                retObj = JSON.parse(decodeURIComponent(cookie.substring(startIndex, endIndex)));
-            } 
+        if (cookie.length <= 0) {
+            return;
         }
-        
-        return $.extend(true, {}, defaults, retObj);
+
+        var cookiePrefix = cookieName + "=";
+        var startIndex = cookie.indexOf(cookiePrefix);
+        if (startIndex < 0) {
+            return;
+        }
+
+        startIndex = startIndex + cookiePrefix.length;
+        var endIndex = cookie.indexOf(";", startIndex);
+        if (endIndex < startIndex) {
+            endIndex = cookie.length;
+        }
+
+        var retObj = JSON.parse(decodeURIComponent(cookie.substring(startIndex, endIndex)));
+        return retObj;
     };
     
     /**
@@ -112,7 +95,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} settings
      * @param {Object} cookieOptions
      */
-    fluid.cookieStore.save = function (settings, cookieOptions) {
+    fluid.cookieStore.set = function (settings, cookieOptions) {
         cookieOptions.data = encodeURIComponent(JSON.stringify(settings));
         document.cookie = fluid.cookieStore.assembleCookie(cookieOptions);
     };
@@ -127,31 +110,21 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.tempStore", {
-        gradeNames: ["fluid.uiOptions.store", "autoInit"],
-        invokers: {
-            fetch: {
-                funcName: "fluid.tempStore.fetch",
-                args: ["{tempStore}"]
-            },
-            save: {
-                funcName: "fluid.tempStore.save",
-                args: ["{arguments}.0", "{tempStore}"]
-            }
-        },
-        defaultSiteSettings: {},
-        finalInitFunction: "fluid.tempStore.finalInit"
+        gradeNames: ["fluid.dataSource", "fluid.modelComponent", "autoInit"]
     });
 
-    fluid.tempStore.finalInit = function (that) {
-        that.model = that.options.defaultSiteSettings;
-    };
-    
-    fluid.tempStore.fetch = function (that) {
-        return that.model;
-    };
+    fluid.demands("fluid.dataSource.get", "fluid.tempStore", {
+        funcName: "fluid.identity",
+        args: "{that}.model"
+    });
 
-    fluid.tempStore.save = function (settings, that) {
-        that.model = settings;
+    fluid.demands("fluid.dataSource.set", "fluid.tempStore", {
+        funcName: "fluid.tempStore.set",
+        args: ["{arguments}.0", "{that}.applier"]
+    });
+
+    fluid.tempStore.set = function (settings, applier) {
+        applier.requestChange("", settings);
     };
 
 })(jQuery, fluid_1_5);
