@@ -98,6 +98,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkValidatedValue(undefined, 5);
             checkValidatedValue(null, 5);
             checkValidatedValue("", 5);
-        });        
+        }); 
+        
+        jqUnit.asyncTest("afterRender event - init", function () {
+            jqUnit.expect(1);
+            getTextfieldSlider({
+                listeners: {
+                    afterRender: function () {
+                        jqUnit.assert("The afterRender event fired");
+                        jqUnit.start();
+                    }
+                }
+            });
+        });
+        
+        jqUnit.asyncTest("afterRender event", function () {
+            jqUnit.expect(1);
+            var that = getTextfieldSlider({
+                listeners: {
+                    afterRender: function () {
+                        jqUnit.assert("The afterRender event fired");
+                        jqUnit.start();
+                    }
+                },
+                renderOnInit: false
+            });
+            
+            that.refreshView();
+        }); 
     });
 })(jQuery);

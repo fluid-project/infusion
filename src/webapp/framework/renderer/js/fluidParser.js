@@ -20,7 +20,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
-      
+
+    // unsupported, non-API function      
     fluid.parseTemplate = function (template, baseURL, scanStart, cutpoints_in, opts) {
         opts = opts || {};
       
@@ -74,7 +75,7 @@ fluid_1_5 = fluid_1_5 || {};
             debugMode = debugModeIn;
             if (cutpointsIn) {
                 for (var i = 0; i < cutpointsIn.length; ++i) {
-                    var tree = fluid.parseSelector(cutpointsIn[i].selector);
+                    var tree = fluid.parseSelector(cutpointsIn[i].selector, fluid.simpleCSSMatcher);
                     var clazz = isSimpleClassCutpoint(tree);
                     if (clazz) {
                         simpleClassCutpoints[clazz] = cutpointsIn[i].id;
@@ -134,7 +135,7 @@ fluid_1_5 = fluid_1_5 || {};
             if (!totest) {
                 return false;
             }
-            // algorithm from JQuery
+            // algorithm from jQuery
             return (" " + totest + " ").indexOf(" " + clazz + " ") !== -1;
         }
         
@@ -373,7 +374,8 @@ parseloop: while (true) {
         }
         return t;
     };
-    
+
+    // unsupported, non-API function    
     fluid.debugLump = function (lump) {
         var togo = lump.text;
         togo += " at ";
@@ -385,12 +387,14 @@ parseloop: while (true) {
     // Public definitions begin here
     
     fluid.ID_ATTRIBUTE = "rsf:id";
-    
+
+    // unsupported, non-API function    
     fluid.getPrefix = function (id) {
         var colpos = id.indexOf(':');
         return colpos === -1? id : id.substring(0, colpos);
     };
     
+    // unsupported, non-API function
     fluid.SplitID = function (id) {
         var that = {};
         var colpos = id.indexOf(':');
@@ -403,7 +407,8 @@ parseloop: while (true) {
         }
         return that;
     };
-    
+
+    // unsupported, non-API function    
     fluid.XMLViewTemplate = function () {
         return {
             globalmap: {},
@@ -413,11 +418,12 @@ parseloop: while (true) {
         };
     };
     
-      // TODO: find faster encoder
+    // TODO: find faster encoder
     fluid.XMLEncode = function (text) {
         return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;"); 
     };
     
+    // unsupported, non-API function    
     fluid.dumpAttributes = function (attrcopy) {
         var togo = "";
         for (var attrname in attrcopy) {
@@ -428,7 +434,8 @@ parseloop: while (true) {
         }
         return togo;
     };
-    
+
+    // unsupported, non-API function    
     fluid.aggregateMMap = function (target, source) {
         for (var key in source) {
             var targhas = target[key];
@@ -438,8 +445,6 @@ parseloop: while (true) {
             target[key] = target[key].concat(source[key]);
         }
     };
-  
-    
     
     /** Returns a "template structure", with globalmap in the root, and a list
      * of entries {href, template, cutpoints} for each parsed template.
@@ -464,66 +469,6 @@ parseloop: while (true) {
       
             togo[i] = template;
             fluid.aggregateMMap(togo.globalmap, template.rootlump.downmap);
-        }
-        return togo;
-    };
-  
-    // ******* SELECTOR ENGINE *********  
-      
-    // selector regexps copied from JQuery
-    var chars = "(?:[\\w\u0128-\uFFFF*_-]|\\\\.)";
-//    var quickChild = new RegExp("^>\\s*(" + chars + "+)");
-//    var quickID = new RegExp("^(" + chars + "+)(#)(" + chars + "+)");
-//    var selSeg = new RegExp("^\\s*([#.]?)(" + chars + "*)");
-  
-    var quickClass = new RegExp("([#.]?)(" + chars + "+)", "g");
-    var childSeg = new RegExp("\\s*(>)?\\s*", "g");
-//    var whiteSpace = new RegExp("^\\w*$");
-  
-    fluid.parseSelector = function (selstring) {
-        var togo = [];
-        selstring = $.trim(selstring);
-        //ws-(ss*)[ws/>]
-        quickClass.lastIndex = 0;
-        var lastIndex = 0;
-        while (true) {
-            var atNode = []; // a list of predicates at a particular node
-            while (true) {
-                var segMatch = quickClass.exec(selstring);
-                if (!segMatch || segMatch.index !== lastIndex) {
-                    break;
-                }
-                var thisNode = {};
-                var text = segMatch[2];
-                if (segMatch[1] === "") {
-                    thisNode.tag = text;
-                }
-                else if (segMatch[1] === "#") {
-                    thisNode.id = text;
-                }
-                else if (segMatch[1] === ".") {
-                    thisNode.clazz = text;
-                }
-                atNode[atNode.length] = thisNode;
-                lastIndex = quickClass.lastIndex;
-            }
-            childSeg.lastIndex = lastIndex;
-            var fullAtNode = {predList: atNode};
-            var childMatch = childSeg.exec(selstring);
-            if (!childMatch || childMatch.index !== lastIndex) {
-                var remainder = selstring.substring(lastIndex);
-                fluid.fail("Error in selector string - can not match child selector expression at " + remainder);
-            }
-            if (childMatch[1] === ">") {
-                fullAtNode.child = true;
-            }
-            togo[togo.length] = fullAtNode;
-            // >= test here to compensate for IE bug http://blog.stevenlevithan.com/archives/exec-bugs
-            if (childSeg.lastIndex >= selstring.length) {
-                break;
-            }
-            lastIndex = childSeg.lastIndex;
-            quickClass.lastIndex = childSeg.lastIndex; 
         }
         return togo;
     };

@@ -98,11 +98,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("merge", function () {
-        jqUnit.expect(7);
-        
+        jqUnit.expect(8);
+                
         var bit1 = {prop1: "thing1"};
         var bit2 = {prop2: "thing2"};
         var bits = {prop1: "thing1", prop2: "thing2"};
+        
         jqUnit.assertDeepEq("Simple merge 1",
             bits, fluid.merge({}, {}, bit1, null, bit2));
         jqUnit.assertDeepEq("Simple merge 2",
@@ -113,15 +114,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             bits, fluid.merge({}, {}, {}, bit2, bit1));
            
         jqUnit.assertDeepNeq("Anticorruption check", bit1, bit2);
+
+        jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
+            fluid.merge([], [], [bit1, bit2], null, [bit2, bit1, bits]));
+        
+        var null1 = {prop1: null};
+        
+        jqUnit.assertDeepEq("Null onto property", null1,
+            fluid.merge({}, bit1, null1));
         
         jqUnit.assertDeepEq("Replace 1", 
             bit1, fluid.merge({"": "replace"}, {}, bits, bit1));
           
-        jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
-            fluid.merge([], [], [bit1, bit2], null, [bit2, bit1, bits]));
     });
   
-    jqUnit.test("reverse merge at depth", function () {
+    jqUnit.test("replace merge at depth", function () {
         var target = {
             root: {
                 prop1: "thing1",
@@ -133,32 +140,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 prop2: "thing3"
             }
         };
-        var target1 = fluid.copy(target);
-        fluid.merge("reverse", target1, source);
-        jqUnit.assertEquals("Property 1 should have been preserved", "thing1", target1.root.prop1);
-        
+
         var target2 = fluid.copy(target);
         fluid.merge(null, target2, source);
-        jqUnit.assertEquals("Property 1 should have been preserved", "thing1", target2.root.prop1);
-  
-    });
-    
-    jqUnit.test("reverse merge at root", function () {
-        var target = {
-            prop2: "old"
-        };
-        var source = {
-            prop2: "new"
-        };
-
-        var testReverseMerge = function (policy, expected) {
-            var thisTarget = fluid.copy(target);
-            fluid.merge(policy, thisTarget, source);
-            jqUnit.assertEquals("\"" + policy + "\" policy", expected, thisTarget.prop2);
-        };
-
-        testReverseMerge("reverse", target.prop2);
-        testReverseMerge(null,  source.prop2);
+        jqUnit.assertEquals("prop1 should have been preserved", "thing1", target2.root.prop1);
+        
+        var target3 = fluid.merge({root: "replace"}, target, null, source, undefined);
+        jqUnit.assertDeepEq("prop1 should have been destroyed", source, target3);
+        
+        // "White box text" for "lastNonEmpty" issue
+        var target4 = fluid.merge({root: "replace"}, target, null, source, {otherThing: 1});
+        var expected = $.extend(true, source, {otherThing: 1});
+        jqUnit.assertDeepEq("prop1 should have been destroyed", expected, target4);
     });
     
     jqUnit.test("copy", function () {
@@ -317,7 +310,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expected = "Paused at: " + data["()"] + 
                             " of " + data["[]"] +
                             " files (" + data["file[]"] + 
-                            " of " + data["file"] + ")";
+                            " of " + data.file + ")";
 
                             
         var result = fluid.stringTemplate(template, data);
@@ -338,7 +331,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             testDefaults, fluid.filterKeys(fluid.defaults("test"), ["foo"]));
         
         // Re-assign the defaults with a new collection.
-        testDefaults2 = {
+        var testDefaults2 = {
             baz: "foo"
         };
         fluid.defaults("test", testDefaults2);
@@ -350,7 +343,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                           fluid.defaults("timemachine"));
     });
     
-    jqUnit.test("FLUID-4842 test - configurable 'soft failure'", function() {
+    jqUnit.test("FLUID-4842 test - configurable 'soft failure'", function () {
         var testArgs = [1, "thingit"];
         function failHandle(args, activity) {
             jqUnit.assertDeepEq("Received arguments in error handler", testArgs, args);
@@ -359,6 +352,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.pushSoftFailure(failHandle);
         fluid.fail.apply(null, testArgs);
         fluid.pushSoftFailure(-1);
+    });
+    
+    function passTestLog(level, expected) {
+        jqUnit.assertEquals("Should " + (expected ? "not " : "") + "pass debug level " + level, expected, fluid.passLogLevel(fluid.logLevel[level])); 
+    }
+    
+    jqUnit.test("FLUID-4936 test - support for logging levels", function () {
+        fluid.setLogging(true);
+        passTestLog("INFO", true);
+        passTestLog("IMPORTANT", true);
+        passTestLog("TRACE", false);
+        fluid.popLogging();
+        fluid.setLogging(false);
+        passTestLog("INFO", false);
+        passTestLog("IMPORTANT", true);
+        fluid.popLogging();
+        fluid.setLogging(fluid.logLevel.TRACE);
+        passTestLog("TRACE", true);
+        fluid.popLogging();
+    });
+    
+    jqUnit.test("FLUID-4973 test - activity logging does not crash", function () {
+        fluid.pushActivity("testActivity", "testing my activity with argument %argument", {argument: 3});
+        var activity = fluid.describeActivity();
+        jqUnit.assertTrue("One activity in progress", activity.length === 1);
+        var rendered = fluid.renderActivity(activity)[0].join("");
+        jqUnit.assertTrue("Activity string rendered", rendered.indexOf("testing my activity with argument 3") !== -1);
+        fluid.logActivity(activity); // This would previously crash on IE8
+        fluid.popActivity();  
     });
            
     jqUnit.test("FLUID-4285 test - prevent 'double options'", function () {
@@ -393,9 +415,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return 2;
         });
         jqUnit.assertEquals("Call new global function", 2, fluid.newFunc());
-        });
+    });
  
-        jqUnit.test("Globals", function () {
+    jqUnit.test("Globals", function () {
         var space = fluid.registerNamespace("fluid.engage.mccord");
         space.func = function () { 
             return 2;
@@ -417,10 +439,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     jqUnit.test("fluid.get with resolution and segments", function () {
         var resolver = function (segment) {
-           return "resolved";
+            return "resolved";
         };
         var model = {
-            resolvePathSegment: resolver,
+            resolvePathSegment: resolver
         };
         jqUnit.assertEquals("Root resolver", "resolved", fluid.get(model, "resolver"));
         var model2 = {
@@ -429,6 +451,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
         jqUnit.assertEquals("Nested resolver", "resolved", fluid.get(model2, ["nested", "resolver"]));
+    });
+    
+    jqUnit.test("FLUID-4915: fluid.invokeGlobalFunction", function () {
+        jqUnit.expect(3);
+        
+        var testArg = "test arg";
+        fluid.tests.igf = {
+            withArgs: function (arg1) {
+                jqUnit.assertEquals("A single argument should have been passed in", 1, arguments.length);
+                jqUnit.assertEquals("The correct argument should have been passed in", testArg, arg1);
+            },
+            withoutArgs: function () {
+                jqUnit.assertEquals("There should not have been any arguments passed in", 0, arguments.length);
+            }
+        };
+        
+        fluid.invokeGlobalFunction("fluid.tests.igf.withArgs", [testArg]);
+        fluid.invokeGlobalFunction("fluid.tests.igf.withoutArgs");
+        
+        // clean up after test
+        delete fluid.tests.igf;
     });
     
     jqUnit.test("messageResolver", function () {
@@ -456,64 +499,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Local fallback",  bundleb.key1, resolver.resolve(["key2", "key1"]));
         jqUnit.assertEquals("Global fallback", bundlea.key2, resolver.resolve(["key4", "key2"]));
     });
-    
-    fluid.defaults("fluid.tests.defaultMergePolicy", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
-        defaultSource: "sourceValue",
-        defaultTarget: "targetValue",
-        mergePolicy: {
-            defaultTarget: "defaultSource"
-        }
-    }); 
-    
-    fluid.tests.fluid4736Tests = [{
-        message: "merge policy has no effect on plain defaults",
-        options: undefined,
-        expected: {
-            defaultSource: "sourceValue",
-            defaultTarget: "targetValue"          
-        }
-    }, {
-        message: "merge policy copies user option to default value",
-        options: {
-            defaultSource: "userSource"
-        },
-        expected: {
-            defaultSource: "userSource",
-            defaultTarget: "userSource"
-        }
-    }, {
-        message: "merge policy has no effect on full user values",
-        options: {
-            defaultSource: "userSource",
-            defaultTarget: "userTarget"
-        },
-        expected: {
-            defaultSource: "userSource",
-            defaultTarget: "userTarget"
-        }
-    }/* , 
-    // This test case can probably not be supported until FLUID-4392: See implementation comment in
-    // fluid.applyDefaultValueMergePolicy - see also FLUID-4733
-    {
-        message: "user modifies value to default",
-        options: {
-            defaultSource: "sourceValue",
-        },
-        expected: {
-            defaultSource: "sourceValue",
-            defaultTarget: "sourceValue"
-        }
-    }*/];
-    
-    jqUnit.test("FLUID-4736: Interaction of default value merge policy with grade chain", function () {
-        fluid.each(fluid.tests.fluid4736Tests, function (fixture) {
-            var component = fluid.tests.defaultMergePolicy(fixture.options);
-            jqUnit.assertLeftHand(fixture.message, fixture.expected, component.options);              
-        });      
-    });
-    
-    
+      
     jqUnit.test("Sorting listeners", function () {
         var accumulate = [];
         var makeListener = function (i) {
@@ -549,11 +535,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         firer.removeListener("toRemoveNonExistent"); // for FLUID-4791
         firer.fire(false);
     });
+            
+    fluid.defaults("fluid.tests.eventMerge", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+           event: "preventable"
+        }
+    });
     
-    fluid.tests.makeNotingListener = function(key, value) {
-        return function(that) {
+    jqUnit.test("Merge over named listener", function () {
+        var that = fluid.tests.eventMerge({
+            events: {
+               event: null
+            },
+            listeners: {
+               event: "fluid.identity"
+            }
+        });
+        var result = that.events.event.fire(false);
+        jqUnit.assertUndefined("Event returned to nonpreventable through merge", result);
+    });
+    
+    fluid.tests.makeNotingListener = function (key, value) {
+        return function (that) {
             var existing = that.values[key];
-            that.values[key] = existing === undefined? 1 : existing + 1;
+            that.values[key] = existing === undefined ? 1 : existing + 1;
         };
     };
     
@@ -575,7 +581,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.values = {};
     };
     
-    jqUnit.test("Correctly merge optioned listeners", function() {
+    jqUnit.test("Correctly merge optioned listeners", function () {
         var options = {listeners: {
             event: fluid.tests.makeNotingListener("noNamespace2"),
             "event.namespace": fluid.tests.makeNotingListener("namespace2"),
@@ -593,7 +599,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expected2 = {
             noNamespace: 1,
             noNamespace2: 1,
-            namespace2: 1,
+            namespace2: 1
         };
         jqUnit.assertDeepEq("Listeners correctly merged", $.extend(expected2, expected1), that.values); 
     });
@@ -660,11 +666,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         preInitFunction: "fluid.tests.lifecycleTest3.preInit"   
     });
     
-    fluid.tests.lifecycleTest3.preInit = function(that) {
+    fluid.tests.lifecycleTest3.preInit = function (that) {
         if (!that.count) {
             that.count = 0;
         }
-        ++ that.count;  
+        ++that.count;  
     };
 
     jqUnit.test("Registration of lifecycle functions by convention", function () {
@@ -684,9 +690,79 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["autoInit", "fluid.gradeComponent"]
     });
 
-    jqUnit.test("FLUID-4788 test - default lifecycle functions inherited from a grade.", function() {
+    jqUnit.test("FLUID-4788 test - default lifecycle functions inherited from a grade.", function () {
         jqUnit.expect(1);
         fluid.gradeUsingComponent();
     });
 
+
+    fluid.registerNamespace("fluid.tests.initSubcomponentTest");
+    
+    fluid.defaults("fluid.tests.initSubcomponentTest.parent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        child: {
+            type: "fluid.tests.initSubcomponentTest.child"
+        }
+    });
+    
+    fluid.tests.initSubcomponentTest.parent.finalInit = function (that) {
+        that.child = fluid.initSubcomponent(that, "child", [fluid.COMPONENT_OPTIONS]);
+    };
+    
+    fluid.defaults("fluid.tests.initSubcomponentTest.child", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    var checkSubcomponentGrade = function (parent, subcomponentName, expectedGrade) {
+        jqUnit.expect(2);
+        var child = parent[subcomponentName];
+        jqUnit.assertNotUndefined("The parent component has a child component", child);
+        jqUnit.assertTrue("The child component has the correct grade.",
+            fluid.hasGrade(child.options, expectedGrade));
+    };
+    
+    var testSubcomponents = function (tests) {
+        fluid.each(tests, function (test) {
+            var parent = fluid.invokeGlobalFunction(test.funcName, [test.options]);
+            checkSubcomponentGrade(parent, test.subcomponentName, test.expectedGrade);
+        });
+    };
+    
+    jqUnit.test("initSubcomponent", function () {
+        testSubcomponents([
+            {
+                funcName: "fluid.tests.initSubcomponentTest.parent",
+                subcomponentName: "child",
+                expectedGrade: "fluid.tests.initSubcomponentTest.child"
+            },
+            {
+                funcName: "fluid.tests.initSubcomponentTest.parent",
+                options: {
+                    child: {
+                        type: "fluid.emptySubcomponent"
+                    }
+                },
+                subcomponentName: "child",
+                expectedGrade: "fluid.emptySubcomponent"
+            }
+        ]);
+    });
+    
+    jqUnit.test("fluid.bind", function () {
+        jqUnit.expect(3);
+        var expectedText = "New Text";
+        var jqElm = $("<div></div>");
+        var testObj = {
+            baseVal: 3,
+            fn: function (a, b) {
+                return this.baseVal + a + b
+            }
+        };
+        
+        fluid.bind(jqElm, "text", expectedText)
+        jqUnit.assertEquals("The text should have been set", expectedText, jqElm.text());
+        jqUnit.assertEquals("The value returned from the bind should be the same as the native call", jqElm.text(), fluid.bind(jqElm, "text"));
+        jqUnit.assertEquals("The correct value should be returned", 6, fluid.bind(testObj, "fn", [1, 2]));
+    });
+    
 })(jQuery);

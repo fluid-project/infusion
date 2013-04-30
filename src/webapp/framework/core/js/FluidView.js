@@ -29,6 +29,14 @@ var fluid_1_5 = fluid_1_5 || {};
         argumentMap: {
             container: 0,
             options: 1
+        },
+        members: { // Used to allow early access to DOM binder via IoC, but to also avoid triggering evaluation of selectors
+            dom: {
+                expander: {
+                    funcName: "fluid.initDomBinder",
+                    args: ["{that}", "{that}.options.selectors"]
+                }
+            }
         }
     });
 
@@ -52,8 +60,12 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.checkTryCatchParameter = function () {
         var location = window.location || { search: "", protocol: "file:" };
-        var GETParams = location.search.slice(1).split('&');
-        return fluid.contains(GETParams, "notrycatch");
+        var GETparams = location.search.slice(1).split('&');
+        return fluid.find(GETparams, function (param) {
+            if (param.indexOf("notrycatch") === 0) {
+                return true;
+            }
+        }) === true;
     };
     
     fluid.notrycatch = fluid.checkTryCatchParameter();
@@ -218,15 +230,22 @@ var fluid_1_5 = fluid_1_5 || {};
         if (!container) {
             return null;
         }
-        var that = fluid.initLittleComponent(componentName, userOptions, localOptions || {gradeNames: ["fluid.viewComponent"]});
-        var userJQuery = that.options.jQuery; // Do it a second time to correct for jQuery injection
-        if (userJQuery) {
-            container = fluid.container(containerSpec, true, userJQuery);
+        // Need to ensure container is set early, without relying on an IoC mechanism - rethink this with asynchrony
+        var receiver = function (that, options, strategy) { 
+            that.container = container;
+        };
+        var that = fluid.initLittleComponent(componentName, userOptions, localOptions || {gradeNames: ["fluid.viewComponent"]}, receiver);
+
+        if (!that.dom) {
+            fluid.initDomBinder(that);
         }
+        // TODO: cannot afford a mutable container - put this into proper workflow
+        var userJQuery = that.options.jQuery; // Do it a second time to correct for jQuery injection
+        // if (userJQuery) {
+        //    container = fluid.container(containerSpec, true, userJQuery);
+        // }
         fluid.log("Constructing view component " + componentName + " with container " + container.constructor.expando + 
             (userJQuery ? " user jQuery " + userJQuery.expando : "") + " env: " + $.expando);
-        that.container = container;
-        fluid.initDomBinder(that);
 
         return that;
     };
@@ -236,9 +255,10 @@ var fluid_1_5 = fluid_1_5 || {};
      * 
      * @param {Object} that the component instance to attach the new DOM Binder to
      */
-    fluid.initDomBinder = function (that) {
-        that.dom = fluid.createDomBinder(that.container, that.options.selectors);
-        that.locate = that.dom.locate;      
+    fluid.initDomBinder = function (that, selectors) {
+        that.dom = fluid.createDomBinder(that.container, selectors || that.options.selectors);
+        that.locate = that.dom.locate;
+        return that.dom;
     };
 
     // DOM Utilities.

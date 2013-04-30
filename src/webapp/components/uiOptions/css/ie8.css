@@ -1,0 +1,21 @@
+/* Graceful degradation of on/off switch for browsers that don't support :before :after, like IE8 */
+
+.fl-uiOptions .fl-uiOptions-onoff input {
+    clip: auto;
+    height: 1em;
+    width: 1em;    
+    margin: 0;
+    position: relative;
+}
+.fl-uiOptions .fl-uiOptions-onoff .fl-uiOptions-switch {
+    display: none;
+}
+.fl-uiOptions .fl-uiOptions-onoff input:focus + label {
+    outline: none;
+}
+
+.fl-uiOptions-fatPanel .fl-choice .uio-demo-theme .fl-crossout {
+    margin-top:-2.75em;
+    margin-left: 0.5em;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand', M11=0.7071067811865476, M12=-0.7071067811865475, M21=0.7071067811865475, M22=0.7071067811865476)";
+}

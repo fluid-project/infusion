@@ -21,10 +21,12 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     fluid.demands("fluid.uploaderImpl", "fluid.uploader.html5", {
+        horizon: "fluid.uploader.progressiveCheck",
         funcName: "fluid.uploader.multiFileUploader"
     });
     
     fluid.demands("fluid.uploader.progressiveStrategy", "fluid.uploader.html5", {
+        horizon: "fluid.uploader.progressiveCheck",
         funcName: "fluid.uploader.html5Strategy"
     });
     

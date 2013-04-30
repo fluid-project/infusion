@@ -24,12 +24,10 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.test.testEnvironment", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         components: {
-            instantiator: "{instantiator}",
             sequenceListener: {
                 type: "fluid.test.sequenceListener"
             }
         },
-        nickName: "testEnvironment", // FLUID-4636 - this is not honoured
         events: {
             onBeginSequence: null,
             onBeginSequenceStep: null,
@@ -83,13 +81,10 @@ var fluid_1_5 = fluid_1_5 || {};
         that.activeTests = 0;
     };
 
-    fluid.test.makeExpander = function (that, instantiator) {
+    fluid.test.makeExpander = function (that) {
         return function (toExpand) {
-            return fluid.withInstantiator(that,
-                function () {
-                    return fluid.expandOptions(toExpand, that);
-                }, "Expanding Test Case", instantiator);
-        };
+            return fluid.expandOptions(toExpand, that);
+        };  
     };
 
     fluid.test.makeFuncExpander = function (expander) {
@@ -104,9 +99,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
 
     fluid.test.testEnvironment.runTests = function (that) {
-        var visitOptions = {
-            instantiator: that.instantiator
-        };
+        var visitOptions = {};
         that.testCaseHolders = [];
         var visitor = function (component) {
             if (fluid.hasGrade(component.options, "fluid.test.testCaseHolder")) {
@@ -116,7 +109,6 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.visitComponentChildren(that, visitor, visitOptions, "");
         var testCaseState = {
             root: that,
-            instantiator: that.instantiator,
             events: that.events
         };
         if (that.options.markupFixture) {
@@ -127,8 +119,9 @@ var fluid_1_5 = fluid_1_5 || {};
             });
         }
         fluid.each(that.testCaseHolders, function (testCaseHolder) {
+            testCaseState.started = false;
             testCaseState.testCaseHolder = testCaseHolder;
-            testCaseState.expand = fluid.test.makeExpander(testCaseHolder, that.instantiator);
+            testCaseState.expand = fluid.test.makeExpander(testCaseHolder);
             testCaseState.expandFunction = fluid.test.makeFuncExpander(testCaseState.expand);
             fluid.test.processTestCaseHolder(testCaseState);
         });
@@ -138,9 +131,12 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.defaults("fluid.test.testCaseHolder", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
         mergePolicy: {
             modules: "noexpand"
+        },
+        events: {
+            onTestCaseStart: null
         }
     });
 
@@ -151,6 +147,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         root.activeTests += count;
         if (count === -1) {
+            fluid.log(fluid.logLevel.IMPORTANT, "Starting QUnit due to destruction of tree ", root);
             QUnit.start();
         }
         if (root.activeTests === 0) {
@@ -234,17 +231,60 @@ var fluid_1_5 = fluid_1_5 || {};
         };
         return that;
     };
+    
+    // TODO: This will eventually go into the core framework for "Luke Skywalker Event Binding"
+    fluid.analyseTarget = function (testCaseState, material, expectedPrefix) {
+        if (typeof(material) === "string" && material.charAt(0) === "{") {
+            var parsed = fluid.parseContextReference(material);
+            if (fluid.isIoCSSSelector(parsed.context)) {
+                var selector = fluid.parseSelector(parsed.context, fluid.IoCSSMatcher);
+                var headContext = fluid.extractSelectorHead(selector);
+                var holder = testCaseState.testCaseHolder;
+                var head = fluid.resolveContext(headContext, holder);
+                if (!head) {
+                    fluid.fail("Error in test case selector ", material, " cannot resolve to a root component from holder ", holder);   
+                }
+                var segs = fluid.model.parseEL(parsed.path);
+                if (segs.length < 2 || segs[0] !== expectedPrefix) {
+                    fluid.fail("Error in test case selector ", material, " must start with path " + expectedPrefix);
+                }
+                return {selector: selector, head: head, path: segs.slice(1)};
+            }
+        }
+        return {resolved: testCaseState.expand(material)};
+    };
 
     fluid.test.decoders.event = function (testCaseState, fixture) {
-        var event = testCaseState.expand(fixture.event);
+        var analysed = fluid.analyseTarget(testCaseState, fixture.event, "events");
         var listener = fluid.test.decodeListener(testCaseState, fixture);
-        var that = fluid.test.makeBinder(listener,
-           function (wrapped) {
-            event.addListener(wrapped, fixture.namespace, null, fixture.priority);
-        }, function (wrapped) {
-            event.removeListener(wrapped);
-        });
-        return that;
+        var bind, unbind;
+        if (analysed.resolved) {
+            var event = analysed.resolved;
+            bind = function (wrapped) {
+                event.addListener(wrapped, fixture.namespace, null, fixture.priority);
+            };
+            unbind = function (wrapped) {
+                event.removeListener(wrapped);
+            } 
+        }
+        else {
+            var id;
+            bind = function (wrapped) {
+                var options = {};
+                fluid.set(options, ["listeners"].concat(analysed.path), {
+                    listener: wrapped,
+                    namespace: fixture.namespace,
+                    priority: fixture.priority
+                });
+                id = fluid.pushDistributions(analysed.head, analysed.selector, 
+                    [{options: options, recordType: "distribution", priority: fluid.mergeRecordTypes.distribution}]
+                );
+            };
+            unbind = function (wrapped) {
+                fluid.clearDistributions(analysed.head, id);  
+            };
+        }
+        return fluid.test.makeBinder(listener, bind, unbind);
     };
 
     fluid.test.decoders.changeEvent = function (testCaseState, fixture) {
@@ -305,6 +345,14 @@ var fluid_1_5 = fluid_1_5 || {};
         var c = fluid.test.composeSimple;
         binder.bind(c(preWrap, preFunc), c(postFunc, postWrap));
     };
+    
+    // This check executes immediately AFTER we apply the first bind of a sequence
+    fluid.test.checkTestStart = function (testCaseState) {
+        if (!testCaseState.started) { // Support for FLUID-4929
+            testCaseState.testCaseHolder.events.onTestCaseStart.fire(testCaseState.testCaseHolder);
+            testCaseState.started = true;
+        }      
+    };
 
     fluid.test.sequenceExecutor = function (testCaseState, fixture) {
         var that = {
@@ -343,6 +391,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 else {
                     fluid.test.bindExecutor(thisExec, fluid.identity, testCaseState.finisher, thisText);
                 }
+                fluid.test.checkTestStart(testCaseState);
                 return;
             }
             var nextExec = that.decode(pos); // decode the NEXT executor
@@ -352,6 +401,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     [fluid.identity, that.execute];
                 fluid.test.bindExecutor(thisExec, wrappers[0], wrappers[1], thisText);
             }
+            fluid.test.checkTestStart(testCaseState);
 
             if (thisExec.execute) {
                 if (nextExec.bind) {
@@ -421,9 +471,10 @@ var fluid_1_5 = fluid_1_5 || {};
             var oldLength = QUnit.config.queue.length;
             jqUnit[testType](fixture.name, testFunc);
             if (QUnit.config.queue.length === oldLength) {
-                console.log("Skipped test " + fixture.name);
+                fluid.log(fluid.logLevel.IMPORTANT, "Skipped test " + fixture.name);
             }
             else {
+                fluid.log(fluid.logLevel.IMPORTANT, "Successfully queued test " + fixture.name);
                 fluid.test.noteTest(testCaseState.root, 1);
             }
         });

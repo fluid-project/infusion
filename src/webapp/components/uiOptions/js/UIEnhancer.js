@@ -22,42 +22,54 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     /*******************************************************************************
-     * Browser type and version detection.                                         *
-     *                                                                             *
-     * Add type tags of IE and browser version into static environment for the     * 
-     * spcial handling on IE6.                                                     *
+     * CSSClassEnhancerBase
+     *
+     * Provides the map between the settings and css classes to be applied. 
+     * Used as a UIEnhancer base grade that can be pulled in as requestd.
      *******************************************************************************/
     
-    fluid.registerNamespace("fluid.browser.version");
+    fluid.defaults("fluid.uiEnhancer.cssClassEnhancerBase", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        classnameMap: {
+            "textFont": {
+                "default": "",
+                "times": "fl-font-uio-times",
+                "comic": "fl-font-uio-comic-sans",
+                "arial": "fl-font-uio-arial",
+                "verdana": "fl-font-uio-verdana"
+            },
+            "theme": {
+                "default": "fl-theme-uio-default",
+                "bw": "fl-theme-uio-bw fl-theme-bw",
+                "wb": "fl-theme-uio-wb fl-theme-wb",
+                "by": "fl-theme-uio-by fl-theme-by",
+                "yb": "fl-theme-uio-yb fl-theme-yb"
+            },
+            "layout": "fl-layout-linear",
+            "links": "fl-link-enhanced",
+            "inputsLarger": "fl-text-larger"
+        }
+    });
 
-    fluid.browser.msie = function () {
-        var isIE = ($.browser.msie);
-        return isIE ? fluid.typeTag("fluid.browser.msie") : undefined;
-    };
-
-    fluid.browser.majorVersion = function () {
-    // From http://www.useragentstring.com/pages/Internet%20Explorer/ several variants are possible
-    // for IE6 - and in general we probably just want to detect major versions
-        var version = $.browser.version;
-        var dotpos = version.indexOf(".");
-        var majorVersion = version.substring(0, dotpos);
-        return fluid.typeTag("fluid.browser.majorVersion." + majorVersion);
-    };
-
-    var features = {
-        browserIE: fluid.browser.msie(),
-        browserMajorVersion: fluid.browser.majorVersion()
-    };
+    /*******************************************************************************
+     * BrowserTextEnhancerBase
+     *
+     * Provides the default font size translation between the strings and actual pixels. 
+     * Used as a UIEnhancer base grade that can be pulled in as requestd.
+     *******************************************************************************/
     
-    fluid.merge(null, fluid.staticEnvironment, features);
-    
-    // Temporary solution pending revised IoC system in 1.5
-    
-    fluid.hasFeature = function (tagName) {
-        return fluid.find(fluid.staticEnvironment, function (value) {
-            return value && value.typeName === tagName ? true : undefined;
-        });
-    };
+    fluid.defaults("fluid.uiEnhancer.browserTextEnhancerBase", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        fontSizeMap: {
+            "xx-small": "9px",
+            "x-small":  "11px",
+            "small":    "13px",
+            "medium":   "15px",
+            "large":    "18px",
+            "x-large":  "23px",
+            "xx-large": "30px"
+        }
+    });
 
     /*******************************************************************************
      * UI Enhancer                                                                 *
@@ -68,68 +80,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiEnhancer", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
-            textSize: {
-                type: "fluid.uiEnhancer.textSizer",
-                container: "{uiEnhancer}.container",
-                options: {
-                    invokers: {
-                        calcInitSize: {
-                            funcName: "fluid.uiEnhancer.textSizer.calcInitSize",
-                            args: ["{that}.container", "{uiEnhancer}.options.fontSizeMap"]
-                        }
-                    }
-                }
-            },
-            tableOfContents: {
-                type: "fluid.tableOfContents",
-                container: "{uiEnhancer}.container",
-                createOnEvent: "onCreateTOCReady",
-                options: {
-                    components: {
-                        levels: {
-                            type: "fluid.tableOfContents.levels",
-                            options: {
-                                resources: {
-                                    template: {
-                                        forceCache: true,
-                                        url: "{uiEnhancer}.options.tocTemplate"
-                                    }
-                                }
-                            } 
-                        }
-                    },
-                    listeners: {
-                      // TODO: This is as a result of lack of FLUID-4398, event relay
-                        afterRender: "{uiEnhancer}.lateRefreshRelay"
-                    }
-                }
-            },
-            textFont: {
-                type: "fluid.uiEnhancer.classSwapper",
-                container: "{uiEnhancer}.container",
-                options: {
-                    classes: "{uiEnhancer}.options.classnameMap.textFont"
-                }
-            },
-            lineSpacing: {
-                type: "fluid.uiEnhancer.lineSpacer",
-                container: "{uiEnhancer}.container",
-                options: {
-                    invokers: {
-                        calcInitSize: {
-                            funcName: "fluid.uiEnhancer.lineSpacer.calcInitSize",
-                            args: ["{that}.container", "{uiEnhancer}.options.fontSizeMap"]
-                        }
-                    }
-                }
-            },
-            theme: {
-                type: "fluid.uiEnhancer.classSwapper",
-                container: "{uiEnhancer}.container",
-                options: {
-                    classes: "{uiEnhancer}.options.classnameMap.theme"
-                }
-            },
             settingsStore: {
                 type: "fluid.uiOptions.store",
                 options: {
@@ -140,390 +90,170 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             updateModel: {
                 funcName: "fluid.uiEnhancer.updateModel",
-                args: ["@0", "{uiEnhancer}.applier"]
+                args: ["{arguments}.0", "{uiEnhancer}.applier"]
             },
             updateFromSettingsStore: {
                 funcName: "fluid.uiEnhancer.updateFromSettingsStore",
                 args: ["{uiEnhancer}"]
-            },
-            refreshView: {
-                funcName: "fluid.uiEnhancer.refreshView",
-                args: ["{uiEnhancer}"]
-            },
-            styleElements: "fluid.uiEnhancer.styleElements",
-            
-            // NOTE: when we do the ants refactoring each of these will be half an ant
-            setLayout: "fluid.uiEnhancer.setLayout",
-            styleLinks: "fluid.uiEnhancer.styleLinks",
-            styleInputs: "fluid.uiEnhancer.styleInputs",
-            setIE6ColorInversion: "fluid.uiEnhancer.setIE6ColorInversion"
+            }
         },
         events: {
-            onCreateTOCReady: null,
-            lateRefreshView: null,
-            modelChanged: null
-        },
-        listeners: {
-            "lateRefreshView.domReading": "fluid.uiEnhancer.applyDomReadingSettings"
-        },
-        classnameMap: {
-            "textFont": {
-                "default": "",
-                "times": "fl-font-uio-times",
-                "comic": "fl-font-uio-comic-sans",
-                "arial": "fl-font-uio-arial",
-                "verdana": "fl-font-uio-verdana"
-            },
-            "theme": {
-                "default": "fl-uio-default-theme",
-                "bw": "fl-theme-uio-bw fl-theme-bw",
-                "wb": "fl-theme-uio-wb fl-theme-wb",
-                "by": "fl-theme-uio-by fl-theme-by",
-                "yb": "fl-theme-uio-yb fl-theme-yb"
-            },
-            "layout": "fl-layout-linear",
-            "links": "fl-link-enhanced",
-            "inputsLarger": "fl-text-larger"
-        },
-        fontSizeMap: {
-            "xx-small": "9px",
-            "x-small":  "11px",
-            "small":    "13px",
-            "medium":   "15px",
-            "large":    "18px",
-            "x-large":  "23px",
-            "xx-large": "30px"
-        },
-        selectors: {
-            colorInversion: ".fl-inverted-color"
-        },
-        styles: {
-            colorInversionClass: "fl-inverted-color"
-        },
-        finalInitFunction: "fluid.uiEnhancer.finalInit"
+            onAsyncEnactorReady: null
+        }
     });
 
-    fluid.uiEnhancer.finalInit = function (that) {
-        that.applier.modelChanged.addListener("",
-            function (newModel, oldModel, changeRequest) {
-                that.events.modelChanged.fire(newModel, oldModel, changeRequest);
-                that.refreshView();   
-            });
-
-        that.lateRefreshRelay = function () {
-            that.events.lateRefreshView.fire(that);
-        };
-        that.updateFromSettingsStore();
-        return that;
-    };
-    
     fluid.uiEnhancer.updateFromSettingsStore = function (that) {
-        that.updateModel(that.settingsStore.get());
+        that.updateModel(that.settingsStore.fetch());
     };
 
     fluid.uiEnhancer.updateModel = function (newModel, applier) {
         applier.requestChange("", newModel);
     };
-
-    fluid.uiEnhancer.applyTocSetting = function (that) {
-        var async = false;
-        if (that.model.toc) {
-            if (that.tableOfContents) {
-                that.tableOfContents.show();
-            } else {
-                that.events.onCreateTOCReady.fire();
-                async = true;
-            }
-        } else {
-            if (that.tableOfContents) {
-                that.tableOfContents.hide();
-            }
-        }
-        if (!async) {
-            that.lateRefreshRelay();
-        }
+    
+    fluid.uiEnhancer.finalInit = function (that) {
+        that.updateFromSettingsStore();
     };
 
-    // Apply those UIEnhancer settings which require reading elements from the DOM - 
-    // as opposed to those which may be honoured by static CSS styles
-    fluid.uiEnhancer.applyDomReadingSettings = function (that) {
-        that.setLayout(that);
-        that.styleLinks(that);
-        that.styleInputs(that);
-        that.setIE6ColorInversion(that); 
-    };
-
-    /**
-     * Transforms the interface based on the settings in that.model
-     */
-    fluid.uiEnhancer.refreshView = function (that) {
-        that.textSize.set(that.model.textSize);
-        that.textFont.swap(that.model.textFont);
-        that.lineSpacing.set(that.model.lineSpacing);
-        that.theme.swap(that.model.theme);
-        $(document).ready(function () {
-            fluid.uiEnhancer.applyTocSetting(that);
-        });
-    };
-
-
-    /**
-     * Adds or removes the classname to/from the elements based upon the setting.
-     * @param {Object} elements
-     * @param {Object} setting
-     * @param {Object} classname
-     */
-    fluid.uiEnhancer.styleElements = function (elements, setting, classname) {
-        if (setting) {
-            elements.addClass(classname);
-        } else {
-            $("." + classname, elements).andSelf().removeClass(classname);
-        }        
-    };
-
-    /**
-     * Style layout in the container according to the settings
-     * @param {Object} that - the uiEnhancer
-     */
-    fluid.uiEnhancer.setLayout = function (that) {
-        that.styleElements(that.container, that.model.layout, that.options.classnameMap.layout);
-    };
-
-    /**
-     * Style links in the container according to the settings
-     * @param {Object} that - the uiEnhancer
-     */
-    fluid.uiEnhancer.styleLinks = function (that) {
-        var links = $("a", that.container);
-        that.styleElements(links, that.model.links, that.options.classnameMap.links);
-    };
-
-    /**
-     * Style inputs in the container according to the settings
-     * @param {Object} that - the uiEnhancer
-     */
-    fluid.uiEnhancer.styleInputs = function (that) {
-        that.styleElements($("input, button", that.container), that.model.inputsLarger, that.options.classnameMap.inputsLarger);
-    };
-
-    /**
-     * remove the instances of fl-inverted-color when the default theme is selected. 
-     * This prevents a bug in IE6 where the default theme will have elements styled 
-     * with the theme color.
+    /*******************************************************************************
+     * UI Enhancer Default Actions
      *
-     * Caused by:
-     * http://thunderguy.com/semicolon/2005/05/16/multiple-class-selectors-in-internet-explorer/
-     * @param {Object} that - the uiEnhancer
-     */
-    fluid.uiEnhancer.setIE6ColorInversion = function (that) {
-        if (fluid.hasFeature("fluid.browser.msie") && fluid.hasFeature("fluid.browser.majorVersion.6") && that.model.theme === "default") {
-            that.locate("colorInversion").removeClass(that.options.styles.colorInversionClass);
-        }
-    };
-
-    /**
-     * return "font-size" in px
-     * @param (Object) container
-     * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
-     */
-    fluid.uiEnhancer.getTextSizeInPx = function (container, fontSizeMap) {
-        var fontSize = container.css("font-size");
-
-        if (fontSizeMap[fontSize]) {
-            fontSize = fontSizeMap[fontSize];
-        }
-
-        // return fontSize in px
-        return parseFloat(fontSize);
-    };
-
-    /**
-     * return "font-size" in em
-     * @param (Object) container
-     * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
-     */
-    fluid.uiEnhancer.getTextSizeInEm = function (container, fontSizeMap) {
-        var px2emFactor = fluid.uiEnhancer.getPx2EmFactor(container, fontSizeMap);
-
-        // retrieve fontSize in px, convert and return in em 
-        return Math.round(fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap) / px2emFactor * 10000) / 10000;
-    };
-    
-    fluid.uiEnhancer.getPx2EmFactor = function (container, fontSizeMap) {
-        // The base font size is the computed font size of the container's parent element unless the container itself 
-        // has been the DOM root element "HTML" which is NOT detectable with this algorithm
-        if (container.get(0).tagName !== "HTML") {
-            container = container.parent();
-        }
-        return fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap);
-    };
-
-    // Return "line-height" css value
-    fluid.uiEnhancer.getLineHeight = function (container) {
-        var lineHeight;
-        
-        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
-        if (container[0].currentStyle) {
-            lineHeight = container[0].currentStyle.lineHeight;
-        } else {
-            lineHeight = container.css("line-height");
-        }
-        
-        return lineHeight;
-    };
-    
-    // Interprets browser returned "line-height" value, either a string "normal", a number with "px" suffix or "undefined" 
-    // into a numeric value in em. 
-    // Return 0 when the given "lineHeight" argument is "undefined" (http://issues.fluidproject.org/browse/FLUID-4500).
-    fluid.uiEnhancer.numerizeLineHeight = function (lineHeight, fontSize) {
-        // Handel the given "lineHeight" argument is "undefined", which occurs when firefox detects 
-        // "line-height" css value on a hidden container. (http://issues.fluidproject.org/browse/FLUID-4500)
-        if (!lineHeight) {
-            return 0;
-        }
-
-        // Needs a better solution. For now, "line-height" value "normal" is defaulted to 1.2em
-        // according to https://developer.mozilla.org/en/CSS/line-height
-        if (lineHeight === "normal") {
-            return 1.2;
-        }
-        
-        // Continuing the work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
-        if (lineHeight.match(/[0-9]$/)) {
-            return lineHeight;
-        }
-        
-        return Math.round(parseFloat(lineHeight) / fontSize * 100) / 100;
-    };
-
-    /*******************************************************************************
-     * TextSizer                                                                   *
-     *                                                                             *
-     * Sets the text size on the container to the multiple provided.               *
-     * Note: This will become half an ant                                          *
+     * A grade component for UIEnhancer. It is a collection of default UI Enhancer 
+     * action ants.
      *******************************************************************************/
     
-    fluid.defaults("fluid.uiEnhancer.textSizer", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        invokers: {
-            set: {
-                funcName: "fluid.uiEnhancer.textSizer.set",
-                args: ["@0", "{textSizer}"]
-            }
-        }
-    });
-       
-    fluid.uiEnhancer.textSizer.set = function (times, that) {
-        if (!that.initialSize) {
-            that.initialSize = that.calcInitSize();
-        }
-
-        if (that.initialSize) {
-            var targetSize = times * that.initialSize;
-            that.container.css("font-size", targetSize + "em");
-        }
-    };
-    
-    fluid.uiEnhancer.textSizer.calcInitSize = function (container, fontSizeMap) {
-        return fluid.uiEnhancer.getTextSizeInEm(container, fontSizeMap);
-    };
-
-    /*******************************************************************************
-     * ClassSwapper                                                                *
-     *                                                                             *
-     * Has a hash of classes it cares about and will remove all those classes from *
-     * its container before setting the new class.                                 *
-     * Note: This will become half an ant                                          *
-     *******************************************************************************/
-    
-    fluid.defaults("fluid.uiEnhancer.classSwapper", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        invokers: {
-            clearClasses: {
-                funcName: "fluid.uiEnhancer.classSwapper.clearClasses",
-                args: ["{classSwapper}"]
+    fluid.defaults("fluid.uiEnhancer.defaultActions", {
+        gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
+        components: {
+            textSize: {
+                type: "fluid.uiOptions.enactor.textSizer",
+                container: "{uiEnhancer}.container",
+                options: {
+                    fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "textSize": "value"
+                    }
+                }
             },
-            swap: {
-                funcName: "fluid.uiEnhancer.classSwapper.swap",
-                args: ["@0", "{classSwapper}"]
+            textFont: {
+                type: "fluid.uiOptions.enactor.classSwapper",
+                container: "{uiEnhancer}.container",
+                options: {
+                    classes: "{uiEnhancer}.options.classnameMap.textFont",
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "textFont": "value"
+                    }
+                }
+            },
+            lineSpacing: {
+                type: "fluid.uiOptions.enactor.lineSpacer",
+                container: "{uiEnhancer}.container",
+                options: {
+                    fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "lineSpacing": "value"
+                    }
+                }
+            },
+            theme: {
+                type: "fluid.uiOptions.enactor.classSwapper",
+                container: "{uiEnhancer}.container",
+                options: {
+                    classes: "{uiEnhancer}.options.classnameMap.theme",
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "theme": "value"
+                    }
+                }
+            },
+            emphasizeLinks: {
+                type: "fluid.uiOptions.enactor.emphasizeLinks",
+                container: "{uiEnhancer}.container",
+                options: {
+                    cssClass: "{uiEnhancer}.options.classnameMap.links",
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "links": "value"
+                    }
+                }
+            },
+            inputsLarger: {
+                type: "fluid.uiOptions.enactor.inputsLarger",
+                container: "{uiEnhancer}.container",
+                options: {
+                    cssClass: "{uiEnhancer}.options.classnameMap.inputsLarger",
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "inputsLarger": "value"
+                    }
+                }
+            },
+            tableOfContentsEnactor: {
+                type: "fluid.uiOptions.enactor.tableOfContentsEnactor",
+                container: "{uiEnhancer}.container",
+                createOnEvent: "onCreateToc",
+                options: {
+                    tocTemplate: "{uiEnhancer}.options.tocTemplate",
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "toc": "value"
+                    },
+                    listeners: {
+                        afterTocRender: "{uiEnhancer}.events.onAsyncEnactorReady",
+                        onLateRefreshRelay: "{uiEnhancer}.events.onAsyncEnactorReady"
+                    }
+                }
+            },
+            IE6ColorInversion: {
+                type: "fluid.uiOptions.enactor.IE6ColorInversion",
+                container: "{uiEnhancer}.container",
+                options: {
+                    sourceApplier: "{uiEnhancer}.applier",
+                    rules: {
+                        "theme": "value"
+                    }
+                }
             }
         },
-        classes: {},
-        finalInitFunction: "fluid.uiEnhancer.classSwapper.finalInit"
+        events: {
+            onCreateToc: null
+        },
+        listeners: {
+            onAsyncEnactorReady: [{
+                listener: "{that}.emphasizeLinks.handleStyle",
+                args: "{that}.model.links"
+            }, {
+                listener: "{that}.inputsLarger.handleStyle",
+                args: "{that}.model.inputsLarger"
+            }, {
+                listener: "{that}.IE6ColorInversion.setIE6ColorInversion",
+                args: "{that}.model.theme"
+            }]
+        },
+        finalInitFunction: "fluid.uiEnhancer.defaultActions.finalInit"
     });
-    
-    fluid.uiEnhancer.classSwapper.finalInit = function (that) {
-        that.classSelector = "";
-        that.classStr = "";
-        
-        fluid.each(that.options.classes, function (className) {
-            if (className) {
-                that.classSelector += that.classSelector ? ", ." + className : "." + className;
-                that.classStr += that.classStr ? " " + className : className;
-            }
-        });
-    };
-    
-    fluid.uiEnhancer.classSwapper.clearClasses = function (that) {
-        that.container.removeClass(that.classStr);
-    };
-    
-    fluid.uiEnhancer.classSwapper.swap = function (classname, that) {
-        that.clearClasses(that);
-        that.container.addClass(that.options.classes[classname]);
-    };
-    
-    /*******************************************************************************
-     * LineSpacer                                                                  *
-     *                                                                             *
-     * Sets the line spacing on the container to the multiple provided.            *
-     * Note: This will become half an ant                                          *
-     *******************************************************************************/
-    
-    fluid.defaults("fluid.uiEnhancer.lineSpacer", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        invokers: {
-            set: {
-                funcName: "fluid.uiEnhancer.lineSpacer.set",
-                args: ["@0", "{lineSpacer}"]
-            }
-        }
-    });
-    
-    // TODO: this might be almost the same as textSize setting - can we share?
-    fluid.uiEnhancer.lineSpacer.set = function (times, that) {
-        if (!that.initialSize) {
-            that.initialSize = that.calcInitSize();
-        }
-        
-        // that.initialSize === 0 when the browser returned "lineHeight" css value is undefined,
-        // which occurs when firefox detects this value on a hidden container.
-        // @ See fluid.uiEnhancer.numerizeLineHeight() & http://issues.fluidproject.org/browse/FLUID-4500
-        if (that.initialSize) {
-            var targetLineSpacing = times * that.initialSize;
-            that.container.css("line-height", targetLineSpacing);
-        }
-    };
-    
-    // Returns the value of css style "line-height" in em 
-    fluid.uiEnhancer.lineSpacer.calcInitSize = function (container, fontSizeMap) {
-        var lineHeight = fluid.uiEnhancer.getLineHeight(container);
-        var fontSize = fluid.uiEnhancer.getTextSizeInPx(container, fontSizeMap);
 
-        return fluid.uiEnhancer.numerizeLineHeight(lineHeight, fontSize);
+    fluid.uiEnhancer.defaultActions.finalInit = function (that) {
+        $(document).ready(function () {
+            that.events.onCreateToc.fire();
+            
+            // Directly calling toc apply function rather than firing a model change request
+            // is because the modelRelay component prevents the relay on the unchanged value.
+            that.tableOfContentsEnactor.applyToc(that.model.toc);
+        });
     };
     
     /*******************************************************************************
      * PageEnhancer                                                                *
      *                                                                             *
      * A UIEnhancer wrapper that concerns itself with the entire page.             *
-     *******************************************************************************/    
-    
+     *******************************************************************************/
     fluid.pageEnhancer = function (uiEnhancerOptions) {
         var that = fluid.initLittleComponent("fluid.pageEnhancer");
-        uiEnhancerOptions = fluid.copy(uiEnhancerOptions);
         // This hack is required to resolve FLUID-4409 - much improved framework support is required
-        uiEnhancerOptions.originalUserOptions = fluid.copy(uiEnhancerOptions);
+        that.options.originalUserOptions = fluid.copy(uiEnhancerOptions);
         that.uiEnhancerOptions = uiEnhancerOptions;
         fluid.initDependents(that);
         fluid.staticEnvironment.uiEnhancer = that.uiEnhancer;
@@ -531,7 +261,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.defaults("fluid.pageEnhancer", {
-        gradeNames: ["fluid.littleComponent"],
+        gradeNames: ["fluid.originalEnhancerOptions"],
         components: {
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
@@ -540,6 +270,19 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
+    
+    /*******************************************************************************
+     * originalEnhancerOptions
+     *
+     * A grade component for pageEnhancer to keep track of the original user options
+     *******************************************************************************/
+    fluid.defaults("fluid.originalEnhancerOptions", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.originalEnhancerOptions.preInit = function (that) {
+        fluid.staticEnvironment.originalEnhancerOptions = that;
+    };
     
     fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer"], {
         funcName: "fluid.cookieStore"

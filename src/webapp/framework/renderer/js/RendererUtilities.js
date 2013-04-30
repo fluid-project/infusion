@@ -39,27 +39,27 @@ fluid_1_5 = fluid_1_5 || {};
     };
 
     // TODO: API status of these 3 functions is uncertain. So far, they have never
-    // appeared in documentation. API change required for Infusion 1.5 to include instantiator.
-    // This is inconvenient, but in the future, all component discovery will require this.   
-    fluid.renderer.visitDecorators = function(that, visitor, instantiator) {
+    // appeared in documentation.
+    fluid.renderer.visitDecorators = function(that, visitor) {
         fluid.visitComponentChildren(that, function(component, name) {
             if (name.indexOf(fluid.renderer.decoratorComponentPrefix) === 0) {
                 visitor(component, name);
             }
-        }, {flat: true, instantiator: instantiator});  
+        }, {flat: true});  
     };
 
-    fluid.renderer.clearDecorators = function(instantiator, that) {
+    fluid.renderer.clearDecorators = function(that) {
+        var instantiator = fluid.getInstantiator(that);
         fluid.renderer.visitDecorators(that, function(component, name) {
             instantiator.clearComponent(that, name);
-        }, instantiator);
+        });
     };
     
-    fluid.renderer.getDecoratorComponents = function(that, instantiator) {
+    fluid.renderer.getDecoratorComponents = function(that) {
         var togo = {};
         fluid.renderer.visitDecorators(that, function(component, name) {
             togo[name] = component;
-        }, instantiator);
+        });
         return togo;
     };
 
@@ -125,7 +125,8 @@ fluid_1_5 = fluid_1_5 || {};
         initFunction: "fluid.initRendererComponent",
         mergePolicy: {
             protoTree: "noexpand, replace",
-            parentBundle: "nomerge"
+            parentBundle: "nomerge",
+            "changeApplierOptions.resolverSetConfig": "resolverSetConfig"
         },
         rendererOptions: {
             autoBind: true
@@ -145,10 +146,7 @@ fluid_1_5 = fluid_1_5 || {};
         
         var rendererOptions = fluid.renderer.modeliseOptions(that.options.rendererOptions, null, that);
         if (!that.options.noUpgradeDecorators) {
-            fluid.withInstantiator(that, function(currentInst) {
-                rendererOptions.instantiator = currentInst;
-                rendererOptions.parentComponent = that;
-            });
+            rendererOptions.parentComponent = that;
         }
         var messageResolver;
         if (!rendererOptions.messageSource && that.options.strings) {
@@ -205,8 +203,8 @@ fluid_1_5 = fluid_1_5 || {};
         }
 
         that.refreshView = renderer.refreshView = function () {
-            if (rendererOptions.instantiator && rendererOptions.parentComponent) {
-                fluid.renderer.clearDecorators(rendererOptions.instantiator, rendererOptions.parentComponent);
+            if (rendererOptions.parentComponent) {
+                fluid.renderer.clearDecorators(rendererOptions.parentComponent);
             }
             that.events.prepareModelForRender.fire(that.model, that.applier, that);
             var tree = produceTree.fire(that);
@@ -431,7 +429,7 @@ fluid_1_5 = fluid_1_5 || {};
         var IDescape = options.IDescape || "\\";
         
         var expandLight = function (source) {
-            return fluid.resolveEnvironment(source, options); 
+            return fluid.expand(source, options); 
         };
 
         var expandBound = function (value, concrete) {

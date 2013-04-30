@@ -19,9 +19,9 @@
         <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-wb/wb.css" />
 
         <!-- Component styles -->
-        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/UIOptions.css" />     
-        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/FullUIOptions.css" />     
-        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/FullPreviewUIOptions.css" />     
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/UIOptions.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/FullUIOptions.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/FullPreviewUIOptions.css" />
 
         <link rel="stylesheet" type="text/css" href="../css/UIOptionsFullPage.css" /> <!-- Demo style -->
 
@@ -30,7 +30,7 @@
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.mouse.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>           
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>
         <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
 
         <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
@@ -45,32 +45,32 @@
         <script type="text/javascript" src="../../../framework/renderer/js/RendererUtilities.js"></script>
 
         <script type="text/javascript" src="../../../components/uiOptions/js/Store.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/ModelRelay.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/Enactor.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/TextfieldSlider.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
-        <script type="text/javascript" src="../../../components/uiOptions/js/FullPreviewUIOptions.js"></script>        
+        <script type="text/javascript" src="../../../components/uiOptions/js/SettingsPanels.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/FullPreviewUIOptions.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
 
-        <script type="text/javascript" src="../js/uiOptionsDemo.js"></script>
+        <script type="text/javascript" src="../js/uiOptionsFullPage.js"></script>
     </head>
 
     <body>
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             $(document).ready(function () {
-                demo.initPageEnhancer("uio-demo-theme");
+                demo.initPageEnhancer();
                 demo.initFullWithPreview("#myUIOptions", {
                     preview: {
                         options: {
-                            templateUrl: "UIOptionsPreview.html"
+                            templateUrl: "uiOptionsPreview.html"
                         }
                     }
                 });
             });
         </script>
-
-        <div class="backButton fl-inverted-color">
-            <a href="uiOptions.html">Return To Site</a> 
-        </div>
 
         <div class="content">
             <span class="fl-hidden">

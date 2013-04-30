@@ -79,7 +79,9 @@ var fluid_1_5 = fluid_1_5 || {};
             that.locate("tocContainer").show();
         };
         
-        that.model = that.modelBuilder.assembleModel(headings, that.anchorInfo);
+        var headingsModel = that.modelBuilder.assembleModel(headings, that.anchorInfo);
+        
+        that.applier.requestChange("", headingsModel);
 
         that.events.onReady.fire();
     };
@@ -106,6 +108,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.tableOfContents.modelBuilder"
             }
         },
+        model: [],
         invokers: {
             insertAnchor: "fluid.tableOfContents.insertAnchor",
             generateGUID: "fluid.tableOfContents.generateGUID",

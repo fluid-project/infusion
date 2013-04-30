@@ -124,9 +124,9 @@ var fluid_1_5 = fluid_1_5 || {};
             }
             var accepted = undefined;
             for (var j = 0; j < strategies.length; ++ j) {
-                var value = strategies[j](root, segs[i], i + 1, segs);
-                if (accepted === undefined) {
-                    accepted = value;
+                accepted = strategies[j](root, segs[i], i + 1, segs);
+                if (accepted !== undefined) {
+                    break; // May now short-circuit with stateless strategies
                 }
             }
             if (accepted === fluid.NO_VALUE) {
@@ -320,7 +320,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         for (var i = start; i < end; ++ i) {
             if (segs[i] !== toMatch[i - start]) {
-               return false;
+                return false;
             }
         }
         return true;
@@ -394,18 +394,18 @@ var fluid_1_5 = fluid_1_5 || {};
         var last = pen.segs[pen.segs.length - 1];
         
         if (request.type === "ADD" || request.type === "MERGE") {
-            if (request.path === "" || request.type === "MERGE") {
+            if (pen.segs.length === 0 || (request.type === "MERGE" && pen.root[last])) {
                 if (request.type === "ADD") {
                     fluid.clear(pen.root);
                 }
-                $.extend(true, request.path === "" ? pen.root : pen.root[last], request.value);
+                $.extend(true, pen.segs.length === 0 ? pen.root : pen.root[last], request.value);
             }
             else {
                 pen.root[last] = request.value;
             }
         }
         else if (request.type === "DELETE") {
-            if (request.path === "") {
+            if (pen.segs.length === 0) {
                 fluid.clear(pen.root);
             }
             else {
@@ -451,9 +451,9 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
   
-    // Utility shared between changeApplier and superApplier
-    
-    function bindRequestChange(that) {
+    // Automatically adapts requestChange onto fireChangeRequest
+    // unsupported, NON-API function    
+    fluid.bindRequestChange = function (that) {
         that.requestChange = function (path, value, type) {
             var changeRequest = {
                 path: path,
@@ -462,16 +462,16 @@ var fluid_1_5 = fluid_1_5 || {};
             };
             that.fireChangeRequest(changeRequest);
         };
-    }
+    };
     
     // Utility used for source tracking in changeApplier
     
     function sourceWrapModelChanged(modelChanged, threadLocal) {
-        return function(changeRequest) {
+        return function (changeRequest) {
             var sources = threadLocal().sources;
             var args = arguments;
             var source = changeRequest.source || "";
-            fluid.tryCatch(function() {
+            fluid.tryCatch(function () {
                 if (sources[source] === undefined) {
                     sources[source] = 0;
                 }
@@ -628,7 +628,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 that.fireChangeRequest(changeRequest, true);
             }
         };
-        bindRequestChange(bareApplier);
+        fluid.bindRequestChange(bareApplier);
 
         that.fireChangeRequest = function (changeRequest, defeatGuards) {
             preFireChangeRequest(changeRequest);
@@ -657,7 +657,7 @@ var fluid_1_5 = fluid_1_5 || {};
         };
         
         that.fireChangeRequest = sourceWrapModelChanged(that.fireChangeRequest, threadLocal);
-        bindRequestChange(that);
+        fluid.bindRequestChange(that);
 
         function fireAgglomerated(eventName, formName, changes, args, accpos) {
             var fireSpec = makeFireSpec();
@@ -695,7 +695,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     changes.push(changeRequest);
                 }
             };
-            bindRequestChange(internalApplier);
+            fluid.bindRequestChange(internalApplier);
             var ation = {
                 commit: function () {
                     var oldModel;
@@ -737,7 +737,7 @@ var fluid_1_5 = fluid_1_5 || {};
             };
             
             ation.fireChangeRequest = sourceWrapModelChanged(ation.fireChangeRequest, threadLocal);
-            bindRequestChange(ation);
+            fluid.bindRequestChange(ation);
 
             return ation;
         };
@@ -767,7 +767,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
         };
-        bindRequestChange(that);
+        fluid.bindRequestChange(that);
         return that;
     };
     

@@ -21,10 +21,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    // TODO: This context name is required, but has no visible detection support
+    fluid.staticEnvironment.supportsFlash10 = fluid.typeTag("fluid.uploader.flash.10"); 
 
-    fluid.uploader = fluid.uploader || {};
+    fluid.registerNamespace("fluid.uploader");
     
     fluid.demands("fluid.uploaderImpl", "fluid.uploader.swfUpload", {
+        horizon: "fluid.uploader.progressiveCheck",
         funcName: "fluid.uploader.multiFileUploader"
     });
     
@@ -32,14 +35,8 @@ var fluid_1_5 = fluid_1_5 || {};
      * uploader.swfUpload *
      **********************/
     
-    fluid.uploader.swfUploadStrategy = function (options) {
-        var that = fluid.initLittleComponent("fluid.uploader.swfUploadStrategy", options);
-        fluid.initDependents(that);
-        return that;
-    };
-    
     fluid.defaults("fluid.uploader.swfUploadStrategy", {
-        gradeNames: ["fluid.littleComponent"],
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             engine: {
                 type: "fluid.uploader.swfUploadStrategy.engine",
@@ -80,6 +77,7 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     fluid.demands("fluid.uploader.progressiveStrategy", "fluid.uploader.swfUpload", {
+        horizon: "fluid.uploader.progressiveCheck",
         funcName: "fluid.uploader.swfUploadStrategy"
     });
     
@@ -291,7 +289,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     // For each event type, hand the fire function to SWFUpload so it can fire the event at the right time for us.
-    // TODO: Refactor out duplication with mapNames()--should be able to use Engage's mapping tool
+    // TODO: Refactor out duplication with mapNames()--should be able to use Model Transformations
     var mapSWFUploadEvents = function (nameMap, events, target) {
         var result = target || {};
         for (var eventType in events) {
@@ -349,15 +347,14 @@ var fluid_1_5 = fluid_1_5 || {};
     var unbindSWFUploadSelectFiles = function () {
         // There's a bug in SWFUpload 2.2.0b3 that causes the entire browser to crash 
         // if selectFile() or selectFiles() is invoked. Remove them so no one will accidently crash their browser.
-        var emptyFunction = function () {};
-        SWFUpload.prototype.selectFile = emptyFunction;
-        SWFUpload.prototype.selectFiles = emptyFunction;
+        SWFUpload.prototype.selectFile = fluid.identity;
+        SWFUpload.prototype.selectFiles = fluid.identity;
     };
     
     fluid.uploader.swfUploadStrategy.bindFileEventListeners = function (model, events) {
         // Manually update our public model to keep it in sync with SWFUpload's insane,
         // always-changing references to its internal model.        
-        var manualModelUpdater = function (file) {
+        var manualModelUpdater = function (file) { // TODO: this is an abuse of the find algorithm, side-effects should occur outside the loop
             fluid.find(model, function (potentialMatch) {
                 if (potentialMatch.id === file.id) {
                     potentialMatch.filestatus = file.filestatus;

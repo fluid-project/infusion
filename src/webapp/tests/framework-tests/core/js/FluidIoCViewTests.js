@@ -234,21 +234,18 @@ fluid.registerNamespace("fluid.tests");
     });
     
     fluid.demands("fluid.tests.mergePathsChild", "fluid.tests.mergePaths", {
-        options: {
-            mergeAllOptions: [
-                "{options}", {childOption1: "demandValue1"}, {childOption3: "{mergePaths}.options.headOption"}
-            ]
-        }
+        mergeOptions: [
+            {childOption1: "demandValue1"}, {childOption3: "{mergePaths}.options.headOption"}
+        ]
     });
     
-    fluid.demands("fluid.tests.mergePathsViewChild", "fluid.tests.mergePaths", [
-        "#pager-top", {
-            mergeOptions: { 
-                model:   "{mergePaths}.model", 
-                applier: "{mergePaths}.options.applier" 
-            }
+    fluid.demands("fluid.tests.mergePathsViewChild", "fluid.tests.mergePaths", {
+        container: "#pager-top", 
+        mergeOptions: { 
+            model:   "{mergePaths}.model", 
+            applier: "{mergePaths}.options.applier" 
         }
-    ]);
+    });
     
     jqUnit.test("FLUID-4130 mergeOptions for demanded component options", function () {
         var model = {key: "Head model"};
@@ -335,7 +332,7 @@ fluid.registerNamespace("fluid.tests");
         });
     };
 
-    jqUnit.test("Deferred expander Tests", function () {
+    jqUnit.asyncTest("Deferred expander Tests", function () {
         var pageBuilder = {
             uispec: {
                 objects: "These Objects",
@@ -370,7 +367,7 @@ fluid.registerNamespace("fluid.tests");
             resourceSpecCollector: resourceSpecs,
             pageBuilder: pageBuilder
         }, function () {
-            expanded = fluid.expander.expandLight(dependencies, {fetcher: fluid.makeEnvironmentFetcher()});
+            expanded = fluid.expand(dependencies, {fetcher: fluid.makeEnvironmentFetcher()});
         });
     
         var func = function () {}; // dummy function to compare equality
@@ -425,6 +422,7 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertUndefined("No fetch error", resourceSpecs.objects.fetchError);
             jqUnit.assertValue("Request completed", resourceSpecs.objects.completeTime);
             jqUnit.assertDeepEq("Resolved model", expectedRes, expanded);
+            jqUnit.start();
         });
     });
 

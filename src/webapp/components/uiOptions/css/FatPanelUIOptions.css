@@ -1,22 +1,52 @@
-/* Top bar and show/hide button */
-.fl-uiOptions-fatPanel .fl-panelBar {
-	width: 100%;
-	height: 5px;
-	background-color: #fff;
-	border-bottom: 1px solid #ccc;	
+@font-face {
+    font-family: 'OpenSans';
+    src:url('fonts/OpenSans-Light.ttf');
+    font-weight: normal;
+    font-style: normal;
 }
 
-.fl-uiOptions-fatPanel .fl-toggleButton {
-	float:right;
-	text-transform: uppercase;
-	font-weight: bold;	
-	border: 0px;
-	background-color: white;	
-	padding: 5px;
-	margin-right: 10px;
-	border-radius: 8px;	
-	border-bottom: 1px solid #ccc;
+/* Top bar and show/hide button */
+.fl-uiOptions-fatPanel .fl-panelBar {
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;  
 }
+
+.fl-uiOptions-fatPanel .fl-panelBar .fl-uio-tabs {
+    box-shadow: 2px 2px 3px 0px #6f6f6f;
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-bottom-left-radius:8px;
+    border-bottom-right-radius:8px; 
+    background-color: white;
+    min-height: 2em;
+    margin-right: 10em;
+    display:block;
+    float:right;    
+}
+
+.fl-uiOptions-fatPanel .fl-uiOptions-showHide,
+.fl-uiOptions-fatPanel .fl-uiOptions-reset {
+    text-transform: lowercase;
+    font-weight: bold;
+    border:0;
+    background-color: white;
+    height: 1.8em;
+    color: #2f2b2a;
+    font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
+    font-size: 1.1em;
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+}
+
+.fl-uiOptions-fatPanel .fl-uiOptions-reset {
+    border-right: 1px solid #ccc;
+}
+
+.fl-uiOptions-fatPanel .fl-uiOptions-showHide{
+    min-width: 15em;
+}
+    
 
 /* IFrame */
 .fl-uiOptions-fatPanel-iframe {
@@ -27,14 +57,26 @@
 }
 
 /* Theming */
+.fl-theme-bw { background-image:none !important; }
+.fl-theme-bw,
 .fl-theme-bw .fl-uiOptions-fatPanel .fl-panelBar, 
-.fl-theme-bw .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #fff; border-color: #000; }
+.fl-theme-bw .fl-uiOptions-fatPanel .fl-toggleButton,
+.fl-theme-yb .fl-uiOptions-fatPanel .fl-uiOptions-reset { background-color: #fff; border-color: #000; }
 
+.fl-theme-wb { background-image:none !important; }
+.fl-theme-wb,
 .fl-theme-wb .fl-uiOptions-fatPanel .fl-panelBar, 
-.fl-theme-wb .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #000; border-color: #fff; color: #fff; }
+.fl-theme-wb .fl-uiOptions-fatPanel .fl-toggleButton,
+.fl-theme-yb .fl-uiOptions-fatPanel .fl-uiOptions-reset { background-color: #000; border-color: #fff; color: #fff; }
 
+.fl-theme-by { background-image:none !important; }
+.fl-theme-by,
 .fl-theme-by .fl-uiOptions-fatPanel .fl-panelBar, 
-.fl-theme-by .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #FFFF00; border-color: #000; }
+.fl-theme-by .fl-uiOptions-fatPanel .fl-toggleButton,
+.fl-theme-yb .fl-uiOptions-fatPanel .fl-uiOptions-reset { background-color: #FFFF00; border-color: #000; }
 
+.fl-theme-yb { background-image:none !important; }
+.fl-theme-yb,
 .fl-theme-yb .fl-uiOptions-fatPanel .fl-panelBar, 
-.fl-theme-yb .fl-uiOptions-fatPanel .fl-toggleButton { background-color: #000; border-color: #ffff00; color: #ffff00 }
+.fl-theme-yb .fl-uiOptions-fatPanel .fl-toggleButton,
+.fl-theme-yb .fl-uiOptions-fatPanel .fl-uiOptions-reset { background-color: #000; border-color: #ffff00; color: #ffff00 }
