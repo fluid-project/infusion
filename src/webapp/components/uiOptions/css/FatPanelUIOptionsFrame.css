@@ -1,8 +1,22 @@
 @font-face {
     font-family: "OpenSans";
-    font-style: normal;
+    font-style: 300;
     font-weight: normal;
     src: url("../../../lib/fonts/OpenSans-Light.ttf");
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    src:url('../../../lib/fonts/OpenSans-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    src:url('../../../lib/fonts/OpenSans-Semibold.ttf');
+    font-weight: 600;
+    font-style: normal;
 }
 
 html {
@@ -67,7 +81,6 @@ html {
 
 .fl-uiOptions-fatPanel label {
     font-size: 1em;
-    font-weight: 400;
 }
 
 .fl-ui
