@@ -80,10 +80,10 @@ fluid_1_5 = fluid_1_5 || {};
     /** "Renderer component" infrastructure **/
   // TODO: fix this up with IoC and improved handling of templateSource as well as better 
   // options layout (model appears in both rOpts and eOpts)
-    fluid.renderer.createRendererSubcomponent = function (container, selectors, options, baseObject, fossils) {
+    fluid.renderer.createRendererSubcomponent = function (container, selectors, options, parentThat, fossils) {
         options = options || {};
         var source = options.templateSource ? options.templateSource : {node: $(container)};
-        var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, baseObject);
+        var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, parentThat);
         rendererOptions.fossils = fossils || {};
         if (container.jquery) {
             var cascadeOptions = {
@@ -93,11 +93,11 @@ fluid_1_5 = fluid_1_5 || {};
             fluid.renderer.reverseMerge(rendererOptions, cascadeOptions, fluid.keys(cascadeOptions));
         }
         
-        var expanderOptions = fluid.renderer.modeliseOptions(options.expanderOptions, {ELstyle: "${}"}, baseObject);
+        var expanderOptions = fluid.renderer.modeliseOptions(options.expanderOptions, {ELstyle: "${}"}, parentThat);
         fluid.renderer.reverseMerge(expanderOptions, options, ["resolverGetConfig", "resolverSetConfig"]);
         var that = {};
         if (!options.noexpand) {
-            that.expander = fluid.renderer.makeProtoExpander(expanderOptions);
+            that.expander = fluid.renderer.makeProtoExpander(expanderOptions, parentThat);
         }
         
         var templates = null;
@@ -393,6 +393,15 @@ fluid_1_5 = fluid_1_5 || {};
         }
         return parsed;
     };
+    
+    // A forgiving variation of "makeStackFetcher" that returns nothing on failing to resolve an IoC reference, 
+    // in keeping with current protoComponent semantics. Note to self: abolish protoComponents
+    fluid.renderer.makeExternalFetcher = function (contextThat) {
+        return function (parsed) {
+            var foundComponent = fluid.resolveContext(parsed.context, contextThat);
+            return foundComponent ? fluid.getForComponent(foundComponent, parsed.path) : undefined;
+        };
+    };
 
     /** Create a "protoComponent expander" with the supplied set of options.
      * The returned value will be a function which accepts a "protoComponent tree"
@@ -414,16 +423,19 @@ fluid_1_5 = fluid_1_5 || {};
      * recognised bracketing any other EL expression.
      */
 
-    fluid.renderer.makeProtoExpander = function (expandOptions) {
+    fluid.renderer.makeProtoExpander = function (expandOptions, parentThat) {
       // shallow copy of options - cheaply avoid destroying model, and all others are primitive
         var options = $.extend({
             ELstyle: "${}"
         }, expandOptions); // shallow copy of options
+        if (parentThat) {
+            options.externalFetcher = fluid.renderer.makeExternalFetcher(parentThat);
+        }
         var threadLocal; // rebound on every expansion at entry point
         
         function fetchEL(string) {
             var env = threadLocal();
-            return fluid.extractContextualPath(string, options, env);
+            return fluid.extractContextualPath(string, options, env, options.externalFetcher);
         }
          
         var IDescape = options.IDescape || "\\";
@@ -606,7 +618,7 @@ fluid_1_5 = fluid_1_5 || {};
             threadLocal = fluid.threadLocal(function() {
                 return $.extend({}, options.envAdd);
             });
-            options.fetcher = fluid.makeEnvironmentFetcher(options.model, fluid.transformContextPath, threadLocal);
+            options.fetcher = fluid.makeEnvironmentFetcher(options.model, fluid.transformContextPath, threadLocal, options.externalFetcher);
             expandConfig.threadLocal = threadLocal;
             return expandEntry(entry);
         };

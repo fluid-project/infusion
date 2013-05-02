@@ -24,7 +24,7 @@ fluid.registerNamespace("fluid.tests");
     
     fluid.staticEnvironment.isTest = fluid.typeTag("fluid.test");
 
-    fluid.setLogging(true);
+    fluid.setLogging(fluid.logLevel.TRACE);
     fluid.activityTracing = true;
 
     fluid.defaults("fluid.tests.defaultMergePolicy", {
@@ -166,7 +166,7 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
-    jqUnit.test("Aliasing expander test", function () {
+    jqUnit.test("Model reference aliasing test", function () {
         jqUnit.expect(3);
         var model = {unpollute: 1};
         var that = fluid.tests.dependentModel({model: model});
@@ -949,7 +949,7 @@ fluid.registerNamespace("fluid.tests");
                         expander: {
                             type: "fluid.deferredInvokeCall",
                             func: "fluid.identity",
-                            args: "{thatStackHead}.headValue"
+                            args: "{thatStackHead}.options.headValue"
                         }
                     }
                 }
@@ -960,7 +960,7 @@ fluid.registerNamespace("fluid.tests");
     jqUnit.test("thatStack tests", function () {
         var component = fluid.tests.thatStackHead();
         var value = component.child1.getHeadValue();
-        jqUnit.assertValue("Correctly resolved head value through invoker", fluid.defaults("fluid.tests.thatStackHead").headValue, value);
+        jqUnit.assertEquals("Correctly resolved head value through invoker", fluid.defaults("fluid.tests.thatStackHead").headValue, value);
     });
 
     fluid.defaults("fluid.tests.deferredInvoke", {
@@ -1464,6 +1464,50 @@ fluid.registerNamespace("fluid.tests");
         
     });
 
+    /** FLUID-4878 - "this-ist" binding tests **/
+    
+    var NastyThisistThing = function () { };
+    
+    NastyThisistThing.prototype.thisistMethod = function (arg) {
+        this.storedArg = arg; 
+    };
+    
+    // Not worth making a framework facility for this, since most "this-ist" constructors are written by OTHERS
+    // and hence will not be placed in a suitable global namespace. 
+    fluid.tests.makeThisistThing = function () {
+        return new NastyThisistThing();
+    };
+    
+    fluid.defaults("fluid.tests.invokerThis", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        members: {
+            "thisistThing": {
+                 expander: { funcName: "fluid.tests.makeThisistThing" }
+            }  
+        },
+        invokers: {
+            callThisist: {
+                "this": "{that}.thisistThing",
+                method: "thisistMethod",
+                args: "{arguments}.0"
+            }
+        },
+        listeners: {
+            onCreate: {
+                "this": "{that}.thisistThing",
+                method: "thisistMethod",
+                args: 5
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-4878 this-ist invoker", function () {
+        var that = fluid.tests.invokerThis();
+        jqUnit.assertEquals("This-ist method called by onCreate listener", 5, that.thisistThing.storedArg);  
+        that.callThisist(7);
+        jqUnit.assertEquals("This-ist method called by invoker", 7, that.thisistThing.storedArg);  
+    });
+
     /** FLUID-4055 - reinstantiation test **/
     
     fluid.tests.reinsNonComponent = function () {
@@ -1676,6 +1720,36 @@ fluid.registerNamespace("fluid.tests");
             "{mergeComponent}.nothingUseful", options.dangerousParams);
         jqUnit.assertEquals("Dangerous parameters via grade defaults unexpanded",
             "{mergeComponent}.nothingUseful", options.dangerousParamsII);
+    });
+
+    /** FLUID-4987 - double listeners added by demands block **/
+    
+    fluid.defaults("fluid.tests.demandListeners", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        members: {
+            listenerCount: 0  
+        },
+        events: {
+            demandEvent: null
+        }
+    });
+    
+    fluid.tests.demandRecording = function (that) {
+        that.listenerCount ++;
+    };
+    
+    fluid.demands("fluid.tests.demandListeners", [], {
+        options: {
+            listeners: {
+                demandEvent: "fluid.tests.demandRecording"
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-4987 double listener from demands block", function () {
+        var that = fluid.invoke("fluid.tests.demandListeners"); // TODO: Allow components to be "self-reactive"
+        that.events.demandEvent.fire(that);
+        jqUnit.assertEquals("Just one listener notified", 1, that.listenerCount);  
     });
 
     /** Component lifecycle functions and merging test - includes FLUID-4257 **/
@@ -1969,8 +2043,48 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertDeepEq("Children constructed in sort order", [1, 2, 3, 4], testComp.constructRecord);
     });
     
-    /** Tree circularity test (early detection of stack overflow **/
-        
+    /** Tree circularity tests (early detection of stack overflow) **/
+    
+    fluid.defaults("fluid.tests.circularEvent", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            circular: {
+                event: "circular"
+            }
+        }
+    });
+    
+    function circularTest(componentName, message) {
+        jqUnit.test("FLUID-4978 " + message, function () {
+            try {
+                fluid.pushSoftFailure(true);
+                jqUnit.expect(1);
+                var circular = fluid.invokeGlobalFunction(componentName);
+            }
+            catch (e) {
+                if (e instanceof fluid.FluidError) {
+                    jqUnit.assert("Circular construction guarded");
+                }
+                else {
+                    jqUnit.fail("Received raw exception " + e + ": circular construction guard failed");
+                }
+            }
+            finally {
+                fluid.pushSoftFailure(-1);
+            }
+        });
+    };
+    
+    circularTest("fluid.tests.circularEvent", "event circularity test");
+    
+    fluid.defaults("fluid.tests.circularOptions", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        circular1: "{that}.options.circular2",
+        circular2: "{that}.options.circular1"  
+    });
+    
+    circularTest("fluid.tests.circularOptions", "options circularity test");
+    
     fluid.defaults("fluid.tests.circularity", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -2000,19 +2114,10 @@ fluid.registerNamespace("fluid.tests");
             var circular = fluid.tests.circularity();
             // if this test fails, the browser will bomb with a stack overflow 
             jqUnit.assertValue("Circular test delivered instantiator", circular.child1.options.instantiator);
-            
-            // This part of the test can no longer run since FLUID-4563 no longer allows us to dynamically modify options
-            // var rawDefaults = fluid.rawDefaults("fluid.tests.circChild");
-            // delete rawDefaults.mergePolicy;
-            // try {
-            //     var circular2 = fluid.tests.circularity();
-            // } catch (e) {
-            //     jqUnit.assert("Exception caught in circular instantiation");
-            //}
             try {
                 fluid.expandOptions(circular, circular);
             } catch (e2) {
-                jqUnit.assert("Exception caught in circular expansion");
+                jqUnit.assertTrue("Exception caught in circular expansion", e2 instanceof fluid.FluidError);
             }
         } finally {
             fluid.pushSoftFailure(-1);  
@@ -2021,7 +2126,8 @@ fluid.registerNamespace("fluid.tests");
     
     
     /** This test case reproduces a circular reference condition found in the Flash
-     *  implementation of the uploader, which the framework did not properly detect */
+     *  implementation of the uploader, which the framework did not properly detect. In the
+     *  FLUID-4330 framework, this is no longer an error */
      
     fluid.registerNamespace("fluid.tests.circular");
     
@@ -2042,8 +2148,7 @@ fluid.registerNamespace("fluid.tests");
     });
     
     fluid.tests.circular.initEngine = function (that) {
-      // This line, which is a somewhat illegal use of an invoker before construction is complete,
-      // will trigger failure
+        // This line, use of an invoker before construction is complete would once trigger failure
         that.bindEvents();
     };
     
@@ -2074,6 +2179,7 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
+    // NB - this is an old-style "non-merging" demands block, use is deprecated
     fluid.demands("fluid.tests.circular.local", "fluid.tests.circular.strategy", {
         args: [
             "{engine}.swfUpload",
@@ -2082,19 +2188,9 @@ fluid.registerNamespace("fluid.tests");
     });
     
     jqUnit.test("Advanced circularity test I", function () {
-        // If this test fails, it will bomb the browser with an infinite recursion
-        // TODO: In the new framework, this no longer fails! But it probably shouldn't in the
-        // long run anyway
-        try {
-            fluid.pushSoftFailure(true);
-            jqUnit.expect(1);
-            var comp = fluid.tests.circular.strategy();
-            jqUnit.assertValue("Component constructed", comp);
-        } catch (e) {
-            jqUnit.assert("Circular construction guarded");  
-        } finally {
-            fluid.pushSoftFailure(-1);
-        }
+        jqUnit.expect(1);
+        var comp = fluid.tests.circular.strategy();
+        jqUnit.assertValue("Component constructed", comp);
     });
 
     /** Correct resolution of invoker arguments through the tree **/

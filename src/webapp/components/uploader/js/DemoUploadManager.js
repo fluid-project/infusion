@@ -22,9 +22,9 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
     
-    fluid.registerNamespace("fluid.uploader");
+    fluid.registerNamespace("fluid.uploader.demo");
     
-    var startUploading = function (that) {
+    fluid.uploader.demo.uploadNextFile = function (that) {
         // Reset our upload stats for each new file.
         that.demoState.currentFile = that.queue.files[that.demoState.fileIdx];
         that.demoState.chunksForCurrentFile = Math.ceil(that.demoState.currentFile / that.demoState.chunkSize);
@@ -32,10 +32,10 @@ var fluid_1_5 = fluid_1_5 || {};
         that.queue.isUploading = true;
         
         that.events.onFileStart.fire(that.demoState.currentFile);
-        simulateUpload(that);
+        fluid.uploader.demo.simulateUpload(that);
     };
     
-    var updateProgress = function (file, events, demoState, isUploading) {
+    fluid.uploader.demo.updateProgress = function (file, events, demoState, isUploading) {
         if (!isUploading) {
             return;
         }
@@ -45,12 +45,14 @@ var fluid_1_5 = fluid_1_5 || {};
         events.onFileProgress.fire(file, demoState.bytesUploaded, file.size);
     };
     
-    var finishAndContinueOrCleanup = function (that, file) {
+    fluid.uploader.demo.finishAndContinueOrCleanup = function (that, file) {
+        // TODO: it appears that this duplicates handlers in Uploader.js onFileComplete - 
+        // which this component does not fire
         that.queue.finishFile(file);
         that.events.afterFileComplete.fire(file);
         
         if (that.queue.shouldUploadNextFile()) {
-            startUploading(that);
+            fluid.uploader.demo.uploadNextFile(that);
         } else {
             that.events.afterUploadComplete.fire(that.queue.currentBatch.files);
             if (file.status !== fluid.uploader.fileStatusConstants.CANCELLED) {
@@ -59,7 +61,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
-    var finishUploading = function (that) {
+    fluid.uploader.demo.finishUploading = function (that) {
         if (!that.queue.isUploading) {
             return;
         }
@@ -67,10 +69,10 @@ var fluid_1_5 = fluid_1_5 || {};
         var file = that.demoState.currentFile;
         that.events.onFileSuccess.fire(file);
         that.demoState.fileIdx++;
-        finishAndContinueOrCleanup(that, file);
+        fluid.uploader.demo.finishAndContinueOrCleanup(that, file);
     };
     
-    var simulateUpload = function (that) {
+    fluid.uploader.demo.simulateUpload = function (that) {
         if (!that.queue.isUploading) {
             return;
         }
@@ -78,100 +80,65 @@ var fluid_1_5 = fluid_1_5 || {};
         var file = that.demoState.currentFile;
         if (that.demoState.bytesUploaded < file.size) {
             fluid.invokeAfterRandomDelay(function () {
-                updateProgress(file, that.events, that.demoState, that.queue.isUploading);
-                simulateUpload(that);
+                fluid.uploader.demo.updateProgress(file, that.events, that.demoState, that.queue.isUploading);
+                fluid.uploader.demo.simulateUpload(that);
             });
         } else {
-            finishUploading(that);
+            fluid.uploader.demo.finishUploading(that);
         } 
     };
 
-    var stopDemo = function (that) {
+    fluid.uploader.demo.stop = function (that) {
         var file = that.demoState.currentFile;
         file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
         that.queue.shouldStop = true;
         
-        // In SWFUpload's world, pausing is a combinination of an UPLOAD_STOPPED error and a complete.
+        // In SWFUpload's world, pausing is a combination of an UPLOAD_STOPPED error and a complete.
         that.events.onFileError.fire(file, 
                                      fluid.uploader.errorConstants.UPLOAD_STOPPED, 
                                      "The demo upload was paused by the user.");
-        finishAndContinueOrCleanup(that, file);
+        fluid.uploader.demo.finishAndContinueOrCleanup(that, file);
         that.events.onUploadStop.fire();
     };
+
+    fluid.demands("fluid.uploader.uploadNextFile", "fluid.uploader.demo.remote", {
+        funcName: "fluid.uploader.demo.uploadNextFile",
+        args: "{that}"
+    });
     
-    var setupDemo = function (that) {
-        if (that.simulateDelay === undefined || that.simulateDelay === null) {
-            that.simulateDelay = true;
-        }
-          
-        // Initialize state for our upload simulation.
-        that.demoState = {
-            fileIdx: 0,
-            chunkSize: 200000
-        };
-        
-        return that;
-    };
-       
-    /**
-     * The demo remote pretends to upload files to the server, firing all the appropriate events
-     * but without sending anything over the network or requiring a server to be running.
-     * 
-     * @param {FileQueue} queue the Uploader's file queue instance
-     * @param {Object} the Uploader's bundle of event firers
-     * @param {Object} configuration options
-     */
-    fluid.uploader.demoRemote = function (queue, options) {
-        var that = fluid.initLittleComponent("fluid.uploader.demoRemote", options);
-        that.queue = queue;
-        
-        that.uploadNextFile = function () {
-            startUploading(that);   
-        };
-        
-        that.stop = function () {
-            stopDemo(that);
-        };
-        
-        setupDemo(that);
-        return that;
-    };
+    fluid.demands("fluid.uploader.stop", "fluid.uploader.demo.remote", {
+        funcName: "fluid.uploader.demo.stop",
+        args: "{that}"
+    });
     
     /**
      * Invokes a function after a random delay by using setTimeout.
-     * If the simulateDelay option is false, the function is invoked immediately.
-     * This is an odd function, but a potential candidate for central inclusion.
-     * 
      * @param {Function} fn the function to invoke
      */
     fluid.invokeAfterRandomDelay = function (fn) {
         var delay = Math.floor(Math.random() * 200 + 100);
         setTimeout(fn, delay);
     };
+
+    /**
+     * The demo remote pretends to upload files to the server, firing all the appropriate events
+     * but without sending anything over the network or requiring a server to be running.
+     * 
+     * @param {Object} configuration options
+     */
     
-    fluid.defaults("fluid.uploader.demoRemote", {
-        gradeNames: ["fluid.eventedComponent"],
-        argumentMap: {
-            options: 1  
-        },
-        events: {
-            onFileProgress: "{multiFileUploader}.events.onFileProgress",
-            afterFileComplete: "{multiFileUploader}.events.afterFileComplete",
-            afterUploadComplete: "{multiFileUploader}.events.afterUploadComplete",
-            onFileSuccess: "{multiFileUploader}.events.onFileSuccess",
-            onFileStart: "{multiFileUploader}.events.onFileStart",
-            onFileError: "{multiFileUploader}.events.onFileError",
-            onUploadStop: "{multiFileUploader}.events.onUploadStop"
+    fluid.defaults("fluid.uploader.demo.remote", {
+        gradeNames: ["fluid.uploader.remote", "autoInit"],
+        members: {
+            demoState: {
+                fileIdx: 0,
+                chunkSize: 200000
+            }
         }
     });
     
     fluid.demands("fluid.uploader.remote", ["fluid.uploader.multiFileUploader", "fluid.uploader.demo"], {
-        funcName: "fluid.uploader.demoRemote",
-        args: [
-            "{multiFileUploader}.queue",
-            "{multiFileUploader}.events",
-            fluid.COMPONENT_OPTIONS
-        ]
+        funcName: "fluid.uploader.demo.remote"
     });
     
 })(jQuery, fluid_1_5);
