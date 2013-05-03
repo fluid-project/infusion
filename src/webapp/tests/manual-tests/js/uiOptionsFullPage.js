@@ -63,7 +63,7 @@ var demo = demo || {};
         // Tell UIOptions where to redirect to if the user cancels the operation
         uiOptions: {
             options: {
-                gradeNames: ["fluid.uiOptions.defaultSettingsPanels"],
+                gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel"],
                 listeners: {
                     onCancel: function () {
                         alert("Cancelled - would normally cancel any unsaved changes and return to the previous page.");

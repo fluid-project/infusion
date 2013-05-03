@@ -276,21 +276,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uiOptions.eventBinder"
             }
         },
-        members: {
-            // TODO: This information is supposed to be generated from the JSON
-            // schema describing various preferences. For now it's kept in top
-            // level uiOptions to avoid further duplication.
-            defaultModel: {
-                textFont: "default",          // key from classname map
-                theme: "default",             // key from classname map
-                textSize: 1,                  // in points
-                lineSpacing: 1,               // in ems
-                layout: false,                // boolean
-                toc: false,                   // boolean
-                links: false,                 // boolean
-                inputsLarger: false           // boolean
-            }
-        },
         selectors: {
             cancel: ".flc-uiOptions-cancel",
             reset: ".flc-uiOptions-reset",
@@ -316,6 +301,25 @@ var fluid_1_5 = fluid_1_5 || {};
             template: "{templateLoader}.resources.uiOptions"
         },
         autoSave: false
+    });
+
+    fluid.defaults("fluid.uiOptions.defaultModel", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+            // TODO: This information is supposed to be generated from the JSON
+            // schema describing various preferences. For now it's kept in top
+            // level uiOptions to avoid further duplication.
+            defaultModel: {
+                textFont: "default",          // key from classname map
+                theme: "default",             // key from classname map
+                textSize: 1,                  // in points
+                lineSpacing: 1,               // in ems
+                layout: false,                // boolean
+                toc: false,                   // boolean
+                links: false,                 // boolean
+                inputsLarger: false           // boolean
+            }
+        }
     });
     
     // called once markup is applied to the document containing tab component roots

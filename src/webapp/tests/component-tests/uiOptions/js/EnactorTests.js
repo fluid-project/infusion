@@ -51,6 +51,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             funcName: "fluid.tests.getElements",
                             args: ".flc-styleElements"
                         }
+                    },
+                    model: {
+                        value: false
                     }
                 }
             },
@@ -92,7 +95,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.enactor.emphasizeLinks",
                 container: ".flc-emphasizeLinks",
                 options: {
-                    cssClass: "fl-emphasizeLinks-test"
+                    cssClass: "fl-emphasizeLinks-test",
+                    model: {
+                        value: false
+                    }
                 }
             },
             emphasizeLinksTester: {
@@ -129,7 +135,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.enactor.inputsLarger",
                 container: ".flc-inputsLarger",
                 options: {
-                    cssClass: "fl-text-larger"
+                    cssClass: "fl-text-larger",
+                    model: {
+                        value: false
+                    }
                 }
             },
             inputsLargerTester: {
@@ -167,6 +176,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     classes: {
                         "default": "",
                         "test": "fl-test"
+                    },
+                    model: {
+                        value: "default"
                     }
                 }
             },
@@ -268,7 +280,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.enactor.textSizer",
                 container: ".flc-textSizer",
                 options: {
-                    fontSizeMap: fontSizeMap
+                    fontSizeMap: fontSizeMap,
+                    model: {
+                        value: 1
+                    }
                 }
             },
             textSizerTester: {
@@ -381,7 +396,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.enactor.lineSpacer",
                 container: ".flc-lineSpacer",
                 options: {
-                    fontSizeMap: fontSizeMap
+                    fontSizeMap: fontSizeMap,
+                    model: {
+                        value: 1
+                    }
                 }
             },
             lineSpacerTester: {
@@ -432,7 +450,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.enactor.tableOfContentsEnactor",
                 container: ".flc-tableOfContents",
                 options: {
-                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
+                    model: {
+                        toc: false
+                    }
                 }
             },
             tableOfContentsTester: {
@@ -497,7 +518,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             setIE6ColorInversion: {
                 type: "fluid.uiOptions.enactor.IE6ColorInversion",
-                container: ".flc-IE6ColorInversion"
+                container: ".flc-IE6ColorInversion",
+                options: {
+                    model: {
+                        value: "default"
+                    }
+                }
             },
             IE6ColorInversionTester: {
                 type: "fluid.tests.IE6ColorInversionTester"

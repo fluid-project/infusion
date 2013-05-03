@@ -42,7 +42,7 @@ var skon = skon || {};
             },
             uiOptions: {
                 options: {
-                    gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
+                    gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel"]
                 }
             },
             markupRenderer: {

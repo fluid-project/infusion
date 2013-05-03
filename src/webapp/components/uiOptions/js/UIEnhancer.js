@@ -129,6 +129,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "textSize": "value"
+                    },
+                    model: {
+                        value: "{uiOptions}.defaultModel.textSize"
                     }
                 }
             },
@@ -140,6 +143,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "textFont": "value"
+                    },
+                    model: {
+                        value: "{uiOptions}.defaultModel.textFont"
                     }
                 }
             },
@@ -151,6 +157,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "lineSpacing": "value"
+                    },
+                    model: {
+                        value: "{uiOptions}.defaultModel.lineSpacing"
                     }
                 }
             },
@@ -162,6 +171,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "theme": "value"
+                    },
+                    model: {
+                        value: "{uiOptions}.defaultModel.theme"
                     }
                 }
             },
@@ -173,6 +185,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "links": "value"
+                    },
+                    model: {
+                        links: "{uiOptions}.defaultModel.links"
                     }
                 }
             },
@@ -184,6 +199,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "inputsLarger": "value"
+                    },
+                    model: {
+                        inputsLarger: "{uiOptions}.defaultModel.inputsLarger"
                     }
                 }
             },
@@ -200,6 +218,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     listeners: {
                         afterTocRender: "{uiEnhancer}.events.onAsyncEnactorReady",
                         onLateRefreshRelay: "{uiEnhancer}.events.onAsyncEnactorReady"
+                    },
+                    model: {
+                        toc: "{uiOptions}.defaultModel.toc"
                     }
                 }
             },
@@ -210,6 +231,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "theme": "value"
+                    },
+                    model: {
+                        value: "{uiOptions}.defaultModel.theme"
                     }
                 }
             }

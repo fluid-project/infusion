@@ -60,7 +60,7 @@ var demo = demo || {};
         },
         uiOptions: {
             options: {
-                gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
+                gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel"]
             }
         }
     };
