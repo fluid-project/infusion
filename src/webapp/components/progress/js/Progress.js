@@ -15,95 +15,94 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*global fluid_1_5:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, indent: 4 */
 
 var fluid_1_5 = fluid_1_5 || {};
 
-(function ($, fluid) {    
+(function ($, fluid) {
+    fluid.registerNamespace("fluid.progress");    
     
-    var animateDisplay = function (elm, animation, defaultAnimation) {
+    fluid.progress.animateDisplay = function (elm, animation, defaultAnimation, callback) {
         animation = (animation) ? animation : defaultAnimation;
-        elm.animate(animation.params, animation.duration, animation.callback);
+        elm.animate(animation.params, animation.duration, callback);
     };
     
-    var animateProgress = function (elm, width, speed) {
+    fluid.progress.animateProgress = function (elm, width, speed) {
         // de-queue any left over animations
         elm.queue("fx", []); 
-        
         elm.animate({ 
             width: width,
             queue: false
-        }, 
-            speed);
+            }, speed);
     };
     
-    var showProgress = function (that, animation) {
+    fluid.progress.showProgress = function (that, animation) {
+        var firer = that.events.onProgressBegin.fire
         if (animation === false) {
             that.displayElement.show();
+            firer();
         } else {
-            animateDisplay(that.displayElement, animation, that.options.showAnimation);
+            fluid.progress.animateDisplay(that.displayElement, animation, that.options.showAnimation, firer);
         }
     };
     
-    var hideProgress = function (that, delay, animation) {
-        
-        delay = (delay === null || isNaN(delay)) ? that.options.delay : delay;
-        
+    fluid.progress.hideProgress = function (that, delay, animation) {
         if (delay) {
-            // use a setTimeout to delay the hide for n millies, note use of recursion
+            // use a setTimeout to delay the hide for n millis, note use of recursion
             var timeOut = setTimeout(function () {
-                hideProgress(that, 0, animation);
+                fluid.progress.hideProgress(that, 0, animation);
             }, delay);
         } else {
+            var firer = that.events.afterProgressHidden.fire;
             if (animation === false) {
                 that.displayElement.hide();
+                firer();
             } else {
-                animateDisplay(that.displayElement, animation, that.options.hideAnimation);
+                fluid.progress.animateDisplay(that.displayElement, animation, that.options.hideAnimation, firer);
             }
         }   
     };
     
-    var updateWidth = function (that, newWidth, dontAnimate) {
-        dontAnimate  = dontAnimate || false;
+    fluid.progress.updateWidth = function (that, newWidth, dontAnimate) {
         var currWidth = that.indicator.width();
         var direction = that.options.animate;
         if ((newWidth > currWidth) && (direction === "both" || direction === "forward") && !dontAnimate) {
-            animateProgress(that.indicator, newWidth, that.options.speed);
+            fluid.progress.animateProgress(that.indicator, newWidth, that.options.speed);
         } else if ((newWidth < currWidth) && (direction === "both" || direction === "backward") && !dontAnimate) {
-            animateProgress(that.indicator, newWidth, that.options.speed);
+            fluid.progress.animateProgress(that.indicator, newWidth, that.options.speed);
         } else {
             that.indicator.width(newWidth);
         }
     };
          
-    var percentToPixels = function (that, percent) {
+    fluid.progress.percentToPixels = function (that, percent) {
         // progress does not support percents over 100, also all numbers are rounded to integers
         return Math.round((Math.min(percent, 100) * that.progressBar.innerWidth()) / 100);
     };
     
-    var refreshRelativeWidth = function (that) {
-        var pixels = Math.max(percentToPixels(that, parseFloat(that.storedPercent)), that.options.minWidth);
-        updateWidth(that, pixels, true);
+    fluid.progress.refreshRelativeWidth = function (that) {
+        var pixels = Math.max(fluid.progress.percentToPixels(that, parseFloat(that.storedPercent)), that.options.minWidth);
+        fluid.progress.updateWidth(that, pixels, true);
     };
         
-    var initARIA = function (ariaElement, ariaBusyText) {
+    fluid.progress.initARIA = function (ariaElement, ariaBusyText) {
         ariaElement.attr("role", "progressbar");
         ariaElement.attr("aria-valuemin", "0");
         ariaElement.attr("aria-valuemax", "100");
         ariaElement.attr("aria-valuenow", "0");
-        //Empty value for ariaBusyText will default to aria-valuenow.
+        // Empty value for ariaBusyText will default to aria-valuenow.
         if (ariaBusyText) {
             ariaElement.attr("aria-valuetext", "");
         }
         ariaElement.attr("aria-busy", "false");
     };
     
-    var updateARIA = function (that, percent) {
+    fluid.progress.updateARIA = function (that, percent) {
         var str = that.options.strings;
         var busy = percent < 100 && percent > 0;
         that.ariaElement.attr("aria-busy", busy);
         that.ariaElement.attr("aria-valuenow", percent);   
-        //Empty value for ariaBusyText will default to aria-valuenow.
+        // Empty value for ariaBusyText will default to aria-valuenow.
         if (str.ariaBusyText) {
             if (busy) {
                 var busyString = fluid.stringTemplate(str.ariaBusyText, {percentComplete : percent});           
@@ -115,140 +114,119 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
         
-    var updateText = function (label, value) {
+    fluid.progress.updateText = function (label, value) {
         label.html(value);
     };
     
-    var repositionIndicator = function (that) {
+    fluid.progress.repositionIndicator = function (that) {
         that.indicator.css("top", that.progressBar.position().top)
             .css("left", 0)
             .height(that.progressBar.height());
-        refreshRelativeWidth(that);
+        fluid.progress.refreshRelativeWidth(that);
     };
         
-    var updateProgress = function (that, percent, labelText, animationForShow) {
-        
+    fluid.progress.updateProgress = function (that, percent, labelText, animationForShow) {
         // show progress before updating, jQuery will handle the case if the object is already displayed
-        showProgress(that, animationForShow);
+        fluid.progress.showProgress(that, animationForShow);
             
-        // do not update if the value of percent is falsey
         if (percent !== null) {
             that.storedPercent = percent;
         
-            var pixels = Math.max(percentToPixels(that, parseFloat(percent)), that.options.minWidth);   
-            updateWidth(that, pixels);
+            var pixels = Math.max(fluid.progress.percentToPixels(that, parseFloat(percent)), that.options.minWidth);   
+            fluid.progress.updateWidth(that, pixels);
         }
         
         if (labelText !== null) {
-            updateText(that.label, labelText);
+            fluid.progress.updateText(that.label, labelText);
         }
         
         // update ARIA
         if (that.ariaElement) {
-            updateARIA(that, percent);
+            fluid.progress.updateARIA(that, percent);
         }
     };
-        
-    var setupProgress = function (that) {
-        that.displayElement = that.locate("displayElement");
-
-        // hide file progress in case it is showing
-        if (that.options.initiallyHidden) {
-            that.displayElement.hide();
-        }
-
-        that.progressBar = that.locate("progressBar");
-        that.label = that.locate("label");
-        that.indicator = that.locate("indicator");
-        that.ariaElement = that.locate("ariaElement");
-        
-        that.indicator.width(that.options.minWidth);
-
-        that.storedPercent = 0;
-                
-        // initialize ARIA
-        if (that.ariaElement) {
-            initARIA(that.ariaElement, that.options.strings.ariaBusyText);
-        }
-        
-        // afterProgressHidden:  
-        // Registering listener with the callback provided by the user and reinitializing
-        // the event trigger function. 
-        // Note: callback deprecated as of 1.5, use afterProgressHidden event
-        if (that.options.hideAnimation.callback) {
-            that.events.afterProgressHidden.addListener(that.options.hideAnimation.callback);           
-        }
-        
-        // triggers the afterProgressHidden event    
-        // Note: callback deprecated as of 1.5, use afterProgressHidden event
-        that.options.hideAnimation.callback = that.events.afterProgressHidden.fire;
-
-        
-        // onProgressBegin:
-        // Registering listener with the callback provided by the user and reinitializing
-        // the event trigger function.  
-        // Note: callback deprecated as of 1.5, use onProgressBegin event
-        if (that.options.showAnimation.callback) {
-            that.events.onProgressBegin.addListener(that.options.showAnimation.callback);                      
-        } 
-            
-        // triggers the onProgressBegin event
-        // Note: callback deprecated as of 1.5, use onProgressBegin event
-        that.options.showAnimation.callback = that.events.onProgressBegin.fire;
+    
+    fluid.progress.hideElement = function (element, shouldHide) {
+        element.toggle(!shouldHide);
     };
-           
-    /**
+
+   /**
     * Instantiates a new Progress component.
     * 
     * @param {jQuery|Selector|Element} container the DOM element in which the Uploader lives
     * @param {Object} options configuration options for the component.
     */
-    fluid.progress = function (container, options) {
-        var that = fluid.initView("fluid.progress", container, options);
-        setupProgress(that);
-        
-        /**
-         * Shows the progress bar if is currently hidden.
-         * 
-         * @param {Object} animation a custom animation used when showing the progress bar
-         */
-        that.show = function (animation) {
-            showProgress(that, animation);
-        };
-        
-        /**
-         * Hides the progress bar if it is visible.
-         * 
-         * @param {Number} delay the amount of time to wait before hiding
-         * @param {Object} animation a custom animation used when hiding the progress bar
-         */
-        that.hide = function (delay, animation) {
-            hideProgress(that, delay, animation);
-        };
-        
-        /**
-         * Updates the state of the progress bar.
-         * This will automatically show the progress bar if it is currently hidden.
-         * Percentage is specified as a decimal value, but will be automatically converted if needed.
-         * 
-         * 
-         * @param {Number|String} percentage the current percentage, specified as a "float-ish" value 
-         * @param {String} labelValue the value to set for the label; this can be an HTML string
-         * @param {Object} animationForShow the animation to use when showing the progress bar if it is hidden
-         */
-        that.update = function (percentage, labelValue, animationForShow) {
-            updateProgress(that, percentage, labelValue, animationForShow);
-        };
-        
-        that.refreshView = function () {
-            repositionIndicator(that);
-        };
-                        
-        return that;  
-    };
-      
+    
     fluid.defaults("fluid.progress", {
-        gradeNames: "fluid.viewComponent",
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        members: {
+            displayElement: "{that}.dom.displayElement",
+            progressBar: "{that}.dom.progressBar",
+            label: "{that}.dom.label",
+            indicator: "{that}.dom.indicator",
+            ariaElement: "{that}.dom.ariaElement",
+            storedPercent: 0
+        },
+        events: {            
+            onProgressBegin: null,
+            afterProgressHidden: null            
+        },
+        listeners: {
+            onCreate: [ {
+                "this": "{that}.dom.indicator",
+                method: "width",
+                args: "{that}.options.minWidth"
+            }, {
+                funcName: "fluid.progress.hideElement",
+                args: ["{that}.dom.displayElement", "{that}.options.initiallyHidden"]
+            }, {
+                funcName: "fluid.progress.initARIA",
+                args: ["{that}.ariaElement", "{that}.options.strings.ariaBusyText"]
+            }],
+            onProgressBegin: {
+                // Note: callback deprecated as of 1.5, use onProgressBegin event
+                func: "{that}.options.showAnimation.callback"  
+            },  
+            afterProgressHidden: {
+                // Note: callback deprecated as of 1.5, use afterProgressHidden event
+                func: "{that}.options.hideAnimation.callback"  
+            }
+        },
+        invokers: {
+           /**
+            * Shows the progress bar if is currently hidden.
+            * @param {Object} animation a custom animation used when showing the progress bar
+            */
+            show: {
+                funcName: "fluid.progress.showProgress",
+                args: ["{that}", "{arguments}.0"]
+            },
+           /**
+            * Hides the progress bar if it is visible.
+            * @param {Number} delay the amount of time to wait before hiding
+            * @param {Object} animation a custom animation used when hiding the progress bar
+            */
+            hide: {
+                funcName: "fluid.progress.hideProgress",
+                args: ["{that}", "{arguments}.0", "{arguments}.1"]
+            },
+           /**
+            * Updates the state of the progress bar.
+            * This will automatically show the progress bar if it is currently hidden.
+            * Percentage is specified as a decimal value, but will be automatically converted if needed.
+            * @param {Number|String} percentage the current percentage, specified as a "float-ish" value 
+            * @param {String} labelValue the value to set for the label; this can be an HTML string
+            * @param {Object} animationForShow the animation to use when showing the progress bar if it is hidden
+            */
+            update: {
+                funcName: "fluid.progress.updateProgress",
+                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+            },
+            refreshView: {
+                funcName: "fluid.progress.repositionIndicator",
+                args: "{that}"
+            }
+        },
         selectors: {
             displayElement: ".flc-progress", // required, the element that gets displayed when progress is displayed, could be the indicator or bar or some larger outer wrapper as in an overlay effect
             progressBar: ".flc-progress-bar", //required
@@ -272,7 +250,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }, 
             duration: "slow",
             //callback has been deprecated and will be removed as of 1.5, instead use onProgressBegin event 
-            callback: null 
+            callback: fluid.identity
         }, // equivalent of $().fadeIn("slow")
         
         hideAnimation: {
@@ -281,13 +259,8 @@ var fluid_1_5 = fluid_1_5 || {};
             }, 
             duration: "slow", 
             //callback has been deprecated and will be removed as of 1.5, instead use afterProgressHidden event 
-            callback: null
+            callback: fluid.identity
         }, // equivalent of $().fadeOut("slow")
-        
-        events: {            
-            onProgressBegin: null,
-            afterProgressHidden: null            
-        },
 
         minWidth: 5, // 0 length indicators can look broken if there is a long pause between updates
         delay: 0, // the amount to delay the fade out of the progress

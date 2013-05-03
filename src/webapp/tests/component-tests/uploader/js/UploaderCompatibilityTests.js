@@ -21,6 +21,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         fluid.registerNamespace("fluid.tests.uploader");
         
+        fluid.enhance.forgetAll();
+
+        // TODO: Do this manually so that progressiveEnhancer does not forget it each time - need enhancer groupings
+                
+        // Choose html5 configuration for all tests since it will cause resolution of multiFileUpload
+        // and not complain about absence of SWF
+        fluid.tests.uploader.commonTags = {
+            "fluid.browser.supportsBinaryXHR": true,
+            "fluid.browser.supportsFormData": true
+        };
+        
+        fluid.setLogging(true);
+        fluid.setDemandLogging(true);
+        
         jqUnit.module("Uploader Compatibility Tests");
         
         /****************************************
@@ -70,12 +84,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
         
-        fluid.enhance.forgetAll();
-        
-        // Choose html5 configuration for all tests since it will cause resolution of multiFileUpload
-        // and not complain about absence of SWF
-        // TODO: Do this manually so that progressiveEnhancer does not forget it each time - need enhancer groupings
-        fluid.staticEnvironment.uploaderConfig = fluid.typeTag("fluid.browser.supportsBinaryXHR");
         
         fluid.defaults("fluid.tests.uploader.parent", {
             gradeNames: ["fluid.littleComponent", "autoInit"],
@@ -137,6 +145,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.each(optionsTypes, function (optionsType) {
                     jqUnit.test(msg + " " + uploaderConfig.label + " - " + optionsType.label, function () {
                         fluid.enhance.check(tags);
+                        fluid.enhance.check(fluid.tests.uploader.commonTags);
                         var uploader = uploaderConfig.uploader.apply(null, [fluid.copy(optionsType.options), rules]);
                         checkFn(uploader);
                         fluid.enhance.forgetAll();

@@ -132,7 +132,8 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} selectors a collection of named jQuery selectors
      */
     fluid.createDomBinder = function (container, selectors) {
-        var cache = {}, that = {};
+        // don't put on a typename to avoid confusing primitive visitComponentChildren 
+        var cache = {}, that = {id: fluid.allocateGuid()};
         var userJQuery = container.constructor;
         
         function cacheKey(name, thisContainer) {
@@ -256,7 +257,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} that the component instance to attach the new DOM Binder to
      */
     fluid.initDomBinder = function (that, selectors) {
-        that.dom = fluid.createDomBinder(that.container, selectors || that.options.selectors);
+        that.dom = fluid.createDomBinder(that.container, selectors || that.options.selectors || {});
         that.locate = that.dom.locate;
         return that.dom;
     };
