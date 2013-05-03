@@ -1,8 +1,22 @@
 @font-face {
     font-family: "OpenSans";
-    font-style: normal;
+    font-style: 300;
     font-weight: normal;
-    src: url("fonts/OpenSans-Light.ttf");
+    src: url("../../../lib/fonts/OpenSans-Light.ttf");
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    src:url('../../../lib/fonts/OpenSans-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    src:url('../../../lib/fonts/OpenSans-Semibold.ttf');
+    font-weight: 600;
+    font-style: normal;
 }
 
 html {
@@ -69,6 +83,8 @@ html {
     font-size: 1em;
 }
 
+.fl-ui
+
 /* Table of Contents switch */
 .fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc {
     width: 6em;
@@ -96,6 +112,8 @@ html {
 .fl-uiOptions-fatPanel h2 .heading-text {
     float:left;
     padding-top: 0.2em;
+    font-size: 1.3em;
+    font-weight: 600;
 }
 
 .fl-icon-size, .fl-icon-font-style, .fl-icon-line-space, .fl-icon-contrast, .fl-icon-list, .fl-icon-links { 

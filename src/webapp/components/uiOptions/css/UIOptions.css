@@ -228,6 +228,7 @@
     transition-duration: 0.2s;
     transition-property: padding-left, width, background-color, margin-left;
     font-size: 1.2em;
+    font-weight: 600;
 }
 
 /* Hide input */
