@@ -46,7 +46,6 @@ var fluid_1_5 = fluid_1_5 || {};
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
         model: {
-            value: "{uiOptions}.defaultModel.textSize",
             min: 1,
             max: 2
         },
@@ -80,9 +79,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // The default model value represents both the expected format as well as the setting to be applied in the absence of a value passed down to the component.
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: This default value is not contributed and shared out
-        model: {
-            value: "{uiOptions}.defaultModel.textFont"
-        },
+        model: {},
         classnameMap: null, // must be supplied by implementors
         strings: {
             textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"]
@@ -127,7 +124,6 @@ var fluid_1_5 = fluid_1_5 || {};
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
         model: {
-            value: "{uiOptions}.defaultModel.lineSpacing",
             min: 1,
             max: 2
         },
@@ -161,9 +157,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // The default model value represents both the expected format as well as the setting to be applied in the absence of a value passed down to the component.
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: This default value is not contributed and shared out
-        model: {
-            value: "{uiOptions}.defaultModel.theme"
-        },
+        model: {},
         strings: {
             theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
         },
@@ -232,10 +226,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // The default model value represents both the expected format as well as the setting to be applied in the absence of a value passed down to the component.
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: This default value is not contributed and shared out
-        model: {
-            toc: "{uiOptions}.defaultModel.toc",
-            layout: "{uiOptions}.defaultModel.layout"
-        },
+        model: {},
         selectors: {
             toc: ".flc-uiOptions-toc"
         },
@@ -255,10 +246,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: These default values are not contributed and shared out
-        model: {
-            links: "{uiOptions}.defaultModel.links",
-            inputsLarger: "{uiOptions}.defaultModel.inputsLarger"
-        },
+        model: {},
         selectors: {
             links: ".flc-uiOptions-links",
             inputsLarger: ".flc-uiOptions-inputs-larger"
@@ -334,6 +322,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     rules: {
                         "selections.textSize": "value"
                     },
+                    model: {
+                        value: "{uiOptions}.defaultModel.textSize"
+                    },
                     resources: {
                         template: "{templateLoader}.resources.textSizer"
                     }
@@ -347,6 +338,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     gradeNames: "fluid.uiOptions.defaultSettingsPanel",
                     rules: {
                         "selections.lineSpacing": "value"
+                    },
+                    model: {
+                        value: "{uiOptions}.defaultModel.lineSpacing"
                     },
                     resources: {
                         template: "{templateLoader}.resources.lineSpacer"
@@ -363,6 +357,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     rules: {
                         "selections.textFont": "value"
                     },
+                    model: {
+                        value: "{uiOptions}.defaultModel.textFont"
+                    },
                     resources: {
                         template: "{templateLoader}.resources.textFont"
                     }
@@ -377,6 +374,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "selections.theme": "value"
+                    },
+                    model: {
+                        value: "{uiOptions}.defaultModel.theme"
                     },
                     resources: {
                         template: "{templateLoader}.resources.contrast"
@@ -393,6 +393,10 @@ var fluid_1_5 = fluid_1_5 || {};
                         "selections.toc": "toc",
                         "selections.layout": "layout"
                     },
+                    model: {
+                        toc: "{uiOptions}.defaultModel.toc",
+                        layout: "{uiOptions}.defaultModel.layout"
+                    },
                     resources: {
                         template: "{templateLoader}.resources.layoutControls"
                     }
@@ -407,6 +411,10 @@ var fluid_1_5 = fluid_1_5 || {};
                     rules: {
                         "selections.links": "links",
                         "selections.inputsLarger": "inputsLarger"
+                    },
+                    model: {
+                        links: "{uiOptions}.defaultModel.links",
+                        inputsLarger: "{uiOptions}.defaultModel.inputsLarger"
                     },
                     resources: {
                         template: "{templateLoader}.resources.linksControls"
