@@ -81,10 +81,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             settingsStore: {
-                type: "fluid.uiOptions.store",
-                options: {
-                    defaultSiteSettings: "{uiEnhancer}.options.defaultSiteSettings"
-                }
+                type: "fluid.uiOptions.store"
             }
         },
         invokers: {
@@ -103,7 +100,7 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     fluid.uiEnhancer.updateFromSettingsStore = function (that) {
-        that.updateModel(that.settingsStore.fetch());
+        that.updateModel(that.settingsStore.get());
     };
 
     fluid.uiEnhancer.updateModel = function (newModel, applier) {

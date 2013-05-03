@@ -46,7 +46,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
         model: {
-            value: 1,
+            value: "{uiOptions}.defaultModel.textSize",
             min: 1,
             max: 2
         },
@@ -81,7 +81,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: This default value is not contributed and shared out
         model: {
-            value: "default"
+            value: "{uiOptions}.defaultModel.textFont"
         },
         classnameMap: null, // must be supplied by implementors
         strings: {
@@ -127,7 +127,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
         model: {
-            value: 1,
+            value: "{uiOptions}.defaultModel.lineSpacing",
             min: 1,
             max: 2
         },
@@ -162,7 +162,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: This default value is not contributed and shared out
         model: {
-            value: "default"
+            value: "{uiOptions}.defaultModel.theme"
         },
         strings: {
             theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
@@ -233,7 +233,8 @@ var fluid_1_5 = fluid_1_5 || {};
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: This default value is not contributed and shared out
         model: {
-            toc: false
+            toc: "{uiOptions}.defaultModel.toc",
+            layout: "{uiOptions}.defaultModel.layout"
         },
         selectors: {
             toc: ".flc-uiOptions-toc"
@@ -255,8 +256,8 @@ var fluid_1_5 = fluid_1_5 || {};
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: These default values are not contributed and shared out
         model: {
-            links: false,
-            inputsLarger: false
+            links: "{uiOptions}.defaultModel.links",
+            inputsLarger: "{uiOptions}.defaultModel.inputsLarger"
         },
         selectors: {
             links: ".flc-uiOptions-links",

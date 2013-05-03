@@ -21,8 +21,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
-    fluid.registerNamespace("fluid.uiOptions.inline");
-
     /*********************
      * UI Options Inline *
      *********************/
@@ -279,9 +277,19 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         members: {
-            // TODO: FLUID-4686 - this will be replaced by the mechanism of
-            // extracting defaults from the schema.
-            defaultModel: "{uiEnhancer}.settingsStore.options.defaultSiteSettings"
+            // TODO: This information is supposed to be generated from the JSON
+            // schema describing various preferences. For now it's kept in top
+            // level uiOptions to avoid further duplication.
+            defaultModel: {
+                textFont: "default",          // key from classname map
+                theme: "default",             // key from classname map
+                textSize: 1,                  // in points
+                lineSpacing: 1,               // in ems
+                layout: false,                // boolean
+                toc: false,                   // boolean
+                links: false,                 // boolean
+                inputsLarger: false           // boolean
+            }
         },
         selectors: {
             cancel: ".flc-uiOptions-cancel",
@@ -336,7 +344,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.preInit = function (that) {
         that.fetch = function () {
-            var initialModel = that.settingsStore.fetch();
+            var initialModel = that.settingsStore.get();
             initialModel = $.extend(true, {}, that.defaultModel, initialModel);
             that.updateModel(initialModel);
             that.events.onUIOptionsRefresh.fire();
@@ -349,7 +357,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.events.onSave.fire(that.model.selections);
             
             var savedSelections = fluid.copy(that.model.selections);
-            that.settingsStore.save(savedSelections);
+            that.settingsStore.set(savedSelections);
         };
         
         that.saveAndApply = function () {
