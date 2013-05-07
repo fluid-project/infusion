@@ -2434,4 +2434,74 @@ fluid.registerNamespace("fluid.tests");
         });
     });
 
+    /** FLUID-5012: IoCSS doesn't apply the gradeNames option onto the target component **/
+    fluid.defaults("fluid.tests.uio", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            templateLoader: {
+                type: "fluid.tests.templateLoader"
+            },
+        },
+        distributeOptions: {
+            source: "{that}.options.templateLoader",
+            exclusions: [],
+            target: "{that > templateLoader}.options"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.templateLoader", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+      
+    fluid.defaults("fluid.tests.defaultTemplateLoader", {
+        userOption: 10
+    });
+    
+    jqUnit.test("FLUID-5012: Apply gradeNames option onto the target component with IoCSS", function () {
+        var uio = fluid.tests.uio({
+            templateLoader: {
+                gradeNames: ["fluid.tests.defaultTemplateLoader"]
+            }
+        });
+        var expectedGrades = ["autoInit", "fluid.littleComponent", "fluid.tests.templateLoader", "fluid.tests.defaultTemplateLoader"];
+        
+        jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, uio.templateLoader.options.gradeNames);
+        jqUnit.assertEquals("The user option from the grade component is transmitted", 10, uio.templateLoader.options.userOption);
+    });
+    
+    /** FLUID-5013: IoCSS doesn't pass down non-options blocks **/
+    fluid.defaults("fluid.tests.top", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            subComponent: {
+                type: "fluid.tests.subComponent1"
+            },
+        },
+        distributeOptions: {
+            source: "{that}.options.templateLoader",
+            exclusions: [],
+            target: "{that > templateLoader}"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.subComponent1", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+      
+    fluid.defaults("fluid.tests.subComponent2", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        userOption: 1
+    });
+    
+    jqUnit.test("FLUID-5013: Pass down non-options blocks with IoCSS", function () {
+        var top = fluid.tests.top({
+            subComponent: {
+                type: "fluid.tests.subComponent2"
+            }
+        });
+        
+        jqUnit.assertEquals("The non-options blocks are passed down to the target component", "fluid.tests.subComponent2", top.subComponent.typeName);
+        jqUnit.assertEquals("The user options from the new component type are merged into the target component", 1, top.subComponent.options.userOption);
+    });
+    
 })(jQuery); 

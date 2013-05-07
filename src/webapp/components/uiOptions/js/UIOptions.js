@@ -49,10 +49,15 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uiOptions.templateLoader"
             }
         },
+        distributeOptions: [{
+            source: "{that}.options.templateLoader.options",
+            exclusions: [],
+            target: "{that > templateLoader}.options"
+        }],
         uiOptionsTransform: {
             transformer: "fluid.uiOptions.mapOptions",
             config: {
-                "*.templateLoader":                                   "templateLoader",
+//                "*.templateLoader":                                   "templateLoader",
                 "*.templateLoader.*.templatePath.options.value":      "prefix",
                 "*.uiOptionsLoader":                                  "uiOptionsLoader",
                 "*.uiOptionsLoader.container":                        "container",
