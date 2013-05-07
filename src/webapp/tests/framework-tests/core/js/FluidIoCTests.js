@@ -2478,9 +2478,9 @@ fluid.registerNamespace("fluid.tests");
             },
         },
         distributeOptions: {
-            source: "{that}.options.templateLoader",
+            source: "{that}.options.subComponent",
             exclusions: [],
-            target: "{that > templateLoader}"
+            target: "{that > subComponent}"
         }
     });
     
