@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.staticEnvironment.uiOptionsTest = fluid.typeTag("fluid.tests.uiOptions");
 
     // Use temp store rather than the cookie store for setting save
-    fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer", "fluid.tests.uiOptions"], {
+    fluid.demands("fluid.uiOptions.store", ["fluid.uiOptions", "fluid.tests.uiOptions"], {
         funcName: "fluid.tempStore"
     });
 
@@ -116,7 +116,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
 
             function testComponent(uiOptionsLoader, uiOptions) {
-                var defaultSiteSettings = uiOptions.settingsStore.options.defaultSiteSettings;
+                var defaultModel = uiOptions.settingsStore.options.defaultModel;
 
                 fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents[componentName]);
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
@@ -134,12 +134,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 var resetButton = uiOptions.locate("reset");
                 resetButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from original", defaultSiteSettings, uiOptions.model.selections);
+                fluid.tests.uiOptions.checkModelSelections("model from original", defaultModel, uiOptions.model.selections);
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
 
                 cancelButton.click();
                 fluid.tests.uiOptions.checkModelSelections("model from original (correct state after reset and cancel)",
-                    (resetShouldSave ? defaultSiteSettings : fluid.tests.uiOptions.bwSkin), uiOptions.model.selections);
+                    (resetShouldSave ? defaultModel : fluid.tests.uiOptions.bwSkin), uiOptions.model.selections);
 
                 jqUnit.start();
             }
@@ -197,9 +197,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "theme": {
                 "yb": "fl-test"
             }
-        },
-        defaultSiteSettings: {
-            theme: "yb"
         }
     };
 
@@ -264,6 +261,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 "fluid.tests.uiOptions.testComponentIntegration",
                                 extraListener
                             ]
+                        }
+                    }
+                },
+                uiOptions: {
+                    options: {
+                        members: {
+                            defaultModel: {
+                                theme: "yb"
+                            }
                         }
                     }
                 }

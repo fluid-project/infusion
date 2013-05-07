@@ -206,11 +206,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: "body",
                 options: {
                     gradeNames: ["fluid.uiEnhancer.defaultActions"],
-                    components: {
-                        settingsStore: {
-                            type: "fluid.tempStore"
-                        }
-                    },
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
                     classnameMap: {
                         "textFont": {

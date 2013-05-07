@@ -79,19 +79,10 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.defaults("fluid.uiEnhancer", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        components: {
-            settingsStore: {
-                type: "fluid.uiOptions.store"
-            }
-        },
         invokers: {
             updateModel: {
                 funcName: "fluid.uiEnhancer.updateModel",
                 args: ["{arguments}.0", "{uiEnhancer}.applier"]
-            },
-            updateFromSettingsStore: {
-                funcName: "fluid.uiEnhancer.updateFromSettingsStore",
-                args: ["{uiEnhancer}"]
             }
         },
         events: {
@@ -99,16 +90,8 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.uiEnhancer.updateFromSettingsStore = function (that) {
-        that.updateModel(that.settingsStore.get());
-    };
-
     fluid.uiEnhancer.updateModel = function (newModel, applier) {
         applier.requestChange("", newModel);
-    };
-    
-    fluid.uiEnhancer.finalInit = function (that) {
-        that.updateFromSettingsStore();
     };
 
     /*******************************************************************************
@@ -304,9 +287,5 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.originalEnhancerOptions.preInit = function (that) {
         fluid.staticEnvironment.originalEnhancerOptions = that;
     };
-    
-    fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer"], {
-        funcName: "fluid.cookieStore"
-    });
     
 })(jQuery, fluid_1_5);

@@ -56,18 +56,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 "*.uiOptionsLoader.container":                        "container",
                 "*.uiOptionsLoader.*.uiOptions":                      "uiOptions"
             }
-        },
-        derivedDefaults: {
-            uiOptions: {
-                options: {
-                    components: {
-                        settingsStore: "{uiEnhancer}.settingsStore"
-                    },
-                    listeners: {
-                        onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
-                    }
-                }
-            }
         }
     });
     
@@ -274,6 +262,21 @@ var fluid_1_5 = fluid_1_5 || {};
         components: {
             eventBinder: {
                 type: "fluid.uiOptions.eventBinder"
+            },
+            settingsStore: {
+                type: "fluid.uiOptions.store"
+            }
+        },
+        invokers: {
+            /**
+             * Updates the change applier and fires modelChanged on subcomponent fluid.uiOptions.controls
+             *
+             * @param {Object} newModel
+             * @param {Object} source
+             */
+            updateModel: {
+                funcName: "fluid.fireSourcedChange",
+                args: ["{that}.applier", "selections", "{arguments}.0", "{arguments}.1"]
             }
         },
         selectors: {
@@ -295,8 +298,6 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             onAutoSave: "{that}.save"
         },
-        preInitFunction: "fluid.uiOptions.preInit",
-        finalInitFunction: "fluid.uiOptions.finalInit",
         resources: {
             template: "{templateLoader}.resources.uiOptions"
         },
@@ -350,7 +351,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that.fetch = function () {
             var initialModel = that.settingsStore.get();
             initialModel = $.extend(true, {}, that.defaultModel, initialModel);
-            that.updateModel(initialModel);
+            that.updateModel(initialModel, "settingsStore");
             that.events.onUIOptionsRefresh.fire();
         };
 
@@ -386,22 +387,18 @@ var fluid_1_5 = fluid_1_5 || {};
             that.fetch();
         };
         
-        /**
-         * Updates the change applier and fires modelChanged on subcomponent fluid.uiOptions.controls
-         * 
-         * @param {Object} newModel
-         * @param {Object} source
-         */
-        that.updateModel = function (newModel) {
-            that.applier.requestChange("selections", newModel);
-        };
-        
         that.applier.modelChanged.addListener("selections", function (newModel, oldModel, changeRequest) {
-            that.events.modelChanged.fire(newModel, oldModel, changeRequest.source);
+            that.events.modelChanged.fire(newModel, oldModel, changeRequest[0].source);
             if (that.options.autoSave) {
                 that.events.onAutoSave.fire();
             }
         });
+
+        fluid.addSourceGuardedListener(that.applier, "selections", "settingsStore",
+            function (newModel, oldModel, changeRequest) {
+                that.uiEnhancer.updateModel(fluid.get(that.model, changeRequest[0].path))
+            }
+        );
     };
 
     fluid.uiOptions.finalInit = function (that) {
@@ -444,12 +441,8 @@ var fluid_1_5 = fluid_1_5 || {};
         components: {
             enhancer: {
                 type: "fluid.uiEnhancer",
-                createOnEvent: "onReady",
-                options: {
-                    settingsStore: {
-                        type: "fluid.uiEnhancer.tempStore"
-                    }
-                }
+                container: "{preview}.enhancerContainer",
+                createOnEvent: "onReady"
             },
             eventBinder: {
                 type: "fluid.uiOptions.preview.eventBinder",
@@ -496,14 +489,6 @@ var fluid_1_5 = fluid_1_5 || {};
         that.container.attr("src", templateUrl);        
 
     };
-
-    fluid.demands("fluid.uiEnhancer", "fluid.uiOptions.preview", {
-        funcName: "fluid.uiEnhancer",
-        args: [
-            "{preview}.enhancerContainer",
-            "{options}"
-        ]
-    });
     
     /***************************************************
      * UI Options Event binder:                        *
@@ -520,6 +505,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 "{uiOptions}.events.modelChanged": "{preview}.updateModel"
             }
         }
+    });
+
+    fluid.demands("fluid.uiOptions.store", ["fluid.uiOptions"], {
+        funcName: "fluid.cookieStore"
     });
 
 })(jQuery, fluid_1_5);

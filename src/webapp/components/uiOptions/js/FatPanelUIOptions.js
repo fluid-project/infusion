@@ -89,9 +89,6 @@ var fluid_1_5 = fluid_1_5 || {};
                             createOnEvent: "afterRender",
                             options: {
                                 gradeNames: ["fluid.uiEnhancer.defaultActions"],
-                                components: {
-                                    settingsStore: "{pageEnhancer}.settingsStore"  
-                                },
                                 jQuery: "{iframeRenderer}.jQuery",
                                 tocTemplate: "{pageEnhancer}.options.tocTemplate",
                                 events: {
@@ -136,8 +133,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         }
                     },
                     components: {
-                        iframeRenderer: "{fatPanel}.iframeRenderer",
-                        settingsStore: "{uiEnhancer}.settingsStore",
+                        iframeRenderer: "{fatPanel}.iframeRenderer"
                     }
                 }
             }
@@ -202,7 +198,6 @@ var fluid_1_5 = fluid_1_5 || {};
     };
         
     fluid.uiOptions.fatPanel.updateView = function (uiOptions, uiEnhancer) {
-        uiEnhancer.updateFromSettingsStore();
         uiOptions.events.onSignificantDOMChange.fire();
     };
     
