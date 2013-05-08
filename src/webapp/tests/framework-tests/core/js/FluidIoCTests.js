@@ -2504,4 +2504,93 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("The user options from the new component type are merged into the target component", 1, top.subComponent.options.userOption);
     });
     
+    /** FLUID-5014 Case 1 - IoCSS: one source value gets passed down to several subcomponents **/
+    fluid.defaults("fluid.tests.root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            sub1: {
+                type: "fluid.tests.subComponent"
+            },
+            sub2: {
+                type: "fluid.tests.subComponent"
+            },
+            sub3: {
+                type: "fluid.tests.subComponent"
+            }
+        },
+        distributeOptions: [{
+            source: "{that}.options.userOption",
+            exclusions: [],
+            target: "{that > sub1}.options.userOption"
+        }, {
+            source: "{that}.options.userOption",
+            exclusions: [],
+            target: "{that > sub2}.options.userOption"
+        }, {
+            source: "{that}.options.userOption",
+            exclusions: [],
+            target: "{that > sub3}.options.userOption"
+        }]
+    });
+    
+    fluid.defaults("fluid.tests.subComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("one source value gets passed down to several subcomponents", function () {
+        var root = fluid.tests.root({
+            userOption: 2
+        });
+        
+        jqUnit.assertEquals("The user option is passed down to the subcomponent #1", 2, root.sub1.options.userOption);
+        jqUnit.assertEquals("The user option is passed down to the subcomponent #2", 2, root.sub2.options.userOption);
+        jqUnit.assertEquals("The user option is passed down to the subcomponent #3", 2, root.sub3.options.userOption);
+    });
+    
+    /** FLUID-5014 Case 2 - IoCSS: one source value gets passed down to its own and its grade component **/
+    fluid.defaults("fluid.tests.gradeComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            gradeSubComponent: {
+                type: "fluid.tests.gradeSubComponent"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.userOption",
+            exclusions: [],
+            target: "{that > gradeSubComponent}.options.userOption"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.rootComponent", {
+        gradeNames: ["fluid.tests.gradeComponent", "autoInit"],
+        components: {
+            rootSubComponent: {
+                type: "fluid.tests.rootSubComponent"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.userOption",
+            exclusions: [],
+            target: "{that > rootSubComponent}.options.userOption"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.rootSubComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.defaults("fluid.tests.gradeSubComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("one source value gets passed down to its own and its grade component", function () {
+        var root = fluid.tests.rootComponent({
+            userOption: 2
+        });
+        
+        jqUnit.assertEquals("The user option is passed down to the subcomponent of the root component", 2, root.rootSubComponent.options.userOption);
+        jqUnit.assertEquals("The user option is passed down to the subcomponent of the grade component", 2, root.gradeSubComponent.options.userOption);
+    });
+    
 })(jQuery); 
