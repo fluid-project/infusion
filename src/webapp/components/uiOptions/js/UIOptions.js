@@ -49,19 +49,22 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uiOptions.templateLoader"
             }
         },
-        distributeOptions: [{
-            source: "{that}.options.templateLoader.options",
-            exclusions: [],
-            target: "{that > templateLoader}.options"
-        }],
         uiOptionsTransform: {
             transformer: "fluid.uiOptions.mapOptions",
             config: {
-//                "*.templateLoader":                                   "templateLoader",
-                "*.templateLoader.*.templatePath.options.value":      "prefix",
-                "*.uiOptionsLoader":                                  "uiOptionsLoader",
+                // To be replaced by IoCSS when FLUID-5102, FLUID-5103 and FLUID-5105 are resolved.
+                "*.templateLoader":                                   "templateLoader",
+                "*.uiOptionsLoader.*.uiOptions":                      "uiOptions",
+
+                // To be replaced by IoCSS when FLUID-5103 and FLUID-5105 are resolved.
                 "*.uiOptionsLoader.container":                        "container",
-                "*.uiOptionsLoader.*.uiOptions":                      "uiOptions"
+                
+                // To be replaced by IoCSS when FLUID-5104 Case 2 and FLUID-5105 are resolved.
+                // "prefix" options is needed by both "fatPanel" and its grade components "inline".
+                "*.templateLoader.*.templatePath.options.value":      "prefix",
+
+                // To be replaced by IoCSS when FLUID-5105 is resolved.
+                "*.uiOptionsLoader":                                  "uiOptionsLoader"
             }
         },
         derivedDefaults: {
@@ -86,6 +89,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions", {
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
+        // Will be replaced by IoCSS once FLUID-5105 is resolved.
         uiOptionsTransform: {
             transformer: "fluid.uiOptions.mapOptions",
             config: {

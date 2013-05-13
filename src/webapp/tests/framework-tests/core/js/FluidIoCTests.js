@@ -2537,7 +2537,7 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
-    jqUnit.test("one source value gets passed down to several subcomponents", function () {
+    jqUnit.test("FLUID-5014 Case 1: one source value gets passed down to several subcomponents", function () {
         var root = fluid.tests.root({
             userOption: 2
         });
@@ -2584,13 +2584,92 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
-    jqUnit.test("one source value gets passed down to its own and its grade component", function () {
+    jqUnit.test("FLUID-5014 Case 2: one source value gets passed down to its own and its grade component", function () {
         var root = fluid.tests.rootComponent({
             userOption: 2
         });
         
         jqUnit.assertEquals("The user option is passed down to the subcomponent of the root component", 2, root.rootSubComponent.options.userOption);
         jqUnit.assertEquals("The user option is passed down to the subcomponent of the grade component", 2, root.gradeSubComponent.options.userOption);
+    });
+    
+    /** FLUID-5015 - IoCSS: Merge "distributeOptions" of the own component and grade components **/
+    /** Description: If the "distributeOptions" block is defined in both the own component and its grade component(s),
+     * Only the one in the own component is distributed correctly.
+     */
+    fluid.defaults("fluid.tests.myGrade", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            myGradeSubComponent: {
+                type: "fluid.tests.myGradeSubComponent"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.gradeOption",
+            exclusions: [],
+            target: "{that > myGradeSubComponent}.options.gradeOption"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.myRoot", {
+        gradeNames: ["fluid.tests.myGrade", "autoInit"],
+        components: {
+            myRootSubComponent: {
+                type: "fluid.tests.myRootSubComponent"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.rootOption",
+            exclusions: [],
+            target: "{that > myRootSubComponent}.options.rootOption"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.myRootSubComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.defaults("fluid.tests.myGradeSubComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("FLUID-5015 - IoCSS: Merge distributeOptions of the own component and grade components", function () {
+        var root = fluid.tests.myRoot({
+            rootOption: 2,
+            gradeOption: 20
+        });
+        
+        jqUnit.assertEquals("The root option is passed down to the subcomponent of the root component", 2, root.myRootSubComponent.options.rootOption);
+        jqUnit.assertEquals("The grade option is passed down to the subcomponent of the grade component", 20, root.myGradeSubComponent.options.gradeOption);
+    });
+    
+    /** FLUID-5016 - IoCSS: Pass to-be-resolved option to a target **/
+    /** Description: 
+     */
+    fluid.defaults("fluid.tests.own", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            ownSub: {
+                type: "fluid.tests.ownSub"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.toBeResolvedOption",
+            exclusions: [],
+            target: "{that > ownSub}.options.resolvedOption"
+        },
+        toBeResolvedOption: "{that}.options.userOption",
+        userOption: 10
+    });
+    
+    fluid.defaults("fluid.tests.ownSub", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("FLUID-5016: Pass to-be-resolved option to a target", function () {
+        var root = fluid.tests.own();
+        
+        jqUnit.assertEquals("The to-be-resolved option is passed down to the target", 10, root.ownSub.options.resolvedOption);
     });
     
 })(jQuery); 
