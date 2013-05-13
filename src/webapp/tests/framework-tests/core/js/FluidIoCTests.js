@@ -2434,4 +2434,237 @@ fluid.registerNamespace("fluid.tests");
         });
     });
 
+    /** FLUID-5012: IoCSS doesn't apply the gradeNames option onto the target component **/
+    fluid.defaults("fluid.tests.uio", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            templateLoader: {
+                type: "fluid.tests.templateLoader"
+            },
+        },
+        distributeOptions: {
+            source: "{that}.options.templateLoader",
+            exclusions: [],
+            target: "{that > templateLoader}.options"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.templateLoader", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+      
+    fluid.defaults("fluid.tests.defaultTemplateLoader", {
+        userOption: 10
+    });
+    
+    jqUnit.test("FLUID-5012: Apply gradeNames option onto the target component with IoCSS", function () {
+        var uio = fluid.tests.uio({
+            templateLoader: {
+                gradeNames: ["fluid.tests.defaultTemplateLoader"]
+            }
+        });
+        var expectedGrades = ["autoInit", "fluid.littleComponent", "fluid.tests.templateLoader", "fluid.tests.defaultTemplateLoader"];
+        
+        jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, uio.templateLoader.options.gradeNames);
+        jqUnit.assertEquals("The user option from the grade component is transmitted", 10, uio.templateLoader.options.userOption);
+    });
+    
+    /** FLUID-5013: IoCSS doesn't pass down non-options blocks **/
+    fluid.defaults("fluid.tests.top", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            subComponent: {
+                type: "fluid.tests.subComponent1"
+            },
+        },
+        distributeOptions: {
+            source: "{that}.options.subComponent",
+            exclusions: [],
+            target: "{that > subComponent}"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.subComponent1", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+      
+    fluid.defaults("fluid.tests.subComponent2", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        userOption: 1
+    });
+    
+    jqUnit.test("FLUID-5013: Pass down non-options blocks with IoCSS", function () {
+        var top = fluid.tests.top({
+            subComponent: {
+                type: "fluid.tests.subComponent2"
+            }
+        });
+        
+        jqUnit.assertEquals("The non-options blocks are passed down to the target component", "fluid.tests.subComponent2", top.subComponent.typeName);
+        jqUnit.assertEquals("The user options from the new component type are merged into the target component", 1, top.subComponent.options.userOption);
+    });
+    
+    /** FLUID-5014 Case 1 - IoCSS: one source value gets passed down to several subcomponents **/
+    fluid.defaults("fluid.tests.root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            sub1: {
+                type: "fluid.tests.subComponent"
+            },
+            sub2: {
+                type: "fluid.tests.subComponent"
+            },
+            sub3: {
+                type: "fluid.tests.subComponent"
+            }
+        },
+        distributeOptions: [{
+            source: "{that}.options.userOption",
+            exclusions: [],
+            target: "{that > sub1}.options.userOption"
+        }, {
+            source: "{that}.options.userOption",
+            exclusions: [],
+            target: "{that > sub2}.options.userOption"
+        }, {
+            source: "{that}.options.userOption",
+            exclusions: [],
+            target: "{that > sub3}.options.userOption"
+        }]
+    });
+    
+    fluid.defaults("fluid.tests.subComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("FLUID-5014 Case 1: one source value gets passed down to several subcomponents", function () {
+        var root = fluid.tests.root({
+            userOption: 2
+        });
+        
+        jqUnit.assertEquals("The user option is passed down to the subcomponent #1", 2, root.sub1.options.userOption);
+        jqUnit.assertEquals("The user option is passed down to the subcomponent #2", 2, root.sub2.options.userOption);
+        jqUnit.assertEquals("The user option is passed down to the subcomponent #3", 2, root.sub3.options.userOption);
+    });
+    
+    /** FLUID-5014 Case 2 - IoCSS: one source value gets passed down to its own and its grade component **/
+    fluid.defaults("fluid.tests.gradeComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            gradeSubComponent: {
+                type: "fluid.tests.gradeSubComponent"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.userOption",
+            exclusions: [],
+            target: "{that > gradeSubComponent}.options.userOption"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.rootComponent", {
+        gradeNames: ["fluid.tests.gradeComponent", "autoInit"],
+        components: {
+            rootSubComponent: {
+                type: "fluid.tests.rootSubComponent"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.userOption",
+            exclusions: [],
+            target: "{that > rootSubComponent}.options.userOption"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.rootSubComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.defaults("fluid.tests.gradeSubComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("FLUID-5014 Case 2: one source value gets passed down to its own and its grade component", function () {
+        var root = fluid.tests.rootComponent({
+            userOption: 2
+        });
+        
+        jqUnit.assertEquals("The user option is passed down to the subcomponent of the root component", 2, root.rootSubComponent.options.userOption);
+        jqUnit.assertEquals("The user option is passed down to the subcomponent of the grade component", 2, root.gradeSubComponent.options.userOption);
+    });
+    
+    /** FLUID-5017 - IoCSS: Merge "distributeOptions" of the own component and grade components **/
+    fluid.defaults("fluid.tests.myGrade", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            myGradeSubComponent: {
+                type: "fluid.tests.myGradeSubComponent"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.gradeOption",
+            exclusions: [],
+            target: "{that > myGradeSubComponent}.options.gradeOption"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.myRoot", {
+        gradeNames: ["fluid.tests.myGrade", "autoInit"],
+        components: {
+            myRootSubComponent: {
+                type: "fluid.tests.myRootSubComponent"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.rootOption",
+            exclusions: [],
+            target: "{that > myRootSubComponent}.options.rootOption"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.myRootSubComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.defaults("fluid.tests.myGradeSubComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("FLUID-5017 - IoCSS: Merge distributeOptions of the own component and grade components", function () {
+        var root = fluid.tests.myRoot({
+            rootOption: 2,
+            gradeOption: 20
+        });
+        
+        jqUnit.assertEquals("The root option is passed down to the subcomponent of the root component", 2, root.myRootSubComponent.options.rootOption);
+        jqUnit.assertEquals("The grade option is passed down to the subcomponent of the grade component", 20, root.myGradeSubComponent.options.gradeOption);
+    });
+    
+    /** FLUID-5018 - IoCSS: Pass to-be-resolved option to a target **/
+    fluid.defaults("fluid.tests.own", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            ownSub: {
+                type: "fluid.tests.ownSub"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.toBeResolvedOption",
+            exclusions: [],
+            target: "{that > ownSub}.options.resolvedOption"
+        },
+        toBeResolvedOption: "{that}.options.userOption",
+        userOption: 10
+    });
+    
+    fluid.defaults("fluid.tests.ownSub", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("FLUID-5018: Pass to-be-resolved option to a target", function () {
+        var root = fluid.tests.own();
+        
+        jqUnit.assertEquals("The to-be-resolved option is passed down to the target", 10, root.ownSub.options.resolvedOption);
+    });
+    
 })(jQuery); 
