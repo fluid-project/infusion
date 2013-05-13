@@ -85,7 +85,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         classnameMap: null, // must be supplied by implementors
         strings: {
-            textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"]
+            textFont: "{globalBundle}.options.messageBase.textFont"
         },
         controlValues: { 
             textFont: ["default", "times", "comic", "arial", "verdana"]
@@ -165,7 +165,7 @@ var fluid_1_5 = fluid_1_5 || {};
             value: "default"
         },
         strings: {
-            theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
+            theme: "{globalBundle}.options.messageBase.theme"
         },
         controlValues: { 
             theme: ["default", "bw", "wb", "by", "yb"]
