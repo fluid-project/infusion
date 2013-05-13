@@ -123,7 +123,8 @@ var fluid_1_5 = fluid_1_5 || {};
                     model: "{fatPanel}.model",
                     applier: "{fatPanel}.applier",
                     events: {
-                        onSignificantDOMChange: null  
+                        onSignificantDOMChange: null,
+                        updateEnhancerModel: "{that}.events.modelChanged"
                     },
                     listeners: {
                         onCreate: {

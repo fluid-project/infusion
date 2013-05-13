@@ -353,18 +353,21 @@ var fluid_1_5 = fluid_1_5 || {};
             onCreate: "{that}.addListener",
             onDestroy: "{that}.removeListener"
         },
+        events: {
+            updateEnhancerModel: "{fluid.uiOptions}.events.onUIOptionsRefresh"
+        },
         invokers: {
             addListener: {
                 funcName: "fluid.uiOptions.uiEnhancerRelay.addListener",
-                args: ["{fluid.uiOptions}.events.modelChanged", "{that}.updateEnhancerModel"]
+                args: ["{that}.events.updateEnhancerModel", "{that}.updateEnhancerModel"]
             },
             removeListener: {
                 funcName: "fluid.uiOptions.uiEnhancerRelay.removeListener",
-                args: ["{fluid.uiOptions}.events.modelChanged", "{that}.updateEnhancerModel"]
+                args: ["{that}.events.updateEnhancerModel", "{that}.updateEnhancerModel"]
             },
             updateEnhancerModel: {
                 funcName: "fluid.uiOptions.uiEnhancerRelay.updateEnhancerModel",
-                args: ["{uiEnhancer}", "{arguments}.0"]
+                args: ["{uiEnhancer}", "{fluid.uiOptions}.model.selections"]
             }
         }
     });
@@ -378,7 +381,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.uiEnhancerRelay.updateEnhancerModel = function (uiEnhancer, newModel) {
-        uiEnhancer.updateModel(newModel.selections);
+        uiEnhancer.updateModel(newModel);
     };
     
     // called once markup is applied to the document containing tab component roots
