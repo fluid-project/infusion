@@ -1,8 +1,8 @@
 @font-face {
     font-family: "OpenSans";
-    font-style: 300;
-    font-weight: normal;
     src: url("../../../lib/fonts/OpenSans-Light.ttf");
+    font-weight: 300;
+    font-style: normal;    
 }
 
 @font-face {
@@ -125,7 +125,7 @@ html {
     text-transform: none;
     line-height: 1;
     -webkit-font-smoothing: antialiased;
-    float:left;
+    float: left;
     margin: 0.2em 0.3em 0 0;
     font-size: 1.5em; 
 }
@@ -142,22 +142,22 @@ html {
     content: "\e00b";
 }
 .fl-icon-links:before {
-    content: "\e00d";
+    content: "\e00c";
 }
 .fl-icon-simplify:before {
     content: "\e00e";
 }
 .fl-icon-font:before {
-    content: "\e010";
+    content: "\e00f";
 }
 .fl-icon-size:before {
-    content: "\e011";
+    content: "\e010";
 }
 .fl-icon-text-to-speech:before {
-    content: "\e012";
+    content: "\e011";
 }
 .fl-icon-toc:before {
-    content: "\e013";
+	content: "\e012";
 }
 
 /* Theming */
