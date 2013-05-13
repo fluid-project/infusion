@@ -2593,10 +2593,7 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("The user option is passed down to the subcomponent of the grade component", 2, root.gradeSubComponent.options.userOption);
     });
     
-    /** FLUID-5015 - IoCSS: Merge "distributeOptions" of the own component and grade components **/
-    /** Description: If the "distributeOptions" block is defined in both the own component and its grade component(s),
-     * Only the one in the own component is distributed correctly.
-     */
+    /** FLUID-5017 - IoCSS: Merge "distributeOptions" of the own component and grade components **/
     fluid.defaults("fluid.tests.myGrade", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -2643,9 +2640,7 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("The grade option is passed down to the subcomponent of the grade component", 20, root.myGradeSubComponent.options.gradeOption);
     });
     
-    /** FLUID-5016 - IoCSS: Pass to-be-resolved option to a target **/
-    /** Description: 
-     */
+    /** FLUID-5018 - IoCSS: Pass to-be-resolved option to a target **/
     fluid.defaults("fluid.tests.own", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
