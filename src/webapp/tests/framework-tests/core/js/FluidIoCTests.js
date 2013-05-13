@@ -2630,7 +2630,7 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
-    jqUnit.test("FLUID-5015 - IoCSS: Merge distributeOptions of the own component and grade components", function () {
+    jqUnit.test("FLUID-5017 - IoCSS: Merge distributeOptions of the own component and grade components", function () {
         var root = fluid.tests.myRoot({
             rootOption: 2,
             gradeOption: 20
@@ -2661,7 +2661,7 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
-    jqUnit.test("FLUID-5016: Pass to-be-resolved option to a target", function () {
+    jqUnit.test("FLUID-5018: Pass to-be-resolved option to a target", function () {
         var root = fluid.tests.own();
         
         jqUnit.assertEquals("The to-be-resolved option is passed down to the target", 10, root.ownSub.options.resolvedOption);

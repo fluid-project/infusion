@@ -157,10 +157,10 @@ var fluid_1_5 = fluid_1_5 || {};
         }],
         uiOptionsTransform: {
             config: { // For FLUID-4409
-                // To be replaced by IoCSS when FLUID-5106 is resolved.
+                // To be replaced by IoCSS when FLUID-5018 is resolved.
                 "!*.iframeRenderer.*.iframeEnhancer.options":  "outerEnhancerOptions",
                 
-                // To be replaced by IoCSS when FLUID-5104 Case 2 is resolved.
+                // To be replaced by IoCSS when FLUID-5014 Case 2 is resolved.
                 // "prefix" options is required by both "fatPanel" and its grade components "inline".
                 "*.iframeRenderer.options.prefix":             "prefix"
             }
