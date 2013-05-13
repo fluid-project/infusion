@@ -167,9 +167,30 @@ img {
 }
 
 .uio-demo-theme .fl-uiOptions-fatPanel .fl-uiOptions-reset  {
-	border-right: 1px solid #fff;
+    border-right: 1px solid #fff;
 }
 
 .fl-uiOptions-fatPanel .fl-panelBar .fl-uiOptions-reset  {
-	border-right: 1px solid #fff;
+    border-right: 1px solid #fff;
+}
+
+/* Font icons for reset/save tabs */
+.fl-icon-undo, .fl-icon-prefrences {
+    font-family: 'InfusionIcons';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    float:left;
+    margin-right: 0.3em;
+    font-size: 1em; 
+}
+.fl-icon-undo:before {
+    content: "\e008";
+}
+.fl-icon-prefrences:before {
+    content: "\e00f";
 }
