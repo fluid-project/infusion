@@ -114,7 +114,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "textSize": "value"
                     },
                     model: {
-                        value: "{uiOptions}.defaultModel.textSize"
+                        value: "{fluid.uiOptions.defaultModel}.defaultModel.textSize"
                     }
                 }
             },
@@ -128,7 +128,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "textFont": "value"
                     },
                     model: {
-                        value: "{uiOptions}.defaultModel.textFont"
+                        value: "{fluid.uiOptions.defaultModel}.defaultModel.textFont"
                     }
                 }
             },
@@ -142,7 +142,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "lineSpacing": "value"
                     },
                     model: {
-                        value: "{uiOptions}.defaultModel.lineSpacing"
+                        value: "{fluid.uiOptions.defaultModel}.defaultModel.lineSpacing"
                     }
                 }
             },
@@ -156,7 +156,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "theme": "value"
                     },
                     model: {
-                        value: "{uiOptions}.defaultModel.theme"
+                        value: "{fluid.uiOptions.defaultModel}.defaultModel.theme"
                     }
                 }
             },
@@ -170,7 +170,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "links": "value"
                     },
                     model: {
-                        links: "{uiOptions}.defaultModel.links"
+                        links: "{fluid.uiOptions.defaultModel}.defaultModel.links"
                     }
                 }
             },
@@ -184,7 +184,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "inputsLarger": "value"
                     },
                     model: {
-                        inputsLarger: "{uiOptions}.defaultModel.inputsLarger"
+                        inputsLarger: "{fluid.uiOptions.defaultModel}.defaultModel.inputsLarger"
                     }
                 }
             },
@@ -203,7 +203,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         onLateRefreshRelay: "{uiEnhancer}.events.onAsyncEnactorReady"
                     },
                     model: {
-                        toc: "{uiOptions}.defaultModel.toc"
+                        toc: "{fluid.uiOptions.defaultModel}.defaultModel.toc"
                     }
                 }
             },
@@ -216,7 +216,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "theme": "value"
                     },
                     model: {
-                        value: "{uiOptions}.defaultModel.theme"
+                        value: "{fluid.uiOptions.defaultModel}.defaultModel.theme"
                     }
                 }
             }
@@ -260,12 +260,13 @@ var fluid_1_5 = fluid_1_5 || {};
         that.options.originalUserOptions = fluid.copy(uiEnhancerOptions);
         that.uiEnhancerOptions = uiEnhancerOptions;
         fluid.initDependents(that);
+        that.uiEnhancer.updateModel(that.getSettings());
         fluid.staticEnvironment.uiEnhancer = that.uiEnhancer;
         return that;
     };
 
     fluid.defaults("fluid.pageEnhancer", {
-        gradeNames: ["fluid.originalEnhancerOptions"],
+        gradeNames: ["fluid.originalEnhancerOptions", "fluid.uiOptions.defaultModel", "fluid.uiOptions.settingsGetter"],
         components: {
             uiEnhancer: {
                 type: "fluid.uiEnhancer",

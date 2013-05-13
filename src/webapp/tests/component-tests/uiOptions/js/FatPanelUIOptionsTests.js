@@ -31,6 +31,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.defaults("fluid.tests.fatPanelIntegration", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        listeners: {
+            onDestroy: "fluid.tests.clearStore"
+        },
         components: {
             fatPanel: {
                 type: "fluid.uiOptions.fatPanel",
@@ -53,7 +56,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     uiOptions: {
                         options: {
-                            gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel"]
+                            gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel", "fluid.uiOptions.uiEnhancerRelay"]
                         }
                     }
                 }
@@ -63,6 +66,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+
+    // Cleanup listener that restores a global settings store model to default.
+    fluid.tests.clearStore = function () {
+        fluid.staticEnvironment.settingsStore.set();
+    };
 
     fluid.tests.testComponent = function (uiOptionsLoader, uiOptions) {
         jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, uiOptions.iframeRenderer.iframe.is(":visible"));
@@ -93,7 +101,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.tests.afterShowFunc3 = function (fatPanel) {
         return function () {
-            var defaultSiteSettings = fatPanel.pageEnhancer.settingsStore.options.defaultSiteSettings;
+            var defaultSiteSettings = fatPanel.uiOptionsLoader.uiOptions.defaultModel;
             var pageModel = fatPanel.pageEnhancer.model;
             var panelModel = fatPanel.iframeRenderer.iframeEnhancer.model;
             
@@ -110,7 +118,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Fat panel integration tests",
             tests: [{
-                expect: 19,
+                expect: 18,
                 name: "Fat panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testComponent",
@@ -165,6 +173,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 src: "./FatPanelUIOptionsFrame.html"
                             }
                         }
+                    },
+                    uiOptions: {
+                        options: {
+                            members: {
+                                defaultModel: {
+                                    theme: "yb"
+                                }
+                            }
+                        }
                     }
                 })
             },
@@ -202,6 +219,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
 
+        fluid.globalSettingsStore();
         fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
     
         fluid.test.runTests([

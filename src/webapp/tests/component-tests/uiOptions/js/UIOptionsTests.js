@@ -67,7 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
             funcName: "fluid.uiOptions.defaultSettingsPanels",
             options: {
-                gradeNames: ["fluid.uiOptions.defaultModel"],
+                gradeNames: ["fluid.uiOptions.defaultModel", "fluid.uiOptions.uiEnhancerRelay"],
                 components: {
                     uiEnhancer: {
                         type: "fluid.uiEnhancer",
@@ -85,8 +85,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         });
-     
-        fluid.demands("fluid.uiOptions.store", ["fluid.uiOptions", "fluid.uiOptions.tests"], {
+
+        fluid.demands("fluid.uiOptions.store", ["fluid.globalSettingsStore", "fluid.uiOptions.tests"], {
             funcName: "fluid.tempStore"
         });
         
@@ -115,6 +115,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var testUIOptions = function (testFn, uio) {
             uio = uio || fluid.uiOptionsTests;
             uio.testFn = testFn;
+            fluid.globalSettingsStore();
             uio("#ui-options");
         };
         
@@ -376,7 +377,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var container = $("body");
                 jqUnit.assertTrue("Save has been called", saveCalled);
                 
-                var uiEnhancerSettings = uiOptions.settingsStore.get();
+                var uiEnhancerSettings = uiOptions.getSettings();
                 jqUnit.assertDeepEq("bw setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
                 jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-bw"));
                 jqUnit.assertEquals("Text size has been saved", bwSkin.textSize, uiOptions.model.selections.textSize);
@@ -408,7 +409,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 jqUnit.assertEquals("bw setting was set in the model", bwSkin.theme, uiOptions.model.selections.theme);
 
-                var uiEnhancerSettings = uiOptions.settingsStore.get();
+                var uiEnhancerSettings = uiOptions.getSettings();
                 jqUnit.assertUndefined("bw setting was not saved", uiEnhancerSettings.theme);
 
                 uiOptions.events.onUIOptionsRefresh.fire();
@@ -488,15 +489,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             applierRequestChanges(uiOptions, saveModel);
             checkModelSelections("After apply saveModel", saveModel, uiOptions.model.selections);
             saveButton.click();
-            checkModelSelections("After clicking save", saveModel, uiOptions.settingsStore.get());
+            checkModelSelections("After clicking save", saveModel, uiOptions.getSettings());
             applierRequestChanges(uiOptions, cancelModel);
             cancelButton.click();
             checkModelSelections("After applying cancelModel and clicking cancel", saveModel,
-                uiOptions.settingsStore.get());
+                uiOptions.getSettings());
             resetButton.click();
             checkModelSelections("After clicking reset", uiOptions.defaultModel, uiOptions.model.selections);
             cancelButton.click();
-            checkModelSelections("After clicking cancel", saveModel, uiOptions.settingsStore.get());
+            checkModelSelections("After clicking cancel", saveModel, uiOptions.getSettings());
 
             // apply the reset settings to make the test result page more readable
             resetButton.click();
@@ -564,7 +565,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "contrast": false,
                     "layoutControls": false,
                     "linksControls": false,
-                    "options.components.settingsStore": true,
                     "uiEnhancer.options.components.tableOfContentsEnactor": true
                 };
 
@@ -624,7 +624,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "contrast": true,
                     "layoutControls": true,
                     "linksControls": true,
-                    "options.components.settingsStore": true,
                     "uiEnhancer.options.components.tableOfContentsEnactor": true
                 };
 
@@ -657,7 +656,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 uiOptions.updateModel(bwSkin);
                 jqUnit.assertTrue("Model has changed, auto-save changes", saveCalled);
                 
-                var uiEnhancerSettings = uiOptions.settingsStore.get();
+                var uiEnhancerSettings = uiOptions.getSettings();
                 jqUnit.assertDeepEq("bw setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
                 
                 fluid.enhance.forget("fluid.uiOptions.uiOptionsTestsAutoSave");

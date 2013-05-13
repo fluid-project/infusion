@@ -30,8 +30,6 @@ var fluid_1_5 = fluid_1_5 || {};
     /*****************************************
      * Fat Panel UI Options Top Level Driver *
      *****************************************/
-     
-    fluid.registerNamespace("fluid.uiOptions.fatPanel"); 
 
     fluid.defaults("fluid.uiOptions.fatPanel", {
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
@@ -42,7 +40,7 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             onReady: {
                 listener: "fluid.uiOptions.fatPanel.bindEvents",
-                args: ["{fatPanel}.uiOptionsLoader.uiOptions", "{uiEnhancer}", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
+                args: ["{fatPanel}.uiOptionsLoader.uiOptions", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
             }
         },
         selectors: {
@@ -120,6 +118,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 createOnEvent: "templatesAndIframeReady",
                 container: "{iframeRenderer}.renderUIOContainer",
                 options: {
+                    gradeNames: ["fluid.uiOptions.uiEnhancerRelay"],
                     // ensure that model and applier are available to users at top level
                     model: "{fatPanel}.model",
                     applier: "{fatPanel}.applier",
@@ -197,24 +196,24 @@ var fluid_1_5 = fluid_1_5 || {};
         that.iframe.appendTo(that.container);
     };
         
-    fluid.uiOptions.fatPanel.updateView = function (uiOptions, uiEnhancer) {
+    fluid.uiOptions.fatPanel.updateView = function (uiOptions) {
         uiOptions.events.onSignificantDOMChange.fire();
     };
     
-    fluid.uiOptions.fatPanel.bindEvents = function (uiOptions, uiEnhancer, iframeEnhancer, fatPanel) {
+    fluid.uiOptions.fatPanel.bindEvents = function (uiOptions, iframeEnhancer, fatPanel) {
         // TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component - and also uiOptionsLoader which is another child
         fatPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             iframeEnhancer.events.onIframeVisible.fire(iframeEnhancer);
-            fluid.uiOptions.fatPanel.updateView(uiOptions, iframeEnhancer);
+            fluid.uiOptions.fatPanel.updateView(uiOptions);
         });  
     
         uiOptions.events.modelChanged.addListener(function (model) {
-            uiEnhancer.updateModel(model.selections);
+            iframeEnhancer.updateModel(model.selections);
             uiOptions.save();
         });
         uiOptions.events.onReset.addListener(function (uiOptions) {
-            fluid.uiOptions.fatPanel.updateView(uiOptions, iframeEnhancer);
+            fluid.uiOptions.fatPanel.updateView(uiOptions);
         });
         uiOptions.events.onSignificantDOMChange.addListener(function () {
             var dokkument = uiOptions.container[0].ownerDocument;

@@ -24,8 +24,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             createPageEnhancer: null
         },
         components: {
-            uiOptions: {
-                type: "fluid.uiOptions.defaultModel"
+            settingsStore: {
+                type: "fluid.globalSettingsStore"
             },
             pageEnhancer: {
                 type: "fluid.pageEnhancer",

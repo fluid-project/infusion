@@ -139,4 +139,21 @@ var fluid_1_5 = fluid_1_5 || {};
         applier.requestChange("", settings);
     };
 
+    fluid.defaults("fluid.globalSettingsStore", {
+        gradeNames: ["autoInit", "fluid.littleComponent"],
+        components: {
+            settingsStore: {
+                type: "fluid.uiOptions.store"
+            }
+        }
+    });
+
+    fluid.globalSettingsStore.finalInit = function (that) {
+        fluid.staticEnvironment.settingsStore = that.settingsStore;
+    };
+
+    fluid.demands("fluid.uiOptions.store", ["fluid.globalSettingsStore"], {
+        funcName: "fluid.cookieStore"
+    });
+
 })(jQuery, fluid_1_5);

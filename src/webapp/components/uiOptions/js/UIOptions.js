@@ -258,13 +258,10 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.uiOptions", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.settingsGetter", "fluid.uiOptions.settingsSetter", "autoInit"],
         components: {
             eventBinder: {
                 type: "fluid.uiOptions.eventBinder"
-            },
-            settingsStore: {
-                type: "fluid.uiOptions.store"
             }
         },
         invokers: {
@@ -304,6 +301,33 @@ var fluid_1_5 = fluid_1_5 || {};
         autoSave: false
     });
 
+    fluid.defaults("fluid.uiOptions.settingsGetter", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+            getSettings: "{settingsStore}.get"
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.settingsSetter", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        invokers: {
+            setSettings: {
+                funcName: "fluid.uiOptions.settingsSetter.setSettings",
+                args: ["{fluid.uiOptions.defaultModel}", "{arguments}.0", "{settingsStore}.set"]
+            }
+        }
+    });
+
+    fluid.uiOptions.settingsSetter.setSettings = function (defaultModel, model, set) {
+        var userSettings = fluid.copy(model);
+        if (defaultModel) {
+            fluid.remove_if(userSettings, function (settingVal, settingKey) {
+                return settingVal === defaultModel[settingKey]
+            });
+        }
+        set(userSettings);
+    };
+
     fluid.defaults("fluid.uiOptions.defaultModel", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         members: {
@@ -322,6 +346,40 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
+
+    fluid.defaults("fluid.uiOptions.uiEnhancerRelay", {
+        gradeNames: ["autoInit", "fluid.eventedComponent"],
+        listeners: {
+            onCreate: "{that}.addListener",
+            onDestroy: "{that}.removeListener"
+        },
+        invokers: {
+            addListener: {
+                funcName: "fluid.uiOptions.uiEnhancerRelay.addListener",
+                args: ["{fluid.uiOptions}.events.modelChanged", "{that}.updateEnhancerModel"]
+            },
+            removeListener: {
+                funcName: "fluid.uiOptions.uiEnhancerRelay.removeListener",
+                args: ["{fluid.uiOptions}.events.modelChanged", "{that}.updateEnhancerModel"]
+            },
+            updateEnhancerModel: {
+                funcName: "fluid.uiOptions.uiEnhancerRelay.updateEnhancerModel",
+                args: ["{uiEnhancer}", "{arguments}.0"]
+            }
+        }
+    });
+
+    fluid.uiOptions.uiEnhancerRelay.addListener = function (modelChanged, listener) {
+        modelChanged.addListener(listener);
+    };
+
+    fluid.uiOptions.uiEnhancerRelay.removeListener = function (modelChanged, listener) {
+        modelChanged.removeListener(listener);
+    };
+
+    fluid.uiOptions.uiEnhancerRelay.updateEnhancerModel = function (uiEnhancer, newModel) {
+        uiEnhancer.updateModel(newModel.selections);
+    };
     
     // called once markup is applied to the document containing tab component roots
     fluid.uiOptions.finishInit = function (that) {
@@ -349,7 +407,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.preInit = function (that) {
         that.fetch = function () {
-            var initialModel = that.settingsStore.get();
+            var initialModel = that.getSettings();
             initialModel = $.extend(true, {}, that.defaultModel, initialModel);
             that.updateModel(initialModel, "settingsStore");
             that.events.onUIOptionsRefresh.fire();
@@ -362,7 +420,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.events.onSave.fire(that.model.selections);
             
             var savedSelections = fluid.copy(that.model.selections);
-            that.settingsStore.set(savedSelections);
+            that.setSettings(savedSelections);
         };
         
         that.saveAndApply = function () {
@@ -393,12 +451,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 that.events.onAutoSave.fire();
             }
         });
-
-        fluid.addSourceGuardedListener(that.applier, "selections", "settingsStore",
-            function (newModel, oldModel, changeRequest) {
-                that.uiEnhancer.updateModel(fluid.get(that.model, changeRequest[0].path))
-            }
-        );
     };
 
     fluid.uiOptions.finalInit = function (that) {
@@ -442,7 +494,10 @@ var fluid_1_5 = fluid_1_5 || {};
             enhancer: {
                 type: "fluid.uiEnhancer",
                 container: "{preview}.enhancerContainer",
-                createOnEvent: "onReady"
+                createOnEvent: "onReady",
+                options: {
+                    gradeNames: ["fluid.uiOptions.uiEnhancerRelay"]
+                }
             },
             eventBinder: {
                 type: "fluid.uiOptions.preview.eventBinder",
@@ -505,10 +560,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 "{uiOptions}.events.modelChanged": "{preview}.updateModel"
             }
         }
-    });
-
-    fluid.demands("fluid.uiOptions.store", ["fluid.uiOptions"], {
-        funcName: "fluid.cookieStore"
     });
 
 })(jQuery, fluid_1_5);
