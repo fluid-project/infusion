@@ -116,54 +116,48 @@ html {
 }
 
 /* Font Icons */
-.fl-icon-next, .fl-icon-prev, .fl-icon-contrast, .fl-icon-undo, .fl-icon-line-space, .fl-icon-links, .fl-icon-simplify, .fl-icon-prefrences, .fl-icon-font, .fl-icon-size, .fl-icon-text-to-speech, .fl-icon-toc {
-	font-family: 'InfusionIcons';
-	speak: none;
-	font-style: normal;
-	font-weight: normal;
-	font-variant: normal;
-	text-transform: none;
-	line-height: 1;
-	-webkit-font-smoothing: antialiased;
-	float:left;
-	margin: 0.2em 0.3em 0 0;
-	font-size: 1.5em; 
+.fl-icon-next, .fl-icon-prev, .fl-icon-contrast, .fl-icon-undo, .fl-icon-line-space, .fl-icon-links, .fl-icon-simplify, .fl-icon-font, .fl-icon-size, .fl-icon-text-to-speech, .fl-icon-toc {
+    font-family: 'InfusionIcons';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    float:left;
+    margin: 0.2em 0.3em 0 0;
+    font-size: 1.5em; 
 }
 .fl-icon-next:before {
-	content: "\e001";
+    content: "\e001";
 }
 .fl-icon-prev:before {
-	content: "\e002";
+    content: "\e002";
 }
 .fl-icon-contrast:before {
-	content: "\e005";
-}
-.fl-icon-undo:before {
-	content: "\e008";
+    content: "\e005";
 }
 .fl-icon-line-space:before {
-	content: "\e00b";
+    content: "\e00b";
 }
 .fl-icon-links:before {
-	content: "\e00d";
+    content: "\e00d";
 }
 .fl-icon-simplify:before {
-	content: "\e00e";
-}
-.fl-icon-prefrences:before {
-	content: "\e00f";
+    content: "\e00e";
 }
 .fl-icon-font:before {
-	content: "\e010";
+    content: "\e010";
 }
 .fl-icon-size:before {
-	content: "\e011";
+    content: "\e011";
 }
 .fl-icon-text-to-speech:before {
-	content: "\e012";
+    content: "\e012";
 }
 .fl-icon-toc:before {
-	content: "\e013";
+    content: "\e013";
 }
 
 /* Theming */

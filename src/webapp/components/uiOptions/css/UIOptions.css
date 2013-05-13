@@ -280,46 +280,46 @@
 
 /* Font Icons */
 .fl-icon-lines, .fl-icon-indicator, .fl-icon-crossout, .fl-icon-big-a, .fl-icon-small-a, .fl-icon-line-space-expanded, .fl-icon-line-space-condensed {
-	font-family: 'InfusionIcons';
-	speak: none;
-	font-style: normal;
-	font-weight: normal;
-	font-variant: normal;
-	text-transform: none;
-	line-height: 1;
-	-webkit-font-smoothing: antialiased;
-	float:left;
-	margin: 0.2em 0.3em 0 0;
-	font-size: 1.5em; 
+    font-family: 'InfusionIcons';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    float:left;
+    margin: 0.2em 0.3em 0 0;
+    font-size: 1.5em; 
 }
 .fl-icon-lines:before {
-	content: "\e000";
+    content: "\e000";
 }
 .fl-icon-crossout:before,
 .fl-uiOptions .fl-choice .fl-theme-uio-default .fl-crossout:before {
-	content: "\e004";
+    content: "\e004";
 }
 .fl-icon-big-a:before {
-	content: "\e006";
+    content: "\e006";
 }
 .fl-icon-small-a:before {
-	content: "\e007";
+    content: "\e007";
 }
 .fl-icon-line-space-expanded:before {
-	content: "\e009";
+    content: "\e009";
 }
 .fl-icon-line-space-condensed:before {
-	content: "\e00a";
+    content: "\e00a";
 }
 .fl-icon-indicator:before,
 .fl-uiOptions .fl-choice input:checked + div:before {
-	content: "\e003";
+    content: "\e003";
 }
 
 .fl-uiOptions .fl-choice .fl-indicator {    
     font-family: 'InfusionIcons'; 
     font-size: 1.3em;
-    margin: -0.75em 0 0 0.65em;   
+    margin: -0.75em 0 0 0.75em;   
     height: 1em;
 }
 
@@ -328,7 +328,6 @@
     margin-top:-1.75em;
     font-size: 1.85em;
 }
-
 
 /* Theming */
 .fl-theme-bw .ui-slider-horizontal .ui-slider-handle,
