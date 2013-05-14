@@ -34,6 +34,13 @@ var demo = demo || {};
     var pathToTocTemplate = "../../../components/tableOfContents/html/TableOfContents.html";
 
     /**
+     * Initialize a settings store for the page.
+     */
+    demo.initSettingsStore = function () {
+        fluid.globalSettingsStore();
+    };
+
+    /**
      * Initialize UI Enhancer for the page. This function is used by the two full-page
      * UI Options pages as well as by the demo page itself.
      */
@@ -60,7 +67,7 @@ var demo = demo || {};
         },
         uiOptions: {
             options: {
-                gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel"]
+                gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel", "fluid.uiOptions.uiEnhancerRelay"]
             }
         }
     };
