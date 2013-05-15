@@ -313,18 +313,13 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             setSettings: {
                 funcName: "fluid.uiOptions.settingsSetter.setSettings",
-                args: ["{fluid.uiOptions.defaultModel}", "{arguments}.0", "{settingsStore}.set"]
+                args: ["{arguments}.0", "{settingsStore}.set"]
             }
         }
     });
 
-    fluid.uiOptions.settingsSetter.setSettings = function (defaultModel, model, set) {
+    fluid.uiOptions.settingsSetter.setSettings = function (model, set) {
         var userSettings = fluid.copy(model);
-        if (defaultModel) {
-            fluid.remove_if(userSettings, function (settingVal, settingKey) {
-                return settingVal === defaultModel[settingKey]
-            });
-        }
         set(userSettings);
     };
 

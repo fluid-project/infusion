@@ -481,24 +481,42 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals(message + ": Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);
         };
 
+        var checkSettingsStore = function (message, expectedSelections, actualSelections, preSaveSelections) {
+            fluid.each(expectedSelections, function (val, key) {
+                if (val === preSaveSelections[key]) {
+                    jqUnit.assertUndefined("Only exactly changed options should be stored", actualSelections[key]);
+                }
+            });
+        };
+
         var checkSaveCancel = function (uiOptions, saveModel, cancelModel) {
             var saveButton = uiOptions.locate("save");
             var cancelButton = uiOptions.locate("cancel");
             var resetButton = uiOptions.locate("reset");
 
+            jqUnit.assertTrue("Initially, settings store settings are empty",
+                $.isEmptyObject(uiOptions.getSettings()));
+            jqUnit.assertDeepEq("Initially, model should correspond to default model",
+                uiOptions.defaultModel, uiOptions.model.selections);
+
+            var preSaveSelections = fluid.copy(uiOptions.model.selections);
             applierRequestChanges(uiOptions, saveModel);
             checkModelSelections("After apply saveModel", saveModel, uiOptions.model.selections);
+            checkSettingsStore("After apply saveModel", saveModel, uiOptions.model.selections,
+                preSaveSelections);
             saveButton.click();
             checkModelSelections("After clicking save", saveModel, uiOptions.getSettings());
+            checkSettingsStore("After clicking save", saveModel, uiOptions.getSettings(), preSaveSelections);
             applierRequestChanges(uiOptions, cancelModel);
             cancelButton.click();
-            checkModelSelections("After applying cancelModel and clicking cancel", saveModel,
-                uiOptions.getSettings());
+            checkModelSelections("After applying cancelModel and clicking cancel", saveModel, uiOptions.getSettings());
+            checkSettingsStore("After applying cancelModel and clicking cancel", saveModel,
+                uiOptions.getSettings(), preSaveSelections);
             resetButton.click();
             checkModelSelections("After clicking reset", uiOptions.defaultModel, uiOptions.model.selections);
             cancelButton.click();
             checkModelSelections("After clicking cancel", saveModel, uiOptions.getSettings());
-
+            checkSettingsStore("After clicking cancel", saveModel, uiOptions.getSettings(), preSaveSelections);
             // apply the reset settings to make the test result page more readable
             resetButton.click();
             saveButton.click();
@@ -580,13 +598,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
             uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
             uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);
-        };
-        
-        checkModelSelections = function (message, expectedSelections, actualSelections) {
-            jqUnit.assertEquals(message + ": Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
-            jqUnit.assertEquals(message + ": Theme correctly updated", expectedSelections.theme, actualSelections.theme);
-            jqUnit.assertEquals(message + ": Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
-            jqUnit.assertEquals(message + ": Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);
         };
         
         jqUnit.asyncTest("UIOptions Integration tests", function () {
