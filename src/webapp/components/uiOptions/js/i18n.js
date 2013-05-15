@@ -28,12 +28,36 @@ var fluid_1_5 = fluid_1_5 || {};
         // controlValues in fluid.uiOptions.textFont component options.
         textFont: ["Default", "Times New Roman", "Comic Sans", "Arial",
             "Verdana"],
+        textFontLabel: "Text Style",
 
         // UI Options Contrast Settings Panel
         // Note: if you modify these, you need to update the appropriate
         // controlValues in fluid.uiOptions.contrast component options.
         theme: ["Default", "Black on white", "White on black", "Black on yellow",
-            "Yellow on black"]
+            "Yellow on black"],
+        contrastLabel: "Colour & Contrast",
+
+        // Table of Contents Settings Panel
+        tocLabel: "Table of Contents",
+        tocChoiceLabel: "Add a table of contents",
+
+        // Line spacing
+        lineSpacingLabel: "Line Spacing",
+        lineSpacingNarrowIcon: "icon of 3 horizontal lines with narrow spacing",
+        lineSpacingWideIcon: "icon of 3 horizontal lines with wide spacing",
+
+        // Links and Buttons
+        linksLabel: "Links & buttons",
+        linksChoiceLabel: "Underline and bold",
+        inputsChoiceLabel: "Enlarge buttons, menus, text-fields, and other inputs",
+
+        // Text Size
+        textSizeLabel: "Text Size",
+        textSizeSmallIcon: "icon of a small capital letter 'A'",
+        textSizeLargeIcon: "icon of a large capital letter 'A'",
+
+        // Shared
+        multiplier: "times"
     };
 
     fluid.staticEnvironment.globalBundle = fluid.messageResolver({
