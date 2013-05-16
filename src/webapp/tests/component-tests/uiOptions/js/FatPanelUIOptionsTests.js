@@ -56,7 +56,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     uiOptions: {
                         options: {
-                            gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel", "fluid.uiOptions.uiEnhancerRelay"]
+                            gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel.outOfTheBox", "fluid.uiOptions.uiEnhancerRelay"]
                         }
                     }
                 }

@@ -329,6 +329,16 @@ var fluid_1_5 = fluid_1_5 || {};
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
             // level uiOptions to avoid further duplication.
+            defaultModel: {}
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.defaultModel.outOfTheBox", {
+        gradeNames: ["fluid.uiOptions.defaultModel", "autoInit"],
+        members: {
+            // TODO: This information is supposed to be generated from the JSON
+            // schema describing various preferences. For now it's kept in top
+            // level uiOptions to avoid further duplication.
             defaultModel: {
                 textFont: "default",          // key from classname map
                 theme: "default",             // key from classname map

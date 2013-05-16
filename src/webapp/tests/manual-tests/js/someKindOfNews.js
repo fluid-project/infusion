@@ -20,7 +20,8 @@ var skon = skon || {};
 	
     /* Our demo script */   
     skon.slidingUIOptions = function (panel, uioptions) {
-        // First, start up Page Enhancer
+        // First, start up Settings Store and Page Enhancer
+        fluid.globalSettingsStore();
         fluid.pageEnhancer({
             gradeNames: ["fluid.uiEnhancer.defaultActions"],
             classnameMap: {
@@ -42,7 +43,7 @@ var skon = skon || {};
             },
             uiOptions: {
                 options: {
-                    gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel"]
+                    gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel.outOfTheBox", "fluid.uiOptions.uiEnhancerRelay"]
                 }
             },
             markupRenderer: {

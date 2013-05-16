@@ -105,7 +105,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             uiOptions: {
-                type: "fluid.uiOptions.defaultModel"
+                type: "fluid.uiOptions.defaultModel.outOfTheBox"
             },
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
@@ -182,7 +182,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             uiOptions: {
-                type: "fluid.uiOptions.defaultModel",
+                type: "fluid.uiOptions.defaultModel.outOfTheBox",
                 options: {
                     members: {
                         defaultModel: {

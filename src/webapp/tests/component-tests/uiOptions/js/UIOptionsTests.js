@@ -67,7 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
             funcName: "fluid.uiOptions.defaultSettingsPanels",
             options: {
-                gradeNames: ["fluid.uiOptions.defaultModel", "fluid.uiOptions.uiEnhancerRelay"],
+                gradeNames: ["fluid.uiOptions.defaultModel", "fluid.uiOptions.defaultModel.outOfTheBox", "fluid.uiOptions.uiEnhancerRelay"],
                 components: {
                     uiEnhancer: {
                         type: "fluid.uiEnhancer",
@@ -606,7 +606,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsIntegration", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
                 funcName: "fluid.uiOptions.defaultSettingsPanels",
                 options: {
-                    gradeNames: ["fluid.uiOptions.defaultModel"],
+                    gradeNames: ["fluid.uiOptions.defaultModel.outOfTheBox"],
                     components: {
                         uiEnhancer: {
                             type: "fluid.uiEnhancer",

@@ -159,7 +159,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 uiOptions: {
                     options: {
-                        gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel"],
+                        gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel.outOfTheBox"],
                         listeners: {
                             "onSave.munged": testSave
                         }
@@ -186,7 +186,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.uiOptions.enhancerOptions = {
-        gradeNames: ["fluid.uiEnhancer.defaultActions"],
+        gradeNames: ["fluid.uiEnhancer.defaultActions", "fluid.uiOptions.defaultModel.outOfTheBox"],
         tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
         classnameMap: {
             "textFont": {
@@ -241,7 +241,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         uiOptions: {
             options: {
-                gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel", "fluid.uiOptions.uiEnhancerRelay"]
+                gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel.outOfTheBox", "fluid.uiOptions.uiEnhancerRelay"]
             }
         }
     };
