@@ -89,6 +89,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: ["fluid.littleComponent", "autoInit"],
             distributeOptions: {
                 source: "{that}.options",
+                removeSource: true,
                 exclusions: ["components.uploader"],
                 target: "{that > uploader}.options"
             },
