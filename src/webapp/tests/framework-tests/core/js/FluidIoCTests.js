@@ -2463,7 +2463,7 @@ fluid.registerNamespace("fluid.tests");
                 gradeNames: ["fluid.tests.defaultTemplateLoader"]
             }
         });
-        var expectedGrades = ["autoInit", "fluid.littleComponent", "fluid.tests.templateLoader", "fluid.tests.defaultTemplateLoader"];
+        var expectedGrades = ["autoInit", "fluid.littleComponent", "fluid.tests.defaultTemplateLoader", "fluid.tests.templateLoader"];
         
         jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, uio.templateLoader.options.gradeNames);
         jqUnit.assertEquals("The user option from the grade component is transmitted", 10, uio.templateLoader.options.userOption);
@@ -2478,8 +2478,7 @@ fluid.registerNamespace("fluid.tests");
             },
         },
         distributeOptions: {
-            source: "{that}.options.subComponent",
-            exclusions: [],
+            source: "{that}.options.subComponentMaterial",
             target: "{that > subComponent}"
         }
     });
@@ -2495,7 +2494,7 @@ fluid.registerNamespace("fluid.tests");
     
     jqUnit.test("FLUID-5013: Pass down non-options blocks with IoCSS", function () {
         var top = fluid.tests.top({
-            subComponent: {
+            subComponentMaterial: {
                 type: "fluid.tests.subComponent2"
             }
         });
@@ -2505,19 +2504,22 @@ fluid.registerNamespace("fluid.tests");
     });
     
     /** FLUID-5014 Case 1 - IoCSS: one source value gets passed down to several subcomponents **/
-    fluid.defaults("fluid.tests.root", {
+    fluid.defaults("fluid.tests.fluid5014root", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             sub1: {
-                type: "fluid.tests.subComponent"
+                type: "fluid.tests.fluid5014sub"
             },
             sub2: {
-                type: "fluid.tests.subComponent"
+                type: "fluid.tests.fluid5014sub"
             },
             sub3: {
-                type: "fluid.tests.subComponent"
+                type: "fluid.tests.fluid5014sub"
             }
-        },
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid5014distro1", {
         distributeOptions: [{
             source: "{that}.options.userOption",
             exclusions: [],
@@ -2533,26 +2535,41 @@ fluid.registerNamespace("fluid.tests");
         }]
     });
     
-    fluid.defaults("fluid.tests.subComponent", {
+    fluid.defaults("fluid.tests.fluid5014distro2", {
+        distributeOptions: [{ // Check that even when we remove source, we can distribute to multiple targets via one record
+            source: "{that}.options.userOption",
+            removeSource: true,
+            exclusions: [],
+            target: "{that > fluid.tests.fluid5014sub}.options.userOption"
+        }]
+    });
+    
+    fluid.defaults("fluid.tests.fluid5014sub", {
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
-    jqUnit.test("FLUID-5014 Case 1: one source value gets passed down to several subcomponents", function () {
-        var root = fluid.tests.root({
-            userOption: 2
+    fluid.tests.testDistro = function (distroGrade) {
+       jqUnit.test("FLUID-5014 Case 1: one source value gets passed down to several subcomponents - " + distroGrade, function () {
+            var root = fluid.tests.fluid5014root({
+                gradeNames: distroGrade,
+                userOption: 2
+            });
+            
+            jqUnit.assertEquals("The user option is passed down to the subcomponent #1", 2, root.sub1.options.userOption);
+            jqUnit.assertEquals("The user option is passed down to the subcomponent #2", 2, root.sub2.options.userOption);
+            jqUnit.assertEquals("The user option is passed down to the subcomponent #3", 2, root.sub3.options.userOption);
         });
-        
-        jqUnit.assertEquals("The user option is passed down to the subcomponent #1", 2, root.sub1.options.userOption);
-        jqUnit.assertEquals("The user option is passed down to the subcomponent #2", 2, root.sub2.options.userOption);
-        jqUnit.assertEquals("The user option is passed down to the subcomponent #3", 2, root.sub3.options.userOption);
-    });
+    };
+    
+    fluid.tests.testDistro("fluid.tests.fluid5014distro1");
+    fluid.tests.testDistro("fluid.tests.fluid5014distro2");
     
     /** FLUID-5014 Case 2 - IoCSS: one source value gets passed down to its own and its grade component **/
-    fluid.defaults("fluid.tests.gradeComponent", {
+    fluid.defaults("fluid.tests.fluid5014gradeComponent", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             gradeSubComponent: {
-                type: "fluid.tests.gradeSubComponent"
+                type: "fluid.tests.fluid5014gradeSubComponent"
             }
         },
         distributeOptions: {
@@ -2562,11 +2579,11 @@ fluid.registerNamespace("fluid.tests");
         }
     });
     
-    fluid.defaults("fluid.tests.rootComponent", {
-        gradeNames: ["fluid.tests.gradeComponent", "autoInit"],
+    fluid.defaults("fluid.tests.fluid5014rootComponent", {
+        gradeNames: ["fluid.tests.fluid5014gradeComponent", "autoInit"],
         components: {
             rootSubComponent: {
-                type: "fluid.tests.rootSubComponent"
+                type: "fluid.tests.fluid5014rootSubComponent"
             }
         },
         distributeOptions: {
@@ -2576,16 +2593,16 @@ fluid.registerNamespace("fluid.tests");
         }
     });
     
-    fluid.defaults("fluid.tests.rootSubComponent", {
+    fluid.defaults("fluid.tests.fluid5014rootSubComponent", {
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
-    fluid.defaults("fluid.tests.gradeSubComponent", {
+    fluid.defaults("fluid.tests.fluid5014gradeSubComponent", {
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
     jqUnit.test("FLUID-5014 Case 2: one source value gets passed down to its own and its grade component", function () {
-        var root = fluid.tests.rootComponent({
+        var root = fluid.tests.fluid5014rootComponent({
             userOption: 2
         });
         
@@ -2630,7 +2647,7 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
-    jqUnit.test("FLUID-5017 - IoCSS: Merge distributeOptions of the own component and grade components", function () {
+    jqUnit.test("FLUID-5017: Merge distributeOptions of the own component and grade components", function () {
         var root = fluid.tests.myRoot({
             rootOption: 2,
             gradeOption: 20
