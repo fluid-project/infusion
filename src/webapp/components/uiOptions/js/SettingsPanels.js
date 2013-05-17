@@ -57,16 +57,12 @@ var fluid_1_5 = fluid_1_5 || {};
             largeIcon: ".flc-uiOptions-min-text-size-largeIcon",
             multiplier: ".flc-uiOptions-multiplier"
         },
-        strings: {
-            label: "{globalBundle}.options.messageBase.textSizeLabel",
-            smallIcon: "{globalBundle}.options.messageBase.textSizeSmallIcon",
-            largeIcon: "{globalBundle}.options.messageBase.textSizeLargeIcon",
-            multiplier: "{globalBundle}.options.messageBase.multiplier"
-        },
+        strings: {},
+        parentBundle: "{globalBundle}",
         protoTree: {
-            label: {messagekey: "label"},
-            smallIcon: {messagekey: "smallIcon"},
-            largeIcon: {messagekey: "largeIcon"},
+            label: {messagekey: "textSizeLabel"},
+            smallIcon: {messagekey: "textSizeSmallIcon"},
+            largeIcon: {messagekey: "textSizeLargeIcon"},
             multiplier: {messagekey: "multiplier"},
             textSize: {
                 decorators: {
@@ -102,9 +98,9 @@ var fluid_1_5 = fluid_1_5 || {};
             label: ".flc-uiOptions-text-font-label"
         },
         strings: {
-            textFont: "{globalBundle}.options.messageBase.textFont",
-            label: "{globalBundle}.options.messageBase.textFontLabel"
+            textFont: "{globalBundle}.options.messageBase.textFont"
         },
+        parentBundle: "{globalBundle}",
         produceTree: "fluid.uiOptions.textFont.produceTree",
         classnameMap: null, // must be supplied by implementors
         controlValues: { 
@@ -115,7 +111,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uiOptions.textFont.produceTree = function (that) {
         // render drop down list box
         return {
-            label: that.options.strings.label,
+            label: {messagekey: "textFontLabel"},
             textFont: {
                 optionnames: that.options.strings.textFont,
                 optionlist: that.options.controlValues.textFont,
@@ -155,16 +151,12 @@ var fluid_1_5 = fluid_1_5 || {};
             wideIcon: ".flc-uiOptions-line-spacing-wideIcon",
             multiplier: ".flc-uiOptions-multiplier"
         },
-        strings: {
-            label: "{globalBundle}.options.messageBase.lineSpacingLabel",
-            narrowIcon: "{globalBundle}.options.messageBase.lineSpacingNarrowIcon",
-            wideIcon: "{globalBundle}.options.messageBase.lineSpacingWideIcon",
-            multiplier: "{globalBundle}.options.messageBase.multiplier"
-        },
+        strings: {},
+        parentBundle: "{globalBundle}",
         protoTree: {
-            label: {messagekey: "label"},
-            narrowIcon: {messagekey: "narrowIcon"},
-            wideIcon: {messagekey: "wideIcon"},
+            label: {messagekey: "lineSpacingLabel"},
+            narrowIcon: {messagekey: "lineSpacingNarrowIcon"},
+            wideIcon: {messagekey: "lineSpacingWideIcon"},
             multiplier: {messagekey: "multiplier"},
             lineSpacing: {
                 decorators: {
@@ -205,9 +197,9 @@ var fluid_1_5 = fluid_1_5 || {};
             label: ".flc-uiOptions-contrast-label"
         },
         strings: {
-            theme: "{globalBundle}.options.messageBase.theme",
-            label: "{globalBundle}.options.messageBase.contrastLabel"
+            theme: "{globalBundle}.options.messageBase.theme"
         },
+        parentBundle: "{globalBundle}",
         repeatingSelectors: ["themeRow"],
         produceTree: "fluid.uiOptions.contrast.produceTree",
         controlValues: { 
@@ -238,7 +230,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.contrast.produceTree = function (that) {
         return {
-            label: that.options.strings.label,
+            label: {messagekey: "contrastLabel"},
             expander: {
                 type: "fluid.renderer.selection.inputs",
                 rowID: "themeRow",
@@ -274,13 +266,11 @@ var fluid_1_5 = fluid_1_5 || {};
             label: ".flc-uiOptions-toc-label",
             choiceLabel: ".flc-uiOptions-toc-choice-label"
         },
-        strings: {
-            label: "{globalBundle}.options.messageBase.tocLabel",
-            choiceLabel: "{globalBundle}.options.messageBase.tocChoiceLabel"
-        },
+        strings: {},
+        parentBundle: "{globalBundle}",
         protoTree: {
-            label: {messagekey: "label"},
-            choiceLabel: {messagekey: "choiceLabel"},
+            label: {messagekey: "tocLabel"},
+            choiceLabel: {messagekey: "tocChoiceLabel"},
             toc: "${toc}"
         }
     });
@@ -307,13 +297,10 @@ var fluid_1_5 = fluid_1_5 || {};
             linksChoiceLabel: ".flc-uiOptions-links-choice-label",
             inputsChoiceLabel: ".flc-uiOptions-links-inputs-choice-label"
         },
-        strings: {
-            label: "{globalBundle}.options.messageBase.linksLabel",
-            linksChoiceLabel: "{globalBundle}.options.messageBase.linksChoiceLabel",
-            inputsChoiceLabel: "{globalBundle}.options.messageBase.inputsChoiceLabel"
-        },
+        strings: {},
+        parentBundle: "{globalBundle}",
         protoTree: {
-            label: {messagekey: "label"},
+            label: {messagekey: "linksLabel"},
             linksChoiceLabel: {messagekey: "linksChoiceLabel"},
             inputsChoiceLabel: {messagekey: "inputsChoiceLabel"},
             links: "${links}",
