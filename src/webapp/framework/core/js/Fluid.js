@@ -353,6 +353,10 @@ var fluid = fluid || fluid_1_5;
         return obj && typeof (obj.nodeType) === "number";
     };
     
+    fluid.isDOMish = function (obj) {
+        return fluid.isDOMNode(obj) || obj.jquery;
+    };
+    
     /** Return an empty container as the same type as the argument (either an
      * array or hash */
     fluid.freshContainer = function (tocopy) {
@@ -1483,7 +1487,7 @@ var fluid = fluid || fluid_1_5;
 
         if (thisSource !== undefined) {
             if (!newPolicy.func && thisSource !== null && typeof (thisSource) === "object" &&
-                    !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
+                    !fluid.isDOMish(thisSource) && thisSource !== fluid.VALUE &&
                     !newPolicy.preserve && !newPolicy.nomerge) {
                 if (primitiveTarget) {
                     togo = thisTarget = fluid.freshContainer(thisSource);
