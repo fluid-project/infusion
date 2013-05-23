@@ -362,6 +362,7 @@ var fluid_1_5 = fluid_1_5 || {};
         distributeOptions: {
             // Allow the uploader implementation component to impersonate the exterior exposed "fluid.uploader" by broadcasting all options to it
             source: "{that}.options",
+            removeSource: true,
             exclusions: ["components.uploaderContext", "components.uploaderImpl"],
             target: "{that > uploaderImpl}.options"
         },

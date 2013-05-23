@@ -137,21 +137,35 @@ var fluid_1_5 = fluid_1_5 || {};
                     },
                     components: {
                         iframeRenderer: "{fatPanel}.iframeRenderer",
-                        settingsStore: "{uiEnhancer}.settingsStore",
+                        settingsStore: "{uiEnhancer}.settingsStore"
                     }
                 }
             }
         },
+        distributeOptions: [{
+            source: "{that}.options.slidingPanel.options",
+            exclusions: [],
+            target: "{that > slidingPanel}.options"
+        }, {
+            source: "{that}.options.iframeRenderer.options",
+            exclusions: [],
+            target: "{that > iframeRenderer}.options"
+        }, {
+            source: "{that}.options.iframe",
+            exclusions: [],
+            target: "{that}.options.selectors.iframe"
+        }],
         uiOptionsTransform: {
             config: { // For FLUID-4409
+                // To be replaced by IoCSS when FLUID-5018 is resolved.
                 "!*.iframeRenderer.*.iframeEnhancer.options":  "outerEnhancerOptions",
-                "*.slidingPanel":                              "slidingPanel",
-                "*.iframeRenderer":                            "iframeRenderer",
-                "*.iframeRenderer.options.prefix":             "prefix",
-                "selectors.iframe":                            "iframe"
+                
+                // To be replaced by IoCSS when FLUID-5014 Case 2 is resolved.
+                // "prefix" options is required by both "fatPanel" and its grade components "inline".
+                "*.iframeRenderer.options.prefix":             "prefix"
             }
         },
-        outerEnhancerOptions:"{originalEnhancerOptions}.options.originalUserOptions"
+        outerEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions"
     });
     
     /*****************************************

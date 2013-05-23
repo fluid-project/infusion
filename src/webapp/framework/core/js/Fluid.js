@@ -1207,6 +1207,10 @@ var fluid = fluid || fluid_1_5;
         });
     };
     
+    fluid.arrayConcatPolicy = function (target, source) {
+        return fluid.makeArray(target).concat(fluid.makeArray(source));
+    };
+    
     fluid.uniqueArrayConcatPolicy = function (target, source) {
         target = (target || []).concat(source);
         fluid.unique(target.sort());
@@ -1363,6 +1367,7 @@ var fluid = fluid || fluid_1_5;
     
     fluid.rootMergePolicy = $.extend({
             gradeNames: fluid.uniqueArrayConcatPolicy,
+            distributeOptions: fluid.arrayConcatPolicy,
             transformOptions: "replace"
         },
         fluid.transform(fluid.lifecycleFunctions, function () {
