@@ -102,9 +102,91 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    fluid.defaults("fluid.tests.modelRelayTransformation", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            modelRelayWrapper: {
+                type: "fluid.uiOptions.modelRelayTransformationWrapper"
+            },
+            modelRelayTester: {
+                type: "fluid.tests.modelRelayTransformationTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.modelRelayTransformationWrapper", {
+        gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
+        model: {
+            wrapperValue: null
+        },
+        components: {
+            modelRelayImpl: {
+                type: "fluid.uiOptions.modelRelay",
+                options: {
+                    sourceApplier: "{modelRelayTransformationWrapper}.applier",
+                    rules: {
+                        "wrapperValue": {
+                            path: "value",
+                            func: "fluid.uiOptions.modelRelayTransformationWrapper.transform"
+                        }
+                    },
+                    model: {
+                        value: null
+                    },
+                    finalInit: "fluid.uiOptions.modelRelay.finalInit"
+                }
+            }
+        }
+    });
+
+    fluid.uiOptions.modelRelayTransformationWrapper.transform = function (value) {
+        return value.length;
+    };
+
+    fluid.tests.checkTransformedResult = function (expectedValue) {
+        return function () {
+            jqUnit.assertEquals("The applier change request on the modelRelay wrapper produces the transformed value", expectedValue, resultValue);
+        };
+    };
+
+    fluid.defaults("fluid.tests.modelRelayTransformationTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        testOptions: {
+            newValue1: "7 chars",
+            newValue1length: 7,
+            newValue2: "This string has 29 characters",
+            newValue2length: 29
+        },
+        modules: [{
+            name: "Test model relay transformation",
+            tests: [{
+                expect: 2,
+                name: "The applier change request on the modelRelay wrapper produces the transformed value",
+                sequence: [{
+                    func: "{modelRelayWrapper}.applier.requestChange",
+                    args: ["wrapperValue", "{that}.options.testOptions.newValue1"]
+                }, {
+                    listenerMaker: "fluid.tests.checkTransformedResult",
+                    makerArgs: ["{that}.options.testOptions.newValue1length"],
+                    spec: {path: "wrapperValue", priority: "last"},
+                    changeEvent: "{modelRelayWrapper}.applier.modelChanged"
+                }, {
+                    func: "{modelRelayWrapper}.applier.requestChange",
+                    args: ["wrapperValue", "{that}.options.testOptions.newValue2"]
+                }, {
+                    listenerMaker: "fluid.tests.checkTransformedResult",
+                    makerArgs: ["{that}.options.testOptions.newValue2length"],
+                    spec: {path: "wrapperValue", priority: "last"},
+                    changeEvent: "{modelRelayWrapper}.applier.modelChanged"
+                }]
+            }]
+        }]
+    });
+
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.tests.modelRelay"
+            "fluid.tests.modelRelay",
+            "fluid.tests.modelRelayTransformation"
         ]);
     });
 

@@ -23,8 +23,11 @@ var fluid_1_5 = fluid_1_5 || {};
      * modelRelay
      *
      * The "model relay" system - a framework sketch for a junction between an applier
-     * bound to one model and another. It accepts (currently) one type of handler:
-     * a simple string representing a direct relay between changes to one path and another
+     * bound to one model and another. It accepts (currently) two types of handlers:
+     * i) a simple string representing a direct relay between changes to one path and another
+     * ii) a general (irreversible) transform of the value change. This takes the form of an
+     *     object specifying the internal key and a transformation function that returns the
+     *     transformed value: {path: <string>, func: <function>}
      ***************************************************************************************/
 
     fluid.defaults("fluid.uiOptions.modelRelay", {
@@ -39,15 +42,27 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.modelRelay.postInit = function (that) {
         fluid.transform(that.options.rules, function (internalKey, sourceKey) {
+            if (typeof (internalKey) !== "string") {
+                var funcval = fluid.getGlobalValue(internalKey.func);
+                if (typeof (funcval) !== "function") {
+                    fluid.fail("Relay func " + internalKey.func + " could not be looked up for rule " + sourceKey);
+                }
+                that.options.rules[sourceKey].func = funcval;
+            }
+
             that.applier.modelChanged.addListener(internalKey, function (newModel, oldModel) {
                 if (!that.applier.hasChangeSource(sourceKey)) {
                     fluid.fireSourcedChange(that.options.sourceApplier, sourceKey, fluid.get(newModel, internalKey), internalKey);
                 }
             });
-            
             that.options.sourceApplier.modelChanged.addListener(sourceKey, function (newModel, oldModel) {
                 if (!that.options.sourceApplier.hasChangeSource(internalKey)) {
-                    fluid.fireSourcedChange(that.applier, internalKey, fluid.get(newModel, sourceKey), sourceKey);
+                    if (typeof (internalKey) !== "string") {
+                        newModel[sourceKey] = that.options.rules[sourceKey].func.apply(null, [newModel[sourceKey]]);
+                        fluid.fireSourcedChange(that.applier, that.options.rules[sourceKey].path, fluid.get(newModel, sourceKey), sourceKey);
+                    } else {
+                        fluid.fireSourcedChange(that.applier, internalKey, fluid.get(newModel, sourceKey), sourceKey);
+                    }
                 }
             });
         });
