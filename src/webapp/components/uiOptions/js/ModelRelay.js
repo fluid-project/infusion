@@ -43,11 +43,13 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uiOptions.modelRelay.postInit = function (that) {
         fluid.transform(that.options.rules, function (internalKey, sourceKey) {
             if (typeof (internalKey) !== "string") {
-                var funcval = fluid.getGlobalValue(internalKey.func);
-                if (typeof (funcval) !== "function") {
-                    fluid.fail("Relay func " + internalKey.func + " could not be looked up for rule " + sourceKey);
+                if (typeof (internalKey.func) !== "function") {
+                    var funcval = fluid.getGlobalValue(internalKey.func);
+                    if (typeof (funcval) !== "function") {
+                        fluid.fail("Relay func " + internalKey.func + " could not be looked up for rule " + sourceKey);
+                    }
+                    internalKey.func = funcval;
                 }
-                that.options.rules[sourceKey].func = funcval;
             }
 
             that.applier.modelChanged.addListener(internalKey, function (newModel, oldModel) {
@@ -55,11 +57,15 @@ var fluid_1_5 = fluid_1_5 || {};
                     fluid.fireSourcedChange(that.options.sourceApplier, sourceKey, fluid.get(newModel, internalKey), internalKey);
                 }
             });
+
             that.options.sourceApplier.modelChanged.addListener(sourceKey, function (newModel, oldModel) {
                 if (!that.options.sourceApplier.hasChangeSource(internalKey)) {
                     if (typeof (internalKey) !== "string") {
-                        newModel[sourceKey] = that.options.rules[sourceKey].func.apply(null, [newModel[sourceKey]]);
-                        fluid.fireSourcedChange(that.applier, that.options.rules[sourceKey].path, fluid.get(newModel, sourceKey), sourceKey);
+                        if (typeof (internalKey.func) !== "function") {
+                            fluid.fail("Rule for " + sourceKey + " missing valid funcion");
+                        }
+                        newModel[sourceKey] = internalKey.func(newModel[sourceKey]);
+                        fluid.fireSourcedChange(that.applier, internalKey.path, fluid.get(newModel, sourceKey), sourceKey);
                     } else {
                         fluid.fireSourcedChange(that.applier, internalKey, fluid.get(newModel, sourceKey), sourceKey);
                     }

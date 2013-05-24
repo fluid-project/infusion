@@ -117,23 +117,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.uiOptions.modelRelayTransformationWrapper", {
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
         model: {
-            wrapperValue: null
+            wrapperValue1: null,
+            wrapperValue2: null
         },
+        increment: 10,
         components: {
             modelRelayImpl: {
                 type: "fluid.uiOptions.modelRelay",
                 options: {
                     sourceApplier: "{modelRelayTransformationWrapper}.applier",
                     rules: {
-                        "wrapperValue": {
+                        "wrapperValue1": {
                             path: "value",
                             func: "fluid.uiOptions.modelRelayTransformationWrapper.transform"
+                        },
+                        "wrapperValue2": {
+                            path: "value",
+                            func: "{that}.transformWithArgs"
                         }
                     },
                     model: {
                         value: null
                     },
-                    finalInit: "fluid.uiOptions.modelRelay.finalInit"
+                    finalInit: "fluid.uiOptions.modelRelay.finalInit",
+                    invokers: {
+                        transformWithArgs: {
+                            funcName: "fluid.uiOptions.modelRelayTransformationWrapper.transformWithArgs",
+                            args: ["{modelRelayTransformationWrapper}", "{arguments}.0"]
+                        }
+                    }
                 }
             }
         }
@@ -142,10 +154,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.uiOptions.modelRelayTransformationWrapper.transform = function (value) {
         return value.length;
     };
+    fluid.uiOptions.modelRelayTransformationWrapper.transformWithArgs = function (that, value) {
+        return value.length + that.options.increment;
+    };
 
-    fluid.tests.checkTransformedResult = function (expectedValue) {
+    fluid.tests.checkTransformedResult = function (expectedValue, msg) {
         return function () {
-            jqUnit.assertEquals("The applier change request on the modelRelay wrapper produces the transformed value", expectedValue, resultValue);
+            jqUnit.assertEquals(msg, expectedValue, resultValue);
         };
     };
 
@@ -153,30 +168,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
             newValue1: "7 chars",
-            newValue1length: 7,
+            transformed1: 7,
             newValue2: "This string has 29 characters",
-            newValue2length: 29
+            transformed2: 39
         },
         modules: [{
             name: "Test model relay transformation",
             tests: [{
                 expect: 2,
-                name: "The applier change request on the modelRelay wrapper produces the transformed value",
+                name: "The applier change request on the modelRelay wrapper triggers the value transformation",
                 sequence: [{
                     func: "{modelRelayWrapper}.applier.requestChange",
-                    args: ["wrapperValue", "{that}.options.testOptions.newValue1"]
+                    args: ["wrapperValue1", "{that}.options.testOptions.newValue1"]
                 }, {
                     listenerMaker: "fluid.tests.checkTransformedResult",
-                    makerArgs: ["{that}.options.testOptions.newValue1length"],
-                    spec: {path: "wrapperValue", priority: "last"},
+                    makerArgs: ["{that}.options.testOptions.transformed1", "Free-function transformation produces the correct value"],
+                    spec: {path: "wrapperValue1", priority: "last"},
                     changeEvent: "{modelRelayWrapper}.applier.modelChanged"
                 }, {
                     func: "{modelRelayWrapper}.applier.requestChange",
-                    args: ["wrapperValue", "{that}.options.testOptions.newValue2"]
+                    args: ["wrapperValue2", "{that}.options.testOptions.newValue2"]
                 }, {
                     listenerMaker: "fluid.tests.checkTransformedResult",
-                    makerArgs: ["{that}.options.testOptions.newValue2length"],
-                    spec: {path: "wrapperValue", priority: "last"},
+                    makerArgs: ["{that}.options.testOptions.transformed2", "Invoker transformation produces the correct value"],
+                    spec: {path: "wrapperValue2", priority: "last"},
                     changeEvent: "{modelRelayWrapper}.applier.modelChanged"
                 }]
             }]
