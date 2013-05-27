@@ -988,6 +988,11 @@ var fluid = fluid || fluid_1_5;
         return listener;
     };
     
+    /** Generate a name for a component for debugging purposes */
+    fluid.nameComponent = function (that) {
+        return that ? "component with typename " + that.typeName + " and id " + that.id : "[unknown component]";
+    };
+    
     fluid.event.nameEvent = function (that, eventName) {
         return eventName + " of " + fluid.nameComponent(that);
     };
@@ -1235,7 +1240,7 @@ var fluid = fluid || fluid_1_5;
                 gs.optionsChain.push(options);
                 var oGradeNames = fluid.makeArray(options.gradeNames);
                 fluid.each(oGradeNames, function (gradeName) {
-                    if (gradeName.charAt(0) !== "{" ) {
+                    if (gradeName !== "autoInit" && gradeName.charAt(0) !== "{") {
                         resolveGradesImpl(gs, gradeName);
                     }
                 });
@@ -1262,6 +1267,10 @@ var fluid = fluid || fluid_1_5;
         return defaultName + "|" + fluid.makeArray(gradeNames).sort().join("|");
     };
     
+    fluid.hasGrade = function (options, gradeName) {
+        return !options || !options.gradeNames ? false : fluid.contains(options.gradeNames, gradeName);
+    };
+    
     // unsupported, NON-API function
     fluid.resolveGrade = function (defaults, defaultName, gradeNames) {
         var mergeArgs = [defaults];
@@ -1277,6 +1286,9 @@ var fluid = fluid || fluid_1_5;
         }
         mergeArgs = [mergePolicy, {}].concat(mergeArgs);
         var mergedDefaults = fluid.merge.apply(null, mergeArgs);
+        if (!fluid.hasGrade(defaults, "autoInit")) {
+            fluid.remove_if(mergedDefaults.gradeNames, function (gradeName) { return gradeName === "autoInit";});
+        }
         return mergedDefaults;
     };
 
@@ -1309,10 +1321,6 @@ var fluid = fluid || fluid_1_5;
         }
     };
     
-        
-    fluid.hasGrade = function (options, gradeName) {
-        return !options || !options.gradeNames ? false : fluid.contains(options.gradeNames, gradeName);
-    };
     
      /**
      * Retrieves and stores a component's default settings centrally.
@@ -1357,69 +1365,6 @@ var fluid = fluid || fluid_1_5;
             };
             fluid.defaults(key, options);
         });
-    };
-    
-    // The base system grade definitions
-    
-    fluid.defaults("fluid.function", {});
-    
-    fluid.lifecycleFunctions = {
-        preInitFunction: true,
-        postInitFunction: true,
-        finalInitFunction: true
-    };
-    
-    fluid.rootMergePolicy = $.extend({
-            gradeNames: fluid.uniqueArrayConcatPolicy,
-            distributeOptions: fluid.arrayConcatPolicy,
-            transformOptions: "replace"
-        },
-        fluid.transform(fluid.lifecycleFunctions, function () {
-            return fluid.mergeListenerPolicy;
-    }));
-    
-    fluid.defaults("fluid.littleComponent", {
-        initFunction: "fluid.initLittleComponent",
-        mergePolicy: fluid.rootMergePolicy,
-        argumentMap: {
-            options: 0
-        }
-    });
-    
-    fluid.defaults("fluid.eventedComponent", {
-        gradeNames: ["fluid.littleComponent"],
-        events: { // Four standard lifecycle points common to all components
-            onCreate:  null,
-            onAttach:  null, // events other than onCreate are only fired for IoC-configured components
-            onClear:   null,
-            onDestroy: null
-        },
-        mergePolicy: {
-            listeners: fluid.mergeListenersPolicy
-        }
-    });
-    
-    
-    fluid.preInitModelComponent = function (that) {
-        that.model = that.options.model || {};
-        that.applier = that.options.applier || (fluid.makeChangeApplier ? fluid.makeChangeApplier(that.model, that.options.changeApplierOptions) : null);
-    };
-    
-    fluid.defaults("fluid.modelComponent", {
-        gradeNames: ["fluid.littleComponent"],
-        preInitFunction: {
-            namespace: "preInitModelComponent",
-            listener: "fluid.preInitModelComponent"
-        },
-        mergePolicy: {
-            model: "preserve",
-            applier: "nomerge"
-        }
-    });
-
-    /** Generate a name for a component for debugging purposes */
-    fluid.nameComponent = function (that) {
-        return that ? "component with typename " + that.typeName + " and id " + that.id : "[unknown component]";
     };
 
     // Cheapskate implementation which avoids dependency on DataBinding.js
@@ -1741,6 +1686,7 @@ var fluid = fluid || fluid_1_5;
     // unsupported, NON-API function
     fluid.deliverOptionsStrategy = fluid.identity;
     fluid.computeComponentAccessor = fluid.identity;
+    fluid.computeDynamicComponents = fluid.identity;
 
     // The (extensible) types of merge record the system supports, with the weakest records first    
     fluid.mergeRecordTypes = {
@@ -1844,7 +1790,66 @@ var fluid = fluid || fluid_1_5;
     };
     
     // The Fluid Component System proper
-            
+        
+    // The base system grade definitions
+    
+    fluid.defaults("fluid.function", {});
+    
+    fluid.lifecycleFunctions = {
+        preInitFunction: true,
+        postInitFunction: true,
+        finalInitFunction: true
+    };
+    
+    fluid.rootMergePolicy = $.extend({
+            gradeNames: fluid.uniqueArrayConcatPolicy,
+            distributeOptions: fluid.arrayConcatPolicy,
+            transformOptions: "replace"
+        },
+        fluid.transform(fluid.lifecycleFunctions, function () {
+            return fluid.mergeListenerPolicy;
+    }));
+    
+    fluid.defaults("fluid.littleComponent", {
+        gradeNames: ["autoInit"],
+        initFunction: "fluid.initLittleComponent",
+        mergePolicy: fluid.rootMergePolicy,
+        argumentMap: {
+            options: 0
+        }
+    });
+    
+    fluid.defaults("fluid.eventedComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        events: { // Four standard lifecycle points common to all components
+            onCreate:  null,
+            onAttach:  null, // events other than onCreate are only fired for IoC-configured components
+            onClear:   null,
+            onDestroy: null
+        },
+        mergePolicy: {
+            listeners: fluid.mergeListenersPolicy
+        }
+    });
+    
+    
+    fluid.preInitModelComponent = function (that) {
+        that.model = that.options.model || {};
+        that.applier = that.options.applier || (fluid.makeChangeApplier ? fluid.makeChangeApplier(that.model, that.options.changeApplierOptions) : null);
+    };
+    
+    fluid.defaults("fluid.modelComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        preInitFunction: {
+            namespace: "preInitModelComponent",
+            listener: "fluid.preInitModelComponent"
+        },
+        mergePolicy: {
+            model: "preserve",
+            applier: "nomerge"
+        }
+    });
+    
     /** A special "marker object" which is recognised as one of the arguments to
      * fluid.initSubcomponents. This object is recognised by reference equality -
      * where it is found, it is replaced in the actual argument position supplied
@@ -1922,6 +1927,7 @@ var fluid = fluid || fluid_1_5;
         }
         // deliver to a non-IoC side early receiver of the component (currently only initView)
         (receiver || fluid.identity)(that, options, mergeOptions.strategy);
+        fluid.computeDynamicComponents(that, mergeOptions);
         
         // TODO: ****THIS**** is the point we must deliver and suspend!! Construct the "component skeleton" first, and then continue
         // for as long as we can continue to find components.
