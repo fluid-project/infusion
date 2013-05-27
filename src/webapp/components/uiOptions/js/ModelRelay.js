@@ -33,7 +33,8 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.modelRelay", {
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
         mergePolicy: {
-            sourceApplier: "nomerge"
+            sourceApplier: "nomerge",
+            rules: "noexpand"
         },
         sourceApplier: null,  // must be supplied by implementors
         rules: {},  // must be supplied by implementors, in format: "externalModelKey": "internalModelKey"
@@ -43,12 +44,8 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uiOptions.modelRelay.postInit = function (that) {
         fluid.transform(that.options.rules, function (internalKey, sourceKey) {
             if (typeof (internalKey) !== "string") {
-                if (typeof (internalKey.func) !== "function") {
-                    var funcval = fluid.getGlobalValue(internalKey.func);
-                    if (typeof (funcval) !== "function") {
-                        fluid.fail("Relay func " + internalKey.func + " could not be looked up for rule " + sourceKey);
-                    }
-                    internalKey.func = funcval;
+                if (!internalKey.expander) {
+                    fluid.fail("No expander specified for rule " + sourceKey);
                 }
             }
 
@@ -61,11 +58,10 @@ var fluid_1_5 = fluid_1_5 || {};
             that.options.sourceApplier.modelChanged.addListener(sourceKey, function (newModel, oldModel) {
                 if (!that.options.sourceApplier.hasChangeSource(internalKey)) {
                     if (typeof (internalKey) !== "string") {
-                        if (typeof (internalKey.func) !== "function") {
-                            fluid.fail("Rule for " + sourceKey + " missing valid funcion");
-                        }
-                        newModel[sourceKey] = internalKey.func(newModel[sourceKey]);
-                        fluid.fireSourcedChange(that.applier, internalKey.path, fluid.get(newModel, sourceKey), sourceKey);
+                        var rules = {};
+                        rules[internalKey.path] = internalKey;
+                        var transformed = fluid.model.transform(newModel, rules);
+                        fluid.fireSourcedChange(that.applier, internalKey.path, fluid.get(transformed, internalKey.path), sourceKey);
                     } else {
                         fluid.fireSourcedChange(that.applier, internalKey, fluid.get(newModel, sourceKey), sourceKey);
                     }

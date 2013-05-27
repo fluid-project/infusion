@@ -114,11 +114,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.tests.modelRelayTransformation.langLookup = {
+        en: "English",
+        fr: "French"
+    }
     fluid.defaults("fluid.uiOptions.modelRelayTransformationWrapper", {
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
         model: {
-            wrapperValue1: null,
-            wrapperValue2: null
+            captionLanguage: "en"
         },
         increment: 10,
         components: {
@@ -127,17 +130,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     sourceApplier: "{modelRelayTransformationWrapper}.applier",
                     rules: {
-                        "wrapperValue1": {
-                            path: "value",
-                            func: "fluid.uiOptions.modelRelayTransformationWrapper.transform"
-                        },
-                        "wrapperValue2": {
-                            path: "value",
-                            func: "{that}.transformWithArgs"
+                        captionLanguage: {
+                            path: "currentTracks.captions",
+                            expander: {
+                                type: "fluid.uiOptions.modelRelayTransformationWrapper.transform",
+                                inputPath: "captionLanguage"
+                            }
                         }
                     },
                     model: {
-                        value: null
+                        currentTracks: {
+                            captions: "English"
+                        }
                     },
                     finalInit: "fluid.uiOptions.modelRelay.finalInit",
                     invokers: {
@@ -152,46 +156,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.uiOptions.modelRelayTransformationWrapper.transform = function (value) {
-        return value.length;
+        return fluid.tests.modelRelayTransformation.langLookup[value];
     };
     fluid.uiOptions.modelRelayTransformationWrapper.transformWithArgs = function (that, value) {
         return value.length + that.options.increment;
     };
 
-    fluid.tests.checkTransformedResult = function (expectedValue, msg) {
+    fluid.tests.checkTransformedResult = function (expectedValue, actualModel, path,  msg) {
         return function () {
-            jqUnit.assertEquals(msg, expectedValue, resultValue);
+            jqUnit.assertEquals(msg, expectedValue, fluid.get(actualModel, path));
         };
     };
 
     fluid.defaults("fluid.tests.modelRelayTransformationTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
-            newValue1: "7 chars",
-            transformed1: 7,
-            newValue2: "This string has 29 characters",
-            transformed2: 39
+            newLang: "fr",
+            newLangTransformed: "French"
         },
         modules: [{
             name: "Test model relay transformation",
             tests: [{
-                expect: 2,
+                expect: 1,
                 name: "The applier change request on the modelRelay wrapper triggers the value transformation",
                 sequence: [{
                     func: "{modelRelayWrapper}.applier.requestChange",
-                    args: ["wrapperValue1", "{that}.options.testOptions.newValue1"]
+                    args: ["captionLanguage", "{that}.options.testOptions.newLang"]
                 }, {
                     listenerMaker: "fluid.tests.checkTransformedResult",
-                    makerArgs: ["{that}.options.testOptions.transformed1", "Free-function transformation produces the correct value"],
-                    spec: {path: "wrapperValue1", priority: "last"},
-                    changeEvent: "{modelRelayWrapper}.applier.modelChanged"
-                }, {
-                    func: "{modelRelayWrapper}.applier.requestChange",
-                    args: ["wrapperValue2", "{that}.options.testOptions.newValue2"]
-                }, {
-                    listenerMaker: "fluid.tests.checkTransformedResult",
-                    makerArgs: ["{that}.options.testOptions.transformed2", "Invoker transformation produces the correct value"],
-                    spec: {path: "wrapperValue2", priority: "last"},
+                    makerArgs: ["{that}.options.testOptions.newLangTransformed", "{modelRelayWrapper}.modelRelayImpl.model", "currentTracks.captions", "Invoker transformation produces the correct value"],
+                    spec: {path: "captionLanguage", priority: "last"},
                     changeEvent: "{modelRelayWrapper}.applier.modelChanged"
                 }]
             }]
