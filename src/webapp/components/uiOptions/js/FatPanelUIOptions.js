@@ -106,19 +106,6 @@ var fluid_1_5 = fluid_1_5 || {};
         // TODO: This material is not really transformation, but would be better expressed by
         // FLUID-4392 additive demands blocks
         derivedDefaults: {
-            uiOptionsLoader: {
-                options: {
-                    events: {
-                        templatesAndIframeReady: {
-                            events: {
-                                iframeReady: "{fatPanel}.events.afterRender",
-                                templateReady: "onUIOptionsTemplateReady"
-                            }  
-                        },
-                        onReady: "{fatPanel}.events.onReady"
-                    }
-                }
-            },
             uiOptions: {
                 createOnEvent: "templatesAndIframeReady",
                 container: "{iframeRenderer}.renderUIOContainer",
@@ -142,30 +129,45 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
         },
+        uiOptionsLoader: {
+            options: {
+                events: {
+                    templatesAndIframeReady: {
+                        events: {
+                            iframeReady: "{fatPanel}.events.afterRender",
+                            templateReady: "onUIOptionsTemplateReady"
+                        }  
+                    },
+                    onReady: "{fatPanel}.events.onReady"
+                }
+            }
+        },
+        outerEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
         distributeOptions: [{
             source: "{that}.options.slidingPanel.options",
+            removeSource: true,
             exclusions: [],
             target: "{that > slidingPanel}.options"
         }, {
             source: "{that}.options.iframeRenderer.options",
+            removeSource: true,
             exclusions: [],
             target: "{that > iframeRenderer}.options"
         }, {
             source: "{that}.options.iframe",
+            removeSource: true,
             exclusions: [],
             target: "{that}.options.selectors.iframe"
-        }],
-        uiOptionsTransform: {
-            config: { // For FLUID-4409
-                // To be replaced by IoCSS when FLUID-5018 is resolved.
-                "!*.iframeRenderer.*.iframeEnhancer.options":  "outerEnhancerOptions",
-                
-                // To be replaced by IoCSS when FLUID-5014 Case 2 is resolved.
-                // "prefix" options is required by both "fatPanel" and its grade components "inline".
-                "*.iframeRenderer.options.prefix":             "prefix"
-            }
-        },
-        outerEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions"
+        }, {
+            source: "{that}.options.outerEnhancerOptions",
+            removeSource: true,
+            exclusions: [],
+            target: "{that > iframeRenderer}.iframeEnhancer.options"
+        }, {
+            source: "{that}.options.prefix",
+            exclusions: [],
+            target: "{that > iframeRenderer}.options.prefix"
+        }]
     });
     
     /*****************************************
@@ -195,13 +197,12 @@ var fluid_1_5 = fluid_1_5 || {};
         that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, {"prefix/": that.options.prefix});
         that.iframeSrc = that.options.markupProps.src;
         
-        //create iframe and append to container
+        // Create iframe and append to container
         that.iframe = $("<iframe/>");
         that.iframe.load(function () {
             var iframeWindow = that.iframe[0].contentWindow;
             that.iframeDocument = iframeWindow.document;
 
-            //var iframeDoc = that.iframe.contents();
             that.jQuery = iframeWindow.jQuery;
             that.renderUIOContainer = that.jQuery("body", that.iframeDocument);
             that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);

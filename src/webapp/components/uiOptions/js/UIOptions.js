@@ -49,34 +49,42 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uiOptions.templateLoader"
             }
         },
+        uiOptions: {
+            options: {
+                components: {
+                    settingsStore: "{uiEnhancer}.settingsStore"
+                },
+                listeners: {
+                    onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
+                }
+            }
+        },
+        distributeOptions: [{
+            source: "{that}.options.templateLoader.options",
+            removeSource: true,
+            exclusions: [],
+            target: "{that > templateLoader}.options"
+        }, {
+            source: "{that}.options.prefix",
+            exclusions: [],
+            target: "{that > templatePath}.options.value"
+        }, {
+            source: "{that}.options.uiOptionsLoader.options",
+            removeSource: true,
+            exclusions: [],
+            target: "{that > uiOptionsLoader}.options"
+        }, {
+            source: "{that}.options.uiOptions.options",
+            removeSource: true,
+            exclusions: [],
+            target: "{that > uiOptions}.options"
+        }],
         uiOptionsTransform: {
             transformer: "fluid.uiOptions.mapOptions",
             config: {
-                // To be replaced by IoCSS when FLUID-5012, FLUID-5013 and FLUID-5017 are resolved.
-                "*.templateLoader":                                   "templateLoader",
+                // To be replaced by IoCSS when FLUID-5025 is resolved.
                 "*.uiOptionsLoader.*.uiOptions":                      "uiOptions",
-
-                // To be replaced by IoCSS when FLUID-5013 and FLUID-5017 are resolved.
                 "*.uiOptionsLoader.container":                        "container",
-                
-                // To be replaced by IoCSS when FLUID-5014 Case 2 and FLUID-5017 are resolved.
-                // "prefix" options is needed by both "fatPanel" and its grade components "inline".
-                "*.templateLoader.*.templatePath.options.value":      "prefix",
-
-                // To be replaced by IoCSS when FLUID-5017 is resolved.
-                "*.uiOptionsLoader":                                  "uiOptionsLoader"
-            }
-        },
-        derivedDefaults: {
-            uiOptions: {
-                options: {
-                    components: {
-                        settingsStore: "{uiEnhancer}.settingsStore"
-                    },
-                    listeners: {
-                        onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
-                    }
-                }
             }
         }
     });
@@ -89,18 +97,37 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions", {
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
-        // Will be replaced by IoCSS once FLUID-5017 is resolved.
-        uiOptionsTransform: {
-            transformer: "fluid.uiOptions.mapOptions",
-            config: {
-                "*.uiOptionsLoader.*.uiOptions.*.textSizer":          "textSizer",
-                "*.uiOptionsLoader.*.uiOptions.*.lineSpacer":         "lineSpacer",
-                "*.uiOptionsLoader.*.uiOptions.*.textFont":           "textFont",
-                "*.uiOptionsLoader.*.uiOptions.*.contrast":           "contrast",
-                "*.uiOptionsLoader.*.uiOptions.*.layoutControls":     "layoutControls",
-                "*.uiOptionsLoader.*.uiOptions.*.linksControls":      "linksControls"
-            }
-        }
+        distributeOptions: [{
+            source: "{that}.options.textSizer.options",
+            removeSource: true,
+            exclusions: [],
+            target: "{that > textSizer}.options"
+        }, {
+            source: "{that}.options.lineSpacer.options",
+            removeSource: true,
+            exclusions: [],
+            target: "{that > lineSpacer}.options"
+        }, {
+            source: "{that}.options.textFont.options",
+            removeSource: true,
+            exclusions: [],
+            target: "{that > textFont}.options"
+        }, {
+            source: "{that}.options.contrast.options",
+            removeSource: true,
+            exclusions: [],
+            target: "{that > contrast}.options"
+        }, {
+            source: "{that}.options.layoutControls.options",
+            removeSource: true,
+            exclusions: [],
+            target: "{that > layoutControls}.options"
+        }, {
+            source: "{that}.options.linksControls.options",
+            removeSource: true,
+            exclusions: [],
+            target: "{that > linksControls}.options"
+        }]
     });
     
     /**

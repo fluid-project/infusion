@@ -2684,4 +2684,40 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("The to-be-resolved option is passed down to the target", 10, root.ownSub.options.resolvedOption);
     });
     
+    /** FLUID-5025 - IoCSS does not pass down options that are attached onto the top component at preInit or finalInit **/
+    fluid.defaults("fluid.tests.fluid5025root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            subComponent: {
+                type: "fluid.tests.fluid5025sub"
+            },
+        },
+        distributeOptions: [{
+            source: "{that}.options.optionFromPreInit",
+            target: "{that > subComponent}.options.optionFromPreInit"
+        }, {
+            source: "{that}.options.optionFromFinalInit",
+            target: "{that > subComponent}.options.optionFromFinalInit"
+        }]
+    });
+    
+    fluid.tests.fluid5025root.preInit = function (that) {
+        that.options.optionFromPreInit = 1;
+    };
+    
+    fluid.tests.fluid5025root.finalInit = function (that) {
+        that.options.optionFromFinalInit = 10;
+    };
+    
+    fluid.defaults("fluid.tests.fluid5025sub", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+      
+    jqUnit.test("FLUID-5025: IoCSS does not pass down options that are attached onto the top component at preInit or finalInit", function () {
+        var root = fluid.tests.fluid5025root();
+        
+        jqUnit.assertEquals("The option attached at preInit is passed down to the target component", 1, root.subComponent.options.optionFromPreInit);
+        jqUnit.assertEquals("The option attached at finalInit is passed down to the target component", 10, root.subComponent.options.optionFromFinalInit);
+    });
+    
 })(jQuery); 
