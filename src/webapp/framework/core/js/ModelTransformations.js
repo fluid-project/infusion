@@ -69,7 +69,14 @@ var fluid = fluid || fluid_1_5;
         return fluid.makeArray(value).length;
     };
     
-
+    fluid.defaults("fluid.model.transform.round", { 
+        gradeNames: "fluid.standardTransformFunction"
+    });
+    
+    fluid.model.transform.round = function (value) {
+        return Math.round(value);
+    };
+    
 
     fluid.defaults("fluid.model.transform.delete", { 
         gradeNames: "fluid.transformFunction"

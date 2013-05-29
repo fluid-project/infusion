@@ -41,8 +41,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         hundred: 100,
         halfdozen: 6,
         lt: "<",
-        catsSuck: true
+        catsSuck: true,
+        floatyLowy: 12.3910,
+        floatyHighy: 12.52,
+        floaty2: -9876.789
     };
+
     var cleanSource = fluid.copy(source);
     
     jqUnit.module("Model Transformation");
@@ -247,7 +251,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("fluid.model.transform.binaryOp()", function () {
         testOneStructure(binaryOpTests);
     });
-
 
     var conditionTests = [{
         message: "simple condition",
@@ -467,6 +470,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOneStructure(countTests);
     });
     
+    var roundTests = [{
+        message: "round() expected to return round down number", 
+        expander: {
+            type: "fluid.model.transform.round", 
+            inputPath: "floatyLowy"
+        }, 
+        method: "assertEquals", 
+        expected: 12
+    }, {        
+        message: "round() expected to return round up number", 
+        expander: {
+            type: "fluid.model.transform.round", 
+            inputPath: "floatyHighy"
+        }, 
+        method: "assertEquals", 
+        expected: 13
+    }, {
+        message: "round() should round up on negative float.", 
+        expander: {
+            type: "fluid.model.transform.round", 
+            inputPath: "floaty2"
+        }, 
+        method: "assertEquals", 
+        expected: -9877
+    }];
+
+    jqUnit.test("fluid.model.transform.round()", function () {
+        testOneStructure(roundTests);
+    });
+
     var createValuePathExpanders = function (paths) {        
         return {
             values: fluid.transform(paths, function (path) {
