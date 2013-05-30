@@ -316,7 +316,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     templateLoader: {
                         type: "fluid.uiOptions.templateLoader",
                         options: {
-                            gradeNames: ["fluid.uiOptions.customizedTemplateLoader"],
+                            gradeNames: ["fluid.uiOptions.customizedTemplateLoader"]
                         }
                     }
                 }

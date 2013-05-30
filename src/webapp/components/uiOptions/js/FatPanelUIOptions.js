@@ -137,7 +137,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     },
                     components: {
                         iframeRenderer: "{fatPanel}.iframeRenderer",
-                        settingsStore: "{uiEnhancer}.settingsStore",
+                        settingsStore: "{uiEnhancer}.settingsStore"
                     }
                 }
             }
@@ -151,7 +151,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "selectors.iframe":                            "iframe"
             }
         },
-        outerEnhancerOptions:"{originalEnhancerOptions}.options.originalUserOptions"
+        outerEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions"
     });
     
     /*****************************************

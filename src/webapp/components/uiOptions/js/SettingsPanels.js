@@ -57,8 +57,6 @@ var fluid_1_5 = fluid_1_5 || {};
             largeIcon: ".flc-uiOptions-min-text-size-largeIcon",
             multiplier: ".flc-uiOptions-multiplier"
         },
-        strings: {},
-        parentBundle: "{globalBundle}",
         protoTree: {
             label: {messagekey: "textSizeLabel"},
             smallIcon: {messagekey: "textSizeSmallIcon"},
@@ -100,7 +98,6 @@ var fluid_1_5 = fluid_1_5 || {};
         strings: {
             textFont: "{globalBundle}.options.messageBase.textFont"
         },
-        parentBundle: "{globalBundle}",
         produceTree: "fluid.uiOptions.textFont.produceTree",
         classnameMap: null, // must be supplied by implementors
         controlValues: { 
@@ -151,8 +148,6 @@ var fluid_1_5 = fluid_1_5 || {};
             wideIcon: ".flc-uiOptions-line-spacing-wideIcon",
             multiplier: ".flc-uiOptions-multiplier"
         },
-        strings: {},
-        parentBundle: "{globalBundle}",
         protoTree: {
             label: {messagekey: "lineSpacingLabel"},
             narrowIcon: {messagekey: "lineSpacingNarrowIcon"},
@@ -199,7 +194,6 @@ var fluid_1_5 = fluid_1_5 || {};
         strings: {
             theme: "{globalBundle}.options.messageBase.theme"
         },
-        parentBundle: "{globalBundle}",
         repeatingSelectors: ["themeRow"],
         produceTree: "fluid.uiOptions.contrast.produceTree",
         controlValues: { 
@@ -266,8 +260,6 @@ var fluid_1_5 = fluid_1_5 || {};
             label: ".flc-uiOptions-toc-label",
             choiceLabel: ".flc-uiOptions-toc-choice-label"
         },
-        strings: {},
-        parentBundle: "{globalBundle}",
         protoTree: {
             label: {messagekey: "tocLabel"},
             choiceLabel: {messagekey: "tocChoiceLabel"},
@@ -297,8 +289,6 @@ var fluid_1_5 = fluid_1_5 || {};
             linksChoiceLabel: ".flc-uiOptions-links-choice-label",
             inputsChoiceLabel: ".flc-uiOptions-links-inputs-choice-label"
         },
-        strings: {},
-        parentBundle: "{globalBundle}",
         protoTree: {
             label: {messagekey: "linksLabel"},
             linksChoiceLabel: {messagekey: "linksChoiceLabel"},
