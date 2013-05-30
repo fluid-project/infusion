@@ -2720,4 +2720,45 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("The option attached at finalInit is passed down to the target component", 10, root.subComponent.options.optionFromFinalInit);
     });
     
+    /** FLUID-5027 - IoCSS can not pass source to a target that is a sub-component originated from another distribution block **/
+    fluid.defaults("fluid.tests.fluid5027root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            subComponent: {
+                type: "fluid.tests.fluid5027sub"
+            },
+        },
+        defineDeeperSubComponent: {
+            components: {
+                subOfSubComponent: {
+                    type: "fluid.tests.fluid5027subOfSub"
+                },
+            }
+        },
+        deeperSubComponentOption: {
+            userOption: 1
+        },
+        distributeOptions: [{
+            source: "{that}.options.defineDeeperSubComponent",
+            target: "{that > subComponent}.options"
+        }, {
+            source: "{that}.options.DeeperSubComponentOption",
+            target: "{that > subOfSubComponent}.options"
+        }]
+    });
+    
+    fluid.defaults("fluid.tests.fluid5027sub", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.defaults("fluid.tests.fluid5027subOfSub", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("FLUID-5027 - IoCSS can not pass source to a target that is a sub-component originated in another distribution block", function () {
+        var root = fluid.tests.fluid5027root();
+        
+        jqUnit.assertEquals("The option for the target component that is originated from another distribution block is passed down", 1, root.subComponent.subOfSubComponent.options.userOption);
+    });
+    
 })(jQuery); 

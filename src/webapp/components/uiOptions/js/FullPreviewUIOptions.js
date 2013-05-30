@@ -28,20 +28,21 @@ var fluid_1_5 = fluid_1_5 || {};
         container: "{fullPreview}.container",
         uiOptionsTransform: {
             config: {
+                // To be replaced by IoCSS when FLUID-5027 is resolved.
                 "!*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer.options": "outerPreviewEnhancerOptions",
                 "*.uiOptionsLoader.*.uiOptions.*.preview":            "preview",
                 "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
             }
         },
         outerPreviewEnhancerOptions:"{originalEnhancerOptions}.options.originalUserOptions",
-        derivedDefaults: {
-            templateLoader: {
-                options: {
-                    templates: {
-                        uiOptions: "%prefix/FullPreviewUIOptions.html"
-                    }
+        templateLoader: {
+            options: {
+                templates: {
+                    uiOptions: "%prefix/FullPreviewUIOptions.html"
                 }
-            },
+            }
+        },
+        derivedDefaults: {
             uiOptions: {
                 options: {
                     components: {
