@@ -2684,4 +2684,43 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("The to-be-resolved option is passed down to the target", 10, root.ownSub.options.resolvedOption);
     });
     
+    /** FLUID-5023 - Corruption of model material in shared grades **/
+
+    fluid.defaults("fluid.tests.comp2", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        model: {}
+    });
+
+    fluid.tests.comp2.finalInit = function (that) {
+        // adds a unique ID to the model through the applier, so that we can check it later
+        that.applier.requestChange("tempId", fluid.allocateGuid());
+    };
+
+    // define a simple grade
+    fluid.defaults("fluid.tests.testGrade", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+
+    // add the grade to the test component using demands
+
+    fluid.demands("fluid.tests.comp2", ["fluid.testSharedGrade"], {
+        options: {
+            gradeNames: ["fluid.tests.testGrade", "autoInit"]
+        }
+    });
+
+    jqUnit.test("FLUID-5023: Test creation of two instances of the same component with a shared grade added through demands", function () {
+        fluid.staticEnvironment.testSharedGrade = fluid.typeTag("fluid.testSharedGrade");
+        // Instantiate two copies of the same test component
+        // Use fluid.invoke to ensure demands honoured
+        var c1 = fluid.invoke("fluid.tests.comp2");
+        var c2 = fluid.invoke("fluid.tests.comp2");
+        var defs = fluid.defaults("fluid.tests.comp2");
+        
+        jqUnit.assertUndefined("The defaults should not have the tempId", defs.model.tempId);
+        jqUnit.assertNotEquals("The ids in the models are not equal", c1.applier.model.tempId, c2.applier.model.tempId);
+
+        delete fluid.staticEnvironment.testSharedGrade;
+    });
+    
 })(jQuery); 

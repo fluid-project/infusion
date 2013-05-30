@@ -421,7 +421,7 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.remove_if(otherGrades, function (gradeName) {
                 return gradeName === that.typeName;
             }); // Remove our own typeName which getGradedDefaults is not expecting (FLUID-4939)
-            var newDefaults = fluid.getGradedDefaults(baseDefaults, that.typeName, otherGrades);
+            var newDefaults = fluid.copy(fluid.getGradedDefaults(baseDefaults, that.typeName, otherGrades));
             var defaultsBlock = fluid.findMergeBlocks(shadow.mergeOptions.mergeBlocks, "defaults")[0];
             defaultsBlock.source = newDefaults;
             shadow.mergeOptions.updateBlocks();
