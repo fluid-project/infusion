@@ -413,7 +413,7 @@ var fluid_1_5 = fluid_1_5 || {};
             refreshView: "{that}.renderer.refreshView"
         },
         strings: {},
-        parentBundle: "{globalBundle}"
+        parentBundle: "{uioMsgBundle}"
     });
 
     /******************************************************

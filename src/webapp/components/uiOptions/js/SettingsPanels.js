@@ -96,7 +96,7 @@ var fluid_1_5 = fluid_1_5 || {};
             label: ".flc-uiOptions-text-font-label"
         },
         strings: {
-            textFont: "{globalBundle}.options.messageBase.textFont"
+            textFont: "{uioMsgBundle}.options.messageBase.textFont"
         },
         produceTree: "fluid.uiOptions.textFont.produceTree",
         classnameMap: null, // must be supplied by implementors
@@ -192,7 +192,7 @@ var fluid_1_5 = fluid_1_5 || {};
             label: ".flc-uiOptions-contrast-label"
         },
         strings: {
-            theme: "{globalBundle}.options.messageBase.theme"
+            theme: "{uioMsgBundle}.options.messageBase.theme"
         },
         repeatingSelectors: ["themeRow"],
         produceTree: "fluid.uiOptions.contrast.produceTree",

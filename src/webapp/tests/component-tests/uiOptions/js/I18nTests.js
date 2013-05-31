@@ -19,37 +19,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     /************************************************************************************
-     * Unit tests for globalBundle, a global message holder for fluid.uiOptions.messages
+     * Unit tests for uioMsgBundle, a global message holder for fluid.uiOptions.messages
      ************************************************************************************/
 
-    fluid.defaults("fluid.tests.globalBundleInstance", {
+    fluid.defaults("fluid.tests.uioMsgBundleInstance", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         strings: {
-            textFont: "{globalBundle}.options.messageBase.textFont",
-            multiplier: "{globalBundle}.options.messageBase.multiplier"
+            textFont: "{uioMsgBundle}.options.messageBase.textFont",
+            multiplier: "{uioMsgBundle}.options.messageBase.multiplier"
         },
-        parentBundle: "{globalBundle}"
+        parentBundle: "{uioMsgBundle}"
     });
 
-    fluid.defaults("fluid.tests.globalBundleTests", {
+    fluid.defaults("fluid.tests.uioMsgBundleTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             messenger: {
-                type: "fluid.tests.globalBundleInstance"
+                type: "fluid.tests.uioMsgBundleInstance"
             },
             styleElementsTester: {
-                type: "fluid.tests.globalBundleTester"
+                type: "fluid.tests.uioMsgBundleTester"
             }
         }
     });
     
-    fluid.tests.testGlobalBundle = function (messenger, expectedNumOfTextFont, expectedFirstTextFontValue, expectedMultiplierValue) {
+    fluid.tests.testUioMsgBundle = function (messenger, expectedNumOfTextFont, expectedFirstTextFontValue, expectedMultiplierValue) {
         jqUnit.assertEquals("There are " + expectedNumOfTextFont + " values in the text font message", expectedNumOfTextFont, messenger.options.strings.textFont.length);
         jqUnit.assertEquals("The first value in the text font message is " + expectedFirstTextFontValue, expectedFirstTextFontValue, messenger.options.strings.textFont[0]);
         jqUnit.assertEquals("The value of the multiplier message is " + expectedMultiplierValue, expectedMultiplierValue, messenger.options.strings.multiplier);
     };
     
-    fluid.defaults("fluid.tests.globalBundleTester", {
+    fluid.defaults("fluid.tests.uioMsgBundleTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
             expectedNumOfTextFont: 5,
@@ -62,17 +62,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 3,
                 name: "Validate the default array and string messages",
                 type: "test",
-                func: "fluid.tests.testGlobalBundle",
+                func: "fluid.tests.testUioMsgBundle",
                 args: ["{messenger}", "{that}.options.testOptions.expectedNumOfTextFont", "{that}.options.testOptions.expectedFirstTextFontValue", "{that}.options.testOptions.expectedMultiplierValue"]
             }]
         }]
     });
 
     /*******************************************************************************************
-     * Integration test to make sure globalBundle messenger works well with renderer components
+     * Integration test to make sure uioMsgBundle messenger works well with renderer components
      *******************************************************************************************/
 
-    fluid.defaults("fluid.tests.globalBundledRendererComponent", {
+    fluid.defaults("fluid.tests.uioMsgBundleRendererComponent", {
         gradeNames: ["fluid.rendererComponent", "autoInit"],
         selectors: {
             multiplier: ".flc-multiplier"
@@ -81,18 +81,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             multiplier: {messagekey: "multiplier"}
         },
         strings: {},
-        parentBundle: "{globalBundle}"
+        parentBundle: "{uioMsgBundle}"
     });
     
-    fluid.defaults("fluid.tests.globalBundledRendererTests", {
+    fluid.defaults("fluid.tests.uioMsgBundleRendererTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            globalBundledRenderer: {
-                type: "fluid.tests.globalBundledRendererComponent",
+            uioMsgBundleRenderer: {
+                type: "fluid.tests.uioMsgBundleRendererComponent",
                 container: "#flc-renderer-test"
             },
-            globalBundledRendererTester: {
-                type: "fluid.tests.globalBundledRendererTester"
+            uioMsgBundleRendererTester: {
+                type: "fluid.tests.uioMsgBundleRendererTester"
             }
         }
     });
@@ -104,7 +104,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
     };
     
-    fluid.defaults("fluid.tests.globalBundledRendererTester", {
+    fluid.defaults("fluid.tests.uioMsgBundleRendererTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
             expectedValue: "times"
@@ -115,12 +115,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 1,
                 name: "Test the rendering of the message from the global bundle",
                 sequence: [{
-                    func: "{globalBundledRenderer}.refreshView"
+                    func: "{uioMsgBundleRenderer}.refreshView"
                 }, {
                     listenerMaker: "fluid.tests.testRendering",
-                    makerArgs: ["{globalBundledRenderer}", "{that}.options.testOptions.expectedValue"],
+                    makerArgs: ["{uioMsgBundleRenderer}", "{that}.options.testOptions.expectedValue"],
                     spec: {priority: "last"},
-                    event: "{globalBundledRenderer}.events.afterRender"
+                    event: "{uioMsgBundleRenderer}.events.afterRender"
                 }]
             }]
         }]
@@ -128,8 +128,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.tests.globalBundleTests",
-            "fluid.tests.globalBundledRendererTests"
+            "fluid.tests.uioMsgBundleTests",
+            "fluid.tests.uioMsgBundleRendererTests"
         ]);
     });
 
