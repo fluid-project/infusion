@@ -103,46 +103,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
         },
-        // TODO: This material is not really transformation, but would be better expressed by
-        // FLUID-4392 additive demands blocks
-        uiOptions: {
-            container: "{iframeRenderer}.renderUIOContainer",
-            options: {
-                // ensure that model and applier are available to users at top level
-                createOnEvent: "templatesAndIframeReady",
-                model: "{fatPanel}.model",
-                applier: "{fatPanel}.applier",
-                events: {
-                    onSignificantDOMChange: null  
-                },
-                listeners: {
-                    onCreate: {
-                        listener: "{fatPanel}.bindReset",
-                        args: ["{that}.reset"]
-                    }
-                },
-                components: {
-                    iframeRenderer: "{fatPanel}.iframeRenderer",
-                    settingsStore: "{uiEnhancer}.settingsStore"
-                }
-            }
-        },
-        uiOptionsLoader: {
-            options: {
-                events: {
-                    templatesAndIframeReady: {
-                        events: {
-                            iframeReady: "{fatPanel}.events.afterRender",
-                            templateReady: "onUIOptionsTemplateReady"
-                        }  
-                    },
-                    onReady: "{fatPanel}.events.onReady"
-                },
-                listeners: {
-                    templatesAndIframeReady: function () {console.log("templatesAndIframeReady fired");}
-                }
-            }
-        },
         outerEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
         distributeOptions: [{
             source: "{that}.options.slidingPanel.options",
@@ -171,9 +131,7 @@ var fluid_1_5 = fluid_1_5 || {};
      *****************************************/
     fluid.registerNamespace("fluid.uiOptions.fatPanel.renderIframe");
     
-//    fluid.uiOptions.fatPanel.renderIframe.finalInit = function (that) {
-    fluid.uiOptions.fatPanel.renderIframe.init = function (that) {
-        console.log("in renderIframe.init");
+    fluid.uiOptions.fatPanel.renderIframe.finalInit = function (that) {
         var styles = that.options.styles;
         // TODO: get earlier access to templateLoader, 
         that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, {"prefix/": that.options.prefix});
@@ -187,7 +145,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
             that.jQuery = iframeWindow.jQuery;
             that.renderUIOContainer = that.jQuery("body", that.iframeDocument);
-            console.log("fat panel renderUIOContainer is assigned");
             that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
         });
         that.iframe.attr(that.options.markupProps);
@@ -201,7 +158,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.fatPanel.renderIframe", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        finalInitFunction: "fluid.uiOptions.fatPanel.renderIframe.init",
         events: {
             afterRender: null
         },
@@ -213,15 +169,6 @@ var fluid_1_5 = fluid_1_5 || {};
         markupProps: {
             "class": "flc-iframe",
             src: "%prefix/uiOptionsIframe.html"
-        },
-        invokers: {
-            init: {
-                funcName: "fluid.uiOptions.fatPanel.renderIframe.init",
-                args: "{that}"
-            },
-        },
-        listeners: {
-            onCreate: "{that}.init"
         }
     });
     
@@ -288,4 +235,43 @@ var fluid_1_5 = fluid_1_5 || {};
         setTimeout(callback, 1);
     };
     
+    /**********************************************************
+     * Define customizedLoader specifically for the fat panel *
+     **********************************************************/
+    fluid.defaults("fluid.uiOptions.customizedLoader", {
+        events: {
+            templatesAndIframeReady: {
+                events: {
+                    iframeReady: "{fatPanel}.events.afterRender",
+                    templateReady: "onUIOptionsTemplateReady"
+                }  
+            },
+            onReady: "{fatPanel}.events.onReady"
+        },
+        components: {
+            uiOptions: {
+                createOnEvent: "templatesAndIframeReady",
+                container: "{iframeRenderer}.renderUIOContainer",
+                options: {
+                    // ensure that model and applier are available to users at top level
+                    model: "{fatPanel}.model",
+                    applier: "{fatPanel}.applier",
+                    events: {
+                        onSignificantDOMChange: null  
+                    },
+                    listeners: {
+                        onCreate: {
+                            listener: "{fatPanel}.bindReset",
+                            args: ["{that}.reset"]
+                        }
+                    },
+                    components: {
+                        iframeRenderer: "{fatPanel}.iframeRenderer",
+                        settingsStore: "{uiEnhancer}.settingsStore"
+                    }
+                }
+            }
+        }
+    });
+
 })(jQuery, fluid_1_5);

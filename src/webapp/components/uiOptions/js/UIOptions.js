@@ -246,8 +246,10 @@ var fluid_1_5 = fluid_1_5 || {};
      * UI Options *
      **************/
     
+    fluid.registerNamespace("fluid.uiOptions.customizedLoader");
+
     fluid.defaults("fluid.uiOptions.loader", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.customizedLoader", "autoInit"],
         resources: "{templateLoader}.resources",
         events: {
             // These two are events private to uiOptions
@@ -361,7 +363,6 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.uiOptions.preInit = function (that) {
-        console.log("uiOptions preInit");
         that.fetch = function () {
             var initialModel = that.settingsStore.fetch();
             initialModel = $.extend(true, {}, that.defaultModel, initialModel);
@@ -420,7 +421,6 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.finalInit = function (that) {
-        console.log("uiOptions finalInit");
         fluid.fetchResources(that.options.resources, function () {
           // This setTimeout is to ensure that fetching of resources is asynchronous,
           // and so that component construction does not run ahead of subcomponents for FatPanel
