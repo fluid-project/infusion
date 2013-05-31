@@ -62,28 +62,24 @@ var fluid_1_5 = fluid_1_5 || {};
         distributeOptions: [{
             source: "{that}.options.templateLoader.options",
             removeSource: true,
-            exclusions: [],
             target: "{that > templateLoader}.options"
         }, {
             source: "{that}.options.prefix",
-            exclusions: [],
             target: "{that > templatePath}.options.value"
         }, {
             source: "{that}.options.uiOptionsLoader.options",
             removeSource: true,
-            exclusions: [],
             target: "{that > uiOptionsLoader}.options"
         }, {
-            source: "{that}.options.uiOptions.options",
+            source: "{that}.options.uiOptions",
             removeSource: true,
-            exclusions: [],
-            target: "{that > uiOptions}.options"
+            target: "{that > uiOptions}"
         }],
         uiOptionsTransform: {
             transformer: "fluid.uiOptions.mapOptions",
             config: {
                 // To be replaced by IoCSS when FLUID-5025 is resolved.
-                "*.uiOptionsLoader.*.uiOptions":                      "uiOptions",
+//                "*.uiOptionsLoader.*.uiOptions":                      "uiOptions",
                 "*.uiOptionsLoader.container":                        "container",
             }
         }
@@ -100,32 +96,26 @@ var fluid_1_5 = fluid_1_5 || {};
         distributeOptions: [{
             source: "{that}.options.textSizer.options",
             removeSource: true,
-            exclusions: [],
             target: "{that > textSizer}.options"
         }, {
             source: "{that}.options.lineSpacer.options",
             removeSource: true,
-            exclusions: [],
             target: "{that > lineSpacer}.options"
         }, {
             source: "{that}.options.textFont.options",
             removeSource: true,
-            exclusions: [],
             target: "{that > textFont}.options"
         }, {
             source: "{that}.options.contrast.options",
             removeSource: true,
-            exclusions: [],
             target: "{that > contrast}.options"
         }, {
             source: "{that}.options.layoutControls.options",
             removeSource: true,
-            exclusions: [],
             target: "{that > layoutControls}.options"
         }, {
             source: "{that}.options.linksControls.options",
             removeSource: true,
-            exclusions: [],
             target: "{that > linksControls}.options"
         }]
     });
@@ -371,6 +361,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.uiOptions.preInit = function (that) {
+        console.log("uiOptions preInit");
         that.fetch = function () {
             var initialModel = that.settingsStore.fetch();
             initialModel = $.extend(true, {}, that.defaultModel, initialModel);
@@ -429,6 +420,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.finalInit = function (that) {
+        console.log("uiOptions finalInit");
         fluid.fetchResources(that.options.resources, function () {
           // This setTimeout is to ensure that fetching of resources is asynchronous,
           // and so that component construction does not run ahead of subcomponents for FatPanel

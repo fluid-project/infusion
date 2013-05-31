@@ -105,27 +105,25 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         // TODO: This material is not really transformation, but would be better expressed by
         // FLUID-4392 additive demands blocks
-        derivedDefaults: {
-            uiOptions: {
+        uiOptions: {
+            container: "{iframeRenderer}.renderUIOContainer",
+            options: {
+                // ensure that model and applier are available to users at top level
                 createOnEvent: "templatesAndIframeReady",
-                container: "{iframeRenderer}.renderUIOContainer",
-                options: {
-                    // ensure that model and applier are available to users at top level
-                    model: "{fatPanel}.model",
-                    applier: "{fatPanel}.applier",
-                    events: {
-                        onSignificantDOMChange: null  
-                    },
-                    listeners: {
-                        onCreate: {
-                            listener: "{fatPanel}.bindReset",
-                            args: ["{that}.reset"]
-                        }
-                    },
-                    components: {
-                        iframeRenderer: "{fatPanel}.iframeRenderer",
-                        settingsStore: "{uiEnhancer}.settingsStore"
+                model: "{fatPanel}.model",
+                applier: "{fatPanel}.applier",
+                events: {
+                    onSignificantDOMChange: null  
+                },
+                listeners: {
+                    onCreate: {
+                        listener: "{fatPanel}.bindReset",
+                        args: ["{that}.reset"]
                     }
+                },
+                components: {
+                    iframeRenderer: "{fatPanel}.iframeRenderer",
+                    settingsStore: "{uiEnhancer}.settingsStore"
                 }
             }
         },
@@ -139,6 +137,9 @@ var fluid_1_5 = fluid_1_5 || {};
                         }  
                     },
                     onReady: "{fatPanel}.events.onReady"
+                },
+                listeners: {
+                    templatesAndIframeReady: function () {console.log("templatesAndIframeReady fired");}
                 }
             }
         },
@@ -146,26 +147,21 @@ var fluid_1_5 = fluid_1_5 || {};
         distributeOptions: [{
             source: "{that}.options.slidingPanel.options",
             removeSource: true,
-            exclusions: [],
             target: "{that > slidingPanel}.options"
         }, {
             source: "{that}.options.iframeRenderer.options",
             removeSource: true,
-            exclusions: [],
             target: "{that > iframeRenderer}.options"
         }, {
             source: "{that}.options.iframe",
             removeSource: true,
-            exclusions: [],
             target: "{that}.options.selectors.iframe"
         }, {
             source: "{that}.options.outerEnhancerOptions",
             removeSource: true,
-            exclusions: [],
             target: "{that > iframeRenderer}.iframeEnhancer.options"
         }, {
             source: "{that}.options.prefix",
-            exclusions: [],
             target: "{that > iframeRenderer}.options.prefix"
         }]
     });
@@ -173,25 +169,11 @@ var fluid_1_5 = fluid_1_5 || {};
     /*****************************************
      * fluid.uiOptions.fatPanel.renderIframe *
      *****************************************/
+    fluid.registerNamespace("fluid.uiOptions.fatPanel.renderIframe");
     
-    fluid.defaults("fluid.uiOptions.fatPanel.renderIframe", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        finalInitFunction: "fluid.uiOptions.fatPanel.renderIframe.finalInit",
-        events: {
-            afterRender: null
-        },
-        styles: {
-            containerFlex: "fl-container-flex",
-            container: "fl-uiOptions-fatPanel-iframe"
-        },
-        prefix: "./",
-        markupProps: {
-            "class": "flc-iframe",
-            src: "%prefix/uiOptionsIframe.html"
-        }
-    });
-    
-    fluid.uiOptions.fatPanel.renderIframe.finalInit = function (that) {
+//    fluid.uiOptions.fatPanel.renderIframe.finalInit = function (that) {
+    fluid.uiOptions.fatPanel.renderIframe.init = function (that) {
+        console.log("in renderIframe.init");
         var styles = that.options.styles;
         // TODO: get earlier access to templateLoader, 
         that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, {"prefix/": that.options.prefix});
@@ -205,6 +187,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
             that.jQuery = iframeWindow.jQuery;
             that.renderUIOContainer = that.jQuery("body", that.iframeDocument);
+            console.log("fat panel renderUIOContainer is assigned");
             that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
         });
         that.iframe.attr(that.options.markupProps);
@@ -215,7 +198,33 @@ var fluid_1_5 = fluid_1_5 || {};
 
         that.iframe.appendTo(that.container);
     };
-        
+
+    fluid.defaults("fluid.uiOptions.fatPanel.renderIframe", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        finalInitFunction: "fluid.uiOptions.fatPanel.renderIframe.init",
+        events: {
+            afterRender: null
+        },
+        styles: {
+            containerFlex: "fl-container-flex",
+            container: "fl-uiOptions-fatPanel-iframe"
+        },
+        prefix: "./",
+        markupProps: {
+            "class": "flc-iframe",
+            src: "%prefix/uiOptionsIframe.html"
+        },
+        invokers: {
+            init: {
+                funcName: "fluid.uiOptions.fatPanel.renderIframe.init",
+                args: "{that}"
+            },
+        },
+        listeners: {
+            onCreate: "{that}.init"
+        }
+    });
+    
     fluid.uiOptions.fatPanel.updateView = function (uiOptions, uiEnhancer) {
         uiEnhancer.updateFromSettingsStore();
         uiOptions.events.onSignificantDOMChange.fire();
