@@ -60,7 +60,7 @@ var fluid_1_5 = fluid_1_5 || {};
         multiplier: "times"
     };
 
-    fluid.staticEnvironment.globalBundle = fluid.messageResolver({
+    fluid.staticEnvironment.uioMsgBundle = fluid.messageResolver({
         messageBase: fluid.uiOptions.messages
     });
 
