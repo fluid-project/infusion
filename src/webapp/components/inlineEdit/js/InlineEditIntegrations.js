@@ -24,41 +24,45 @@ var fluid_1_5 = fluid_1_5 || {};
     /*************************************
      * Shared Rich Text Editor functions *
      *************************************/
-     
-    fluid.inlineEdit.makeViewAccessor = function (editorGetFn, setValueFn, getValueFn) {
-        return function (editField) {
-            return {
-                value: function (newValue) {
-                    var editor = editorGetFn(editField);
-                    if (!editor) {
-                        if (newValue !== undefined) {
-                            $(editField).val(newValue);
-                        }
-                        return "";
-                    }
-                    if (newValue !== undefined) {
-                        setValueFn(editField, editor, newValue);
-                    } else {
-                        return getValueFn(editor);
-                    }
-                }
-            };
-        };
-    };
     
-    fluid.inlineEdit.richTextViewAccessor = function (element) {
-        return {
-            value: function (newValue) {
-                return fluid.html(element, newValue);
+    fluid.defaults("fluid.inlineEdit.editorViewAccessor", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        invokers: {
+            value: {
+                funcName: "fluid.inlineEdit.editorViewAccessor.value",
+                args: ["{that}.container", "{that}.options", "{arguments}.0"]
             }
-        };
-    };        
+        }
+    });
     
-    var configureInlineEdit = function (configurationName, container, options) {
-        var defaults = fluid.defaults(configurationName); 
-        var assembleOptions = fluid.merge(defaults ? defaults.mergePolicy : null, {}, defaults, options);
-        return fluid.inlineEdit(container, assembleOptions);
-    };
+    fluid.inlineEdit.editorViewAccessor.value = function (editField, options, newValue) {
+        var editor = options.editorGetFn(editField);
+        if (!editor || editor.length === 0) {
+            if (newValue !== undefined) {
+                $(editField).val(newValue);
+            }
+            return "";
+        }
+        if (newValue !== undefined) {
+            options.setValueFn(editField, editor, newValue);
+        } else {
+            return options.getValueFn(editor);
+        }
+    }
+
+    fluid.defaults("fluid.inlineEdit.richTextViewAccessor", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        invokers: {
+            value: {
+                funcName: "fluid.inlineEdit.richTextViewAccessor.value",
+                args: ["{that}.container", "{arguments}.0"]
+            }
+        }
+    });
+    
+    fluid.inlineEdit.richTextViewAccessor.value = function (element, newValue) {
+        return fluid.html(element, newValue);
+    };        
 
     fluid.inlineEdit.normalizeHTML = function (value) {
         var togo = $.trim(value.replace(/\s+/g, " "));
@@ -70,8 +74,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.inlineEdit.htmlComparator = function (el1, el2) {
-        return fluid.inlineEdit.normalizeHTML(el1) ===
-            fluid.inlineEdit.normalizeHTML(el2);
+        return fluid.inlineEdit.normalizeHTML(el1) === fluid.inlineEdit.normalizeHTML(el2);
     };
     
     fluid.inlineEdit.bindRichTextHighlightHandler = function (element, displayModeRenderer, invitationStyle) {
@@ -108,7 +111,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * Wrap the display text and the textEditButton with the display mode container  
      * for better style control.
      */
-    fluid.inlineEdit.richTextDisplayModeRenderer = function (that) {
+    fluid.inlineEdit.richTextDisplayModeRenderer = function (that, edit) {
         var styles = that.options.styles;
         
         var displayModeWrapper = fluid.inlineEdit.setupDisplayModeContainer(styles);
@@ -120,33 +123,22 @@ var fluid_1_5 = fluid_1_5 || {};
         
         // Add event handlers.
         fluid.inlineEdit.bindHoverHandlers(displayModeRenderer, styles.invitation);
-        fluid.inlineEdit.bindMouseHandlers(that.textEditButton, that.edit);
-        fluid.inlineEdit.bindKeyboardHandlers(that.textEditButton, that.edit);
+        fluid.inlineEdit.bindMouseHandlers(that.textEditButton, edit);
+        fluid.inlineEdit.bindKeyboardHandlers(that.textEditButton, edit);
         fluid.inlineEdit.bindRichTextHighlightHandler(that.viewEl, displayModeRenderer, styles.invitation);
         fluid.inlineEdit.bindRichTextHighlightHandler(that.textEditButton, displayModeRenderer, styles.invitation);
         
         return displayModeRenderer;
     };        
 
-   
     /************************
      * Tiny MCE Integration *
      ************************/
     
-    /**
-     * Instantiate a rich-text InlineEdit component that uses an instance of TinyMCE.
-     * 
-     * @param {Object} componentContainer the element containing the inline editors
-     * @param {Object} options configuration options for the components
-     */
-    fluid.inlineEdit.tinyMCE = function (container, options) {
-        var inlineEditor = configureInlineEdit("fluid.inlineEdit.tinyMCE", container, options);
-        tinyMCE.init(inlineEditor.options.tinyMCE);
-        return inlineEditor;
-    };
+    var flTinyMCE = fluid.registerNamespace("fluid.inlineEdit.tinyMCE");
         
     fluid.inlineEdit.tinyMCE.getEditor = function (editField) {
-        return tinyMCE.get(editField.id);
+        return tinyMCE.get(editField.prop("id"));
     };
     
     fluid.inlineEdit.tinyMCE.setValue = function (editField, editor, value) {
@@ -159,10 +151,12 @@ var fluid_1_5 = fluid_1_5 || {};
         return editor.getContent();
     };
     
-    var flTinyMCE = fluid.inlineEdit.tinyMCE; // Shorter alias for awfully long fully-qualified names.
-    flTinyMCE.viewAccessor = fluid.inlineEdit.makeViewAccessor(flTinyMCE.getEditor, 
-                                                               flTinyMCE.setValue,
-                                                               flTinyMCE.getValue);
+    fluid.defaults("fluid.inlineEdit.tinyMCE.viewAccessor", {
+        gradeNames: ["fluid.inlineEdit.editorViewAccessor", "autoInit"],
+        editorGetFn: flTinyMCE.getEditor,
+        setValueFn: flTinyMCE.setValue,
+        getValueFn: flTinyMCE.getValue
+    });
    
     fluid.inlineEdit.tinyMCE.blurHandlerBinder = function (that) {
         function focusEditor(editor) {
@@ -238,11 +232,26 @@ var fluid_1_5 = fluid_1_5 || {};
         }, 1);
     };
     
+    /**
+     * Instantiate a rich-text InlineEdit component that uses an instance of TinyMCE.
+     * 
+     * @param {Object} componentContainer the element containing the inline editors
+     * @param {Object} options configuration options for the components
+     */
+    
     fluid.defaults("fluid.inlineEdit.tinyMCE", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.inlineEdit", "autoInit"],
         tinyMCE : {
             mode: "exact", 
             theme: "simple"
+        },
+        listeners: {
+            onCreate: {
+                "this": "tinyMCE",
+                method: "init",
+                namespace: "initTinyMCE",
+                args: "{that}.options.tinyMCE"
+            }  
         },
         useTooltip: true,
         selectors: {
@@ -276,13 +285,11 @@ var fluid_1_5 = fluid_1_5 || {};
     /****************************
      * CKEditor 3.x Integration *
      ****************************/
-    
-    fluid.inlineEdit.CKEditor = function (container, options) {
-        return configureInlineEdit("fluid.inlineEdit.CKEditor", container, options);
-    };
+     
+    var flCKEditor = fluid.registerNamespace("fluid.inlineEdit.CKEditor");
     
     fluid.inlineEdit.CKEditor.getEditor = function (editField) {
-        return CKEDITOR.instances[editField.id];
+        return CKEDITOR.instances[editField.prop("id")];
     };
     
     fluid.inlineEdit.CKEditor.setValue = function (editField, editor, value) {
@@ -293,11 +300,13 @@ var fluid_1_5 = fluid_1_5 || {};
         return editor.getData();
     };
     
-    var flCKEditor = fluid.inlineEdit.CKEditor;
-    flCKEditor.viewAccessor = fluid.inlineEdit.makeViewAccessor(flCKEditor.getEditor,
-                                                                flCKEditor.setValue,
-                                                                flCKEditor.getValue);
-                             
+    fluid.defaults("fluid.inlineEdit.CKEditor.viewAccessor", {
+        gradeNames: ["fluid.inlineEdit.editorViewAccessor", "autoInit"],
+        editorGetFn: flCKEditor.getEditor,
+        setValueFn: flCKEditor.setValue,
+        getValueFn: flCKEditor.getValue
+    });
+                       
     fluid.inlineEdit.CKEditor.focus = function (editor) {
         setTimeout(function () {
             // CKEditor won't focus itself except in a timeout.
@@ -326,7 +335,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.inlineEdit.CKEditor.blurHandlerBinder = function (that) {
         that.events.afterInitEdit.addListener(fluid.inlineEdit.CKEditor.focus);
         that.events.afterBeginEdit.addListener(function () {
-            var editor = fluid.inlineEdit.CKEditor.getEditor(that.editField[0]);
+            var editor = fluid.inlineEdit.CKEditor.getEditor(that.editField);
             if (editor) {
                 fluid.inlineEdit.CKEditor.focus(editor);
             }
@@ -344,7 +353,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };                                                     
     
     fluid.defaults("fluid.inlineEdit.CKEditor", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.inlineEdit", "autoInit"],
         selectors: {
             edit: "textarea" 
         },
@@ -377,15 +386,8 @@ var fluid_1_5 = fluid_1_5 || {};
     /************************
      * Dropdown Integration *
      ************************/    
-    /**
-     * Instantiate a drop-down InlineEdit component
-     * 
-     * @param {Object} container
-     * @param {Object} options
-     */
-    fluid.inlineEdit.dropdown = function (container, options) {
-        return configureInlineEdit("fluid.inlineEdit.dropdown", container, options);
-    };
+
+    fluid.registerNamespace("fluid.inlineEdit.dropdown");
 
     fluid.inlineEdit.dropdown.editModeRenderer = function (that) {
         var id = fluid.allocateSimpleId(that.editField);
@@ -409,8 +411,15 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
+    /**
+     * Instantiate a drop-down InlineEdit component
+     * 
+     * @param {Object} container
+     * @param {Object} options
+     */
+    
     fluid.defaults("fluid.inlineEdit.dropdown", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.inlineEdit", "autoInit"],
         applyEditPadding: false,
         blurHandlerBinder: fluid.inlineEdit.dropdown.blurHandlerBinder,
         editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer

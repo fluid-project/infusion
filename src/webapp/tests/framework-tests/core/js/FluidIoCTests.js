@@ -2684,81 +2684,43 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("The to-be-resolved option is passed down to the target", 10, root.ownSub.options.resolvedOption);
     });
     
-    /** FLUID-5025 - IoCSS does not pass down options that are attached onto the top component at preInit or finalInit **/
-    fluid.defaults("fluid.tests.fluid5025root", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            subComponent: {
-                type: "fluid.tests.fluid5025sub"
-            },
-        },
-        distributeOptions: [{
-            source: "{that}.options.optionFromPreInit",
-            target: "{that > subComponent}.options.optionFromPreInit"
-        }, {
-            source: "{that}.options.optionFromFinalInit",
-            target: "{that > subComponent}.options.optionFromFinalInit"
-        }]
+    /** FLUID-5023 - Corruption of model material in shared grades **/
+
+    fluid.defaults("fluid.tests.comp2", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        model: {}
     });
-    
-    fluid.tests.fluid5025root.preInit = function (that) {
-        that.options.optionFromPreInit = 1;
+
+    fluid.tests.comp2.finalInit = function (that) {
+        // adds a unique ID to the model through the applier, so that we can check it later
+        that.applier.requestChange("tempId", fluid.allocateGuid());
     };
-    
-    fluid.tests.fluid5025root.finalInit = function (that) {
-        that.options.optionFromFinalInit = 10;
-    };
-    
-    fluid.defaults("fluid.tests.fluid5025sub", {
+
+    // define a simple grade
+    fluid.defaults("fluid.tests.testGrade", {
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
-      
-    jqUnit.test("FLUID-5025: IoCSS does not pass down options that are attached onto the top component at preInit or finalInit", function () {
-        var root = fluid.tests.fluid5025root();
+
+    // add the grade to the test component using demands
+
+    fluid.demands("fluid.tests.comp2", ["fluid.testSharedGrade"], {
+        options: {
+            gradeNames: ["fluid.tests.testGrade", "autoInit"]
+        }
+    });
+
+    jqUnit.test("FLUID-5023: Test creation of two instances of the same component with a shared grade added through demands", function () {
+        fluid.staticEnvironment.testSharedGrade = fluid.typeTag("fluid.testSharedGrade");
+        // Instantiate two copies of the same test component
+        // Use fluid.invoke to ensure demands honoured
+        var c1 = fluid.invoke("fluid.tests.comp2");
+        var c2 = fluid.invoke("fluid.tests.comp2");
+        var defs = fluid.defaults("fluid.tests.comp2");
         
-        jqUnit.assertEquals("The option attached at preInit is passed down to the target component", 1, root.subComponent.options.optionFromPreInit);
-        jqUnit.assertEquals("The option attached at finalInit is passed down to the target component", 10, root.subComponent.options.optionFromFinalInit);
-    });
-    
-    /** FLUID-5027 - IoCSS can not pass source to a target that is a sub-component originated from another distribution block **/
-    fluid.defaults("fluid.tests.fluid5027root", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            subComponent: {
-                type: "fluid.tests.fluid5027sub"
-            },
-        },
-        defineDeeperSubComponent: {
-            components: {
-                subOfSubComponent: {
-                    type: "fluid.tests.fluid5027subOfSub"
-                },
-            }
-        },
-        deeperSubComponentOption: {
-            userOption: 1
-        },
-        distributeOptions: [{
-            source: "{that}.options.defineDeeperSubComponent",
-            target: "{that > subComponent}.options"
-        }, {
-            source: "{that}.options.DeeperSubComponentOption",
-            target: "{that > subOfSubComponent}.options"
-        }]
-    });
-    
-    fluid.defaults("fluid.tests.fluid5027sub", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
-    });
-    
-    fluid.defaults("fluid.tests.fluid5027subOfSub", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
-    });
-    
-    jqUnit.test("FLUID-5027 - IoCSS can not pass source to a target that is a sub-component originated in another distribution block", function () {
-        var root = fluid.tests.fluid5027root();
-        
-        jqUnit.assertEquals("The option for the target component that is originated from another distribution block is passed down", 1, root.subComponent.subOfSubComponent.options.userOption);
+        jqUnit.assertUndefined("The defaults should not have the tempId", defs.model.tempId);
+        jqUnit.assertNotEquals("The ids in the models are not equal", c1.applier.model.tempId, c2.applier.model.tempId);
+
+        delete fluid.staticEnvironment.testSharedGrade;
     });
     
 })(jQuery); 

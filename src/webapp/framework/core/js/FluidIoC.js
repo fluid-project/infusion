@@ -421,7 +421,7 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.remove_if(otherGrades, function (gradeName) {
                 return gradeName === that.typeName;
             }); // Remove our own typeName which getGradedDefaults is not expecting (FLUID-4939)
-            var newDefaults = fluid.getGradedDefaults(baseDefaults, that.typeName, otherGrades);
+            var newDefaults = fluid.copy(fluid.getGradedDefaults(baseDefaults, that.typeName, otherGrades));
             var defaultsBlock = fluid.findMergeBlocks(shadow.mergeOptions.mergeBlocks, "defaults")[0];
             defaultsBlock.source = newDefaults;
             shadow.mergeOptions.updateBlocks();
@@ -1039,6 +1039,16 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
     
+    /** Instantiate the subcomponent with the supplied name of the supplied top-level component. Although this method
+     * is published as part of the Fluid API, it should not be called by general users and may not remain stable. It is
+     * currently the only mechanism provided for instantiating components whose definitions are dynamic, and will be 
+     * replaced in time by dedicated declarative framework described by FLUID-5022.
+     * @param that {Component} the parent component for which the subcomponent is to be instantiated
+     * @param name {String} the name of the component - the index of the options block which configures it as part of the
+     * <code>components</code> section of its parent's options
+     */
+     // NB "directArgs" is now disused by the framework
+    
     fluid.initDependent = function (that, name, directArgs) {
         if (that[name]) { return; } // TODO: move this into strategy
         directArgs = directArgs || [];
@@ -1082,6 +1092,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that[name] = instance;
         fluid.fireEvent(instance, "events.onAttach", [instance, name, that]);
         fluid.popActivity();
+        return instance;
     };
     
     // unsupported, non-API function
@@ -1292,6 +1303,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 // Resolve this material late, to deal with cases where the target has only just been brought into existence
                 // (e.g. a jQuery target for rendered material) - TODO: Possibly implement cached versions of these as we might do for invokers
                 var resolvedThis = fluid.expandOptions(recthis, that);
+                if (typeof(resolvedThis) === "string") {
+                    resolvedThis = fluid.getGlobalValue(resolvedThis);
+                }
                 if (!resolvedThis) {
                     fluid.fail("Could not resolve reference " + recthis + " to a value"); 
                 }
@@ -1685,7 +1699,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.fetchExpandChildren = function (target, source, mergePolicy, miniWorld, options) {
         if (source.expander /* && source.expander.type */) { // possible expander at top level
             var expanded = fluid.expandExpander(target, source, options);
-            if (fluid.isPrimitive(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
+            if (fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
                 return expanded;
             }
             else { // make an attempt to preserve the root reference if possible
