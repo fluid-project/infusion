@@ -228,12 +228,6 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
 
-    fluid.getMembers = function (holder, name) {
-        return fluid.transform(holder, function(member) {
-            return fluid.get(member, name);
-        });
-    };
-
     // unsupported, NON-API function 
     fluid.receiveDistributions = function (parentThat, gradeNames, memberName) {
         var instantiator = fluid.getInstantiator(parentThat);

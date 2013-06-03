@@ -104,17 +104,17 @@ fluid_1_5 = fluid_1_5 || {};
         that.render = function (tree) {
             var cutpointFn = options.cutpointGenerator || "fluid.renderer.selectorsToCutpoints";
             rendererOptions.cutpoints = rendererOptions.cutpoints || fluid.invokeGlobalFunction(cutpointFn, [selectors, options]);
-            container = typeof(container) === "function" ? container() : $(container);
+            var renderTarget = options.renderTarget ? options.renderTarget : container;
               
             if (templates) {
                 fluid.clear(rendererOptions.fossils);
-                fluid.reRender(templates, container, tree, rendererOptions);
+                fluid.reRender(templates, renderTarget, tree, rendererOptions);
             } 
             else {
                 if (typeof(source) === "function") { // TODO: make a better attempt than this at asynchrony
                     source = source();  
                 }
-                templates = fluid.render(source, container, tree, rendererOptions);
+                templates = fluid.render(source, renderTarget, tree, rendererOptions);
             }
         };
         return that;

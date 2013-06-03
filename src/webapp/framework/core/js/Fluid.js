@@ -548,6 +548,17 @@ var fluid = fluid || fluid_1_5;
         return togo;
     };
     
+    /** Extracts a particular member from each member of a container, returning a new container of the same type
+     * @param holder {Array|Object} The container to be filtered
+     * @param name {String|Array of String} An EL path to be fetched from each members
+     */
+    
+    fluid.getMembers = function (holder, name) {
+        return fluid.transform(holder, function(member) {
+            return fluid.get(member, name);
+        });
+    };
+    
     /** Accepts an object to be filtered, and a list of keys. Either all keys not present in
      * the list are removed, or only keys present in the list are returned.
      * @param toFilter {Array|Object} The object to be filtered - this will be modified by the operation
@@ -1161,7 +1172,6 @@ var fluid = fluid || fluid_1_5;
                 }
                 if (!events[key]) {
                     fluid.fail("Listener registered for event " + key + " which is not defined for this component");
-                    events[key] = fluid.makeEventFirer(null, null, fluid.event.nameEvent(that, key));
                 }
                 firer = events[key];
             }
