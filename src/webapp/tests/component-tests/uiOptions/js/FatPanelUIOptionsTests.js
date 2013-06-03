@@ -159,6 +159,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * UIOptions fatPanel options munging integration tests
      *******************************************************************************/
 
+    var expectedIframeSelector = ".uio-munging";
+    var isSlidingPanelShown = false;
+    
     fluid.defaults("fluid.tests.fatPanelMungingIntegration", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
@@ -174,6 +177,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             }
                         }
                     },
+                    slidingPanel: {
+                        options: {
+                            listeners: {
+                                onPanelShow: function() {
+                                    isSlidingPanelShown = true;
+                                }
+                            }
+                        }
+                    },
+                    iframe: expectedIframeSelector,
                     uiOptions: {
                         options: {
                             members: {
@@ -191,27 +204,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.testEnhancerTransit = function testEnhancerTransit(uiOptions) {
+    fluid.tests.testEnhancerTransit = function testEnhancerTransit(fatPanel, expectedIframeSelector) {
         var cMap = fluid.tests.uiOptions.enhancerOptions.classnameMap;
+        
+        // "outerEnhancerOptions" option mapping
         jqUnit.assertEquals("classnameMap transferred to outer UIEnhancer", cMap.textFont["default"],
-             uiOptions.pageEnhancer.options.classnameMap.textFont["default"]);
+             fatPanel.pageEnhancer.options.classnameMap.textFont["default"]);
         jqUnit.assertEquals("classnameMap transferred to inner UIEnhancer", cMap.textFont["default"],
-             uiOptions.iframeRenderer.iframeEnhancer.options.classnameMap.textFont["default"]);
+             fatPanel.iframeRenderer.iframeEnhancer.options.classnameMap.textFont["default"]);
+        
+        // "slidingPanel" option mapping
+        jqUnit.assertFalse("UIO Panel is hidden", isSlidingPanelShown);
+        fatPanel.slidingPanel.locate("toggleButton").click();
+        jqUnit.assertTrue("UIO Panel is shown", isSlidingPanelShown);
+        
+        // "iframe" option mapping
+        jqUnit.assertEquals("Iframe selector is transferred in", expectedIframeSelector, fatPanel.options.selectors.iframe);
     };
 
     fluid.defaults("fluid.tests.mungingIntegrationTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        expectedIframeSelector: expectedIframeSelector,
         modules: [{
             name: "Fat panel munging integration tests",
             tests: [{
-                expect: 10,
+                expect: 13,
                 name: "Fat panel munging integration tests",
                 sequence: [{
                     listener: "fluid.tests.uiOptions.testComponentIntegration",
                     event: "{fatPanelMungingIntegration fatPanel uiOptionsLoader}.events.onReady"
                 }, {
                     func: "fluid.tests.testEnhancerTransit",
-                    args: "{fatPanel}"
+                    args: ["{fatPanel}", "{that}.options.expectedIframeSelector"]
                 }]
             }]
         }]
