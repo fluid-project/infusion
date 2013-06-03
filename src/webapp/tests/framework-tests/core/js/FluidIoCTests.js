@@ -2723,4 +2723,82 @@ fluid.registerNamespace("fluid.tests");
         delete fluid.staticEnvironment.testSharedGrade;
     });
     
+    /** FLUID-5029 - ">" separator in IoCSS target field should not identify a non-direct child **/
+    fluid.defaults("fluid.tests.fluid5029root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            sub: {
+                type: "fluid.tests.fluid5029sub",
+                options: {
+                    components: {
+                        subOfSub: {
+                            type: "fluid.tests.fluid5029subOfSub"
+                        }
+                    }
+                }
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.userOption",
+            exclusions: [],
+            target: "{that > subOfSub}.options.userOption"
+        },
+        userOption: 10
+    });
+    
+    fluid.defaults("fluid.tests.fluid5029sub", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    fluid.defaults("fluid.tests.fluid5029subOfSub", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("FLUID-5029 - > separator in IoCSS target field should not identify a non-direct child", function () {
+        var root = fluid.tests.fluid5029root();
+        
+        jqUnit.assertUndefined("The user option is not be passed down to the target", root.sub.subOfSub.options.userOption);
+    });
+    
+    /** FLUID-5030 - "createOnEvent" and events from additive grades are not merged in properly **/
+    var fluid5030MyEventFired = false;
+    
+    fluid.defaults("fluid.tests.fluid5030Root", {
+        gradeNames: ["fluid.eventedComponent", "fluid.tests.fluid5030Grade", "autoInit"],
+        components: {
+            subComponent: {
+                type: "fluid.tests.fluid5030Sub"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid5030Sub", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"]
+    });
+    
+    fluid.defaults("fluid.tests.fluid5030Grade", {
+        gradeNames: ["fluid.tests.fluid5030Root", "autoInit"],
+        events: {
+            myevent: null
+        },
+        listeners: {
+            myevent: function () {
+                fluid5030MyEventFired = true;
+            }
+        },
+        components: {
+            subComponent: {
+                createOnEvent: "myevent"
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5030 - createOnEvent and events from additive grades are not merged in properly", function () {
+        var root = fluid.tests.fluid5030Root();
+        
+        jqUnit.assertNotUndefined("The event defined in the grade component is merged in", root.events.myevent);
+        jqUnit.assertEquals("The createOnEvent is not fired", false, fluid5030MyEventFired);
+        jqUnit.assertUndefined("The subcomponent that should be created on createOnEvent is not created", root.subComponent);
+    });
+    
 })(jQuery); 
