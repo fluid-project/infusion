@@ -611,7 +611,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var i;
                 for (i = 0; i < numEditors; i++) {
                     var editor = editors[i];
-                    var currentHasUndo = !!editor.decorators && editor.decorators[0].typeName === "undo";
+                    var currentHasUndo = !!editor.decorators && editor.decorators[0].typeName === "fluid.undo";
                     jqUnit.assertEquals("Check whether or not editor has undo option", hasUndo, currentHasUndo);
                     jqUnit.assertEquals("Belongs to container " + containerId, containerId, editor.container.parent().prop("id"));
                 }
@@ -832,7 +832,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("The keyboard instruction text should be properly positioned directly underneath the edit field", editField.offset().left, editModeInstruction.offset().left);
             });
             
-            var displayModeRendererNoTextEditButton = function (that) {
+            var displayModeRendererNoTextEditButton = function (that, edit) {
                 var styles = that.options.styles;
                 
                 var displayModeWrapper = fluid.inlineEdit.setupDisplayModeContainer(styles);
@@ -840,7 +840,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 
                 // Add event handlers.
                 fluid.inlineEdit.bindHoverHandlers(displayModeRenderer, styles.invitation);
-                fluid.inlineEdit.bindMouseHandlers(that.viewEl, that.edit);
+                fluid.inlineEdit.bindMouseHandlers(that.viewEl, edit);
                 fluid.inlineEdit.bindHighlightHandler(that.viewEl, displayModeRenderer, that.options.styles, that.options.strings, that.model);
                 
                 return displayModeRenderer;                        
@@ -865,6 +865,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.notVisible("After mouse click, the display text is hidden", display);
             });
             
+            // TODO: This test should really be removed since none of these functions form part of the public InlineEdit API
             jqUnit.test("Test individual public functions", function () {
                 var editor = fluid.inlineEdit("#inline-edit");
                 var styles = editor.options.styles;
@@ -872,16 +873,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var displayModeContainer = fluid.inlineEdit.setupDisplayModeContainer(styles);
                 jqUnit.assertTrue("Display mode renderer has fl-inlineEdit-displayView style", displayModeContainer.hasClass(styles.displayView));
 
-                var editField = fluid.inlineEdit.setupEditField(styles.edit);
+                var editField = fluid.inlineEdit.setupEditField(styles.edit, editor.options.markup.editField);
                 jqUnit.assertTrue("Edit field has fl-inlineEdit-edit style", editField.hasClass(styles.edit));
                 
-                var editContainer = fluid.inlineEdit.setupEditContainer(displayModeContainer, editField);
+                var editContainer = fluid.inlineEdit.setupEditContainer(displayModeContainer, editField, editor.options.markup.editContainer);
                 jqUnit.assertEquals("Edit container is created", 1, editContainer.length);
                 
-                var editModeInstruction = fluid.inlineEdit.setupEditModeInstruction(styles.editModeInstruction, editor.options.strings.editModeTooltip);
+                var editModeInstruction = fluid.inlineEdit.setupEditModeInstruction(styles.editModeInstruction, editor.options.strings.editModeTooltip, editor.options.markup.editModeInstruction);
                 jqUnit.assertTrue("Keyboard instruction has fl-inlineEdit-editModeInstruction style", editModeInstruction.hasClass(styles.editModeInstruction));
                 
-                var display = fluid.inlineEdit.setupDisplayText(editor); 
+                var display = fluid.inlineEdit.setupDisplayText(editor.viewEl, editor.options.styles.text); 
                 jqUnit.assertEquals("Display text is removed from the tab order", -1, display.attr("tabindex"));
                 
                 var button = fluid.inlineEdit.setupTextEditButton(editor);     

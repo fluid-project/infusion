@@ -52,11 +52,19 @@ var fluid_1_5 = fluid_1_5 || {};
         uiOptionsTransform: {
             transformer: "fluid.uiOptions.mapOptions",
             config: {
+                // To be replaced by IoCSS when FLUID-5012, FLUID-5013 and FLUID-5017 are resolved.
                 "*.templateLoader":                                   "templateLoader",
-                "*.templateLoader.*.templatePath.options.value":      "prefix",
-                "*.uiOptionsLoader":                                  "uiOptionsLoader",
+                "*.uiOptionsLoader.*.uiOptions":                      "uiOptions",
+
+                // To be replaced by IoCSS when FLUID-5013 and FLUID-5017 are resolved.
                 "*.uiOptionsLoader.container":                        "container",
-                "*.uiOptionsLoader.*.uiOptions":                      "uiOptions"
+                
+                // To be replaced by IoCSS when FLUID-5014 Case 2 and FLUID-5017 are resolved.
+                // "prefix" options is needed by both "fatPanel" and its grade components "inline".
+                "*.templateLoader.*.templatePath.options.value":      "prefix",
+
+                // To be replaced by IoCSS when FLUID-5017 is resolved.
+                "*.uiOptionsLoader":                                  "uiOptionsLoader"
             }
         },
         derivedDefaults: {
@@ -81,6 +89,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions", {
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
+        // Will be replaced by IoCSS once FLUID-5017 is resolved.
         uiOptionsTransform: {
             transformer: "fluid.uiOptions.mapOptions",
             config: {
@@ -411,7 +420,9 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay", "autoInit"],
         invokers: {
             refreshView: "{that}.renderer.refreshView"
-        }
+        },
+        strings: {},
+        parentBundle: "{uioMsgBundle}"
     });
 
     /******************************************************
