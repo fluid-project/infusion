@@ -175,8 +175,8 @@ img {
 }
 
 /* Font icons for reset/save tabs */
-.fl-icon-undo, .fl-icon-prefrences {
-    font-family: 'InfusionIcons';
+.fl-icon-undo, .fl-icon-preferences {
+    font-family: 'InfusionIcons' !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
@@ -191,6 +191,6 @@ img {
 .fl-icon-undo:before {
     content: "\e008";
 }
-.fl-icon-prefrences:before {
+.fl-icon-preferences:before {
     content: "\e00f";
 }
