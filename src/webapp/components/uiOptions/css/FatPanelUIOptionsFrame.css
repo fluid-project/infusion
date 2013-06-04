@@ -116,7 +116,7 @@ html {
 }
 
 /* Font Icons */
-.fl-icon-next, .fl-icon-prev, .fl-icon-contrast, .fl-icon-undo, .fl-icon-line-space, .fl-icon-links, .fl-icon-simplify, .fl-icon-font, .fl-icon-size, .fl-icon-text-to-speech, .fl-icon-toc {
+.fl-icon-next, .fl-icon-prev {
     font-family: 'InfusionIcons';
     speak: none;
     font-style: normal;
@@ -134,30 +134,6 @@ html {
 }
 .fl-icon-prev:before {
     content: "\e002";
-}
-.fl-icon-contrast:before {
-    content: "\e005";
-}
-.fl-icon-line-space:before {
-    content: "\e00b";
-}
-.fl-icon-links:before {
-    content: "\e00c";
-}
-.fl-icon-simplify:before {
-    content: "\e00e";
-}
-.fl-icon-font:before {
-    content: "\e00f";
-}
-.fl-icon-size:before {
-    content: "\e010";
-}
-.fl-icon-text-to-speech:before {
-    content: "\e011";
-}
-.fl-icon-toc:before {
-	content: "\e012";
 }
 
 /* Theming */
