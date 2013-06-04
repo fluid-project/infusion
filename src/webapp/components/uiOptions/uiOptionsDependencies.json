@@ -11,6 +11,7 @@
         ],
         "files": [
             "URLUtilities.js",
+            "i18n.js",
             "Store.js",
             "Enactor.js",
             "ModelRelay.js",
