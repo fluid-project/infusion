@@ -2,7 +2,9 @@
 
 @font-face {
     font-family: 'InfusionIcons';
-    src:url('InfusionIcons-UIOptions.ttf');
+    src: url('../fonts/InfusionIcons-UIOptions.ttf'),
+         url('../fonts/InfusionIcons-UIOptions.eot');
+	}
 }
 
 .fl-uiOptions {
