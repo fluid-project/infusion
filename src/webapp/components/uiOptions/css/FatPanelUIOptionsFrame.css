@@ -115,7 +115,7 @@ html {
 
 /* Font Icons */
 .fl-icon-next, .fl-icon-prev {
-    font-family: 'InfusionIcons';
+    font-family: 'InfusionIcons' !important;
     speak: none;
     font-style: normal;
     font-weight: normal;

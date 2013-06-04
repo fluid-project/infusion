@@ -281,7 +281,7 @@
 /* Font Icons */
 .fl-icon-lines, .fl-icon-indicator, .fl-icon-crossout, .fl-icon-big-a, .fl-icon-small-a, .fl-icon-line-space-expanded, .fl-icon-line-space-condensed,
  .fl-icon-contrast, .fl-icon-undo, .fl-icon-line-space, .fl-icon-links, .fl-icon-simplify, .fl-icon-font, .fl-icon-size, .fl-icon-text-to-speech, .fl-icon-toc {
-    font-family: 'InfusionIcons';
+    font-family: 'InfusionIcons' !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
@@ -320,14 +320,14 @@
 }
 
 .fl-uiOptions .fl-choice .fl-indicator {    
-    font-family: 'InfusionIcons'; 
+    font-family: 'InfusionIcons' !important; 
     font-size: 1.3em;
     margin: -0.75em 0 0 0.75em;   
     height: 1em;
 }
 
 .fl-uiOptions .fl-choice .fl-theme-uio-default .fl-crossout {
-    font-family: 'InfusionIcons';
+    font-family: 'InfusionIcons' !important;
     margin-top:-1.75em;
     font-size: 1.85em;
 }
