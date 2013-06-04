@@ -281,15 +281,14 @@
 }
 
 /* Font Icons */
-.fl-icon-lines, .fl-icon-indicator, .fl-icon-crossout, .fl-icon-big-a, .fl-icon-small-a, .fl-icon-line-space-expanded, .fl-icon-line-space-condensed,
- .fl-icon-contrast, .fl-icon-undo, .fl-icon-line-space, .fl-icon-links, .fl-icon-simplify, .fl-icon-font, .fl-icon-size, .fl-icon-text-to-speech, .fl-icon-toc {
+.fl-uiOptions .fl-icon-lines, .fl-uiOptions .fl-icon-indicator, .fl-uiOptions .fl-icon-crossout, .fl-uiOptions .fl-icon-big-a, .fl-uiOptions .fl-icon-small-a, .fl-uiOptions .fl-icon-line-space-expanded, .fl-uiOptions .fl-icon-line-space-condensed,
+ .fl-uiOptions .fl-icon-contrast, .fl-uiOptions .fl-icon-undo, .fl-uiOptions .fl-icon-line-space, .fl-uiOptions .fl-icon-links, .fl-uiOptions .fl-icon-simplify, .fl-uiOptions .fl-icon-font, .fl-uiOptions .fl-icon-size, .fl-uiOptions .fl-icon-text-to-speech, .fl-uiOptions .fl-icon-toc {
     font-family: 'InfusionIcons' !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
     font-variant: normal;
     text-transform: none;
-    line-height: 1;
     -webkit-font-smoothing: antialiased;
     float:left;
     margin: 0.2em 0.3em 0 0;
@@ -297,26 +296,26 @@
 }
 
 /* control icons */
-.fl-icon-lines:before {
+.fl-uiOptions .fl-icon-lines:before {
     content: "\e000";
 }
-.fl-icon-crossout:before,
+.fl-uiOptions .fl-icon-crossout:before,
 .fl-uiOptions .fl-choice .fl-theme-uio-default .fl-crossout:before {
     content: "\e004";
 }
-.fl-icon-big-a:before {
+.fl-uiOptions .fl-icon-big-a:before {
     content: "\e006";
 }
-.fl-icon-small-a:before {
+.fl-uiOptions .fl-icon-small-a:before {
     content: "\e007";
 }
-.fl-icon-line-space-expanded:before {
+.fl-uiOptions .fl-icon-line-space-expanded:before {
     content: "\e009";
 }
-.fl-icon-line-space-condensed:before {
+.fl-uiOptions .fl-icon-line-space-condensed:before {
     content: "\e00a";
 }
-.fl-icon-indicator:before,
+.fl-uiOptions .fl-icon-indicator:before,
 .fl-uiOptions .fl-choice input:checked + div:before {
     content: "\e003";
 }
@@ -335,28 +334,28 @@
 }
 
 /* header icons */
-.fl-icon-contrast:before {
+.fl-uiOptions .fl-icon-contrast:before {
     content: "\e005";
 }
-.fl-icon-line-space:before {
+.fl-uiOptions .fl-icon-line-space:before {
     content: "\e00b";
 }
-.fl-icon-links:before {
+.fl-uiOptions .fl-icon-links:before {
     content: "\e00c";
 }
-.fl-icon-simplify:before {
+.fl-uiOptions .fl-icon-simplify:before {
     content: "\e00e";
 }
-.fl-icon-font:before {
+.fl-uiOptions .fl-icon-font:before {
     content: "\e00f";
 }
-.fl-icon-size:before {
+.fl-uiOptions .fl-icon-size:before {
     content: "\e010";
 }
-.fl-icon-text-to-speech:before {
+.fl-uiOptions .fl-icon-text-to-speech:before {
     content: "\e011";
 }
-.fl-icon-toc:before {
+.fl-uiOptions .fl-icon-toc:before {
 	content: "\e012";
 }
 

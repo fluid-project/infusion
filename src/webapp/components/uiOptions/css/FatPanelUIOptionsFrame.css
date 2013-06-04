@@ -114,23 +114,22 @@ html {
 }
 
 /* Font Icons */
-.fl-icon-next, .fl-icon-prev {
+.fl-uiOptions-fatPanel .fl-icon-next, .fl-uiOptions-fatPanel .fl-icon-prev {
     font-family: 'InfusionIcons' !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
     font-variant: normal;
     text-transform: none;
-    line-height: 1;
     -webkit-font-smoothing: antialiased;
     float: left;
     margin: 0.2em 0.3em 0 0;
     font-size: 1.5em; 
 }
-.fl-icon-next:before {
+.fl-uiOptions-fatPanel .fl-icon-next:before {
     content: "\e001";
 }
-.fl-icon-prev:before {
+.fl-uiOptions-fatPanel .fl-icon-prev:before {
     content: "\e002";
 }
 
