@@ -23,5 +23,5 @@
 /* Font icons in IE8 require EOT */
 @font-face {
     font-family: 'InfusionIcons';
-    src:url('../../../lib/fonts/InfusionIcons-UIOptions.eot');
+    src:url('InfusionIcons-UIOptions.eot');
 }
