@@ -155,7 +155,8 @@ var fluid_1_5 = fluid_1_5 || {};
         });
 
         var record = {options: {}};
-        fluid.model.applyChangeRequest(record, {path: targetSegs, type: "MERGE", value: source});
+        var primitiveSource = fluid.isPrimitive(source);
+        fluid.model.applyChangeRequest(record, {path: targetSegs, type: primitiveSource? "ADD": "MERGE", value: source});
         return $.extend(record, {contextThat: contextThat, recordType: sourceType, priority: fluid.mergeRecordTypes.distribution + offset});
     };
 
