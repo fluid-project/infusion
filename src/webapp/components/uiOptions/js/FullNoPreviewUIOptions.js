@@ -33,13 +33,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
         },
-        derivedDefaults: {
-            uiOptions: {
-                options: {
-                    listeners: {
-                        onReset: function (uiOptions) {
-                            uiOptions.save();
-                        }
+        uiOptions: {
+            options: {
+                listeners: {
+                    onReset: function (uiOptions) {
+                        uiOptions.save();
                     }
                 }
             }

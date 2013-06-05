@@ -28,10 +28,8 @@ var fluid_1_5 = fluid_1_5 || {};
         container: "{fullPreview}.container",
         uiOptionsTransform: {
             config: {
-                // To be replaced by IoCSS when FLUID-5027 is resolved.
-                "!*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer.options": "outerPreviewEnhancerOptions",
-                "*.uiOptionsLoader.*.uiOptions.*.preview":            "preview",
-                "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
+                 // To be replaced by IoCSS by un-commenting line 56-60 when FLUID-5036 is resolved
+                "!*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer.options": "outerPreviewEnhancerOptions"
             }
         },
         outerPreviewEnhancerOptions:"{originalEnhancerOptions}.options.originalUserOptions",
@@ -42,19 +40,32 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
         },
-        derivedDefaults: {
-            uiOptions: {
-                options: {
-                    components: {
-                        preview: {
-                            type: "fluid.uiOptions.preview",
-                            createOnEvent: "onUIOptionsComponentReady",
-                            container: "{uiOptions}.dom.previewFrame"
-                        }
+        uiOptions: {
+            options: {
+                components: {
+                    preview: {
+                        type: "fluid.uiOptions.preview",
+                        createOnEvent: "onUIOptionsComponentReady",
+                        container: "{uiOptions}.dom.previewFrame"
                     }
                 }
             }
-        }
+        },
+        distributeOptions: [
+        // Un-comment once FLUID-5036 is resolved. Currently is using the manual mapping @ line 32
+//        {
+//            source: "{that}.options.outerPreviewEnhancerOptions",
+//            removeSource: true,
+//            target: "{that preview}.enhancer.options"
+//        }, 
+        {
+            source: "{that}.options.preview.options",
+            target: "{that preview}.options"
+        }, {
+            source: "{that}.options.previewEnhancer.options",
+            removeSource: true,
+            target: "{that enhancer}.options"
+        }]
     });
     
 })(jQuery, fluid_1_5);

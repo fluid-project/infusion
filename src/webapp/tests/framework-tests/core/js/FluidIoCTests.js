@@ -2801,4 +2801,67 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertUndefined("The subcomponent that should be created on createOnEvent is not created", root.subComponent);
     });
     
+    /** FLUID-5036, Case 1 - The IoCSS source that is fetched from the static environment is not resolved correctly **/
+    fluid.defaults("fluid.tests.fluid5036_1Root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            subComponent: {
+                type: "fluid.tests.fluid5036_1Sub",
+                options: {
+                    targetOption: null
+                }
+            }
+        },
+        source: "{fluid5036_1UserOption}",
+        distributeOptions: {
+            source: "{that}.options.source",
+            removeSource: true,
+            target: "{that > subComponent}.options.targetOption"
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid5036_1Sub", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("FLUID-5036, Case 1 - The IoCSS source that is fetched from the static environment is not resolved correctly", function () {
+        var userOption = 10;
+        
+        fluid.staticEnvironment.fluid5036_1UserOption = userOption;
+        var root = fluid.tests.fluid5036_1Root();
+        
+        jqUnit.assertEquals("The user option fetched from the static environment is passed down the target", userOption, root.subComponent.options.targetOption);
+    });
+
+    /** FLUID-5036, Case 2 - The IoCSS source that is fetched from the static environment is not resolved correctly **/
+    fluid.defaults("fluid.tests.fluid5036_2Root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        source: "{fluid5036_2UserOption}",
+        components: {
+            subComponent: {
+                type: "fluid.tests.fluid5036_2Sub"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.source",
+            removeSource: true,
+            target: "{that > subComponent}.options"
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid5036_2Sub", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("FLUID-5036, Case 2 - The IoCSS source that is fetched from the static environment is not resolved correctly", function () {
+        var userOption = {
+                targetOption: 10
+            };
+        
+        fluid.staticEnvironment.fluid5036_2UserOption = userOption;
+        var root = fluid.tests.fluid5036_2Root();
+        
+        jqUnit.assertEquals("The user option fetched from the static environment is passed down the target", 10, root.subComponent.options.targetOption);
+    });
+    
 })(jQuery); 

@@ -102,47 +102,47 @@ var fluid_1_5 = fluid_1_5 || {};
                         }
                     }
                 }
-            }//,
-//            uiOptionsLoader: {
-//                options: {
-//                    events: {
-//                        templatesAndIframeReady: {
-//                            events: {
-//                                iframeReady: "{fatPanel}.events.afterRender",
-//                                templateReady: "onUIOptionsTemplateReady"
-//                            }
-//                        },
-//                        onReady: "{fatPanel}.events.onReady"
-//                    },
-//                    listeners: {
-//                        templatesAndIframeReady: function () {console.log("templatesAndIframeReady is fired");}
-//                    },
-//                    components: {
-//                        uiOptions: {
-//                            createOnEvent: "templatesAndIframeReady",
-//                            container: "{iframeRenderer}.renderUIOContainer",
-//                            options: {
-//                                // ensure that model and applier are available to users at top level
-//                                model: "{fatPanel}.model",
-//                                applier: "{fatPanel}.applier",
-//                                events: {
-//                                    onSignificantDOMChange: null  
-//                                },
-//                                listeners: {
-//                                    onCreate: {
-//                                        listener: "{fatPanel}.bindReset",
-//                                        args: ["{that}.reset"]
-//                                    }
-//                                },
-//                                components: {
-//                                    iframeRenderer: "{fatPanel}.iframeRenderer",
-//                                    settingsStore: "{uiEnhancer}.settingsStore"
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
+            },
+            uiOptionsLoader: {
+                options: {
+                    events: {
+                        templatesAndIframeReady: {
+                            events: {
+                                iframeReady: "{fatPanel}.events.afterRender",
+                                templateReady: "onUIOptionsTemplateReady"
+                            }
+                        },
+                        onReady: "{fatPanel}.events.onReady"
+                    },
+                    listeners: {
+                        templatesAndIframeReady: function () {console.log("templatesAndIframeReady is fired");}
+                    },
+                    components: {
+                        uiOptions: {
+                            createOnEvent: "templatesAndIframeReady",
+                            container: "{iframeRenderer}.renderUIOContainer",
+                            options: {
+                                // ensure that model and applier are available to users at top level
+                                model: "{fatPanel}.model",
+                                applier: "{fatPanel}.applier",
+                                events: {
+                                    onSignificantDOMChange: null  
+                                },
+                                listeners: {
+                                    onCreate: {
+                                        listener: "{fatPanel}.bindReset",
+                                        args: ["{that}.reset"]
+                                    }
+                                },
+                                components: {
+                                    iframeRenderer: "{fatPanel}.iframeRenderer",
+                                    settingsStore: "{uiEnhancer}.settingsStore"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
         outerEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
         distributeOptions: [{
@@ -157,14 +157,24 @@ var fluid_1_5 = fluid_1_5 || {};
             source: "{that}.options.iframe",
             removeSource: true,
             target: "{that}.options.selectors.iframe"
-        }, {
-            source: "{that}.options.outerEnhancerOptions",
-            removeSource: true,
-            target: "{that > iframeRenderer}.iframeEnhancer.options"
-        }, {
+        }, 
+        // Un-comment once FLUID-5036 is resolved. Currently is using the manual mapping @ line 174
+//        {
+//            source: "{that}.options.outerEnhancerOptions",
+//            removeSource: true,
+//            target: "{that > iframeRenderer}.iframeEnhancer.options"
+//        }, 
+        {
             source: "{that}.options.prefix",
             target: "{that > iframeRenderer}.options.prefix"
-        }]
+        }],
+        uiOptionsTransform: {
+            transformer: "fluid.uiOptions.mapOptions",
+            config: {
+                // To be replaced by IoCSS by un-commenting line 162-166 when FLUID-5036 is resolved
+                "!*.iframeRenderer.*.iframeEnhancer.options":                        "outerEnhancerOptions"
+            }
+        }
     });
     
     /*****************************************
@@ -280,44 +290,44 @@ var fluid_1_5 = fluid_1_5 || {};
     /**********************************************************
      * Define customizedLoader specifically for the fat panel *
      **********************************************************/
-    fluid.defaults("fluid.uiOptions.customizedLoader", {
-        gradeNames: ["fluid.uiOptions.loader", "autoInit"],
-        components: {
-            uiOptions: {
-                createOnEvent: "templatesAndIframeReady",
-                container: "{iframeRenderer}.renderUIOContainer",
-                options: {
-                    // ensure that model and applier are available to users at top level
-                    model: "{fatPanel}.model",
-                    applier: "{fatPanel}.applier",
-                    events: {
-                        onSignificantDOMChange: null  
-                    },
-                    listeners: {
-                        onCreate: {
-                            listener: "{fatPanel}.bindReset",
-                            args: ["{that}.reset"]
-                        }
-                    },
-                    components: {
-                        iframeRenderer: "{fatPanel}.iframeRenderer",
-                        settingsStore: "{uiEnhancer}.settingsStore"
-                    }
-                }
-            }
-        },
-        events: {
-            templatesAndIframeReady: {
-                events: {
-                    iframeReady: "{fatPanel}.events.afterRender",
-                    templateReady: "onUIOptionsTemplateReady"
-                }
-            },
-            onReady: "{fatPanel}.events.onReady"
-        },
-        listeners: {
-            templatesAndIframeReady: function () {console.log("templatesAndIframeReady is fired");}
-        }
-    });
+//    fluid.defaults("fluid.uiOptions.customizedLoader", {
+//        gradeNames: ["fluid.uiOptions.loader", "autoInit"],
+//        components: {
+//            uiOptions: {
+//                createOnEvent: "templatesAndIframeReady",
+//                container: "{iframeRenderer}.renderUIOContainer",
+//                options: {
+//                    // ensure that model and applier are available to users at top level
+//                    model: "{fatPanel}.model",
+//                    applier: "{fatPanel}.applier",
+//                    events: {
+//                        onSignificantDOMChange: null  
+//                    },
+//                    listeners: {
+//                        onCreate: {
+//                            listener: "{fatPanel}.bindReset",
+//                            args: ["{that}.reset"]
+//                        }
+//                    },
+//                    components: {
+//                        iframeRenderer: "{fatPanel}.iframeRenderer",
+//                        settingsStore: "{uiEnhancer}.settingsStore"
+//                    }
+//                }
+//            }
+//        },
+//        events: {
+//            templatesAndIframeReady: {
+//                events: {
+//                    iframeReady: "{fatPanel}.events.afterRender",
+//                    templateReady: "onUIOptionsTemplateReady"
+//                }
+//            },
+//            onReady: "{fatPanel}.events.onReady"
+//        },
+//        listeners: {
+//            templatesAndIframeReady: function () {console.log("templatesAndIframeReady is fired");}
+//        }
+//    });
 
 })(jQuery, fluid_1_5);

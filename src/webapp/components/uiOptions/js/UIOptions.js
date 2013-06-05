@@ -59,6 +59,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
         },
+        container: "{that}.container",
         distributeOptions: [{
             source: "{that}.options.templateLoader.options",
             removeSource: true,
@@ -74,19 +75,23 @@ var fluid_1_5 = fluid_1_5 || {};
             source: "{that}.options.uiOptions.options",
             removeSource: true,
             target: "{that uiOptions}.options"
+        }, {
+            source: "{that}.options.container",
+            removeSource: true,
+            target: "{that > uiOptionsLoader}.container"
         }],
         uiOptionsTransform: {
             transformer: "fluid.uiOptions.mapOptions",
             config: {
-                // To be replaced by IoCSS when FLUID-5025 is resolved.
+//                // To be replaced by IoCSS when FLUID-5025 is resolved.
 //                "*.uiOptionsLoader.*.uiOptions":                      "uiOptions",
-                "*.uiOptionsLoader.container":                        "container",
+//                "*.uiOptionsLoader.container":                        "container",
             }
         }
     });
     
     fluid.uiOptions.inline.preInit = function (that) {
-        that.options.container = that.container;
+//        that.options.container = that.container;
         that.options = fluid.uiOptions.mapOptions(that.options, that.options.uiOptionsTransform.config, that.options.mergePolicy, 
                 fluid.copy(that.options.derivedDefaults));
     };
