@@ -336,7 +336,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         fluid.defaults("test", testDefaults2);
         jqUnit.assertDeepEq("defaults() should return the original defaults", 
-                            testDefaults, fluid.filterKeys(fluid.defaults("test"), ["foo", "baz"]));
+                            testDefaults2, fluid.filterKeys(fluid.defaults("test"), ["foo", "baz"]));
         
         // Try to access defaults for a component that doesn't exist.
         jqUnit.assertNoValue("The defaults for a nonexistent component should be null.", 

@@ -179,7 +179,8 @@ var fluid_1_5 = fluid_1_5 || {};
         return togo; 
     };
     
-    // unsupported, NON-API function    
+    // unsupported, NON-API function
+    // TODO: This implementation is obviously poor and has numerous flaws
     fluid.matchIoCSelector = function (selector, thatStack, contextHashes, memberNames, i) {
         var thatpos = thatStack.length - 1;
         var selpos = selector.length - 1;
@@ -199,6 +200,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     match = false;
                     break;
                 }
+            }
+            if (selpos === 0 && thatpos > i && mustMatchHere) {
+                match = false; // child selector must exhaust stack completely - FLUID-5029
             }
             if (match) {
                 if (selpos === 0) {
@@ -410,12 +414,7 @@ var fluid_1_5 = fluid_1_5 || {};
             gradeNames.push.apply(gradeNames, resolved);
             fluid.unique(gradeNames.sort());
             fluid.cacheShadowGrades(that, shadow);
-            var baseDefaults = fluid.rawDefaults(that.typeName);
-            var otherGrades = fluid.makeArray(gradeNames);
-            fluid.remove_if(otherGrades, function (gradeName) {
-                return gradeName === that.typeName;
-            }); // Remove our own typeName which getGradedDefaults is not expecting (FLUID-4939)
-            var newDefaults = fluid.copy(fluid.getGradedDefaults(baseDefaults, that.typeName, otherGrades));
+            var newDefaults = fluid.copy(fluid.getGradedDefaults(that.typeName, resolved));
             var defaultsBlock = fluid.findMergeBlocks(shadow.mergeOptions.mergeBlocks, "defaults")[0];
             defaultsBlock.source = newDefaults;
             shadow.mergeOptions.updateBlocks();
@@ -773,7 +772,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // unsupported, non-API function    
     fluid.checkComponentRecord = function (defaults, localRecord) {
         var expected = fluid.arrayToHash(fluid.localRecordExpected);
-        fluid.each(defaults.argumentMap, function(value, key) {
+        fluid.each(defaults && defaults.argumentMap, function(value, key) {
             expected[key] = true;
         });
         fluid.each(localRecord, function (value, key) {
