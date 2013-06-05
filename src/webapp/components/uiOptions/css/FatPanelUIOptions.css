@@ -60,6 +60,27 @@
 .fl-uiOptions-fatPanel .fl-uiOptions-showHide{
     min-width: 15em;
 }
+
+/* Font icons for reset/save tabs */
+.fl-uiOptions-fatPanel .fl-icon-undo, .fl-uiOptions-fatPanel .fl-icon-preferences {
+    font-family: 'InfusionIcons' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    float:left;
+    margin-right: 0.3em;
+    margin-top: -0.1em;
+    font-size: 1em; 
+}
+.fl-uiOptions-fatPanel .fl-icon-undo:before {
+    content: "\e008";
+}
+.fl-uiOptions-fatPanel .fl-icon-preferences:before {
+    content: "\e00f";
+}
     
 
 /* IFrame */
