@@ -56,7 +56,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     uiOptions: {
                         options: {
-                            gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.defaultModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
+                            gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.initialModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
                         }
                     }
                 }
@@ -101,7 +101,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.tests.afterShowFunc3 = function (fatPanel) {
         return function () {
-            var defaultSiteSettings = fatPanel.uiOptionsLoader.uiOptions.defaultModel;
+            var defaultSiteSettings = fatPanel.uiOptionsLoader.uiOptions.initialModel;
             var pageModel = fatPanel.pageEnhancer.model;
             var panelModel = fatPanel.iframeRenderer.iframeEnhancer.model;
             
@@ -190,7 +190,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     uiOptions: {
                         options: {
                             members: {
-                                defaultModel: {
+                                initialModel: {
                                     theme: "yb"
                                 }
                             }

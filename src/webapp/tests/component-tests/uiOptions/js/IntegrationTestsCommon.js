@@ -114,7 +114,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
 
             function testComponent(uiOptionsLoader, uiOptions) {
-                var defaultModel = uiOptions.defaultModel;
+                var initialModel = uiOptions.initialModel;
 
                 fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents[componentName]);
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
@@ -132,12 +132,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 var resetButton = uiOptions.locate("reset");
                 resetButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from original", defaultModel, uiOptions.model.selections);
+                fluid.tests.uiOptions.checkModelSelections("model from original", initialModel, uiOptions.model.selections);
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
 
                 cancelButton.click();
                 fluid.tests.uiOptions.checkModelSelections("model from original (correct state after reset and cancel)",
-                    (resetShouldSave ? defaultModel : fluid.tests.uiOptions.bwSkin), uiOptions.model.selections);
+                    (resetShouldSave ? initialModel : fluid.tests.uiOptions.bwSkin), uiOptions.model.selections);
 
                 jqUnit.start();
             }
@@ -159,7 +159,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 uiOptions: {
                     options: {
-                        gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.defaultModel.starter"],
+                        gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.initialModel.starter"],
                         listeners: {
                             "onSave.munged": testSave
                         }
@@ -186,7 +186,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.uiOptions.enhancerOptions = {
-        gradeNames: ["fluid.uiEnhancer.starterActions", "fluid.uiOptions.defaultModel.starter"],
+        gradeNames: ["fluid.uiEnhancer.starterActions", "fluid.uiOptions.initialModel.starter"],
         tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
         classnameMap: {
             "textFont": {
@@ -241,7 +241,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         uiOptions: {
             options: {
-                gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.defaultModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
+                gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.initialModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
             }
         }
     };
@@ -266,7 +266,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 uiOptions: {
                     options: {
                         members: {
-                            defaultModel: {
+                            initialModel: {
                                 theme: "yb"
                             }
                         }

@@ -43,7 +43,7 @@ var skon = skon || {};
             },
             uiOptions: {
                 options: {
-                    gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.defaultModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
+                    gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.initialModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
                 }
             },
             markupRenderer: {

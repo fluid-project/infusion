@@ -332,23 +332,23 @@ var fluid_1_5 = fluid_1_5 || {};
         set(userSettings);
     };
 
-    fluid.defaults("fluid.uiOptions.defaultModel", {
+    fluid.defaults("fluid.uiOptions.initialModel", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
             // level uiOptions to avoid further duplication.
-            defaultModel: {}
+            initialModel: {}
         }
     });
 
-    fluid.defaults("fluid.uiOptions.defaultModel.starter", {
-        gradeNames: ["fluid.uiOptions.defaultModel", "autoInit"],
+    fluid.defaults("fluid.uiOptions.initialModel.starter", {
+        gradeNames: ["fluid.uiOptions.initialModel", "autoInit"],
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
             // level uiOptions to avoid further duplication.
-            defaultModel: {
+            initialModel: {
                 textFont: "default",          // key from classname map
                 theme: "default",             // key from classname map
                 textSize: 1,                  // in points
@@ -424,9 +424,9 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.preInit = function (that) {
         that.fetch = function () {
-            var initialModel = that.getSettings();
-            initialModel = $.extend(true, {}, that.defaultModel, initialModel);
-            that.updateModel(initialModel, "settingsStore");
+            var completeModel = that.getSettings();
+            completeModel = $.extend(true, {}, that.initialModel, completeModel);
+            that.updateModel(completeModel, "settingsStore");
             that.events.onUIOptionsRefresh.fire();
         };
 
@@ -449,7 +449,7 @@ var fluid_1_5 = fluid_1_5 || {};
          * Resets the selections to the integrator's defaults and fires onReset
          */
         that.reset = function () {
-            that.updateModel(fluid.copy(that.defaultModel));
+            that.updateModel(fluid.copy(that.initialModel));
             that.events.onReset.fire(that);
             that.events.onUIOptionsRefresh.fire();
         };

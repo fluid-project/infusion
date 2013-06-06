@@ -114,7 +114,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "textSize": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.defaultModel}.defaultModel.textSize"
+                        value: "{fluid.uiOptions.initialModel}.initialModel.textSize"
                     }
                 }
             },
@@ -128,7 +128,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "textFont": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.defaultModel}.defaultModel.textFont"
+                        value: "{fluid.uiOptions.initialModel}.initialModel.textFont"
                     }
                 }
             },
@@ -142,7 +142,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "lineSpacing": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.defaultModel}.defaultModel.lineSpacing"
+                        value: "{fluid.uiOptions.initialModel}.initialModel.lineSpacing"
                     }
                 }
             },
@@ -156,7 +156,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "theme": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.defaultModel}.defaultModel.theme"
+                        value: "{fluid.uiOptions.initialModel}.initialModel.theme"
                     }
                 }
             },
@@ -170,7 +170,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "links": "value"
                     },
                     model: {
-                        links: "{fluid.uiOptions.defaultModel}.defaultModel.links"
+                        links: "{fluid.uiOptions.initialModel}.initialModel.links"
                     }
                 }
             },
@@ -184,7 +184,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "inputsLarger": "value"
                     },
                     model: {
-                        inputsLarger: "{fluid.uiOptions.defaultModel}.defaultModel.inputsLarger"
+                        inputsLarger: "{fluid.uiOptions.initialModel}.initialModel.inputsLarger"
                     }
                 }
             },
@@ -203,7 +203,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         onLateRefreshRelay: "{uiEnhancer}.events.onAsyncEnactorReady"
                     },
                     model: {
-                        toc: "{fluid.uiOptions.defaultModel}.defaultModel.toc"
+                        toc: "{fluid.uiOptions.initialModel}.initialModel.toc"
                     }
                 }
             },
@@ -216,7 +216,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "theme": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.defaultModel}.defaultModel.theme"
+                        value: "{fluid.uiOptions.initialModel}.initialModel.theme"
                     }
                 }
             }
@@ -266,7 +266,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.defaults("fluid.pageEnhancer", {
-        gradeNames: ["fluid.originalEnhancerOptions", "fluid.uiOptions.defaultModel", "fluid.uiOptions.settingsGetter"],
+        gradeNames: ["fluid.originalEnhancerOptions", "fluid.uiOptions.initialModel", "fluid.uiOptions.settingsGetter"],
         components: {
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
