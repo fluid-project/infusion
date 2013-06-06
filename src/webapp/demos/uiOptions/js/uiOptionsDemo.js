@@ -46,7 +46,7 @@ var demo = demo || {};
      */
     demo.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
-            gradeNames: ["fluid.uiEnhancer.defaultActions"],
+            gradeNames: ["fluid.uiEnhancer.starterActions"],
             tocTemplate: pathToTocTemplate,
             classnameMap: {
                 theme: {
@@ -62,12 +62,12 @@ var demo = demo || {};
         prefix: pathToTemplates,
         templateLoader: {
             options: {
-                gradeNames: ["fluid.uiOptions.defaultTemplateLoader"]
+                gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
             }
         },
         uiOptions: {
             options: {
-                gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel.outOfTheBox", "fluid.uiOptions.uiEnhancerRelay"]
+                gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.defaultModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
             }
         }
     };

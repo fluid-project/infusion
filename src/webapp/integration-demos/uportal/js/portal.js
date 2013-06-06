@@ -97,7 +97,7 @@ var demo = demo || {};
      */
     var initSkinChange = function () {
         var uiEnhancer = fluid.pageEnhancer({
-            gradeNames: ["fluid.uiEnhancer.defaultActions"],
+            gradeNames: ["fluid.uiEnhancer.starterActions"],
             tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
         }).uiEnhancer;
         

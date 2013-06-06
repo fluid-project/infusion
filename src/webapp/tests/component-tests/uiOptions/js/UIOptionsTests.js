@@ -39,7 +39,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.uiOptions.templateLoader",
                     priority: "first",
                     options: {
-                        gradeNames: ["fluid.uiOptions.defaultTemplateLoader"],
+                        gradeNames: ["fluid.uiOptions.starterTemplateLoader"],
                         templates: {
                             uiOptions: templatePrefix + "FullNoPreviewUIOptions.html"
                         }
@@ -65,16 +65,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var saveCalled = false;
 
         fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
-            funcName: "fluid.uiOptions.defaultSettingsPanels",
+            funcName: "fluid.uiOptions.starterSettingsPanels",
             options: {
-                gradeNames: ["fluid.uiOptions.defaultModel", "fluid.uiOptions.defaultModel.outOfTheBox", "fluid.uiOptions.uiEnhancerRelay"],
+                gradeNames: ["fluid.uiOptions.defaultModel", "fluid.uiOptions.defaultModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
                 components: {
                     uiEnhancer: {
                         type: "fluid.uiEnhancer",
                         container: "body",
                         priority: "first",
                         options: {
-                            gradeNames: ["fluid.uiEnhancer.defaultActions"]
+                            gradeNames: ["fluid.uiEnhancer.starterActions"]
                         }
                     }
                 },
@@ -604,16 +604,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.enhance.check({"fluid.uiOptions.testsIntegration": true});
             
             fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsIntegration", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
-                funcName: "fluid.uiOptions.defaultSettingsPanels",
+                funcName: "fluid.uiOptions.starterSettingsPanels",
                 options: {
-                    gradeNames: ["fluid.uiOptions.defaultModel.outOfTheBox"],
+                    gradeNames: ["fluid.uiOptions.defaultModel.starter"],
                     components: {
                         uiEnhancer: {
                             type: "fluid.uiEnhancer",
                             container: "body",
                             priority: "first",
                             options: {
-                                gradeNames: ["fluid.uiEnhancer.defaultActions"]
+                                gradeNames: ["fluid.uiEnhancer.starterActions"]
                             }
                         }
                     },

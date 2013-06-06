@@ -95,13 +95,13 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     /*******************************************************************************
-     * UI Enhancer Default Actions
+     * UI Enhancer Starter Actions
      *
      * A grade component for UIEnhancer. It is a collection of default UI Enhancer 
      * action ants.
      *******************************************************************************/
     
-    fluid.defaults("fluid.uiEnhancer.defaultActions", {
+    fluid.defaults("fluid.uiEnhancer.starterActions", {
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
         components: {
             textSize: {
@@ -236,10 +236,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: "{that}.model.theme"
             }]
         },
-        finalInitFunction: "fluid.uiEnhancer.defaultActions.finalInit"
+        finalInitFunction: "fluid.uiEnhancer.starterActions.finalInit"
     });
 
-    fluid.uiEnhancer.defaultActions.finalInit = function (that) {
+    fluid.uiEnhancer.starterActions.finalInit = function (that) {
         $(document).ready(function () {
             that.events.onCreateToc.fire();
             

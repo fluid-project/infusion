@@ -342,7 +342,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.defaultModel.outOfTheBox", {
+    fluid.defaults("fluid.uiOptions.defaultModel.starter", {
         gradeNames: ["fluid.uiOptions.defaultModel", "autoInit"],
         members: {
             // TODO: This information is supposed to be generated from the JSON

@@ -101,7 +101,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest(componentName + " Integration tests", function () {
             fluid.globalSettingsStore();
             fluid.pageEnhancer({
-                gradeNames: ["fluid.uiEnhancer.defaultActions"],
+                gradeNames: ["fluid.uiEnhancer.starterActions"],
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
             });
             var savedSelections;
@@ -154,12 +154,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 templateLoader: {
                     options: {
-                        gradeNames: ["fluid.uiOptions.defaultTemplateLoader"]
+                        gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
                     }
                 },
                 uiOptions: {
                     options: {
-                        gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel.outOfTheBox"],
+                        gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.defaultModel.starter"],
                         listeners: {
                             "onSave.munged": testSave
                         }
@@ -186,7 +186,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.uiOptions.enhancerOptions = {
-        gradeNames: ["fluid.uiEnhancer.defaultActions", "fluid.uiOptions.defaultModel.outOfTheBox"],
+        gradeNames: ["fluid.uiEnhancer.starterActions", "fluid.uiOptions.defaultModel.starter"],
         tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
         classnameMap: {
             "textFont": {
@@ -236,12 +236,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         templateLoader: {
             options: {
-                gradeNames: ["fluid.uiOptions.defaultTemplateLoader"]
+                gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
             }
         },
         uiOptions: {
             options: {
-                gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel.outOfTheBox", "fluid.uiOptions.uiEnhancerRelay"]
+                gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.defaultModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
             }
         }
     };

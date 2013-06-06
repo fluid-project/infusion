@@ -31,7 +31,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.pageEnhancer",
                 creatOnEvent: "createPageEnhancer",
                 options: {
-                    gradeNames: ["fluid.uiEnhancer.defaultActions"],
+                    gradeNames: ["fluid.uiEnhancer.starterActions"],
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
                 }
             },

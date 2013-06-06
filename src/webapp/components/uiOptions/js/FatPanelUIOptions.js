@@ -86,7 +86,7 @@ var fluid_1_5 = fluid_1_5 || {};
                             container: "{iframeRenderer}.renderUIOContainer",
                             createOnEvent: "afterRender",
                             options: {
-                                gradeNames: ["fluid.uiEnhancer.defaultActions"],
+                                gradeNames: ["fluid.uiEnhancer.starterActions"],
                                 jQuery: "{iframeRenderer}.jQuery",
                                 tocTemplate: "{pageEnhancer}.options.tocTemplate",
                                 events: {

@@ -311,11 +311,11 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     /*********************************************************************************************************
-     * defaultSettingsPanels
+     * Starter Settings Panels
      * 
      * A collection of all the default UIO setting panels.
      *********************************************************************************************************/
-    fluid.defaults("fluid.uiOptions.defaultSettingsPanels", {
+    fluid.defaults("fluid.uiOptions.starterSettingsPanels", {
         gradeNames: ["fluid.uiOptions", "autoInit"],
         selectors: {
             textSizer: ".flc-uiOptions-text-sizer",
@@ -439,16 +439,16 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     /******************************
-     * Default Template Loader
+     * Starter Template Loader
      ******************************/
 
     /**
-     * A template loader component that specifies the templates used by defaultSettingsPanels
+     * A template loader component that specifies the templates used by starterSettingsPanels
      * 
      * @param {Object} options
      */    
        
-    fluid.defaults("fluid.uiOptions.defaultTemplateLoader", {
+    fluid.defaults("fluid.uiOptions.starterTemplateLoader", {
         gradeNames: ["fluid.uiOptions.templateLoader", "autoInit"],
         templates: {
             textSizer: "%prefix/UIOptionsTemplate-textSizer.html",

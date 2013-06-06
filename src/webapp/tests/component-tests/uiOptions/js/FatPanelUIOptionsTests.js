@@ -51,12 +51,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     templateLoader: {
                         options: {
-                            gradeNames: ["fluid.uiOptions.defaultTemplateLoader"]
+                            gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
                         }
                     },
                     uiOptions: {
                         options: {
-                            gradeNames: ["fluid.uiOptions.defaultSettingsPanels", "fluid.uiOptions.defaultModel.outOfTheBox", "fluid.uiOptions.uiEnhancerRelay"]
+                            gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.defaultModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
                         }
                     }
                 }
