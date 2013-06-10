@@ -226,7 +226,6 @@ var fluid_1_5 = fluid_1_5 || {};
     
         uiOptions.events.onUIOptionsRefresh.addListener(function () {
             iframeEnhancer.updateModel(uiOptions.model.selections);
-            uiOptions.save();
         });
         uiOptions.events.onReset.addListener(function (uiOptions) {
             fluid.uiOptions.fatPanel.updateView(uiOptions);
@@ -247,7 +246,9 @@ var fluid_1_5 = fluid_1_5 || {};
             iframeEnhancer.textSize.set(iframeEnhancer.model.textSize);
             iframeEnhancer.lineSpacing.set(iframeEnhancer.model.lineSpacing);
         });
-        
+
+        fatPanel.slidingPanel.events.onPanelHide.addListener(uiOptions.save);
+
         fatPanel.slidingPanel.events.afterPanelHide.addListener(function () {
             fatPanel.iframeRenderer.iframe.height(0);
             
