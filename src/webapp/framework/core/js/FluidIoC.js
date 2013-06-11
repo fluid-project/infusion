@@ -155,7 +155,8 @@ var fluid_1_5 = fluid_1_5 || {};
         });
 
         var record = {options: {}};
-        fluid.model.applyChangeRequest(record, {path: targetSegs, type: "MERGE", value: source});
+        var primitiveSource = fluid.isPrimitive(source);
+        fluid.model.applyChangeRequest(record, {path: targetSegs, type: primitiveSource? "ADD": "MERGE", value: source});
         return $.extend(record, {contextThat: contextThat, recordType: sourceType, priority: fluid.mergeRecordTypes.distribution + offset});
     };
 
@@ -179,7 +180,8 @@ var fluid_1_5 = fluid_1_5 || {};
         return togo; 
     };
     
-    // unsupported, NON-API function    
+    // unsupported, NON-API function
+    // TODO: This implementation is obviously poor and has numerous flaws
     fluid.matchIoCSelector = function (selector, thatStack, contextHashes, memberNames, i) {
         var thatpos = thatStack.length - 1;
         var selpos = selector.length - 1;
@@ -199,6 +201,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     match = false;
                     break;
                 }
+            }
+            if (selpos === 0 && thatpos > i && mustMatchHere) {
+                match = false; // child selector must exhaust stack completely - FLUID-5029
             }
             if (match) {
                 if (selpos === 0) {
