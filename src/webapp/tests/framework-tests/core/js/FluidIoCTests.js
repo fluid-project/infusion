@@ -2842,45 +2842,4 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("Original graded value", 2, root2.options.gradeValue);        
     });
 
-   /** FLUID-5035 -  **/
-    
-    fluid.defaults("fluid.tests.fluid5035Root", {
-        gradeNames: ["fluid.eventedComponent", "fluid.tests.fluid5035Grade", "autoInit"],
-        components: {
-            subComponent: {
-                type: "fluid.eventedComponent"
-            }
-        }
-    });
-    
-    fluid.defaults("fluid.tests.fluid5035Grade", {
-        gradeNames: ["fluid.eventedComponent"],
-        events: {
-            creationEvent: null
-        },
-        listeners: {
-            creationEvent: {
-                listener: "fluid.tests.fluid5035listener",
-                args: "{that}"
-            }
-        },
-        components: {
-            subComponent: {
-                createOnEvent: "creationEvent"
-            }
-        }
-    });
-    
-    fluid.tests.fluid5035listener = function (that) {
-        that.creationEventFired = true;
-    };
-    
-    jqUnit.test("FLUID-5035 - forward reference in grade hierarchy", function () {
-        var root = fluid.tests.fluid5035Root();
-        
-        jqUnit.assertNotUndefined("The event defined in the grade component is merged in", root.events.creationEvent);
-        jqUnit.assertFalse("The createOnEvent is not fired", root.creationEventFired);
-        jqUnit.assertUndefined("The subcomponent that should be created on createOnEvent is not created", root.subComponent);
-    });
-    
 })(jQuery); 
