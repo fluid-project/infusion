@@ -127,6 +127,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         updateEnhancerModel: "{that}.events.modelChanged"
                     },
                     listeners: {
+                        modelChanged: "{that}.save",
                         onCreate: {
                             listener: "{fatPanel}.bindReset",
                             args: ["{that}.reset"]
@@ -246,8 +247,6 @@ var fluid_1_5 = fluid_1_5 || {};
             iframeEnhancer.textSize.set(iframeEnhancer.model.textSize);
             iframeEnhancer.lineSpacing.set(iframeEnhancer.model.lineSpacing);
         });
-
-        fatPanel.slidingPanel.events.onPanelHide.addListener(uiOptions.save);
 
         fatPanel.slidingPanel.events.afterPanelHide.addListener(function () {
             fatPanel.iframeRenderer.iframe.height(0);
