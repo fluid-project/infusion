@@ -36,10 +36,6 @@ var fluid_1_5 = fluid_1_5 || {};
      */    
     fluid.defaults("fluid.uiOptions.inline", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        mergePolicy: {
-            uiOptionsTransform: "noexpand",
-            derivedDefaults: "noexpand"
-        },
         components: {
             uiOptionsLoader: {
                 type: "fluid.uiOptions.loader"
@@ -79,117 +75,37 @@ var fluid_1_5 = fluid_1_5 || {};
             source: "{that}.options.container",
             removeSource: true,
             target: "{that > uiOptionsLoader}.container"
-        }],
-        uiOptionsTransform: {
-            transformer: "fluid.uiOptions.mapOptions",
-            config: {
-//                // To be replaced by IoCSS when FLUID-5025 is resolved.
-//                "*.uiOptionsLoader.*.uiOptions":                      "uiOptions",
-//                "*.uiOptionsLoader.container":                        "container",
-            }
-        }
+        }]
     });
-    
-    fluid.uiOptions.inline.preInit = function (that) {
-//        that.options.container = that.container;
-        that.options = fluid.uiOptions.mapOptions(that.options, that.options.uiOptionsTransform.config, that.options.mergePolicy, 
-                fluid.copy(that.options.derivedDefaults));
-    };
     
     fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions", {
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         distributeOptions: [{
             source: "{that}.options.textSizer.options",
             removeSource: true,
-            target: "{that > textSizer}.options"
+            target: "{that textSizer}.options"
         }, {
             source: "{that}.options.lineSpacer.options",
             removeSource: true,
-            target: "{that > lineSpacer}.options"
+            target: "{that lineSpacer}.options"
         }, {
             source: "{that}.options.textFont.options",
             removeSource: true,
-            target: "{that > textFont}.options"
+            target: "{that textFont}.options"
         }, {
             source: "{that}.options.contrast.options",
             removeSource: true,
-            target: "{that > contrast}.options"
+            target: "{that contrast}.options"
         }, {
             source: "{that}.options.layoutControls.options",
             removeSource: true,
-            target: "{that > layoutControls}.options"
+            target: "{that layoutControls}.options"
         }, {
             source: "{that}.options.linksControls.options",
             removeSource: true,
-            target: "{that > linksControls}.options"
+            target: "{that linksControls}.options"
         }]
     });
-    
-    /**
-    * @param {Object} inObject, the element on inObject is in the pair of key -> value
-    */
-    fluid.uiOptions.sortByKeyLength = function (inObject) {
-        var keys = fluid.keys(inObject);
-        return keys.sort(fluid.compareStringLength(true));
-    };
-    
-    fluid.uiOptions.mapOptionsRecord = function (options, sortedConfigKeys, config) {
-        var opRecs = [{}, {}, options || {}];
-        var appliers = fluid.transform(opRecs, function (opRec) {
-            return fluid.makeChangeApplier(opRec);
-        });
-        var toDelete = [];
-        fluid.each(sortedConfigKeys, function (origDest) {
-            var source = config[origDest];
-            var dest = fluid.uiOptions.expandShortPath(origDest);
-            var applier = appliers[origDest.charAt(0) === "!" ? 0 : 1];
-            
-            // Process the user pass-in options
-            var value = fluid.get(options, source);
-            if (value) {
-                applier.requestChange(dest, value, "ADD");
-                toDelete.push({source: source, value: value});
-            }
-        });
-        fluid.each(toDelete, function (elem) {
-            appliers[2].requestChange(elem.source, elem.value, "DELETE");
-        });
-        return opRecs;
-    };
-    
-    // TODO: This dreadful function will be absorbed into the framework for 1.5
-    /**
-    * @param {Object} options, top level options to be mapped
-    * @param {Array} config, a mapping between the target path on the IoC tree and the option name
-    * @param {Object} used in fluid.merge() to merge options and componentConfig
-    */
-    fluid.uiOptions.mapOptions = function (options, config, mergePolicy, derivedDefaults) {
-        // Sort the config object by the length of the key in case an option and its child option
-        // are both configurable. 
-        // For instance: "*.templateLoader" & "*.templateLoader.*.templatePath.options.value"
-        var sortedConfigKeys = fluid.uiOptions.sortByKeyLength(config);         
-
-        var optrecs = fluid.uiOptions.mapOptionsRecord(options, sortedConfigKeys, config);
-        var devrecs = fluid.uiOptions.mapOptionsRecord(derivedDefaults, sortedConfigKeys, config);
-        var mergeOpts = [mergePolicy].concat(devrecs).concat(optrecs);
-        return fluid.merge.apply(null, mergeOpts);
-    };
-    
-    fluid.uiOptions.expandShortPath = function (path) {
-        if (path.charAt(0) === "!") {
-            path = path.substring(1);
-        }
-        var strToreplaceFirst = "components";
-        var strToreplaceRest = "options.components";
-
-        // replace the beginning "*"
-        var newPath = (path.charAt(0) === "*") ? path.replace("*", strToreplaceFirst) : path;
-
-        // replace the rest "*"
-        newPath = newPath.replace(/\*/g, strToreplaceRest);
-        
-        return newPath;
-    };
     
     /******************************
      * UI Options Template Loader *

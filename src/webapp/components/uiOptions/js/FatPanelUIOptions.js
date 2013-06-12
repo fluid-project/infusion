@@ -157,24 +157,15 @@ var fluid_1_5 = fluid_1_5 || {};
             source: "{that}.options.iframe",
             removeSource: true,
             target: "{that}.options.selectors.iframe"
+        }, {
+            source: "{that}.options.outerEnhancerOptions",
+            removeSource: true,
+            target: "{that iframeEnhancer}.options"
         }, 
-        // Un-comment once FLUID-5036 is resolved. Currently is using the manual mapping @ line 174
-//        {
-//            source: "{that}.options.outerEnhancerOptions",
-//            removeSource: true,
-//            target: "{that > iframeRenderer}.iframeEnhancer.options"
-//        }, 
         {
             source: "{that}.options.prefix",
             target: "{that > iframeRenderer}.options.prefix"
-        }],
-        uiOptionsTransform: {
-            transformer: "fluid.uiOptions.mapOptions",
-            config: {
-                // To be replaced by IoCSS by un-commenting line 162-166 when FLUID-5036 is resolved
-                "!*.iframeRenderer.*.iframeEnhancer.options":                        "outerEnhancerOptions"
-            }
-        }
+        }]
     });
     
     /*****************************************
@@ -287,9 +278,9 @@ var fluid_1_5 = fluid_1_5 || {};
         setTimeout(callback, 1);
     };
     
-    /**********************************************************
-     * Define customizedLoader specifically for the fat panel *
-     **********************************************************/
+    /*********************************************************************************************
+     * Define customizedLoader, the additive grade for fluid.uiOptions.loader, for the fat panel *
+     *********************************************************************************************/
     fluid.defaults("fluid.uiOptions.customizedLoader", {
         gradeNames: ["fluid.uiOptions.loader", "autoInit"],
         components: {

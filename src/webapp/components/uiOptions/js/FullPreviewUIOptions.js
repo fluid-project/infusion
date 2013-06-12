@@ -26,13 +26,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.fullPreview", {
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         container: "{fullPreview}.container",
-        uiOptionsTransform: {
-            config: {
-                 // To be replaced by IoCSS by un-commenting line 56-60 when FLUID-5036 is resolved
-                "!*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer.options": "outerPreviewEnhancerOptions"
-            }
-        },
-        outerPreviewEnhancerOptions:"{originalEnhancerOptions}.options.originalUserOptions",
+        outerPreviewEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
         templateLoader: {
             options: {
                 templates: {
@@ -51,14 +45,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
         },
-        distributeOptions: [
-        // Un-comment once FLUID-5036 is resolved. Currently is using the manual mapping @ line 32
-//        {
-//            source: "{that}.options.outerPreviewEnhancerOptions",
-//            removeSource: true,
-//            target: "{that preview}.enhancer.options"
-//        }, 
-        {
+        distributeOptions: [{
+            source: "{that}.options.outerPreviewEnhancerOptions",
+            removeSource: true,
+            target: "{that enhancer}.options"
+        }, {
             source: "{that}.options.preview.options",
             target: "{that preview}.options"
         }, {
