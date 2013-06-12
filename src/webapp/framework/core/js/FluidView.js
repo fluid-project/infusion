@@ -24,7 +24,7 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
     
     fluid.defaults("fluid.viewComponent", {
-        gradeNames: ["fluid.littleComponent", "fluid.modelComponent", "fluid.eventedComponent"],
+        gradeNames: ["fluid.littleComponent", "fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
         initFunction: "fluid.initView",
         argumentMap: {
             container: 0,

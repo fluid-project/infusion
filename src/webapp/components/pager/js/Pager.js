@@ -445,6 +445,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
 
+    // TODO: This mostly becomes a set of "guards" - somehow we need to fix sequence
     fluid.pager.initiatePageChangeListener = function (that, arg) {
         var newModel = fluid.copy(that.model);
         if (arg.relativePage !== undefined) {

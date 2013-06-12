@@ -980,11 +980,12 @@ var fluid_1_5 = fluid_1_5 || {};
                 demands = fluid.makePassArgsSpec(initArgs);
             }
         }
-        // confusion remains with "localRecord" - it is a random mishmash of user arguments and the component record
-        // this should itself be absorbed into "mergeRecords" and let stackFetcher sort it out
-        var localRecord = $.extend({"arguments": initArgs}, fluid.censorKeys(options.componentRecord, ["type"]));
         var shadow = fluid.shadowForComponent(parentThat);
         var localDynamic = shadow && options.memberName ? shadow.subcomponentLocal[options.memberName] : null;
+
+        // confusion remains with "localRecord" - it is a random mishmash of user arguments and the component record
+        // this should itself be absorbed into "mergeRecords" and let stackFetcher sort it out
+        var localRecord = $.extend({"arguments": initArgs}, fluid.censorKeys(options.componentRecord, ["type"]), localDynamic);
         
         fluid.each(argMap, function (index, name) {
             // this is incorrect anyway! What if the supplied arguments were not in the same order as the target argmap,
