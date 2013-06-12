@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.staticEnvironment.uiOptionsTest = fluid.typeTag("fluid.tests.uiOptions");
 
     // Use temp store rather than the cookie store for setting save
-    fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer", "fluid.tests.uiOptions"], {
+    fluid.demands("fluid.uiOptions.store", ["fluid.globalSettingsStore", "fluid.tests.uiOptions"], {
         funcName: "fluid.tempStore"
     });
 
@@ -56,7 +56,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "contrast",
             "layoutControls",
             "linksControls",
-            "settingsStore",
             "eventBinder"
         ],
         "fluid.uiOptions.fullNoPreview": [
@@ -66,7 +65,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "contrast",
             "layoutControls",
             "linksControls",
-            "settingsStore",
             "eventBinder"
         ],
         "fluid.uiOptions.fullPreview": [
@@ -77,7 +75,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "layoutControls",
             "linksControls",
             "preview",
-            "settingsStore",
             "eventBinder"
         ]
     };
@@ -102,8 +99,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.uiOptions.integrationTest = function (componentName, resetShouldSave) {
         jqUnit.asyncTest(componentName + " Integration tests", function () {
+            fluid.globalSettingsStore();
             fluid.pageEnhancer({
-                gradeNames: ["fluid.uiEnhancer.defaultActions"],
+                gradeNames: ["fluid.uiEnhancer.starterActions"],
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
             });
             var savedSelections;
@@ -116,7 +114,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
 
             function testComponent(uiOptionsLoader, uiOptions) {
-                var defaultSiteSettings = uiOptions.settingsStore.options.defaultSiteSettings;
+                var initialModel = uiOptions.initialModel;
 
                 fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents[componentName]);
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
@@ -134,12 +132,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 var resetButton = uiOptions.locate("reset");
                 resetButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from original", defaultSiteSettings, uiOptions.model.selections);
+                fluid.tests.uiOptions.checkModelSelections("model from original", initialModel, uiOptions.model.selections);
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
 
                 cancelButton.click();
                 fluid.tests.uiOptions.checkModelSelections("model from original (correct state after reset and cancel)",
-                    (resetShouldSave ? defaultSiteSettings : fluid.tests.uiOptions.bwSkin), uiOptions.model.selections);
+                    (resetShouldSave ? initialModel : fluid.tests.uiOptions.bwSkin), uiOptions.model.selections);
 
                 jqUnit.start();
             }
@@ -156,12 +154,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 templateLoader: {
                     options: {
-                        gradeNames: ["fluid.uiOptions.defaultTemplateLoader"]
+                        gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
                     }
                 },
                 uiOptions: {
                     options: {
-                        gradeNames: ["fluid.uiOptions.defaultSettingsPanels"],
+                        gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.initialModel.starter"],
                         listeners: {
                             "onSave.munged": testSave
                         }
@@ -188,7 +186,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.uiOptions.enhancerOptions = {
-        gradeNames: ["fluid.uiEnhancer.defaultActions"],
+        gradeNames: ["fluid.uiEnhancer.starterActions", "fluid.uiOptions.initialModel.starter"],
         tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
         classnameMap: {
             "textFont": {
@@ -197,9 +195,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "theme": {
                 "yb": "fl-test"
             }
-        },
-        defaultSiteSettings: {
-            theme: "yb"
         }
     };
 
@@ -241,12 +236,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         templateLoader: {
             options: {
-                gradeNames: ["fluid.uiOptions.defaultTemplateLoader"]
+                gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
             }
         },
         uiOptions: {
             options: {
-                gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
+                gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.initialModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
             }
         }
     };
@@ -255,6 +250,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         extraListener = extraListener || function () { jqUnit.start(); };
         
         jqUnit.asyncTest(componentName + " Munging Integration tests", function () {
+            fluid.globalSettingsStore();
             fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
             var options = fluid.merge(null, fluid.tests.uiOptions.mungingIntegrationOptions, {
                 uiOptionsLoader: {
@@ -264,6 +260,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 "fluid.tests.uiOptions.testComponentIntegration",
                                 extraListener
                             ]
+                        }
+                    }
+                },
+                uiOptions: {
+                    options: {
+                        members: {
+                            initialModel: {
+                                theme: "yb"
+                            }
                         }
                     }
                 }

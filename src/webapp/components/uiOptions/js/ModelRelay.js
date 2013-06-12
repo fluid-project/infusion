@@ -32,24 +32,38 @@ var fluid_1_5 = fluid_1_5 || {};
         mergePolicy: {
             sourceApplier: "nomerge"
         },
+        listeners: {
+            onCreate: "{that}.addListeners",
+            onDestroy: "{that}.removeListeners"
+        },
+        invokers: {
+            addListeners: {
+                funcName: "fluid.uiOptions.modelRelay.addListeners",
+                args: ["{that}.options.rules", "{that}.applier", "{that}.options.sourceApplier", "{that}.id"]
+            },
+            removeListeners: {
+                funcName: "fluid.uiOptions.modelRelay.removeListeners",
+                args: ["{that}.options.rules", "{that}.options.sourceApplier", "{that}.id"]
+            }
+        },
         sourceApplier: null,  // must be supplied by implementors
-        rules: {},  // must be supplied by implementors, in format: "externalModelKey": "internalModelKey"
-        postInitFunction: "fluid.uiOptions.modelRelay.postInit"
+        rules: {}  // must be supplied by implementors, in format: "externalModelKey": "internalModelKey"
     });
-    
-    fluid.uiOptions.modelRelay.postInit = function (that) {
-        fluid.transform(that.options.rules, function (internalKey, sourceKey) {
-            that.applier.modelChanged.addListener(internalKey, function (newModel, oldModel) {
-                if (!that.applier.hasChangeSource(sourceKey)) {
-                    fluid.fireSourcedChange(that.options.sourceApplier, sourceKey, fluid.get(newModel, internalKey), internalKey);
-                }
+
+    fluid.uiOptions.modelRelay.removeListeners = function (rules, applier, namespace) {
+        fluid.each(rules, function () {
+            applier.removeListener(namespace);
+        });
+    };
+
+    fluid.uiOptions.modelRelay.addListeners = function (rules, applier, sourceApplier, namespace) {
+        fluid.each(rules, function (internalKey, sourceKey) {
+            fluid.addSourceGuardedListener(applier, internalKey, sourceKey, function (newModel) {
+                fluid.fireSourcedChange(sourceApplier, sourceKey, fluid.get(newModel, internalKey), internalKey)
             });
-            
-            that.options.sourceApplier.modelChanged.addListener(sourceKey, function (newModel, oldModel) {
-                if (!that.options.sourceApplier.hasChangeSource(internalKey)) {
-                    fluid.fireSourcedChange(that.applier, internalKey, fluid.get(newModel, sourceKey), sourceKey);
-                }
-            });
+            fluid.addSourceGuardedListener(sourceApplier, sourceKey, internalKey, function (newModel) {
+                fluid.fireSourcedChange(applier, internalKey, fluid.get(newModel, sourceKey), sourceKey);
+            }, undefined, namespace);
         });
     };
 

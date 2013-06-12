@@ -32,9 +32,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.enactor.styleElements", {
         gradeNames: ["fluid.uiOptions.enactor", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
-        model: {
-            value: false
-        },
         invokers: {
             applyStyle: {
                 funcName: "fluid.uiOptions.enactor.styleElements.applyStyle",
@@ -92,9 +89,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.enactor.emphasizeLinks", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor.styleElements", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
-        model: {
-            value: false
-        },
         invokers: {
             getElements: {
                 funcName: "fluid.uiOptions.enactor.emphasizeLinks.getLinks",
@@ -117,9 +111,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.enactor.inputsLarger", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor.styleElements", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
-        model: {
-            value: false
-        },
         invokers: {
             getElements: {
                 funcName: "fluid.uiOptions.enactor.inputsLarger.getInputs",
@@ -144,9 +135,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.enactor.classSwapper", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor", "autoInit"],
         classes: {},  // Must be supplied by implementors
-        model: {
-            value: ""
-        },
         invokers: {
             clearClasses: {
                 funcName: "fluid.uiOptions.enactor.classSwapper.clearClasses",
@@ -229,9 +217,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.enactor.textSizer", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor", "autoInit"],
         fontSizeMap: {},  // must be supplied by implementors
-        model: {
-            value: 1
-        },
         invokers: {
             set: {
                 funcName: "fluid.uiOptions.enactor.textSizer.set",
@@ -310,9 +295,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.enactor.lineSpacer", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor", "autoInit"],
         fontSizeMap: {},  // must be supplied by implementors
-        model: {
-            value: 1
-        },
         invokers: {
             set: {
                 funcName: "fluid.uiOptions.enactor.lineSpacer.set",
@@ -409,9 +391,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.enactor.tableOfContentsEnactor", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor", "autoInit"],
         tocTemplate: null,  // must be supplied by implementors
-        model: {
-            value: false
-        },
         components: {
             tableOfContents: {
                 type: "fluid.tableOfContents",
@@ -538,9 +517,6 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         styles: {
             colorInversionClass: "fl-inverted-color"
-        },
-        model: {
-            value: null
         },
         invokers: {
             setIE6ColorInversion: {
