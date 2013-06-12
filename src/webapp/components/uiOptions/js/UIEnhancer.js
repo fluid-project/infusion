@@ -79,22 +79,10 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.defaults("fluid.uiEnhancer", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        components: {
-            settingsStore: {
-                type: "fluid.uiOptions.store",
-                options: {
-                    defaultSiteSettings: "{uiEnhancer}.options.defaultSiteSettings"
-                }
-            }
-        },
         invokers: {
             updateModel: {
                 funcName: "fluid.uiEnhancer.updateModel",
                 args: ["{arguments}.0", "{uiEnhancer}.applier"]
-            },
-            updateFromSettingsStore: {
-                funcName: "fluid.uiEnhancer.updateFromSettingsStore",
-                args: ["{uiEnhancer}"]
             }
         },
         events: {
@@ -102,26 +90,18 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.uiEnhancer.updateFromSettingsStore = function (that) {
-        that.updateModel(that.settingsStore.fetch());
-    };
-
     fluid.uiEnhancer.updateModel = function (newModel, applier) {
         applier.requestChange("", newModel);
     };
-    
-    fluid.uiEnhancer.finalInit = function (that) {
-        that.updateFromSettingsStore();
-    };
 
     /*******************************************************************************
-     * UI Enhancer Default Actions
+     * UI Enhancer Starter Actions
      *
      * A grade component for UIEnhancer. It is a collection of default UI Enhancer 
      * action ants.
      *******************************************************************************/
     
-    fluid.defaults("fluid.uiEnhancer.defaultActions", {
+    fluid.defaults("fluid.uiEnhancer.starterActions", {
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
         components: {
             textSize: {
@@ -132,6 +112,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "textSize": "value"
+                    },
+                    model: {
+                        value: "{fluid.uiOptions.initialModel}.initialModel.textSize"
                     }
                 }
             },
@@ -143,6 +126,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "textFont": "value"
+                    },
+                    model: {
+                        value: "{fluid.uiOptions.initialModel}.initialModel.textFont"
                     }
                 }
             },
@@ -154,6 +140,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "lineSpacing": "value"
+                    },
+                    model: {
+                        value: "{fluid.uiOptions.initialModel}.initialModel.lineSpacing"
                     }
                 }
             },
@@ -165,6 +154,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "theme": "value"
+                    },
+                    model: {
+                        value: "{fluid.uiOptions.initialModel}.initialModel.theme"
                     }
                 }
             },
@@ -176,6 +168,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "links": "value"
+                    },
+                    model: {
+                        links: "{fluid.uiOptions.initialModel}.initialModel.links"
                     }
                 }
             },
@@ -187,6 +182,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "inputsLarger": "value"
+                    },
+                    model: {
+                        inputsLarger: "{fluid.uiOptions.initialModel}.initialModel.inputsLarger"
                     }
                 }
             },
@@ -203,6 +201,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     listeners: {
                         afterTocRender: "{uiEnhancer}.events.onAsyncEnactorReady",
                         onLateRefreshRelay: "{uiEnhancer}.events.onAsyncEnactorReady"
+                    },
+                    model: {
+                        toc: "{fluid.uiOptions.initialModel}.initialModel.toc"
                     }
                 }
             },
@@ -213,6 +214,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "theme": "value"
+                    },
+                    model: {
+                        value: "{fluid.uiOptions.initialModel}.initialModel.theme"
                     }
                 }
             }
@@ -232,10 +236,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: "{that}.model.theme"
             }]
         },
-        finalInitFunction: "fluid.uiEnhancer.defaultActions.finalInit"
+        finalInitFunction: "fluid.uiEnhancer.starterActions.finalInit"
     });
 
-    fluid.uiEnhancer.defaultActions.finalInit = function (that) {
+    fluid.uiEnhancer.starterActions.finalInit = function (that) {
         $(document).ready(function () {
             that.events.onCreateToc.fire();
             
@@ -256,12 +260,13 @@ var fluid_1_5 = fluid_1_5 || {};
         that.options.originalUserOptions = fluid.copy(uiEnhancerOptions);
         that.uiEnhancerOptions = uiEnhancerOptions;
         fluid.initDependents(that);
+        that.uiEnhancer.updateModel(that.getSettings());
         fluid.staticEnvironment.uiEnhancer = that.uiEnhancer;
         return that;
     };
 
     fluid.defaults("fluid.pageEnhancer", {
-        gradeNames: ["fluid.originalEnhancerOptions"],
+        gradeNames: ["fluid.originalEnhancerOptions", "fluid.uiOptions.initialModel", "fluid.uiOptions.settingsGetter"],
         components: {
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
@@ -283,9 +288,5 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.originalEnhancerOptions.preInit = function (that) {
         fluid.staticEnvironment.originalEnhancerOptions = that;
     };
-    
-    fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer"], {
-        funcName: "fluid.cookieStore"
-    });
     
 })(jQuery, fluid_1_5);

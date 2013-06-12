@@ -2436,17 +2436,17 @@ fluid.registerNamespace("fluid.tests");
         }
     });
       
-    fluid.defaults("fluid.tests.defaultTemplateLoader", {
+    fluid.defaults("fluid.tests.starterTemplateLoader", {
         userOption: 10
     });
     
     jqUnit.test("FLUID-5012: Apply gradeNames option onto the target component with IoCSS", function () {
         var uio = fluid.tests.uio({
             templateLoader: {
-                gradeNames: ["fluid.tests.defaultTemplateLoader"]
+                gradeNames: ["fluid.tests.starterTemplateLoader"]
             }
         });
-        var expectedGrades = ["autoInit", "fluid.littleComponent", "fluid.tests.defaultTemplateLoader"];
+        var expectedGrades = ["autoInit", "fluid.littleComponent", "fluid.tests.starterTemplateLoader"];
         
         jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, uio.templateLoader.options.gradeNames);
         jqUnit.assertEquals("The user option from the grade component is transmitted", 10, uio.templateLoader.options.userOption);

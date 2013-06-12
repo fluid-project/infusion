@@ -1,5 +1,12 @@
 /* General UI Options styles, used for all layouts */
 
+@font-face {
+    font-family: 'InfusionIcons';
+    src: url('../fonts/InfusionIcons-UIOptions.ttf'),
+         url('../fonts/InfusionIcons-UIOptions.eot');
+	}
+}
+
 .fl-uiOptions {
     font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
 }
@@ -83,7 +90,8 @@
     padding: 0;
     position: relative;
     height: 1em;
-    margin-top: 0;    
+    margin-top: 0;
+    margin-left: 0.5em;    
 }
 
 .fl-uiOptions .fl-slider a {
@@ -128,42 +136,9 @@
     height: 100%;   
 }
 
-.fl-uiOptions .fl-text-slider-left {
-    padding-right: 15px;
-    background-image: url("../images/default/uio_icon_smallA_default_10x10.png");
-    background-repeat: no-repeat;
-    height: 10px;
-    width: 10px;
-    margin-top: 5px;
-}
-.fl-uiOptions .fl-text-slider-right {
-    padding-right: 15px;
-    margin-left:8px;
-    background-image: url("../images/default/uio_icon_bigA_default_20x20.png");
-    background-repeat: no-repeat;
-    height: 20px;
-    width: 20px;
-}
-.fl-uiOptions .fl-spacing-slider-left {
-    padding-right: 15px;
-    background-image: url("../images/default/uio_icon_linesNarrow_default_16x12.png");
-    background-repeat: no-repeat;
-    height: 12px;
-    width: 16px;
-    margin-top: 5px;
-}
-.fl-uiOptions .fl-spacing-slider-right {
-    padding-right: 15px;
-    margin-left:8px;
-    background-image: url("../images/default/uio_icon_linesWide_default_16x21.png");
-    background-repeat: no-repeat;
-    height: 21px;
-    width: 16px;
-}
-
-.fl-uiOptions .fl-icon {
-    width: 2em;
-    padding-top: 1em;
+.fl-uiOptions .fl-inputs div[class*='fl-icon-'] {
+    font-size: 1.5em;
+    margin-top: -0.15em;
 }
 
 /* Theme radio buttons */
@@ -182,14 +157,7 @@
     vertical-align: middle;
     display: inline-block;
     line-height: 3em !important;
-}
-.fl-uiOptions .fl-choice .fl-theme-uio-default .fl-crossout {
-    margin-top:-1.75em;
-    border-bottom: 1px dashed #ddbdc0;
-    -webkit-transform: rotate(45deg); 
-    -moz-transform: rotate(45deg);  
-    -ms-transform: rotate(45deg);
-    background-color: transparent !important;
+    padding: 2px;
 }
 
 .fl-uiOptions .fl-choice .fl-preview-A {
@@ -198,18 +166,6 @@
 
 .fl-uiOptions .fl-choice input:focus ~ label {
     outline: 2px solid black;
-}
-
-.fl-uiOptions .fl-choice .fl-indicator {    
-    margin: -1em 0 5px 1em;
-    padding-bottom: 1em;
-}
-.fl-uiOptions .fl-choice input:checked + div {
-    background-image: url("../images/default/uio_icon_indicator.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    width: 1.8em;
-    font-size: 0.8em; 
 }
 
 /* ON/OFF Switch for checkboxes */
@@ -324,6 +280,85 @@
     left: 0px;
 }
 
+/* Font Icons */
+.fl-uiOptions .fl-icon-lines, .fl-uiOptions .fl-icon-indicator, .fl-uiOptions .fl-icon-crossout, .fl-uiOptions .fl-icon-big-a, .fl-uiOptions .fl-icon-small-a, .fl-uiOptions .fl-icon-line-space-expanded, .fl-uiOptions .fl-icon-line-space-condensed,
+ .fl-uiOptions .fl-icon-contrast, .fl-uiOptions .fl-icon-undo, .fl-uiOptions .fl-icon-line-space, .fl-uiOptions .fl-icon-links, .fl-uiOptions .fl-icon-simplify, .fl-uiOptions .fl-icon-font, .fl-uiOptions .fl-icon-size, .fl-uiOptions .fl-icon-text-to-speech, .fl-uiOptions .fl-icon-toc {
+    font-family: 'InfusionIcons' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    float:left;
+    margin: 0.2em 0.3em 0 0;
+    font-size: 1.5em; 
+}
+
+/* control icons */
+.fl-uiOptions .fl-icon-lines:before {
+    content: "\e000";
+}
+.fl-uiOptions .fl-icon-crossout:before,
+.fl-uiOptions .fl-choice .fl-theme-uio-default .fl-crossout:before {
+    content: "\e004";
+}
+.fl-uiOptions .fl-icon-big-a:before {
+    content: "\e006";
+}
+.fl-uiOptions .fl-icon-small-a:before {
+    content: "\e007";
+}
+.fl-uiOptions .fl-icon-line-space-expanded:before {
+    content: "\e009";
+}
+.fl-uiOptions .fl-icon-line-space-condensed:before {
+    content: "\e00a";
+}
+.fl-uiOptions .fl-icon-indicator:before,
+.fl-uiOptions .fl-choice input:checked + div:before {
+    content: "\e003";
+}
+
+.fl-uiOptions .fl-choice .fl-indicator {    
+    font-family: 'InfusionIcons' !important; 
+    font-size: 1.3em;
+    margin: -0.75em 0 0 0.75em;   
+    height: 1em;
+}
+
+.fl-uiOptions .fl-choice .fl-theme-uio-default .fl-crossout {
+    font-family: 'InfusionIcons' !important;
+    margin-top:-1.75em;
+    font-size: 1.85em;
+}
+
+/* header icons */
+.fl-uiOptions .fl-icon-contrast:before {
+    content: "\e005";
+}
+.fl-uiOptions .fl-icon-line-space:before {
+    content: "\e00b";
+}
+.fl-uiOptions .fl-icon-links:before {
+    content: "\e00c";
+}
+.fl-uiOptions .fl-icon-simplify:before {
+    content: "\e00e";
+}
+.fl-uiOptions .fl-icon-font:before {
+    content: "\e00f";
+}
+.fl-uiOptions .fl-icon-size:before {
+    content: "\e010";
+}
+.fl-uiOptions .fl-icon-text-to-speech:before {
+    content: "\e011";
+}
+.fl-uiOptions .fl-icon-toc:before {
+	content: "\e012";
+}
+
 /* Theming */
 .fl-theme-bw .ui-slider-horizontal .ui-slider-handle,
 .fl-theme-wb .ui-slider-horizontal .ui-slider-handle,
@@ -333,40 +368,24 @@
 .fl-theme-bw .fl-uiOptions .fl-slider { background: none; background-color:#000;} 
 .fl-theme-bw .fl-uiOptions .fl-slider a,
 .fl-theme-bw .fl-uiOptions .fl-slider a:hover {border:1px solid #000; background-color:#fff;}
-.fl-theme-bw .fl-uiOptions .fl-text-slider-left { background-image: url("../images/bw/uio_icon_smallA_hc_10x10.png"); }
-.fl-theme-bw .fl-uiOptions .fl-text-slider-right { background-image: url("../images/bw/uio_icon_bigA_hc_20x20.png"); }
-.fl-theme-bw .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/bw/uio_icon_linesNarrow_hc_16x12.png"); }
-.fl-theme-bw .fl-uiOptions .fl-spacing-slider-right { background-image: url("../images/bw/uio_icon_linesWide_hc_16x21.png"); }
 .fl-theme-bw .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/bw/uio_icon_save_hc_13x13.png"); }
 .fl-theme-bw .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/bw/uio_icon_cancel_hc_13x13.png"); }
 
 .fl-theme-wb .fl-uiOptions .fl-slider { background: none; background-color:#fff;} 
 .fl-theme-wb .fl-uiOptions .fl-slider a,
 .fl-theme-wb .fl-uiOptions .fl-slider a:hover {border:1px solid #fff; background-color:#000;}
-.fl-theme-wb .fl-uiOptions .fl-text-slider-left { background-image: url("../images/wb/uio_icon_smallA_hci_10x10.png"); }
-.fl-theme-wb .fl-uiOptions .fl-text-slider-right { background-image: url("../images/wb/uio_icon_bigA_hci_20x20.png"); }
-.fl-theme-wb .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/wb/uio_icon_linesNarrow_hci_16x12.png"); }
-.fl-theme-wb .fl-uiOptions .fl-spacing-slider-right { background-image: url("../images/wb/uio_icon_linesWide_hci_16x21.png"); }
 .fl-theme-wb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/wb/uio_icon_save_hci_13x13.png"); }
 .fl-theme-wb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/wb/uio_icon_cancel_hci_13x13.png"); }
 
 .fl-theme-yb .fl-uiOptions .fl-slider {background: none; background-color:#000;}
 .fl-theme-yb .fl-uiOptions .fl-slider a,
 .fl-theme-yb .fl-uiOptions .fl-slider a:hover {border:1px solid #ffff00; background-color:#000;}
-.fl-theme-yb .fl-uiOptions .fl-text-slider-left { background-image: url("../images/yb/uio_icon_smallA_yellowBlack_10x10.png"); }
-.fl-theme-yb .fl-uiOptions .fl-text-slider-right { background-image: url("../images/yb/uio_icon_bigA_yellowBlack_20x20.png"); }
-.fl-theme-yb .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/yb/uio_icon_linesNarrow_yellowBlack_16x12.png"); }
-.fl-theme-yb .fl-uiOptions .fl-spacing-slider-right { background-image: url("../images/yb/uio_icon_linesWide_yellowBlack_16x21.png"); }
 .fl-theme-yb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/yb/uio_icon_save_yellowBlack_13x13.png"); }
 .fl-theme-yb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/yb/uio_icon_cancel_yellowBlack_13x13.png"); }
 
 .fl-theme-by .fl-uiOptions .fl-slider {background: none; background-color:#ffff00;}
 .fl-theme-by .fl-uiOptions .fl-slider a,
 .fl-theme-by .fl-uiOptions .fl-slider a:hover {border:1px solid #000; background-color:#ffff00;}
-.fl-theme-by .fl-uiOptions .fl-text-slider-left { background-image: url("../images/by/uio_icon_smallA_blackYellow_10x10.png"); }
-.fl-theme-by .fl-uiOptions .fl-text-slider-right { background-image: url("../images/by/uio_icon_bigA_blackYellow_20x20.png"); }
-.fl-theme-by .fl-uiOptions .fl-spacing-slider-left { background-image: url("../images/by/uio_icon_linesNarrow_blackYellow_16x12.png"); }
-.fl-theme-by .fl-uiOptions .fl-spacing-slider-right { background-image: url("../images/by/uio_icon_linesWide_blackYellow_16x21.png"); }
 .fl-theme-by .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/by/uio_icon_save_blackYellow_13x13.png"); }
 .fl-theme-by .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/by/uio_icon_cancel_blackYellow_13x13.png"); }
 
@@ -435,11 +454,6 @@
     border-color: #433F3D !important;
     color: #433F3D !important;  
 }
-
-.fl-theme-bw .fl-uiOptions .fl-choice input:checked + div { background-image: url("../images/bw/uio_icon_indicator.png"); }
-.fl-theme-wb .fl-uiOptions .fl-choice input:checked + div { background-image: url("../images/wb/uio_icon_indicator.png"); }
-.fl-theme-by .fl-uiOptions .fl-choice input:checked + div { background-image: url("../images/by/uio_icon_indicator.png"); }
-.fl-theme-yb .fl-uiOptions .fl-choice input:checked + div { background-image: url("../images/yb/uio_icon_indicator.png"); }
 
 .fl-theme-bw .fl-uiOptions input:focus + label,
 .fl-theme-wb .fl-uiOptions input:focus + label,
