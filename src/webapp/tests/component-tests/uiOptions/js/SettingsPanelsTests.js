@@ -58,6 +58,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.textFont",
                 container: ".flc-textFont",
                 options: {
+                    model: {
+                        value: 1
+                    },
                     classnameMap: classnameMap
                 }
             },
@@ -127,6 +130,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.contrast",
                 container: ".flc-contrast",
                 options: {
+                    model: {
+                        value: "default"
+                    },
                     classnameMap: classnameMap
                 }
             },
@@ -212,7 +218,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             textSizer: {
                 type: "fluid.uiOptions.textSizer",
-                container: ".flc-textSizer"
+                container: ".flc-textSizer",
+                options: {
+                    model: {
+                        value: 1
+                    }
+                }
             },
             textSizerTester: {
                 type: "fluid.tests.textSizerTester"
@@ -257,7 +268,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             lineSpacer: {
                 type: "fluid.uiOptions.lineSpacer",
-                container: ".flc-lineSpacer"
+                container: ".flc-lineSpacer",
+                options: {
+                    model: {
+                        value: 1
+                    }
+                }
             },
             lineSpacerTester: {
                 type: "fluid.tests.lineSpacerTester"
@@ -309,7 +325,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             layout: {
                 type: "fluid.uiOptions.layoutControls",
-                container: ".flc-layout"
+                container: ".flc-layout",
+                options: {
+                    model: {
+                        toc: false,
+                        layout: false
+                    }
+                }
             },
             layoutTester: {
                 type: "fluid.tests.layoutTester"
@@ -362,7 +384,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             links: {
                 type: "fluid.uiOptions.linksControls",
-                container: ".flc-links"
+                container: ".flc-links",
+                options: {
+                    model: {
+                        links: false,
+                        inputsLarger: false
+                    }
+                }
             },
             linksTester: {
                 type: "fluid.tests.linksTester"

@@ -30,8 +30,6 @@ var fluid_1_5 = fluid_1_5 || {};
     /*****************************************
      * Fat Panel UI Options Top Level Driver *
      *****************************************/
-     
-    fluid.registerNamespace("fluid.uiOptions.fatPanel"); 
 
     fluid.defaults("fluid.uiOptions.fatPanel", {
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
@@ -42,7 +40,7 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             onReady: {
                 listener: "fluid.uiOptions.fatPanel.bindEvents",
-                args: ["{fatPanel}.uiOptionsLoader.uiOptions", "{uiEnhancer}", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
+                args: ["{fatPanel}.uiOptionsLoader.uiOptions", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
             }
         },
         selectors: {
@@ -88,10 +86,7 @@ var fluid_1_5 = fluid_1_5 || {};
                             container: "{iframeRenderer}.renderUIOContainer",
                             createOnEvent: "afterRender",
                             options: {
-                                gradeNames: ["fluid.uiEnhancer.defaultActions"],
-                                components: {
-                                    settingsStore: "{pageEnhancer}.settingsStore"  
-                                },
+                                gradeNames: ["fluid.uiEnhancer.starterActions"],
                                 jQuery: "{iframeRenderer}.jQuery",
                                 tocTemplate: "{pageEnhancer}.options.tocTemplate",
                                 events: {
@@ -123,21 +118,23 @@ var fluid_1_5 = fluid_1_5 || {};
                 createOnEvent: "templatesAndIframeReady",
                 container: "{iframeRenderer}.renderUIOContainer",
                 options: {
+                    gradeNames: ["fluid.uiOptions.uiEnhancerRelay"],
                     // ensure that model and applier are available to users at top level
                     model: "{fatPanel}.model",
                     applier: "{fatPanel}.applier",
                     events: {
-                        onSignificantDOMChange: null  
+                        onSignificantDOMChange: null,
+                        updateEnhancerModel: "{that}.events.modelChanged"
                     },
                     listeners: {
+                        modelChanged: "{that}.save",
                         onCreate: {
                             listener: "{fatPanel}.bindReset",
                             args: ["{that}.reset"]
                         }
                     },
                     components: {
-                        iframeRenderer: "{fatPanel}.iframeRenderer",
-                        settingsStore: "{uiEnhancer}.settingsStore"
+                        iframeRenderer: "{fatPanel}.iframeRenderer"
                     }
                 }
             }
@@ -215,25 +212,24 @@ var fluid_1_5 = fluid_1_5 || {};
         that.iframe.appendTo(that.container);
     };
         
-    fluid.uiOptions.fatPanel.updateView = function (uiOptions, uiEnhancer) {
-        uiEnhancer.updateFromSettingsStore();
+    fluid.uiOptions.fatPanel.updateView = function (uiOptions) {
+        uiOptions.events.onUIOptionsRefresh.fire();
         uiOptions.events.onSignificantDOMChange.fire();
     };
     
-    fluid.uiOptions.fatPanel.bindEvents = function (uiOptions, uiEnhancer, iframeEnhancer, fatPanel) {
+    fluid.uiOptions.fatPanel.bindEvents = function (uiOptions, iframeEnhancer, fatPanel) {
         // TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component - and also uiOptionsLoader which is another child
         fatPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             iframeEnhancer.events.onIframeVisible.fire(iframeEnhancer);
-            fluid.uiOptions.fatPanel.updateView(uiOptions, iframeEnhancer);
+            fluid.uiOptions.fatPanel.updateView(uiOptions);
         });  
     
-        uiOptions.events.modelChanged.addListener(function (model) {
-            uiEnhancer.updateModel(model.selections);
-            uiOptions.save();
+        uiOptions.events.onUIOptionsRefresh.addListener(function () {
+            iframeEnhancer.updateModel(uiOptions.model.selections);
         });
         uiOptions.events.onReset.addListener(function (uiOptions) {
-            fluid.uiOptions.fatPanel.updateView(uiOptions, iframeEnhancer);
+            fluid.uiOptions.fatPanel.updateView(uiOptions);
         });
         uiOptions.events.onSignificantDOMChange.addListener(function () {
             var dokkument = uiOptions.container[0].ownerDocument;
@@ -251,7 +247,7 @@ var fluid_1_5 = fluid_1_5 || {};
             iframeEnhancer.textSize.set(iframeEnhancer.model.textSize);
             iframeEnhancer.lineSpacing.set(iframeEnhancer.model.lineSpacing);
         });
-        
+
         fatPanel.slidingPanel.events.afterPanelHide.addListener(function () {
             fatPanel.iframeRenderer.iframe.height(0);
             

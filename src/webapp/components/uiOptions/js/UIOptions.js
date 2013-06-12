@@ -21,8 +21,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
-    fluid.registerNamespace("fluid.uiOptions.inline");
-
     /*********************
      * UI Options Inline *
      *********************/
@@ -65,18 +63,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
                 // To be replaced by IoCSS when FLUID-5017 is resolved.
                 "*.uiOptionsLoader":                                  "uiOptionsLoader"
-            }
-        },
-        derivedDefaults: {
-            uiOptions: {
-                options: {
-                    components: {
-                        settingsStore: "{uiEnhancer}.settingsStore"
-                    },
-                    listeners: {
-                        onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
-                    }
-                }
             }
         }
     });
@@ -281,16 +267,23 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.uiOptions", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.settingsGetter", "fluid.uiOptions.settingsSetter", "autoInit"],
         components: {
             eventBinder: {
                 type: "fluid.uiOptions.eventBinder"
             }
         },
-        members: {
-            // TODO: FLUID-4686 - this will be replaced by the mechanism of
-            // extracting defaults from the schema.
-            defaultModel: "{uiEnhancer}.settingsStore.options.defaultSiteSettings"
+        invokers: {
+            /**
+             * Updates the change applier and fires modelChanged on subcomponent fluid.uiOptions.controls
+             *
+             * @param {Object} newModel
+             * @param {Object} source
+             */
+            updateModel: {
+                funcName: "fluid.fireSourcedChange",
+                args: ["{that}.applier", "selections", "{arguments}.0", "{arguments}.1"]
+            }
         },
         selectors: {
             cancel: ".flc-uiOptions-cancel",
@@ -311,13 +304,99 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             onAutoSave: "{that}.save"
         },
-        preInitFunction: "fluid.uiOptions.preInit",
-        finalInitFunction: "fluid.uiOptions.finalInit",
         resources: {
             template: "{templateLoader}.resources.uiOptions"
         },
         autoSave: false
     });
+
+    fluid.defaults("fluid.uiOptions.settingsGetter", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+            getSettings: "{settingsStore}.get"
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.settingsSetter", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        invokers: {
+            setSettings: {
+                funcName: "fluid.uiOptions.settingsSetter.setSettings",
+                args: ["{arguments}.0", "{settingsStore}.set"]
+            }
+        }
+    });
+
+    fluid.uiOptions.settingsSetter.setSettings = function (model, set) {
+        var userSettings = fluid.copy(model);
+        set(userSettings);
+    };
+
+    fluid.defaults("fluid.uiOptions.initialModel", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+            // TODO: This information is supposed to be generated from the JSON
+            // schema describing various preferences. For now it's kept in top
+            // level uiOptions to avoid further duplication.
+            initialModel: {}
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.initialModel.starter", {
+        gradeNames: ["fluid.uiOptions.initialModel", "autoInit"],
+        members: {
+            // TODO: This information is supposed to be generated from the JSON
+            // schema describing various preferences. For now it's kept in top
+            // level uiOptions to avoid further duplication.
+            initialModel: {
+                textFont: "default",          // key from classname map
+                theme: "default",             // key from classname map
+                textSize: 1,                  // in points
+                lineSpacing: 1,               // in ems
+                layout: false,                // boolean
+                toc: false,                   // boolean
+                links: false,                 // boolean
+                inputsLarger: false           // boolean
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.uiEnhancerRelay", {
+        gradeNames: ["autoInit", "fluid.eventedComponent"],
+        listeners: {
+            onCreate: "{that}.addListener",
+            onDestroy: "{that}.removeListener"
+        },
+        events: {
+            updateEnhancerModel: "{fluid.uiOptions}.events.onUIOptionsRefresh"
+        },
+        invokers: {
+            addListener: {
+                funcName: "fluid.uiOptions.uiEnhancerRelay.addListener",
+                args: ["{that}.events.updateEnhancerModel", "{that}.updateEnhancerModel"]
+            },
+            removeListener: {
+                funcName: "fluid.uiOptions.uiEnhancerRelay.removeListener",
+                args: ["{that}.events.updateEnhancerModel", "{that}.updateEnhancerModel"]
+            },
+            updateEnhancerModel: {
+                funcName: "fluid.uiOptions.uiEnhancerRelay.updateEnhancerModel",
+                args: ["{uiEnhancer}", "{fluid.uiOptions}.model.selections"]
+            }
+        }
+    });
+
+    fluid.uiOptions.uiEnhancerRelay.addListener = function (modelChanged, listener) {
+        modelChanged.addListener(listener);
+    };
+
+    fluid.uiOptions.uiEnhancerRelay.removeListener = function (modelChanged, listener) {
+        modelChanged.removeListener(listener);
+    };
+
+    fluid.uiOptions.uiEnhancerRelay.updateEnhancerModel = function (uiEnhancer, newModel) {
+        uiEnhancer.updateModel(newModel);
+    };
     
     // called once markup is applied to the document containing tab component roots
     fluid.uiOptions.finishInit = function (that) {
@@ -345,9 +424,9 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.preInit = function (that) {
         that.fetch = function () {
-            var initialModel = that.settingsStore.fetch();
-            initialModel = $.extend(true, {}, that.defaultModel, initialModel);
-            that.updateModel(initialModel);
+            var completeModel = that.getSettings();
+            completeModel = $.extend(true, {}, that.initialModel, completeModel);
+            that.updateModel(completeModel, "settingsStore");
             that.events.onUIOptionsRefresh.fire();
         };
 
@@ -358,7 +437,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.events.onSave.fire(that.model.selections);
             
             var savedSelections = fluid.copy(that.model.selections);
-            that.settingsStore.save(savedSelections);
+            that.setSettings(savedSelections);
         };
         
         that.saveAndApply = function () {
@@ -370,7 +449,7 @@ var fluid_1_5 = fluid_1_5 || {};
          * Resets the selections to the integrator's defaults and fires onReset
          */
         that.reset = function () {
-            that.updateModel(fluid.copy(that.defaultModel));
+            that.updateModel(fluid.copy(that.initialModel));
             that.events.onReset.fire(that);
             that.events.onUIOptionsRefresh.fire();
         };
@@ -383,18 +462,8 @@ var fluid_1_5 = fluid_1_5 || {};
             that.fetch();
         };
         
-        /**
-         * Updates the change applier and fires modelChanged on subcomponent fluid.uiOptions.controls
-         * 
-         * @param {Object} newModel
-         * @param {Object} source
-         */
-        that.updateModel = function (newModel) {
-            that.applier.requestChange("selections", newModel);
-        };
-        
         that.applier.modelChanged.addListener("selections", function (newModel, oldModel, changeRequest) {
-            that.events.modelChanged.fire(newModel, oldModel, changeRequest.source);
+            that.events.modelChanged.fire(newModel, oldModel, changeRequest[0].source);
             if (that.options.autoSave) {
                 that.events.onAutoSave.fire();
             }
@@ -443,11 +512,10 @@ var fluid_1_5 = fluid_1_5 || {};
         components: {
             enhancer: {
                 type: "fluid.uiEnhancer",
+                container: "{preview}.enhancerContainer",
                 createOnEvent: "onReady",
                 options: {
-                    settingsStore: {
-                        type: "fluid.uiEnhancer.tempStore"
-                    }
+                    gradeNames: ["fluid.uiOptions.uiEnhancerRelay"]
                 }
             },
             eventBinder: {
@@ -495,14 +563,6 @@ var fluid_1_5 = fluid_1_5 || {};
         that.container.attr("src", templateUrl);        
 
     };
-
-    fluid.demands("fluid.uiEnhancer", "fluid.uiOptions.preview", {
-        funcName: "fluid.uiEnhancer",
-        args: [
-            "{preview}.enhancerContainer",
-            "{options}"
-        ]
-    });
     
     /***************************************************
      * UI Options Event binder:                        *
