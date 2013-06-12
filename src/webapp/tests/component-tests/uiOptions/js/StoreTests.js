@@ -84,20 +84,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     name: cookieName
                 }
             });
-            store.save(testSettings);
+            store.set(testSettings);
             
             // Check that we get back the test settings correctly.
-            var result = store.fetch();
-            // Note that the result of "fetch" now adds default values where they don't occur - although the actual
-            // stored value correctly consists of just the original values. Perhaps we should have a separate method
-            // "fetchRaw" that gets the original values for some purposes (including testing)?
+            var result = store.get();
             jqUnit.assertLeftHand("The settings are saved and retrieved correctly.", testSettings, result);
             
             // Change the results, save again. It should work again.
             var differentSettings = fluid.copy(testSettings);
             differentSettings.textSize = "2";
-            store.save(differentSettings);
-            jqUnit.assertEquals("Changed settings are saved correctly.", store.fetch().textSize, "2");
+            store.set(differentSettings);
+            jqUnit.assertEquals("Changed settings are saved correctly.", store.get().textSize, "2");
             
             // Check the cookie directly and make sure it's there.
             var startIndex = document.cookie.indexOf(store.options.cookie.name);
@@ -120,18 +117,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.test("Temp store", function () {
             var store = fluid.tempStore();
-            store.save(testSettings);
+            store.set(testSettings);
             
             // Check that we get back the test settings correctly.
-            var result = store.fetch();
+            var result = store.get();
             jqUnit.assertDeepEq("The settings are saved and retrieved correctly.", testSettings, result);
             
             // Change the results, save again. It should work again.
             var differentSettings = fluid.copy(testSettings);
             differentSettings.textSize = "32";
-            store.save(differentSettings);
-            jqUnit.assertEquals("Changed settings are saved correctly.", "32", store.fetch().textSize);
-            jqUnit.assertEquals("Theme was saved correctly.", "bw", store.fetch().theme);
+            store.set(differentSettings);
+            jqUnit.assertEquals("Changed settings are saved correctly.", "32", store.get().textSize);
+            jqUnit.assertEquals("Theme was saved correctly.", "bw", store.get().theme);
             
         });
 

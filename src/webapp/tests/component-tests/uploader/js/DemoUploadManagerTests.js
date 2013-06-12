@@ -19,29 +19,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(function () {
-        // Redefine SWFUploadStrategy's invokers in this testing context.
-        fluid.staticEnvironment.uploaderTests = fluid.typeTag("fluid.uploader.tests");
-        fluid.demands("fluid.uploader.swfUploadStrategy.setupDOM", ["fluid.uploader.tests"], {
-            funcName: "fluid.identity",
-            args: []
-        });
+        fluid.registerNamespace("fluid.uploader.tests");
+        fluid.enhance.forgetAll();
         
-        fluid.uploader.demoRemote.tests = {
-            makeMockConfig: function () {
-                return {
-                    button_placeholder_id: "swfUploadLovesDestroyingInnocentDomElements"
-                };
-            }    
-        };
-        
-        fluid.demands("fluid.uploader.swfUploadStrategy.setupConfig", ["fluid.uploader.tests"], {
-            funcName: "fluid.uploader.demoRemote.tests.makeMockConfig",
-            args: []
-        });
-        
-        fluid.demands("fluid.uploader.swfUploadStrategy.eventBinder", ["fluid.uploader.tests"], {
-            funcName: "fluid.identity",
-            args: []
+        fluid.enhance.check({
+            "fluid.uploader.tests": true
         });
         
         var events;        
@@ -98,28 +80,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return tracker;
         };
         
+        fluid.defaults("fluid.uploader.tests.demoShell", {
+            gradeNames: ["fluid.littleComponent", "autoInit"],
+            nickName: "uploader",
+            components: {
+                queue: {
+                    type: "fluid.uploader.fileQueue"  
+                },
+                remote: {
+                    type: "fluid.uploader.demo.remote",
+                    options: {
+                        events: {
+                            onFileProgress: null,
+                            onFileComplete: null,
+                            afterFileComplete: null,
+                            afterUploadComplete: null,
+                            onFileSuccess: null,
+                            onFileStart: null,
+                            onFileError: null,
+                            onUploadStop: null
+                        }
+                    }
+                }
+            }
+        });
         var uploadFilesAndTest = function (files, testBody) {
             var tracker = eventTracker(testBody);
             
-            var queue = fluid.uploader.fileQueue();
-            queue.files = files;     
-            
-            var demo = fluid.uploader.demoRemote(queue, {
-                events: {
-                    onFileProgress: null,
-                    afterFileComplete: null,
-                    afterUploadComplete: null,
-                    onFileSuccess: null,
-                    onFileStart: null,
-                    onFileError: null,
-                    onUploadStop: null
-                },
-                
-                listeners: tracker.listeners
+            var demo = fluid.uploader.tests.demoShell({
+                components: {
+                    remote: {
+                        options: {
+                            listeners: tracker.listeners
+                        }
+                    }
+                }
             });
+            demo.queue.files = files;
 
-            queue.start();
-            demo.uploadNextFile();
+            demo.queue.start();
+            demo.remote.uploadNextFile();
             
             tracker.transcript.files = files;
             return tracker.transcript;    

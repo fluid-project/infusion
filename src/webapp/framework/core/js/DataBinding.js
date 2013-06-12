@@ -320,7 +320,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         for (var i = start; i < end; ++ i) {
             if (segs[i] !== toMatch[i - start]) {
-               return false;
+                return false;
             }
         }
         return true;
@@ -420,16 +420,17 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param path The path specification to listen to
      * @param source The source value to exclude (direct equality used)
      * @param func The listener to be notified of a change
-     * @param [eventName] - optional - the event name to be listened to - defaults to "modelChanged" 
+     * @param [eventName] - optional - the event name to be listened to - defaults to "modelChanged"
+     * @param [namespace] - optional - the event namespace
      */
-    fluid.addSourceGuardedListener = function(applier, path, source, func, eventName) {
+    fluid.addSourceGuardedListener = function(applier, path, source, func, eventName, namespace) {
         eventName = eventName || "modelChanged";
         applier[eventName].addListener(path, 
             function() {
                 if (!applier.hasChangeSource(source)) {
                     func.apply(null, arguments);
                 }
-            });
+            }, namespace);
     };
 
     /** Convenience method to fire a change event to a specified applier, including
@@ -462,7 +463,7 @@ var fluid_1_5 = fluid_1_5 || {};
             };
             that.fireChangeRequest(changeRequest);
         };
-    }
+    };
     
     // Utility used for source tracking in changeApplier
     

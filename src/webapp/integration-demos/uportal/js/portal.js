@@ -97,7 +97,8 @@ var demo = demo || {};
      */
     var initSkinChange = function () {
         var uiEnhancer = fluid.pageEnhancer({
-        	tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
+            gradeNames: ["fluid.uiEnhancer.starterActions"],
+            tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
         }).uiEnhancer;
         
         jQuery("#hc-skin").click(function () {

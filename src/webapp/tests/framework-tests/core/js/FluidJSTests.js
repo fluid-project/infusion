@@ -98,7 +98,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("merge", function () {
-        jqUnit.expect(7);
+        jqUnit.expect(8);
                 
         var bit1 = {prop1: "thing1"};
         var bit2 = {prop2: "thing2"};
@@ -118,6 +118,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
             fluid.merge([], [], [bit1, bit2], null, [bit2, bit1, bits]));
         
+        var null1 = {prop1: null};
+        
+        jqUnit.assertDeepEq("Null onto property", null1,
+            fluid.merge({}, bit1, null1));
         
         jqUnit.assertDeepEq("Replace 1", 
             bit1, fluid.merge({"": "replace"}, {}, bits, bit1));
@@ -349,6 +353,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.fail.apply(null, testArgs);
         fluid.pushSoftFailure(-1);
     });
+    
+    function passTestLog(level, expected) {
+        jqUnit.assertEquals("Should " + (expected ? "not " : "") + "pass debug level " + level, expected, fluid.passLogLevel(fluid.logLevel[level])); 
+    }
+    
+    jqUnit.test("FLUID-4936 test - support for logging levels", function () {
+        fluid.setLogging(true);
+        passTestLog("INFO", true);
+        passTestLog("IMPORTANT", true);
+        passTestLog("TRACE", false);
+        fluid.popLogging();
+        fluid.setLogging(false);
+        passTestLog("INFO", false);
+        passTestLog("IMPORTANT", true);
+        fluid.popLogging();
+        fluid.setLogging(fluid.logLevel.TRACE);
+        passTestLog("TRACE", true);
+        fluid.popLogging();
+    });
+    
+    jqUnit.test("FLUID-4973 test - activity logging does not crash", function () {
+        fluid.pushActivity("testActivity", "testing my activity with argument %argument", {argument: 3});
+        var activity = fluid.describeActivity();
+        jqUnit.assertTrue("One activity in progress", activity.length === 1);
+        var rendered = fluid.renderActivity(activity)[0].join("");
+        jqUnit.assertTrue("Activity string rendered", rendered.indexOf("testing my activity with argument 3") !== -1);
+        fluid.logActivity(activity); // This would previously crash on IE8
+        fluid.popActivity();  
+    });
            
     jqUnit.test("FLUID-4285 test - prevent 'double options'", function () {
         try {
@@ -501,6 +534,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         firer.fire(false);
         firer.removeListener("toRemoveNonExistent"); // for FLUID-4791
         firer.fire(false);
+    });
+            
+    fluid.defaults("fluid.tests.eventMerge", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+           event: "preventable"
+        }
+    });
+    
+    jqUnit.test("Merge over named listener", function () {
+        var that = fluid.tests.eventMerge({
+            events: {
+               event: null
+            },
+            listeners: {
+               event: "fluid.identity"
+            }
+        });
+        var result = that.events.event.fire(false);
+        jqUnit.assertUndefined("Event returned to nonpreventable through merge", result);
     });
     
     fluid.tests.makeNotingListener = function (key, value) {
@@ -693,6 +746,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expectedGrade: "fluid.emptySubcomponent"
             }
         ]);
+    });
+    
+    jqUnit.test("fluid.bind", function () {
+        jqUnit.expect(3);
+        var expectedText = "New Text";
+        var jqElm = $("<div></div>");
+        var testObj = {
+            baseVal: 3,
+            fn: function (a, b) {
+                return this.baseVal + a + b
+            }
+        };
+        
+        fluid.bind(jqElm, "text", expectedText)
+        jqUnit.assertEquals("The text should have been set", expectedText, jqElm.text());
+        jqUnit.assertEquals("The value returned from the bind should be the same as the native call", jqElm.text(), fluid.bind(jqElm, "text"));
+        jqUnit.assertEquals("The correct value should be returned", 6, fluid.bind(testObj, "fn", [1, 2]));
     });
     
 })(jQuery);

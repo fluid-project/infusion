@@ -11,16 +11,22 @@
         ],
         "files": [
             "URLUtilities.js",
+            "i18n.js",
             "Store.js",
+            "Enactor.js",
+            "ModelRelay.js",
             "UIEnhancer.js",
             "UIOptions.js",
             "FatPanelUIOptions.js",
             "FullNoPreviewUIOptions.js",
             "FullPreviewUIOptions.js",
-            "SlidingPanel.js"
+            "SlidingPanel.js",
+            "TextfieldSlider.js",
+            "SettingsPanels.js"
         ],
         "dependencies": [
             "fss",
+            "fonts",
             "jQuery",
             "jQueryUICore",
             "framework",
@@ -29,7 +35,8 @@
             "tabs",
             "tableOfContents",
             "json",
-            "jQueryAriaTabsPlugin"
+            "jQueryAriaTabsPlugin",
+            "jQueryTouchPunchPlugin"
         ]
     }
 }

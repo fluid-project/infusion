@@ -21,9 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
           
         var makeUploaderEventFirers = function () {
-            // TODO: This kind of thing is not permissible! Use IoC testing framework instead
-            var mockUploader = {};
-            fluid.instantiateFirers(mockUploader, fluid.defaults("fluid.uploader.multiFileUploader"));
+            var mockUploader = fluid.tests.uploader.mockUploader();
             return mockUploader.events;
         };
         
