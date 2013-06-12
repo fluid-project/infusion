@@ -87,7 +87,7 @@ var fluid = fluid || fluid_1_5;
 
     fluid.model.transform.accumulateInputPath = function (inputPath, expander, paths) {
         if (inputPath !== undefined) {
-            paths.push(fluid.model.composePaths(expander.inputPrefix, inputPath));            
+            paths.push(fluid.model.composePaths(expander.inputPrefix, inputPath));
         }
     }
 
