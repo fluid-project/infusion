@@ -41,8 +41,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onReady: {
                 listener: "fluid.uiOptions.fatPanel.bindEvents",
                 args: ["{fatPanel}.uiOptionsLoader.uiOptions", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
-            },
-            afterRender: function () {console.log("fat panel afterRender is fired");}
+            }
         },
         selectors: {
             reset: ".flc-uiOptions-reset",
@@ -97,49 +96,10 @@ var fluid_1_5 = fluid_1_5 || {};
                         }
                     }
                 }
-            }//,
-//            uiOptionsLoader: {
-//                options: {
-//                    events: {
-//                        templatesAndIframeReady: {
-//                            events: {
-//                                iframeReady: "{fatPanel}.events.afterRender",
-//                                templateReady: "onUIOptionsTemplateReady"
-//                            }
-//                        },
-//                        onReady: "{fatPanel}.events.onReady"
-//                    },
-//                    listeners: {
-//                        templatesAndIframeReady: function () {console.log("templatesAndIframeReady is fired");}
-//                    },
-//                    components: {
-//                        uiOptions: {
-//                            createOnEvent: "templatesAndIframeReady",
-//                            container: "{iframeRenderer}.renderUIOContainer",
-//                            options: {
-//                                gradeNames: ["fluid.uiOptions.uiEnhancerRelay"],
-//                                // ensure that model and applier are available to users at top level
-//                                model: "{fatPanel}.model",
-//                                applier: "{fatPanel}.applier",
-//                                events: {
-//                                    onSignificantDOMChange: null,
-//                                    updateEnhancerModel: "{that}.events.modelChanged"
-//                                },
-//                                listeners: {
-//                                    modelChanged: "{that}.save",
-//                                    onCreate: {
-//                                        listener: "{fatPanel}.bindReset",
-//                                        args: ["{that}.reset"]
-//                                    }
-//                                },
-//                                components: {
-//                                    iframeRenderer: "{fatPanel}.iframeRenderer"
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
+            },
+            uiOptionsLoader: {
+                type: "fluid.uiOptions.fatPanelLoader"
+            }
         },
         outerEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
         distributeOptions: [{
@@ -199,7 +159,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
             that.jQuery = iframeWindow.jQuery;
             that.renderUIOContainer = that.jQuery("body", that.iframeDocument);
-            console.log("create renderUIOContainer");
             that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
         });
         that.iframe.attr(that.options.markupProps);
@@ -273,10 +232,12 @@ var fluid_1_5 = fluid_1_5 || {};
         setTimeout(callback, 1);
     };
     
-    /*********************************************************************************************
-     * Define customizedLoader, the additive grade for fluid.uiOptions.loader, for the fat panel *
-     *********************************************************************************************/
-    fluid.defaults("fluid.uiOptions.customizedLoader", {
+    /*************************************************************
+     * fluid.uiOptions.fatPanelLoader: 
+     * 
+     * Define the loader that are specifically for the fat panel.
+     *************************************************************/
+    fluid.defaults("fluid.uiOptions.fatPanelLoader", {
         gradeNames: ["fluid.uiOptions.loader", "autoInit"],
         components: {
             uiOptions: {
@@ -312,9 +273,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             onReady: "{fatPanel}.events.onReady"
-        },
-        listeners: {
-            templatesAndIframeReady: function () {console.log("templatesAndIframeReady is fired");}
         }
     });
 
