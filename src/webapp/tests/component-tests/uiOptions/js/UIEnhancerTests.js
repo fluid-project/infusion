@@ -30,13 +30,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             emphasizeLinks: {
-                type: "fluid.uiOptions.actionAnts.emphasizeLinksEnactor",
+                type: "fluid.uiOptions.enactor.emphasizeLinks",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: emphasizeLinksClass,
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "emphasizeLinks": "value"
+                    },
+                    model: {
+                        links: false
                     }
                 }
             }
@@ -51,15 +54,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: ".flt-customizedActions",
                 options: {
                     gradeNames: ["fluid.uiEnhancer.customizedActions"],
-                    components: {
-                        settingsStore: {
-                            type: "fluid.tempStore"
-                        }
-                    },
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
                 }
             },
-            styleElementsEnactorTester: {
+            styleElementsTester: {
                 type: "fluid.tests.customizedActionsTester"
             }
         }
@@ -106,16 +104,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.settings", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
+            uiOptions: {
+                type: "fluid.uiOptions.initialModel.starter"
+            },
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
                 container: "body",
                 options: {
-                    gradeNames: ["fluid.uiEnhancer.defaultActions"],
-                    components: {
-                        settingsStore: {
-                            type: "fluid.tempStore"
-                        }
-                    },
+                    gradeNames: ["fluid.uiEnhancer.starterActions"],
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
                 }
             },
@@ -169,7 +165,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.testTocStyling",
                     spec: {priority: "last"},
-                    event: "{uiEnhancer}.events.onAsyncEnactorsReady"
+                    event: "{uiEnhancer}.events.onAsyncEnactorReady"
                 }, {
                     func: "fluid.tests.testSettings",
                     args: ["{uiEnhancer}", "{that}.options.testOpts.testSettings", "{that}.options.testOpts.initialFontSize"]
@@ -185,16 +181,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.optionsMunging", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
+            uiOptions: {
+                type: "fluid.uiOptions.initialModel.starter",
+                options: {
+                    members: {
+                        initialModel: {
+                            theme: "yb"
+                        }
+                    }
+                }
+            },
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
                 container: "body",
                 options: {
-                    gradeNames: ["fluid.uiEnhancer.defaultActions"],
-                    components: {
-                        settingsStore: {
-                            type: "fluid.tempStore"
-                        }
-                    },
+                    gradeNames: ["fluid.uiEnhancer.starterActions"],
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
                     classnameMap: {
                         "textFont": {
@@ -203,13 +204,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "theme": {
                             "yb": "fl-test"
                         }
-                    },
-                    defaultSiteSettings: {
-                        theme: "yb"
                     }
                 }
             },
-            styleElementsEnactorTester: {
+            styleElementsTester: {
                 type: "fluid.tests.optionsMungingTester"
             }
         }

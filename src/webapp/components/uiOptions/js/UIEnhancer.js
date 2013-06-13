@@ -39,7 +39,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "verdana": "fl-font-uio-verdana"
             },
             "theme": {
-                "default": "fl-uio-default-theme",
+                "default": "fl-theme-uio-default",
                 "bw": "fl-theme-uio-bw fl-theme-bw",
                 "wb": "fl-theme-uio-wb fl-theme-wb",
                 "by": "fl-theme-uio-by fl-theme-by",
@@ -79,121 +79,119 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.defaults("fluid.uiEnhancer", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        components: {
-            settingsStore: {
-                type: "fluid.uiOptions.store",
-                options: {
-                    defaultSiteSettings: "{uiEnhancer}.options.defaultSiteSettings"
-                }
-            }
-        },
         invokers: {
             updateModel: {
                 funcName: "fluid.uiEnhancer.updateModel",
                 args: ["{arguments}.0", "{uiEnhancer}.applier"]
-            },
-            updateFromSettingsStore: {
-                funcName: "fluid.uiEnhancer.updateFromSettingsStore",
-                args: ["{uiEnhancer}"]
             }
         },
         events: {
-            onAsyncEnactorsReady: null
+            onAsyncEnactorReady: null
         }
     });
-
-    fluid.uiEnhancer.updateFromSettingsStore = function (that) {
-        that.updateModel(that.settingsStore.fetch());
-    };
 
     fluid.uiEnhancer.updateModel = function (newModel, applier) {
         applier.requestChange("", newModel);
     };
-    
-    fluid.uiEnhancer.finalInit = function (that) {
-        that.updateFromSettingsStore();
-    };
 
     /*******************************************************************************
-     * UI Enhancer Default Actions
+     * UI Enhancer Starter Actions
      *
      * A grade component for UIEnhancer. It is a collection of default UI Enhancer 
      * action ants.
      *******************************************************************************/
     
-    fluid.defaults("fluid.uiEnhancer.defaultActions", {
+    fluid.defaults("fluid.uiEnhancer.starterActions", {
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
         components: {
             textSize: {
-                type: "fluid.uiOptions.actionAnts.textSizerEnactor",
+                type: "fluid.uiOptions.enactor.textSizer",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "textSize": "value"
+                    },
+                    model: {
+                        value: "{fluid.uiOptions.initialModel}.initialModel.textSize"
                     }
                 }
             },
             textFont: {
-                type: "fluid.uiOptions.actionAnts.classSwapperEnactor",
+                type: "fluid.uiOptions.enactor.classSwapper",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.textFont",
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "textFont": "value"
+                    },
+                    model: {
+                        value: "{fluid.uiOptions.initialModel}.initialModel.textFont"
                     }
                 }
             },
             lineSpacing: {
-                type: "fluid.uiOptions.actionAnts.lineSpacerEnactor",
+                type: "fluid.uiOptions.enactor.lineSpacer",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "lineSpacing": "value"
+                    },
+                    model: {
+                        value: "{fluid.uiOptions.initialModel}.initialModel.lineSpacing"
                     }
                 }
             },
             theme: {
-                type: "fluid.uiOptions.actionAnts.classSwapperEnactor",
+                type: "fluid.uiOptions.enactor.classSwapper",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.theme",
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "theme": "value"
+                    },
+                    model: {
+                        value: "{fluid.uiOptions.initialModel}.initialModel.theme"
                     }
                 }
             },
             emphasizeLinks: {
-                type: "fluid.uiOptions.actionAnts.emphasizeLinksEnactor",
+                type: "fluid.uiOptions.enactor.emphasizeLinks",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.links",
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "links": "value"
+                    },
+                    model: {
+                        links: "{fluid.uiOptions.initialModel}.initialModel.links"
                     }
                 }
             },
             inputsLarger: {
-                type: "fluid.uiOptions.actionAnts.inputsLargerEnactor",
+                type: "fluid.uiOptions.enactor.inputsLarger",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.inputsLarger",
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "inputsLarger": "value"
+                    },
+                    model: {
+                        inputsLarger: "{fluid.uiOptions.initialModel}.initialModel.inputsLarger"
                     }
                 }
             },
-            tableOfContents: {
-                type: "fluid.uiOptions.actionAnts.tableOfContentsEnactor",
+            tableOfContentsEnactor: {
+                type: "fluid.uiOptions.enactor.tableOfContentsEnactor",
                 container: "{uiEnhancer}.container",
-                createOnEvent: "onCreateTocEnactor",
+                createOnEvent: "onCreateToc",
                 options: {
                     tocTemplate: "{uiEnhancer}.options.tocTemplate",
                     sourceApplier: "{uiEnhancer}.applier",
@@ -201,27 +199,33 @@ var fluid_1_5 = fluid_1_5 || {};
                         "toc": "value"
                     },
                     listeners: {
-                        afterTocRender: "{uiEnhancer}.events.onAsyncEnactorsReady",
-                        onLateRefreshRelay: "{uiEnhancer}.events.onAsyncEnactorsReady"
+                        afterTocRender: "{uiEnhancer}.events.onAsyncEnactorReady",
+                        onLateRefreshRelay: "{uiEnhancer}.events.onAsyncEnactorReady"
+                    },
+                    model: {
+                        toc: "{fluid.uiOptions.initialModel}.initialModel.toc"
                     }
                 }
             },
             IE6ColorInversion: {
-                type: "fluid.uiOptions.actionAnts.IE6ColorInversionEnactor",
+                type: "fluid.uiOptions.enactor.IE6ColorInversion",
                 container: "{uiEnhancer}.container",
                 options: {
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "theme": "value"
+                    },
+                    model: {
+                        value: "{fluid.uiOptions.initialModel}.initialModel.theme"
                     }
                 }
             }
         },
         events: {
-            onCreateTocEnactor: null
+            onCreateToc: null
         },
         listeners: {
-            onAsyncEnactorsReady: [{
+            onAsyncEnactorReady: [{
                 listener: "{that}.emphasizeLinks.handleStyle",
                 args: "{that}.model.links"
             }, {
@@ -232,16 +236,16 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: "{that}.model.theme"
             }]
         },
-        finalInitFunction: "fluid.uiEnhancer.defaultActions.finalInit"
+        finalInitFunction: "fluid.uiEnhancer.starterActions.finalInit"
     });
 
-    fluid.uiEnhancer.defaultActions.finalInit = function (that) {
+    fluid.uiEnhancer.starterActions.finalInit = function (that) {
         $(document).ready(function () {
-            that.events.onCreateTocEnactor.fire();
+            that.events.onCreateToc.fire();
             
             // Directly calling toc apply function rather than firing a model change request
             // is because the modelRelay component prevents the relay on the unchanged value.
-            that.tableOfContents.applyToc(that.model.toc);
+            that.tableOfContentsEnactor.applyToc(that.model.toc);
         });
     };
     
@@ -249,21 +253,20 @@ var fluid_1_5 = fluid_1_5 || {};
      * PageEnhancer                                                                *
      *                                                                             *
      * A UIEnhancer wrapper that concerns itself with the entire page.             *
-     *******************************************************************************/    
-    
+     *******************************************************************************/
     fluid.pageEnhancer = function (uiEnhancerOptions) {
         var that = fluid.initLittleComponent("fluid.pageEnhancer");
-        uiEnhancerOptions = fluid.copy(uiEnhancerOptions);
         // This hack is required to resolve FLUID-4409 - much improved framework support is required
-        uiEnhancerOptions.originalUserOptions = fluid.copy(uiEnhancerOptions);
+        that.options.originalUserOptions = fluid.copy(uiEnhancerOptions);
         that.uiEnhancerOptions = uiEnhancerOptions;
         fluid.initDependents(that);
+        that.uiEnhancer.updateModel(that.getSettings());
         fluid.staticEnvironment.uiEnhancer = that.uiEnhancer;
         return that;
     };
 
     fluid.defaults("fluid.pageEnhancer", {
-        gradeNames: ["fluid.littleComponent"],
+        gradeNames: ["fluid.originalEnhancerOptions", "fluid.uiOptions.initialModel", "fluid.uiOptions.settingsGetter"],
         components: {
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
@@ -273,8 +276,17 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    fluid.demands("fluid.uiOptions.store", ["fluid.uiEnhancer"], {
-        funcName: "fluid.cookieStore"
+    /*******************************************************************************
+     * originalEnhancerOptions
+     *
+     * A grade component for pageEnhancer to keep track of the original user options
+     *******************************************************************************/
+    fluid.defaults("fluid.originalEnhancerOptions", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
     });
+    
+    fluid.originalEnhancerOptions.preInit = function (that) {
+        fluid.staticEnvironment.originalEnhancerOptions = that;
+    };
     
 })(jQuery, fluid_1_5);

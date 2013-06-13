@@ -19,165 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 var fluid_1_5 = fluid_1_5 || {};
 
-
-/******************
- * Textfield Slider *
- ******************/
-
 (function ($, fluid) {
-
-    fluid.defaults("fluid.textfieldSlider", {
-        gradeNames: ["fluid.viewComponent", "autoInit"], 
-        components: {
-            textfield: {
-                type: "fluid.textfieldSlider.textfield",
-                container: "{textfieldSlider}.dom.textfield",
-                options: {
-                    model: "{textfieldSlider}.model",
-                    applier: "{textfieldSlider}.applier"
-                }
-            },
-            slider: {
-                type: "fluid.textfieldSlider.slider",
-                container: "{textfieldSlider}.dom.slider",
-                options: {
-                    model: "{textfieldSlider}.model",
-                    applier: "{textfieldSlider}.applier",
-                    sliderOptions: "{textfieldSlider}.options.sliderOptions"
-                }
-            }
-        },
-        selectors: {
-            textfield: ".flc-textfieldSlider-field",
-            slider: ".flc-textfieldSlider-slider"
-        },
-        events: {
-            modelChanged: null
-        },
-        model: {
-            value: null,
-            min: 0,
-            max: 100
-        },
-        sliderOptions: {
-            orientation: "horizontal",
-            step: 1.0
-        }, 
-        finalInitFunction: "fluid.textfieldSlider.finalInit"
-    });    
-    
-    fluid.textfieldSlider.finalInit = function (that) {
-
-        that.refreshView = function () {
-            var val = that.model.value;
-            that.textfield.container.val(val);
-        };
-        
-        // TODO: replace this with "model events relay" system.
-        // problem: if we place these directly in "events", this will destroy all
-        // existing events named "modelChanged".
-        that.applier.modelChanged.addListener("value", 
-            function (newModel) {
-                that.events.modelChanged.fire(newModel.value);
-            }
-        );
-
-        that.events.modelChanged.addListener(that.refreshView);
-
-        that.refreshView();
-    };
-    
-    fluid.defaults("fluid.textfieldSlider.textfield", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        finalInitFunction: "fluid.textfieldSlider.textfield.finalInit"
-    });
-
-    fluid.textfieldSlider.validateValue = function (model, changeRequest, applier) {
-        var oldValue = model.value;
-        var newValue = changeRequest.value;
-        
-        var isValidNum = !isNaN(parseInt(newValue, 10));
-
-        if (isValidNum) {
-            if (newValue < model.min) {
-                newValue = model.min;
-            } else if (newValue > model.max) {
-                newValue = model.max;
-            }
-            changeRequest.value = newValue;
-        } else {
-            changeRequest.value = oldValue;
-        }
-    };
-
-    fluid.textfieldSlider.textfield.finalInit = function (that) {
-        that.applier.guards.addListener({path: "value", transactional: true}, fluid.textfieldSlider.validateValue);
-        
-        that.container.change(function (source) {
-            that.applier.requestChange("value", source.target.value);
-        });
-    };
-
-    fluid.defaults("fluid.textfieldSlider.slider", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        finalInitFunction: "fluid.textfieldSlider.slider.finalInit",
-        selectors: {
-            thumb: ".ui-slider-handle"
-        },
-        events: {
-            modelChanged: null
-        }
-    });
-    
-    // This will be removed once the jQuery UI slider has built in ARIA 
-    var initSliderAria = function (thumb, opts) {
-        var ariaDefaults = {
-            role: "slider",
-            "aria-valuenow": opts.value,
-            "aria-valuemin": opts.min,
-            "aria-valuemax": opts.max
-        };
-        thumb.attr(ariaDefaults);
-    };
-    
-    fluid.textfieldSlider.slider.finalInit = function (that) {
-        var sliderOptions = $.extend(true, {}, that.options.sliderOptions, that.model);
-        
-        that.slider = that.container.slider(sliderOptions);
-        initSliderAria(that.locate("thumb"), sliderOptions);
-        
-        that.setSliderValue = function (value) {
-            that.slider.slider("value", value);
-        };
-        
-        that.setSliderAria = function (value) {
-            that.locate("thumb").attr("aria-valuenow", value);
-        };
-        
-        that.slider.bind("slide", function (e, ui) {
-            that.applier.requestChange("value", ui.value);
-        });
-        
-        that.applier.modelChanged.addListener("value", 
-            function (newModel) {
-                that.setSliderValue(newModel.value);
-                that.setSliderAria(newModel.value);
-                that.events.modelChanged.fire(newModel.value);
-            }
-        );
-        
-    };
-
-})(jQuery, fluid_1_5);
-
-
-/**************
- * UI Options *
- **************/
-
-(function ($, fluid) {
-
-    fluid.registerNamespace("fluid.uiOptions.inline");
 
     /*********************
      * UI Options Inline *
@@ -191,7 +33,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */    
     fluid.defaults("fluid.uiOptions.inline", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         mergePolicy: {
             uiOptionsTransform: "noexpand",
             derivedDefaults: "noexpand"
@@ -208,61 +50,44 @@ var fluid_1_5 = fluid_1_5 || {};
         uiOptionsTransform: {
             transformer: "fluid.uiOptions.mapOptions",
             config: {
+                // To be replaced by IoCSS when FLUID-5012, FLUID-5013 and FLUID-5017 are resolved.
                 "*.templateLoader":                                   "templateLoader",
-                "*.templateLoader.*.templatePath.options.value":      "prefix",
-                "*.uiOptionsLoader":                                  "uiOptionsLoader",
-                "*.uiOptionsLoader.container":                        "container",
                 "*.uiOptionsLoader.*.uiOptions":                      "uiOptions",
-                "*.uiOptionsLoader.*.uiOptions.*.textControls":       "textControls",
-                "*.uiOptionsLoader.*.uiOptions.*.layoutControls":     "layoutControls",
-                "*.uiOptionsLoader.*.uiOptions.*.linksControls":      "linksControls",
-                "*.uiOptionsLoader.*.uiOptions.*.preview":            "preview",
-                "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
-            }
-        },
-        derivedDefaults: {
-            uiOptions: {
-                options: {
-                    components: {
-                        settingsStore: "{uiEnhancer}.settingsStore"
-                    },
-                    listeners: {
-                        onUIOptionsRefresh: "{uiEnhancer}.updateFromSettingsStore"
-                    }
-                }
+
+                // To be replaced by IoCSS when FLUID-5013 and FLUID-5017 are resolved.
+                "*.uiOptionsLoader.container":                        "container",
+                
+                // To be replaced by IoCSS when FLUID-5014 Case 2 and FLUID-5017 are resolved.
+                // "prefix" options is needed by both "fatPanel" and its grade components "inline".
+                "*.templateLoader.*.templatePath.options.value":      "prefix",
+
+                // To be replaced by IoCSS when FLUID-5017 is resolved.
+                "*.uiOptionsLoader":                                  "uiOptionsLoader"
             }
         }
     });
     
-    // A temporary function to automate the work of making a creator function for a UIOptions configuration.
-    // These creator functions accept literal options from the user (via direct function call) and
-    // apply a mapping transformation to them to make some deeply nested configuration more accessible.
-    
-    // Unfortunately this operation conflicts with the workflow of the IoC system in constructing a component - 
-    // so these UIOptions configurations are not suitable for use as IoC-driven subcomponents. 
-    fluid.uiOptions.inline.makeCreator = function (componentName, processor) {
-        var creator = function (container, options) {
-            // make "container" one of the options so it can be munged by the uiOptions.mapOptions.
-            // This container is passed down to be used as uiOptionsLoader.container
-            var defaults = fluid.defaults(componentName);
-            options.container = container;
-            options = processor(options);
-            
-            var mappedOptions = fluid.uiOptions.mapOptions(options, defaults.uiOptionsTransform.config, defaults.mergePolicy, 
-                fluid.copy(defaults.derivedDefaults));
-            var that = fluid.initView(componentName, container, mappedOptions);
-            // This workflow copied from fluid.initView
-            fluid.diagnoseFailedView(componentName, that, fluid.defaults(componentName), [componentName, container, mappedOptions]);
-            fluid.initDependents(that);
-            return that;
-        };
-        // This workflow taken from framework fluid.makeComponent
-        var existing = fluid.getGlobalValue(componentName);
-        if (existing) {
-            $.extend(creator, existing);
-        }
-        fluid.setGlobalValue(componentName, creator);
+    fluid.uiOptions.inline.preInit = function (that) {
+        that.options.container = that.container;
+        that.options = fluid.uiOptions.mapOptions(that.options, that.options.uiOptionsTransform.config, that.options.mergePolicy, 
+                fluid.copy(that.options.derivedDefaults));
     };
+    
+    fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions", {
+        gradeNames: ["fluid.uiOptions.inline", "autoInit"],
+        // Will be replaced by IoCSS once FLUID-5017 is resolved.
+        uiOptionsTransform: {
+            transformer: "fluid.uiOptions.mapOptions",
+            config: {
+                "*.uiOptionsLoader.*.uiOptions.*.textSizer":          "textSizer",
+                "*.uiOptionsLoader.*.uiOptions.*.lineSpacer":         "lineSpacer",
+                "*.uiOptionsLoader.*.uiOptions.*.textFont":           "textFont",
+                "*.uiOptionsLoader.*.uiOptions.*.contrast":           "contrast",
+                "*.uiOptionsLoader.*.uiOptions.*.layoutControls":     "layoutControls",
+                "*.uiOptionsLoader.*.uiOptions.*.linksControls":      "linksControls"
+            }
+        }
+    });
     
     /**
     * @param {Object} inObject, the element on inObject is in the pair of key -> value
@@ -347,10 +172,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         finalInitFunction: "fluid.uiOptions.templateLoader.resolveTemplates",
         templates: {
-            uiOptions: "%prefix/FatPanelUIOptions.html",
-            textControls: "%prefix/UIOptionsTemplate-text.html",
-            layoutControls: "%prefix/UIOptionsTemplate-layout.html",
-            linksControls: "%prefix/UIOptionsTemplate-links.html"
+            uiOptions: "%prefix/FatPanelUIOptions.html"
         },
         // Unsupported, non-API option
         components: {
@@ -396,7 +218,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.loader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         resources: "{templateLoader}.resources",
-        finalInitFunction: "fluid.uiOptions.loader.finalInit",
         events: {
             // These two are events private to uiOptions
             onUIOptionsTemplateReady: null, // templates are loaded - construct UIOptions itself
@@ -410,6 +231,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 listener: "{loader}.events.onReady",
                 args: ["{fluid.uiOptions.loader}", "{arguments}.0"],
                 priority: "last"
+            },
+            onCreate: {
+                listener: "fluid.uiOptions.loader.init",
+                args: "{that}"
             }
         },
         components: {
@@ -426,44 +251,12 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    fluid.uiOptions.loader.finalInit = function (that) {
-        fluid.fetchResources(that.options.resources, that.events.onUIOptionsTemplateReady.fire);
+    fluid.uiOptions.loader.init = function (that) {
+        fluid.fetchResources(that.options.resources, function () {
+            that.events.onUIOptionsTemplateReady.fire();
+        });
     };
     
-        
-    // This function compensates for a framework deficiency that due to lack of gingerness, the "refreshView"
-    // function synthesized by rendererComponent is not available during listener registration which only 
-    // occurs after component init functions have completed (http://issues.fluidproject.org/browse/FLUID-4334)
-    fluid.uiOptions.lateRefreshViewBinder = function (that) {
-        that.refreshView = function () {
-            that.renderer.refreshView();
-        };
-    };
-    
-    fluid.uiOptions.defaultModelMerger = function (target, source) {
-        $.extend(true, target, source);
-    };
-    
-    // Temporary, encapsulation-violating definition of an Ant - currently these can't
-    // be deployed outside the direct environment of a UIOptions component
-    fluid.defaults("fluid.uiOptions.ant", {
-        gradeNames: ["fluid.rendererComponent"],
-        model: "{uiOptions}.model",
-        applier: "{uiOptions}.applier",
-        events: {
-            onUIOptionsRefresh: "{uiOptions}.events.onUIOptionsRefresh"
-        },
-        listeners: {
-            onUIOptionsRefresh: "{that}.refreshView",     
-            "{uiOptions}.events.contributeDefaultModel": {
-                listener: "fluid.uiOptions.defaultModelMerger",
-                args: ["{arguments}.0", "{that}.options.defaultModel"]
-            }
-        },
-        preInitFunction: "fluid.uiOptions.lateRefreshViewBinder",
-        finalInitFunction: "fluid.uiOptions.controlsFinalInit"
-    });
-
     /**
      * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
      * to allow users to set personal user interface preferences. The UI Options component provides a user 
@@ -474,45 +267,25 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.uiOptions", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.settingsGetter", "fluid.uiOptions.settingsSetter", "autoInit"],
         components: {
-            textControls: {
-                type: "fluid.uiOptions.textControls",
-                container: "{uiOptions}.dom.textControls",
-                createOnEvent: "onUIOptionsMarkupReady",
-                options: {
-                    classnameMap: "{uiEnhancer}.options.classnameMap"
-                }
-            },
-            layoutControls: {
-                type: "fluid.uiOptions.layoutControls",
-                container: "{uiOptions}.dom.layoutControls",
-                createOnEvent: "onUIOptionsMarkupReady",
-                options: {
-                    classnameMap: "{uiEnhancer}.options.classnameMap"
-                }
-            },
-            linksControls: {
-                type: "fluid.uiOptions.linksControls",
-                container: "{uiOptions}.dom.linksControls",
-                createOnEvent: "onUIOptionsMarkupReady",
-                options: {
-                    classnameMap: "{uiEnhancer}.options.classnameMap"
-                }
-            },
-            preview: {
-                type: "fluid.uiOptions.preview",
-                createOnEvent: "onUIOptionsComponentReady",
-                container: "{uiOptions}.dom.previewFrame"
-            },
             eventBinder: {
                 type: "fluid.uiOptions.eventBinder"
             }
         },
+        invokers: {
+            /**
+             * Updates the change applier and fires modelChanged on subcomponent fluid.uiOptions.controls
+             *
+             * @param {Object} newModel
+             * @param {Object} source
+             */
+            updateModel: {
+                funcName: "fluid.fireSourcedChange",
+                args: ["{that}.applier", "selections", "{arguments}.0", "{arguments}.1"]
+            }
+        },
         selectors: {
-            textControls: ".flc-uiOptions-text-controls",
-            layoutControls: ".flc-uiOptions-layout-controls",
-            linksControls: ".flc-uiOptions-links-controls",
             cancel: ".flc-uiOptions-cancel",
             reset: ".flc-uiOptions-reset",
             save: ".flc-uiOptions-save",
@@ -526,24 +299,109 @@ var fluid_1_5 = fluid_1_5 || {};
             modelChanged: null,
             onUIOptionsRefresh: null,
             onUIOptionsMarkupReady: null,
-            onUIOptionsComponentReady: null,
-            contributeDefaultModel: null
+            onUIOptionsComponentReady: null
         },
         listeners: {
             onAutoSave: "{that}.save"
         },
-        preInitFunction: "fluid.uiOptions.preInit",
-        finalInitFunction: "fluid.uiOptions.finalInit",
         resources: {
             template: "{templateLoader}.resources.uiOptions"
         },
         autoSave: false
     });
 
+    fluid.defaults("fluid.uiOptions.settingsGetter", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+            getSettings: "{settingsStore}.get"
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.settingsSetter", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        invokers: {
+            setSettings: {
+                funcName: "fluid.uiOptions.settingsSetter.setSettings",
+                args: ["{arguments}.0", "{settingsStore}.set"]
+            }
+        }
+    });
+
+    fluid.uiOptions.settingsSetter.setSettings = function (model, set) {
+        var userSettings = fluid.copy(model);
+        set(userSettings);
+    };
+
+    fluid.defaults("fluid.uiOptions.initialModel", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+            // TODO: This information is supposed to be generated from the JSON
+            // schema describing various preferences. For now it's kept in top
+            // level uiOptions to avoid further duplication.
+            initialModel: {}
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.initialModel.starter", {
+        gradeNames: ["fluid.uiOptions.initialModel", "autoInit"],
+        members: {
+            // TODO: This information is supposed to be generated from the JSON
+            // schema describing various preferences. For now it's kept in top
+            // level uiOptions to avoid further duplication.
+            initialModel: {
+                textFont: "default",          // key from classname map
+                theme: "default",             // key from classname map
+                textSize: 1,                  // in points
+                lineSpacing: 1,               // in ems
+                layout: false,                // boolean
+                toc: false,                   // boolean
+                links: false,                 // boolean
+                inputsLarger: false           // boolean
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.uiEnhancerRelay", {
+        gradeNames: ["autoInit", "fluid.eventedComponent"],
+        listeners: {
+            onCreate: "{that}.addListener",
+            onDestroy: "{that}.removeListener"
+        },
+        events: {
+            updateEnhancerModel: "{fluid.uiOptions}.events.onUIOptionsRefresh"
+        },
+        invokers: {
+            addListener: {
+                funcName: "fluid.uiOptions.uiEnhancerRelay.addListener",
+                args: ["{that}.events.updateEnhancerModel", "{that}.updateEnhancerModel"]
+            },
+            removeListener: {
+                funcName: "fluid.uiOptions.uiEnhancerRelay.removeListener",
+                args: ["{that}.events.updateEnhancerModel", "{that}.updateEnhancerModel"]
+            },
+            updateEnhancerModel: {
+                funcName: "fluid.uiOptions.uiEnhancerRelay.updateEnhancerModel",
+                args: ["{uiEnhancer}", "{fluid.uiOptions}.model.selections"]
+            }
+        }
+    });
+
+    fluid.uiOptions.uiEnhancerRelay.addListener = function (modelChanged, listener) {
+        modelChanged.addListener(listener);
+    };
+
+    fluid.uiOptions.uiEnhancerRelay.removeListener = function (modelChanged, listener) {
+        modelChanged.removeListener(listener);
+    };
+
+    fluid.uiOptions.uiEnhancerRelay.updateEnhancerModel = function (uiEnhancer, newModel) {
+        uiEnhancer.updateModel(newModel);
+    };
+    
     // called once markup is applied to the document containing tab component roots
     fluid.uiOptions.finishInit = function (that) {
         var bindHandlers = function (that) {
-            var saveButton = that.locate("save");            
+            var saveButton = that.locate("save");
             if (saveButton.length > 0) {
                 saveButton.click(that.saveAndApply);
                 var form = fluid.findForm(saveButton);
@@ -559,18 +417,16 @@ var fluid_1_5 = fluid_1_5 || {};
         bindHandlers(that);
         // This creates subcomponents - we can find default model afterwards
         that.events.onUIOptionsMarkupReady.fire(that);
-        
-        that.defaultModel = {};
-        that.events.contributeDefaultModel.fire(that.defaultModel);
+
         that.fetch();
         that.events.onUIOptionsComponentReady.fire(that);
     };
     
     fluid.uiOptions.preInit = function (that) {
         that.fetch = function () {
-            var initialModel = that.settingsStore.fetch();
-            initialModel = $.extend(true, {}, that.defaultModel, initialModel);
-            that.updateModel(initialModel);
+            var completeModel = that.getSettings();
+            completeModel = $.extend(true, {}, that.initialModel, completeModel);
+            that.updateModel(completeModel, "settingsStore");
             that.events.onUIOptionsRefresh.fire();
         };
 
@@ -581,7 +437,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.events.onSave.fire(that.model.selections);
             
             var savedSelections = fluid.copy(that.model.selections);
-            that.settingsStore.save(savedSelections);
+            that.setSettings(savedSelections);
         };
         
         that.saveAndApply = function () {
@@ -593,7 +449,7 @@ var fluid_1_5 = fluid_1_5 || {};
          * Resets the selections to the integrator's defaults and fires onReset
          */
         that.reset = function () {
-            that.updateModel(fluid.copy(that.defaultModel));
+            that.updateModel(fluid.copy(that.initialModel));
             that.events.onReset.fire(that);
             that.events.onUIOptionsRefresh.fire();
         };
@@ -606,24 +462,12 @@ var fluid_1_5 = fluid_1_5 || {};
             that.fetch();
         };
         
-        /**
-         * Updates the change applier and fires modelChanged on subcomponent fluid.uiOptions.controls
-         * 
-         * @param {Object} newModel
-         * @param {Object} source
-         */
-        that.updateModel = function (newModel) {
-            that.applier.requestChange("selections", newModel);
-        };
-        
-        that.applier.modelChanged.addListener("selections",
-            function (newModel, oldModel, changeRequest) {
-                that.events.modelChanged.fire(newModel, oldModel, changeRequest.source);
-                if (that.options.autoSave) {
-                    that.events.onAutoSave.fire();
-                }
+        that.applier.modelChanged.addListener("selections", function (newModel, oldModel, changeRequest) {
+            that.events.modelChanged.fire(newModel, oldModel, changeRequest[0].source);
+            if (that.options.autoSave) {
+                that.events.onAutoSave.fire();
             }
-        );
+        });
     };
 
     fluid.uiOptions.finalInit = function (that) {
@@ -637,6 +481,19 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
 
+    /***********************************************
+     * Base grade settingsPanel
+     ***********************************************/
+     
+    fluid.defaults("fluid.uiOptions.settingsPanel", {
+        gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay", "autoInit"],
+        invokers: {
+            refreshView: "{that}.renderer.refreshView"
+        },
+        strings: {},
+        parentBundle: "{uioMsgBundle}"
+    });
+
     /******************************************************
      * UI Options Event binder:                           *
      * Binds events between UI Options and the UIEnhancer *
@@ -644,201 +501,6 @@ var fluid_1_5 = fluid_1_5 || {};
      
     fluid.defaults("fluid.uiOptions.eventBinder", {
         gradeNames: ["fluid.eventedComponent", "autoInit"]
-    });
-
-    // Utility function which assembles material in the model suitable for rendering
-    // style-based selection dropdowns
-    var optionsToLabelMap = function (that) {
-        fluid.each(that.options.controlValues, function (item, key) {
-            that.applier.requestChange("labelMap." + key, {
-                values: that.options.controlValues[key],
-                names: that.options.strings[key],
-                classes: fluid.get(that, "options.classnameMap." + key)
-            });
-        });
-    };
-    
-    fluid.uiOptions.createSliderNode = function (that, item, type, options) {
-        return {
-            decorators: {
-                type: "fluid",
-                func: type,
-                options: {
-                    listeners: {
-                        modelChanged: function (value) {
-                            that.applier.requestChange("selections." + item, value);
-                        }
-                    },
-                    model: {
-                        min: that.options[item].min,
-                        max: that.options[item].max,
-                        value: that.model.selections[item]
-                        
-                    },
-                    sliderOptions: that.options[item].sliderOptions
-                }
-            }
-        };
-    };
-    
-    fluid.uiOptions.controlsFinalInit = function (that) {
-        optionsToLabelMap(that);
-    };
-
-
-    /***********************************************
-     * UI Options Select Dropdown Options Decorator*
-     ***********************************************/
-
-    /**
-     * A sub-component that decorates the options on the select dropdown list box with the css style
-     */
-    fluid.demands("fluid.uiOptions.selectDecorator", "fluid.uiOptions", {
-        container: "{arguments}.0"
-    });
-    
-    fluid.defaults("fluid.uiOptions.selectDecorator", {
-        gradeNames: ["fluid.viewComponent", "autoInit"], 
-        finalInitFunction: "fluid.uiOptions.selectDecorator.finalInit",
-        styles: {
-            preview: "fl-preview-theme"
-        }
-    });
-    
-    fluid.uiOptions.selectDecorator.finalInit = function (that) {
-        fluid.each($("option", that.container), function (option) {
-            var styles = that.options.styles;
-            $(option).addClass(styles.preview + " " + styles[fluid.value(option)]);
-        });
-    };
-
-    /****************************
-     * UI Options Text Controls *
-     ****************************/
-
-    /**
-     * A sub-component of fluid.uiOptions that renders the "text and display" panel of the user preferences interface.
-     */
-    fluid.defaults("fluid.uiOptions.textControls", {
-        gradeNames: ["fluid.uiOptions.ant", "autoInit"], 
-        defaultModel: {
-            textFont: "default",          // key from classname map
-            theme: "default",             // key from classname map
-            textSize: 1,                  // in points
-            lineSpacing: 1                // in ems
-        },
-        strings: {
-            textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"],
-            theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
-        },
-        controlValues: { 
-            textFont: ["default", "times", "comic", "arial", "verdana"],
-            theme: ["default", "bw", "wb", "by", "yb"]
-        },
-        textSize: {
-            min: 1,
-            max: 2,
-            sliderOptions: {
-                orientation: "horizontal",
-                step: 0.1
-            } 
-        },
-        lineSpacing: {
-            min: 1,
-            max: 2,
-            sliderOptions: {
-                orientation: "horizontal",
-                step: 0.1
-            } 
-        },
-        selectors: {
-            textFont: ".flc-uiOptions-text-font",
-            theme: ".flc-uiOptions-theme",
-            textSize: ".flc-uiOptions-min-text-size",
-            lineSpacing: ".flc-uiOptions-line-spacing"
-        },
-        produceTree: "fluid.uiOptions.textControls.produceTree",
-        resources: {
-            template: "{templateLoader}.resources.textControls"
-        }
-    });
-    
-    fluid.uiOptions.textControls.produceTree = function (that) {
-        var tree = {};
-        
-        for (var item in that.model.selections) {
-            if (item === "textFont" || item === "theme") {
-                // render drop down list box
-                tree[item] = {
-                    optionnames: "${labelMap." + item + ".names}",
-                    optionlist: "${labelMap." + item + ".values}",
-                    selection: "${selections." + item + "}",
-                    decorators: {
-                        type: "fluid",
-                        func: "fluid.uiOptions.selectDecorator",
-                        options: {
-                            styles: that.options.classnameMap[item]
-                        }
-                    }
-                };
-            } else if (item === "textSize" || item === "lineSpacing") {
-                // textfield sliders
-                tree[item] = fluid.uiOptions.createSliderNode(that, item, "fluid.textfieldSlider");
-            }
-        }
-        
-        return tree;
-    };
-    
-    /******************************
-     * UI Options Layout Controls *
-     ******************************/
-
-    /**
-     * A sub-component of fluid.uiOptions that renders the "layout and navigation" panel of the user preferences interface.
-     */
-    fluid.defaults("fluid.uiOptions.layoutControls", {
-        gradeNames: ["fluid.uiOptions.ant", "autoInit"],
-        defaultModel: {
-            layout: false,                // boolean
-            toc: false                   // boolean
-        },
-        selectors: {
-            layout: ".flc-uiOptions-layout",
-            toc: ".flc-uiOptions-toc"
-        },
-        protoTree: {
-            toc: "${selections.toc}",
-            layout: "${selections.layout}"        
-        },
-        resources: {                    
-            template: "{templateLoader}.resources.layoutControls"
-        }
-    });
-
-    /*****************************
-     * UI Options Links Controls *
-     *****************************/
-    /**
-     * A sub-component of fluid.uiOptions that renders the "links and buttons" panel of the user preferences interface.
-     */
-    fluid.defaults("fluid.uiOptions.linksControls", {
-        gradeNames: ["fluid.uiOptions.ant", "autoInit"],
-        defaultModel: {
-            links: false,                 // boolean
-            inputsLarger: false           // boolean
-        },
-        selectors: {
-            links: ".flc-uiOptions-links",
-            inputsLarger: ".flc-uiOptions-inputs-larger"
-        },
-        protoTree: {
-            links: "${selections.links}",
-            inputsLarger: "${selections.inputsLarger}"          
-        },
-        resources: {
-            template: "{templateLoader}.resources.linksControls"
-        }
     });
 
     /**********************
@@ -850,11 +512,10 @@ var fluid_1_5 = fluid_1_5 || {};
         components: {
             enhancer: {
                 type: "fluid.uiEnhancer",
+                container: "{preview}.enhancerContainer",
                 createOnEvent: "onReady",
                 options: {
-                    settingsStore: {
-                        type: "fluid.uiEnhancer.tempStore"
-                    }
+                    gradeNames: ["fluid.uiOptions.uiEnhancerRelay"]
                 }
             },
             eventBinder: {
@@ -902,14 +563,6 @@ var fluid_1_5 = fluid_1_5 || {};
         that.container.attr("src", templateUrl);        
 
     };
-
-    fluid.demands("fluid.uiEnhancer", "fluid.uiOptions.preview", {
-        funcName: "fluid.uiEnhancer",
-        args: [
-            "{preview}.enhancerContainer",
-            "{options}"
-        ]
-    });
     
     /***************************************************
      * UI Options Event binder:                        *

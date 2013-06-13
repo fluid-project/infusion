@@ -146,10 +146,30 @@ var fluid_1_5 = fluid_1_5 || {};
             left : fluid.reorderer.keys.j
         }
     ];
-    
+
+    /**
+     * @param container - A jQueryable designator for the root node of the reorderer (a selector, a DOM node, or a jQuery instance)
+     * @param options - an object containing any of the available options:
+     *                  containerRole - indicates the role, or general use, for this instance of the Reorderer
+     *                  keysets - an object containing sets of keycodes to use for directional navigation. Must contain:
+     *                            modifier - a function that returns a boolean, indicating whether or not the required modifier(s) are activated
+     *                            up
+     *                            down
+     *                            right
+     *                            left
+     *                  styles - an object containing class names for styling the Reorderer
+     *                                  defaultStyle
+     *                                  selected
+     *                                  dragging
+     *                                  hover
+     *                                  dropMarker
+     *                                  mouseDrag
+     *                                  avatar
+     *                  avatarCreator - a function that returns a valid DOM node to be used as the dragging avatar
+     */
+         
     fluid.defaults("fluid.reorderer", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        nickName: "reorderer", // TODO STUPID BUG!!
         styles: {
             defaultStyle: "fl-reorderer-movable-default",
             selected: "fl-reorderer-movable-selected",
@@ -173,22 +193,45 @@ var fluid_1_5 = fluid_1_5 || {};
         selectablesTabindex: "{that}.layoutHandler.options.selectablesTabindex",
         layoutHandler: "fluid.listLayoutHandler",
         
+        members: {
+            activeItem: null,
+            kbDropWarning: "{that}.dom.dropWarning"
+        },
         events: {
             onShowKeyboardDropWarning: null,
             onSelect: null,
             onBeginMove: "preventable",
             onMove: null,
             afterMove: null,
-            onHover: null,
+            onHover: null, // item, state
             onRefresh: null
         },
         listeners: {
-            onCreate: "{that}.refresh",
+            onCreate: [ { // TODO: better model for creation sequence, with auto-namespaces
+                funcName: "fluid.reorderer.bindHandlersToContainer",
+                args: ["{that}.container", "{that}.handleKeyDown", "{that}.handleKeyUp"]
+            }, {
+                funcName: "fluid.reorderer.addRolesToContainer", 
+                args: "{that}"
+            }, {
+                funcName: "fluid.tabbable", 
+                args: "{that}.container"
+            }, {
+                funcName: "fluid.reorderer.processAfterMoveCallbackUrl",
+                namespace: "processAfterMoveCallbackUrl",
+                args: "{that}"  
+            },
+            "{that}.refresh"],
             onRefresh: {
                 listener: "fluid.reorderer.initItems",
                 args: "{that}",
                 priority: -1000 // TODO: Can't be "first" since moduleLayout needs to respond first
-            }
+            },
+            onHover: {
+                funcName: "fluid.reorderer.hoverStyleHandler",
+                args: ["{that}.dom", "{that}.options.styles", "{arguments}.0", "{arguments}.1"], // item, state
+                namespace: "style"
+            } 
         },
         invokers: {
             changeSelectedToDefault: {
@@ -211,13 +254,37 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.reorderer.selectItem",
                 args: ["{that}", "{arguments}.0"]
             },
-            initSelectables: {
+            initSelectables: { // unsupported, NON-API function
                 funcName: "fluid.reorderer.initSelectables",
                 args: ["{that}"]
             },
-            initMovable: {
+            initMovable: { // unsupported, NON-API function
                 funcName: "fluid.reorderer.initMovable",
                 args: ["{that}", "{that}.dropManager", "{arguments}.0"]
+            },
+            isMove: { // unsupported, NON-API function
+                funcName: "fluid.reorderer.isMove",
+                args: ["{that}.options.keysets", "{arguments}.0"] // evt
+            },
+            isActiveItemMovable: { // unsupported, NON-API function
+                funcName: "fluid.reorderer.isActiveItemMovable",
+                args: ["{that}.activeItem", "{that}.dom"]
+            },
+            handleKeyDown: { // unsupported, NON-API function
+                funcName: "fluid.reorderer.handleKeyDown",
+                args: ["{that}", "{that}.options.styles", "{arguments}.0"] // evt
+            },
+            handleDirectionKeyDown: { // unsupported, NON-API function
+                funcName: "fluid.reorderer.handleDirectionKeyDown",
+                args: ["{that}", "{arguments}.0"] // evt
+            },
+            handleKeyUp: { // unsupported, NON-API function
+                funcName: "fluid.reorderer.handleKeyUp",
+                args: ["{that}", "{that}.options.styles", "{arguments}.0"] // evt
+            },
+            requestMovement: { // unsupported, NON-API function
+                funcName: "fluid.reorderer.requestMovement",
+                args: ["{that}", "{arguments}.0", "{arguments}.1"] // requestedPosition, item
             }
         },
         
@@ -238,7 +305,9 @@ var fluid_1_5 = fluid_1_5 || {};
             labeller: {
                 type: "fluid.reorderer.labeller",
                 options: {
-                    dom: "{reorderer}.dom",
+                    members: {
+                        dom: "{reorderer}.dom"
+                    },
                     getGeometricInfo: "{reorderer}.layoutHandler.getGeometricInfo",
                     orientation: "{reorderer}.layoutHandler.options.orientation",
                     layoutType: "{reorderer}.options.layoutHandler"
@@ -253,182 +322,148 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.reorderer.noModifier = function (evt) {
         return (!evt.ctrlKey && !evt.altKey && !evt.shiftKey && !evt.metaKey);
     };
-    
-    
-    /**
-     * @param container - A jQueryable designator for the root node of the reorderer (a selector, a DOM node, or a jQuery instance)
-     * @param options - an object containing any of the available options:
-     *                  containerRole - indicates the role, or general use, for this instance of the Reorderer
-     *                  keysets - an object containing sets of keycodes to use for directional navigation. Must contain:
-     *                            modifier - a function that returns a boolean, indicating whether or not the required modifier(s) are activated
-     *                            up
-     *                            down
-     *                            right
-     *                            left
-     *                  styles - an object containing class names for styling the Reorderer
-     *                                  defaultStyle
-     *                                  selected
-     *                                  dragging
-     *                                  hover
-     *                                  dropMarker
-     *                                  mouseDrag
-     *                                  avatar
-     *                  avatarCreator - a function that returns a valid DOM node to be used as the dragging avatar
-     */
-    fluid.reorderer.postInit = function (thatReorderer) {
-        var options = thatReorderer.options;
 
-        thatReorderer.activeItem = undefined;
- 
-        var kbDropWarning = thatReorderer.locate("dropWarning");
-        if (kbDropWarning) {
-            thatReorderer.mouseDropWarning = kbDropWarning.clone();
+    // unsupported, NON-API function
+    fluid.reorderer.isMove = function (keysets, evt) { // NB, needs dynamic binding
+        for (var i = 0; i < keysets.length; i++) {
+            if (keysets[i].modifier(evt)) {
+                return true;
+            }
         }
-
-        options.keysets = fluid.makeArray(options.keysets);
-        var isMove = function (evt) {
-            var keysets = options.keysets;
-            for (var i = 0; i < keysets.length; i++) {
-                if (keysets[i].modifier(evt)) {
-                    return true;
-                }
-            }
-            return false;
-        };
-        
-        var isActiveItemMovable = function () {
-            return $.inArray(thatReorderer.activeItem, thatReorderer.dom.fastLocate("movables")) >= 0;
-        };
-        
-        var handleDirectionKeyDown = function (evt) {
-            var item = thatReorderer.activeItem;
-            if (!item) {
-                return true;
-            }
-            var keysets = options.keysets;
-            for (var i = 0; i < keysets.length; i++) {
-                var keyset = keysets[i];
-                var keydir = fluid.keyForValue(keyset, evt.keyCode);
-                if (!keydir) {
-                    continue;
-                }
-                var isMovement = keyset.modifier(evt);
-                
-                var dirnum = fluid.keycodeDirection[keydir];
-                var relativeItem = thatReorderer.layoutHandler.getRelativePosition(item, dirnum, !isMovement);  
-                if (!relativeItem) {
-                    continue;
-                }
-                
-                if (isMovement) {
-                    var prevent = thatReorderer.events.onBeginMove.fire(item);
-                    if (prevent === false) {
-                        return false;
-                    }
-                    if (kbDropWarning.length > 0) {
-                        if (relativeItem.clazz === "locked") {
-                            thatReorderer.events.onShowKeyboardDropWarning.fire(item, kbDropWarning);
-                            kbDropWarning.show();                       
-                        } else {
-                            kbDropWarning.hide();
-                        }
-                    }
-                    if (relativeItem.element) {
-                        thatReorderer.requestMovement(relativeItem, item);
-                    }
-            
-                } else if (fluid.reorderer.noModifier(evt)) {
-                    item.blur();
-                    $(relativeItem.element).focus();
-                }
-                return false;
-            }
-            return true;
-        };
-
-        var styles = options.styles;
-
-        // unsupported, NON-API function
-        thatReorderer.handleKeyDown = function (evt) {
-            if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
-                return true;
-            }
-            // If the key pressed is ctrl, and the active item is movable we want to restyle the active item.
-            var jActiveItem = $(thatReorderer.activeItem);
-            if (!jActiveItem.hasClass(styles.dragging) && isMove(evt)) {
-               // Don't treat the active item as dragging unless it is a movable.
-                if (isActiveItemMovable()) {
-                    jActiveItem.removeClass(styles.selected);
-                    jActiveItem.addClass(styles.dragging);
-                    jActiveItem.attr("aria-grabbed", "true");
-                    thatReorderer.setDropEffects("move");
-                }
-                return false;
-            }
-            // The only other keys we listen for are the arrows.
-            return handleDirectionKeyDown(evt);
-        };
-
-        // unsupported, NON-API function
-        thatReorderer.handleKeyUp = function (evt) {
-            if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
-                return true;
-            }
-            var jActiveItem = $(thatReorderer.activeItem);
-            
-            // Handle a key up event for the modifier
-            if (jActiveItem.hasClass(styles.dragging) && !isMove(evt)) {
-                if (kbDropWarning) {
-                    kbDropWarning.hide();
-                }
-                jActiveItem.removeClass(styles.dragging);
-                jActiveItem.addClass(styles.selected);
-                jActiveItem.attr("aria-grabbed", "false");
-                thatReorderer.setDropEffects("none");
-                return false;
-            }
-            
-            return false;
-        };
-
-        // unsupported, NON-API function
-        thatReorderer.requestMovement = function (requestedPosition, item) {
-            item = fluid.unwrap(item);
-          // Temporary censoring to get around ModuleLayout inability to update relative to self.
-            if (!requestedPosition || fluid.unwrap(requestedPosition.element) === item) {
-                return;
-            }
-            var activeItem = $(thatReorderer.activeItem);
-            
-            // Fixes FLUID-3288.
-            // Need to unbind the blur event as safari will call blur on movements.
-            // This caused the user to have to double tap the arrow keys to move.
-            activeItem.unbind("blur.fluid.reorderer");
-            
-            thatReorderer.events.onMove.fire(item, requestedPosition);
-            thatReorderer.dropManager.geometricMove(item, requestedPosition.element, requestedPosition.position);
-            //$(thatReorderer.activeItem).removeClass(options.styles.selected);
-           
-            // refocus on the active item because moving places focus on the body
-            activeItem.focus();
-            
-            thatReorderer.refresh();
-            
-            thatReorderer.dropManager.updateGeometry(thatReorderer.layoutHandler.getGeometricInfo());
-
-            thatReorderer.events.afterMove.fire(item, requestedPosition, thatReorderer.dom.fastLocate("movables"));
-        };
-
-        var hoverStyleHandler = function (item, state) {
-            thatReorderer.dom.fastLocate("grabHandle", item)[state ? "addClass" : "removeClass"](styles.hover);
-        };
+        return false;
+    };
     
-        fluid.reorderer.bindHandlersToContainer(thatReorderer.container, 
-                thatReorderer.handleKeyDown,
-                thatReorderer.handleKeyUp);
-        fluid.reorderer.addRolesToContainer(thatReorderer);
-        fluid.tabbable(thatReorderer.container);
+    // unsupported, NON-API function
+    fluid.reorderer.isActiveItemMovable = function (activeItem, dom) {
+        return $.inArray(activeItem, dom.fastLocate("movables")) >= 0;
+    };
+    
+    // unsupported, NON-API function
+    fluid.reorderer.handleKeyDown = function (thatReorderer, styles, evt) {
+        if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
+            return true;
+        }
+        // If the key pressed is ctrl, and the active item is movable we want to restyle the active item.
+        var jActiveItem = $(thatReorderer.activeItem);
+        if (!jActiveItem.hasClass(styles.dragging) && thatReorderer.isMove(evt)) {
+           // Don't treat the active item as dragging unless it is a movable.
+            if (thatReorderer.isActiveItemMovable()) {
+                jActiveItem.removeClass(styles.selected);
+                jActiveItem.addClass(styles.dragging);
+                jActiveItem.attr("aria-grabbed", "true");
+                thatReorderer.setDropEffects("move");
+            }
+            return false;
+        }
+        // The only other keys we listen for are the arrows.
+        return thatReorderer.handleDirectionKeyDown(evt);
+    };
+    
+    // unsupported, NON-API function
+    fluid.reorderer.handleDirectionKeyDown = function (thatReorderer, evt) {
+        var item = thatReorderer.activeItem;
+        if (!item) {
+            return true;
+        }
+        var keysets = thatReorderer.options.keysets;
+        for (var i = 0; i < keysets.length; i++) {
+            var keyset = keysets[i];
+            var keydir = fluid.keyForValue(keyset, evt.keyCode);
+            if (!keydir) {
+                continue;
+            }
+            var isMovement = keyset.modifier(evt);
+            
+            var dirnum = fluid.keycodeDirection[keydir];
+            var relativeItem = thatReorderer.layoutHandler.getRelativePosition(item, dirnum, !isMovement);  
+            if (!relativeItem) {
+                continue;
+            }
+            
+            if (isMovement) {
+                var prevent = thatReorderer.events.onBeginMove.fire(item);
+                if (prevent === false) {
+                    return false;
+                }
+                var kbDropWarning = thatReorderer.kbDropWarning;
+                if (kbDropWarning.length > 0) {
+                    if (relativeItem.clazz === "locked") {
+                        thatReorderer.events.onShowKeyboardDropWarning.fire(item, kbDropWarning);
+                        kbDropWarning.show();                       
+                    } else {
+                        kbDropWarning.hide();
+                    }
+                }
+                if (relativeItem.element) {
+                    thatReorderer.requestMovement(relativeItem, item);
+                }
+        
+            } else if (fluid.reorderer.noModifier(evt)) {
+                item.blur();
+                $(relativeItem.element).focus();
+            }
+            return false;
+        }
+        return true;
+    };
+    
+    // unsupported, NON-API function
+    fluid.reorderer.handleKeyUp = function (thatReorderer, styles, evt) {
+        if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
+            return true;
+        }
+        var jActiveItem = $(thatReorderer.activeItem);
+        
+        // Handle a key up event for the modifier
+        if (jActiveItem.hasClass(styles.dragging) && !thatReorderer.isMove(evt)) {
+            if (thatReorderer.kbDropWarning) {
+                thatReorderer.kbDropWarning.hide();
+            }
+            jActiveItem.removeClass(styles.dragging);
+            jActiveItem.addClass(styles.selected);
+            jActiveItem.attr("aria-grabbed", "false");
+            thatReorderer.setDropEffects("none");
+            return false;
+        }
+        return false;
+    };
+    
+    // unsupported, NON-API function
+    fluid.reorderer.requestMovement = function (thatReorderer, requestedPosition, item) {
+        item = fluid.unwrap(item);
+      // Temporary censoring to get around ModuleLayout inability to update relative to self.
+        if (!requestedPosition || fluid.unwrap(requestedPosition.element) === item) {
+            return;
+        }
+        var activeItem = $(thatReorderer.activeItem);
+        
+        // Fixes FLUID-3288.
+        // Need to unbind the blur event as safari will call blur on movements.
+        // This caused the user to have to double tap the arrow keys to move.
+        activeItem.unbind("blur.fluid.reorderer");
+        
+        thatReorderer.events.onMove.fire(item, requestedPosition);
+        thatReorderer.dropManager.geometricMove(item, requestedPosition.element, requestedPosition.position);
+        //$(thatReorderer.activeItem).removeClass(options.styles.selected);
+       
+        // refocus on the active item because moving places focus on the body
+        activeItem.focus();
+        
+        thatReorderer.refresh();
+        
+        thatReorderer.dropManager.updateGeometry(thatReorderer.layoutHandler.getGeometricInfo());
 
+        thatReorderer.events.afterMove.fire(item, requestedPosition, thatReorderer.dom.fastLocate("movables"));
+    };
+    
+    // unsupported, NON-API function
+    fluid.reorderer.hoverStyleHandler = function (dom, styles, item, state) {
+        dom.fastLocate("grabHandle", item)[state ? "addClass" : "removeClass"](styles.hover);
+    };
+    
+    // unsupported, NON-API function
+    fluid.reorderer.processAfterMoveCallbackUrl = function (thatReorderer) {
+        var options = thatReorderer.options;
         if (options.afterMoveCallbackUrl) {
             thatReorderer.events.afterMove.addListener(function () {
                 var layoutHandler = thatReorderer.layoutHandler;
@@ -436,8 +471,14 @@ var fluid_1_5 = fluid_1_5 || {};
                         options.acquireModel(thatReorderer);
                 $.post(options.afterMoveCallbackUrl, JSON.stringify(model));
             }, "postModel");
+        }      
+    };
+    
+    fluid.reorderer.postInit = function (that) {
+        if (that.kbDropWarning) {
+            that.mouseDropWarning = that.kbDropWarning.clone();
         }
-        thatReorderer.events.onHover.addListener(hoverStyleHandler, "style");
+        that.options.keysets = fluid.makeArray(that.options.keysets); // TODO: mergePolicy or other strategy?
     };
     
     fluid.reorderer.setDropEffects = function (dom, value) {
@@ -761,11 +802,36 @@ var fluid_1_5 = fluid_1_5 || {};
         
         that.getGeometricInfo = fluid.reorderer.makeGeometricInfoGetter(options.orientation, options.sentinelize, that.reordererDom);
     };
-
+    
+    /*************
+     * Labelling *
+     *************/
+    
+    /** ARIA labeller component which decorates the reorderer with the function of announcing the current
+      * focused position of the reorderer as well as the coordinates of any requested move */
+    
     fluid.defaults("fluid.reorderer.labeller", {
-        gradeNames: ["fluid.littleComponent"],
-        mergePolicy: {
-            dom: "nomerge"  
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        members: {
+            movedMap: {},
+            moduleCell: {
+                expander: {
+                    funcName: "fluid.reorderer.labeller.computeModuleCell",
+                    args: ["{that}.resolver", "{that}.options.orientation"]
+                }
+            },
+            layoutType: {
+                expander: {
+                    funcName: "fluid.computeNickName",
+                    args: "{that}.options.layoutType"
+                }
+            },
+            positionTemplate: {
+                expander: {
+                    funcName: "fluid.reorderer.labeller.computePositionTemplate",
+                    args: ["{that}.resolver", "{that}.layoutType"]
+                }
+            }
         },
         strings: {
             overallTemplate: "%recentStatus %item %position %movable",
@@ -790,8 +856,67 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.reorderer.labeller.renderLabel",
                 args: ["{labeller}", "{arguments}.0", "{arguments}.1"]
             }  
+        },
+        listeners: {
+            "{reorderer}.events.onRefresh": {
+                listener: "fluid.reorderer.labeller.onRefresh",
+                args: "{that}"
+            },
+            "{reorderer}.events.onMove": {
+                listener: "fluid.reorderer.labeller.onMove",
+                args: ["{that}", "{arguments}.0", "{arguments}.1"] // item, newPosition
+            }
         }
     });
+
+    // unsupported, NON-API function    
+    fluid.reorderer.labeller.computeModuleCell = function (resolver, orientation) {
+        return resolver.resolve("moduleCell_" + orientation);
+    };
+    
+    // unsupported, NON-API function
+    fluid.reorderer.labeller.computePositionTemplate = function (resolver, layoutType) {
+        return resolver.lookup(["position_" + layoutType, "position"]);
+    };
+
+    // unsupported, NON-API function
+    fluid.reorderer.labeller.onRefresh = function (that) {
+        var selectables = that.dom.locate("selectables");
+        var movedMap = that.movedMap;
+        fluid.each(selectables, function (selectable) {
+            var labelOptions = {};
+            var id = fluid.allocateSimpleId(selectable);
+            var moved = movedMap[id];
+            var label = that.renderLabel(selectable);
+            var plainLabel = label;
+            if (moved) {
+                moved.newRender = plainLabel;
+                label = that.renderLabel(selectable, moved.oldRender.position);
+                // once we move focus out of the element which just moved, return its ARIA label to be the new plain label
+                $(selectable).one("focusout.ariaLabeller", function () {
+                    if (movedMap[id]) {
+                        var oldLabel = movedMap[id].newRender.label;
+                        delete movedMap[id];
+                        fluid.updateAriaLabel(selectable, oldLabel);
+                    }
+                });
+                labelOptions.dynamicLabel = true;
+            }
+            fluid.updateAriaLabel(selectable, label.label, labelOptions);
+        });      
+    };
+
+    // unsupported, NON-API function    
+    fluid.reorderer.labeller.onMove = function (that, item, newPosition) {
+        fluid.clear(that.movedMap); // if we somehow were fooled into missing a defocus, at least clear the map on a 2nd move
+        // This unbind is needed for FLUID-4693 with Chrome 18, which generates a focusOut when
+        // simply doing the DOM manipulation to move the element to a new position.   
+        $(item).unbind("focusout.ariaLabeller");
+        var movingId = fluid.allocateSimpleId(item);
+        that.movedMap[movingId] = {
+            oldRender: that.renderLabel(item)
+        };
+    }
 
     // unsupported, NON-API function
     // Convert from 0-based to 1-based indices for announcement
@@ -803,62 +928,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return indices;
     };
 
-    /*************
-     * Labelling *
-     *************/
-     
-    fluid.reorderer.labeller = function (options) {
-        var that = fluid.initLittleComponent("fluid.reorderer.labeller", options);
-        fluid.initDependents(that);
-        that.dom = that.options.dom;
-        
-        that.moduleCell = that.resolver.resolve("moduleCell_" + that.options.orientation);
-        var layoutType = fluid.computeNickName(that.options.layoutType);
-        that.positionTemplate = that.resolver.lookup(["position_" + layoutType, "position"]);
-        
-        var movedMap = {};
-        
-        that.returnedOptions = {
-            listeners: {
-                onRefresh: function () {
-                    var selectables = that.dom.locate("selectables");
-                    fluid.each(selectables, function (selectable) {
-                        var labelOptions = {};
-                        var id = fluid.allocateSimpleId(selectable);
-                        var moved = movedMap[id];
-                        var label = that.renderLabel(selectable);
-                        var plainLabel = label;
-                        if (moved) {
-                            moved.newRender = plainLabel;
-                            label = that.renderLabel(selectable, moved.oldRender.position);
-                            // once we move focus out of the element which just moved, return its ARIA label to be the new plain label
-                            $(selectable).one("focusout.ariaLabeller", function () {
-                                if (movedMap[id]) {
-                                    var oldLabel = movedMap[id].newRender.label;
-                                    delete movedMap[id];
-                                    fluid.updateAriaLabel(selectable, oldLabel);
-                                }
-                            });
-                            labelOptions.dynamicLabel = true;
-                        }
-                        fluid.updateAriaLabel(selectable, label.label, labelOptions);
-                    });
-                },
-                onMove: function (item, newPosition) {
-                    fluid.clear(movedMap); // if we somehow were fooled into missing a defocus, at least clear the map on a 2nd move
-                    // This unbind is needed for FLUID-4693 with Chrome 18, which generates a focusOut when
-                    // simply doing the DOM manipulation to move the element to a new position.   
-                    $(item).unbind("focusout.ariaLabeller");
-                    var movingId = fluid.allocateSimpleId(item);
-                    movedMap[movingId] = {
-                        oldRender: that.renderLabel(item)
-                    };
-                }
-            }
-        };
-        return that;
-    };
-    
+    // unsupported, NON-API function    
     fluid.reorderer.labeller.renderLabel = function (that, selectable, recentPosition) {
         var geom = that.options.getGeometricInfo();
         var indices = fluid.reorderer.indexRebaser(geom.elementIndexer(selectable));

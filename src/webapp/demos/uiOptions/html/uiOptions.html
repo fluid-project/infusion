@@ -21,6 +21,10 @@
         <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/UIOptions.css" />
         <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/FatPanelUIOptions.css" />
         <link rel="stylesheet" type="text/css" href="../css/uiOptions.css" />
+        
+        <!--[if IE 8]>
+            <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/ie8.css" />
+        <![endif]-->          
 
         <title>User Interface Options Demo</title>
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
@@ -47,10 +51,13 @@
 
         <script type="text/javascript" src="../../../components/tabs/js/Tabs.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/URLUtilities.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/i18n.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/Store.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/TextfieldSlider.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/SettingsPanels.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/ModelRelay.js"></script>
-        <script type="text/javascript" src="../../../components/uiOptions/js/Enactors.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/Enactor.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIEnhancer.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/FatPanelUIOptions.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/SlidingPanel.js"></script>
@@ -63,34 +70,26 @@
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             $(document).ready(function () {
-                demo.initPageEnhancer("uio-demo-theme");
+                demo.initSettingsStore();
+                demo.initPageEnhancer();
                 demo.initFatPanel(".flc-uiOptions-fatPanel");
             })
         </script>
-
+        
         <!-- BEGIN markup for fat-panel UI Options -->
-		<div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel">
+        <div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel">
             <!-- This is the div that will contain the UI Options component -->
-			<div class="flc-slidingPanel-panel flc-uiOptions-iframe"></div>
+            <div class="flc-slidingPanel-panel flc-uiOptions-iframe"></div>
 
             <!-- This div is for the sliding panel that shows and hides the UI Options controls -->
-			<div class="fl-panelBar">
-				<button class="flc-slidingPanel-toggleButton fl-toggleButton">Show/Hide</button>
-			</div>
-		</div>	
+            <div class="fl-panelBar">
+            	<span class="fl-uio-tabs">
+	                <button id="reset" class="flc-uiOptions-reset fl-uiOptions-reset"><span class="fl-icon-undo"></span> Reset</button>
+	            	<button id="show-hide" class="flc-slidingPanel-toggleButton fl-uiOptions-showHide"> Show/Hide</button>
+            	</span>
+            </div>
+        </div>  
         <!-- END markup for fat-panel UI Options -->
-
-        <div class="fl-force-right fl-push disp-opts-buttons">
-            <div class="disp-opts-button-container fl-inverted-color">
-                <button class="disp-opts-with-preview disp-opts-button">Display Preferences<br/><span class="preview">(with preview)</span></button>
-            </div>
-            <div class="disp-opts-button-container fl-inverted-color">
-                <button class="disp-opts-without-preview disp-opts-button">Display Preferences<br/><span class="preview">(without preview)</span></button>
-            </div>
-        </div>
-        <script type="text/javascript">
-            demo.setUpButtons();            
-        </script>
 
         <div class="fl-container-950 fl-centered">
             <div class="flc-toc-tocContainer toc"> </div>
@@ -103,11 +102,9 @@
             <div class="instructions">
                 <h2>Some helpful tips</h2>
                 <ol>
-                    <li>User Interface Options comes in three configurations.<br/>
-                        <span class="instruction-comment">All three configurations provide the same options,
-                        but with different interfaces. On this page, "Fat panel" can be found along the top edge,
-                        and both "Full page with preview" and "Full page without preview" can be found along the
-                        right edge.</span></li>
+                    <li>User Interface Options and its different configurations.<br/>
+                        <span class="instruction-comment">On this page, the "Fat panel" version of UI Options can be found along the top edge.
+                        There are other layout options in development - see <a href="http://wiki.fluidproject.org/display/fluid/%28Floe%29+UI+Options+Design+Wireframes%2C+C.1" target="_blank" title="Opens in new window">UI Options Design Wireframes</a>.</span></li>
                     <li>Try tinkering with the options.</li>
                 </ol>
             </div>

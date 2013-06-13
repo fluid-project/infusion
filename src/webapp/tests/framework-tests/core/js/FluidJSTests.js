@@ -372,6 +372,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         passTestLog("TRACE", true);
         fluid.popLogging();
     });
+    
+    jqUnit.test("FLUID-4973 test - activity logging does not crash", function () {
+        fluid.pushActivity("testActivity", "testing my activity with argument %argument", {argument: 3});
+        var activity = fluid.describeActivity();
+        jqUnit.assertTrue("One activity in progress", activity.length === 1);
+        var rendered = fluid.renderActivity(activity)[0].join("");
+        jqUnit.assertTrue("Activity string rendered", rendered.indexOf("testing my activity with argument 3") !== -1);
+        fluid.logActivity(activity); // This would previously crash on IE8
+        fluid.popActivity();  
+    });
            
     jqUnit.test("FLUID-4285 test - prevent 'double options'", function () {
         try {
@@ -736,6 +746,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expectedGrade: "fluid.emptySubcomponent"
             }
         ]);
+    });
+    
+    jqUnit.test("fluid.bind", function () {
+        jqUnit.expect(3);
+        var expectedText = "New Text";
+        var jqElm = $("<div></div>");
+        var testObj = {
+            baseVal: 3,
+            fn: function (a, b) {
+                return this.baseVal + a + b
+            }
+        };
+        
+        fluid.bind(jqElm, "text", expectedText)
+        jqUnit.assertEquals("The text should have been set", expectedText, jqElm.text());
+        jqUnit.assertEquals("The value returned from the bind should be the same as the native call", jqElm.text(), fluid.bind(jqElm, "text"));
+        jqUnit.assertEquals("The correct value should be returned", 6, fluid.bind(testObj, "fn", [1, 2]));
     });
     
 })(jQuery);

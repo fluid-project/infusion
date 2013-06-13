@@ -116,6 +116,19 @@ var jqUnit = jqUnit || {};
         };
     };
     
+        
+    // Canonicalise a list of DOM elements (or a jQuery) by converting elements to their ids (allocated if necessary)
+    jqUnit.canonicaliseDom = function (list) {
+        return fluid.transform(list, function (element) {
+            return fluid.allocateSimpleId(element);
+        });
+    };
+    
+    // Compare two lists of DOM elements (or jQueries) for being equal by virtue of containing the same DOM elements
+    jqUnit.assertDomEquals = function (message, expected, actual) {
+        return jqUnit.assertCanoniseEqual(message, expected, actual, jqUnit.canonicaliseDom);
+    };
+    
     /** Condense a DOM node into a plain Javascript object, to facilitate testing against
      * a trial, with the use of assertDeepEq or similar
      */
