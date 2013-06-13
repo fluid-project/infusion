@@ -89,7 +89,7 @@ var fluid = fluid || fluid_1_5;
         if (inputPath !== undefined) {
             paths.push(fluid.model.composePaths(expander.inputPrefix, inputPath));
         }
-    }
+    };
 
     fluid.model.transform.accumulateStandardInputPath = function (input, expandSpec, expander, paths) {
         fluid.model.transform.getValue(undefined, expandSpec[input], expander);    
@@ -100,7 +100,7 @@ var fluid = fluid || fluid_1_5;
         fluid.each(inputVariables, function (v, k) {
             fluid.model.transform.accumulateStandardInputPath(k, expandSpec, expander, paths);
         });
-    }
+    };
 
     fluid.model.transform.getValue = function (inputPath, value, expander) {
         var togo;
@@ -124,7 +124,7 @@ var fluid = fluid || fluid_1_5;
         var outputPath = fluid.model.composePaths(expander.outputPrefix, userOutputPath);
         // TODO: custom resolver config here to create non-hash output model structure
         if (toset !== undefined) {
-            expander.applier.requestChange(outputPath, toset, merge? "MERGE": undefined);
+            expander.applier.requestChange(outputPath, toset, merge ? "MERGE" : undefined);
         }
         return userOutputPath ? fluid.model.transform.NONDEFAULT_OUTPUT_PATH_RETURN : toset;
     };
@@ -150,9 +150,9 @@ var fluid = fluid || fluid_1_5;
             }
         }
         else {
-            if (typeof(expected) !== typeof(actual)) {
+            if (typeof expected  !== typeof actual) {
                 ++stats.mismatchCount;
-                stats.messages.push("Type mismatch at path " + stats.path + ": expected " + typeof(expected) + " actual " + typeof(actual)); 
+                stats.messages.push("Type mismatch at path " + stats.path + ": expected " + typeof expected  + " actual " + typeof actual); 
             } else {
                 fluid.each(expected, function (value, key) {
                     stats.pathOps.push(key);
@@ -236,7 +236,7 @@ var fluid = fluid || fluid_1_5;
         }
         var expanderFn = fluid.getGlobalValue(typeName);
         var expdef = fluid.defaults(typeName);
-        if (typeof(expanderFn) !== "function") {
+        if (typeof expanderFn !== "function") {
             fluid.fail("Transformation record specifies transformation function with name " + 
                 expandSpec.type + " which is not a function - ", expanderFn);
         }
@@ -294,7 +294,7 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function   
     fluid.model.transform.hasWildcard = function (path) {
-        return typeof(path) === "string" && path.indexOf("*") !== -1;
+        return typeof path === "string" && path.indexOf("*") !== -1;
     };
     
     // unsupported, NON-API function
@@ -360,7 +360,7 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.model.transform.expandValue = function (rule, expander) {
-        if (typeof(rule) === "string") {
+        if (typeof rule === "string") {
             rule = fluid.model.transform.pathToRule(rule);
         }
         // special dispensation to allow "value" at top level
@@ -483,7 +483,7 @@ var fluid = fluid || fluid_1_5;
     
     fluid.model.compareByPathLength = function (changea, changeb) {
         var pdiff = changea.path.length - changeb.path.length; 
-        return pdiff === 0? changea.sequence - changeb.sequence : pdiff;
+        return pdiff === 0 ? changea.sequence - changeb.sequence : pdiff;
     };
     
    /** Fires an accumulated set of change requests in increasing order of target pathlength
@@ -562,18 +562,20 @@ var fluid = fluid || fluid_1_5;
 
     /** Utility function to produce a standard options transformation record for a single set of rules **/    
     fluid.transformOne = function (rules) {
-        return {transformOptions: {
-            transformer: "fluid.model.transformWithRules",
-            config: rules
+        return {
+            transformOptions: {
+                transformer: "fluid.model.transformWithRules",
+                config: rules
             }
         };
     };
     
     /** Utility function to produce a standard options transformation record for multiple rules to be applied in sequence **/    
     fluid.transformMany = function (rules) {
-        return {transformOptions: {
-            transformer: "fluid.model.transform.sequence",
-            config: rules
+        return {
+            transformOptions: {
+                transformer: "fluid.model.transform.sequence",
+                config: rules
             }
         };
     };

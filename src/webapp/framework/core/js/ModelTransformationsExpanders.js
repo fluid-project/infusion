@@ -174,9 +174,7 @@ var fluid = fluid || fluid_1_5;
             return undefined;
         }
 
-        return (inputs.condition) ? 
-            (inputs["true"] === null ? undefined : inputs["true"]) : 
-            (inputs["false"] === null ? undefined : inputs["false"]);
+        return inputs[inputs.condition];
     };
 
 
@@ -400,7 +398,11 @@ var fluid = fluid || fluid_1_5;
      */
     fluid.model.transform.applyPaths = function (operation, pathOp, paths) {
         for (var i = 0; i < paths.length; ++i) {
-            operation === "push" ? pathOp.push(paths[i]) : pathOp.pop();
+            if (operation === "push") {
+                pathOp.push(paths[i]);
+            } else {
+                pathOp.pop();   
+            }
         }
     };
     
