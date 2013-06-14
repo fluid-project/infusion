@@ -67,8 +67,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         
         var file = that.demoState.currentFile;
-        that.events.onFileSuccess.fire(file);
-        that.demoState.fileIdx++;
+       // that.events.onFileSuccess.fire(file);
+        that.events.onFileError.fire(file, fluid.uploader.fileStatusConstants.UPLOAD_FAILED, "Custom Error to display icon."); // Icon!
+        //that.demoState.fileIdx++;
         fluid.uploader.demo.finishAndContinueOrCleanup(that, file);
     };
     
