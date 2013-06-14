@@ -67,7 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
             funcName: "fluid.uiOptions.starterSettingsPanels",
             options: {
-                gradeNames: ["fluid.uiOptions.initialModel", "fluid.uiOptions.initialModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
+                gradeNames: ["fluid.uiOptions.initialModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
                 components: {
                     uiEnhancer: {
                         type: "fluid.uiEnhancer",
