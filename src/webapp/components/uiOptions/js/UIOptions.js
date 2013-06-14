@@ -267,7 +267,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.uiOptions", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.settingsGetter", "fluid.uiOptions.settingsSetter", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.settingsGetter", "fluid.uiOptions.settingsSetter", "fluid.uiOptions.initialModel", "autoInit"],
         components: {
             eventBinder: {
                 type: "fluid.uiOptions.eventBinder"

@@ -101,14 +101,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.tests.afterShowFunc3 = function (fatPanel) {
         return function () {
-            var defaultSiteSettings = fatPanel.uiOptionsLoader.uiOptions.initialModel;
+            var initialModel = fatPanel.uiOptionsLoader.uiOptions.initialModel;
             var pageModel = fatPanel.pageEnhancer.model;
             var panelModel = fatPanel.iframeRenderer.iframeEnhancer.model;
             
             fatPanel.locate("reset").click();
-            fluid.tests.uiOptions.checkModelSelections("pageModel from defaults", defaultSiteSettings, pageModel);
+            fluid.tests.uiOptions.checkModelSelections("pageModel from defaults", initialModel, pageModel);
             fatPanel.slidingPanel.hidePanel();
-            fluid.tests.uiOptions.checkModelSelections("panelModel from defaults", defaultSiteSettings, panelModel);
+            fluid.tests.uiOptions.checkModelSelections("panelModel from defaults", initialModel, panelModel);
             fluid.tests.uiOptions.checkModelSelections("pageModel from panelModel", pageModel, panelModel);  
         };
     };
