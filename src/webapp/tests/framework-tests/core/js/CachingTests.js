@@ -124,15 +124,18 @@ fluid.registerNamespace("fluid.tests");
             var expandComponentOptions = fluid.expandComponentOptions;
             var deliverOptionsStrategy = fluid.deliverOptionsStrategy;
             var computeComponentAccessor = fluid.computeComponentAccessor;
+            var computeDynamicComponents = fluid.computeDynamicComponents;
             delete fluid.expandComponentOptions;
             fluid.deliverOptionsStrategy = fluid.identity;
             fluid.computeComponentAccessor = fluid.identity;
+            fluid.computeDynamicComponents = fluid.identity;
             try {
                 func();
             } finally {
                 fluid.expandComponentOptions = expandComponentOptions;
                 fluid.deliverOptionsStrategy = deliverOptionsStrategy;
                 fluid.computeComponentAccessor = computeComponentAccessor;
+                fluid.computeDynamicComponents = computeDynamicComponents;
             }      
         }
          
@@ -144,7 +147,7 @@ fluid.registerNamespace("fluid.tests");
         testAllSimpleCache("With IoC", funcInvoker);
 
         function testProleptickJoinset(delays, message, expectedFinal) {
-            jqUnit.test("Test proleptick joinsets: " + message, function () {
+            jqUnit.test("Test proleptick joinsets: " + message + " (" + delays.cacheTestUrl3 + ", " + delays.cacheTestUrl4 + ")" , function () {
                 fluid.log("Begin test " + message);
                 var fetches = {};
                 function countCallback(key) {
@@ -176,7 +179,7 @@ fluid.registerNamespace("fluid.tests");
                     fluid.fetchResources(fluid.copy(fluid.tests.finalResources), finalCallback, {
                         amalgamateClasses: ["slowTemplate", "fastTemplate"]
                     });
-                }, 100);
+                }, 100); // TODO: Stability of tests seems to be very sensitive to this timeout
                 jqUnit.stop();
             });
         }
