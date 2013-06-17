@@ -396,17 +396,14 @@ html>body .fl-uploader span.fl-uploader-browse {
     
     background-color: #FCFBE6;
     border-left: 4px solid #F5E392;
-    background-image: url(../images/error.png);
-    background-position: 6px 2px;
-    background-repeat: no-repeat;
     padding-bottom: 8px;
     padding-left: 32px;
 }
 
 .fl-uploader-queue .fl-uploader-file-error td:before {
-    content: "\e000";
-    position:relative;
-    color: #42B447;
+    content: "\e003";
+    color: #d38c1b;
+    font-size: 1.3em;
 }
 
 /* Error feedback messages */
@@ -420,11 +417,17 @@ html>body .fl-uploader span.fl-uploader-browse {
 }
 
 .fl-uploader-errorsPanel-header {
-    background-image: url("../images/error.png");
-    background-position: 1px center;
-    background-repeat: no-repeat;
+    font-family: 'InfusionIcons' !important;
+    speak: none;
+    -webkit-font-smoothing: antialiased; 
     padding: 6px 0 6px 0;
     margin-bottom: 10px;
+}
+
+.fl-uploader-errorsPanel-header:before {
+    content: "\e003";
+    color: #d38c1b;
+    font-size: 1.3em;
 }
 
 .fl-uploader-errorsPanel-header span {
@@ -447,19 +450,26 @@ html>body .fl-uploader span.fl-uploader-browse {
 
 /* Remove error message button */
 .fl-uploader-errorPanel-section-removeButton {
-    background-color: inherit;
-    background-image: url("../images/grey-4d4d4d-x-button.png");
-    background-position: center;
-    background-repeat: no-repeat;
+    font-family: 'InfusionIcons' !important;
+    speak: none;
+    -webkit-font-smoothing: antialiased; 
     border-width: 0px;
     width: 18px;
     height: 18px;
     padding: 0px;
     margin-right: 9px;
+    background: none; /* Work-around Chrome user-agent styling that applies a grey background color. */
 }
 
-.fl-uploader-errorPanel-section-removeButton:hover {
-    background-image: url("../images/grey-999999-x-button.png");
+.fl-uploader-errorPanel-section-removeButton:before {
+    content: "\e000";
+    color: #4D4D4D;
+    position:relative; 
+    font-size: 1.4em;
+}
+
+.fl-uploader-errorPanel-section-removeButton:hover:before {
+    color: #D2D2D2;
 }
 
 /* Show Hide Error Details */
@@ -509,10 +519,21 @@ html>body .fl-uploader span.fl-uploader-browse {
 /* dimmed */
 .fl-uploader span.fl-uploader-browse.fl-uploader-dim  {
     outline:none;
-    background-color:#F7F7F7;
+    /*background-color:#F7F7F7;*/
     color: #d2d2d2;
-    background-image: url("../images/add-grey.png");
+    /*background-image: url("../images/add-grey.png");*/
 }
+/*
+.fl-uploader .fl-infusionIcon-plus.fl-uploader-dim {
+    font-family: 'InfusionIcons' !important;
+    speak: none;
+    -webkit-font-smoothing: antialiased; 
+}
+
+.fl-uploader .fl-infusionIcon-plus.fl-uploader-dim :before {
+    content: "\e001";
+}
+*/
 
 /* Hidden SWF for Flash 9*/
 .fl-uploader-flash9-container {

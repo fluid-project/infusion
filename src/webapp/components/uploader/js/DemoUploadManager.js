@@ -50,7 +50,6 @@ var fluid_1_5 = fluid_1_5 || {};
         // which this component does not fire
         that.queue.finishFile(file);
         that.events.afterFileComplete.fire(file);
-        
         if (that.queue.shouldUploadNextFile()) {
             fluid.uploader.demo.uploadNextFile(that);
         } else {
@@ -67,9 +66,8 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         
         var file = that.demoState.currentFile;
-       // that.events.onFileSuccess.fire(file);
-        that.events.onFileError.fire(file, fluid.uploader.fileStatusConstants.UPLOAD_FAILED, "Custom Error to display icon."); // Icon!
-        //that.demoState.fileIdx++;
+        that.events.onFileSuccess.fire(file);
+        that.demoState.fileIdx++;
         fluid.uploader.demo.finishAndContinueOrCleanup(that, file);
     };
     
