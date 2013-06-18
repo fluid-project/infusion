@@ -420,8 +420,11 @@ var fluid_1_5 = fluid_1_5 || {};
         if (resolved.length !== 0) {
             gradeNames.push.apply(gradeNames, resolved);
             fluid.unique(gradeNames.sort());
-            fluid.cacheShadowGrades(that, shadow);
             var newDefaults = fluid.copy(fluid.getGradedDefaults(that.typeName, resolved));
+            gradeNames.length = 0; // acquire derivatives of dynamic grades (FLUID-5054)
+            gradeNames.push.apply(gradeNames, newDefaults.gradeNames);
+            fluid.cacheShadowGrades(that, shadow);
+            
             var defaultsBlock = fluid.findMergeBlocks(shadow.mergeOptions.mergeBlocks, "defaults")[0];
             defaultsBlock.source = newDefaults;
             shadow.mergeOptions.updateBlocks();
