@@ -1704,5 +1704,84 @@ fluid.registerNamespace("fluid.tests");
             escaped.val("NEW").change();
             checkDataBind("NEW");
         });
-    }; 
+        
+
+        /**
+         * Test setup for FLUID-5048
+         */
+        fluid.defaults("fluid.tests.fluid5048.mediaSettings", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            model: {
+                show: false
+            },
+            selectors: {
+                show: ".flc-videoPlayer-media-show"
+            },
+            resources: {
+                template: {
+                    url: "../data/MediaPanelTemplate.html"
+                }
+            },
+            protoTree: {
+                show: "${show}"
+            }
+        });
+        
+        fluid.tests.fluid5048.mediaSettings.finalInit = function (that) {
+            fluid.fetchResources(that.options.resources, function (resourceSpec) {
+                that.refreshView();
+            });
+        };
+        fluid.defaults("fluid.tests.fluid5048.captionsSettings", {
+            gradeNames: ["fluid.tests.fluid5048.mediaSettings", "autoInit"]
+        });
+        fluid.defaults("fluid.tests.fluid5048.transcriptsSettings", {
+            gradeNames: ["fluid.tests.fluid5048.mediaSettings", "autoInit"]
+        });
+
+        fluid.defaults("fluid.tests.fluid5048.parent", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+            selectors: {
+                captionsSettings: ".flc-uiOptions-captions-settings",
+                transcriptsSettings: ".flc-uiOptions-transcripts-settings"
+            },
+            components: {
+                captions: {
+                    type: "fluid.tests.fluid5048.captionsSettings",
+                    container: "{parent}.dom.captionsSettings"
+                },
+                transcripts: {
+                    type: "fluid.tests.fluid5048.transcriptsSettings",
+                    container: "{parent}.dom.transcriptsSettings"
+                }
+            },
+            events: {
+                onReady: {
+                    events: {
+                        capsReady: "{captions}.events.afterRender",
+                        transReady: "{transcripts}.events.afterRender"
+                    },
+                    args: ["{parent}"]
+                }
+            }
+        });
+
+        jqUnit.asyncTest("FLUID-5048: Label 'for' attributes", function () {
+            var onReady = function (that) {
+                var label1for = $("label", that.captions.container).attr("for");
+                var label2for = $("label", that.transcripts.container).attr("for");
+                jqUnit.assertEquals("first 'for' should be 'show'", "show", label1for);
+                jqUnit.assertEquals("second 'for' should be 'show-1'", "show-1", label2for);
+                jqUnit.assertNotEquals("two labels shouldn't have the same 'for' attribute", label1for, label2for);
+                jqUnit.start();
+            };
+            fluid.tests.fluid5048.parent("#FLUID-5048-test", {
+                listeners: {
+                    onReady: onReady
+                }
+            });
+        });
+
+        
+    };
 })(jQuery); 
