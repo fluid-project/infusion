@@ -142,7 +142,7 @@ table.fl-uploader-queue {
     font-family: 'InfusionIcons' !important;
     speak: none;
     -webkit-font-smoothing: antialiased; 
-    font-size: 1.5em;
+    font-size: 1.4em;
     cursor: pointer; 
 }
 
@@ -171,13 +171,12 @@ tr.fl-uploader-file-state-uploaded button {
     font-family: 'InfusionIcons' !important;
     speak: none;
     -webkit-font-smoothing: antialiased; 
-    font-size: 1.8em;
+    font-size: 1.2em;
 }
 
 tr.fl-uploader-file-state-uploaded button:before {
     content: "\e002";
     position:relative;
-    bottom: -2px;
     left: -2px;
     color: #42B447;
 }
@@ -213,7 +212,7 @@ tr.fl-uploader-file-state-uploaded button:before {
     font-family: 'InfusionIcons' !important;
     speak: none;
     -webkit-font-smoothing: antialiased; 
-    font-size: 1.3em;
+    font-size: 1.2em;
 }
 
 .fl-uploader .fl-infusionIcon-plus:before {
@@ -417,25 +416,27 @@ html>body .fl-uploader span.fl-uploader-browse {
 }
 
 .fl-uploader-errorsPanel-header {
-    font-family: 'InfusionIcons' !important;
-    speak: none;
-    -webkit-font-smoothing: antialiased; 
     padding: 6px 0 6px 0;
     margin-bottom: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #000000;
+    display: inline-block;
 }
 
-.fl-uploader-errorsPanel-header:before {
+.fl-infusionIcon-warning {
+    font-family: 'InfusionIcons' !important;
+    speak: none;
+    -webkit-font-smoothing: antialiased;   
+    display: inline-block;  
+}
+
+.fl-infusionIcon-warning:before {
     content: "\e003";
     color: #d38c1b;
     font-size: 1.3em;
 }
 
-.fl-uploader-errorsPanel-header span {
-    padding-left: 21px;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: #000000;
-}
 
 .fl-uploader-errorPanel-section-wrapper {
     float: left;
@@ -519,21 +520,18 @@ html>body .fl-uploader span.fl-uploader-browse {
 /* dimmed */
 .fl-uploader span.fl-uploader-browse.fl-uploader-dim  {
     outline:none;
-    /*background-color:#F7F7F7;*/
-    color: #d2d2d2;
-    /*background-image: url("../images/add-grey.png");*/
-}
-/*
-.fl-uploader .fl-infusionIcon-plus.fl-uploader-dim {
-    font-family: 'InfusionIcons' !important;
-    speak: none;
-    -webkit-font-smoothing: antialiased; 
+    background-color:#F7F7F7;
 }
 
-.fl-uploader .fl-infusionIcon-plus.fl-uploader-dim :before {
+.fl-uploader span.fl-uploader-browse.fl-uploader-dim  .fl-uploader-button-browse-text {
+    color: #d2d2d2;
+}
+
+.fl-uploader span.fl-uploader-browse.fl-uploader-dim .fl-infusionIcon-plus:before {
+    color: #d2d2d2;
     content: "\e001";
 }
-*/
+
 
 /* Hidden SWF for Flash 9*/
 .fl-uploader-flash9-container {
