@@ -207,7 +207,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.uiOptions", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.settingsGetter", "fluid.uiOptions.settingsSetter", "fluid.uiOptions.initialModel", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.settingsGetter", "fluid.uiOptions.settingsSetter", "fluid.uiOptions.rootModel", "autoInit"],
         components: {
             eventBinder: {
                 type: "fluid.uiOptions.eventBinder"
@@ -272,23 +272,23 @@ var fluid_1_5 = fluid_1_5 || {};
         set(userSettings);
     };
 
-    fluid.defaults("fluid.uiOptions.initialModel", {
+    fluid.defaults("fluid.uiOptions.rootModel", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
             // level uiOptions to avoid further duplication.
-            initialModel: {}
+            rootModel: {}
         }
     });
 
-    fluid.defaults("fluid.uiOptions.initialModel.starter", {
-        gradeNames: ["fluid.uiOptions.initialModel", "autoInit"],
+    fluid.defaults("fluid.uiOptions.rootModel.starter", {
+        gradeNames: ["fluid.uiOptions.rootModel", "autoInit"],
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
             // level uiOptions to avoid further duplication.
-            initialModel: {
+            rootModel: {
                 textFont: "default",          // key from classname map
                 theme: "default",             // key from classname map
                 textSize: 1,                  // in points
@@ -365,7 +365,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uiOptions.preInit = function (that) {
         that.fetch = function () {
             var completeModel = that.getSettings();
-            completeModel = $.extend(true, {}, that.initialModel, completeModel);
+            completeModel = $.extend(true, {}, that.rootModel, completeModel);
             that.updateModel(completeModel, "settingsStore");
             that.events.onUIOptionsRefresh.fire();
         };
@@ -389,7 +389,7 @@ var fluid_1_5 = fluid_1_5 || {};
          * Resets the selections to the integrator's defaults and fires onReset
          */
         that.reset = function () {
-            that.updateModel(fluid.copy(that.initialModel));
+            that.updateModel(fluid.copy(that.rootModel));
             that.events.onReset.fire(that);
             that.events.onUIOptionsRefresh.fire();
         };

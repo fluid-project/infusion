@@ -67,7 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
             funcName: "fluid.uiOptions.starterSettingsPanels",
             options: {
-                gradeNames: ["fluid.uiOptions.initialModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
+                gradeNames: ["fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
                 components: {
                     uiEnhancer: {
                         type: "fluid.uiEnhancer",
@@ -215,7 +215,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("lineSpacer forceCache is set", loader.templateLoader.resources.lineSpacer.forceCache);
         });
         
-        var assertInitialModel = function (model) {
+        var assertrootModel = function (model) {
             jqUnit.expect(6);
             jqUnit.assertNotNull("Model is not null", model);
             jqUnit.assertNotUndefined("Model is not undefined", model);
@@ -227,7 +227,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         jqUnit.asyncTest("Init Model - default", function () {
             testUIOptions(function (uiOptionsLoader, uiOptions) {
-                assertInitialModel(uiOptions.model);
+                assertrootModel(uiOptions.model);
                 jqUnit.start();
             });
         });
@@ -236,7 +236,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(4);
             
             testUIOptions(function (uiOptionsLoader, uiOptions) {
-                assertInitialModel(uiOptions.model);
+                assertrootModel(uiOptions.model);
 
                 var themeValues = uiOptions.contrast.options.controlValues.theme;
                 jqUnit.assertEquals("There are 5 themes in the control", 5, themeValues.length);
@@ -318,7 +318,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testDiffInit"], {
                 options: {
                     members: {
-                        initialModel: {
+                        rootModel: {
                             theme: "wb",
                             textFont: "times"
                         }
@@ -327,7 +327,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
 
             testUIOptions(function (uiOptionsLoader, uiOptions) {
-                var settings = uiOptions.initialModel;
+                var settings = uiOptions.rootModel;
                 
                 var themeValue = settings.theme;
                 jqUnit.assertEquals("The theme is set to wb", "wb", themeValue);
@@ -381,7 +381,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Initially, settings store settings are empty",
                 $.isEmptyObject(uiOptions.getSettings()));
             jqUnit.assertDeepEq("Initially, model should correspond to default model",
-                uiOptions.initialModel, uiOptions.model.selections);
+                uiOptions.rootModel, uiOptions.model.selections);
 
             var preSaveSelections = fluid.copy(uiOptions.model.selections);
             applierRequestChanges(uiOptions, saveModel);
@@ -397,7 +397,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkSettingsStore("After applying cancelModel and clicking cancel", saveModel,
                 uiOptions.getSettings(), preSaveSelections);
             resetButton.click();
-            checkModelSelections("After clicking reset", uiOptions.initialModel, uiOptions.model.selections);
+            checkModelSelections("After clicking reset", uiOptions.rootModel, uiOptions.model.selections);
             cancelButton.click();
             checkModelSelections("After clicking cancel", saveModel, uiOptions.getSettings());
             checkSettingsStore("After clicking cancel", saveModel, uiOptions.getSettings(), preSaveSelections);
@@ -490,7 +490,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsIntegration", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
                 funcName: "fluid.uiOptions.starterSettingsPanels",
                 options: {
-                    gradeNames: ["fluid.uiOptions.initialModel.starter"],
+                    gradeNames: ["fluid.uiOptions.rootModel.starter"],
                     components: {
                         uiEnhancer: {
                             type: "fluid.uiEnhancer",
