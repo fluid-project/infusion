@@ -46,7 +46,6 @@ var fluid_1_5 = fluid_1_5 || {};
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
         model: {
-            value: 1,
             min: 1,
             max: 2
         },
@@ -85,12 +84,6 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.textFont", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
-        // The default model value represents both the expected format as well as the setting to be applied in the absence of a value passed down to the component.
-        // i.e. from the settings store, or specific defaults derived from schema.
-        // Note: This default value is not contributed and shared out
-        model: {
-            value: "default"
-        },
         selectors: {
             textFont: ".flc-uiOptions-text-font",
             label: ".flc-uiOptions-text-font-label"
@@ -137,7 +130,6 @@ var fluid_1_5 = fluid_1_5 || {};
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
         model: {
-            value: 1,
             min: 1,
             max: 2
         },
@@ -176,12 +168,6 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.contrast", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
-        // The default model value represents both the expected format as well as the setting to be applied in the absence of a value passed down to the component.
-        // i.e. from the settings store, or specific defaults derived from schema.
-        // Note: This default value is not contributed and shared out
-        model: {
-            value: "default"
-        },
         listeners: {
             afterRender: "{that}.style"
         },
@@ -249,12 +235,6 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.layoutControls", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
-        // The default model value represents both the expected format as well as the setting to be applied in the absence of a value passed down to the component.
-        // i.e. from the settings store, or specific defaults derived from schema.
-        // Note: This default value is not contributed and shared out
-        model: {
-            toc: false
-        },
         selectors: {
             toc: ".flc-uiOptions-toc",
             label: ".flc-uiOptions-toc-label",
@@ -275,13 +255,6 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.linksControls", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
-        // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
-        // i.e. from the settings store, or specific defaults derived from schema.
-        // Note: These default values are not contributed and shared out
-        model: {
-            links: false,
-            inputsLarger: false
-        },
         selectors: {
             links: ".flc-uiOptions-links",
             inputsLarger: ".flc-uiOptions-inputs-larger",
@@ -338,11 +311,11 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     /*********************************************************************************************************
-     * defaultSettingsPanels
+     * Starter Settings Panels
      * 
      * A collection of all the default UIO setting panels.
      *********************************************************************************************************/
-    fluid.defaults("fluid.uiOptions.defaultSettingsPanels", {
+    fluid.defaults("fluid.uiOptions.starterSettingsPanels", {
         gradeNames: ["fluid.uiOptions", "autoInit"],
         selectors: {
             textSizer: ".flc-uiOptions-text-sizer",
@@ -363,6 +336,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     rules: {
                         "selections.textSize": "value"
                     },
+                    model: {
+                        value: "{fluid.uiOptions.initialModel}.initialModel.textSize"
+                    },
                     resources: {
                         template: "{templateLoader}.resources.textSizer"
                     }
@@ -376,6 +352,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     gradeNames: "fluid.uiOptions.defaultSettingsPanel",
                     rules: {
                         "selections.lineSpacing": "value"
+                    },
+                    model: {
+                        value: "{fluid.uiOptions.initialModel}.initialModel.lineSpacing"
                     },
                     resources: {
                         template: "{templateLoader}.resources.lineSpacer"
@@ -392,6 +371,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     rules: {
                         "selections.textFont": "value"
                     },
+                    model: {
+                        value: "{fluid.uiOptions.initialModel}.initialModel.textFont"
+                    },
                     resources: {
                         template: "{templateLoader}.resources.textFont"
                     }
@@ -406,6 +388,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "selections.theme": "value"
+                    },
+                    model: {
+                        value: "{fluid.uiOptions.initialModel}.initialModel.theme"
                     },
                     resources: {
                         template: "{templateLoader}.resources.contrast"
@@ -422,6 +407,10 @@ var fluid_1_5 = fluid_1_5 || {};
                         "selections.toc": "toc",
                         "selections.layout": "layout"
                     },
+                    model: {
+                        toc: "{fluid.uiOptions.initialModel}.initialModel.toc",
+                        layout: "{fluid.uiOptions.initialModel}.initialModel.layout"
+                    },
                     resources: {
                         template: "{templateLoader}.resources.layoutControls"
                     }
@@ -437,6 +426,10 @@ var fluid_1_5 = fluid_1_5 || {};
                         "selections.links": "links",
                         "selections.inputsLarger": "inputsLarger"
                     },
+                    model: {
+                        links: "{fluid.uiOptions.initialModel}.initialModel.links",
+                        inputsLarger: "{fluid.uiOptions.initialModel}.initialModel.inputsLarger"
+                    },
                     resources: {
                         template: "{templateLoader}.resources.linksControls"
                     }
@@ -446,16 +439,16 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     /******************************
-     * Default Template Loader
+     * Starter Template Loader
      ******************************/
 
     /**
-     * A template loader component that specifies the templates used by defaultSettingsPanels
+     * A template loader component that specifies the templates used by starterSettingsPanels
      * 
      * @param {Object} options
      */    
        
-    fluid.defaults("fluid.uiOptions.defaultTemplateLoader", {
+    fluid.defaults("fluid.uiOptions.starterTemplateLoader", {
         gradeNames: ["fluid.uiOptions.templateLoader", "autoInit"],
         templates: {
             textSizer: "%prefix/UIOptionsTemplate-textSizer.html",

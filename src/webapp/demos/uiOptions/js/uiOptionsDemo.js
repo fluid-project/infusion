@@ -34,12 +34,19 @@ var demo = demo || {};
     var pathToTocTemplate = "../../../components/tableOfContents/html/TableOfContents.html";
 
     /**
+     * Initialize a settings store for the page.
+     */
+    demo.initSettingsStore = function () {
+        fluid.globalSettingsStore();
+    };
+
+    /**
      * Initialize UI Enhancer for the page. This function is used by the two full-page
      * UI Options pages as well as by the demo page itself.
      */
     demo.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
-            gradeNames: ["fluid.uiEnhancer.defaultActions"],
+            gradeNames: ["fluid.uiEnhancer.starterActions"],
             tocTemplate: pathToTocTemplate,
             classnameMap: {
                 theme: {
@@ -55,12 +62,12 @@ var demo = demo || {};
         prefix: pathToTemplates,
         templateLoader: {
             options: {
-                gradeNames: ["fluid.uiOptions.defaultTemplateLoader"]
+                gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
             }
         },
         uiOptions: {
             options: {
-                gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
+                gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.initialModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
             }
         }
     };
