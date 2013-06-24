@@ -57,12 +57,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             link.hasClass(fluid.defaults("fluid.pager.pagerBar").styles.currentPage));        
     };
 
-    // This is a placeholder test. It knows too much about the implementation details. 
-    // This will be replaced with a better test as the public API of the Pager is developed
+    // This is a "white-box" test which depends on the exact internals of the Pager
     jqUnit.test("Pager setup", function () {
         var pager = markupPager("#gradebook");
         
-        // For now, the pager exposes the objects it contains.
         var pagerTop = pager.pagerBar; 
         jqUnit.assertEquals("Pager top is set", "pager-top", pagerTop.container[0].id);
 
@@ -70,7 +68,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Previous is set", "previous-top", pagerTop.previousNext.previous[0].id);        
         jqUnit.assertEquals("Next is set", "next-top", pagerTop.previousNext.next[0].id);        
         
-        var pagerBottom = pager.pagerBarSecondary; 
+        var pagerBottom = pager["pagerBar-1"]; 
         jqUnit.assertEquals("Pager bottom is set", "pager-bottom", pagerBottom.container[0].id);
 
         jqUnit.assertEquals("Page Links are set", 3, pagerBottom.pageList.pageLinks.length);        

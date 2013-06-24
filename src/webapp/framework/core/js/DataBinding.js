@@ -78,7 +78,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }    
     };
     
-    /** MODEL ACCESSOR ENGINE (trundler) **/
+    /** MODEL ACCESSOR ENGINE **/
     
     /** Standard strategies for resolving path segments **/
     fluid.model.makeEnvironmentStrategy = function (environment) {
@@ -376,7 +376,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return togo;
     };
-        
+    
     /** CHANGE APPLIER **/    
       
     fluid.model.isNullChange = function (model, request, resolverGetConfig) {

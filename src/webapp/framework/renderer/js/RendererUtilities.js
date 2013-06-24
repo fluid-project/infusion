@@ -104,7 +104,7 @@ fluid_1_5 = fluid_1_5 || {};
         that.render = function (tree) {
             var cutpointFn = options.cutpointGenerator || "fluid.renderer.selectorsToCutpoints";
             rendererOptions.cutpoints = rendererOptions.cutpoints || fluid.invokeGlobalFunction(cutpointFn, [selectors, options]);
-            var renderTarget = options.renderTarget ? options.renderTarget : container;
+            var renderTarget = $(options.renderTarget ? options.renderTarget : container);
               
             if (templates) {
                 fluid.clear(rendererOptions.fossils);

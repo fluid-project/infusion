@@ -309,12 +309,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         jqUnit.test("Culling Applier", function () {
             var model = {
-                    outerProperty: false,
-                    transWorld: {
-                        innerPath1: 3,
-                        innerPath2: 4
-                    }
-                };
+                outerProperty: false,
+                transWorld: {
+                    innerPath1: 3,
+                    innerPath2: 4
+                }
+            };
             function nullingGuard(newModel, changeRequest, applier) {
                 if (changeRequest.path === "transWorld.innerPath2") {
                     changeRequest.value = 4;

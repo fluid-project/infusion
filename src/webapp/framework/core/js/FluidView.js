@@ -40,7 +40,12 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-
+    // unsupported, NON-API function
+    fluid.dumpSelector = function (selectable) {
+        return typeof (selectable) === "string" ? selectable : 
+            selectable.selector ? selectable.selector : "";
+    };
+    
     // unsupported, NON-API function
     // NOTE: this function represents a temporary strategy until we have more integrated IoC debugging.
     // It preserves the current framework behaviour for the 1.4 release, but provides a more informative
@@ -51,7 +56,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var container = fluid.wrap(args[1]);
             var message1 = "Instantiation of autoInit component with type " + componentName + " failed, since ";
             if (container.length === 0) {
-                fluid.fail(message1 + "selector \"", args[1], "\" did not match any markup in the document");
+                fluid.fail(message1 + "selector \"", fluid.dumpSelector(args[1]), "\" did not match any markup in the document");
             } else {
                 fluid.fail(message1 + " component creator function did not return a value");
             }  
@@ -109,7 +114,6 @@ var fluid_1_5 = fluid_1_5 || {};
             return null;
         }
         
-        // Throw an exception if we've got more or less than one element.
         if (!container || !container.jquery || container.length !== 1) {
             if (typeof (containerSpec) !== "string") {
                 containerSpec = container.selector;

@@ -754,10 +754,13 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.layoutHandler", {
         gradeNames: ["fluid.viewComponent"],
         disableWrap: "{reorderer}.options.disableWrap",
+        members: {
+            reordererDom: "{reorderer}.dom"
+        },
         components: {
             dropManager: "{reorderer}.dropManager",
-            reordererDom: "{reorderer}.dom"
         }
+    
     });
     
     fluid.defaults("fluid.listLayoutHandler", {
