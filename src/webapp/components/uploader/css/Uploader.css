@@ -140,7 +140,6 @@ table.fl-uploader-queue {
 /* remove button */
 .fl-uploader-file-actions .fl-uploader-file-action-remove {
     font-family: 'InfusionIcons' !important;
-    speak: none;
     -webkit-font-smoothing: antialiased; 
     font-size: 1.4em;
     cursor: pointer; 
@@ -169,7 +168,6 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
 
 tr.fl-uploader-file-state-uploaded button {
     font-family: 'InfusionIcons' !important;
-    speak: none;
     -webkit-font-smoothing: antialiased; 
     font-size: 1.2em;
 }
@@ -210,7 +208,6 @@ tr.fl-uploader-file-state-uploaded button:before {
 
 .fl-uploader .fl-infusionIcon-plus {
     font-family: 'InfusionIcons' !important;
-    speak: none;
     -webkit-font-smoothing: antialiased; 
     font-size: 1.2em;
 }
@@ -390,7 +387,6 @@ html>body .fl-uploader span.fl-uploader-browse {
 
 .fl-uploader-queue .fl-uploader-file-error td {
     font-family: 'InfusionIcons' !important;
-    speak: none;
     -webkit-font-smoothing: antialiased; 
     
     background-color: #FCFBE6;
@@ -426,7 +422,6 @@ html>body .fl-uploader span.fl-uploader-browse {
 
 .fl-infusionIcon-warning {
     font-family: 'InfusionIcons' !important;
-    speak: none;
     -webkit-font-smoothing: antialiased;   
     display: inline-block;  
 }
@@ -452,7 +447,6 @@ html>body .fl-uploader span.fl-uploader-browse {
 /* Remove error message button */
 .fl-uploader-errorPanel-section-removeButton {
     font-family: 'InfusionIcons' !important;
-    speak: none;
     -webkit-font-smoothing: antialiased; 
     border-width: 0px;
     width: 18px;
