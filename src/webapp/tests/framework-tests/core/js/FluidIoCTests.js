@@ -2569,7 +2569,7 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             gradeSubComponent: {
-                type: "fluid.tests.fluid5014gradeSubComponent"
+                type: "fluid.littleComponent"
             }
         },
         distributeOptions: {
@@ -2583,7 +2583,7 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.tests.fluid5014gradeComponent", "autoInit"],
         components: {
             rootSubComponent: {
-                type: "fluid.tests.fluid5014rootSubComponent"
+                type: "fluid.littleComponent"
             }
         },
         distributeOptions: {
@@ -2591,14 +2591,6 @@ fluid.registerNamespace("fluid.tests");
             exclusions: [],
             target: "{that > rootSubComponent}.options.userOption"
         }
-    });
-    
-    fluid.defaults("fluid.tests.fluid5014rootSubComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
-    });
-    
-    fluid.defaults("fluid.tests.fluid5014gradeSubComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
     jqUnit.test("FLUID-5014 Case 2: one source value gets passed down to its own and its grade component", function () {
@@ -2611,11 +2603,11 @@ fluid.registerNamespace("fluid.tests");
     });
     
     /** FLUID-5017 - IoCSS: Merge "distributeOptions" of the own component and grade components **/
-    fluid.defaults("fluid.tests.myGrade", {
+    fluid.defaults("fluid.tests.fluid5017Grade", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             myGradeSubComponent: {
-                type: "fluid.tests.myGradeSubComponent"
+                type: "fluid.littleComponent"
             }
         },
         distributeOptions: {
@@ -2625,11 +2617,11 @@ fluid.registerNamespace("fluid.tests");
         }
     });
     
-    fluid.defaults("fluid.tests.myRoot", {
-        gradeNames: ["fluid.tests.myGrade", "autoInit"],
+    fluid.defaults("fluid.tests.fluid5017Root", {
+        gradeNames: ["fluid.tests.fluid5017Grade", "autoInit"],
         components: {
             myRootSubComponent: {
-                type: "fluid.tests.myRootSubComponent"
+                type: "fluid.littleComponent"
             }
         },
         distributeOptions: {
@@ -2639,16 +2631,8 @@ fluid.registerNamespace("fluid.tests");
         }
     });
     
-    fluid.defaults("fluid.tests.myRootSubComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
-    });
-    
-    fluid.defaults("fluid.tests.myGradeSubComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
-    });
-    
     jqUnit.test("FLUID-5017: Merge distributeOptions of the own component and grade components", function () {
-        var root = fluid.tests.myRoot({
+        var root = fluid.tests.fluid5017Root({
             rootOption: 2,
             gradeOption: 20
         });
@@ -2686,26 +2670,26 @@ fluid.registerNamespace("fluid.tests");
     
     /** FLUID-5023 - Corruption of model material in shared grades **/
 
-    fluid.defaults("fluid.tests.comp2", {
+    fluid.defaults("fluid.tests.fluid5023comp2", {
         gradeNames: ["fluid.modelComponent", "autoInit"],
         model: {}
     });
 
-    fluid.tests.comp2.finalInit = function (that) {
+    fluid.tests.fluid5023comp2.finalInit = function (that) {
         // adds a unique ID to the model through the applier, so that we can check it later
         that.applier.requestChange("tempId", fluid.allocateGuid());
     };
 
     // define a simple grade
-    fluid.defaults("fluid.tests.testGrade", {
+    fluid.defaults("fluid.tests.fluid5023testGrade", {
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
 
     // add the grade to the test component using demands
 
-    fluid.demands("fluid.tests.comp2", ["fluid.testSharedGrade"], {
+    fluid.demands("fluid.tests.fluid5023comp2", ["fluid.testSharedGrade"], {
         options: {
-            gradeNames: ["fluid.tests.testGrade", "autoInit"]
+            gradeNames: ["fluid.tests.fluid5023testGrade", "autoInit"]
         }
     });
 
@@ -2713,14 +2697,84 @@ fluid.registerNamespace("fluid.tests");
         fluid.staticEnvironment.testSharedGrade = fluid.typeTag("fluid.testSharedGrade");
         // Instantiate two copies of the same test component
         // Use fluid.invoke to ensure demands honoured
-        var c1 = fluid.invoke("fluid.tests.comp2");
-        var c2 = fluid.invoke("fluid.tests.comp2");
-        var defs = fluid.defaults("fluid.tests.comp2");
+        var c1 = fluid.invoke("fluid.tests.fluid5023comp2");
+        var c2 = fluid.invoke("fluid.tests.fluid5023comp2");
+        var defs = fluid.defaults("fluid.tests.fluid5023comp2");
         
         jqUnit.assertUndefined("The defaults should not have the tempId", defs.model.tempId);
         jqUnit.assertNotEquals("The ids in the models are not equal", c1.applier.model.tempId, c2.applier.model.tempId);
 
         delete fluid.staticEnvironment.testSharedGrade;
+    });
+    
+    /** FLUID-5022 - Designation of dynamic components **/
+    
+    fluid.tests.fluid5022add = function (that) {
+        that.count++;  
+    };
+    
+    fluid.defaults("fluid.tests.fluid5022head", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        values: [2, 3],
+        members: {
+            count: 0  
+        },
+        dynamicComponents: {
+            dynamic: {
+                sources: "{that}.options.values",
+                type: "fluid.eventedComponent",
+                options: {
+                    source: "{source}",
+                    listeners: {
+                        onCreate: {
+                            funcName: "fluid.tests.fluid5022add",
+                            args: "{fluid5022head}"
+                        }
+                    }
+                }
+            }
+        }  
+    });
+    
+    jqUnit.test("FLUID-5022: Dynamic component creation", function () {
+        var head = fluid.tests.fluid5022head();
+        jqUnit.assertEquals("Constructed 2 components", 2, head.count);
+        jqUnit.assertEquals("First component source transmitted: ", 2, head.dynamic.options.source);
+        jqUnit.assertEquals("First component source transmitted: ", 3, head["dynamic-1"].options.source);
+    });
+    
+    fluid.defaults("fluid.tests.fluid5022eventHead", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        members: {
+            count: 0  
+        },
+        events: {
+            createIt: null  
+        },
+        dynamicComponents: {
+            dynamic: {
+                createOnEvent: "createIt", 
+                type: "fluid.eventedComponent",
+                options: {
+                    source: "{arguments}.0.value",
+                    listeners: {
+                        onCreate: {
+                            funcName: "fluid.tests.fluid5022add",
+                            args: "{fluid5022eventHead}"
+                        }
+                    }
+                }
+            }
+        }  
+    });
+    
+    jqUnit.test("FLUID-5022: Dynamic component creation in response to events", function () {
+        var head = fluid.tests.fluid5022eventHead();
+        head.events.createIt.fire({value: 2});
+        head.events.createIt.fire({value: 3});
+        jqUnit.assertEquals("Constructed 2 components", 2, head.count);
+        jqUnit.assertEquals("First component source transmitted: ", 2, head.dynamic.options.source);
+        jqUnit.assertEquals("First component source transmitted: ", 3, head["dynamic-1"].options.source);
     });
     
 })(jQuery); 

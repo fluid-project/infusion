@@ -428,6 +428,49 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
+    fluid.computeDynamicComponentKey = function (recordKey, sourceKey) {
+        return recordKey + (sourceKey === 0 ? "" : "-" + sourceKey); // TODO: configurable name strategies      
+    };
+
+    // unsupported, NON-API function    
+    fluid.registerDynamicRecord = function (that, recordKey, sourceKey, record, toCensor) {
+        var key = fluid.computeDynamicComponentKey(recordKey, sourceKey);
+        var cRecord = fluid.copy(record);
+        delete cRecord[toCensor];
+        fluid.set(that.options, ["components", key], cRecord);
+        return key;
+    };
+
+    // unsupported, NON-API function
+    fluid.computeDynamicComponents = function (that, mergeOptions) {
+        var shadow = fluid.shadowForComponent(that);
+        var localSub = shadow.subcomponentLocal = {};
+        var records = fluid.driveStrategy(that.options, "dynamicComponents", mergeOptions.strategy);
+        fluid.each(records, function (record, recordKey) {
+            if (!record.sources && !record.createOnEvent) {
+                fluid.fail("Cannot process dynamicComponents record ", record, " without a \"sources\" or \"createOnEvent\" entry");  
+            }
+            if (record.sources) {
+                var sources = fluid.expandOptions(record.sources, that);
+                fluid.each(sources, function (source, sourceKey) {
+                    var key = fluid.registerDynamicRecord(that, recordKey, sourceKey, record, "sources");
+                    localSub[key] = {"source": source, "sourcePath": sourceKey};
+                });
+            }
+            else if (record.createOnEvent) {
+               var event = fluid.event.expandOneEvent(that, record.createOnEvent);
+               fluid.set(shadow, ["dynamicComponentCount", recordKey], 0);
+               var listener = function () {
+                    var key = fluid.registerDynamicRecord(that, recordKey, shadow.dynamicComponentCount[recordKey]++, record, "createOnEvent");
+                    localSub[key] = {"arguments": fluid.makeArray(arguments)};
+                    fluid.initDependent(that, key);
+               };
+               event.addListener(listener);
+               fluid.recordListener(event, listener, shadow);
+            }
+        });
+    };
+    
     // Second sequence point for mergeOptions from Fluid.js - here we construct all further
     // strategies required on the IoC side and mount them into the shadow's getConfig for universal use
     // unsupported, NON-API function
@@ -519,7 +562,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return togo.join("\n");
     };
 
-    var localRecordExpected = /arguments|options|container/;
+    var localRecordExpected = /arguments|options|container|source|sourcePath/;
 
     // unsupported, NON-API function    
     fluid.resolveContext = function (context, that) {
@@ -557,7 +600,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var context = parsed.context;
             if (localRecord && localRecordExpected.test(context)) {
                 var fetched = fluid.get(localRecord[context], parsed.path);
-                return context === "arguments" ? fetched : {
+                return context === "arguments" || context === "source" || context === "sourcePath" ? fetched : {
                     marker: context === "options" ? fluid.EXPAND : fluid.EXPAND_NOW,
                     value: fetched
                 };
@@ -575,7 +618,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     // unsupported, NON-API function     
     fluid.makeStackResolverOptions = function (parentThat, localRecord) {
-        return $.extend(fluid.copy(fluid.defaults("fluid.makeExpandOptions")), {
+        return $.extend(fluid.copy(fluid.rawDefaults("fluid.makeExpandOptions")), {
             fetcher: fluid.makeStackFetcher(parentThat, localRecord),
             contextThat: parentThat
         }); 
@@ -587,6 +630,15 @@ var fluid_1_5 = fluid_1_5 || {};
             rec.event.removeListener(rec.listener);  
         });
         delete shadow.listeners;
+    };
+
+    // unsupported, non-API function    
+    fluid.recordListener = function (event, listener, shadow) {
+        var listeners = shadow.listeners;
+        if (!listeners) {
+            listeners = shadow.listeners = [];
+        }
+        listeners.push({event: event, listener: listener});
     };
     
     var idToInstantiator = {};
@@ -606,14 +658,6 @@ var fluid_1_5 = fluid_1_5 || {};
         that.idToPath = function (id) {
             var shadow = that.idToShadow[id];
             return shadow ? shadow.path : "";
-        };
-        that.recordListener = function (event, listener, source) {
-            var shadow = that.idToShadow[source.id];
-            var listeners = shadow.listeners;
-            if (!listeners) {
-                listeners = shadow.listeners = [];
-            }
-            listeners.push({event: event, listener: listener});
         };
         that.getThatStack = function (component) {
             var shadow = that.idToShadow[component.id];
@@ -798,15 +842,15 @@ var fluid_1_5 = fluid_1_5 || {};
     // TODO: overall efficiency could huge be improved by resorting to the hated PROTOTYPALISM as an optimisation
     // for this mergePolicy which occurs in every component. Although it is a deep structure, the root keys are all we need 
     var addPolicyBuiltins = function (policy) {
-        fluid.each(["gradeNames", "mergePolicy", "argumentMap", "components", "members", "invokers", "events", "listeners", "distributeOptions", "transformOptions"], function (key) {
+        fluid.each(["gradeNames", "mergePolicy", "argumentMap", "components", "dynamicComponents", "members", "invokers", "events", "listeners", "distributeOptions", "transformOptions"], function (key) {
             fluid.set(policy, [key, "*", "noexpand"], true);
         });
         return policy;
     };
 
     // unsupported, NON-API function - used from Fluid.js
-    fluid.generateExpandBlock = function (record, that, mergePolicy) {
-        var expanded = fluid.expandOptions(record.options, record.contextThat || that, mergePolicy, null, {defer: true});
+    fluid.generateExpandBlock = function (record, that, mergePolicy, localRecord) {
+        var expanded = fluid.expandOptions(record.options, record.contextThat || that, mergePolicy, localRecord, {defer: true});
         expanded.priority = record.priority;
         expanded.recordType = record.recordType;
         return expanded;
@@ -836,7 +880,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var expandList = fluid.mergeRecordsToList(mergeRecords);
 
         var togo = fluid.transform(expandList, function (value) {
-            return fluid.generateExpandBlock(value, that, mergePolicy);
+            return fluid.generateExpandBlock(value, that, mergePolicy, userOptions && userOptions.localRecord);
         });
         return togo;
     };
@@ -946,6 +990,9 @@ var fluid_1_5 = fluid_1_5 || {};
         // confusion remains with "localRecord" - it is a random mishmash of user arguments and the component record
         // this should itself be absorbed into "mergeRecords" and let stackFetcher sort it out
         var localRecord = $.extend({"arguments": initArgs}, fluid.censorKeys(options.componentRecord, ["type"]));
+        var shadow = fluid.shadowForComponent(parentThat);
+        var localDynamic = shadow && options.memberName ? shadow.subcomponentLocal[options.memberName] : null;
+        
         fluid.each(argMap, function (index, name) {
             // this is incorrect anyway! What if the supplied arguments were not in the same order as the target argmap,
             // which was obtained from the target defaults
@@ -1010,7 +1057,8 @@ var fluid_1_5 = fluid_1_5 || {};
                     if (initArgs.length > 0) {
                         mergeRecords.user = {options: localRecord.options};
                     }
-                    args[i] = {marker: fluid.EXPAND, 
+                    args[i] = {marker: fluid.EXPAND,
+                               localRecord: localDynamic,
                                mergeRecords: mergeRecords,
                                instantiator: fluid.getInstantiator(parentThat),
                                parentThat: parentThat,
@@ -1373,10 +1421,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // unsupported, non-API function
     // weird higher-order function so that we can staightforwardly dispatch original args back onto listener   
     fluid.event.makeTrackedListenerAdder = function (source) {
-        var instantiator = idToInstantiator[source.id];
+        var shadow = fluid.shadowForComponent(source);
         return function (event) {
             return {addListener: function(listener) {
-                    instantiator.recordListener(event, listener, source);
+                    fluid.recordListener(event, listener, shadow);
                     event.addListener.apply(null, arguments);
                 }
             }
@@ -1467,7 +1515,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
     
     // unsupported, non-API function
-    fluid.event.expandOneEvent = function (event, that) {
+    fluid.event.expandOneEvent = function (that, event) {
         var origin;
         if (typeof(event) === "string" && event.charAt(0) !== "{") {
             // Shorthand for resolving onto our own events, but with GINGER WORLD!
@@ -1483,11 +1531,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
 
     // unsupported, non-API function    
-    fluid.event.expandEvents = function (event, that) {
-        return typeof(event) === "string"?
-            fluid.event.expandOneEvent(event, that) :
-            fluid.transform(event, function(oneEvent) {
-                return fluid.event.expandOneEvent(oneEvent, that);
+    fluid.event.expandEvents = function (that, event) {
+        return typeof(event) === "string" ?
+            fluid.event.expandOneEvent(that, event) :
+            fluid.transform(event, function (oneEvent) {
+                return fluid.event.expandOneEvent(that, oneEvent);
             });
     };
     
@@ -1504,7 +1552,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             fluid.fail("Event specification for event with name " + eventName + " does not include a base event specification: ", eventSpec);
         }
         
-        var origin = fluid.event.expandEvents(event, that);
+        var origin = fluid.event.expandEvents(that, event);
 
         var isMultiple = origin.typeName !== "fluid.event.firer";
         var isComposite = eventSpec.args || isMultiple;
