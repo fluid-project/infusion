@@ -655,20 +655,14 @@ var fluid = fluid || fluid_1_5;
      */
     fluid.model.transformWithRules = function (source, rules, options) {
         options = options || {};
-        var parser = {
-            parse: fluid.pathUtil.parseEL,
-            compose: fluid.pathUtil.composePath
-        };
-        var getConfig = {
-            parser: parser,
-            strategies: [fluid.model.defaultFetchStrategy]
-        };
+        
+        var getConfig = fluid.model.escapedGetConfig;
+        
         var schemaStrategy = fluid.model.transform.decodeStrategy(source, options, getConfig);
-        var setConfig = {
-            parser: parser,
-            strategies: [fluid.model.defaultFetchStrategy, schemaStrategy ? fluid.model.transform.schemaToCreatorStrategy(schemaStrategy)
-                : fluid.model.defaultCreatorStrategy]
-        };
+        var setConfig = fluid.copy(fluid.model.escapedSetConfig);
+        setConfig.strategies = [fluid.model.defaultFetchStrategy, schemaStrategy ? fluid.model.transform.schemaToCreatorStrategy(schemaStrategy)
+                : fluid.model.defaultCreatorStrategy];
+
         var expander = {
             source: source,
             target: schemaStrategy ? fluid.model.transform.defaultSchemaValue(schemaStrategy(null, "", 0, [""])) : {},
@@ -693,8 +687,7 @@ var fluid = fluid || fluid_1_5;
             fluid.model.transform.expandWildcards(expander, source);
         }
         fluid.model.fireSortedChanges(expander.queuedChanges, expander.finalApplier);
-        return expander.target;
-        
+        return expander.target;    
     };
     
     $.extend(fluid.model.transformWithRules, fluid.model.transform);
