@@ -633,7 +633,8 @@ var fluid_1_5 = fluid_1_5 || {};
         that.fireChangeRequest = function (changeRequest, defeatGuards) {
             preFireChangeRequest(changeRequest);
             var guardFireSpec = defeatGuards ? null : getFireSpec("guards", changeRequest.path);
-            if (guardFireSpec && guardFireSpec.transListeners.length > 0) {
+            var postGuardSpec = getFireSpec("postGuards", changeRequest.path);
+            if (guardFireSpec && guardFireSpec.transListeners.length > 0 || postGuardSpec.transListeners.length > 0) {
                 var ation = that.initiate();
                 ation.fireChangeRequest(changeRequest, guardFireSpec);
                 ation.commit();

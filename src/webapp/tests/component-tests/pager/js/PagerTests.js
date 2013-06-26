@@ -29,7 +29,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     /** Convenience markup driven pager creator **/
     var markupPager = function (container, options) {
-        var options = $.extend(options, {
+        var options = $.extend(true, {}, options, {
             gradeNames: "fluid.tests.testMarkupPager"
         });
        
@@ -113,14 +113,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         enabled("Next top", next);
         enabled("Next bottom", nextBottom);
         
-        jqUnit.assertEquals("The onPageChange event should be fired upon initialization.", 0, pageChangeStats.pageNum);
-        jqUnit.assertUndefined("The oldPageNum for the onPageChange event should be undefined.", pageChangeStats.oldPageNum);
+        jqUnit.assertEquals("The onPageChange event should be fired upon initialization.", 0, pager.pageChangeStats.pageNum);
+        jqUnit.assertUndefined("The oldPageNum for the onPageChange event should be undefined.", pager.pageChangeStats.oldPageNum);
     });
     
     jqUnit.test("Click link", function () {
         var pager = markupPager("#gradebook", pageChangeOptions);
-        var link1 = $("#top1");        
-        var link1Bottom = $("#bottom1");        
+        var link1 = $("#top1");
+        var link1Bottom = $("#bottom1");
         var link2 = $("#top2");
         var anchor2 = $("a", link2);
         var link2Bottom = $("#bottom2");
@@ -130,8 +130,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var nextBottom = $("#next-bottom");
 
         anchor2.simulate("click");
-        jqUnit.assertEquals("Page number is 1.", 1, pageChangeStats.pageNum);      
-        jqUnit.assertEquals("Old page number is 0.", 0, pageChangeStats.oldPageNum);
+        jqUnit.assertEquals("Page number is 1.", 1, pager.pageChangeStats.pageNum);      
+        jqUnit.assertEquals("Old page number is 0.", 0, pager.pageChangeStats.oldPageNum);
         
         current("Link 2 top", link2);
         current("Link 2 bottom", link2Bottom);
@@ -142,10 +142,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         enabled("Previous top", previous);
         enabled("Previous bottom", previousBottom);
         
-        pageChangeStats = {};   
+        pager.pageChangeStats = {};   
         anchor2.simulate("click");
-        jqUnit.assertUndefined("Link 2 clicked again - callback not called.", pageChangeStats.pageNum);
-        jqUnit.assertUndefined("Link 2 clicked again - callback not called.", pageChangeStats.oldPageNum);
+        jqUnit.assertUndefined("Link 2 clicked again - callback not called.", pager.pageChangeStats.pageNum);
+        jqUnit.assertUndefined("Link 2 clicked again - callback not called.", pager.pageChangeStats.oldPageNum);
     });
     
     jqUnit.test("Links between top and bottom", function () {
@@ -154,14 +154,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var topLink = $("#plants-top2");
         var pageLink = $("#plants-bottom2");
         
-        jqUnit.assertEquals("Initially, the first page should be selected.", 0, pageChangeStats.pageNum);
+        jqUnit.assertEquals("Initially, the first page should be selected.", 0, pager.pageChangeStats.pageNum);
         nonPageLink.simulate("click");
-        pageChangeStats = {};   
-        jqUnit.assertUndefined("When a non-page link is clicked, no events should be fired.", pageChangeStats.pageNum);
+        pager.pageChangeStats = {};   
+        jqUnit.assertUndefined("When a non-page link is clicked, no events should be fired.", pager.pageChangeStats.pageNum);
         pageLink.simulate("click");
 
-        jqUnit.assertEquals("Page number is 1.", 1, pageChangeStats.pageNum);
-        jqUnit.assertEquals("Old page number is 0.", 0, pageChangeStats.oldPageNum);
+        jqUnit.assertEquals("Page number is 1.", 1, pager.pageChangeStats.pageNum);
+        jqUnit.assertEquals("Old page number is 0.", 0, pager.pageChangeStats.oldPageNum);
         jqUnit.assertTrue("Link 2 top is styled as current", 
             topLink.hasClass(fluid.defaults("fluid.pager.pagerBar").styles.currentPage));        
         jqUnit.assertTrue("Link 2 bottom is styled as current", 
@@ -208,86 +208,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         enabled("After clicking next on last page, previous", previousLink);
         disabled("After clicking next on last page, next", nextLink);
     });
-    
-     /** 
-     * Test consistentGappedPageStrategy Strategy
-     */
-    jqUnit.test("Pager consistentGappedPageStrategy", function () {            
-        /*
-         * Create n pages, check if number of pages = n
-         * consistentGappedPageStrategy(j, m) should look like this:
-         * ---j--- -m-[x]-m- ---j---
-         */             
-        var pageSize = 3;
-        var pageList = 100;
-        var expectedPages = Math.ceil(pageList / pageSize);
-        var j = 3;
-        var m = 1;
-        var consistentGappedPageStrategyPageList = function (j, m) {
-            return {
-                type: "fluid.pager.renderedPageList",
-                options: {
-                    pageStrategy: fluid.pager.consistentGappedPageStrategy(j, m)
-                }
-            };
-        };
-        
-        /*
-         * Check if element is in the list when we clicked on "i"
-         */
-        var shouldExistInList = function (i, element) {
-            //manually retrieve ID
-            //todo: make this better?
-            var link = $(element).find('a');
-            var linkId = parseInt(link.attr('id').replace('page-link:link', ''), 10);
-            //if this link is within the leading linkCount
-            if (linkId <= j) {
-                return true;
-            }
-            //if this link is within the trailing linkCount
-            if (linkId > expectedPages - j && linkId <= expectedPages) {
-                return true;
-            }
-            //if this link is within the middle linkCount
-            if (i >= linkId - m && i <= linkId + m) {
-                return true;
-            }
-            
-            //if this element is outside of leading linkCount but index
-            //is within leading linkCount
-            //i-m-2 because 1 2 3 ... 5 6 is pointless. it should be 1 2 3 4 5 6.
-            if ((i - m - 2) <= j && linkId <= (expectedPages - j - 1)) {
-                return true;
-            }
-            
-            //if this element is outside of trailing linkCount but index
-            //is within leading linkCount
-            if (i + m + 2 >= expectedPages - j && linkId > expectedPages - (expectedPages - j - 1)) {
-                return true;
-            }
-            
-            //if all the above fails.
-            return false;
-        };
-        
-        var pager = strategyRenderer(pageList, pageSize, consistentGappedPageStrategyPageList(j, m)); 
-        //total queue size allowed is current_page + 2 * (j + m) + self + 2 skipped_pages                        
-        var totalPages = 2 * (j + m) + 3;
-        var allPagesAfterClickedEachFn = function (index, element) {
-                if (!$(element).hasClass("flc-pager-pageLink-skip")) {
-                    jqUnit.assertTrue("On [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
-                }
-            };
-        
-        //Go through all pages 1 by 1 , and click all page dynamically each time
-        for (var i = 1; i <= expectedPages; i++) {
-            var page = fluid.jById('page-link:link' + i);
-            page.click();                
-            jqUnit.assertEquals("Verify number of top page links", totalPages, 
-                                pager.pagerBar.locate("pageLinks").length + pager.pagerBar.locate("pageLinkSkip").length);                
-            var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
-                allPagesAfterClicked.each(allPagesAfterClickedEachFn);
-            }
-        });
  
 })(jQuery);

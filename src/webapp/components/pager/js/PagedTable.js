@@ -95,6 +95,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.pager.rangeAnnotator"
             }
         },
+        annotateColumnRange: undefined, // specify a "key" from the columnDefs
+ 
         tooltip: { // TODO: This is not currently a real component but just a house for options
             type: "fluid.tooltip" 
         },
