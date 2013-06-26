@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid, jqUnit, expect, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
@@ -47,7 +47,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Expected model value " + expectedValue + " at path " + path, expectedValue, newval);
         };
     };
-    
+
     /*******************************************************************************
      * textFontPanel
      *******************************************************************************/
@@ -75,7 +75,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var options = that.container.find("option");
             jqUnit.assertEquals("There are " + expectedNumOfOptions + " text fonts in the control", expectedNumOfOptions, options.length);
             jqUnit.assertEquals("The first text font is " + expectedFont, expectedFont, options.filter(":selected").val());
-            
+
             fluid.each(options, function (option, index) {
                 var css = that.options.classnameMap.textFont[option.value];
                 if (css) {
@@ -84,11 +84,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         };
     };
-    
+
     fluid.tests.textFontPanel.changeSelection = function (element, newValue) {
         element.val(newValue).change();
     };
-    
+
     fluid.defaults("fluid.tests.textFontTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
@@ -146,10 +146,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return function () {
             var inputs = that.locate("themeInput");
             var labels = that.locate("themeLabel");
-            
+
             jqUnit.assertEquals("There are " + expectedNumOfOptions + " contrast selections in the control", expectedNumOfOptions, inputs.length);
             jqUnit.assertEquals("The first contrast is " + expectedContrast, expectedContrast, inputs.filter(":checked").val());
-            
+
             var inputValue, label;
             fluid.each(inputs, function (input, index) {
                 inputValue = input.value;
@@ -158,12 +158,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         };
     };
-    
+
     fluid.tests.contrastPanel.changeChecked = function (inputs, newValue) {
         inputs.removeAttr("checked");
         inputs.filter("[value='" + newValue + "']").attr("checked", "checked").change();
     };
-    
+
     fluid.defaults("fluid.tests.contrastTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
@@ -202,14 +202,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testDefault = function (that, expectedNumOfOptions, expectedContrast) {
         return function () {
             var inputValue = that.container.find("input").val();
-            jqUnit.assertEquals("The default input value has been set to the min value", that.model.min, inputValue);
+            jqUnit.assertEquals("The default input value has been set to the min value", that.options.range.min, inputValue);
         };
     };
-    
+
     fluid.tests.changeInput = function (textSlider, newValue) {
         textSlider.find("input").val(newValue).change();
     };
-    
+
     /*******************************************************************************
      * textSizer
      *******************************************************************************/
@@ -311,12 +311,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Test functions shared by checkbox panels: layoutPanel & linkPanel 
+     * Test functions shared by checkbox panels: layoutPanel & linkPanel
      *******************************************************************************/
     fluid.tests.changeCheckboxSelection = function (element) {
         element.attr("checked", "checked").change();
     };
-    
+
     /*******************************************************************************
      * layoutPanel
      *******************************************************************************/
@@ -345,7 +345,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The toc option is not checked by default", expectedValue, inputValue);
         };
     };
-    
+
     fluid.defaults("fluid.tests.layoutTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
@@ -406,7 +406,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The links option is not checked by default", expectedValue, inputsLargerValue);
         };
     };
-    
+
 
     fluid.defaults("fluid.tests.linksTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
