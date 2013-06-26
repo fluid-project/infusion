@@ -332,13 +332,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         var assertInitialModel = function (model) {
-            jqUnit.expect(6);
+            jqUnit.expect(5);
             jqUnit.assertNotNull("Model is not null", model);
             jqUnit.assertNotUndefined("Model is not undefined", model);
             jqUnit.assertFalse("Min text size is not set", !!model.textSize);
             jqUnit.assertEquals("Text font is set", "default", model.selections.textFont);
             jqUnit.assertEquals("Colour scheme is set", "default", model.selections.theme);
-            jqUnit.assertEquals("Layout value is set", false, model.selections.layout);
         };
         
         jqUnit.asyncTest("Init Model - default", function () {

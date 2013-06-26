@@ -45,7 +45,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 "by": "fl-theme-uio-by fl-theme-by",
                 "yb": "fl-theme-uio-yb fl-theme-yb"
             },
-            "layout": "fl-layout-linear",
             "links": "fl-link-enhanced",
             "inputsLarger": "fl-text-larger"
         }
@@ -206,19 +205,6 @@ var fluid_1_5 = fluid_1_5 || {};
                         toc: "{fluid.uiOptions.initialModel}.initialModel.toc"
                     }
                 }
-            },
-            IE6ColorInversion: {
-                type: "fluid.uiOptions.enactor.IE6ColorInversion",
-                container: "{uiEnhancer}.container",
-                options: {
-                    sourceApplier: "{uiEnhancer}.applier",
-                    rules: {
-                        "theme": "value"
-                    },
-                    model: {
-                        value: "{fluid.uiOptions.initialModel}.initialModel.theme"
-                    }
-                }
             }
         },
         events: {
@@ -231,9 +217,6 @@ var fluid_1_5 = fluid_1_5 || {};
             }, {
                 listener: "{that}.inputsLarger.handleStyle",
                 args: "{that}.model.inputsLarger"
-            }, {
-                listener: "{that}.IE6ColorInversion.setIE6ColorInversion",
-                args: "{that}.model.theme"
             }]
         },
         finalInitFunction: "fluid.uiEnhancer.starterActions.finalInit"
