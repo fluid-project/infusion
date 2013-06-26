@@ -1904,7 +1904,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
 /* --------------- fixedArray to outputs -------------------- */
-    var arrayToOutputsTests = {
+    var arrayToSetMembershipTests = [{
         name: "basic test",
         raw: {
             a: [ "foo", "bar" ]
@@ -1912,10 +1912,50 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         rules: {
             "b": {
                 "expander": {
-                    type: "fluid.model.transform.arrayToOutputs",
+                    type: "fluid.model.transform.arrayToSetMembership",
                     inputPath: "a",
-                    presentValue: true,
-                    missingValue: false,
+                    presentValue: "yes",
+                    missingValue: "no",
+                    options: { //(paths)
+                        "foo": "settingF", 
+                        "bar": "settingB",
+                        "tar": "settingT"
+                    }
+                }
+            }
+        },
+        expected: {
+            b: {
+                settingF: "yes",
+                settingB: "yes",
+                settingT: "no"
+            }
+        },
+        invertedRules: {
+            expander: [ 
+                {
+                    type: "fluid.model.transform.setMembershipToArray",
+                    outputPath: "a",
+                    presentValue: "yes",
+                    missingValue: "no",
+                    options: {
+                        "b.settingF": "foo", 
+                        "b.settingB": "bar",
+                        "b.settingT": "tar"
+                    }
+                }
+            ]
+        }
+    }, {
+        name: "basic test",
+        raw: {
+            a: [ "foo", "bar" ]
+        }, 
+        rules: {
+            "b": {
+                "expander": {
+                    type: "fluid.model.transform.arrayToSetMembership",
+                    inputPath: "a",
                     options: { //(paths)
                         "foo": "settingF", 
                         "bar": "settingB",
@@ -1934,7 +1974,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         invertedRules: {
             expander: [ 
                 {
-                    type: "fluid.model.transform.inputsToArray",
+                    type: "fluid.model.transform.setMembershipToArray",
                     outputPath: "a",
                     presentValue: true,
                     missingValue: false,
@@ -1946,10 +1986,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             ]
         }
-    };
+    }];;
 
-    jqUnit.test("arrayToOutputs and inputsToArray transformation tests", function () {
-        arrayTest(arrayToOutputsTests);
+    jqUnit.test("arrayToSetMembership and setMembershipToArray transformation tests", function () {
+        fluid.each(arrayToSetMembershipTests, function (v) {
+            arrayTest(v);
+        });
     });
 
 })(jQuery);

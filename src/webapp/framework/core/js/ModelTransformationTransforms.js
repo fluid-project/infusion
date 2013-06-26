@@ -1,6 +1,7 @@
 /*
 Copyright 2010 University of Toronto
 Copyright 2010-2011 OCAD University
+Copyright 2013 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -304,23 +305,31 @@ var fluid = fluid || fluid_1_5;
         return togo;
     };
 
-    /* -------- arrayToOutputs and inputsToArray ---------------- */
-    fluid.defaults("fluid.model.transform.arrayToOutputs", { 
+    /* -------- arrayToSetMembership and setMembershipToArray ---------------- */
+    fluid.defaults("fluid.model.transform.arrayToSetMembership", { 
         gradeNames: ["fluid.standardInputTransformFunction", "fluid.lens"],
-        invertConfiguration: "fluid.model.transform.arrayToOutputs.invert"
+        invertConfiguration: "fluid.model.transform.arrayToSetMembership.invert"
     });
 
  
-    fluid.model.transform.arrayToOutputs = function (value, expandSpec, expander) {
+    fluid.model.transform.arrayToSetMembership = function (value, expandSpec, expander) {
         var options = expandSpec.options;
 
         if (value === undefined || !fluid.isArrayable(value)) {
-            fluid.log("arrayToOutputs didn't find array at inputPath nor passed as value.", expandSpec);
+            fluid.log("arrayToSetMembership didn't find array at inputPath nor passed as value.", expandSpec);
             return undefined;
         }
-        if (expandSpec.presentValue === undefined || expandSpec.missingValue === undefined || options === undefined) {
-            fluid.log("arrayToOutputs requires both presentValue, missingValue and an options block set");
+        if (options === undefined) {
+            fluid.log("arrayToSetMembership requires an options block set");
             return undefined;
+        }
+
+        if (expandSpec.presentValue === undefined) {
+            expandSpec.presentValue = true;
+        }
+        
+        if (expandSpec.missingValue === undefined) {
+            expandSpec.missingValue = false;
         }
 
         fluid.each(options, function (outPath, key) {
@@ -331,10 +340,10 @@ var fluid = fluid || fluid_1_5;
         return undefined;
     };
 
-    fluid.model.transform.arrayToOutputs.invert = function (expandSpec, expander) {
+    fluid.model.transform.arrayToSetMembership.invert = function (expandSpec, expander) {
         var togo = fluid.copy(expandSpec);
         delete togo.inputPath;
-        togo.type = "fluid.model.transform.inputsToArray";
+        togo.type = "fluid.model.transform.setMembershipToArray";
         togo.outputPath = fluid.model.composePaths(expander.inputPrefix, expandSpec.inputPath);
         var newOptions = {};
         fluid.each(expandSpec.options, function (path, oldKey) {
@@ -345,17 +354,24 @@ var fluid = fluid || fluid_1_5;
         return togo;
     };
 
-    /* -------- arrayToOutputs and inputsToArray ---------------- */
-    fluid.defaults("fluid.model.transform.inputsToArray", { 
+    fluid.defaults("fluid.model.transform.setMembershipToArray", { 
         gradeNames: ["fluid.standardOutputTransformFunction"]
     });
 
-    fluid.model.transform.inputsToArray = function (expandSpec, expander) {
+    fluid.model.transform.setMembershipToArray = function (expandSpec, expander) {
         var options = expandSpec.options;
 
-        if (expandSpec.presentValue === undefined || expandSpec.missingValue === undefined || expandSpec.options === undefined) {
-            fluid.fail("inputsToArray requires both presentValue, missingValue and an options block specified");
-        }        
+        if (options === undefined) {
+            fluid.fail("setMembershipToArray requires an options block specified");
+        }
+
+        if (expandSpec.presentValue === undefined) {
+            expandSpec.presentValue = true;
+        }
+        
+        if (expandSpec.missingValue === undefined) {
+            expandSpec.missingValue = false;
+        }
 
         var outputArr = [];
         fluid.each(options, function (arrVal, inPath) {
@@ -502,8 +518,7 @@ var fluid = fluid || fluid_1_5;
                 v = fluid.model.transform.expandInnerValues([expandSpec.inputPath, k], [expandSpec.outputPath, newArray.length.toString()], 
                     expander, expandSpec.innerValue);
             }
-            // TODO: remove this use of fluid.merge which will not be valid in 1.5 Infusion framework
-            content = fluid.merge("replace", content, v);
+            $.extend(true, content, v);
             newArray.push(content);
         });
         return newArray;
