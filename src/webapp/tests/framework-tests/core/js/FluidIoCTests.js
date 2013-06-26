@@ -2777,4 +2777,69 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("First component source transmitted: ", 3, head["dynamic-1"].options.source);
     });
     
+    
+   /** FLUID-5032 - Forward reference through grade hierarchy **/
+    
+    fluid.defaults("fluid.tests.fluid5032Root", {
+        gradeNames: ["fluid.eventedComponent", "fluid.tests.fluid5032Grade", "autoInit"],
+        components: {
+            subComponent: {
+                type: "fluid.eventedComponent"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid5032Grade", {
+        gradeNames: ["fluid.eventedComponent"],
+        events: {
+            creationEvent: null
+        },
+        listeners: {
+            creationEvent: {
+                listener: "fluid.tests.fluid5032listener",
+                args: "{that}"
+            }
+        },
+        components: {
+            subComponent: {
+                createOnEvent: "creationEvent"
+            }
+        }
+    });
+    
+    fluid.tests.fluid5032listener = function (that) {
+        that.creationEventFired = true;
+    };
+    
+    jqUnit.test("FLUID-5032 - forward reference in grade hierarchy", function () {
+        var root = fluid.tests.fluid5032Root();
+        
+        jqUnit.assertNotUndefined("The event defined in the grade component is merged in", root.events.creationEvent);
+        jqUnit.assertFalse("The createOnEvent is not fired", root.creationEventFired);
+        jqUnit.assertUndefined("The subcomponent that should be created on createOnEvent is not created", root.subComponent);
+    });
+    
+    /** FLUID-5033 - Grade reloading **/
+    function defineFluid5033Grade(value) {
+        // Note that this technique must not be used within ordinary user code - in general the dynamic redefinition of a grade is an error.
+        // This technique is only appropriate for development or "live coding" scenarios
+        fluid.defaults("fluid.tests.fluid5033Grade", {
+            gradeNames: ["fluid.littleComponent"],
+            gradeValue: value
+        });
+    }
+    defineFluid5033Grade(1);
+    
+    fluid.defaults("fluid.tests.fluid5033Root", {
+        gradeNames: ["fluid.tests.fluid5033Grade", "autoInit"],
+    });
+    
+    jqUnit.test("FLUID-5033 - grade reloading updates cache", function () {
+        var root1 = fluid.tests.fluid5033Root();
+        jqUnit.assertEquals("Original graded value", 1, root1.options.gradeValue);
+        defineFluid5033Grade(2);
+        var root2 = fluid.tests.fluid5033Root();
+        jqUnit.assertEquals("Original graded value", 2, root2.options.gradeValue);        
+    });
+
 })(jQuery); 
