@@ -14,7 +14,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid_1_5:true, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_5 = fluid_1_5 || {};
@@ -27,11 +27,11 @@ var fluid_1_5 = fluid_1_5 || {};
 
     /**
      * An UI Options top-level component that reflects the collaboration between uiOptionsLoader
-     * and templateLoader. This component is the only UI Options component that is intended to be 
+     * and templateLoader. This component is the only UI Options component that is intended to be
      * called by the outside world.
-     * 
+     *
      * @param {Object} options
-     */    
+     */
     fluid.defaults("fluid.uiOptions.inline", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
@@ -94,20 +94,20 @@ var fluid_1_5 = fluid_1_5 || {};
             target: "{that linksControls}.options"
         }]
     });
-    
+
     /******************************
      * UI Options Template Loader *
      ******************************/
 
     /**
-     * A configurable component that works in conjunction with or without the UI Options template path  
-     * component (fluid.uiOptionsTemplatePath) to allow users to set either the location of their own 
-     * templates or the templates that are relative to the path defined in the UI Options template path 
+     * A configurable component that works in conjunction with or without the UI Options template path
+     * component (fluid.uiOptionsTemplatePath) to allow users to set either the location of their own
+     * templates or the templates that are relative to the path defined in the UI Options template path
      * component.
-     * 
+     *
      * @param {Object} options
-     */    
-       
+     */
+
     fluid.defaults("fluid.uiOptions.templateLoader", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         finalInitFunction: "fluid.uiOptions.templateLoader.resolveTemplates",
@@ -130,31 +130,31 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uiOptions.templateLoader.resolveTemplates = function (that) {
         var mapped = fluid.transform(that.options.templates, that.transformURL);
-    
+
         that.resources = fluid.transform(mapped, function (url) {
             return {url: url, forceCache: true};
         });
     };
-    
+
     /**************************************
      * UI Options Template Path Specifier *
      **************************************/
-    
+
     /**
      * A configurable component that defines the relative path from the html to UI Options templates.
-     * 
+     *
      * @param {Object} options
      */
-    
+
     fluid.defaults("fluid.uiOptions.templatePath", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         value: "../html/"
     });
-    
+
     /**************
      * UI Options *
      **************/
-    
+
     fluid.defaults("fluid.uiOptions.loader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         resources: "{templateLoader}.resources",
@@ -190,19 +190,19 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-    
+
     fluid.uiOptions.loader.init = function (that) {
         fluid.fetchResources(that.options.resources, function () {
             that.events.onUIOptionsTemplateReady.fire();
         });
     };
-    
+
     /**
-     * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
-     * to allow users to set personal user interface preferences. The UI Options component provides a user 
-     * interface for setting and saving personal preferences, and the UI Enhancer component carries out the 
+     * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS)
+     * to allow users to set personal user interface preferences. The UI Options component provides a user
+     * interface for setting and saving personal preferences, and the UI Enhancer component carries out the
      * work of applying those preferences to the user interface.
-     * 
+     *
      * @param {Object} container
      * @param {Object} options
      */
@@ -337,7 +337,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uiOptions.uiEnhancerRelay.updateEnhancerModel = function (uiEnhancer, newModel) {
         uiEnhancer.updateModel(newModel);
     };
-    
+
     // called once markup is applied to the document containing tab component roots
     fluid.uiOptions.finishInit = function (that) {
         var bindHandlers = function (that) {
@@ -352,7 +352,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.locate("reset").click(that.reset);
             that.locate("cancel").click(that.cancel);
         };
-        
+
         that.container.append(that.options.resources.template.resourceText);
         bindHandlers(that);
         // This creates subcomponents - we can find default model afterwards
@@ -361,7 +361,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that.fetch();
         that.events.onUIOptionsComponentReady.fire(that);
     };
-    
+
     fluid.uiOptions.preInit = function (that) {
         that.fetch = function () {
             var completeModel = that.getSettings();
@@ -372,14 +372,14 @@ var fluid_1_5 = fluid_1_5 || {};
 
         /**
          * Saves the current model and fires onSave
-         */ 
+         */
         that.save = function () {
             that.events.onSave.fire(that.model.selections);
-            
+
             var savedSelections = fluid.copy(that.model.selections);
             that.setSettings(savedSelections);
         };
-        
+
         that.saveAndApply = function () {
             that.save();
             that.events.onUIOptionsRefresh.fire();
@@ -393,7 +393,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.events.onReset.fire(that);
             that.events.onUIOptionsRefresh.fire();
         };
-        
+
         /**
          * Resets the selections to the last saved selections and fires onCancel
          */
@@ -401,7 +401,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.events.onCancel.fire();
             that.fetch();
         };
-        
+
         that.applier.modelChanged.addListener("selections", function (newModel, oldModel, changeRequest) {
             that.events.modelChanged.fire(newModel, oldModel, changeRequest[0].source);
             if (that.options.autoSave) {
@@ -414,7 +414,7 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.fetchResources(that.options.resources, function () {
           // This setTimeout is to ensure that fetching of resources is asynchronous,
           // and so that component construction does not run ahead of subcomponents for FatPanel
-          // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix) 
+          // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix)
             setTimeout(function () {
                 fluid.uiOptions.finishInit(that);
             }, 1);
@@ -424,7 +424,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /***********************************************
      * Base grade settingsPanel
      ***********************************************/
-     
+
     fluid.defaults("fluid.uiOptions.settingsPanel", {
         gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay", "autoInit"],
         invokers: {
@@ -438,7 +438,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * UI Options Event binder:                           *
      * Binds events between UI Options and the UIEnhancer *
      ******************************************************/
-     
+
     fluid.defaults("fluid.uiOptions.eventBinder", {
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
@@ -448,7 +448,7 @@ var fluid_1_5 = fluid_1_5 || {};
      **********************/
 
     fluid.defaults("fluid.uiOptions.preview", {
-        gradeNames: ["fluid.viewComponent", "autoInit"], 
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             enhancer: {
                 type: "fluid.uiEnhancer",
@@ -457,10 +457,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     gradeNames: ["fluid.uiOptions.uiEnhancerRelay"]
                 }
-            },
-            eventBinder: {
-                type: "fluid.uiOptions.preview.eventBinder",
-                createOnEvent: "onReady"
             },
             // TODO: This is a violation of containment, but we can't use up our allowance of demands
             // blocks as a result of FLUID-4392
@@ -479,10 +475,13 @@ var fluid_1_5 = fluid_1_5 || {};
         events: {
             onReady: null
         },
-        
+        listeners: {
+            "{uiOptions}.events.modelChanged": "{that}.updateModel",
+            onReady: "{that}.updateModel"
+        },
         templateUrl: "%prefix/UIOptionsPreview.html"
     });
-    
+
     fluid.uiOptions.preview.updateModel = function (that, selections) {
         /**
          * SetTimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
@@ -493,32 +492,15 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }, 0);
     };
-    
+
     fluid.uiOptions.preview.finalInit = function (that) {
         var templateUrl = that.templateLoader.transformURL(that.options.templateUrl);
         that.container.load(function () {
             that.enhancerContainer = $("body", that.container.contents());
             that.events.onReady.fire();
         });
-        that.container.attr("src", templateUrl);        
+        that.container.attr("src", templateUrl);
 
     };
-    
-    /***************************************************
-     * UI Options Event binder:                        *
-     * Binds events between UI Options and the Preview *
-     ***************************************************/
-     
-    fluid.defaults("fluid.uiOptions.preview.eventBinder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"]
-    });
-    
-    fluid.demands("fluid.uiOptions.preview.eventBinder", ["fluid.uiOptions.preview", "fluid.uiOptions"], {
-        options: {
-            listeners: {
-                "{uiOptions}.events.modelChanged": "{preview}.updateModel"
-            }
-        }
-    });
 
 })(jQuery, fluid_1_5);
