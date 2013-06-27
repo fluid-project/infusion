@@ -31,6 +31,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.defaults("fluid.tests.fatPanelIntegration", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        listeners: {
+            onDestroy: "fluid.tests.clearStore"
+        },
         components: {
             fatPanel: {
                 type: "fluid.uiOptions.fatPanel",
@@ -48,12 +51,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     templateLoader: {
                         options: {
-                            gradeNames: ["fluid.uiOptions.defaultTemplateLoader"]
+                            gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
                         }
                     },
                     uiOptions: {
                         options: {
-                            gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
+                            gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.initialModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
                         }
                     }
                 }
@@ -63,6 +66,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+
+    // Cleanup listener that restores a global settings store model to default.
+    fluid.tests.clearStore = function () {
+        fluid.staticEnvironment.settingsStore.set();
+    };
 
     fluid.tests.testComponent = function (uiOptionsLoader, uiOptions) {
         jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, uiOptions.iframeRenderer.iframe.is(":visible"));
@@ -93,14 +101,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.tests.afterShowFunc3 = function (fatPanel) {
         return function () {
-            var defaultSiteSettings = fatPanel.pageEnhancer.settingsStore.options.defaultSiteSettings;
+            var initialModel = fatPanel.uiOptionsLoader.uiOptions.initialModel;
             var pageModel = fatPanel.pageEnhancer.model;
             var panelModel = fatPanel.iframeRenderer.iframeEnhancer.model;
             
             fatPanel.locate("reset").click();
-            fluid.tests.uiOptions.checkModelSelections("pageModel from defaults", defaultSiteSettings, pageModel);
+            fluid.tests.uiOptions.checkModelSelections("pageModel from defaults", initialModel, pageModel);
             fatPanel.slidingPanel.hidePanel();
-            fluid.tests.uiOptions.checkModelSelections("panelModel from defaults", defaultSiteSettings, panelModel);
+            fluid.tests.uiOptions.checkModelSelections("panelModel from defaults", initialModel, panelModel);
             fluid.tests.uiOptions.checkModelSelections("pageModel from panelModel", pageModel, panelModel);  
         };
     };
@@ -110,7 +118,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Fat panel integration tests",
             tests: [{
-                expect: 19,
+                expect: 18,
                 name: "Fat panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testComponent",
@@ -178,7 +186,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             }
                         }
                     },
-                    iframe: expectedIframeSelector
+                    iframe: expectedIframeSelector,
+                    uiOptions: {
+                        options: {
+                            members: {
+                                initialModel: {
+                                    theme: "yb"
+                                }
+                            }
+                        }
+                    }
                 })
             },
             mungingIntegrationTester: {
@@ -226,6 +243,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
 
+        fluid.globalSettingsStore();
         fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
     
         fluid.test.runTests([
