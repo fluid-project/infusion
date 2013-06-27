@@ -337,7 +337,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "selections.textSize": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.initialModel}.initialModel.textSize"
+                        value: "{fluid.uiOptions.rootModel}.rootModel.textSize"
                     },
                     resources: {
                         template: "{templateLoader}.resources.textSizer"
@@ -354,7 +354,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "selections.lineSpacing": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.initialModel}.initialModel.lineSpacing"
+                        value: "{fluid.uiOptions.rootModel}.rootModel.lineSpacing"
                     },
                     resources: {
                         template: "{templateLoader}.resources.lineSpacer"
@@ -372,7 +372,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "selections.textFont": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.initialModel}.initialModel.textFont"
+                        value: "{fluid.uiOptions.rootModel}.rootModel.textFont"
                     },
                     resources: {
                         template: "{templateLoader}.resources.textFont"
@@ -390,7 +390,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "selections.theme": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.initialModel}.initialModel.theme"
+                        value: "{fluid.uiOptions.rootModel}.rootModel.theme"
                     },
                     resources: {
                         template: "{templateLoader}.resources.contrast"
@@ -408,8 +408,8 @@ var fluid_1_5 = fluid_1_5 || {};
                         "selections.layout": "layout"
                     },
                     model: {
-                        toc: "{fluid.uiOptions.initialModel}.initialModel.toc",
-                        layout: "{fluid.uiOptions.initialModel}.initialModel.layout"
+                        toc: "{fluid.uiOptions.rootModel}.rootModel.toc",
+                        layout: "{fluid.uiOptions.rootModel}.rootModel.layout"
                     },
                     resources: {
                         template: "{templateLoader}.resources.layoutControls"
@@ -427,8 +427,8 @@ var fluid_1_5 = fluid_1_5 || {};
                         "selections.inputsLarger": "inputsLarger"
                     },
                     model: {
-                        links: "{fluid.uiOptions.initialModel}.initialModel.links",
-                        inputsLarger: "{fluid.uiOptions.initialModel}.initialModel.inputsLarger"
+                        links: "{fluid.uiOptions.rootModel}.rootModel.links",
+                        inputsLarger: "{fluid.uiOptions.rootModel}.rootModel.inputsLarger"
                     },
                     resources: {
                         template: "{templateLoader}.resources.linksControls"
