@@ -1851,7 +1851,7 @@ fluid.registerNamespace("fluid.tests");
         }
     });
     
-    fluid.defaults("fluid.tests.lifecycle.demandsInitComponent", {
+    fluid.defaults("fluid.tests.lifecycle.demandsInitComponent", { 
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
@@ -1956,7 +1956,7 @@ fluid.registerNamespace("fluid.tests");
                 }
             },
             uiOptionsBridge: {
-                type: "fluid.tests.createOnEvent.uiOptionsBridge",
+                type: "fluid.littleComponent",
                 createOnEvent: "afterRender"
             }
         }
@@ -1970,10 +1970,6 @@ fluid.registerNamespace("fluid.tests");
     fluid.tests.createOnEvent.iframe.finalInit = function (that) {
         that.events.afterRender.fire();
     };
-    
-    fluid.defaults("fluid.tests.createOnEvent.uiOptionsBridge", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
-    });
     
     jqUnit.test("FLUID-4290 test: createOnEvent sequence corruption", function () {
         jqUnit.expect(1);
@@ -2135,16 +2131,12 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             local: {
-                type: "fluid.tests.circular.local"
+                type: "fluid.littleComponent"
             },
             engine: {
                 type: "fluid.tests.circular.engine"
             }
         }
-    });
-    
-    fluid.defaults("fluid.tests.circular.swfUpload", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
     fluid.tests.circular.initEngine = function (that) {
@@ -2160,7 +2152,7 @@ fluid.registerNamespace("fluid.tests");
         },
         components: {
             swfUpload: {
-                type: "fluid.tests.circular.swfUpload"
+                type: "fluid.littleComponent"
             }
         }
     });
@@ -2173,10 +2165,6 @@ fluid.registerNamespace("fluid.tests");
         args: [
             "{strategy}.local"
         ]
-    });
-
-    fluid.defaults("fluid.tests.circular.local", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
     // NB - this is an old-style "non-merging" demands block, use is deprecated
@@ -2439,31 +2427,26 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             templateLoader: {
-                type: "fluid.tests.templateLoader"
+                type: "fluid.littleComponent"
             },
         },
         distributeOptions: {
             source: "{that}.options.templateLoader",
-            exclusions: [],
             target: "{that > templateLoader}.options"
         }
     });
-    
-    fluid.defaults("fluid.tests.templateLoader", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
-    });
       
-    fluid.defaults("fluid.tests.starterTemplateLoader", {
+    fluid.defaults("fluid.tests.defaultTemplateLoader", {
         userOption: 10
     });
     
     jqUnit.test("FLUID-5012: Apply gradeNames option onto the target component with IoCSS", function () {
         var uio = fluid.tests.uio({
             templateLoader: {
-                gradeNames: ["fluid.tests.starterTemplateLoader"]
+                gradeNames: ["fluid.tests.defaultTemplateLoader"]
             }
         });
-        var expectedGrades = ["autoInit", "fluid.littleComponent", "fluid.tests.starterTemplateLoader", "fluid.tests.templateLoader"];
+        var expectedGrades = ["autoInit", "fluid.littleComponent", "fluid.tests.defaultTemplateLoader"];
         
         jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, uio.templateLoader.options.gradeNames);
         jqUnit.assertEquals("The user option from the grade component is transmitted", 10, uio.templateLoader.options.userOption);
@@ -2519,18 +2502,19 @@ fluid.registerNamespace("fluid.tests");
         }
     });
     
+    fluid.defaults("fluid.tests.fluid5014sub", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
     fluid.defaults("fluid.tests.fluid5014distro1", {
         distributeOptions: [{
             source: "{that}.options.userOption",
-            exclusions: [],
             target: "{that > sub1}.options.userOption"
         }, {
             source: "{that}.options.userOption",
-            exclusions: [],
             target: "{that > sub2}.options.userOption"
         }, {
             source: "{that}.options.userOption",
-            exclusions: [],
             target: "{that > sub3}.options.userOption"
         }]
     });
@@ -2539,13 +2523,8 @@ fluid.registerNamespace("fluid.tests");
         distributeOptions: [{ // Check that even when we remove source, we can distribute to multiple targets via one record
             source: "{that}.options.userOption",
             removeSource: true,
-            exclusions: [],
             target: "{that > fluid.tests.fluid5014sub}.options.userOption"
         }]
-    });
-    
-    fluid.defaults("fluid.tests.fluid5014sub", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
     fluid.tests.testDistro = function (distroGrade) {
@@ -2574,7 +2553,6 @@ fluid.registerNamespace("fluid.tests");
         },
         distributeOptions: {
             source: "{that}.options.userOption",
-            exclusions: [],
             target: "{that > gradeSubComponent}.options.userOption"
         }
     });
@@ -2588,7 +2566,6 @@ fluid.registerNamespace("fluid.tests");
         },
         distributeOptions: {
             source: "{that}.options.userOption",
-            exclusions: [],
             target: "{that > rootSubComponent}.options.userOption"
         }
     });
@@ -2603,6 +2580,7 @@ fluid.registerNamespace("fluid.tests");
     });
     
     /** FLUID-5017 - IoCSS: Merge "distributeOptions" of the own component and grade components **/
+    
     fluid.defaults("fluid.tests.fluid5017Grade", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -2612,7 +2590,6 @@ fluid.registerNamespace("fluid.tests");
         },
         distributeOptions: {
             source: "{that}.options.gradeOption",
-            exclusions: [],
             target: "{that > myGradeSubComponent}.options.gradeOption"
         }
     });
@@ -2626,7 +2603,6 @@ fluid.registerNamespace("fluid.tests");
         },
         distributeOptions: {
             source: "{that}.options.rootOption",
-            exclusions: [],
             target: "{that > myRootSubComponent}.options.rootOption"
         }
     });
@@ -2646,20 +2622,15 @@ fluid.registerNamespace("fluid.tests");
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             ownSub: {
-                type: "fluid.tests.ownSub"
+                type: "fluid.littleComponent"
             }
         },
         distributeOptions: {
             source: "{that}.options.toBeResolvedOption",
-            exclusions: [],
             target: "{that > ownSub}.options.resolvedOption"
         },
         toBeResolvedOption: "{that}.options.userOption",
         userOption: 10
-    });
-    
-    fluid.defaults("fluid.tests.ownSub", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
     });
     
     jqUnit.test("FLUID-5018: Pass to-be-resolved option to a target", function () {
@@ -2777,8 +2748,37 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("First component source transmitted: ", 3, head["dynamic-1"].options.source);
     });
     
+    /** FLUID-5029 - Child selector ">" in IoCSS selector should not select an indirect child **/
     
-   /** FLUID-5032 - Forward reference through grade hierarchy **/
+    fluid.defaults("fluid.tests.fluid5029root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            sub: {
+                type: "fluid.littleComponent",
+                options: {
+                    components: {
+                        subOfSub: {
+                            type: "fluid.littleComponent"
+                        }
+                    }
+                }
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.userOption",
+            target: "{that > subOfSub}.options.userOption"
+        },
+        userOption: 10
+    });
+    
+    jqUnit.test("FLUID-5029 - > separator in IoCSS target field should not identify a non-direct child", function () {
+        var root = fluid.tests.fluid5029root();
+        
+        jqUnit.assertUndefined("The user option is not be passed down to the target", root.sub.subOfSub.options.userOption);
+    });
+    
+    
+    /** FLUID-5032 - Forward reference through grade hierarchy **/
     
     fluid.defaults("fluid.tests.fluid5032Root", {
         gradeNames: ["fluid.eventedComponent", "fluid.tests.fluid5032Grade", "autoInit"],
