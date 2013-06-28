@@ -293,7 +293,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 theme: "default",             // key from classname map
                 textSize: 1,                  // in points
                 lineSpacing: 1,               // in ems
-                layout: false,                // boolean
                 toc: false,                   // boolean
                 links: false,                 // boolean
                 inputsLarger: false           // boolean
