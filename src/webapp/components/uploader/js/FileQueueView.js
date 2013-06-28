@@ -247,9 +247,9 @@ var fluid_1_5 = fluid_1_5 || {};
         removeRowBtn.attr("title", that.options.strings.status.success); 
     };
     
-    fluid.uploader.fileQueueView.renderErrorInfoRowFromTemplate = function (that, fileRow, error) {
+    fluid.uploader.fileQueueView.renderErrorInfoFromTemplate = function (that, fileRow, error) {
         // Render the row by cloning the template and binding its id to the file.
-        var errorRow = that.errorInfoRowTemplate.clone();
+        var errorRow = that.errorInfoTemplate.clone();
         errorRow.prop("id", fileRow.prop("id") + "_error");
         
         // Look up the error message and render it.
@@ -265,7 +265,7 @@ var fluid_1_5 = fluid_1_5 || {};
         if (file.filestatus === fluid.uploader.fileStatusConstants.ERROR) {
             var fileRowElm = fluid.uploader.fileQueueView.rowForFile(that, file);
             fluid.uploader.fileQueueView.changeRowState(that, fileRowElm, that.options.styles.error);
-            fluid.uploader.fileQueueView.renderErrorInfoRowFromTemplate(that, fileRowElm, error);
+            fluid.uploader.fileQueueView.renderErrorInfoFromTemplate(that, fileRowElm, error);
         }
     };
     
@@ -284,8 +284,8 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uploader.fileQueueView.prepareTemplateElements = function (that) {
         // Grab our template elements out of the DOM.  
-        that.errorInfoRowTemplate = that.locate("errorInfoRowTemplate").remove();
-        that.errorInfoRowTemplate.removeClass(that.options.styles.hiddenTemplate);
+        that.errorInfoTemplate = that.locate("errorInfoTemplate").remove();
+        that.errorInfoTemplate.removeClass(that.options.styles.hiddenTemplate);
         that.rowTemplate = that.locate("rowTemplate").remove();
         that.rowProgressorTemplate = that.locate("rowProgressorTemplate", that.options.uploaderContainer).remove();
     };
@@ -372,7 +372,7 @@ var fluid_1_5 = fluid_1_5 || {};
             errorText: ".flc-uploader-file-error",
             
             rowTemplate: ".flc-uploader-file-tmplt",
-            errorInfoRowTemplate: ".flc-uploader-file-error-tmplt",
+            errorInfoTemplate: ".flc-uploader-file-error-tmplt",
             rowProgressorTemplate: ".flc-uploader-file-progressor-tmplt"
         },
         
