@@ -2906,5 +2906,43 @@ fluid.registerNamespace("fluid.tests");
         
         jqUnit.assertEquals("The user option fetched from the static environment is passed down the target", targetOption, root.subComponent.options.options.targetOption);
     });
-
-})(jQuery); 
+    
+    fluid.defaults("fluid.tests.baseGradeComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        initialModel: {}
+    });
+    
+    fluid.defaults("fluid.tests.derivedGradeComponent", {
+        gradeNames: ["fluid.tests.baseGradeComponent", "autoInit"],
+        initialModel: {
+            test: true
+        }
+    });
+    
+    fluid.defaults("fluid.tests.implementationSubcomponent", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        model: {}
+    });
+    
+    fluid.defaults("fluid.tests.implementationComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            subcomponent: {
+                type: "fluid.tests.implementationSubcomponent",
+                options: {
+                    model: {
+                        value: "{fluid.tests.baseGradeComponent}.options.initialModel.test"
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("Contributed grade resolution", function () {
+        var component = fluid.tests.implementationComponent({
+            gradeNames: ["fluid.tests.derivedGradeComponent"]
+        });
+        jqUnit.assertTrue("Model fields should be resolved", component.subcomponent.model.value);
+    });
+    
+})(jQuery);
