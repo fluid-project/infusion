@@ -418,8 +418,6 @@ var fluid_1_5 = fluid_1_5 || {};
             resolved = resolved.concat(typeof(func) === "function" ? func() : func);
         });
         if (resolved.length !== 0) {
-            gradeNames.push.apply(gradeNames, resolved);
-            fluid.unique(gradeNames.sort());
             var newDefaults = fluid.copy(fluid.getGradedDefaults(that.typeName, resolved));
             gradeNames.length = 0; // acquire derivatives of dynamic grades (FLUID-5054)
             gradeNames.push.apply(gradeNames, newDefaults.gradeNames);
