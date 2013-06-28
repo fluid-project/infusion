@@ -658,6 +658,17 @@ fluid_1_5 = fluid_1_5 || {};
             return component.childmap[relativeID];
         }
         
+        // TODO: This mechanism inefficiently handles the rare case of a target document
+        // id collision requiring a rewrite for FLUID-5048. In case it needs improving, we
+        // could hold an inverted index - however, these cases will become even rarer with FLUID-5047
+        function rewriteRewriteMap (from, to) {
+            fluid.each(rewritemap, function (value, key) {
+                if (value === from) {
+                    rewritemap[key] = to;
+                }  
+            });
+        }
+        
         function adjustForID(attrcopy, component, late, forceID) {
             if (!late) {
                 delete attrcopy["rsf:id"];
@@ -678,6 +689,9 @@ fluid_1_5 = fluid_1_5 || {};
             var baseid = attrcopy.id;
             while (renderOptions.document.getElementById(attrcopy.id) || usedIDs[attrcopy.id]) {
                 attrcopy.id = baseid + "-" + (count++); 
+            }
+            if (count !== 1) {
+                rewriteRewriteMap(baseid, attrcopy.id);
             }
             component.finalID = attrcopy.id;
             return attrcopy.id;
@@ -1114,7 +1128,6 @@ fluid_1_5 = fluid_1_5 || {};
           
                 adjustForID(attrcopy, torendero);
                 //decoratormanager.decorate(torendero.decorators, uselump.getTag(), attrcopy);
-          
                 
                 // ALWAYS dump the tag name, this can never be rewritten. (probably?!)
                 openTag();
