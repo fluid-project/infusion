@@ -37,6 +37,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "emphasizeLinks": "value"
+                    },
+                    model: {
+                        links: false
                     }
                 }
             }
@@ -51,11 +54,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: ".flt-customizedActions",
                 options: {
                     gradeNames: ["fluid.uiEnhancer.customizedActions"],
-                    components: {
-                        settingsStore: {
-                            type: "fluid.tempStore"
-                        }
-                    },
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
                 }
             },
@@ -106,16 +104,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.settings", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
+            uiOptions: {
+                type: "fluid.uiOptions.rootModel.starter"
+            },
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
                 container: "body",
                 options: {
-                    gradeNames: ["fluid.uiEnhancer.defaultActions"],
-                    components: {
-                        settingsStore: {
-                            type: "fluid.tempStore"
-                        }
-                    },
+                    gradeNames: ["fluid.uiEnhancer.starterActions"],
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
                 }
             },
@@ -185,16 +181,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.optionsMunging", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
+            uiOptions: {
+                type: "fluid.uiOptions.rootModel.starter",
+                options: {
+                    members: {
+                        rootModel: {
+                            theme: "yb"
+                        }
+                    }
+                }
+            },
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
                 container: "body",
                 options: {
-                    gradeNames: ["fluid.uiEnhancer.defaultActions"],
-                    components: {
-                        settingsStore: {
-                            type: "fluid.tempStore"
-                        }
-                    },
+                    gradeNames: ["fluid.uiEnhancer.starterActions"],
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
                     classnameMap: {
                         "textFont": {
@@ -203,9 +204,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "theme": {
                             "yb": "fl-test"
                         }
-                    },
-                    defaultSiteSettings: {
-                        theme: "yb"
                     }
                 }
             },

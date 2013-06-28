@@ -30,13 +30,20 @@ var demo = demo || {};
      * itself.
      */
     var pathToTocTemplate = "../../../components/tableOfContents/html/TableOfContents.html";
+
+    /**
+     * Initialize UIOptions global settings store.
+     */
+    demo.initSettingsStore = function () {
+        fluid.globalSettingsStore();
+    };
 	
     /**
      * Initialize UI Enhancer for the page.
      */
     demo.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
-            gradeNames: ["fluid.uiEnhancer.defaultActions"],
+            gradeNames: ["fluid.uiEnhancer.starterActions"],
             tocTemplate: pathToTocTemplate,
             classnameMap: {
                 theme: {
@@ -57,13 +64,13 @@ var demo = demo || {};
         prefix: pathToTemplates,
         templateLoader: {
             options: {
-                gradeNames: ["fluid.uiOptions.defaultTemplateLoader"]
+                gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
             }
         },
         // Tell UIOptions where to redirect to if the user cancels the operation
         uiOptions: {
             options: {
-                gradeNames: ["fluid.uiOptions.defaultSettingsPanels"],
+                gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
                 listeners: {
                     onCancel: function () {
                         alert("Cancelled - would normally cancel any unsaved changes and return to the previous page.");

@@ -15,12 +15,10 @@
         <link rel="stylesheet" type="text/css" href="../css/sakai.css" />
         <link rel="stylesheet" type="text/css" href="../css/sakai.layout.css" />
         <link rel="stylesheet" type="text/css" href="../css/sakai.theme.mist.css" />
-        <link rel="stylesheet" type="text/css" href="../css/sakai.components.ui-options.css" />
         
         <!-- UI Options Stylesheets -->
         <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/UIOptions.css" />
         <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/FatPanelUIOptions.css" />
-        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/Slider.css" />
         <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/fss/fss-theme-yb-uio.css" />
         <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/fss/fss-theme-by-uio.css" />
         <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/fss/fss-theme-bw-uio.css" />
@@ -55,6 +53,7 @@
 
         <script type="text/javascript" src="../../../components/tabs/js/Tabs.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/URLUtilities.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/i18n.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/Store.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/TextfieldSlider.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
@@ -260,9 +259,10 @@
         
         <!-- Script block to instantiate UI Options when the necessary markup has loaded. -->
         <script type="text/javascript">
+            fluid.globalSettingsStore();
             // First, instantiate Page Enhancer
             fluid.pageEnhancer({
-                gradeNames: ["fluid.uiEnhancer.defaultActions"],
+                gradeNames: ["fluid.uiEnhancer.starterActions"],
                 tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
             });
 
@@ -272,12 +272,12 @@
                 prefix: "../../../components/uiOptions/html/",
                 templateLoader: {
                     options: {
-                        gradeNames: ["fluid.uiOptions.defaultTemplateLoader"]
+                        gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
                     }
                 },
                 uiOptions: {
                     options: {
-                        gradeNames: ["fluid.uiOptions.defaultSettingsPanels"]
+                        gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
                     }
                 },
                 markupRenderer: {
