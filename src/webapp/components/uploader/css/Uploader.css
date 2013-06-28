@@ -374,31 +374,19 @@ html>body .fl-uploader span.fl-uploader-browse {
 }
 
 /* Upload Queue errors */
-.fl-uploader-queue .fl-uploader-file-state-error th {
+
+.fl-uploader-queue .fl-uploader-file-state-error {
     border-left: 4px solid #F5E392;
     background-color: #FCFBE6;
     border-bottom-width: 0;
 }
 
-.fl-uploader-queue .fl-uploader-file-state-error td {
-    background-color: #FCFBE6;
-    border-bottom-width: 0;
-}
-
-.fl-uploader-queue .fl-uploader-file-error td {
-    font-family: 'InfusionIcons';
-    -webkit-font-smoothing: antialiased; 
-    
-    background-color: #FCFBE6;
+.fl-uploader-file-error {
+    /*background-color: #FCFBE6;
     border-left: 4px solid #F5E392;
     padding-bottom: 8px;
-    padding-left: 32px;
-}
-
-.fl-uploader-queue .fl-uploader-file-error td:before {
-    content: "\e003";
-    color: #d38c1b;
-    font-size: 1.3em;
+    padding-left: 32px;*/
+   margin-top: 1em;
 }
 
 /* Error feedback messages */

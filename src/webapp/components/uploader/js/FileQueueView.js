@@ -256,7 +256,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var errorType = fluid.keyForValue(fluid.uploader.errorConstants, error);
         var errorMsg = that.options.strings.errors[errorType];
         that.locate("errorText", errorRow).text(errorMsg);
-        fileRow.after(errorRow);
+        that.locate("fileName", fileRow).after(errorRow);
         that.scroller.scrollTo(errorRow);
     };
     
@@ -284,9 +284,9 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uploader.fileQueueView.prepareTemplateElements = function (that) {
         // Grab our template elements out of the DOM.  
-        that.rowTemplate = that.locate("rowTemplate").remove();
         that.errorInfoRowTemplate = that.locate("errorInfoRowTemplate").remove();
         that.errorInfoRowTemplate.removeClass(that.options.styles.hiddenTemplate);
+        that.rowTemplate = that.locate("rowTemplate").remove();
         that.rowProgressorTemplate = that.locate("rowProgressorTemplate", that.options.uploaderContainer).remove();
     };
 

@@ -60,20 +60,21 @@
             
             <!-- File Queue body, which is the default container for the FileQueueView component -->
             <table summary="The list of files" class="flc-uploader-queue fl-uploader-queue">
-				<caption>File Upload Queue:</caption>
+                <caption>File Upload Queue:</caption>
 				<tbody>
 					<!-- Template for file row -->
 					<tr class="flc-uploader-file-tmplt flc-uploader-file">
-						<td class="flc-uploader-file-name fl-uploader-file-name">File Name Placeholder</td>
+						<td class='flc-uploader-file-info fl-uploader-file-name'>
+                            <span class="flc-uploader-file-name">File Name Placeholder</span>
+                            <div class="flc-uploader-file-error-tmplt fl-uploader-file-error">
+                                <span class="fl-infusionIcon-warning"></span>
+                                <span class='flc-uploader-file-error'></span>
+                            </div>
+                        </td>
 						<td class="flc-uploader-file-size fl-uploader-file-size">0 KB</td>
 						<td class="fl-uploader-file-actions">
 							<button type="button" class="flc-uploader-file-action" tabindex="-1"></button>
 						</td>
-					</tr>
-					
-					<!-- Template for error info row -->
-					<tr class="flc-uploader-file-error-tmplt fl-uploader-file-error">
-						<td colspan="3" class="flc-uploader-file-error"></td>
 					</tr>
 				</tbody>
 			</table>
