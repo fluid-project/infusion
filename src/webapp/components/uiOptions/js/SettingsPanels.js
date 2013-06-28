@@ -404,12 +404,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     gradeNames: "fluid.uiOptions.defaultSettingsPanel",
                     rules: {
-                        "selections.toc": "toc",
-                        "selections.layout": "layout"
+                        "selections.toc": "toc"
                     },
                     model: {
-                        toc: "{fluid.uiOptions.rootModel}.rootModel.toc",
-                        layout: "{fluid.uiOptions.rootModel}.rootModel.layout"
+                        toc: "{fluid.uiOptions.rootModel}.rootModel.toc"
                     },
                     resources: {
                         template: "{templateLoader}.resources.layoutControls"

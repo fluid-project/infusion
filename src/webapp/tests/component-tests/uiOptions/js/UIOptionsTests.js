@@ -215,19 +215,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("lineSpacer forceCache is set", loader.templateLoader.resources.lineSpacer.forceCache);
         });
         
-        var assertrootModel = function (model) {
-            jqUnit.expect(6);
+        var assertRootModel = function (model) {
+            jqUnit.expect(5);
             jqUnit.assertNotNull("Model is not null", model);
             jqUnit.assertNotUndefined("Model is not undefined", model);
             jqUnit.assertFalse("Min text size is not set", !!model.textSize);
             jqUnit.assertEquals("Text font is set", "default", model.selections.textFont);
             jqUnit.assertEquals("Colour scheme is set", "default", model.selections.theme);
-            jqUnit.assertEquals("Layout value is set", false, model.selections.layout);
         };
         
         jqUnit.asyncTest("Init Model - default", function () {
             testUIOptions(function (uiOptionsLoader, uiOptions) {
-                assertrootModel(uiOptions.model);
+                assertRootModel(uiOptions.model);
                 jqUnit.start();
             });
         });
@@ -236,7 +235,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(4);
             
             testUIOptions(function (uiOptionsLoader, uiOptions) {
-                assertrootModel(uiOptions.model);
+                assertRootModel(uiOptions.model);
 
                 var themeValues = uiOptions.contrast.options.controlValues.theme;
                 jqUnit.assertEquals("There are 5 themes in the control", 5, themeValues.length);
