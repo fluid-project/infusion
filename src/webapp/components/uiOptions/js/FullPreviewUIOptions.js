@@ -26,34 +26,37 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.fullPreview", {
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         container: "{fullPreview}.container",
-        uiOptionsTransform: {
-            config: {
-                "!*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer.options": "outerPreviewEnhancerOptions",
-                "*.uiOptionsLoader.*.uiOptions.*.preview":            "preview",
-                "*.uiOptionsLoader.*.uiOptions.*.preview.*.enhancer": "previewEnhancer"
+        outerPreviewEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
+        templateLoader: {
+            options: {
+                templates: {
+                    uiOptions: "%prefix/FullPreviewUIOptions.html"
+                }
             }
         },
-        outerPreviewEnhancerOptions:"{originalEnhancerOptions}.options.originalUserOptions",
-        derivedDefaults: {
-            templateLoader: {
-                options: {
-                    templates: {
-                        uiOptions: "%prefix/FullPreviewUIOptions.html"
-                    }
-                }
-            },
-            uiOptions: {
-                options: {
-                    components: {
-                        preview: {
-                            type: "fluid.uiOptions.preview",
-                            createOnEvent: "onUIOptionsComponentReady",
-                            container: "{uiOptions}.dom.previewFrame"
-                        }
+        uiOptions: {
+            options: {
+                components: {
+                    preview: {
+                        type: "fluid.uiOptions.preview",
+                        createOnEvent: "onUIOptionsComponentReady",
+                        container: "{uiOptions}.dom.previewFrame"
                     }
                 }
             }
-        }
+        },
+        distributeOptions: [{
+            source: "{that}.options.outerPreviewEnhancerOptions",
+            removeSource: true,
+            target: "{that enhancer}.options"
+        }, {
+            source: "{that}.options.preview.options",
+            target: "{that preview}.options"
+        }, {
+            source: "{that}.options.previewEnhancer.options",
+            removeSource: true,
+            target: "{that enhancer}.options"
+        }]
     });
     
 })(jQuery, fluid_1_5);

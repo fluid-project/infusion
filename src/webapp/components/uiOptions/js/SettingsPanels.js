@@ -26,14 +26,14 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.textfieldSlider", {
         gradeNames: ["fluid.textfieldSlider", "autoInit"],
-        path: "value",
+        model: "{fluid.uiOptions.settingsPanel}.model",
         listeners: {
             modelChanged: {
                 listener: "{fluid.uiOptions.settingsPanel}.applier.requestChange",
                 args: ["{that}.options.path", "{arguments}.0"]
             }
         },
-        model: "{fluid.uiOptions.settingsPanel}.model",
+        path: "value",
         sliderOptions: "{fluid.uiOptions.settingsPanel}.options.sliderOptions"
     });
 
@@ -46,25 +46,32 @@ var fluid_1_5 = fluid_1_5 || {};
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
         model: {
-            value: 1,
             min: 1,
             max: 2
         },
-        sliderOptions: {
-            orientation: "horizontal",
-            step: 0.1,
-            range: "min"
-        },
         selectors: {
-            textSize: ".flc-uiOptions-min-text-size"
+            textSize: ".flc-uiOptions-min-text-size",
+            label: ".flc-uiOptions-min-text-size-label",
+            smallIcon: ".flc-uiOptions-min-text-size-smallIcon",
+            largeIcon: ".flc-uiOptions-min-text-size-largeIcon",
+            multiplier: ".flc-uiOptions-multiplier"
         },
         protoTree: {
+            label: {messagekey: "textSizeLabel"},
+            smallIcon: {messagekey: "textSizeSmallIcon"},
+            largeIcon: {messagekey: "textSizeLargeIcon"},
+            multiplier: {messagekey: "multiplier"},
             textSize: {
                 decorators: {
                     type: "fluid",
                     func: "fluid.uiOptions.textfieldSlider"
                 }
             }
+        },
+        sliderOptions: {
+            orientation: "horizontal",
+            step: 0.1,
+            range: "min"
         }
     });
     
@@ -77,28 +84,24 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.textFont", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
-        // The default model value represents both the expected format as well as the setting to be applied in the absence of a value passed down to the component.
-        // i.e. from the settings store, or specific defaults derived from schema.
-        // Note: This default value is not contributed and shared out
-        model: {
-            value: "default"
+        selectors: {
+            textFont: ".flc-uiOptions-text-font",
+            label: ".flc-uiOptions-text-font-label"
         },
-        classnameMap: null, // must be supplied by implementors
         strings: {
-            textFont: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"]
+            textFont: "{uioMsgBundle}.options.messageBase.textFont"
         },
+        produceTree: "fluid.uiOptions.textFont.produceTree",
+        classnameMap: null, // must be supplied by implementors
         controlValues: { 
             textFont: ["default", "times", "comic", "arial", "verdana"]
-        },
-        selectors: {
-            textFont: ".flc-uiOptions-text-font"
-        },
-        produceTree: "fluid.uiOptions.textFont.produceTree"
+        }
     });
     
     fluid.uiOptions.textFont.produceTree = function (that) {
         // render drop down list box
         return {
+            label: {messagekey: "textFontLabel"},
             textFont: {
                 optionnames: that.options.strings.textFont,
                 optionlist: that.options.controlValues.textFont,
@@ -127,25 +130,32 @@ var fluid_1_5 = fluid_1_5 || {};
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
         model: {
-            value: 1,
             min: 1,
             max: 2
         },
-        sliderOptions: {
-            orientation: "horizontal",
-            step: 0.1,
-            range: "min"
-        },
         selectors: {
-            lineSpacing: ".flc-uiOptions-line-spacing"
+            lineSpacing: ".flc-uiOptions-line-spacing",
+            label: ".flc-uiOptions-line-spacing-label",
+            narrowIcon: ".flc-uiOptions-line-spacing-narrowIcon",
+            wideIcon: ".flc-uiOptions-line-spacing-wideIcon",
+            multiplier: ".flc-uiOptions-multiplier"
         },
         protoTree: {
+            label: {messagekey: "lineSpacingLabel"},
+            narrowIcon: {messagekey: "lineSpacingNarrowIcon"},
+            wideIcon: {messagekey: "lineSpacingWideIcon"},
+            multiplier: {messagekey: "multiplier"},
             lineSpacing: {
                 decorators: {
                     type: "fluid",
                     func: "fluid.uiOptions.textfieldSlider"
                 }
             }
+        },
+        sliderOptions: {
+            orientation: "horizontal",
+            step: 0.1,
+            range: "min"
         }
     });
     
@@ -158,22 +168,22 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.contrast", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
-        // The default model value represents both the expected format as well as the setting to be applied in the absence of a value passed down to the component.
-        // i.e. from the settings store, or specific defaults derived from schema.
-        // Note: This default value is not contributed and shared out
-        model: {
-            value: "default"
-        },
-        strings: {
-            theme: ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"]
-        },
-        controlValues: { 
-            theme: ["default", "bw", "wb", "by", "yb"]
+        listeners: {
+            afterRender: "{that}.style"
         },
         selectors: {
             themeRow: ".flc-uiOptions-themeRow",
-            themeLabel: ".flc-uiOptions-themeLabel",
-            themeInput: ".flc-uiOptions-themeInput"
+            themeLabel: ".flc-uiOptions-theme-label",
+            themeInput: ".flc-uiOptions-themeInput",
+            label: ".flc-uiOptions-contrast-label"
+        },
+        strings: {
+            theme: "{uioMsgBundle}.options.messageBase.theme"
+        },
+        repeatingSelectors: ["themeRow"],
+        produceTree: "fluid.uiOptions.contrast.produceTree",
+        controlValues: { 
+            theme: ["default", "bw", "wb", "by", "yb"]
         },
         markup: {
             label: "<span class=\"fl-preview-A\">A</span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\"></div>"
@@ -185,12 +195,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "{that}.options.markup.label", "{that}.options.controlValues.theme",
                     "{that}.options.classnameMap.theme"]
             }
-        },
-        listeners: {
-            afterRender: "{that}.style"
-        },
-        repeatingSelectors: ["themeRow"],
-        produceTree: "fluid.uiOptions.contrast.produceTree"
+        }
     });
 
     fluid.uiOptions.contrast.style = function (labels, strings, markup, theme, style) {
@@ -205,6 +210,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.contrast.produceTree = function (that) {
         return {
+            label: {messagekey: "contrastLabel"},
             expander: {
                 type: "fluid.renderer.selection.inputs",
                 rowID: "themeRow",
@@ -229,16 +235,14 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.layoutControls", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
-        // The default model value represents both the expected format as well as the setting to be applied in the absence of a value passed down to the component.
-        // i.e. from the settings store, or specific defaults derived from schema.
-        // Note: This default value is not contributed and shared out
-        model: {
-            toc: false
-        },
         selectors: {
-            toc: ".flc-uiOptions-toc"
+            toc: ".flc-uiOptions-toc",
+            label: ".flc-uiOptions-toc-label",
+            choiceLabel: ".flc-uiOptions-toc-choice-label"
         },
         protoTree: {
+            label: {messagekey: "tocLabel"},
+            choiceLabel: {messagekey: "tocChoiceLabel"},
             toc: "${toc}"
         }
     });
@@ -251,18 +255,17 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.linksControls", {
         gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
-        // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
-        // i.e. from the settings store, or specific defaults derived from schema.
-        // Note: These default values are not contributed and shared out
-        model: {
-            links: false,
-            inputsLarger: false
-        },
         selectors: {
             links: ".flc-uiOptions-links",
-            inputsLarger: ".flc-uiOptions-inputs-larger"
+            inputsLarger: ".flc-uiOptions-inputs-larger",
+            label: ".flc-uiOptions-links-label",
+            linksChoiceLabel: ".flc-uiOptions-links-choice-label",
+            inputsChoiceLabel: ".flc-uiOptions-links-inputs-choice-label"
         },
         protoTree: {
+            label: {messagekey: "linksLabel"},
+            linksChoiceLabel: {messagekey: "linksChoiceLabel"},
+            inputsChoiceLabel: {messagekey: "inputsChoiceLabel"},
             links: "${links}",
             inputsLarger: "${inputsLarger}"
         }
@@ -277,11 +280,11 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.selectDecorator", {
         gradeNames: ["fluid.viewComponent", "autoInit"], 
-        styles: {
-            preview: "fl-preview-theme"
-        },
         listeners: {
             onCreate: "fluid.uiOptions.selectDecorator.decorateOptions"
+        },
+        styles: {
+            preview: "fl-preview-theme"
         }
     });
     
@@ -308,11 +311,11 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     /*********************************************************************************************************
-     * defaultSettingsPanels
+     * Starter Settings Panels
      * 
      * A collection of all the default UIO setting panels.
      *********************************************************************************************************/
-    fluid.defaults("fluid.uiOptions.defaultSettingsPanels", {
+    fluid.defaults("fluid.uiOptions.starterSettingsPanels", {
         gradeNames: ["fluid.uiOptions", "autoInit"],
         selectors: {
             textSizer: ".flc-uiOptions-text-sizer",
@@ -333,6 +336,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     rules: {
                         "selections.textSize": "value"
                     },
+                    model: {
+                        value: "{fluid.uiOptions.rootModel}.rootModel.textSize"
+                    },
                     resources: {
                         template: "{templateLoader}.resources.textSizer"
                     }
@@ -346,6 +352,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     gradeNames: "fluid.uiOptions.defaultSettingsPanel",
                     rules: {
                         "selections.lineSpacing": "value"
+                    },
+                    model: {
+                        value: "{fluid.uiOptions.rootModel}.rootModel.lineSpacing"
                     },
                     resources: {
                         template: "{templateLoader}.resources.lineSpacer"
@@ -362,6 +371,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     rules: {
                         "selections.textFont": "value"
                     },
+                    model: {
+                        value: "{fluid.uiOptions.rootModel}.rootModel.textFont"
+                    },
                     resources: {
                         template: "{templateLoader}.resources.textFont"
                     }
@@ -377,6 +389,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     rules: {
                         "selections.theme": "value"
                     },
+                    model: {
+                        value: "{fluid.uiOptions.rootModel}.rootModel.theme"
+                    },
                     resources: {
                         template: "{templateLoader}.resources.contrast"
                     }
@@ -389,8 +404,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     gradeNames: "fluid.uiOptions.defaultSettingsPanel",
                     rules: {
-                        "selections.toc": "toc",
-                        "selections.layout": "layout"
+                        "selections.toc": "toc"
+                    },
+                    model: {
+                        toc: "{fluid.uiOptions.rootModel}.rootModel.toc"
                     },
                     resources: {
                         template: "{templateLoader}.resources.layoutControls"
@@ -407,6 +424,10 @@ var fluid_1_5 = fluid_1_5 || {};
                         "selections.links": "links",
                         "selections.inputsLarger": "inputsLarger"
                     },
+                    model: {
+                        links: "{fluid.uiOptions.rootModel}.rootModel.links",
+                        inputsLarger: "{fluid.uiOptions.rootModel}.rootModel.inputsLarger"
+                    },
                     resources: {
                         template: "{templateLoader}.resources.linksControls"
                     }
@@ -416,16 +437,16 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     /******************************
-     * Default Template Loader
+     * Starter Template Loader
      ******************************/
 
     /**
-     * A template loader component that specifies the templates used by defaultSettingsPanels
+     * A template loader component that specifies the templates used by starterSettingsPanels
      * 
      * @param {Object} options
      */    
        
-    fluid.defaults("fluid.uiOptions.defaultTemplateLoader", {
+    fluid.defaults("fluid.uiOptions.starterTemplateLoader", {
         gradeNames: ["fluid.uiOptions.templateLoader", "autoInit"],
         templates: {
             textSizer: "%prefix/UIOptionsTemplate-textSizer.html",

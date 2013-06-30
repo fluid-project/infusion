@@ -27,8 +27,8 @@
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.mouse.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>        
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.tabs.js"></script>        
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.tabs.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/plugins/ariaTabs/js/ui.ariaTabs.js"></script>
         <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
 
@@ -47,6 +47,7 @@
 
         <script type="text/javascript" src="../../../components/tabs/js/Tabs.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/URLUtilities.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/i18n.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/Store.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/TextfieldSlider.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
@@ -66,11 +67,12 @@
 
 		<div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel">
 			<div id="myUIOptions" class="flc-slidingPanel-panel flc-uiOptions-iframe"></div>
-			
+
 			<div class="fl-panelBar">
+                <button id="reset" class="flc-uiOptions-reset fl-uiOptions-reset"><span class="fl-icon-undo"></span>Reset</button>
 				<button class="flc-slidingPanel-toggleButton fl-toggleButton">Show/Hide</button>
 			</div>
-		</div>	
+		</div>
 
         <div class="flc-toc-tocContainer toc">
         </div>
@@ -203,7 +205,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                            
+
                                 <div class="fl-widget fl-centered">
                                     <div class="fl-widget-titlebar">
                                         <a class="fl-force-right fl-icon fl-icon-close" href="#">Close</a>
@@ -237,7 +239,7 @@
                                         <p></p>The quarter itself had no distinguising marks that might help identify the owner. "I suppose I'll put up some posters, see if I can find out who lost it," Bains is quoted as saying.</p>
                                     </div>
                                 </div>
-                            
+
                                 <div class="fl-widget fl-centered skon-weather">
                                     <div class="fl-widget-titlebar">
                                         <a class="fl-force-right fl-icon fl-icon-close" href="#">Close</a>
@@ -266,7 +268,7 @@
         </div>
 
         <script type="text/javascript">
-            skon.slidingUIOptions($("#mySlidingPanel"), $("#myUIOptions"));            
+            skon.slidingUIOptions($("#mySlidingPanel"), $("#myUIOptions"));
         </script>
 
     </body>

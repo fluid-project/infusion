@@ -2841,5 +2841,108 @@ fluid.registerNamespace("fluid.tests");
         var root2 = fluid.tests.fluid5033Root();
         jqUnit.assertEquals("Original graded value", 2, root2.options.gradeValue);        
     });
+    
+        
+    /** FLUID-5036, Case 1 - The IoCSS source that is fetched from the static environment is not resolved correctly **/
+    fluid.defaults("fluid.tests.fluid5036_1Root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            subComponent: {
+                type: "fluid.littleComponent",
+                options: {
+                    targetOption: null
+                }
+            }
+        },
+        source: "{fluid5036_1UserOption}.options.userOption",
+        distributeOptions: {
+            source: "{that}.options.source",
+            removeSource: true,
+            target: "{that > subComponent}.options.targetOption"
+        }
+    });
+    
+    jqUnit.test("FLUID-5036, Case 1 - The IoCSS source that is fetched from the static environment is not resolved correctly", function () {
+        var userOption = 10;
+        
+        fluid.staticEnvironment.fluid5036_1UserOption = fluid.littleComponent({
+            gradeNames: "fluid5036_1UserOption",
+            userOption: userOption
+        });
+        var root = fluid.tests.fluid5036_1Root();
+        
+        jqUnit.assertEquals("The user option fetched from the static environment is passed down the target", userOption, root.subComponent.options.targetOption);
+    });
 
-})(jQuery); 
+    /** FLUID-5036, Case 2 - The IoCSS source that is fetched from the static environment is not resolved correctly **/
+    fluid.defaults("fluid.tests.fluid5036_2Root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        // Note: this is not a recommended implementation technique, causing double nesting of options - this test is purely intendend to verify fix to a
+        // framework issue which caused a faulty diagnostic "Malformed context reference without }" as well as to verify that at least some sensible effect
+        // results from this reference. In general, i) only components are resolvable as context references (including in the static environment) and
+        // ii) components should not be passed through options material as a whole - they should either be injected as subcomponents or else options
+        // material selected from them resolved into other options
+        source: "{fluid5036_2UserOption}",
+        components: {
+            subComponent: {
+                type: "fluid.littleComponent"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.source",
+            removeSource: true,
+            target: "{that > subComponent}.options"
+        }
+    });
+    
+    jqUnit.test("FLUID-5036, Case 2 - The IoCSS source that is fetched from the static environment is not resolved correctly", function () {
+        var targetOption = 10;
+        
+        fluid.staticEnvironment.fluid5036_2UserOption = fluid.littleComponent({
+            gradeNames: "fluid5036_2UserOption",
+            targetOption: targetOption 
+        });
+        var root = fluid.tests.fluid5036_2Root();
+        
+        jqUnit.assertEquals("The user option fetched from the static environment is passed down the target", targetOption, root.subComponent.options.options.targetOption);
+    });
+    
+    fluid.defaults("fluid.tests.baseGradeComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        initialModel: {}
+    });
+    
+    fluid.defaults("fluid.tests.derivedGradeComponent", {
+        gradeNames: ["fluid.tests.baseGradeComponent", "autoInit"],
+        initialModel: {
+            test: true
+        }
+    });
+    
+    fluid.defaults("fluid.tests.implementationSubcomponent", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        model: {}
+    });
+    
+    fluid.defaults("fluid.tests.implementationComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            subcomponent: {
+                type: "fluid.tests.implementationSubcomponent",
+                options: {
+                    model: {
+                        value: "{fluid.tests.baseGradeComponent}.options.initialModel.test"
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("Contributed grade resolution", function () {
+        var component = fluid.tests.implementationComponent({
+            gradeNames: ["fluid.tests.derivedGradeComponent"]
+        });
+        jqUnit.assertTrue("Model fields should be resolved", component.subcomponent.model.value);
+    });
+    
+})(jQuery);

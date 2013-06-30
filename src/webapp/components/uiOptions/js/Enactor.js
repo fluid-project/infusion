@@ -32,9 +32,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.enactor.styleElements", {
         gradeNames: ["fluid.uiOptions.enactor", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
-        model: {
-            value: false
-        },
         invokers: {
             applyStyle: {
                 funcName: "fluid.uiOptions.enactor.styleElements.applyStyle",
@@ -92,9 +89,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.enactor.emphasizeLinks", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor.styleElements", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
-        model: {
-            value: false
-        },
         invokers: {
             getElements: {
                 funcName: "fluid.uiOptions.enactor.emphasizeLinks.getLinks",
@@ -117,9 +111,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.enactor.inputsLarger", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor.styleElements", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
-        model: {
-            value: false
-        },
         invokers: {
             getElements: {
                 funcName: "fluid.uiOptions.enactor.inputsLarger.getInputs",
@@ -144,9 +135,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.enactor.classSwapper", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor", "autoInit"],
         classes: {},  // Must be supplied by implementors
-        model: {
-            value: ""
-        },
         invokers: {
             clearClasses: {
                 funcName: "fluid.uiOptions.enactor.classSwapper.clearClasses",
@@ -229,9 +217,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.enactor.textSizer", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor", "autoInit"],
         fontSizeMap: {},  // must be supplied by implementors
-        model: {
-            value: 1
-        },
         invokers: {
             set: {
                 funcName: "fluid.uiOptions.enactor.textSizer.set",
@@ -310,9 +295,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.enactor.lineSpacer", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor", "autoInit"],
         fontSizeMap: {},  // must be supplied by implementors
-        model: {
-            value: 1
-        },
         invokers: {
             set: {
                 funcName: "fluid.uiOptions.enactor.lineSpacer.set",
@@ -409,9 +391,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.enactor.tableOfContentsEnactor", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor", "autoInit"],
         tocTemplate: null,  // must be supplied by implementors
-        model: {
-            value: false
-        },
         components: {
             tableOfContents: {
                 type: "fluid.tableOfContents",
@@ -481,91 +460,4 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
-    /*******************************************************************************
-     * Browser type and version detection.                                         *
-     *                                                                             *
-     * Add type tags of IE and browser version into static environment for the     * 
-     * spcial handling on IE6.                                                     *
-     *******************************************************************************/
-    
-    fluid.registerNamespace("fluid.browser.version");
-
-    fluid.browser.msie = function () {
-        var isIE = ($.browser.msie);
-        return isIE ? fluid.typeTag("fluid.browser.msie") : undefined;
-    };
-
-    fluid.browser.majorVersion = function () {
-    // From http://www.useragentstring.com/pages/Internet%20Explorer/ several variants are possible
-    // for IE6 - and in general we probably just want to detect major versions
-        var version = $.browser.version;
-        var dotpos = version.indexOf(".");
-        var majorVersion = version.substring(0, dotpos);
-        return fluid.typeTag("fluid.browser.majorVersion." + majorVersion);
-    };
-
-    var features = {
-        browserIE: fluid.browser.msie(),
-        browserMajorVersion: fluid.browser.majorVersion()
-    };
-    
-    fluid.merge(null, fluid.staticEnvironment, features);
-    
-    // Temporary solution pending revised IoC system in 1.5
-    
-    fluid.hasFeature = function (tagName) {
-        return fluid.find_if(fluid.staticEnvironment, function (value) {
-            return value && value.typeName === tagName;
-        });
-    };
-
-    /********************************************************************************************
-     * setIE6ColorInversion
-     * 
-     * Remove the instances of fl-inverted-color when the default theme is selected. 
-     * This prevents a bug in IE6 where the default theme will have elements styled 
-     * with the theme color.
-     *
-     * Caused by:
-     * http://thunderguy.com/semicolon/2005/05/16/multiple-class-selectors-in-internet-explorer/
-     ********************************************************************************************/
-
-    // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.uiOptions.enactor.IE6ColorInversion", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactor", "autoInit"],
-        selectors: {
-            colorInversion: ".fl-inverted-color"
-        },
-        styles: {
-            colorInversionClass: "fl-inverted-color"
-        },
-        model: {
-            value: null
-        },
-        invokers: {
-            setIE6ColorInversion: {
-                funcName: "fluid.uiOptions.enactor.IE6ColorInversion.setIE6ColorInversion",
-                args: ["{arguments}.0", "{that}"]
-            }
-        },
-        listeners: {
-            onCreate: {
-                listener: "{that}.setIE6ColorInversion",
-                args: ["{that}.model.value"]
-            }
-        }
-    });
-    
-    fluid.uiOptions.enactor.IE6ColorInversion.setIE6ColorInversion = function (value, that) {
-        if (fluid.hasFeature("fluid.browser.msie") && fluid.hasFeature("fluid.browser.majorVersion.6") && value === "default") {
-            that.locate("colorInversion").removeClass(that.options.styles.colorInversionClass);
-        }
-    };
-    
-    fluid.uiOptions.enactor.IE6ColorInversion.finalInit = function (that) {
-        that.applier.modelChanged.addListener("value", function (newModel) {
-            that.setIE6ColorInversion(newModel.value);
-        });
-    };
-
 })(jQuery, fluid_1_5);
