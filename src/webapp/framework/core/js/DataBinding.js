@@ -629,6 +629,18 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         };
         fluid.bindRequestChange(bareApplier);
+        
+        // This function is a helper to participate in the process of model initialisation. During a component's construction,
+        // values may arise in the model that it would be helpful if could be broadcast so that listeners could react in the normal
+        // workflow of changeEvents. Right now, a ChangeApplier user must request this event manually which creates an "early time period"
+        // in which the model contents are inconsistent, but in the future we might like to fire this at the point of creation of the
+        // ChangeApplier, especially once FLUID-4258 is implemented and we can head off the risk of "late listeners".
+        that.initModelEvent = function () {
+            var newModel = {};
+            fluid.model.copyModel(newModel, model);
+            fluid.clear(model);
+            that.requestChange("", newModel);
+        };
 
         that.fireChangeRequest = function (changeRequest, defeatGuards) {
             preFireChangeRequest(changeRequest);

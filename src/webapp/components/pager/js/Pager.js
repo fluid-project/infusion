@@ -490,13 +490,6 @@ var fluid_1_5 = fluid_1_5 || {};
         that.applier.requestChange("pageSize", arg);
     };
 
-    fluid.pager.initModel = function (that) {
-        var trans = that.applier.initiate();
-        trans.requestChange("totalRange", that.acquireDefaultRange());
-        trans.requestChange("pageIndex", 0); // TODO: obviously wrong if initial value is supplied!
-        trans.commit();  
-    };
-
     /*******************
      * Pager Component *
      *******************/
@@ -517,9 +510,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 method: "attr",
                 args: ["role", "application"]  
             }, {
-                funcName: "fluid.pager.initModel",
-                namespace: "initModel",
-                args: "{that}"
+                func: "{that}.applier.initModelEvent",
+                namespace: "initModel"
                 }
             ],
             initiatePageChange: {
@@ -569,9 +561,13 @@ var fluid_1_5 = fluid_1_5 || {};
         },
 
         model: {
-            pageIndex: undefined,
+            pageIndex: 0,
             pageSize: 1,
-            totalRange: undefined
+            totalRange: {
+                expander: {
+                    func: "{that}.acquireDefaultRange"
+                }
+            }
         },
         changeApplierOptions: {
             cullUnchanged: true
