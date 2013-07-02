@@ -60,20 +60,21 @@
             
             <!-- File Queue body, which is the default container for the FileQueueView component -->
             <table summary="The list of files" class="flc-uploader-queue fl-uploader-queue">
-				<caption>File Upload Queue:</caption>
+                <caption>File Upload Queue:</caption>
 				<tbody>
 					<!-- Template for file row -->
 					<tr class="flc-uploader-file-tmplt flc-uploader-file">
-						<td class="flc-uploader-file-name fl-uploader-file-name">File Name Placeholder</td>
+						<td class='flc-uploader-file-info fl-uploader-file-name'>
+                            <span class="flc-uploader-file-name">File Name Placeholder</span>
+                            <div class="flc-uploader-file-error-tmplt fl-uploader-file-error">
+                                <span class="fl-infusionIcon-warning"></span>
+                                <span class='flc-uploader-file-error'></span>
+                            </div>
+                        </td>
 						<td class="flc-uploader-file-size fl-uploader-file-size">0 KB</td>
 						<td class="fl-uploader-file-actions">
 							<button type="button" class="flc-uploader-file-action" tabindex="-1"></button>
 						</td>
-					</tr>
-					
-					<!-- Template for error info row -->
-					<tr class="flc-uploader-file-error-tmplt fl-uploader-file-error">
-						<td colspan="3" class="flc-uploader-file-error"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -85,7 +86,6 @@
             <div class="flc-uploader-browse-instructions fl-uploader-browse-instructions">
                 Choose <em>Browse files</em> to add files to the queue. 
             </div>            
-
             <!-- Status footer -->
             <div class="flc-uploader-queue-footer fl-uploader-queue-footer fl-clearfix">
                 <div class="fl-force-left">
@@ -96,14 +96,16 @@
                 </div>                
                 <div class="fl-text-align-right fl-force-right">
                     <span class="flc-uploader-button-browse fl-uploader-browse">
-                        <span class="flc-uploader-button-browse-text">Browse files</span>
+                        <span class="fl-infusionIcon-plus"></span>
+                        <span class="flc-uploader-button-browse-text fl-uploader-button-browse-text">Browse files</span>
                     </span>
                 </div>
                 <!-- Total progress bar -->
                 <div class="flc-uploader-total-progress fl-uploader-total-progress-okay"></div>
                 <div class="flc-uploader-errorsPanel fl-uploader-errorsPanel">
-                    <div class="fl-uploader-errorsPanel-header"><span class="flc-uploader-errorPanel-header">Warnings:</span></div>
-
+                    <span class="fl-infusionIcon-warning"></span>
+                    <div class="flc-uploader-errorPanel-header fl-uploader-errorsPanel-header">Warnings:</div>
+                    
                     <!-- The markup for each error section will be rendered into these containers. -->
                     <div class="flc-uploader-errorPanel-section-fileSize"></div>
                     <div class="flc-uploader-errorPanel-section-numFiles"></div>
