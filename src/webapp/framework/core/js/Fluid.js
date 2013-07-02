@@ -1333,7 +1333,38 @@ var fluid = fluid || fluid_1_5;
         }
     };
     
-     /**
+    fluid.doIndexDefaults = function (defaultName, defaults, index, indexSpec) {
+        var requiredGrades = fluid.makeArray(indexSpec.gradeNames);
+        for (var i = 0; i < requiredGrades.length; ++ i) {
+            if (!fluid.hasGrade(defaults, requiredGrades[i])) return;
+        }
+        var indexFunc = typeof(indexSpec.indexFunc) === "function" ? indexSpec.indexFunc : fluid.getGlobalValue(indexSpec.indexFunc); 
+        var keys = indexFunc(defaults) || [];
+        for (var j = 0; j < keys.length; ++ j) {
+            (index[keys[j]] = index[keys[j]] || []).push(defaultName);
+        }
+    };
+    
+    /** Evaluates an index specification over all the defaults records registered into the system.
+     * @param indexName {String} The name of this index record (currently ignored)
+     * @param indexSpec {Object} Specification of the index to be performed - fields:
+     *     gradeNames: {String/Array of String} List of grades that must be matched by this indexer
+     *     indexFunc:  {String/Function} An index function which accepts a defaults record and returns a list of keys
+     * @return A structure indexing keys to lists of matched gradenames
+     */
+    // The expectation is that this function is extremely rarely used with respect to registration of defaults
+    // in the system, so currently we do not make any attempts to cache the results. The field "indexName" is
+    // supplied in case a future implementation chooses to implement caching
+    fluid.indexDefaults = function (indexName, indexSpec) {
+        var index = {};
+        for (var defaultName in defaultsStore) {
+            var defaults = fluid.getGradedDefaults(defaultName);
+            fluid.doIndexDefaults(defaultName, defaults, index, indexSpec);    
+        }
+        return index;
+    };
+    
+    /**
      * Retrieves and stores a component's default settings centrally.
      * @param {String} componentName the name of the component
      * @param {Object} (optional) an container of key/value pairs to set
