@@ -512,15 +512,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // of missed notifications
             var model = {
                 selections: {
-                    lineSpacing: 1.0
+                    lineSpace: 1.0
                 }  
             };
             var applier = fluid.makeChangeApplier(model);
             var notified = false;
-            applier.modelChanged.addListener("selections.linespacing", function() {
+            applier.modelChanged.addListener("selections.linespace", function() {
                 notified = true;
             });
-            applier.requestChange("selections", {lineSpacing: 1.5});
+            applier.requestChange("selections", {lineSpace: 1.5});
             jqUnit.assertTrue("Over-broad change triggers listener", notified);
         });
     });

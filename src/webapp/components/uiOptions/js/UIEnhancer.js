@@ -104,7 +104,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
         components: {
             textSize: {
-                type: "fluid.uiOptions.enactors.textSizer",
+                type: "fluid.uiOptions.enactors.textSize",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
@@ -131,17 +131,17 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             },
-            lineSpacing: {
-                type: "fluid.uiOptions.enactors.lineSpacer",
+            lineSpace: {
+                type: "fluid.uiOptions.enactors.lineSpace",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
-                        "lineSpacing": "value"
+                        "lineSpace": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.rootModel}.rootModel.lineSpacing"
+                        value: "{fluid.uiOptions.rootModel}.rootModel.lineSpace"
                     }
                 }
             },

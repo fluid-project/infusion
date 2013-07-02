@@ -188,7 +188,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     /*******************************************************************************
-     * Functions shared by textSizer and lineSpacer
+     * Functions shared by textSize and lineSpace
      *******************************************************************************/
     
     /**
@@ -208,18 +208,18 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     /*******************************************************************************
-     * textSizer
+     * textSize
      *
      * Sets the text size on the container to the multiple provided.
      *******************************************************************************/
     
     // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.uiOptions.enactors.textSizer", {
+    fluid.defaults("fluid.uiOptions.enactors.textSize", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors", "autoInit"],
         fontSizeMap: {},  // must be supplied by implementors
         invokers: {
             set: {
-                funcName: "fluid.uiOptions.enactors.textSizer.set",
+                funcName: "fluid.uiOptions.enactors.textSize.set",
                 args: ["{arguments}.0", "{that}"]
             },
             getTextSizeInPx: {
@@ -227,11 +227,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}.container", "{that}.options.fontSizeMap"]
             },
             getTextSizeInEm: {
-                funcName: "fluid.uiOptions.enactors.textSizer.getTextSizeInEm",
+                funcName: "fluid.uiOptions.enactors.textSize.getTextSizeInEm",
                 args: [{expander: {func: "{that}.getTextSizeInPx"}}, {expander: {func: "{that}.getPx2EmFactor"}}]
             },
             getPx2EmFactor: {
-                funcName: "fluid.uiOptions.enactors.textSizer.getPx2EmFactor",
+                funcName: "fluid.uiOptions.enactors.textSize.getPx2EmFactor",
                 args: ["{that}.container", "{that}.options.fontSizeMap"]
             }
         },
@@ -243,7 +243,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    fluid.uiOptions.enactors.textSizer.set = function (times, that) {
+    fluid.uiOptions.enactors.textSize.set = function (times, that) {
         // Calculating the initial size here rather than using a members expand because the "font-size"
         // cannot be detected on hidden containers such as fat paenl iframe.
         if (!that.initialSize) {
@@ -261,7 +261,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param (Object) container
      * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
      */
-    fluid.uiOptions.enactors.textSizer.getTextSizeInEm = function (textSizeInPx, px2emFactor) {
+    fluid.uiOptions.enactors.textSize.getTextSizeInEm = function (textSizeInPx, px2emFactor) {
         // retrieve fontSize in px, convert and return in em 
         return Math.round(textSizeInPx / px2emFactor * 10000) / 10000;
     };
@@ -269,7 +269,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * Return the base font size used for converting text size from px to em
      */
-    fluid.uiOptions.enactors.textSizer.getPx2EmFactor = function (container, fontSizeMap) {
+    fluid.uiOptions.enactors.textSize.getPx2EmFactor = function (container, fontSizeMap) {
         // The base font size for converting text size to em is the computed font size of the container's 
         // parent element unless the container itself has been the DOM root element "HTML"
         // The reference to this algorithm: http://clagnut.com/blog/348/
@@ -279,25 +279,25 @@ var fluid_1_5 = fluid_1_5 || {};
         return fluid.uiOptions.enactors.getTextSizeInPx(container, fontSizeMap);
     };
 
-    fluid.uiOptions.enactors.textSizer.finalInit = function (that) {
+    fluid.uiOptions.enactors.textSize.finalInit = function (that) {
         that.applier.modelChanged.addListener("value", function (newModel) {
             that.set(newModel.value);
         });
     };
     
     /*******************************************************************************
-     * lineSpacer
+     * lineSpace
      *
      * Sets the line spacing on the container to the multiple provided.
      *******************************************************************************/
     
     // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.uiOptions.enactors.lineSpacer", {
+    fluid.defaults("fluid.uiOptions.enactors.lineSpace", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors", "autoInit"],
         fontSizeMap: {},  // must be supplied by implementors
         invokers: {
             set: {
-                funcName: "fluid.uiOptions.enactors.lineSpacer.set",
+                funcName: "fluid.uiOptions.enactors.lineSpace.set",
                 args: ["{arguments}.0", "{that}"]
             },
             getTextSizeInPx: {
@@ -305,11 +305,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}.container", "{that}.options.fontSizeMap"]
             },
             getLineHeight: {
-                funcName: "fluid.uiOptions.enactors.lineSpacer.getLineHeight",
+                funcName: "fluid.uiOptions.enactors.lineSpace.getLineHeight",
                 args: "{that}.container"
             },
             numerizeLineHeight: {
-                funcName: "fluid.uiOptions.enactors.lineSpacer.numerizeLineHeight",
+                funcName: "fluid.uiOptions.enactors.lineSpace.numerizeLineHeight",
                 args: [{expander: {func: "{that}.getLineHeight"}}, {expander: {func: "{that}.getTextSizeInPx"}}]
             }
         },
@@ -322,7 +322,7 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     // Return "line-height" css value
-    fluid.uiOptions.enactors.lineSpacer.getLineHeight = function (container) {
+    fluid.uiOptions.enactors.lineSpace.getLineHeight = function (container) {
         var lineHeight;
         
         // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
@@ -338,7 +338,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // Interprets browser returned "line-height" value, either a string "normal", a number with "px" suffix or "undefined" 
     // into a numeric value in em. 
     // Return 0 when the given "lineHeight" argument is "undefined" (http://issues.fluidproject.org/browse/FLUID-4500).
-    fluid.uiOptions.enactors.lineSpacer.numerizeLineHeight = function (lineHeight, fontSize) {
+    fluid.uiOptions.enactors.lineSpace.numerizeLineHeight = function (lineHeight, fontSize) {
         // Handel the given "lineHeight" argument is "undefined", which occurs when firefox detects 
         // "line-height" css value on a hidden container. (http://issues.fluidproject.org/browse/FLUID-4500)
         if (!lineHeight) {
@@ -359,7 +359,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return Math.round(parseFloat(lineHeight) / fontSize * 100) / 100;
     };
 
-    fluid.uiOptions.enactors.lineSpacer.set = function (times, that) {
+    fluid.uiOptions.enactors.lineSpace.set = function (times, that) {
         // Calculating the initial size here rather than using a members expand because the "line-height"
         // cannot be detected on hidden containers such as fat paenl iframe.
         if (!that.initialSize) {
@@ -370,12 +370,12 @@ var fluid_1_5 = fluid_1_5 || {};
         // which occurs when firefox detects "line-height" value on a hidden container.
         // @ See numerizeLineHeight() & http://issues.fluidproject.org/browse/FLUID-4500
         if (that.initialSize) {
-            var targetLineSpacing = times * that.initialSize;
-            that.container.css("line-height", targetLineSpacing);
+            var targetLineSpace = times * that.initialSize;
+            that.container.css("line-height", targetLineSpace);
         }
     };
     
-    fluid.uiOptions.enactors.lineSpacer.finalInit = function (that) {
+    fluid.uiOptions.enactors.lineSpace.finalInit = function (that) {
         that.applier.modelChanged.addListener("value", function (newModel) {
             that.set(newModel.value);
         });

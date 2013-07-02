@@ -40,7 +40,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A sub-component of fluid.uiOptions that renders the "text size" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.textSizer", {
+    fluid.defaults("fluid.uiOptions.panels.textSize", {
         gradeNames: ["fluid.uiOptions.panels", "autoInit"],
         // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
         // i.e. from the settings store, or specific defaults derived from schema.
@@ -82,7 +82,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A sub-component of fluid.uiOptions that renders the "text font" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.textFont", {
+    fluid.defaults("fluid.uiOptions.panels.textFont", {
         gradeNames: ["fluid.uiOptions.panels", "autoInit"],
         selectors: {
             textFont: ".flc-uiOptions-text-font",
@@ -91,14 +91,14 @@ var fluid_1_5 = fluid_1_5 || {};
         strings: {
             textFont: "{uioMsgBundle}.options.messageBase.textFont"
         },
-        produceTree: "fluid.uiOptions.textFont.produceTree",
+        produceTree: "fluid.uiOptions.panels.textFont.produceTree",
         classnameMap: null, // must be supplied by implementors
         controlValues: { 
             textFont: ["default", "times", "comic", "arial", "verdana"]
         }
     });
     
-    fluid.uiOptions.textFont.produceTree = function (that) {
+    fluid.uiOptions.panels.textFont.produceTree = function (that) {
         // render drop down list box
         return {
             label: {messagekey: "textFontLabel"},
@@ -124,7 +124,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A sub-component of fluid.uiOptions that renders the "line spacing" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.lineSpacer", {
+    fluid.defaults("fluid.uiOptions.panels.lineSpace", {
         gradeNames: ["fluid.uiOptions.panels", "autoInit"],
         // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
         // i.e. from the settings store, or specific defaults derived from schema.
@@ -134,18 +134,18 @@ var fluid_1_5 = fluid_1_5 || {};
             max: 2
         },
         selectors: {
-            lineSpacing: ".flc-uiOptions-line-spacing",
+            lineSpace: ".flc-uiOptions-line-spacing",
             label: ".flc-uiOptions-line-spacing-label",
             narrowIcon: ".flc-uiOptions-line-spacing-narrowIcon",
             wideIcon: ".flc-uiOptions-line-spacing-wideIcon",
             multiplier: ".flc-uiOptions-multiplier"
         },
         protoTree: {
-            label: {messagekey: "lineSpacingLabel"},
-            narrowIcon: {messagekey: "lineSpacingNarrowIcon"},
-            wideIcon: {messagekey: "lineSpacingWideIcon"},
+            label: {messagekey: "lineSpaceLabel"},
+            narrowIcon: {messagekey: "lineSpaceNarrowIcon"},
+            wideIcon: {messagekey: "lineSpaceWideIcon"},
             multiplier: {messagekey: "multiplier"},
-            lineSpacing: {
+            lineSpace: {
                 decorators: {
                     type: "fluid",
                     func: "fluid.uiOptions.textfieldSlider"
@@ -166,7 +166,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A sub-component of fluid.uiOptions that renders the "contrast" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.contrast", {
+    fluid.defaults("fluid.uiOptions.panels.contrast", {
         gradeNames: ["fluid.uiOptions.panels", "autoInit"],
         listeners: {
             afterRender: "{that}.style"
@@ -181,7 +181,7 @@ var fluid_1_5 = fluid_1_5 || {};
             theme: "{uioMsgBundle}.options.messageBase.theme"
         },
         repeatingSelectors: ["themeRow"],
-        produceTree: "fluid.uiOptions.contrast.produceTree",
+        produceTree: "fluid.uiOptions.panels.contrast.produceTree",
         controlValues: { 
             theme: ["default", "bw", "wb", "by", "yb"]
         },
@@ -190,7 +190,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         invokers: {
             style: {
-                funcName: "fluid.uiOptions.contrast.style",
+                funcName: "fluid.uiOptions.panels.contrast.style",
                 args: ["{that}.dom.themeLabel", "{that}.options.strings.theme",
                     "{that}.options.markup.label", "{that}.options.controlValues.theme",
                     "{that}.options.classnameMap.theme"]
@@ -198,7 +198,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.uiOptions.contrast.style = function (labels, strings, markup, theme, style) {
+    fluid.uiOptions.panels.contrast.style = function (labels, strings, markup, theme, style) {
         fluid.each(labels, function (label, index) {
             label = $(label);
             label.html(fluid.stringTemplate(markup, {
@@ -208,7 +208,7 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
-    fluid.uiOptions.contrast.produceTree = function (that) {
+    fluid.uiOptions.panels.contrast.produceTree = function (that) {
         return {
             label: {messagekey: "contrastLabel"},
             expander: {
@@ -233,7 +233,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A sub-component of fluid.uiOptions that renders the "layout and navigation" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.layoutControls", {
+    fluid.defaults("fluid.uiOptions.panels.layoutControls", {
         gradeNames: ["fluid.uiOptions.panels", "autoInit"],
         selectors: {
             toc: ".flc-uiOptions-toc",
@@ -253,7 +253,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A sub-component of fluid.uiOptions that renders the "links and buttons" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.linksControls", {
+    fluid.defaults("fluid.uiOptions.panels.linksControls", {
         gradeNames: ["fluid.uiOptions.panels", "autoInit"],
         selectors: {
             links: ".flc-uiOptions-links",
@@ -299,7 +299,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * The grade that contains shared options by all default settings panels
      ************************************************************************/
     
-    fluid.defaults("fluid.uiOptions.defaultSettingsPanel", {
+    fluid.defaults("fluid.uiOptions.defaultPanel", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         mergePolicy: {
             sourceApplier: "nomerge"
@@ -315,24 +315,24 @@ var fluid_1_5 = fluid_1_5 || {};
      * 
      * A collection of all the default UIO setting panels.
      *********************************************************************************************************/
-    fluid.defaults("fluid.uiOptions.starterSettingsPanels", {
+    fluid.defaults("fluid.uiOptions.starterPanels", {
         gradeNames: ["fluid.uiOptions", "autoInit"],
         selectors: {
-            textSizer: ".flc-uiOptions-text-sizer",
+            textSize: ".flc-uiOptions-text-sizer",
             textFont: ".flc-uiOptions-text-font",
-            lineSpacer: ".flc-uiOptions-line-spacer",
+            lineSpace: ".flc-uiOptions-line-spacer",
             contrast: ".flc-uiOptions-contrast",
             textControls: ".flc-uiOptions-text-controls",
             layoutControls: ".flc-uiOptions-layout-controls",
             linksControls: ".flc-uiOptions-links-controls"
         },
         components: {
-            textSizer: {
-                type: "fluid.uiOptions.textSizer",
-                container: "{uiOptions}.dom.textSizer",
+            textSize: {
+                type: "fluid.uiOptions.panels.textSize",
+                container: "{uiOptions}.dom.textSize",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultSettingsPanel",
+                    gradeNames: "fluid.uiOptions.defaultPanel",
                     rules: {
                         "selections.textSize": "value"
                     },
@@ -340,33 +340,33 @@ var fluid_1_5 = fluid_1_5 || {};
                         value: "{fluid.uiOptions.rootModel}.rootModel.textSize"
                     },
                     resources: {
-                        template: "{templateLoader}.resources.textSizer"
+                        template: "{templateLoader}.resources.textSize"
                     }
                 }
             },
-            lineSpacer: {
-                type: "fluid.uiOptions.lineSpacer",
-                container: "{uiOptions}.dom.lineSpacer",
+            lineSpace: {
+                type: "fluid.uiOptions.panels.lineSpace",
+                container: "{uiOptions}.dom.lineSpace",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultSettingsPanel",
+                    gradeNames: "fluid.uiOptions.defaultPanel",
                     rules: {
-                        "selections.lineSpacing": "value"
+                        "selections.lineSpace": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.rootModel}.rootModel.lineSpacing"
+                        value: "{fluid.uiOptions.rootModel}.rootModel.lineSpace"
                     },
                     resources: {
-                        template: "{templateLoader}.resources.lineSpacer"
+                        template: "{templateLoader}.resources.lineSpace"
                     }
                 }
             },
             textFont: {
-                type: "fluid.uiOptions.textFont",
+                type: "fluid.uiOptions.panels.textFont",
                 container: "{uiOptions}.dom.textFont",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultSettingsPanel",
+                    gradeNames: "fluid.uiOptions.defaultPanel",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "selections.textFont": "value"
@@ -380,11 +380,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             contrast: {
-                type: "fluid.uiOptions.contrast",
+                type: "fluid.uiOptions.panels.contrast",
                 container: "{uiOptions}.dom.contrast",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultSettingsPanel",
+                    gradeNames: "fluid.uiOptions.defaultPanel",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "selections.theme": "value"
@@ -398,11 +398,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             layoutControls: {
-                type: "fluid.uiOptions.layoutControls",
+                type: "fluid.uiOptions.panels.layoutControls",
                 container: "{uiOptions}.dom.layoutControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultSettingsPanel",
+                    gradeNames: "fluid.uiOptions.defaultPanel",
                     rules: {
                         "selections.toc": "toc"
                     },
@@ -415,11 +415,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             linksControls: {
-                type: "fluid.uiOptions.linksControls",
+                type: "fluid.uiOptions.panels.linksControls",
                 container: "{uiOptions}.dom.linksControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultSettingsPanel",
+                    gradeNames: "fluid.uiOptions.defaultPanel",
                     rules: {
                         "selections.links": "links",
                         "selections.inputsLarger": "inputsLarger"
@@ -441,7 +441,7 @@ var fluid_1_5 = fluid_1_5 || {};
      ******************************/
 
     /**
-     * A template loader component that specifies the templates used by starterSettingsPanels
+     * A template loader component that specifies the templates used by starterPanels
      * 
      * @param {Object} options
      */    
@@ -449,9 +449,9 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.starterTemplateLoader", {
         gradeNames: ["fluid.uiOptions.templateLoader", "autoInit"],
         templates: {
-            textSizer: "%prefix/UIOptionsTemplate-textSizer.html",
+            textSize: "%prefix/UIOptionsTemplate-textSize.html",
             textFont: "%prefix/UIOptionsTemplate-textFont.html",
-            lineSpacer: "%prefix/UIOptionsTemplate-lineSpacer.html",
+            lineSpace: "%prefix/UIOptionsTemplate-lineSpace.html",
             contrast: "%prefix/UIOptionsTemplate-contrast.html",
             layoutControls: "%prefix/UIOptionsTemplate-layout.html",
             linksControls: "%prefix/UIOptionsTemplate-links.html"
