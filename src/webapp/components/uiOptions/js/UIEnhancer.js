@@ -104,7 +104,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
         components: {
             textSize: {
-                type: "fluid.uiOptions.enactor.textSizer",
+                type: "fluid.uiOptions.enactors.textSize",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
@@ -118,7 +118,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             textFont: {
-                type: "fluid.uiOptions.enactor.classSwapper",
+                type: "fluid.uiOptions.enactors.classSwapper",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.textFont",
@@ -131,22 +131,22 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             },
-            lineSpacing: {
-                type: "fluid.uiOptions.enactor.lineSpacer",
+            lineSpace: {
+                type: "fluid.uiOptions.enactors.lineSpace",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
-                        "lineSpacing": "value"
+                        "lineSpace": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.rootModel}.rootModel.lineSpacing"
+                        value: "{fluid.uiOptions.rootModel}.rootModel.lineSpace"
                     }
                 }
             },
             theme: {
-                type: "fluid.uiOptions.enactor.classSwapper",
+                type: "fluid.uiOptions.enactors.classSwapper",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.theme",
@@ -160,7 +160,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             emphasizeLinks: {
-                type: "fluid.uiOptions.enactor.emphasizeLinks",
+                type: "fluid.uiOptions.enactors.emphasizeLinks",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.links",
@@ -174,7 +174,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             inputsLarger: {
-                type: "fluid.uiOptions.enactor.inputsLarger",
+                type: "fluid.uiOptions.enactors.inputsLarger",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.inputsLarger",
@@ -188,7 +188,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             tableOfContentsEnactor: {
-                type: "fluid.uiOptions.enactor.tableOfContentsEnactor",
+                type: "fluid.uiOptions.enactors.tableOfContentsEnactor",
                 container: "{uiEnhancer}.container",
                 createOnEvent: "onCreateToc",
                 options: {
