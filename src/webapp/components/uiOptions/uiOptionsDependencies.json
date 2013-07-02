@@ -17,7 +17,7 @@
             "UIOptions.js",
             "SettingsPanels.js",
             "ModelRelay.js",
-            "Enactor.js",
+            "Enactors.js",
             "UIEnhancer.js",
             "FatPanelUIOptions.js",
             "FullNoPreviewUIOptions.js",
