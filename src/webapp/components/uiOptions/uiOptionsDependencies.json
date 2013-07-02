@@ -15,7 +15,7 @@
             "Store.js",
             "TextfieldSlider.js",
             "UIOptions.js",
-            "SettingsPanels.js",
+            "Panels.js",
             "ModelRelay.js",
             "Enactors.js",
             "UIEnhancer.js",

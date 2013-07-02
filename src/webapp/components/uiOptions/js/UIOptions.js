@@ -424,7 +424,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * Base grade settingsPanel
      ***********************************************/
 
-    fluid.defaults("fluid.uiOptions.settingsPanel", {
+    fluid.defaults("fluid.uiOptions.panels", {
         gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay", "autoInit"],
         invokers: {
             refreshView: "{that}.renderer.refreshView"

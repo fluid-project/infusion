@@ -26,22 +26,22 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.textfieldSlider", {
         gradeNames: ["fluid.textfieldSlider", "autoInit"],
-        model: "{fluid.uiOptions.settingsPanel}.model",
+        model: "{fluid.uiOptions.panels}.model",
         listeners: {
             modelChanged: {
-                listener: "{fluid.uiOptions.settingsPanel}.applier.requestChange",
+                listener: "{fluid.uiOptions.panels}.applier.requestChange",
                 args: ["{that}.options.path", "{arguments}.0"]
             }
         },
         path: "value",
-        sliderOptions: "{fluid.uiOptions.settingsPanel}.options.sliderOptions"
+        sliderOptions: "{fluid.uiOptions.panels}.options.sliderOptions"
     });
 
     /**
      * A sub-component of fluid.uiOptions that renders the "text size" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.textSizer", {
-        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
+        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
         // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
@@ -83,7 +83,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "text font" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.textFont", {
-        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
+        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
         selectors: {
             textFont: ".flc-uiOptions-text-font",
             label: ".flc-uiOptions-text-font-label"
@@ -125,7 +125,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "line spacing" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.lineSpacer", {
-        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
+        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
         // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
@@ -167,7 +167,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "contrast" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.contrast", {
-        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
+        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
         listeners: {
             afterRender: "{that}.style"
         },
@@ -234,7 +234,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "layout and navigation" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.layoutControls", {
-        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
+        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
         selectors: {
             toc: ".flc-uiOptions-toc",
             label: ".flc-uiOptions-toc-label",
@@ -254,7 +254,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.uiOptions that renders the "links and buttons" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.linksControls", {
-        gradeNames: ["fluid.uiOptions.settingsPanel", "autoInit"],
+        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
         selectors: {
             links: ".flc-uiOptions-links",
             inputsLarger: ".flc-uiOptions-inputs-larger",
@@ -306,7 +306,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         sourceApplier: "{fluid.uiOptions}.applier",
         listeners: {
-            "{uiOptions}.events.onUIOptionsRefresh": "{fluid.uiOptions.settingsPanel}.refreshView"
+            "{uiOptions}.events.onUIOptionsRefresh": "{fluid.uiOptions.panels}.refreshView"
         }
     });
 
