@@ -426,9 +426,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.settingsPanel", {
         gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay", "autoInit"],
-        invokers: {
-            refreshView: "{that}.renderer.refreshView"
-        },
         strings: {},
         parentBundle: "{uioMsgBundle}"
     });

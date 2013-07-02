@@ -21,10 +21,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    fluid.registerNamespace("fluid.pagedTable");
 
     // cf. ancient SVN-era version in bitbucket at https://bitbucket.org/fluid/infusion/src/adf319d9b279/branches/FLUID-2881/src/webapp/components/pager/js/PagedTable.js
   
-
+    fluid.defaults("fluid.pagedTable.rangeAnnotator", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        listeners: {
+            "{pagedTable}.events.onRenderPageLinks": {
+                funcName: "fluid.pagedTable.rangeAnnotator.onRenderPageLinks",
+                args: ["{pagedTable}", "{arguments}.0", "{arguments}.1"]
+            }
+        }
+    });
+  
     fluid.pagedTable.rangeAnnotator.onRenderPageLinks = function (that, tree, newModel) {
         var roots = {};
         var column = that.options.annotateColumnRange;
@@ -32,13 +42,12 @@ var fluid_1_5 = fluid_1_5 || {};
             return;
         }
         var dataModel = that.options.dataModel;
-        // TODO: reaching into another component's options like this is a bit unfortunate
-        var columnDefs = getColumnDefs(that);
-        var columnDef = fluid.pager.findColumnDef(columnDefs, column);
+        var columnDefs = that.options.columnDefs;
+        var columnDef = fluid.table.findColumnDef(columnDefs, column);
         
         function fetchValue(index) {
             index = that.permutation ? that.permutation[index] : index;
-            return fluid.table.fetchValue(that, dataModel, index, columnDef.valuebinding, roots);
+            return fluid.table.fetchValue(that.options.dataOffset, dataModel, index, columnDef.valuebinding, roots);
         }
         var tModel = {};
         fluid.model.copyModel(tModel, newModel);
@@ -77,22 +86,22 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
 
-    fluid.defaults("fluid.pagedTable.rangeAnnotator", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        listeners: {
-            "{pagedTable}.events.onRenderPageLinks": {
-                funcName: "fluid.pagedTable.rangeAnnotator.onRenderPageLinks",
-                args: ["{pagedTable}", "{arguments}.0", "{arguments}.1"]
-            }
+    
+    fluid.pagedTable.directModelFilter = function (model, pagerModel, perm) {
+        var togo = [];
+        var limit = fluid.pager.computePageLimit(pagerModel);
+        for (var i = pagerModel.pageIndex * pagerModel.pageSize; i < limit; ++i) {
+            var index = perm ? perm[i] : i;
+            togo[togo.length] = {index: index, row: model[index]};
         }
-    });
-
+        return togo;
+    };
     
     fluid.defaults("fluid.pagedTable", {
         gradeNames: ["fluid.pager", "fluid.table", "autoInit"],
         components: {
             rangeAnnotator: {
-                type: "fluid.pager.rangeAnnotator"
+                type: "fluid.pagedTable.rangeAnnotator"
             }
         },
         annotateColumnRange: undefined, // specify a "key" from the columnDefs

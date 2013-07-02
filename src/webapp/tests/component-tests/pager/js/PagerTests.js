@@ -23,14 +23,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.registerNamespace("fluid.tests");
     
-    fluid.demands("fluid.pager.pageList", ["fluid.tests.testMarkupPager", "fluid.pager.pagerBar"], {
-        funcName: "fluid.pager.directPageList"  
-    });
-    
     /** Convenience markup driven pager creator **/
     var markupPager = function (container, options) {
         var options = $.extend(true, {}, options, {
-            gradeNames: "fluid.tests.testMarkupPager"
+            gradeNames: "fluid.tests.testMarkupPager",
+            pageList: {
+                type: "fluid.pager.directPageList" 
+            }
         });
        
         return fluid.pager(container, options);

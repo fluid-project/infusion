@@ -79,7 +79,7 @@ sakai.initFluidSiteSettingTable = function () {
             sortable: true}
         ];
   
-        var pager = fluid.pager(".ss-members", {
+        var pager = fluid.pagedTable(".ss-members", {
             dataModel: model,
             // Test FLUID-2663
             model: {
@@ -88,14 +88,15 @@ sakai.initFluidSiteSettingTable = function () {
             dataOffset: "users.membership_collection",
             columnDefs: columnDefs,
             annotateColumnRange: "user-link",
-
-            bodyRenderer: {
-                type: "fluid.pager.selfRender",
-                options: {
-                    selectors: {
-                        root: ".site-setting-body"
-                    },
-                    renderOptions: {debugMode: false}
+            components: {
+                bodyRenderer: {
+                    type: "fluid.table.selfRender",
+                    options: {
+                        selectors: {
+                            root: ".site-setting-body"
+                        },
+                        renderOptions: {debugMode: false}
+                    }
                 }
             },
             decorators: {

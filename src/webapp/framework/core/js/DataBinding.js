@@ -283,6 +283,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     var composeSegment = function (prefix, toappend) {
+        toappend = toappend.toString();
         for (var i = 0; i < toappend.length; ++i) {
             var c = toappend.charAt(i);
             if (c === '.' || c === '\\' || c === '}') {
@@ -544,7 +545,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var wrapped = function (changePath, fireSpec, accum) {
                 var guid = fluid.event.identifyListener(listener);
                 var exist = fireSpec.guids[guid];
-                if (!exist) {
+                if (!exist || !accum) {
                     var match = fluid.pathUtil.matchPath(pathSpec, changePath);
                     if (match !== null) {
                         var record = {

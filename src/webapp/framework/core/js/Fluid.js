@@ -715,7 +715,7 @@ var fluid = fluid || fluid_1_5;
         if (!type) {
             return true;
         }
-        return totest === type;
+        return totest.value === type.value;
     };
     
     // Model functions
@@ -1936,6 +1936,7 @@ var fluid = fluid || fluid_1_5;
         var that = fluid.typeTag(name);
         localOptions = localOptions || {gradeNames: "fluid.littleComponent"};
         
+        that.destroy = fluid.makeRootDestroy(that); // overwritten by FluidIoC for constructed subcomponents
         var mergeOptions = fluid.mergeComponentOptions(that, name, userOptions, localOptions);
         var options = that.options;
         var evented = fluid.hasGrade(options, "fluid.eventedComponent");
@@ -2041,7 +2042,6 @@ var fluid = fluid || fluid_1_5;
         }
         fluid.fireEvent(that.options, "finalInitFunction", that);
         fluid.clearLifecycleFunctions(that.options);
-        that.destroy = fluid.makeRootDestroy(that); // overwritten by FluidIoC for constructed subcomponents
         fluid.fireEvent(that, "events.onCreate", that);
         fluid.popActivity();
         return fluid.resolveReturnedPath(that.options.returnedPath, that) ? fluid.get(that, that.options.returnedPath) : that;

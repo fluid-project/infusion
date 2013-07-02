@@ -61,7 +61,7 @@ var demo = demo || {};
                 }
             ];
           
-            demo.pager = fluid.pager(".demo-pager-container", {
+            demo.pager = fluid.pagedTable(".demo-pager-container", {
                 dataModel: model,
                 model: {
                     pageSize: 10
@@ -69,14 +69,16 @@ var demo = demo || {};
                 dataOffset: "membership_collection",
                 columnDefs: columnDefs,
                 annotateColumnRange: "user-link",
-                bodyRenderer: {
-                    type: "fluid.pager.selfRender",
-                    options: {
-                        selectors: {
-                            root: ".demo-pager-table-data"
-                        },
-                        renderOptions: {debugMode: false}
-                    }
+                components: {
+                    bodyRenderer: {
+                        type: "fluid.table.selfRender",
+                        options: {
+                            selectors: {
+                                root: ".demo-pager-table-data"
+                            },
+                            rendererOptions: {debugMode: false}
+                        }
+                }
                 },
                 decorators: {
                     unsortableHeader: [

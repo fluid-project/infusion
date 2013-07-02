@@ -55,7 +55,10 @@ var fluid_1_5 = fluid_1_5 || {};
         if (!that && fluid.hasGrade(options, "fluid.viewComponent")) {
             var container = fluid.wrap(args[1]);
             var message1 = "Instantiation of autoInit component with type " + componentName + " failed, since ";
-            if (container.length === 0) {
+            if (!container) {
+                fluid.fail(message1 + " container argument is empty");
+            }
+            else if (container.length === 0) {
                 fluid.fail(message1 + "selector \"", fluid.dumpSelector(args[1]), "\" did not match any markup in the document");
             } else {
                 fluid.fail(message1 + " component creator function did not return a value");

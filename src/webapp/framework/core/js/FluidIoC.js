@@ -880,6 +880,14 @@ var fluid_1_5 = fluid_1_5 || {};
         return togo;
     };
 
+    // unsupported, non-API function    
+    fluid.makeIoCRootDestroy = function (instantiator, that) {
+        return function () {
+            instantiator.clearComponent(that, "", that, null, true);
+            fluid.fireEvent(that, "events.onDestroy", [that, "", null]);
+        };
+    };
+
     // unsupported, non-API function
     fluid.expandComponentOptions = function (mergePolicy, defaults, userOptions, that) {
         var instantiator = userOptions && userOptions.marker === fluid.EXPAND && userOptions.memberName !== undefined ? 
@@ -889,6 +897,7 @@ var fluid_1_5 = fluid_1_5 || {};
             instantiator = fluid.instantiator();
             fresh = true;
             fluid.log("Created new instantiator with id " + instantiator.id + " in order to operate on component " + (that? that.typeName : "[none]"));
+            that.destroy = fluid.makeIoCRootDestroy(instantiator, that);
         }
         fluid.pushActivity("expandComponentOptions", "expanding component options %options with record %record for component %that", 
             {options: userOptions && userOptions.mergeRecords, record: userOptions, that: that});

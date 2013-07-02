@@ -218,10 +218,9 @@ var fluid_1_5 = fluid_1_5 || {};
             pageTree[pageTree.length - 1].value = pageTree[pageTree.length - 1].value + that.options.strings.last;
         }
         that.events.onRenderPageLinks.fire(pageTree, newModel);
+        that.pageTree = pageTree;
         that.refreshView();
-        //fluid.reRender(template, root, pageTree, renderOptions);
-        fluid.pager.updateStyles(that, newModel, oldModel);  
-    }
+    };
     
     fluid.pager.renderedPageList.renderLinkBody = function (linkBody, rendererOptions) {
         if (linkBody) {
@@ -238,37 +237,48 @@ var fluid_1_5 = fluid_1_5 || {};
             cutpoints: [ 
                 {
                     id: "page-link:link",
-                    selector: "{pagerBar}.options.selectors.pageLinks"
+                    selector: "{that}.options.selectors.pageLinks"
                 },
                 {
                     id: "page-link:skip",
-                    selector: "{pagerBar}.options.selectors.pageLinkSkip"
+                    selector: "{that}.options.selectors.pageLinkSkip"
                 }
             ]
         },
-        templateSource: "{that}.dom.root",
-        renderTarget: "{that}.dom.root",
-        renderOnInit: true,
+        rendererFnOptions: {
+            noexpand: true,
+            templateSource: {node: "{that}.dom.root"},
+            renderTarget: "{that}.dom.root",
+        },
+        events: {
+            onRenderPageLinks: "{pager}.events.onRenderPageLinks"
+        },
         listeners: {
             onCreate: {
-                funcName: "fluid.pager.rendererdPageList.renderLinkBody", 
+                funcName: "fluid.pager.renderedPageList.renderLinkBody", 
                 args: ["{that}.options.linkBody", "{that}.options.rendererOptions"]  
             },
-            "{pager}.onModelChange": {
+            "{pager}.events.onModelChange": {
                 funcName: "fluid.pager.renderedPageList.onModelChange",
                 args: ["{that}", "{arguments}.0", "{arguments}.1"]
             }
         },
         invokers: {
+            produceTree: { // TODO: a dynamic invoker
+                funcName: "fluid.identity",
+                args: "{that}.pageTree"  
+            },
             assembleComponent: {
-            funcName: "fluid.pager.rendereredPageList.assembleComponent", 
-            args: ["{arguments}.0", "{arguments}.1", 
+                funcName: "fluid.pager.renderedPageList.assembleComponent", 
+                args: ["{arguments}.0", "{arguments}.1", 
                    "{pager}.events.initiatePageChange", "{pagerBar}.options.styles.currentPage", "{pagerBar}.options.strings.currentPageIndexMsg"]
             }
         },
         
         selectors: {
-            root: ".flc-pager-links"
+            root: ".flc-pager-links",
+            pageLinks: "{pagerBar}.options.selectors.pageLinks",
+            pageLinkSkip: "{pagerBar}.options.selectors.pageLinkSkip"
         },
         strings: "{pager}.options.strings",
         linkBody: "a",
@@ -306,14 +316,6 @@ var fluid_1_5 = fluid_1_5 || {};
         that.previous.toggleClass(disabledStyle, newModel.pageIndex === 0);
         that.next.toggleClass(disabledStyle, newModel.pageIndex === newModel.pageCount - 1);
     };
-
-    fluid.demands("fluid.pager.pageList", "fluid.pager.pagerBar", {
-        funcName: "fluid.pager.renderedPageList",
-        options: {
-            pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
-        }
-    });
-
     
     fluid.defaults("fluid.pager.pagerBar", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
@@ -361,20 +363,17 @@ var fluid_1_5 = fluid_1_5 || {};
             currentPageIndexMsg: "Current page"
         }
     });
-
-    function getColumnDefs(that) { // TODO: What on earth is this function for
-        return that.options.columnDefs;
-    }
     
     // TODO: Remove this and replace with FLUID-4258 scheme
     fluid.pager.preInit = function (that) {
+        // Explicit namespace to evade FLUID-5077
         that.applier.postGuards.addListener({path: "pageSize", transactional: true}, 
-                fluid.pager.pageCountGuard);
+                fluid.pager.pageCountGuard, "pageSizeGuard");
         that.applier.postGuards.addListener({path: "totalRange", transactional: true}, 
-                fluid.pager.pageCountGuard);
+                fluid.pager.pageCountGuard, "totalRangeGuard");
         that.applier.guards.addListener({path: "pageIndex", transactional: true}, 
                 fluid.pager.pageIndexGuard);
-        that.applier.modelChanged.addListener({path: "*"}, 
+        that.applier.modelChanged.addListener({path: "*"},
             function (newModel, oldModel, changes) {
                 that.events.onModelChange.fire(newModel, oldModel);
         });
@@ -396,22 +395,7 @@ var fluid_1_5 = fluid_1_5 || {};
             changeRequest.value = 0;
         }
     };
-
-    // TODO: common between the various implementations, and mixes model material from both schemes
-    fluid.pager.fireModelChange = function (that, newModel, forceUpdate) {
-        var newPageCount = fluid.pager.computePageCount(newModel);
-        if (newModel.pageIndex >= newModel.pageCount) {
-            newModel.pageIndex = newModel.pageCount - 1;
-        }
-        if (forceUpdate || newModel.pageIndex !== that.model.pageIndex || newModel.pageSize !== that.model.pageSize || newModel.sortKey !== that.model.sortKey ||
-                newModel.sortDir !== that.model.sortDir) {
-            var sorted = isCurrentColumnSortable(getColumnDefs(that), newModel) ? that.options.sorter(that, newModel) : null;
-            that.permutation = sorted;
-            that.events.onModelChange.fire(newModel, that.model, that);
-            fluid.model.copyModel(that.model, newModel);
-        }
-    };
-
+    
     fluid.pager.summaryAria = function (element) {
         element.attr({
             "aria-relevant": "all",
@@ -431,7 +415,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             onModelChange: {
                 funcName: "fluid.pager.summary.onModelChange",
-                args: ["{that}.container", "{arguments}.0", "{arguments}.1"] 
+                args: ["{that}.container", "{that}.options.strings.message", "{arguments}.0", "{arguments}.1"] 
             }
         },
         events: {
@@ -439,8 +423,8 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.pager.summary.onModelChange = function (node, newModel, oldModel) {
-        var text = fluid.stringTemplate(options.message, {
+    fluid.pager.summary.onModelChange = function (node, message, newModel, oldModel) {
+        var text = fluid.stringTemplate(message, {
             first: newModel.pageIndex * newModel.pageSize + 1,
             last: fluid.pager.computePageLimit(newModel),
             total: newModel.totalRange,
@@ -456,8 +440,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 "this": "{that}.container",
                 method: "change",
                 args: {
-                    funcName: "fluid.pager.directPageSize.onChange",
-                    args: ["{pager}.events.initiatePageSizeChange", "{that}.container"]
+                    expander: {
+                        funcName: "fluid.pager.directPageSize.onChange",
+                        args: ["{pager}.events.initiatePageSizeChange", "{that}.container"]
+                    }
                 }
             },
             "{pager}.events.onModelChange": {
@@ -468,7 +454,9 @@ var fluid_1_5 = fluid_1_5 || {};
     });
     
     fluid.pager.directPageSize.onChange = function (initiatePageSizeChange, node) {
-        initiatePageSizeChange.fire(node.val() || 1);
+        return function () {
+            initiatePageSizeChange.fire(node.val() || 1);
+        }
     };
     
     fluid.pager.directPageSize.onModelChange = function (node, newModel, oldModel) {
@@ -503,6 +491,17 @@ var fluid_1_5 = fluid_1_5 || {};
             onRenderPageLinks: null,
             afterRender: null
         },
+        distributeOptions: {
+            source: "{that}.options.pageList",
+            removeSource: true,
+            target: "{that fluid.pager.pageList}"
+        },
+        pageList: {
+            type: "fluid.pager.renderedPageList",
+            options: {
+                pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
+            }
+        },
         listeners: {
             onCreate: [ {
                 namespace: "containerRole",
@@ -535,10 +534,12 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.pager.summary",
                 container: "{source}",
                 options: {
-                    message: "Viewing page %currentPage. Showing records %first - %last of %total items."
-                },
-                events: {
-                    onModelChange: "{pager}.events.onModelChange"
+                    strings: {
+                        message: "Viewing page %currentPage. Showing records %first - %last of %total items.",
+                    },
+                    events: {
+                        onModelChange: "{pager}.events.onModelChange"
+                    }
                 }
             },
             pageSize: {
@@ -577,17 +578,6 @@ var fluid_1_5 = fluid_1_5 || {};
             pagerBar: ".flc-pager-top, .flc-pager-bottom",
             summary: ".flc-pager-summary",
             pageSize: ".flc-pager-page-size",
-            headerSortStylisticOffset: ".flc-pager-sort-header"
-        },
-        
-        styles: {
-            ascendingHeader: "fl-pager-asc",
-            descendingHeader: "fl-pager-desc"
-        },
-        
-        decorators: {
-            sortableHeader: [],
-            unsortableHeader: []
         },
         
         strings: {

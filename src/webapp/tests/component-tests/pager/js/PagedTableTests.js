@@ -18,6 +18,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, indent: 4 */
 
 (function ($) {
+  
+    jqUnit.module("Paged Table Tests");
+    
+    fluid.registerNamespace("fluid.tests.pager");
+    
+    // NB: ensure to destroy each pager at the end of a test fixture in order to prevent leakage of tooltips, which 
+    // disrupts the final test which makes a lot of assumptions
       
     /** Convenience rendered pager creator **/
     var renderedPager = function (container, options) {
@@ -71,16 +78,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
         
         var opt = {
-            dataModel : dataModel,
+            dataModel: dataModel,
             model: {
                 pageSize: pageSize
             },
-            pagerBar: {
-                type: "fluid.pager.pagerBar", 
-                options: {
-                    pageList: pageList
-                }
-            }
+            pageList: pageList
         };
         var pager = renderedPager("#rendered", opt);
         return pager;
@@ -89,9 +91,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // Just tests that the pager will initialize with only a container, and dataModel passed in.
     // The rest of the options are the defaults.
     jqUnit.test("Default Pager: FLUID-4213", function () {
-        jqUnit.assertTrue("The default pager initialized", fluid.pagedTable("#rendered", {
+        var pager = fluid.pagedTable("#rendered", {
             dataModel: [{language: "javascript"}]
-        }));
+        });
+        jqUnit.assertValue("The default pager initialized", pager);
+        pager.destroy();
     });
     
     
@@ -103,8 +107,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var descElmID = $(currentPage).attr("aria-label");
             jqUnit.assertTrue("aria-label was added to the current page list element", descElmID);
             jqUnit.assertEquals("The label is correct", pager.pagerBar.options.strings.currentPageIndexMsg, descElmID);
-            });
         });
+        pager.destroy();
+    });
  
         
     /** 
@@ -128,6 +133,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var pagerBottomPageLinks = $(".flc-pager-bottom .flc-pager-pageLink", pager.container).length;
         jqUnit.assertEquals("Top pageLinks", expectedPages, pagerTopPageLinks);
         jqUnit.assertEquals("Bottom pageLinks", expectedPages, pagerBottomPageLinks);
+        pager.destroy();
     });
     
     /** 
@@ -155,8 +161,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var shouldExistInList = function (i, element) {
             //manually retrieve ID
             //todo: make this better?
-            var link = $(element).find('a');
-            var linkId = parseInt(link.attr('id').replace('page-link:link', ''), 10);
+            var link = $(element).find("a");
+            var linkId = parseInt(link.attr("id").replace("page-link:link", ""), 10);
             //if this link is within the leading linkCount
             if (linkId <= j) {
                 return true;
@@ -175,83 +181,81 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         
         var allPagesAfterClickedEachFn = function (index, element) {
-                if (!$(element).hasClass("flc-pager-pageLink-skip")) {
-                    jqUnit.assertTrue("Clicked on [page " + i + "] and checking [" + $(element).find("a").attr("id") + "]", shouldExistInList(i, element));
-                }
-            };
+            if (!$(element).hasClass("flc-pager-pageLink-skip")) {
+                jqUnit.assertTrue("Clicked on [page " + i + "] and checking [" + $(element).find("a").attr("id") + "]", shouldExistInList(i, element));
+            }
+        };
             
-        //Go through all pages 1 by 1 , and click click all page dynamically each time
+        // Go through all pages 1 by 1, and click each
         for (var i = 1; i <= expectedPages; i++) {
             var page = fluid.jById("page-link:link" + i);
             page.click();     
             var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
-                allPagesAfterClicked.each(allPagesAfterClickedEachFn);
-            } 
-        });
+            allPagesAfterClicked.each(allPagesAfterClickedEachFn);
+        }
+        pager.destroy();
+    });
+    
+    fluid.tests.pager.animalDataModel = {
+        pets: [
+            {
+                category: "B",
+                breed: "Siberian Husky",
+                origin: "Russia"
+            },
+            {
+                category: "C",
+                breed: "Old German Shepherd Dog",
+                origin: "Germany"
+            },
+            {
+                category: "A",
+                breed: "Old England Old English Terrier",
+                origin: "Germany"
+            },
+            {
+                category: "D",
+                breed: "Kuvasz",
+                origin: "Hungary"
+            },
+            {
+                category: "D",
+                breed: "King Shepherd",
+                origin: "United States"
+            },
+            {
+                category: "B",
+                breed: "Kishu",
+                origin: "Japan"
+            }
+        ]
+    };
+    
+    fluid.tests.pager.animalColumnDefs = [ 
+        {
+            key: "category",
+            valuebinding: "*.category",  
+            sortable: true
+        },
+        {
+            key: "breed",
+            valuebinding: "*.breed",
+            sortable: true 
+        },
+        {
+            key: "origin",
+            valuebinding: "*.origin",
+            sortable: true
+        }
+    ];
  
          
-        jqUnit.test("Page Table Header aria-sort, also checks if anchor titles changes accordingly ", function () {
-        //the following sortableColumnText strings are the same as fluid.pager.selfRender.strings.
-        //redeclaring them here because we cannot get them from the pager object.
-        var sortableColumnText = "Select to sort";
-        var sortableColumnTextDesc = "Select to sort in ascending, currently in descending order.";
-        var sortableColumnTextAsc = "Select to sort in descending, currently in ascending order.";
+    jqUnit.test("Page Table Header aria-sort, also checks if anchor titles changes accordingly ", function () {
+        var strings = fluid.defaults("fluid.table").strings;
 
-        // TODO: this data can be usefully reused for other tests as well - we might want to make it more accessible.  
-        var dataModel = {
-                pets: [
-                    {
-                        category: "B",
-                        breed: "Siberian Husky",
-                        origin: "Russia"
-                    },
-                    {
-                        category: "C",
-                        breed: "Old German Shepherd Dog",
-                        origin: "Germany"
-                    },
-                    {
-                        category: "A",
-                        breed: "Old England Old English Terrier",
-                        origin: "Germany"
-                    },
-                    {
-                        category: "D",
-                        breed: "Kuvasz",
-                        origin: "Hungary"
-                    },
-                    {
-                        category: "D",
-                        breed: "King Shepherd",
-                        origin: "United States"
-                    },
-                    {
-                        category: "B",
-                        breed: "Kishu",
-                        origin: "Japan"
-                    }
-                ]
-            };
-        var columnDefs = [ 
-            {
-                key: "category",
-                valuebinding: "*.category",  
-                sortable: true
-            },
-            {
-                key: "breed",
-                valuebinding: "*.breed",
-                sortable: true 
-            },
-            {
-                key: "origin",
-                valuebinding: "*.origin",
-                sortable: true
-            }
-        ];
         var opt = {
-            dataModel : dataModel,
-            columnDefs: columnDefs,
+            dataModel: fluid.tests.pager.animaldataModel,
+            columnDefs: fluid.tests.pager.animalColumnDefs,
             annotateColumnRange: "category",
             model: {
                 pageSize: 6
@@ -265,11 +269,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          */
         var sortableColumnTextStr = function (dir_order) {
             if (dir_order === "ascending") {
-                return sortableColumnTextAsc;
+                return strings.sortableColumnTextAsc;
             } else if (dir_order === "descending") {
-                return sortableColumnTextDesc;
+                return strings.sortableColumnTextDesc;
             } else {
-                return sortableColumnText;
+                return strings.sortableColumnText;
             }
         };
 
@@ -329,6 +333,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 testAriaOnAllHeaders(i, "3rd", "ascending");
             }
         }
+        pager.destroy();
     });
     
       
@@ -361,8 +366,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var shouldExistInList = function (i, element) {
             //manually retrieve ID
             //todo: make this better?
-            var link = $(element).find('a');
-            var linkId = parseInt(link.attr('id').replace('page-link:link', ''), 10);
+            var link = $(element).find("a");
+            var linkId = parseInt(link.attr("id").replace("page-link:link", ""), 10);
             //if this link is within the leading linkCount
             if (linkId <= j) {
                 return true;
@@ -404,20 +409,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         //Go through all pages 1 by 1 , and click all page dynamically each time
         for (var i = 1; i <= expectedPages; i++) {
-            var page = fluid.jById('page-link:link' + i);
+            var page = fluid.jById("page-link:link" + i);
             page.click();                
             jqUnit.assertEquals("Verify number of top page links", totalPages, 
                                 pager.pagerBar.locate("pageLinks").length + pager.pagerBar.locate("pageLinkSkip").length);                
             var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
-                allPagesAfterClicked.each(allPagesAfterClickedEachFn);
-            }
-        });
+            allPagesAfterClicked.each(allPagesAfterClickedEachFn);
+        }
+        pager.destroy();
+    });
     
     
     jqUnit.test("Pager tooltip", function () {
         var pager = renderedPager("#rendered");
         var pageLinksTop = $("a", pager.pagerBar.locate("pageLinks"));
         var pageLinksBottom = $("a", pager["pagerBar-1"].locate("pageLinks"));
+        // TODO: This method of locating tooltips makes horrendous assumptions
         var tooltips = $(".ui-tooltip-content");
         var midPoint = tooltips.length / 2;
         
@@ -455,6 +462,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         pageLinksTop.each(tooltipTest("top"));
         pageLinksBottom.each(tooltipTest("bottom"));
+        pager.destroy();
     });
     
 })(jQuery);

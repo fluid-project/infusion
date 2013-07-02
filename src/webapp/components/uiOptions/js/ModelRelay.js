@@ -52,7 +52,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uiOptions.modelRelay.removeListeners = function (rules, applier, namespace) {
         fluid.each(rules, function () {
-            applier.removeListener(namespace);
+            applier.modelChanged.removeListener(namespace);
         });
     };
 
@@ -63,7 +63,7 @@ var fluid_1_5 = fluid_1_5 || {};
             });
             fluid.addSourceGuardedListener(sourceApplier, sourceKey, internalKey, function (newModel) {
                 fluid.fireSourcedChange(applier, internalKey, fluid.get(newModel, sourceKey), sourceKey);
-            }, undefined, namespace);
+            }, null, namespace);
         });
     };
 

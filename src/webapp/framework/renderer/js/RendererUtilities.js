@@ -66,7 +66,7 @@ fluid_1_5 = fluid_1_5 || {};
     // Utilities for coordinating options in renderer components - this code is all pretty
     // dreadful and needs to be organised as a suitable set of defaults and policies
     fluid.renderer.modeliseOptions = function (options, defaults, baseOptions) {
-        return $.extend({}, defaults, options, fluid.filterKeys(baseOptions, ["model", "applier"]));
+        return $.extend({}, defaults, fluid.filterKeys(baseOptions, ["model", "applier"]), options);
     };
     fluid.renderer.reverseMerge = function (target, source, names) {
         names = fluid.makeArray(names);
@@ -85,6 +85,7 @@ fluid_1_5 = fluid_1_5 || {};
         var source = options.templateSource ? options.templateSource : {node: $(container)};
         var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, parentThat);
         rendererOptions.fossils = fossils || {};
+        rendererOptions.parentComponent = parentThat;
         if (container.jquery) {
             var cascadeOptions = {
                 document: container[0].ownerDocument,
@@ -121,12 +122,24 @@ fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.defaults("fluid.rendererComponent", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         initFunction: "fluid.initRendererComponent",
         mergePolicy: {
+            "rendererOptions.idMap": "nomerge",
+            "rendererOptions.model": "preserve",
             protoTree: "noexpand, replace",
             parentBundle: "nomerge",
             "changeApplierOptions.resolverSetConfig": "resolverSetConfig"
+        },
+        invokers: {
+            refreshView: {
+                funcName: "fluid.rendererComponent.refreshView",
+                args: "{that}"
+            },
+            produceTree: {
+                funcName: "fluid.rendererComponent.produceTree",
+                args: "{that}"  
+            }
         },
         rendererOptions: {
             autoBind: true
@@ -135,19 +148,49 @@ fluid_1_5 = fluid_1_5 || {};
             prepareModelForRender: null,
             onRenderTree: null,
             afterRender: null,
-            produceTree: "unicast"
+        },
+        listeners: {
+            onCreate: {
+                funcName: "fluid.rendererComponent.renderOnInit",
+                args: ["{that}.options.renderOnInit", "{that}"],
+                priority: "last"
+            }
         }
     });
+    
+    fluid.rendererComponent.renderOnInit = function (renderOnInit, that) {
+        if (renderOnInit) {
+            that.refreshView();
+        }
+    };
+    
+    fluid.rendererComponent.refreshView = function (that) {
+        fluid.renderer.clearDecorators(that);
+        that.events.prepareModelForRender.fire(that.model, that.applier, that);
+        var tree = that.produceTree(that);
+        if (that.renderer.expander) {
+            tree = that.renderer.expander(tree);
+        }
+        that.events.onRenderTree.fire(that, tree);
+        that.renderer.render(tree);
+        that.events.afterRender.fire(that);     
+    };
+    
+    fluid.rendererComponent.produceTree = function (that) {
+       var produceTreeOption = that.options.produceTree;
+       return produceTreeOption ? 
+           (typeof(produceTreeOption) === "string" ? fluid.getGlobalValue(produceTreeOption) : produceTreeOption) (that) :
+           that.options.protoTree;   
+    };
 
     fluid.initRendererComponent = function (componentName, container, options) {
         var that = fluid.initView(componentName, container, options, {gradeNames: ["fluid.rendererComponent"]});
+        fluid.diagnoseFailedView(componentName, that, fluid.defaults(componentName), arguments);
         
         fluid.fetchResources(that.options.resources); // TODO: deal with asynchrony
         
         var rendererOptions = fluid.renderer.modeliseOptions(that.options.rendererOptions, null, that);
-        if (!that.options.noUpgradeDecorators) {
-            rendererOptions.parentComponent = that;
-        }
+
         var messageResolver;
         if (!rendererOptions.messageSource && that.options.strings) {
             messageResolver = fluid.messageResolver({
@@ -158,9 +201,9 @@ fluid_1_5 = fluid_1_5 || {};
             rendererOptions.messageSource = {type: "resolver", resolver: messageResolver}; 
         }
         fluid.renderer.reverseMerge(rendererOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
+        that.rendererOptions = rendererOptions;
 
-
-        var rendererFnOptions = $.extend({}, that.options.rendererFnOptions, { 
+        var rendererFnOptions = $.extend({}, that.options.rendererFnOptions, {
             rendererOptions: rendererOptions,
             repeatingSelectors: that.options.repeatingSelectors,
             selectorsToIgnore: that.options.selectorsToIgnore,
@@ -173,14 +216,6 @@ fluid_1_5 = fluid_1_5 || {};
             rendererFnOptions.templateSource = function () { // TODO: don't obliterate, multitemplates, etc.
                 return that.options.resources.template.resourceText;
             };
-        }
-        var produceTree = that.events.produceTree;
-        produceTree.addListener(function() {
-            return that.options.protoTree;
-        });
-        
-        if (that.options.produceTree) {
-            produceTree.addListener(that.options.produceTree);
         }
 
         fluid.renderer.reverseMerge(rendererFnOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
@@ -201,25 +236,8 @@ fluid_1_5 = fluid_1_5 || {};
         if (messageResolver) {
             that.messageResolver = messageResolver;
         }
+        renderer.refreshView = fluid.getForComponent(that, "refreshView"); // Stopgap implementation for FLUID-4334
 
-        that.refreshView = renderer.refreshView = function () {
-            if (rendererOptions.parentComponent) {
-                fluid.renderer.clearDecorators(rendererOptions.parentComponent);
-            }
-            that.events.prepareModelForRender.fire(that.model, that.applier, that);
-            var tree = produceTree.fire(that);
-            if (that.renderer.expander) {
-                tree = that.renderer.expander(tree);
-            }
-            that.events.onRenderTree.fire(that, tree);
-            that.renderer.render(tree);
-            that.events.afterRender.fire(that);
-        };
-        
-        if (that.options.renderOnInit) {
-            that.refreshView();
-        }
-        
         return that;
     };
     

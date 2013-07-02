@@ -32,9 +32,9 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
-    fluid.table.getRoots = function (target, overallThat, index) {
+    fluid.table.getRoots = function (target, dataOffset, index) {
         target.shortRoot = index;
-        target.longRoot = fluid.pathUtil.composePath(overallThat.options.dataOffset, target.shortRoot);
+        target.longRoot = fluid.pathUtil.composePath(dataOffset, target.shortRoot);
     };
     
     // TODO: This crazed variable expansion system was a sketch for what eventually became the "protoComponent expansion system" delivered in 1.x versions of
@@ -48,8 +48,8 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
-    fluid.table.fetchValue = function (that, dataModel, index, valuebinding, roots) {
-        fluid.table.getRoots(roots, that, index);
+    fluid.table.fetchValue = function (dataOffset, dataModel, index, valuebinding, roots) {
+        fluid.table.getRoots(roots, dataOffset, index);
 
         var path = fluid.table.expandPath(valuebinding, roots.shortRoot, roots.longRoot);
         return fluid.get(dataModel, path);
@@ -59,61 +59,48 @@ var fluid_1_5 = fluid_1_5 || {};
         return function (arec, brec) {
             return (arec.value - brec.value) * sortDir;
         };  
-    }
+    };
     
-    fluid.table.basicSorter = function (overallThat, model) {        
-        var dataModel = overallThat.options.dataModel;
+    fluid.table.basicSorter = function (columnDefs, dataModel, dataOffset, model) {        
         var roots = {};
-        var columnDefs = getColumnDefs(overallThat);
         var columnDef = fluid.table.findColumnDef(columnDefs, model.sortKey);
         var sortrecs = [];
         for (var i = 0; i < model.totalRange; ++i) {
             sortrecs[i] = {
                 index: i,
-                value: fluid.table.fetchValue(overallThat, dataModel, i, columnDef.valuebinding, roots)
+                value: fluid.table.fetchValue(dataOffset, dataModel, i, columnDef.valuebinding, roots)
             };
         }
 
         sortrecs.sort(fluid.table.rowComparator(model.sortDir));
         return fluid.getMembers(sortrecs, "index");
     };
-
-    
-    fluid.pagedTable.directModelFilter = function (model, pagerModel, perm) {
-        var togo = [];
-        var limit = fluid.pager.computePageLimit(pagerModel);
-        for (var i = pagerModel.pageIndex * pagerModel.pageSize; i < limit; ++i) {
-            var index = perm ? perm[i] : i;
-            togo[togo.length] = {index: index, row: model[index]};
-        }
-        return togo;
-    };
    
-    // sets opts.EL, returns ID
-    fluid.table.IDforColumn = function (columnDef, opts) {
-        var options = opts.options;
+    fluid.table.IDforColumn = function (columnDef, keyPrefix, roots) {
         var EL = columnDef.valuebinding;
         var key = columnDef.key;
         if (!EL) {
             fluid.fail("Error in definition for column with key " + key + ": valuebinding is not set");
         }
-        opts.EL = fluid.table.expandPath(EL, opts.shortRoot, opts.longRoot);
         if (!key) {
             var segs = fluid.model.parseEL(EL);
             key = segs[segs.length - 1];
         }
-        var ID = (options.keyPrefix ? options.keyPrefix : "") + key;
-        return ID;
+        return {
+            ID: (keyPrefix || "") + key,
+            EL: fluid.table.expandPath(EL, roots.shortRoot, roots.longRoot)
+        };
     };
    
     
-    fluid.table.bigHeaderForKey = function (key, opts) {
-        var id = opts.options.renderOptions.idMap["header:" + key];
+    fluid.table.bigHeaderForKey = function (key, options) {
+        // TODO: ensure this is shared properly
+        var id = options.rendererOptions.idMap["header:" + key];
         var smallHeader = fluid.jById(id);
         if (smallHeader.length === 0) {
             return null;
         }
-        var headerSortStylisticOffset = opts.overallOptions.selectors.headerSortStylisticOffset;
+        var headerSortStylisticOffset = options.selectors.headerSortStylisticOffset;
         var bigHeader = fluid.findAncestor(smallHeader, function (element) {
             return $(element).is(headerSortStylisticOffset); 
         });
@@ -126,7 +113,7 @@ var fluid_1_5 = fluid_1_5 || {};
         element.removeClass(styles.descendingHeader);
         if (sort !== 0) {
             element.addClass(sort === 1 ? styles.ascendingHeader : styles.descendingHeader);
-            // aria-sort property are specified in the w3 WAI spec, ascending, descending, none, other.
+            // aria-sort property are specified in the W3C WAI spec, ascending, descending, none, other.
             // since pager currently uses ascending and descending, we do not support the others.
             // http://www.w3.org/WAI/PF/aria/states_and_properties#aria-sort
             element.attr("aria-sort", sort === 1 ? "ascending" : "descending"); 
@@ -138,26 +125,26 @@ var fluid_1_5 = fluid_1_5 || {};
         return columnDef ? columnDef.sortable : false;
     };
     
-    fluid.table.setModelSortHeaderClass = function (newModel, opts) {
-        var styles = opts.overallOptions.styles;
-        var sort = fluid.table.isCurrentColumnSortable(opts.columnDefs, newModel) ? newModel.sortDir : 0;
-        fluid.table.setSortHeaderClass(styles, bigHeaderForKey(newModel.sortKey, opts), sort);
+    fluid.table.setModelSortHeaderClass = function (columnDefs, newModel, options) {
+        var styles = options.styles;
+        var sort = fluid.table.isCurrentColumnSortable(columnDefs, newModel) ? newModel.sortDir : 0;
+        fluid.table.setSortHeaderClass(styles, fluid.table.bigHeaderForKey(newModel.sortKey, options), sort);
     };
    
     
-    fluid.table.generateColumnClick = function (overallThat, columnDef, opts) {
+    fluid.table.generateColumnClick = function (tableThat, options, model, columnDef) {
         return function () {
             if (columnDef.sortable === true) {
-                var model = overallThat.model;
+                var model = tableThat.model;
                 var newModel = fluid.copy(model);
-                var styles = overallThat.options.styles;
+                var styles = tableThat.options.styles;
                 var oldKey = model.sortKey;
                 if (columnDef.key !== model.sortKey) {
                     newModel.sortKey = columnDef.key;
                     newModel.sortDir = 1;
-                    var oldBig = bigHeaderForKey(oldKey, opts);
+                    var oldBig = fluid.table.bigHeaderForKey(oldKey, options);
                     if (oldBig) {
-                        setSortHeaderClass(styles, oldBig, 0);
+                        fluid.table.setSortHeaderClass(styles, oldBig, 0);
                     }
                 } else if (newModel.sortKey === columnDef.key) {
                     newModel.sortDir = -1 * newModel.sortDir;
@@ -165,8 +152,8 @@ var fluid_1_5 = fluid_1_5 || {};
                     return false;
                 }
                 newModel.pageIndex = 0;
-                fluid.pager.fireModelChange(overallThat, newModel, true);
-                fluid.table.setModelSortHeaderClass(newModel, opts);                
+                tableThat.applier.requestChange("", newModel);
+                // fluid.table.setModelSortHeaderClass(newModel, options); - done during rerender, surely              
             }
             return false;
         };
@@ -176,25 +163,26 @@ var fluid_1_5 = fluid_1_5 || {};
         return decorators[columnDef.sortable ? "sortableHeader" : "unsortableHeader"];
     };
    
-    fluid.table.generateHeader = function (overallThat, newModel, columnDefs, opts) {
-        var sortableColumnTxt = opts.options.strings.sortableColumnText;
+    fluid.table.generateHeader = function (tableThat, options, newModel) { // arg 2 is renderThat.options
+        var sortableColumnTxt = options.strings.sortableColumnText;
         if (newModel.sortDir === 1) {
-            sortableColumnTxt = opts.options.strings.sortableColumnTextAsc;
+            sortableColumnTxt = options.strings.sortableColumnTextAsc;
         } else if (newModel.sortDir === -1) {
-            sortableColumnTxt = opts.options.strings.sortableColumnTextDesc;
+            sortableColumnTxt = options.strings.sortableColumnTextDesc;
         }
+        var columnDefs = tableThat.options.columnDefs;
 
         return {
             children:  
                 fluid.transform(columnDefs, function (columnDef) {
                     return {
-                        ID: iDforColumn(columnDef, opts),
+                        ID: fluid.table.IDforColumn(columnDef, options.keyPrefix, {}).ID,
                         value: columnDef.label,
                         decorators: [ 
-                            {"jQuery": ["click", fluid.table.generateColumnClick(overallThat, columnDef, opts)]},
+                            {"jQuery": ["click", fluid.table.generateColumnClick(tableThat, options, newModel, columnDef)]},
                             {identify: "header:" + columnDef.key},
-                            {type: "attrs", attributes: { title: (columnDef.key === newModel.sortKey) ? sortableColumnTxt : opts.options.strings.sortableColumnText}}
-                        ].concat(fluid.table.fetchHeaderDecorators(opts.overallOptions.decorators, columnDef))
+                            {type: "attrs", attributes: { title: (columnDef.key === newModel.sortKey) ? sortableColumnTxt : options.strings.sortableColumnText}}
+                        ].concat(fluid.table.fetchHeaderDecorators(options.decorators, columnDef))
                     };
                 })  
         };
@@ -228,7 +216,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.table.expandPaths = function (target, tree, opts) {
         for (var i in tree) {
             var val = tree[i];
-            if (val === fluid.VALUE) {
+            if (fluid.isMarker(val, fluid.VALUE)) { // TODO, in theory, we could prevent copying of columnDefs
                 if (i === "valuebinding") {
                     target[i] = opts.EL;
                 } else {
@@ -248,14 +236,17 @@ var fluid_1_5 = fluid_1_5 || {};
         return target;
     };
    
-    fluid.table.expandColumnDefs = function (filteredRow, opts) {
-        var tree = fluid.transform(opts.columnDefs, function (columnDef) {
-            var ID = fluid.table.IDforColumn(columnDef, opts);
+    fluid.table.expandColumnDefs = function (columnDefs, keyPrefix, dataModel, filteredRow, roots) {
+        var tree = fluid.transform(columnDefs, function (columnDef) {
+            var record = fluid.table.IDforColumn(columnDef, keyPrefix, roots);
+            var opts = $.extend({
+                dataModel: dataModel
+            }, roots, record);
             var togo;
             if (!columnDef.components) {
                 return {
-                    ID: ID,
-                    valuebinding: opts.EL
+                    ID: record.ID,
+                    valuebinding: record.EL
                 };
             } else if (typeof columnDef.components === "function") {
                 togo = columnDef.components(filteredRow.row, filteredRow.index);
@@ -263,7 +254,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 togo = columnDef.components;
             }
             togo = fluid.table.expandPaths({}, togo, opts);
-            togo.ID = ID;
+            togo.ID = record.ID;
             return togo;
         });
         return tree;
@@ -272,70 +263,114 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.table.fetchDataModel = function (dataModel, dataOffset) {
         return fluid.get(dataModel, dataOffset);
     };
-   
+    
+    fluid.table.produceTree = function (tableThat, renderThat) {
+        var options = renderThat.options;
+        var columnDefs = tableThat.options.columnDefs;
+        var roots = {};
+        var tree = fluid.transform(tableThat.filtered, 
+            function (filteredRow) {
+                fluid.table.getRoots(roots, tableThat.options.dataOffset, filteredRow.index);
+                if (columnDefs === "explode") {
+                    return fluid.explode(filteredRow.row, roots.longRoot);
+                } else if (columnDefs.length) {
+                    return fluid.table.expandColumnDefs(columnDefs, renderThat.options.keyPrefix, tableThat.dataModel, filteredRow, roots);
+                }
+            });
+        var fullTree = {};
+        fullTree[options.row] = tree;
+        if (typeof (columnDefs) === "object") {
+            fullTree[options.header] = fluid.table.generateHeader(tableThat, renderThat.options, tableThat.model);
+        }
+        return fullTree;
+    };
+    
+    fluid.table.sortInvoker = function (tableThat, newModel) {
+        var columnDefs = tableThat.options.columnDefs;
+        var sorted = fluid.table.isCurrentColumnSortable(columnDefs, newModel) ? 
+            tableThat.options.sorter(columnDefs, tableThat.dataModel, tableThat.options.dataOffset, newModel) : null;
+        tableThat.permutation = sorted;      
+    }; 
+    
+    fluid.table.onModelChange = function (tableThat, renderThat, newModel, oldModel) {
+        tableThat.dataModel = tableThat.fetchDataModel();
+        tableThat.filtered = tableThat.options.modelFilter(tableThat.dataModel, newModel, tableThat.permutation);
+    };
    
     /** A body renderer implementation which uses the Fluid renderer to render a table section **/
-   
-    fluid.table.selfRender = function (overallThat, inOptions) {
-        var that = fluid.initView("fluid.table.selfRender", overallThat.container, inOptions);
-        var options = that.options;
-        var root = that.locate("root");
-        var template = fluid.selfRender(root, {}, options.renderOptions);
-        root.addClass(options.styles.root);
-        var columnDefs = getColumnDefs(overallThat);
-        var expOpts = {options: options, columnDefs: columnDefs, overallOptions: overallThat.options, dataModel: overallThat.options.dataModel, idMap: idMap};
-        var directModel = overallThat.fetchDataModel();
-
-        return {
-            returnedOptions: {
-                listeners: {
-                    onModelChange: function (newModel, oldModel) {
-                        var filtered = overallThat.options.modelFilter(directModel, newModel, overallThat.permutation);
-                        var tree = fluid.transform(filtered, 
-                            function (filteredRow) {
-                                fluid.table.getRoots(expOpts, overallThat, filteredRow.index);
-                                if (columnDefs === "explode") {
-                                    return fluid.explode(filteredRow.row, expOpts.longRoot);
-                                } else if (columnDefs.length) {
-                                    return fluid.table.expandColumnDefs(filteredRow, expOpts);
-                                }
-                            });
-                        var fullTree = {};
-                        fullTree[options.row] = tree;
-                        if (typeof (columnDefs) === "object") {
-                            fullTree[options.header] = generateHeader(overallThat, newModel, columnDefs, expOpts);
-                        }
-                        options.renderOptions = options.renderOptions || {};
-                        options.renderOptions.model = expOpts.dataModel;
-                        fluid.reRender(template, root, fullTree, options.renderOptions);
-                        overallThat.events.afterRender.fire(overallThat);
-                        fluid.table.setModelSortHeaderClass(newModel, expOpts); // TODO, should this not be actually renderable?
-                    }
-                }
-            }
-        };
-    };
 
     fluid.defaults("fluid.table.selfRender", {
-        selectors: {
-            root: ".flc-pager-body-template"
+        gradeNames: ["fluid.rendererComponent", "autoInit"],
+        listeners: {
+            onCreate: [{
+                "this": "{that}.root",
+                method: "addClass",
+                args: "{that}.options.styles.root"  
+            }],
+            onModelChange: [{
+                funcName: "fluid.table.onModelChange",
+                namespace: "onModelChange",
+                args: ["{fluid.table}", "{fluid.table.selfRender}", "{arguments}.0", "{arguments}.1"] // newModel, oldModel
+            }, {
+                func: "{that}.sortInvoker",
+                namespace: "sortInvoker",
+                args: "{arguments}.0"
+            }, {
+                priority: "last",
+                namespace: "refreshView",
+                func: "{that}.refreshView"
+            }],
+            afterRender: { // TODO, should this not be actually renderable?
+                funcName: "fluid.table.setModelSortHeaderClass",
+                args: ["{that}.options.columnDefs", "{fluid.table}.model", "{that}.options"]
+            }
         },
+        events: {
+            onModelChange: "{fluid.table}.events.onModelChange"  
+        },
+        invokers: {
+            sortInvoker: {
+                funcName: "fluid.table.sortInvoker",
+                args: ["{fluid.table}", "{arguments}.0"] // newModel
+            },
+            produceTree: {
+                funcName: "fluid.table.produceTree",
+                args: ["{fluid.table}", "{fluid.table.selfRender}"]
+            }
+        },
+        selectors: {
+            root: ".flc-pager-body-template",
+            headerSortStylisticOffset: "{table}.options.selectors.headerSortStylisticOffset"
+        },
+        selectorsToIgnore: ["root", "headerSortStylisticOffset"],
         styles: {
-            root: "fl-pager"
+            root: "fl-pager",
+            ascendingHeader: "{table}.options.styles.ascendingHeader",
+            descendingHeader: "{table}.options.styles.descendingHeader"
+        },
+        members: {
+            root: "{that}.dom.root"  
+        },
+        decorators: {
+            sortableHeader: [],
+            unsortableHeader: []
         },
         keyStrategy: "id",
         keyPrefix: "",
         row: "row:",
         header: "header:",
-        
-        strings: {
-            sortableColumnText: "Select to sort",
-            sortableColumnTextDesc: "Select to sort in ascending, currently in descending order.",
-            sortableColumnTextAsc: "Select to sort in descending, currently in ascending order."
-        },
-
+        strings: "{table}.options.strings",
+        columnDefs: "{table}.options.columnDefs",
         // Options passed upstream to the renderer
-        renderOptions: {}
+        rendererFnOptions: {
+            templateSource: {node: "{that}.dom.root"},
+            renderTarget: "{that}.dom.root",
+            noexpand: true,
+        },
+        rendererOptions: {
+            model: "{table}.options.dataModel",
+            idMap: {},
+        }
     });
     
     
@@ -349,11 +384,13 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.table", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         mergePolicy: {
-            dataModel: "preserve"
+            dataModel: "preserve",
+            columnDefs: "noexpand"
         },
         components: {
             bodyRenderer: {
-                type: "fluid.table.selfRender"
+                type: "fluid.table.selfRender",
+                container: "{table}.container"
             }
         },
         listeners: {
@@ -377,6 +414,19 @@ var fluid_1_5 = fluid_1_5 || {};
                  funcName: "fluid.table.fetchDataModel",
                  args: ["{that}.options.dataModel", "{that}.options.dataOffset"]
              }
+        },
+                
+        styles: {
+            ascendingHeader: "fl-pager-asc",
+            descendingHeader: "fl-pager-desc"
+        },
+        selectors: {
+            headerSortStylisticOffset: ".flc-pager-sort-header"  
+        },
+        strings: {
+            sortableColumnText: "Select to sort",
+            sortableColumnTextDesc: "Select to sort in ascending, currently in descending order.",
+            sortableColumnTextAsc: "Select to sort in descending, currently in ascending order."
         },
         // Offset of the tree's "main" data from the overall dataModel root
         dataOffset: "",
