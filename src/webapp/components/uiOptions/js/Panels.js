@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid_1_5:true, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_5 = fluid_1_5 || {};
@@ -27,6 +27,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.textfieldSlider", {
         gradeNames: ["fluid.textfieldSlider", "autoInit"],
         model: "{fluid.uiOptions.panels}.model",
+        range: "{fluid.uiOptions.panels}.options.range",
         listeners: {
             modelChanged: {
                 listener: "{fluid.uiOptions.panels}.applier.requestChange",
@@ -45,7 +46,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
-        model: {
+        range: {
             min: 1,
             max: 2
         },
@@ -74,7 +75,7 @@ var fluid_1_5 = fluid_1_5 || {};
             range: "min"
         }
     });
-    
+
     /************************
      * UI Options Text Font *
      ************************/
@@ -93,7 +94,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         produceTree: "fluid.uiOptions.panels.textFont.produceTree",
         classnameMap: null, // must be supplied by implementors
-        controlValues: { 
+        controlValues: {
             textFont: ["default", "times", "comic", "arial", "verdana"]
         }
     });
@@ -116,7 +117,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         };
     };
-    
+
     /**************************
      * UI Options Line Spacer *
      **************************/
@@ -129,7 +130,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
-        model: {
+        range: {
             min: 1,
             max: 2
         },
@@ -158,7 +159,7 @@ var fluid_1_5 = fluid_1_5 || {};
             range: "min"
         }
     });
-    
+
     /***********************
      * UI Options Contrast *
      ***********************/
@@ -182,7 +183,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         repeatingSelectors: ["themeRow"],
         produceTree: "fluid.uiOptions.panels.contrast.produceTree",
-        controlValues: { 
+        controlValues: {
             theme: ["default", "bw", "wb", "by", "yb"]
         },
         markup: {
@@ -225,7 +226,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         };
     };
-    
+
     /******************************
      * UI Options Layout Controls *
      ******************************/
@@ -279,7 +280,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component that decorates the options on the select dropdown list box with the css style
      */
     fluid.defaults("fluid.uiOptions.selectDecorator", {
-        gradeNames: ["fluid.viewComponent", "autoInit"], 
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         listeners: {
             onCreate: "fluid.uiOptions.selectDecorator.decorateOptions"
         },
@@ -287,7 +288,7 @@ var fluid_1_5 = fluid_1_5 || {};
             preview: "fl-preview-theme"
         }
     });
-    
+
     fluid.uiOptions.selectDecorator.decorateOptions = function (that) {
         fluid.each($("option", that.container), function (option) {
             var styles = that.options.styles;
@@ -312,7 +313,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     /*********************************************************************************************************
      * Starter Settings Panels
-     * 
+     *
      * A collection of all the default UIO setting panels.
      *********************************************************************************************************/
     fluid.defaults("fluid.uiOptions.starterPanels", {
@@ -442,10 +443,10 @@ var fluid_1_5 = fluid_1_5 || {};
 
     /**
      * A template loader component that specifies the templates used by starterPanels
-     * 
+     *
      * @param {Object} options
-     */    
-       
+     */
+
     fluid.defaults("fluid.uiOptions.starterTemplateLoader", {
         gradeNames: ["fluid.uiOptions.templateLoader", "autoInit"],
         templates: {
