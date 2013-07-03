@@ -21,9 +21,9 @@ var fluid_1_5 = fluid_1_5 || {};
 
     "use strict";
 
-    fluid.registerNamespace("fluid.uiOptions.schema");
+    fluid.registerNamespace("fluid.uiOptions.schemas");
 
-    fluid.uiOptions.schema.merge = function merge(target, source) {
+    fluid.uiOptions.schemas.merge = function merge(target, source) {
         if (!target) {
             target = {
                 type: "object",
@@ -46,17 +46,17 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uiOptions.initSchemaBuilder = function init() {};
 
-    fluid.defaults("fluid.uiOptions.schema", {
+    fluid.defaults("fluid.uiOptions.schemas", {
         gradeNames: ["autoInit", "fluid.littleComponent"],
         mergePolicy: {
-            schema: fluid.uiOptions.schema.merge
+            schema: fluid.uiOptions.schemas.merge
         }
     });
 
-    fluid.defaults("fluid.uiOptions.schema.textSizer", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schema"],
+    fluid.defaults("fluid.uiOptions.schemas.textSize", {
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
         schema: {
-            "fluid.uiOptions.textSizer": {
+            "fluid.uiOptions.textSize": {
                 "type": "number",
                 "default": 1,
                 "minimum": 1,
@@ -66,10 +66,10 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.schema.lineSpacer", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schema"],
+    fluid.defaults("fluid.uiOptions.schemas.lineSpacing", {
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
         schema: {
-            "fluid.uiOptions.lineSpacer": {
+            "fluid.uiOptions.lineSpacing": {
                 "type": "number",
                 "default": 1,
                 "minimum": 1,
@@ -79,8 +79,8 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.schema.textFont", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schema"],
+    fluid.defaults("fluid.uiOptions.schemas.textFont", {
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
         schema: {
             "fluid.uiOptions.textFont": {
                 "type": "string",
@@ -90,8 +90,8 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.schema.contrast", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schema"],
+    fluid.defaults("fluid.uiOptions.schemas.contrast", {
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
         schema: {
             "fluid.uiOptions.contrast": {
                 "type": "string",
@@ -101,22 +101,32 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.schema.layoutControls", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schema"],
+    fluid.defaults("fluid.uiOptions.schemas.tableOfContents", {
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
         schema: {
-            "fluid.uiOptions.layoutControls": {
+            "fluid.uiOptions.tableOfContents": {
                 "type": "boolean",
                 "default": false
             }
         }
     });
 
-    fluid.defaults("fluid.uiOptions.schema.linksControls", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schema"],
+    fluid.defaults("fluid.uiOptions.schemas.emphasizeLinks", {
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
         schema: {
-            "fluid.uiOptions.linksControls": {
-                "links": false,
-                "inputsLarger": false
+            "fluid.uiOptions.emphasizeLinks": {
+                "type": "boolean",
+                "default": false
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.schemas.inputsLarger", {
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+        schema: {
+            "fluid.uiOptions.inputsLarger": {
+                "type": "boolean",
+                "default": false
             }
         }
     });

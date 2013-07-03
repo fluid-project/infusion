@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     fluid.defaults("fluid.tests.properSchemaGrade", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schema"],
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
         schema: {
             "type": "object",
             "properties": {
@@ -43,7 +43,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             schema: {
                 type: "fluid.littleComponent",
                 options: {
-                    gradeNames: ["fluid.uiOptions.schema.textSizer", "fluid.uiOptions.schema.lineSpacer"]
+                    gradeNames: ["fluid.uiOptions.schemas.textSize", "fluid.uiOptions.schemas.lineSpacing"]
                 }
             },
             properSchema: {
@@ -92,17 +92,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testContributedSchema = function testContributedSchema(schema) {
         var contributedSchema = $.extend(true, {},
-            fluid.defaults("fluid.uiOptions.schema.textSizer").schema,
-            fluid.defaults("fluid.uiOptions.schema.lineSpacer").schema);
+            fluid.defaults("fluid.uiOptions.schemas.textSize").schema,
+            fluid.defaults("fluid.uiOptions.schemas.lineSpacing").schema);
         var finalSchema = schema.options.schema;
         verifySchema(contributedSchema, finalSchema);
         contributedSchema =
-            fluid.defaults("fluid.uiOptions.schema.textSizer").schema.properties["fluid.uiOptions.textSizer"];
-        finalSchema = schema.options.schema.properties["fluid.uiOptions.textSizer"];
+            fluid.defaults("fluid.uiOptions.schemas.textSize").schema.properties["fluid.uiOptions.textSize"];
+        finalSchema = schema.options.schema.properties["fluid.uiOptions.textSize"];
         verifySchema(contributedSchema, finalSchema);
         contributedSchema =
-            fluid.defaults("fluid.uiOptions.schema.lineSpacer").schema.properties["fluid.uiOptions.lineSpacer"];
-        finalSchema = schema.options.schema.properties["fluid.uiOptions.lineSpacer"];
+            fluid.defaults("fluid.uiOptions.schemas.lineSpacing").schema.properties["fluid.uiOptions.lineSpacing"];
+        finalSchema = schema.options.schema.properties["fluid.uiOptions.lineSpacing"];
         verifySchema(contributedSchema, finalSchema);
     };
 
