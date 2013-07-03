@@ -56,7 +56,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     uiOptions: {
                         options: {
-                            gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.initialModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
+                            gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
                         }
                     }
                 }
@@ -101,14 +101,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.tests.afterShowFunc3 = function (fatPanel) {
         return function () {
-            var initialModel = fatPanel.uiOptionsLoader.uiOptions.initialModel;
+            var rootModel = fatPanel.uiOptionsLoader.uiOptions.rootModel;
             var pageModel = fatPanel.pageEnhancer.model;
             var panelModel = fatPanel.iframeRenderer.iframeEnhancer.model;
             
             fatPanel.locate("reset").click();
-            fluid.tests.uiOptions.checkModelSelections("pageModel from defaults", initialModel, pageModel);
+            fluid.tests.uiOptions.checkModelSelections("pageModel from defaults", rootModel, pageModel);
             fatPanel.slidingPanel.hidePanel();
-            fluid.tests.uiOptions.checkModelSelections("panelModel from defaults", initialModel, panelModel);
+            fluid.tests.uiOptions.checkModelSelections("panelModel from defaults", rootModel, panelModel);
             fluid.tests.uiOptions.checkModelSelections("pageModel from panelModel", pageModel, panelModel);  
         };
     };
@@ -190,7 +190,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     uiOptions: {
                         options: {
                             members: {
-                                initialModel: {
+                                rootModel: {
                                     theme: "yb"
                                 }
                             }

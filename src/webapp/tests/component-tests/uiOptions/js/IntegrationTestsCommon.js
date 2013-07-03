@@ -38,20 +38,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         textSize: "1.8",
         textFont: "verdana",
         theme: "bw",
-        lineSpacing: 2
+        lineSpace: 2
     };
 
     fluid.tests.uiOptions.ybSkin = {
         textSize: "2",
         textFont: "comic sans",
         theme: "yb",
-        lineSpacing: 1.5
+        lineSpace: 1.5
     };
 
     fluid.tests.uiOptions.expectedComponents = {
         "fluid.uiOptions.fatPanel": [
-            "textSizer",
-            "lineSpacer",
+            "textSize",
+            "lineSpace",
             "textFont",
             "contrast",
             "layoutControls",
@@ -59,8 +59,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "eventBinder"
         ],
         "fluid.uiOptions.fullNoPreview": [
-            "textSizer",
-            "lineSpacer",
+            "textSize",
+            "lineSpace",
             "textFont",
             "contrast",
             "layoutControls",
@@ -68,8 +68,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "eventBinder"
         ],
         "fluid.uiOptions.fullPreview": [
-            "textSizer",
-            "lineSpacer",
+            "textSize",
+            "lineSpace",
             "textFont",
             "contrast",
             "layoutControls",
@@ -114,7 +114,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
 
             function testComponent(uiOptionsLoader, uiOptions) {
-                var initialModel = uiOptions.initialModel;
+                var rootModel = uiOptions.rootModel;
 
                 fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents[componentName]);
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
@@ -132,12 +132,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 var resetButton = uiOptions.locate("reset");
                 resetButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from original", initialModel, uiOptions.model.selections);
+                fluid.tests.uiOptions.checkModelSelections("model from original", rootModel, uiOptions.model.selections);
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
 
                 cancelButton.click();
                 fluid.tests.uiOptions.checkModelSelections("model from original (correct state after reset and cancel)",
-                    (resetShouldSave ? initialModel : fluid.tests.uiOptions.bwSkin), uiOptions.model.selections);
+                    (resetShouldSave ? rootModel : fluid.tests.uiOptions.bwSkin), uiOptions.model.selections);
 
                 jqUnit.start();
             }
@@ -159,7 +159,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 uiOptions: {
                     options: {
-                        gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.initialModel.starter"],
+                        gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter"],
                         listeners: {
                             "onSave.munged": testSave
                         }
@@ -186,7 +186,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.uiOptions.enhancerOptions = {
-        gradeNames: ["fluid.uiEnhancer.starterActions", "fluid.uiOptions.initialModel.starter"],
+        gradeNames: ["fluid.uiEnhancer.starterActions", "fluid.uiOptions.rootModel.starter"],
         tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
         classnameMap: {
             "textFont": {
@@ -241,7 +241,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         uiOptions: {
             options: {
-                gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.initialModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
+                gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
             }
         }
     };
@@ -266,7 +266,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 uiOptions: {
                     options: {
                         members: {
-                            initialModel: {
+                            rootModel: {
                                 theme: "yb"
                             }
                         }

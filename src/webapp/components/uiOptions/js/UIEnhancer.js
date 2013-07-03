@@ -45,7 +45,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 "by": "fl-theme-uio-by fl-theme-by",
                 "yb": "fl-theme-uio-yb fl-theme-yb"
             },
-            "layout": "fl-layout-linear",
             "links": "fl-link-enhanced",
             "inputsLarger": "fl-text-larger"
         }
@@ -105,7 +104,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
         components: {
             textSize: {
-                type: "fluid.uiOptions.enactor.textSizer",
+                type: "fluid.uiOptions.enactors.textSize",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
@@ -114,12 +113,12 @@ var fluid_1_5 = fluid_1_5 || {};
                         "textSize": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.initialModel}.initialModel.textSize"
+                        value: "{fluid.uiOptions.rootModel}.rootModel.textSize"
                     }
                 }
             },
             textFont: {
-                type: "fluid.uiOptions.enactor.classSwapper",
+                type: "fluid.uiOptions.enactors.classSwapper",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.textFont",
@@ -128,26 +127,26 @@ var fluid_1_5 = fluid_1_5 || {};
                         "textFont": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.initialModel}.initialModel.textFont"
+                        value: "{fluid.uiOptions.rootModel}.rootModel.textFont"
                     }
                 }
             },
-            lineSpacing: {
-                type: "fluid.uiOptions.enactor.lineSpacer",
+            lineSpace: {
+                type: "fluid.uiOptions.enactors.lineSpace",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
-                        "lineSpacing": "value"
+                        "lineSpace": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.initialModel}.initialModel.lineSpacing"
+                        value: "{fluid.uiOptions.rootModel}.rootModel.lineSpace"
                     }
                 }
             },
             theme: {
-                type: "fluid.uiOptions.enactor.classSwapper",
+                type: "fluid.uiOptions.enactors.classSwapper",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.theme",
@@ -156,12 +155,12 @@ var fluid_1_5 = fluid_1_5 || {};
                         "theme": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.initialModel}.initialModel.theme"
+                        value: "{fluid.uiOptions.rootModel}.rootModel.theme"
                     }
                 }
             },
             emphasizeLinks: {
-                type: "fluid.uiOptions.enactor.emphasizeLinks",
+                type: "fluid.uiOptions.enactors.emphasizeLinks",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.links",
@@ -170,12 +169,12 @@ var fluid_1_5 = fluid_1_5 || {};
                         "links": "value"
                     },
                     model: {
-                        links: "{fluid.uiOptions.initialModel}.initialModel.links"
+                        links: "{fluid.uiOptions.rootModel}.rootModel.links"
                     }
                 }
             },
             inputsLarger: {
-                type: "fluid.uiOptions.enactor.inputsLarger",
+                type: "fluid.uiOptions.enactors.inputsLarger",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.inputsLarger",
@@ -184,12 +183,12 @@ var fluid_1_5 = fluid_1_5 || {};
                         "inputsLarger": "value"
                     },
                     model: {
-                        inputsLarger: "{fluid.uiOptions.initialModel}.initialModel.inputsLarger"
+                        inputsLarger: "{fluid.uiOptions.rootModel}.rootModel.inputsLarger"
                     }
                 }
             },
             tableOfContentsEnactor: {
-                type: "fluid.uiOptions.enactor.tableOfContentsEnactor",
+                type: "fluid.uiOptions.enactors.tableOfContentsEnactor",
                 container: "{uiEnhancer}.container",
                 createOnEvent: "onCreateToc",
                 options: {
@@ -203,20 +202,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         onLateRefreshRelay: "{uiEnhancer}.events.onAsyncEnactorReady"
                     },
                     model: {
-                        toc: "{fluid.uiOptions.initialModel}.initialModel.toc"
-                    }
-                }
-            },
-            IE6ColorInversion: {
-                type: "fluid.uiOptions.enactor.IE6ColorInversion",
-                container: "{uiEnhancer}.container",
-                options: {
-                    sourceApplier: "{uiEnhancer}.applier",
-                    rules: {
-                        "theme": "value"
-                    },
-                    model: {
-                        value: "{fluid.uiOptions.initialModel}.initialModel.theme"
+                        toc: "{fluid.uiOptions.rootModel}.rootModel.toc"
                     }
                 }
             }
@@ -231,9 +217,6 @@ var fluid_1_5 = fluid_1_5 || {};
             }, {
                 listener: "{that}.inputsLarger.handleStyle",
                 args: "{that}.model.inputsLarger"
-            }, {
-                listener: "{that}.IE6ColorInversion.setIE6ColorInversion",
-                args: "{that}.model.theme"
             }]
         },
         finalInitFunction: "fluid.uiEnhancer.starterActions.finalInit"
@@ -266,7 +249,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.defaults("fluid.pageEnhancer", {
-        gradeNames: ["fluid.originalEnhancerOptions", "fluid.uiOptions.initialModel", "fluid.uiOptions.settingsGetter"],
+        gradeNames: ["fluid.originalEnhancerOptions", "fluid.uiOptions.rootModel", "fluid.uiOptions.settingsGetter"],
         components: {
             uiEnhancer: {
                 type: "fluid.uiEnhancer",

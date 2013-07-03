@@ -30,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             emphasizeLinks: {
-                type: "fluid.uiOptions.enactor.emphasizeLinks",
+                type: "fluid.uiOptions.enactors.emphasizeLinks",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: emphasizeLinksClass,
@@ -105,7 +105,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             uiOptions: {
-                type: "fluid.uiOptions.initialModel.starter"
+                type: "fluid.uiOptions.rootModel.starter"
             },
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
@@ -182,10 +182,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             uiOptions: {
-                type: "fluid.uiOptions.initialModel.starter",
+                type: "fluid.uiOptions.rootModel.starter",
                 options: {
                     members: {
-                        initialModel: {
+                        rootModel: {
                             theme: "yb"
                         }
                     }

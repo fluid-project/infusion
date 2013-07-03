@@ -65,9 +65,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var saveCalled = false;
 
         fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
-            funcName: "fluid.uiOptions.starterSettingsPanels",
+            funcName: "fluid.uiOptions.starterPanels",
             options: {
-                gradeNames: ["fluid.uiOptions.initialModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
+                gradeNames: ["fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
                 components: {
                     uiEnhancer: {
                         type: "fluid.uiEnhancer",
@@ -94,14 +94,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             textSize: "1.8",
             textFont: "verdana",
             theme: "bw",
-            lineSpacing: 2
+            lineSpace: 2
         };
         
         var bwSkin2 = {
             textSize: "1.1",
             textFont: "italic",
             theme: "cw",
-            lineSpacing: 1
+            lineSpace: 1
         };
 
         var maxTextSize = {
@@ -125,122 +125,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         jqUnit.module("UIOptions Tests");
 
-        var sortByKeyLength = function (initial, expected) {
-            var actual = fluid.uiOptions.sortByKeyLength(initial);
-            jqUnit.assertDeepEq("Sorted correctly", expected, actual);
-        };
-        
-        jqUnit.test("Sort object key by length", function () {
-            jqUnit.expect(2);
-
-            var initial = {
-                "ddd": "1",
-                "cc": "2",
-                "a": "3"
-            };
-            var expected = ["a", "cc", "ddd"];
-            sortByKeyLength(initial, expected);
-
-            initial = {
-                "aaaa.***.ccc": "1",
-                "aaaa.bbb.cc": "2",
-                "aaaa.bbb.cccdd": "3",
-                "a.b.c": "1"
-            };
-            expected = ["a.b.c", "aaaa.bbb.cc", "aaaa.***.ccc", "aaaa.bbb.cccdd"];
-            sortByKeyLength(initial, expected);
-        });
-        
-        var expandPathTest = function (initial, expected) {
-            var actual = fluid.uiOptions.expandShortPath(initial);
-            jqUnit.assertDeepEq("The path is expanded correctly", expected, actual);
-        };
-    
-        jqUnit.test("Expand Path", function () {
-            jqUnit.expect(2);
-            var initial = "*.comp1.*.comp2.*.comp3";
-            var expected = "components.comp1.options.components.comp2.options.components.comp3";
-            expandPathTest(initial, expected);
-
-            initial = "comp1.comp2.comp3";
-            expandPathTest(initial, initial);
-        });
-        
-        jqUnit.test("Map Options", function () {
-            jqUnit.expect(3);
-            
-            var config = fluid.defaults("fluid.uiOptions.inline").uiOptionsTransform.config;
-
-            var options = null;
-            
-            var actual = fluid.uiOptions.mapOptions(options, config, "preserve");
-            jqUnit.assertDeepEq("The path is expanded correctly", {}, actual);
-
-            config = fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions").uiOptionsTransform.config;
-
-            options = {
-                textFont: {
-                    opt1: "food"
-                }
-            };
-
-            var expected = {
-                components: {
-                    uiOptionsLoader: {
-                        options: {
-                            components: {
-                                uiOptions: {
-                                    options: {
-                                        components: {
-                                            textFont: {
-                                                opt1: "food"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-            
-            actual = fluid.uiOptions.mapOptions(options, config, "preserve");
-            jqUnit.assertDeepEq("The path is expanded correctly", expected, actual);
-
-            options = {
-                uiOptions: {
-                    opt: "drink"
-                },
-                contrast: {
-                    opt1: "food"
-                }
-            };
-            
-            expected = {
-                components: {
-                    uiOptionsLoader: {
-                        options: {
-                            components: {
-                                uiOptions: {
-                                    opt: "drink",
-                                    options: {
-                                        components: {
-                                            contrast: {
-                                                opt1: "food"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-            
-            actual = fluid.uiOptions.mapOptions(options, config);
-            jqUnit.assertDeepEq("Multiple options are expanded and combined correctly", expected, actual);
-        });
-        
         jqUnit.test("Template Loader", function () {
             jqUnit.expect(6);
 
@@ -294,7 +178,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             var testTemplatePrefix = "../test/";
             var uiOptionsDefaultTemplateName = "FatPanelUIOptions.html";
-            var lineSpacerTemplateName = "UIOptionsTemplate-lineSpacer.html";
+            var lineSpaceTemplateName = "UIOptionsTemplate-lineSpace.html";
 
             // Supply the templates
             fluid.demands("fluid.uiOptions.templatePath", "fluid.uiOptionsCustomizedTemplateLoader", {
@@ -306,7 +190,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.defaults("fluid.uiOptions.customizedTemplateLoader", {
                 gradeNames: ["fluid.uiOptions.templateLoader", "autoInit"],
                 templates: {
-                    lineSpacer: "%prefix/" + lineSpacerTemplateName
+                    lineSpace: "%prefix/" + lineSpaceTemplateName
                 }
             });
 
@@ -327,23 +211,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("uiOptions template url is set correctly", testTemplatePrefix + uiOptionsDefaultTemplateName, loader.templateLoader.resources.uiOptions.url);
             jqUnit.assertTrue("uiOptions forceCache is set", loader.templateLoader.resources.uiOptions.forceCache);
 
-            jqUnit.assertEquals("lineSpacer template url is set correctly", testTemplatePrefix + lineSpacerTemplateName, loader.templateLoader.resources.lineSpacer.url);
-            jqUnit.assertTrue("lineSpacer forceCache is set", loader.templateLoader.resources.lineSpacer.forceCache);
+            jqUnit.assertEquals("lineSpace template url is set correctly", testTemplatePrefix + lineSpaceTemplateName, loader.templateLoader.resources.lineSpace.url);
+            jqUnit.assertTrue("lineSpace forceCache is set", loader.templateLoader.resources.lineSpace.forceCache);
         });
         
-        var assertInitialModel = function (model) {
-            jqUnit.expect(6);
+        var assertRootModel = function (model) {
+            jqUnit.expect(5);
             jqUnit.assertNotNull("Model is not null", model);
             jqUnit.assertNotUndefined("Model is not undefined", model);
             jqUnit.assertFalse("Min text size is not set", !!model.textSize);
             jqUnit.assertEquals("Text font is set", "default", model.selections.textFont);
             jqUnit.assertEquals("Colour scheme is set", "default", model.selections.theme);
-            jqUnit.assertEquals("Layout value is set", false, model.selections.layout);
         };
         
         jqUnit.asyncTest("Init Model - default", function () {
             testUIOptions(function (uiOptionsLoader, uiOptions) {
-                assertInitialModel(uiOptions.model);
+                assertRootModel(uiOptions.model);
                 jqUnit.start();
             });
         });
@@ -352,7 +235,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(4);
             
             testUIOptions(function (uiOptionsLoader, uiOptions) {
-                assertInitialModel(uiOptions.model);
+                assertRootModel(uiOptions.model);
 
                 var themeValues = uiOptions.contrast.options.controlValues.theme;
                 jqUnit.assertEquals("There are 5 themes in the control", 5, themeValues.length);
@@ -434,7 +317,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testDiffInit"], {
                 options: {
                     members: {
-                        initialModel: {
+                        rootModel: {
                             theme: "wb",
                             textFont: "times"
                         }
@@ -443,7 +326,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
 
             testUIOptions(function (uiOptionsLoader, uiOptions) {
-                var settings = uiOptions.initialModel;
+                var settings = uiOptions.rootModel;
                 
                 var themeValue = settings.theme;
                 jqUnit.assertEquals("The theme is set to wb", "wb", themeValue);
@@ -465,7 +348,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
             uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
             uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
-            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);
+            uiOptions.applier.requestChange("selections.lineSpace", selectionOptions.lineSpace);
         };
         
         var checkPaths = function (uiOptions, paths) {
@@ -478,7 +361,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals(message + ": Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
             jqUnit.assertEquals(message + ": Theme correctly updated", expectedSelections.theme, actualSelections.theme);
             jqUnit.assertEquals(message + ": Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
-            jqUnit.assertEquals(message + ": Line spacing correctly updated", expectedSelections.lineSpacing, actualSelections.lineSpacing);
+            jqUnit.assertEquals(message + ": Line spacing correctly updated", expectedSelections.lineSpace, actualSelections.lineSpace);
         };
 
         var checkSettingsStore = function (message, expectedSelections, actualSelections, preSaveSelections) {
@@ -497,7 +380,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Initially, settings store settings are empty",
                 $.isEmptyObject(uiOptions.getSettings()));
             jqUnit.assertDeepEq("Initially, model should correspond to default model",
-                uiOptions.initialModel, uiOptions.model.selections);
+                uiOptions.rootModel, uiOptions.model.selections);
 
             var preSaveSelections = fluid.copy(uiOptions.model.selections);
             applierRequestChanges(uiOptions, saveModel);
@@ -513,7 +396,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkSettingsStore("After applying cancelModel and clicking cancel", saveModel,
                 uiOptions.getSettings(), preSaveSelections);
             resetButton.click();
-            checkModelSelections("After clicking reset", uiOptions.initialModel, uiOptions.model.selections);
+            checkModelSelections("After clicking reset", uiOptions.rootModel, uiOptions.model.selections);
             cancelButton.click();
             checkModelSelections("After clicking cancel", saveModel, uiOptions.getSettings());
             checkSettingsStore("After clicking cancel", saveModel, uiOptions.getSettings(), preSaveSelections);
@@ -529,12 +412,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 funcName: "fluid.uiOptions",
                 options: {
                     selectors: {
-                        textSizer: ".flc-uiOptions-text-sizer"
+                        textSize: ".flc-uiOptions-text-sizer"
                     },
                     components: {
-                        textSizer: {
-                            type: "fluid.uiOptions.textSizer",
-                            container: "{uiOptions}.dom.textSizer",
+                        textSize: {
+                            type: "fluid.uiOptions.panels.textSize",
+                            container: "{uiOptions}.dom.textSize",
                             createOnEvent: "onUIOptionsMarkupReady",
                             options: {
                                 sourceApplier: "{uiOptions}.applier",
@@ -545,7 +428,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
                                 },
                                 resources: {
-                                    template: "{templateLoader}.resources.textSizer"
+                                    template: "{templateLoader}.resources.textSize"
                                 }
                             }
                         },
@@ -556,7 +439,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 components: {
                                     textSize: {
-                                        type: "fluid.uiOptions.enactor.textSizer",
+                                        type: "fluid.uiOptions.enactors.textSize",
                                         container: "{uiEnhancer}.container",
                                         options: {
                                             fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
@@ -577,8 +460,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testUIOptions(function (uiOptionsLoader, uiOptions) {
                 var customizedPanelPaths = {
                     "uiEnhancer": true,
-                    "textSizer": true,
-                    "lineSpacer": false,
+                    "textSize": true,
+                    "lineSpace": false,
                     "textFont": false,
                     "contrast": false,
                     "layoutControls": false,
@@ -597,16 +480,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
             uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
             uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
-            uiOptions.applier.requestChange("selections.lineSpacing", selectionOptions.lineSpacing);
+            uiOptions.applier.requestChange("selections.lineSpace", selectionOptions.lineSpace);
         };
         
         jqUnit.asyncTest("UIOptions Integration tests", function () {
             fluid.enhance.check({"fluid.uiOptions.testsIntegration": true});
             
             fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsIntegration", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
-                funcName: "fluid.uiOptions.starterSettingsPanels",
+                funcName: "fluid.uiOptions.starterPanels",
                 options: {
-                    gradeNames: ["fluid.uiOptions.initialModel.starter"],
+                    gradeNames: ["fluid.uiOptions.rootModel.starter"],
                     components: {
                         uiEnhancer: {
                             type: "fluid.uiEnhancer",
@@ -629,8 +512,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testUIOptions(function (uiOptionsLoader, uiOptions) {
                 var defaultPanelsPaths = {
                     "uiEnhancer": true,
-                    "textSizer": true,
-                    "lineSpacer": true,
+                    "textSize": true,
+                    "lineSpace": true,
                     "textFont": true,
                     "contrast": true,
                     "layoutControls": true,
