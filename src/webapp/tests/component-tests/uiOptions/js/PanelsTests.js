@@ -240,7 +240,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "Test the text sizer settings panel",
             tests: [{
                 expect: 2,
-                name: "Test the rendering of the text sizer panel",
+                name: "Test the rendering of the text size panel",
                 sequence: [{
                     func: "{textSize}.refreshView"
                 }, {
@@ -287,10 +287,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             newValue: 1.2
         },
         modules: [{
-            name: "Test the line spacer settings panel",
+            name: "Test the line space settings panel",
             tests: [{
                 expect: 2,
-                name: "Test the rendering of the line spacer panel",
+                name: "Test the rendering of the line space panel",
                 sequence: [{
                     func: "{lineSpace}.refreshView"
                 }, {

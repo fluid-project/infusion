@@ -304,7 +304,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.textSizeTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
-            name: "Test text sizer enactor",
+            name: "Test text size enactor",
             tests: [{
                 expect: 2,
                 name: "Apply text size in times",
@@ -428,10 +428,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.lineSpaceTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
-            name: "Test line spacer enactor",
+            name: "Test line space enactor",
             tests: [{
                 expect: 3,
-                name: "Apply line spacing in times",
+                name: "Apply line space in times",
                 type: "test",
                 func: "fluid.tests.testLineSpace",
                 args: ["{lineSpace}"]

@@ -288,7 +288,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /*******************************************************************************
      * lineSpace
      *
-     * Sets the line spacing on the container to the multiple provided.
+     * Sets the line space on the container to the multiple provided.
      *******************************************************************************/
     
     // Note that the implementors need to provide the container for this view component

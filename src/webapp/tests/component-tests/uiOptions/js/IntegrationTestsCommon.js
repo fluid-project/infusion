@@ -101,7 +101,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest(componentName + " Integration tests", function () {
             fluid.globalSettingsStore();
             fluid.pageEnhancer({
-                gradeNames: ["fluid.uiEnhancer.starterActions"],
+                gradeNames: ["fluid.uiEnhancer.starterEnactors"],
                 tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
             });
             var savedSelections;
@@ -186,7 +186,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.uiOptions.enhancerOptions = {
-        gradeNames: ["fluid.uiEnhancer.starterActions", "fluid.uiOptions.rootModel.starter"],
+        gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.uiOptions.rootModel.starter"],
         tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
         classnameMap: {
             "textFont": {
