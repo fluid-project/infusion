@@ -43,6 +43,13 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.panels.textSize", {
         gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+        preferenceMap: {
+            "fluid.uiOptions.textSize": {
+                "model.value": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
+        },
         // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
@@ -85,6 +92,12 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.panels.textFont", {
         gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+        preferenceMap: {
+            "fluid.uiOptions.textFont": {
+                "model.value": "default",
+                "controlValues.textFont": "enum"
+            }
+        },
         selectors: {
             textFont: ".flc-uiOptions-text-font",
             label: ".flc-uiOptions-text-font-label"
@@ -98,7 +111,7 @@ var fluid_1_5 = fluid_1_5 || {};
             textFont: ["default", "times", "comic", "arial", "verdana"]
         }
     });
-    
+
     fluid.uiOptions.panels.textFont.produceTree = function (that) {
         // render drop down list box
         return {
@@ -127,6 +140,13 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.panels.lineSpace", {
         gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+        preferenceMap: {
+            "fluid.uiOptions.lineSpace": {
+                "model.value": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
+        },
         // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
         // i.e. from the settings store, or specific defaults derived from schema.
         // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
@@ -169,6 +189,12 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.panels.contrast", {
         gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+        preferenceMap: {
+            "fluid.uiOptions.contrast": {
+                "model.value": "default",
+                "controlValues.theme": "emum"
+            }
+        },
         listeners: {
             afterRender: "{that}.style"
         },
@@ -208,7 +234,7 @@ var fluid_1_5 = fluid_1_5 || {};
             label.addClass(style[theme[index]]);
         });
     };
-    
+
     fluid.uiOptions.panels.contrast.produceTree = function (that) {
         return {
             label: {messagekey: "contrastLabel"},
@@ -236,6 +262,11 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.panels.layoutControls", {
         gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+        preferenceMap: {
+            "fluid.uiOptions.tableOfContents": {
+                "model.toc": "default"
+            }
+        },
         selectors: {
             toc: ".flc-uiOptions-toc",
             label: ".flc-uiOptions-toc-label",
@@ -256,6 +287,14 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions.panels.linksControls", {
         gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+        preferenceMap: {
+            "fluid.uiOptions.emphasizeLinks": {
+                "model.links": "default"
+            },
+            "fluid.uiOptions.inputsLarger": {
+                "model.inputsLarger": "default"
+            }
+        },
         selectors: {
             links: ".flc-uiOptions-links",
             inputsLarger: ".flc-uiOptions-inputs-larger",
@@ -299,7 +338,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /************************************************************************
      * The grade that contains shared options by all default settings panels
      ************************************************************************/
-    
+
     fluid.defaults("fluid.uiOptions.defaultPanel", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         mergePolicy: {
