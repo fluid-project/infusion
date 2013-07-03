@@ -547,6 +547,20 @@ var fluid = fluid || fluid_1_5;
         }
         return togo;
     };
+        
+    /** Returns an array of size count, filled with increasing integers, starting at 0 or at the index specified by first.
+     * @param count {Number} Size of the filled array to be returned
+     * @param first {Number} (optional, defaults to 0) First element to appear in the array 
+     */
+    
+    fluid.iota = function (count, first) {
+        first = first || 0;
+        var togo = [];
+        for (var i = 0; i < count; ++i) {
+            togo[togo.length] = first++;
+        }
+        return togo;
+    };
     
     /** Extracts a particular member from each member of a container, returning a new container of the same type
      * @param holder {Array|Object} The container to be filtered

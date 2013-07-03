@@ -287,7 +287,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                                 
                     function transGuard1(innerModel, changeRequest, applier) {
-                        applier.requestChange("transWorld.innerPath2", 5);
+                        if (changeRequest.path !== "transWorld.innerPath2") { // guard infinite recursion
+                            applier.requestChange("transWorld.innerPath2", 5);
+                        }
+                        else {
+                            return;
+                        }
                         jqUnit.assertEquals("Change wrt transaction", trans && !thin ? 4 : 5, model.transWorld.innerPath2);
                         jqUnit.assertEquals("ModelChanged count", trans ? 0 : 1, modelChangedCheck.length);
                         guard1check++;
@@ -300,7 +305,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     jqUnit.assertDeepEq("Final model state", {innerPath1: 4, innerPath2: 5}, model.transWorld);
                     jqUnit.assertEquals("2 changes received", 2, modelChangedCheck.length);
                 }
-                );
+            );
         }
         makeTransTest(true, false);
         makeTransTest(false, false);
@@ -357,7 +362,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 if (changeRequest.path === "transWorld.innerPath2") {
                     changeRequest.value = 6;
                 }
-                applier.requestChange("transWorld.innerPath1", 4);
+                // Don't cause infinite recursion by firing a change that we react to
+                if (changeRequest.path !== "transWorld.innerPath1") {
+                    applier.requestChange("transWorld.innerPath1", 4);
+                }
             }
             var postGuardCheck = 0;
             function postGuard(newModel, changes, applier) {

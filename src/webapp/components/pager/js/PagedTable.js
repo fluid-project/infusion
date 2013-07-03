@@ -37,7 +37,7 @@ var fluid_1_5 = fluid_1_5 || {};
   
     fluid.pagedTable.rangeAnnotator.onRenderPageLinks = function (that, tree, newModel) {
         var roots = {};
-        var column = that.options.annotateColumnRange;
+        var column = that.options.annotateColumnRange || (that.options.annotateSortedColumn ? newModel.sortKey : null);
         if (!column) {
             return;
         }
@@ -104,9 +104,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.pagedTable.rangeAnnotator"
             }
         },
+        annotateSortedColumn: false,
         annotateColumnRange: undefined, // specify a "key" from the columnDefs
  
-        tooltip: { // TODO: This is not currently a real component but just a house for options
+        tooltip: {
             type: "fluid.tooltip" 
         },
         invokers: {

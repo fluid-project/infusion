@@ -24,19 +24,6 @@ fluid_1_5 = fluid_1_5 || {};
     if (!fluid.renderer) {
         fluid.fail("fluidRenderer.js is a necessary dependency of RendererUtilities");
     }
-    
-    /** Returns an array of size count, filled with increasing integers, 
-     *  starting at 0 or at the index specified by first. 
-     */
-    
-    fluid.iota = function (count, first) {
-        first = first || 0;
-        var togo = [];
-        for (var i = 0; i < count; ++i) {
-            togo[togo.length] = first++;
-        }
-        return togo;
-    };
 
     // TODO: API status of these 3 functions is uncertain. So far, they have never
     // appeared in documentation.

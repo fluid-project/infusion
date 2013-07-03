@@ -64,7 +64,7 @@ var demo = demo || {};
             demo.pager = fluid.pagedTable(".demo-pager-container", {
                 dataModel: model,
                 model: {
-                    pageSize: 10
+                    pageSize: 20
                 },
                 dataOffset: "membership_collection",
                 columnDefs: columnDefs,
@@ -76,7 +76,7 @@ var demo = demo || {};
                             selectors: {
                                 root: ".demo-pager-table-data"
                             },
-                            rendererOptions: {debugMode: false}
+                            rendererOptions: {debugMode: false} // Change this to true to diagnose rendering issues
                         }
                 }
                 },

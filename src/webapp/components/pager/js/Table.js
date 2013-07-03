@@ -57,7 +57,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.table.rowComparator = function (sortDir) {
         return function (arec, brec) {
-            return (arec.value - brec.value) * sortDir;
+            return (arec.value > brec.value ? 1 : (arec.value < brec.value ? -1 : 0)) * sortDir;
         };  
     };
     
@@ -288,11 +288,12 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.table.sortInvoker = function (tableThat, newModel) {
         var columnDefs = tableThat.options.columnDefs;
         var sorted = fluid.table.isCurrentColumnSortable(columnDefs, newModel) ? 
-            tableThat.options.sorter(columnDefs, tableThat.dataModel, tableThat.options.dataOffset, newModel) : null;
+            tableThat.options.sorter(columnDefs, tableThat.options.dataModel, tableThat.options.dataOffset, newModel) : null;
         tableThat.permutation = sorted;      
     }; 
     
     fluid.table.onModelChange = function (tableThat, renderThat, newModel, oldModel) {
+        renderThat.sortInvoker(newModel);
         tableThat.dataModel = tableThat.fetchDataModel();
         tableThat.filtered = tableThat.options.modelFilter(tableThat.dataModel, newModel, tableThat.permutation);
     };

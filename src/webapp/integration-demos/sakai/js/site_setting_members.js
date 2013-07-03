@@ -59,8 +59,8 @@ sakai.initFluidSiteSettingTable = function () {
             components: {
                 linktext: fluid.VALUE,
                 target: "mailto:${VALUE}"
-            }
-            // test FLUID-2247 - remove sortable from this column 
+            },
+            sortable: true
             },
             {key: "user-role",
             valuebinding: "*.memberRole",
@@ -68,7 +68,7 @@ sakai.initFluidSiteSettingTable = function () {
                 selection: fluid.VALUE, 
                 optionlist: {valuebinding: "site.userRoles"}
             },
-            sortable: true
+            // test FLUID-2247 - remove sortable from this column 
             },
             {key: "user-status",
             valuebinding: "*.active",
@@ -87,7 +87,8 @@ sakai.initFluidSiteSettingTable = function () {
             },
             dataOffset: "users.membership_collection",
             columnDefs: columnDefs,
-            annotateColumnRange: "user-link",
+            //annotateColumnRange: "user-link",
+            annotateSortedColumn: true,
             components: {
                 bodyRenderer: {
                     type: "fluid.table.selfRender",

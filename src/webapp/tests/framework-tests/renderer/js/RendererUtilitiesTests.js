@@ -1756,9 +1756,10 @@ fluid.registerNamespace("fluid.tests");
             var onReady = function (that) {
                 var label1for = $("label", that.captions.container).attr("for");
                 var label2for = $("label", that.transcripts.container).attr("for");
-                jqUnit.assertEquals("first 'for' should be 'show'", "show", label1for);
-                jqUnit.assertEquals("second 'for' should be 'show-1'", "show-1", label2for);
-                jqUnit.assertNotEquals("two labels shouldn't have the same 'for' attribute", label1for, label2for);
+                labels = {};
+                labels[label1for] = true;
+                labels[label2for] = true;
+                jqUnit.assertDeepEq("Labels should separately be \"show\" and \"show-1\"", {"show": true, "show-1": true}, labels);
                 jqUnit.start();
             };
             fluid.tests.fluid5048.parent("#FLUID-5048-test", {

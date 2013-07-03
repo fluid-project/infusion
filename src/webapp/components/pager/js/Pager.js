@@ -84,19 +84,6 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    /** Returns an array of size count, filled with increasing integers, 
-     *  starting at 0 or at the index specified by first. 
-     */
-    
-    fluid.iota = function (count, first) {
-        first = first || 0;
-        var togo = [];
-        for (var i = 0; i < count; ++i) {
-            togo[togo.length] = first++;
-        }
-        return togo;
-    };
-    
     fluid.pager.everyPageStrategy = fluid.iota;
     
     fluid.pager.gappedPageStrategy = function (locality, midLocality) {
@@ -371,8 +358,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.pager.pageCountGuard, "pageSizeGuard");
         that.applier.postGuards.addListener({path: "totalRange", transactional: true}, 
                 fluid.pager.pageCountGuard, "totalRangeGuard");
+                
         that.applier.guards.addListener({path: "pageIndex", transactional: true}, 
                 fluid.pager.pageIndexGuard);
+        
         that.applier.modelChanged.addListener({path: "*"},
             function (newModel, oldModel, changes) {
                 that.events.onModelChange.fire(newModel, oldModel);
@@ -383,6 +372,13 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.pager.pageCountGuard = function (newModel, changeRequest, iApplier) {
         var newPageCount = fluid.pager.computePageCount(newModel);
         iApplier.requestChange("pageCount", newPageCount);
+        // TODO: this unnatural action is required to ensure shortened pageCount properly invalidates pageIndex - failure in transactional ChangeApplier design
+        iApplier.fireChangeRequest({
+            type: "ADD",
+            path: "pageIndex",
+            value: newModel.pageIndex,
+            forceChange: true
+        });
     };
     
     // guards pageIndex - may produce culled change - nontransactional?
