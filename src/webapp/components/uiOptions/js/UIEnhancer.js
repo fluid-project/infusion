@@ -187,8 +187,8 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             },
-            tableOfContentsEnactor: {
-                type: "fluid.uiOptions.enactors.tableOfContentsEnactor",
+            tableOfContents: {
+                type: "fluid.uiOptions.enactors.tableOfContents",
                 container: "{uiEnhancer}.container",
                 createOnEvent: "onCreateToc",
                 options: {
@@ -228,7 +228,7 @@ var fluid_1_5 = fluid_1_5 || {};
             
             // Directly calling toc apply function rather than firing a model change request
             // is because the modelRelay component prevents the relay on the unchanged value.
-            that.tableOfContentsEnactor.applyToc(that.model.toc);
+            that.tableOfContents.applyToc(that.model.toc);
         });
     };
     

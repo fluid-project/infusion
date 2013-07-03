@@ -447,7 +447,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             toc: {
-                type: "fluid.uiOptions.enactors.tableOfContentsEnactor",
+                type: "fluid.uiOptions.enactors.tableOfContents",
                 container: ".flc-tableOfContents",
                 options: {
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",

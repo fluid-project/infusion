@@ -466,7 +466,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "contrast": false,
                     "layoutControls": false,
                     "linksControls": false,
-                    "uiEnhancer.options.components.tableOfContentsEnactor": true
+                    "uiEnhancer.options.components.tableOfContents": true
                 };
 
                 checkPaths(uiOptions, customizedPanelPaths);
@@ -518,7 +518,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "contrast": true,
                     "layoutControls": true,
                     "linksControls": true,
-                    "uiEnhancer.options.components.tableOfContentsEnactor": true
+                    "uiEnhancer.options.components.tableOfContents": true
                 };
 
                 checkPaths(uiOptions, defaultPanelsPaths);
