@@ -203,7 +203,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // when the iframe is hidden.
         iframeEnhancer.events.onIframeVisible.addListener(function () {
             iframeEnhancer.textSize.set(iframeEnhancer.model.textSize);
-            iframeEnhancer.lineSpacing.set(iframeEnhancer.model.lineSpacing);
+            iframeEnhancer.lineSpace.set(iframeEnhancer.model.lineSpace);
         });
 
         fatPanel.slidingPanel.events.afterPanelHide.addListener(function () {

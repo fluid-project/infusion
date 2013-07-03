@@ -38,20 +38,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         textSize: "1.8",
         textFont: "verdana",
         theme: "bw",
-        lineSpacing: 2
+        lineSpace: 2
     };
 
     fluid.tests.uiOptions.ybSkin = {
         textSize: "2",
         textFont: "comic sans",
         theme: "yb",
-        lineSpacing: 1.5
+        lineSpace: 1.5
     };
 
     fluid.tests.uiOptions.expectedComponents = {
         "fluid.uiOptions.fatPanel": [
-            "textSizer",
-            "lineSpacer",
+            "textSize",
+            "lineSpace",
             "textFont",
             "contrast",
             "layoutControls",
@@ -59,8 +59,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "eventBinder"
         ],
         "fluid.uiOptions.fullNoPreview": [
-            "textSizer",
-            "lineSpacer",
+            "textSize",
+            "lineSpace",
             "textFont",
             "contrast",
             "layoutControls",
@@ -68,8 +68,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "eventBinder"
         ],
         "fluid.uiOptions.fullPreview": [
-            "textSizer",
-            "lineSpacer",
+            "textSize",
+            "lineSpace",
             "textFont",
             "contrast",
             "layoutControls",
@@ -159,7 +159,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 uiOptions: {
                     options: {
-                        gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.rootModel.starter"],
+                        gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter"],
                         listeners: {
                             "onSave.munged": testSave
                         }
@@ -241,7 +241,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         uiOptions: {
             options: {
-                gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
+                gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
             }
         }
     };

@@ -25,14 +25,14 @@ var fluid_1_5 = fluid_1_5 || {};
 
         // UI Options Text Font Settings Panel
         // Note: if you modify these, you need to update the appropriate
-        // controlValues in fluid.uiOptions.textFont component options.
+        // controlValues in fluid.uiOptions.panels.textFont component options.
         textFont: ["Default", "Times New Roman", "Comic Sans", "Arial",
             "Verdana"],
         textFontLabel: "Text Style",
 
         // UI Options Contrast Settings Panel
         // Note: if you modify these, you need to update the appropriate
-        // controlValues in fluid.uiOptions.contrast component options.
+        // controlValues in fluid.uiOptions.panels.contrast component options.
         theme: ["Default", "Black on white", "White on black", "Black on yellow",
             "Yellow on black"],
         contrastLabel: "Colour & Contrast",
@@ -42,9 +42,9 @@ var fluid_1_5 = fluid_1_5 || {};
         tocChoiceLabel: "Add a table of contents",
 
         // Line spacing
-        lineSpacingLabel: "Line Spacing",
-        lineSpacingNarrowIcon: "icon of 3 horizontal lines with narrow spacing",
-        lineSpacingWideIcon: "icon of 3 horizontal lines with wide spacing",
+        lineSpaceLabel: "Line Spacing",
+        lineSpaceNarrowIcon: "icon of 3 horizontal lines with narrow spacing",
+        lineSpaceWideIcon: "icon of 3 horizontal lines with wide spacing",
 
         // Links and Buttons
         linksLabel: "Links & buttons",
