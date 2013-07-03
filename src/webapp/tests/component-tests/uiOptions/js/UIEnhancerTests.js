@@ -21,12 +21,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     /*******************************************************************************
-     * Empty uiEnhancer works with customized actions grades
+     * Empty uiEnhancer works with customized enactors grades
      *******************************************************************************/
     
     var emphasizeLinksClass = "fl-emphasize-links";
     
-    fluid.defaults("fluid.uiEnhancer.customizedActions", {
+    fluid.defaults("fluid.uiEnhancer.customizedEnactors", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             emphasizeLinks: {
@@ -46,51 +46,51 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.tests.customizedActions", {
+    fluid.defaults("fluid.tests.customizedEnactors", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
-                container: ".flt-customizedActions",
+                container: ".flt-customizedEnactors",
                 options: {
-                    gradeNames: ["fluid.uiEnhancer.customizedActions"],
+                    gradeNames: ["fluid.uiEnhancer.customizedEnactors"],
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
                 }
             },
             styleElementsTester: {
-                type: "fluid.tests.customizedActionsTester"
+                type: "fluid.tests.customizedEnactorsTester"
             }
         }
     });
 
-    fluid.tests.testCustomizedActions = function (container, cssClass, expectedValue) {
+    fluid.tests.testCustomizedEnactors = function (container, cssClass, expectedValue) {
         jqUnit.assertEquals("The emphasized links are applied - " + expectedValue, expectedValue, $(container).children("a").hasClass(cssClass));
     };
     
-    fluid.defaults("fluid.tests.customizedActionsTester", {
+    fluid.defaults("fluid.tests.customizedEnactorsTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOpts: {
             cssClass: emphasizeLinksClass
         },
         modules: [{
-            name: "Customized actions grade with empty UIEnhancer",
+            name: "Customized enactors grade with empty UIEnhancer",
             tests: [{
                 expect: 3,
-                name: "Apply customized actions grade",
+                name: "Apply customized enactors grade",
                 sequence: [{
-                    func: "fluid.tests.testCustomizedActions",
+                    func: "fluid.tests.testCustomizedEnactors",
                     args: ["{uiEnhancer}.container", "{that}.options.testOpts.cssClass", false]
                 }, {
                     func: "{uiEnhancer}.applier.requestChange",
                     args: ["emphasizeLinks", true]
                 }, {
-                    func: "fluid.tests.testCustomizedActions",
+                    func: "fluid.tests.testCustomizedEnactors",
                     args: ["{uiEnhancer}.container", "{that}.options.testOpts.cssClass", true]
                 }, {
                     func: "{uiEnhancer}.applier.requestChange",
                     args: ["emphasizeLinks", false]
                 }, {
-                    func: "fluid.tests.testCustomizedActions",
+                    func: "fluid.tests.testCustomizedEnactors",
                     args: ["{uiEnhancer}.container", "{that}.options.testOpts.cssClass", false]
                 }]
             }]
@@ -111,7 +111,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiEnhancer",
                 container: "body",
                 options: {
-                    gradeNames: ["fluid.uiEnhancer.starterActions"],
+                    gradeNames: ["fluid.uiEnhancer.starterEnactors"],
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
                 }
             },
@@ -195,7 +195,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiEnhancer",
                 container: "body",
                 options: {
-                    gradeNames: ["fluid.uiEnhancer.starterActions"],
+                    gradeNames: ["fluid.uiEnhancer.starterEnactors"],
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
                     classnameMap: {
                         "textFont": {
@@ -269,7 +269,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.tests.customizedActions",
+            "fluid.tests.customizedEnactors",
             "fluid.tests.settings",
             "fluid.tests.optionsMunging",
             "fluid.tests.lineHeightUnit"

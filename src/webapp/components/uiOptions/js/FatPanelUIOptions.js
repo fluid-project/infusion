@@ -86,7 +86,7 @@ var fluid_1_5 = fluid_1_5 || {};
                             container: "{iframeRenderer}.renderUIOContainer",
                             createOnEvent: "afterRender",
                             options: {
-                                gradeNames: ["fluid.uiEnhancer.starterActions"],
+                                gradeNames: ["fluid.uiEnhancer.starterEnactors"],
                                 jQuery: "{iframeRenderer}.jQuery",
                                 tocTemplate: "{pageEnhancer}.options.tocTemplate",
                                 events: {
@@ -199,7 +199,7 @@ var fluid_1_5 = fluid_1_5 || {};
             iframe.animate(attrs, 400);
         });
         
-        // Re-apply text size and line spacing to iframe content since these initial css values are not detectable
+        // Re-apply text size and line space to iframe content since these initial css values are not detectable
         // when the iframe is hidden.
         iframeEnhancer.events.onIframeVisible.addListener(function () {
             iframeEnhancer.textSize.set(iframeEnhancer.model.textSize);
