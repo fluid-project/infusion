@@ -52,6 +52,10 @@ var fluid_1_5 = fluid_1_5 || {};
         var expandedValue = source;
         for( var i = 0; i < paths.length; i++ ) {
             expandedValue = expandedValue[ paths[i] ];
+
+            if (typeof expandedValue === "undefined") {
+                break;
+            }
         }
 
         return expandedValue;
@@ -59,11 +63,8 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uiOptions.expandSchema = function (source, schemaToExpand) {
         var expandedSchema = {};
-        var keys = fluid.keys(schemaToExpand);
-
-        for (var i = 0; i < keys.length; ++i) {
-            var key = keys[i];
-            var value = schemaToExpand[key];
+        
+        fluid.each(schemaToExpand, function(value, key) {
             if (typeof value === "object") {
                 expandedSchema[key] = fluid.uiOptions.expandSchema(source, value);
             } else if (typeof value === "string") {
@@ -71,17 +72,17 @@ var fluid_1_5 = fluid_1_5 || {};
             } else {
                 expandedSchema[key] = value;
             }
-        }
+        });
         
         return expandedSchema;
     };
 
-    fluid.uiOptions.auxiliaryParser = function (schema) {
+    fluid.uiOptions.auxiliaryExpander = function (schema) {
         var sourceSchema = schemaToExpand = schema;
         return fluid.uiOptions.expandSchema(sourceSchema, schemaToExpand);
     }
 
-    var expandedAuxiliarySchema = fluid.uiOptions.auxiliaryParser(auxiliarySchema);
+    var expandedAuxiliarySchema = fluid.uiOptions.auxiliaryExpander(auxiliarySchema);
     console.log(expandedAuxiliarySchema);
 
 })(jQuery, fluid_1_5);

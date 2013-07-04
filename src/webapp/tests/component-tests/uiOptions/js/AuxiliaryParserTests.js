@@ -31,20 +31,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.testExpandSchemaValue = function (that, container, expectedDefaultFlag, expectedCssClass) {
-        var elements = that.getElements();
-        
-        jqUnit.assertEquals("Default value: " + expectedDefaultFlag, expectedDefaultFlag, that.model.value);
-        jqUnit.assertEquals("Default css class: " + expectedCssClass, expectedCssClass, that.options.cssClass);
-        jqUnit.assertEquals("Default - css class is not applied", undefined, elements.attr("class"));
-        
-        that.applier.requestChange("value", true);
-        jqUnit.assertEquals("True value - Css class has been applied", expectedCssClass, elements.attr("class"));
-
-        that.applier.requestChange("value", false);
-        jqUnit.assertEquals("False value - Css class has been removed", "", elements.attr("class"));
-    }; 
-
     fluid.tests.testExpandSchemaValue = function (source, templates, expectedValues) {
         for (var i = 0; i < templates.length; i++) {
             var value = fluid.uiOptions.expandSchemaValue(source, templates[i]);
@@ -76,9 +62,144 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    /*******************************************************************************
+     * Unit tests for fluid.uiOptions.schemaExpander
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.schemaExpanderTest", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            schemaExpanderTester: {
+                type: "fluid.tests.schemaExpanderTester"
+            }
+        }
+    });
+
+    fluid.tests.testSchemaExpander = function (schema, expectedOutput) {
+        var output = fluid.uiOptions.auxiliaryExpander(schema);
+        jqUnit.assertDeepEq("The source schema is expanded correctly", expectedOutput, output);
+    };
+
+    fluid.defaults("fluid.tests.schemaExpanderTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        testOptions: {
+            schema: {
+                "textFont": {
+                    "type": "fluid.uiOptions.textFont",
+                    "classes": {
+                        "default": "",
+                        "times": "fl-font-uio-times",
+                        "comic": "fl-font-uio-comic-sans",
+                        "arial": "fl-font-uio-arial",
+                        "verdana": "fl-font-uio-verdana"
+                    }
+                },
+                "contrast": {
+                    "type": "fluid.uiOptions.contrast",
+                    "classes": {
+                        "default": "fl-theme-uio-default",
+                        "bw": "fl-theme-uio-bw fl-theme-bw",
+                        "wb": "fl-theme-uio-wb fl-theme-wb",
+                        "by": "fl-theme-uio-by fl-theme-by",
+                        "yb": "fl-theme-uio-yb fl-theme-yb"
+                    }
+                },
+                "enactors": [{
+                    "type": "fluid.uiOptions.enactors.lineSpacing",
+                    "fontSizeMap": {
+                        "xx-small": "9px",
+                        "x-small": "11px",
+                        "small": "13px",
+                        "medium": "15px",
+                        "large": "18px",
+                        "x-large": "23px",
+                        "xx-large": "30px"
+                    }
+                }, {
+                    "type": "fluid.uiOptions.enactors.textFont",
+                    "classes": "@textFont.classes"
+                }, {
+                    "type": "fluid.uiOptions.enactors.contrast",
+                    "classes": "@contrast.classes"
+                }, {
+                    "type": "fluid.uiOptions.enactors.tableOfContents",
+                    "template": "the-location-of-toc-template",
+                    "random": "@random.path"
+                }]
+            },
+            expectedSchema: {
+                "textFont": {
+                    "type": "fluid.uiOptions.textFont",
+                    "classes": {
+                        "default": "",
+                        "times": "fl-font-uio-times",
+                        "comic": "fl-font-uio-comic-sans",
+                        "arial": "fl-font-uio-arial",
+                        "verdana": "fl-font-uio-verdana"
+                    }
+                },
+                "contrast": {
+                    "type": "fluid.uiOptions.contrast",
+                    "classes": {
+                        "default": "fl-theme-uio-default",
+                        "bw": "fl-theme-uio-bw fl-theme-bw",
+                        "wb": "fl-theme-uio-wb fl-theme-wb",
+                        "by": "fl-theme-uio-by fl-theme-by",
+                        "yb": "fl-theme-uio-yb fl-theme-yb"
+                    }
+                },
+                "enactors": [{
+                    "type": "fluid.uiOptions.enactors.lineSpacing",
+                    "fontSizeMap": {
+                        "xx-small": "9px",
+                        "x-small": "11px",
+                        "small": "13px",
+                        "medium": "15px",
+                        "large": "18px",
+                        "x-large": "23px",
+                        "xx-large": "30px"
+                    }
+                }, {
+                    "type": "fluid.uiOptions.enactors.textFont",
+                    "classes": {
+                        "default": "",
+                        "times": "fl-font-uio-times",
+                        "comic": "fl-font-uio-comic-sans",
+                        "arial": "fl-font-uio-arial",
+                        "verdana": "fl-font-uio-verdana"
+                    }
+                }, {
+                    "type": "fluid.uiOptions.enactors.contrast",
+                    "classes": {
+                        "default": "fl-theme-uio-default",
+                        "bw": "fl-theme-uio-bw fl-theme-bw",
+                        "wb": "fl-theme-uio-wb fl-theme-wb",
+                        "by": "fl-theme-uio-by fl-theme-by",
+                        "yb": "fl-theme-uio-yb fl-theme-yb"
+                    }
+                }, {
+                    "type": "fluid.uiOptions.enactors.tableOfContents",
+                    "random": undefined,
+                    "template": "the-location-of-toc-template"
+                }]
+            }
+        },
+        modules: [{
+            name: "Test schema expander",
+            tests: [{
+                expect: 1,
+                name: "Schema expander",
+                type: "test",
+                func: "fluid.tests.testSchemaExpander",
+                args: ["{that}.options.testOptions.schema", "{that}.options.testOptions.expectedSchema"]
+            }]
+        }]
+    });
+
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.tests.expandSchemaValueTest"
+            "fluid.tests.expandSchemaValueTest",
+            "fluid.tests.schemaExpanderTest"
         ]);
     });
 
