@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'InfusionIcons';
+    src: url('../fonts/InfusionIcons-Uploader.eot?#iefix') format('embedded-opentype'), /* IE8 fix. Reference: https://www.fontspring.com/blog/the-new-bulletproof-font-face-syntax */
+         url('../fonts/InfusionIcons-Uploader.ttf'),
+         url('../fonts/InfusionIcons-Uploader.eot');
+}
+
 /*
  * Uploader container
  */
@@ -120,7 +127,7 @@ table.fl-uploader-queue {
 .fl-uploader-file-actions button {
     border: 1px solid transparent;
     height: 22px;
-    width: 24px;
+    width: 29px;
     overflow: hidden;
     background-color: transparent;
     background-attachment: scroll;
@@ -132,9 +139,21 @@ table.fl-uploader-queue {
 
 /* remove button */
 .fl-uploader-file-actions .fl-uploader-file-action-remove {
-    background-image: url(../images/remove.png);
+    font-family: 'InfusionIcons';
+    -webkit-font-smoothing: antialiased; 
+    font-size: 1.4em;
     cursor: pointer; 
 }
+
+
+.fl-uploader-file-actions .fl-uploader-file-action-remove:before {
+    content: "\e000";
+    color: #ED3820;
+    position:relative;
+    bottom: 1px;
+    right: 1px;
+}
+
 
 .fl-uploader-file-actions .fl-uploader-file-action-remove:hover, tr:focus .fl-uploader-file-actions .fl-uploader-file-action-remove {
     border: 1px solid #CCC;
@@ -142,13 +161,24 @@ table.fl-uploader-queue {
 }
 
 /* uploaded row */
-tr.fl-uploader-file-state-uploaded button {
-    background-image: url(../images/tick.png);
-}
 tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
     border-left: 4px solid #74B74A;
     color: #5E7A5E;
 }
+
+tr.fl-uploader-file-state-uploaded button {
+    font-family: 'InfusionIcons';
+    -webkit-font-smoothing: antialiased; 
+    font-size: 1.2em;
+}
+
+tr.fl-uploader-file-state-uploaded button:before {
+    content: "\e002";
+    position:relative;
+    left: -2px;
+    color: #42B447;
+}
+
 
 /* 
  * Status footer 
@@ -166,16 +196,28 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
 }
 
 .fl-uploader span.fl-uploader-browse {
-    background-image: url(../images/add.png);
-    background-attachment: scroll;
-    background-repeat: no-repeat;
-    background-position: 0px 5px;
-    padding: 5px 5px 0px 22px;
     border: none;
     white-space: nowrap;
+}
+
+.fl-uploader .fl-uploader-button-browse-text {
     color: #005ebc;
     font-weight: bold;
     text-decoration:underline;
+}
+
+.fl-uploader .fl-infusionIcon-plus {
+    font-family: 'InfusionIcons';
+    -webkit-font-smoothing: antialiased; 
+    font-size: 1.2em;
+}
+
+.fl-uploader .fl-infusionIcon-plus:before {
+    content: "\e001";
+    position:relative;
+    color: #42B447;
+    top: 3px;
+    left: 2px;
 }
 
 .fl-uploader-queue-footer .fl-uploader-total-progress-text {
@@ -198,15 +240,15 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
 .fl-uploader-browse {
     display: block;
     overflow: hidden;
-    height: 1.65em;
-    width: 6em;
+    height: 2em;
+    width: 8em;
     cursor: default;
 }
 
 /* Fake add files button wrapper ("Add more")
  * Same as above, but width-adjusted for shorter text */
 .fl-uploader-browse.fl-uploader-browseMore {
-   width: 4.5em;
+   width: 8em;
 }
 
 /* Actual, real add files button (invisible) */
@@ -332,25 +374,15 @@ html>body .fl-uploader span.fl-uploader-browse {
 }
 
 /* Upload Queue errors */
-.fl-uploader-queue .fl-uploader-file-state-error th {
+
+.fl-uploader-queue .fl-uploader-file-state-error {
     border-left: 4px solid #F5E392;
     background-color: #FCFBE6;
     border-bottom-width: 0;
 }
 
-.fl-uploader-queue .fl-uploader-file-state-error td {
-    background-color: #FCFBE6;
-    border-bottom-width: 0;
-}
-
-.fl-uploader-queue .fl-uploader-file-error td {
-    background-color: #FCFBE6;
-    border-left: 4px solid #F5E392;
-    background-image: url(../images/error.png);
-    background-position: 6px 2px;
-    background-repeat: no-repeat;
-    padding-bottom: 8px;
-    padding-left: 32px;
+.fl-uploader-file-error {
+   margin-top: 1em;
 }
 
 /* Error feedback messages */
@@ -364,19 +396,26 @@ html>body .fl-uploader span.fl-uploader-browse {
 }
 
 .fl-uploader-errorsPanel-header {
-    background-image: url("../images/error.png");
-    background-position: 1px center;
-    background-repeat: no-repeat;
     padding: 6px 0 6px 0;
     margin-bottom: 10px;
-}
-
-.fl-uploader-errorsPanel-header span {
-    padding-left: 21px;
     font-size: 1.1em;
     font-weight: bold;
     color: #000000;
+    display: inline-block;
 }
+
+.fl-infusionIcon-warning {
+    font-family: 'InfusionIcons';
+    -webkit-font-smoothing: antialiased;   
+    display: inline-block;  
+}
+
+.fl-infusionIcon-warning:before {
+    content: "\e003";
+    color: #d38c1b;
+    font-size: 1.3em;
+}
+
 
 .fl-uploader-errorPanel-section-wrapper {
     float: left;
@@ -391,19 +430,25 @@ html>body .fl-uploader span.fl-uploader-browse {
 
 /* Remove error message button */
 .fl-uploader-errorPanel-section-removeButton {
-    background-color: inherit;
-    background-image: url("../images/grey-4d4d4d-x-button.png");
-    background-position: center;
-    background-repeat: no-repeat;
+    font-family: 'InfusionIcons';
+    -webkit-font-smoothing: antialiased; 
     border-width: 0px;
     width: 18px;
     height: 18px;
     padding: 0px;
     margin-right: 9px;
+    background: none; /* Work-around Chrome user-agent styling that applies a grey background color. */
 }
 
-.fl-uploader-errorPanel-section-removeButton:hover {
-    background-image: url("../images/grey-999999-x-button.png");
+.fl-uploader-errorPanel-section-removeButton:before {
+    content: "\e000";
+    color: #4D4D4D;
+    position:relative; 
+    font-size: 1.4em;
+}
+
+.fl-uploader-errorPanel-section-removeButton:hover:before {
+    color: #D2D2D2;
 }
 
 /* Show Hide Error Details */
@@ -454,10 +499,16 @@ html>body .fl-uploader span.fl-uploader-browse {
 .fl-uploader span.fl-uploader-browse.fl-uploader-dim  {
     outline:none;
     background-color:#F7F7F7;
-    color: #d2d2d2;
-    background-image: url("../images/add-grey.png");
 }
 
+.fl-uploader span.fl-uploader-browse.fl-uploader-dim  .fl-uploader-button-browse-text {
+    color: #d2d2d2;
+}
+
+.fl-uploader span.fl-uploader-browse.fl-uploader-dim .fl-infusionIcon-plus:before {
+    color: #d2d2d2;
+    content: "\e001";
+}
 
 
 /* Hidden SWF for Flash 9*/

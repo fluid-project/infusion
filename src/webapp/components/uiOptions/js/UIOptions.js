@@ -69,13 +69,13 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions", {
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         distributeOptions: [{
-            source: "{that}.options.textSizer.options",
+            source: "{that}.options.textSize.options",
             removeSource: true,
-            target: "{that textSizer}.options"
+            target: "{that textSize}.options"
         }, {
-            source: "{that}.options.lineSpacer.options",
+            source: "{that}.options.lineSpace.options",
             removeSource: true,
-            target: "{that lineSpacer}.options"
+            target: "{that lineSpace}.options"
         }, {
             source: "{that}.options.textFont.options",
             removeSource: true,
@@ -292,7 +292,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 textFont: "default",          // key from classname map
                 theme: "default",             // key from classname map
                 textSize: 1,                  // in points
-                lineSpacing: 1,               // in ems
+                lineSpace: 1,               // in ems
                 toc: false,                   // boolean
                 links: false,                 // boolean
                 inputsLarger: false           // boolean
@@ -421,10 +421,10 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     /***********************************************
-     * Base grade settingsPanel
+     * Base grade panels
      ***********************************************/
 
-    fluid.defaults("fluid.uiOptions.settingsPanel", {
+    fluid.defaults("fluid.uiOptions.panels", {
         gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay", "autoInit"],
         strings: {},
         parentBundle: "{uioMsgBundle}"
