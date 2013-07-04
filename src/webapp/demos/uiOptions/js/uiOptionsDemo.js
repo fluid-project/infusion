@@ -46,7 +46,7 @@ var demo = demo || {};
      */
     demo.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
-            gradeNames: ["fluid.uiEnhancer.starterActions"],
+            gradeNames: ["fluid.uiEnhancer.starterEnactors"],
             tocTemplate: pathToTocTemplate,
             classnameMap: {
                 theme: {
@@ -67,7 +67,7 @@ var demo = demo || {};
         },
         uiOptions: {
             options: {
-                gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
+                gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
             }
         }
     };

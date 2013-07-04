@@ -23,7 +23,7 @@ var skon = skon || {};
         // First, start up Settings Store and Page Enhancer
         fluid.globalSettingsStore();
         fluid.pageEnhancer({
-            gradeNames: ["fluid.uiEnhancer.starterActions"],
+            gradeNames: ["fluid.uiEnhancer.starterEnactors"],
             classnameMap: {
                 theme: {
                     "default": "skon-theme-basic"
@@ -43,7 +43,7 @@ var skon = skon || {};
             },
             uiOptions: {
                 options: {
-                    gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
+                    gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
                 }
             },
             markupRenderer: {
