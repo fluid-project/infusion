@@ -334,7 +334,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /*******************************************************************************
      * lineSpace
      *
-     * Sets the line spacing on the container to the multiple provided.
+     * Sets the line space on the container to the multiple provided.
      *******************************************************************************/
 
     // Note that the implementors need to provide the container for this view component
@@ -439,7 +439,7 @@ var fluid_1_5 = fluid_1_5 || {};
      *******************************************************************************/
 
     // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.uiOptions.enactors.tableOfContentsEnactor", {
+    fluid.defaults("fluid.uiOptions.enactors.tableOfContents", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.enactors", "autoInit"],
         preferenceMap: {
             "fluid.uiOptions.tableOfContents": {
@@ -450,7 +450,7 @@ var fluid_1_5 = fluid_1_5 || {};
         components: {
             tableOfContents: {
                 type: "fluid.tableOfContents",
-                container: "{tableOfContentsEnactor}.container",
+                container: "{fluid.uiOptions.enactors.tableOfContents}.container",
                 createOnEvent: "onCreateTOCReady",
                 options: {
                     components: {
@@ -460,21 +460,21 @@ var fluid_1_5 = fluid_1_5 || {};
                                 resources: {
                                     template: {
                                         forceCache: true,
-                                        url: "{tableOfContentsEnactor}.options.tocTemplate"
+                                        url: "{fluid.uiOptions.enactors.tableOfContents}.options.tocTemplate"
                                     }
                                 }
                             }
                         }
                     },
                     listeners: {
-                        afterRender: "{tableOfContentsEnactor}.events.afterTocRender"
+                        afterRender: "{fluid.uiOptions.enactors.tableOfContents}.events.afterTocRender"
                     }
                 }
             }
         },
         invokers: {
             applyToc: {
-                funcName: "fluid.uiOptions.enactors.tableOfContentsEnactor.applyToc",
+                funcName: "fluid.uiOptions.enactors.tableOfContents.applyToc",
                 args: ["{arguments}.0", "{that}"]
             }
         },
@@ -490,8 +490,8 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-
-    fluid.uiOptions.enactors.tableOfContentsEnactor.applyToc = function (value, that) {
+    
+    fluid.uiOptions.enactors.tableOfContents.applyToc = function (value, that) {
         var async = false;
         if (value) {
             if (that.tableOfContents) {
@@ -509,8 +509,8 @@ var fluid_1_5 = fluid_1_5 || {};
             that.events.onLateRefreshRelay.fire(that);
         }
     };
-
-    fluid.uiOptions.enactors.tableOfContentsEnactor.finalInit = function (that) {
+    
+    fluid.uiOptions.enactors.tableOfContents.finalInit = function (that) {
         that.applier.modelChanged.addListener("value", function (newModel) {
             that.applyToc(newModel.value);
         });
