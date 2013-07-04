@@ -36,7 +36,7 @@
         <h1>Widgets (includes links)</h1>
 
         <h2>Black on Yellow</h2>
-        <div class="fl-theme-by fl-container-300 fl-centered">
+        <div class="fl-theme-by fl-container-300 fl-centered fl-clearfix">
             <div class="fl-widget fl-grabbable fl-container-500 fl-centered">
                 <div class="fl-widget-titlebar">
                     <a class="fl-force-left fl-icon fl-icon-more" href="#">More</a>
@@ -61,7 +61,7 @@
         </div>
         
         <h2>Coal</h2>
-        <div class="fl-theme-coal fl-container-300 fl-centered">
+        <div class="fl-theme-coal fl-container-300 fl-centered fl-clearfix">
             <div class="fl-widget fl-grabbable fl-container-500 fl-centered">
                 <div class="fl-widget-titlebar">
                     <a class="fl-force-left fl-icon fl-icon-more" href="#">More</a>
@@ -86,7 +86,7 @@
         </div>
         
         <h2>Debug</h2>
-        <div class="fl-theme-debug fl-container-300 fl-centered">
+        <div class="fl-theme-debug fl-container-300 fl-centered fl-clearfix">
             <div class="fl-widget fl-grabbable fl-container-500 fl-centered">
                 <div class="fl-widget-titlebar">
                     <a class="fl-force-left fl-icon fl-icon-more" href="#">More</a>
@@ -111,7 +111,7 @@
         </div>
         
         <h2>High Contrast</h2>
-        <div class="fl-theme-bw fl-container-300 fl-centered">
+        <div class="fl-theme-bw fl-container-300 fl-centered fl-clearfix">
             <div class="fl-widget fl-grabbable fl-container-500 fl-centered">
                 <div class="fl-widget-titlebar">
                     <a class="fl-force-left fl-icon fl-icon-more" href="#">More</a>
@@ -136,7 +136,7 @@
         </div>
         
         <h2>High Contrast Inverted</h2>
-        <div class="fl-theme-wb fl-container-300 fl-centered">
+        <div class="fl-theme-wb fl-container-300 fl-centered fl-clearfix">
             <div class="fl-widget fl-grabbable fl-container-500 fl-centered">
                 <div class="fl-widget-titlebar">
                     <a class="fl-force-left fl-icon fl-icon-more" href="#">More</a>
@@ -161,7 +161,7 @@
         </div>
         
         <h2>Mist</h2>
-        <div class="fl-theme-mist fl-container-300 fl-centered">
+        <div class="fl-theme-mist fl-container-300 fl-centered fl-clearfix">
             <div class="fl-widget fl-grabbable fl-container-500 fl-centered">
                 <div class="fl-widget-titlebar">
                     <a class="fl-force-left fl-icon fl-icon-more" href="#">More</a>
@@ -186,7 +186,7 @@
         </div>
         
         <h2>Slate</h2>
-        <div class="fl-theme-slate fl-container-300 fl-centered">
+        <div class="fl-theme-slate fl-container-300 fl-centered fl-clearfix">
             <div class="fl-widget fl-grabbable fl-container-500 fl-centered">
                 <div class="fl-widget-titlebar">
                     <a class="fl-force-left fl-icon fl-icon-more" href="#">More</a>
@@ -211,7 +211,7 @@
         </div>
         
         <h2>Yellow on Black</h2>
-        <div class="fl-theme-yb fl-container-300 fl-centered">
+        <div class="fl-theme-yb fl-container-300 fl-centered fl-clearfix">
             <div class="fl-widget fl-grabbable fl-container-500 fl-centered">
                 <div class="fl-widget-titlebar">
                     <a class="fl-force-left fl-icon fl-icon-more" href="#">More</a>
@@ -235,8 +235,8 @@
             </div>
         </div>
      
-        <h2>Low Contrast - light grey on dark grey</h2>
-        <div class="fl-theme-lgdg fl-container-300 fl-centered">
+        <h2>Low Contrast - light grey on dark grey - OLD MARKUP</h2>
+        <div class="fl-theme-lgdg fl-container-300 fl-centered fl-clearfix">
             <div class="fl-widget fl-grabbable fl-container-500 fl-centered">
                 <div class="fl-widget-titlebar">
                     <a class="fl-force-left fl-icon fl-icon-more" href="#">More</a>
@@ -259,15 +259,40 @@
                 </div>
             </div>
         </div>
-
-        <h2>Low Contrast Inverted - dark grey on light grey</h2>
-        <div class="fl-theme-dglg fl-container-300 fl-centered">
+        <h2>Low Contrast - light grey on dark grey - UPDATED MARKUP for font icons</h2>
+        <div class="fl-theme-lgdg fl-container-300 fl-centered fl-clearfix">
             <div class="fl-widget fl-grabbable fl-container-500 fl-centered">
                 <div class="fl-widget-titlebar">
-                    <a class="fl-force-left fl-icon fl-icon-more" href="#">More</a>
-                    <a class="fl-force-right fl-icon fl-icon-close" href="#">Close</a>
+                    <a class="fl-force-left" href="#"><span class="fl-icon-widget-more" aria-label="More" role="img"></span></a>
+                                      
+                    <a class="fl-force-right" href="#"><span class="fl-icon-widget-close" aria-label="Close" role="img"></span></a>                    
                     <a class="fl-button-right settings" href="#"><strong class="fl-button-inner">Settings</strong></a>
-                    <h2>My Favourite News Sites</h2>
+                    <h2>My Favourite News Sites</h2><span class="fl-icon-widget-grab" aria-label="Grab" role="img"></span>  
+                </div>
+                <div class="fl-widget-options">
+                    <ul>
+                        <li><a class="add" href="#">Add</a></li>
+                        <li><a class="sort" href="#">Sort</a></li>
+                    </ul>
+                </div>
+                <div class="fl-widget-content">
+                    <ul>
+                        <li><a href="http://cbc.ca">CBC</a></li>
+                        <li><a href="http://www.nytimes.com/">New York Times</a></li>
+                        <li><a href="http://bbc.co.uk">BBC</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <h2>Low Contrast Inverted - dark grey on light grey - UPDATED MARKUP</h2>
+        <div class="fl-theme-dglg fl-container-300 fl-centered fl-clearfix">
+            <div class="fl-widget fl-grabbable fl-container-500 fl-centered">
+                <div class="fl-widget-titlebar">
+                    <a class="fl-force-left" href="#"><span class="fl-icon-widget-more" aria-label="More" role="img"></span></a>
+                                      
+                    <a class="fl-force-right" href="#"><span class="fl-icon-widget-close" aria-label="Close" role="img"></span></a>                    
+                    <a class="fl-button-right settings" href="#"><strong class="fl-button-inner">Settings</strong></a>
+                    <h2>My Favourite News Sites</h2><span class="fl-icon-widget-grab" aria-label="Grab" role="img"></span>  
                 </div>
                 <div class="fl-widget-options">
                     <ul>
@@ -520,7 +545,7 @@
 
         <h1>Tables</h1>
         <h2>Black on Yellow</h2>
-        <div class="fl-theme-by fl-container-300 fl-centered">
+        <div class="fl-theme-by fl-container-300 fl-centered fl-clearfix">
             <table>
                 <tr><th>Header 1</th><th>Header 2</th></tr>
                 <tr><td>Cell 1</td><td>Cell 2</td></tr>
@@ -529,7 +554,7 @@
         </div>
 
         <h2>Coal</h2>
-        <div class="fl-theme-coal fl-container-300 fl-centered">
+        <div class="fl-theme-coal fl-container-300 fl-centered fl-clearfix">
             <table>
                 <tr><th>Header 1</th><th>Header 2</th></tr>
                 <tr><td>Cell 1</td><td>Cell 2</td></tr>
@@ -538,7 +563,7 @@
         </div>
 
         <h2>Debug</h2>
-        <div class="fl-theme-debug fl-container-300 fl-centered">
+        <div class="fl-theme-debug fl-container-300 fl-centered fl-clearfix">
             <table>
                 <tr><th>Header 1</th><th>Header 2</th></tr>
                 <tr><td>Cell 1</td><td>Cell 2</td></tr>
@@ -547,7 +572,7 @@
         </div>
 
         <h2>High Contrast</h2>
-        <div class="fl-theme-bw fl-container-300 fl-centered">
+        <div class="fl-theme-bw fl-container-300 fl-centered fl-clearfix">
             <table>
                 <tr><th>Header 1</th><th>Header 2</th></tr>
                 <tr><td>Cell 1</td><td>Cell 2</td></tr>
@@ -556,7 +581,7 @@
         </div>
 
         <h2>High Contrast Inverted</h2>
-        <div class="fl-theme-wb fl-container-300 fl-centered">
+        <div class="fl-theme-wb fl-container-300 fl-centered fl-clearfix">
             <table>
                 <tr><th>Header 1</th><th>Header 2</th></tr>
                 <tr><td>Cell 1</td><td>Cell 2</td></tr>
@@ -565,7 +590,7 @@
         </div>
 
         <h2>Mist</h2>
-        <div class="fl-theme-mist fl-container-300 fl-centered">
+        <div class="fl-theme-mist fl-container-300 fl-centered fl-clearfix">
             <table>
                 <tr><th>Header 1</th><th>Header 2</th></tr>
                 <tr><td>Cell 1</td><td>Cell 2</td></tr>
@@ -574,7 +599,7 @@
         </div>
 
         <h2>Slate</h2>
-        <div class="fl-theme-slate fl-container-300 fl-centered">
+        <div class="fl-theme-slate fl-container-300 fl-centered fl-clearfix">
             <table>
                 <tr><th>Header 1</th><th>Header 2</th></tr>
                 <tr><td>Cell 1</td><td>Cell 2</td></tr>
@@ -583,7 +608,7 @@
         </div>
 
         <h2>Yellow on Black</h2>
-        <div class="fl-theme-yb fl-container-300 fl-centered">
+        <div class="fl-theme-yb fl-container-300 fl-centered fl-clearfix">
             <table>
                 <tr><th>Header 1</th><th>Header 2</th></tr>
                 <tr><td>Cell 1</td><td>Cell 2</td></tr>
@@ -592,7 +617,7 @@
         </div>
         
         <h2>Low Contrast</h2>
-        <div class="fl-theme-lgdg fl-container-300 fl-centered">
+        <div class="fl-theme-lgdg fl-container-300 fl-centered fl-clearfix">
             <table>
                 <tr><th>Header 1</th><th>Header 2</th></tr>
                 <tr><td>Cell 1</td><td>Cell 2</td></tr>
@@ -601,7 +626,7 @@
         </div>
         
         <h2>Low Contrast Inverted</h2>
-        <div class="fl-theme-dglg fl-container-300 fl-centered">
+        <div class="fl-theme-dglg fl-container-300 fl-centered fl-clearfix">
             <table>
                 <tr><th>Header 1</th><th>Header 2</th></tr>
                 <tr><td>Cell 1</td><td>Cell 2</td></tr>
@@ -678,7 +703,6 @@
                     <label>Omnivore</label>
                 </li>
             </ul>
-            </ul>
         </div>
 
         <h2>Debug</h2>
@@ -713,7 +737,6 @@
                     <input type="checkbox" value="omnivore"/>
                     <label>Omnivore</label>
                 </li>
-            </ul>
             </ul>
         </div>
 
@@ -750,7 +773,6 @@
                     <label>Omnivore</label>
                 </li>
             </ul>
-            </ul>
         </div>
 
         <h2>High Contrast Inverted</h2>
@@ -785,7 +807,6 @@
                     <input type="checkbox" value="omnivore"/>
                     <label>Omnivore</label>
                 </li>
-            </ul>
             </ul>
         </div>
 
@@ -822,7 +843,6 @@
                     <label>Omnivore</label>
                 </li>
             </ul>
-            </ul>
         </div>
 
         <h2>Slate</h2>
@@ -857,7 +877,6 @@
                     <input type="checkbox" value="omnivore"/>
                     <label>Omnivore</label>
                 </li>
-            </ul>
             </ul>
         </div>
 
@@ -894,18 +913,17 @@
                     <label>Omnivore</label>
                 </li>
             </ul>
-            </ul>
         </div>
 
         <h2>Low Contrast</h2>
         <div class="fl-theme-lgdg fl-container-600 fl-centered">
             <ul class="fl-controls-right">
                 <li>
-                    <label class="fl-label">Name</label>
+                    <label class="fl-label">Name:</label>
                     <input type="text" value="John Smith">
                 </li>
                 <li>
-                    <label class="fl-label">Email Address</label>
+                    <label class="fl-label">Email Address:</label>
                     <input type="text" value="john@smith.com">
                 </li>
                 <li>
@@ -929,7 +947,6 @@
                     <input type="checkbox" value="omnivore"/>
                     <label>Omnivore</label>
                 </li>
-            </ul>
             </ul>
         </div>
         
@@ -937,11 +954,11 @@
         <div class="fl-theme-dglg fl-container-600 fl-centered">
             <ul class="fl-controls-right">
                 <li>
-                    <label class="fl-label">Name</label>
+                    <label class="fl-label">Name:</label>
                     <input type="text" value="John Smith">
                 </li>
                 <li>
-                    <label class="fl-label">Email Address</label>
+                    <label class="fl-label">Email Address:</label>
                     <input type="text" value="john@smith.com">
                 </li>
                 <li>
@@ -966,81 +983,80 @@
                     <label>Omnivore</label>
                 </li>
             </ul>
-            </ul>
-        </div>        
+        </div>       
 
         <h1>Buttons</h1>
 
         <h2>Black on Yellow</h2>
-        <div class="fl-theme-by fl-container-300 fl-centered">
+        <div class="fl-theme-by fl-container-300 fl-centered fl-clearfix">
             <a class="fl-button-left" href="#_bottom">
                 <span class="fl-button-inner"> Display Preferences </span>
             </a>
         </div>
 
         <h2>Coal</h2>
-        <div class="fl-theme-coal fl-container-300 fl-centered">
+        <div class="fl-theme-coal fl-container-300 fl-centered fl-clearfix">
             <a class="fl-button-left" href="#_bottom">
                 <span class="fl-button-inner"> Display Preferences </span>
             </a>
         </div>
 
         <h2>Debug</h2>
-        <div class="fl-theme-debug fl-container-300 fl-centered">
+        <div class="fl-theme-debug fl-container-300 fl-centered fl-clearfix">
             <a class="fl-button-left" href="#_bottom">
                 <span class="fl-button-inner"> Display Preferences </span>
             </a>
         </div>
 
         <h2>High Contrast</h2>
-        <div class="fl-theme-bw fl-container-300 fl-centered">
+        <div class="fl-theme-bw fl-container-300 fl-centered fl-clearfix">
             <a class="fl-button-left" href="#_bottom">
                 <span class="fl-button-inner"> Display Preferences </span>
             </a>
         </div>
 
         <h2>High Contrast Inverted</h2>
-        <div class="fl-theme-wb fl-container-300 fl-centered">
+        <div class="fl-theme-wb fl-container-300 fl-centered fl-clearfix">
             <a class="fl-button-left" href="#_bottom">
                 <span class="fl-button-inner"> Display Preferences </span>
             </a>
         </div>
 
         <h2>Mist</h2>
-        <div class="fl-theme-mist fl-container-300 fl-centered">
+        <div class="fl-theme-mist fl-container-300 fl-centered fl-clearfix">
             <a class="fl-button-left" href="#_bottom">
                 <span class="fl-button-inner"> Display Preferences </span>
             </a>
         </div>
 
         <h2>Slate</h2>
-        <div class="fl-theme-slate fl-container-300 fl-centered">
+        <div class="fl-theme-slate fl-container-300 fl-centered fl-clearfix">
             <a class="fl-button-left" href="#_bottom">
                 <span class="fl-button-inner"> Display Preferences </span>
             </a>
         </div>
 
         <h2>Yellow on Black</h2>
-        <div class="fl-theme-yb fl-container-300 fl-centered">
+        <div class="fl-theme-yb fl-container-300 fl-centered fl-clearfix">
             <a class="fl-button-left" href="#_bottom">
                 <span class="fl-button-inner"> Display Preferences </span>
             </a>
         </div>
 
         <h2>Low Contrast</h2>
-        <div class="fl-theme-lgdg fl-container-300 fl-centered">
+        <div class="fl-theme-lgdg fl-container-300 fl-centered fl-clearfix">
             <a class="fl-button-left" href="#_bottom">
                 <span class="fl-button-inner"> Display Preferences </span>
-            </a>
+            </a><br>
             
             <button class="fl-button">Display Preferences</button>
         </div>
         
         <h2>Low Contrast Inverted</h2>
-        <div class="fl-theme-dglg fl-container-300 fl-centered">
+        <div class="fl-theme-dglg fl-container-300 fl-centered fl-clearfix">
             <a class="fl-button-left" href="#_bottom">
                 <span class="fl-button-inner"> Display Preferences </span>
-            </a>
+            </a><br>
             
             <button class="fl-button">Display Preferences</button>
         </div>
