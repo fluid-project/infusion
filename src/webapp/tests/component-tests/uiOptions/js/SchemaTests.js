@@ -52,6 +52,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     gradeNames: ["fluid.tests.properSchemaGrade"]
                 }
             },
+            primaryBuilder: {
+                type: "fluid.uiOptions.primaryBuilder",
+                options: {
+                    auxiliarySchema: {
+                        textSize: {
+                            type: "fluid.uiOptions.textSize"
+                        },
+                        lineSpacing: {
+                            type: "fluid.uiOptions.lineSpacing"
+                        }
+                    }
+                }
+            },
             schemaTester: {
                 type: "fluid.tests.schemaTester"
             }
@@ -80,8 +93,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{properSchema}"]
                 }]
             }]
+        }, {
+            name: "Primary Builder",
+            tests: [{
+                expect: 4,
+                name: "Primary schema is assambled correctectly.",
+                sequence: [{
+                    func: "fluid.tests.primaryBuilder",
+                    args: ["{primaryBuilder}.options.schema"]
+                }]
+            }]
         }]
     });
+
+    fluid.tests.primaryBuilder = function primaryBuilder(schema) {
+        var contributedSchema = $.extend(true, {},
+            fluid.defaults("fluid.uiOptions.schemas.textSize").schema,
+            fluid.defaults("fluid.uiOptions.schemas.lineSpacing").schema);
+        verifySchema(contributedSchema, schema);
+        jqUnit.assertUndefined(
+            "Schema outside of auxiliary schema should not be included",
+            schema.properties["fluid.uiOptions.contrast"]);
+        jqUnit.assertUndefined(
+            "Schema outside of auxiliary schema should not be included",
+            schema.properties["fluid.tests.somePreference"]);
+    };
 
     var verifySchema = function verifySchema(contributedSchema, finalSchema) {
         jqUnit.assertValue("Final Schema is defined",

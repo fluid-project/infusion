@@ -65,7 +65,10 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uiOptions.primaryBuilder.buildPrimary = function buildPrimary(schemaIndex, auxTypes) {
         var primary = [];
         fluid.each(auxTypes, function merge(auxType) {
-            primary = primary.concat(schemaIndex[auxType]);
+            var schemaGrades = schemaIndex[auxType];
+            if (schemaGrades) {
+                primary.push.apply(primary, schemaGrades);
+            }
         });
         return primary;
     };
@@ -86,8 +89,6 @@ var fluid_1_5 = fluid_1_5 || {};
             return fluid.keys(defaults.schema.properties);
         }
     };
-
-    fluid.uiOptions.initSchemaBuilder = function init() {};
 
     fluid.defaults("fluid.uiOptions.schemas", {
         gradeNames: ["autoInit", "fluid.littleComponent"],
