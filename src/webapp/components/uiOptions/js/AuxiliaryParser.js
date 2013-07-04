@@ -29,10 +29,10 @@ var fluid_1_5 = fluid_1_5 || {};
      *
      * @param {object}    source      an object to retrieve the returned value from
      * @param {String}    template    a string that the path to the requested value is embedded into
-     * 
+     *
      * Example:
      * 1. Parameters:
-     * source: 
+     * source:
      * {
      *     path1: {
      *         path2: "here"
@@ -63,7 +63,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uiOptions.expandSchema = function (source, schemaToExpand) {
         var expandedSchema = {};
-        
+
         fluid.each(schemaToExpand, function(value, key) {
             if (typeof value === "object") {
                 expandedSchema[key] = fluid.uiOptions.expandSchema(source, value);
@@ -73,15 +73,27 @@ var fluid_1_5 = fluid_1_5 || {};
                 expandedSchema[key] = value;
             }
         });
-        
+
         return expandedSchema;
     };
 
     fluid.uiOptions.auxiliaryExpander = function (schema) {
         var sourceSchema = schemaToExpand = schema;
         return fluid.uiOptions.expandSchema(sourceSchema, schemaToExpand);
-    }
+    };
 
+    fluid.defaults("fluid.uiOptions.auxBuilder", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        auxiliarySchema: {},
+        expandedAuxSchema: {
+            expander: {
+                func: "fluid.uiOptions.auxiliaryParser",
+                args: "{that}.options.auxiliarySchema"
+            }
+        }
+    });
+
+    //TODO: remove, this is just for testsing
     var expandedAuxiliarySchema = fluid.uiOptions.auxiliaryExpander(auxiliarySchema);
     console.log(expandedAuxiliarySchema);
 
