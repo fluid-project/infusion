@@ -35,14 +35,57 @@ var fluid_1_5 = fluid_1_5 || {};
         return target;
     };
 
-    fluid.defaults("fluid.uiOptions.schemaBuilder", {
-        gradeNames: ["fluid.littleComponent"],
-        initFunction: "fluid.uiOptions.initSchemaBuilder",
-        argumentMap: {
-            schema: 0,
-            options: 1
-        }
+    fluid.defaults("fluid.uiOptions.primaryBuilder", {
+        gradeNames: ["fluid.eventedComponent", "autoInit", "{that}.buildPrimary"],
+        schemaIndex: {
+            expander: {
+                func: "fluid.indexDefaults",
+                args: ["schemaIndex", {
+                    gradeNames: "fluid.uiOptions.schemas",
+                    indexFunc: "fluid.uiOptions.primaryBuilder.indexer"
+                }]
+            }
+        },
+        primarySchema: {},
+        auxiliarySchema: {},
+        auxTypes: {
+            expander: {
+                func: "fluid.uiOptions.primaryBuilder.parseAuxSchema",
+                args: "{that}.options.auxiliarySchema"
+            }
+        },
+        invokers: {
+            buildPrimary: {
+                funcName: "fluid.uiOptions.primaryBuilder.buildPrimary",
+                args: ["{that}.options.schemaIndex", "{that}.options.auxTypes"]
+            }
+        },
     });
+
+    fluid.uiOptions.primaryBuilder.buildPrimary = function buildPrimary(schemaIndex, auxTypes) {
+        var primary = [];
+        fluid.each(auxTypes, function merge(auxType) {
+            primary = primary.concat(schemaIndex[auxType]);
+        });
+        return primary;
+    };
+
+    fluid.uiOptions.primaryBuilder.parseAuxSchema = function parseAuxSchema(auxSchema) {
+        var auxTypes = [];
+        fluid.each(auxSchema, function parse(field) {
+            var type = field.type;
+            if (type) {
+                auxTypes.push(type);
+            }
+        });
+        return auxTypes;
+    };
+
+    fluid.uiOptions.primaryBuilder.indexer = function indexer(defaults) {
+        if (defaults.schema) {
+            return fluid.keys(defaults.schema.properties);
+        }
+    };
 
     fluid.uiOptions.initSchemaBuilder = function init() {};
 
