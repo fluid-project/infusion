@@ -36,7 +36,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.defaults("fluid.uiOptions.primaryBuilder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit", "{that}.buildPrimary"],
+        gradeNames: ["fluid.eventedComponent", "autoInit", "{that}.buildPrimary", "{that}.relayPrimary"],
         schemaIndex: {
             expander: {
                 func: "fluid.indexDefaults",
@@ -57,7 +57,17 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             buildPrimary: {
                 funcName: "fluid.uiOptions.primaryBuilder.buildPrimary",
-                args: ["{that}.options.schemaIndex", "{that}.options.auxTypes"]
+                args: [
+                    "{that}.options.schemaIndex",
+                    "{that}.options.auxTypes"
+                ]
+            },
+            relayPrimary: {
+                funcName: "fluid.uiOptions.primaryBuilder.relayPrimary",
+                args: [
+                    "{that}.options.primarySchema",
+                    "{that}.options.auxTypes"
+                ]
             }
         },
     });
@@ -71,6 +81,18 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
         return primary;
+    };
+
+    fluid.uiOptions.primaryBuilder.relayPrimary = function relayPrimary(primarySchema, auxTypes) {
+        if ($.isEmptyObject(primarySchema)) {
+            return;
+        }
+        fluid.defaults("fluid.uiOptions.schemas.primary", {
+            gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+            schema: fluid.filterKeys(primarySchema.properties || primarySchema,
+                auxTypes, false)
+        });
+        return "fluid.uiOptions.schemas.primary";
     };
 
     fluid.uiOptions.primaryBuilder.parseAuxSchema = function parseAuxSchema(auxSchema) {
