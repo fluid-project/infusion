@@ -20,6 +20,29 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
+    fluid.registerNamespace("fluid.uiOptions");
+
+    /**
+     * Look up the value on the given source object by using the path.
+     * Takes a template string containing tokens in the form of "@source-path-to-value".
+     * Returns a value (any type) or undefined if the path is not found.
+     *
+     * @param {object}    source      an object to retrieve the returned value from
+     * @param {String}    template    a string that the path to the requested value is embedded into
+     * 
+     * Example:
+     * 1. Parameters:
+     * source: 
+     * {
+     *     path1: {
+     *         path2: "here"
+     *     }
+     * }
+     *
+     * template: "@path1.path2"
+     *
+     * 2. Return: "here"
+     */
     fluid.uiOptions.expandSchemaValue = function (source, template) {
         if (template.charAt(0) !== "@") return template;
 
@@ -28,7 +51,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
         var expandedValue = source;
         for( var i = 0; i < paths.length; i++ ) {
-            expandedValue = expandedValue[ paths[i] ] || {};
+            expandedValue = expandedValue[ paths[i] ];
         }
 
         return expandedValue;
