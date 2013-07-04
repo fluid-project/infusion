@@ -970,7 +970,11 @@ var fluid = fluid || fluid_1_5;
     fluid.event.sortListeners = function (listeners) {
         var togo = [];
         fluid.each(listeners, function (listener) {
-            togo.push(listener);
+            if (listener.length) {
+                togo = togo.concat(listener)
+            } else {
+                togo.push(listener);
+            }
         });
         return togo.sort(fluid.priorityComparator);
     };
@@ -1043,7 +1047,7 @@ var fluid = fluid || fluid_1_5;
             listeners = {};
             byId = {};
             sortedListeners = [];
-            that.addListener = function (listener, namespace, predicate, priority) {
+            that.addListener = function (listener, namespace, predicate, priority, softNamespace) {
                 if (!listener) {
                     return;
                 }
@@ -1057,9 +1061,17 @@ var fluid = fluid || fluid_1_5;
                 namespace = namespace || id;
                 var record = {listener: listener, predicate: predicate,
                     namespace: namespace,
+                    softNamespace: softNamespace,
                     priority: fluid.event.mapPriority(priority, sortedListeners.length)};
-
-                listeners[namespace] = byId[id] = record;
+                byId[id] = record;
+                if (softNamespace) {
+                    var thisListeners = (listeners[namespace] = fluid.makeArray(listeners[namespace]));
+                    thisListeners.push(record);
+                }
+                else {
+                    listeners[namespace] = record;
+                }
+                
                 sortedListeners = fluid.event.sortListeners(listeners);
             };
             that.addListener.apply(null, arguments);
@@ -1130,7 +1142,7 @@ var fluid = fluid || fluid_1_5;
         } else if (typeof (value) === "function" || typeof (value) === "string") {
             wrapper(firer).addListener(value, namespace);
         } else if (value && typeof (value) === "object") {
-            wrapper(firer).addListener(value.listener, namespace || value.namespace, value.predicate, value.priority);
+            wrapper(firer).addListener(value.listener, namespace || value.namespace, value.predicate, value.priority, value.softNamespace);
         }
     };
     
@@ -1165,7 +1177,7 @@ var fluid = fluid || fluid_1_5;
                 }
                 firer = events[key];
             }
-            record = fluid.event.resolveListenerRecord(value, that, key);
+            record = fluid.event.resolveListenerRecord(value, that, key, namespace);
             fluid.event.addListenerToFirer(firer, record.records, namespace, record.adderWrapper);
         });
     };
@@ -1197,8 +1209,7 @@ var fluid = fluid || fluid_1_5;
     fluid.mergeListenerPolicy = function (target, source, key) {
         // cf. triage in mergeListeners
         var hasNamespace = key.charAt(0) !== "{" && key.indexOf(".") !== -1;
-        return hasNamespace ? (source ? source : target)
-            : fluid.makeArray(target).concat(fluid.makeArray(source));
+        return hasNamespace ? (source || target) : fluid.makeArray(target).concat(fluid.makeArray(source));
     };
     
     fluid.mergeListenersPolicy = function (target, source) {

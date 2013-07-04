@@ -133,7 +133,6 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             onCreate: [{
                 funcName: "fluid.undo.refreshView",
-                namespace: "refreshView",
                 args: "{that}"
             }, {
                 "this": "{that}.dom.undoControl",
