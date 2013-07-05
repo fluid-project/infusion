@@ -105,15 +105,6 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
-        
-    fluid.model.defaultGetConfig = {
-        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy]
-    };
-
-    fluid.model.defaultSetConfig = {
-        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
-    };
-    
     // unsupported, NON-API function
     fluid.model.traverseWithStrategy = function (root, segs, initPos, config, uncess) {
         var strategies = config.strategies;
@@ -413,7 +404,31 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     };
-          
+        
+    fluid.model.defaultGetConfig = {
+        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy]
+    };
+
+    fluid.model.defaultSetConfig = {
+        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
+    };
+
+    fluid.model.escapedGetConfig = {
+        parser: {
+            parse: fluid.pathUtil.parseEL,
+            compose: fluid.pathUtil.composePath
+        },
+        strategies: [fluid.model.defaultFetchStrategy]
+    };
+
+    fluid.model.escapedSetConfig = {
+        parser: {
+            parse: fluid.pathUtil.parseEL,
+            compose: fluid.pathUtil.composePath
+        },
+        strategies: [fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
+    };
+
     /** Add a listener to a ChangeApplier event that only acts in the case the event
      * has not come from the specified source (typically ourself)
      * @param modelEvent An model event held by a changeApplier (typically applier.modelChanged)
