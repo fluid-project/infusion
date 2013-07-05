@@ -54,6 +54,8 @@ var fluid_1_5 = fluid_1_5 || {};
                         args: ["{that}.options.auxSchema.name", "{that}.options.defaultName"]
                     }
                 }, {
+                    auxSchema: "{that}.options.auxSchema",
+                    schema: "{that}.options.schema",
                     gradeNames: ["autoInit", "fluid.viewComponent", "{that}.attachUIOptions", "{that}.attachEnhancer"]
                 }]
             }
@@ -69,7 +71,7 @@ var fluid_1_5 = fluid_1_5 || {};
             enhancer: {
                 type: "fluid.pageEnhancer",
                 options: {
-                    components: "{that}.options.auxSchema.enactors"
+                    components: "{fluid.uiOptions.builder.assembler.enhancer}.options.auxSchema.enactors"
                 }
             }
         }
@@ -83,18 +85,18 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             uiOptions: {
                 type: "fluid.uiOptions.fatPanel",
-                container: "{that}.container",
+                container: "{fluid.uiOptions.builder.assembler.uiOptions}.container",
                 options: {
-                    prefix: "{that}.options.auxSchema.templatePrefix",
+                    prefix: "{fluid.uiOptions.builder.assembler.uiOptions}.options.auxSchema.templatePrefix",
                     components: {
                         templateLoader: {
                             options: {
-                                templates: "{that}.options.auxSchema.templates"
+                                templates: "{fluid.uiOptions.builder.assembler.uiOptions}.options.auxSchema.templates"
                             }
                         },
                         uiOptions: {
                             options: {
-                                components: "{that}.options.auxSchema.panels"
+                                components: "{fluid.uiOptions.builder.assembler.uiOptions}.options.auxSchema.panels"
                             }
                         }
                     }
