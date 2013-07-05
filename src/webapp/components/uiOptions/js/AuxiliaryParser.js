@@ -27,12 +27,12 @@ var fluid_1_5 = fluid_1_5 || {};
      * Takes a template string containing tokens in the form of "@source-path-to-value".
      * Returns a value (any type) or undefined if the path is not found.
      *
-     * @param {object}    source      an object to retrieve the returned value from
-     * @param {String}    template    a string that the path to the requested value is embedded into
-     * 
+     * @param {object}    root       an object to retrieve the returned value from
+     * @param {String}    pathRef    a string that the path to the requested value is embedded into
+     *
      * Example:
      * 1. Parameters:
-     * source: 
+     * source:
      * {
      *     path1: {
      *         path2: "here"
@@ -43,46 +43,49 @@ var fluid_1_5 = fluid_1_5 || {};
      *
      * 2. Return: "here"
      */
-    fluid.uiOptions.expandSchemaValue = function (source, template) {
-        if (template.charAt(0) !== "@") return template;
+    fluid.uiOptions.expandSchemaValue = function (root, pathRef) {
+        if (pathRef.charAt(0) !== "@") return pathRef;
 
-        var fullPath = template.substring(1);
-        var paths = fullPath.split(".");
-
-        var expandedValue = source;
-        for( var i = 0; i < paths.length; i++ ) {
-            expandedValue = expandedValue[ paths[i] ];
-
-            if (typeof expandedValue === "undefined") {
-                break;
-            }
-        }
-
-        return expandedValue;
+        return fluid.get(root, pathRef.substring(1));
     };
 
-    fluid.uiOptions.expandSchema = function (source, schemaToExpand) {
-        var expandedSchema = {};
-        
-        fluid.each(schemaToExpand, function(value, key) {
+    /**
+     * Expands a all "@" path references from an auxiliary schema.
+     * Note that you cannot chain "@" paths.
+     *
+     *  @param {object} schemaToExpand the shcema which will be expanded
+     *  @param {object} altSource an alternative look up object. This is primarily used for the internal recursive call.
+     *  @return {object} an expaneded version of the schema.
+     */
+    fluid.uiOptions.expandSchema = function (schemaToExpand, altSource) {
+        var expandedSchema = fluid.copy(schemaToExpand);
+        altSource = altSource || expandedSchema;
+
+        fluid.each(expandedSchema, function (value, key) {
             if (typeof value === "object") {
-                expandedSchema[key] = fluid.uiOptions.expandSchema(source, value);
+                expandedSchema[key] = fluid.uiOptions.expandSchema(value, altSource);
             } else if (typeof value === "string") {
-                expandedSchema[key] = fluid.uiOptions.expandSchemaValue(source, value);
-            } else {
-                expandedSchema[key] = value;
+                var expandedVal = fluid.uiOptions.expandSchemaValue(altSource, value);
+                if (expandedVal !== undefined) {
+                    expandedSchema[key] = expandedVal;
+                } else {
+                    delete expandedSchema[key];
+                }
             }
         });
-        
+
         return expandedSchema;
     };
 
-    fluid.uiOptions.auxiliaryExpander = function (schema) {
-        var sourceSchema = schemaToExpand = schema;
-        return fluid.uiOptions.expandSchema(sourceSchema, schemaToExpand);
-    }
-
-    var expandedAuxiliarySchema = fluid.uiOptions.auxiliaryExpander(auxiliarySchema);
-    console.log(expandedAuxiliarySchema);
+    fluid.defaults("fluid.uiOptions.auxBuilder", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        auxiliarySchema: {},
+        expandedAuxSchema: {
+            expander: {
+                func: "fluid.uiOptions.expandSchema",
+                args: "{that}.options.auxiliarySchema"
+            }
+        }
+    });
 
 })(jQuery, fluid_1_5);

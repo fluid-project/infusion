@@ -14,7 +14,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid_1_5:true, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_5 = fluid_1_5 || {};
@@ -24,10 +24,10 @@ var fluid_1_5 = fluid_1_5 || {};
     /*******************************************************************************
      * CSSClassEnhancerBase
      *
-     * Provides the map between the settings and css classes to be applied. 
+     * Provides the map between the settings and css classes to be applied.
      * Used as a UIEnhancer base grade that can be pulled in as requestd.
      *******************************************************************************/
-    
+
     fluid.defaults("fluid.uiEnhancer.cssClassEnhancerBase", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         classnameMap: {
@@ -53,10 +53,10 @@ var fluid_1_5 = fluid_1_5 || {};
     /*******************************************************************************
      * BrowserTextEnhancerBase
      *
-     * Provides the default font size translation between the strings and actual pixels. 
+     * Provides the default font size translation between the strings and actual pixels.
      * Used as a UIEnhancer base grade that can be pulled in as requestd.
      *******************************************************************************/
-    
+
     fluid.defaults("fluid.uiEnhancer.browserTextEnhancerBase", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         fontSizeMap: {
@@ -75,7 +75,7 @@ var fluid_1_5 = fluid_1_5 || {};
      *                                                                             *
      * Works in conjunction with FSS to transform the page based on user settings. *
      *******************************************************************************/
-    
+
     fluid.defaults("fluid.uiEnhancer", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         invokers: {
@@ -96,7 +96,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /*******************************************************************************
      * UI Enhancer Starter Enactors
      *
-     * A grade component for UIEnhancer. It is a collection of default UI Enhancer 
+     * A grade component for UIEnhancer. It is a collection of default UI Enhancer
      * action ants.
      *******************************************************************************/
     
@@ -118,7 +118,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             textFont: {
-                type: "fluid.uiOptions.enactors.classSwapper",
+                type: "fluid.uiOptions.enactors.textFont",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.textFont",
@@ -145,8 +145,8 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             },
-            theme: {
-                type: "fluid.uiOptions.enactors.classSwapper",
+            contrast: {
+                type: "fluid.uiOptions.enactors.contrast",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.theme",
@@ -225,13 +225,13 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uiEnhancer.starterEnactors.finalInit = function (that) {
         $(document).ready(function () {
             that.events.onCreateToc.fire();
-            
+
             // Directly calling toc apply function rather than firing a model change request
             // is because the modelRelay component prevents the relay on the unchanged value.
             that.tableOfContents.applyToc(that.model.toc);
         });
     };
-    
+
     /*******************************************************************************
      * PageEnhancer                                                                *
      *                                                                             *
@@ -258,7 +258,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-    
+
     /*******************************************************************************
      * originalEnhancerOptions
      *
@@ -267,9 +267,9 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.originalEnhancerOptions", {
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
-    
+
     fluid.originalEnhancerOptions.preInit = function (that) {
         fluid.staticEnvironment.originalEnhancerOptions = that;
     };
-    
+
 })(jQuery, fluid_1_5);
