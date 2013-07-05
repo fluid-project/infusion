@@ -43,26 +43,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         "enactors": [{
-            "type": "fluid.uiOptions.enactors.lineSpacing",
-            "fontSizeMap": {
-                "xx-small": "9px",
-                "x-small": "11px",
-                "small": "13px",
-                "medium": "15px",
-                "large": "18px",
-                "x-large": "23px",
-                "xx-large": "30px"
-            }
-        }, {
             "type": "fluid.uiOptions.enactors.textFont",
             "classes": "@textFont.classes"
         }, {
             "type": "fluid.uiOptions.enactors.contrast",
             "classes": "@contrast.classes"
-        }, {
-            "type": "fluid.uiOptions.enactors.tableOfContents",
-            "template": "the-location-of-toc-template",
-            "random": "@random.path"
         }]
     };
 
@@ -88,17 +73,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         "enactors": [{
-            "type": "fluid.uiOptions.enactors.lineSpacing",
-            "fontSizeMap": {
-                "xx-small": "9px",
-                "x-small": "11px",
-                "small": "13px",
-                "medium": "15px",
-                "large": "18px",
-                "x-large": "23px",
-                "xx-large": "30px"
-            }
-        }, {
             "type": "fluid.uiOptions.enactors.textFont",
             "classes": {
                 "default": "",
@@ -116,9 +90,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "by": "fl-theme-uio-by fl-theme-by",
                 "yb": "fl-theme-uio-yb fl-theme-yb"
             }
-        }, {
-            "type": "fluid.uiOptions.enactors.tableOfContents",
-            "template": "the-location-of-toc-template"
         }]
     };
 

@@ -33,7 +33,84 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.builder.assembler", {
         gradeNames: ["autoInit", "fluid.eventedComponent", "{fluid.uiOptions.builder}.buildPrimary"],
-        auxSchema: "{fluid.uiOptions.builder}.options.expandedAuxSchema"
+        auxSchema: "{fluid.uiOptions.builder}.options.expandedAuxSchema",
+        defaultName: "fluid.uiOptions.create",
+        invokers: {
+            attachUIOptions: {
+                funcName: "fluid.uiOptions.builder.assembler.attach",
+                args: ["{that}.options.auxSchema.panels", "fluid.uiOptions.builder.assembler.uiOptions"]
+            },
+            attachEnhancer: {
+                funcName: "fluid.uiOptions.builder.assembler.attach",
+                args: ["{that}.options.auxSchema.enactors", "fluid.uiOptions.builder.assembler.enhancer"]
+            }
+        },
+        listeners: {
+            onCreate: {
+                listener: "fluid.defaults",
+                args: [{
+                    expander: {
+                        func: "fluid.uiOptions.builder.assembler.provideName",
+                        args: ["{that}.options.auxSchema.name", "{that}.options.defaultName"]
+                    }
+                }, {
+                    gradeNames: ["autoInit", "fluid.viewComponent", "{that}.attachUIOptions", "{that}.attachEnhancer"]
+                }]
+            }
+        }
     });
+
+    fluid.defaults("fluid.uiOptions.builder.assembler.enhancer", {
+        gradeNames: ["autoInit", "fluid.viewComponent"],
+        components: {
+            store: {
+                type: "fluid.globalSettingsStore"
+            },
+            enhancer: {
+                type: "fluid.pageEnhancer",
+                options: {
+                    components: "{that}.options.auxSchema.enactors"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.builder.assembler.uiOptions", {
+        gradeNames: ["autoInit", "fluid.viewComponent"],
+        components: {
+            store: {
+                type: "fluid.globalSettingsStore"
+            },
+            uiOptions: {
+                type: "fluid.uiOptions.fatPanel",
+                container: "{that}.container",
+                options: {
+                    prefix: "{that}.options.auxSchema.templatePrefix",
+                    components: {
+                        templateLoader: {
+                            options: {
+                                templates: "{that}.options.auxSchema.templates"
+                            }
+                        },
+                        uiOptions: {
+                            options: {
+                                components: "{that}.options.auxSchema.panels"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.uiOptions.builder.assembler.attach = function (components, gradeName) {
+        if (!$.isEmptyObject(components)) {
+            return gradeName;
+        }
+    };
+
+    fluid.uiOptions.builder.assembler.provideName = function (suppliedName, defaultName) {
+        return suppliedName || defaultName;
+    };
 
 })(jQuery, fluid_1_5);
