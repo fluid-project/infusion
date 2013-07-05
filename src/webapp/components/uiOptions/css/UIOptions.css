@@ -4,7 +4,6 @@
     font-family: 'InfusionIcons';
     src: url('../fonts/InfusionIcons-UIOptions.ttf'),
          url('../fonts/InfusionIcons-UIOptions.eot');
-	}
 }
 
 .fl-uiOptions {
@@ -368,26 +367,18 @@
 .fl-theme-bw .fl-uiOptions .fl-slider { background: none; background-color:#000;} 
 .fl-theme-bw .fl-uiOptions .fl-slider a,
 .fl-theme-bw .fl-uiOptions .fl-slider a:hover {border:1px solid #000; background-color:#fff;}
-.fl-theme-bw .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/bw/uio_icon_save_hc_13x13.png"); }
-.fl-theme-bw .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/bw/uio_icon_cancel_hc_13x13.png"); }
 
 .fl-theme-wb .fl-uiOptions .fl-slider { background: none; background-color:#fff;} 
 .fl-theme-wb .fl-uiOptions .fl-slider a,
 .fl-theme-wb .fl-uiOptions .fl-slider a:hover {border:1px solid #fff; background-color:#000;}
-.fl-theme-wb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/wb/uio_icon_save_hci_13x13.png"); }
-.fl-theme-wb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/wb/uio_icon_cancel_hci_13x13.png"); }
 
 .fl-theme-yb .fl-uiOptions .fl-slider {background: none; background-color:#000;}
 .fl-theme-yb .fl-uiOptions .fl-slider a,
 .fl-theme-yb .fl-uiOptions .fl-slider a:hover {border:1px solid #ffff00; background-color:#000;}
-.fl-theme-yb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/yb/uio_icon_save_yellowBlack_13x13.png"); }
-.fl-theme-yb .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/yb/uio_icon_cancel_yellowBlack_13x13.png"); }
 
 .fl-theme-by .fl-uiOptions .fl-slider {background: none; background-color:#ffff00;}
 .fl-theme-by .fl-uiOptions .fl-slider a,
 .fl-theme-by .fl-uiOptions .fl-slider a:hover {border:1px solid #000; background-color:#ffff00;}
-.fl-theme-by .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-save { background-image: url("../images/by/uio_icon_save_blackYellow_13x13.png"); }
-.fl-theme-by .fl-uiOptions .fl-uiOptions-buttons .fl-uiOptions-cancel { background-image: url("../images/by/uio_icon_cancel_blackYellow_13x13.png"); }
 
 .fl-theme-bw .fl-uiOptions .ui-slider .ui-slider-handle,
 .fl-theme-wb .fl-uiOptions .ui-slider .ui-slider-handle,

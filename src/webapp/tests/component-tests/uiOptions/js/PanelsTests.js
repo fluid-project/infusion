@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid, jqUnit, expect, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
@@ -47,7 +47,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Expected model value " + expectedValue + " at path " + path, expectedValue, newval);
         };
     };
-    
+
     /*******************************************************************************
      * textFontPanel
      *******************************************************************************/
@@ -55,7 +55,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             textFont: {
-                type: "fluid.uiOptions.textFont",
+                type: "fluid.uiOptions.panels.textFont",
                 container: ".flc-textFont",
                 options: {
                     model: {
@@ -75,7 +75,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var options = that.container.find("option");
             jqUnit.assertEquals("There are " + expectedNumOfOptions + " text fonts in the control", expectedNumOfOptions, options.length);
             jqUnit.assertEquals("The first text font is " + expectedFont, expectedFont, options.filter(":selected").val());
-            
+
             fluid.each(options, function (option, index) {
                 var css = that.options.classnameMap.textFont[option.value];
                 if (css) {
@@ -84,11 +84,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         };
     };
-    
+
     fluid.tests.textFontPanel.changeSelection = function (element, newValue) {
         element.val(newValue).change();
     };
-    
+
     fluid.defaults("fluid.tests.textFontTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
@@ -127,7 +127,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             contrast: {
-                type: "fluid.uiOptions.contrast",
+                type: "fluid.uiOptions.panels.contrast",
                 container: ".flc-contrast",
                 options: {
                     model: {
@@ -146,10 +146,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return function () {
             var inputs = that.locate("themeInput");
             var labels = that.locate("themeLabel");
-            
+
             jqUnit.assertEquals("There are " + expectedNumOfOptions + " contrast selections in the control", expectedNumOfOptions, inputs.length);
             jqUnit.assertEquals("The first contrast is " + expectedContrast, expectedContrast, inputs.filter(":checked").val());
-            
+
             var inputValue, label;
             fluid.each(inputs, function (input, index) {
                 inputValue = input.value;
@@ -158,12 +158,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         };
     };
-    
+
     fluid.tests.contrastPanel.changeChecked = function (inputs, newValue) {
         inputs.removeAttr("checked");
         inputs.filter("[value='" + newValue + "']").attr("checked", "checked").change();
     };
-    
+
     fluid.defaults("fluid.tests.contrastTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
@@ -202,36 +202,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testDefault = function (that, expectedNumOfOptions, expectedContrast) {
         return function () {
             var inputValue = that.container.find("input").val();
-            jqUnit.assertEquals("The default input value has been set to the min value", that.model.min, inputValue);
+            jqUnit.assertEquals("The default input value has been set to the min value", that.options.range.min, inputValue);
         };
     };
-    
+
     fluid.tests.changeInput = function (textSlider, newValue) {
         textSlider.find("input").val(newValue).change();
     };
-    
+
     /*******************************************************************************
-     * textSizer
+     * textSize
      *******************************************************************************/
-    fluid.defaults("fluid.tests.textSizerPanel", {
+    fluid.defaults("fluid.tests.textSizePanel", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            textSizer: {
-                type: "fluid.uiOptions.textSizer",
-                container: ".flc-textSizer",
+            textSize: {
+                type: "fluid.uiOptions.panels.textSize",
+                container: ".flc-textSize",
                 options: {
                     model: {
                         value: 1
                     }
                 }
             },
-            textSizerTester: {
-                type: "fluid.tests.textSizerTester"
+            textSizeTester: {
+                type: "fluid.tests.textSizeTester"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.textSizerTester", {
+    fluid.defaults("fluid.tests.textSizeTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
             newValue: 1.2
@@ -240,83 +240,83 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "Test the text sizer settings panel",
             tests: [{
                 expect: 2,
-                name: "Test the rendering of the text sizer panel",
+                name: "Test the rendering of the text size panel",
                 sequence: [{
-                    func: "{textSizer}.refreshView"
+                    func: "{textSize}.refreshView"
                 }, {
                     listenerMaker: "fluid.tests.testDefault",
-                    makerArgs: ["{textSizer}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
-                    event: "{textSizer}.events.afterRender"
+                    makerArgs: ["{textSize}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
+                    event: "{textSize}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeInput",
-                    args: ["{textSizer}.dom.textSize", "{that}.options.testOptions.newValue"]
+                    args: ["{textSize}.dom.textSize", "{that}.options.testOptions.newValue"]
                 }, {
                     listenerMaker: "fluid.tests.checkModel",
                     makerArgs: ["value", "{that}.options.testOptions.newValue"],
                     spec: {path: "value", priority: "last"},
-                    changeEvent: "{textSizer}.applier.modelChanged"
+                    changeEvent: "{textSize}.applier.modelChanged"
                 }]
             }]
         }]
     });
 
     /*******************************************************************************
-     * lineSpacer
+     * lineSpace
      *******************************************************************************/
-    fluid.defaults("fluid.tests.lineSpacerPanel", {
+    fluid.defaults("fluid.tests.lineSpacePanel", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            lineSpacer: {
-                type: "fluid.uiOptions.lineSpacer",
-                container: ".flc-lineSpacer",
+            lineSpace: {
+                type: "fluid.uiOptions.panels.lineSpace",
+                container: ".flc-lineSpace",
                 options: {
                     model: {
                         value: 1
                     }
                 }
             },
-            lineSpacerTester: {
-                type: "fluid.tests.lineSpacerTester"
+            lineSpaceTester: {
+                type: "fluid.tests.lineSpaceTester"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.lineSpacerTester", {
+    fluid.defaults("fluid.tests.lineSpaceTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
             newValue: 1.2
         },
         modules: [{
-            name: "Test the line spacer settings panel",
+            name: "Test the line space settings panel",
             tests: [{
                 expect: 2,
-                name: "Test the rendering of the line spacer panel",
+                name: "Test the rendering of the line space panel",
                 sequence: [{
-                    func: "{lineSpacer}.refreshView"
+                    func: "{lineSpace}.refreshView"
                 }, {
                     listenerMaker: "fluid.tests.testDefault",
-                    makerArgs: ["{lineSpacer}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
-                    event: "{lineSpacer}.events.afterRender"
+                    makerArgs: ["{lineSpace}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
+                    event: "{lineSpace}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeInput",
-                    args: ["{lineSpacer}.dom.textSize", "{that}.options.testOptions.newValue"]
+                    args: ["{lineSpace}.dom.textSize", "{that}.options.testOptions.newValue"]
                 }, {
                     listenerMaker: "fluid.tests.checkModel",
                     makerArgs: ["value", "{that}.options.testOptions.newValue"],
                     spec: {path: "value", priority: "last"},
-                    changeEvent: "{lineSpacer}.applier.modelChanged"
+                    changeEvent: "{lineSpace}.applier.modelChanged"
                 }]
             }]
         }]
     });
 
     /*******************************************************************************
-     * Test functions shared by checkbox panels: layoutPanel & linkPanel 
+     * Test functions shared by checkbox panels: layoutPanel & linkPanel
      *******************************************************************************/
     fluid.tests.changeCheckboxSelection = function (element) {
         element.attr("checked", "checked").change();
     };
-    
+
     /*******************************************************************************
      * layoutPanel
      *******************************************************************************/
@@ -324,7 +324,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             layout: {
-                type: "fluid.uiOptions.layoutControls",
+                type: "fluid.uiOptions.panels.layoutControls",
                 container: ".flc-layout",
                 options: {
                     model: {
@@ -345,7 +345,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The toc option is not checked by default", expectedValue, inputValue);
         };
     };
-    
+
     fluid.defaults("fluid.tests.layoutTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
@@ -383,7 +383,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             links: {
-                type: "fluid.uiOptions.linksControls",
+                type: "fluid.uiOptions.panels.linksControls",
                 container: ".flc-links",
                 options: {
                     model: {
@@ -406,7 +406,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The links option is not checked by default", expectedValue, inputsLargerValue);
         };
     };
-    
+
 
     fluid.defaults("fluid.tests.linksTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
@@ -450,8 +450,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.test.runTests([
             "fluid.tests.textFontPanel",
             "fluid.tests.contrastPanel",
-            "fluid.tests.textSizerPanel",
-            "fluid.tests.lineSpacerPanel",
+            "fluid.tests.textSizePanel",
+            "fluid.tests.lineSpacePanel",
             "fluid.tests.layoutPanel",
             "fluid.tests.linksPanel"
         ]);
