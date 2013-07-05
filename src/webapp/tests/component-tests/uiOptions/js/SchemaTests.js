@@ -37,6 +37,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.defaults("fluid.tests.customTextSize", {
+        gradeNames: ["autoInit", "fluid.littleComponent"],
+        schema: {
+            "type": "object",
+            "properties": {
+                "fluid.uiOptions.textSize": {
+                    "type": "number",
+                    "default": 1,
+                    "minimum": 1,
+                    "maximum": 2,
+                    "divisibleBy": 0.2
+                }
+            }
+        }
+    });
+
     fluid.defaults("fluid.tests.contributedSchema", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
@@ -150,7 +166,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.primaryBuilderWithSuppliedPrimarySchema = function primaryBuilderWithSuppliedPrimarySchema(schema, that) {
         verifyBuilder(schema, [
-            "fluid.uiOptions.schemas.textSize",
+            "fluid.tests.customTextSize",
             "fluid.uiOptions.schemas.lineSpacing",
             "fluid.tests.properSchemaGrade"
         ], [
