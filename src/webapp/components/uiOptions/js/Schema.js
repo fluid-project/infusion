@@ -23,7 +23,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.registerNamespace("fluid.uiOptions.schemas");
 
-    fluid.uiOptions.schemas.merge = function merge(target, source) {
+    fluid.uiOptions.schemas.merge = function (target, source) {
         if (!target) {
             target = {
                 type: "object",
@@ -36,13 +36,13 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.defaults("fluid.uiOptions.primaryBuilder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit", "{that}.buildPrimary"],
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         schemaIndex: {
             expander: {
                 func: "fluid.indexDefaults",
                 args: ["schemaIndex", {
                     gradeNames: "fluid.uiOptions.schemas",
-                    indexFunc: "fluid.uiOptions.primaryBuilder.indexer"
+                    indexFunc: "fluid.uiOptions.primaryBuilder.defaultSchemaIndexer"
                 }]
             }
         },
@@ -66,16 +66,13 @@ var fluid_1_5 = fluid_1_5 || {};
         },
     });
 
-    fluid.uiOptions.primaryBuilder.buildPrimary = function buildPrimary(schemaIndex, auxTypes, primarySchema) {
-        var primary = [];
-        if (!$.isEmptyObject(primarySchema)) {
-            fluid.defaults("fluid.uiOptions.schemas.primary", {
-                gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
-                schema: fluid.filterKeys(primarySchema.properties || primarySchema,
-                    auxTypes, false)
-            });
-            primary.push("fluid.uiOptions.schemas.primary");
-        }
+    fluid.uiOptions.primaryBuilder.buildPrimary = function (schemaIndex, auxTypes, primarySchema) {
+        fluid.defaults("fluid.uiOptions.schemas.suppliedPrimary", {
+            gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+            schema: fluid.filterKeys(primarySchema.properties || primarySchema,
+                auxTypes, false)
+        });
+        var primary = ["fluid.uiOptions.schemas.suppliedPrimary"];
         fluid.each(auxTypes, function merge(auxType) {
             var schemaGrades = schemaIndex[auxType];
             if (schemaGrades) {
@@ -85,7 +82,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return primary;
     };
 
-    fluid.uiOptions.primaryBuilder.parseAuxSchema = function parseAuxSchema(auxSchema) {
+    fluid.uiOptions.primaryBuilder.parseAuxSchema = function (auxSchema) {
         var auxTypes = [];
         fluid.each(auxSchema, function parse(field) {
             var type = field.type;
@@ -96,7 +93,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return auxTypes;
     };
 
-    fluid.uiOptions.primaryBuilder.indexer = function indexer(defaults) {
+    fluid.uiOptions.primaryBuilder.defaultSchemaIndexer = function (defaults) {
         if (defaults.schema) {
             return fluid.keys(defaults.schema.properties);
         }

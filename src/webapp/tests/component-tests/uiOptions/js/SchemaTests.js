@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
-    fluid.defaults("fluid.tests.properSchemaGrade", {
+    fluid.defaults("fluid.tests.sampleSchemaGrade", {
         gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
         schema: {
             "type": "object",
@@ -65,7 +65,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             properSchema: {
                 type: "fluid.littleComponent",
                 options: {
-                    gradeNames: ["fluid.tests.properSchemaGrade"]
+                    gradeNames: ["fluid.tests.sampleSchemaGrade"]
                 }
             },
             primaryBuilder: {
@@ -79,6 +79,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             type: "fluid.uiOptions.lineSpacing"
                         }
                     }
+                }
+            },
+            primaryBuilderSchema: {
+                type: "fluid.littleComponent",
+                options: {
+                    gradeNames: ["{primaryBuilder}.buildPrimary"]
                 }
             },
             primaryBuilderWithSuppliedPrimarySchema: {
@@ -103,14 +109,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "maximum": 10,
                             "divisibleBy": 1
                         },
-                        "fluid.uiOptions.textSize": {
-                            "type": "number",
-                            "default": 1,
-                            "minimum": 1,
-                            "maximum": 2,
-                            "divisibleBy": 0.2
-                        }
+                        "fluid.uiOptions.textSize": fluid.defaults(
+                            "fluid.tests.customTextSize").schema.properties["fluid.uiOptions.textSize"]
                     }
+                }
+            },
+            primaryBuilderWithSuppliedPrimarySchemaSchema: {
+                type: "fluid.littleComponent",
+                options: {
+                    gradeNames: ["{primaryBuilderWithSuppliedPrimarySchema}.buildPrimary"]
                 }
             },
             schemaTester: {
@@ -148,7 +155,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Primary schema is assambled correctectly.",
                 sequence: [{
                     func: "fluid.tests.primaryBuilder",
-                    args: ["{primaryBuilder}.options.schema"]
+                    args: ["{primaryBuilderSchema}.options.schema"]
                 }]
             }]
         }, {
@@ -158,17 +165,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Primary schema is assambled correctectly.",
                 sequence: [{
                     func: "fluid.tests.primaryBuilderWithSuppliedPrimarySchema",
-                    args: ["{primaryBuilderWithSuppliedPrimarySchema}.options.schema", "{primaryBuilderWithSuppliedPrimarySchema}"]
+                    args: ["{primaryBuilderWithSuppliedPrimarySchemaSchema}.options.schema"]
                 }]
             }]
         }]
     });
 
-    fluid.tests.primaryBuilderWithSuppliedPrimarySchema = function primaryBuilderWithSuppliedPrimarySchema(schema, that) {
+    fluid.tests.primaryBuilderWithSuppliedPrimarySchema = function (schema, that) {
         verifyBuilder(schema, [
             "fluid.tests.customTextSize",
             "fluid.uiOptions.schemas.lineSpacing",
-            "fluid.tests.properSchemaGrade"
+            "fluid.tests.sampleSchemaGrade"
         ], [
             "fluid.uiOptions.contrast"
         ]);
@@ -176,7 +183,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             0.2, schema.properties["fluid.uiOptions.textSize"].divisibleBy);
     };
 
-    fluid.tests.primaryBuilder = function primaryBuilder(schema) {
+    fluid.tests.primaryBuilder = function (schema) {
         verifyBuilder(schema, [
             "fluid.uiOptions.schemas.textSize",
             "fluid.uiOptions.schemas.lineSpacing"
@@ -186,7 +193,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ]);
     };
 
-    var verifyBuilder = function verifyBuilder(schema, includedSchemas, excludedGrades) {
+    var verifyBuilder = function (schema, includedSchemas, excludedGrades) {
         var included = {};
         fluid.each(includedSchemas, function (schemaName) {
             $.extend(true, included, fluid.defaults(schemaName).schema);
@@ -200,14 +207,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    var verifySchema = function verifySchema(contributedSchema, finalSchema) {
+    var verifySchema = function (contributedSchema, finalSchema) {
         jqUnit.assertValue("Final Schema is defined",
             finalSchema);
         jqUnit.assertDeepEq("Schemas are merged correctectly",
             contributedSchema, finalSchema);
     };
 
-    fluid.tests.testContributedSchema = function testContributedSchema(schema) {
+    fluid.tests.testContributedSchema = function (schema) {
         var contributedSchema = $.extend(true, {},
             fluid.defaults("fluid.uiOptions.schemas.textSize").schema,
             fluid.defaults("fluid.uiOptions.schemas.lineSpacing").schema);
@@ -223,12 +230,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         verifySchema(contributedSchema, finalSchema);
     };
 
-    fluid.tests.testContributedProperSchema = function testContributedProperSchema(schema) {
+    fluid.tests.testContributedProperSchema = function (schema) {
         jqUnit.assertDeepEq("Schema is merged correctly",
-            fluid.defaults("fluid.tests.properSchemaGrade").schema,
+            fluid.defaults("fluid.tests.sampleSchemaGrade").schema,
             schema.options.schema);
         var contributedSchema =
-            fluid.defaults("fluid.tests.properSchemaGrade").schema.properties["fluid.tests.somePreference"];
+            fluid.defaults("fluid.tests.sampleSchemaGrade").schema.properties["fluid.tests.somePreference"];
         var finalSchema = schema.options.schema.properties["fluid.tests.somePreference"];
         verifySchema(contributedSchema, finalSchema);
     };
