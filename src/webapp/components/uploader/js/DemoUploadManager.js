@@ -50,7 +50,6 @@ var fluid_1_5 = fluid_1_5 || {};
         // which this component does not fire
         that.queue.finishFile(file);
         that.events.afterFileComplete.fire(file);
-        
         if (that.queue.shouldUploadNextFile()) {
             fluid.uploader.demo.uploadNextFile(that);
         } else {

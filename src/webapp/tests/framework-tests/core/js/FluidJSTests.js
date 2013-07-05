@@ -336,7 +336,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         fluid.defaults("test", testDefaults2);
         jqUnit.assertDeepEq("defaults() should return the original defaults", 
-                            testDefaults, fluid.filterKeys(fluid.defaults("test"), ["foo", "baz"]));
+                            testDefaults2, fluid.filterKeys(fluid.defaults("test"), ["foo", "baz"]));
         
         // Try to access defaults for a component that doesn't exist.
         jqUnit.assertNoValue("The defaults for a nonexistent component should be null.", 
@@ -747,6 +747,60 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         ]);
     });
+    
+    fluid.defaults("fluid.tests.schema.textSizer", { 
+        gradeNames: ["fluid.tests.schema", "fluid.littleComponent", "autoInit"], 
+        schema: { 
+            "fluid.uiOptions.textSizer": { // common grade name 
+                "type": "number", 
+                "default": 1, 
+                "min": 1, 
+                "max": 2, 
+                "divisibleBy": 0.1 
+            } 
+        }
+    });
+    
+    fluid.defaults("fluid.tests.nonPanel", { // A dummy grade to ensure that grade filtration is working in the indexer
+        gradeNames: ["fluid.littleComponent"],
+        preferenceMap: {
+            thing: "fluid.uiOptions.nonThing"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.panels.linksControls", { 
+        gradeNames: ["fluid.tests.settingsPanel", "fluid.littleComponent", "autoInit"], 
+        preferenceMap: { 
+            links: "fluid.uiOptions.emphasizeLinks", 
+            inputsLarger: "fluid.uiOptions.inputsLarger" 
+        }
+    });
+    
+    fluid.tests.schema.indexer = function (defaults) {
+        return fluid.keys(defaults.schema);
+    };
+    
+    fluid.tests.panels.indexer = function (defaults) {
+        return fluid.values(defaults.preferenceMap);
+    };
+    
+    jqUnit.test("FLUID-5067 grade indexing", function () {
+        var indexedSchema = fluid.indexDefaults("schemaIndexer", {
+            gradeNames: "fluid.tests.schema",
+            indexFunc: "fluid.tests.schema.indexer"
+        });
+        jqUnit.assertDeepEq("Indexed grade", ["fluid.tests.schema.textSizer"], indexedSchema["fluid.uiOptions.textSizer"]);
+        var indexedPanels = fluid.indexDefaults("panelIndexer", {
+            gradeNames: "fluid.tests.settingsPanel",
+            indexFunc: "fluid.tests.panels.indexer"
+        });
+        var expected = {
+            "fluid.uiOptions.emphasizeLinks": ["fluid.tests.panels.linksControls"],
+            "fluid.uiOptions.inputsLarger": ["fluid.tests.panels.linksControls"]
+        };
+        jqUnit.assertDeepEq("Indexed multiple grades", expected, indexedPanels);
+    });
+    
     
     jqUnit.test("fluid.bind", function () {
         jqUnit.expect(3);

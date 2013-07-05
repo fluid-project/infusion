@@ -43,7 +43,7 @@ var demo = demo || {};
      */
     demo.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
-            gradeNames: ["fluid.uiEnhancer.starterActions"],
+            gradeNames: ["fluid.uiEnhancer.starterEnactors"],
             tocTemplate: pathToTocTemplate,
             classnameMap: {
                 theme: {
@@ -70,7 +70,7 @@ var demo = demo || {};
         // Tell UIOptions where to redirect to if the user cancels the operation
         uiOptions: {
             options: {
-                gradeNames: ["fluid.uiOptions.starterSettingsPanels", "fluid.uiOptions.initialModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
+                gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
                 listeners: {
                     onCancel: function () {
                         alert("Cancelled - would normally cancel any unsaved changes and return to the previous page.");

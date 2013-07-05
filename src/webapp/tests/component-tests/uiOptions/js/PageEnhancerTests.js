@@ -31,7 +31,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.pageEnhancer",
                 creatOnEvent: "createPageEnhancer",
                 options: {
-                    gradeNames: ["fluid.uiEnhancer.starterActions"],
+                    gradeNames: ["fluid.uiEnhancer.starterEnactors"],
                     tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
                 }
             },
@@ -46,7 +46,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Page Enhancer Tests",
             tests: [{
-                expect: 10,
+                expect: 9,
                 name: "UIEnhancer options passing",
                 sequence: [{
                     func: "fluid.tests.testInitialState"
@@ -61,7 +61,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testInitialState = function () {
         jqUnit.assertEquals("Initially font size classes exist", 3, $(".fl-font-size-90").length);
-        jqUnit.assertEquals("Initially layout class exists", 3, $(".fl-layout-linear").length);
         jqUnit.assertEquals("Initially white on black class exists", 1, $(".fl-theme-wb").length);
         jqUnit.assertEquals("Initially font-sans class exists", 1, $(".fl-font-sans").length);
         jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
