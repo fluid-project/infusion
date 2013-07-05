@@ -35,7 +35,8 @@ Infusion 1.4.
 
 Uploader includes automatic backwards compatibility for Infusion 1.2-era options, which can be enabled
 simply by including the following files in your page:
-    ModelTransformations.js
+    ModelTransformation.js
+    ModelTransformationTransforms.js
     UploaderCompatibility-Infusion1.2.js
 
 --------------------------------------
