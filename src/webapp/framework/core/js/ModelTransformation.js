@@ -150,9 +150,9 @@ var fluid = fluid || fluid_1_5;
             }
         }
         else {
-            if (typeof expected  !== typeof actual) {
+            if (typeof(expected) !== typeof(actual)) {
                 ++stats.mismatchCount;
-                stats.messages.push("Type mismatch at path " + stats.path + ": expected " + typeof expected  + " actual " + typeof actual); 
+                stats.messages.push("Type mismatch at path " + stats.path + ": expected " + typeof(expected)  + " actual " + typeof(actual)); 
             } else {
                 fluid.each(expected, function (value, key) {
                     stats.pathOps.push(key);
@@ -236,7 +236,7 @@ var fluid = fluid || fluid_1_5;
         }
         var expanderFn = fluid.getGlobalValue(typeName);
         var expdef = fluid.defaults(typeName);
-        if (typeof expanderFn !== "function") {
+        if (typeof(expanderFn) !== "function") {
             fluid.fail("Transformation record specifies transformation function with name " + 
                 expandSpec.type + " which is not a function - ", expanderFn);
         }
@@ -247,7 +247,7 @@ var fluid = fluid || fluid_1_5;
         var expanderArgs = [expandSpec, expander];
         if (fluid.hasGrade(expdef, "fluid.standardInputTransformFunction")) {
             if (expandSpec.input !== undefined) { 
-                expandSpec.value = expandSpec.input; //alias input and value
+                expandSpec.value = expandSpec.input; // alias input and value
             }
             var expanded = fluid.model.transform.getValue(expandSpec.inputPath, expandSpec.value, expander);
             expanderArgs.unshift(expanded);
@@ -255,7 +255,7 @@ var fluid = fluid || fluid_1_5;
             var inputs = {};
             fluid.each(expdef.inputVariables, function (v, k) {
                 var input = fluid.model.transform.getValue(expandSpec[k + "Path"], expandSpec[k], expander);
-                inputs[k] = (input !== undefined) ? input : v; //if no match, assign default
+                inputs[k] = (input !== undefined) ? input : v; // if no match, assign default
             });
             expanderArgs.unshift(inputs);
         }
@@ -294,7 +294,7 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function   
     fluid.model.transform.hasWildcard = function (path) {
-        return typeof path === "string" && path.indexOf("*") !== -1;
+        return typeof(path) === "string" && path.indexOf("*") !== -1;
     };
     
     // unsupported, NON-API function
@@ -315,7 +315,6 @@ var fluid = fluid || fluid_1_5;
         return false;
     };
     
-    // From UIOptions utility fluid.uiOptions.sortByKeyLength!
     fluid.model.sortByKeyLength = function (inObject) {
         var keys = fluid.keys(inObject);
         return keys.sort(fluid.compareStringLength(true));
@@ -360,7 +359,7 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.model.transform.expandValue = function (rule, expander) {
-        if (typeof rule === "string") {
+        if (typeof(rule) === "string") {
             rule = fluid.model.transform.pathToRule(rule);
         }
         // special dispensation to allow "value" at top level

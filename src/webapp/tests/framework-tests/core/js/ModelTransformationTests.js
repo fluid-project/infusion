@@ -41,7 +41,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         hundred: 100,
         halfdozen: 6,
         lt: "<",
-        catsSuck: true,
+        catsAreDecent: true,
         floatyLowy: 12.3910,
         floatyHighy: 12.52,
         floaty2: -9876.789
@@ -221,7 +221,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         message: "binaryOp - &&",
         expander: {
             type: "fluid.model.transform.binaryOp",
-            leftPath: "catsSuck",
+            leftPath: "catsAreDecent",
             operator: "&&",
             right: false
         },
@@ -233,7 +233,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             type: "fluid.model.transform.binaryOp",
             left: false,
             operator: "||",
-            rightPath: "catsSuck"
+            rightPath: "catsAreDecent"
         },
         method: "assertEquals",
         expected: true
@@ -243,7 +243,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             type: "fluid.model.transform.binaryOp",
             left: false,
             operator: "-+",
-            rightPath: "catsSuck"
+            rightPath: "catsAreDecent"
         },
         method: "assertEquals",
         expected: undefined
@@ -258,7 +258,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             message: "simple condition",
             expander: {
                 type: "fluid.model.transform.condition",
-                conditionPath: "catsSuck",
+                conditionPath: "catsAreDecent",
                 "true": "it was true",
                 "false": "it was false"
             },
@@ -279,7 +279,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             message: "invalid truePath",
             expander: {
                 type: "fluid.model.transform.condition",
-                conditionPath: "catsSuck",
+                conditionPath: "catsAreDecent",
                 "true": source.bow
             },
             method: "assertEquals",
@@ -1791,7 +1791,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 {
                                     innerpivot1: "arr1.2",
                                     innervar: "arr1.2.1"
-                                }],
+                                }
+                            ],
                             arr2: [
                                 {
                                     innerpivot2: "arr2.1",
@@ -1986,7 +1987,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             ]
         }
-    }];;
+    }];
 
     jqUnit.test("arrayToSetMembership and setMembershipToArray transformation tests", function () {
         fluid.each(arrayToSetMembershipTests, function (v) {

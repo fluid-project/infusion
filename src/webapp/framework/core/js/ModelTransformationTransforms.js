@@ -41,7 +41,6 @@ var fluid = fluid || fluid_1_5;
         togo.outputPath = fluid.model.composePaths(expander.inputPrefix, expandSpec.inputPath);
         return togo;
     };
-    
 
 
     fluid.defaults("fluid.model.transform.literalValue", { 
@@ -52,14 +51,12 @@ var fluid = fluid || fluid_1_5;
         return expanderSpec.value;  
     };
     
-    
 
     fluid.defaults("fluid.model.transform.arrayValue", { 
         gradeNames: "fluid.standardTransformFunction"
     });
     
     fluid.model.transform.arrayValue = fluid.makeArray;
-    
 
 
     fluid.defaults("fluid.model.transform.count", { 
@@ -69,6 +66,7 @@ var fluid = fluid || fluid_1_5;
     fluid.model.transform.count = function (value) {
         return fluid.makeArray(value).length;
     };
+    
     
     fluid.defaults("fluid.model.transform.round", { 
         gradeNames: "fluid.standardTransformFunction"
@@ -88,7 +86,6 @@ var fluid = fluid || fluid_1_5;
         expander.applier.requestChange(outputPath, null, "DELETE");
     };
 
-     
     
     fluid.defaults("fluid.model.transform.firstValue", { 
         gradeNames: "fluid.transformFunction"
@@ -108,7 +105,6 @@ var fluid = fluid || fluid_1_5;
         }
     };
     
-
      
     fluid.defaults("fluid.model.transform.scaleValue", {
         gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction" ],
@@ -121,10 +117,9 @@ var fluid = fluid || fluid_1_5;
 
     /* simple linear transformation */
     fluid.model.transform.scaleValue = function (inputs, expandSpec, expander) {        
-        if (typeof (inputs.value) !== "number" || typeof inputs.factor !== "number" || typeof inputs.offset !== "number") {
+        if (typeof(inputs.value) !== "number" || typeof(inputs.factor) !== "number" || typeof(inputs.offset) !== "number") {
             return undefined;
         }
-
         return inputs.value * inputs.factor + inputs.offset;
     };
 
@@ -236,11 +231,11 @@ var fluid = fluid || fluid_1_5;
         if (fluid.isPrimitive(indexed)) {
             outputValue = indexed;
         } else {
-            //if undefinedOutputValue is set, outputValue should be undefined
+            // if undefinedOutputValue is set, outputValue should be undefined
             if (indexed.undefinedOutputValue) {
                 outputValue = undefined;
             } else {
-                //get value from outputValue or outputValuePath. If none is found set the outputValue to be that of defaultOutputValue (or undefined)
+                // get value from outputValue or outputValuePath. If none is found set the outputValue to be that of defaultOutputValue (or undefined)
                 outputValue = fluid.model.transform.resolveParam(indexed, expander, "outputValue", undefined);
                 outputValue = (outputValue === undefined) ? expandSpec.defaultOutputValue : outputValue;
             }
@@ -306,6 +301,7 @@ var fluid = fluid || fluid_1_5;
     };
 
     /* -------- arrayToSetMembership and setMembershipToArray ---------------- */
+    
     fluid.defaults("fluid.model.transform.arrayToSetMembership", { 
         gradeNames: ["fluid.standardInputTransformFunction", "fluid.lens"],
         invertConfiguration: "fluid.model.transform.arrayToSetMembership.invert"
@@ -315,13 +311,11 @@ var fluid = fluid || fluid_1_5;
     fluid.model.transform.arrayToSetMembership = function (value, expandSpec, expander) {
         var options = expandSpec.options;
 
-        if (value === undefined || !fluid.isArrayable(value)) {
-            fluid.log("arrayToSetMembership didn't find array at inputPath nor passed as value.", expandSpec);
-            return undefined;
+        if (!value || !fluid.isArrayable(value)) {
+            fluid.fail("arrayToSetMembership didn't find array at inputPath nor passed as value.", expandSpec);
         }
-        if (options === undefined) {
-            fluid.log("arrayToSetMembership requires an options block set");
-            return undefined;
+        if (!options) {
+            fluid.fail("arrayToSetMembership requires an options block set");
         }
 
         if (expandSpec.presentValue === undefined) {
@@ -333,11 +327,11 @@ var fluid = fluid || fluid_1_5;
         }
 
         fluid.each(options, function (outPath, key) {
-            //write to output path given in options the value <presentValue> or <missingValue> depending on whether key is found in user input
+            // write to output path given in options the value <presentValue> or <missingValue> depending on whether key is found in user input
             var outVal = (value.indexOf(key) !== -1) ? expandSpec.presentValue : expandSpec.missingValue;
             fluid.model.transform.setValue(outPath, outVal, expander);
         });
-        return undefined;
+        // TODO: Why does this transform make no return?
     };
 
     fluid.model.transform.arrayToSetMembership.invert = function (expandSpec, expander) {
@@ -361,7 +355,7 @@ var fluid = fluid || fluid_1_5;
     fluid.model.transform.setMembershipToArray = function (expandSpec, expander) {
         var options = expandSpec.options;
 
-        if (options === undefined) {
+        if (!options) {
             fluid.fail("setMembershipToArray requires an options block specified");
         }
 
@@ -457,16 +451,16 @@ var fluid = fluid || fluid_1_5;
         var pivot = expandSpec.key;
 
         fluid.each(arr, function (v, k) {
-            //check that we have a pivot entry in the object and it's a valid type:            
+            // check that we have a pivot entry in the object and it's a valid type:            
             var newKey = v[pivot];
-            var keyType = typeof newKey;
+            var keyType = typeof(newKey);
             if (keyType !== "string" && keyType !== "boolean" && keyType !== "number") {
                 fluid.fail("arrayToObject encountered untransformable array due to missing or invalid key", v);
             }
-            //use the value of the key element as key and use the remaining content as value
+            // use the value of the key element as key and use the remaining content as value
             var content = fluid.copy(v);
             delete content[pivot];
-            //fix sub Arrays if needed:
+            // fix sub Arrays if needed:
             if (expandSpec.innerValue) {
                 content = fluid.model.transform.expandInnerValues([expander.inputPrefix, expandSpec.inputPath, k.toString()], 
                     [newKey], expander, expandSpec.innerValue);
@@ -481,7 +475,7 @@ var fluid = fluid || fluid_1_5;
         togo.type = "fluid.model.transform.objectToArray";
         togo.inputPath = fluid.model.composePaths(expander.outputPrefix, expandSpec.outputPath);
         togo.outputPath = fluid.model.composePaths(expander.inputPrefix, expandSpec.inputPath);
-        //invert expanders from innerValue as well:
+        // invert expanders from innerValue as well:
         // TODO: The Model Transformations framework should be capable of this, but right now the
         // issue is that we use a "private contract" to operate the "innerValue" slot. We need to
         // spend time thinking of how this should be formalised
