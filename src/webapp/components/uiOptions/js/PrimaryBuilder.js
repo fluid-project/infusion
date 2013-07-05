@@ -36,7 +36,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.defaults("fluid.uiOptions.primaryBuilder", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.littleComponent", "autoInit", "{that}.buildPrimary"],
         schemaIndex: {
             expander: {
                 func: "fluid.indexDefaults",

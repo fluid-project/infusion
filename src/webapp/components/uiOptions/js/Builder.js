@@ -24,25 +24,18 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.builder", {
         gradeNames: ["fluid.uiOptions.primaryBuilder", "fluid.uiOptions.auxBuilder", "autoInit"],
-        components: {
-            assembler: {
-                type: "fluid.uiOptions.builder.assembler"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.uiOptions.builder.assembler", {
-        gradeNames: ["autoInit", "fluid.eventedComponent", "{fluid.uiOptions.builder}.buildPrimary"],
-        auxSchema: "{fluid.uiOptions.builder}.options.expandedAuxSchema",
+        mergePolicy: {
+            auxSchema: "expandedAuxSchema"
+        },
         defaultName: "fluid.uiOptions.create",
         invokers: {
             attachUIOptions: {
-                funcName: "fluid.uiOptions.builder.assembler.attach",
-                args: ["{that}.options.auxSchema.panels", "fluid.uiOptions.builder.assembler.uiOptions"]
+                funcName: "fluid.uiOptions.builder.attach",
+                args: ["{that}.options.auxSchema.panels", "fluid.uiOptions.builder.uiOptions"]
             },
             attachEnhancer: {
-                funcName: "fluid.uiOptions.builder.assembler.attach",
-                args: ["{that}.options.auxSchema.enactors", "fluid.uiOptions.builder.assembler.enhancer"]
+                funcName: "fluid.uiOptions.builder.attach",
+                args: ["{that}.options.auxSchema.enactors", "fluid.uiOptions.builder.enhancer"]
             }
         },
         listeners: {
@@ -50,7 +43,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 listener: "fluid.defaults",
                 args: [{
                     expander: {
-                        func: "fluid.uiOptions.builder.assembler.provideName",
+                        func: "fluid.uiOptions.builder.provideName",
                         args: ["{that}.options.auxSchema.name", "{that}.options.defaultName"]
                     }
                 }, {
@@ -62,7 +55,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.builder.assembler.enhancer", {
+    fluid.defaults("fluid.uiOptions.builder.enhancer", {
         gradeNames: ["autoInit", "fluid.viewComponent"],
         components: {
             store: {
@@ -71,13 +64,13 @@ var fluid_1_5 = fluid_1_5 || {};
             enhancer: {
                 type: "fluid.pageEnhancer",
                 options: {
-                    components: "{fluid.uiOptions.builder.assembler.enhancer}.options.auxSchema.enactors"
+                    components: "{fluid.uiOptions.builder.enhancer}.options.auxSchema.enactors"
                 }
             }
         }
     });
 
-    fluid.defaults("fluid.uiOptions.builder.assembler.uiOptions", {
+    fluid.defaults("fluid.uiOptions.builder.uiOptions", {
         gradeNames: ["autoInit", "fluid.viewComponent"],
         components: {
             store: {
@@ -85,18 +78,18 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             uiOptions: {
                 type: "fluid.uiOptions.fatPanel",
-                container: "{fluid.uiOptions.builder.assembler.uiOptions}.container",
+                container: "{fluid.uiOptions.builder.uiOptions}.container",
                 options: {
-                    prefix: "{fluid.uiOptions.builder.assembler.uiOptions}.options.auxSchema.templatePrefix",
+                    prefix: "{fluid.uiOptions.builder.uiOptions}.options.auxSchema.templatePrefix",
                     components: {
                         templateLoader: {
                             options: {
-                                templates: "{fluid.uiOptions.builder.assembler.uiOptions}.options.auxSchema.templates"
+                                templates: "{fluid.uiOptions.builder.uiOptions}.options.auxSchema.templates"
                             }
                         },
                         uiOptions: {
                             options: {
-                                components: "{fluid.uiOptions.builder.assembler.uiOptions}.options.auxSchema.panels"
+                                components: "{fluid.uiOptions.builder.uiOptions}.options.auxSchema.panels"
                             }
                         }
                     }
@@ -105,13 +98,13 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.uiOptions.builder.assembler.attach = function (components, gradeName) {
+    fluid.uiOptions.builder.attach = function (components, gradeName) {
         if (!$.isEmptyObject(components)) {
             return gradeName;
         }
     };
 
-    fluid.uiOptions.builder.assembler.provideName = function (suppliedName, defaultName) {
+    fluid.uiOptions.builder.provideName = function (suppliedName, defaultName) {
         return suppliedName || defaultName;
     };
 

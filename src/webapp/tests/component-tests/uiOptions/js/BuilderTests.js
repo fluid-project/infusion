@@ -72,25 +72,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "yb": "fl-theme-uio-yb fl-theme-yb"
             }
         },
-        "enactors": [{
-            "type": "fluid.uiOptions.enactors.textFont",
-            "classes": {
-                "default": "",
-                "times": "fl-font-uio-times",
-                "comic": "fl-font-uio-comic-sans",
-                "arial": "fl-font-uio-arial",
-                "verdana": "fl-font-uio-verdana"
+        "enactors": {
+            "fluid.uiOptions.enactors.textFont": {
+                "type": "fluid.uiOptions.enactors.textFont",
+                "options": {
+                    "classes": {
+                        "default": "",
+                        "times": "fl-font-uio-times",
+                        "comic": "fl-font-uio-comic-sans",
+                        "arial": "fl-font-uio-arial",
+                        "verdana": "fl-font-uio-verdana"
+                    },
+                    "rules": {
+                        "textFont": "value"
+                    }
+                }
+            },
+            "fluid.uiOptions.enactors.contrast": {
+                "type": "fluid.uiOptions.enactors.contrast",
+                "options": {
+                    "classes": {
+                        "default": "fl-theme-uio-default",
+                        "bw": "fl-theme-uio-bw fl-theme-bw",
+                        "wb": "fl-theme-uio-wb fl-theme-wb",
+                        "by": "fl-theme-uio-by fl-theme-by",
+                        "yb": "fl-theme-uio-yb fl-theme-yb"
+                    },
+                    "rules": {
+                        "theme": "value"
+                    }
+                }
             }
-        }, {
-            "type": "fluid.uiOptions.enactors.contrast",
-            "classes": {
-                "default": "fl-theme-uio-default",
-                "bw": "fl-theme-uio-bw fl-theme-bw",
-                "wb": "fl-theme-uio-wb fl-theme-wb",
-                "by": "fl-theme-uio-by fl-theme-by",
-                "yb": "fl-theme-uio-yb fl-theme-yb"
-            }
-        }]
+        }
     };
 
     fluid.defaults("fluid.tests.builder", {
@@ -120,7 +133,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Empty builder.",
                 sequence: [{
                     func: "fluid.tests.testEmptyBuilder",
-                    args: "{emptyBuilder}.assembler"
+                    args: "{emptyBuilder}"
                 }]
             }]
         }, {
@@ -130,26 +143,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Sample builder.",
                 sequence: [{
                     func: "fluid.tests.testSampleBuilder",
-                    args: "{sampleBuilder}.assembler"
+                    args: "{sampleBuilder}"
                 }]
             }]
         }]
     });
 
-    fluid.tests.testEmptyBuilder = function (assembler) {
+    fluid.tests.testEmptyBuilder = function (builder) {
         jqUnit.assertDeepEq("Resolved aux schema should be empty", {},
-            assembler.options.auxSchema);
+            builder.options.auxSchema);
         jqUnit.assertDeepEq("Resolved primary schema should be empty", {},
-            assembler.options.schema.properties);
+            builder.options.schema.properties);
     };
 
-    fluid.tests.testSampleBuilder = function (assembler) {
+    fluid.tests.testSampleBuilder = function (builder) {
         jqUnit.assertDeepEq("Resolved aux schema should be expanded correctly",
-            fluid.tests.expectedSchema, assembler.options.auxSchema);
+            fluid.tests.expectedSchema, builder.options.auxSchema);
         jqUnit.assertDeepEq("Resolved primary schema should be assembled correctly",
             $.extend(true, {}, fluid.defaults("fluid.uiOptions.schemas.textFont").schema,
                 fluid.defaults("fluid.uiOptions.schemas.contrast").schema),
-            assembler.options.schema);
+            builder.options.schema);
     };
 
     $(document).ready(function () {
