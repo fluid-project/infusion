@@ -23,7 +23,17 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.registerNamespace("fluid.uiOptions");
 
     fluid.defaults("fluid.uiOptions.builder", {
-        gradeNames: ["fluid.uiOptions.primaryBuilder", "fluid.uiOptions.auxBuilder", "autoInit"]
+        gradeNames: ["fluid.uiOptions.primaryBuilder", "fluid.uiOptions.auxBuilder", "autoInit"],
+        components: {
+            assembler: {
+                type: "fluid.uiOptions.builder.assembler"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.builder.assembler", {
+        gradeNames: ["autoInit", "fluid.eventedComponent", "{fluid.uiOptions.builder}.buildPrimary"],
+        auxSchema: "{fluid.uiOptions.builder}.options.expandedAuxSchema"
     });
 
 })(jQuery, fluid_1_5);
