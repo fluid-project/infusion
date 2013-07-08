@@ -88,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         "enactors": [{
-            "type": "fluid.uiOptions.enactors.lineSpacing",
+            "type": "fluid.uiOptions.enactors.lineSpace",
             "fontSizeMap": {
                 "xx-small": "9px",
                 "x-small": "11px",
