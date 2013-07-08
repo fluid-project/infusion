@@ -133,7 +133,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         "enactors": [{
-            "type": "fluid.uiOptions.enactors.lineSpacing",
+            "type": "fluid.uiOptions.enactors.lineSpace",
             "fontSizeMap": {
                 "xx-small": "9px",
                 "x-small": "11px",
@@ -173,7 +173,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.tests.testSchemaExpander = function (schema, expectedOutput) {
-        var output = fluid.uiOptions.expandSchema(schema);
+        var output = fluid.uiOptions.expandSchemaImpl(schema);
         jqUnit.assertDeepEq("The source schema is expanded correctly", expectedOutput, output);
     };
 

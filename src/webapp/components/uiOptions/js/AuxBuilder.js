@@ -84,13 +84,13 @@ var fluid_1_5 = fluid_1_5 || {};
      *  @param {object} altSource an alternative look up object. This is primarily used for the internal recursive call.
      *  @return {object} an expaneded version of the schema.
      */
-    var expandSchemaImpl = function (schemaToExpand, altSource) {
+    fluid.uiOptions.expandSchemaImpl = function (schemaToExpand, altSource) {
         var expandedSchema = fluid.copy(schemaToExpand);
         altSource = altSource || expandedSchema;
 
         fluid.each(expandedSchema, function (value, key) {
             if (typeof value === "object") {
-                expandedSchema[key] = expandSchemaImpl(value, altSource);
+                expandedSchema[key] = fluid.uiOptions.expandSchemaImpl(value, altSource);
             } else if (typeof value === "string") {
                 var expandedVal = fluid.uiOptions.expandSchemaValue(altSource, value);
                 if (expandedVal !== undefined) {
@@ -103,14 +103,14 @@ var fluid_1_5 = fluid_1_5 || {};
         return expandedSchema;
     };
     fluid.uiOptions.expandSchema = function (schemaToExpand, enactorsIndex, panelsIndex, schema) {
-        var auxSchema = expandSchemaImpl(schemaToExpand);
+        var auxSchema = fluid.uiOptions.expandSchemaImpl(schemaToExpand);
         fluid.uiOptions.expandSchemaComponents(auxSchema, "enactors", enactorsIndex, schema);
         fluid.uiOptions.expandSchemaComponents(auxSchema, "panels", panelsIndex, schema);
         return auxSchema;
     };
 
     fluid.defaults("fluid.uiOptions.auxBuilder", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.uiOptions.primaryBuilder", "autoInit"],
         auxiliarySchema: {},
         enactorsIndex: {
             expander: {
