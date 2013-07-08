@@ -49,6 +49,33 @@ var fluid_1_5 = fluid_1_5 || {};
         return fluid.get(root, pathRef.substring(1));
     };
 
+    fluid.uiOptions.expandSchemaComponents = function (auxSchema, type, index, schema) {
+        var components = {};
+        fluid.each(auxSchema[type], function expand(component) {
+            var type = component.type;
+            var preferenceMap = fluid.defaults(type).preferenceMap;
+
+            delete component.type;
+            components[type] = {
+                type: type,
+                options: component
+            };
+            fluid.each(preferenceMap, function (map, pref) {
+                fluid.each(map, function (path, optionsPath) {
+                    var prefSchema = schema[pref];
+                    if (prefSchema) {
+                        fluid.set(components[type].options, optionsPath, prefSchema[path]);
+                    }
+                });
+            });
+
+            components[type].options.rules = {
+                // TODO
+            };
+        });
+        auxSchema[type] = components;
+    };
+
     /**
      * Expands a all "@" path references from an auxiliary schema.
      * Note that you cannot chain "@" paths.
@@ -57,13 +84,13 @@ var fluid_1_5 = fluid_1_5 || {};
      *  @param {object} altSource an alternative look up object. This is primarily used for the internal recursive call.
      *  @return {object} an expaneded version of the schema.
      */
-    fluid.uiOptions.expandSchema = function (schemaToExpand, altSource) {
+    var expandSchemaImpl = function (schemaToExpand, altSource) {
         var expandedSchema = fluid.copy(schemaToExpand);
         altSource = altSource || expandedSchema;
 
         fluid.each(expandedSchema, function (value, key) {
             if (typeof value === "object") {
-                expandedSchema[key] = fluid.uiOptions.expandSchema(value, altSource);
+                expandedSchema[key] = expandSchemaImpl(value, altSource);
             } else if (typeof value === "string") {
                 var expandedVal = fluid.uiOptions.expandSchemaValue(altSource, value);
                 if (expandedVal !== undefined) {
@@ -73,19 +100,51 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
         });
-
         return expandedSchema;
+    };
+    fluid.uiOptions.expandSchema = function (schemaToExpand, enactorsIndex, panelsIndex, schema) {
+        var auxSchema = expandSchemaImpl(schemaToExpand);
+        fluid.uiOptions.expandSchemaComponents(auxSchema, "enactors", enactorsIndex, schema);
+        fluid.uiOptions.expandSchemaComponents(auxSchema, "panels", panelsIndex, schema);
+        return auxSchema;
     };
 
     fluid.defaults("fluid.uiOptions.auxBuilder", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         auxiliarySchema: {},
+        enactorsIndex: {
+            expander: {
+                func: "fluid.indexDefaults",
+                args: ["enactorsIndex", {
+                    gradeNames: "fluid.uiOptions.enactors",
+                    indexFunc: "fluid.uiOptions.auxBuilder.prefMapIndexer"
+                }]
+            }
+        },
+        panelsIndex: {
+            expander: {
+                func: "fluid.indexDefaults",
+                args: ["panelsIndex", {
+                    gradeNames: "fluid.uiOptions.panels",
+                    indexFunc: "fluid.uiOptions.auxBuilder.prefMapIndexer"
+                }]
+            }
+        },
         expandedAuxSchema: {
             expander: {
                 func: "fluid.uiOptions.expandSchema",
-                args: "{that}.options.auxiliarySchema"
+                args: [
+                    "{that}.options.auxiliarySchema",
+                    "{that}.options.enactorsIndex",
+                    "{that}.options.panelsIndex",
+                    "{that}.options.schema.properties"
+                ]
             }
         }
     });
+
+    fluid.uiOptions.auxBuilder.prefMapIndexer = function (defaults) {
+        return fluid.keys(defaults.preferenceMap);
+    };
 
 })(jQuery, fluid_1_5);
