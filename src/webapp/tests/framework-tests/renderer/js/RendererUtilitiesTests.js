@@ -1677,20 +1677,8 @@ fluid.registerNamespace("fluid.tests");
                 escaped: "${a\\.b\\.c.val}"
             },
             renderOnInit: true,
-            resolverGetConfig: {
-                parser: {
-                    parse: fluid.pathUtil.parseEL,
-                    compose: fluid.pathUtil.composePath
-                },
-                strategies: [fluid.model.defaultFetchStrategy]
-            },
-            resolverSetConfig: {
-                parser: {
-                    parse: fluid.pathUtil.parseEL,
-                    compose: fluid.pathUtil.composePath
-                },
-                strategies: [fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
-            }
+            resolverGetConfig: fluid.model.escapedGetConfig,
+            resolverSetConfig: fluid.model.escapedSetConfig
         });
         jqUnit.test("FLUID-4935: resolverSetConfig propagation to changeApplierOptions.resolverSetConfig option", function () {
             var customSetConfigRendererComponent = fluid.tests.customSetConfigRendererComponent(".FLUID-4935");
