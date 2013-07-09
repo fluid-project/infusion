@@ -59,6 +59,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // Shared
         multiplier: "times",
         
+        // Sliding Panel
         slidingPanelShowText: "+ Show Display Preferences",
         slidingPanelHideText: "- Hide"        
     };
