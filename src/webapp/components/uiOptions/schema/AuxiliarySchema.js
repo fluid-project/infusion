@@ -15,8 +15,8 @@ var auxiliarySchema = {
     "textSize": {
         "type": "fluid.uiOptions.textSize"
     },
-    "lineSpacing": {
-        "type": "fluid.uiOptions.lineSpacing"
+    "lineSpace": {
+        "type": "fluid.uiOptions.lineSpace"
     },
     "textFont": {
         "type": "fluid.uiOptions.textFont",
@@ -50,7 +50,7 @@ var auxiliarySchema = {
     "enactors": [{
         "type": "fluid.uiOptions.enactors.textSize"
     }, {
-        "type": "fluid.uiOptions.enactors.lineSpacing",
+        "type": "fluid.uiOptions.enactors.lineSpace",
         "fontSizeMap": {
             "xx-small": "9px",
             "x-small": "11px",
@@ -78,12 +78,12 @@ var auxiliarySchema = {
     }],
     "panels": [{
         "type": "fluid.uiOptions.panels.textSize",
-        "container": ".flc-uiOptions-text-sizer",  // the css selector in the template where the panel is rendered
+        "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
         "template": "templates/textSize"  // optional
     }, {
-        "type": "fluid.uiOptions.panels.lineSpacing",
-        "container": ".flc-uiOptions-line-spacer",  // the css selector in the template where the panel is rendered
-        "template": "templates/lineSpacing"  // optional
+        "type": "fluid.uiOptions.panels.lineSpace",
+        "container": ".flc-uiOptions-line-space",  // the css selector in the template where the panel is rendered
+        "template": "templates/lineSpace"  // optional
     }, {
         "type": "fluid.uiOptions.panels.textFont",
         "container": ".flc-uiOptions-text-font",  // the css selector in the template where the panel is rendered
@@ -95,7 +95,7 @@ var auxiliarySchema = {
         "classnameMap": "@contrast.classes",
         "template": "templates/contrast"  // optional
     }, {
-        "type": "fluid.uiOptions.panels.tableOfContents",
+        "type": "fluid.uiOptions.panels.layoutControls",
         "container": ".flc-uiOptions-layout-controls",  // the css selector in the template where the panel is rendered
         "template": "templates/tableOfContents"  // optional
     }, {

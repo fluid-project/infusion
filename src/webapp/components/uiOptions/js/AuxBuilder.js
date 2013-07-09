@@ -51,29 +51,70 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uiOptions.expandSchemaComponents = function (auxSchema, type, index, schema) {
         var components = {};
-        fluid.each(auxSchema[type], function expand(component) {
-            var type = component.type;
-            var preferenceMap = fluid.defaults(type).preferenceMap;
+        var templates = {};
+        var sharedModel = {};
 
-            delete component.type;
-            components[type] = {
-                type: type,
-                options: component
-            };
-            fluid.each(preferenceMap, function (map, pref) {
-                fluid.each(map, function (path, optionsPath) {
-                    var prefSchema = schema[pref];
-                    if (prefSchema) {
-                        fluid.set(components[type].options, optionsPath, prefSchema[path]);
-                    }
-                });
-            });
-
-            components[type].options.rules = {
-                // TODO
-            };
+        fluid.each(auxSchema, function (config, prefName) {
+            var prefKey = config.type;
+            if (prefKey) {
+                sharedModel[prefKey] = prefName;
+            }
         });
-        auxSchema[type] = components;
+
+        fluid.each(auxSchema[type], function (componentConfig) {
+            var componentName = componentConfig.type;
+            if (componentName) {
+                var preferenceMap = fluid.defaults(componentName).preferenceMap;
+
+                components[componentName] = {
+                    type: componentName
+                };
+
+                var container = componentConfig.container;
+                if (container) {
+                    components[componentName].container = container;
+                }
+                
+                var template = componentConfig.template;
+                if (template) {
+                    templates[componentName] = template;
+                }
+
+                componentOptions = fluid.copy(componentConfig);
+                delete componentOptions.type;
+                delete componentOptions.container;
+                delete componentOptions.template;
+
+                if (!jQuery.isEmptyObject(componentOptions)) {
+                    components[componentName].options = componentOptions;
+                }
+
+                var preferenceMap = fluid.defaults(componentName).preferenceMap;
+
+                fluid.each(preferenceMap, function (map, pref) {
+                    fluid.each(map, function (PrimaryPath, internalPath) {
+                        var prefSchema = schema[pref];
+                        if (prefSchema) {
+                            if (internalPath.slice(0, 6) === "model.") {
+                                var internalModelName = internalPath.slice(6);
+                                fluid.set(components[componentName], "options.rules." + sharedModel[pref], internalModelName);
+                                fluid.set(components[componentName], "options.model." + internalModelName, prefSchema[PrimaryPath]);
+                            } else {
+                                fluid.set(components[componentName], "options." + internalPath, prefSchema[PrimaryPath]);
+                            }
+                        }
+                    });
+                });
+            }
+        });
+
+        if (!jQuery.isEmptyObject(components)) {
+            auxSchema[type] = components;
+        }
+        if (!jQuery.isEmptyObject(templates)) {
+            auxSchema.templates = $.extend(true, auxSchema.templates || {}, templates);
+        }
+        return auxSchema;
     };
 
     /**

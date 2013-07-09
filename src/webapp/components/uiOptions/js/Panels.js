@@ -209,7 +209,7 @@ var fluid_1_5 = fluid_1_5 || {};
         preferenceMap: {
             "fluid.uiOptions.contrast": {
                 "model.value": "default",
-                "controlValues.theme": "emum"
+                "controlValues.theme": "enum"
             }
         },
         listeners: {
