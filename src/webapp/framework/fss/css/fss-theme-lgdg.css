@@ -4,9 +4,14 @@
  * Color Scheme:
  *     light grey: #bdbdbb
  *     dark grey: #343434
- *
- * Note: Images, commented out, to be replaced by font icons
  */
+ 
+@font-face {
+    font-family: 'InfusionIcons';
+    src: url('../fonts/InfusionIcons-FSS.ttf'),
+         url('../fonts/InfusionIcons-FSS.eot');
+}
+
  
 /* 
  * General Styling
@@ -53,7 +58,7 @@
 .fl-theme-lgdg th,
 .fl-theme-dglg .fl-inverted-color th {border:0.1em solid #bdbdbb; background-color:#bdbdbb; color:#343434;}
 .fl-theme-lgdg td,
-.fl-theme-dglg .fl-inverted-color td {border:0.1em solid #bdbdbb;}
+.fl-theme-dglg .fl-inverted-color td {border:0.1em solid #bdbdbb; background-color:#343434; color:#bdbdbb;}
 
 /* 
  * FSS Elements
@@ -139,17 +144,19 @@
 .fl-theme-dglg .fl-inverted-color .fl-list-menu .fl-activemenu a:hover { background-color: #bdbdbb; border-bottom-color:#343434; color:#343434;}
 
 /* Buttons */
-.fl-theme-lgdg .fl-button-left,
+.fl-theme-lgdg .fl-button-left, 
 .fl-theme-lgdg .fl-button-right,
 .fl-theme-dglg .fl-inverted-color .fl-button-left,
-.fl-theme-dglg .fl-inverted-color .fl-button-right {color:#bdbdbb; background-color:#343434;}
-/*.fl-theme-lgdg .fl-button-left,
-.fl-theme-lgdg .fl-button-right,
-.fl-theme-dglg .fl-inverted-color .fl-button-left,
-.fl-theme-dglg .fl-inverted-color .fl-button-right {background-image:url('../images/themes/bw//buttons-med-cap.png');}
-.fl-theme-lgdg .fl-button-inner,
-.fl-theme-dglg .fl-inverted-color .fl-button-inner {background-image:url('../images/themes/bw/buttons-med-bg.png');}
-*/
+.fl-theme-dglg .fl-inverted-color .fl-button-right,
+.fl-theme-lgdg button, 
+.fl-theme-dglg .fl-inverted-color button {
+    color:#bdbdbb; 
+    background-color:#343434; 
+    border: 2px solid #bdbdbb; 
+    border-radius: 3px; 
+    font-weight: bold;
+    padding: 0 0.75em;
+}
 
 /* Widgets */
 .fl-theme-lgdg .fl-widget,
@@ -158,29 +165,44 @@
 .fl-theme-dglg .fl-inverted-color .fl-widget h2 {display:inline;}
 .fl-theme-lgdg .fl-widget a,
 .fl-theme-dglg .fl-inverted-color .fl-widget a {color:#bdbdbb;}
-.fl-theme-lgdg .fl-widget .fl-icon-more,
-/*.fl-theme-dglg .fl-inverted-color .fl-widget .fl-icon-more {background-image:url('../images/themes/bw/icon-widget-More.png'); margin-left:0px;}
-.fl-theme-lgdg .fl-widget .fl-icon-close,
-.fl-theme-dglg .fl-inverted-color .fl-widget .fl-icon-close {background-image:url('../images/themes/bw/icon-widget-Close.png'); margin-right:0px;}
-*/
-        
+
+.fl-theme-lgdg .fl-icon-widget-more, .fl-theme-dglg .fl-inverted-color .fl-icon-widget-more,
+.fl-theme-lgdg .fl-icon-widget-close, .fl-theme-dglg .fl-inverted-color .fl-icon-widget-close,
+.fl-theme-lgdg .fl-icon-widget-grab, .fl-theme-dglg .fl-inverted-color .fl-icon-widget-grab {
+    font-family: 'InfusionIcons' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    font-size: 1em;   
+    margin: 0 0.25em;  
+}
+
+.fl-theme-lgdg .fl-widget .fl-icon-widget-more:before,
+.fl-theme-dglg .fl-inverted-color .fl-widget .fl-icon-widget-more:before {  
+    content: "\e002";
+}
+
+.fl-theme-lgdg .fl-widget .fl-icon-widget-close:before,
+.fl-theme-dglg .fl-inverted-color .fl-widget .fl-icon-widget-close:before {
+    content: "\e001";
+}
+
+.fl-theme-lgdg .fl-grabbable .fl-icon-widget-grab:before,
+.fl-theme-dglg .fl-inverted-color .fl-grabbable .fl-icon-widget-grab:before {
+    content: "\e000";
+}
+.fl-theme-lgdg .fl-grabbable .fl-widget-titlebar a { text-decoration: none; }
+
 /* Widget titlebar */
-.fl-theme-lgdg .fl-widget .fl-widget-titlebar,
-.fl-theme-dglg .fl-inverted-color .fl-widget .fl-widget-titlebar {margin-bottom:3px;}
-/*.fl-theme-lgdg .fl-grabbable .fl-widget-titlebar,
-.fl-theme-dglg .fl-inverted-color .fl-grabbable .fl-widget-titlebar {background-image:url('../images/themes/bw/icon-widget-gripper.png');}
-*/
+.fl-theme-lgdg .fl-widget .fl-widget-titlebar {margin-bottom:3px; padding: 3px;}
+
 .fl-theme-lgdg .fl-grabbable .fl-widget-titlebar h2,
 .fl-theme-dglg .fl-inverted-color .fl-grabbable .fl-widget-titlebar h2 {display:inline;}
 .fl-theme-lgdg .fl-widget-titlebar .icon,
 .fl-theme-dglg .fl-inverted-color .fl-widget-titlebar .icon {background-position:center center;}
-/*.fl-theme-lgdg .fl-widget-titlebar .fl-button-right,
-.fl-theme-lgdg .fl-widget-titlebar .fl-button-left,
-.fl-theme-dglg .fl-inverted-color .fl-widget-titlebar .fl-button-right,
-.fl-theme-dglg .fl-inverted-color .fl-widget-titlebar .fl-button-left {color:#bdbdbb; background-image:url('../images/themes/bw/buttons-titlebar-cap.png'); text-decoration:none;}
-.fl-theme-lgdg .fl-widget-titlebar .fl-button-inner,
-.fl-theme-dglg .fl-inverted-color .fl-widget-titlebar .fl-button-inner {background-image:url(../images/themes/bw/buttons-titlebar-bg.png);}
-*/
 
 /* Widget options */
 .fl-theme-lgdg .fl-widget .fl-widget-options,
@@ -209,3 +231,10 @@
 /* Inline edit */
 .fl-theme-lgdg .fl-inlineEdit-edit,
 .fl-theme-dglg .fl-inverted-color .fl-inlineEdit-edit {background-color:#bdbdbb; color:#343434; border: 0.1em solid #343434; padding:0.1em; margin:-0.1em;}
+
+
+/* Overrides for deprecated markup */
+.fl-theme-lgdg .fl-icon { text-indent: 0; width: auto; }
+.fl-theme-lgdg .fl-button-inner { font-size: inherit; padding: 0; }
+.fl-theme-lgdg .fl-button-left, .fl-theme-lgdg .fl-button-right { margin: 0; padding: 0 1em; }
+    
