@@ -72,7 +72,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "yb": "fl-theme-uio-yb fl-theme-yb"
             }
         },
-        "panels": {},
         "enactors": {
             "fluid.uiOptions.enactors.textFont": {
                 "type": "fluid.uiOptions.enactors.textFont",
@@ -86,6 +85,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     "rules": {
                         "textFont": "value"
+                    },
+                    "model": {
+                        "value": ""
                     }
                 }
             },
@@ -100,7 +102,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "yb": "fl-theme-uio-yb fl-theme-yb"
                     },
                     "rules": {
-                        "theme": "value"
+                        "contrast": "value"
+                    },
+                    "model": {
+                        "value": "default"
                     }
                 }
             }
@@ -151,10 +156,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.testEmptyBuilder = function (builder) {
-        jqUnit.assertDeepEq("Resolved aux schema should be empty", {
-            enactors: {},
-            panels: {}
-        }, builder.options.auxSchema);
+        jqUnit.assertDeepEq("Resolved aux schema should be empty", {}, builder.options.auxSchema);
         jqUnit.assertDeepEq("Resolved primary schema should be empty", {},
             builder.options.schema.properties);
     };
