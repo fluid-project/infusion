@@ -20,21 +20,24 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
+    fluid.setLogging(fluid.logLevel.TRACE);
     fluid.registerNamespace("fluid.uiOptions");
 
     fluid.defaults("fluid.uiOptions.builder", {
-        gradeNames: ["fluid.uiOptions.primaryBuilder", "fluid.uiOptions.auxBuilder", "autoInit"],
+        gradeNames: ["fluid.eventedComponent", "fluid.uiOptions.primaryBuilder", "fluid.uiOptions.auxBuilder", "autoInit"],
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
         },
         defaultName: "fluid.uiOptions.create",
-        invokers: {
-            attachUIOptions: {
-                funcName: "fluid.uiOptions.builder.attach",
+        UIOGrade: {
+            expander: {
+                func: "fluid.uiOptions.builder.attach",
                 args: ["{that}.options.auxSchema.panels", "fluid.uiOptions.builder.uiOptions"]
-            },
-            attachEnhancer: {
-                funcName: "fluid.uiOptions.builder.attach",
+            }
+        },
+        UIEGrade: {
+            expander: {
+                func: "fluid.uiOptions.builder.attach",
                 args: ["{that}.options.auxSchema.enactors", "fluid.uiOptions.builder.enhancer"]
             }
         },
@@ -49,11 +52,15 @@ var fluid_1_5 = fluid_1_5 || {};
                 }, {
                     auxSchema: "{that}.options.auxSchema",
                     schema: "{that}.options.schema",
-                    gradeNames: ["autoInit", "fluid.viewComponent", "{that}.attachUIOptions", "{that}.attachEnhancer"]
+                    gradeNames: ["autoInit", "fluid.viewComponent", "{that}.options.UIOGrade", "{that}.options.UIEGrade"]
                 }]
             }
         }
     });
+    
+    fluid.uiOptions.builder.finalInit = function (that) {
+        console.log(that);
+    };
 
     fluid.defaults("fluid.uiOptions.builder.enhancer", {
         gradeNames: ["autoInit", "fluid.viewComponent"],
@@ -62,13 +69,27 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.globalSettingsStore"
             },
             enhancer: {
-                type: "fluid.pageEnhancer",
+                type: "fluid.uiEnhancer",
+                container: "body",
                 options: {
-                    components: "{fluid.uiOptions.builder.enhancer}.options.auxSchema.enactors"
+                    components: "{fluid.uiOptions.builder.enhancer}.options.auxSchema.enactors",
+                    invokers: {
+                        attachStaticEnv: {
+                            funcName: "fluid.uiOptions.builder.attachStaticEnv",
+                            args: ["{that}"]
+                        }
+                    },
+                    listeners: {
+                        onCreate: "{that}.attachStaticEnv"
+                    }
                 }
             }
         }
     });
+
+    fluid.uiOptions.builder.attachStaticEnv = function (UIEnhancer) {
+        fluid.staticEnvironment.uiEnhancer = UIEnhancer;
+    };
 
     fluid.defaults("fluid.uiOptions.builder.uiOptions", {
         gradeNames: ["autoInit", "fluid.viewComponent"],

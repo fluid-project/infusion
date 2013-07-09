@@ -21,7 +21,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
+    var expectedUIOName = "fluid.uiOptions.constructed";
+
     fluid.tests.schema = {
+        "name": expectedUIOName,
         "textFont": {
             "type": "fluid.uiOptions.textFont",
             "classes": {
@@ -52,6 +55,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.expectedSchema = {
+        "name": expectedUIOName,
         "textFont": {
             "type": "fluid.uiOptions.textFont",
             "classes": {
@@ -73,9 +77,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         "enactors": {
-            "fluid.uiOptions.enactors.textFont": {
+            "fluid_uiOptions_enactors_textFont": {
                 "type": "fluid.uiOptions.enactors.textFont",
+                "container": "{uiEnhancer}.container",
                 "options": {
+                    "sourceApplier": "{uiEnhancer}.applier",
                     "classes": {
                         "default": "",
                         "times": "fl-font-uio-times",
@@ -91,9 +97,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             },
-            "fluid.uiOptions.enactors.contrast": {
+            "fluid_uiOptions_enactors_contrast": {
                 "type": "fluid.uiOptions.enactors.contrast",
+                "container": "{uiEnhancer}.container",
                 "options": {
+                    "sourceApplier": "{uiEnhancer}.applier",
                     "classes": {
                         "default": "fl-theme-uio-default",
                         "bw": "fl-theme-uio-bw fl-theme-bw",
@@ -121,7 +129,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             sampleBuilder: {
                 type: "fluid.uiOptions.builder",
                 options: {
-                    auxiliarySchema: fluid.tests.schema
+                    auxiliarySchema: fluid.tests.schema//,
+                    // commonEnactorOptions: {
+                    //     "container": "{uiEnhancer}.container",
+                    //     "options.sourceApplier": "{uiEnhancer}.applier"
+                    // },
                 }
             },
             builderTester: {
@@ -143,9 +155,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }]
             }]
         }, {
-            name: "Sample Builder",
+            name: "Builder: Construct enactors only",
             tests: [{
-                expect: 2,
+                // expect: 2,
                 name: "Sample builder.",
                 sequence: [{
                     func: "fluid.tests.testSampleBuilder",
@@ -168,6 +180,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             $.extend(true, {}, fluid.defaults("fluid.uiOptions.schemas.textFont").schema,
                 fluid.defaults("fluid.uiOptions.schemas.contrast").schema),
             builder.options.schema);
+
+        var constructedUIO = fluid.defaults(expectedUIOName);
+        jqUnit.assertNotUndefined("The assembled UIO component is constructed", constructedUIO);
+
+        fluid.invokeGlobalFunction(expectedUIOName, ["body"]);
     };
 
     $(document).ready(function () {
