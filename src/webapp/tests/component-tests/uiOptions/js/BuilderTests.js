@@ -81,9 +81,84 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    fluid.tests.testNotCreated = function (that, grades) {
+        fluid.each(grades, function (grade) {
+            jqUnit.assertUndefined("{that}.constructedGrades." + "grade should be undefined", that.constructedGrades[grade]);
+            jqUnit.assertUndefined("No defaults for the " + grade + " grade should have been created", fluid.defaults(that.options.auxSchema.namespace + "." + grade));
+        });
+    };
+
+    fluid.tests.assembleAuxSchema = function (namespace, auxObjs) {
+        var auxSchema = {
+            namespace: namespace
+        };
+        fluid.each(auxObjs, function(auxObj) {
+            $.extend(true, auxSchema, auxObj);
+        });
+        return auxSchema;
+    };
+
+    fluid.tests.prefs = {
+        "textSize": {
+            "type": "fluid.uiOptions.textSize"
+        }
+    };
+
+    fluid.tests.panels = {
+        "panels": [{
+            "type": "fluid.uiOptions.panels.textSize",
+            "container": ".flc-uiOptions-text-size",
+            "template": "templates/textSize"
+        }]
+    };
+
+    fluid.tests.enactors = {
+        "enactors": [{
+            "type": "fluid.uiOptions.enactors.textSize"
+        }]
+    };
+
+    fluid.defaults("fluid.tests.builder", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            builderEmpty: {
+                type: "fluid.uiOptions.builder",
+                options: {
+                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.empty", [fluid.tests.prefs])
+                }
+            },
+            builderTester: {
+                type: "fluid.tests.builderTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.builderTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        modules: [{
+            name: "fluid.uiOptions.builder - empty",
+            tests: [{
+                expect: 8,
+                name: "not created",
+                sequence: [{
+                    func: "fluid.tests.testNotCreated",
+                    args: ["{builderEmpty}", ["enactors", "panels", "rootModel", "templateLoader"]]
+                }]
+            }]
+        }]
+    });
+
+//TODO: Tests to write
+// 1) Only Enactors
+// 2) Only Panels and templateLoader
+// 3) Only rootModel// 4) Only tempalteLoader
+// 4) Only messages
+// 5) Everything
+
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.tests.generateGradeName"
+            "fluid.tests.generateGradeName",
+            "fluid.tests.builder"
         ]);
     });
 
