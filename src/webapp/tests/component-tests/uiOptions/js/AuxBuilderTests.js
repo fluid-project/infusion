@@ -220,8 +220,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Shared variables by following unit tests
      *******************************************************************************/
 
+    fluid.tests.panelsTopOptions = {
+        gradeNames: ["fluid.uiOptions", "autoInit"]
+    };
+
+    fluid.tests.enactorsTopOptions = {
+        gradeNames: ["fluid.uiEnhancer", "autoInit"]
+    };
+
     fluid.tests.commonPanelOptions = {
         "createOnEvent": "onUIOptionsMarkupReady",
+        "container": "uiOptions.dom.%prefKey",
         "options.resources.template": "templateLoader.resources.%prefKey"
     };
 
@@ -235,7 +244,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.tests.testExpandSchemaComponents = function (auxSchema, type, index, primarySchema, expectedOutput) {
-        var output = fluid.uiOptions.expandSchemaComponents(auxSchema, type, index, fluid.tests.commonPanelOptions, primarySchema);
+        var output = fluid.uiOptions.expandSchemaComponents(auxSchema, type, index, fluid.tests.panelsTopOptions, fluid.tests.commonPanelOptions, primarySchema);
         jqUnit.assertDeepEq("The components and templates blocks are constructed correctly", expectedOutput, output);
     };
 
@@ -298,45 +307,52 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "type": "fluid.uiOptions.tableOfContents"
                 },
                 panels: {
-                    "fluid_uiOptions_panels_contrast": {
-                        type: "fluid.uiOptions.panels.contrast",
-                        container: ".flc-uiOptions-contrast",  // the css selector in the template where the panel is rendered
-                        createOnEvent: "onUIOptionsMarkupReady",
-                        options: {
-                            classnameMap: {
-                                "default": "fl-theme-uio-default",
-                                "bw": "fl-theme-uio-bw fl-theme-bw",
-                                "wb": "fl-theme-uio-wb fl-theme-wb",
-                                "by": "fl-theme-uio-by fl-theme-by",
-                                "yb": "fl-theme-uio-yb fl-theme-yb"
-                            },
-                            rules: {
-                                "contrast": "value"
-                            },
-                            model: {
-                                value: "default"
-                            },
-                            controlValues: {
-                                theme: ["default", "bw", "wb", "by", "yb"]
-                            },
-                            resources: {
-                                template: "templateLoader.resources.fluid_uiOptions_panels_contrast"
-                            }
-                        }
+                    gradeNames: ["fluid.uiOptions", "autoInit"],
+                    selectors: {
+                        "fluid_uiOptions_panels_contrast": ".flc-uiOptions-contrast",
+                        "fluid_uiOptions_panels_layoutControls": ".flc-uiOptions-layout-controls"
                     },
-                    "fluid_uiOptions_panels_layoutControls": {
-                        type: "fluid.uiOptions.panels.layoutControls",
-                        container: ".flc-uiOptions-layout-controls",
-                        createOnEvent: "onUIOptionsMarkupReady",
-                        options: {
-                            rules: {
-                                "tableOfContents": "toc"
-                            },
-                            model: {
-                                toc: false
-                            },
-                            resources: {
-                                template: "templateLoader.resources.fluid_uiOptions_panels_layoutControls"
+                    components: {
+                        "fluid_uiOptions_panels_contrast": {
+                            type: "fluid.uiOptions.panels.contrast",
+                            container: "uiOptions.dom.fluid_uiOptions_panels_contrast",
+                            createOnEvent: "onUIOptionsMarkupReady",
+                            options: {
+                                classnameMap: {
+                                    "default": "fl-theme-uio-default",
+                                    "bw": "fl-theme-uio-bw fl-theme-bw",
+                                    "wb": "fl-theme-uio-wb fl-theme-wb",
+                                    "by": "fl-theme-uio-by fl-theme-by",
+                                    "yb": "fl-theme-uio-yb fl-theme-yb"
+                                },
+                                rules: {
+                                    "contrast": "value"
+                                },
+                                model: {
+                                    value: "default"
+                                },
+                                controlValues: {
+                                    theme: ["default", "bw", "wb", "by", "yb"]
+                                },
+                                resources: {
+                                    template: "templateLoader.resources.fluid_uiOptions_panels_contrast"
+                                }
+                            }
+                        },
+                        "fluid_uiOptions_panels_layoutControls": {
+                            type: "fluid.uiOptions.panels.layoutControls",
+                            container: "uiOptions.dom.fluid_uiOptions_panels_layoutControls",
+                            createOnEvent: "onUIOptionsMarkupReady",
+                            options: {
+                                rules: {
+                                    "tableOfContents": "toc"
+                                },
+                                model: {
+                                    toc: false
+                                },
+                                resources: {
+                                    template: "templateLoader.resources.fluid_uiOptions_panels_layoutControls"
+                                }
                             }
                         }
                     }
@@ -344,6 +360,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 templates: {
                     "fluid_uiOptions_panels_contrast": "templates/contrast",
                     "fluid_uiOptions_panels_layoutControls": "templates/tableOfContents"
+                },
+                rootModel: {
+                    members: {
+                        "contrast": "default",
+                        "tableOfContents": false
+                    }
                 }
             }
         },
@@ -369,6 +391,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      jqUnit.assertDeepEq("The schema was expanded correctly", expectedExpandedSchema, expandedSchema);
     };
 
+    fluid.tests.auxSchema.defaultNamespace = fluid.defaults("fluid.uiOptions.auxBuilder").defaultNamespace;
+    fluid.tests.auxSchema.newNamespace = "fluid.uiOptions.constructedUIO";
+
     fluid.tests.auxSchema.prefs = {
         "textSize": {
             "type": "fluid.uiOptions.textSize"
@@ -384,6 +409,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.enactors = {
+        "namespace": fluid.tests.auxSchema.newNamespace,
         "enactors": [{
             "type": "fluid.uiOptions.enactors.textSize"
         }]
@@ -434,82 +460,111 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
             expectedPrefs: {
+                "namespace": fluid.tests.auxSchema.defaultNamespace,
                 "textSize": {
                     "type": "fluid.uiOptions.textSize"
                 }
             },
             expectedPanels: {
+                "namespace": fluid.tests.auxSchema.defaultNamespace,
                 "textSize": {
                     "type": "fluid.uiOptions.textSize"
                 },
                 panels: {
-                    "fluid_uiOptions_panels_textSize": {
-                        "type": "fluid.uiOptions.panels.textSize",
-                        "container": ".flc-uiOptions-text-size",
-                        "createOnEvent": "onUIOptionsMarkupReady",
-                        options: {
-                            model: {
-                                value: 1
-                            },
-                            rules: {
-                                textSize: "value"
-                            },
-                            range: {
-                                min: 1,
-                                max: 2
-                            },
-                            resources: {
-                                template: "templateLoader.resources.fluid_uiOptions_panels_textSize"
+                    "gradeNames": ["fluid.uiOptions", "autoInit"],
+                    "selectors": {
+                        "fluid_uiOptions_panels_textSize": ".flc-uiOptions-text-size"
+                    },
+                    "components": {
+                        "fluid_uiOptions_panels_textSize": {
+                            "type": "fluid.uiOptions.panels.textSize",
+                            "container": "uiOptions.dom.fluid_uiOptions_panels_textSize",
+                            "createOnEvent": "onUIOptionsMarkupReady",
+                            options: {
+                                model: {
+                                    value: 1
+                                },
+                                rules: {
+                                    textSize: "value"
+                                },
+                                range: {
+                                    min: 1,
+                                    max: 2
+                                },
+                                resources: {
+                                    template: "templateLoader.resources.fluid_uiOptions_panels_textSize"
+                                }
                             }
                         }
                     }
                 },
                 templates: {
                     "fluid_uiOptions_panels_textSize": "templates/textSize"
+                },
+                rootModel: {
+                    members: {
+                        textSize: 1
+                    }
                 }
             },
             expectedEnactors: {
+                "namespace": fluid.tests.auxSchema.newNamespace,
                 "textSize": {
                     "type": "fluid.uiOptions.textSize"
                 },
                 enactors: {
-                    "fluid_uiOptions_enactors_textSize": {
-                        type: "fluid.uiOptions.enactors.textSize",
-                        container: "uiEnhancer.container",
-                        options: {
-                            sourceApplier: "uiEnhancer.applier",
-                            model: {
-                                value: 1
-                            },
-                            rules: {
-                                textSize: "value"
+                    "gradeNames": ["fluid.uiEnhancer", "autoInit"],
+                    "components": {
+                        "fluid_uiOptions_enactors_textSize": {
+                            type: "fluid.uiOptions.enactors.textSize",
+                            container: "uiEnhancer.container",
+                            options: {
+                                sourceApplier: "uiEnhancer.applier",
+                                model: {
+                                    value: 1
+                                },
+                                rules: {
+                                    textSize: "value"
+                                }
                             }
                         }
+                    }
+                },
+                rootModel: {
+                    members: {
+                        textSize: 1
                     }
                 }
             },
             expectedAll: {
+                "namespace": fluid.tests.auxSchema.newNamespace,
                 "textSize": {
                     "type": "fluid.uiOptions.textSize"
                 },
                 panels: {
-                    "fluid_uiOptions_panels_textSize": {
-                        "type": "fluid.uiOptions.panels.textSize",
-                        "container": ".flc-uiOptions-text-size",
-                        "createOnEvent": "onUIOptionsMarkupReady",
-                        options: {
-                            model: {
-                                value: 1
-                            },
-                            rules: {
-                                textSize: "value"
-                            },
-                            range: {
-                                min: 1,
-                                max: 2
-                            },
-                            resources: {
-                                template: "templateLoader.resources.fluid_uiOptions_panels_textSize"
+                    "gradeNames": ["fluid.uiOptions", "autoInit"],
+                    "selectors": {
+                        "fluid_uiOptions_panels_textSize": ".flc-uiOptions-text-size"
+                    },
+                    "components": {
+                        "fluid_uiOptions_panels_textSize": {
+                            "type": "fluid.uiOptions.panels.textSize",
+                            "container": "uiOptions.dom.fluid_uiOptions_panels_textSize",
+                            "createOnEvent": "onUIOptionsMarkupReady",
+                            options: {
+                                model: {
+                                    value: 1
+                                },
+                                rules: {
+                                    textSize: "value"
+                                },
+                                range: {
+                                    min: 1,
+                                    max: 2
+                                },
+                                resources: {
+                                    template: "templateLoader.resources.fluid_uiOptions_panels_textSize"
+                                }
                             }
                         }
                     }
@@ -518,18 +573,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "fluid_uiOptions_panels_textSize": "templates/textSize"
                 },
                 enactors: {
-                    "fluid_uiOptions_enactors_textSize": {
-                        type: "fluid.uiOptions.enactors.textSize",
-                        container: "uiEnhancer.container",
-                        options: {
-                            sourceApplier: "uiEnhancer.applier",
-                            model: {
-                                value: 1
-                            },
-                            rules: {
-                                textSize: "value"
+                    "gradeNames": ["fluid.uiEnhancer", "autoInit"],
+                    "components": {
+                        "fluid_uiOptions_enactors_textSize": {
+                            type: "fluid.uiOptions.enactors.textSize",
+                            container: "uiEnhancer.container",
+                            options: {
+                                sourceApplier: "uiEnhancer.applier",
+                                model: {
+                                    value: 1
+                                },
+                                rules: {
+                                    textSize: "value"
+                                }
                             }
                         }
+                    }
+                },
+                rootModel: {
+                    members: {
+                        textSize: 1
                     }
                 }
             }

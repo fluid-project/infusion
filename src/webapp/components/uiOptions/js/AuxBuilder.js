@@ -51,9 +51,12 @@ var fluid_1_5 = fluid_1_5 || {};
         return fluid.get(root, pathRef.substring(1));
     };
 
-    fluid.uiOptions.expandSchemaComponents = function (auxSchema, type, index, commonOptions, schema) {
+    fluid.uiOptions.expandSchemaComponents = function (auxSchema, type, index, commonTopOptions, commonOptions, schema) {
         var components = {};
+        var selectors = {};
         var templates = {};
+        var rootModel = {};
+
         var sharedModel = {};
 
         fluid.each(auxSchema, function (config, prefName) {
@@ -74,7 +77,8 @@ var fluid_1_5 = fluid_1_5 || {};
 
                 var container = componentConfig.container;
                 if (container) {
-                    instance.container = container;
+                    // instance.container = container;
+                    fluid.set(selectors, memberName, container);
                 }
                 
                 var template = componentConfig.template;
@@ -87,7 +91,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 delete componentOptions.container;
                 delete componentOptions.template;
 
-                if (!jQuery.isEmptyObject(componentOptions)) {
+                if (fluid.keys(componentOptions).length > 0) {
                     instance.options = componentOptions;
                 }
 
@@ -101,6 +105,7 @@ var fluid_1_5 = fluid_1_5 || {};
                                 var internalModelName = internalPath.slice(6);
                                 fluid.set(instance, "options.rules." + sharedModel[pref], internalModelName);
                                 fluid.set(instance, "options.model." + internalModelName, prefSchema[PrimaryPath]);
+                                fluid.set(rootModel, "members." + sharedModel[pref], prefSchema[PrimaryPath]);
                             } else {
                                 fluid.set(instance, "options." + internalPath, prefSchema[PrimaryPath]);
                             }
@@ -122,11 +127,24 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
 
-        if (!jQuery.isEmptyObject(components)) {
-            auxSchema[type] = components;
+        if (fluid.keys(components).length > 0) {
+            if (commonTopOptions) {
+                auxSchema[type] = commonTopOptions;
+            }
+            auxSchema[type] = $.extend(true, auxSchema[type] || {}, {
+                components: components,
+            });
+            if (fluid.keys(selectors).length > 0) {
+                auxSchema[type] = $.extend(true, auxSchema[type], {
+                    selectors: selectors,
+                });
+            }
         }
-        if (!jQuery.isEmptyObject(templates)) {
+        if (fluid.keys(templates).length > 0) {
             auxSchema.templates = $.extend(true, auxSchema.templates || {}, templates);
+        }
+        if (fluid.keys(rootModel).length > 0) {
+            auxSchema["rootModel"] = rootModel;
         }
         return auxSchema;
     };
@@ -158,23 +176,32 @@ var fluid_1_5 = fluid_1_5 || {};
         return expandedSchema;
     };
 
-    fluid.uiOptions.expandSchema = function (schemaToExpand, enactorsIndex, commonEnactorOptions, panelsIndex, commonPanelOptions, schema) {
+    fluid.uiOptions.expandSchema = function (schemaToExpand, defaultNamespace, enactorsIndex, enactorsTopOptions, commonEnactorOptions, panelsIndex, panelsTopOptions, commonPanelOptions, schema) {
         var auxSchema = fluid.uiOptions.expandSchemaImpl(schemaToExpand);
-        fluid.uiOptions.expandSchemaComponents(auxSchema, "enactors", enactorsIndex, commonEnactorOptions, schema);
-        fluid.uiOptions.expandSchemaComponents(auxSchema, "panels", panelsIndex, commonPanelOptions, schema);
+        auxSchema.namespace = auxSchema.namespace || defaultNamespace;
+        fluid.uiOptions.expandSchemaComponents(auxSchema, "enactors", enactorsIndex, enactorsTopOptions, commonEnactorOptions, schema);
+        fluid.uiOptions.expandSchemaComponents(auxSchema, "panels", panelsIndex, panelsTopOptions, commonPanelOptions, schema);
         return auxSchema;
     };
 
     fluid.defaults("fluid.uiOptions.auxBuilder", {
         gradeNames: ["fluid.uiOptions.primaryBuilder", "autoInit"],
+        defaultNamespace: "fluid.uiOptions.create",
         mergePolicy: {
             commonPanelOptions: "noexpand",
             commonEnactorOptions: "noexpand"
         },
         auxiliarySchema: {},
+        panelsTopOptions: {
+            gradeNames: ["fluid.uiOptions", "autoInit"]
+        },
         commonPanelOptions: {
             "createOnEvent": "onUIOptionsMarkupReady",
+            "container": "{uiOptions}.dom.%prefKey",
             "options.resources.template": "{templateLoader}.resources.%prefKey"
+        },
+        enactorsTopOptions: {
+            gradeNames: ["fluid.uiEnhancer", "autoInit"]
         },
         commonEnactorOptions: {
             "container": "{uiEnhancer}.container",
@@ -203,13 +230,19 @@ var fluid_1_5 = fluid_1_5 || {};
                 func: "fluid.uiOptions.expandSchema",
                 args: [
                     "{that}.options.auxiliarySchema",
+                    "{that}.options.defaultNamespace",
                     "{that}.options.enactorsIndex",
+                    "{that}.options.enactorsTopOptions",
                     "{that}.options.commonEnactorOptions",
                     "{that}.options.panelsIndex",
+                    "{that}.options.panelsTopOptions",
                     "{that}.options.commonPanelOptions",
                     "{that}.options.schema.properties"
                 ]
             }
+        },
+        listeners: {
+
         }
     });
 
