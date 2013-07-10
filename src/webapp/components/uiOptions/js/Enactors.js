@@ -682,7 +682,14 @@ var fluid_1_5 = fluid_1_5 || {};
         events: {
             onCreateToc: null
         },
+        invokers: {
+            initToc: {
+                funcName: "fluid.uiEnhancer.initToc",
+                args: ["{that}"]
+            }
+        },
         listeners: {
+            onCreate: "{that}.initToc",
             onAsyncEnactorReady: [{
                 listener: "{that}.emphasizeLinks.handleStyle",
                 args: "{that}.model.links"
@@ -690,11 +697,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 listener: "{that}.inputsLarger.handleStyle",
                 args: "{that}.model.inputsLarger"
             }]
-        },
-        finalInitFunction: "fluid.uiEnhancer.starterEnactors.finalInit"
+        }
     });
 
-    fluid.uiEnhancer.starterEnactors.finalInit = function (that) {
+    fluid.uiEnhancer.initToc = function (that) {
         that.events.onCreateToc.fire();
 
         // Directly calling toc apply function rather than firing a model change request
