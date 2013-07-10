@@ -28,105 +28,46 @@ var fluid_1_5 = fluid_1_5 || {};
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
         },
-        defaultName: "fluid.uiOptions.create",
-        UIOGrade: {
-            expander: {
-                func: "fluid.uiOptions.builder.attach",
-                args: ["{that}.options.auxSchema.panels", "fluid.uiOptions.builder.uiOptions"]
-            }
-        },
-        UIEGrade: {
-            expander: {
-                func: "fluid.uiOptions.builder.attach",
-                args: ["{that}.options.auxSchema.enactors", "fluid.uiOptions.builder.enhancer"]
-            }
-        },
-        listeners: {
-            onCreate: {
-                listener: "fluid.defaults",
-                args: [{
+        members: {
+            constructedGrades: {
+                enactors: {
                     expander: {
-                        func: "fluid.uiOptions.builder.provideName",
-                        args: ["{that}.options.auxSchema.name", "{that}.options.defaultName"]
+                        func: "fluid.uiOptions.builder.generateGrade",
+                        args: ["{that}.options.auxSchema.namespace", "%namespace.enactors", ["fluid.uiEnhancer"], "{that}.options.auxSchema.enactors", "components"]
                     }
-                }, {
-                    auxSchema: "{that}.options.auxSchema",
-                    schema: "{that}.options.schema",
-                    gradeNames: ["autoInit", "fluid.viewComponent", "{that}.options.UIOGrade", "{that}.options.UIEGrade"]
-                }]
-            }
-        }
-    });
-    
-    fluid.uiOptions.builder.finalInit = function (that) {
-        console.log(that);
-    };
-
-    fluid.defaults("fluid.uiOptions.builder.enhancer", {
-        gradeNames: ["autoInit", "fluid.viewComponent"],
-        components: {
-            store: {
-                type: "fluid.globalSettingsStore"
-            },
-            enhancer: {
-                type: "fluid.uiEnhancer",
-                container: "body",
-                options: {
-                    components: "{fluid.uiOptions.builder.enhancer}.options.auxSchema.enactors",
-                    invokers: {
-                        attachStaticEnv: {
-                            funcName: "fluid.uiOptions.builder.attachStaticEnv",
-                            args: ["{that}"]
-                        }
-                    },
-                    listeners: {
-                        onCreate: "{that}.attachStaticEnv"
+                },
+                panels: {
+                    expander: {
+                        func: "fluid.uiOptions.builder.generateGrade",
+                        args: ["{that}.options.auxSchema.namespace", "%namespace.panels", ["fluid.uiOptions"], "{that}.options.auxSchema.panels"]
+                    }
+                },
+                rootModel: {
+                    expander: {
+                        func: "fluid.uiOptions.builder.generateGrade",
+                        args: ["{that}.options.auxSchema.namespace", "%namespace.rootModel", ["fluid.uiOptions.rootModel"], "{that}.options.auxSchema.rootModel", "members.rootModel"]
+                    }
+                },
+                templateLoader: {
+                    expander: {
+                        func: "fluid.uiOptions.builder.generateGrade",
+                        args: ["{that}.options.auxSchema.namespace", "%namespace.templateLoader", ["fluid.uiOptions.templateLoader"], "{that}.options.auxSchema.templateLoader"]
                     }
                 }
             }
         }
     });
 
-    fluid.uiOptions.builder.attachStaticEnv = function (UIEnhancer) {
-        fluid.staticEnvironment.uiEnhancer = UIEnhancer;
-    };
-
-    fluid.defaults("fluid.uiOptions.builder.uiOptions", {
-        gradeNames: ["autoInit", "fluid.viewComponent"],
-        components: {
-            store: {
-                type: "fluid.globalSettingsStore"
-            },
-            uiOptions: {
-                type: "fluid.uiOptions.fatPanel",
-                container: "{fluid.uiOptions.builder.uiOptions}.container",
-                options: {
-                    prefix: "{fluid.uiOptions.builder.uiOptions}.options.auxSchema.templatePrefix",
-                    components: {
-                        templateLoader: {
-                            options: {
-                                templates: "{fluid.uiOptions.builder.uiOptions}.options.auxSchema.templates"
-                            }
-                        },
-                        uiOptions: {
-                            options: {
-                                components: "{fluid.uiOptions.builder.uiOptions}.options.auxSchema.panels"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    });
-
-    fluid.uiOptions.builder.attach = function (components, gradeName) {
-        if (!$.isEmptyObject(components)) {
+    fluid.uiOptions.builder.generateGrade = function (namespace, gradeNameTemplate, baseGrades, gradeOptions, path) {
+        if (gradeOptions) {
+            var opts = {
+                gradeNames: baseGrades
+            };
+            var gradeName = fluid.stringTemplate(gradeNameTemplate, {namespace: namespace});
+            fluid.set(opts, path || "", gradeOptions);
+            fluid.defaults(gradeName, opts); // creates the grade with name specified by gradeName
             return gradeName;
         }
-    };
-
-    fluid.uiOptions.builder.provideName = function (suppliedName, defaultName) {
-        return suppliedName || defaultName;
     };
 
 })(jQuery, fluid_1_5);
