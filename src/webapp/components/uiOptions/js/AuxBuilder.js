@@ -54,6 +54,8 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uiOptions.expandSchemaComponents = function (auxSchema, type, index, commonOptions, schema) {
         var components = {};
         var templates = {};
+        var rootModel = {};
+
         var sharedModel = {};
 
         fluid.each(auxSchema, function (config, prefName) {
@@ -87,7 +89,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 delete componentOptions.container;
                 delete componentOptions.template;
 
-                if (!jQuery.isEmptyObject(componentOptions)) {
+                if (fluid.keys(componentOptions).length > 0) {
                     instance.options = componentOptions;
                 }
 
@@ -101,6 +103,7 @@ var fluid_1_5 = fluid_1_5 || {};
                                 var internalModelName = internalPath.slice(6);
                                 fluid.set(instance, "options.rules." + sharedModel[pref], internalModelName);
                                 fluid.set(instance, "options.model." + internalModelName, prefSchema[PrimaryPath]);
+                                fluid.set(rootModel, "members." + sharedModel[pref], prefSchema[PrimaryPath]);
                             } else {
                                 fluid.set(instance, "options." + internalPath, prefSchema[PrimaryPath]);
                             }
@@ -122,11 +125,14 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
 
-        if (!jQuery.isEmptyObject(components)) {
+        if (fluid.keys(components).length > 0) {
             auxSchema[type] = components;
         }
-        if (!jQuery.isEmptyObject(templates)) {
+        if (fluid.keys(templates).length > 0) {
             auxSchema.templates = $.extend(true, auxSchema.templates || {}, templates);
+        }
+        if (fluid.keys(rootModel).length > 0) {
+            auxSchema["rootModel"] = rootModel;
         }
         return auxSchema;
     };

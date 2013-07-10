@@ -50,6 +50,10 @@ var fluid_1_5 = fluid_1_5 || {};
                         args: ["{that}.options.auxSchema.name", "{that}.options.defaultName"]
                     }
                 }, {
+                    mergePolicy: {
+                        auxSchema: "noexpand",
+                        schema: "noexpand"
+                    },
                     auxSchema: "{that}.options.auxSchema",
                     schema: "{that}.options.schema",
                     gradeNames: ["autoInit", "fluid.viewComponent", "{that}.options.UIOGrade", "{that}.options.UIEGrade"]

@@ -344,6 +344,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 templates: {
                     "fluid_uiOptions_panels_contrast": "templates/contrast",
                     "fluid_uiOptions_panels_layoutControls": "templates/tableOfContents"
+                },
+                rootModel: {
+                    members: {
+                        "contrast": "default",
+                        "tableOfContents": false
+                    }
                 }
             }
         },
@@ -466,6 +472,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 templates: {
                     "fluid_uiOptions_panels_textSize": "templates/textSize"
+                },
+                rootModel: {
+                    members: {
+                        textSize: 1
+                    }
                 }
             },
             expectedEnactors: {
@@ -485,6 +496,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 textSize: "value"
                             }
                         }
+                    }
+                },
+                rootModel: {
+                    members: {
+                        textSize: 1
                     }
                 }
             },
@@ -530,6 +546,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 textSize: "value"
                             }
                         }
+                    }
+                },
+                rootModel: {
+                    members: {
+                        textSize: 1
                     }
                 }
             }
