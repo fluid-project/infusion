@@ -1,5 +1,5 @@
 var auxiliarySchema = {
-    "name": "fluid.uiOptions.constructed", // the author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
+    "namespace": "fluid.uiOptions.constructed", // the author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
     "templatePrefix": "../html",  // the common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
     "messages": {
         // UI Options Text Font Settings Panel
