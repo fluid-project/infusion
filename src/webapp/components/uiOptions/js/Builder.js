@@ -19,8 +19,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
 
 (function ($, fluid) {
-
-    fluid.setLogging(fluid.logLevel.TRACE);
     fluid.registerNamespace("fluid.uiOptions");
 
     fluid.defaults("fluid.uiOptions.builder", {
@@ -59,12 +57,22 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     fluid.uiOptions.builder.generateGrade = function (namespace, gradeNameTemplate, baseGrades, gradeOptions, path) {
+        // fluid.registerNamespace(namespace);
         if (gradeOptions) {
-            var opts = {
-                gradeNames: baseGrades
-            };
             var gradeName = fluid.stringTemplate(gradeNameTemplate, {namespace: namespace});
-            fluid.set(opts, path || "", gradeOptions);
+            var opts = {};
+
+            if (path) {
+                fluid.set(opts, path, gradeOptions);
+            } else {
+                opts = gradeOptions;
+            }
+
+            opts.gradeNames = fluid.makeArray(baseGrades);
+            if ($.inArray("autoInit", opts.gradeNames) < 0) {
+                opts.gradeNames.push("autoInit");
+            }
+
             fluid.defaults(gradeName, opts); // creates the grade with name specified by gradeName
             return gradeName;
         }

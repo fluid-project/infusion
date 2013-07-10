@@ -21,175 +21,69 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
-    var expectedUIOName = "fluid.uiOptions.constructed";
+    fluid.tests.testGenerateGrade = function (expectedGradeName, expectedOpts, funcArgs) {
+        var gradeName = fluid.invokeGlobalFunction("fluid.uiOptions.builder.generateGrade", funcArgs);
 
-    fluid.tests.schema = {
-        "name": expectedUIOName,
-        "textFont": {
-            "type": "fluid.uiOptions.textFont",
-            "classes": {
-                "default": "",
-                "times": "fl-font-uio-times",
-                "comic": "fl-font-uio-comic-sans",
-                "arial": "fl-font-uio-arial",
-                "verdana": "fl-font-uio-verdana"
-            }
-        },
-        "contrast": {
-            "type": "fluid.uiOptions.contrast",
-            "classes": {
-                "default": "fl-theme-uio-default",
-                "bw": "fl-theme-uio-bw fl-theme-bw",
-                "wb": "fl-theme-uio-wb fl-theme-wb",
-                "by": "fl-theme-uio-by fl-theme-by",
-                "yb": "fl-theme-uio-yb fl-theme-yb"
-            }
-        },
-        "enactors": [{
-            "type": "fluid.uiOptions.enactors.textFont",
-            "classes": "@textFont.classes"
-        }, {
-            "type": "fluid.uiOptions.enactors.contrast",
-            "classes": "@contrast.classes"
-        }]
-    };
+        if (expectedGradeName) {
+            var grade = fluid.defaults(expectedGradeName);
+            jqUnit.assertEquals("The grade name should be generated correctly", expectedGradeName, gradeName);
+            jqUnit.assertNotUndefined("The grade should be created", grade);
+            var component = fluid.invokeGlobalFunction(gradeName, []);
+            jqUnit.assertTrue("The component is 'autoInit'", fluid.hasGrade(component.options, "autoInit"));
+            fluid.each(funcArgs[2], function (baseGrade) {
+                jqUnit.assertTrue("The gradeName '" + baseGrade + "' is set", fluid.hasGrade(component.options, baseGrade));
+            });
+            fluid.each(expectedOpts, function (optVal, optKey) {
+                jqUnit.assertDeepEq("The options at path '" + optKey + "'' is set correctly", optVal, fluid.get(component.options, optKey));
+            });
 
-    fluid.tests.expectedSchema = {
-        "name": expectedUIOName,
-        "textFont": {
-            "type": "fluid.uiOptions.textFont",
-            "classes": {
-                "default": "",
-                "times": "fl-font-uio-times",
-                "comic": "fl-font-uio-comic-sans",
-                "arial": "fl-font-uio-arial",
-                "verdana": "fl-font-uio-verdana"
-            }
-        },
-        "contrast": {
-            "type": "fluid.uiOptions.contrast",
-            "classes": {
-                "default": "fl-theme-uio-default",
-                "bw": "fl-theme-uio-bw fl-theme-bw",
-                "wb": "fl-theme-uio-wb fl-theme-wb",
-                "by": "fl-theme-uio-by fl-theme-by",
-                "yb": "fl-theme-uio-yb fl-theme-yb"
-            }
-        },
-        "enactors": {
-            "fluid_uiOptions_enactors_textFont": {
-                "type": "fluid.uiOptions.enactors.textFont",
-                "container": "{uiEnhancer}.container",
-                "options": {
-                    "sourceApplier": "{uiEnhancer}.applier",
-                    "classes": {
-                        "default": "",
-                        "times": "fl-font-uio-times",
-                        "comic": "fl-font-uio-comic-sans",
-                        "arial": "fl-font-uio-arial",
-                        "verdana": "fl-font-uio-verdana"
-                    },
-                    "rules": {
-                        "textFont": "value"
-                    },
-                    "model": {
-                        "value": ""
-                    }
-                }
-            },
-            "fluid_uiOptions_enactors_contrast": {
-                "type": "fluid.uiOptions.enactors.contrast",
-                "container": "{uiEnhancer}.container",
-                "options": {
-                    "sourceApplier": "{uiEnhancer}.applier",
-                    "classes": {
-                        "default": "fl-theme-uio-default",
-                        "bw": "fl-theme-uio-bw fl-theme-bw",
-                        "wb": "fl-theme-uio-wb fl-theme-wb",
-                        "by": "fl-theme-uio-by fl-theme-by",
-                        "yb": "fl-theme-uio-yb fl-theme-yb"
-                    },
-                    "rules": {
-                        "contrast": "value"
-                    },
-                    "model": {
-                        "value": "default"
-                    }
-                }
-            }
+        } else {
+            jqUnit.assertUndefined("The gradeName should not have been generated", gradeName);
+            jqUnit.assertUndefined("The grade should not have been created", fluid.defaults(fluid.stringTemplate(funcArgs[0], {namespace: funcArgs[1]})));
         }
     };
 
-    fluid.defaults("fluid.tests.builder", {
+    fluid.defaults("fluid.tests.generateGradeName", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            emptyBuilder: {
-                type: "fluid.uiOptions.builder"
-            },
-            sampleBuilder: {
-                type: "fluid.uiOptions.builder",
-                options: {
-                    auxiliarySchema: fluid.tests.schema//,
-                    // commonEnactorOptions: {
-                    //     "container": "{uiEnhancer}.container",
-                    //     "options.sourceApplier": "{uiEnhancer}.applier"
-                    // },
-                }
-            },
-            builderTester: {
-                type: "fluid.tests.builderTester"
+            generateGradeTester: {
+                type: "fluid.tests.generateGradeTester"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.builderTester", {
+    fluid.defaults("fluid.tests.generateGradeTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
-            name: "Builder",
+            name: "fluid.uiOptions.builder.generateGrade",
             tests: [{
                 expect: 2,
-                name: "Empty builder.",
+                name: "no gradeOptions",
                 sequence: [{
-                    func: "fluid.tests.testEmptyBuilder",
-                    args: "{emptyBuilder}"
+                    func: "fluid.tests.testGenerateGrade",
+                    args: [undefined, {}, ["fluid.tests.created", "%namespace.generateGradeNoGradeOptions", ["fluid.littleComponent"]]]
                 }]
-            }]
-        }, {
-            name: "Builder: Construct enactors only",
-            tests: [{
-                // expect: 2,
-                name: "Sample builder.",
+            }, {
+                expect: 5,
+                name: "no path",
                 sequence: [{
-                    func: "fluid.tests.testSampleBuilder",
-                    args: "{sampleBuilder}"
+                    func: "fluid.tests.testGenerateGrade",
+                    args: ["fluid.tests.created.generateGradeNoPath", {test: "test"}, ["fluid.tests.created", "%namespace.generateGradeNoPath", ["fluid.littleComponent"], {test: "test"}]]
+                }]
+            }, {
+                expect: 6,
+                name: "no path",
+                sequence: [{
+                    func: "fluid.tests.testGenerateGrade",
+                    args: ["fluid.tests.created.generateGradeWithPath", {test: {test: "test"}}, ["fluid.tests.created", "%namespace.generateGradeWithPath", ["fluid.littleComponent", "autoInit"], {test: "test"}, "test"]]
                 }]
             }]
         }]
     });
-
-    fluid.tests.testEmptyBuilder = function (builder) {
-        jqUnit.assertDeepEq("Resolved aux schema should be empty", {}, builder.options.auxSchema);
-        jqUnit.assertDeepEq("Resolved primary schema should be empty", {},
-            builder.options.schema.properties);
-    };
-
-    fluid.tests.testSampleBuilder = function (builder) {
-        jqUnit.assertDeepEq("Resolved aux schema should be expanded correctly",
-            fluid.tests.expectedSchema, builder.options.auxSchema);
-        jqUnit.assertDeepEq("Resolved primary schema should be assembled correctly",
-            $.extend(true, {}, fluid.defaults("fluid.uiOptions.schemas.textFont").schema,
-                fluid.defaults("fluid.uiOptions.schemas.contrast").schema),
-            builder.options.schema);
-
-        var constructedUIO = fluid.defaults(expectedUIOName);
-        jqUnit.assertNotUndefined("The assembled UIO component is constructed", constructedUIO);
-
-        fluid.invokeGlobalFunction(expectedUIOName, ["body"]);
-    };
 
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.tests.builder"
+            "fluid.tests.generateGradeName"
         ]);
     });
 
