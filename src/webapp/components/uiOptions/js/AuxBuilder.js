@@ -105,7 +105,7 @@ var fluid_1_5 = fluid_1_5 || {};
                                 var internalModelName = internalPath.slice(6);
                                 fluid.set(instance, "options.rules." + sharedModel[pref], internalModelName);
                                 fluid.set(instance, "options.model." + internalModelName, prefSchema[PrimaryPath]);
-                                fluid.set(rootModel, "members." + sharedModel[pref], prefSchema[PrimaryPath]);
+                                fluid.set(rootModel, "members.rootModel." + sharedModel[pref], prefSchema[PrimaryPath]);
                             } else {
                                 fluid.set(instance, "options." + internalPath, prefSchema[PrimaryPath]);
                             }
