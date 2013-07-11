@@ -136,31 +136,50 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     };
 
-    fluid.defaults("fluid.tests.builderTestGrade", {
-        gradeNames: ["fluid.littleComponent"],
-        panelsTopOptions: {
-            gradeNames: ["fluid.littleComponent", "autoInit"]
-        },
-        enactorsTopOptions: {
-            gradeNames: ["fluid.littleComponent", "autoInit"]
-        }
-    });
-
     fluid.defaults("fluid.tests.builder", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        testOpts: {
+            topCommonOptions: {
+                panels: {
+                    selectors: {
+                        cancel: ".flc-uiOptions-cancel",
+                        reset: ".flc-uiOptions-reset",
+                        save: ".flc-uiOptions-save",
+                        previewFrame : ".flc-uiOptions-preview-frame"
+                    }
+                },
+                templateLoader: {
+                    templates: {
+                        uiOptions: "%prefix/FatPanelUIOptions.html"
+                    }
+                }
+            }
+        },
         components: {
             builderEmpty: {
                 type: "fluid.uiOptions.builder",
                 options: {
-                    gradeNames: ["fluid.tests.builderTestGrade"],
                     auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.empty", [fluid.tests.prefs])
                 }
             },
             builderEnactors: {
                 type: "fluid.uiOptions.builder",
                 options: {
-                    gradeNames: ["fluid.tests.builderTestGrade"],
                     auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.enactorsOnly", [fluid.tests.prefs, fluid.tests.enactors])
+                }
+            },
+            builderPanels: {
+                type: "fluid.uiOptions.builder",
+                options: {
+                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.panelsOnly", [fluid.tests.prefs, fluid.tests.panels]),
+                    topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
+                }
+            },
+            builderAll: {
+                type: "fluid.uiOptions.builder",
+                options: {
+                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.all", [fluid.tests.prefs, fluid.tests.panels, fluid.tests.enactors]),
+                    topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
                 }
             },
             builderTester: {
@@ -197,7 +216,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "fluid.tests.assertDefaults",
                     args: ["{builderEnactors}.constructedGrades.rootModel", "{builderEnactors}.options.auxSchema.rootModel"]
                 }]
-            },{
+            }, {
                 expect: 4,
                 name: "not created",
                 sequence: [{
@@ -205,13 +224,70 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{builderEnactors}", ["panels", "templateLoader"]]
                 }]
             }]
+        }, {
+            name: "fluid.uiOptions.builder - only panels",
+            tests: [{
+                expect: 5,
+                name: "panels",
+                sequence: [{
+                    func: "fluid.tests.assertDefaults",
+                    args: ["{builderPanels}.constructedGrades.panels", "{builderPanels}.options.auxSchema.panels"]
+                }]
+            }, {
+                expect: 4,
+                name: "rootModel",
+                sequence: [{
+                    func: "fluid.tests.assertDefaults",
+                    args: ["{builderPanels}.constructedGrades.rootModel", "{builderPanels}.options.auxSchema.rootModel"]
+                }]
+            }, {
+                expect: 4,
+                name: "templateLoader",
+                sequence: [{
+                    func: "fluid.tests.assertDefaults",
+                    args: ["{builderPanels}.constructedGrades.templateLoader", "{builderPanels}.options.auxSchema.templateLoader"]
+                }]
+            }, {
+                expect: 2,
+                name: "not created",
+                sequence: [{
+                    func: "fluid.tests.testNotCreated",
+                    args: ["{builderPanels}", ["enactors"]]
+                }]
+            }]
+        }, {
+            name: "fluid.uiOptions.builder - all",
+            tests: [{
+                expect: 5,
+                name: "panels",
+                sequence: [{
+                    func: "fluid.tests.assertDefaults",
+                    args: ["{builderAll}.constructedGrades.panels", "{builderAll}.options.auxSchema.panels"]
+                }]
+            }, {
+                expect: 4,
+                name: "enactors",
+                sequence: [{
+                    func: "fluid.tests.assertDefaults",
+                    args: ["{builderAll}.constructedGrades.enactors", "{builderAll}.options.auxSchema.enactors"]
+                }]
+            }, {
+                expect: 4,
+                name: "rootModel",
+                sequence: [{
+                    func: "fluid.tests.assertDefaults",
+                    args: ["{builderAll}.constructedGrades.rootModel", "{builderAll}.options.auxSchema.rootModel"]
+                }]
+            }, {
+                expect: 4,
+                name: "templateLoader",
+                sequence: [{
+                    func: "fluid.tests.assertDefaults",
+                    args: ["{builderAll}.constructedGrades.templateLoader", "{builderAll}.options.auxSchema.templateLoader"]
+                }]
+            }]
         }]
     });
-
-//TODO: Tests to write
-// 1) Only Panels
-// 2) Only messages
-// 3) Everything
 
     $(document).ready(function () {
         fluid.test.runTests([
