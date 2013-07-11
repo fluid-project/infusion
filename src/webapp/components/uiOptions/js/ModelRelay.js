@@ -33,37 +33,26 @@ var fluid_1_5 = fluid_1_5 || {};
             sourceApplier: "nomerge"
         },
         listeners: {
-            onCreate: "{that}.addListeners",
-            onDestroy: "{that}.removeListeners"
+            onCreate: "{that}.addListeners"
         },
         invokers: {
             addListeners: {
                 funcName: "fluid.uiOptions.modelRelay.addListeners",
-                args: ["{that}.options.rules", "{that}.applier", "{that}.options.sourceApplier", "{that}.id"]
-            },
-            removeListeners: {
-                funcName: "fluid.uiOptions.modelRelay.removeListeners",
-                args: ["{that}.options.rules", "{that}.options.sourceApplier", "{that}.id"]
+                args: ["{that}.options.rules", "{that}.applier", "{that}.options.sourceApplier"]
             }
         },
         sourceApplier: null,  // must be supplied by implementors
-        rules: {}  // must be supplied by implementors, in format: "externalModelKey": "internalModelKey"
+        rules: {}  // must be supplied by implementors in format: "externalModelKey": "internalModelKey"
     });
 
-    fluid.uiOptions.modelRelay.removeListeners = function (rules, applier, namespace) {
-        fluid.each(rules, function () {
-            applier.removeListener(namespace);
-        });
-    };
-
-    fluid.uiOptions.modelRelay.addListeners = function (rules, applier, sourceApplier, namespace) {
+    fluid.uiOptions.modelRelay.addListeners = function (rules, applier, sourceApplier) {
         fluid.each(rules, function (internalKey, sourceKey) {
             fluid.addSourceGuardedListener(applier, internalKey, sourceKey, function (newModel) {
                 fluid.fireSourcedChange(sourceApplier, sourceKey, fluid.get(newModel, internalKey), internalKey)
             });
             fluid.addSourceGuardedListener(sourceApplier, sourceKey, internalKey, function (newModel) {
                 fluid.fireSourcedChange(applier, internalKey, fluid.get(newModel, sourceKey), sourceKey);
-            }, undefined, namespace);
+            });
         });
     };
 
