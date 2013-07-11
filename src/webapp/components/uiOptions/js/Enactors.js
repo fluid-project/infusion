@@ -662,50 +662,54 @@ var fluid_1_5 = fluid_1_5 || {};
             tableOfContents: {
                 type: "fluid.uiOptions.enactors.tableOfContents",
                 container: "{uiEnhancer}.container",
-                createOnEvent: "onCreateToc",
+                // createOnEvent: "onCreateToc",
                 options: {
                     tocTemplate: "{uiEnhancer}.options.tocTemplate",
                     sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "toc": "value"
                     },
-                    listeners: {
-                        afterTocRender: "{uiEnhancer}.events.onAsyncEnactorReady",
-                        onLateRefreshRelay: "{uiEnhancer}.events.onAsyncEnactorReady"
-                    },
                     model: {
                         toc: "{fluid.uiOptions.rootModel}.rootModel.toc"
                     }
                 }
             }
-        },
-        events: {
-            onCreateToc: null
-        },
-        invokers: {
-            initToc: {
-                funcName: "fluid.uiEnhancer.initToc",
-                args: ["{that}"]
-            }
-        },
-        listeners: {
-            onCreate: "{that}.initToc",
-            onAsyncEnactorReady: [{
-                listener: "{that}.emphasizeLinks.handleStyle",
-                args: "{that}.model.links"
-            }, {
-                listener: "{that}.inputsLarger.handleStyle",
-                args: "{that}.model.inputsLarger"
-            }]
         }
     });
 
-    fluid.uiEnhancer.initToc = function (that) {
-        that.events.onCreateToc.fire();
+    /*******************************************************************************
+     * The demands blocks that hook up tableOfContents enactor with other enactors
+     * which need to re-apply their actions on the links inside table of contents
+     *******************************************************************************/
 
-        // Directly calling toc apply function rather than firing a model change request
-        // is because the modelRelay component prevents the relay on the unchanged value.
-        that.tableOfContents.applyToc(that.model.toc);
-    };
+    fluid.demands("fluid.uiOptions.enactors.tableOfContents", "fluid.uiOptions.enactors.emphasizeLinks", {
+        options: {
+            listeners: {
+                afterTocRender: {
+                    listener: "{uiEnhancer}.emphasizeLinks.handleStyle",
+                    args: "{uiEnhancer}.model.links"
+                },
+                onLateRefreshRelay: {
+                    listener: "{uiEnhancer}.emphasizeLinks.handleStyle",
+                    args: "{uiEnhancer}.model.links"
+                }
+            }
+        }
+    });
+
+    fluid.demands("fluid.uiOptions.enactors.tableOfContents", "fluid.uiOptions.enactors.inputsLarger", {
+        options: {
+            listeners: {
+                afterTocRender: {
+                    listener: "{uiEnhancer}.inputsLarger.handleStyle",
+                    args: "{uiEnhancer}.model.inputsLarger"
+                },
+                onLateRefreshRelay: {
+                    listener: "{uiEnhancer}.inputsLarger.handleStyle",
+                    args: "{uiEnhancer}.model.inputsLarger"
+                }
+            }
+        }
+    });
 
 })(jQuery, fluid_1_5);

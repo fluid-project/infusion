@@ -68,7 +68,7 @@ var auxiliarySchema = {
         "classes": "@contrast.classes"
     }, {
         "type": "fluid.uiOptions.enactors.tableOfContents",
-        "template": "the-location-of-toc-template"
+        "tocTemplate": "the-location-of-toc-template"
     }, {
         "type": "fluid.uiOptions.enactors.emphasizeLinks",
         "cssClass": "fl-link-enhanced"

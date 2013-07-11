@@ -34,9 +34,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.uiEnhancer.updateModel",
                 args: ["{arguments}.0", "{uiEnhancer}.applier"]
             }
-        },
-        events: {
-            onAsyncEnactorReady: null
         }
     });
 
