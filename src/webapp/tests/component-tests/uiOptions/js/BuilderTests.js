@@ -188,14 +188,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "enactors",
                 sequence: [{
                     func: "fluid.tests.assertDefaults",
-                    args: ["fluid.tests.created.enactorsOnly.enactors", "{builderEnactors}.options.auxSchema.enactors"]
+                    args: ["{builderEnactors}.constructedGrades.enactors", "{builderEnactors}.options.auxSchema.enactors"]
                 }]
             }, {
-                expect: 2,
+                expect: 4,
                 name: "rootModel",
                 sequence: [{
                     func: "fluid.tests.assertDefaults",
-                    args: ["fluid.tests.created.enactorsOnly.rootModel", "{builderEnactors}.options.auxSchema.rootModel"]
+                    args: ["{builderEnactors}.constructedGrades.rootModel", "{builderEnactors}.options.auxSchema.rootModel"]
                 }]
             },{
                 expect: 4,
