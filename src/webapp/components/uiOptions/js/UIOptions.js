@@ -65,7 +65,7 @@ var fluid_1_5 = fluid_1_5 || {};
             target: "{that > uiOptionsLoader}.container"
         }]
     });
-    
+
     fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions", {
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         distributeOptions: [{
@@ -208,11 +208,6 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.settingsGetter", "fluid.uiOptions.settingsSetter", "fluid.uiOptions.rootModel", "autoInit"],
-        components: {
-            eventBinder: {
-                type: "fluid.uiOptions.eventBinder"
-            }
-        },
         invokers: {
             /**
              * Updates the change applier and fires modelChanged on subcomponent fluid.uiOptions.controls
@@ -419,15 +414,6 @@ var fluid_1_5 = fluid_1_5 || {};
             }, 1);
         });
     };
-
-    /******************************************************
-     * UI Options Event binder:                           *
-     * Binds events between UI Options and the UIEnhancer *
-     ******************************************************/
-
-    fluid.defaults("fluid.uiOptions.eventBinder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"]
-    });
 
     /**********************
      * UI Options Preview *
