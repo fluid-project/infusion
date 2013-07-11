@@ -21,22 +21,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
+    fluid.tests.assertDefaults = function (gradeName, expectedOpts) {
+        var grade = fluid.defaults(gradeName);
+        jqUnit.assertNotUndefined("The grade should be created", grade);
+
+        fluid.each(expectedOpts, function (opt, optPath) {
+            var actualOpt = fluid.get(grade, optPath);
+            if (optPath === "gradeNames") {
+                fluid.each(opt, function (baseGrade) {
+                    jqUnit.assertTrue(gradeName + " should have the base grade '" + baseGrade + "'", $.inArray(baseGrade, actualOpt) >= 0);
+                });
+            } else {
+                jqUnit.assertDeepEq("The options at path '" + optPath + "'' is set correctly", opt, actualOpt);
+            }
+        });
+    };
+
     fluid.tests.testGenerateGrade = function (expectedGradeName, expectedOpts, funcArgs) {
         var gradeName = fluid.invokeGlobalFunction("fluid.uiOptions.builder.generateGrade", funcArgs);
 
         if (expectedGradeName) {
-            var grade = fluid.defaults(expectedGradeName);
             jqUnit.assertEquals("The grade name should be generated correctly", expectedGradeName, gradeName);
-            jqUnit.assertNotUndefined("The grade should be created", grade);
+            fluid.tests.assertDefaults(expectedGradeName, expectedOpts);
             var component = fluid.invokeGlobalFunction(gradeName, []);
-            jqUnit.assertTrue("The component is 'autoInit'", fluid.hasGrade(component.options, "autoInit"));
-            fluid.each(funcArgs[2], function (baseGrade) {
-                jqUnit.assertTrue("The gradeName '" + baseGrade + "' is set", fluid.hasGrade(component.options, baseGrade));
-            });
-            fluid.each(expectedOpts, function (optVal, optKey) {
-                jqUnit.assertDeepEq("The options at path '" + optKey + "'' is set correctly", optVal, fluid.get(component.options, optKey));
-            });
-
+            jqUnit.assertTrue("The component from grade " + gradeName + " should be instantiable", component);
         } else {
             jqUnit.assertUndefined("The gradeName should not have been generated", gradeName);
             jqUnit.assertUndefined("The grade should not have been created", fluid.defaults(fluid.stringTemplate(funcArgs[0], {namespace: funcArgs[1]})));
@@ -61,21 +69,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "no gradeOptions",
                 sequence: [{
                     func: "fluid.tests.testGenerateGrade",
-                    args: [undefined, {}, ["fluid.tests.created", "%namespace.generateGradeNoGradeOptions", ["fluid.littleComponent"]]]
-                }]
-            }, {
-                expect: 5,
-                name: "no path",
-                sequence: [{
-                    func: "fluid.tests.testGenerateGrade",
-                    args: ["fluid.tests.created.generateGradeNoPath", {test: "test"}, ["fluid.tests.created", "%namespace.generateGradeNoPath", ["fluid.littleComponent"], {test: "test"}]]
+                    args: [undefined, {}, ["fluid.tests.created", "%namespace.generateGradeNoGradeOptions"]]
                 }]
             }, {
                 expect: 6,
-                name: "no path",
+                name: "complete",
                 sequence: [{
                     func: "fluid.tests.testGenerateGrade",
-                    args: ["fluid.tests.created.generateGradeWithPath", {test: {test: "test"}}, ["fluid.tests.created", "%namespace.generateGradeWithPath", ["fluid.littleComponent", "autoInit"], {test: "test"}, "test"]]
+                    args: ["fluid.tests.created.generateGradeWithPath", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}, ["fluid.tests.created", "%namespace.generateGradeWithPath", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}]]
                 }]
             }]
         }]
@@ -86,6 +87,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertUndefined("{that}.constructedGrades." + "grade should be undefined", that.constructedGrades[grade]);
             jqUnit.assertUndefined("No defaults for the " + grade + " grade should have been created", fluid.defaults(that.options.auxSchema.namespace + "." + grade));
         });
+    };
+
+    fluid.tests.testEnactors = function (that) {
+        var enactorsGradeName = that.constructedGrades.enactors;
+        var enactorDefaults = fluid.defaults(enactorsGradeName);
+        jqUnit.assertNotUndefined("{that}.constructedGrades.enactors should be defined", enactorsGradeName);
+        jqUnit.assertNotUndefined("The defaults for " + enactorsGradeName + " should be defined", enactorDefaults);
+        jqUnit.assertDeepEq("The options should be set correctly", that.options.auxSchema.enactors.members, enactorDefaults.components);
+    };
+
+    fluid.tests.testRootModel = function (that) {
+        var rootModelGradeName = that.constructedGrades.rootModel;
+        var rootModelDefaults = fluid.defaults(rootModelGradeName);
+        jqUnit.assertNotUndefined("{that}.constructedGrades.roodModel should be defined", rootModelGradeName);
+        jqUnit.assertNotUndefined("The defaults for " + rootModelGradeName + " should be defined", rootModelDefaults);
+        jqUnit.assertDeepEq("The members option should be set correctly", that.options.auxSchema.rootModel.members, rootModelDefaults.members);
+        jqUnit.assertDeepEq("The members option should be set correctly", that.options.auxSchema.rootModel.members, rootModelDefaults.grad);
     };
 
     fluid.tests.assembleAuxSchema = function (namespace, auxObjs) {
@@ -118,13 +136,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     };
 
+    fluid.defaults("fluid.tests.builderTestGrade", {
+        gradeNames: ["fluid.littleComponent"],
+        panelsTopOptions: {
+            gradeNames: ["fluid.littleComponent", "autoInit"]
+        },
+        enactorsTopOptions: {
+            gradeNames: ["fluid.littleComponent", "autoInit"]
+        }
+    });
+
     fluid.defaults("fluid.tests.builder", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             builderEmpty: {
                 type: "fluid.uiOptions.builder",
                 options: {
+                    gradeNames: ["fluid.tests.builderTestGrade"],
                     auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.empty", [fluid.tests.prefs])
+                }
+            },
+            builderEnactors: {
+                type: "fluid.uiOptions.builder",
+                options: {
+                    gradeNames: ["fluid.tests.builderTestGrade"],
+                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.enactorsOnly", [fluid.tests.prefs, fluid.tests.enactors])
                 }
             },
             builderTester: {
@@ -145,15 +181,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{builderEmpty}", ["enactors", "panels", "rootModel", "templateLoader"]]
                 }]
             }]
+        }, {
+            name: "fluid.uiOptions.builder - only enactors",
+            tests: [{
+                expect: 4,
+                name: "enactors",
+                sequence: [{
+                    func: "fluid.tests.assertDefaults",
+                    args: ["fluid.tests.created.enactorsOnly.enactors", "{builderEnactors}.options.auxSchema.enactors"]
+                }]
+            }, {
+                expect: 2,
+                name: "rootModel",
+                sequence: [{
+                    func: "fluid.tests.assertDefaults",
+                    args: ["fluid.tests.created.enactorsOnly.rootModel", "{builderEnactors}.options.auxSchema.rootModel"]
+                }]
+            },{
+                expect: 4,
+                name: "not created",
+                sequence: [{
+                    func: "fluid.tests.testNotCreated",
+                    args: ["{builderEnactors}", ["panels", "templateLoader"]]
+                }]
+            }]
         }]
     });
 
 //TODO: Tests to write
-// 1) Only Enactors
-// 2) Only Panels and templateLoader
-// 3) Only rootModel// 4) Only tempalteLoader
-// 4) Only messages
-// 5) Everything
+// 1) Only Panels
+// 2) Only messages
+// 3) Everything
 
     $(document).ready(function () {
         fluid.test.runTests([

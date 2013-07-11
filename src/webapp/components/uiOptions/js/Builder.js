@@ -31,47 +31,35 @@ var fluid_1_5 = fluid_1_5 || {};
                 enactors: {
                     expander: {
                         func: "fluid.uiOptions.builder.generateGrade",
-                        args: ["{that}.options.auxSchema.namespace", "%namespace.enactors", ["fluid.uiEnhancer"], "{that}.options.auxSchema.enactors", "components"]
+                        args: ["{that}.options.auxSchema.namespace", "%namespace.enactors", "{that}.options.auxSchema.enactors"]
                     }
                 },
                 panels: {
                     expander: {
                         func: "fluid.uiOptions.builder.generateGrade",
-                        args: ["{that}.options.auxSchema.namespace", "%namespace.panels", ["fluid.uiOptions"], "{that}.options.auxSchema.panels"]
+                        args: ["{that}.options.auxSchema.namespace", "%namespace.panels", "{that}.options.auxSchema.panels"]
                     }
                 },
                 rootModel: {
                     expander: {
                         func: "fluid.uiOptions.builder.generateGrade",
-                        args: ["{that}.options.auxSchema.namespace", "%namespace.rootModel", ["fluid.uiOptions.rootModel"], "{that}.options.auxSchema.rootModel", "members.rootModel"]
+                        args: ["{that}.options.auxSchema.namespace", "%namespace.rootModel", "{that}.options.auxSchema.rootModel"]
                     }
                 },
                 templateLoader: {
                     expander: {
                         func: "fluid.uiOptions.builder.generateGrade",
-                        args: ["{that}.options.auxSchema.namespace", "%namespace.templateLoader", ["fluid.uiOptions.templateLoader"], "{that}.options.auxSchema.templateLoader"]
+                        args: ["{that}.options.auxSchema.namespace", "%namespace.templateLoader", "{that}.options.auxSchema.templateLoader"]
                     }
                 }
             }
         }
     });
 
-    fluid.uiOptions.builder.generateGrade = function (namespace, gradeNameTemplate, baseGrades, gradeOptions, path) {
-        // fluid.registerNamespace(namespace);
+    fluid.uiOptions.builder.generateGrade = function (namespace, gradeNameTemplate, gradeOptions) {
         if (gradeOptions) {
             var gradeName = fluid.stringTemplate(gradeNameTemplate, {namespace: namespace});
-            var opts = {};
-
-            if (path) {
-                fluid.set(opts, path, gradeOptions);
-            } else {
-                opts = gradeOptions;
-            }
-
-            opts.gradeNames = fluid.makeArray(baseGrades);
-            if ($.inArray("autoInit", opts.gradeNames) < 0) {
-                opts.gradeNames.push("autoInit");
-            }
+            var opts = fluid.copy(gradeOptions);
 
             fluid.defaults(gradeName, opts); // creates the grade with name specified by gradeName
             return gradeName;
