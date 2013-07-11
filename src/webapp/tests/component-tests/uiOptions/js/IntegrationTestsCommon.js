@@ -55,8 +55,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "textFont",
             "contrast",
             "layoutControls",
-            "linksControls",
-            "eventBinder"
+            "linksControls"
         ],
         "fluid.uiOptions.fullNoPreview": [
             "textSize",
@@ -64,8 +63,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "textFont",
             "contrast",
             "layoutControls",
-            "linksControls",
-            "eventBinder"
+            "linksControls"
         ],
         "fluid.uiOptions.fullPreview": [
             "textSize",
@@ -74,8 +72,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "contrast",
             "layoutControls",
             "linksControls",
-            "preview",
-            "eventBinder"
+            "preview"
         ]
     };
 
