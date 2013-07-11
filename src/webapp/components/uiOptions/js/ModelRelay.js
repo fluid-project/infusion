@@ -29,30 +29,46 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.modelRelay", {
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
+        listenerNamespaces: [], // keep track of all the added listeners for removal at the destroy of this component
         mergePolicy: {
             sourceApplier: "nomerge"
         },
         listeners: {
-            onCreate: "{that}.addListeners"
+            onCreate: "{that}.addListeners",
+            onDestroy: "{that}.removeListeners"
         },
         invokers: {
             addListeners: {
                 funcName: "fluid.uiOptions.modelRelay.addListeners",
-                args: ["{that}.options.rules", "{that}.applier", "{that}.options.sourceApplier"]
+                args: ["{that}.options.rules", "{that}.applier", "{that}.options.sourceApplier", "{that}.options.listenerNamespaces"]
+            },
+            removeListeners: {
+                funcName: "fluid.uiOptions.modelRelay.removeListeners",
+                args: ["{that}.options.rules", "{that}.options.sourceApplier", "{that}.options.listenerNamespaces"]
             }
         },
         sourceApplier: null,  // must be supplied by implementors
-        rules: {}  // must be supplied by implementors in format: "externalModelKey": "internalModelKey"
+        rules: {}  // must be supplied by implementors, in format: "externalModelKey": "internalModelKey"
     });
 
-    fluid.uiOptions.modelRelay.addListeners = function (rules, applier, sourceApplier) {
+    fluid.uiOptions.modelRelay.removeListeners = function (rules, applier, namespaces) {
+        fluid.each(namespaces, function (namespace) {
+            applier.removeListener(namespace);
+        });
+    };
+
+    fluid.uiOptions.modelRelay.addListeners = function (rules, applier, sourceApplier, listenerNamespaces) {
         fluid.each(rules, function (internalKey, sourceKey) {
+            var uniqueNamespace = fluid.allocateGuid();
+
+            listenerNamespaces.push(uniqueNamespace);
+
             fluid.addSourceGuardedListener(applier, internalKey, sourceKey, function (newModel) {
                 fluid.fireSourcedChange(sourceApplier, sourceKey, fluid.get(newModel, internalKey), internalKey)
             });
             fluid.addSourceGuardedListener(sourceApplier, sourceKey, internalKey, function (newModel) {
                 fluid.fireSourcedChange(applier, internalKey, fluid.get(newModel, sourceKey), sourceKey);
-            });
+            }, undefined, uniqueNamespace);
         });
     };
 
