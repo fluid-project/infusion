@@ -363,8 +363,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 rootModel: {
                     members: {
-                        "contrast": "default",
-                        "tableOfContents": false
+                        rootModel: {
+                            "contrast": "default",
+                            "tableOfContents": false
+                        }
                     }
                 }
             }
@@ -503,7 +505,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 rootModel: {
                     members: {
-                        textSize: 1
+                        rootModel: {
+                            textSize: 1
+                        }
                     }
                 }
             },
@@ -532,7 +536,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 rootModel: {
                     members: {
-                        textSize: 1
+                        rootModel: {
+                            textSize: 1
+                        }
                     }
                 }
             },
@@ -592,7 +598,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 rootModel: {
                     members: {
-                        textSize: 1
+                        rootModel: {
+                            textSize: 1
+                        }
                     }
                 }
             }
