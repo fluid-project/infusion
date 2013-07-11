@@ -51,7 +51,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return fluid.get(root, pathRef.substring(1));
     };
 
-    fluid.uiOptions.expandSchemaComponents = function (auxSchema, type, index, commonTopOptions, commonOptions, schema) {
+    fluid.uiOptions.expandSchemaComponents = function (auxSchema, type, index, commonOptions, schema) {
         var components = {};
         var selectors = {};
         var templates = {};
@@ -115,7 +115,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
                 // Merge common options
                 if (commonOptions) {
-                    fluid.each(commonOptions, function (value, key){
+                    fluid.each(commonOptions, function (value, key) {
                         value = fluid.stringTemplate(value, {
                             prefKey: memberName
                         });
@@ -128,23 +128,22 @@ var fluid_1_5 = fluid_1_5 || {};
         });
 
         if (fluid.keys(components).length > 0) {
-            if (commonTopOptions) {
-                auxSchema[type] = commonTopOptions;
-            }
-            auxSchema[type] = $.extend(true, auxSchema[type] || {}, {
-                components: components,
-            });
+            auxSchema[type] = {
+                components: components
+            };
             if (fluid.keys(selectors).length > 0) {
                 auxSchema[type] = $.extend(true, auxSchema[type], {
-                    selectors: selectors,
+                    selectors: selectors
                 });
             }
         }
         if (fluid.keys(templates).length > 0) {
-            auxSchema.templates = $.extend(true, auxSchema.templates || {}, templates);
+            auxSchema.templateLoader = $.extend(true, auxSchema.templates || {}, {
+                templates: templates
+            });
         }
         if (fluid.keys(rootModel).length > 0) {
-            auxSchema["rootModel"] = rootModel;
+            auxSchema.rootModel = $.extend(true, auxSchema.rootModel || {}, rootModel);
         }
         return auxSchema;
     };
@@ -176,11 +175,25 @@ var fluid_1_5 = fluid_1_5 || {};
         return expandedSchema;
     };
 
-    fluid.uiOptions.expandSchema = function (schemaToExpand, defaultNamespace, enactorsIndex, enactorsTopOptions, commonEnactorOptions, panelsIndex, panelsTopOptions, commonPanelOptions, schema) {
+    fluid.uiOptions.expandSchema = function (schemaToExpand, defaultNamespace, indexes, topCommonOptions, elementCommonOptions, primarySchema) {
         var auxSchema = fluid.uiOptions.expandSchemaImpl(schemaToExpand);
         auxSchema.namespace = auxSchema.namespace || defaultNamespace;
-        fluid.uiOptions.expandSchemaComponents(auxSchema, "enactors", enactorsIndex, enactorsTopOptions, commonEnactorOptions, schema);
-        fluid.uiOptions.expandSchemaComponents(auxSchema, "panels", panelsIndex, panelsTopOptions, commonPanelOptions, schema);
+
+        var type = "panels";
+        fluid.uiOptions.expandSchemaComponents(auxSchema, type, fluid.get(indexes, type), fluid.get(elementCommonOptions, type), primarySchema);
+
+        type = "enactors";
+        fluid.uiOptions.expandSchemaComponents(auxSchema, type, fluid.get(indexes, type), fluid.get(elementCommonOptions, type), primarySchema);
+
+        // Add top common options
+        fluid.each(topCommonOptions, function (topOptions, type) {
+            var typeObject = fluid.get(auxSchema, type);
+
+            if (typeObject) {
+                auxSchema[type] = $.extend(true, typeObject, topOptions);
+            }
+        });
+
         return auxSchema;
     };
 
@@ -188,41 +201,53 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.uiOptions.primaryBuilder", "autoInit"],
         defaultNamespace: "fluid.uiOptions.create",
         mergePolicy: {
-            commonPanelOptions: "noexpand",
-            commonEnactorOptions: "noexpand"
+            elementCommonOptions: "noexpand"
         },
         auxiliarySchema: {},
-        panelsTopOptions: {
-            gradeNames: ["fluid.uiOptions", "autoInit"]
-        },
-        commonPanelOptions: {
-            "createOnEvent": "onUIOptionsMarkupReady",
-            "container": "{uiOptions}.dom.%prefKey",
-            "options.resources.template": "{templateLoader}.resources.%prefKey"
-        },
-        enactorsTopOptions: {
-            gradeNames: ["fluid.uiEnhancer", "autoInit"]
-        },
-        commonEnactorOptions: {
-            "container": "{uiEnhancer}.container",
-            "options.sourceApplier": "{uiEnhancer}.applier"
-        },
-        enactorsIndex: {
-            expander: {
-                func: "fluid.indexDefaults",
-                args: ["enactorsIndex", {
-                    gradeNames: "fluid.uiOptions.enactors",
-                    indexFunc: "fluid.uiOptions.auxBuilder.prefMapIndexer"
-                }]
+        topCommonOptions: {
+            panels: {
+                gradeNames: ["fluid.uiOptions", "autoInit"]    
+            },
+            enactors: {
+                gradeNames: ["fluid.uiEnhancer", "autoInit"]
+            },
+            templateLoader: {
+                gradeNames: ["fluid.uiOptions.templateLoader", "autoInit"]
+            },
+            rootModel: {
+                gradeNames: ["fluid.uiOptions.rootModel", "autoInit"]
             }
         },
-        panelsIndex: {
-            expander: {
-                func: "fluid.indexDefaults",
-                args: ["panelsIndex", {
-                    gradeNames: "fluid.uiOptions.panels",
-                    indexFunc: "fluid.uiOptions.auxBuilder.prefMapIndexer"
-                }]
+        elementCommonOptions: {
+            panels: {
+                "createOnEvent": "onUIOptionsMarkupReady",
+                "container": "{uiOptions}.dom.%prefKey",
+                "options.gradeNames": "fluid.uiOptions.defaultPanel",
+                "options.resources.template": "{templateLoader}.resources.%prefKey"
+            },
+            enactors: {
+                "container": "{uiEnhancer}.container",
+                "options.sourceApplier": "{uiEnhancer}.applier"
+            }
+        },
+        indexes: {
+            panels: {
+                expander: {
+                    func: "fluid.indexDefaults",
+                    args: ["panelsIndex", {
+                        gradeNames: "fluid.uiOptions.panels",
+                        indexFunc: "fluid.uiOptions.auxBuilder.prefMapIndexer"
+                    }]
+                }
+            },
+            enactors: {
+                expander: {
+                    func: "fluid.indexDefaults",
+                    args: ["enactorsIndex", {
+                        gradeNames: "fluid.uiOptions.enactors",
+                        indexFunc: "fluid.uiOptions.auxBuilder.prefMapIndexer"
+                    }]
+                }
             }
         },
         expandedAuxSchema: {
@@ -231,18 +256,12 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: [
                     "{that}.options.auxiliarySchema",
                     "{that}.options.defaultNamespace",
-                    "{that}.options.enactorsIndex",
-                    "{that}.options.enactorsTopOptions",
-                    "{that}.options.commonEnactorOptions",
-                    "{that}.options.panelsIndex",
-                    "{that}.options.panelsTopOptions",
-                    "{that}.options.commonPanelOptions",
+                    "{that}.options.indexes",
+                    "{that}.options.topCommonOptions",
+                    "{that}.options.elementCommonOptions",
                     "{that}.options.schema.properties"
                 ]
             }
-        },
-        listeners: {
-
         }
     });
 
