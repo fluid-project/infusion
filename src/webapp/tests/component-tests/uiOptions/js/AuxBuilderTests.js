@@ -410,10 +410,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.enactors = {
-        "namespace": fluid.tests.auxSchema.newNamespace,
         "enactors": [{
             "type": "fluid.uiOptions.enactors.textSize"
         }]
+    };
+
+    fluid.tests.auxSchema.namespace = {
+        "namespace": fluid.tests.auxSchema.newNamespace
+    };
+
+    fluid.tests.auxSchema.messages = {
+        "messages": {
+            "textFont": ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"],
+            "textFontLabel": "Text Style"
+        }
     };
 
     fluid.defaults("fluid.tests.auxBuilderTest", {
@@ -429,7 +439,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             auxbuilderOnlyEnactor: {
                 type: "fluid.uiOptions.auxBuilder",
                 options: {
-                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.prefs, fluid.tests.auxSchema.enactors),
+                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.prefs, fluid.tests.auxSchema.enactors, fluid.tests.auxSchema.namespace),
                     elementCommonOptions: fluid.tests.elementCommonOptions
                 }
             },
@@ -443,7 +453,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             auxbuilderAll: {
                 type: "fluid.uiOptions.auxBuilder",
                 options: {
-                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.prefs, fluid.tests.auxSchema.enactors, fluid.tests.auxSchema.panels),
+                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.prefs, fluid.tests.auxSchema.enactors, fluid.tests.auxSchema.panels, fluid.tests.auxSchema.namespace, fluid.tests.auxSchema.messages),
                     elementCommonOptions: fluid.tests.elementCommonOptions
                 }
             },
@@ -606,6 +616,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     members: {
                         rootModel: {
                             textSize: 1
+                        }
+                    }
+                },
+                messages: {
+                    gradeNames: ["fluid.littleComponent", "autoInit"],
+                    members: {
+                        "messages": {
+                            "textFont": ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"],
+                            "textFontLabel": "Text Style"
                         }
                     }
                 }

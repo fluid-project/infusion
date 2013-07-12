@@ -185,12 +185,18 @@ var fluid_1_5 = fluid_1_5 || {};
         type = "enactors";
         fluid.uiOptions.expandSchemaComponents(auxSchema, type, fluid.get(indexes, type), fluid.get(elementCommonOptions, type), primarySchema);
 
+        var messages = auxSchema["messages"];
+        delete auxSchema.messages;
+        if (messages) {
+            fluid.set(auxSchema, "messages.members.messages", messages);
+        }
+
         // Add top common options
         fluid.each(topCommonOptions, function (topOptions, type) {
             var typeObject = fluid.get(auxSchema, type);
 
             if (typeObject) {
-                auxSchema[type] = $.extend(true, typeObject, topOptions);
+                auxSchema[type] = $.extend(true, topOptions, typeObject);
             }
         });
 
@@ -216,6 +222,9 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             rootModel: {
                 gradeNames: ["fluid.uiOptions.rootModel", "autoInit"]
+            },
+            messages: {
+                gradeNames: ["fluid.littleComponent", "autoInit"]
             }
         },
         elementCommonOptions: {
