@@ -86,10 +86,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tests: [{
                 expect: 4,
                 name: "grade creation",
-                sequence: [{
-                    func: "fluid.tests.testDefaults",
-                    args: [{gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}, ["fluid.tests.created.defaults", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}]]
-                }]
+                func: "fluid.tests.testDefaults",
+                args: [{gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}, ["fluid.tests.created.defaults", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}]]
             }]
         }]
     });
@@ -110,17 +108,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tests: [{
                 expect: 2,
                 name: "no gradeOptions",
-                sequence: [{
-                    func: "fluid.tests.testGenerateGrade",
-                    args: [undefined, {}, ["fluid.tests.created", "%namespace.generateGradeNoGradeOptions"]]
-                }]
+                func: "fluid.tests.testGenerateGrade",
+                args: [undefined, {}, ["fluid.tests.created", "%namespace.generateGradeNoGradeOptions"]]
             }, {
                 expect: 6,
                 name: "complete",
-                sequence: [{
-                    func: "fluid.tests.testGenerateGrade",
-                    args: ["fluid.tests.created.generateGrade", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}, ["fluid.tests.created", "%namespace.generateGrade", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}]]
-                }]
+                func: "fluid.tests.testGenerateGrade",
+                args: ["fluid.tests.created.generateGrade", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}, ["fluid.tests.created", "%namespace.generateGrade", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}]]
             }]
         }]
     });
@@ -149,17 +143,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tests: [{
                 expect: 1,
                 name: "constructedGrade exists",
-                sequence: [{
-                    func: "fluid.tests.testAttach",
-                    args: ["{that}.options.testOptions.exists", [true, "{that}.options.testOptions.exists"]]
-                }]
+                func: "fluid.tests.testAttach",
+                args: ["{that}.options.testOptions.exists", [true, "{that}.options.testOptions.exists"]]
             }, {
                 expect: 1,
                 name: "constructedGrade doesn't exists",
-                sequence: [{
-                    func: "fluid.tests.testAttach",
-                    args: [undefined, [undefined, "{that}.options.testOptions.exists"]]
-                }]
+                func: "fluid.tests.testAttach",
+                args: [undefined, [undefined, "{that}.options.testOptions.exists"]]
             }]
         }]
     });
@@ -279,267 +269,195 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tests: [{
                 expect: 10,
                 name: "not created",
-                sequence: [{
-                    func: "fluid.tests.testNotCreated",
-                    args: ["{builderEmpty}", ["enactors", "messages", "panels", "rootModel", "templateLoader"]]
-                }]
+                func: "fluid.tests.testNotCreated",
+                args: ["{builderEmpty}", ["enactors", "messages", "panels", "rootModel", "templateLoader"]]
             }, {
                 expect: 1,
                 name: "consolidationGrades.enhancer",
-                sequence: [{
-                    func: "jqUnit.assertUndefined",
-                    args: ["The consolidationGrades.enhancer should be undefined", "{builderEmpty}.consolidationGrades.enhancer"]
-                }]
+                func: "jqUnit.assertUndefined",
+                args: ["The consolidationGrades.enhancer should be undefined", "{builderEmpty}.consolidationGrades.enhancer"]
             }, {
                 expect: 1,
                 name: "consolidationGrades.uiOptions",
-                sequence: [{
-                    func: "jqUnit.assertUndefined",
-                    args: ["The consolidationGrades.uiOptions should be undefined", "{builderEmpty}.consolidationGrades.uiOptions"]
-                }]
+                func: "jqUnit.assertUndefined",
+                args: ["The consolidationGrades.uiOptions should be undefined", "{builderEmpty}.consolidationGrades.uiOptions"]
             }, {
                 expect: 3,
                 name: "consolidated grade",
-                sequence: [{
-                    func: "fluid.tests.assertGradesNotPresent",
-                    args: ["{builderEmpty}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
-                }]
+                func: "fluid.tests.assertGradesNotPresent",
+                args: ["{builderEmpty}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
             }]
         }, {
             name: "fluid.uiOptions.builder - only enactors",
             tests: [{
                 expect: 4,
                 name: "enactors",
-                sequence: [{
-                    func: "fluid.tests.assertDefaults",
-                    args: ["{builderEnactors}.constructedGrades.enactors", "{builderEnactors}.options.auxSchema.enactors"]
-                }]
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderEnactors}.constructedGrades.enactors", "{builderEnactors}.options.auxSchema.enactors"]
             }, {
                 expect: 4,
                 name: "rootModel",
-                sequence: [{
-                    func: "fluid.tests.assertDefaults",
-                    args: ["{builderEnactors}.constructedGrades.rootModel", "{builderEnactors}.options.auxSchema.rootModel"]
-                }]
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderEnactors}.constructedGrades.rootModel", "{builderEnactors}.options.auxSchema.rootModel"]
             }, {
                 expect: 6,
                 name: "not created",
-                sequence: [{
-                    func: "fluid.tests.testNotCreated",
-                    args: ["{builderEnactors}", ["messages", "panels", "templateLoader"]]
-                }]
+                func: "fluid.tests.testNotCreated",
+                args: ["{builderEnactors}", ["messages", "panels", "templateLoader"]]
             }, {
                 expect: 1,
                 name: "consolidationGrades.enhancer",
-                sequence: [{
-                    func: "jqUnit.assertEquals",
-                    args: ["The consolidationGrades.enhancer should be set", "{builderTester}.options.testOptions.consolidationGrades.enhancer", "{builderEnactors}.consolidationGrades.enhancer"]
-                }]
+                func: "jqUnit.assertEquals",
+                args: ["The consolidationGrades.enhancer should be set", "{builderTester}.options.testOptions.consolidationGrades.enhancer", "{builderEnactors}.consolidationGrades.enhancer"]
             }, {
                 expect: 1,
                 name: "consolidationGrades.uiOptions",
-                sequence: [{
-                    func: "jqUnit.assertUndefined",
-                    args: ["The consolidationGrades.uiOptions should be undefined", "{builderEnactors}.consolidationGrades.uiOptions"]
-                }]
+                func: "jqUnit.assertUndefined",
+                args: ["The consolidationGrades.uiOptions should be undefined", "{builderEnactors}.consolidationGrades.uiOptions"]
             }, {
                 expect: 2,
                 name: "consolidated grade - gradeNames not added",
-                sequence: [{
-                    func: "fluid.tests.assertGradesNotPresent",
-                    args: ["{builderEnactors}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions"]]
-                }]
+                func: "fluid.tests.assertGradesNotPresent",
+                args: ["{builderEnactors}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions"]]
             }, {
                 expect: 2,
                 name: "consolidated grade - gradeNames added",
-                sequence: [{
-                    func: "fluid.tests.assertGradesPresent",
-                    args: ["{builderEnactors}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
-                }]
+                func: "fluid.tests.assertGradesPresent",
+                args: ["{builderEnactors}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
             }]
         }, {
             name: "fluid.uiOptions.builder - only panels",
             tests: [{
                 expect: 5,
                 name: "panels",
-                sequence: [{
-                    func: "fluid.tests.assertDefaults",
-                    args: ["{builderPanels}.constructedGrades.panels", "{builderPanels}.options.auxSchema.panels"]
-                }]
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderPanels}.constructedGrades.panels", "{builderPanels}.options.auxSchema.panels"]
             }, {
                 expect: 4,
                 name: "rootModel",
-                sequence: [{
-                    func: "fluid.tests.assertDefaults",
-                    args: ["{builderPanels}.constructedGrades.rootModel", "{builderPanels}.options.auxSchema.rootModel"]
-                }]
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderPanels}.constructedGrades.rootModel", "{builderPanels}.options.auxSchema.rootModel"]
             }, {
                 expect: 4,
                 name: "templateLoader",
-                sequence: [{
-                    func: "fluid.tests.assertDefaults",
-                    args: ["{builderPanels}.constructedGrades.templateLoader", "{builderPanels}.options.auxSchema.templateLoader"]
-                }]
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderPanels}.constructedGrades.templateLoader", "{builderPanels}.options.auxSchema.templateLoader"]
             }, {
                 expect: 4,
                 name: "not created",
-                sequence: [{
-                    func: "fluid.tests.testNotCreated",
-                    args: ["{builderPanels}", ["messages", "enactors"]]
-                }]
+                func: "fluid.tests.testNotCreated",
+                args: ["{builderPanels}", ["messages", "enactors"]]
             }, {
                 expect: 1,
                 name: "consolidationGrades.uiOptions",
-                sequence: [{
-                    func: "jqUnit.assertEquals",
-                    args: ["The consolidationGrades.uiOptions should be set", "{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderPanels}.consolidationGrades.uiOptions"]
-                }]
+                func: "jqUnit.assertEquals",
+                args: ["The consolidationGrades.uiOptions should be set", "{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderPanels}.consolidationGrades.uiOptions"]
             }, {
                 expect: 1,
                 name: "consolidationGrades.enhancer",
-                sequence: [{
-                    func: "jqUnit.assertUndefined",
-                    args: ["The consolidationGrades.enhancer should be undefined", "{builderPanels}.consolidationGrades.enhancer"]
-                }]
+                func: "jqUnit.assertUndefined",
+                args: ["The consolidationGrades.enhancer should be undefined", "{builderPanels}.consolidationGrades.enhancer"]
             }, {
                 expect: 2,
                 name: "consolidated grade - gradeNames not added",
-                sequence: [{
-                    func: "fluid.tests.assertGradesNotPresent",
-                    args: ["{builderPanels}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
-                }]
+                func: "fluid.tests.assertGradesNotPresent",
+                args: ["{builderPanels}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
             }, {
                 expect: 2,
                 name: "consolidated grade - gradeNames added",
-                sequence: [{
-                    func: "fluid.tests.assertGradesPresent",
-                    args: ["{builderPanels}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions"]]
-                }]
+                func: "fluid.tests.assertGradesPresent",
+                args: ["{builderPanels}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions"]]
             }]
         }, {
             name: "fluid.uiOptions.builder - panels & messages",
             tests: [{
                 expect: 5,
                 name: "panels",
-                sequence: [{
-                    func: "fluid.tests.assertDefaults",
-                    args: ["{builderPanelsAndMessages}.constructedGrades.panels", "{builderPanelsAndMessages}.options.auxSchema.panels"]
-                }]
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderPanelsAndMessages}.constructedGrades.panels", "{builderPanelsAndMessages}.options.auxSchema.panels"]
             }, {
                 expect: 4,
                 name: "messages",
-                sequence: [{
-                    func: "fluid.tests.assertDefaults",
-                    args: ["{builderPanelsAndMessages}.constructedGrades.messages", "{builderPanelsAndMessages}.options.auxSchema.messages"]
-                }]
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderPanelsAndMessages}.constructedGrades.messages", "{builderPanelsAndMessages}.options.auxSchema.messages"]
             }, {
                 expect: 4,
                 name: "rootModel",
-                sequence: [{
-                    func: "fluid.tests.assertDefaults",
-                    args: ["{builderPanelsAndMessages}.constructedGrades.rootModel", "{builderPanelsAndMessages}.options.auxSchema.rootModel"]
-                }]
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderPanelsAndMessages}.constructedGrades.rootModel", "{builderPanelsAndMessages}.options.auxSchema.rootModel"]
             }, {
                 expect: 4,
                 name: "templateLoader",
-                sequence: [{
-                    func: "fluid.tests.assertDefaults",
-                    args: ["{builderPanelsAndMessages}.constructedGrades.templateLoader", "{builderPanelsAndMessages}.options.auxSchema.templateLoader"]
-                }]
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderPanelsAndMessages}.constructedGrades.templateLoader", "{builderPanelsAndMessages}.options.auxSchema.templateLoader"]
             }, {
                 expect: 2,
                 name: "not created",
-                sequence: [{
-                    func: "fluid.tests.testNotCreated",
-                    args: ["{builderPanelsAndMessages}", ["enactors"]]
-                }]
+                func: "fluid.tests.testNotCreated",
+                args: ["{builderPanelsAndMessages}", ["enactors"]]
             }, {
                 expect: 1,
                 name: "consolidationGrades.uiOptions",
-                sequence: [{
-                    func: "jqUnit.assertEquals",
-                    args: ["The consolidationGrades.uiOptions should be set", "{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderPanelsAndMessages}.consolidationGrades.uiOptions"]
-                }]
+                func: "jqUnit.assertEquals",
+                args: ["The consolidationGrades.uiOptions should be set", "{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderPanelsAndMessages}.consolidationGrades.uiOptions"]
             }, {
                 expect: 1,
                 name: "consolidationGrades.enhancer",
-                sequence: [{
-                    func: "jqUnit.assertUndefined",
-                    args: ["The consolidationGrades.enhancer should be undefined", "{builderPanelsAndMessages}.consolidationGrades.enhancer"]
-                }]
+                func: "jqUnit.assertUndefined",
+                args: ["The consolidationGrades.enhancer should be undefined", "{builderPanelsAndMessages}.consolidationGrades.enhancer"]
             }, {
                 expect: 2,
                 name: "consolidated grade - gradeNames not added",
-                sequence: [{
-                    func: "fluid.tests.assertGradesNotPresent",
-                    args: ["{builderPanelsAndMessages}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
-                }]
+                func: "fluid.tests.assertGradesNotPresent",
+                args: ["{builderPanelsAndMessages}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
             }, {
                 expect: 2,
                 name: "consolidated grade - gradeNames added",
-                sequence: [{
-                    func: "fluid.tests.assertGradesPresent",
-                    args: ["{builderPanelsAndMessages}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions"]]
-                }]
+                func: "fluid.tests.assertGradesPresent",
+                args: ["{builderPanelsAndMessages}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions"]]
             }]
         }, {
             name: "fluid.uiOptions.builder - all",
             tests: [{
                 expect: 5,
                 name: "panels",
-                sequence: [{
-                    func: "fluid.tests.assertDefaults",
-                    args: ["{builderAll}.constructedGrades.panels", "{builderAll}.options.auxSchema.panels"]
-                }]
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderAll}.constructedGrades.panels", "{builderAll}.options.auxSchema.panels"]
             }, {
                 expect: 4,
                 name: "messages",
-                sequence: [{
-                    func: "fluid.tests.assertDefaults",
-                    args: ["{builderAll}.constructedGrades.messages", "{builderAll}.options.auxSchema.messages"]
-                }]
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderAll}.constructedGrades.messages", "{builderAll}.options.auxSchema.messages"]
             }, {
                 expect: 4,
                 name: "enactors",
-                sequence: [{
-                    func: "fluid.tests.assertDefaults",
-                    args: ["{builderAll}.constructedGrades.enactors", "{builderAll}.options.auxSchema.enactors"]
-                }]
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderAll}.constructedGrades.enactors", "{builderAll}.options.auxSchema.enactors"]
             }, {
                 expect: 4,
                 name: "rootModel",
-                sequence: [{
-                    func: "fluid.tests.assertDefaults",
-                    args: ["{builderAll}.constructedGrades.rootModel", "{builderAll}.options.auxSchema.rootModel"]
-                }]
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderAll}.constructedGrades.rootModel", "{builderAll}.options.auxSchema.rootModel"]
             }, {
                 expect: 4,
                 name: "templateLoader",
-                sequence: [{
-                    func: "fluid.tests.assertDefaults",
-                    args: ["{builderAll}.constructedGrades.templateLoader", "{builderAll}.options.auxSchema.templateLoader"]
-                }]
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderAll}.constructedGrades.templateLoader", "{builderAll}.options.auxSchema.templateLoader"]
             }, {
                 expect: 1,
                 name: "consolidationGrades.uiOptions",
-                sequence: [{
-                    func: "jqUnit.assertEquals",
-                    args: ["The consolidationGrades.uiOptions should be set", "{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderAll}.consolidationGrades.uiOptions"]
-                }]
+                func: "jqUnit.assertEquals",
+                args: ["The consolidationGrades.uiOptions should be set", "{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderAll}.consolidationGrades.uiOptions"]
             }, {
                 expect: 1,
                 name: "consolidationGrades.enhancer",
-                sequence: [{
-                    func: "jqUnit.assertEquals",
-                    args: ["The consolidationGrades.enhancer should be set", "{builderTester}.options.testOptions.consolidationGrades.enhancer", "{builderAll}.consolidationGrades.enhancer"]
-                }]
+                func: "jqUnit.assertEquals",
+                args: ["The consolidationGrades.enhancer should be set", "{builderTester}.options.testOptions.consolidationGrades.enhancer", "{builderAll}.consolidationGrades.enhancer"]
             }, {
                 expect: 3,
                 name: "consolidated grade",
-                sequence: [{
-                    func: "fluid.tests.assertGradesPresent",
-                    args: ["{builderAll}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
-                }]
+                func: "fluid.tests.assertGradesPresent",
+                args: ["{builderAll}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
             }]
         }]
     });
