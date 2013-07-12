@@ -39,7 +39,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.uiOptions.auxSchema", "autoInit"],
         auxiliarySchema: {
             "namespace": "fluid.uiOptions.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
-            "templatePrefix": "../html",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            "templatePrefix": "../../../components/uiOptions/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
             "textSize": {
                 "type": "fluid.uiOptions.textSize"
             },
@@ -106,30 +106,24 @@ var fluid_1_5 = fluid_1_5 || {};
             }],
             "panels": [{
                 "type": "fluid.uiOptions.panels.textSize",
-                "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
-                "template": "templates/textSize"  // optional
+                "container": ".flc-uiOptions-text-size"  // the css selector in the template where the panel is rendered
             }, {
                 "type": "fluid.uiOptions.panels.lineSpace",
-                "container": ".flc-uiOptions-line-space",  // the css selector in the template where the panel is rendered
-                "template": "templates/lineSpace"  // optional
+                "container": ".flc-uiOptions-line-space"  // the css selector in the template where the panel is rendered
             }, {
                 "type": "fluid.uiOptions.panels.textFont",
                 "container": ".flc-uiOptions-text-font",  // the css selector in the template where the panel is rendered
-                "classnameMap": "@textFont.classes",
-                "template": "templates/textFont"  // optional
+                "classnameMap": "@textFont.classes"
             }, {
                 "type": "fluid.uiOptions.panels.contrast",
                 "container": ".flc-uiOptions-contrast",  // the css selector in the template where the panel is rendered
-                "classnameMap": "@contrast.classes",
-                "template": "templates/contrast"  // optional
+                "classnameMap": "@contrast.classes"
             }, {
                 "type": "fluid.uiOptions.panels.layoutControls",
-                "container": ".flc-uiOptions-layout-controls",  // the css selector in the template where the panel is rendered
-                "template": "templates/tableOfContents"  // optional
+                "container": ".flc-uiOptions-layout-controls"  // the css selector in the template where the panel is rendered
             }, {
                 "type": "fluid.uiOptions.panels.linksControls",
-                "container": ".flc-uiOptions-links-controls",  // the css selector in the template where the panel is rendered
-                "template": "templates/linksControls"  // optional
+                "container": ".flc-uiOptions-links-controls"  // the css selector in the template where the panel is rendered
             }]
         }
     });
