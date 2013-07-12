@@ -82,47 +82,67 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
-    /***********************************************
-     * fluid.uiOptions.builder.generateGrade tests *
-     ***********************************************/
+    /************************************************
+     * fluid.uiOptions.builder.generateGrades tests *
+     ************************************************/
 
-     fluid.tests.testGenerateGrade = function (expectedGradeName, expectedOpts, funcArgs) {
-         var gradeName = fluid.invokeGlobalFunction("fluid.uiOptions.builder.generateGrade", funcArgs);
+    fluid.tests.testGenerateGrades = function (expected, funcArgs) {
+        var gradeNames = fluid.invokeGlobalFunction("fluid.uiOptions.builder.generateGrades", funcArgs);
 
-         if (expectedGradeName) {
-             jqUnit.assertEquals("The grade name should be generated correctly", expectedGradeName, gradeName);
-             fluid.tests.assertDefaults(expectedGradeName, expectedOpts);
-             var component = fluid.invokeGlobalFunction(gradeName, []);
-             jqUnit.assertTrue("The component from grade " + gradeName + " should be instantiable", component);
-         } else {
-             jqUnit.assertUndefined("The gradeName should not have been generated", gradeName);
-             jqUnit.assertUndefined("The grade should not have been created", fluid.defaults(fluid.stringTemplate(funcArgs[0], {namespace: funcArgs[1]})));
-         }
-     };
+        fluid.each(expected, function (expectValues, category) {
+            var actualGradeName = gradeNames[category];
+            var eOpts = expectValues.options;
+            var eGradeName = expectValues.gradeName;
+            if (eOpts) {
+                jqUnit.assertEquals("The grade name should be generated correctly", eGradeName, actualGradeName);
+                fluid.tests.assertDefaults(eGradeName, eOpts);
+                var component = fluid.invokeGlobalFunction(eGradeName, []);
+                jqUnit.assertTrue("The component from grade " + eGradeName + " should be instantiable", component);
+            } else {
+                jqUnit.assertUndefined("The gradeName should not have been generated", gradeNames[eGradeName]);
+            }
+        });
+    };
 
-    fluid.defaults("fluid.tests.generateGradeName", {
+    fluid.defaults("fluid.tests.generateGrades", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            generateGradeTester: {
-                type: "fluid.tests.generateGradeTester"
+            generateGradesTester: {
+                type: "fluid.tests.generateGradesTester"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.generateGradeTester", {
+    fluid.defaults("fluid.tests.generateGradesTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        testOptions: {
+            mockAuxSchema: {
+                namespace: "fluid.tests.created.generateGrade",
+                sample: {
+                    gradeNames: ["fluid.littleComponent", "autoInit"],
+                    testOpt: "testOpt"
+                }
+            },
+            expected: {
+                sample: {
+                    gradeName: "fluid.tests.created.generateGrade.sample",
+                    options: {
+                        gradeNames: ["fluid.littleComponent", "autoInit"],
+                        testOpt: "testOpt"
+                    }
+                },
+                missing: {
+                    gradeName: "fluid.tests.created.generateGrade.missing"
+                }
+            }
+        },
         modules: [{
             name: "fluid.uiOptions.builder.generateGrade",
             tests: [{
-                expect: 2,
-                name: "no gradeOptions",
-                func: "fluid.tests.testGenerateGrade",
-                args: [undefined, {}, ["fluid.tests.created", "%namespace.generateGradeNoGradeOptions"]]
-            }, {
-                expect: 6,
-                name: "complete",
-                func: "fluid.tests.testGenerateGrade",
-                args: ["fluid.tests.created.generateGrade", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}, ["fluid.tests.created", "%namespace.generateGrade", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}]]
+                expect: 7,
+                name: "generate grades",
+                func: "fluid.tests.testGenerateGrades",
+                args: ["{that}.options.testOptions.expected", ["{that}.options.testOptions.mockAuxSchema", ["sample", "missing"]]]
             }]
         }]
     });
@@ -485,7 +505,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         fluid.test.runTests([
             "fluid.tests.defaults",
-            "fluid.tests.generateGradeName",
+            "fluid.tests.generateGrades",
             "fluid.tests.attach",
             "fluid.tests.builder"
         ]);
