@@ -19,37 +19,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     /************************************************************************************
-     * Unit tests for uioMsgBundle, a global message holder for fluid.uiOptions.messages
+     * Unit tests for fluid.uiOptions.messages, an UIO message holder grade component
      ************************************************************************************/
 
-    fluid.defaults("fluid.tests.uioMsgBundleInstance", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        strings: {
-            textFont: "{uioMsgBundle}.options.messageBase.textFont",
-            multiplier: "{uioMsgBundle}.options.messageBase.multiplier"
-        },
-        parentBundle: "{uioMsgBundle}"
+    fluid.tests.newTextFontLabel = "A test text style";
+
+    fluid.defaults("fluid.tests.messagesInstance", {
+        gradeNames: ["fluid.uiOptions.messages", "autoInit"],
+            members: {
+                messages: {
+                    textFontLabel: fluid.tests.newTextFontLabel
+                }
+            }
     });
 
-    fluid.defaults("fluid.tests.uioMsgBundleTests", {
+    fluid.defaults("fluid.tests.messagesTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             messenger: {
-                type: "fluid.tests.uioMsgBundleInstance"
+                type: "fluid.tests.messagesInstance"
             },
             styleElementsTester: {
-                type: "fluid.tests.uioMsgBundleTester"
+                type: "fluid.tests.messagesTester"
             }
         }
     });
     
-    fluid.tests.testUioMsgBundle = function (messenger, expectedNumOfTextFont, expectedFirstTextFontValue, expectedMultiplierValue) {
-        jqUnit.assertEquals("There are " + expectedNumOfTextFont + " values in the text font message", expectedNumOfTextFont, messenger.options.strings.textFont.length);
-        jqUnit.assertEquals("The first value in the text font message is " + expectedFirstTextFontValue, expectedFirstTextFontValue, messenger.options.strings.textFont[0]);
-        jqUnit.assertEquals("The value of the multiplier message is " + expectedMultiplierValue, expectedMultiplierValue, messenger.options.strings.multiplier);
+    fluid.tests.testMessages = function (messenger, expectedNumOfTextFont, expectedFirstTextFontValue, expectedMultiplierValue) {
+        jqUnit.assertEquals("There are " + expectedNumOfTextFont + " values in the text font message", expectedNumOfTextFont, messenger.messages.textFont.length);
+        jqUnit.assertEquals("The first value in the text font message is " + expectedFirstTextFontValue, expectedFirstTextFontValue, messenger.messages.textFont[0]);
+        jqUnit.assertEquals("The value of the multiplier message is " + expectedMultiplierValue, expectedMultiplierValue, messenger.messages.multiplier);
+        jqUnit.assertEquals("The value of the text font label is overwritten with the new value " + fluid.tests.newTextFontLabel, fluid.tests.newTextFontLabel, messenger.messages.textFontLabel);
     };
     
-    fluid.defaults("fluid.tests.uioMsgBundleTester", {
+    fluid.defaults("fluid.tests.messagesTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
             expectedNumOfTextFont: 5,
@@ -59,21 +62,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test style element component",
             tests: [{
-                expect: 3,
+                expect: 4,
                 name: "Validate the default array and string messages",
                 type: "test",
-                func: "fluid.tests.testUioMsgBundle",
+                func: "fluid.tests.testMessages",
                 args: ["{messenger}", "{that}.options.testOptions.expectedNumOfTextFont", "{that}.options.testOptions.expectedFirstTextFontValue", "{that}.options.testOptions.expectedMultiplierValue"]
             }]
         }]
     });
 
     /*******************************************************************************************
-     * Integration test to make sure uioMsgBundle messenger works well with renderer components
+     * Integration test to make sure messages grade works well with renderer components
      *******************************************************************************************/
 
-    fluid.defaults("fluid.tests.uioMsgBundleRendererComponent", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"],
+    fluid.defaults("fluid.tests.messagesRendererComponent", {
+        gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.messages", "autoInit"],
         selectors: {
             multiplier: ".flc-multiplier"
         },
@@ -81,18 +84,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             multiplier: {messagekey: "multiplier"}
         },
         strings: {},
-        parentBundle: "{uioMsgBundle}"
+        parentBundle: {
+            expander: {
+                funcName: "fluid.messageResolver",
+                args: [{messageBase: "{that}.messages"}]
+            }
+        }
     });
     
-    fluid.defaults("fluid.tests.uioMsgBundleRendererTests", {
+    fluid.defaults("fluid.tests.messagesRendererTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            uioMsgBundleRenderer: {
-                type: "fluid.tests.uioMsgBundleRendererComponent",
+            messagesRenderer: {
+                type: "fluid.tests.messagesRendererComponent",
                 container: "#flc-renderer-test"
             },
-            uioMsgBundleRendererTester: {
-                type: "fluid.tests.uioMsgBundleRendererTester"
+            messagesRendererTester: {
+                type: "fluid.tests.messagesRendererTester"
             }
         }
     });
@@ -104,23 +112,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
     };
     
-    fluid.defaults("fluid.tests.uioMsgBundleRendererTester", {
+    fluid.defaults("fluid.tests.messagesRendererTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
             expectedValue: "times"
         },
         modules: [{
-            name: "Test the global bundled messenger with a renderer component",
+            name: "Test the messenger with a renderer component",
             tests: [{
                 expect: 1,
-                name: "Test the rendering of the message from the global bundle",
+                name: "Test the rendering of the message",
                 sequence: [{
-                    func: "{uioMsgBundleRenderer}.refreshView"
+                    func: "{messagesRenderer}.refreshView"
                 }, {
                     listenerMaker: "fluid.tests.testRendering",
-                    makerArgs: ["{uioMsgBundleRenderer}", "{that}.options.testOptions.expectedValue"],
+                    makerArgs: ["{messagesRenderer}", "{that}.options.testOptions.expectedValue"],
                     spec: {priority: "last"},
-                    event: "{uioMsgBundleRenderer}.events.afterRender"
+                    event: "{messagesRenderer}.events.afterRender"
                 }]
             }]
         }]
@@ -128,8 +136,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.tests.uioMsgBundleTests",
-            "fluid.tests.uioMsgBundleRendererTests"
+            "fluid.tests.messagesTests",
+            "fluid.tests.messagesRendererTests"
         ]);
     });
 

@@ -58,7 +58,9 @@ var fluid_1_5 = fluid_1_5 || {};
             slidingPanel: {
                 type: "fluid.slidingPanel",
                 container: "{fatPanel}.container",
+                createOnEvent: "afterRender",
                 options: {
+                    messages: "{fluid.uiOptions.inline}.messages",
                     invokers: {
                         operateShow: {
                             funcName: "fluid.uiOptions.fatPanel.showPanel"
@@ -67,8 +69,7 @@ var fluid_1_5 = fluid_1_5 || {};
                             funcName: "fluid.uiOptions.fatPanel.hidePanel"
                         } 
                     }
-                },
-                createOnEvent: "afterRender"
+                }
             },
             iframeRenderer: {
                 type: "fluid.uiOptions.fatPanel.renderIframe",
@@ -118,8 +119,7 @@ var fluid_1_5 = fluid_1_5 || {};
             source: "{that}.options.outerEnhancerOptions",
             removeSource: true,
             target: "{that iframeEnhancer}.options"
-        }, 
-        {
+        }, {
             source: "{that}.options.prefix",
             target: "{that > iframeRenderer}.options.prefix"
         }]

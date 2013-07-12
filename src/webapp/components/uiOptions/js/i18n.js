@@ -19,53 +19,51 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function (fluid) {
 
-    fluid.registerNamespace("fluid.uiOptions");
+    fluid.defaults("fluid.uiOptions.messages", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+            messages: {
+                // UI Options Text Font Settings Panel
+                // Note: if you modify these, you need to update the appropriate
+                // controlValues in fluid.uiOptions.panels.textFont component options.
+                textFont: ["Default", "Times New Roman", "Comic Sans", "Arial",
+                    "Verdana"],
+                textFontLabel: "Text Style",
 
-    fluid.uiOptions.messages = {
+                // UI Options Contrast Settings Panel
+                // Note: if you modify these, you need to update the appropriate
+                // controlValues in fluid.uiOptions.panels.contrast component options.
+                theme: ["Default", "Black on white", "White on black", "Black on yellow",
+                    "Yellow on black"],
+                contrastLabel: "Colour & Contrast",
 
-        // UI Options Text Font Settings Panel
-        // Note: if you modify these, you need to update the appropriate
-        // controlValues in fluid.uiOptions.panels.textFont component options.
-        textFont: ["Default", "Times New Roman", "Comic Sans", "Arial",
-            "Verdana"],
-        textFontLabel: "Text Style",
+                // Table of Contents Settings Panel
+                tocLabel: "Table of Contents",
+                tocChoiceLabel: "Add a table of contents",
 
-        // UI Options Contrast Settings Panel
-        // Note: if you modify these, you need to update the appropriate
-        // controlValues in fluid.uiOptions.panels.contrast component options.
-        theme: ["Default", "Black on white", "White on black", "Black on yellow",
-            "Yellow on black"],
-        contrastLabel: "Colour & Contrast",
+                // Line spacing
+                lineSpaceLabel: "Line Spacing",
+                lineSpaceNarrowIcon: "icon of 3 horizontal lines with narrow spacing",
+                lineSpaceWideIcon: "icon of 3 horizontal lines with wide spacing",
 
-        // Table of Contents Settings Panel
-        tocLabel: "Table of Contents",
-        tocChoiceLabel: "Add a table of contents",
+                // Links and Buttons
+                linksLabel: "Links & buttons",
+                linksChoiceLabel: "Underline and bold",
+                inputsChoiceLabel: "Enlarge buttons, menus, text-fields, and other inputs",
 
-        // Line spacing
-        lineSpaceLabel: "Line Spacing",
-        lineSpaceNarrowIcon: "icon of 3 horizontal lines with narrow spacing",
-        lineSpaceWideIcon: "icon of 3 horizontal lines with wide spacing",
+                // Text Size
+                textSizeLabel: "Text Size",
+                textSizeSmallIcon: "icon of a small capital letter 'A'",
+                textSizeLargeIcon: "icon of a large capital letter 'A'",
 
-        // Links and Buttons
-        linksLabel: "Links & buttons",
-        linksChoiceLabel: "Underline and bold",
-        inputsChoiceLabel: "Enlarge buttons, menus, text-fields, and other inputs",
-
-        // Text Size
-        textSizeLabel: "Text Size",
-        textSizeSmallIcon: "icon of a small capital letter 'A'",
-        textSizeLargeIcon: "icon of a large capital letter 'A'",
-
-        // Shared
-        multiplier: "times",
-        
-        // Sliding Panel
-        slidingPanelShowText: "+ Show Display Preferences",
-        slidingPanelHideText: "- Hide"        
-    };
-
-    fluid.staticEnvironment.uioMsgBundle = fluid.messageResolver({
-        messageBase: fluid.uiOptions.messages
+                // Shared
+                multiplier: "times",
+                
+                // Sliding Panel
+                slidingPanelShowText: "+ Show Display Preferences",
+                slidingPanelHideText: "- Hide"        
+            }
+        }
     });
 
 })(fluid_1_5);
