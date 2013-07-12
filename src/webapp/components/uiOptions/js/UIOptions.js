@@ -33,7 +33,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.uiOptions.inline", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.messages", "autoInit"],
         components: {
             uiOptionsLoader: {
                 type: "fluid.uiOptions.loader"

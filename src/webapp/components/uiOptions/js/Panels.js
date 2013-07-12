@@ -30,7 +30,12 @@ var fluid_1_5 = fluid_1_5 || {};
             refreshView: "{that}.renderer.refreshView"
         },
         strings: {},
-        parentBundle: "{uioMsgBundle}"
+        parentBundle: {
+            expander: {
+                funcName: "fluid.messageResolver",
+                args: [{messageBase: "{fluid.uiOptions.inline}.messages"}]
+            }
+        }
     });
 
     /********************************
@@ -120,7 +125,7 @@ var fluid_1_5 = fluid_1_5 || {};
             label: ".flc-uiOptions-text-font-label"
         },
         strings: {
-            textFont: "{uioMsgBundle}.options.messageBase.textFont"
+            textFont: "{that}.options.parentBundle.messageBase.textFont"
         },
         produceTree: "fluid.uiOptions.panels.textFont.produceTree",
         classnameMap: null, // must be supplied by implementors
@@ -222,7 +227,7 @@ var fluid_1_5 = fluid_1_5 || {};
             label: ".flc-uiOptions-contrast-label"
         },
         strings: {
-            theme: "{uioMsgBundle}.options.messageBase.theme"
+            theme: "{that}.options.parentBundle.messageBase.theme"
         },
         repeatingSelectors: ["themeRow"],
         produceTree: "fluid.uiOptions.panels.contrast.produceTree",
