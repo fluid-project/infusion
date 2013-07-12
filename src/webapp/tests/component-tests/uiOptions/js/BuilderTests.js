@@ -51,23 +51,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
+    /******************************************
+     * fluid.uiOptions.builder.defaults tests *
+     ******************************************/
+
     fluid.tests.testDefaults = function (expectedOpts, funcArgs) {
         var gradeName = fluid.invokeGlobalFunction("fluid.uiOptions.builder.defaults", funcArgs);
         fluid.tests.assertDefaults(gradeName, expectedOpts);
-    };
-
-    fluid.tests.testGenerateGrade = function (expectedGradeName, expectedOpts, funcArgs) {
-        var gradeName = fluid.invokeGlobalFunction("fluid.uiOptions.builder.generateGrade", funcArgs);
-
-        if (expectedGradeName) {
-            jqUnit.assertEquals("The grade name should be generated correctly", expectedGradeName, gradeName);
-            fluid.tests.assertDefaults(expectedGradeName, expectedOpts);
-            var component = fluid.invokeGlobalFunction(gradeName, []);
-            jqUnit.assertTrue("The component from grade " + gradeName + " should be instantiable", component);
-        } else {
-            jqUnit.assertUndefined("The gradeName should not have been generated", gradeName);
-            jqUnit.assertUndefined("The grade should not have been created", fluid.defaults(fluid.stringTemplate(funcArgs[0], {namespace: funcArgs[1]})));
-        }
     };
 
     fluid.defaults("fluid.tests.defaults", {
@@ -91,6 +81,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         }]
     });
+
+    /***********************************************
+     * fluid.uiOptions.builder.generateGrade tests *
+     ***********************************************/
+
+     fluid.tests.testGenerateGrade = function (expectedGradeName, expectedOpts, funcArgs) {
+         var gradeName = fluid.invokeGlobalFunction("fluid.uiOptions.builder.generateGrade", funcArgs);
+
+         if (expectedGradeName) {
+             jqUnit.assertEquals("The grade name should be generated correctly", expectedGradeName, gradeName);
+             fluid.tests.assertDefaults(expectedGradeName, expectedOpts);
+             var component = fluid.invokeGlobalFunction(gradeName, []);
+             jqUnit.assertTrue("The component from grade " + gradeName + " should be instantiable", component);
+         } else {
+             jqUnit.assertUndefined("The gradeName should not have been generated", gradeName);
+             jqUnit.assertUndefined("The grade should not have been created", fluid.defaults(fluid.stringTemplate(funcArgs[0], {namespace: funcArgs[1]})));
+         }
+     };
 
     fluid.defaults("fluid.tests.generateGradeName", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
@@ -118,6 +126,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         }]
     });
+
+    /****************************************
+     * fluid.uiOptions.builder.attach tests *
+     ****************************************/
 
     fluid.tests.testAttach = function (expected, funcArgs) {
         var actual = fluid.invokeGlobalFunction("fluid.uiOptions.builder.attach", funcArgs);
@@ -153,6 +165,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         }]
     });
+
+    /**********************************
+     * fluid.uiOptions.builder. tests *
+     **********************************/
 
     fluid.tests.testNotCreated = function (that, grades) {
         fluid.each(grades, function (grade) {
@@ -461,6 +477,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         }]
     });
+
+    /***********************
+     * Test Initialization *
+     ***********************/
 
     $(document).ready(function () {
         fluid.test.runTests([
