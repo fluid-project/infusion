@@ -148,6 +148,14 @@ var fluid_1_5 = fluid_1_5 || {};
         return auxSchema;
     };
 
+    fluid.uiOptions.expandSchemaDirectOption = function(auxSchema, type, targetPath) {
+        var value = auxSchema[type];
+        if (value) {
+            delete auxSchema[type];
+            fluid.set(auxSchema, targetPath, value);
+        }
+    };
+
     /**
      * Expands a all "@" path references from an auxiliary schema.
      * Note that you cannot chain "@" paths.
@@ -185,11 +193,11 @@ var fluid_1_5 = fluid_1_5 || {};
         type = "enactors";
         fluid.uiOptions.expandSchemaComponents(auxSchema, type, fluid.get(indexes, type), fluid.get(elementCommonOptions, type), primarySchema);
 
-        var messages = auxSchema["messages"];
-        delete auxSchema.messages;
-        if (messages) {
-            fluid.set(auxSchema, "messages.members.messages", messages);
-        }
+        type = "messages";
+        fluid.uiOptions.expandSchemaDirectOption(auxSchema, type, "messages.members.messages");
+
+        type = "templatePrefix"
+        fluid.uiOptions.expandSchemaDirectOption(auxSchema, type, "templatePrefix.prefix");
 
         // Add top common options
         fluid.each(topCommonOptions, function (topOptions, type) {
@@ -224,6 +232,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 gradeNames: ["fluid.uiOptions.rootModel", "autoInit"]
             },
             messages: {
+                gradeNames: ["fluid.littleComponent", "autoInit"]
+            },
+            templatePrefix: {
                 gradeNames: ["fluid.littleComponent", "autoInit"]
             }
         },
