@@ -52,7 +52,7 @@ var fluid_1_5 = fluid_1_5 || {};
             constructedGrades: {
                 expander: {
                     func: "fluid.uiOptions.builder.generateGrades",
-                    args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "rootModel", "templateLoader"]]
+                    args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "rootModel", "templateLoader", "templatePrefix"]]
                 }
             }
         }
@@ -93,17 +93,15 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uiOptions.fatPanel",
                 container: "{fluid.uiOptions.builder.uio}.container",
                 options: {
-                    gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.messages"],
-                    components: {
-                        templateLoader: {
-                            options: {
-                                gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.templateLoader"]
-                            }
-                        },
-                        uiOptions: {
-                            options: {
-                                gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.panels", "{fluid.uiOptions.builder.uio}.options.constructedGrades.rootModel"]
-                            }
+                    gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.messages", "{fluid.uiOptions.builder.uio}.options.constructedGrades.templatePrefix"],
+                    templateLoader: {
+                        options: {
+                            gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.templateLoader"]
+                        }
+                    },
+                    uiOptions: {
+                        options: {
+                            gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.panels", "{fluid.uiOptions.builder.uio}.options.constructedGrades.rootModel"]
                         }
                     }
                 }

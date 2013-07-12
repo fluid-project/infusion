@@ -219,6 +219,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
+    fluid.tests.templatePrefix = {
+        "templatePrefix": "templatePrefix"
+    };
+
     fluid.tests.panels = {
         "panels": [{
             "type": "fluid.uiOptions.panels.textSize",
@@ -279,6 +283,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
                 }
             },
+            builderPanelsAndTemplates: {
+                type: "fluid.uiOptions.builder",
+                options: {
+                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.builderPanelsAndTemplates", [fluid.tests.prefs, fluid.tests.panels, fluid.tests.templatePrefix]),
+                    topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
+                }
+            },
             builderAll: {
                 type: "fluid.uiOptions.builder",
                 options: {
@@ -303,10 +314,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.uiOptions.builder - empty",
             tests: [{
-                expect: 10,
+                expect: 12,
                 name: "not created",
                 func: "fluid.tests.testNotCreated",
-                args: ["{builderEmpty}", ["enactors", "messages", "panels", "rootModel", "templateLoader"]]
+                args: ["{builderEmpty}", ["enactors", "messages", "panels", "rootModel", "templateLoader", "templatePrefix"]]
             }, {
                 expect: 1,
                 name: "consolidationGrades.enhancer",
@@ -336,10 +347,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderEnactors}.constructedGrades.rootModel", "{builderEnactors}.options.auxSchema.rootModel"]
             }, {
-                expect: 6,
+                expect: 8,
                 name: "not created",
                 func: "fluid.tests.testNotCreated",
-                args: ["{builderEnactors}", ["messages", "panels", "templateLoader"]]
+                args: ["{builderEnactors}", ["messages", "panels", "templateLoader", "templatePrefix"]]
             }, {
                 expect: 1,
                 name: "consolidationGrades.enhancer",
@@ -379,10 +390,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanels}.constructedGrades.templateLoader", "{builderPanels}.options.auxSchema.templateLoader"]
             }, {
-                expect: 4,
+                expect: 6,
                 name: "not created",
                 func: "fluid.tests.testNotCreated",
-                args: ["{builderPanels}", ["messages", "enactors"]]
+                args: ["{builderPanels}", ["messages", "enactors", "templatePrefix"]]
             }, {
                 expect: 1,
                 name: "consolidationGrades.uiOptions",
@@ -427,10 +438,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanelsAndMessages}.constructedGrades.templateLoader", "{builderPanelsAndMessages}.options.auxSchema.templateLoader"]
             }, {
-                expect: 2,
+                expect: 4,
                 name: "not created",
                 func: "fluid.tests.testNotCreated",
-                args: ["{builderPanelsAndMessages}", ["enactors"]]
+                args: ["{builderPanelsAndMessages}", ["enactors", "templatePrefix"]]
             }, {
                 expect: 1,
                 name: "consolidationGrades.uiOptions",
@@ -451,6 +462,54 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "consolidated grade - gradeNames added",
                 func: "fluid.tests.assertGradesPresent",
                 args: ["{builderPanelsAndMessages}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions"]]
+            }]
+        }, {
+            name: "fluid.uiOptions.builder - panels & templates",
+            tests: [{
+                expect: 5,
+                name: "panels",
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderPanelsAndTemplates}.constructedGrades.panels", "{builderPanelsAndTemplates}.options.auxSchema.panels"]
+            }, {
+                expect: 4,
+                name: "templatePrefix",
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderPanelsAndTemplates}.constructedGrades.templatePrefix", "{builderPanelsAndTemplates}.options.auxSchema.templatePrefix"]
+            }, {
+                expect: 4,
+                name: "rootModel",
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderPanelsAndTemplates}.constructedGrades.rootModel", "{builderPanelsAndTemplates}.options.auxSchema.rootModel"]
+            }, {
+                expect: 4,
+                name: "templateLoader",
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderPanelsAndTemplates}.constructedGrades.templateLoader", "{builderPanelsAndTemplates}.options.auxSchema.templateLoader"]
+            }, {
+                expect: 4,
+                name: "not created",
+                func: "fluid.tests.testNotCreated",
+                args: ["{builderPanelsAndTemplates}", ["enactors", "messages"]]
+            }, {
+                expect: 1,
+                name: "consolidationGrades.uiOptions",
+                func: "jqUnit.assertEquals",
+                args: ["The consolidationGrades.uiOptions should be set", "{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderPanelsAndTemplates}.consolidationGrades.uiOptions"]
+            }, {
+                expect: 1,
+                name: "consolidationGrades.enhancer",
+                func: "jqUnit.assertUndefined",
+                args: ["The consolidationGrades.enhancer should be undefined", "{builderPanelsAndTemplates}.consolidationGrades.enhancer"]
+            }, {
+                expect: 2,
+                name: "consolidated grade - gradeNames not added",
+                func: "fluid.tests.assertGradesNotPresent",
+                args: ["{builderPanelsAndTemplates}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
+            }, {
+                expect: 2,
+                name: "consolidated grade - gradeNames added",
+                func: "fluid.tests.assertGradesPresent",
+                args: ["{builderPanelsAndTemplates}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions"]]
             }]
         }, {
             name: "fluid.uiOptions.builder - all",
@@ -479,6 +538,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "templateLoader",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderAll}.constructedGrades.templateLoader", "{builderAll}.options.auxSchema.templateLoader"]
+            }, {
+                expect: 4,
+                name: "templatePrefix",
+                func: "fluid.tests.assertDefaults",
+                args: ["{builderPanelsAndTemplates}.constructedGrades.templatePrefix", "{builderPanelsAndTemplates}.options.auxSchema.templatePrefix"]
             }, {
                 expect: 1,
                 name: "consolidationGrades.uiOptions",
