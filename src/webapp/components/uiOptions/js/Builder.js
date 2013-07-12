@@ -113,7 +113,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uiOptions.fatPanel",
                 container: "{fluid.uiOptions.builder.uio}.container",
                 options: {
-                    prefix: "{fluid.uiOptions.builder.uio}.options.auxSchema.templatePrefix",
                     components: {
                         templateLoader: {
                             options: {

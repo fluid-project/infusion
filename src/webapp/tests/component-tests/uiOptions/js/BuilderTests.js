@@ -21,17 +21,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
-    fluid.tests.assertDefaults = function (gradeName, expectedOpts) {
+    fluid.tests.assertGradesPresent = function (gradeName, grades) {
         var grade = fluid.defaults(gradeName);
         jqUnit.assertNotUndefined("The grade should be created", grade);
 
+        fluid.each(grades, function (baseGrade) {
+            jqUnit.assertTrue(gradeName + " should have the base grade '" + baseGrade + "'", $.inArray(baseGrade, grade.gradeNames) >= 0);
+        });
+    };
+
+    fluid.tests.assertGradesNotPresent = function (gradeName, grades) {
+        var grade = fluid.defaults(gradeName);
+        jqUnit.assertNotUndefined("The grade should be created", grade);
+
+        fluid.each(grades, function (baseGrade) {
+            jqUnit.assertFalse(gradeName + " should not have the base grade '" + baseGrade + "'", $.inArray(baseGrade, grade.gradeNames) >= 0);
+        });
+    };
+
+    fluid.tests.assertDefaults = function (gradeName, expectedOpts) {
+        fluid.tests.assertGradesPresent(gradeName, expectedOpts.gradeNames);
+        var grade = fluid.defaults(gradeName);
+
         fluid.each(expectedOpts, function (opt, optPath) {
             var actualOpt = fluid.get(grade, optPath);
-            if (optPath === "gradeNames") {
-                fluid.each(opt, function (baseGrade) {
-                    jqUnit.assertTrue(gradeName + " should have the base grade '" + baseGrade + "'", $.inArray(baseGrade, actualOpt) >= 0);
-                });
-            } else {
+            if (optPath !== "gradeNames") {
                 jqUnit.assertDeepEq("The options at path '" + optPath + "'' is set correctly", opt, actualOpt);
             }
         });
@@ -258,6 +272,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.builderTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        testOptions: {
+            consolidationGrades: {
+                enhancer: "fluid.uiOptions.builder.uie",
+                uiOptions: "fluid.uiOptions.builder.uio"
+            }
+        },
         modules: [{
             name: "fluid.uiOptions.builder - empty",
             tests: [{
@@ -266,6 +286,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "fluid.tests.testNotCreated",
                     args: ["{builderEmpty}", ["enactors", "panels", "rootModel", "templateLoader"]]
+                }]
+            }, {
+                expect: 1,
+                name: "consolidationGrades.enhancer",
+                sequence: [{
+                    func: "jqUnit.assertUndefined",
+                    args: ["The consolidationGrades.enhancer should be undefined", "{builderEmpty}.consolidationGrades.enhancer"]
+                }]
+            }, {
+                expect: 1,
+                name: "consolidationGrades.uiOptions",
+                sequence: [{
+                    func: "jqUnit.assertUndefined",
+                    args: ["The consolidationGrades.uiOptions should be undefined", "{builderEmpty}.consolidationGrades.uiOptions"]
+                }]
+            }, {
+                expect: 3,
+                name: "consolidated grade",
+                sequence: [{
+                    func: "fluid.tests.assertGradesNotPresent",
+                    args: ["{builderEmpty}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
                 }]
             }]
         }, {
@@ -290,6 +331,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "fluid.tests.testNotCreated",
                     args: ["{builderEnactors}", ["panels", "templateLoader"]]
+                }]
+            }, {
+                expect: 1,
+                name: "consolidationGrades.enhancer",
+                sequence: [{
+                    func: "jqUnit.assertEquals",
+                    args: ["The consolidationGrades.enhancer should be set", "{builderTester}.options.testOptions.consolidationGrades.enhancer", "{builderEnactors}.consolidationGrades.enhancer"]
+                }]
+            }, {
+                expect: 1,
+                name: "consolidationGrades.uiOptions",
+                sequence: [{
+                    func: "jqUnit.assertUndefined",
+                    args: ["The consolidationGrades.uiOptions should be undefined", "{builderEnactors}.consolidationGrades.uiOptions"]
+                }]
+            }, {
+                expect: 2,
+                name: "consolidated grade - gradeNames not added",
+                sequence: [{
+                    func: "fluid.tests.assertGradesNotPresent",
+                    args: ["{builderEnactors}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions"]]
+                }]
+            }, {
+                expect: 2,
+                name: "consolidated grade - gradeNames added",
+                sequence: [{
+                    func: "fluid.tests.assertGradesPresent",
+                    args: ["{builderEnactors}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
                 }]
             }]
         }, {
@@ -322,6 +391,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "fluid.tests.testNotCreated",
                     args: ["{builderPanels}", ["enactors"]]
                 }]
+            }, {
+                expect: 1,
+                name: "consolidationGrades.uiOptions",
+                sequence: [{
+                    func: "jqUnit.assertEquals",
+                    args: ["The consolidationGrades.uiOptions should be set", "{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderPanels}.consolidationGrades.uiOptions"]
+                }]
+            }, {
+                expect: 1,
+                name: "consolidationGrades.enhancer",
+                sequence: [{
+                    func: "jqUnit.assertUndefined",
+                    args: ["The consolidationGrades.enhancer should be undefined", "{builderPanels}.consolidationGrades.enhancer"]
+                }]
+            }, {
+                expect: 2,
+                name: "consolidated grade - gradeNames not added",
+                sequence: [{
+                    func: "fluid.tests.assertGradesNotPresent",
+                    args: ["{builderPanels}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
+                }]
+            }, {
+                expect: 2,
+                name: "consolidated grade - gradeNames added",
+                sequence: [{
+                    func: "fluid.tests.assertGradesPresent",
+                    args: ["{builderPanels}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions"]]
+                }]
             }]
         }, {
             name: "fluid.uiOptions.builder - all",
@@ -352,6 +449,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "fluid.tests.assertDefaults",
                     args: ["{builderAll}.constructedGrades.templateLoader", "{builderAll}.options.auxSchema.templateLoader"]
+                }]
+            }, {
+                expect: 1,
+                name: "consolidationGrades.uiOptions",
+                sequence: [{
+                    func: "jqUnit.assertEquals",
+                    args: ["The consolidationGrades.uiOptions should be set", "{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderAll}.consolidationGrades.uiOptions"]
+                }]
+            }, {
+                expect: 1,
+                name: "consolidationGrades.enhancer",
+                sequence: [{
+                    func: "jqUnit.assertEquals",
+                    args: ["The consolidationGrades.enhancer should be set", "{builderTester}.options.testOptions.consolidationGrades.enhancer", "{builderAll}.consolidationGrades.enhancer"]
+                }]
+            }, {
+                expect: 3,
+                name: "consolidated grade",
+                sequence: [{
+                    func: "fluid.tests.assertGradesPresent",
+                    args: ["{builderAll}.consolidatedGrade", ["{builderTester}.options.testOptions.consolidationGrades.uiOptions", "{builderTester}.options.testOptions.consolidationGrades.enhancer"]]
                 }]
             }]
         }]
