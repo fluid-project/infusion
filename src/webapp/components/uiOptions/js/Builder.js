@@ -27,6 +27,28 @@ var fluid_1_5 = fluid_1_5 || {};
             auxSchema: "expandedAuxSchema"
         },
         members: {
+            consolidatedGrade: {
+                expander: {
+                    func: "fluid.uiOptions.builder.defaults",
+                    args: ["{that}.options.auxSchema.namespace", {
+                        gradeNames: ["fluid.viewComponent", "autoInit", "{that}.consolidationGrades.uiOptions", "{that}.consolidationGrades.enhancer"]
+                    }]
+                }
+            },
+            consolidationGrades: {
+                enhancer: {
+                    expander: {
+                        func: "fluid.uiOptions.builder.attach",
+                        args: ["{that}.constructedGrades.enactors", "fluid.uiOptions.builder.uie"]
+                    }
+                },
+                uiOptions: {
+                    expander: {
+                        func: "fluid.uiOptions.builder.attach",
+                        args: ["{that}.constructedGrades.panels", "fluid.uiOptions.builder.uio"]
+                    }
+                }
+            },
             constructedGrades: {
                 enactors: {
                     expander: {
@@ -56,13 +78,76 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
+    fluid.defaults("fluid.uiOptions.builder.uie", {
+        gradeNames: ["autoInit", "fluid.viewComponent"],
+        components: {
+            store: {
+                type: "fluid.globalSettingsStore"
+            },
+            enhancer: {
+                type: "fluid.uiEnhancer",// <--- need to change the type  or add a gradeName
+                container: "body",
+                options: {
+                    gradeNames: ["{fluid.uiOptions.builder.uie}.options.constructedGrades.enactors", "{fluid.uiOptions.builder.uie}.options.constructedGrades.rootModel"],
+                    invokers: {
+                        attachStaticEnv: {
+                            funcName: "fluid.uiOptions.builder.attachStaticEnv",
+                            args: ["{that}"]
+                        }
+                    },
+                    listeners: {
+                        onCreate: "{that}.attachStaticEnv"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.builder.uio", {
+        gradeNames: ["autoInit", "fluid.viewComponent"],
+        components: {
+            store: {
+                type: "fluid.globalSettingsStore"
+            },
+            uiOptions: {
+                type: "fluid.uiOptions.fatPanel",
+                container: "{fluid.uiOptions.builder.uio}.container",
+                options: {
+                    prefix: "{fluid.uiOptions.builder.uio}.options.auxSchema.templatePrefix",
+                    components: {
+                        templateLoader: {
+                            options: {
+                                gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.templateLoader"]
+                            }
+                        },
+                        uiOptions: {
+                            options: {
+                                gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.panels", "{fluid.uiOptions.builder.uio}.options.constructedGrades.rootModel"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.uiOptions.builder.defaults = function (name, options) {
+        fluid.defaults(name, options);
+        return name;
+    };
+
     fluid.uiOptions.builder.generateGrade = function (namespace, gradeNameTemplate, gradeOptions) {
         if (gradeOptions) {
             var gradeName = fluid.stringTemplate(gradeNameTemplate, {namespace: namespace});
             var opts = fluid.copy(gradeOptions);
 
-            fluid.defaults(gradeName, opts); // creates the grade with name specified by gradeName
-            return gradeName;
+            return fluid.uiOptions.builder.defaults(gradeName, opts);
+        }
+    };
+
+    fluid.uiOptions.builder.attach = function (constructedGrade, consolidatedGrade) {
+        if (constructedGrade) {
+            return consolidatedGrade;
         }
     };
 

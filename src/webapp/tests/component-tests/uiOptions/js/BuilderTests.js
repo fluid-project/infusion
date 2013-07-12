@@ -37,6 +37,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
+    fluid.tests.testDefaults = function (expectedOpts, funcArgs) {
+        var gradeName = fluid.invokeGlobalFunction("fluid.uiOptions.builder.defaults", funcArgs);
+        fluid.tests.assertDefaults(gradeName, expectedOpts);
+    };
+
     fluid.tests.testGenerateGrade = function (expectedGradeName, expectedOpts, funcArgs) {
         var gradeName = fluid.invokeGlobalFunction("fluid.uiOptions.builder.generateGrade", funcArgs);
 
@@ -50,6 +55,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertUndefined("The grade should not have been created", fluid.defaults(fluid.stringTemplate(funcArgs[0], {namespace: funcArgs[1]})));
         }
     };
+
+    fluid.defaults("fluid.tests.defaults", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            defaultsTester: {
+                type: "fluid.tests.defaultsTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.defaultsTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        modules: [{
+            name: "fluid.uiOptions.builder.defaults",
+            tests: [{
+                expect: 4,
+                name: "grade creation",
+                sequence: [{
+                    func: "fluid.tests.testDefaults",
+                    args: [{gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}, ["fluid.tests.created.defaults", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}]]
+                }]
+            }]
+        }]
+    });
 
     fluid.defaults("fluid.tests.generateGradeName", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
@@ -76,7 +105,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "complete",
                 sequence: [{
                     func: "fluid.tests.testGenerateGrade",
-                    args: ["fluid.tests.created.generateGradeWithPath", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}, ["fluid.tests.created", "%namespace.generateGradeWithPath", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}]]
+                    args: ["fluid.tests.created.generateGrade", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}, ["fluid.tests.created", "%namespace.generateGrade", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}]]
+                }]
+            }]
+        }]
+    });
+
+    fluid.tests.testAttach = function (expected, funcArgs) {
+        var actual = fluid.invokeGlobalFunction("fluid.uiOptions.builder.attach", funcArgs);
+        jqUnit.assertEquals("The output should be set correctly", expected, actual);
+    };
+
+    fluid.defaults("fluid.tests.attach", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            attachTester: {
+                type: "fluid.tests.attachTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.attachTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        testOptions: {
+            exists: "fluid.tests.created.exists"
+        },
+        modules: [{
+            name: "fluid.uiOptions.builder.attach",
+            tests: [{
+                expect: 1,
+                name: "constructedGrade exists",
+                sequence: [{
+                    func: "fluid.tests.testAttach",
+                    args: ["{that}.options.testOptions.exists", [true, "{that}.options.testOptions.exists"]]
+                }]
+            }, {
+                expect: 1,
+                name: "constructedGrade doesn't exists",
+                sequence: [{
+                    func: "fluid.tests.testAttach",
+                    args: [undefined, [undefined, "{that}.options.testOptions.exists"]]
                 }]
             }]
         }]
@@ -291,7 +359,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
         fluid.test.runTests([
+            "fluid.tests.defaults",
             "fluid.tests.generateGradeName",
+            "fluid.tests.attach",
             "fluid.tests.builder"
         ]);
     });
