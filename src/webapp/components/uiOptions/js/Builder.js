@@ -56,6 +56,12 @@ var fluid_1_5 = fluid_1_5 || {};
                         args: ["{that}.options.auxSchema.namespace", "%namespace.enactors", "{that}.options.auxSchema.enactors"]
                     }
                 },
+                messages: {
+                    expander: {
+                        func: "fluid.uiOptions.builder.generateGrade",
+                        args: ["{that}.options.auxSchema.namespace", "%namespace.messages", "{that}.options.auxSchema.messages"]
+                    }
+                },
                 panels: {
                     expander: {
                         func: "fluid.uiOptions.builder.generateGrade",
@@ -113,6 +119,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uiOptions.fatPanel",
                 container: "{fluid.uiOptions.builder.uio}.container",
                 options: {
+                    gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.messages"],
                     components: {
                         templateLoader: {
                             options: {
