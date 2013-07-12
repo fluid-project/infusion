@@ -22,7 +22,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.registerNamespace("fluid.uiOptions");
 
     fluid.defaults("fluid.uiOptions.builder", {
-        gradeNames: ["fluid.eventedComponent", "fluid.uiOptions.primaryBuilder", "fluid.uiOptions.auxBuilder", "autoInit"],
+        gradeNames: ["fluid.eventedComponent", "fluid.uiOptions.primaryBuilder", "fluid.uiOptions.auxBuilder", "fluid.uiOptions.auxSchema.starter", "autoInit"],
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
         },
@@ -69,14 +69,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "body",
                 options: {
                     gradeNames: ["{fluid.uiOptions.builder.uie}.options.constructedGrades.enactors", "{fluid.uiOptions.builder.uie}.options.constructedGrades.rootModel"],
-                    invokers: {
-                        attachStaticEnv: {
-                            funcName: "fluid.uiOptions.builder.attachStaticEnv",
-                            args: ["{that}"]
-                        }
-                    },
                     listeners: {
-                        onCreate: "{that}.attachStaticEnv"
+                        onCreate: {
+                            listener: "fluid.set",
+                            args: [fluid.staticEnvironment, "uiEnhancer", "{that}"]
+                        }
                     }
                 }
             }

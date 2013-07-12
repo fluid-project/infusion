@@ -96,7 +96,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "classes": "@contrast.classes"
             }, {
                 "type": "fluid.uiOptions.enactors.tableOfContents",
-                "tocTemplate": "the-location-of-toc-template"
+                "tocTemplate": "../../../components/tableOfContents/html/TableOfContents.html"
             }, {
                 "type": "fluid.uiOptions.enactors.emphasizeLinks",
                 "cssClass": "fl-link-enhanced"

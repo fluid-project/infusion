@@ -212,12 +212,11 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.defaults("fluid.uiOptions.auxBuilder", {
-        gradeNames: ["fluid.uiOptions.primaryBuilder", "autoInit"],
+        gradeNames: ["fluid.uiOptions.primaryBuilder", "fluid.uiOptions.auxSchema", "autoInit"],
         defaultNamespace: "fluid.uiOptions.create",
         mergePolicy: {
             elementCommonOptions: "noexpand"
         },
-        auxiliarySchema: {},
         topCommonOptions: {
             panels: {
                 gradeNames: ["fluid.uiOptions", "autoInit"]    
