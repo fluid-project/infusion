@@ -23,7 +23,7 @@ var demo = demo || {};
         var builder = fluid.uiOptions.builder({
             // gradeNames: ["fluid.uiOptions.auxSchema.starter"]
         });
-        fluid.invokeGlobalFunction(builder.consolidatedGrade, [".flc-uiOptions-fatPanel"]);
+        fluid.invokeGlobalFunction(builder.options.consolidatedGrade, [".flc-uiOptions-fatPanel"]);
     };
 
     // /**
