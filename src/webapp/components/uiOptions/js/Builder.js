@@ -26,35 +26,33 @@ var fluid_1_5 = fluid_1_5 || {};
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
         },
-        members: {
-            consolidatedGrade: {
+        consolidatedGrade: {
+            expander: {
+                func: "fluid.uiOptions.builder.defaults",
+                args: ["{that}.options.auxSchema.namespace", {
+                    gradeNames: ["fluid.viewComponent", "autoInit", "{that}.options.consolidationGrades.uiOptions", "{that}.options.consolidationGrades.enhancer"],
+                    constructedGrades: "{that}.options.constructedGrades"
+                }]
+            }
+        },
+        consolidationGrades: {
+            enhancer: {
                 expander: {
-                    func: "fluid.uiOptions.builder.defaults",
-                    args: ["{that}.options.auxSchema.namespace", {
-                        gradeNames: ["fluid.viewComponent", "autoInit", "{that}.consolidationGrades.uiOptions", "{that}.consolidationGrades.enhancer"],
-                        constructedGrades: "{that}.constructedGrades"
-                    }]
+                    func: "fluid.uiOptions.builder.attach",
+                    args: ["{that}.options.constructedGrades.enactors", "fluid.uiOptions.builder.uie"]
                 }
             },
-            consolidationGrades: {
-                enhancer: {
-                    expander: {
-                        func: "fluid.uiOptions.builder.attach",
-                        args: ["{that}.constructedGrades.enactors", "fluid.uiOptions.builder.uie"]
-                    }
-                },
-                uiOptions: {
-                    expander: {
-                        func: "fluid.uiOptions.builder.attach",
-                        args: ["{that}.constructedGrades.panels", "fluid.uiOptions.builder.uio"]
-                    }
-                }
-            },
-            constructedGrades: {
+            uiOptions: {
                 expander: {
-                    func: "fluid.uiOptions.builder.generateGrades",
-                    args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "rootModel", "templateLoader", "templatePrefix"]]
+                    func: "fluid.uiOptions.builder.attach",
+                    args: ["{that}.options.constructedGrades.panels", "fluid.uiOptions.builder.uio"]
                 }
+            }
+        },
+        constructedGrades: {
+            expander: {
+                func: "fluid.uiOptions.builder.generateGrades",
+                args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "rootModel", "templateLoader", "templatePrefix"]]
             }
         }
     });
