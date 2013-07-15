@@ -58,7 +58,7 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     fluid.defaults("fluid.uiOptions.builder.uie", {
-        gradeNames: ["autoInit", "fluid.viewComponent"],
+        gradeNames: ["autoInit", "fluid.viewComponent", "fluid.originalEnhancerOptions"],
         components: {
             store: {
                 type: "fluid.globalSettingsStore"
@@ -88,6 +88,7 @@ var fluid_1_5 = fluid_1_5 || {};
             uiOptions: {
                 type: "fluid.uiOptions.fatPanel",
                 container: "{fluid.uiOptions.builder.uio}.container",
+                priority: "last",
                 options: {
                     gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.templatePrefix", "{fluid.uiOptions.builder.uio}.options.constructedGrades.messages"],
                     // prefix: "../../../components/uiOptions/html/",
