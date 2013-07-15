@@ -31,7 +31,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 expander: {
                     func: "fluid.uiOptions.builder.defaults",
                     args: ["{that}.options.auxSchema.namespace", {
-                        gradeNames: ["fluid.viewComponent", "autoInit", "{that}.consolidationGrades.uiOptions", "{that}.consolidationGrades.enhancer"]
+                        gradeNames: ["fluid.viewComponent", "autoInit", "{that}.consolidationGrades.uiOptions", "{that}.consolidationGrades.enhancer"],
+                        constructedGrades: "{that}.constructedGrades"
                     }]
                 }
             },
@@ -90,7 +91,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uiOptions.fatPanel",
                 container: "{fluid.uiOptions.builder.uio}.container",
                 options: {
-                    gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.messages", "{fluid.uiOptions.builder.uio}.options.constructedGrades.templatePrefix"],
+                    gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.templatePrefix", "{fluid.uiOptions.builder.uio}.options.constructedGrades.messages"],
+                    // prefix: "../../../components/uiOptions/html/",
                     templateLoader: {
                         options: {
                             gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.templateLoader"]

@@ -49,7 +49,6 @@
         <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../../framework/renderer/js/RendererUtilities.js"></script>
 
-        <script type="text/javascript" src="../../../components/uiOptions/js/AuxiliarySchema.js"></script>
         <script type="text/javascript" src="../../../components/tabs/js/Tabs.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/URLUtilities.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/i18n.js"></script>
@@ -63,6 +62,10 @@
         <script type="text/javascript" src="../../../components/uiOptions/js/FatPanelUIOptions.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/SlidingPanel.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/AuxiliarySchema.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/PrimaryBuilder.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/AuxBuilder.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/Builder.js"></script>
 
         <script type="text/javascript" src="../js/uiOptionsDemo.js"></script>
     </head>
@@ -71,8 +74,8 @@
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             $(document).ready(function () {
-                demo.initSettingsStore();
-                demo.initPageEnhancer();
+                // demo.initSettingsStore();
+                // demo.initPageEnhancer();
                 demo.initFatPanel(".flc-uiOptions-fatPanel");
             })
         </script>
