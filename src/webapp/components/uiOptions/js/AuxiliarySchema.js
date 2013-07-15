@@ -106,24 +106,30 @@ var fluid_1_5 = fluid_1_5 || {};
             }],
             "panels": [{
                 "type": "fluid.uiOptions.panels.textSize",
-                "container": ".flc-uiOptions-text-size"  // the css selector in the template where the panel is rendered
+                "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/UIOptionsTemplate-textSize.html"
             }, {
                 "type": "fluid.uiOptions.panels.lineSpace",
-                "container": ".flc-uiOptions-line-space"  // the css selector in the template where the panel is rendered
+                "container": ".flc-uiOptions-line-space",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/UIOptionsTemplate-lineSpace.html"
             }, {
                 "type": "fluid.uiOptions.panels.textFont",
                 "container": ".flc-uiOptions-text-font",  // the css selector in the template where the panel is rendered
-                "classnameMap": "@textFont.classes"
+                "classnameMap": "@textFont.classes",
+                "template": "%prefix/UIOptionsTemplate-textFont.html"
             }, {
                 "type": "fluid.uiOptions.panels.contrast",
                 "container": ".flc-uiOptions-contrast",  // the css selector in the template where the panel is rendered
-                "classnameMap": "@contrast.classes"
+                "classnameMap": "@contrast.classes",
+                "template": "%prefix/UIOptionsTemplate-contrast.html"
             }, {
                 "type": "fluid.uiOptions.panels.layoutControls",
-                "container": ".flc-uiOptions-layout-controls"  // the css selector in the template where the panel is rendered
+                "container": ".flc-uiOptions-layout-controls",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/UIOptionsTemplate-layout.html"
             }, {
                 "type": "fluid.uiOptions.panels.linksControls",
-                "container": ".flc-uiOptions-links-controls"  // the css selector in the template where the panel is rendered
+                "container": ".flc-uiOptions-links-controls",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/UIOptionsTemplate-links.html"
             }]
         }
     });
