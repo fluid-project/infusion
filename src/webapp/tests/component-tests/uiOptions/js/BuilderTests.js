@@ -293,7 +293,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             builderAll: {
                 type: "fluid.uiOptions.builder",
                 options: {
-                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.all", [fluid.tests.prefs, fluid.tests.panels, fluid.tests.enactors, fluid.tests.messages]),
+                    auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.all", [fluid.tests.prefs, fluid.tests.panels, fluid.tests.enactors, fluid.tests.messages, fluid.tests.templatePrefix]),
                     topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
                 }
             },
@@ -542,7 +542,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 4,
                 name: "templatePrefix",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.constructedGrades.templatePrefix", "{builderPanelsAndTemplates}.options.auxSchema.templatePrefix"]
+                args: ["{builderAll}.constructedGrades.templatePrefix", "{builderAll}.options.auxSchema.templatePrefix"]
             }, {
                 expect: 1,
                 name: "consolidationGrades.uiOptions",
