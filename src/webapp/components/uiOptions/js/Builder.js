@@ -91,7 +91,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 priority: "last",
                 options: {
                     gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.templatePrefix", "{fluid.uiOptions.builder.uio}.options.constructedGrades.messages"],
-                    // prefix: "../../../components/uiOptions/html/",
                     templateLoader: {
                         options: {
                             gradeNames: ["{fluid.uiOptions.builder.uio}.options.constructedGrades.templateLoader"]
