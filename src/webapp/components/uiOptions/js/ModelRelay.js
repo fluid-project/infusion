@@ -44,16 +44,16 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             removeListeners: {
                 funcName: "fluid.uiOptions.modelRelay.removeListeners",
-                args: ["{that}.options.rules", "{that}.options.sourceApplier", "{that}.options.listenerNamespaces"]
+                args: ["{that}.options.sourceApplier.modelChanged", "{that}.options.listenerNamespaces"]
             }
         },
         sourceApplier: null,  // must be supplied by implementors
         rules: {}  // must be supplied by implementors, in format: "externalModelKey": "internalModelKey"
     });
 
-    fluid.uiOptions.modelRelay.removeListeners = function (rules, applier, namespaces) {
+    fluid.uiOptions.modelRelay.removeListeners = function (modelChanged, namespaces) {
         fluid.each(namespaces, function (namespace) {
-            applier.removeListener(namespace);
+            modelChanged.removeListener(namespace);
         });
     };
 

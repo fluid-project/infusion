@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Unit tests for fluid.uiOptions.modelRelay
      *******************************************************************************/
 
-    var resultValue;
+    var resultValue, resultWrapperValue;
     
     fluid.defaults("fluid.tests.modelRelay", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
@@ -39,7 +39,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.uiOptions.modelRelayWrapper", {
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
         model: {
-            wrapperValue: null
+            wrapperValue: null,
+            anotherValue: null
         },
         components: {
             modelRelayImpl: {
@@ -47,45 +48,87 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     sourceApplier: "{modelRelayWrapper}.applier",
                     rules: {
-                        "wrapperValue": "value"
+                        "wrapperValue": "value",
+                        "anotherValue": "anotherInternalValue"
                     },
                     model: {
-                        value: null
+                        value: null,
+                        anotherInternalValue: null
                     },
-                    finalInit: "fluid.uiOptions.modelRelay.finalInit"
+                    listeners: {
+                        onCreate: {
+                            listener: "fluid.uiOptions.modelRelay.init",
+                            args: "{that}"
+                        }
+                    }
                 }
+            }
+        },
+        listeners: {
+            onCreate: {
+                listener: "fluid.uiOptions.modelRelayWrapper.init",
+                args: "{that}"
             }
         }
     });
 
-    fluid.uiOptions.modelRelay.finalInit = function (that) {
+    fluid.uiOptions.modelRelay.init = function (that) {
         that.applier.modelChanged.addListener("value", function (newModel) {
             resultValue = newModel.value;
         });
     };
     
-    fluid.tests.checkResult = function (expectedValue) {
+    fluid.uiOptions.modelRelayWrapper.init = function (that) {
+        that.applier.modelChanged.addListener("wrapperValue", function (newModel) {
+            resultWrapperValue = newModel.wrapperValue;
+        });
+    };
+    
+    fluid.tests.checkImplResult = function (expectedValue) {
         return function () {
             jqUnit.assertEquals("The model change request on the modelRelay has been fired", expectedValue, resultValue);
         };
     };
     
+    fluid.tests.checkWrapperResult = function (expectedValue) {
+        return function () {
+            jqUnit.assertEquals("The model change request on the modelRelay has been fired", expectedValue, resultWrapperValue);
+        };
+    };
+    
+    fluid.tests.destroyModelRelayImpl = function (modelRelayWrapper) {
+        var instantiator = fluid.getInstantiator(modelRelayWrapper);
+        instantiator.clearComponent(modelRelayWrapper, "modelRelayImpl");
+    };
+
+    fluid.tests.testListenerRemoval = function (sourceApplier, newValue) {
+        return function () {
+            sourceApplier.requestChange("wrapperValue", newValue);
+
+            jqUnit.assertNotEquals("The listener on the source applier to co-trigger internal applier has been removed and not fired", newValue, resultValue);
+        };
+    };
+
     fluid.defaults("fluid.tests.modelRelayTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
             newValue1: "This is a test string 1.",
-            newValue2: "This is a test string 2."
+            newValue2: "This is a test string 2.",
+            newValue3: "This is a test string 3."
         },
         modules: [{
             name: "Test model relay component",
             tests: [{
-                expect: 2,
+                expect: 4,
                 name: "The applier change request on the modelRelay wrapper triggers the request on the modelRelay itself",
                 sequence: [{
+                    func: "jqUnit.assertEquals",
+                    args: ["All the listeners registered for the source applier are tracked", 2, "{modelRelayWrapper}.modelRelayImpl.options.listenerNamespaces.length"]
+                }, {
                     func: "{modelRelayWrapper}.applier.requestChange",
                     args: ["wrapperValue", "{that}.options.testOptions.newValue1"]
                 }, {
-                    listenerMaker: "fluid.tests.checkResult",
+                    listenerMaker: "fluid.tests.checkImplResult",
                     makerArgs: ["{that}.options.testOptions.newValue1"],
                     spec: {path: "wrapperValue", priority: "last"},
                     changeEvent: "{modelRelayWrapper}.applier.modelChanged"
@@ -93,10 +136,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{modelRelayWrapper}.modelRelayImpl.applier.requestChange",
                     args: ["value", "{that}.options.testOptions.newValue2"]
                 }, {
-                    listenerMaker: "fluid.tests.checkResult",
+                    listenerMaker: "fluid.tests.checkWrapperResult",
                     makerArgs: ["{that}.options.testOptions.newValue2"],
-                    spec: {path: "value", priority: "last"},
-                    changeEvent: "{modelRelayWrapper}.modelRelayImpl.applier.modelChanged"
+                    spec: {path: "wrapperValue", priority: "last"},
+                    changeEvent: "{modelRelayWrapper}.applier.modelChanged"
+                }, {
+                    func: "fluid.tests.destroyModelRelayImpl",
+                    args: ["{modelRelayWrapper}"]
+                }, {
+                    listenerMaker: "fluid.tests.testListenerRemoval",
+                    makerArgs: ["{modelRelayWrapper}.applier", "{that}.options.testOptions.newValue3"],
+                    spec: {priority: "last"},
+                    event: "{modelRelayWrapper}.modelRelayImpl.events.onDestroy"
                 }]
             }]
         }]
