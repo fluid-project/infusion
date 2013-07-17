@@ -31,7 +31,7 @@ var fluid_1_5 = fluid_1_5 || {};
             expander: {
                 func: "fluid.uiOptions.builder.generateGrade",
                 args: ["uio", "{that}.options.auxSchema.namespace", {
-                    gradeNames: ["fluid.viewComponent", "autoInit", "fluid.uiOptions.assembler.consolidated"],
+                    gradeNames: ["fluid.viewComponent", "autoInit", "fluid.uiOptions.assembler.uio"],
                     componentGrades: "{that}.options.constructedGrades"
                 }]
             }
