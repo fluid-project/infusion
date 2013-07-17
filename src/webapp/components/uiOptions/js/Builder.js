@@ -65,7 +65,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uiEnhancer",
                 container: "body",
                 options: {
-                    gradeNames: ["{fluid.uiOptions.builder.uie}.options.componentGrades.enactors", "{fluid.uiOptions.builder.uie}.options.componentGrades.rootModel"],
+                    gradeNames: ["{fluid.uiOptions.assembler.uie}.options.componentGrades.enactors", "{fluid.uiOptions.assembler.uie}.options.componentGrades.rootModel"],
                     listeners: {
                         onCreate: {
                             listener: "fluid.set",
@@ -82,18 +82,18 @@ var fluid_1_5 = fluid_1_5 || {};
         components: {
             uiOptions: {
                 type: "fluid.uiOptions.fatPanel",
-                container: "{fluid.uiOptions.builder.uio}.container",
+                container: "{fluid.uiOptions.assembler.uio}.container",
                 priority: "last",
                 options: {
-                    gradeNames: ["{fluid.uiOptions.builder.uio}.options.componentGrades.templatePrefix", "{fluid.uiOptions.builder.uio}.options.componentGrades.messages"],
+                    gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.templatePrefix", "{fluid.uiOptions.assembler.uio}.options.componentGrades.messages"],
                     templateLoader: {
                         options: {
-                            gradeNames: ["{fluid.uiOptions.builder.uio}.options.componentGrades.templateLoader"]
+                            gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.templateLoader"]
                         }
                     },
                     uiOptions: {
                         options: {
-                            gradeNames: ["{fluid.uiOptions.builder.uio}.options.componentGrades.panels", "{fluid.uiOptions.builder.uio}.options.componentGrades.rootModel"]
+                            gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.panels", "{fluid.uiOptions.assembler.uio}.options.componentGrades.rootModel"]
                         }
                     }
                 }

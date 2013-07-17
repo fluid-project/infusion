@@ -13,17 +13,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global demo:true, fluid, jQuery, window*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var demo = demo || {};
-(function ($, fluid) {       
+(function ($, fluid) {
 
     demo.initFatPanel = function (container) {
         var builder = fluid.uiOptions.builder({
             // gradeNames: ["fluid.uiOptions.auxSchema.starter"]
         });
-        fluid.invokeGlobalFunction(builder.options.consolidatedGrade, [".flc-uiOptions-fatPanel"]);
+        fluid.invokeGlobalFunction(builder.options.assembledUIOGrade, [".flc-uiOptions-fatPanel"]);
     };
 
     // /**
@@ -32,7 +32,7 @@ var demo = demo || {};
     //  * versions of the component.
     //  */
     // var pathToTemplates = "../../../components/uiOptions/html/";
-    
+
     // /**
     //  * The UI Enhancer's Table of Contents uses a template. This path variable is used by all
     //  * three versions of the component, as well as by the UI Enhancer present in the Preview
@@ -78,7 +78,7 @@ var demo = demo || {};
     //         }
     //     }
     // };
-    
+
     // /**
     //  * Initialize UI Options on the "Fat Panel" version. This version of UI Options uses the
     //  * page itself as a live preview.
@@ -86,5 +86,5 @@ var demo = demo || {};
     // demo.initFatPanel = function (container) {
     //     fluid.uiOptions.fatPanel(container, commonOpts);
     // };
-    
+
 })(jQuery, fluid);
