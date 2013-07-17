@@ -103,13 +103,13 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uiOptions.builder.generateGrade = function (name, namespace, options) {
         var gradeNameTemplate = "%namespace.%name";
-        var gradeName = fluid.stringTEmplate(gradeNameTemplate, {name: name, namespace: namespace});
+        var gradeName = fluid.stringTemplate(gradeNameTemplate, {name: name, namespace: namespace});
         fluid.defaults(gradeName, options);
-        return name;
+        return gradeName;
     };
 
     fluid.uiOptions.builder.generateGrades = function (auxSchema, gradeCategories) {
-        var componentGrades = {};
+        var constructedGrades = {};
         fluid.each(gradeCategories, function (category) {
             var gradeOpts = auxSchema[category];
             if (gradeOpts) {
