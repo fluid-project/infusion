@@ -49,7 +49,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
         constructedGrades: {
             expander: {
-                func: "fluid.uiOptions.builder.generateGrades",
+                func: "fluid.uiOptions.builder.constructGrades",
                 args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "rootModel", "templateLoader", "templatePrefix"]]
             }
         }
@@ -108,7 +108,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return gradeName;
     };
 
-    fluid.uiOptions.builder.generateGrades = function (auxSchema, gradeCategories) {
+    fluid.uiOptions.builder.constructGrades = function (auxSchema, gradeCategories) {
         var constructedGrades = {};
         fluid.each(gradeCategories, function (category) {
             var gradeOpts = auxSchema[category];

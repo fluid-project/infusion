@@ -82,12 +82,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
-    /************************************************
-     * fluid.uiOptions.builder.generateGrades tests *
-     ************************************************/
+    /*************************************************
+     * fluid.uiOptions.builder.constructGrades tests *
+     *************************************************/
 
-    fluid.tests.testGenerateGrades = function (expected, funcArgs) {
-        var gradeNames = fluid.invokeGlobalFunction("fluid.uiOptions.builder.generateGrades", funcArgs);
+    fluid.tests.testConstructGrades = function (expected, funcArgs) {
+        var gradeNames = fluid.invokeGlobalFunction("fluid.uiOptions.builder.constructGrades", funcArgs);
 
         fluid.each(expected, function (expectValues, category) {
             var actualGradeName = gradeNames[category];
@@ -104,20 +104,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.defaults("fluid.tests.generateGrades", {
+    fluid.defaults("fluid.tests.constructGrades", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            generateGradesTester: {
-                type: "fluid.tests.generateGradesTester"
+            constructGradesTester: {
+                type: "fluid.tests.constructGradesTester"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.generateGradesTester", {
+    fluid.defaults("fluid.tests.constructGradesTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
             mockAuxSchema: {
-                namespace: "fluid.tests.created.generateGrade",
+                namespace: "fluid.tests.created.constructGrade",
                 sample: {
                     gradeNames: ["fluid.littleComponent", "autoInit"],
                     testOpt: "testOpt"
@@ -125,23 +125,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             expected: {
                 sample: {
-                    gradeName: "fluid.tests.created.generateGrade.sample",
+                    gradeName: "fluid.tests.created.constructGrade.sample",
                     options: {
                         gradeNames: ["fluid.littleComponent", "autoInit"],
                         testOpt: "testOpt"
                     }
                 },
                 missing: {
-                    gradeName: "fluid.tests.created.generateGrade.missing"
+                    gradeName: "fluid.tests.created.constructGrade.missing"
                 }
             }
         },
         modules: [{
-            name: "fluid.uiOptions.builder.generateGrade",
+            name: "fluid.uiOptions.builder.constructGrade",
             tests: [{
                 expect: 7,
                 name: "generate grades",
-                func: "fluid.tests.testGenerateGrades",
+                func: "fluid.tests.testConstructGrades",
                 args: ["{that}.options.testOptions.expected", ["{that}.options.testOptions.mockAuxSchema", ["sample", "missing"]]]
             }]
         }]
@@ -480,7 +480,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         fluid.test.runTests([
             "fluid.tests.generateGrade",
-            "fluid.tests.generateGrades",
+            "fluid.tests.constructGrades",
             "fluid.tests.builder"
         ]);
     });
