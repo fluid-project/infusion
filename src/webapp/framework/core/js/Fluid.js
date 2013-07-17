@@ -1787,6 +1787,11 @@ var fluid = fluid || fluid_1_5;
         var mergeOptions = fluid.makeMergeOptions(sharedMergePolicy, sources, baseMergeOptions);
         mergeOptions.mergeBlocks = mergeBlocks;
         mergeOptions.updateBlocks = updateBlocks;
+        mergeOptions.destroyValue = function (path) { // This method is a temporary hack to assist FLUID-5091
+            for (var i = 0; i < mergeBlocks.length; ++ i) {
+                fluid.model.applyChangeRequest(mergeBlocks[i].target, {type: "DELETE", path: path});
+            }
+        };
         
         // Decode the now available mergePolicy
         var mergePolicy = fluid.driveStrategy(options, "mergePolicy", mergeOptions.strategy);
