@@ -80,7 +80,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     // instance.container = container;
                     fluid.set(selectors, memberName, container);
                 }
-                
+
                 var template = componentConfig.template;
                 if (template) {
                     templates[memberName] = template;
@@ -196,7 +196,7 @@ var fluid_1_5 = fluid_1_5 || {};
         type = "messages";
         fluid.uiOptions.expandSchemaDirectOption(auxSchema, type, "messages.members.messages");
 
-        type = "templatePrefix"
+        type = "templatePrefix";
         fluid.uiOptions.expandSchemaDirectOption(auxSchema, type, "templatePrefix.prefix");
 
         // Add top common options
@@ -219,7 +219,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         topCommonOptions: {
             panels: {
-                gradeNames: ["fluid.uiOptions", "autoInit"]    
+                gradeNames: ["fluid.uiOptions", "autoInit"]
             },
             enactors: {
                 gradeNames: ["fluid.uiEnhancer", "autoInit"]
