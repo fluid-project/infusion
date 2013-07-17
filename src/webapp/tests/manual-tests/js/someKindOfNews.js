@@ -36,9 +36,9 @@ var skon = skon || {};
         fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
             gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
             prefix: "../../../components/uiOptions/html/",
-            templateLoader: {
+            resourceLoader: {
                 options: {
-                    gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
+                    gradeNames: ["fluid.uiOptions.starterResourceLoader"]
                 }
             },
             uiOptions: {

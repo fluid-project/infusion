@@ -2426,13 +2426,13 @@ fluid.registerNamespace("fluid.tests");
     fluid.defaults("fluid.tests.uio", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
-            templateLoader: {
+            resourceLoader: {
                 type: "fluid.littleComponent"
             },
         },
         distributeOptions: {
-            source: "{that}.options.templateLoader",
-            target: "{that > templateLoader}.options"
+            source: "{that}.options.resourceLoader",
+            target: "{that > resourceLoader}.options"
         }
     });
       
@@ -2442,8 +2442,8 @@ fluid.registerNamespace("fluid.tests");
     
     jqUnit.test("FLUID-5012: Apply gradeNames option onto the target component with IoCSS", function () {
         var uio = fluid.tests.uio({
-            templateLoader: {
-                gradeNames: ["fluid.tests.defaultTemplateLoader"]
+            resourceLoader: {
+                gradeNames: ["fluid.tests.defaultResourceLoader"]
             }
         });
         var expectedGrades = ["autoInit", "fluid.littleComponent", "fluid.tests.defaultTemplateLoader"];

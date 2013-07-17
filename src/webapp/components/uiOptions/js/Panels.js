@@ -402,7 +402,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         value: "{fluid.uiOptions.rootModel}.rootModel.textSize"
                     },
                     resources: {
-                        template: "{templateLoader}.resources.textSize"
+                        template: "{resourceLoader}.resources.textSize"
                     }
                 }
             },
@@ -419,7 +419,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         value: "{fluid.uiOptions.rootModel}.rootModel.lineSpace"
                     },
                     resources: {
-                        template: "{templateLoader}.resources.lineSpace"
+                        template: "{resourceLoader}.resources.lineSpace"
                     }
                 }
             },
@@ -437,7 +437,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         value: "{fluid.uiOptions.rootModel}.rootModel.textFont"
                     },
                     resources: {
-                        template: "{templateLoader}.resources.textFont"
+                        template: "{resourceLoader}.resources.textFont"
                     }
                 }
             },
@@ -455,7 +455,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         value: "{fluid.uiOptions.rootModel}.rootModel.theme"
                     },
                     resources: {
-                        template: "{templateLoader}.resources.contrast"
+                        template: "{resourceLoader}.resources.contrast"
                     }
                 }
             },
@@ -472,7 +472,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         toc: "{fluid.uiOptions.rootModel}.rootModel.toc"
                     },
                     resources: {
-                        template: "{templateLoader}.resources.layoutControls"
+                        template: "{resourceLoader}.resources.layoutControls"
                     }
                 }
             },
@@ -491,7 +491,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         inputsLarger: "{fluid.uiOptions.rootModel}.rootModel.inputsLarger"
                     },
                     resources: {
-                        template: "{templateLoader}.resources.linksControls"
+                        template: "{resourceLoader}.resources.linksControls"
                     }
                 }
             }
@@ -508,8 +508,8 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
 
-    fluid.defaults("fluid.uiOptions.starterTemplateLoader", {
-        gradeNames: ["fluid.uiOptions.templateLoader", "autoInit"],
+    fluid.defaults("fluid.uiOptions.starterResourceLoader", {
+        gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
         templates: {
             textSize: "%prefix/UIOptionsTemplate-textSize.html",
             textFont: "%prefix/UIOptionsTemplate-textFont.html",

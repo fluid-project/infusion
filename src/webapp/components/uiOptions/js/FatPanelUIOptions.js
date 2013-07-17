@@ -147,7 +147,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.uiOptions.fatPanel.renderIframe.finalInit = function (that) {
         var styles = that.options.styles;
-        // TODO: get earlier access to templateLoader, 
+        // TODO: get earlier access to resourceLoader, 
         that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, {"prefix/": that.options.prefix});
         that.iframeSrc = that.options.markupProps.src;
         

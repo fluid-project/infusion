@@ -49,9 +49,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             }
                         }
                     },
-                    templateLoader: {
+                    resourceLoader: {
                         options: {
-                            gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
+                            gradeNames: ["fluid.uiOptions.starterResourceLoaderLoader"]
                         }
                     },
                     uiOptions: {

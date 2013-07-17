@@ -27,7 +27,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     /**
      * An UI Options top-level component that reflects the collaboration between uiOptionsLoader
-     * and templateLoader. This component is the only UI Options component that is intended to be
+     * and resourceLoader. This component is the only UI Options component that is intended to be
      * called by the outside world.
      *
      * @param {Object} options
@@ -38,19 +38,19 @@ var fluid_1_5 = fluid_1_5 || {};
             uiOptionsLoader: {
                 type: "fluid.uiOptions.loader"
             },
-            templateLoader: {
+            resourceLoader: {
                 priority: "first",
-                type: "fluid.uiOptions.templateLoader"
+                type: "fluid.uiOptions.resourceLoader"
             }
         },
         container: "{that}.container",
         distributeOptions: [{
-            source: "{that}.options.templateLoader.options",
+            source: "{that}.options.resourceLoader.options",
             removeSource: true,
-            target: "{that templateLoader}.options"
+            target: "{that resourceLoader}.options"
         }, {
             source: "{that}.options.prefix",
-            target: "{that templatePath}.options.value"
+            target: "{that resourcePath}.options.value"
         }, {
             source: "{that}.options.uiOptionsLoader.options",
             removeSource: true,
@@ -101,34 +101,34 @@ var fluid_1_5 = fluid_1_5 || {};
 
     /**
      * A configurable component that works in conjunction with or without the UI Options template path
-     * component (fluid.uiOptionsTemplatePath) to allow users to set either the location of their own
+     * component (fluid.uiOptionsResourcePath) to allow users to set either the location of their own
      * templates or the templates that are relative to the path defined in the UI Options template path
      * component.
      *
      * @param {Object} options
      */
 
-    fluid.defaults("fluid.uiOptions.templateLoader", {
+    fluid.defaults("fluid.uiOptions.resourceLoader", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
-        finalInitFunction: "fluid.uiOptions.templateLoader.resolveTemplates",
+        finalInitFunction: "fluid.uiOptions.resourceLoader.resolveTemplates",
         templates: {
             uiOptions: "%prefix/FatPanelUIOptions.html"
         },
         // Unsupported, non-API option
         components: {
-            templatePath: {
-                type: "fluid.uiOptions.templatePath"
+            resourcePath: {
+                type: "fluid.uiOptions.resourcePath"
             }
         },
         invokers: {
             transformURL: {
                 funcName: "fluid.stringTemplate",
-                args: [ "{arguments}.0", { "prefix/" : "{templateLoader}.templatePath.options.value"} ]
+                args: [ "{arguments}.0", { "prefix/" : "{that}.resourcePath.options.value"} ]
             }
         }
     });
 
-    fluid.uiOptions.templateLoader.resolveTemplates = function (that) {
+    fluid.uiOptions.resourceLoader.resolveTemplates = function (that) {
         var mapped = fluid.transform(that.options.templates, that.transformURL);
 
         that.resources = fluid.transform(mapped, function (url) {
@@ -146,7 +146,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
 
-    fluid.defaults("fluid.uiOptions.templatePath", {
+    fluid.defaults("fluid.uiOptions.resourcePath", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         value: "../html/"
     });
@@ -157,7 +157,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.loader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        resources: "{templateLoader}.resources",
+        resources: "{resourceLoader}.resources",
         events: {
             // These two are events private to uiOptions
             onUIOptionsTemplateReady: null, // templates are loaded - construct UIOptions itself
@@ -240,7 +240,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onAutoSave: "{that}.save"
         },
         resources: {
-            template: "{templateLoader}.resources.uiOptions"
+            template: "{resourceLoader}.resources.uiOptions"
         },
         autoSave: false
     });
@@ -432,7 +432,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             // TODO: This is a violation of containment, but we can't use up our allowance of demands
             // blocks as a result of FLUID-4392
-            templateLoader: "{templateLoader}"
+            resourceLoader: "{resourceLoader}"
         },
         invokers: {
             updateModel: {
@@ -466,7 +466,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.preview.finalInit = function (that) {
-        var templateUrl = that.templateLoader.transformURL(that.options.templateUrl);
+        var templateUrl = that.resourceLoader.transformURL(that.options.templateUrl);
         that.container.load(function () {
             that.enhancerContainer = $("body", that.container.contents());
             that.events.onReady.fire();

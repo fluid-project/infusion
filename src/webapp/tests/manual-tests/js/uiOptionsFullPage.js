@@ -62,9 +62,9 @@ var demo = demo || {};
         gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
         // Tell UIOptions where to find all the templates, relative to this file
         prefix: pathToTemplates,
-        templateLoader: {
+        resourceLoader: {
             options: {
-                gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
+                gradeNames: ["fluid.uiOptions.starterResourceLoader"]
             }
         },
         // Tell UIOptions where to redirect to if the user cancels the operation
