@@ -27,20 +27,20 @@ var fluid_1_5 = fluid_1_5 || {};
             auxSchema: "expandedAuxSchema"
         },
 
-        consolidatedGrade: {
+        assembledUIOGrade: {
             expander: {
-                func: "fluid.uiOptions.builder.defaults",
-                args: ["{that}.options.auxSchema.namespace", {
+                func: "fluid.uiOptions.builder.generateGrade",
+                args: ["uio", "{that}.options.auxSchema.namespace", {
                     gradeNames: ["fluid.viewComponent", "autoInit", "fluid.uiOptions.assembler.consolidated"],
                     componentGrades: "{that}.options.constructedGrades"
                 }]
             }
         },
 
-        enhancerGrade: {
+        assembledUIEGrade: {
             expander: {
-                func: "fluid.uiOptions.builder.defaults",
-                args: ["{that}.options.auxSchema.namespace", { // how do i get the namespace??
+                func: "fluid.uiOptions.builder.generateGrade",
+                args: ["uie", "{that}.options.auxSchema.namespace", {
                     gradeNames: ["fluid.viewComponent", "autoInit", "fluid.uiOptions.assembler.uie"],
                     componentGrades: "{that}.options.constructedGrades"
                 }]
@@ -62,7 +62,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.globalSettingsStore"
             },
             enhancer: {
-                type: "fluid.uiEnhancer",// <--- need to change the type  or add a gradeName
+                type: "fluid.uiEnhancer",
                 container: "body",
                 options: {
                     gradeNames: ["{fluid.uiOptions.builder.uie}.options.componentGrades.enactors", "{fluid.uiOptions.builder.uie}.options.componentGrades.rootModel"],
@@ -77,7 +77,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.assembler.consolidated", {
+    fluid.defaults("fluid.uiOptions.assembler.uio", {
         gradeNames: ["autoInit", "fluid.viewComponent", "fluid.uiOptions.assembler.uie"],
         components: {
             uiOptions: {
@@ -101,19 +101,19 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.uiOptions.builder.defaults = function (name, options) {
-        fluid.defaults(name, options);
+    fluid.uiOptions.builder.generateGrade = function (name, namespace, options) {
+        var gradeNameTemplate = "%namespace.%name";
+        var gradeName = fluid.stringTEmplate(gradeNameTemplate, {name: name, namespace: namespace});
+        fluid.defaults(gradeName, options);
         return name;
     };
 
     fluid.uiOptions.builder.generateGrades = function (auxSchema, gradeCategories) {
-        var gradeNameTemplate = auxSchema.namespace + ".%category";
         var componentGrades = {};
         fluid.each(gradeCategories, function (category) {
-            var gradeName = fluid.stringTemplate(gradeNameTemplate, {category: category});
             var gradeOpts = auxSchema[category];
             if (gradeOpts) {
-                constructedGrades[category] = fluid.uiOptions.builder.defaults(gradeName, gradeOpts);
+                constructedGrades[category] = fluid.uiOptions.builder.generateGrade(category, auxSchema.namespace, gradeOpts);
             }
         });
         return constructedGrades;
