@@ -95,6 +95,15 @@ var fluid_1_5 = fluid_1_5 || {};
                         options: {
                             gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.panels", "{fluid.uiOptions.assembler.uio}.options.componentGrades.rootModel"]
                         }
+                    },
+                    components: {
+                        originalEnhancerOptions: {
+                            type: "fluid.littleComponent",
+                            options: {
+                                gradeNames: ["autoInit"],
+                                originalUserOptions: {}
+                            }
+                        }
                     }
                 }
             }
