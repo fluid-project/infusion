@@ -2951,7 +2951,15 @@ fluid.registerNamespace("fluid.tests");
             actualComponent: {
                 type: "fluid.littleComponent",
                 options: {
-                    gradeNames: ["{fluid.tests.builderComponent}.options.gradeName"]
+                    gradeNames: ["{fluid.tests.builderComponent}.options.gradeName"],
+                    components: {
+                        originalSub: {
+                            type: "fluid.littleComponent",
+                            options: {
+                                gradeNames: "autoInit"
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -2973,6 +2981,7 @@ fluid.registerNamespace("fluid.tests");
         });
         jqUnit.assertTrue("Non component related options are merged correctly", builder.actualComponent.options.existingOption);
         jqUnit.assertTrue("Grade was assigned correctly", fluid.hasGrade(builder.actualComponent.options, "fluid.tests.contributedGrade"));
+        jqUnit.assertNotUndefined("The existing subcomponent exists", builder.actualComponent.originalSub);
         jqUnit.assertValue("Components must be merged correctly", builder.actualComponent.mustExist);
     });
 
