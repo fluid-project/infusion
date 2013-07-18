@@ -90,7 +90,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.uiOptions.applierRequestChanges = function (uiOptions, selectionOptions) {
         fluid.each(selectionOptions, function (value, key) {
-            uiOptions.applier.requestChange("selections." + key, value);
+            uiOptions.applier.requestChange("" + key, value);
         });
     };
 
@@ -118,23 +118,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 var saveButton = uiOptions.locate("save");
                 saveButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from bwSkin", fluid.tests.uiOptions.bwSkin, uiOptions.model.selections);
-                jqUnit.assertEquals("Save event fired with selections", uiOptions.model.selections, savedSelections);
-                jqUnit.assertEquals("Direct save event fired with selections", uiOptions.model.selections, savedSelections2);
+                fluid.tests.uiOptions.checkModelSelections("model from bwSkin", fluid.tests.uiOptions.bwSkin, uiOptions.model);
+                jqUnit.assertEquals("Save event fired with selections", uiOptions.model, savedSelections);
+                jqUnit.assertEquals("Direct save event fired with selections", uiOptions.model, savedSelections2);
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.ybSkin);
 
                 var cancelButton = uiOptions.locate("cancel");
                 cancelButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from bwSkin (unchanged after cancel", fluid.tests.uiOptions.bwSkin, uiOptions.model.selections);
+                fluid.tests.uiOptions.checkModelSelections("model from bwSkin (unchanged after cancel", fluid.tests.uiOptions.bwSkin, uiOptions.model);
 
                 var resetButton = uiOptions.locate("reset");
                 resetButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from original", rootModel, uiOptions.model.selections);
+                fluid.tests.uiOptions.checkModelSelections("model from original", rootModel, uiOptions.model);
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
 
                 cancelButton.click();
                 fluid.tests.uiOptions.checkModelSelections("model from original (correct state after reset and cancel)",
-                    (resetShouldSave ? rootModel : fluid.tests.uiOptions.bwSkin), uiOptions.model.selections);
+                    (resetShouldSave ? rootModel : fluid.tests.uiOptions.bwSkin), uiOptions.model);
 
                 jqUnit.start();
             }
@@ -245,7 +245,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.uiOptions.mungingIntegrationTest = function (componentName, container, extraOpts, extraListener) {
         extraListener = extraListener || function () { jqUnit.start(); };
-        
+
         jqUnit.asyncTest(componentName + " Munging Integration tests", function () {
             fluid.globalSettingsStore();
             fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
