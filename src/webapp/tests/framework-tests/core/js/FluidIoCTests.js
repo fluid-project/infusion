@@ -2985,4 +2985,39 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertValue("Components must be merged correctly", builder.actualComponent.mustExist);
     });
 
+    /** FLUID-5094: Dynamic grade merging takes the undefined source passed in from IoCSS into account rather than ignoring it **/
+    fluid.defaults("fluid.tests.fluid5094", {
+        gradeNames: ["fluid.littleComponent", "fluid.tests.nonExistedGrade", "autoInit"],
+        components: {
+            subComponent: {
+                type: "fluid.littleComponent",
+                options: {
+                    gradeNames: ["{fluid.tests.fluid5094}.options.gradeName"]
+                }
+            },
+        },
+        passDownObject: "{nonExistedGrade}.options.fakeOption",
+        distributeOptions: {
+            source: "{that}.options.passDownObject",
+            target: "{that > subComponent}.options"
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid5094Grade", {
+        gradeNames: ["autoInit", "fluid.littleComponent"],
+        components: {
+            mustExist: {
+                type: "fluid.littleComponent"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5094: Dynamic grade merging takes the undefined source passed in from IoCSS into account rather than ignoring it", function () {
+        var root = fluid.tests.fluid5094({
+            gradeName: "fluid.tests.fluid5094Grade"
+        });
+        
+        jqUnit.assertValue("Components must be merged correctly", root.subComponent.mustExist);
+    });
+
 })(jQuery);
