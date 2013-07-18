@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid_1_5:true*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_5 = fluid_1_5 || {};
@@ -49,11 +49,11 @@ var fluid_1_5 = fluid_1_5 || {};
             "textFont": {
                 "type": "fluid.uiOptions.textFont",
                 "classes": {
-                    "default": "",
-                    "times": "fl-font-uio-times",
-                    "comic": "fl-font-uio-comic-sans",
-                    "arial": "fl-font-uio-arial",
-                    "verdana": "fl-font-uio-verdana"
+                    "": "",
+                    "Times New Roman": "fl-font-uio-times",
+                    "Comic Sans": "fl-font-uio-comic-sans",
+                    "Arial": "fl-font-uio-arial",
+                    "Verdana": "fl-font-uio-verdana"
                 }
             },
             "contrast": {
@@ -115,12 +115,12 @@ var fluid_1_5 = fluid_1_5 || {};
             }, {
                 "type": "fluid.uiOptions.panels.textFont",
                 "container": ".flc-uiOptions-text-font",  // the css selector in the template where the panel is rendered
-                "classnameMap": "@textFont.classes",
+                "classnameMap": {"textFont": "@textFont.classes"},
                 "template": "%prefix/UIOptionsTemplate-textFont.html"
             }, {
                 "type": "fluid.uiOptions.panels.contrast",
                 "container": ".flc-uiOptions-contrast",  // the css selector in the template where the panel is rendered
-                "classnameMap": "@contrast.classes",
+                "classnameMap": {"theme": "@contrast.classes"},
                 "template": "%prefix/UIOptionsTemplate-contrast.html"
             }, {
                 "type": "fluid.uiOptions.panels.layoutControls",
