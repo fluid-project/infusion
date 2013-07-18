@@ -59,7 +59,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             schema: {
                 type: "fluid.littleComponent",
                 options: {
-                    gradeNames: ["fluid.uiOptions.schemas.textSize", "fluid.uiOptions.schemas.lineSpacing"]
+                    gradeNames: ["fluid.uiOptions.schemas.textSize", "fluid.uiOptions.schemas.lineSpace"]
                 }
             },
             properSchema: {
@@ -75,8 +75,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         textSize: {
                             type: "fluid.uiOptions.textSize"
                         },
-                        lineSpacing: {
-                            type: "fluid.uiOptions.lineSpacing"
+                        lineSpace: {
+                            type: "fluid.uiOptions.lineSpace"
                         }
                     }
                 }
@@ -94,8 +94,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         textSize: {
                             type: "fluid.uiOptions.textSize"
                         },
-                        lineSpacing: {
-                            type: "fluid.uiOptions.lineSpacing"
+                        lineSpace: {
+                            type: "fluid.uiOptions.lineSpace"
                         },
                         somePreference: {
                             type: "fluid.tests.somePreference"
@@ -174,7 +174,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.primaryBuilderWithSuppliedPrimarySchema = function (schema, that) {
         verifyBuilder(schema, [
             "fluid.tests.customTextSize",
-            "fluid.uiOptions.schemas.lineSpacing",
+            "fluid.uiOptions.schemas.lineSpace",
             "fluid.tests.sampleSchemaGrade"
         ], [
             "fluid.uiOptions.contrast"
@@ -186,7 +186,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.primaryBuilder = function (schema) {
         verifyBuilder(schema, [
             "fluid.uiOptions.schemas.textSize",
-            "fluid.uiOptions.schemas.lineSpacing"
+            "fluid.uiOptions.schemas.lineSpace"
         ], [
             "fluid.uiOptions.contrast",
             "fluid.tests.somePreference"
@@ -217,7 +217,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testContributedSchema = function (schema) {
         var contributedSchema = $.extend(true, {},
             fluid.defaults("fluid.uiOptions.schemas.textSize").schema,
-            fluid.defaults("fluid.uiOptions.schemas.lineSpacing").schema);
+            fluid.defaults("fluid.uiOptions.schemas.lineSpace").schema);
         var finalSchema = schema.options.schema;
         verifySchema(contributedSchema, finalSchema);
         contributedSchema =
@@ -225,8 +225,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         finalSchema = schema.options.schema.properties["fluid.uiOptions.textSize"];
         verifySchema(contributedSchema, finalSchema);
         contributedSchema =
-            fluid.defaults("fluid.uiOptions.schemas.lineSpacing").schema.properties["fluid.uiOptions.lineSpacing"];
-        finalSchema = schema.options.schema.properties["fluid.uiOptions.lineSpacing"];
+            fluid.defaults("fluid.uiOptions.schemas.lineSpace").schema.properties["fluid.uiOptions.lineSpace"];
+        finalSchema = schema.options.schema.properties["fluid.uiOptions.lineSpace"];
         verifySchema(contributedSchema, finalSchema);
     };
 
