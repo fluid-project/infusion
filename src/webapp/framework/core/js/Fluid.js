@@ -1742,6 +1742,16 @@ var fluid = fluid || fluid_1_5;
         demands:            600 // and above
     };
 
+    /** Delete the value in the supplied object held at the specified path
+     * @param target {Object} The object holding the value to be deleted (possibly empty)
+     * @param path {String/Array of String} the path of the value to be deleted
+     */
+     
+    fluid.destroyValue = function (target, path) {
+        if (target) {
+            fluid.model.applyChangeRequest(target, {type: "DELETE", path: path});
+        }
+    };
     /**
      * Merges the component's declared defaults, as obtained from fluid.defaults(),
      * with the user's specified overrides.
@@ -1789,8 +1799,9 @@ var fluid = fluid || fluid_1_5;
         mergeOptions.updateBlocks = updateBlocks;
         mergeOptions.destroyValue = function (path) { // This method is a temporary hack to assist FLUID-5091
             for (var i = 0; i < mergeBlocks.length; ++ i) {
-                fluid.model.applyChangeRequest(mergeBlocks[i].target, {type: "DELETE", path: path});
+                fluid.destroyValue(mergeBlocks[i].target, path);
             }
+            fluid.destroyValue(baseMergeOptions.target, path);
         };
         
         // Decode the now available mergePolicy
