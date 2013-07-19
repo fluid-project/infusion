@@ -92,7 +92,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
             return toMount(target, name, i - prefix.length, segs.slice(offset));
-        }
+        };
     };
     
     // unsupported, NON-API function    
@@ -462,15 +462,15 @@ var fluid_1_5 = fluid_1_5 || {};
                 });
             }
             else if (record.createOnEvent) {
-               var event = fluid.event.expandOneEvent(that, record.createOnEvent);
-               fluid.set(shadow, ["dynamicComponentCount", recordKey], 0);
-               var listener = function () {
+                var event = fluid.event.expandOneEvent(that, record.createOnEvent);
+                fluid.set(shadow, ["dynamicComponentCount", recordKey], 0);
+                var listener = function () {
                     var key = fluid.registerDynamicRecord(that, recordKey, shadow.dynamicComponentCount[recordKey]++, record, "createOnEvent");
                     localSub[key] = {"arguments": fluid.makeArray(arguments)};
                     fluid.initDependent(that, key);
-               };
-               event.addListener(listener);
-               fluid.recordListener(event, listener, shadow);
+                };
+                event.addListener(listener);
+                fluid.recordListener(event, listener, shadow);
             }
         });
     };
@@ -499,7 +499,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.shadowForComponent = function (component) {
         var instantiator = fluid.getInstantiator(component);
-        return shadow = instantiator && component ? instantiator.idToShadow[component.id] : null;      
+        return instantiator && component ? instantiator.idToShadow[component.id] : null;      
     };
     
     fluid.getForComponent = function (component, path) {
@@ -1348,7 +1348,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             fluid.fail("Record ", that, " must contain both entries \"method\" and \"this\" if it contains either");
         }
         if (!record.method) {
-           return null;
+            return null;
         }
         return {
             apply: function (noThis, args) {
@@ -1427,11 +1427,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.event.makeTrackedListenerAdder = function (source) {
         var shadow = fluid.shadowForComponent(source);
         return function (event) {
-            return {addListener: function(listener) {
+            return {addListener: function (listener) {
                     fluid.recordListener(event, listener, shadow);
                     event.addListener.apply(null, arguments);
                 }
-            }
+            };
         };
     };
 
@@ -1476,9 +1476,19 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             return togo;
         };
     };
+
+    // unsupported, non-API function    
+    fluid.event.resolveSoftNamespace = function (key) {
+        if (typeof(key) !== "string") {
+            return null;
+        } else {
+            var lastpos = Math.max(key.lastIndexOf("."), key.lastIndexOf("}"));
+            return key.substring(lastpos + 1);
+        }
+    };
     
     // unsupported, non-API function
-    fluid.event.resolveListenerRecord = function (lisrec, that, eventName) {
+    fluid.event.resolveListenerRecord = function (lisrec, that, eventName, namespace) {
         var badRec = function (record, extra) {
             fluid.fail("Error in listener record - could not resolve reference ", record, " to a listener or firer. "
                     + "Did you miss out \"events.\" when referring to an event firer?" + extra);
@@ -1496,7 +1506,12 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 expanded.listener = expanded.listener || expanded.func || expanded.funcName;
             }
             if (!expanded.listener) {
-                badRec(record, " Listener record must contain a member named \"listener\" or \"method\"");
+                badRec(record, " Listener record must contain a member named \"listener\", \"func\", \"funcName\" or \"method\"");
+            }
+            var softNamespace = fluid.event.resolveSoftNamespace(record.method ? record["this"] + "-" + record.method : expanded.listener);
+            if (!expanded.namespace && !namespace && softNamespace) {
+                expanded.softNamespace = true;
+                expanded.namespace = softNamespace;
             }
             var listener = expanded.listener = fluid.expandOptions(expanded.listener, that);
             if (!listener) {
