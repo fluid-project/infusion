@@ -853,18 +853,14 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             onCreate: [{
                 func: "{that}.refreshView",
-                namespace: "refreshView"
             }, {
                 funcName: "fluid.inlineEdit.initializeEditView",
-                namespace: "initializeEditView",
                 args: ["{that}", true]
             }, {
                 funcName: "fluid.inlineEdit.setup",
-                namespace: "setup",
                 args: "{that}"
             }, {
                 funcName: "fluid.inlineEdit.processUndoDecorator",
-                namespace: "processUndoDecorator",
                 args: "{that}"
             }],
             onBeginEdit: {
