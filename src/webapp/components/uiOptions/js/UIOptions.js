@@ -217,7 +217,7 @@ var fluid_1_5 = fluid_1_5 || {};
              */
             updateModel: {
                 funcName: "fluid.fireSourcedChange",
-                args: ["{that}.applier", "selections", "{arguments}.0", "{arguments}.1"]
+                args: ["{that}.applier", "", "{arguments}.0", "{arguments}.1"]
             }
         },
         selectors: {
@@ -315,7 +315,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             updateEnhancerModel: {
                 funcName: "fluid.uiOptions.uiEnhancerRelay.updateEnhancerModel",
-                args: ["{uiEnhancer}", "{fluid.uiOptions}.model.selections"]
+                args: ["{uiEnhancer}", "{fluid.uiOptions}.model"]
             }
         }
     });
@@ -368,9 +368,9 @@ var fluid_1_5 = fluid_1_5 || {};
          * Saves the current model and fires onSave
          */
         that.save = function () {
-            that.events.onSave.fire(that.model.selections);
+            that.events.onSave.fire(that.model);
 
-            var savedSelections = fluid.copy(that.model.selections);
+            var savedSelections = fluid.copy(that.model);
             that.setSettings(savedSelections);
         };
 
@@ -396,7 +396,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.fetch();
         };
 
-        that.applier.modelChanged.addListener("selections", function (newModel, oldModel, changeRequest) {
+        that.applier.modelChanged.addListener("*", function (newModel, oldModel, changeRequest) {
             that.events.modelChanged.fire(newModel, oldModel, changeRequest[0].source);
             if (that.options.autoSave) {
                 that.events.onAutoSave.fire();
@@ -439,7 +439,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.uiOptions.preview.updateModel",
                 args: [
                     "{preview}",
-                    "{uiOptions}.model.selections"
+                    "{uiOptions}.model"
                 ]
             }
         },
@@ -454,13 +454,13 @@ var fluid_1_5 = fluid_1_5 || {};
         templateUrl: "%prefix/UIOptionsPreview.html"
     });
 
-    fluid.uiOptions.preview.updateModel = function (that, selections) {
+    fluid.uiOptions.preview.updateModel = function (that, model) {
         /**
          * SetTimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
          */
         setTimeout(function () {
             if (that.enhancer) {
-                that.enhancer.updateModel(selections);
+                that.enhancer.updateModel(model);
             }
         }, 0);
     };

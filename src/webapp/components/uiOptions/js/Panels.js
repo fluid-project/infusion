@@ -396,7 +396,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     gradeNames: "fluid.uiOptions.defaultPanel",
                     rules: {
-                        "selections.textSize": "value"
+                        "textSize": "value"
                     },
                     model: {
                         value: "{fluid.uiOptions.rootModel}.rootModel.textSize"
@@ -413,7 +413,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     gradeNames: "fluid.uiOptions.defaultPanel",
                     rules: {
-                        "selections.lineSpace": "value"
+                        "lineSpace": "value"
                     },
                     model: {
                         value: "{fluid.uiOptions.rootModel}.rootModel.lineSpace"
@@ -431,7 +431,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     gradeNames: "fluid.uiOptions.defaultPanel",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
-                        "selections.textFont": "value"
+                        "textFont": "value"
                     },
                     model: {
                         value: "{fluid.uiOptions.rootModel}.rootModel.textFont"
@@ -449,7 +449,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     gradeNames: "fluid.uiOptions.defaultPanel",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
-                        "selections.theme": "value"
+                        "theme": "value"
                     },
                     model: {
                         value: "{fluid.uiOptions.rootModel}.rootModel.theme"
@@ -466,7 +466,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     gradeNames: "fluid.uiOptions.defaultPanel",
                     rules: {
-                        "selections.toc": "toc"
+                        "toc": "toc"
                     },
                     model: {
                         toc: "{fluid.uiOptions.rootModel}.rootModel.toc"
@@ -483,8 +483,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     gradeNames: "fluid.uiOptions.defaultPanel",
                     rules: {
-                        "selections.links": "links",
-                        "selections.inputsLarger": "inputsLarger"
+                        "links": "links",
+                        "inputsLarger": "inputsLarger"
                     },
                     model: {
                         links: "{fluid.uiOptions.rootModel}.rootModel.links",

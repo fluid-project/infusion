@@ -119,10 +119,10 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.schemas.lineSpacing", {
+    fluid.defaults("fluid.uiOptions.schemas.lineSpace", {
         gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
         schema: {
-            "fluid.uiOptions.lineSpacing": {
+            "fluid.uiOptions.lineSpace": {
                 "type": "number",
                 "default": 1,
                 "minimum": 1,

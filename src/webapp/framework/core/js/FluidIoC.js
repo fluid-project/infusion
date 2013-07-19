@@ -422,6 +422,9 @@ var fluid_1_5 = fluid_1_5 || {};
             gradeNames.length = 0; // acquire derivatives of dynamic grades (FLUID-5054)
             gradeNames.push.apply(gradeNames, newDefaults.gradeNames);
             fluid.cacheShadowGrades(that, shadow);
+            // This cheap strategy patches FLUID-5091 for now - some more sophisticated activity will take place 
+            // at this site when we have a full fix for FLUID-5028
+            shadow.mergeOptions.destroyValue("components");
             
             var defaultsBlock = fluid.findMergeBlocks(shadow.mergeOptions.mergeBlocks, "defaults")[0];
             defaultsBlock.source = newDefaults;
