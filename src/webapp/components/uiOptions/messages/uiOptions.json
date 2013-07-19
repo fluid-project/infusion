@@ -1,0 +1,5 @@
+// UIOptions general message strings such as for the sliding Panel
+uiOptions: {
+	slidingPanelShowText: "+ Show Display Preferences",
+    slidingPanelHideText: "- Hide"
+}
