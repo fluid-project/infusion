@@ -57,7 +57,11 @@ var fluid_1_5 = fluid_1_5 || {};
         textSizeLargeIcon: "icon of a large capital letter 'A'",
 
         // Shared
-        multiplier: "times"
+        multiplier: "times",
+        
+        // Sliding Panel
+        slidingPanelShowText: "+ Show Display Preferences",
+        slidingPanelHideText: "- Hide"        
     };
 
     fluid.staticEnvironment.uioMsgBundle = fluid.messageResolver({

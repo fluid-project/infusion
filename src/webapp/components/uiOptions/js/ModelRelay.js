@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid_1_5:true, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_5 = fluid_1_5 || {};
@@ -29,6 +29,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.modelRelay", {
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
+        listenerNamespaces: [], // keep track of all the added listeners for removal at the destroy of this component
         mergePolicy: {
             sourceApplier: "nomerge"
         },
@@ -39,31 +40,35 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             addListeners: {
                 funcName: "fluid.uiOptions.modelRelay.addListeners",
-                args: ["{that}.options.rules", "{that}.applier", "{that}.options.sourceApplier", "{that}.id"]
+                args: ["{that}.options.rules", "{that}.applier", "{that}.options.sourceApplier", "{that}.options.listenerNamespaces"]
             },
             removeListeners: {
                 funcName: "fluid.uiOptions.modelRelay.removeListeners",
-                args: ["{that}.options.rules", "{that}.options.sourceApplier", "{that}.id"]
+                args: ["{that}.options.sourceApplier.modelChanged", "{that}.options.listenerNamespaces"]
             }
         },
         sourceApplier: null,  // must be supplied by implementors
         rules: {}  // must be supplied by implementors, in format: "externalModelKey": "internalModelKey"
     });
 
-    fluid.uiOptions.modelRelay.removeListeners = function (rules, applier, namespace) {
-        fluid.each(rules, function () {
-            applier.modelChanged.removeListener(namespace);
+    fluid.uiOptions.modelRelay.removeListeners = function (modelChanged, namespaces) {
+        fluid.each(namespaces, function (namespace) {
+            modelChanged.removeListener(namespace);
         });
     };
 
-    fluid.uiOptions.modelRelay.addListeners = function (rules, applier, sourceApplier, namespace) {
+    fluid.uiOptions.modelRelay.addListeners = function (rules, applier, sourceApplier, listenerNamespaces) {
         fluid.each(rules, function (internalKey, sourceKey) {
+            var uniqueNamespace = fluid.allocateGuid();
+
+            listenerNamespaces.push(uniqueNamespace);
+
             fluid.addSourceGuardedListener(applier, internalKey, sourceKey, function (newModel) {
                 fluid.fireSourcedChange(sourceApplier, sourceKey, fluid.get(newModel, internalKey), internalKey)
             });
             fluid.addSourceGuardedListener(sourceApplier, sourceKey, internalKey, function (newModel) {
                 fluid.fireSourcedChange(applier, internalKey, fluid.get(newModel, sourceKey), sourceKey);
-            }, null, namespace);
+            }, null, uniqueNamespace);
         });
     };
 

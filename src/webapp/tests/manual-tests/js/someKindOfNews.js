@@ -23,7 +23,7 @@ var skon = skon || {};
         // First, start up Settings Store and Page Enhancer
         fluid.globalSettingsStore();
         fluid.pageEnhancer({
-            gradeNames: ["fluid.uiEnhancer.starterActions"],
+            gradeNames: ["fluid.uiEnhancer.starterEnactors"],
             classnameMap: {
                 theme: {
                     "default": "skon-theme-basic"

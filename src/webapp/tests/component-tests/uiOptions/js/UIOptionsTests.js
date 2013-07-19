@@ -74,7 +74,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         container: "body",
                         priority: "first",
                         options: {
-                            gradeNames: ["fluid.uiEnhancer.starterActions"]
+                            gradeNames: ["fluid.uiEnhancer.starterEnactors"]
                         }
                     }
                 },
@@ -361,7 +361,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals(message + ": Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
             jqUnit.assertEquals(message + ": Theme correctly updated", expectedSelections.theme, actualSelections.theme);
             jqUnit.assertEquals(message + ": Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
-            jqUnit.assertEquals(message + ": Line spacing correctly updated", expectedSelections.lineSpace, actualSelections.lineSpace);
+            jqUnit.assertEquals(message + ": Line space correctly updated", expectedSelections.lineSpace, actualSelections.lineSpace);
         };
 
         var checkSettingsStore = function (message, expectedSelections, actualSelections, preSaveSelections) {
@@ -412,7 +412,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 funcName: "fluid.uiOptions",
                 options: {
                     selectors: {
-                        textSize: ".flc-uiOptions-text-sizer"
+                        textSize: ".flc-uiOptions-text-size"
                     },
                     components: {
                         textSize: {
@@ -466,7 +466,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "contrast": false,
                     "layoutControls": false,
                     "linksControls": false,
-                    "uiEnhancer.options.components.tableOfContentsEnactor": true
+                    "uiEnhancer.options.components.tableOfContents": true
                 };
 
                 checkPaths(uiOptions, customizedPanelPaths);
@@ -496,7 +496,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             container: "body",
                             priority: "first",
                             options: {
-                                gradeNames: ["fluid.uiEnhancer.starterActions"]
+                                gradeNames: ["fluid.uiEnhancer.starterEnactors"]
                             }
                         }
                     },
@@ -518,7 +518,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "contrast": true,
                     "layoutControls": true,
                     "linksControls": true,
-                    "uiEnhancer.options.components.tableOfContentsEnactor": true
+                    "uiEnhancer.options.components.tableOfContents": true
                 };
 
                 checkPaths(uiOptions, defaultPanelsPaths);

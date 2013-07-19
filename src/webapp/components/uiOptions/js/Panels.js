@@ -20,9 +20,9 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
-    /*************************
-     * UI Options Text Sizer *
-     *************************/
+    /********************************
+     * UI Options Text Field Slider *
+     ********************************/
 
     fluid.defaults("fluid.uiOptions.textfieldSlider", {
         gradeNames: ["fluid.textfieldSlider", "autoInit"],
@@ -37,6 +37,10 @@ var fluid_1_5 = fluid_1_5 || {};
         path: "value",
         sliderOptions: "{fluid.uiOptions.panels}.options.sliderOptions"
     });
+
+    /************************
+     * UI Options Text Size *
+     ************************/
 
     /**
      * A sub-component of fluid.uiOptions that renders the "text size" panel of the user preferences interface.
@@ -118,12 +122,12 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
 
-    /**************************
-     * UI Options Line Spacer *
-     **************************/
+    /*************************
+     * UI Options Line Space *
+     *************************/
 
     /**
-     * A sub-component of fluid.uiOptions that renders the "line spacing" panel of the user preferences interface.
+     * A sub-component of fluid.uiOptions that renders the "line space" panel of the user preferences interface.
      */
     fluid.defaults("fluid.uiOptions.panels.lineSpace", {
         gradeNames: ["fluid.uiOptions.panels", "autoInit"],
@@ -135,10 +139,10 @@ var fluid_1_5 = fluid_1_5 || {};
             max: 2
         },
         selectors: {
-            lineSpace: ".flc-uiOptions-line-spacing",
-            label: ".flc-uiOptions-line-spacing-label",
-            narrowIcon: ".flc-uiOptions-line-spacing-narrowIcon",
-            wideIcon: ".flc-uiOptions-line-spacing-wideIcon",
+            lineSpace: ".flc-uiOptions-line-space",
+            label: ".flc-uiOptions-line-space-label",
+            narrowIcon: ".flc-uiOptions-line-space-narrowIcon",
+            wideIcon: ".flc-uiOptions-line-space-wideIcon",
             multiplier: ".flc-uiOptions-multiplier"
         },
         protoTree: {
@@ -319,9 +323,9 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.starterPanels", {
         gradeNames: ["fluid.uiOptions", "autoInit"],
         selectors: {
-            textSize: ".flc-uiOptions-text-sizer",
+            textSize: ".flc-uiOptions-text-size",
             textFont: ".flc-uiOptions-text-font",
-            lineSpace: ".flc-uiOptions-line-spacer",
+            lineSpace: ".flc-uiOptions-line-space",
             contrast: ".flc-uiOptions-contrast",
             textControls: ".flc-uiOptions-text-controls",
             layoutControls: ".flc-uiOptions-layout-controls",

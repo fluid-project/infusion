@@ -94,13 +94,13 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     /*******************************************************************************
-     * UI Enhancer Starter Actions
+     * UI Enhancer Starter Enactors
      *
      * A grade component for UIEnhancer. It is a collection of default UI Enhancer 
      * action ants.
      *******************************************************************************/
     
-    fluid.defaults("fluid.uiEnhancer.starterActions", {
+    fluid.defaults("fluid.uiEnhancer.starterEnactors", {
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
         components: {
             textSize: {
@@ -187,8 +187,8 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             },
-            tableOfContentsEnactor: {
-                type: "fluid.uiOptions.enactors.tableOfContentsEnactor",
+            tableOfContents: {
+                type: "fluid.uiOptions.enactors.tableOfContents",
                 container: "{uiEnhancer}.container",
                 createOnEvent: "onCreateToc",
                 options: {
@@ -219,16 +219,16 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: "{that}.model.inputsLarger"
             }]
         },
-        finalInitFunction: "fluid.uiEnhancer.starterActions.finalInit"
+        finalInitFunction: "fluid.uiEnhancer.starterEnactors.finalInit"
     });
 
-    fluid.uiEnhancer.starterActions.finalInit = function (that) {
+    fluid.uiEnhancer.starterEnactors.finalInit = function (that) {
         $(document).ready(function () {
             that.events.onCreateToc.fire();
             
             // Directly calling toc apply function rather than firing a model change request
             // is because the modelRelay component prevents the relay on the unchanged value.
-            that.tableOfContentsEnactor.applyToc(that.model.toc);
+            that.tableOfContents.applyToc(that.model.toc);
         });
     };
     

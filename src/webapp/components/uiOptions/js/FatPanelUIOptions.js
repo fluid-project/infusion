@@ -41,6 +41,10 @@ var fluid_1_5 = fluid_1_5 || {};
             onReady: {
                 listener: "fluid.uiOptions.fatPanel.bindEvents",
                 args: ["{fatPanel}.uiOptionsLoader.uiOptions", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
+            },
+            onCreate: {
+                listener: "fluid.uiOptions.fatPanel.hideReset",
+                args: ["{fatPanel}"]
             }
         },
         selectors: {
@@ -86,7 +90,7 @@ var fluid_1_5 = fluid_1_5 || {};
                             container: "{iframeRenderer}.renderUIOContainer",
                             createOnEvent: "afterRender",
                             options: {
-                                gradeNames: ["fluid.uiEnhancer.starterActions"],
+                                gradeNames: ["fluid.uiEnhancer.starterEnactors"],
                                 jQuery: "{iframeRenderer}.jQuery",
                                 tocTemplate: "{pageEnhancer}.options.tocTemplate",
                                 events: {
@@ -125,6 +129,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }]
     });
     
+    fluid.uiOptions.fatPanel.hideReset = function (fatPanel) {
+        fatPanel.locate("reset").hide();
+    };
     /*****************************************
      * fluid.uiOptions.fatPanel.renderIframe *
      *****************************************/
@@ -199,7 +206,7 @@ var fluid_1_5 = fluid_1_5 || {};
             iframe.animate(attrs, 400);
         });
         
-        // Re-apply text size and line spacing to iframe content since these initial css values are not detectable
+        // Re-apply text size and line space to iframe content since these initial css values are not detectable
         // when the iframe is hidden.
         iframeEnhancer.events.onIframeVisible.addListener(function () {
             iframeEnhancer.textSize.set(iframeEnhancer.model.textSize);
@@ -214,6 +221,10 @@ var fluid_1_5 = fluid_1_5 || {};
         });
         fatPanel.slidingPanel.events.onPanelShow.addListener(function () {
             fatPanel.iframeRenderer.iframe.show();
+            fatPanel.locate("reset").show();
+        });
+        fatPanel.slidingPanel.events.onPanelHide.addListener(function () {
+            fatPanel.locate("reset").hide();
         });
     };
 
