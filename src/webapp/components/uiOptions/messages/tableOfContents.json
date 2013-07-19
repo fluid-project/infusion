@@ -1,0 +1,5 @@
+// Table of Contents Settings Panel
+tableOfContents: {
+    tocLabel: "Table of Contents",
+    tocChoiceLabel: "Add a table of contents"
+}
