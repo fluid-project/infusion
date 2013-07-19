@@ -243,7 +243,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 createOnEvent: "templatesAndIframeReady",
                 container: "{iframeRenderer}.renderUIOContainer",
                 options: {
-                    gradeNames: ["fluid.uiOptions.uiEnhancerRelay", "fluid.uiOptions.iframeRenderer"],
+                    gradeNames: ["fluid.uiOptions.uiEnhancerRelay"],
                     // ensure that model and applier are available to users at top level
                     model: "{fatPanel}.model",
                     applier: "{fatPanel}.applier",
@@ -257,6 +257,9 @@ var fluid_1_5 = fluid_1_5 || {};
                             listener: "{fatPanel}.bindReset",
                             args: ["{that}.reset"]
                         }
+                    },
+                    components: {
+                        iframeRenderer: "{fatPanel}.iframeRenderer"
                     }
                 }
             }
@@ -269,12 +272,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             onReady: "{fatPanel}.events.onReady"
-        }
-    });
-
-    fluid.defaults("fluid.uiOptions.iframeRenderer", {
-        components: {
-            iframeRenderer: "{fatPanel}.iframeRenderer"
         }
     });
 
