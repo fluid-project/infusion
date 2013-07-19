@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid, jqUnit, expect, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
@@ -23,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     var resultValue, resultWrapperValue;
-    
+
     fluid.defaults("fluid.tests.modelRelay", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
@@ -77,25 +77,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             resultValue = newModel.value;
         });
     };
-    
+
     fluid.uiOptions.modelRelayWrapper.init = function (that) {
         that.applier.modelChanged.addListener("wrapperValue", function (newModel) {
             resultWrapperValue = newModel.wrapperValue;
         });
     };
-    
+
     fluid.tests.checkImplResult = function (expectedValue) {
         return function () {
             jqUnit.assertEquals("The model change request on the modelRelay has been fired", expectedValue, resultValue);
         };
     };
-    
+
     fluid.tests.checkWrapperResult = function (expectedValue) {
         return function () {
             jqUnit.assertEquals("The model change request on the modelRelay has been fired", expectedValue, resultWrapperValue);
         };
     };
-    
+
     fluid.tests.destroyModelRelayImpl = function (modelRelayWrapper) {
         var instantiator = fluid.getInstantiator(modelRelayWrapper);
         instantiator.clearComponent(modelRelayWrapper, "modelRelayImpl");
