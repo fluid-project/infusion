@@ -139,7 +139,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** 
      * Test gappedPageStrategy Strategy
      */
-    jqUnit.test("Pager gappedPageStrategy", function () {
+    jqUnit.asyncTest("Pager gappedPageStrategy", function () {
         var pageSize = 3;
         var pageList = 100;
         var expectedPages = Math.ceil(pageList / pageSize);
@@ -149,6 +149,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return {
                 type: "fluid.pager.renderedPageList",
                 options: {
+                    dataModel: fluid.tests.pager.animalDataModel,
+                    columnDefs: fluid.tests.pager.animalColumnDefs,
                     pageStrategy: fluid.pager.gappedPageStrategy(j, m)
                 }
             };
@@ -180,22 +182,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return false;
         };
         
+        var i = 1;
+        
         var allPagesAfterClickedEachFn = function (index, element) {
             if (!$(element).hasClass("flc-pager-pageLink-skip")) {
                 jqUnit.assertTrue("Clicked on [page " + i + "] and checking [" + $(element).find("a").attr("id") + "]", shouldExistInList(i, element));
             }
         };
-            
-        // Go through all pages 1 by 1, and click each
-        for (var i = 1; i <= expectedPages; i++) {
+        function clickNext() {
             var page = fluid.jById("page-link:link" + i);
             page.click();     
             var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
             allPagesAfterClicked.each(allPagesAfterClickedEachFn);
+            if (i === expectedPages - 1) {
+                pager.destroy();
+                jqUnit.start();
+            }
+            else { // Convert the test to async since on FF it is now expensive enough to generate painful "unresponsive script" warnings (mainly due to tooltip cost)
+                ++i;
+                setTimeout(clickNext, 1);
+            }
         }
-        pager.destroy();
+        clickNext();
     });
-    
+ 
     fluid.tests.pager.animalDataModel = {
         pets: [
             {
@@ -248,13 +258,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             sortable: true
         }
     ];
- 
          
-    jqUnit.test("Page Table Header aria-sort, also checks if anchor titles changes accordingly ", function () {
+    jqUnit.test("Page Table Header aria-sort and title, and body rendering test", function () {
         var strings = fluid.defaults("fluid.table").strings;
 
         var opt = {
-            dataModel: fluid.tests.pager.animaldataModel,
+            dataModel: fluid.tests.pager.animalDataModel,
             columnDefs: fluid.tests.pager.animalColumnDefs,
             annotateColumnRange: "category",
             model: {
@@ -263,6 +272,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         var pager = renderedPager("#rendered", opt);
         var currentHeaders = pager.locate("headerSortStylisticOffset");
+        
+        // Check that the table data was actually rendered into the markup
+        var trs = $("tbody tr", pager.container);
+        jqUnit.assertEquals("Correct number of rows rendered", opt.model.pageSize, trs.length);
+        function spanToObject(accum, span) {
+            var id = span.prop("id");
+            var member = id.substring(id.lastIndexOf(":") + 1);
+            accum[member] = span.text();
+        }
+        
+        var recovered = fluid.transform(trs, function (tr) {
+            var togo = {};
+            var spans = $("span", tr);
+            fluid.each(spans, function (span) {
+                spanToObject(togo, $(span));
+            });
+            return togo;
+        });
+        
+        jqUnit.assertDeepEq("All table data rendered", fluid.tests.pager.animalDataModel, {pets: recovered});
 
         /**
          * Get a string representation of the parameter based on the strings we have in Pager.js 
@@ -325,13 +354,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             //second click is descending order
             clickHeader(i);
             testAriaOnAllHeaders(i, "2nd", "descending");
-
-            //third click is ascending order
-            //if rand(0,1)===0, then do a third click; this adds randomness
-            if (Math.floor(Math.random() * 2) === 0) {
-                clickHeader(i);
-                testAriaOnAllHeaders(i, "3rd", "ascending");
-            }
         }
         pager.destroy();
     });
@@ -340,7 +362,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      /** 
      * Test consistentGappedPageStrategy Strategy
      */
-    jqUnit.test("Pager consistentGappedPageStrategy", function () {            
+    jqUnit.asyncTest("Pager consistentGappedPageStrategy", function () {            
         /*
          * Create n pages, check if number of pages = n
          * consistentGappedPageStrategy(j, m) should look like this:
@@ -407,16 +429,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             };
         
-        //Go through all pages 1 by 1 , and click all page dynamically each time
-        for (var i = 1; i <= expectedPages; i++) {
+        var i = 1;
+
+        //Go through all pages 1 by 1 , and click all page dynamically each time        
+        function clickNext() {
             var page = fluid.jById("page-link:link" + i);
             page.click();                
             jqUnit.assertEquals("Verify number of top page links", totalPages, 
                                 pager.pagerBar.locate("pageLinks").length + pager.pagerBar.locate("pageLinkSkip").length);                
             var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
             allPagesAfterClicked.each(allPagesAfterClickedEachFn);
+            if (i === expectedPages - 1) {
+                pager.destroy();
+                jqUnit.start();
+            }
+            else {
+                ++i;
+                setTimeout(clickNext, 1);
+            }
         }
-        pager.destroy();
+        clickNext();
     });
     
     

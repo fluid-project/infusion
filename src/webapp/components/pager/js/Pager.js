@@ -402,7 +402,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     
-    fluid.defaults("fluid.pager.summary", { 
+    fluid.defaults("fluid.pager.summary", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         listeners: {
             onCreate: {

@@ -1117,11 +1117,13 @@ var fluid = fluid || fluid_1_5;
                     if (!record) {
                         return;
                     }
-                    listener = record.listener;
+                    listener = record.length !== undefined ? record : record.listener;
                 }
-                var id = identify(listener);
-                if (!id) {
-                    fluid.fail("Cannot remove unregistered listener function ", listener, " from event " + that.name);
+                if (typeof(listener) === "function") {
+                    var id = identify(listener);
+                    if (!id) {
+                        fluid.fail("Cannot remove unregistered listener function ", listener, " from event " + that.name);
+                    }
                 }
                 namespace = namespace || (byId[id] && byId[id].namespace) || id;
                 delete byId[id];
@@ -1299,7 +1301,7 @@ var fluid = fluid || fluid_1_5;
         };
         gradeStruct.gradeHash[defaultName] = true;
         // TODO: this algorithm will fail if extra grades are mutually redundant and supplied out of dependency order
-        // expectation is that stronger grades appear to the left in defaults - dynamic grades are stronger still
+        // expectation is that stronger grades appear to the left in defaults - dynamic grades are stronger still - FLUID-5085
         return resolveGradesImpl(gradeStruct, (gradeNames || []).concat(fluid.makeArray(defaultGrades)));
     };
         
@@ -1357,13 +1359,29 @@ var fluid = fluid || fluid_1_5;
         }
         return mergedDefaults.defaults;
     };
+
+    // unsupported, NON-API function
+    // Modify supplied options record to include "componentSource" annotation required by FLUID-5082    
+    fluid.annotateListeners = function (componentName, options) {
+        if (options.listeners) {
+            options.listeners = fluid.transform(options.listeners, function (record) {
+                var togo = fluid.makeArray(record);
+                return fluid.transform(togo, function (onerec) {
+                    onerec.componentSource = componentName;
+                    return onerec;
+                });
+            });
+        }
+    };
     
     // unsupported, NON-API function
     fluid.rawDefaults = function (componentName, options) {
         if (options === undefined) {
             return defaultsStore[componentName];
         } else {
-            defaultsStore[componentName] = options;
+            var optionsCopy = fluid.copy(options);
+            fluid.annotateListeners(componentName, optionsCopy);
+            defaultsStore[componentName] = optionsCopy;
             gradeTickStore[componentName] = gradeTick++;
         }
     };

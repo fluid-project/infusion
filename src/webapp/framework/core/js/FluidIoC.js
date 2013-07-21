@@ -1512,10 +1512,12 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             if (!expanded.listener) {
                 badRec(record, " Listener record must contain a member named \"listener\", \"func\", \"funcName\" or \"method\"");
             }
-            var softNamespace = fluid.event.resolveSoftNamespace(record.method ? record["this"] + "-" + record.method : expanded.listener);
+            var softNamespace = record.method ? 
+                fluid.event.resolveSoftNamespace(record["this"]) + "." + record.method : 
+                fluid.event.resolveSoftNamespace(expanded.listener);
             if (!expanded.namespace && !namespace && softNamespace) {
                 expanded.softNamespace = true;
-                expanded.namespace = softNamespace;
+                expanded.namespace = (record.componentSource ? record.componentSource : that.typeName) + "." + softNamespace;
             }
             var listener = expanded.listener = fluid.expandOptions(expanded.listener, that);
             if (!listener) {
@@ -1602,9 +1604,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 fluid.popActivity();
                 return togo;
             };
-            firer.addListener = function (listener, namespace, predicate, priority) {
+            firer.addListener = function (listener, namespace, predicate, priority, softNamespace) {
                 var dispatcher = fluid.event.dispatchListener(that, listener, eventName, eventSpec);
-                adder(origin).addListener(dispatcher, namespace, predicate, priority);
+                adder(origin).addListener(dispatcher, namespace, predicate, priority, softNamespace);
             };
             firer.removeListener = function (listener) {
                 origin.removeListener(listener);
