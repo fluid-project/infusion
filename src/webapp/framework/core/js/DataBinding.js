@@ -78,7 +78,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }    
     };
     
-    /** MODEL ACCESSOR ENGINE (trundler) **/
+    /** MODEL ACCESSOR ENGINE **/
     
     /** Standard strategies for resolving path segments **/
     fluid.model.makeEnvironmentStrategy = function (environment) {
@@ -274,6 +274,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     var composeSegment = function (prefix, toappend) {
+        toappend = toappend.toString();
         for (var i = 0; i < toappend.length; ++i) {
             var c = toappend.charAt(i);
             if (c === '.' || c === '\\' || c === '}') {
@@ -367,11 +368,11 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return togo;
     };
-        
+    
     /** CHANGE APPLIER **/    
       
     fluid.model.isNullChange = function (model, request, resolverGetConfig) {
-        if (request.type === "ADD") {
+        if (request.type === "ADD" && !request.forceChange) {
             var existing = fluid.get(model, request.path, resolverGetConfig);
             if (existing === request.value) {
                 return true;
@@ -559,7 +560,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var wrapped = function (changePath, fireSpec, accum) {
                 var guid = fluid.event.identifyListener(listener);
                 var exist = fireSpec.guids[guid];
-                if (!exist) {
+                if (!exist || !accum) {
                     var match = fluid.pathUtil.matchPath(pathSpec, changePath);
                     if (match !== null) {
                         var record = {
@@ -645,11 +646,24 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         };
         fluid.bindRequestChange(bareApplier);
+        
+        // This function is a helper to participate in the process of model initialisation. During a component's construction,
+        // values may arise in the model that it would be helpful if could be broadcast so that listeners could react in the normal
+        // workflow of changeEvents. Right now, a ChangeApplier user must request this event manually which creates an "early time period"
+        // in which the model contents are inconsistent, but in the future we might like to fire this at the point of creation of the
+        // ChangeApplier, especially once FLUID-4258 is implemented and we can head off the risk of "late listeners".
+        that.initModelEvent = function () {
+            var newModel = {};
+            fluid.model.copyModel(newModel, model);
+            fluid.clear(model);
+            that.requestChange("", newModel);
+        };
 
         that.fireChangeRequest = function (changeRequest, defeatGuards) {
             preFireChangeRequest(changeRequest);
             var guardFireSpec = defeatGuards ? null : getFireSpec("guards", changeRequest.path);
-            if (guardFireSpec && guardFireSpec.transListeners.length > 0) {
+            var postGuardSpec = getFireSpec("postGuards", changeRequest.path);
+            if (guardFireSpec && guardFireSpec.transListeners.length > 0 || postGuardSpec.transListeners.length > 0) {
                 var ation = that.initiate();
                 ation.fireChangeRequest(changeRequest, guardFireSpec);
                 ation.commit();
@@ -702,24 +716,14 @@ var fluid_1_5 = fluid_1_5 || {};
                 newModel = newModel || {};
                 fluid.model.copyModel(newModel, model);
             }
-            // the guard in the inner world is given a private applier to "fast track"
-            // and glob collateral changes it requires
-            var internalApplier = {
-                fireChangeRequest: function (changeRequest) {
-                    preFireChangeRequest(changeRequest);
-                    fluid.model.applyChangeRequest(newModel, changeRequest, options.resolverSetConfig);
-                    changes.push(changeRequest);
-                }
-            };
-            fluid.bindRequestChange(internalApplier);
             var ation = {
                 commit: function () {
                     var oldModel;
                     if (cancelled) {
                         return false;
                     }
-                    var ret = fireAgglomerated("postGuards", "transListeners", changes, [newModel, null, internalApplier], 1);
-                    if (ret === false) {
+                    var ret = fireAgglomerated("postGuards", "transListeners", changes, [newModel, null, ation], 1);
+                    if (ret === false || cancelled) {
                         return false;
                     }
                     if (options.thin) {
@@ -739,7 +743,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         return;
                     } 
                     var wrapper = makeGuardWrapper(options.cullUnchanged);
-                    var prevent = fireEvent("guards", changeRequest.path, [newModel, changeRequest, internalApplier], wrapper);
+                    var prevent = fireEvent("guards", changeRequest.path, [newModel, changeRequest, ation], wrapper);
                     if (prevent === false && !(wrapper && wrapper.culled)) {
                         cancelled = true;
                     }
