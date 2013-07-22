@@ -138,7 +138,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
         if (fluid.keys(templates).length > 0) {
-            auxSchema.resourceLoader = $.extend(true, auxSchema.templates || {}, {
+            auxSchema.templateLoader = $.extend(true, auxSchema.templates || {}, {
                 templates: templates
             });
         }
@@ -224,7 +224,7 @@ var fluid_1_5 = fluid_1_5 || {};
             enactors: {
                 gradeNames: ["fluid.uiEnhancer", "autoInit"]
             },
-            resourceLoader: {
+            templateLoader: {
                 gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"]
             },
             rootModel: {
@@ -242,7 +242,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "createOnEvent": "onUIOptionsMarkupReady",
                 "container": "{uiOptions}.dom.%prefKey",
                 "options.gradeNames": "fluid.uiOptions.defaultPanel",
-                "options.resources.template": "{resourceLoader}.resources.%prefKey"
+                "options.resources.template": "{templateLoader}.resources.%prefKey"
             },
             enactors: {
                 "container": "{uiEnhancer}.container",

@@ -41,7 +41,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 createOnEvent: "{fatPanelIntegrationTester}.events.onTestCaseStart",
                 options: {
                     gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
-                    prefix: "../../../../components/uiOptions/html/",
+                    templatePrefix: "../../../../components/uiOptions/html/",
                     iframeRenderer: {
                         options: {
                             markupProps: {
@@ -49,9 +49,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             }
                         }
                     },
-                    resourceLoader: {
+                    templateLoader: {
                         options: {
-                            gradeNames: ["fluid.uiOptions.starterResourceLoaderLoader"]
+                            gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
                         }
                     },
                     uiOptions: {

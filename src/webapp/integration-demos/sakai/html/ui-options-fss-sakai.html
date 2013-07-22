@@ -256,7 +256,7 @@
             <p>© 2004-2008 The Sakai Foundation <br />
             Portions of Sakai are copyrighted by other parties as described in the <a href="#">Acknowledgments screen</a></p>
         </div>
-        
+
         <!-- Script block to instantiate UI Options when the necessary markup has loaded. -->
         <script type="text/javascript">
             fluid.globalSettingsStore();
@@ -270,9 +270,9 @@
             fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
                 gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
                 prefix: "../../../components/uiOptions/html/",
-                resourceLoader: {
+                templateLoader: {
                     options: {
-                        gradeNames: ["fluid.uiOptions.starterResourceLoaderLoader"]
+                        gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
                     }
                 },
                 uiOptions: {

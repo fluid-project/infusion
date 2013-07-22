@@ -210,7 +210,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         previewFrame : ".flc-uiOptions-preview-frame"
                     }
                 },
-                resourceLoader: {
+                templateLoader: {
                     templates: {
                         uiOptions: "%prefix/FatPanelUIOptions.html"
                     }
@@ -278,7 +278,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 12,
                 name: "not created",
                 func: "fluid.tests.testNotCreated",
-                args: ["{builderEmpty}", ["enactors", "messages", "panels", "rootModel", "resourceLoader", "templatePrefix"]]
+                args: ["{builderEmpty}", ["enactors", "messages", "panels", "rootModel", "templateLoader", "templatePrefix"]]
             }, {
                 expect: 2,
                 name: "assembledUIEGrade",
@@ -306,7 +306,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 8,
                 name: "not created",
                 func: "fluid.tests.testNotCreated",
-                args: ["{builderEnactors}", ["messages", "panels", "resourceLoader", "templatePrefix"]]
+                args: ["{builderEnactors}", ["messages", "panels", "templateLoader", "templatePrefix"]]
             }, {
                 expect: 2,
                 name: "assembledUIEGrade",
@@ -332,9 +332,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderPanels}.options.constructedGrades.rootModel", "{builderPanels}.options.auxSchema.rootModel"]
             }, {
                 expect: 4,
-                name: "resourceLoader",
+                name: "templateLoader",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.constructedGrades.resourceLoader", "{builderPanels}.options.auxSchema.resourceLoader"]
+                args: ["{builderPanels}.options.constructedGrades.templateLoader", "{builderPanels}.options.auxSchema.templateLoader"]
             }, {
                 expect: 6,
                 name: "not created",
@@ -370,9 +370,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderPanelsAndMessages}.options.constructedGrades.rootModel", "{builderPanelsAndMessages}.options.auxSchema.rootModel"]
             }, {
                 expect: 4,
-                name: "resourceLoader",
+                name: "templateLoader",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.constructedGrades.resourceLoader", "{builderPanelsAndMessages}.options.auxSchema.resourceLoader"]
+                args: ["{builderPanelsAndMessages}.options.constructedGrades.templateLoader", "{builderPanelsAndMessages}.options.auxSchema.templateLoader"]
             }, {
                 expect: 4,
                 name: "not created",
@@ -408,9 +408,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderPanelsAndTemplates}.options.constructedGrades.rootModel", "{builderPanelsAndTemplates}.options.auxSchema.rootModel"]
             }, {
                 expect: 4,
-                name: "resourceLoader",
+                name: "templateLoader",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.constructedGrades.resourceLoader", "{builderPanelsAndTemplates}.options.auxSchema.resourceLoader"]
+                args: ["{builderPanelsAndTemplates}.options.constructedGrades.templateLoader", "{builderPanelsAndTemplates}.options.auxSchema.templateLoader"]
             }, {
                 expect: 4,
                 name: "not created",
@@ -451,9 +451,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderAll}.options.constructedGrades.rootModel", "{builderAll}.options.auxSchema.rootModel"]
             }, {
                 expect: 4,
-                name: "resourceLoader",
+                name: "templateLoader",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.constructedGrades.resourceLoader", "{builderAll}.options.auxSchema.resourceLoader"]
+                args: ["{builderAll}.options.constructedGrades.templateLoader", "{builderAll}.options.auxSchema.templateLoader"]
             }, {
                 expect: 4,
                 name: "templatePrefix",

@@ -50,7 +50,7 @@ var fluid_1_5 = fluid_1_5 || {};
         constructedGrades: {
             expander: {
                 func: "fluid.uiOptions.builder.constructGrades",
-                args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "rootModel", "resourceLoader", "templatePrefix"]]
+                args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "rootModel", "templateLoader", "templatePrefix"]]
             }
         }
     });
@@ -86,9 +86,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 priority: "last",
                 options: {
                     gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.templatePrefix", "{fluid.uiOptions.assembler.uio}.options.componentGrades.messages"],
-                    resourceLoader: {
+                    templateLoader: {
                         options: {
-                            gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.resourceLoader"]
+                            gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.templateLoader"]
                         }
                     },
                     uiOptions: {

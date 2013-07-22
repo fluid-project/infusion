@@ -76,7 +76,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{fatPanel}.dom.iframe",
                 options: {
                     markupProps: {
-                        src: "%prefix/FatPanelUIOptionsFrame.html"
+                        src: "%templatePrefix/FatPanelUIOptionsFrame.html"
                     },
                     events: {
                         afterRender: "{fatPanel}.events.afterRender"
@@ -120,8 +120,8 @@ var fluid_1_5 = fluid_1_5 || {};
             removeSource: true,
             target: "{that iframeEnhancer}.options"
         }, {
-            source: "{that}.options.prefix",
-            target: "{that > iframeRenderer}.options.prefix"
+            source: "{that}.options.templatePrefix",
+            target: "{that > iframeRenderer}.options.templatePrefix"
         }]
     });
 
@@ -138,17 +138,17 @@ var fluid_1_5 = fluid_1_5 || {};
             containerFlex: "fl-container-flex",
             container: "fl-uiOptions-fatPanel-iframe"
         },
-        prefix: "./",
+        templatePrefix: "./",
         markupProps: {
             "class": "flc-iframe",
-            src: "%prefix/uiOptionsIframe.html"
+            src: "%templatePrefix/uiOptionsIframe.html"
         }
     });
 
     fluid.uiOptions.fatPanel.renderIframe.finalInit = function (that) {
         var styles = that.options.styles;
-        // TODO: get earlier access to resourceLoader,
-        that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, {"prefix/": that.options.prefix});
+        // TODO: get earlier access to templateLoader,
+        that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, {"templatePrefix/": that.options.templatePrefix});
         that.iframeSrc = that.options.markupProps.src;
 
         // Create iframe and append to container

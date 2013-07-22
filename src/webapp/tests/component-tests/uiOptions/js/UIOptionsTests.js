@@ -35,11 +35,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     }
                 },
-                resourceLoader: {
+                templateLoader: {
                     type: "fluid.uiOptions.resourceLoader",
                     priority: "first",
                     options: {
-                        gradeNames: ["fluid.uiOptions.starterResourceLoader"],
+                        gradeNames: ["fluid.uiOptions.starterTemplateLoader"],
                         templates: {
                             uiOptions: templatePrefix + "FullNoPreviewUIOptions.html"
                         }
@@ -428,7 +428,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
                                 },
                                 resources: {
-                                    template: "{resourceLoader}.resources.textSize"
+                                    template: "{templateLoader}.resources.textSize"
                                 }
                             }
                         },
