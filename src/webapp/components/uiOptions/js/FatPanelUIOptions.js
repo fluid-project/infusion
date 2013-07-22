@@ -41,6 +41,10 @@ var fluid_1_5 = fluid_1_5 || {};
             onReady: {
                 listener: "fluid.uiOptions.fatPanel.bindEvents",
                 args: ["{fatPanel}.uiOptionsLoader.uiOptions", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
+            },
+            onCreate: {
+                listener: "fluid.uiOptions.fatPanel.hideReset",
+                args: ["{fatPanel}"]
             }
         },
         selectors: {
@@ -124,7 +128,10 @@ var fluid_1_5 = fluid_1_5 || {};
             target: "{that > iframeRenderer}.options.templatePrefix"
         }]
     });
-
+    
+    fluid.uiOptions.fatPanel.hideReset = function (fatPanel) {
+        fatPanel.locate("reset").hide();
+    };
     /*****************************************
      * fluid.uiOptions.fatPanel.renderIframe *
      *****************************************/
@@ -213,6 +220,10 @@ var fluid_1_5 = fluid_1_5 || {};
         });
         fatPanel.slidingPanel.events.onPanelShow.addListener(function () {
             fatPanel.iframeRenderer.iframe.show();
+            fatPanel.locate("reset").show();
+        });
+        fatPanel.slidingPanel.events.onPanelHide.addListener(function () {
+            fatPanel.locate("reset").hide();
         });
     };
 
