@@ -15,9 +15,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
-var demo = demo || {};
-
 (function ($, fluid) {
+  
+    fluid.registerNamespace("demo.imageViewer");
     
     //=====================================================================
     // Utility functions
@@ -26,7 +26,7 @@ var demo = demo || {};
     /**
      * Assign any relevant ARIA roles, states, properties to the image viewer.
      */
-    var setARIA = function (container, thumbContainer, image) {
+    demo.imageViewer.setARIA = function (container, thumbContainer, image) {
         container.attr("role", "application");
         thumbContainer.attr("role", "listbox");
         $(demo.imageViewer.selectors.thumbSelector, thumbContainer).attr({
@@ -36,7 +36,7 @@ var demo = demo || {};
         });
     };
 
-    var displayImage = function (thumb, thumbContainer, image) {
+    demo.imageViewer.displayImage = function (thumb, thumbContainer, image) {
         // Remove the 'selected' styling from the thumbnails.
         var images = $(demo.imageViewer.selectors.thumbSelector, thumbContainer);
         images.attr("aria-selected", false);
@@ -54,20 +54,20 @@ var demo = demo || {};
     /**
      * Create a function that will be uses as the event handler when a thumbnail is activated
      */
-    var makeImageActivationHandler = function (thumbContainer, image, fiveStarRanker, model) {
+    demo.imageViewer.makeImageActivationHandler = function (thumbContainer, image, fiveStarRanker, model) {
         return function (evt) {
             var thumb = $(evt.target);
-            displayImage(thumb, thumbContainer, image);
+            demo.imageViewer.displayImage(thumb, thumbContainer, image);
             // update the five-star with the image's rank
             fiveStarRanker.setRank(model[thumb.attr("src")]);
         };
     };
 
-    var bindEventHandlers = function (fiveStarRanker, model) {
-        fiveStarRanker.events.modelChanged.addListener(function (newModel, oldModel) {
+    demo.imageViewer.bindEventHandlers = function (fiveStarRanker, model) {
+        fiveStarRanker.applier.modelChanged.addListener("rank", function (newModel, oldModel) {
             // change the rank of the current image to the new rank
             var currImg = $(demo.imageViewer.selectors.image).attr("src");
-            model[currImg] = newModel;
+            model[currImg] = newModel.rank;
         });
     };
 
@@ -78,7 +78,7 @@ var demo = demo || {};
     /**
      * Ensure that the image thumbnails can be navigated using the keyboard
      */
-    var makeThumbnailsNavigable = function (thumbContainer) {
+    demo.imageViewer.makeThumbnailsNavigable = function (thumbContainer) {
         //*** Use the Keyboard Accessibility Plugin to ensure that the container is in the tab order
         thumbContainer.fluid("tabbable");
 
@@ -101,9 +101,9 @@ var demo = demo || {};
     /**
      * Ensure that the image thumbnails can be activated using the keyboard
      */
-    var makeThumbnailsActivatable = function (thumbContainer, image, fiveStarRanker, model) {
+    demo.imageViewer.makeThumbnailsActivatable = function (thumbContainer, image, fiveStarRanker, model) {
         // create the event handler
-        var handler = makeImageActivationHandler(thumbContainer, image, fiveStarRanker, model);
+        var handler = demo.imageViewer.makeImageActivationHandler(thumbContainer, image, fiveStarRanker, model);
 
         //*** Use the Keyboard Accessibility Plugin to make the thumbnails activatable by keyboard
         thumbContainer.fluid("activatable", handler);
@@ -115,7 +115,7 @@ var demo = demo || {};
     /**
      * Ensure that the five-star ranking widget can be navigated using the keyboard
      */
-    var makeFiveStarsNavigable = function (fiveStarRanker) {
+    demo.imageViewer.makeFiveStarsNavigable = function (fiveStarRanker) {
         var starContainer = fiveStarRanker.container;
 
         //*** Use the Keyboard Accessibility Plugin to ensure that the container is in the tab order
@@ -151,9 +151,9 @@ var demo = demo || {};
     /**
      * Ensure that the five-star ranking widget can be navigated using the keyboard
      */
-    var makeFiveStarsActivatable = function (fiveStarRanker) {
+    demo.imageViewer.makeFiveStarsActivatable = function (fiveStarRanker) {
         fiveStarRanker.stars.fluid("activatable", function (evt) {
-            fiveStarRanker.pickStar(evt.target);
+            fiveStarRanker.setRank(demo.fiveStar.getStarNum(evt.target));
         });
     };
 
@@ -161,7 +161,7 @@ var demo = demo || {};
     // Setup functions
     //
     
-    var setUpModel = function (thumbContainer) {
+    demo.imageViewer.setUpModel = function (thumbContainer) {
         var thumbnails = $(demo.imageViewer.selectors.thumbImgSelector, thumbContainer);
         var model = {};
         fluid.each(thumbnails, function (value, key) {
@@ -170,35 +170,37 @@ var demo = demo || {};
         return model;
     };
 
-    var setUpFiveStarRanker = function (container) {
+    demo.imageViewer.setUpFiveStarRanker = function (container) {
         // the five-star ranking code can be found in the file five-star.js
         var ranker = demo.fiveStar(container);
 
         // the five-star widget provides mouse-support, but not keyboard
         // add keyboard support using the plugin
-        makeFiveStarsNavigable(ranker);
-        makeFiveStarsActivatable(ranker);
+        demo.imageViewer.makeFiveStarsNavigable(ranker);
+        demo.imageViewer.makeFiveStarsActivatable(ranker);
 
         return ranker;        
     };
 
-    var setUpImageViewer = function (that, ranker) {
-        makeThumbnailsNavigable(that.thumbContainer);
-        makeThumbnailsActivatable(that.thumbContainer, that.image, ranker, that.model);
+    demo.imageViewer.setUpImageViewer = function (that, ranker) {
+        demo.imageViewer.makeThumbnailsNavigable(that.thumbContainer);
+        demo.imageViewer.makeThumbnailsActivatable(that.thumbContainer, that.image, ranker, that.model);
 
-        bindEventHandlers(ranker, that.model);
-        setARIA(that.container, that.thumbContainer, that.image);
+        demo.imageViewer.bindEventHandlers(ranker, that.model);
+        demo.imageViewer.setARIA(that.container, that.thumbContainer, that.image);
 
         // set up with the first image
         var firstThumb = $("img:first", that.thumbContainer);
-        displayImage(firstThumb, that.thumbContainer, that.image);
+        demo.imageViewer.displayImage(firstThumb, that.thumbContainer, that.image);
         // update the five-star with the image's rank
         ranker.setRank(that.model[firstThumb.attr("src")]);
     };
 
     //=====================================================================
     // Demo initialization
-    //
+    
+    // Note that the "imageViewer" is a non-component, it assembles raw objects and functions
+    // to create a component-like structure manually
 
     demo.initImageViewer = function (container) {
         var that = {
@@ -207,18 +209,18 @@ var demo = demo || {};
             image: $(demo.imageViewer.selectors.image)
         };
 
-        that.model = setUpModel(that.thumbContainer);
+        that.model = demo.imageViewer.setUpModel(that.thumbContainer);
 
-        var fiveStarRanker = setUpFiveStarRanker(demo.imageViewer.selectors.ranker);
+        var fiveStarRanker = demo.imageViewer.setUpFiveStarRanker(demo.imageViewer.selectors.ranker);
         
-        setUpImageViewer(that, fiveStarRanker);
+        demo.imageViewer.setUpImageViewer(that, fiveStarRanker);
     };
     
     
     /**
      * Defaults for the demo
      */
-    demo.imageViewer = {
+    demo.imageViewer = $.extend(demo.imageViewer, {
         selectors: {
             thumbContainer: ".demo-container-imageThumbnails",
             ranker: ".demo-fiveStar",
@@ -229,5 +231,5 @@ var demo = demo || {};
         styles: {
             selected: "demo-selected"
         }
-    };
+    });
 })(jQuery, fluid);

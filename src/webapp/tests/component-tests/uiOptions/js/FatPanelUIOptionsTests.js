@@ -28,7 +28,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "slidingPanel",
         "iframeRenderer",
         "iframeRenderer.iframeEnhancer"];
-    
+
     fluid.defaults("fluid.tests.fatPanelIntegration", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         listeners: {
@@ -74,6 +74,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testComponent = function (uiOptionsLoader, uiOptions) {
         jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, uiOptions.iframeRenderer.iframe.is(":visible"));
+        jqUnit.assertEquals("Reset button is invisible", false, $(".flc-uiOptions-reset").is(":visible"));
 
         fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents["fluid.uiOptions.fatPanel"]);
     };
@@ -86,9 +87,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return function () {
             fluid.tests.uiOptions.applierRequestChanges(fatPanel.uiOptionsLoader.uiOptions, fluid.tests.uiOptions.bwSkin);
             fluid.tests.uiOptions.checkModelSelections("pageModel from bwSkin", fluid.tests.uiOptions.bwSkin, fatPanel.pageEnhancer.model);
+            jqUnit.assertEquals("Reset button is visible", true, $(".flc-uiOptions-reset").is(":visible"));
         };
     };
     
+    fluid.tests.afterHideFunc1 = function (fatPanel) {
+        return function () {
+            jqUnit.assertEquals("Reset button is invisible", false, $(".flc-uiOptions-reset").is(":visible"));
+        };
+    };
     fluid.tests.afterShowFunc2 = function (fatPanel) {
         return function () {
             var pageModel = fatPanel.pageEnhancer.model;
@@ -104,7 +111,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var rootModel = fatPanel.uiOptionsLoader.uiOptions.rootModel;
             var pageModel = fatPanel.pageEnhancer.model;
             var panelModel = fatPanel.iframeRenderer.iframeEnhancer.model;
-            
+
             fatPanel.locate("reset").click();
             fluid.tests.uiOptions.checkModelSelections("pageModel from defaults", rootModel, pageModel);
             fatPanel.slidingPanel.hidePanel();
@@ -118,7 +125,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Fat panel integration tests",
             tests: [{
-                expect: 17,
+                expect: 21,
                 name: "Fat panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testComponent",
@@ -136,6 +143,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     event: "{fatPanel}.slidingPanel.events.afterPanelShow"
                 }, {
                     func: "{fatPanel}.slidingPanel.hidePanel"
+                }, {
+                    listenerMaker: "fluid.tests.afterHideFunc1",
+                    makerArgs: ["{fatPanel}"],
+                    event: "{fatPanel}.slidingPanel.events.afterPanelHide"
                 }, {
                     func: "{fatPanel}.slidingPanel.showPanel"
                 }, {

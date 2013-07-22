@@ -547,6 +547,31 @@ var fluid = fluid || fluid_1_5;
         }
         return togo;
     };
+        
+    /** Returns an array of size count, filled with increasing integers, starting at 0 or at the index specified by first.
+     * @param count {Number} Size of the filled array to be returned
+     * @param first {Number} (optional, defaults to 0) First element to appear in the array 
+     */
+    
+    fluid.iota = function (count, first) {
+        first = first || 0;
+        var togo = [];
+        for (var i = 0; i < count; ++i) {
+            togo[togo.length] = first++;
+        }
+        return togo;
+    };
+    
+    /** Extracts a particular member from each member of a container, returning a new container of the same type
+     * @param holder {Array|Object} The container to be filtered
+     * @param name {String|Array of String} An EL path to be fetched from each members
+     */
+    
+    fluid.getMembers = function (holder, name) {
+        return fluid.transform(holder, function(member) {
+            return fluid.get(member, name);
+        });
+    };
     
     /** Accepts an object to be filtered, and a list of keys. Either all keys not present in
      * the list are removed, or only keys present in the list are returned.
@@ -704,7 +729,7 @@ var fluid = fluid || fluid_1_5;
         if (!type) {
             return true;
         }
-        return totest === type;
+        return totest.value === type.value;
     };
     
     // Model functions
@@ -970,7 +995,11 @@ var fluid = fluid || fluid_1_5;
     fluid.event.sortListeners = function (listeners) {
         var togo = [];
         fluid.each(listeners, function (listener) {
-            togo.push(listener);
+            if (listener.length) {
+                togo = togo.concat(listener)
+            } else {
+                togo.push(listener);
+            }
         });
         return togo.sort(fluid.priorityComparator);
     };
@@ -1043,7 +1072,7 @@ var fluid = fluid || fluid_1_5;
             listeners = {};
             byId = {};
             sortedListeners = [];
-            that.addListener = function (listener, namespace, predicate, priority) {
+            that.addListener = function (listener, namespace, predicate, priority, softNamespace) {
                 if (!listener) {
                     return;
                 }
@@ -1057,9 +1086,17 @@ var fluid = fluid || fluid_1_5;
                 namespace = namespace || id;
                 var record = {listener: listener, predicate: predicate,
                     namespace: namespace,
+                    softNamespace: softNamespace,
                     priority: fluid.event.mapPriority(priority, sortedListeners.length)};
-
-                listeners[namespace] = byId[id] = record;
+                byId[id] = record;
+                if (softNamespace) {
+                    var thisListeners = (listeners[namespace] = fluid.makeArray(listeners[namespace]));
+                    thisListeners.push(record);
+                }
+                else {
+                    listeners[namespace] = record;
+                }
+                
                 sortedListeners = fluid.event.sortListeners(listeners);
             };
             that.addListener.apply(null, arguments);
@@ -1080,11 +1117,13 @@ var fluid = fluid || fluid_1_5;
                     if (!record) {
                         return;
                     }
-                    listener = record.listener;
+                    listener = record.length !== undefined ? record : record.listener;
                 }
-                var id = identify(listener);
-                if (!id) {
-                    fluid.fail("Cannot remove unregistered listener function ", listener, " from event " + that.name);
+                if (typeof(listener) === "function") {
+                    var id = identify(listener);
+                    if (!id) {
+                        fluid.fail("Cannot remove unregistered listener function ", listener, " from event " + that.name);
+                    }
                 }
                 namespace = namespace || (byId[id] && byId[id].namespace) || id;
                 delete byId[id];
@@ -1130,7 +1169,7 @@ var fluid = fluid || fluid_1_5;
         } else if (typeof (value) === "function" || typeof (value) === "string") {
             wrapper(firer).addListener(value, namespace);
         } else if (value && typeof (value) === "object") {
-            wrapper(firer).addListener(value.listener, namespace || value.namespace, value.predicate, value.priority);
+            wrapper(firer).addListener(value.listener, namespace || value.namespace, value.predicate, value.priority, value.softNamespace);
         }
     };
     
@@ -1161,11 +1200,10 @@ var fluid = fluid || fluid_1_5;
                 }
                 if (!events[key]) {
                     fluid.fail("Listener registered for event " + key + " which is not defined for this component");
-                    events[key] = fluid.makeEventFirer(null, null, fluid.event.nameEvent(that, key));
                 }
                 firer = events[key];
             }
-            record = fluid.event.resolveListenerRecord(value, that, key);
+            record = fluid.event.resolveListenerRecord(value, that, key, namespace);
             fluid.event.addListenerToFirer(firer, record.records, namespace, record.adderWrapper);
         });
     };
@@ -1197,8 +1235,7 @@ var fluid = fluid || fluid_1_5;
     fluid.mergeListenerPolicy = function (target, source, key) {
         // cf. triage in mergeListeners
         var hasNamespace = key.charAt(0) !== "{" && key.indexOf(".") !== -1;
-        return hasNamespace ? (source ? source : target)
-            : fluid.makeArray(target).concat(fluid.makeArray(source));
+        return hasNamespace ? (source || target) : fluid.makeArray(target).concat(fluid.makeArray(source));
     };
     
     fluid.mergeListenersPolicy = function (target, source) {
@@ -1264,7 +1301,7 @@ var fluid = fluid || fluid_1_5;
         };
         gradeStruct.gradeHash[defaultName] = true;
         // TODO: this algorithm will fail if extra grades are mutually redundant and supplied out of dependency order
-        // expectation is that stronger grades appear to the left in defaults - dynamic grades are stronger still
+        // expectation is that stronger grades appear to the left in defaults - dynamic grades are stronger still - FLUID-5085
         return resolveGradesImpl(gradeStruct, (gradeNames || []).concat(fluid.makeArray(defaultGrades)));
     };
         
@@ -1322,13 +1359,29 @@ var fluid = fluid || fluid_1_5;
         }
         return mergedDefaults.defaults;
     };
+
+    // unsupported, NON-API function
+    // Modify supplied options record to include "componentSource" annotation required by FLUID-5082    
+    fluid.annotateListeners = function (componentName, options) {
+        if (options.listeners) {
+            options.listeners = fluid.transform(options.listeners, function (record) {
+                var togo = fluid.makeArray(record);
+                return fluid.transform(togo, function (onerec) {
+                    onerec.componentSource = componentName;
+                    return onerec;
+                });
+            });
+        }
+    };
     
     // unsupported, NON-API function
     fluid.rawDefaults = function (componentName, options) {
         if (options === undefined) {
             return defaultsStore[componentName];
         } else {
-            defaultsStore[componentName] = options;
+            var optionsCopy = fluid.copy(options);
+            fluid.annotateListeners(componentName, optionsCopy);
+            defaultsStore[componentName] = optionsCopy;
             gradeTickStore[componentName] = gradeTick++;
         }
     };
@@ -1973,6 +2026,7 @@ var fluid = fluid || fluid_1_5;
         var that = fluid.typeTag(name);
         localOptions = localOptions || {gradeNames: "fluid.littleComponent"};
         
+        that.destroy = fluid.makeRootDestroy(that); // overwritten by FluidIoC for constructed subcomponents
         var mergeOptions = fluid.mergeComponentOptions(that, name, userOptions, localOptions);
         var options = that.options;
         var evented = fluid.hasGrade(options, "fluid.eventedComponent");
@@ -2078,7 +2132,6 @@ var fluid = fluid || fluid_1_5;
         }
         fluid.fireEvent(that.options, "finalInitFunction", that);
         fluid.clearLifecycleFunctions(that.options);
-        that.destroy = fluid.makeRootDestroy(that); // overwritten by FluidIoC for constructed subcomponents
         fluid.fireEvent(that, "events.onCreate", that);
         fluid.popActivity();
         return fluid.resolveReturnedPath(that.options.returnedPath, that) ? fluid.get(that, that.options.returnedPath) : that;

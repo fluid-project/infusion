@@ -172,6 +172,7 @@ fluid.registerNamespace("fluid.tests");
         }
         
         fluid.defaults("fluid.tests.rendererParent", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
             components: {
                 middle: {
                     type: "fluid.tests.rendererMiddle"
@@ -182,16 +183,11 @@ fluid.registerNamespace("fluid.tests");
             }
         });
         
-        fluid.tests.rendererParent = function (container, options) {
-            var that = fluid.initView("fluid.tests.rendererParent", container, options);
-            fluid.initDependents(that);
-            return that;  
-        };
-        
         fluid.demands("fluid.tests.rendererMiddle", "fluid.tests.rendererParent",
             ["{rendererParent}.dom.middle", fluid.COMPONENT_OPTIONS]);
         
         fluid.defaults("fluid.tests.rendererMiddle", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
             selectors: {
                 decorated: ".decorated-component"
             },
@@ -206,11 +202,6 @@ fluid.registerNamespace("fluid.tests");
                 }
             }
         });
-        
-        fluid.tests.rendererMiddle = function (container, options) {
-            var that = fluid.initRendererComponent("fluid.tests.rendererMiddle", container, options);
-            return that;
-        };
 
         fluid.defaults("fluid.tests.rendererChild", {
             value: "{rendererParent}.options.parentValue"  
@@ -243,12 +234,6 @@ fluid.registerNamespace("fluid.tests");
         
                 
         jqUnit.module("Renderer component tests");
-                
-        // TODO: reform this manual init component once we drop support for them
-        fluid.tests.rendererComponentTest = function (container, options) {
-            var that = fluid.initRendererComponent("fluid.tests.rendererComponentTest", container, options);
-            return that;
-        };
         
         fluid.tests.censoringStrategy = function (listCensor) {
             var matchPath = ["recordlist", "deffolt"];
@@ -259,6 +244,7 @@ fluid.registerNamespace("fluid.tests");
         };
         
         fluid.defaults("fluid.tests.rendererComponentTest", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
             model: {
                 recordlist: {
                     deffolt: ["person", "intake", "loanin", "loanout", "acquisition", "organization", "objects", "movement"]
@@ -1758,9 +1744,10 @@ fluid.registerNamespace("fluid.tests");
             var onReady = function (that) {
                 var label1for = $("label", that.captions.container).attr("for");
                 var label2for = $("label", that.transcripts.container).attr("for");
-                jqUnit.assertEquals("first 'for' should be 'show'", "show", label1for);
-                jqUnit.assertEquals("second 'for' should be 'show-1'", "show-1", label2for);
-                jqUnit.assertNotEquals("two labels shouldn't have the same 'for' attribute", label1for, label2for);
+                labels = {};
+                labels[label1for] = true;
+                labels[label2for] = true;
+                jqUnit.assertDeepEq("Labels should separately be \"show\" and \"show-1\"", {"show": true, "show-1": true}, labels);
                 jqUnit.start();
             };
             fluid.tests.fluid5048.parent("#FLUID-5048-test", {

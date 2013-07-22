@@ -207,7 +207,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onRefresh: null
         },
         listeners: {
-            onCreate: [ { // TODO: better model for creation sequence, with auto-namespaces
+            onCreate: [ {
                 funcName: "fluid.reorderer.bindHandlersToContainer",
                 args: ["{that}.container", "{that}.handleKeyDown", "{that}.handleKeyUp"]
             }, {
@@ -218,7 +218,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: "{that}.container"
             }, {
                 funcName: "fluid.reorderer.processAfterMoveCallbackUrl",
-                namespace: "processAfterMoveCallbackUrl",
                 args: "{that}"  
             },
             "{that}.refresh"],
@@ -229,8 +228,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             onHover: {
                 funcName: "fluid.reorderer.hoverStyleHandler",
-                args: ["{that}.dom", "{that}.options.styles", "{arguments}.0", "{arguments}.1"], // item, state
-                namespace: "style"
+                args: ["{that}.dom", "{that}.options.styles", "{arguments}.0", "{arguments}.1"] // item, state
             } 
         },
         invokers: {
@@ -754,10 +752,13 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.layoutHandler", {
         gradeNames: ["fluid.viewComponent"],
         disableWrap: "{reorderer}.options.disableWrap",
+        members: {
+            reordererDom: "{reorderer}.dom"
+        },
         components: {
             dropManager: "{reorderer}.dropManager",
-            reordererDom: "{reorderer}.dom"
         }
+    
     });
     
     fluid.defaults("fluid.listLayoutHandler", {
