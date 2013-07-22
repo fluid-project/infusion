@@ -18,8 +18,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid = fluid || {};
 
 (function ($, fluid) {
+    fluid.registerNamespace("fluid.themer");
 
-    var setupThemer = function (that) {
+    fluid.themer.setupThemer = function (that) {
         // add a click delegate to the container
         that.container.bind("click", function (e) {
             var el = $(e.target);
@@ -30,56 +31,72 @@ var fluid = fluid || {};
         that.switchThemes();
     };
     
-    /***************************************/
-    fluid.themer = function (container, options) {
-        var that = fluid.initView("fluid.themer", container, options);
+    fluid.themer.switchThemes = function (that) {
+        that.setTheme(that.currentTheme);
+        that.highlightTheme(that.currentTheme);
+    };
+    
+    fluid.themer.highlightTheme = function (that, theme) {
+        var sels = that.options.selectors;
+        var className = that.options.styles.activeEl;
+
+        $(sels.activeEl).removeClass(className);
+        $(sels.themes[theme]).closest(sels.activeEl).addClass(className);
+    };
+    
+    fluid.themer.getTheme = function (themeSelectors, el) {
+        var theme = false;
+        $.each(themeSelectors, function (t, s) {
+            if (el.is(s)) {
+                theme = t;
+                return false;
+            }
+        });
+        return theme;
+    };
+    
+    fluid.themer.setTheme = function (that, theme) {
         var themeStyles = that.options.styles.themes;
-        var themeSelectors = that.options.selectors.themes;
-        that.currentTheme = that.options.startupTheme;
-
-
-        // hilight the element clicked
-        var hilightTheme = function (theme) {
-            var sels = that.options.selectors;
-            var className = that.options.styles.activeEl;
-
-            $(sels.activeEl).removeClass(className);
-            $(sels.themes[theme]).closest(sels.activeEl).addClass(className);
-        };
-
-        that.switchThemes = function () {
-            that.setTheme(that.currentTheme);
-            hilightTheme(that.currentTheme);
-        };
-
-        // match the theme to the selector
-        that.getTheme = function (el) {
-            var theme = false;
-            $.each(themeSelectors, function (t, s) {
-                if (el.is(s)) {
-                    theme = t;
-                    return false;
-                }
-            });
-            return theme;
-        };
-
-        // set the theme class name onto an element
-        that.setTheme = function (theme) {
-            that.locate("themeDestination", $(document)).removeClass().addClass(themeStyles[theme]);
-        };
-        
-        setupThemer(that);
-        return that;
-
+        that.locate("themeDestination", $(document)).removeClass().addClass(themeStyles[theme]);
     };
 
     fluid.defaults("fluid.themer", {
-        startupTheme : "iphone",
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        startupTheme: "iphone",
+        members: {
+            currentTheme: "{that}.options.startupTheme"  
+        },
+        listeners: {
+            onCreate: [{
+                funcName: "fluid.themer.setupThemer",
+                args: "{that}"
+            }] 
+        },
+        invokers: {
+            switchThemes: {
+                funcName: "fluid.themer.switchThemes",
+                args: "{that}"
+            },
+            // hilight the element clicked
+            highlightTheme: {
+                funcName: "fluid.themer.highlightTheme",
+                args: ["{that}", "{arguments}.0"] // theme
+            },
+            // match the theme to the selector
+            getTheme: {
+                funcName: "fluid.themer.getTheme",
+                args: ["{that}.options.selectors.themes", "{arguments}.0"]
+            },
+            // set the theme class name onto an element
+            setTheme: {
+                funcName: "fluid.themer.setTheme",
+                args: ["{that}", "{arguments}.0"] // theme
+            },            
+        },
         selectors: {
             themeDestination: "body",
             activeEl: "li",
-            themes : {
+            themes: {
                 iphone: "[href=#iphone]",
                 android: "[href=#android]",
                 noTheme: "[href=#none]"
