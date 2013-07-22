@@ -18,27 +18,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var demo = demo || {};
 
 (function ($, fluid) {
+    fluid.registerNamespace("demo.fiveStar");
 
     // This assumes the className is of the form "star-x" where x is the starNum
-    var getStarNum = function (el) {
+    demo.fiveStar.getStarNum = function (el) {
         var className = $(el).attr("class").match("star-[1-5]")[0];
         return parseInt(className.charAt(className.length - 1), 10);
     };
-
-    var bindHandlers = function (that) {
-        that.locate("stars").mouseover(function (evt) {
-            that.hoverStars(evt.target);
-        });
-        that.locate(that.container).mouseout(that.refreshView);
-        that.locate("stars").click(function (evt) {
-            that.pickStar(evt.target);
-        });
+    
+    // Given a function accepting a number, return a function accepting a DOM event targetted at the star with that number
+    demo.fiveStar.makeStarHandler = function (that, handler) {
+        return function (evt) {
+            var number = demo.fiveStar.getStarNum(evt.target);
+            handler(number);
+        }
     };
-
     /**
      * Apply appropriate ARIA role and attributes
      */
-    var setARIA = function (that) {
+    demo.fiveStar.setARIA = function (that) {
         that.container.attr("role", "radiogroup");
         that.locate("stars").attr({
             "role": "radio",
@@ -49,8 +47,7 @@ var demo = demo || {};
     /**
      * When the selected rank changes, update the ARIA to reflect the new value
      */
-    var updateARIA = function (that, rank) {
-        var stars = that.locate("stars");
+    demo.fiveStar.updateARIA = function (stars, rank) {
         stars.attr("aria-checked", false);
         $(stars[rank - 1]).attr("aria-checked", true);
     };
@@ -58,7 +55,7 @@ var demo = demo || {};
     /**
      * Set the colour of the stars depending on the current rank and hover
      */
-    var setStarStates = function (stars, hovered, rank, imgs) {
+    demo.fiveStar.renderStarState = function (stars, hovered, rank, imgs) {
         // if nothing is hovered, don't show any hover state
         if (hovered > 0) {
             stars.slice(0, hovered).attr("src", imgs.hover);
@@ -68,54 +65,79 @@ var demo = demo || {};
         stars.slice(hovered + 1, rank).attr("src", imgs.select);
         stars.slice(Math.max(hovered, rank), 5).attr("src", imgs.blank);
     };
+    
+    demo.fiveStar.bindChangeListener = function (that) {
+        // TODO: This will be simplified once FLUID-4258 is implemented 
+        that.applier.modelChanged.addListener("rank", function (newModel) {
+            demo.fiveStar.updateARIA(that.stars, newModel.rank);
+            that.refreshView();
+        });
+    };
 
     /**
      * A very simple five-star ranking widget that allows users to click on a star to set a rank.
-     * @param {Object} container
-     * @param {Object} options
      */
-    demo.fiveStar = function (container, options) {
-        var that = fluid.initView("demo.fiveStar", container, options);
-        that.model = that.options.model;
-        that.stars = that.locate("stars");
-
-        /**
-         * Highlight the stars up to the given star with the hover colour
-         * @param {Object} starEl
-         */
-        that.hoverStars = function (starEl) {
-            var star = $(starEl);
-            var starNum = getStarNum(star);            
-            setStarStates(that.stars, starNum, that.model.rank, that.options.starImages);
-        };
-
-        /**
-         * Restore the display of stars to reflect the ranking
-         */
-        that.refreshView = function () {
-            setStarStates(that.stars, 0, that.model.rank, that.options.starImages);
-        };
-        
-        that.setRank = function (rank) {
-            var oldRank = that.model.rank;
-            that.model.rank = rank;
-            updateARIA(that, rank);
-            that.events.modelChanged.fire(that.model.rank, oldRank);
-            that.refreshView();
-        };
-        
-        that.pickStar = function (el) {
-            var starNum = getStarNum(el);
-            that.setRank(starNum);
-        };
-
-        bindHandlers(that);
-        setARIA(that);
-        that.refreshView();
-        return that;
-    };
-    
+     
     fluid.defaults("demo.fiveStar", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        members: {
+            stars: "{that}.dom.stars"  
+        },
+        listeners: {
+            onCreate: [{
+                "this": "{that}.stars",
+                method: "mouseover",
+                args: {
+                    expander: {
+                        funcName: "demo.fiveStar.makeStarHandler",
+                        args: ["{that}", "{that}.hoverStars"]
+                    }
+                }  
+            }, {
+                "this": "{that}.container",
+                method: "mouseout",
+                args: "{that}.refreshView"
+            }, {
+                "this": "{that}.stars",
+                method: "click",
+                args: {
+                    expander: {
+                        funcName: "demo.fiveStar.makeStarHandler",
+                        args: ["{that}", "{that}.setRank"]
+                    }
+                }  
+            }, {
+                funcName: "demo.fiveStar.setARIA",
+                args: "{that}"
+            }, {
+                funcName: "demo.fiveStar.bindChangeListener",
+                args: "{that}"
+            }]
+        },
+        invokers: {
+            setRank: {
+               func: "{that}.applier.requestChange",
+               args: ["rank", "{arguments}.0"]
+            },
+            renderStarState: {
+                funcName: "demo.fiveStar.renderStarState",
+                args: ["{that}.stars", "{arguments}.0", "{that}.model.rank", "{that}.options.starImages"]  
+            },
+           /**
+            * Highlight the stars up to the given star with the hover colour
+            * @param {Number} star number
+            */
+            hoverStars: {
+                func: "{that}.renderStarState"
+            },
+           /**
+            * Restore the display of stars to reflect the ranking
+            */
+            refreshView: {
+                func: "{that}.renderStarState",
+                args: 0
+            }
+        },
         selectors: {
             stars: "[class^='star-']"
         },
@@ -126,9 +148,6 @@ var demo = demo || {};
         },
         model: {
             rank: 1
-        },
-        events: {
-            modelChanged: null
         }
     });
 })(jQuery, fluid);

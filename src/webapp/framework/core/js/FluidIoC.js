@@ -233,12 +233,6 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
 
-    fluid.getMembers = function (holder, name) {
-        return fluid.transform(holder, function(member) {
-            return fluid.get(member, name);
-        });
-    };
-
     // unsupported, NON-API function 
     fluid.receiveDistributions = function (parentThat, gradeNames, memberName) {
         var instantiator = fluid.getInstantiator(parentThat);
@@ -889,6 +883,14 @@ var fluid_1_5 = fluid_1_5 || {};
         return togo;
     };
 
+    // unsupported, non-API function    
+    fluid.makeIoCRootDestroy = function (instantiator, that) {
+        return function () {
+            instantiator.clearComponent(that, "", that, null, true);
+            fluid.fireEvent(that, "events.onDestroy", [that, "", null]);
+        };
+    };
+
     // unsupported, non-API function
     fluid.expandComponentOptions = function (mergePolicy, defaults, userOptions, that) {
         var instantiator = userOptions && userOptions.marker === fluid.EXPAND && userOptions.memberName !== undefined ? 
@@ -898,6 +900,7 @@ var fluid_1_5 = fluid_1_5 || {};
             instantiator = fluid.instantiator();
             fresh = true;
             fluid.log("Created new instantiator with id " + instantiator.id + " in order to operate on component " + (that? that.typeName : "[none]"));
+            that.destroy = fluid.makeIoCRootDestroy(instantiator, that);
         }
         fluid.pushActivity("expandComponentOptions", "expanding component options %options with record %record for component %that", 
             {options: userOptions && userOptions.mergeRecords, record: userOptions, that: that});
@@ -991,11 +994,12 @@ var fluid_1_5 = fluid_1_5 || {};
                 demands = fluid.makePassArgsSpec(initArgs);
             }
         }
-        // confusion remains with "localRecord" - it is a random mishmash of user arguments and the component record
-        // this should itself be absorbed into "mergeRecords" and let stackFetcher sort it out
-        var localRecord = $.extend({"arguments": initArgs}, fluid.censorKeys(options.componentRecord, ["type"]));
         var shadow = fluid.shadowForComponent(parentThat);
         var localDynamic = shadow && options.memberName ? shadow.subcomponentLocal[options.memberName] : null;
+
+        // confusion remains with "localRecord" - it is a random mishmash of user arguments and the component record
+        // this should itself be absorbed into "mergeRecords" and let stackFetcher sort it out
+        var localRecord = $.extend({"arguments": initArgs}, fluid.censorKeys(options.componentRecord, ["type"]), localDynamic);
         
         fluid.each(argMap, function (index, name) {
             // this is incorrect anyway! What if the supplied arguments were not in the same order as the target argmap,
@@ -1508,10 +1512,12 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             if (!expanded.listener) {
                 badRec(record, " Listener record must contain a member named \"listener\", \"func\", \"funcName\" or \"method\"");
             }
-            var softNamespace = fluid.event.resolveSoftNamespace(record.method ? record["this"] + "-" + record.method : expanded.listener);
+            var softNamespace = record.method ? 
+                fluid.event.resolveSoftNamespace(record["this"]) + "." + record.method : 
+                fluid.event.resolveSoftNamespace(expanded.listener);
             if (!expanded.namespace && !namespace && softNamespace) {
                 expanded.softNamespace = true;
-                expanded.namespace = softNamespace;
+                expanded.namespace = (record.componentSource ? record.componentSource : that.typeName) + "." + softNamespace;
             }
             var listener = expanded.listener = fluid.expandOptions(expanded.listener, that);
             if (!listener) {
@@ -1598,9 +1604,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 fluid.popActivity();
                 return togo;
             };
-            firer.addListener = function (listener, namespace, predicate, priority) {
+            firer.addListener = function (listener, namespace, predicate, priority, softNamespace) {
                 var dispatcher = fluid.event.dispatchListener(that, listener, eventName, eventSpec);
-                adder(origin).addListener(dispatcher, namespace, predicate, priority);
+                adder(origin).addListener(dispatcher, namespace, predicate, priority, softNamespace);
             };
             firer.removeListener = function (listener) {
                 origin.removeListener(listener);

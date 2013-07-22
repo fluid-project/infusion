@@ -68,7 +68,7 @@ var fluid_1_5 = fluid_1_5 || {};
             });
             fluid.addSourceGuardedListener(sourceApplier, sourceKey, internalKey, function (newModel) {
                 fluid.fireSourcedChange(applier, internalKey, fluid.get(newModel, sourceKey), sourceKey);
-            }, undefined, uniqueNamespace);
+            }, null, uniqueNamespace);
         });
     };
 
