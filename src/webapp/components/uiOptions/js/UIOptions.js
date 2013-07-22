@@ -26,8 +26,8 @@ var fluid_1_5 = fluid_1_5 || {};
      *********************/
 
     /**
-     * An UI Options top-level component that reflects the collaboration between uiOptionsLoader
-     * and resourceLoader. This component is the only UI Options component that is intended to be
+     * An UI Options top-level component that reflects the collaboration between uiOptionsLoader,
+     * templateLoader and messageLoader. This component is the only UI Options component that is intended to be
      * called by the outside world.
      *
      * @param {Object} options
@@ -36,21 +36,31 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.messages", "autoInit"],
         components: {
             uiOptionsLoader: {
+                priority: "last",
                 type: "fluid.uiOptions.loader"
             },
-            resourceLoader: {
-                priority: "first",
+            templateLoader: {
+                type: "fluid.uiOptions.resourceLoader"
+            },
+            messageLoader: {
                 type: "fluid.uiOptions.resourceLoader"
             }
         },
         container: "{that}.container",
         distributeOptions: [{
-            source: "{that}.options.resourceLoader.options",
+            source: "{that}.options.templateLoader.options",
             removeSource: true,
-            target: "{that resourceLoader}.options"
+            target: "{that templateLoader}.options"
         }, {
-            source: "{that}.options.prefix",
-            target: "{that resourcePath}.options.value"
+            source: "{that}.options.messageLoader.options",
+            removeSource: true,
+            target: "{that messageLoader}.options"
+        }, {
+            source: "{that}.options.templatePrefix",
+            target: "{that > templateLoader > resourcePath}.options.value"
+        }, {
+            source: "{that}.options.messagePrefix",
+            target: "{that > messageLoader > resourcePath}.options.value"
         }, {
             source: "{that}.options.uiOptionsLoader.options",
             removeSource: true,
@@ -157,7 +167,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.loader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        resources: "{resourceLoader}.resources",
+        resources: "{templateLoader}.resources",
         events: {
             // These two are events private to uiOptions
             onUIOptionsTemplateReady: null, // templates are loaded - construct UIOptions itself
@@ -240,7 +250,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onAutoSave: "{that}.save"
         },
         resources: {
-            template: "{resourceLoader}.resources.uiOptions"
+            template: "{templateLoader}.resources.uiOptions"
         },
         autoSave: false
     });
@@ -432,7 +442,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             // TODO: This is a violation of containment, but we can't use up our allowance of demands
             // blocks as a result of FLUID-4392
-            resourceLoader: "{resourceLoader}"
+            templateLoader: "{templateLoader}"
         },
         invokers: {
             updateModel: {
@@ -466,13 +476,12 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.preview.finalInit = function (that) {
-        var templateUrl = that.resourceLoader.transformURL(that.options.templateUrl);
+        var templateUrl = that.templateLoader.transformURL(that.options.templateUrl);
         that.container.load(function () {
             that.enhancerContainer = $("body", that.container.contents());
             that.events.onReady.fire();
         });
         that.container.attr("src", templateUrl);
-
     };
 
 })(jQuery, fluid_1_5);

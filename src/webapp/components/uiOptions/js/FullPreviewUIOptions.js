@@ -27,7 +27,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         container: "{fullPreview}.container",
         outerPreviewEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
-        resourceLoader: {
+        templateLoader: {
             options: {
                 templates: {
                     uiOptions: "%prefix/FullPreviewUIOptions.html"
