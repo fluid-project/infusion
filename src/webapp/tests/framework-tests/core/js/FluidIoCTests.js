@@ -877,8 +877,11 @@ fluid.registerNamespace("fluid.tests");
             fireRecord: [],
             self: "{that}"
         },
+        events: {
+            testEvent: null,
+        },
         listeners: {
-            onCreate: [{
+            testEvent: [{
                 funcName: "fluid.tests.FLUID5082func",
                 args: ["{that}", 1]  
             }, {
@@ -904,33 +907,51 @@ fluid.registerNamespace("fluid.tests");
     });
     
     fluid.defaults("fluid.tests.FLUID5082Child", {
-        gradeNames: ["fluid.tests.FLUID5082Parent", "autoInit"],
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
         listeners: {
-            onCreate: [{
+            testEvent: [{
                 funcName: "fluid.tests.FLUID5082func",
-                namespace: "FLUID5082func", // will override
-                args: ["{that}", 5]  
+                namespace: "fluid.tests.FLUID5082Parent.FLUID5082func", // will override
+                args: ["{FLUID5082Parent}", 5]  
             }, {
-                func: "{that}.FLUID5082invoker",
-                namespace: "FLUID5082invoker", // will override
-                args: ["{that}", 6]
+                func: "{FLUID5082Parent}.FLUID5082invoker",
+                namespace: "fluid.tests.FLUID5082Parent.FLUID5082invoker", // will override
+                args: ["{FLUID5082Parent}", 6]
             }, {
-                "this": "{that}.self",
-                namespace: "self-FLUID5082invoker2", // will override
+                "this": "{FLUID5082Parent}.self",
+                namespace: "fluid.tests.FLUID5082Parent.self.FLUID5082invoker2", // will override
                 method: "FLUID5082invoker2",
-                args: ["{that}", 7]
+                args: ["{FLUID5082Parent}", 7]
             }, {
                 funcName: "fluid.tests.FLUID5082func2", // will not override
-                args: ["{that}", 8]
+                args: ["{FLUID5082Parent}", 8]
             }]
         }
     });
 
     jqUnit.test("Listener Merging Tests: FLUID-5082", function () {
         var that = fluid.tests.FLUID5082Parent();
+        that.events.testEvent.fire();
         jqUnit.assertDeepEq("Base grade listeners fired", [1, 2, 3, 4], that.fireRecord);
-        var that2 = fluid.tests.FLUID5082Child();
+        // Test configuration with child superposed on parent
+        var that2 = fluid.tests.FLUID5082Child({gradeNames: "fluid.tests.FLUID5082Parent"});
+        that2.events.testEvent.fire();
         jqUnit.assertDeepEq("Base grade listeners fired", [4, 5, 6, 7, 8], that2.fireRecord);
+        // Test configuration with child as child component - results should be identical
+        var that3 = fluid.tests.FLUID5082Parent( {
+            components: {
+                child: {
+                    type: "fluid.tests.FLUID5082Child",
+                    options: {
+                        events: {
+                            testEvent: "{FLUID5082Parent}.events.testEvent"
+                        }  
+                    }
+                }
+            }
+        });
+        that3.events.testEvent.fire();
+        jqUnit.assertDeepEq("Base grade listeners fired", [4, 5, 6, 7, 8], that3.fireRecord);        
     });
 
     /** withEnvironment tests - eventually to be deprecated **/

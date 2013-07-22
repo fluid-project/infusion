@@ -267,8 +267,40 @@ fluid.registerNamespace("fluid.tests");
             expected2, fluid.filterKeys(mergePaths.viewChild.options, ["childOption1", "childOption2"]));
     });
     
+    fluid.tests.dynamicCounter = function (parent) {
+        parent.childCount++;
+    };
+    
+    fluid.defaults("fluid.tests.dynamicContainer", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        members: {
+            childCount: 0
+        },
+        selectors: {
+            dynamicContainer: ".flc-tests-dynamic-component"
+        },
+        dynamicComponents: {
+            dynamicDOM: {
+                sources: "{that}.dom.dynamicContainer",
+                container: "{source}",
+                type: "fluid.viewComponent",
+                options: {
+                    listeners: {
+                        onCreate: {
+                            funcName: "fluid.tests.dynamicCounter",
+                            args: "{dynamicContainer}"
+                        }
+                    }
+                }
+            }
+        }
+    });
 
-
+    jqUnit.test("FLUID-5022 dynamic container for view components", function () {
+        var dynamic = fluid.tests.dynamicContainer(".flc-tests-dynamic-container");
+        jqUnit.assertEquals("Three markup-driven child components created", 3, dynamic.childCount);
+    });
+    
     /************************************
      * DOM Binder IoC Resolution Tests. *
      ************************************/
