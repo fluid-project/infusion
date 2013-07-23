@@ -33,19 +33,19 @@ var fluid_1_5 = fluid_1_5 || {};
         "components": {
             expander: [
                 {
-                    type: "fluid.model.transform.value",
+                    type: "fluid.transforms.value",
                     inputPath: "components",
                     merge: true
                 },
                 {
-                    type: "fluid.model.transform.value",
+                    type: "fluid.transforms.value",
                     merge: true,
                     value: {
                         "strategy": {
                             "options": {
                                 "flashMovieSettings": {
                                     expander: {
-                                        type: "fluid.model.transform.value",
+                                        type: "fluid.transforms.value",
                                         value: {
                                             "flashURL": "uploadManager.options.flashURL",
                                             "flashButtonPeerId": "decorators.0.options.flashButtonPeerId",
@@ -68,7 +68,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         "queueSettings": {
             expander: {
-                type: "fluid.model.transform.firstValue",
+                type: "fluid.transforms.firstValue",
                 values: ["queueSettings", "uploadManager.options"]
             }
         },
