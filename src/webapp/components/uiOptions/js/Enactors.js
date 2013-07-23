@@ -490,7 +490,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-    
+
     fluid.uiOptions.enactors.tableOfContents.applyToc = function (value, that) {
         var async = false;
         if (value) {
@@ -509,7 +509,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.events.onLateRefreshRelay.fire(that);
         }
     };
-    
+
     fluid.uiOptions.enactors.tableOfContents.finalInit = function (that) {
         that.applier.modelChanged.addListener("value", function (newModel) {
             that.applyToc(newModel.value);
@@ -571,7 +571,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A grade component for UIEnhancer. It is a collection of default UI Enhancer
      * action ants.
      *******************************************************************************/
-    
+
     fluid.defaults("fluid.uiEnhancer.starterEnactors", {
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
         components: {
@@ -682,33 +682,43 @@ var fluid_1_5 = fluid_1_5 || {};
      * which need to re-apply their actions on the links inside table of contents
      *******************************************************************************/
 
+    fluid.defaults("fluid.uiOptions.tocWithEmphasizeLinks", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        listeners: {
+            afterTocRender: {
+                listener: "{uiEnhancer}.emphasizeLinks.handleStyle",
+                args: "{uiEnhancer}.model.links"
+            },
+            onLateRefreshRelay: {
+                listener: "{uiEnhancer}.emphasizeLinks.handleStyle",
+                args: "{uiEnhancer}.model.links"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.tocWithInputsLarger", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        listeners: {
+            afterTocRender: {
+                listener: "{uiEnhancer}.inputsLarger.handleStyle",
+                args: "{uiEnhancer}.model.inputsLarger"
+            },
+            onLateRefreshRelay: {
+                listener: "{uiEnhancer}.inputsLarger.handleStyle",
+                args: "{uiEnhancer}.model.inputsLarger"
+            }
+        }
+    });
+
     fluid.demands("fluid.uiOptions.enactors.tableOfContents", "fluid.uiOptions.enactors.emphasizeLinks", {
         options: {
-            listeners: {
-                afterTocRender: {
-                    listener: "{uiEnhancer}.emphasizeLinks.handleStyle",
-                    args: "{uiEnhancer}.model.links"
-                },
-                onLateRefreshRelay: {
-                    listener: "{uiEnhancer}.emphasizeLinks.handleStyle",
-                    args: "{uiEnhancer}.model.links"
-                }
-            }
+            gradeNames: "fluid.uiOptions.tocWithEmphasizeLinks"
         }
     });
 
     fluid.demands("fluid.uiOptions.enactors.tableOfContents", "fluid.uiOptions.enactors.inputsLarger", {
         options: {
-            listeners: {
-                afterTocRender: {
-                    listener: "{uiEnhancer}.inputsLarger.handleStyle",
-                    args: "{uiEnhancer}.model.inputsLarger"
-                },
-                onLateRefreshRelay: {
-                    listener: "{uiEnhancer}.inputsLarger.handleStyle",
-                    args: "{uiEnhancer}.model.inputsLarger"
-                }
-            }
+            gradeNames: "fluid.uiOptions.tocWithInputsLarger"
         }
     });
 

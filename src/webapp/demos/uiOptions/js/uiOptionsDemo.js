@@ -32,7 +32,6 @@ var demo = demo || {};
      * versions of the component.
      */
     var pathToTemplates = "../../../components/uiOptions/html/";
-    var pathToMessages = "../../../components/uiOptions/messages/";
 
     /**
      * The UI Enhancer's Table of Contents uses a template. This path variable is used by all
@@ -68,7 +67,6 @@ var demo = demo || {};
         gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
         // Tell UIOptions where to find all the templates, relative to this path
         templatePrefix: pathToTemplates,
-        messagePrefix: pathToMessages,
         templateLoader: {
             options: {
                 gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
