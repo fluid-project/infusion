@@ -364,7 +364,7 @@ var fluid_1_5 = fluid_1_5 || {};
         parentBundle: {
             expander: {
                 funcName: "fluid.messageResolver",
-                args: [{messageBase: "{uiOptions}.options.messages"}]
+                args: [{messageBase: "{uiOptions}.messages"}]
             }
         }
     });

@@ -30,8 +30,8 @@ var fluid_1_5 = fluid_1_5 || {};
             toggleButton: ".flc-slidingPanel-toggleButton"
         },
         strings: {
-            showText: "{that}.options.messages.slidingPanelShowText",
-            hideText: "{that}.options.messages.slidingPanelHideText"
+            showText: "{that}.messages.slidingPanelShowText",
+            hideText: "{that}.messages.slidingPanelHideText"
         },
         events: {
             onPanelHide: null,

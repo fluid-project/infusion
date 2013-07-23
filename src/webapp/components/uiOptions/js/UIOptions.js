@@ -37,7 +37,12 @@ var fluid_1_5 = fluid_1_5 || {};
         components: {
             uiOptionsLoader: {
                 priority: "last",
-                type: "fluid.uiOptions.loader"
+                type: "fluid.uiOptions.loader",
+                options: {
+                    members: {
+                        messages: "{fluid.uiOptions.inline}.messages"
+                    }
+                }
             },
             templateLoader: {
                 type: "fluid.uiOptions.resourceLoader"
@@ -195,6 +200,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     events: {
                         "onUIOptionsComponentReady": "{loader}.events.onUIOptionsComponentReady"
+                    },
+                    members: {
+                        messages: "{loader}.messages"
                     }
                 }
             }
