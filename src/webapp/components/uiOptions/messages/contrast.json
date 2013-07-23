@@ -1,8 +1,4 @@
-// UI Options Contrast Settings Panel
-// Note: if you modify these, you need to update the appropriate
-// controlValues in fluid.uiOptions.panels.contrast component options.
-contrast: {
-    contrast: ["Default", "Black on white", "White on black", "Black on yellow",
-        "Yellow on black"],
-    contrastLabel: "Colour & Contrast"
+{
+    "contrast": ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"],
+    "contrastLabel": "Colour & Contrast"
 }

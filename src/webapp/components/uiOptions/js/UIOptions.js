@@ -121,9 +121,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.resourceLoader", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         finalInitFunction: "fluid.uiOptions.resourceLoader.resolveTemplates",
-        templates: {
-            uiOptions: "%prefix/FatPanelUIOptions.html"
-        },
+        templates: {},
         // Unsupported, non-API option
         components: {
             resourcePath: {
@@ -167,20 +165,32 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.loader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        resources: "{templateLoader}.resources",
+        templateResources: "{templateLoader}.resources",
+        messageResources: "{messageLoader}.resources",
         events: {
             // These two are events private to uiOptions
             onUIOptionsTemplateReady: null, // templates are loaded - construct UIOptions itself
-            onUIOptionsComponentReady: null, // UIOptions is loaded - construct its subcomponents
+            onUIOptionsComponentReady: null, // UIOptions templates are loaded
             // This is a public event which users outside the component can subscribe to - the argument
             // supplied is UIOptions.loader itself
+            onUIOptionsMessageReady: null,  // UIOptions message json files are loaded
             onReady: null
+        },
+        invokers: {
+            buildMessageResolver: {
+                funcName: "fluid.uiOptions.loader.buildMessageResolver",
+                args: ["{that}.options.messageResources", "{that}"]
+            }
         },
         listeners: {
             onUIOptionsComponentReady: {
                 listener: "{loader}.events.onReady",
                 args: ["{fluid.uiOptions.loader}", "{arguments}.0"],
                 priority: "last"
+            },
+            onUIOptionsMessageReady: {
+                listener: "{that}.buildMessageResolver",
+                priority: "first"
             },
             onCreate: {
                 listener: "fluid.uiOptions.loader.init",
@@ -202,9 +212,24 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     fluid.uiOptions.loader.init = function (that) {
-        fluid.fetchResources(that.options.resources, function () {
+        fluid.fetchResources(that.options.templateResources, function () {
             that.events.onUIOptionsTemplateReady.fire();
         });
+        fluid.fetchResources(that.options.messageResources, function () {
+            that.events.onUIOptionsMessageReady.fire();
+        });
+    };
+
+    fluid.uiOptions.loader.buildMessageResolver = function (messageResources, that) {
+        var mergedResolver;
+        var previousResolver = fluid.messageResolver({messageBase: {}});
+        fluid.each(messageResources, function (oneResource, key) {
+            var message = JSON.parse(oneResource.resourceText);
+            mergedResolver = fluid.messageResolver({messageBase: message, parents: [previousResolver]});
+            previousResolver = mergedResolver;
+        });
+        that.msgBundle = mergedResolver;
+        console.log(mergedResolver);
     };
 
     /**

@@ -74,6 +74,11 @@ var demo = demo || {};
                 gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
             }
         },
+        messageLoader: {
+            options: {
+                gradeNames: ["fluid.uiOptions.starterMessageLoader"]
+            }
+        },
         uiOptions: {
             options: {
                 gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]

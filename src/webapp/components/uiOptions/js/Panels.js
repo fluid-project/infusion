@@ -503,7 +503,7 @@ var fluid_1_5 = fluid_1_5 || {};
      ******************************/
 
     /**
-     * A template loader component that specifies the templates used by starterPanels
+     * A template loader component that expands the resources blocks for loading templates used by starterPanels
      *
      * @param {Object} options
      */
@@ -511,12 +511,36 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.starterTemplateLoader", {
         gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
         templates: {
+            uiOptions: "%prefix/FatPanelUIOptions.html",
             textSize: "%prefix/UIOptionsTemplate-textSize.html",
             textFont: "%prefix/UIOptionsTemplate-textFont.html",
             lineSpace: "%prefix/UIOptionsTemplate-lineSpace.html",
             contrast: "%prefix/UIOptionsTemplate-contrast.html",
             layoutControls: "%prefix/UIOptionsTemplate-layout.html",
             linksControls: "%prefix/UIOptionsTemplate-links.html"
+        }
+    });
+
+    /******************************
+     * Starter Message Loader
+     ******************************/
+
+    /**
+     * A message loader component that expands the resources blocks for loading messages for starter panels
+     *
+     * @param {Object} options
+     */
+
+    fluid.defaults("fluid.uiOptions.starterMessageLoader", {
+        gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
+        templates: {
+            uiOptions: "%prefix/uiOptions.json",
+            textSize: "%prefix/textSize.json",
+            textFont: "%prefix/textFont.json",
+            lineSpace: "%prefix/lineSpace.json",
+            contrast: "%prefix/contrast.json",
+            layoutControls: "%prefix/tableOfContents.json",
+            linksControls: "%prefix/links.json"
         }
     });
 
