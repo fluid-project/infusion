@@ -185,17 +185,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.panels = {
-        "panels": [{
-            "type": "fluid.uiOptions.panels.textSize",
-            "container": ".flc-uiOptions-text-size",
-            "template": "templates/textSize"
-        }]
+        "textSize": {
+            "panel": {
+                "type": "fluid.uiOptions.panels.textSize",
+                "container": ".flc-uiOptions-text-size",
+                "template": "templates/textSize"
+            }
+        }
     };
 
     fluid.tests.enactors = {
-        "enactors": [{
-            "type": "fluid.uiOptions.enactors.textSize"
-        }]
+        "textSize": {
+            "enactor": {
+                "type": "fluid.uiOptions.enactors.textSize"
+            }
+        }
     };
 
     fluid.defaults("fluid.tests.builder", {
