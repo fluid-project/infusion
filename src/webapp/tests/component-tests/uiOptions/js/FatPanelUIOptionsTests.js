@@ -13,7 +13,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid, jqUnit, expect, start, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 
@@ -28,7 +28,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "slidingPanel",
         "iframeRenderer",
         "iframeRenderer.iframeEnhancer"];
-    
+
     fluid.defaults("fluid.tests.fatPanelIntegration", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         listeners: {
@@ -74,42 +74,49 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testComponent = function (uiOptionsLoader, uiOptions) {
         jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, uiOptions.iframeRenderer.iframe.is(":visible"));
+        jqUnit.assertEquals("Reset button is invisible", false, $(".flc-uiOptions-reset").is(":visible"));
 
         fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents["fluid.uiOptions.fatPanel"]);
     };
-    
+
     fluid.tests.testFatPanel = function (fatPanel) {
         fluid.tests.uiOptions.assertPresent(fatPanel, fluid.tests.uiOptions.expectedFatPanel);
     };
-    
+
     fluid.tests.afterShowFunc1 = function (fatPanel) {
         return function () {
             fluid.tests.uiOptions.applierRequestChanges(fatPanel.uiOptionsLoader.uiOptions, fluid.tests.uiOptions.bwSkin);
             fluid.tests.uiOptions.checkModelSelections("pageModel from bwSkin", fluid.tests.uiOptions.bwSkin, fatPanel.pageEnhancer.model);
+            jqUnit.assertEquals("Reset button is visible", true, $(".flc-uiOptions-reset").is(":visible"));
         };
     };
-    
+
+    fluid.tests.afterHideFunc1 = function (fatPanel) {
+        return function () {
+            jqUnit.assertEquals("Reset button is invisible", false, $(".flc-uiOptions-reset").is(":visible"));
+        };
+    };
     fluid.tests.afterShowFunc2 = function (fatPanel) {
         return function () {
             var pageModel = fatPanel.pageEnhancer.model;
             var panelModel = fatPanel.iframeRenderer.iframeEnhancer.model;
-            
+
             fluid.tests.uiOptions.checkModelSelections("panelModel from bwSkin", fluid.tests.uiOptions.bwSkin, panelModel);
             fluid.tests.uiOptions.checkModelSelections("panelModel from pageModel", pageModel, panelModel);
         };
     };
-    
+
     fluid.tests.afterShowFunc3 = function (fatPanel) {
         return function () {
             var rootModel = fatPanel.uiOptionsLoader.uiOptions.rootModel;
             var pageModel = fatPanel.pageEnhancer.model;
             var panelModel = fatPanel.iframeRenderer.iframeEnhancer.model;
-            
+
             fatPanel.locate("reset").click();
             fluid.tests.uiOptions.checkModelSelections("pageModel from defaults", rootModel, pageModel);
             fatPanel.slidingPanel.hidePanel();
             fluid.tests.uiOptions.checkModelSelections("panelModel from defaults", rootModel, panelModel);
-            fluid.tests.uiOptions.checkModelSelections("pageModel from panelModel", pageModel, panelModel);  
+            fluid.tests.uiOptions.checkModelSelections("pageModel from panelModel", pageModel, panelModel);
         };
     };
 
@@ -118,7 +125,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Fat panel integration tests",
             tests: [{
-                expect: 17,
+                expect: 20,
                 name: "Fat panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testComponent",
@@ -136,6 +143,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     event: "{fatPanel}.slidingPanel.events.afterPanelShow"
                 }, {
                     func: "{fatPanel}.slidingPanel.hidePanel"
+                }, {
+                    listenerMaker: "fluid.tests.afterHideFunc1",
+                    makerArgs: ["{fatPanel}"],
+                    event: "{fatPanel}.slidingPanel.events.afterPanelHide"
                 }, {
                     func: "{fatPanel}.slidingPanel.showPanel"
                 }, {
@@ -161,7 +172,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     var expectedIframeSelector = ".uio-munging";
     var isSlidingPanelShown = false;
-    
+
     fluid.defaults("fluid.tests.fatPanelMungingIntegration", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
@@ -206,18 +217,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testEnhancerTransit = function testEnhancerTransit(fatPanel, expectedIframeSelector) {
         var cMap = fluid.tests.uiOptions.enhancerOptions.classnameMap;
-        
+
         // "outerEnhancerOptions" option mapping
         jqUnit.assertEquals("classnameMap transferred to outer UIEnhancer", cMap.textFont["default"],
              fatPanel.pageEnhancer.options.classnameMap.textFont["default"]);
         jqUnit.assertEquals("classnameMap transferred to inner UIEnhancer", cMap.textFont["default"],
              fatPanel.iframeRenderer.iframeEnhancer.options.classnameMap.textFont["default"]);
-        
+
         // "slidingPanel" option mapping
         jqUnit.assertFalse("UIO Panel is hidden", isSlidingPanelShown);
         fatPanel.slidingPanel.locate("toggleButton").click();
         jqUnit.assertTrue("UIO Panel is shown", isSlidingPanelShown);
-        
+
         // "iframe" option mapping
         jqUnit.assertEquals("Iframe selector is transferred in", expectedIframeSelector, fatPanel.options.selectors.iframe);
     };
@@ -245,7 +256,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.globalSettingsStore();
         fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
-    
+
         fluid.test.runTests([
             "fluid.tests.fatPanelIntegration",
             "fluid.tests.fatPanelMungingIntegration"
