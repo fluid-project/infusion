@@ -188,7 +188,7 @@ var fluid_1_5 = fluid_1_5 || {};
         repeatingSelectors: ["themeRow"],
         produceTree: "fluid.uiOptions.panels.contrast.produceTree",
         controlValues: {
-            theme: ["default", "bw", "wb", "by", "yb"]
+            theme: ["default", "bw", "wb", "by", "yb", "lgdg"]
         },
         markup: {
             label: "<span class=\"fl-preview-A\">A</span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\"></div>"
