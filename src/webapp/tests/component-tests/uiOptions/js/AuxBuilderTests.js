@@ -448,12 +448,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.auxSchema.defaultNamespace = fluid.defaults("fluid.uiOptions.auxBuilder").defaultNamespace;
     fluid.tests.auxSchema.newNamespace = "fluid.uiOptions.constructedUIO";
 
-    fluid.tests.auxSchema.prefs = {
-        "textSize": {
-            "type": "fluid.uiOptions.textSize"
-        }
-    };
-
     fluid.tests.auxSchema.panels = {
         "textSize": {
             "type": "fluid.uiOptions.textSize",
@@ -461,6 +455,57 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "type": "fluid.uiOptions.panels.textSize",
                 "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
                 "template": "%prefix/UIOptionsTemplate-textSize.html"
+            }
+        }
+    };
+
+    fluid.tests.auxSchema.manyPrefsOnePanel = {
+        "emphasizeLinks": {
+            "type": "fluid.uiOptions.emphasizeLinks",
+            "panel": {
+                "type": "fluid.uiOptions.panels.linksControls",
+                "container": ".flc-uiOptions-links-controls",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/UIOptionsTemplate-links.html"
+            }
+        },
+        "inputsLarger": {
+            "type": "fluid.uiOptions.inputsLarger",
+            "panel": {
+                "type": "fluid.uiOptions.panels.linksControls"
+            }
+        }
+    };
+
+    fluid.defaults("fluid.uiOptions.panels.otherTextSize", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        preferenceMap: {
+            "fluid.uiOptions.textSize": {
+                "model.value": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
+        },
+        range: {
+            min: 0,
+            max: 100
+        }
+    });
+
+    fluid.tests.auxSchema.manyPanelsOnePref = {
+        "textSize": {
+            "type": "fluid.uiOptions.textSize",
+            "panel": {
+                "type": "fluid.uiOptions.panels.textSize",
+                "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/UIOptionsTemplate-textSize.html"
+            }
+        },
+        "textSize.other": {
+            "type": "fluid.uiOptions.textSize",
+            "panel": {
+                "type": "fluid.uiOptions.panels.otherTextSize",
+                "container": ".flc-uiOptions-otherTextSize",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/UIOptionsTemplate-otherTextSize.html"
             }
         }
     };
@@ -502,21 +547,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             auxbuilderOnlyEnactor: {
                 type: "fluid.uiOptions.auxBuilder",
                 options: {
-                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.prefs, fluid.tests.auxSchema.enactors, fluid.tests.auxSchema.namespace),
+                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.enactors, fluid.tests.auxSchema.namespace),
                     elementCommonOptions: fluid.tests.elementCommonOptions
                 }
             },
             auxbuilderOnlyPanel: {
                 type: "fluid.uiOptions.auxBuilder",
                 options: {
-                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.prefs, fluid.tests.auxSchema.panels),
+                    auxiliarySchema: fluid.tests.auxSchema.panels,
+                    elementCommonOptions: fluid.tests.elementCommonOptions
+                }
+            },
+            auxbuilderManyPanelsOnePref: {
+                type: "fluid.uiOptions.auxBuilder",
+                options: {
+                    auxiliarySchema: fluid.tests.auxSchema.manyPanelsOnePref,
+                    elementCommonOptions: fluid.tests.elementCommonOptions
+                }
+            },
+            auxbuilderManyPrefsOnePanel: {
+                type: "fluid.uiOptions.auxBuilder",
+                options: {
+                    auxiliarySchema: fluid.tests.auxSchema.manyPrefsOnePanel,
                     elementCommonOptions: fluid.tests.elementCommonOptions
                 }
             },
             auxbuilderAll: {
                 type: "fluid.uiOptions.auxBuilder",
                 options: {
-                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.prefs, fluid.tests.auxSchema.enactors, fluid.tests.auxSchema.panels, fluid.tests.auxSchema.namespace, fluid.tests.auxSchema.messages, fluid.tests.auxSchema.templatePrefix),
+                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.enactors, fluid.tests.auxSchema.panels, fluid.tests.auxSchema.namespace, fluid.tests.auxSchema.messages, fluid.tests.auxSchema.templatePrefix),
                     elementCommonOptions: fluid.tests.elementCommonOptions
                 }
             },
@@ -530,10 +589,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
             expectedPrefs: {
-                "namespace": fluid.tests.auxSchema.defaultNamespace,
-                "textSize": {
-                    "type": "fluid.uiOptions.textSize"
-                }
+                "namespace": fluid.tests.auxSchema.defaultNamespace
             },
             expectedPanels: {
                 "namespace": fluid.tests.auxSchema.defaultNamespace,
@@ -620,6 +676,150 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     members: {
                         rootModel: {
                             fluid_uiOptions_textSize: 1
+                        }
+                    }
+                }
+            },
+            expectedManyPanelsOnePref: {
+                "namespace": fluid.tests.auxSchema.defaultNamespace,
+                "textSize": {
+                    "type": "fluid.uiOptions.textSize",
+                    "panel": {
+                        "type": "fluid.uiOptions.panels.textSize",
+                        "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
+                        "template": "%prefix/UIOptionsTemplate-textSize.html"
+                    }
+                },
+                "textSize.other": {
+                    "type": "fluid.uiOptions.textSize",
+                    "panel": {
+                        "type": "fluid.uiOptions.panels.otherTextSize",
+                        "container": ".flc-uiOptions-otherTextSize",  // the css selector in the template where the panel is rendered
+                        "template": "%prefix/UIOptionsTemplate-otherTextSize.html"
+                    }
+                },
+                panels: {
+                    "gradeNames": ["fluid.uiOptions", "autoInit"],
+                    "selectors": {
+                        "fluid_uiOptions_panels_textSize": ".flc-uiOptions-text-size",
+                        "fluid_uiOptions_panels_otherTextSize": ".flc-uiOptions-otherTextSize"
+                    },
+                    "components": {
+                        "fluid_uiOptions_panels_textSize": {
+                            "type": "fluid.uiOptions.panels.textSize",
+                            "container": "uiOptions.dom.fluid_uiOptions_panels_textSize",
+                            "createOnEvent": "onUIOptionsMarkupReady",
+                            options: {
+                                gradeNames: "fluid.uiOptions.defaultPanel",
+                                model: {
+                                    value: 1
+                                },
+                                rules: {
+                                    fluid_uiOptions_textSize: "value"
+                                },
+                                range: {
+                                    min: 1,
+                                    max: 2
+                                },
+                                resources: {
+                                    template: "templateLoader.resources.fluid_uiOptions_panels_textSize"
+                                }
+                            }
+                        },
+                        "fluid_uiOptions_panels_otherTextSize": {
+                            "type": "fluid.uiOptions.panels.otherTextSize",
+                            "container": "uiOptions.dom.fluid_uiOptions_panels_otherTextSize",
+                            "createOnEvent": "onUIOptionsMarkupReady",
+                            options: {
+                                gradeNames: "fluid.uiOptions.defaultPanel",
+                                model: {
+                                    value: 1
+                                },
+                                rules: {
+                                    fluid_uiOptions_textSize: "value"
+                                },
+                                range: {
+                                    min: 1,
+                                    max: 2
+                                },
+                                resources: {
+                                    template: "templateLoader.resources.fluid_uiOptions_panels_otherTextSize"
+                                }
+                            }
+                        }
+                    }
+                },
+                templateLoader: {
+                    gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
+                    templates: {
+                        "fluid_uiOptions_panels_textSize": "%prefix/UIOptionsTemplate-textSize.html",
+                        "fluid_uiOptions_panels_otherTextSize": "%prefix/UIOptionsTemplate-otherTextSize.html"
+                    }
+                },
+                rootModel: {
+                    gradeNames: ["fluid.uiOptions.rootModel", "autoInit"],
+                    members: {
+                        rootModel: {
+                            fluid_uiOptions_textSize: 1
+                        }
+                    }
+                }
+            },
+            expectedManyPrefsOnePanel: {
+                "namespace": fluid.tests.auxSchema.defaultNamespace,
+                "emphasizeLinks": {
+                    "type": "fluid.uiOptions.emphasizeLinks",
+                    "panel": {
+                        "type": "fluid.uiOptions.panels.linksControls",
+                        "container": ".flc-uiOptions-links-controls",  // the css selector in the template where the panel is rendered
+                        "template": "%prefix/UIOptionsTemplate-links.html"
+                    }
+                },
+                "inputsLarger": {
+                    "type": "fluid.uiOptions.inputsLarger",
+                    "panel": {
+                        "type": "fluid.uiOptions.panels.linksControls"
+                    }
+                },
+                panels: {
+                    "gradeNames": ["fluid.uiOptions", "autoInit"],
+                    "selectors": {
+                        "fluid_uiOptions_panels_linksControls": ".flc-uiOptions-links-controls"
+                    },
+                    "components": {
+                        "fluid_uiOptions_panels_linksControls": {
+                            "type": "fluid.uiOptions.panels.linksControls",
+                            "container": "uiOptions.dom.fluid_uiOptions_panels_linksControls",
+                            "createOnEvent": "onUIOptionsMarkupReady",
+                            options: {
+                                gradeNames: "fluid.uiOptions.defaultPanel",
+                                model: {
+                                    links: false,
+                                    inputsLarger: false
+                                },
+                                rules: {
+                                    fluid_uiOptions_emphasizeLinks: "links",
+                                    fluid_uiOptions_inputsLarger: "inputsLarger"
+                                },
+                                resources: {
+                                    template: "templateLoader.resources.fluid_uiOptions_panels_linksControls"
+                                }
+                            }
+                        }
+                    }
+                },
+                templateLoader: {
+                    gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
+                    templates: {
+                        "fluid_uiOptions_panels_linksControls": "%prefix/UIOptionsTemplate-links.html"
+                    }
+                },
+                rootModel: {
+                    gradeNames: ["fluid.uiOptions.rootModel", "autoInit"],
+                    members: {
+                        rootModel: {
+                            fluid_uiOptions_emphasizeLinks: false,
+                            fluid_uiOptions_inputsLarger: false
                         }
                     }
                 }
@@ -733,6 +933,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "test",
                 func: "fluid.tests.testAuxBuilder",
                 args: ["{auxbuilderOnlyEnactor}.options.expandedAuxSchema", "{that}.options.testOptions.expectedEnactors"]
+            }, {
+                expect: 1,
+                name: "expandedAuxSchema - manyPanelsOnePref",
+                type: "test",
+                func: "fluid.tests.testAuxBuilder",
+                args: ["{auxbuilderManyPanelsOnePref}.options.expandedAuxSchema", "{that}.options.testOptions.expectedManyPanelsOnePref"]
+            }, {
+                expect: 1,
+                name: "expandedAuxSchema - manyPrefsOnePanel",
+                type: "test",
+                func: "fluid.tests.testAuxBuilder",
+                args: ["{auxbuilderManyPrefsOnePanel}.options.expandedAuxSchema", "{that}.options.testOptions.expectedManyPrefsOnePanel"]
             }, {
                 expect: 1,
                 name: "expandedAuxSchema - all",
