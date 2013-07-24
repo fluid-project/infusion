@@ -362,7 +362,8 @@
 .fl-theme-bw .ui-slider-horizontal .ui-slider-handle,
 .fl-theme-wb .ui-slider-horizontal .ui-slider-handle,
 .fl-theme-by .ui-slider-horizontal .ui-slider-handle,
-.fl-theme-yb .ui-slider-horizontal .ui-slider-handle { margin-top: -5px; }
+.fl-theme-yb .ui-slider-horizontal .ui-slider-handle,
+.fl-theme-lgdg .ui-slider-horizontal .ui-slider-handle { margin-top: -5px; }
 
 .fl-theme-bw .fl-uiOptions .fl-slider { background: none; background-color:#000;} 
 .fl-theme-bw .fl-uiOptions .fl-slider a,
@@ -380,10 +381,15 @@
 .fl-theme-by .fl-uiOptions .fl-slider a,
 .fl-theme-by .fl-uiOptions .fl-slider a:hover {border:1px solid #000; background-color:#ffff00;}
 
+.fl-theme-lgdg .fl-uiOptions .fl-slider {background: none; background-color:#343434;}
+.fl-theme-lgdg .fl-uiOptions .fl-slider a,
+.fl-theme-lgdg .fl-uiOptions .fl-slider a:hover {border:1px solid #bdbdbb; background-color:#343434;}
+
 .fl-theme-bw .fl-uiOptions .ui-slider .ui-slider-handle,
 .fl-theme-wb .fl-uiOptions .ui-slider .ui-slider-handle,
 .fl-theme-by .fl-uiOptions .ui-slider .ui-slider-handle,
-.fl-theme-yb .fl-uiOptions .ui-slider .ui-slider-handle {
+.fl-theme-yb .fl-uiOptions .ui-slider .ui-slider-handle,
+.fl-theme-lgdg .fl-uiOptions .ui-slider .ui-slider-handle {
     height: 1.8em;
     width: 1.8em;
 }
@@ -400,7 +406,10 @@
 .fl-theme-by .fl-uiOptions input + label .fl-uiOptions-switch:before,
 .fl-theme-yb .fl-uiOptions .fl-uiOptions-switch,
 .fl-theme-yb .fl-uiOptions .fl-uiOptions-switch-inner,
-.fl-theme-yb .fl-uiOptions input + label .fl-uiOptions-switch:before {
+.fl-theme-yb .fl-uiOptions input + label .fl-uiOptions-switch:before,
+.fl-theme-lgdg .fl-uiOptions .fl-uiOptions-switch,
+.fl-theme-lgdg .fl-uiOptions .fl-uiOptions-switch-inner,
+.fl-theme-lgdg .fl-uiOptions input + label .fl-uiOptions-switch:before {
     box-shadow: none !important;
     text-shadow: none;
     color: inherit;
@@ -437,6 +446,13 @@
     border-color: #FFFF00 !important;
     color: #FFFF00 !important;
 }
+.fl-uiOptions .fl-choice label.fl-theme-lgdg,
+.fl-uiOptions .fl-choice label.fl-theme-lgdg span,
+.fl-uiOptions .fl-choice label.fl-theme-lgdg .fl-crossout {
+    background-color: #343434 !important;
+    border-color: #bdbdbb !important;
+    color: #bdbdbb !important;
+}
 
 .fl-uiOptions .fl-choice label.fl-theme-uio-default,
 .fl-uiOptions .fl-choice label.fl-theme-uio-default span,
@@ -450,9 +466,11 @@
 .fl-theme-wb .fl-uiOptions input:focus + label,
 .fl-theme-by .fl-uiOptions input:focus + label,
 .fl-theme-yb .fl-uiOptions input:focus + label,
+.fl-theme-lgdg .fl-uiOptions input:focus + label,
 .fl-theme-bw .fl-uiOptions .fl-choice input:focus ~ label,
 .fl-theme-wb .fl-uiOptions .fl-choice input:focus ~ label,
 .fl-theme-by .fl-uiOptions .fl-choice input:focus ~ label,
-.fl-theme-yb .fl-uiOptions .fl-choice input:focus ~ label {
+.fl-theme-yb .fl-uiOptions .fl-choice input:focus ~ label,
+.fl-theme-lgdg .fl-uiOptions .fl-choice input:focus ~ label {
     outline: 0.2em solid #00AAFF;
 }
