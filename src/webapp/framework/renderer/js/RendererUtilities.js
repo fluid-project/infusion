@@ -14,7 +14,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid_1_5:true, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, continue: true, elsecatch: true, operator: true, jslintok:true, undef: true, newcap: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid_1_5 = fluid_1_5 || {};
@@ -32,7 +32,7 @@ fluid_1_5 = fluid_1_5 || {};
             if (name.indexOf(fluid.renderer.decoratorComponentPrefix) === 0) {
                 visitor(component, name);
             }
-        }, {flat: true});  
+        }, {flat: true});
     };
 
     fluid.renderer.clearDecorators = function(that) {
@@ -41,7 +41,7 @@ fluid_1_5 = fluid_1_5 || {};
             instantiator.clearComponent(that, name);
         });
     };
-    
+
     fluid.renderer.getDecoratorComponents = function(that) {
         var togo = {};
         fluid.renderer.visitDecorators(that, function(component, name) {
@@ -65,7 +65,7 @@ fluid_1_5 = fluid_1_5 || {};
     };
 
     /** "Renderer component" infrastructure **/
-  // TODO: fix this up with IoC and improved handling of templateSource as well as better 
+  // TODO: fix this up with IoC and improved handling of templateSource as well as better
   // options layout (model appears in both rOpts and eOpts)
     fluid.renderer.createRendererSubcomponent = function (container, selectors, options, parentThat, fossils) {
         options = options || {};
@@ -76,38 +76,38 @@ fluid_1_5 = fluid_1_5 || {};
         if (container.jquery) {
             var cascadeOptions = {
                 document: container[0].ownerDocument,
-                jQuery: container.constructor  
+                jQuery: container.constructor
             };
             fluid.renderer.reverseMerge(rendererOptions, cascadeOptions, fluid.keys(cascadeOptions));
         }
-        
+
         var expanderOptions = fluid.renderer.modeliseOptions(options.expanderOptions, {ELstyle: "${}"}, parentThat);
         fluid.renderer.reverseMerge(expanderOptions, options, ["resolverGetConfig", "resolverSetConfig"]);
         var that = {};
         if (!options.noexpand) {
             that.expander = fluid.renderer.makeProtoExpander(expanderOptions, parentThat);
         }
-        
+
         var templates = null;
         that.render = function (tree) {
             var cutpointFn = options.cutpointGenerator || "fluid.renderer.selectorsToCutpoints";
             rendererOptions.cutpoints = rendererOptions.cutpoints || fluid.invokeGlobalFunction(cutpointFn, [selectors, options]);
             var renderTarget = $(options.renderTarget ? options.renderTarget : container);
-              
+
             if (templates) {
                 fluid.clear(rendererOptions.fossils);
                 fluid.reRender(templates, renderTarget, tree, rendererOptions);
-            } 
+            }
             else {
                 if (typeof(source) === "function") { // TODO: make a better attempt than this at asynchrony
-                    source = source();  
+                    source = source();
                 }
                 templates = fluid.render(source, renderTarget, tree, rendererOptions);
             }
         };
         return that;
     };
-    
+
     fluid.defaults("fluid.rendererComponent", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         initFunction: "fluid.initRendererComponent",
@@ -125,7 +125,7 @@ fluid_1_5 = fluid_1_5 || {};
             },
             produceTree: {
                 funcName: "fluid.rendererComponent.produceTree",
-                args: "{that}"  
+                args: "{that}"
             }
         },
         rendererOptions: {
@@ -144,13 +144,13 @@ fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-    
+
     fluid.rendererComponent.renderOnInit = function (renderOnInit, that) {
         if (renderOnInit) {
             that.refreshView();
         }
     };
-    
+
     fluid.rendererComponent.refreshView = function (that) {
         fluid.renderer.clearDecorators(that);
         that.events.prepareModelForRender.fire(that.model, that.applier, that);
@@ -160,22 +160,22 @@ fluid_1_5 = fluid_1_5 || {};
         }
         that.events.onRenderTree.fire(that, tree);
         that.renderer.render(tree);
-        that.events.afterRender.fire(that);     
+        that.events.afterRender.fire(that);
     };
-    
+
     fluid.rendererComponent.produceTree = function (that) {
        var produceTreeOption = that.options.produceTree;
-       return produceTreeOption ? 
+       return produceTreeOption ?
            (typeof(produceTreeOption) === "string" ? fluid.getGlobalValue(produceTreeOption) : produceTreeOption) (that) :
-           that.options.protoTree;   
+           that.options.protoTree;
     };
 
     fluid.initRendererComponent = function (componentName, container, options) {
         var that = fluid.initView(componentName, container, options, {gradeNames: ["fluid.rendererComponent"]});
         fluid.diagnoseFailedView(componentName, that, fluid.defaults(componentName), arguments);
-        
+
         fluid.fetchResources(that.options.resources); // TODO: deal with asynchrony
-        
+
         var rendererOptions = fluid.renderer.modeliseOptions(that.options.rendererOptions, null, that);
 
         var messageResolver;
@@ -185,7 +185,7 @@ fluid_1_5 = fluid_1_5 || {};
                 resolveFunc: that.options.messageResolverFunction,
                 parents: fluid.makeArray(that.options.parentBundle)
             });
-            rendererOptions.messageSource = {type: "resolver", resolver: messageResolver}; 
+            rendererOptions.messageSource = {type: "resolver", resolver: messageResolver};
         }
         fluid.renderer.reverseMerge(rendererOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
         that.rendererOptions = rendererOptions;
@@ -198,7 +198,7 @@ fluid_1_5 = fluid_1_5 || {};
                 envAdd: {styles: that.options.styles}
             }
         });
-           
+
         if (that.options.resources && that.options.resources.template) {
             rendererFnOptions.templateSource = function () { // TODO: don't obliterate, multitemplates, etc.
                 return that.options.resources.template.resourceText;
@@ -209,17 +209,17 @@ fluid_1_5 = fluid_1_5 || {};
         if (rendererFnOptions.rendererTargetSelector) {
             container = function () {return that.dom.locate(rendererFnOptions.rendererTargetSelector); };
         }
-       
+
         var renderer = {
             fossils: {},
             boundPathForNode: function (node) {
                 return fluid.boundPathForNode(node, renderer.fossils);
             }
         };
-       
+
         var rendererSub = fluid.renderer.createRendererSubcomponent(container, that.options.selectors, rendererFnOptions, that, renderer.fossils);
         that.renderer = $.extend(renderer, rendererSub);
-        
+
         if (messageResolver) {
             that.messageResolver = messageResolver;
         }
@@ -227,7 +227,7 @@ fluid_1_5 = fluid_1_5 || {};
 
         return that;
     };
-    
+
     var removeSelectors = function (selectors, selectorsToIgnore) {
         fluid.each(fluid.makeArray(selectorsToIgnore), function (selectorToIgnore) {
             delete selectors[selectorToIgnore];
@@ -250,27 +250,27 @@ fluid_1_5 = fluid_1_5 || {};
         var togo = [];
         options = options || {};
         selectors = fluid.copy(selectors); // Make a copy before potentially destructively changing someone's selectors.
-    
+
         if (options.selectorsToIgnore) {
             selectors = removeSelectors(selectors, options.selectorsToIgnore);
         }
-    
+
         for (var selectorKey in selectors) {
             togo.push({
                 id: markRepeated(selectorKey, options.repeatingSelectors),
                 selector: selectors[selectorKey]
             });
         }
-    
+
         return togo;
     };
-  
+
     /** END of "Renderer Components" infrastructure **/
-    
+
     fluid.renderer.NO_COMPONENT = {};
-  
+
     /** A special "shallow copy" operation suitable for nondestructively
-     * merging trees of components. jQuery.extend in shallow mode will 
+     * merging trees of components. jQuery.extend in shallow mode will
      * neglect null valued properties.
      * This function is unsupported: It is not really intended for use by implementors.
      */
@@ -280,11 +280,11 @@ fluid_1_5 = fluid_1_5 || {};
         }
         return target;
     };
-    
+
     fluid.registerNamespace("fluid.renderer.selection");
-        
+
     /** Definition of expanders - firstly, "heavy" expanders **/
-    
+
     fluid.renderer.selection.inputs = function (options, container, key, config) {
         fluid.expect("Selection to inputs expander", ["selectID", "inputID", "labelID", "rowID"], options);
         var selection = config.expander(options.tree);
@@ -292,7 +292,7 @@ fluid_1_5 = fluid_1_5 || {};
             var togo = {};
             var element =  {parentRelativeID: "..::" + options.selectID, choiceindex: index};
             togo[options.inputID] = element;
-            togo[options.labelID] = fluid.copy(element); 
+            togo[options.labelID] = fluid.copy(element);
             return togo;
         });
         var togo = {}; // TODO: JICO needs to support "quoted literal key initialisers" :P
@@ -301,13 +301,13 @@ fluid_1_5 = fluid_1_5 || {};
         togo = config.expander(togo);
         return togo;
     };
-    
+
     fluid.renderer.repeat = function (options, container, key, config) {
         fluid.expect("Repetition expander", ["controlledBy", "tree"], options);
         var env = config.threadLocal();
         var path = fluid.extractContextualPath(options.controlledBy, {ELstyle: "ALL"}, env);
         var list = fluid.get(config.model, path, config.resolverGetConfig);
-        
+
         var togo = {};
         if (!list || list.length === 0) {
             return options.ifEmpty ? config.expander(options.ifEmpty) : togo;
@@ -315,7 +315,7 @@ fluid_1_5 = fluid_1_5 || {};
         var expanded = [];
         fluid.each(list, function (element, i) {
             var EL = fluid.model.composePath(path, i);
-            var envAdd = {}; 
+            var envAdd = {};
             if (options.pathAs) {
                 envAdd[options.pathAs] = "${" + EL + "}";
             }
@@ -341,7 +341,7 @@ fluid_1_5 = fluid_1_5 || {};
         fluid.each(expanded, function (entry) {entry.ID = repeatID; });
         return expanded;
     };
-    
+
     fluid.renderer.condition = function (options, container, key, config) {
         fluid.expect("Selection to condition expander", ["condition"], options);
         var condition;
@@ -359,9 +359,9 @@ fluid_1_5 = fluid_1_5 || {};
         }
         return config.expander(tree);
     };
-    
-    
-    /* An EL extraction utility suitable for context expressions which occur in 
+
+
+    /* An EL extraction utility suitable for context expressions which occur in
      * expanding component trees. It assumes that any context expressions refer
      * to EL paths that are to be referred to the "true (direct) model" - since
      * the context during expansion may not agree with the context during rendering.
@@ -381,7 +381,7 @@ fluid_1_5 = fluid_1_5 || {};
             }
         }
     };
-    
+
     fluid.transformContextPath = function (parsed, env) {
         if (parsed.context) {
             var fetched = env[parsed.context];
@@ -391,15 +391,15 @@ fluid_1_5 = fluid_1_5 || {};
             }
             if (EL) {
                 return {
-                    noDereference: parsed.path === "", 
-                    path: fluid.model.composePath(EL, parsed.path) 
-                }; 
+                    noDereference: parsed.path === "",
+                    path: fluid.model.composePath(EL, parsed.path)
+                };
             }
         }
         return parsed;
     };
-    
-    // A forgiving variation of "makeStackFetcher" that returns nothing on failing to resolve an IoC reference, 
+
+    // A forgiving variation of "makeStackFetcher" that returns nothing on failing to resolve an IoC reference,
     // in keeping with current protoComponent semantics. Note to self: abolish protoComponents
     fluid.renderer.makeExternalFetcher = function (contextThat) {
         return function (parsed) {
@@ -437,16 +437,16 @@ fluid_1_5 = fluid_1_5 || {};
             options.externalFetcher = fluid.renderer.makeExternalFetcher(parentThat);
         }
         var threadLocal; // rebound on every expansion at entry point
-        
+
         function fetchEL(string) {
             var env = threadLocal();
             return fluid.extractContextualPath(string, options, env, options.externalFetcher);
         }
-         
+
         var IDescape = options.IDescape || "\\";
-        
+
         var expandLight = function (source) {
-            return fluid.expand(source, options); 
+            return fluid.expand(source, options);
         };
 
         var expandBound = function (value, concrete) {
@@ -472,7 +472,8 @@ fluid_1_5 = fluid_1_5 || {};
             if (EL) {
                 proto.valuebinding = EL;
             } else if (value !== undefined) {
-                proto.value = value;
+                var expanded = expandLight(value);
+                proto.value = expanded !== undefined ? expanded : value;
             }
             if (options.model && proto.valuebinding && proto.value === undefined) {
                 proto.value = fluid.get(options.model, proto.valuebinding, options.resolverGetConfig);
@@ -482,18 +483,18 @@ fluid_1_5 = fluid_1_5 || {};
             }
             return proto;
         };
-        
+
         options.filter = fluid.expander.lightFilter;
-        
+
         var expandCond;
         var expandLeafOrCond;
-        
+
         var expandEntry = function (entry) {
             var comp = [];
             expandCond(entry, comp);
             return {children: comp};
         };
-        
+
         var expandExternal = function (entry) {
             if (entry === fluid.renderer.NO_COMPONENT) {
                 return entry;
@@ -506,7 +507,7 @@ fluid_1_5 = fluid_1_5 || {};
             expandLeafOrCond(entry, target, pusher);
             return singleTarget || target;
         };
-        
+
         var expandConfig = {
             model: options.model,
             resolverGetConfig: options.resolverGetConfig,
@@ -515,7 +516,7 @@ fluid_1_5 = fluid_1_5 || {};
             expandLight: expandLight
             //threadLocal: threadLocal
         };
-        
+
         var expandLeaf = function (leaf, componentType) {
             var togo = {componentType: componentType};
             var map = fluid.renderer.boundMap[componentType] || {};
@@ -531,10 +532,10 @@ fluid_1_5 = fluid_1_5 || {};
             }
             return togo;
         };
-        
+
         // A child entry may be a cond, a leaf, or another "thing with children".
         // Unlike the case with a cond's contents, these must be homogeneous - at least
-        // they may either be ALL leaves, or else ALL cond/childed etc. 
+        // they may either be ALL leaves, or else ALL cond/childed etc.
         // In all of these cases, the key will be THE PARENT'S KEY
         var expandChildren = function (entry, pusher) {
             var children = entry.children;
@@ -545,22 +546,22 @@ fluid_1_5 = fluid_1_5 || {};
                 var child = children[i];
                 var childPusher = function (comp) {
                     target[target.length] = comp;
-                }; // jslint:ok - function in loop 
+                }; // jslint:ok - function in loop
                 expandLeafOrCond(child, target, childPusher);
                 // Rescue the case of an expanded leaf into single component - TODO: check what sense this makes of the grammar
                 if (comp.children.length === 1 && !comp.children[0].ID) {
                     comp = comp.children[0];
                 }
-                pusher(comp); 
+                pusher(comp);
             }
         };
-        
+
         function detectBareBound(entry) {
             return fluid.find(entry, function (value, key) {
                 return key === "decorators";
             }) !== false;
         }
-        
+
         // We have reached something which is either a leaf or Cond - either inside
         // a Cond or as an entry in children.
         var expandLeafOrCond = function (entry, target, pusher) { // jslint:ok - forward declaration
@@ -579,11 +580,11 @@ fluid_1_5 = fluid_1_5 || {};
                 expandCond(entry, target);
             }
         };
-        
+
         // cond entry may be a leaf, "thing with children" or a "direct bound".
         // a Cond can ONLY occur as a direct member of "children". Each "cond" entry may
         // give rise to one or many elements with the SAME key - if "expandSingle" discovers
-        // "thing with children" they will all share the same key found in proto. 
+        // "thing with children" they will all share the same key found in proto.
         expandCond = function (proto, target) {
             for (var key in proto) {
                 var entry = proto[key];
@@ -601,7 +602,7 @@ fluid_1_5 = fluid_1_5 || {};
                 } else if (entry) {
                     var condPusher = function (comp) {
                         comp.ID = key;
-                        target[target.length] = comp; 
+                        target[target.length] = comp;
                     }; // jslint:ok - function in loop
 
                     if (entry.children) {
@@ -616,9 +617,9 @@ fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             }
-                
+
         };
-        
+
         return function(entry) {
             threadLocal = fluid.threadLocal(function() {
                 return $.extend({}, options.envAdd);
@@ -628,6 +629,5 @@ fluid_1_5 = fluid_1_5 || {};
             return expandEntry(entry);
         };
     };
-    
+
 })(jQuery, fluid_1_5);
-    
