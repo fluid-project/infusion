@@ -1782,5 +1782,41 @@ fluid.registerNamespace("fluid.tests");
             });
             test.val("NEW VALUE").change();
         });
+
+        fluid.defaults("fluid.tests.fluid4986", {
+            gradeNames: ["autoInit", "fluid.rendererComponent"],
+            selectors: {
+                select: ".flc-fluid4986-select",
+                simpleBound1: ".flc-fluid4986-simpleBound1",
+                simpleBound2: ".flc-fluid4986-simpleBound2",
+                simpleBound3: ".flc-fluid4986-simpleBound3"
+            },
+            optionnames: ["One", "Two", "Three"],
+            optionlist: ["one", "two", "three"],
+            model: {
+                select: "two"
+            },
+            protoTree: {
+                select: {
+                    optionnames: "{that}.options.optionnames",
+                    optionlist: "{that}.options.optionlist",
+                    selection: "${select}"
+                },
+                simpleBound1: "{test}.string",
+                simpleBound2: "{test.string .....",
+                simpleBound3: "test}.string ....."
+            },
+            renderOnInit: true
+        });
+        jqUnit.test("FLUID-4986: Select", function () {
+            var that = fluid.tests.fluid4986("#FLUID-4986");
+            jqUnit.assertEquals("Select should be rendered properly", that.model.select, that.locate("select").val());
+            jqUnit.assertEquals("Simple bound with that includes {} should be rendered correctly",
+                "{test}.string", that.locate("simpleBound1").text());
+            jqUnit.assertEquals("Simple bound with that includes just { should be rendered correctly",
+                "{test.string .....", that.locate("simpleBound2").text());
+            jqUnit.assertEquals("Simple bound with that includes just } should be rendered correctly",
+                "test}.string .....", that.locate("simpleBound3").text());
+        });
     };
 })(jQuery);
