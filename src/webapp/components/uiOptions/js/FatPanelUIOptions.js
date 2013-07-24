@@ -128,7 +128,7 @@ var fluid_1_5 = fluid_1_5 || {};
             target: "{that > iframeRenderer}.options.templatePrefix"
         }]
     });
-    
+
     fluid.uiOptions.fatPanel.hideReset = function (fatPanel) {
         fatPanel.locate("reset").hide();
     };

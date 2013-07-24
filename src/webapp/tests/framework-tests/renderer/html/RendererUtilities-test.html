@@ -3,18 +3,18 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Renderer Utilities Tests</title>
-    
+
         <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
-        
+
         <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../../../lib/json/js/json2.js"></script>  
+        <script type="text/javascript" src="../../../../lib/json/js/json2.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidRequests.js"></script>
-        <script type="text/javascript" src="../../../../framework/core/js/JavaProperties.js"></script>   
+        <script type="text/javascript" src="../../../../framework/core/js/JavaProperties.js"></script>
         <script type="text/javascript" src="../../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../../framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../../framework/renderer/js/fluidRenderer.js"></script>
@@ -39,14 +39,14 @@
 
     <!-- Test HTML -->
     <div id="qunit-fixture" style="display: none;">
-    
+
         <div id="decorator-container">
 	        <div class="flc-row">
 	            <div class="flc-val">
 	                <input type="text" class="flc-val-val" />
 	            </div>
 	        </div>
-        
+
         </div>
         <div class="flc-renderUtils-container">
             <span class="flc-renderUtils-test">
@@ -54,11 +54,11 @@
             <span class="flc-renderUtils-message">Message</span>
             </span>
         </div>
-        
+
         <div class="repeater-leaf-test">
           <a rsf:id="link:" href="#">Link text</a>
         </div>
-        
+
         <div class="recursive-expansion-test">
             <table>
                 <tr rsf:id="permissions-record-row:">
@@ -74,7 +74,7 @@
                 </tr>
             </table>
         </div>
-        
+
         <div class="renderer-component-test-repeat">
             <ul>
                 <li class="csc-tabs-tab">
@@ -83,7 +83,7 @@
             </ul>
             <div class="csc-unmatchedMessage"></div>
         </div>
-        
+
         <div class="renderer-component-test-multiple-repeat">
             <li class="csc-tabs-tab">
                 <div class="csc-tabs-tab-content"></div>
@@ -92,29 +92,29 @@
                 <div class="csc-tabs-tab-two-content"></div>
             </li>
         </div>
-        
+
         <div class="renderer-ioc-test">
             <div class="middle-component">
                 <div class="decorated-component">
                 </div>
             </div>
         </div>
-        
+
         <div class="renderer-component-test">
             <span class="csc-searchBox-message">A messuage</span>
             <span class="csc-searchBox-deffoltmessage">A messuage</span>
             <span class="csc-searchBox-recordType">Record 1</span>
         </div>
-        
+
         <div class="FLUID-4165-test">
             <input type="text" value="" class="flc-renderUtils-test"/>
         </div>
-        
+
         <div class="FLUID-4189-test">
             <input type="text" value="" class="flc-renderUtils-test"/>
             <input type="text" value="" class="flc-renderUtils-test2"/>
         </div>
-        
+
         <div class="renderer-component-infRec">
             <span class="csc-footer-text1"></span>
 	        <span class="csc-footer-text2"></span>
@@ -122,18 +122,18 @@
 	        <a class="csc-footer-about" href=""></a>
 	        <a class="csc-footer-feedback" href=""></a>
 	    </div>
-        
+
         <div class="identicalComponentParent">
             <div class="identicalComponent1"></div>
             <div class="identicalComponent2"></div>
         </div>
-        
+
         <div class="mergeRenderParent">
             <div class="mergeComponent"></div>
         </div>
-              
+
       <iframe src="RendererUtilitiesIFrame.html"></iframe>
-        
+
         <div class="news-items">
             <div class="news-item">
                 <h1><a class="link" href="" title=""><span class="title">Title</span></a></h1>
@@ -146,7 +146,7 @@
                 <div class="pathexp-row-decorated"></div>
             </div>
         </div>
-        
+
         <div class="FLUID-4737">
             <ul class="messages">
                 <li class="message"></li>
@@ -156,14 +156,18 @@
         <div class="FLUID-4935">
             <input type="text" class="escaped" />
         </div>
-        
+
         <div id="FLUID-5048-test">
-            <div class="flc-uiOptions-captions-settings"></div>        
-            <div class="flc-uiOptions-transcripts-settings"></div>      
+            <div class="flc-uiOptions-captions-settings"></div>
+            <div class="flc-uiOptions-transcripts-settings"></div>
         </div>
-        
+
+        <div id="FLUID-5099">
+            <input type="text" value="" class="flc-fluid5099-test"/>
+        </div>
+
     </div>
-    
+
     <script>
     fluid.tests.testRendererUtilities();
     </script>

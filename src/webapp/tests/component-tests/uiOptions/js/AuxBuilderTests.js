@@ -572,7 +572,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 templateLoader: {
-                    gradeNames: ["fluid.uiOptions.templateLoader", "autoInit"],
+                    gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
                     templates: {
                         "fluid_uiOptions_panels_textSize": "templates/textSize"
                     }
@@ -653,7 +653,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 templateLoader: {
-                    gradeNames: ["fluid.uiOptions.templateLoader", "autoInit"],
+                    gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
                     templates: {
                         "fluid_uiOptions_panels_textSize": "templates/textSize"
                     }
