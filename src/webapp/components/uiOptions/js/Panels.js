@@ -117,31 +117,26 @@ var fluid_1_5 = fluid_1_5 || {};
         strings: {
             textFont: "{that}.options.parentBundle.messageBase.textFont"
         },
-        produceTree: "fluid.uiOptions.panels.textFont.produceTree",
-        classnameMap: null, // must be supplied by implementors
-        controlValues: {
-            textFont: ["default", "times", "comic", "arial", "verdana"]
-        }
-    });
-
-    fluid.uiOptions.panels.textFont.produceTree = function (that) {
-        // render drop down list box
-        return {
+        protoTree: {
             label: {messagekey: "textFontLabel"},
             textFont: {
-                optionnames: that.options.strings.textFont,
-                optionlist: that.options.controlValues.textFont,
+                optionnames: "{that}.options.strings.textFont",
+                optionlist: "{that}.options.controlValues.textFont",
                 selection: "${value}",
                 decorators: {
                     type: "fluid",
                     func: "fluid.uiOptions.selectDecorator",
                     options: {
-                        styles: that.options.classnameMap.textFont
+                        styles: "{that}.options.classnameMap.textFont"
                     }
                 }
             }
-        };
-    };
+        },
+        classnameMap: null, // must be supplied by implementors
+        controlValues: {
+            textFont: ["default", "times", "comic", "arial", "verdana"]
+        }
+    });
 
     /*************************
      * UI Options Line Space *
@@ -220,7 +215,21 @@ var fluid_1_5 = fluid_1_5 || {};
             theme: "{that}.options.parentBundle.messageBase.theme"
         },
         repeatingSelectors: ["themeRow"],
-        produceTree: "fluid.uiOptions.panels.contrast.produceTree",
+        protoTree: {
+            label: {messagekey: "contrastLabel"},
+            expander: {
+                type: "fluid.renderer.selection.inputs",
+                rowID: "themeRow",
+                labelID: "themeLabel",
+                inputID: "themeInput",
+                selectID: "theme-radio",
+                tree: {
+                    optionnames: "{that}.options.strings.theme",
+                    optionlist: "{that}.options.controlValues.theme",
+                    selection: "${value}"
+                }
+            }
+        },
         controlValues: {
             theme: ["default", "bw", "wb", "by", "yb"]
         },
@@ -245,24 +254,6 @@ var fluid_1_5 = fluid_1_5 || {};
             }));
             label.addClass(style[theme[index]]);
         });
-    };
-
-    fluid.uiOptions.panels.contrast.produceTree = function (that) {
-        return {
-            label: {messagekey: "contrastLabel"},
-            expander: {
-                type: "fluid.renderer.selection.inputs",
-                rowID: "themeRow",
-                labelID: "themeLabel",
-                inputID: "themeInput",
-                selectID: "theme-radio",
-                tree: {
-                    optionnames: that.options.strings.theme,
-                    optionlist: that.options.controlValues.theme,
-                    selection: "${value}"
-                }
-            }
-        };
     };
 
     /******************************
