@@ -2,13 +2,13 @@ Infusion Build System
 =====================
 
 The Infusion build system is a collection of Ant, Maven, and JavaScript-based scripts that are responsible
-for managing dependencies between parts of Infusion, concatenating and minifying scripts, and creating release 
+for managing dependencies between parts of Infusion, concatenating and minifying scripts, and creating release
 packages of Infusion.
 
 Builder
 =======
 
-In most cases, users can use the Infusion Builder, a web application designed to easily create custom 
+In most cases, users can use the Infusion Builder, a web application designed to easily create custom
 packages of Infusion based only on the things you need. The Builder is available on our web site at:
 
 http://builder.fluidproject.org/
@@ -38,8 +38,8 @@ ant -lib lib/rhino customBuild \
     -Dexclude="<modules to exclude>" \
     -Djsfilename="<desired file name>"
 
-If you'd rather not specify the -lib parameter every time you run a build, you can upgrade the copy of Rhino 
-installed by Ant inyour $ANT_HOME/lib directory with the newer version distributed in Infusion's 
+If you'd rather not specify the -lib parameter every time you run a build, you can upgrade the copy of Rhino
+installed by Ant inyour $ANT_HOME/lib directory with the newer version distributed in Infusion's
 build-scripts/lib/rhino directory. On Mac OS X, use:
 
 sudo rm -rf /usr/share/ant/lib/js-1.6R7.jar

@@ -15,53 +15,53 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid_1_5:true, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, indent: 4 */
 
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
-    
-    // cf. ancient SVN-era version in bitbucket at https://bitbucket.org/fluid/infusion/src/adf319d9b279/branches/FLUID-2881/src/webapp/components/pager/js/Table.js
-    
+
+    // cf. ancient SVN-era version in bitbucket at https://bitbucket.org/fluid/infusion/src/adf319d9b279/branches/FLUID-2881/src/components/pager/js/Table.js
+
     fluid.registerNamespace("fluid.table");
-    
+
     fluid.table.findColumnDef = function (columnDefs, key) {
         return fluid.find_if(columnDefs, function (def) {
             return def.key === key;
         });
     };
-    
+
     fluid.table.getRoots = function (target, dataOffset, index) {
         target.shortRoot = index;
         target.longRoot = fluid.pathUtil.composePath(dataOffset, target.shortRoot);
     };
-    
+
     // TODO: This crazed variable expansion system was a sketch for what eventually became the "protoComponent expansion system" delivered in 1.x versions of
-    // Infusion. It in turn should be abolished when FLUID-4260 is implemented, allowing users to code with standard Fluid components and standard IoC references 
-    
+    // Infusion. It in turn should be abolished when FLUID-4260 is implemented, allowing users to code with standard Fluid components and standard IoC references
+
     fluid.table.expandPath = function (EL, shortRoot, longRoot) {
         if (EL.charAt(0) === "*") {
-            return longRoot + EL.substring(1); 
+            return longRoot + EL.substring(1);
         } else {
             return EL.replace("*", shortRoot);
         }
     };
-    
+
     fluid.table.fetchValue = function (dataOffset, dataModel, index, valuebinding, roots) {
         fluid.table.getRoots(roots, dataOffset, index);
 
         var path = fluid.table.expandPath(valuebinding, roots.shortRoot, roots.longRoot);
         return fluid.get(dataModel, path);
     };
-    
+
     fluid.table.rowComparator = function (sortDir) {
         return function (arec, brec) {
             return (arec.value > brec.value ? 1 : (arec.value < brec.value ? -1 : 0)) * sortDir;
-        };  
+        };
     };
-    
-    fluid.table.basicSorter = function (columnDefs, dataModel, dataOffset, model) {        
+
+    fluid.table.basicSorter = function (columnDefs, dataModel, dataOffset, model) {
         var roots = {};
         var columnDef = fluid.table.findColumnDef(columnDefs, model.sortKey);
         var sortrecs = [];
@@ -75,7 +75,7 @@ var fluid_1_5 = fluid_1_5 || {};
         sortrecs.sort(fluid.table.rowComparator(model.sortDir));
         return fluid.getMembers(sortrecs, "index");
     };
-   
+
     fluid.table.IDforColumn = function (columnDef, keyPrefix, roots) {
         var EL = columnDef.valuebinding;
         var key = columnDef.key;
@@ -91,8 +91,8 @@ var fluid_1_5 = fluid_1_5 || {};
             EL: fluid.table.expandPath(EL, roots.shortRoot, roots.longRoot)
         };
     };
-   
-    
+
+
     fluid.table.bigHeaderForKey = function (key, options) {
         // TODO: ensure this is shared properly
         var id = options.rendererOptions.idMap["header:" + key];
@@ -102,11 +102,11 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         var headerSortStylisticOffset = options.selectors.headerSortStylisticOffset;
         var bigHeader = fluid.findAncestor(smallHeader, function (element) {
-            return $(element).is(headerSortStylisticOffset); 
+            return $(element).is(headerSortStylisticOffset);
         });
         return bigHeader;
     };
-   
+
     fluid.table.setSortHeaderClass = function (styles, element, sort) {
         element = $(element);
         element.removeClass(styles.ascendingHeader);
@@ -116,22 +116,22 @@ var fluid_1_5 = fluid_1_5 || {};
             // aria-sort property are specified in the W3C WAI spec, ascending, descending, none, other.
             // since pager currently uses ascending and descending, we do not support the others.
             // http://www.w3.org/WAI/PF/aria/states_and_properties#aria-sort
-            element.attr("aria-sort", sort === 1 ? "ascending" : "descending"); 
+            element.attr("aria-sort", sort === 1 ? "ascending" : "descending");
         }
     };
-    
+
     fluid.table.isCurrentColumnSortable = function (columnDefs, model) {
         var columnDef = model.sortKey ? fluid.table.findColumnDef(columnDefs, model.sortKey) : null;
         return columnDef ? columnDef.sortable : false;
     };
-    
+
     fluid.table.setModelSortHeaderClass = function (columnDefs, newModel, options) {
         var styles = options.styles;
         var sort = fluid.table.isCurrentColumnSortable(columnDefs, newModel) ? newModel.sortDir : 0;
         fluid.table.setSortHeaderClass(styles, fluid.table.bigHeaderForKey(newModel.sortKey, options), sort);
     };
-   
-    
+
+
     fluid.table.generateColumnClick = function (tableThat, options, model, columnDef) {
         return function () {
             if (columnDef.sortable === true) {
@@ -153,16 +153,16 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
                 newModel.pageIndex = 0;
                 tableThat.applier.requestChange("", newModel);
-                // fluid.table.setModelSortHeaderClass(newModel, options); - done during rerender, surely              
+                // fluid.table.setModelSortHeaderClass(newModel, options); - done during rerender, surely
             }
             return false;
         };
     };
-   
+
     fluid.table.fetchHeaderDecorators = function (decorators, columnDef) {
         return decorators[columnDef.sortable ? "sortableHeader" : "unsortableHeader"];
     };
-   
+
     fluid.table.generateHeader = function (tableThat, options, newModel) { // arg 2 is renderThat.options
         var sortableColumnTxt = options.strings.sortableColumnText;
         if (newModel.sortDir === 1) {
@@ -173,21 +173,21 @@ var fluid_1_5 = fluid_1_5 || {};
         var columnDefs = tableThat.options.columnDefs;
 
         return {
-            children:  
+            children:
                 fluid.transform(columnDefs, function (columnDef) {
                     return {
                         ID: fluid.table.IDforColumn(columnDef, options.keyPrefix, {}).ID,
                         value: columnDef.label,
-                        decorators: [ 
+                        decorators: [
                             {"jQuery": ["click", fluid.table.generateColumnClick(tableThat, options, newModel, columnDef)]},
                             {identify: "header:" + columnDef.key},
                             {type: "attrs", attributes: { title: (columnDef.key === newModel.sortKey) ? sortableColumnTxt : options.strings.sortableColumnText}}
                         ].concat(fluid.table.fetchHeaderDecorators(options.decorators, columnDef))
                     };
-                })  
+                })
         };
     };
-   
+
     fluid.table.expandVariables = function (value, opts) {
         var togo = "";
         var index = 0;
@@ -212,7 +212,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return togo;
     };
-   
+
     fluid.table.expandPaths = function (target, tree, opts) {
         for (var i in tree) {
             var val = tree[i];
@@ -235,7 +235,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return target;
     };
-   
+
     fluid.table.expandColumnDefs = function (columnDefs, keyPrefix, dataModel, filteredRow, roots) {
         var tree = fluid.transform(columnDefs, function (columnDef) {
             var record = fluid.table.IDforColumn(columnDef, keyPrefix, roots);
@@ -259,16 +259,16 @@ var fluid_1_5 = fluid_1_5 || {};
         });
         return tree;
     };
-   
+
     fluid.table.fetchDataModel = function (dataModel, dataOffset) {
         return fluid.get(dataModel, dataOffset);
     };
-    
+
     fluid.table.produceTree = function (tableThat, renderThat) {
         var options = renderThat.options;
         var columnDefs = tableThat.options.columnDefs;
         var roots = {};
-        var tree = fluid.transform(tableThat.filtered, 
+        var tree = fluid.transform(tableThat.filtered,
             function (filteredRow) {
                 fluid.table.getRoots(roots, tableThat.options.dataOffset, filteredRow.index);
                 if (columnDefs === "explode") {
@@ -284,20 +284,20 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return fullTree;
     };
-    
+
     fluid.table.sortInvoker = function (tableThat, newModel) {
         var columnDefs = tableThat.options.columnDefs;
-        var sorted = fluid.table.isCurrentColumnSortable(columnDefs, newModel) ? 
+        var sorted = fluid.table.isCurrentColumnSortable(columnDefs, newModel) ?
             tableThat.options.sorter(columnDefs, tableThat.options.dataModel, tableThat.options.dataOffset, newModel) : null;
-        tableThat.permutation = sorted;      
-    }; 
-    
+        tableThat.permutation = sorted;
+    };
+
     fluid.table.onModelChange = function (tableThat, renderThat, newModel, oldModel) {
         renderThat.sortInvoker(newModel);
         tableThat.dataModel = tableThat.fetchDataModel();
         tableThat.filtered = tableThat.options.modelFilter(tableThat.dataModel, newModel, tableThat.permutation);
     };
-   
+
     /** A body renderer implementation which uses the Fluid renderer to render a table section **/
 
     fluid.defaults("fluid.table.selfRender", {
@@ -306,7 +306,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onCreate: [{
                 "this": "{that}.root",
                 method: "addClass",
-                args: "{that}.options.styles.root"  
+                args: "{that}.options.styles.root"
             }],
             onModelChange: [{
                 funcName: "fluid.table.onModelChange",
@@ -327,7 +327,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         events: {
-            onModelChange: "{fluid.table}.events.onModelChange"  
+            onModelChange: "{fluid.table}.events.onModelChange"
         },
         invokers: {
             sortInvoker: {
@@ -350,7 +350,7 @@ var fluid_1_5 = fluid_1_5 || {};
             descendingHeader: "{table}.options.styles.descendingHeader"
         },
         members: {
-            root: "{that}.dom.root"  
+            root: "{that}.dom.root"
         },
         decorators: {
             sortableHeader: [],
@@ -373,15 +373,15 @@ var fluid_1_5 = fluid_1_5 || {};
             idMap: {},
         }
     });
-    
-    
+
+
     fluid.table.checkTotalRange = function (totalRange, pagerBar) {
         if (totalRange === undefined && !pagerBar) {
             fluid.fail("Error in Pager configuration - cannot determine total range, " +
                     " since not configured in model.totalRange and no PagerBar is configured");
         }
     };
-    
+
     fluid.defaults("fluid.table", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         mergePolicy: {
@@ -399,7 +399,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.table.checkTotalRange",
                 namespace: "checkTotalRange",
                 args: ["{that}.model.totalRange", "{that}.pagerBar"]
-            }  
+            }
         },
         modelFilter: fluid.table.directModelFilter, // TODO: no implementation for this yet
         sorter: fluid.table.basicSorter,
@@ -416,13 +416,13 @@ var fluid_1_5 = fluid_1_5 || {};
                  args: ["{that}.options.dataModel", "{that}.options.dataOffset"]
              }
         },
-                
+
         styles: {
             ascendingHeader: "fl-pager-asc",
             descendingHeader: "fl-pager-desc"
         },
         selectors: {
-            headerSortStylisticOffset: ".flc-pager-sort-header"  
+            headerSortStylisticOffset: ".flc-pager-sort-header"
         },
         strings: {
             sortableColumnText: "Select to sort",
@@ -434,5 +434,5 @@ var fluid_1_5 = fluid_1_5 || {};
         // strategy for generating a tree row, either "explode" or an array of columnDef objects
         columnDefs: [], // [{key: "columnName", valuebinding: "*.valuePath", sortable: true/false}]
     });
-    
+
 })(jQuery, fluid_1_5);
