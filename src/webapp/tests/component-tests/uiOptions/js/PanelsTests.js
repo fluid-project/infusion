@@ -34,7 +34,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "bw": "fl-theme-uio-bw fl-theme-bw",
                 "wb": "fl-theme-uio-wb fl-theme-wb",
                 "by": "fl-theme-uio-by fl-theme-by",
-                "yb": "fl-theme-uio-yb fl-theme-yb"
+                "yb": "fl-theme-uio-yb fl-theme-yb",
+                "lgdg": "fl-theme-uio-lgdg fl-theme-lgdg"                
             }
         };
 
@@ -167,14 +168,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.contrastTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
-            expectedNumOfOptions: 5,
+            expectedNumOfOptions: 6,
             defaultValue: "default",
             newValue: "bw"
         },
         modules: [{
             name: "Test the contrast settings panel",
             tests: [{
-                expect: 8,
+                expect: 9,
                 name: "Test the rendering of the contrast panel",
                 sequence: [{
                     func: "{contrast}.refreshView"
