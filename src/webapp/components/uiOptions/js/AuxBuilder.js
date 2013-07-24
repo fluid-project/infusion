@@ -51,99 +51,91 @@ var fluid_1_5 = fluid_1_5 || {};
         return fluid.get(root, pathRef.substring(1));
     };
 
-    fluid.uiOptions.expandSchemaComponents = function (auxSchema, type, index, commonOptions, schema) {
+    fluid.uiOptions.addAtPath = function (root, path, object) {
+        var existingObject = fluid.get(root, path);
+        fluid.set(root, path, $.extend(true, {}, existingObject, object));
+
+        return root;
+    }
+
+    fluid.uiOptions.expandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, commonOptions, primarySchema) {
         var components = {};
         var selectors = {};
         var templates = {};
         var rootModel = {};
 
-        var sharedModel = {};
+        type = type + "s";
 
-        fluid.each(auxSchema, function (config, prefName) {
-            var prefKey = config.type;
-            if (prefKey) {
-                sharedModel[prefKey] = prefName;
+        var componentName = componentConfig.type;
+        var memberName = componentName.replace(new RegExp("\\.", 'g'),  "_");
+        var flattenedPrefKey = prefKey.replace(new RegExp("\\.", 'g'),  "_");
+
+        if (componentName) {
+            var instance = {
+                type: componentName
+            };
+
+            var container = componentConfig.container;
+            if (container) {
+                fluid.set(selectors, memberName, container);
             }
-        });
 
-        fluid.each(auxSchema[type], function (componentConfig) {
-            var componentName = componentConfig.type;
-            var memberName = componentName.replace(new RegExp("\\.", 'g'),  "_");
+            var template = componentConfig.template;
+            if (template) {
+                templates[memberName] = template;
+            }
 
-            if (componentName) {
-                var instance = {
-                    type: componentName
-                };
+            var componentOptions = fluid.copy(componentConfig);
+            delete componentOptions.type;
+            delete componentOptions.container;
+            delete componentOptions.template;
 
-                var container = componentConfig.container;
-                if (container) {
-                    // instance.container = container;
-                    fluid.set(selectors, memberName, container);
+            if (fluid.keys(componentOptions).length > 0) {
+                instance.options = componentOptions;
+            }
+
+            var preferenceMap = fluid.defaults(componentName).preferenceMap;
+
+            var map = preferenceMap[prefKey];
+            fluid.each(map, function (PrimaryPath, internalPath) {
+                var prefSchema = primarySchema[prefKey];
+                if (prefSchema) {
+                    if (internalPath.slice(0, 6) === "model.") {
+                        var internalModelName = internalPath.slice(6);
+                        fluid.set(instance, "options.rules." + flattenedPrefKey, internalModelName);
+                        fluid.set(instance, "options.model." + internalModelName, prefSchema[PrimaryPath]);
+                        fluid.set(rootModel, "members.rootModel." + flattenedPrefKey, prefSchema[PrimaryPath]);
+                    } else {
+                        fluid.set(instance, "options." + internalPath, prefSchema[PrimaryPath]);
+                    }
                 }
+            });
 
-                var template = componentConfig.template;
-                if (template) {
-                    templates[memberName] = template;
-                }
-
-                var componentOptions = fluid.copy(componentConfig);
-                delete componentOptions.type;
-                delete componentOptions.container;
-                delete componentOptions.template;
-
-                if (fluid.keys(componentOptions).length > 0) {
-                    instance.options = componentOptions;
-                }
-
-                var preferenceMap = fluid.defaults(componentName).preferenceMap;
-
-                fluid.each(preferenceMap, function (map, pref) {
-                    fluid.each(map, function (PrimaryPath, internalPath) {
-                        var prefSchema = schema[pref];
-                        if (prefSchema) {
-                            if (internalPath.slice(0, 6) === "model.") {
-                                var internalModelName = internalPath.slice(6);
-                                fluid.set(instance, "options.rules." + sharedModel[pref], internalModelName);
-                                fluid.set(instance, "options.model." + internalModelName, prefSchema[PrimaryPath]);
-                                fluid.set(rootModel, "members.rootModel." + sharedModel[pref], prefSchema[PrimaryPath]);
-                            } else {
-                                fluid.set(instance, "options." + internalPath, prefSchema[PrimaryPath]);
-                            }
-                        }
+            // Merge common options
+            if (commonOptions) {
+                fluid.each(commonOptions, function (value, key) {
+                    value = fluid.stringTemplate(value, {
+                        prefKey: memberName
                     });
+                    fluid.set(instance, key, value);
                 });
-
-                // Merge common options
-                if (commonOptions) {
-                    fluid.each(commonOptions, function (value, key) {
-                        value = fluid.stringTemplate(value, {
-                            prefKey: memberName
-                        });
-                        fluid.set(instance, key, value);
-                    });
-                }
-
-                components[memberName] = instance;
             }
-        });
+
+            components[memberName] = instance;
+        }
 
         if (fluid.keys(components).length > 0) {
-            auxSchema[type] = {
-                components: components
-            };
+            auxSchema = fluid.uiOptions.addAtPath(auxSchema, type + ".components", components);
+
             if (fluid.keys(selectors).length > 0) {
-                auxSchema[type] = $.extend(true, auxSchema[type], {
-                    selectors: selectors
-                });
+                auxSchema = fluid.uiOptions.addAtPath(auxSchema, type + ".selectors", selectors);
             }
         }
         if (fluid.keys(templates).length > 0) {
-            auxSchema.templateLoader = $.extend(true, auxSchema.templates || {}, {
-                templates: templates
-            });
+            auxSchema = fluid.uiOptions.addAtPath(auxSchema, "templateLoader.templates", templates);
         }
         if (fluid.keys(rootModel).length > 0) {
-            auxSchema.rootModel = $.extend(true, auxSchema.rootModel || {}, rootModel);
+            auxSchema = fluid.uiOptions.addAtPath(auxSchema, "rootModel", rootModel);
         }
         return auxSchema;
     };
@@ -153,6 +145,7 @@ var fluid_1_5 = fluid_1_5 || {};
         if (value) {
             delete auxSchema[type];
             fluid.set(auxSchema, targetPath, value);
+            var a = 1;
         }
     };
 
@@ -187,17 +180,26 @@ var fluid_1_5 = fluid_1_5 || {};
         var auxSchema = fluid.uiOptions.expandSchemaImpl(schemaToExpand);
         auxSchema.namespace = auxSchema.namespace || defaultNamespace;
 
-        var type = "panels";
-        fluid.uiOptions.expandSchemaComponents(auxSchema, type, fluid.get(indexes, type), fluid.get(elementCommonOptions, type), primarySchema);
+        fluid.each(auxSchema, function (category, prefName) {
+            var type = "panel";
+            if (category[type]) {
+                fluid.uiOptions.expandSchemaComponents(auxSchema, type, category.type, category[type], fluid.get(indexes, type), fluid.get(elementCommonOptions, type), primarySchema);
+            }
+            type = "enactor";
+            if (category[type]) {
+                fluid.uiOptions.expandSchemaComponents(auxSchema, type, category.type, category[type], fluid.get(indexes, type), fluid.get(elementCommonOptions, type), primarySchema);
+            }
 
-        type = "enactors";
-        fluid.uiOptions.expandSchemaComponents(auxSchema, type, fluid.get(indexes, type), fluid.get(elementCommonOptions, type), primarySchema);
+            type = "messages";
+            if (prefName === type) {
+                fluid.uiOptions.expandSchemaDirectOption(auxSchema, type, "messages.members.messages");
+            }
 
-        type = "messages";
-        fluid.uiOptions.expandSchemaDirectOption(auxSchema, type, "messages.members.messages");
-
-        type = "templatePrefix";
-        fluid.uiOptions.expandSchemaDirectOption(auxSchema, type, "templatePrefix.prefix");
+            type = "templatePrefix";
+            if (prefName === type) {
+                fluid.uiOptions.expandSchemaDirectOption(auxSchema, type, "templatePrefix.templatePrefix");
+            }
+        });
 
         // Add top common options
         fluid.each(topCommonOptions, function (topOptions, type) {
@@ -238,19 +240,19 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         elementCommonOptions: {
-            panels: {
+            panel: {
                 "createOnEvent": "onUIOptionsMarkupReady",
                 "container": "{uiOptions}.dom.%prefKey",
                 "options.gradeNames": "fluid.uiOptions.defaultPanel",
                 "options.resources.template": "{templateLoader}.resources.%prefKey"
             },
-            enactors: {
+            enactor: {
                 "container": "{uiEnhancer}.container",
                 "options.sourceApplier": "{uiEnhancer}.applier"
             }
         },
         indexes: {
-            panels: {
+            panel: {
                 expander: {
                     func: "fluid.indexDefaults",
                     args: ["panelsIndex", {
@@ -259,7 +261,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     }]
                 }
             },
-            enactors: {
+            enactor: {
                 expander: {
                     func: "fluid.indexDefaults",
                     args: ["enactorsIndex", {
