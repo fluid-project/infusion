@@ -33,7 +33,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.uiOptions.inline", {
-        gradeNames: ["fluid.viewComponent", "fluid.uiOptions.messages", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             uiOptionsLoader: {
                 priority: "last",
@@ -174,6 +174,12 @@ var fluid_1_5 = fluid_1_5 || {};
             // This is a public event which users outside the component can subscribe to - the argument
             // supplied is UIOptions.loader itself
             onUIOptionsMessageReady: null,  // UIOptions message json files are loaded
+            onCreateUIOptionsReady: {
+                events: {
+                    templateLoaded: "onUIOptionsTemplateReady",
+                    messageLoaded: "onUIOptionsMessageReady"
+                }
+            },
             onReady: null
         },
         invokers: {
@@ -201,10 +207,13 @@ var fluid_1_5 = fluid_1_5 || {};
             uiOptions: {
                 type: "fluid.uiOptions",
                 container: "{loader}.container",
-                createOnEvent: "onUIOptionsTemplateReady",
+                createOnEvent: "onCreateUIOptionsReady",
                 options: {
                     events: {
                         "onUIOptionsComponentReady": "{loader}.events.onUIOptionsComponentReady"
+                    },
+                    members: {
+                        msgBundle: "{loader}.msgBundle"
                     }
                 }
             }
@@ -221,15 +230,12 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.loader.buildMessageResolver = function (messageResources, that) {
-        var mergedResolver;
-        var previousResolver = fluid.messageResolver({messageBase: {}});
+        var completeMessage;
         fluid.each(messageResources, function (oneResource, key) {
             var message = JSON.parse(oneResource.resourceText);
-            mergedResolver = fluid.messageResolver({messageBase: message, parents: [previousResolver]});
-            previousResolver = mergedResolver;
+            completeMessage = $.extend({}, completeMessage, message);
         });
-        that.msgBundle = mergedResolver;
-        console.log(mergedResolver);
+        that.msgBundle = fluid.messageResolver({messageBase: completeMessage});
     };
 
     /**
@@ -388,6 +394,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that.events.onUIOptionsMarkupReady.fire(that);
 
         that.fetch();
+        console.log(that);
         that.events.onUIOptionsComponentReady.fire(that);
     };
 

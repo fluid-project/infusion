@@ -64,7 +64,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{fatPanel}.container",
                 createOnEvent: "afterRender",
                 options: {
-                    messages: "{fluid.uiOptions.inline}.messages",
+                    members: {
+                        msgBundle: "{uiOptionsLoader}.msgBundle"
+                    },
                     invokers: {
                         operateShow: {
                             funcName: "fluid.uiOptions.fatPanel.showPanel"
