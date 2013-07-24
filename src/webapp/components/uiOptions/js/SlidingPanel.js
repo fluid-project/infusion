@@ -13,7 +13,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid_1_5:true, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_5 = fluid_1_5 || {};
@@ -22,17 +22,17 @@ var fluid_1_5 = fluid_1_5 || {};
     /**********************
      * Sliding Panel *
      *********************/
-     
+
     fluid.defaults("fluid.slidingPanel", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],             
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         selectors: {
             panel: ".flc-slidingPanel-panel",
             toggleButton: ".flc-slidingPanel-toggleButton"
         },
         strings: {
-            showText: "{that}.options.messages.slidingPanelShowText",
-            hideText: "{that}.options.messages.slidingPanelHideText"            
-        },          
+            showText: "{that}.messages.slidingPanelShowText",
+            hideText: "{that}.messages.slidingPanelHideText"
+        },
         events: {
             onPanelHide: null,
             onPanelShow: null,
@@ -58,15 +58,15 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-    
+
     fluid.slidingPanel.slideUp = function (element, callback, duration) {
         $(element).slideUp(duration || "400", callback);
     };
-    
+
     fluid.slidingPanel.slideDown = function (element, callback, duration) {
         $(element).slideDown(duration || "400", callback);
     };
-    
+
     fluid.slidingPanel.finalInit = function (that) {
         fluid.each(that.options.methods, function (method, methodName) {
             that[methodName] = function () {
@@ -76,22 +76,22 @@ var fluid_1_5 = fluid_1_5 || {};
                 that["operate" + method.name](that.locate("panel"), that.events["afterPanel" + method.name].fire);
             };
         });
-        
+
         that.togglePanel = function () {
             that[that.model.isShowing ? "hidePanel" : "showPanel"]();
         };
-        
+
         that.setPanelHeight = function (newHeight) {
             that.locate("panel").height(newHeight);
         };
-        
+
         that.refreshView = function () {
-            that.locate("toggleButton").text(that.options.strings[that.model.isShowing ? "hideText" : "showText"]);         
+            that.locate("toggleButton").text(that.options.strings[that.model.isShowing ? "hideText" : "showText"]);
         };
-    
-        that.locate("toggleButton").click(that.togglePanel);        
-        
+
+        that.locate("toggleButton").click(that.togglePanel);
+
         that.refreshView();
-    };    
+    };
 
 })(jQuery, fluid_1_5);

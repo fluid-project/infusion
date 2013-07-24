@@ -25,14 +25,7 @@ var fluid_1_5 = fluid_1_5 || {};
      ***********************************************/
 
     fluid.defaults("fluid.uiOptions.panels", {
-        gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay", "autoInit"],
-        strings: {},
-        parentBundle: {
-            expander: {
-                funcName: "fluid.messageResolver",
-                args: [{messageBase: "{fluid.uiOptions.inline}.messages"}]
-            }
-        }
+        gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay", "autoInit"]
     });
 
     /********************************
@@ -366,6 +359,13 @@ var fluid_1_5 = fluid_1_5 || {};
         sourceApplier: "{fluid.uiOptions}.applier",
         listeners: {
             "{uiOptions}.events.onUIOptionsRefresh": "{fluid.uiOptions.panels}.refreshView"
+        },
+        strings: {},
+        parentBundle: {
+            expander: {
+                funcName: "fluid.messageResolver",
+                args: [{messageBase: "{uiOptions}.messages"}]
+            }
         }
     });
 

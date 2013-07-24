@@ -30,6 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.uiOptions.loader",
                     container: "{uiOptionsTests}.container",
                     options: {
+                        gradeNames: "fluid.uiOptions.messages",
                         listeners: {
                             onReady: "fluid.uiOptionsTests.testFn"
                         }
@@ -216,12 +217,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         var assertRootModel = function (model) {
-            jqUnit.expect(5);
+            jqUnit.expect(3);
             jqUnit.assertNotNull("Model is not null", model);
             jqUnit.assertNotUndefined("Model is not undefined", model);
-            jqUnit.assertFalse("Min text size is not set", !!model.textSize);
-            jqUnit.assertEquals("Text font is set", "default", model.textFont);
-            jqUnit.assertEquals("Colour scheme is set", "default", model.theme);
+            jqUnit.assertDeepEq("Initial model is the starter rootModel", fluid.defaults("fluid.uiOptions.rootModel.starter").members.rootModel, model);
         };
 
         jqUnit.asyncTest("Init Model - default", function () {
@@ -345,10 +344,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          */
 
         var applierRequestChanges = function (uiOptions, selectionOptions) {
-            uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
-            uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
-            uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
-            uiOptions.applier.requestChange("selections.lineSpace", selectionOptions.lineSpace);
+            uiOptions.applier.requestChange("textFont", selectionOptions.textFont);
+            uiOptions.applier.requestChange("theme", selectionOptions.theme);
+            uiOptions.applier.requestChange("textSize", selectionOptions.textSize);
+            uiOptions.applier.requestChange("lineSpace", selectionOptions.lineSpace);
         };
 
         var checkPaths = function (uiOptions, paths) {
@@ -422,7 +421,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 sourceApplier: "{uiOptions}.applier",
                                 rules: {
-                                    "selections.textSize": "value"
+                                    "textSize": "value"
                                 },
                                 listeners: {
                                     "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
@@ -477,10 +476,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         applierRequestChanges = function (uiOptions, selectionOptions) {
-            uiOptions.applier.requestChange("selections.textFont", selectionOptions.textFont);
-            uiOptions.applier.requestChange("selections.theme", selectionOptions.theme);
-            uiOptions.applier.requestChange("selections.textSize", selectionOptions.textSize);
-            uiOptions.applier.requestChange("selections.lineSpace", selectionOptions.lineSpace);
+            uiOptions.applier.requestChange("textFont", selectionOptions.textFont);
+            uiOptions.applier.requestChange("theme", selectionOptions.theme);
+            uiOptions.applier.requestChange("textSize", selectionOptions.textSize);
+            uiOptions.applier.requestChange("lineSpace", selectionOptions.lineSpace);
         };
 
         jqUnit.asyncTest("UIOptions Integration tests", function () {
