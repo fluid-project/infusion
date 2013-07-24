@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Settings Panels Tests</title>
+        
+        <!--  This is the jqUnit test css file -->
+        <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+        
+        <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.mouse.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>
+        <script type="text/javascript" src="../../../../lib/json/js/json2.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidRequests.js"></script>  
+        <script type="text/javascript" src="../../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/RendererUtilities.js"></script>
+        
+        <script type="text/javascript" src="../../../../components/uiOptions/js/ModelRelay.js"></script>
+        <script type="text/javascript" src="../../../../components/uiOptions/js/i18n.js"></script>
+        <script type="text/javascript" src="../../../../components/uiOptions/js/TextfieldSlider.js"></script>
+        <script type="text/javascript" src="../../../../components/uiOptions/js/UIOptions.js"></script>
+        <script type="text/javascript" src="../../../../components/uiOptions/js/Panels.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script type="text/javascript" src="../js/PanelsTests.js"></script>
+    </head>
+    
+    <body>
+    <h1 id="qunit-header">Settings Panels Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <div class="flc-textFont">
+        <select class="flc-uiOptions-text-font fl-inputs" id="text-font">
+        </select>
+    </div>
+    
+    <div class="flc-contrast">
+        <h2><span class="fl-icon-contrast"></span><span class="flc-uiOptions-contrast-label heading-text"></span></h2>
+        <div class="flc-uiOptions-themeRow fl-choice">
+            <input type="radio" class="flc-uiOptions-themeInput fl-hidden-accessible" name="theme" id="bw" value="bw" />
+            <div class="fl-indicator"></div>
+            <label for="bw" class="flc-uiOptions-theme-label fl-theme-uio-bw">
+                <span class="fl-preview-A"></span>
+                <span class="fl-hidden-accessible"></span>
+                <div class="fl-crossout"></div>
+            </label>
+        </div>
+    </div>
+    
+    <div class="flc-textSize">
+        <ul class="fl-uiOptions-topContainer fl-clearfix">
+            <li class="flc-uiOptions-min-text-size">
+                <label for="min-text-size">Text Size</label>
+                <div class="fl-inputs">
+                    <div class="fl-force-left">
+                        <div class="fl-force-left fl-text-slider-left"><span class="fl-hidden-accessible">icon of a small capital letter 'A'</span></div>
+                        <div class="flc-textfieldSlider-slider fl-force-left fl-slider fl-slider-horz"> </div>
+                        <div class="fl-force-left fl-text-slider-right"><span class="fl-hidden-accessible">icon of a large capital letter 'A'</span></div>
+                    </div>
+                    <div class="fl-slider-input"><input id="min-text-size" class="flc-textfieldSlider-field" type="text" /> times</div>
+                    
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="flc-lineSpace">
+        <ul class="fl-uiOptions-topContainer fl-clearfix">
+            <li class="flc-uiOptions-line-space">
+                <label for="line-space">Line Space</label>
+                <div class="fl-inputs">
+                    <div class="fl-force-left">
+                        <div class="fl-force-left fl-spacing-slider-left"><span class="fl-hidden-accessible">icon of 3 horizontal lines with narrow spacing</span></div>
+                        <div class="flc-textfieldSlider-slider fl-force-left fl-slider fl-slider-horz"> </div>
+                        <div class="fl-force-left fl-spacing-slider-right"><span class="fl-hidden-accessible">icon of 3 horizontal lines with wide spacing</span></div>
+                    </div>
+                    <div class="fl-slider-input"><input id="line-space" class="flc-textfieldSlider-field" type="text" /> times</div>
+                    
+                </div>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="flc-layout">
+        <input type="checkbox" id="toc-choice" class="flc-uiOptions-toc fl-force-left" />
+    </div>
+    
+    <div class="flc-links">
+        <input type="checkbox" id="links-choice" class="flc-uiOptions-links fl-force-left" />
+        <input type="checkbox" id="inputs-choice" class="flc-uiOptions-inputs-larger fl-force-left" />
+    </div>
+    
+    </body>
+</html>

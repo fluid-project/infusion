@@ -19,12 +19,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
         
-        var tests = jqUnit.testCase("FullPreviewUIOptions Tests");
+        jqUnit.module("FullPreviewUIOptions Tests");
         
         /**************************************************
          * fluid.fullPreviewUIOptions Integration Tests *
-         **************************************************/        
-        fluid.tests.uiOptions.integrationTest(tests, "fluid.uiOptions.fullPreview", false);
+         **************************************************/
+        fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptions.fullPreview"], {
+            options: {
+                templateUrl: "TestPreviewTemplate.html"
+            }
+        });
+
+        fluid.tests.uiOptions.integrationTest("fluid.uiOptions.fullPreview", false);
         
         var testSettings = {
             textSize: "1.5",
@@ -37,36 +43,51 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         // TODO: we need MUCH better event boiling support in order to avoid rubbish like this
         var that, uiOptions;
-        function testToCEnhancement(innerThat, uiOptionsLoader, innerUIOptions) {
+        function testToCEnhancement(uiOptionsLoader, innerUIOptions) {
             uiOptions = innerUIOptions;
         }
         
-        function testToCEnhancement2() {
+        function requestApplierChange() {
             fluid.tests.uiOptions.applierRequestChanges(uiOptions, testSettings);
-            jqUnit.expect(1);
-            // TODO: Very unsatisfactory - the TOC resources are the final thing we wait on, and the
-            // event for this is very deeply buried
-            setTimeout(function () {
-                var container = uiOptions.preview.enhancerContainer;
-                var links = $(".flc-toc-tocContainer a", container);
-                jqUnit.assertTrue("ToC links created", links.length > 0); 
-                start();
-            }, 200);
         }
         
-        that = fluid.tests.uiOptions.mungingIntegrationTest(tests, "fluid.uiOptions.fullPreview", "#myUIOptions", {
+        var refreshCount = 0;
+        function testToCEnhancement2() {
+            var container = uiOptions.preview.enhancerContainer;
+            var links = $(".flc-toc-tocContainer a", container);
+            jqUnit.assertTrue("ToC links created", links.length > 0); 
+            jqUnit.start();
+        }
+        
+        that = fluid.tests.uiOptions.mungingIntegrationTest("fluid.uiOptions.fullPreview", "#myUIOptions", {
+            previewEnhancer: {
+                options: {
+                    components: {
+                        tableOfContents: {
+                            options: {
+                                listeners: {
+                                    afterTocRender: {
+                                        listener: testToCEnhancement2,
+                                        priority: "last"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             preview: {
                 options: {
                     templateUrl: "TestPreviewTemplate.html",
                     listeners: {
                         "onReady.toc2": {
-                            listener: testToCEnhancement2,
+                            listener: requestApplierChange,
                             priority: "last"
                         }
                     }
                 }
             }
-        }, testToCEnhancement);    
+        }, testToCEnhancement);
     });
 
 })(jQuery);

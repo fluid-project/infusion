@@ -28,9 +28,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     var context = vm.createContext({
-        window: {},
-        console: console
+        console: console,
+        setTimeout: setTimeout
     });
+    
+    context.window = context;
+
+    /** Load a standard, non-require-aware Fluid framework file into the Fluid context **/
 
     var loadInContext = function (path) {
         var fullpath = buildPath(path);
@@ -38,23 +42,41 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         vm.runInContext(data, context, fullpath);
     };
 
-    var includes = fs.readFileSync(buildPath("includes.json"));
+    var loadIncludes = function (path) {
+        var includes = require(buildPath(path));
+        for (var i = 0; i < includes.length; ++i) {
+            loadInContext(includes[i]);
+        }
+    };
 
-    includes = JSON.parse(includes);
-
-    for (var i = 0; i < includes.length; ++i) {
-        loadInContext(includes[i]);
-    }
+    loadIncludes("includes.json");
     
     var fluid = context.fluid;
+    // FLUID-4913: QUnit calls window.addEventListener on load. We need to add
+    // it to the context it will be loaded in.
+    context.addEventListener = fluid.identity;
+    
+    fluid.loadInContext = loadInContext;
+    fluid.loadIncludes = loadIncludes;
+    
+    /** Load a node-aware JavaScript file using either a supplied or the native
+      * Fluid require function (the difference relates primarily to the base
+      * directory used for loading - although the file will need to make use of
+      * a registerNamespace or similar call to get access to the required global namespace */
 
     fluid.require = function (moduleName, foreignRequire, namespace) {
         foreignRequire = foreignRequire || require;
-        namespace = namespace || moduleName;
         var module = foreignRequire(moduleName);
-        fluid.set(context, namespace, module);
+        if (namespace) {
+            fluid.set(context, namespace, module);
+        }
         return module;
     };
+    
+    /** Produce a loader object exposing a "require" object which will automatically
+     * prefix the supplied directory name to any requested modules before forwarding
+     * the operation to fluid.require 
+     */
     
     fluid.getLoader = function (dirName, foreignRequire) {
         return {
@@ -65,6 +87,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 return fluid.require(moduleName, foreignRequire, namespace);
             }
         }
+    };
+
+    /**
+     * Setup testing environment with jqUnit and IoC Test Utils in node.
+     * This function will load everything necessary for running node jqUnit.
+     */
+    fluid.loadTestingSupport = function () {
+        fluid.loadIncludes("devIncludes.json");
     };
 
     module.exports = fluid;

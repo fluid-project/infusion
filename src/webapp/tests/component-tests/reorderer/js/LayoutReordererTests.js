@@ -20,11 +20,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        var layoutReordererTests = new jqUnit.TestCase("LayoutReorderer Tests");
+        jqUnit.module("LayoutReorderer Tests");
         
         var k = fluid.testUtils.reorderer.bindReorderer(fluid.testUtils.moduleLayout.portletIds);
         
-        layoutReordererTests.test("Default selectors", function () {
+        jqUnit.test("Default selectors", function () {
             var testReorderer = fluid.reorderLayout("#default-selector-test");
             var item1 = $("#portlet-1");
             var item2 = $("#portlet-2").focus();
@@ -34,7 +34,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("focus on item2 - item1 should be default", item1.hasClass("fl-reorderer-movable-default"));
         });
         
-        layoutReordererTests.test("Events within module", function () {
+        jqUnit.test("Events within module", function () {
             var reorderer = fluid.reorderLayout("#" + fluid.testUtils.moduleLayout.portalRootId, {
                 selectors: {
                     columns: fluid.testUtils.moduleLayout.columnSelector,
@@ -58,7 +58,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
         });
         
-        layoutReordererTests.test("Drop warning visibility for up and down", function () {
+        jqUnit.test("Drop warning visibility for up and down", function () {
             var reorderer = fluid.testUtils.moduleLayout.initReorderer();
     
             jqUnit.notVisible("On first load the warning should not be visible", "#drop-warning");
@@ -76,24 +76,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             // try to move portlet 3 up
             // Press the ctrl key
-            k.keyDown(reorderer, fluid.testUtils.ctrlKeyEvent("CTRL"), 3);
+            k.keyDown(reorderer, k.ctrlKeyEvent("CTRL"), 3);
             jqUnit.notVisible("After ctrl down, the warning should not be visible", "#drop-warning");
             
             // Press the up arrow key while holding down ctrl
-            k.keyDown(reorderer, fluid.testUtils.ctrlKeyEvent("UP"), 3);
+            k.keyDown(reorderer, k.ctrlKeyEvent("UP"), 3);
             jqUnit.isVisible("After ctrl + up arrow, drop warning should be visible", "#drop-warning"); 
     
             // release the ctrl key
-            k.keyUp(reorderer, fluid.testUtils.keyEvent("CTRL"), 3);
+            k.keyUp(reorderer, k.keyEvent("CTRL"), 3);
             jqUnit.notVisible("After ctrl is released, drop warning should not be visible", "#drop-warning"); 
     
             // Press the up arrow key while holding down ctrl again
-            k.keyDown(reorderer, fluid.testUtils.ctrlKeyEvent("CTRL"), 3);
-            k.keyDown(reorderer, fluid.testUtils.ctrlKeyEvent("UP"), 3);
+            k.keyDown(reorderer, k.ctrlKeyEvent("CTRL"), 3);
+            k.keyDown(reorderer, k.ctrlKeyEvent("UP"), 3);
             jqUnit.isVisible("After ctrl + up arrow, drop warning should be visible", "#drop-warning"); 
     
             // Press the down arrow key while holding down ctrl
-            k.keyDown(reorderer, fluid.testUtils.ctrlKeyEvent("DOWN"), 3);
+            k.keyDown(reorderer, k.ctrlKeyEvent("DOWN"), 3);
             jqUnit.notVisible("After ctrl + down arrow, drop warning should NOT be visible", "#drop-warning");
             
             jqUnit.assertTrue("Label is updated to account for temporary moved state", 
@@ -109,18 +109,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
             // move portlet 8 down
             // Press the ctrl key
-            reorderer.handleKeyDown(fluid.testUtils.ctrlKeyEvent("CTRL", portlet8));
+            reorderer.handleKeyDown(k.ctrlKeyEvent("CTRL", portlet8));
             jqUnit.notVisible("After ctrl down, the warning should not be visible", "#drop-warning");
     
-            reorderer.handleKeyDown(fluid.testUtils.ctrlKeyEvent("DOWN", portlet8));
+            reorderer.handleKeyDown(k.ctrlKeyEvent("DOWN", portlet8));
             jqUnit.notVisible("After moving portlet 8 down, drop warning should not be visible", "#drop-warning"); 
     
             // try to move portlet 8 down from the bottom position.
-            reorderer.handleKeyDown(fluid.testUtils.ctrlKeyEvent("DOWN", portlet8));
+            reorderer.handleKeyDown(k.ctrlKeyEvent("DOWN", portlet8));
             jqUnit.notVisible("After trying to move portlet 8 down, drop warning should not be visible", "#drop-warning"); 
     
             // release the ctrl key
-            reorderer.handleKeyUp(fluid.testUtils.keyEvent("CTRL", portlet8));
+            reorderer.handleKeyUp(k.keyEvent("CTRL", portlet8));
             jqUnit.notVisible("After ctrl is released, drop warning should not be visible", "#drop-warning"); 
     
         });   
@@ -133,7 +133,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertDeepEq(message, expected, items);
         }
              
-        var tests = new jqUnit.TestCase("Reorder Layout Tests");
+        jqUnit.module("Reorder Layout Tests");
         
         var assembleOptions = function (isDisableWrap, isLocked) {
             var obj = {
@@ -151,7 +151,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return obj;
         };       
         
-        tests.test("reorderLayout API", function () {
+        jqUnit.test("reorderLayout API", function () {
             var options = assembleOptions();
             var lastLayoutModel = null;
             
@@ -171,12 +171,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertEquals("No move callback", null, lastLayoutModel);
     
-            layoutReorderer.handleKeyDown(fluid.testUtils.keyEvent("DOWN", item2));
+            layoutReorderer.handleKeyDown(k.keyEvent("DOWN", item2));
             jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertTrue("down arrow - item3 should be selected", item3.hasClass("fl-reorderer-movable-selected"));
     
-            layoutReorderer.handleKeyDown(fluid.testUtils.ctrlKeyEvent("CTRL", item3));
-            layoutReorderer.handleKeyDown(fluid.testUtils.ctrlKeyEvent("DOWN", item3));
+            layoutReorderer.handleKeyDown(k.ctrlKeyEvent("CTRL", item3));
+            layoutReorderer.handleKeyDown(k.ctrlKeyEvent("DOWN", item3));
             // Test FLUID-3121 - the afterMoveCallback should successfully execute and obtain the model
             jqUnit.assertNotEquals("Move callback with model", null, lastLayoutModel);
     
@@ -184,7 +184,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 [1, 2, 4, 3, 5, 6, 7, 8, 9]);
         });
     
-        tests.test("reorderLayout with optional styles", function () {       
+        jqUnit.test("reorderLayout with optional styles", function () {       
             var options = {
                     selectors: {
                         columns: "[id^='c']",
@@ -205,7 +205,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
         });
         
-        tests.test("reorderLayout with locked portlets", function () {
+        jqUnit.test("reorderLayout with locked portlets", function () {
             var options = assembleOptions(false, ".locked");
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
             var item2 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
@@ -213,13 +213,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var key = fluid.testUtils.reorderer.compositeKey;
 
             jqUnit.assertTrue("focus on item2", item2.hasClass("fl-reorderer-movable-selected"));
-            key(layoutReorderer, fluid.testUtils.ctrlKeyEvent("DOWN"), item3);
+            key(layoutReorderer, k.ctrlKeyEvent("DOWN"), item3);
 
             expectOrder("after ctrl-down, expect order 1, 2, 3, 4", [1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
             item3.focus();
             jqUnit.assertTrue("focus on item3", item3.hasClass("fl-reorderer-movable-selected"));
-            key(layoutReorderer, fluid.testUtils.ctrlKeyEvent("DOWN"), item3);
+            key(layoutReorderer, k.ctrlKeyEvent("DOWN"), item3);
 
             expectOrder("after ctrl-down, expect order 1, 2, 4, 3", [1, 2, 4, 3, 5, 6, 7, 8, 9]);
 
@@ -230,14 +230,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             jqUnit.assertEquals("Should now have 5 columns", 5, model.columns.length);
             
-            key(layoutReorderer, fluid.testUtils.ctrlKeyEvent("LEFT"), item3);
+            key(layoutReorderer, k.ctrlKeyEvent("LEFT"), item3);
             
             jqUnit.assertTrue("Moved to new column", 
                 fluid.dom.isContainer($("#c5")[0], item3[0]));
                    
         });        
        
-        tests.test("reorderLayout, option set disabled wrap, user action ctrl+up", function () {              
+        jqUnit.test("reorderLayout, option set disabled wrap, user action ctrl+up", function () {              
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "UP",
@@ -249,7 +249,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     
         });        
      
-        tests.test("reorderLayout, option set disabled wrap, user action ctrl+down", function () {  
+        jqUnit.test("reorderLayout, option set disabled wrap, user action ctrl+down", function () {  
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "DOWN",
@@ -260,7 +260,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options);                      
         });
         
-        tests.test("reorderLayout with locked portlets, option set disabled wrap, user action ctrl+up", function () {
+        jqUnit.test("reorderLayout with locked portlets, option set disabled wrap, user action ctrl+up", function () {
             var options = {
                 reordererOptions: assembleOptions(true, ".locked"),
                 direction: "UP",
@@ -273,7 +273,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertValue("gives warning message when trying to move item4 up ", $(".flc-reorderer-dropWarning"));                   
         });       
        
-        tests.test("reorderLayout with locked portlets, option set disabled wrap, user action ctrl+right", function () {
+        jqUnit.test("reorderLayout with locked portlets, option set disabled wrap, user action ctrl+right", function () {
             var options = {
                 reordererOptions: assembleOptions(true, ".locked"),
                 direction: "RIGHT",
@@ -285,7 +285,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options); 
         });        
         
-        tests.test("reorderLayout with locked portlets, option set disabled wrap, user action ctrl+left", function () { 
+        jqUnit.test("reorderLayout with locked portlets, option set disabled wrap, user action ctrl+left", function () { 
             var options = {
                 reordererOptions: assembleOptions(true, ".locked"),
                 direction: "LEFT",
@@ -307,11 +307,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
 
-        tests.test("Check tabindex with default selectors", function () {
+        jqUnit.test("Check tabindex with default selectors", function () {
             tabIndexTest("#default-selector-test");
         });
 
-        tests.test("Check tabindex when using a table. ", function () {
+        jqUnit.test("Check tabindex when using a table. ", function () {
             var options = {
                 selectors: {
                     columns: "td",

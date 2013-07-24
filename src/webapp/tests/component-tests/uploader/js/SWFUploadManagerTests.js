@@ -21,8 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
           
         var makeUploaderEventFirers = function () {
-            var mockUploader = {};
-            fluid.instantiateFirers(mockUploader, fluid.defaults("fluid.uploader.multiFileUploader"));
+            var mockUploader = fluid.tests.uploader.mockUploader();
             return mockUploader.events;
         };
         
@@ -36,21 +35,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var defaultMergedSettings = $.extend({}, defaultQueueSettings, defaultFlashSettings);
         var events = makeUploaderEventFirers();
         
-        var swfUploadSetupTests = new jqUnit.TestCase("SWFUpload for Flash 9 & 10 Setup Tests");
+        jqUnit.module("SWFUpload for Flash 9 & 10 Setup Tests");
         
-        swfUploadSetupTests.test("SWFUpload Flash 10 callFlash() should be unavailable.", function () {
+        jqUnit.test("SWFUpload Flash 10 callFlash() should be unavailable.", function () {
             fluid.uploader.swfUploadStrategy.flash10SetupDOM(container, button, progressBar, styles);
             jqUnit.assertNotEquals("The Flash 9-compatible version of callFlash() should not be in place.",
                                    SWFUpload.callFlash_Flash9Compatibility, SWFUpload.prototype.callFlash);
         });
         
-        swfUploadSetupTests.test("SWFUpload Flash 10 accessibility", function () {
+        jqUnit.test("SWFUpload Flash 10 accessibility", function () {
             fluid.uploader.swfUploadStrategy.flash10SetupDOM(container, button,  progressBar, styles);
             jqUnit.assertEquals("The HTML browse button should have been given a tabindex of -1",
                                 "-1", button.attr("tabindex"));
         });
         
-        swfUploadSetupTests.test("SWFUpload Flash 9 configuration", function () {
+        jqUnit.test("SWFUpload Flash 9 configuration", function () {
             var config = fluid.uploader.swfUploadStrategy.flash9SetupConfig(flashContainer, 
                                                                             defaultMergedSettings, 
                                                                             events);
@@ -79,7 +78,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 config.button_window_mode);
         };
         
-        swfUploadSetupTests.test("Flash 10 visibility", function () {
+        jqUnit.test("Flash 10 visibility", function () {
             var flashOptions = fluid.merge(null, {}, defaultFlashSettings, {
                 flashButtonAlwaysVisible: true,
                 transparentEvenInIE: false
@@ -94,7 +93,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkVisibleSettings(config);
         });
         
-        swfUploadSetupTests.test("swfUploadSetupDecorator Flash 10 transparency", function () {
+        jqUnit.test("swfUploadSetupDecorator Flash 10 transparency", function () {
             // Mock jQuery's browser property to fake IE.
             $.browser.msie = true;
                         
@@ -138,7 +137,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The converted accepted fileType is", convertedFileTypes, convertedConfig.file_types);            
         };
         
-        swfUploadSetupTests.test("Ensure SWFUpload is properly converted to fileTypes from MIME types", function () {
+        jqUnit.test("Ensure SWFUpload is properly converted to fileTypes from MIME types", function () {
             checkConvertedFileTypes(["image/jpeg"], "*.jpg;*.jpeg");
             checkConvertedFileTypes(["image/tiff", "image/png", "image/jpeg"], "*.tif;*.tiff;*.png;*.jpg;*.jpeg");
             checkConvertedFileTypes(["*.jpg", "image/png", "*.html"], "*.png");

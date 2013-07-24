@@ -115,12 +115,6 @@ img {
     font-style: italic;
 }
 
-/* Overriding some of the default Fat Panel UI Options styling */
-.fl-uiOptions-fatPanel .fl-toggleButton {
-    font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
-    border-radius: 0;
-    margin-right: 80px;
-}
 
 /* Scoped colours for theme swapping */
 /*
@@ -155,10 +149,27 @@ img {
 }
 
 /* Overriding some of the default Fat Panel UI Options colours */
-.uio-demo-theme .fl-uiOptions-fatPanel .fl-panelBar {
+.uio-demo-theme .fl-uiOptions-fatPanel .fl-panelBar .fl-uio-tabs {
     background-color: #0071BC;
 }
-.uio-demo-theme .fl-uiOptions-fatPanel .fl-toggleButton {
+.fl-uiOptions-fatPanel .fl-panelBar button {
+    font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
+    border: 0;
+    border-radius: 0;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.uio-demo-theme .fl-uiOptions-fatPanel .fl-uiOptions-showHide,
+.uio-demo-theme .fl-uiOptions-fatPanel .fl-uiOptions-reset  {
     background-color: #0071BC;
     color: white;
+}
+
+.uio-demo-theme .fl-uiOptions-fatPanel .fl-uiOptions-reset  {
+    border-right: 1px solid #fff;
+}
+
+.fl-uiOptions-fatPanel .fl-panelBar .fl-uiOptions-reset  {
+    border-right: 1px solid #fff;
 }

@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(function () {
-        var errorPanelTests = jqUnit.testCase("Uploader errorPanel Tests");
+        jqUnit.module("Uploader errorPanel Tests");
         
         var testFiles = [
             {
@@ -57,7 +57,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expectedIdx, $.inArray(file.name, section.model.files));
         };
         
-        errorPanelTests.test("errorPanel.section.addFile()", function () {
+        jqUnit.test("errorPanel.section.addFile()", function () {
             var section = makeSection();
             
             // Add the first file.
@@ -73,7 +73,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkAddedFiles(section, 2, testFiles[3], -1);
         });
         
-        errorPanelTests.test("errorPanel.section.clear()", function () {
+        jqUnit.test("errorPanel.section.clear()", function () {
             var section = makeSection();
             section.addFile(testFiles[0], 0);
             section.addFile(testFiles[1], 0);
@@ -109,7 +109,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkDetailsVisibility(section, true);
         };
         
-        errorPanelTests.test("errorPanel.section details visibility", function () {
+        jqUnit.test("errorPanel.section details visibility", function () {
             var section = makeSection();
             checkDetailsAreHidden(section); // By default, the error details should be hidden.
             
@@ -153,7 +153,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkSection(section, filesList, true);
         };
         
-        errorPanelTests.test("errorPanel.section.refreshView()", function () {
+        jqUnit.test("errorPanel.section.refreshView()", function () {
             var section = makeSection();
             checkSectionWithHiddenDetails(section, "");
             
@@ -170,7 +170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkSectionWithVisibleDetails(section, testFiles[0].name);
         });
         
-        errorPanelTests.test("errorPanel.section.renderErrorDetails", function () {
+        jqUnit.test("errorPanel.section.renderErrorDetails", function () {
             var section = makeSection();
             fluid.uploader.errorPanel.section.renderErrorDetails(section);
             
@@ -187,7 +187,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkFilesList(section, "PictureOfACat.jpg, Dog.jpg, Sailboat.png");
         });
         
-        errorPanelTests.test("errorPanel.section clear errors button", function () {
+        jqUnit.test("errorPanel.section clear errors button", function () {
             var section = makeSection();
             section.addFile(testFiles[0], 0);
             section.showDetails();
@@ -221,7 +221,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             errorPanel.refreshView();
         };
         
-        errorPanelTests.test("errorPanel.refreshView()", function () {
+        jqUnit.test("errorPanel.refreshView()", function () {
             var errorPanel = fluid.uploader.errorPanel(".flc-uploader-errorsPanel");
             jqUnit.notVisible("On initialization, the error panel should be hidden.", errorPanel.container);
             

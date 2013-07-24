@@ -13,8 +13,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid, jqUnit, jQuery*/
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+// JSLint options
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, indent: 4 */
 
 fluid.registerNamespace("fluid.tests");
 
@@ -22,21 +22,21 @@ fluid.registerNamespace("fluid.tests");
     fluid.setLogging(true);
 
     fluid.tests.testRendererUtilities = function () {
-    
-        var binderTests = jqUnit.testCase("Cutpoint utility tests");
-        binderTests.test("Renderer Utilities Test: selectorsToCutpoints", function () {
+
+        jqUnit.module("Cutpoint utility tests");
+        jqUnit.test("Renderer Utilities Test: selectorsToCutpoints", function () {
             // Single class name, simple cutpoints generation.
             var selectors = {selector1: ".class1"};
             var expected = [{id: "selector1", selector: ".class1"}];
             jqUnit.assertDeepEq("Selector Map generation", expected, fluid.renderer.selectorsToCutpoints(selectors));
-            
+
             selectors.selector2 = ".class2";
-            
+
             // Multiple selectors with one repeating.
             expected = [{id: "selector1", selector: ".class1"}, {id: "selector2:", selector: ".class2"}];
             var actual = fluid.renderer.selectorsToCutpoints(selectors, {repeatingSelectors: ["selector2"]});
             jqUnit.assertDeepEq("Selector Map generation, with repeating items", expected, actual);
-            
+
             // Ignoring selectors.
             expected = [{id: "selector1", selector: ".class1"}];
             actual = fluid.renderer.selectorsToCutpoints(selectors, {
@@ -44,148 +44,19 @@ fluid.registerNamespace("fluid.tests");
             });
             jqUnit.assertDeepEq("Selector Map generation, with ignored selectors", expected, actual);
             jqUnit.assertNotUndefined("selectorsToCutpoints should not eat other people's selectors", selectors.selector2);
-            
+
             // Repeating and ignored selectors.
             expected = [{id: "selector1:", selector: ".class1"}];
             actual = fluid.renderer.selectorsToCutpoints(selectors, {
-                repeatingSelectors: ["selector1"], 
+                repeatingSelectors: ["selector1"],
                 selectorsToIgnore: ["selector2"]
             });
             jqUnit.assertDeepEq("Selector Map generation, with repeating items and ignored selectors", expected, actual);
             jqUnit.assertNotUndefined("selectorsToCutpoints should not eat other people's selectors", selectors.selector2);
         });
-        
-        fluid.tests.rendererComponentTest = function (container, options) {
-            var that = fluid.initRendererComponent("fluid.tests.rendererComponentTest", container, options);
-            return that;
-        };
-        
-        fluid.tests.censoringStrategy = function (listCensor) {
-            return {
-                init: function () {
-                    var totalPath = "";
-                    return function (root, segment, index) {
-                        var orig = root[segment];
-                        totalPath = fluid.model.composePath(totalPath, segment);
-                        return totalPath === "recordlist.deffolt" ?
-                            listCensor(orig) : orig;
-                    };
-                }
-            };
-        };
-        
-        fluid.defaults("fluid.tests.rendererComponentTest", {
-            mergePolicy: {
-                model: "preserve",
-                protoTree: "noexpand, replace"
-            },
-            model: {
-                recordlist: {
-                    deffolt: ["person", "intake", "loanin", "loanout", "acquisition", "organization", "objects", "movement"]
-                }
-            },
-            protoTree: {
-                expander: {
-                    type: "fluid.renderer.repeat",
-                    controlledBy: "recordlist.deffolt",
-                    pathAs: "elementPath",
-                    repeatID: "recordType",
-                    tree: { value: "${{elementPath}}" }
-                },
-                message: {
-                    messagekey: "message",
-                    decorators: {"addClass": "{styles}.applicableStyle"}
-                },
-                deffoltmessage: {
-                    messagekey: "deffolt"
-                }
-            },
-            selectors: {
-                recordType: ".csc-searchBox-recordType",
-                message: ".csc-searchBox-message",
-                deffoltmessage: ".csc-searchBox-deffoltmessage",
-                toIgnore: ".csc-searchBox-ignore"
-            },
-            repeatingSelectors: ["recordType"],
-            selectorsToIgnore: ["toIgnore"],
-            parentBundle: "{globalBundle}",
-            strings: {
-                message: "A mess of messuage"          
-            },
-            styles: {
-                applicableStyle: ".fl-applicable-style"  
-            }
-        });
-        
-        function assertRenderedText(els, array) {
-            fluid.each(els, function (el, index) {
-                jqUnit.assertEquals("Element " + index + " text", array[index], $(el).text());
-            });
-        }
-        
-        fluid.defaults("fluid.tests.rendererParent", {
-            components: {
-                middle: {
-                    type: "fluid.tests.rendererMiddle"
-                }
-            },
-            selectors: {
-                middle: ".middle-component"  
-            }
-        });
-        
-        fluid.tests.rendererParent = function (container, options) {
-            var that = fluid.initView("fluid.tests.rendererParent", container, options);
-            fluid.initDependents(that);
-            return that;  
-        };
-        
-        fluid.demands("fluid.tests.rendererMiddle", "fluid.tests.rendererParent",
-            ["{rendererParent}.dom.middle", fluid.COMPONENT_OPTIONS]);
-        
-        fluid.defaults("fluid.tests.rendererMiddle", {
-            mergePolicy: {
-                "rendererOptions.instantiator": "nomerge",
-                "rendererOptions.parentComponent": "nomerge"  
-            },
-            rendererOptions: {
-                instantiator: "{instantiator}",
-                parentComponent: "{rendererMiddle}"
-            },
-            selectors: {
-                decorated: ".decorated-component"
-            },
-            protoTree: {
-                decorated: {
-                    decorators: {
-                        type: "fluid",
-                        func: "fluid.tests.rendererChild",
-                        options: { decoratorValue: "{rendererParent}.options.parentValue"}
-                    }
-                }
-            }
-        });
-        
-        fluid.tests.rendererMiddle = function (container, options) {
-            var that = fluid.initRendererComponent("fluid.tests.rendererMiddle", container, options);
-            return that;
-        };
 
-        fluid.defaults("fluid.tests.rendererChild", {
-            value: "{rendererParent}.options.parentValue"  
-        });
-        
-        fluid.demands("fluid.tests.rendererChild", "fluid.tests.rendererMiddle", 
-            ["@0", fluid.COMPONENT_OPTIONS]);
-             
-        fluid.tests.rendererChild = function (container, options) {
-            var that = fluid.initView("fluid.tests.rendererChild", container, options);
-            $(container).text(that.options.value);
-            return that;
-        };
-        
-        var IoCTests = jqUnit.testCase("IoC Renderer tests");
-        
+        jqUnit.module("IoC Renderer tests");
+
         fluid.defaults("fluid.tests.identicalComponentParent", {
             gradeNames: ["fluid.rendererComponent", "autoInit"],
             selectors: {
@@ -195,6 +66,7 @@ fluid.registerNamespace("fluid.tests");
             finalInitFunction: "fluid.tests.identicalComponentParent.finalInitFunction",
             produceTree: "fluid.tests.identicalComponentParent.produceTree"
         });
+
         fluid.tests.identicalComponentParent.produceTree = function (that) {
             return {
                 identicalComponent1: {
@@ -220,7 +92,7 @@ fluid.registerNamespace("fluid.tests");
         fluid.tests.identicalComponentParent.finalInitFunction = function (that) {
             that.renderer.refreshView();
         };
-        
+
         fluid.defaults("fluid.tests.identicalComponent", {
             gradeNames: ["fluid.viewComponent", "autoInit"],
             components: {
@@ -229,11 +101,11 @@ fluid.registerNamespace("fluid.tests");
                 }
             }
         });
-        
+
         fluid.defaults("fluid.tests.identicalSubComponent", {
             gradeNames: ["fluid.littleComponent", "autoInit"]
         });
-        
+
         fluid.demands("fluid.tests.identicalSubComponent", "fluid.tests.identicalComponent", {
             args: {
                 option: "{identicalComponent}.options.option"
@@ -242,12 +114,12 @@ fluid.registerNamespace("fluid.tests");
         fluid.demands("fluid.tests.identicalComponent", "fluid.tests.identicalComponentParent", {
             container: "{arguments}.0"
         });
-        IoCTests.test("Same level identical components with different options", function () {
+        jqUnit.test("Same level identical components with different options", function () {
             var that = fluid.tests.identicalComponentParent(".identicalComponentParent");
             jqUnit.assertEquals("First component's subcomponent option is", "OPTION1", that["**-renderer-identicalComponent1-0"].subcomponent.options.option);
             jqUnit.assertEquals("Second component's subcomponent option is", "OPTION2", that["**-renderer-identicalComponent2-1"].subcomponent.options.option);
         });
-        
+
         fluid.defaults("fluid.tests.mergeRenderParent", {
             gradeNames: ["fluid.rendererComponent", "autoInit"],
             selectors: {
@@ -280,17 +152,72 @@ fluid.registerNamespace("fluid.tests");
         });
         fluid.demands("fluid.tests.mergeComponent", "fluid.tests.mergeRenderParent", {
             container: "{arguments}.0",
-            mergeAllOptions: [{
+            mergeOptions: {
                 model: "{mergeRenderParent}.model"
-            }, "{arguments}.1"]
+            }
         });
-        IoCTests.test("Merging args and options", function () {
+
+        jqUnit.test("Merging args and options", function () {
             var that = fluid.tests.mergeRenderParent(".mergeRenderParent");
             jqUnit.assertEquals("Subcomponent arg option is", "OPTION1", that["**-renderer-mergeComponent-0"].options.option);
             jqUnit.assertEquals("Subcomponent option is", that.model, that["**-renderer-mergeComponent-0"].options.model);
         });
-        
-        IoCTests.test("initDependent upgrade test", function () {
+
+
+
+        function assertRenderedText(els, array) {
+            fluid.each(els, function (el, index) {
+                jqUnit.assertEquals("Element " + index + " text", array[index], $(el).text());
+            });
+        }
+
+        fluid.defaults("fluid.tests.rendererParent", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            components: {
+                middle: {
+                    type: "fluid.tests.rendererMiddle"
+                }
+            },
+            selectors: {
+                middle: ".middle-component"
+            }
+        });
+
+        fluid.demands("fluid.tests.rendererMiddle", "fluid.tests.rendererParent",
+            ["{rendererParent}.dom.middle", fluid.COMPONENT_OPTIONS]);
+
+        fluid.defaults("fluid.tests.rendererMiddle", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            selectors: {
+                decorated: ".decorated-component"
+            },
+            protoTree: {
+                decorated: {
+                    decorators: {
+                        type: "fluid",
+                        func: "fluid.tests.rendererChild",
+                        options: { decoratorValue: "{rendererParent}.options.parentValue" // with FLUID-4986 we can support this reference properly
+                        }
+                    }
+                }
+            }
+        });
+
+        fluid.defaults("fluid.tests.rendererChild", {
+            value: "{rendererParent}.options.parentValue"
+        });
+
+        fluid.demands("fluid.tests.rendererChild", "fluid.tests.rendererMiddle",
+            ["@0", fluid.COMPONENT_OPTIONS]);
+
+        fluid.tests.rendererChild = function (container, options) {
+            var that = fluid.initView("fluid.tests.rendererChild", container, options);
+            $(container).text(that.options.value);
+            return that;
+        };
+
+
+        jqUnit.test("initDependent upgrade test", function () {
             var parentValue = "parentValue";
             var component = fluid.tests.rendererParent(".renderer-ioc-test", {parentValue: parentValue});
             var middleNode = component.middle.container;
@@ -299,24 +226,74 @@ fluid.registerNamespace("fluid.tests");
             var decorated = component.middle.locate("decorated");
             jqUnit.assertEquals("Decorated text resolved from top level", parentValue, decorated.text());
             var child = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
-            jqUnit.assertEquals("Located decorator with IoC-resolved value", parentValue, child.options.decoratorValue);
+            jqUnit.assertEquals("Located decorator with IoC-resolved value", "parentValue", child.options.decoratorValue);
             component.middle.refreshView();
             var child2 = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
             jqUnit.assertNotEquals("Rendering has produced new component", child, child2);
         });
-        
-        var compTests = jqUnit.testCase("Renderer component tests");
-        
-        compTests.test("Renderer component without resolver", function () {
+
+
+        jqUnit.module("Renderer component tests");
+
+        fluid.tests.censoringStrategy = function (listCensor) {
+            var matchPath = ["recordlist", "deffolt"];
+            return function (root, segment, index, segs) {
+                var orig = root[segment];
+                return fluid.pathUtil.matchSegments(matchPath, segs, 0, index) ? listCensor(orig) : orig;
+            };
+        };
+
+        fluid.defaults("fluid.tests.rendererComponentTest", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            model: {
+                recordlist: {
+                    deffolt: ["person", "intake", "loanin", "loanout", "acquisition", "organization", "objects", "movement"]
+                }
+            },
+            protoTree: {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    controlledBy: "recordlist.deffolt",
+                    pathAs: "elementPath",
+                    repeatID: "recordType",
+                    tree: { value: "${{elementPath}}" }
+                },
+                message: {
+                    messagekey: "message",
+                    decorators: {"addClass": "{that}.options.styles.applicableStyle"} // new-style FLUID-4986 reference - formerly "{styles}"
+                },
+                deffoltmessage: {
+                    messagekey: "deffolt"
+                }
+            },
+            selectors: {
+                recordType: ".csc-searchBox-recordType",
+                message: ".csc-searchBox-message",
+                deffoltmessage: ".csc-searchBox-deffoltmessage",
+                toIgnore: ".csc-searchBox-ignore"
+            },
+            repeatingSelectors: ["recordType"],
+            selectorsToIgnore: ["toIgnore"],
+            parentBundle: "{globalBundle}",
+            strings: {
+                message: "A mess of messuage"
+            },
+            styles: {
+                applicableStyle: ".fl-applicable-style"
+            }
+        });
+
+
+        jqUnit.test("Renderer component without resolver", function () {
             var globalMessages = {deffolt: "A globbal messuage"};
             var globalBundle = fluid.messageResolver({messageBase: globalMessages});
-            var that = fluid.withEnvironment({globalBundle: globalBundle}, function () { 
+            var that = fluid.withEnvironment({globalBundle: globalBundle}, function () {
                 return fluid.tests.rendererComponentTest(".renderer-component-test");
             });
             that.refreshView();
             var renderMess = that.locate("message").text();
             jqUnit.assertEquals("Rendered message from bundle", that.options.strings.message, renderMess);
-            jqUnit.assertTrue("Applied style using addClass decorator reference to styles block", 
+            jqUnit.assertTrue("Applied style using addClass decorator reference to styles block",
                 that.locate("message").hasClass(that.options.styles.applicableStyle));
             var renderDeffoltMess = that.locate("deffoltmessage").text();
             jqUnit.assertEquals("Rendered message from global bundle", globalMessages.deffolt, renderDeffoltMess);
@@ -330,33 +307,8 @@ fluid.registerNamespace("fluid.tests");
             });
             assertRenderedText(renderRecs, array);
         });
-    
-        var censorFunc = function (types) {
-            var togo = [];
-            fluid.each(types, function (type) {
-                if (type.charAt(0) === "o") {
-                    togo.push(type);
-                }
-            });
-            return togo;
-        };
-        
-        var testFilteredRecords = function (that) {
-            that.refreshView();
-            var renderRecs = that.locate("recordType");
-            var censored = censorFunc(that.model.recordlist.deffolt);
-            jqUnit.assertEquals("Rendered elements", censored.length, renderRecs.length);
-            assertRenderedText(renderRecs, censored);      
-        };
-        
-        var testMessageRepeat = function (that) {
-            that.refreshView();
-            var tablinks = that.locate("tabLink");
-            jqUnit.assertEquals("Existing string relative should be found", "Acquisition", tablinks.eq(0).text());
-            jqUnit.assertEquals("Nonexisting string relative should be notified ", "[No messagecodes provided]", tablinks.eq(1).text());
-            jqUnit.assertEquals("Nonexisting string relative should be notified ", "[No messagecodes provided]", that.locate("unmatchedMessage").text());
-        };
-        
+
+
         var testMultipleExpanders = function (that) {
             that.refreshView();
             var tabContent = that.locate("tabContent");
@@ -366,14 +318,14 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Existing string relative should be found", "Acquisition", tabTwoContent.eq(0).text());
             jqUnit.assertEquals("Existing string relative should be found", "Cataloging", tabTwoContent.eq(1).text());
         };
-        
-        compTests.test("Multiple same level expanders", function () {
+
+        jqUnit.test("Multiple same level expanders", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test-multiple-repeat", {
                 model: {
                     firstCategory: {
                         acquisition: {
                             "name": "acq"
-                        }, 
+                        },
                         objects: {
                             "name": "acq2"
                         }
@@ -381,7 +333,7 @@ fluid.registerNamespace("fluid.tests");
                     secondCategory: {
                         acquisition: {
                             "name": "acq"
-                        }, 
+                        },
                         objects: {
                             "name": "acq2"
                         }
@@ -423,8 +375,17 @@ fluid.registerNamespace("fluid.tests");
             });
             testMultipleExpanders(that);
         });
-        
-        compTests.test("FLUID-3819 test: messagekey with no value", function () {
+
+
+        var testMessageRepeat = function (that) {
+            that.refreshView();
+            var tablinks = that.locate("tabLink");
+            jqUnit.assertEquals("Existing string relative should be found", "Acquisition", tablinks.eq(0).text());
+            jqUnit.assertEquals("Nonexisting string relative should be notified ", "[No messagecodes provided]", tablinks.eq(1).text());
+            jqUnit.assertEquals("Nonexisting string relative should be notified ", "[No messagecodes provided]", that.locate("unmatchedMessage").text());
+        };
+
+        jqUnit.test("FLUID-3819 test: messagekey with no value", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test-repeat", {
                 resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]},
                 model: {
@@ -433,7 +394,7 @@ fluid.registerNamespace("fluid.tests");
                             acquisition: {
                                 "name": "acq",
                                 href: "#HREF1"
-                            }, 
+                            },
                             objects: {
                                 href: "#HREF1"
                             }
@@ -471,14 +432,32 @@ fluid.registerNamespace("fluid.tests");
             });
             testMessageRepeat(that);
         });
-        
-        compTests.test("Renderer component with custom resolver", function () {
+
+        var censorFunc = function (types) {
+            var togo = [];
+            fluid.each(types, function (type) {
+                if (type.charAt(0) === "o") {
+                    togo.push(type);
+                }
+            });
+            return togo;
+        };
+
+        var testFilteredRecords = function (that) {
+            that.refreshView();
+            var renderRecs = that.locate("recordType");
+            var censored = censorFunc(that.model.recordlist.deffolt);
+            jqUnit.assertEquals("Rendered elements", censored.length, renderRecs.length);
+            assertRenderedText(renderRecs, censored);
+        };
+
+        jqUnit.test("Renderer component with custom resolver", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
                 resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]}
             });
             testFilteredRecords(that);
         });
-        
+
         fluid.defaults("fluid.tests.littleComponentWithInstantiator", {
             gradeNames: ["fluid.littleComponent", "autoInit"],
             components: {
@@ -489,11 +468,10 @@ fluid.registerNamespace("fluid.tests");
                 }
             }
         });
-        
+
         fluid.defaults("fluid.tests.rendererComponentWithNoInstantiator", {
             gradeNames: ["fluid.rendererComponent", "autoInit"],
-            produceTree: "fluid.tests.littleComponentWithInstantiator.produceTree",
-            finalInitFunction: "fluid.tests.littleComponentWithInstantiator.finalInitFunction",
+            produceTree: "fluid.tests.rendererComponentWithNoInstantiator.produceTree",
             selectors: {
                 text1: ".csc-footer-text1",
                 text2: ".csc-footer-text2",
@@ -505,8 +483,8 @@ fluid.registerNamespace("fluid.tests");
                 about: "http://www.collectionspace.org",
                 currentRelease: "http://www.collectionspace.org/current_release",
                 feedback: "http://wiki.collectionspace.org/display/collectionspace/Release+1.6+Feedback",
-                version: "1.6"
             },
+            version: "1.6", // moved this out to top level to test FLUID-4986
             strings: {
                 text1: "2009 - 2011",
                 text2: "CollectionSpace",
@@ -515,12 +493,12 @@ fluid.registerNamespace("fluid.tests");
                 feedback: "Leave Feedback"
             }
         });
-        
-        fluid.tests.littleComponentWithInstantiator.finalInitFunction = function (that) {
+
+        fluid.tests.rendererComponentWithNoInstantiator.finalInit = function (that) {
             that.renderer.refreshView();
         };
-        
-        fluid.tests.littleComponentWithInstantiator.produceTree = function () {
+
+        fluid.tests.rendererComponentWithNoInstantiator.produceTree = function () {
             return {
                 text1: {
                     messagekey: "text1"
@@ -532,7 +510,7 @@ fluid.registerNamespace("fluid.tests");
                     target: "${currentRelease}",
                     linktext: {
                         messagekey: "currentRelease",
-                        args: {version: "${version}"}
+                        args: {version: "${{that}.options.version}"}
                     }
                 },
                 about: {
@@ -549,20 +527,21 @@ fluid.registerNamespace("fluid.tests");
                 }
             };
         };
-        
-        compTests.test("FLUID-4200 test: Renderer component with infinite expansion (if there's an instantiator in the tree)", function () {
+
+        jqUnit.test("FLUID-4200 test: Renderer component with infinite expansion (if there's an instantiator in the tree)", function () {
             var that = fluid.tests.littleComponentWithInstantiator();
-            jqUnit.assertTrue("That with subcomponents was created", true);
+            var releaseText = that.rendererComponent.locate("currentRelease").text();
+            jqUnit.assertEquals("Rendered release text", "Release 1.6", releaseText);
         });
-        
-        compTests.test("Renderer component with custom resolver and renderer fixup", function () {
+
+        jqUnit.test("Renderer component with custom resolver and renderer fixup", function () {
             var tree = {
                 children: [
                     {ID: "recordType:",
                         valuebinding: "recordlist.deffolt.0"},
                     {ID: "recordType:",
                         valuebinding: "recordlist.deffolt.1"}
-                ]  
+                ]
             };
             var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
                 resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]},
@@ -573,7 +552,7 @@ fluid.registerNamespace("fluid.tests");
             });
             testFilteredRecords(that);
         });
-        
+
         fluid.defaults("fluid.tests.paychequeComponent", {
             gradeNames: ["fluid.viewComponent", "autoInit"],
             selectors: {
@@ -586,26 +565,26 @@ fluid.registerNamespace("fluid.tests");
                 }
             }
         });
-        
+
         // For AC
         fluid.defaults("fluid.tests.paychequeRenderer", {
             gradeNames: ["fluid.rendererComponent", "autoInit"],
             selectors: {
-                message: ".flc-renderUtils-message"  
+                message: ".flc-renderUtils-message"
             },
             protoTree: {
                 message: "What, every Friday?"
             },
             renderOnInit: true
         });
-        
-        compTests.test("Graded renderer component test", function () {
+
+        jqUnit.test("Graded renderer component test", function () {
             var that = fluid.tests.paychequeComponent(".flc-renderUtils-container");
             var message = that.renderChild.locate("message");
             jqUnit.assertEquals("Message rendered", fluid.defaults("fluid.tests.paychequeRenderer").protoTree.message,
                 message.text());
         });
-     
+
         fluid.defaults("fluid.tests.FLUID4165Component", {
             gradeNames: ["fluid.rendererComponent", "autoInit"],
             selectors: {
@@ -615,7 +594,7 @@ fluid.registerNamespace("fluid.tests");
                 input: "${value}"
             }
         });
-        
+
         fluid.defaults("fluid.tests.decoratorParent", {
             gradeNames: ["fluid.rendererComponent", "autoInit"],
             model: {
@@ -649,7 +628,7 @@ fluid.registerNamespace("fluid.tests");
                 }
             }
         });
-        
+
         fluid.defaults("fluid.tests.decoratorWithSubModel", {
             gradeNames: ["fluid.rendererComponent", "autoInit"],
             protoTree: {
@@ -660,17 +639,17 @@ fluid.registerNamespace("fluid.tests");
             },
             finalInitFunction: "fluid.tests.decoratorWithSubModel.finalInitFunction"
         });
-        
+
         fluid.tests.decoratorWithSubModel.finalInitFunction = function (that) {
             that.refreshView();
         };
-        
+
         fluid.demands("fluid.tests.decoratorWithSubModel", "fluid.tests.decoratorParent", {
             container: "{arguments}.0"
         });
-        
-        compTests.test("Decorator with sub model", function () {
-            var that = fluid.tests.decoratorParent("#main");
+
+        jqUnit.test("Decorator with sub model", function () {
+            var that = fluid.tests.decoratorParent("#decorator-container");
             that.refreshView();
             var decorator = that["**-renderer-row::val-0"];
             jqUnit.assertEquals("Original value should be", "TEST", decorator.locate("val").val());
@@ -680,8 +659,8 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Original value in the model should be", "NEW VAL", decorator.model.val);
             jqUnit.assertEquals("Original value in the model should be", "NEW VAL", that.model.submodel[0].val);
         });
-     
-        compTests.test("FLUID-4165 - ensure automatic creation of applier if none supplied", function () {
+
+        jqUnit.test("FLUID-4165 - ensure automatic creation of applier if none supplied", function () {
             var model = {value: "Initial Value"};
             var that = fluid.tests.FLUID4165Component(".FLUID-4165-test", {model: model});
             that.refreshView();
@@ -691,23 +670,49 @@ fluid.registerNamespace("fluid.tests");
             input.change();
             jqUnit.assertEquals("Updated value read", "New Value", model.value);
         });
-    
+
         fluid.defaults("fluid.tests.FLUID4189Component", {
             gradeNames: ["fluid.rendererComponent", "autoInit"],
             selectors: {
                 input: ".flc-renderUtils-test",
                 input2: ".flc-renderUtils-test2"
             },
-            produceTree: "fluid.tests.FLUID4189Component.produceTree"
+            produceTree: "fluid.tests.FLUID4189Component.produceTree",
+            members: {
+                clicked: []
+            },
+            invokers: {
+                clickField: {
+                    funcName: "fluid.tests.FLUID4189Click",
+                    args: ["{that}", "{arguments}.0"]
+                }
+            },
+            listeners: { // Test binding of FLUID-4878 style "this-ist" jQuery listeners
+                afterRender: [ {
+                    "this": "{that}.dom.input",
+                    method: "click",
+                    args: "{that}.clickField"
+                },
+                {
+                    "this": "{that}.dom.input2",
+                    method: "click",
+                    args: "{that}.clickField"
+                }
+                ]
+            }
         });
-        
+
         fluid.tests.FLUID4189Component.produceTree = function () {
             return {
                 input: "${value}"
             };
         };
-        
-        compTests.test("FLUID-4189 - refined workflow for renderer component", function () {
+
+        fluid.tests.FLUID4189Click = function (that, event) {
+            that.clicked.push(event.target);
+        };
+
+        jqUnit.test("FLUID-4189 - refined workflow for renderer component", function () {
             function adjustModel(model, applier, that) {
                 model.path2 = "value2";
             }
@@ -718,10 +723,10 @@ fluid.registerNamespace("fluid.tests");
                 });
             }
             function afterRender() {
-                jqUnit.assert("afterRender function called");  
+                jqUnit.assert("afterRender function called");
             }
             var model = {value: "Initial Value"};
-            var that = fluid.tests.FLUID4189Component(".FLUID-4189-test", { 
+            var that = fluid.tests.FLUID4189Component(".FLUID-4189-test", {
                 model: model,
                 listeners: {
                     prepareModelForRender: adjustModel,
@@ -730,16 +735,19 @@ fluid.registerNamespace("fluid.tests");
                 }
             });
             that.refreshView();
-            jqUnit.expect(3);
+            jqUnit.expect(4);
             var input = that.locate("input");
             jqUnit.assertEquals("Field 1 rendered", model.value, input.val());
             var input2 = that.locate("input2");
             jqUnit.assertEquals("Field 2 rendered", "value2", input2.val());
+            var inputs = [input, input2];
+            fluid.each(inputs, function (element) {element.click();});
+            jqUnit.assertDomEquals("Click handlers registered by afterRender", inputs, that.clicked);
         });
-    
-        var protoTests = new jqUnit.TestCase("Protocomponent Expander Tests");
-  
-        protoTests.test("makeProtoExpander Basic Tests", function () {
+
+        jqUnit.module("Protocomponent Expander Tests");
+
+        jqUnit.test("makeProtoExpander Basic Tests", function () {
             var model = {
                 path1: "value1",
                 path2: "value2"
@@ -757,7 +765,7 @@ fluid.registerNamespace("fluid.tests");
                     messagekey: {value: "myKey"},
                     args: ["thing", 3, false, "value1"]
                 }, {
-                    ID: "boundValue", 
+                    ID: "boundValue",
                     componentType: "UIBound",
                     value: "value2",
                     valuebinding: "path2"
@@ -765,15 +773,15 @@ fluid.registerNamespace("fluid.tests");
             };
             jqUnit.assertDeepEq("Simple expansion", expected, expanded);
         });
-        
-        protoTests.test("Bare array expansion", function () {
+
+        jqUnit.test("Bare array expansion", function () {
             var protoTree = {
                 matches: {
                     children: ["Fred Allen", "Phyllis Allen", "Karen Allen", "Rex Allen"]
                 }
             };
             var expander = fluid.renderer.makeProtoExpander();
-            var expanded = expander(protoTree);       
+            var expanded = expander(protoTree);
             var expected = {
                 children: [
                     {ID: "matches:",
@@ -788,12 +796,12 @@ fluid.registerNamespace("fluid.tests");
                     {ID: "matches:",
                          componentType: "UIBound",
                          value: "Rex Allen"}
-                ] 
+                ]
             };
             jqUnit.assertDeepEq("Simple expansion", expected, expanded);
         });
-       
-        protoTests.test("FLUID-3663 test: anomalous UISelect expansion", function () {
+
+        jqUnit.test("FLUID-3663 test: anomalous UISelect expansion", function () {
             var expander = fluid.renderer.makeProtoExpander({ELstyle: "${}"});
             var protoTree = {
                 "authority-history": "${fields.history}",
@@ -819,17 +827,17 @@ fluid.registerNamespace("fluid.tests");
             };
             jqUnit.assertDeepEq("UISelect expansion", expected, expanded);
         });
-        
-        protoTests.test("FLUID-3682 test: decorators attached to blank UIOutput", function () {
+
+        jqUnit.test("FLUID-3682 test: decorators attached to blank UIOutput", function () {
             var expander = fluid.renderer.makeProtoExpander({ELstyle: "${}"});
             var protoTree = {
-                ".csc-date-information-date-earliest-single-date-container": { 
-                    "decorators": [ 
-                        { 
-                            "func": "cspace.datePicker", 
-                            "type": "fluid" 
-                        } 
-                    ] 
+                ".csc-date-information-date-earliest-single-date-container": {
+                    "decorators": [
+                        {
+                            "func": "cspace.datePicker",
+                            "type": "fluid"
+                        }
+                    ]
                 }
             };
             var expanded = expander(protoTree);
@@ -837,20 +845,20 @@ fluid.registerNamespace("fluid.tests");
                 children: [
                     {ID: ".csc-date-information-date-earliest-single-date-container",
                          componentType: "UIBound",
-                         "decorators": [ 
-                            { 
-                                "func": "cspace.datePicker", 
-                                "type": "fluid" 
-                            } 
-                        ] 
+                         "decorators": [
+                            {
+                                "func": "cspace.datePicker",
+                                "type": "fluid"
+                            }
+                        ]
                         }
                 ]
             };
             jqUnit.assertDeepEq("Decorator expansion", expected, expanded);
         });
-        
-      
-        protoTests.test("FLUID-3659 test: decorators attached to elements with valuebinding", function () {
+
+
+        jqUnit.test("FLUID-3659 test: decorators attached to elements with valuebinding", function () {
             var model = {
                 queryUrl: "../../chain/loanin/autocomplete/lender",
                 vocabUrl: "../../chain/loanin/source-vocab/lender"
@@ -889,11 +897,11 @@ fluid.registerNamespace("fluid.tests");
             };
             jqUnit.assertDeepEq("Decorator expansion", expected, expanded);
         });
-        
+
         fluid.defaults("fluid.tests.repeatDecorator", {
             gradeNames: ["fluid.viewComponent", "autoInit"]
         });
-        
+
         fluid.defaults("fluid.tests.repeatHead", {
             gradeNames: ["fluid.rendererComponent", "autoInit"],
             components: {
@@ -904,7 +912,7 @@ fluid.registerNamespace("fluid.tests");
                     type: "fluid.renderer.repeat",
                     controlledBy: "vector",
                     pathAs: "elementPath",
-                    valueAs: "element", 
+                    valueAs: "element",
                     repeatID: "link",
                     tree: {
                         decorators: {
@@ -913,16 +921,16 @@ fluid.registerNamespace("fluid.tests");
                             options: {
                                 model: {
                                     value: "${{element}}"
-                                }  
+                                }
                             }
-                          
-                        }  
+
+                        }
                     }
                 }
             }
         });
-        
-        protoTests.test("FLUID-4168 test: decorator expansion reference to repetition variables", function () {
+
+        jqUnit.test("FLUID-4168 test: decorator expansion reference to repetition variables", function () {
             var model = {
                 vector: [1, 2, 3]
             };
@@ -935,12 +943,12 @@ fluid.registerNamespace("fluid.tests");
             });
             declist.sort(function (ea, eb) {return ea.key < eb.key ? -1 : 1;});
             var decvals = fluid.transform(declist, function (dec) {
-                return dec.decorator.model.value;  
+                return dec.decorator.model.value;
             });
             jqUnit.assertDeepEq("Model values recovered from decorators", model.vector, decvals);
         });
-        
-        protoTests.test("FLUID-3658 test: simple repetition expander", function () {
+
+        jqUnit.test("FLUID-3658 test: simple repetition expander", function () {
             var model = {
                 vector: [1, 2, 3]
             };
@@ -961,11 +969,11 @@ fluid.registerNamespace("fluid.tests");
                             messagekey: "siteUrlTemplate",
                             args: {
                                 element: "${{element}}"
-                            }          
+                            }
                         }
                     }
                 }
-            }; 
+            };
             var expanded = expander(protoTree);
             var node = $(".repeater-leaf-test");
             fluid.selfRender(node, expanded, {
@@ -975,15 +983,15 @@ fluid.registerNamespace("fluid.tests");
             var links = $("a", node);
             jqUnit.assertEquals("Link count", 3, links.length);
             for (var i = 0; i < links.length; ++i) {
-                fluid.testUtils.assertNode("Link rendered", {
-                    nodeName: "a", 
+                jqUnit.assertNode("Link rendered", {
+                    nodeName: "a",
                     href: fluid.stringTemplate(messageBundle.siteUrlTemplate, {element: model.vector[i]}),
                     nodeText: String(model.vector[i])
                 }, links[i]);
             }
         });
-        
-        protoTests.test("FLUID-3658 test: recursive expansion with expanders", function () {
+
+        jqUnit.test("FLUID-3658 test: recursive expansion with expanders", function () {
             var choices = ["none", "read", "write", "delete"];
             var rows = ["Acquisition", "Cataloguing", "Intake", "Loan In", "Loan Out"];
             var model = {
@@ -998,11 +1006,11 @@ fluid.registerNamespace("fluid.tests");
                     })
                 };
             });
-            
+
             var expopts = {ELstyle: "${}", model: model};
             var expander = fluid.renderer.makeProtoExpander(expopts);
-        
-            var protoTree = { 
+
+            var protoTree = {
                 expander: {
                     type: "fluid.renderer.repeat",
                     controlledBy: "permissions",
@@ -1015,7 +1023,7 @@ fluid.registerNamespace("fluid.tests");
                             pathAs: "permission",
                             repeatID: "permissions-record-column",
                             tree: {
-                                expander: {                  
+                                expander: {
                                     type: "fluid.renderer.selection.inputs",
                                     rowID: "permissions-record-role-row",
                                     labelID: "permissions-record-role-label",
@@ -1034,21 +1042,21 @@ fluid.registerNamespace("fluid.tests");
                     }
                 }
             };
-        
+
             var expanded = expander(protoTree);
             var node = $(".recursive-expansion-test");
             fluid.selfRender(node, expanded, {
                 model: model
             });
             var radios = $("input", node);
-            jqUnit.assertEquals("Radio button count", model.permissions.length * model.permissions[0].permissions.length * choices.length, 
+            jqUnit.assertEquals("Radio button count", model.permissions.length * model.permissions[0].permissions.length * choices.length,
                 radios.length);
-            
+
             var spans = $("span", node);
             jqUnit.assertEquals("Span count", model.permissions.length, spans.length);
-        
+
         });
-        
+
         function deleteComponentTypes(tree) {
             return fluid.transform(tree, function (el) {
                 if (fluid.isPrimitive(el)) {
@@ -1059,8 +1067,8 @@ fluid.registerNamespace("fluid.tests");
                 return deleteComponentTypes(el);
             });
         }
-        
-        protoTests.test("Non-expansion expander test", function () {
+
+        jqUnit.test("Non-expansion expander test", function () {
             var model = {
                 queryUrl: "../../chain/loanin/autocomplete/lender",
                 vocabUrl: "../../chain/loanin/source-vocab/lender"
@@ -1115,12 +1123,12 @@ fluid.registerNamespace("fluid.tests");
             };
             jqUnit.assertDeepEq("Decorator non-expansion", expected, expanded);
         });
-        
+
         fluid.tests.returnArg = function (arg) {
             return arg;
         };
-        
-        protoTests.test("Condition Expander", function () {
+
+        jqUnit.test("Condition Expander", function () {
             var tree = {
                 expander: {
                     type: "fluid.renderer.condition",
@@ -1208,12 +1216,12 @@ fluid.registerNamespace("fluid.tests");
             });
             jqUnit.assertDeepEq("Expanded tree should be", expectedTrue, expanded);
         });
-       
+
         fluid.tests.assertDisplay = function (displayString) {
             return displayString === "show";
         };
-        
-        protoTests.test("Condition within repetition expander", function () {
+
+        jqUnit.test("Condition within repetition expander", function () {
             var model = {
                 "fields": {
                     "permissions": [
@@ -1238,7 +1246,7 @@ fluid.registerNamespace("fluid.tests");
                     "type": "fluid.renderer.repeat",
                     "pathAs": "row",
                     "valueAs": "rowValue",
-                    "controlledBy": "fields.permissions", 
+                    "controlledBy": "fields.permissions",
                     "tree": {
                         "expander": {
                             "type": "fluid.renderer.condition",
@@ -1253,12 +1261,12 @@ fluid.registerNamespace("fluid.tests");
                                     "tree": {
                                         "optionnames": ["none", "read", "write", "delete"],
                                         "optionlist": ["none", "read", "write", "delete"],
-                                        "selection": "${{row}.permission}" 
+                                        "selection": "${{row}.permission}"
                                     },
                                     "rowID": ".csc-role-permission-row:",
                                     "selectID": "permission",
                                     "labelID": ".csc-role-permission-label",
-                                    "type": "fluid.renderer.selection.inputs" 
+                                    "type": "fluid.renderer.selection.inputs"
                                 }
                             }
                         }
@@ -1268,12 +1276,12 @@ fluid.registerNamespace("fluid.tests");
             var expanded = expander(protoTree);
             jqUnit.assertEquals("Only one row produced", 1, expanded.children.length);
             // one for UISelect, one for resourceName bound, one each for optionlist
-            jqUnit.assertEquals("Inner expander expanded", 2 + protoTree.expander.tree.expander.trueTree.expander.tree.optionnames.length, 
+            jqUnit.assertEquals("Inner expander expanded", 2 + protoTree.expander.tree.expander.trueTree.expander.tree.optionnames.length,
                 expanded.children[0].children.length);
             return;
         });
-        
-        protoTests.test("FLUID-4128 test: Literal booleans within repetition/condition expander", function () {
+
+        jqUnit.test("FLUID-4128 test: Literal booleans within repetition/condition expander", function () {
             var model = {conditions: [true, false, true, true, false]};
             var expander = fluid.renderer.makeProtoExpander({model: model});
             var protoTree = {
@@ -1301,15 +1309,15 @@ fluid.registerNamespace("fluid.tests");
             expanded = expander(protoTree);
             jqUnit.assertEquals("Only three rows produced - alternative reference style", 3, expanded.children.length);
         });
-        
-        protoTests.test("FLUID-3658 test: selection to inputs expander", function () {
+
+        jqUnit.test("FLUID-3658 test: selection to inputs expander", function () {
             var model = { };
             var expopts = {ELstyle: "${}", model: model};
             var expander = fluid.renderer.makeProtoExpander(expopts);
             var protoTree = {
                 "permissions-record-row": {
                     "children": [{
-                        expander: {                  
+                        expander: {
                             type: "fluid.renderer.selection.inputs",
                             rowID: "permissions-record-role-row",
                             labelID: "permissions-record-role-label",
@@ -1328,7 +1336,7 @@ fluid.registerNamespace("fluid.tests");
             };
             var expanded = expander(protoTree);
             expanded = deleteComponentTypes(expanded);
-            
+
             var expint = protoTree["permissions-record-row"]["children"][0];
             var expopt = expint.expander;
             expopt.rowID = expopt.rowID + ":"; // the expander automatically aligns colons for repetition
@@ -1350,17 +1358,17 @@ fluid.registerNamespace("fluid.tests");
                     }
                 ]
             };
-            fluid.testUtils.assertCanoniseEqual("Selection explosion", expected, expanded, fluid.testUtils.sortTree);
+            jqUnit.assertCanoniseEqual("Selection explosion", expected, expanded, jqUnit.sortTree);
         });
-        
-        protoTests.test("FLUID-3844 test: messagekey resolved by expander", function () {
+
+        jqUnit.test("FLUID-3844 test: messagekey resolved by expander", function () {
             var model = {
                 tabs: {
                     here: {
                         href: "#here",
                         name: "messagekey"
                     },
-                    "FLUID-4301": [ 
+                    "FLUID-4301": [
                         { id: 1 },
                         { id: 1 }
                     ]
@@ -1386,8 +1394,8 @@ fluid.registerNamespace("fluid.tests");
                 }
             };
             var expanded = expander(protoTree);
-            fluid.testUtils.assertCanoniseEqual("Message key resolved", model.tabs.here.name, 
-                expanded.children[0].children[0].linktext.messagekey.value, fluid.testUtils.sortTree);
+            jqUnit.assertCanoniseEqual("Message key resolved", model.tabs.here.name,
+                expanded.children[0].children[0].linktext.messagekey.value, jqUnit.sortTree);
         });
 
         fluid.registerNamespace("fluid.tests.FLUID4737");
@@ -1423,14 +1431,14 @@ fluid.registerNamespace("fluid.tests");
             },
             model: {vals: [{mVal: 1}, {mVal: 2}]}
         });
-        
-        protoTests.test("FLUID-4737: Messagekey with arguments from the model", function () {
+
+        jqUnit.test("FLUID-4737: Messagekey with arguments from the model", function () {
             var origModel, that;
             jqUnit.expect(1);
             var testModel = function (that) {
                 jqUnit.assertDeepEq("The model shouldn't have changed", origModel, that.model);
             };
-            
+
             that = fluid.tests.FLUID4737(".FLUID-4737", {
                 listeners: {
                     afterRender: testModel
@@ -1439,8 +1447,8 @@ fluid.registerNamespace("fluid.tests");
             origModel = fluid.copy(that.model);
             that.refreshView();
         });
-        
-        protoTests.test("Can't have explicit valuebinding in the proto tree (no other way if there are decorators)", function () {
+
+        jqUnit.test("Can't have explicit valuebinding in the proto tree (no other way if there are decorators)", function () {
             var model = {
                 vector: [{
                     index: "one"
@@ -1467,12 +1475,12 @@ fluid.registerNamespace("fluid.tests");
                 }
             };
             var expanded = expander(protoTree);
-            fluid.testUtils.assertCanoniseEqual("Valuebinding should be resolved", "vector.0.index", 
-                expanded.children[0].children[0].valuebinding, fluid.testUtils.sortTree);
-            fluid.testUtils.assertCanoniseEqual("Valuebinding should be resolved", "one", 
-                 expanded.children[0].children[0].value, fluid.testUtils.sortTree);
+            jqUnit.assertCanoniseEqual("Valuebinding should be resolved", "vector.0.index",
+                expanded.children[0].children[0].valuebinding, jqUnit.sortTree);
+            jqUnit.assertCanoniseEqual("Valuebinding should be resolved", "one",
+                 expanded.children[0].children[0].value, jqUnit.sortTree);
         });
-        
+
         fluid.defaults("fluid.tests.FLUID4537", {
             gradeNames: ["fluid.rendererComponent", "autoInit"],
             renderOnInit: true,
@@ -1502,8 +1510,8 @@ fluid.registerNamespace("fluid.tests");
                 }
             }
         });
-        
-        protoTests.test("FLUID-4537: Attribute decorator expansion test", function () {
+
+        jqUnit.test("FLUID-4537: Attribute decorator expansion test", function () {
             var that = fluid.tests.FLUID4537(".news-items", {});
             var links = that.locate("link");
             jqUnit.assertEquals("One link rendered", 1, links.length);
@@ -1524,7 +1532,7 @@ fluid.registerNamespace("fluid.tests");
                 iframe: "iframe"
             },
             events: {
-                iframeLoad: null  
+                iframeLoad: null
             },
             finalInitFunction: "fluid.tests.FLUID4536.finalInit"
         });
@@ -1534,7 +1542,7 @@ fluid.registerNamespace("fluid.tests");
             function tryLoad() {
                 var iframeWindow = that.iframe[0].contentWindow;
                 that.iframeDocument = iframeWindow.document;
-    
+
                 that.jQuery = iframeWindow.jQuery;
                 if (that.jQuery) {
                     that.iframeContainer = that.jQuery("body");
@@ -1546,7 +1554,7 @@ fluid.registerNamespace("fluid.tests");
                 that.iframe.load(tryLoad);
             }
         };
-    
+
         fluid.defaults("fluid.tests.FLUID4536IframeHead", {
             gradeNames: ["fluid.viewComponent", "autoInit"],
             components: {
@@ -1556,44 +1564,44 @@ fluid.registerNamespace("fluid.tests");
                 }
             },
             selectors: {
-                component: "#main"
+                component: "#iframe-root"
             }
         });
-        
+
         fluid.defaults("fluid.tests.FLUID4536IframeChild", {
             gradeNames: ["fluid.rendererComponent", "autoInit"],
             model: {
                 checked: true
             },
             protoTree: {
-                checkbox: "${checked}"  
+                checkbox: "${checked}"
             },
             selectors: {
                 checkbox: ".flc-checkbox"
             },
             renderOnInit: true
         });
-    
-        protoTests.asyncTest("FLUID-4536 iframe propagation test", function() {
+
+        jqUnit.asyncTest("FLUID-4536 iframe propagation test", function() {
             jqUnit.expect(4);
-            fluid.tests.FLUID4536("#main", {listeners: {
+            fluid.tests.FLUID4536("#qunit-fixture", {listeners: {
                 iframeLoad: {
-                    priority: "last",   
-                    listener: 
+                    priority: "last",
+                    listener:
                     function(that) {
-                    jqUnit.assertValue("Inner component constructed", that.iframeHead.iframeChild);
-                    var outerExpando = $.expando;
-                    var innerExpando = that.iframeContainer.constructor.expando;
-                    jqUnit.assertNotEquals("Inner container uses different jQuery", outerExpando, innerExpando);
-                    var child = that.iframeHead.iframeChild;
-                    var furtherExpando = child.container.constructor.expando;
-                    jqUnit.assertEquals("jQuery propagated through DOM binder", innerExpando, furtherExpando);
-                    child.locate("checkbox").prop("checked", false).change();
-                    jqUnit.assertEquals("Operable renderer component in child", false, child.model.checked);
-                    start();
+                        jqUnit.assertValue("Inner component constructed", that.iframeHead.iframeChild);
+                        var outerExpando = $.expando;
+                        var innerExpando = that.iframeContainer.constructor.expando;
+                        jqUnit.assertNotEquals("Inner container uses different jQuery", outerExpando, innerExpando);
+                        var child = that.iframeHead.iframeChild;
+                        var furtherExpando = child.container.constructor.expando;
+                        jqUnit.assertEquals("jQuery propagated through DOM binder", innerExpando, furtherExpando);
+                        child.locate("checkbox").prop("checked", false).change();
+                        jqUnit.assertEquals("Operable renderer component in child", false, child.model.checked);
+                        jqUnit.start();
                }}}});
         });
-        
+
         fluid.defaults("fluid.tests.pathExpander", {
             gradeNames: ["autoInit", "fluid.viewComponent"]
         });
@@ -1633,12 +1641,146 @@ fluid.registerNamespace("fluid.tests");
             },
             renderOnInit: true
         });
-        protoTests.test("FLUID-4537 further: pathAs propagation", function () {
+        jqUnit.test("FLUID-4537 further: pathAs propagation", function () {
             var that = fluid.tests.pathExpanderParent(".pathAsProp");
             var decorators = fluid.renderer.getDecoratorComponents(that, that.instantiator);
             fluid.each(decorators, function (comp, name) {
                 jqUnit.assertEquals("Path should not be expanded into value", "rows." + comp.options.val, comp.options.path);
             });
         });
-    }; 
-})(jQuery); 
+
+        fluid.defaults("fluid.tests.customSetConfigRendererComponent", {
+            gradeNames: ["autoInit", "fluid.rendererComponent"],
+            model: {
+                "a.b.c": {
+                    val: "OLD"
+                }
+            },
+            selectors: {
+                escaped: ".escaped"
+            },
+            protoTree: {
+                escaped: "${a\\.b\\.c.val}"
+            },
+            renderOnInit: true,
+            resolverGetConfig: fluid.model.escapedGetConfig,
+            resolverSetConfig: fluid.model.escapedSetConfig
+        });
+        jqUnit.test("FLUID-4935: resolverSetConfig propagation to changeApplierOptions.resolverSetConfig option", function () {
+            var customSetConfigRendererComponent = fluid.tests.customSetConfigRendererComponent(".FLUID-4935");
+            var escaped = customSetConfigRendererComponent.locate("escaped");
+            function checkDataBind(expected) {
+                jqUnit.assertEquals("Selector is rendered correctly", expected, escaped.val());
+                jqUnit.assertEquals("Model is up to date", expected,
+                    customSetConfigRendererComponent.model["a.b.c"].val);
+            }
+            checkDataBind("OLD");
+            escaped.val("NEW").change();
+            checkDataBind("NEW");
+        });
+
+
+        /**
+         * Test setup for FLUID-5048
+         */
+        fluid.defaults("fluid.tests.fluid5048.mediaSettings", {
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            model: {
+                show: false
+            },
+            selectors: {
+                show: ".flc-videoPlayer-media-show"
+            },
+            resources: {
+                template: {
+                    url: "../data/MediaPanelTemplate.html"
+                }
+            },
+            protoTree: {
+                show: "${show}"
+            }
+        });
+
+        fluid.tests.fluid5048.mediaSettings.finalInit = function (that) {
+            fluid.fetchResources(that.options.resources, function (resourceSpec) {
+                that.refreshView();
+            });
+        };
+        fluid.defaults("fluid.tests.fluid5048.captionsSettings", {
+            gradeNames: ["fluid.tests.fluid5048.mediaSettings", "autoInit"]
+        });
+        fluid.defaults("fluid.tests.fluid5048.transcriptsSettings", {
+            gradeNames: ["fluid.tests.fluid5048.mediaSettings", "autoInit"]
+        });
+
+        fluid.defaults("fluid.tests.fluid5048.parent", {
+            gradeNames: ["fluid.viewComponent", "autoInit"],
+            selectors: {
+                captionsSettings: ".flc-uiOptions-captions-settings",
+                transcriptsSettings: ".flc-uiOptions-transcripts-settings"
+            },
+            components: {
+                captions: {
+                    type: "fluid.tests.fluid5048.captionsSettings",
+                    container: "{parent}.dom.captionsSettings"
+                },
+                transcripts: {
+                    type: "fluid.tests.fluid5048.transcriptsSettings",
+                    container: "{parent}.dom.transcriptsSettings"
+                }
+            },
+            events: {
+                onReady: {
+                    events: {
+                        capsReady: "{captions}.events.afterRender",
+                        transReady: "{transcripts}.events.afterRender"
+                    },
+                    args: ["{parent}"]
+                }
+            }
+        });
+
+        jqUnit.asyncTest("FLUID-5048: Label 'for' attributes", function () {
+            var onReady = function (that) {
+                var label1for = $("label", that.captions.container).attr("for");
+                var label2for = $("label", that.transcripts.container).attr("for");
+                labels = {};
+                labels[label1for] = true;
+                labels[label2for] = true;
+                jqUnit.assertDeepEq("Labels should separately be \"show\" and \"show-1\"", {"show": true, "show-1": true}, labels);
+                jqUnit.start();
+            };
+            fluid.tests.fluid5048.parent("#FLUID-5048-test", {
+                listeners: {
+                    onReady: onReady
+                }
+            });
+        });
+
+        fluid.defaults("fluid.tests.fluid5099", {
+            gradeNames: ["autoInit", "fluid.rendererComponent"],
+            model: {
+                test: "TEST"
+            },
+            selectors: {
+                test: ".flc-fluid5099-test"
+            },
+            protoTree: {
+                test: "${test}"
+            },
+            renderOnInit: true
+        });
+
+        jqUnit.test("FLUID-5099: source name collision", function () {
+            jqUnit.expect(3)
+            var that = fluid.tests.fluid5099("#FLUID-5099");
+            var test = that.locate("test");
+            jqUnit.assertEquals("Original value is correct", "TEST", test.val());
+            fluid.addSourceGuardedListener(that.applier, "test", "test", function (model, oldModel, changeRequest) {
+                jqUnit.assert("Listener is applied correctly.");
+                jqUnit.assertEquals("Source is set correctly", "DOM:test", changeRequest[0].source);
+            });
+            test.val("NEW VALUE").change();
+        });
+    };
+})(jQuery);

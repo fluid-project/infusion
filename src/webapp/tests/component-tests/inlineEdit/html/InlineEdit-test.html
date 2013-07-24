@@ -17,6 +17,7 @@
         <script type="text/javascript" src="../../../../framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../../../components/tooltip/js/Tooltip.js"></script>
         <script type="text/javascript" src="../../../../components/inlineEdit/js/InlineEdit.js"></script>
@@ -32,6 +33,7 @@
         <!--  These are the jqUnit test framework js files -->
         <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
         <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
         <script type="text/javascript" src="../../../lib/jquery-ui/js/jquery.simulate.js"></script>        
 
         <!--  These are tests that have been written using this page as data and test supports -->
@@ -45,7 +47,7 @@
       <div id="qunit-testrunner-toolbar"></div>
       <h2 id="qunit-userAgent"></h2>
       <ol id="qunit-tests"></ol>
-      <div id="main">
+      <div id="qunit-fixture">
 
       <!-- This is the test data -->
       <form id="inline-edit" action="#" class="inlineEditable">
@@ -155,6 +157,11 @@
       <!-- Test overriding the tooltip text -->	
       <p id="inline-override-tooltip">
         <span class="flc-inlineEdit-text" id="text1">This text has a tooltip with custom text.</span>
+      </p>
+      
+      <!-- IOC test -->
+      <p id="ioc-inline-edit">
+        <span class="flc-ioc-inlineEditable"><span class="flc-inlineEdit-text">This IoC test</span></span>
       </p>
       </div>
     </body>

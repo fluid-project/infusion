@@ -23,9 +23,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         fluid.registerNamespace("fluid.tests");
         
-        var DataBindingTests = new jqUnit.TestCase("Data Binding Tests");
+        jqUnit.module("Data Binding Tests");
         
-        DataBindingTests.test("PathUtil", function () {
+        jqUnit.test("PathUtil", function () {
             var path = "path1.path2.path3";
             jqUnit.assertEquals("getHeadPath", "path1", fluid.pathUtil.getHeadPath(path));
             jqUnit.assertEquals("getTailPath", "path3", fluid.pathUtil.getTailPath(path));
@@ -40,11 +40,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
                
-        var customStrategy = function (root, segment, path) {
-            return path === "path3" ? fluid.NO_VALUE : undefined;
+        var customStrategy = function (root, segment, i, segs) {
+            return fluid.pathUtil.matchSegments(["path3"], segs, 0, i) ? fluid.NO_VALUE : undefined;
         };
         
-        DataBindingTests.test("getBeanValue with custom strategy", function () {
+        jqUnit.test("getBeanValue with custom strategy", function () {
             var model = {path3: "thing", path4: "otherThing"};
             var value = fluid.get(model, "path3", {strategies: [customStrategy, fluid.model.defaultFetchStrategy]});
             jqUnit.assertUndefined("path3 value censored", value);
@@ -52,17 +52,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("path4 value uncensored", model.path4, value2);
         });
         
-        fluid.tests.childMatchResolver = function (options, trundler) {
-            trundler = trundler.trundle(options.queryPath);
-            return fluid.find(trundler.root, function (value, key) {
-                var trundleKey = trundler.trundle(key);
-                var trundleChild = trundleKey.trundle(options.childPath);
+        fluid.tests.childMatchResolver = function (valueSeg, options, trundler) {
+            valueSeg = trundler(valueSeg, options.queryPath);
+            return fluid.find(valueSeg.root, function (value, key) {
+                var trundleKey = trundler(valueSeg, key);
+                var trundleChild = trundler(trundleKey, options.childPath);
                 if (trundleChild.root === options.value) {
                     return trundleKey;
-                } 
+                }
             });
         };
-        
+        // Unpacks a string encoded in triples into an array of objects, where the first digit encodes whether
+        // _primary is true or false, and the following two encode the values of properties "a" and "b"
         fluid.tests.generateRepeatableThing = function (gens) {
             var togo = [];
             for (var i = 0; i < gens.length; i += 3) {
@@ -83,7 +84,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
                 
-        DataBindingTests.test("getBeanValue with resolver", function () {
+        jqUnit.test("getBeanValue with resolver", function () {
             var model = fluid.copy(fluid.tests.basicResolverModel);
             var config = $.extend(true, {}, fluid.model.defaultGetConfig, {
                 resolvers: {
@@ -105,20 +106,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertUndefined("Queried resolved value", resolved);
         });
 
-        fluid.tests.repeatableModifyingStrategy = {
-            init: function (oldStrategy) {
-                var that = {};
-                that.path = oldStrategy ? oldStrategy.path : "";
-                that.next = function (root, segment) {
-                    that.path = fluid.model.composePath(that.path, segment);
-                    return that.path === "fields.repeatableThing.1.value" ?
+        fluid.tests.repeatableModifyingStrategy = function (toMatch) {
+            var matchSegs = fluid.model.parseEL(toMatch);
+            return function (root, segment, i, segs) {
+                return fluid.pathUtil.matchSegments(matchSegs, segs, 0, i) ?
                         fluid.tests.generateRepeatableThing("145") : undefined;   
-                };
-                return that;
-            }
+            };
         };
 
-        DataBindingTests.test("Complex resolving and strategising", function () {
+        jqUnit.test("Complex resolving and strategising", function () {
             var model = fluid.copy(fluid.tests.basicResolverModel);
             model.fields.repeatableThing[1].value = fluid.tests.generateRepeatableThing("045167089");
             var el = {
@@ -145,7 +141,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 resolvers: {
                     childMatch: fluid.tests.childMatchResolver
                 },
-                strategies: [fluid.tests.repeatableModifyingStrategy].concat(fluid.model.defaultGetConfig.strategies) 
+                strategies: [fluid.tests.repeatableModifyingStrategy("fields.repeatableThing.1.value")].concat(fluid.model.defaultGetConfig.strategies) 
             };
             var resolved2 = fluid.get(model, el, config2);
             jqUnit.assertEquals("Queried resolved and strategised value", 4, resolved2);
@@ -179,7 +175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
      
         
-        DataBindingTests.test("Merge model semantics - preserve", function () {
+        jqUnit.test("Merge model semantics - preserve", function () {
             testPreservingMerge("undef1", true);
             testPreservingMerge("undef2", false);
              // defaultModel of "null" tests FLUID-3768
@@ -192,7 +188,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         
         // NB - this implementation is in Fluid.js, but test is grouped with the one above
-        DataBindingTests.test("FLUID 4585 test: mergeModel with nested model", function () {
+        jqUnit.test("FLUID 4585 test: mergeModel with nested model", function () {
             var defaults = {
                 twoLevels: {
                     one: 1,
@@ -216,7 +212,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertDeepEq("Model should be properly merged", expected, result);
         });
         
-        DataBindingTests.test("FLUID-3729 test: application into nothing", function () {
+        jqUnit.test("FLUID-3729 test: application into nothing", function () {
             var model = {};
             
             fluid.model.applyChangeRequest(model, {type: "ADD", path: "path1.nonexistent", value: "value"});
@@ -227,7 +223,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
             
         
-        DataBindingTests.test("ApplyChangeRequest - ADD, DELETE and MERGE", function () {
+        jqUnit.test("ApplyChangeRequest - ADD, DELETE and MERGE", function () {
             var model = {a: 1, b: 2};
             var model2 = {c: 3};
             
@@ -241,15 +237,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             var testModel3 = fluid.copy(model);
             testModel3.c = fluid.copy(model);
-            var testModel4 = fluid.copy(testModel3);
+            var testModel5 = fluid.copy(testModel3);
             fluid.model.applyChangeRequest(testModel3, {type: "MERGE", path: "c", value: fluid.copy(model2)});
             jqUnit.assertDeepEq("Merge at trunk", {a: 1, b: 2, c: {a: 1, b: 2, c: 3}}, testModel3);
             
-            fluid.model.applyChangeRequest(testModel4, {type: "ADD", path: "c", value: fluid.copy(model2)});
-            jqUnit.assertDeepEq("Add at trunk", {a: 1, b: 2, c: {c: 3}}, testModel4);
+            var testModel4 = fluid.copy(model);
+            fluid.model.applyChangeRequest(testModel4, {type: "MERGE", path: "c", value: fluid.copy(model2)});
+            jqUnit.assertDeepEq("Merge into nothing", {a: 1, b: 2, c: {c: 3}}, testModel4);
+            
+            fluid.model.applyChangeRequest(testModel5, {type: "ADD", path: "c", value: fluid.copy(model2)});
+            jqUnit.assertDeepEq("Add at trunk", {a: 1, b: 2, c: {c: 3}}, testModel5);
         });
 
-        DataBindingTests.test("Transactional ChangeApplier - external transactions", function () {
+        jqUnit.test("Transactional ChangeApplier - external transactions", function () {
             var model = {a: 1, b: 2};
             var applier = fluid.makeChangeApplier(model);
             var initModel = fluid.copy(model);
@@ -264,7 +264,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         function makeTransTest(trans, thin) {
-            DataBindingTests.test("Transactional ChangeApplier - Transactional: " + 
+            jqUnit.test("Transactional ChangeApplier - Transactional: " + 
                 trans + " Thin: " + thin, function () {
                     var model = {
                         outerProperty: false,
@@ -287,7 +287,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                                 
                     function transGuard1(innerModel, changeRequest, applier) {
-                        applier.requestChange("transWorld.innerPath2", 5);
+                        if (changeRequest.path !== "transWorld.innerPath2") { // guard infinite recursion
+                            applier.requestChange("transWorld.innerPath2", 5);
+                        }
+                        else {
+                            return;
+                        }
                         jqUnit.assertEquals("Change wrt transaction", trans && !thin ? 4 : 5, model.transWorld.innerPath2);
                         jqUnit.assertEquals("ModelChanged count", trans ? 0 : 1, modelChangedCheck.length);
                         guard1check++;
@@ -300,21 +305,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     jqUnit.assertDeepEq("Final model state", {innerPath1: 4, innerPath2: 5}, model.transWorld);
                     jqUnit.assertEquals("2 changes received", 2, modelChangedCheck.length);
                 }
-                );
+            );
         }
         makeTransTest(true, false);
         makeTransTest(false, false);
         makeTransTest(true, true);
         makeTransTest(false, true);
         
-        DataBindingTests.test("Culling Applier", function () {
+        jqUnit.test("Culling Applier", function () {
             var model = {
-                    outerProperty: false,
-                    transWorld: {
-                        innerPath1: 3,
-                        innerPath2: 4
-                    }
-                };
+                outerProperty: false,
+                transWorld: {
+                    innerPath1: 3,
+                    innerPath2: 4
+                }
+            };
             function nullingGuard(newModel, changeRequest, applier) {
                 if (changeRequest.path === "transWorld.innerPath2") {
                     changeRequest.value = 4;
@@ -345,7 +350,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertFalse("Low priority guard culled", lowExecuted);
         });
         
-        DataBindingTests.test("PostGuards", function () {
+        jqUnit.test("PostGuards", function () {
             var model = {
                 outerProperty: false,
                 transWorld: {
@@ -357,7 +362,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 if (changeRequest.path === "transWorld.innerPath2") {
                     changeRequest.value = 6;
                 }
-                applier.requestChange("transWorld.innerPath1", 4);
+                // Don't cause infinite recursion by firing a change that we react to
+                if (changeRequest.path !== "transWorld.innerPath1") {
+                    applier.requestChange("transWorld.innerPath1", 4);
+                }
             }
             var postGuardCheck = 0;
             function postGuard(newModel, changes, applier) {
@@ -385,7 +393,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         
         
-        DataBindingTests.test("FLUID-4633 test - source tracking", function() {
+        jqUnit.test("FLUID-4633 test - source tracking", function() {
             var model = {
                 property1: 1,
                 property2: 2  
@@ -411,7 +419,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
         });
         
-        DataBindingTests.test("ChangeApplier", function () {
+        jqUnit.test("ChangeApplier", function () {
             var outerDAR = null;
             function checkingGuard(model, dar) {
                 outerDAR = dar;
@@ -427,7 +435,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 innerProperty: {
                     innerPath1: 3,
                     innerPath2: "Owneriet"
-                }
+                },
+                arrayInnerProperty: [{a: "a", b: "b"}, {a: "A", b: "B"}]
             };
             var applier = fluid.makeChangeApplier(model);
             applier.guards.addListener("outerProperty", checkingGuard, "firstListener");
@@ -478,24 +487,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             applier.fireChangeRequest({path: "innerProperty.innerPath2", type: "DELETE"});
             jqUnit.assertEquals("Removed via deletion", undefined, model.innerProperty.innerpath2);
+            
+            var guardPath = "arrayInnerProperty.0.a";
+            
+            function checkingGuard3(model, dar) {
+                var excess = fluid.pathUtil.getExcessPath(dar.path, guardPath);
+                var value = fluid.get(dar.value, excess);
+                return value.length === 1;
+            }
+            // Tests FLUID-4869
+            outerNewModel = null;
+            applier.modelChanged.removeListener(observingListener);
+            
+            // Tests for FLUID-4739
+            applier.guards.addListener(guardPath, checkingGuard3, "checkingGuard3");
+            applier.requestChange("arrayInnerProperty.0.a", "new a");
+            jqUnit.assertEquals("The model should have been guarded and not changed", "a", model.arrayInnerProperty[0].a);
+            applier.requestChange("arrayInnerProperty.0.b", "new b");
+            jqUnit.assertEquals("The model should have updated", "new b", model.arrayInnerProperty[0].b);
+            var newArray = [{a: "a", b: "b", c: "c"}, {a: "A", b: "B", c: "C"}]
+            applier.requestChange("arrayInnerProperty", newArray);
+            jqUnit.assertDeepEq("The model should have updated", newArray, model.arrayInnerProperty);
+            applier.guards.removeListener("checkingGuard3");
+            
+            jqUnit.assertEquals("Stopped observing model", null, outerNewModel);
         });
         
-        DataBindingTests.test("FLUID-4625 test: Over-broad changes", function() {
+        jqUnit.test("FLUID-4625 test: Over-broad changes", function() {
             // This tests FLUID-4625 - we don't test at the utility level of matchPath since this is the functional
             // behaviour required. In practice we may want a better implementation which explodes composite changes into
             // smaller increments so that we can avoid unnecessary notifications, but this at least covers the case
             // of missed notifications
             var model = {
                 selections: {
-                    lineSpacing: 1.0
+                    lineSpace: 1.0
                 }  
             };
             var applier = fluid.makeChangeApplier(model);
             var notified = false;
-            applier.modelChanged.addListener("selections.linespacing", function() {
+            applier.modelChanged.addListener("selections.linespace", function() {
                 notified = true;
             });
-            applier.requestChange("selections", {lineSpacing: 1.5});
+            applier.requestChange("selections", {lineSpace: 1.5});
             jqUnit.assertTrue("Over-broad change triggers listener", notified);
         });
     });

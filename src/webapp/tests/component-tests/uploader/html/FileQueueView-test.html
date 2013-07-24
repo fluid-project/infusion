@@ -20,6 +20,7 @@
     <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
     
     <script type="text/javascript" src="../../../../components/progress/js/Progress.js"></script>
+    <script type="text/javascript" src="../../../../framework/enhancement/js/ProgressiveEnhancement.js"></script>
     <script type="text/javascript" src="../../../../components/uploader/js/Uploader.js"></script>
     <script type="text/javascript" src="../../../../components/uploader/js/FileQueue.js"></script>
     <script type="text/javascript" src="../../../../components/uploader/js/FileQueueView.js"></script>
@@ -28,6 +29,7 @@
     <!--  These are the jqUnit test js files -->
     <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
     <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
 
     <script type="text/javascript" src="../js/FileQueueViewTests.js"></script>
 </head>
@@ -40,7 +42,7 @@
     <ol id="qunit-tests"></ol>
     
     <!-- Test HTML -->
-    <div id="main">
+    <div id="qunit-fixture">
         
         <!-- The file queue -->
         <table summary="Headers for the file queue." class="flc-uploader-queue fl-uploader-data">

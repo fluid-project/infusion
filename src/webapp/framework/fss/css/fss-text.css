@@ -190,4 +190,10 @@
 .fl-highlight-green, .fl-highlight-hover-green:hover, .fl-highlight-focus-green:focus {background-color:#0F0; background-image:none;}
 .fl-highlight-blue, .fl-highlight-hover-blue:hover, .fl-highlight-focus-blue:focus {background-color:#00F; background-image:none;}
 
+/* UI Enhancer 'enhanced links' styling */
+.fl-link-enhanced {
+    font-size: 125%;
+    text-decoration: underline;
+    font-weight: bold;
+}
 

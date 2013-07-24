@@ -18,7 +18,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function (fluid) {
 
-    fluid.uploader = fluid.uploader || {};
+    fluid.registerNamespace("fluid.uploader");
     
     fluid.uploader.mimeTypeRegistry = {
         // Images

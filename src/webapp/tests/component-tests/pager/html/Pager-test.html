@@ -17,17 +17,20 @@
     <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/FluidRequests.js"></script>
     <script type="text/javascript" src="../../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
     <script type="text/javascript" src="../../../../framework/renderer/js/fluidParser.js"></script>
     <script type="text/javascript" src="../../../../framework/renderer/js/fluidRenderer.js"></script>
+    <script type="text/javascript" src="../../../../framework/renderer/js/RendererUtilities.js"></script>
     <script type="text/javascript" src="../../../../components/tooltip/js/Tooltip.js"></script>
     <script type="text/javascript" src="../../../../components/pager/js/Pager.js"></script>
 
     <!--  These are the jqUnit test js files -->
     <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
     <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
-    <script type="text/javascript" src="../../../test-core/utils/js/TestUtils.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
     <script type="text/javascript" src="../../../lib/jquery-ui/js/jquery.simulate.js"></script>        
   
     <!--  These are used for tests that have been written using this page as data -->
@@ -41,10 +44,10 @@
     <h2 id="qunit-userAgent"></h2>
     <ol id="qunit-tests"></ol>
     
-    <div id="main">
+    <div id="qunit-fixture">
         <div id="gradebook">
             <ul id="pager-top" class="flc-pager-top">
-                 <li id="top1" class="flc-pager-pageLink"><a href="#">1</a></li>
+                <li id="top1" class="flc-pager-pageLink"><a href="#">1</a></li>
                 <li id="top2" class="flc-pager-pageLink"><a href="#">2</a></li>
                 <li id="top3" class="flc-pager-pageLink"><a href="#">3</a></li>
                 <li id="previous-top" class="flc-pager-previous">&lt; previous</li>
@@ -93,7 +96,7 @@
               </tbody>
             </table>
             <ul id="pager-bottom" class="flc-pager-bottom">
-                   <li id="bottom1" class="flc-pager-pageLink"><a href="#">1</a></li>
+                <li id="bottom1" class="flc-pager-pageLink"><a href="#">1</a></li>
                 <li id="bottom2" class="flc-pager-pageLink"><a href="#">2</a></li>
                 <li id="bottom3" class="flc-pager-pageLink"><a href="#">3</a></li>
                 <li id="previous-bottom" class="flc-pager-previous">&lt; previous</li>
@@ -125,48 +128,6 @@
                 <li id="plants-next-bottom" class="flc-pager-next">next &gt;</li>
             </ul>
         </div>
-        
-        <div id="rendered">
-            <div class="flc-pager-top">
-                <ul class="flc-pager-links">
-                    <li class="flc-pager-pageLink"><a href="#">1</a></li>
-                    <li class="flc-pager-pageLink-skip">...</li>
-                </ul>
-                <ul>
-                    <li class="flc-pager-previous">&lt; previous</li>
-                    <li class="flc-pager-next">next &gt;</li>
-                </ul>
-            </div>
-
-            <table summary="Table of all students and teachers." xmlns:rsf="http://ponder.org.uk" class="flc-pager-body-template">
-                <thead>
-                    <tr rsf:id="header:">
-                        <th class="flc-pager-sort-header"><a rsf:id="category" href="#">Category</a></th>
-                        <th class="flc-pager-sort-header"><a rsf:id="breed" href="#">Breed</a></th>
-                        <th class="flc-pager-sort-header"><a rsf:id="origin" href="#">Origin</a></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr rsf:id="row:">
-                        <td><span rsf:id="category">Animal category</span></td>
-                        <td><span rsf:id="breed">Shiba</span></td>
-                        <td><span rsf:id="origin">Japan</span></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="flc-pager-bottom">
-                <ul class="flc-pager-links">
-                    <li class="flc-pager-pageLink"><a href="#">1</a></li>
-                    <li class="flc-pager-pageLink-skip">...</li>
-                </ul>
-                <ul>
-                    <li class="flc-pager-previous">&lt; previous</li>
-                    <li class="flc-pager-next">next &gt;</li>
-                </ul>
-            </div>
-        </div>
-        
     </div>
   </body>
 </html>

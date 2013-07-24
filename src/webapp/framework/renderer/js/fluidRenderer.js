@@ -59,7 +59,7 @@ fluid_1_5 = fluid_1_5 || {};
     var renderer = {};
   
     renderer.isBoundPrimitive = function (value) {
-        return fluid.isPrimitive(value) || value instanceof Array 
+        return fluid.isPrimitive(value) || fluid.isArrayable(value) 
             && (value.length === 0 || typeof (value[0]) === "string"); // jslint:ok
     };
   
@@ -81,11 +81,11 @@ fluid_1_5 = fluid_1_5 || {};
     }
   
     function fixChildren(children) {
-        if (!(children instanceof Array)) {
+        if (!fluid.isArrayable(children)) {
             var togo = [];
             for (var key in children) {
                 var value = children[key];
-                if (value instanceof Array) {
+                if (fluid.isArrayable(value)) {
                     for (var i = 0; i < value.length; ++i) {
                         var processed = processChild(value[i], key);
           //            if (processed.componentType === "UIContainer" &&
@@ -224,7 +224,7 @@ fluid_1_5 = fluid_1_5 || {};
         
                 var componentType = child.componentType;
                 if (componentType === "UISelect") {
-                    child.selection.fullID = child.fullID + "-selection";
+                    child.selection.fullID = child.fullID;
                 }
                 else if (componentType === "UIInitBlock") {
                     var call = child.functionname + '(';
@@ -266,7 +266,7 @@ fluid_1_5 = fluid_1_5 || {};
     
     renderer.invokeFluidDecorator = function(func, args, ID, num, options) {
         var that;
-        if (options.instantiator && options.parentComponent) {
+        if (options.parentComponent) {
             var parent = options.parentComponent;
             var name = renderer.IDtoComponentName(ID, num);
             // TODO: The best we can do here without GRADES is to wildly guess 
@@ -275,7 +275,7 @@ fluid_1_5 = fluid_1_5 || {};
             // This MIGHT really be a variant of fluid.invoke... only we often probably DO want the component
             // itself to be inserted into the that stack. This *ALSO* requires GRADES to resolve. A 
             // "function" is that which has no grade. The gradeless grade.
-            that = fluid.initDependent(options.parentComponent, name, options.instantiator, args);
+            that = fluid.initDependent(options.parentComponent, name, args);
         }
         else {
             that = fluid.invokeGlobalFunction(func, args);
@@ -381,9 +381,6 @@ fluid_1_5 = fluid_1_5 || {};
                             var resolved = fetchComponent(basecontainer, lump.rsfID); //jslint:ok - scoping
                             if (resolved !== null) {
                                 var resolveID = resolved.fullID;
-                                if (resolved.componentType === "UISelect") {
-                                    resolveID = resolveID + "-selection";
-                                }
                                 rewritemap[getRewriteKey(parentlump.parent, basecontainer,
                                     lumpid)] = resolveID;
                             }
@@ -648,7 +645,7 @@ fluid_1_5 = fluid_1_5 || {};
         function isSelectedValue(torender, value) {
             var selection = torender.selection;
             return selection.value && typeof(selection.value) !== "string" && typeof(selection.value.length) === "number" ? 
-                $.inArray(value, selection.value, value) !== -1 :
+                $.inArray(value, selection.value) !== -1 :
                 selection.value === value;
         }
         
@@ -659,6 +656,17 @@ fluid_1_5 = fluid_1_5 || {};
                 component = component.parent;
             }
             return component.childmap[relativeID];
+        }
+        
+        // TODO: This mechanism inefficiently handles the rare case of a target document
+        // id collision requiring a rewrite for FLUID-5048. In case it needs improving, we
+        // could hold an inverted index - however, these cases will become even rarer with FLUID-5047
+        function rewriteRewriteMap (from, to) {
+            fluid.each(rewritemap, function (value, key) {
+                if (value === from) {
+                    rewritemap[key] = to;
+                }  
+            });
         }
         
         function adjustForID(attrcopy, component, late, forceID) {
@@ -681,6 +689,9 @@ fluid_1_5 = fluid_1_5 || {};
             var baseid = attrcopy.id;
             while (renderOptions.document.getElementById(attrcopy.id) || usedIDs[attrcopy.id]) {
                 attrcopy.id = baseid + "-" + (count++); 
+            }
+            if (count !== 1) {
+                rewriteRewriteMap(baseid, attrcopy.id);
             }
             component.finalID = attrcopy.id;
             return attrcopy.id;
@@ -889,7 +900,7 @@ fluid_1_5 = fluid_1_5 || {};
                     attrcopy.value = fluid.XMLEncode(underlyingValue? underlyingValue : "true");
                     rewriteLeaf(null);
                 }
-                else if (torender.value instanceof Array) {
+                else if (fluid.isArrayable(torender.value)) {
                     // Cannot be rendered directly, must be fake
                     renderUnchanged();
                 }
@@ -922,7 +933,7 @@ fluid_1_5 = fluid_1_5 || {};
                 var ishtmlselect = tagname === "select";
                 var ismultiple = false;
           
-                if (torender.selection.value instanceof Array) {
+                if (fluid.isArrayable(torender.selection.value)) {
                     ismultiple = true;
                     if (ishtmlselect) {
                         attrcopy.multiple = "multiple";
@@ -931,11 +942,7 @@ fluid_1_5 = fluid_1_5 || {};
                 // assignSubmittingName is now the definitive trigger point for uniquifying output IDs
                 // However, if id is already assigned it is probably through attempt to decorate root select.
                 // in this case restore it.
-                var oldid = attrcopy.id;
                 assignSubmittingName(attrcopy, torender.selection);
-                if (oldid !== undefined) {
-                    attrcopy.id = oldid;
-                }
                 
                 if (ishtmlselect) {
                     // The HTML submitted value from a <select> actually corresponds
@@ -1121,7 +1128,6 @@ fluid_1_5 = fluid_1_5 || {};
           
                 adjustForID(attrcopy, torendero);
                 //decoratormanager.decorate(torendero.decorators, uselump.getTag(), attrcopy);
-          
                 
                 // ALWAYS dump the tag name, this can never be rewritten. (probably?!)
                 openTag();

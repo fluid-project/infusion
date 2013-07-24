@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>UI Options complete tests runner</title>
+
+    <link rel="stylesheet" href="../../lib/qunit/css/qunit.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="../../lib/qunit/addons/composite/qunit-composite.css">
+    <script src="../../lib/qunit/js/qunit.js"></script>
+    <script src="../../lib/qunit/addons/composite/qunit-composite.js"></script>
+<!-- Stupid bloody escaping rules: 
+    find . -name "*-test.html" | awk '{print "\""$1"\","}' -->
+    <script>
+    QUnit.testSuites([
+        "./html/CSSGenerator-test.html",
+        "./html/Enactors-test.html",
+        "./html/FatPanelUIOptions-test.html",
+        "./html/FullNoPreviewUIOptions-test.html",
+        "./html/FullPreviewUIOptions-test.html",
+        "./html/I18n-test.html",
+        "./html/ModelRelay-test.html",
+        "./html/PageEnhancer-test.html",
+        "./html/Panels-test.html",
+        "./html/SlidingPanel-test.html",
+        "./html/Store-test.html",
+        "./html/TextfieldSlider-test.html",
+        "./html/UIEnhancer-test.html",
+        "./html/UIOptions-test.html",
+        "./html/URLUtilities-test.html"
+    ]);
+    </script>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture">
+</div>
+</body>
+</html>

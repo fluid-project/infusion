@@ -1,11 +1,27 @@
 This directory contains tests that are run manually. 
 
-UI Options:
+UI Options, Fat Panel:
     To run this test:
         1. open SomeKindOfNews.html in a browser
         2. activate the "Show Display Preferences" button in the top right corner of the screen
         3. experiment with the various UI Options settings and verify that the window
-           contents are styles correctly.
+           contents are styled correctly.
+
+UI Options, Full with Preview:
+    To run this test:
+        1. open uiOptionsFullWithPreview.html in a browser
+        2. experiment with the various UI Options settings and verify that the preview window
+           contents are styled correctly.
+        3. use the "save and apply" button to apply the preview styles to UI Options
+        4. use the "reset" button to reset the styles
+
+UI Options, Full without Preview:
+    To run this test:
+        1. open uiOptionsFullWithoutPreview.html in a browser
+        2. experiment with the various UI Options settings
+        3. use the "save and apply" button to apply the styles to UI Options and verify that the
+           contents are styled correctly.
+        4. use the "reset and apply" button to reset the styles
 
 Dropdown
     To run this test:

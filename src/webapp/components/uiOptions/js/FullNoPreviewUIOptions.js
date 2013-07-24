@@ -24,33 +24,24 @@ var fluid_1_5 = fluid_1_5 || {};
      ******************************/
 
     fluid.defaults("fluid.uiOptions.fullNoPreview", {
-        gradeNames: ["fluid.uiOptions.inline"],
+        gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         container: "{fullNoPreview}.container",
-        derivedDefaults: {
-            templateLoader: {
-                options: {
-                    templates: {
-                        uiOptions: "%prefix/FullNoPreviewUIOptions.html"
-                    }
+        templateLoader: {
+            options: {
+                templates: {
+                    uiOptions: "%prefix/FullNoPreviewUIOptions.html"
                 }
-            },
-            uiOptions: {
-                options: {
-                    components: {
-                        preview: {
-                            type: "fluid.emptySubcomponent"
-                        }
-                    },
-                    listeners: {
-                        onReset: function (uiOptions) {
-                            uiOptions.save();
-                        }
+            }
+        },
+        uiOptions: {
+            options: {
+                listeners: {
+                    onReset: function (uiOptions) {
+                        uiOptions.save();
                     }
                 }
             }
         }
     });
-    
-    fluid.uiOptions.inline.makeCreator("fluid.uiOptions.fullNoPreview", fluid.identity); 
     
 })(jQuery, fluid_1_5);

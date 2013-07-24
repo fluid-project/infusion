@@ -21,7 +21,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         fluid.registerNamespace("fluid.tests.uploader");
         
-        var compatTests = new jqUnit.TestCase("Uploader Compatibility Tests");
+        fluid.enhance.forgetAll();
+
+        // TODO: Do this manually so that progressiveEnhancer does not forget it each time - need enhancer groupings
+                
+        // Choose html5 configuration for all tests since it will cause resolution of multiFileUpload
+        // and not complain about absence of SWF
+        fluid.tests.uploader.commonTags = {
+            "fluid.browser.supportsBinaryXHR": true,
+            "fluid.browser.supportsFormData": true
+        };
+        
+        fluid.setLogging(true);
+        fluid.setDemandLogging(true);
+        
+        jqUnit.module("Uploader Compatibility Tests");
         
         /****************************************
          * Infusion 1.2-1.3 Compatibility Tests *
@@ -70,36 +84,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
         
-        // Choose html5 configuration for all tests since it will cause resolution of multiFileUpload
-        // and not complain about absence of SWF
-        fluid.staticEnvironment.uploaderConfig = fluid.typeTag("fluid.browser.supportsBinaryXHR");
         
         fluid.defaults("fluid.tests.uploader.parent", {
             gradeNames: ["fluid.littleComponent", "autoInit"],
+            distributeOptions: {
+                source: "{that}.options",
+                removeSource: true,
+                exclusions: ["components.uploader"],
+                target: "{that > uploader}.options"
+            },
             components: {
-                uploaderContext: {
-                    type: "fluid.typeFount",
-                    options: {
-                        targetTypeName: "fluid.uploader.html5"
-                    }
-                },
                 uploader: {
                     type: "fluid.uploader",
                     container: ".flc-uploader",
-                    options: "{parent}.options.uploaderOptions"
                 }
             }
         });
 
         fluid.tests.uploader.noIoC = function (options, rules) {
-            return fluid.uploader(".flc-uploader", options);
+            var transRec = (fluid.isArrayable(rules)? fluid.transformMany : fluid.transformOne) (rules);
+            return fluid.uploader(".flc-uploader", $.extend(true, options, transRec));
         };
         
         fluid.tests.uploader.ioc = function (options) {
-            var parent = fluid.tests.uploader.parent({
-                uploaderOptions: options
-            });
-            return parent.uploader;
+            var parent = fluid.tests.uploader.parent(options);
+            return parent.uploader.uploaderImpl;
         };
         
         var uploaderConfigs = [{label: "no IoC", uploader: fluid.tests.uploader.noIoC}, {label: "ioc", uploader: fluid.tests.uploader.ioc}];
@@ -132,27 +141,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }, fluid.defaults("fluid.uploader.multiFileUploader"), uploader.options);
         };
         
-        var testUploaderConfigs = function (rules, optionsTypes, checkFn, msg) {
+        var testUploaderConfigs = function (rules, tags, optionsTypes, checkFn, msg) {
             fluid.each(uploaderConfigs, function (uploaderConfig) {
                 fluid.each(optionsTypes, function (optionsType) {
-                    compatTests.test(msg + " " + uploaderConfig.label + " - " + optionsType.label, function () {
-                        var uploader = uploaderConfig.uploader.apply(null, [optionsType.options, rules]);
+                    jqUnit.test(msg + " " + uploaderConfig.label + " - " + optionsType.label, function () {
+                        fluid.enhance.check(tags);
+                        fluid.enhance.check(fluid.tests.uploader.commonTags);
+                        var uploader = uploaderConfig.uploader.apply(null, [fluid.copy(optionsType.options), rules]);
                         checkFn(uploader);
+                        fluid.enhance.forgetAll();
                     });
                 });
             });
         };
         
-        testUploaderConfigs(fluid.compat.fluid_1_2.uploader.optionsRules, [
-            {
-                label: "old options", 
-                options: oldOptions
-            }, 
-            {
-                label: "modern options", 
-                options: modernOptions
-            }
-        ], checkUploaderOptions, "Uploader 1.2->1.3 options backwards compatibility;");
+        testUploaderConfigs(fluid.compat.fluid_1_2.uploader.optionsRules,
+            {"fluid.uploader.fluid_1_2": true},
+            [
+                {
+                    label: "old options", 
+                    options: oldOptions
+                }, 
+                {
+                    label: "modern options", 
+                    options: modernOptions
+                }
+            ], 
+        checkUploaderOptions, "Uploader 1.2->1.3 options backwards compatibility;");
 
 
         /****************************************
@@ -167,31 +182,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 modernImageTypes, uploader.options.queueSettings.fileTypes);
         };
 
-        testUploaderConfigs(fluid.compat.fluid_1_3.uploader.optionsRules, [
-            {
-                label: "1.3-era options", 
-                options: {
-                    queueSettings: {
-                        fileTypes: oldImageTypes
+        testUploaderConfigs(fluid.compat.fluid_1_3.uploader.optionsRules,
+            {"fluid.uploader.fluid_1_3": true}, 
+            [
+                {
+                    label: "1.3-era options", 
+                    options: {
+                        queueSettings: {
+                            fileTypes: oldImageTypes
+                        }
+                    }
+                },
+                {
+                    label: "modern 1.4 options", 
+                    options: {
+                        queueSettings: {
+                            fileTypes: modernImageTypes
+                        }
                     }
                 }
-            }, 
-            {
-                label: "modern 1.4 options", 
-                options: {
-                    queueSettings: {
-                        fileTypes: modernImageTypes
-                    }
-                }
-            }
-        ], checkUploaderFileTypes, "Uploader 1.3->1.4 options backwards compatibility;");
+            ], 
+        checkUploaderFileTypes, "Uploader 1.3->1.4 options backwards compatibility;");
         
         var rules1_2To1_4 = [
             fluid.compat.fluid_1_2.uploader.optionsRules, 
             fluid.compat.fluid_1_3.uploader.optionsRules
         ];
         
-        testUploaderConfigs(rules1_2To1_4, [
+        testUploaderConfigs(rules1_2To1_4,
+            {"fluid.uploader.fluid_1_2": true,
+             "fluid.uploader.fluid_1_3": true
+            }, 
+            [
             {
                 label: "1.2-era options",
                 options: {

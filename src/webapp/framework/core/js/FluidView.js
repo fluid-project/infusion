@@ -24,15 +24,28 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
     
     fluid.defaults("fluid.viewComponent", {
-        gradeNames: ["fluid.littleComponent", "fluid.modelComponent", "fluid.eventedComponent"],
+        gradeNames: ["fluid.littleComponent", "fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
         initFunction: "fluid.initView",
         argumentMap: {
             container: 0,
             options: 1
+        },
+        members: { // Used to allow early access to DOM binder via IoC, but to also avoid triggering evaluation of selectors
+            dom: {
+                expander: {
+                    funcName: "fluid.initDomBinder",
+                    args: ["{that}", "{that}.options.selectors"]
+                }
+            }
         }
     });
 
-
+    // unsupported, NON-API function
+    fluid.dumpSelector = function (selectable) {
+        return typeof (selectable) === "string" ? selectable : 
+            selectable.selector ? selectable.selector : "";
+    };
+    
     // unsupported, NON-API function
     // NOTE: this function represents a temporary strategy until we have more integrated IoC debugging.
     // It preserves the current framework behaviour for the 1.4 release, but provides a more informative
@@ -42,8 +55,11 @@ var fluid_1_5 = fluid_1_5 || {};
         if (!that && fluid.hasGrade(options, "fluid.viewComponent")) {
             var container = fluid.wrap(args[1]);
             var message1 = "Instantiation of autoInit component with type " + componentName + " failed, since ";
-            if (container.length === 0) {
-                fluid.fail(message1 + "selector \"", args[1], "\" did not match any markup in the document");
+            if (!container) {
+                fluid.fail(message1 + " container argument is empty");
+            }
+            else if (container.length === 0) {
+                fluid.fail(message1 + "selector \"", fluid.dumpSelector(args[1]), "\" did not match any markup in the document");
             } else {
                 fluid.fail(message1 + " component creator function did not return a value");
             }  
@@ -52,8 +68,12 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.checkTryCatchParameter = function () {
         var location = window.location || { search: "", protocol: "file:" };
-        var GETParams = location.search.slice(1).split('&');
-        return fluid.contains(GETParams, "notrycatch");
+        var GETparams = location.search.slice(1).split('&');
+        return fluid.find(GETparams, function (param) {
+            if (param.indexOf("notrycatch") === 0) {
+                return true;
+            }
+        }) === true;
     };
     
     fluid.notrycatch = fluid.checkTryCatchParameter();
@@ -97,7 +117,6 @@ var fluid_1_5 = fluid_1_5 || {};
             return null;
         }
         
-        // Throw an exception if we've got more or less than one element.
         if (!container || !container.jquery || container.length !== 1) {
             if (typeof (containerSpec) !== "string") {
                 containerSpec = container.selector;
@@ -120,7 +139,8 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} selectors a collection of named jQuery selectors
      */
     fluid.createDomBinder = function (container, selectors) {
-        var cache = {}, that = {};
+        // don't put on a typename to avoid confusing primitive visitComponentChildren 
+        var cache = {}, that = {id: fluid.allocateGuid()};
         var userJQuery = container.constructor;
         
         function cacheKey(name, thisContainer) {
@@ -218,15 +238,22 @@ var fluid_1_5 = fluid_1_5 || {};
         if (!container) {
             return null;
         }
-        var that = fluid.initLittleComponent(componentName, userOptions, localOptions || {gradeNames: ["fluid.viewComponent"]});
-        var userJQuery = that.options.jQuery; // Do it a second time to correct for jQuery injection
-        if (userJQuery) {
-            container = fluid.container(containerSpec, true, userJQuery);
+        // Need to ensure container is set early, without relying on an IoC mechanism - rethink this with asynchrony
+        var receiver = function (that, options, strategy) { 
+            that.container = container;
+        };
+        var that = fluid.initLittleComponent(componentName, userOptions, localOptions || {gradeNames: ["fluid.viewComponent"]}, receiver);
+
+        if (!that.dom) {
+            fluid.initDomBinder(that);
         }
+        // TODO: cannot afford a mutable container - put this into proper workflow
+        var userJQuery = that.options.jQuery; // Do it a second time to correct for jQuery injection
+        // if (userJQuery) {
+        //    container = fluid.container(containerSpec, true, userJQuery);
+        // }
         fluid.log("Constructing view component " + componentName + " with container " + container.constructor.expando + 
             (userJQuery ? " user jQuery " + userJQuery.expando : "") + " env: " + $.expando);
-        that.container = container;
-        fluid.initDomBinder(that);
 
         return that;
     };
@@ -236,9 +263,10 @@ var fluid_1_5 = fluid_1_5 || {};
      * 
      * @param {Object} that the component instance to attach the new DOM Binder to
      */
-    fluid.initDomBinder = function (that) {
-        that.dom = fluid.createDomBinder(that.container, that.options.selectors);
-        that.locate = that.dom.locate;      
+    fluid.initDomBinder = function (that, selectors) {
+        that.dom = fluid.createDomBinder(that.container, selectors || that.options.selectors || {});
+        that.locate = that.dom.locate;
+        return that.dom;
     };
 
     // DOM Utilities.
@@ -495,6 +523,14 @@ var fluid_1_5 = fluid_1_5 || {};
         }); 
     }; 
     
+    /** Provides an abstraction for determing the current time.
+     * This is to provide a fix for FLUID-4762, where IE6 - IE8 
+     * do not support Date.now().
+     */
+    fluid.now = function () {
+        return Date.now ? Date.now() : (new Date()).getTime();
+    };
+    
     /** Sets an interation on a target control, which morally manages a "blur" for
      * a possibly composite region.
      * A timed blur listener is set on the control, which waits for a short period of
@@ -512,7 +548,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that.lastCancel = 0;
         that.canceller = function (event) {
             fluid.log("Cancellation through " + event.type + " on " + fluid.dumpEl(event.target)); 
-            that.lastCancel = Date.now();
+            that.lastCancel = fluid.now();
             that.blurPending = false;
         };
         that.noteProceeded = function () {
@@ -541,7 +577,7 @@ var fluid_1_5 = fluid_1_5 || {};
         if (!that.options.cancelByDefault) {
             $(control).bind("focusout", function (event) {
                 fluid.log("Starting blur timer for element " + fluid.dumpEl(event.target));
-                var now = Date.now();
+                var now = fluid.now();
                 fluid.log("back delay: " + (now - that.lastCancel));
                 if (now - that.lastCancel > that.options.backDelay) {
                     that.blurPending = true;

@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-reset-global.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-base-global.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-text.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/fss/fss-theme-bw-uio.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/fss/fss-theme-wb-uio.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/fss/fss-theme-by-uio.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/fss/fss-theme-yb-uio.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/fss/fss-text-uio.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-by/by.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-yb/yb.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-bw/bw.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-wb/wb.css" />
+
+        <!-- Component styles -->
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/UIOptions.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/FullUIOptions.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/FullPreviewUIOptions.css" />
+
+        <link rel="stylesheet" type="text/css" href="../css/UIOptionsFullPage.css" /> <!-- Demo style -->
+
+        <title>UI Options: Full Page, With Preview</title>
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.mouse.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/plugins/touchPunch/js/jquery.ui.touch-punch.js"></script>
+        <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
+
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/RendererUtilities.js"></script>
+
+        <script type="text/javascript" src="../../../components/uiOptions/js/Store.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/i18n.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/ModelRelay.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/Enactors.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/TextfieldSlider.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/Panels.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/FullPreviewUIOptions.js"></script>
+        <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
+
+        <script type="text/javascript" src="../js/uiOptionsFullPage.js"></script>
+    </head>
+
+    <body>
+        <!-- The page-wide UI Enhancer needs to be initialized right away -->
+        <script type="text/javascript">
+            $(document).ready(function () {
+                demo.initSettingsStore();
+                demo.initPageEnhancer();
+                demo.initFullWithPreview("#myUIOptions", {
+                    preview: {
+                        options: {
+                            templateUrl: "uiOptionsPreview.html"
+                        }
+                    }
+                });
+            });
+        </script>
+
+        <div class="content">
+            <span class="fl-hidden">
+                <div class="flc-toc-tocContainer">
+                </div>
+            </span>
+    
+            <h1>User Interface Options</h1>
+            <div id="myUIOptions"></div>
+        </div>
+        
+    </body>
+</html>
+

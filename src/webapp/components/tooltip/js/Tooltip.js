@@ -13,107 +13,121 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*global fluid_1_5:true, jQuery*/
 
 // JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, indent: 4 */
 
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    fluid.registerNamespace("fluid.tooltip");
     
-    var createContentFunc = function (content) {
+    fluid.tooltip.createContentFunc = function (content) {
         return typeof content === "function" ? content : function () {
             return content;
         };
     };
-
-    var setup = function (that) {
-        that.container.tooltip({
-            content: createContentFunc(that.options.content),
-            position: that.options.position,
-            items: that.options.items,
-            open: function (event) {
-                var tt = $(event.target).tooltip("widget");
-                tt.stop(false, true);
-                tt.hide();
-                if (that.options.delay) {
-                    tt.delay(that.options.delay).fadeIn("default", that.events.afterOpen.fire());
-                } else {
-                    tt.show();
-                    that.events.afterOpen.fire();
-                }
-            },
-            close: function (event) {
-                var tt = $(event.target).tooltip("widget");
-                tt.stop(false, true);
-                tt.hide();
-                tt.clearQueue();
-                that.events.afterClose.fire();
-            } 
-        });
-        
-        that.elm = that.container.tooltip("widget");
-        
-        that.elm.addClass(that.options.styles.tooltip);
+    
+    fluid.tooltip.makeOpenHandler = function (that) {
+        return function (event) {
+            var tt = $(event.target).tooltip("widget");
+            tt.stop(false, true);
+            tt.hide();
+            if (that.options.delay) {
+                tt.delay(that.options.delay).fadeIn("default", that.events.afterOpen.fire());
+            } else {
+                tt.show();
+                that.events.afterOpen.fire();
+            }
+        };
+    };
+    
+    fluid.tooltip.makeCloseHandler = function (that) {
+        return function (event) {
+            var tt = $(event.target).tooltip("widget");
+            tt.stop(false, true);
+            tt.hide();
+            tt.clearQueue();
+            that.events.afterClose.fire();
+        };
     };
 
-    fluid.tooltip = function (container, options) {
-        var that = fluid.initView("fluid.tooltip", container, options);
-        
-        /**
-         * Updates the contents displayed in the tooltip
-         * 
-         * @param {Object} content, the content to be displayed in the tooltip
-         */
-        that.updateContent = function (content) {
-            that.container.tooltip("option", "content", createContentFunc(content));
-        };
-        
-        /**
-         * Destroys the underlying jquery ui tooltip
-         */
-        that.destroy = function () {
-            that.container.tooltip("destroy");
-        };
-        
-        /**
-         * Manually displays the tooltip
-         */
-        that.open = function () {
-            that.container.tooltip("open");
-        };
-        
-        /**
-         * Manually hides the tooltip
-         */
-        that.close = function () {
-            that.container.tooltip("close");
-        };
-        
-        setup(that);
-        
-        return that;
+    fluid.tooltip.setup = function (that) {
+        that.container.tooltip({
+            content: fluid.tooltip.createContentFunc(that.options.content),
+            position: that.options.position,
+            items: that.options.items,
+            open: fluid.tooltip.makeOpenHandler(that),
+            close: fluid.tooltip.makeCloseHandler(that)
+        });
+        that.elm = that.container.tooltip("widget");
+        that.elm.addClass(that.options.styles.tooltip);
+    };
+    
+    fluid.tooltip.updateContent = function (that, content) {
+        that.container.tooltip("option", "content", fluid.tooltip.createContentFunc(content));
+        // FLUID-4780:
+        // The following line is a workaround for an issue we found in the VideoPlayer (FLUID-4743).
+        // jQuery UI has a fix for it: http://bugs.jqueryui.com/ticket/8544
+        // When we upgrade jQuery UI, we should clean out this workaround
+        that.container.data("tooltip").tooltip.html(content);
     };
     
     fluid.defaults("fluid.tooltip", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        invokers: {
+          /**
+           * Destroys the underlying jquery ui tooltip
+           */
+            // NB - can't name this "destroy" due to collision with new fabricated "destroy" method - however API is
+            // preserved since that method forwards to this one via listener
+            doDestroy: {
+                "this": "{that}.container",
+                method: "tooltip",
+                args: "destroy"
+            },
+          /**
+           * Manually displays the tooltip
+           */
+            open: {
+                "this": "{that}.container",
+                method: "tooltip",
+                args: "open"
+            },
+          /**
+           * Manually hides the tooltip
+           */
+            close: {
+                "this": "{that}.container",
+                method: "tooltip",
+                args: "close"
+            },
+          /**
+           * Updates the contents displayed in the tooltip
+           * 
+           * @param {Object} content, the content to be displayed in the tooltip
+           */
+            updateContent: {
+                funcName: "fluid.tooltip.updateContent",
+                args: ["{that}", "{arguments}.0"]
+            }
+        },
         styles: {
             tooltip: ""
         },
-        
         events: {
             afterOpen: null,
             afterClose: null  
         },
-        
+        listeners: {
+            onCreate: "fluid.tooltip.setup",
+            onDestroy: "{that}.doDestroy"
+        },
         content: "",
-        
         position: {
             my: "left top",
             at: "left bottom",
             offset: "0 5"
         },
-        
         items: "*",
-        
         delay: 300
     });
 

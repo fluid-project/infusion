@@ -24,49 +24,36 @@ fluid_1_5 = fluid_1_5 || {};
     if (!fluid.renderer) {
         fluid.fail("fluidRenderer.js is a necessary dependency of RendererUtilities");
     }
-    
-    /** Returns an array of size count, filled with increasing integers, 
-     *  starting at 0 or at the index specified by first. 
-     */
-    
-    fluid.iota = function (count, first) {
-        first = first || 0;
-        var togo = [];
-        for (var i = 0; i < count; ++i) {
-            togo[togo.length] = first++;
-        }
-        return togo;
-    };
 
     // TODO: API status of these 3 functions is uncertain. So far, they have never
-    // appeared in documentation. API change required for Infusion 1.5 to include instantiator.
-    // This is inconvenient, but in the future, all component discovery will require this.   
-    fluid.renderer.visitDecorators = function(that, visitor, instantiator) {
+    // appeared in documentation.
+    fluid.renderer.visitDecorators = function(that, visitor) {
         fluid.visitComponentChildren(that, function(component, name) {
             if (name.indexOf(fluid.renderer.decoratorComponentPrefix) === 0) {
                 visitor(component, name);
             }
-        }, {flat: true, instantiator: instantiator});  
+        }, {flat: true});  
     };
 
-    fluid.renderer.clearDecorators = function(instantiator, that) {
+    fluid.renderer.clearDecorators = function(that) {
+        var instantiator = fluid.getInstantiator(that);
         fluid.renderer.visitDecorators(that, function(component, name) {
             instantiator.clearComponent(that, name);
-        }, instantiator);
+        });
     };
     
-    fluid.renderer.getDecoratorComponents = function(that, instantiator) {
+    fluid.renderer.getDecoratorComponents = function(that) {
         var togo = {};
         fluid.renderer.visitDecorators(that, function(component, name) {
             togo[name] = component;
-        }, instantiator);
+        });
         return togo;
     };
 
     // Utilities for coordinating options in renderer components - this code is all pretty
     // dreadful and needs to be organised as a suitable set of defaults and policies
     fluid.renderer.modeliseOptions = function (options, defaults, baseOptions) {
-        return $.extend({}, defaults, options, fluid.filterKeys(baseOptions, ["model", "applier"]));
+        return $.extend({}, defaults, fluid.filterKeys(baseOptions, ["model", "applier"]), options);
     };
     fluid.renderer.reverseMerge = function (target, source, names) {
         names = fluid.makeArray(names);
@@ -80,11 +67,12 @@ fluid_1_5 = fluid_1_5 || {};
     /** "Renderer component" infrastructure **/
   // TODO: fix this up with IoC and improved handling of templateSource as well as better 
   // options layout (model appears in both rOpts and eOpts)
-    fluid.renderer.createRendererSubcomponent = function (container, selectors, options, baseObject, fossils) {
+    fluid.renderer.createRendererSubcomponent = function (container, selectors, options, parentThat, fossils) {
         options = options || {};
         var source = options.templateSource ? options.templateSource : {node: $(container)};
-        var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, baseObject);
+        var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, parentThat);
         rendererOptions.fossils = fossils || {};
+        rendererOptions.parentComponent = parentThat;
         if (container.jquery) {
             var cascadeOptions = {
                 document: container[0].ownerDocument,
@@ -93,39 +81,52 @@ fluid_1_5 = fluid_1_5 || {};
             fluid.renderer.reverseMerge(rendererOptions, cascadeOptions, fluid.keys(cascadeOptions));
         }
         
-        var expanderOptions = fluid.renderer.modeliseOptions(options.expanderOptions, {ELstyle: "${}"}, baseObject);
+        var expanderOptions = fluid.renderer.modeliseOptions(options.expanderOptions, {ELstyle: "${}"}, parentThat);
         fluid.renderer.reverseMerge(expanderOptions, options, ["resolverGetConfig", "resolverSetConfig"]);
         var that = {};
         if (!options.noexpand) {
-            that.expander = fluid.renderer.makeProtoExpander(expanderOptions);
+            that.expander = fluid.renderer.makeProtoExpander(expanderOptions, parentThat);
         }
         
         var templates = null;
         that.render = function (tree) {
             var cutpointFn = options.cutpointGenerator || "fluid.renderer.selectorsToCutpoints";
             rendererOptions.cutpoints = rendererOptions.cutpoints || fluid.invokeGlobalFunction(cutpointFn, [selectors, options]);
-            container = typeof(container) === "function" ? container() : $(container);
+            var renderTarget = $(options.renderTarget ? options.renderTarget : container);
               
             if (templates) {
                 fluid.clear(rendererOptions.fossils);
-                fluid.reRender(templates, container, tree, rendererOptions);
+                fluid.reRender(templates, renderTarget, tree, rendererOptions);
             } 
             else {
                 if (typeof(source) === "function") { // TODO: make a better attempt than this at asynchrony
                     source = source();  
                 }
-                templates = fluid.render(source, container, tree, rendererOptions);
+                templates = fluid.render(source, renderTarget, tree, rendererOptions);
             }
         };
         return that;
     };
     
     fluid.defaults("fluid.rendererComponent", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         initFunction: "fluid.initRendererComponent",
         mergePolicy: {
+            "rendererOptions.idMap": "nomerge",
+            "rendererOptions.model": "preserve",
             protoTree: "noexpand, replace",
-            parentBundle: "nomerge"
+            parentBundle: "nomerge",
+            "changeApplierOptions.resolverSetConfig": "resolverSetConfig"
+        },
+        invokers: {
+            refreshView: {
+                funcName: "fluid.rendererComponent.refreshView",
+                args: "{that}"
+            },
+            produceTree: {
+                funcName: "fluid.rendererComponent.produceTree",
+                args: "{that}"  
+            }
         },
         rendererOptions: {
             autoBind: true
@@ -134,22 +135,49 @@ fluid_1_5 = fluid_1_5 || {};
             prepareModelForRender: null,
             onRenderTree: null,
             afterRender: null,
-            produceTree: "unicast"
+        },
+        listeners: {
+            onCreate: {
+                funcName: "fluid.rendererComponent.renderOnInit",
+                args: ["{that}.options.renderOnInit", "{that}"],
+                priority: "last"
+            }
         }
     });
+    
+    fluid.rendererComponent.renderOnInit = function (renderOnInit, that) {
+        if (renderOnInit) {
+            that.refreshView();
+        }
+    };
+    
+    fluid.rendererComponent.refreshView = function (that) {
+        fluid.renderer.clearDecorators(that);
+        that.events.prepareModelForRender.fire(that.model, that.applier, that);
+        var tree = that.produceTree(that);
+        if (that.renderer.expander) {
+            tree = that.renderer.expander(tree);
+        }
+        that.events.onRenderTree.fire(that, tree);
+        that.renderer.render(tree);
+        that.events.afterRender.fire(that);     
+    };
+    
+    fluid.rendererComponent.produceTree = function (that) {
+       var produceTreeOption = that.options.produceTree;
+       return produceTreeOption ? 
+           (typeof(produceTreeOption) === "string" ? fluid.getGlobalValue(produceTreeOption) : produceTreeOption) (that) :
+           that.options.protoTree;   
+    };
 
     fluid.initRendererComponent = function (componentName, container, options) {
         var that = fluid.initView(componentName, container, options, {gradeNames: ["fluid.rendererComponent"]});
+        fluid.diagnoseFailedView(componentName, that, fluid.defaults(componentName), arguments);
         
         fluid.fetchResources(that.options.resources); // TODO: deal with asynchrony
         
         var rendererOptions = fluid.renderer.modeliseOptions(that.options.rendererOptions, null, that);
-        if (!that.options.noUpgradeDecorators) {
-            fluid.withInstantiator(that, function(currentInst) {
-                rendererOptions.instantiator = currentInst;
-                rendererOptions.parentComponent = that;
-            });
-        }
+
         var messageResolver;
         if (!rendererOptions.messageSource && that.options.strings) {
             messageResolver = fluid.messageResolver({
@@ -160,9 +188,9 @@ fluid_1_5 = fluid_1_5 || {};
             rendererOptions.messageSource = {type: "resolver", resolver: messageResolver}; 
         }
         fluid.renderer.reverseMerge(rendererOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
+        that.rendererOptions = rendererOptions;
 
-
-        var rendererFnOptions = $.extend({}, that.options.rendererFnOptions, { 
+        var rendererFnOptions = $.extend({}, that.options.rendererFnOptions, {
             rendererOptions: rendererOptions,
             repeatingSelectors: that.options.repeatingSelectors,
             selectorsToIgnore: that.options.selectorsToIgnore,
@@ -175,14 +203,6 @@ fluid_1_5 = fluid_1_5 || {};
             rendererFnOptions.templateSource = function () { // TODO: don't obliterate, multitemplates, etc.
                 return that.options.resources.template.resourceText;
             };
-        }
-        var produceTree = that.events.produceTree;
-        produceTree.addListener(function() {
-            return that.options.protoTree;
-        });
-        
-        if (that.options.produceTree) {
-            produceTree.addListener(that.options.produceTree);
         }
 
         fluid.renderer.reverseMerge(rendererFnOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
@@ -203,25 +223,8 @@ fluid_1_5 = fluid_1_5 || {};
         if (messageResolver) {
             that.messageResolver = messageResolver;
         }
+        renderer.refreshView = fluid.getForComponent(that, "refreshView"); // Stopgap implementation for FLUID-4334
 
-        that.refreshView = renderer.refreshView = function () {
-            if (rendererOptions.instantiator && rendererOptions.parentComponent) {
-                fluid.renderer.clearDecorators(rendererOptions.instantiator, rendererOptions.parentComponent);
-            }
-            that.events.prepareModelForRender.fire(that.model, that.applier, that);
-            var tree = produceTree.fire(that);
-            if (that.renderer.expander) {
-                tree = that.renderer.expander(tree);
-            }
-            that.events.onRenderTree.fire(that, tree);
-            that.renderer.render(tree);
-            that.events.afterRender.fire(that);
-        };
-        
-        if (that.options.renderOnInit) {
-            that.refreshView();
-        }
-        
         return that;
     };
     
@@ -395,6 +398,15 @@ fluid_1_5 = fluid_1_5 || {};
         }
         return parsed;
     };
+    
+    // A forgiving variation of "makeStackFetcher" that returns nothing on failing to resolve an IoC reference, 
+    // in keeping with current protoComponent semantics. Note to self: abolish protoComponents
+    fluid.renderer.makeExternalFetcher = function (contextThat) {
+        return function (parsed) {
+            var foundComponent = fluid.resolveContext(parsed.context, contextThat);
+            return foundComponent ? fluid.getForComponent(foundComponent, parsed.path) : undefined;
+        };
+    };
 
     /** Create a "protoComponent expander" with the supplied set of options.
      * The returned value will be a function which accepts a "protoComponent tree"
@@ -416,22 +428,25 @@ fluid_1_5 = fluid_1_5 || {};
      * recognised bracketing any other EL expression.
      */
 
-    fluid.renderer.makeProtoExpander = function (expandOptions) {
+    fluid.renderer.makeProtoExpander = function (expandOptions, parentThat) {
       // shallow copy of options - cheaply avoid destroying model, and all others are primitive
         var options = $.extend({
             ELstyle: "${}"
         }, expandOptions); // shallow copy of options
+        if (parentThat) {
+            options.externalFetcher = fluid.renderer.makeExternalFetcher(parentThat);
+        }
         var threadLocal; // rebound on every expansion at entry point
         
         function fetchEL(string) {
             var env = threadLocal();
-            return fluid.extractContextualPath(string, options, env);
+            return fluid.extractContextualPath(string, options, env, options.externalFetcher);
         }
          
         var IDescape = options.IDescape || "\\";
         
         var expandLight = function (source) {
-            return fluid.resolveEnvironment(source, options); 
+            return fluid.expand(source, options); 
         };
 
         var expandBound = function (value, concrete) {
@@ -608,7 +623,7 @@ fluid_1_5 = fluid_1_5 || {};
             threadLocal = fluid.threadLocal(function() {
                 return $.extend({}, options.envAdd);
             });
-            options.fetcher = fluid.makeEnvironmentFetcher(options.model, fluid.transformContextPath, threadLocal);
+            options.fetcher = fluid.makeEnvironmentFetcher(options.model, fluid.transformContextPath, threadLocal, options.externalFetcher);
             expandConfig.threadLocal = threadLocal;
             return expandEntry(entry);
         };

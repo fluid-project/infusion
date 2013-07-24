@@ -12,11 +12,13 @@
         <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../../components/progress/js/Progress.js"></script>
         
         <!--  These are the jqUnit test js files -->
         <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
         <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
 
         <!--  These are tests that have been written using this page as data -->
         <script type="text/javascript" src="../js/ProgressTests.js"></script>
@@ -65,12 +67,9 @@
     <div id="qunit-testrunner-toolbar"></div>
     <h2 id="qunit-userAgent"></h2>
     <ol id="qunit-tests"></ol>
-    
-    <!-- short explanation for the curious -->
-    
 
     <!-- Test HTML -->
-    <div id="main">
+    <div id="qunit-fixture">
      <h4>These tests use a convenience of a progress bar with a width of 100 pixels so that the percent of progress will always be equal to the number of pixels. eg. 50% = 50 pixels.</h4>
        <div id="progress-container">
             <div class="flc-progress">

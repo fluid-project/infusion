@@ -42,7 +42,9 @@ var fluid = fluid || {};
                         "border-top-color",
                         "border-left-color",
                         "border-right-color",
-                        "font-family"
+                        "font-family",
+                        "font-weight",
+                        "text-decoration"
                     ]
                 }
             },
