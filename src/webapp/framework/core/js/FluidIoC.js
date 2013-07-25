@@ -1685,7 +1685,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // unsupported, non-API function
     fluid.extractELWithContext = function (string, options) {
         var EL = fluid.extractEL(string, options);
-        if (EL && EL.charAt(0) === "{") {
+        if (EL && EL.charAt(0) === "{" && EL.indexOf("}") > 0) {
             return fluid.parseContextReference(EL);
         }
         return EL? {path: EL} : EL;
