@@ -23,7 +23,7 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
     fluid.registerNamespace("fluid.pagedTable");
 
-    // cf. ancient SVN-era version in bitbucket at https://bitbucket.org/fluid/infusion/src/adf319d9b279/branches/FLUID-2881/src/components/pager/js/PagedTable.js
+    // cf. ancient SVN-era version in bitbucket at https://bitbucket.org/fluid/infusion/src/adf319d9b279/branches/FLUID-2881/src/webapp/components/pager/js/PagedTable.js
 
     fluid.defaults("fluid.pagedTable.rangeAnnotator", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],

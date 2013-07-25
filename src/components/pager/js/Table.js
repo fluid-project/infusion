@@ -22,7 +22,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
-    // cf. ancient SVN-era version in bitbucket at https://bitbucket.org/fluid/infusion/src/adf319d9b279/branches/FLUID-2881/src/components/pager/js/Table.js
+    // cf. ancient SVN-era version in bitbucket at https://bitbucket.org/fluid/infusion/src/adf319d9b279/branches/FLUID-2881/src/webapp/components/pager/js/Table.js
 
     fluid.registerNamespace("fluid.table");
 

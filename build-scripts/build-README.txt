@@ -1,8 +1,8 @@
 Infusion Build System
 =====================
 
-The Infusion build system is a collection of Ant, Maven, and JavaScript-based scripts that are responsible
-for managing dependencies between parts of Infusion, concatenating and minifying scripts, and creating release
+The Infusion build system is a collection of Ant and JavaScript-based scripts that are responsible for
+managing dependencies between parts of Infusion, concatenating and minifying scripts, and creating release
 packages of Infusion.
 
 Builder
