@@ -14,7 +14,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global demo:true, fluid, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid = fluid || {};
@@ -26,7 +26,7 @@ var demo = demo || {};
     var abortDemo = false;
     try {
         $.ajax({
-            url: "../../../build-scripts/build.xml",
+            url: "../../../../build-scripts/build.xml",
             async : false,
             error: function (XMLHttpRequest, state, error) {
                 if (error && error.code === 1012 && (demo.name === "uiOptions" || demo.name === "uploader")) {
@@ -186,7 +186,7 @@ var demo = demo || {};
         code.chili();
         return code;
     };
-    
+
     var togglePlainColorized = function () {
         // plain view
         $(".codeOptions [href=#plaintext]").click(function (e) {
@@ -201,7 +201,7 @@ var demo = demo || {};
             $("code." + langID).show(); // show colorised
             $("textarea." + langID).hide(); // hide plaintext
         });
-    };    
+    };
 
     var loadComplete = function (name, data) {
 
