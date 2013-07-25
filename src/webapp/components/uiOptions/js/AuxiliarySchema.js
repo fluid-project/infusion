@@ -40,6 +40,9 @@ var fluid_1_5 = fluid_1_5 || {};
         auxiliarySchema: {
             "namespace": "fluid.uiOptions.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
             "templatePrefix": "../../../components/uiOptions/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            "template": "%prefix/FatPanelUIOptions.html",
+            "messagePrefix": "../../../components/uiOptions/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            "message": "%prefix/uiOptions.json",
             "textSize": {
                 "type": "fluid.uiOptions.textSize",
                 "enactor": {
@@ -48,7 +51,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 "panel": {
                     "type": "fluid.uiOptions.panels.textSize",
                     "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
-                    "template": "%prefix/UIOptionsTemplate-textSize.html"
+                    "template": "%prefix/UIOptionsTemplate-textSize.html",
+                    "message": "%prefix/textSize.json"
                 }
             },
             "lineSpace": {
@@ -68,7 +72,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 "panel": {
                     "type": "fluid.uiOptions.panels.lineSpace",
                     "container": ".flc-uiOptions-line-space",  // the css selector in the template where the panel is rendered
-                    "template": "%prefix/UIOptionsTemplate-lineSpace.html"
+                    "template": "%prefix/UIOptionsTemplate-lineSpace.html",
+                    "message": "%prefix/lineSpace.json"
                 }
             },
             "textFont": {
@@ -88,7 +93,8 @@ var fluid_1_5 = fluid_1_5 || {};
                     "type": "fluid.uiOptions.panels.textFont",
                     "container": ".flc-uiOptions-text-font",  // the css selector in the template where the panel is rendered
                     "classnameMap": {"textFont": "@textFont.classes"},
-                    "template": "%prefix/UIOptionsTemplate-textFont.html"
+                    "template": "%prefix/UIOptionsTemplate-textFont.html",
+                    "message": "%prefix/textFont.json"
                 }
             },
             "contrast": {
@@ -110,7 +116,8 @@ var fluid_1_5 = fluid_1_5 || {};
                     "type": "fluid.uiOptions.panels.contrast",
                     "container": ".flc-uiOptions-contrast",  // the css selector in the template where the panel is rendered
                     "classnameMap": {"theme": "@contrast.classes"},
-                    "template": "%prefix/UIOptionsTemplate-contrast.html"
+                    "template": "%prefix/UIOptionsTemplate-contrast.html",
+                    "message": "%prefix/contrast.json"
                 }
             },
             "tableOfContents": {
@@ -122,7 +129,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 "panel": {
                     "type": "fluid.uiOptions.panels.layoutControls",
                     "container": ".flc-uiOptions-layout-controls",  // the css selector in the template where the panel is rendered
-                    "template": "%prefix/UIOptionsTemplate-layout.html"
+                    "template": "%prefix/UIOptionsTemplate-layout.html",
+                    "message": "%prefix/tableOfContents.json"
                 }
             },
             "emphasizeLinks": {
@@ -134,7 +142,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 "panel": {
                     "type": "fluid.uiOptions.panels.linksControls",
                     "container": ".flc-uiOptions-links-controls",  // the css selector in the template where the panel is rendered
-                    "template": "%prefix/UIOptionsTemplate-links.html"
+                    "template": "%prefix/UIOptionsTemplate-links.html",
+                    "message": "%prefix/links.json"
                 }
             },
             "inputsLarger": {

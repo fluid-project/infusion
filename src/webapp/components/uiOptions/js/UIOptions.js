@@ -383,7 +383,6 @@ var fluid_1_5 = fluid_1_5 || {};
         that.events.onUIOptionsMarkupReady.fire(that);
 
         that.fetch();
-        console.log(that);
         that.events.onUIOptionsComponentReady.fire(that);
     };
 

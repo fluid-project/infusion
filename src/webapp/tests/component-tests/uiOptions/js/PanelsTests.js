@@ -35,9 +35,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "wb": "fl-theme-uio-wb fl-theme-wb",
                 "by": "fl-theme-uio-by fl-theme-by",
                 "yb": "fl-theme-uio-yb fl-theme-yb",
-                "lgdg": "fl-theme-uio-lgdg fl-theme-lgdg"                
+                "lgdg": "fl-theme-uio-lgdg fl-theme-lgdg"
             }
         };
+
+    var messages = {
+        "textFont": ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"],
+        "textFontLabel": "Text Style",
+        "contrast": ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"],
+        "contrastLabel": "Colour & Contrast"
+    };
 
     /*******************************************************************************
      * Functions shared by panel tests
@@ -50,12 +57,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.uiOptions.defaultTestPanel", {
-        gradeNames: ["fluid.eventedComponent", "fluid.uiOptions.messages", "autoInit"],
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
         strings: {},
         parentBundle: {
             expander: {
                 funcName: "fluid.messageResolver",
-                args: [{messageBase: "{that}.messages"}]
+                args: [{messageBase: messages}]
             }
         }
     });

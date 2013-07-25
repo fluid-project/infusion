@@ -62,6 +62,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var components = {};
         var selectors = {};
         var templates = {};
+        var messages = {};
         var rootModel = {};
 
         type = type + "s";
@@ -85,10 +86,16 @@ var fluid_1_5 = fluid_1_5 || {};
                 templates[memberName] = template;
             }
 
+            var message = componentConfig.message;
+            if (message) {
+                messages[memberName] = message;
+            }
+
             var componentOptions = fluid.copy(componentConfig);
             delete componentOptions.type;
             delete componentOptions.container;
             delete componentOptions.template;
+            delete componentOptions.message;
 
             if (fluid.keys(componentOptions).length > 0) {
                 instance.options = componentOptions;
@@ -133,6 +140,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         if (fluid.keys(templates).length > 0) {
             auxSchema = fluid.uiOptions.addAtPath(auxSchema, "templateLoader.templates", templates);
+        }
+        if (fluid.keys(messages).length > 0) {
+            auxSchema = fluid.uiOptions.addAtPath(auxSchema, "messageLoader.templates", messages);
         }
         if (fluid.keys(rootModel).length > 0) {
             auxSchema = fluid.uiOptions.addAtPath(auxSchema, "rootModel", rootModel);
@@ -190,14 +200,26 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.uiOptions.expandSchemaComponents(auxSchema, type, category.type, category[type], fluid.get(indexes, type), fluid.get(elementCommonOptions, type), primarySchema);
             }
 
-            type = "messages";
+            type = "template";
             if (prefName === type) {
-                fluid.uiOptions.expandSchemaDirectOption(auxSchema, type, "messages.members.messages");
+                fluid.set(auxSchema, "templateLoader.templates.uiOptions", auxSchema[type]);
+                delete auxSchema[type];
             }
 
             type = "templatePrefix";
             if (prefName === type) {
                 fluid.uiOptions.expandSchemaDirectOption(auxSchema, type, "templatePrefix.templatePrefix");
+            }
+
+            type = "message";
+            if (prefName === type) {
+                fluid.set(auxSchema, "messageLoader.templates.uiOptions", auxSchema[type]);
+                delete auxSchema[type];
+            }
+
+            type = "messagePrefix";
+            if (prefName === type) {
+                fluid.uiOptions.expandSchemaDirectOption(auxSchema, type, "messagePrefix.messagePrefix");
             }
         });
 
@@ -229,13 +251,16 @@ var fluid_1_5 = fluid_1_5 || {};
             templateLoader: {
                 gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"]
             },
+            messageLoader: {
+                gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"]
+            },
             rootModel: {
                 gradeNames: ["fluid.uiOptions.rootModel", "autoInit"]
             },
-            messages: {
+            templatePrefix: {
                 gradeNames: ["fluid.littleComponent", "autoInit"]
             },
-            templatePrefix: {
+            messagePrefix: {
                 gradeNames: ["fluid.littleComponent", "autoInit"]
             }
         },
