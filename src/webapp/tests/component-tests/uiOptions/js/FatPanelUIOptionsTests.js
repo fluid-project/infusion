@@ -42,6 +42,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
                     templatePrefix: "../../../../components/uiOptions/html/",
+                    messagePrefix: "../../../../components/uiOptions/messages/",
                     iframeRenderer: {
                         options: {
                             markupProps: {
@@ -52,6 +53,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     templateLoader: {
                         options: {
                             gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
+                        }
+                    },
+                    messageLoader: {
+                        options: {
+                            gradeNames: ["fluid.uiOptions.starterMessageLoader"]
                         }
                     },
                     uiOptions: {

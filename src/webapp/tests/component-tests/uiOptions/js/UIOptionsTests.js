@@ -22,15 +22,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.enhance.check({"fluid.uiOptions.tests": true});
 
         var templatePrefix = "../../../../components/uiOptions/html/";
+        var messagePrefix = "../../../../components/uiOptions/messages/";
 
         fluid.defaults("fluid.uiOptionsDefaultTests", {
             gradeNames: ["fluid.viewComponent", "autoInit"],
             components: {
                 uiOptionsLoader: {
+                    priority: "last",
                     type: "fluid.uiOptions.loader",
                     container: "{uiOptionsTests}.container",
                     options: {
-                        gradeNames: "fluid.uiOptions.messages",
                         listeners: {
                             onReady: "fluid.uiOptionsTests.testFn"
                         }
@@ -38,16 +39,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 templateLoader: {
                     type: "fluid.uiOptions.resourceLoader",
-                    priority: "first",
                     options: {
                         gradeNames: ["fluid.uiOptions.starterTemplateLoader"],
                         templates: {
                             uiOptions: templatePrefix + "FullNoPreviewUIOptions.html"
+                        },
+                        components: {
+                            resourcePath: {
+                                options: {
+                                    value: templatePrefix
+                                }
+                            }
+                        }
+                    }
+                },
+                messageLoader: {
+                    type: "fluid.uiOptions.resourceLoader",
+                    options: {
+                        gradeNames: ["fluid.uiOptions.starterMessageLoader"],
+                        components: {
+                            resourcePath: {
+                                options: {
+                                    value: messagePrefix
+                                }
+                            }
                         }
                     }
                 }
             },
-            prefix: templatePrefix
+            templatePrefix: templatePrefix,
+            messagePrefix: messagePrefix
         });
 
         // use "fluid.uiOptionsDefaultTests" configuration but will specify different demands to test the full config with settings
@@ -55,12 +76,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: ["fluid.uiOptionsDefaultTests", "autoInit"]
         });
 
-        // Supply the templates
-        fluid.demands("fluid.uiOptions.resourcePath", ["fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
-            options: {
-                value: "{uiOptionsTests}.options.prefix"
-            }
-        });
+        // Supply the paths to templates and message json files
+        // fluid.demands("fluid.uiOptions.resourcePath", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.starterTemplateLoader"], {
+        //     options: {
+        //         value: templatePrefix
+        //     }
+        // });
+
+        // fluid.demands("fluid.uiOptions.resourcePath", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.starterMessageLoader"], {
+        //     options: {
+        //         value: messagePrefix
+        //     }
+        // });
 
         // Options for UIOptions
         var saveCalled = false;
@@ -127,7 +154,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.module("UIOptions Tests");
 
         jqUnit.test("Template Loader", function () {
-            jqUnit.expect(6);
+            jqUnit.expect(4);
 
             var testTemplatePrefix = "../test/";
             var uiOptionsDefaultTemplateName = "FatPanelUIOptions.html";
@@ -161,10 +188,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             var loader = fluid.uiOptionsTestResourceLoader(null);
 
-            // The template with prefix + default name
-            jqUnit.assertEquals("uiOptions template url is set correctly", testTemplatePrefix + uiOptionsDefaultTemplateName, loader.resourceLoader.resources.uiOptions.url);
-            jqUnit.assertTrue("uiOptions forceCache is set", loader.resourceLoader.resources.uiOptions.forceCache);
-
             // The template with a customized full url
             jqUnit.assertEquals("textControls template url is set correctly", textControlsFullResourcePath, loader.resourceLoader.resources.textControls.url);
             jqUnit.assertTrue("textControls forceCache is set", loader.resourceLoader.resources.textControls.forceCache);
@@ -175,7 +198,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Customized Template Loader", function () {
-            jqUnit.expect(4);
+            jqUnit.expect(2);
 
             var testTemplatePrefix = "../test/";
             var uiOptionsDefaultTemplateName = "FatPanelUIOptions.html";
@@ -208,9 +231,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
 
             var loader = fluid.uiOptionsCustomizedResourceLoader(null);
-
-            jqUnit.assertEquals("uiOptions template url is set correctly", testTemplatePrefix + uiOptionsDefaultTemplateName, loader.resourceLoader.resources.uiOptions.url);
-            jqUnit.assertTrue("uiOptions forceCache is set", loader.resourceLoader.resources.uiOptions.forceCache);
 
             jqUnit.assertEquals("lineSpace template url is set correctly", testTemplatePrefix + lineSpaceTemplateName, loader.resourceLoader.resources.lineSpace.url);
             jqUnit.assertTrue("lineSpace forceCache is set", loader.resourceLoader.resources.lineSpace.forceCache);
@@ -568,7 +588,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.enhance.check({"fluid.uiOptions.testsPreview": true});
 
-            fluid.demands("fluid.uiOptions.resourceLoader", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
+            fluid.demands("templateLoader", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
                 options: {
                     templates: {
                         uiOptions: templatePrefix + "FullPreviewUIOptions.html"

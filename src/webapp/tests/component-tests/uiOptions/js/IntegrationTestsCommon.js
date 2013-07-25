@@ -142,6 +142,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var that = fluid.invokeGlobalFunction(componentName, ["#myUIOptions", {
                 gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
                 templatePrefix: "../../../../components/uiOptions/html/",
+                messagePrefix: "../../../../components/uiOptions/messages/",
                 uiOptionsLoader: {
                     options: {
                         listeners: {
@@ -152,6 +153,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 templateLoader: {
                     options: {
                         gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
+                    }
+                },
+                messageLoader: {
+                    options: {
+                        gradeNames: ["fluid.uiOptions.starterMessageLoader"]
                     }
                 },
                 uiOptions: {
@@ -221,6 +227,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.uiOptions.mungingIntegrationOptions = {
         gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
         templatePrefix: "../../../../components/uiOptions/html/",
+        messagePrefix: "../../../../components/uiOptions/messages/",
         textFont: {
             options: {
                 strings: {
@@ -234,6 +241,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         templateLoader: {
             options: {
                 gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
+            }
+        },
+        messageLoader: {
+            options: {
+                gradeNames: ["fluid.uiOptions.starterMessageLoader"]
             }
         },
         uiOptions: {

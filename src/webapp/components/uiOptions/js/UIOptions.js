@@ -182,21 +182,11 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             onReady: null
         },
-        invokers: {
-            buildMessageResolver: {
-                funcName: "fluid.uiOptions.loader.buildMessageResolver",
-                args: ["{that}.options.messageResources", "{that}"]
-            }
-        },
         listeners: {
             onUIOptionsComponentReady: {
                 listener: "{loader}.events.onReady",
                 args: ["{fluid.uiOptions.loader}", "{arguments}.0"],
                 priority: "last"
-            },
-            onUIOptionsMessageReady: {
-                listener: "{that}.buildMessageResolver",
-                priority: "first"
             },
             onCreate: {
                 listener: "fluid.uiOptions.loader.init",
@@ -224,18 +214,17 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.fetchResources(that.options.templateResources, function () {
             that.events.onUIOptionsTemplateReady.fire();
         });
+
+        // Load message json files and create message resolver
         fluid.fetchResources(that.options.messageResources, function () {
+            var completeMessage;
+            fluid.each(that.options.messageResources, function (oneResource) {
+                var message = JSON.parse(oneResource.resourceText);
+                completeMessage = $.extend({}, completeMessage, message);
+            });
+            that.msgBundle = fluid.messageResolver({messageBase: completeMessage});
             that.events.onUIOptionsMessageReady.fire();
         });
-    };
-
-    fluid.uiOptions.loader.buildMessageResolver = function (messageResources, that) {
-        var completeMessage;
-        fluid.each(messageResources, function (oneResource, key) {
-            var message = JSON.parse(oneResource.resourceText);
-            completeMessage = $.extend({}, completeMessage, message);
-        });
-        that.msgBundle = fluid.messageResolver({messageBase: completeMessage});
     };
 
     /**

@@ -22,10 +22,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.registerNamespace("fluid.tests");
 
         fluid.tests.createSlidingPanel = function (options) {
-            return fluid.slidingPanel(".flc-slidingPanel", $.extend(true, {
-                gradeNames: "fluid.uiOptions.messages",
-                messages: "{that}.messages"
-            }, options));
+            var commonOptions = {
+                members: {
+                    msgBundle: {
+                        expander: {
+                            funcName: "fluid.messageResolver",
+                            args: {
+                                messageBase: {
+                                    "slidingPanelShowText": "+ Show Display Preferences",
+                                    "slidingPanelHideText": "- Hide"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            return fluid.slidingPanel(".flc-slidingPanel", $.extend(true, commonOptions, options));
         };
 
         jqUnit.test("Test Init", function () {

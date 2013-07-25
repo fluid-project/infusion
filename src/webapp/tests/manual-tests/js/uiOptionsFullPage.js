@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global skon:true, fluid, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var demo = demo || {};
@@ -23,7 +23,14 @@ var demo = demo || {};
      * versions of the component.
      */
     var pathToTemplates = "../../../components/uiOptions/html/";
-    
+
+    /**
+     * The strings used on UI Options interface is defined by several JSON files. The component
+     * needs to know where those files are. This variable will be used by all versions of the
+     * component.
+     */
+    var pathToMessages = "../../../components/uiOptions/messages/";
+
     /**
      * The UI Enhancer's Table of Contents uses a template. This path variable is used by all
      * three versions of the component, as well as by the UI Enhancer present in the Preview
@@ -37,7 +44,7 @@ var demo = demo || {};
     demo.initSettingsStore = function () {
         fluid.globalSettingsStore();
     };
-	
+
     /**
      * Initialize UI Enhancer for the page.
      */
@@ -52,7 +59,7 @@ var demo = demo || {};
             }
         });
     };
-    
+
     /**
      * The basic options for configuring the full-page versions of UI Options are the same,
      * regardless of whether or not the Preview is used. These settings used by both
@@ -61,10 +68,16 @@ var demo = demo || {};
     var basicFullPageOpts = {
         gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
         // Tell UIOptions where to find all the templates, relative to this file
-        prefix: pathToTemplates,
-        resourceLoader: {
+        templatePrefix: pathToTemplates,
+        messagePrefix: pathToMessages,
+        templateLoader: {
             options: {
                 gradeNames: ["fluid.uiOptions.starterResourceLoader"]
+            }
+        },
+        messageLoader: {
+            options: {
+                gradeNames: ["fluid.uiOptions.starterMessageLoader"]
             }
         },
         // Tell UIOptions where to redirect to if the user cancels the operation
@@ -79,7 +92,7 @@ var demo = demo || {};
             }
         }
     };
-    
+
     /**
      * Initialize UI Options on the "Full Page, No Preview" version.
      */
@@ -92,6 +105,6 @@ var demo = demo || {};
      */
     demo.initFullWithPreview = function (container, options) {
         fluid.uiOptions.fullPreview(container, $.extend(true, {}, basicFullPageOpts, options));
-    };        
-    
+    };
+
 })(jQuery, fluid);
