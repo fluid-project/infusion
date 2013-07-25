@@ -22,7 +22,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.registerNamespace("fluid.uiOptions");
 
     fluid.defaults("fluid.uiOptions.builder", {
-        gradeNames: ["fluid.eventedComponent", "fluid.uiOptions.primaryBuilder", "fluid.uiOptions.auxBuilder", "fluid.uiOptions.auxSchema.starter", "autoInit"],
+        gradeNames: ["fluid.eventedComponent", "fluid.uiOptions.auxBuilder", "fluid.uiOptions.auxSchema.starter", "autoInit"],
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
         },

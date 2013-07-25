@@ -72,7 +72,7 @@ var demo = demo || {};
         messagePrefix: pathToMessages,
         templateLoader: {
             options: {
-                gradeNames: ["fluid.uiOptions.starterResourceLoader"]
+                gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
             }
         },
         messageLoader: {

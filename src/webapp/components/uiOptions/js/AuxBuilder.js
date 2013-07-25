@@ -56,7 +56,7 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.set(root, path, $.extend(true, {}, existingObject, object));
 
         return root;
-    }
+    };
 
     fluid.uiOptions.expandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, commonOptions, primarySchema) {
         var components = {};
@@ -150,7 +150,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return auxSchema;
     };
 
-    fluid.uiOptions.expandSchemaDirectOption = function(auxSchema, type, targetPath) {
+    fluid.uiOptions.expandSchemaDirectOption = function (auxSchema, type, targetPath) {
         var value = auxSchema[type];
         if (value) {
             delete auxSchema[type];
