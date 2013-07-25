@@ -98,7 +98,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     "bw": "fl-theme-uio-bw fl-theme-bw",
                     "wb": "fl-theme-uio-wb fl-theme-wb",
                     "by": "fl-theme-uio-by fl-theme-by",
-                    "yb": "fl-theme-uio-yb fl-theme-yb"
+                    "yb": "fl-theme-uio-yb fl-theme-yb",
+                    "lgdg": "fl-theme-uio-lgdg fl-theme-lgdg"
+
                 },
                 "enactor": {
                     "type": "fluid.uiOptions.enactors.contrast",

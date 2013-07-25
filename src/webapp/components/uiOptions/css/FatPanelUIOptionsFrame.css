@@ -137,6 +137,7 @@ html {
 .fl-uiOptions-fatPanel.fl-theme-bw,
 .fl-uiOptions-fatPanel.fl-theme-wb,
 .fl-uiOptions-fatPanel.fl-theme-by,
-.fl-uiOptions-fatPanel.fl-theme-yb {
+.fl-uiOptions-fatPanel.fl-theme-yb,
+.fl-uiOptions-fatPanel.fl-theme-lgdg {
     background-image: none;
 }

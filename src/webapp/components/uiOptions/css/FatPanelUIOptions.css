@@ -92,26 +92,33 @@
 }
 
 /* Theming */
-.fl-theme-bw { background-image:none !important; }
+.fl-theme-bw,
+.fl-theme-wb,
+.fl-theme-by,
+.fl-theme-yb,
+.fl-theme-lgdg { background-image:none !important; }
+
 .fl-theme-bw,
 .fl-theme-bw .fl-uiOptions-fatPanel .fl-panelBar, 
 .fl-theme-bw .fl-uiOptions-fatPanel .fl-toggleButton,
 .fl-theme-yb .fl-uiOptions-fatPanel .fl-uiOptions-reset { background-color: #fff; border-color: #000; }
 
-.fl-theme-wb { background-image:none !important; }
 .fl-theme-wb,
 .fl-theme-wb .fl-uiOptions-fatPanel .fl-panelBar, 
 .fl-theme-wb .fl-uiOptions-fatPanel .fl-toggleButton,
 .fl-theme-yb .fl-uiOptions-fatPanel .fl-uiOptions-reset { background-color: #000; border-color: #fff; color: #fff; }
 
-.fl-theme-by { background-image:none !important; }
 .fl-theme-by,
 .fl-theme-by .fl-uiOptions-fatPanel .fl-panelBar, 
 .fl-theme-by .fl-uiOptions-fatPanel .fl-toggleButton,
 .fl-theme-yb .fl-uiOptions-fatPanel .fl-uiOptions-reset { background-color: #FFFF00; border-color: #000; }
 
-.fl-theme-yb { background-image:none !important; }
 .fl-theme-yb,
 .fl-theme-yb .fl-uiOptions-fatPanel .fl-panelBar, 
 .fl-theme-yb .fl-uiOptions-fatPanel .fl-toggleButton,
-.fl-theme-yb .fl-uiOptions-fatPanel .fl-uiOptions-reset { background-color: #000; border-color: #ffff00; color: #ffff00 }
+.fl-theme-yb .fl-uiOptions-fatPanel .fl-uiOptions-reset { background-color: #000; border-color: #ffff00; color: #ffff00; }
+
+.fl-theme-lgdg,
+.fl-theme-lgdg .fl-uiOptions-fatPanel .fl-panelBar, 
+.fl-theme-lgdg .fl-uiOptions-fatPanel .fl-toggleButton,
+.fl-theme-lgdg .fl-uiOptions-fatPanel .fl-uiOptions-reset { background-color: #343434; border-color: #bdbdbb; color: #bdbdbb; }
