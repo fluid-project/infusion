@@ -257,7 +257,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 assertRootModel(uiOptions.model);
 
                 var themeValues = uiOptions.contrast.options.controlValues.theme;
-                jqUnit.assertEquals("There are 5 themes in the control", 5, themeValues.length);
+                jqUnit.assertEquals("There are 6 themes in the control", 6, themeValues.length);
                 jqUnit.assertEquals("The first theme is default", "default", themeValues[0]);
 
                 var fontValues = uiOptions.textFont.options.controlValues.textFont;

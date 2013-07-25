@@ -149,7 +149,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "fluid.uiOptions.contrast": {
                 "type": "string",
                 "default": "default",
-                "enum": ["default", "bw", "wb", "by", "yb"]
+                "enum": ["default", "bw", "wb", "by", "yb", "lgdg"]
             }
         }
     });
