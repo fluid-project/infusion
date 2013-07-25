@@ -21,6 +21,8 @@ var fluid_1_5 = fluid_1_5 || {};
 var fluid = fluid || fluid_1_5;
 
 (function ($) {
+    "use strict";
+
     fluid.registerNamespace("fluid.model.transform");
     fluid.registerNamespace("fluid.transforms");
 
@@ -107,10 +109,10 @@ var fluid = fluid || fluid_1_5;
         }
     };
     
-     
     fluid.defaults("fluid.transforms.linearScale", {
-        gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction" ],
-        inputVariables: { 
+        gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction", "fluid.lens" ],
+        invertConfiguration: "fluid.transforms.linearScale.invert",
+        inputVariables: {
             value: null, 
             factor: 1,
             offset: 0
@@ -125,6 +127,30 @@ var fluid = fluid || fluid_1_5;
         return inputs.value * inputs.factor + inputs.offset;
     };
 
+    fluid.transforms.linearScale.invert = function  (expandSpec, expander) {
+        var togo = fluid.copy(expandSpec);
+        togo.type = "fluid.transforms.inverseLinearScale";
+        togo.valuePath = fluid.model.composePaths(expander.outputPrefix, expandSpec.outputPath);
+        togo.outputPath = fluid.model.composePaths(expander.inputPrefix, expandSpec.valuePath);
+        return togo;
+    };
+
+    fluid.defaults("fluid.transforms.inverseLinearScale", {
+        gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction" ],
+        inputVariables: { 
+            value: null, 
+            factor: 1,
+            offset: 0
+        }
+    });
+
+    /* inverse linear transformation y = (x-b)/a   where a=factor, b=offset and x=value */
+    fluid.transforms.inverseLinearScale = function (inputs, expandSpec, expander) {        
+        if (typeof(inputs.value) !== "number" || typeof(inputs.factor) !== "number" || typeof(inputs.offset) !== "number") {
+            return undefined;
+        }
+        return (inputs.value - inputs.offset) / inputs.factor;
+    };
 
     fluid.defaults("fluid.transforms.binaryOp", { 
         gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction" ],
@@ -133,7 +159,7 @@ var fluid = fluid || fluid_1_5;
             right: null
         }
     });
-    
+
     fluid.transforms.binaryLookup = {
         "===": function (a, b) { return a === b; },
         "!==": function (a, b) { return a !== b; },
