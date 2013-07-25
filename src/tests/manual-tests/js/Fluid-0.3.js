@@ -22,7 +22,7 @@ var jQuery = window.jQuery = function( selector, context ) {
 // Map over the $ in case of overwrite
 if ( window.$ )
     var _$ = window.$;
-    
+
 // Map the jQuery namespace to the '$' one
 window.$ = jQuery;
 
@@ -99,7 +99,7 @@ jQuery.fn = jQuery.prototype = {
             // HANDLE: $(*)
             [ selector ] );
     },
-    
+
     // The current version of jQuery being used
     jquery: "1.2.3",
 
@@ -107,7 +107,7 @@ jQuery.fn = jQuery.prototype = {
     size: function() {
         return this.length;
     },
-    
+
     // The number of elements contained in the matched element set
     length: 0,
 
@@ -122,7 +122,7 @@ jQuery.fn = jQuery.prototype = {
             // Return just the object
             this[ num ];
     },
-    
+
     // Take an array of elements and push it onto the stack
     // (returning the new matched element set)
     pushStack: function( elems ) {
@@ -135,7 +135,7 @@ jQuery.fn = jQuery.prototype = {
         // Return the newly-formed element set
         return ret;
     },
-    
+
     // Force the current matched set of elements to become
     // the specified array of elements (destroying the stack in the process)
     // You should use pushStack() in order to do this, but maintain the stack
@@ -144,7 +144,7 @@ jQuery.fn = jQuery.prototype = {
         // is a super-fast way to populate an object with array-like properties
         this.length = 0;
         Array.prototype.push.apply( this, elems );
-        
+
         return this;
     },
 
@@ -155,7 +155,7 @@ jQuery.fn = jQuery.prototype = {
         return jQuery.each( this, callback, args );
     },
 
-    // Determine the position of an element within 
+    // Determine the position of an element within
     // the matched set of elements
     index: function( elem ) {
         var ret = -1;
@@ -171,7 +171,7 @@ jQuery.fn = jQuery.prototype = {
 
     attr: function( name, value, type ) {
         var options = name;
-        
+
         // Look for the case where we're accessing a style value
         if ( name.constructor == String )
             if ( value == undefined )
@@ -181,7 +181,7 @@ jQuery.fn = jQuery.prototype = {
                 options = {};
                 options[ name ] = value;
             }
-        
+
         // Check to see if we're setting style values
         return this.each(function(i){
             // Set all the styles
@@ -264,7 +264,7 @@ jQuery.fn = jQuery.prototype = {
                 this.insertBefore( elem, this.firstChild );
         });
     },
-    
+
     before: function() {
         return this.domManip(arguments, false, false, function(elem){
             this.parentNode.insertBefore( elem, this );
@@ -299,8 +299,8 @@ jQuery.fn = jQuery.prototype = {
                 // using cloneNode. Calling detachEvent on the
                 // clone will also remove the events from the orignal
                 // In order to get around this, we use innerHTML.
-                // Unfortunately, this means some modifications to 
-                // attributes in IE that are actually only stored 
+                // Unfortunately, this means some modifications to
+                // attributes in IE that are actually only stored
                 // as properties will not be copied (such as the
                 // the name attribute on an input).
                 var clone = this.cloneNode(true),
@@ -318,7 +318,7 @@ jQuery.fn = jQuery.prototype = {
             if ( this[ expando ] != undefined )
                 this[ expando ] = null;
         });
-        
+
         // Copy the events from the original to the clone
         if ( events === true )
             this.find("*").andSelf().each(function(i){
@@ -360,9 +360,9 @@ jQuery.fn = jQuery.prototype = {
     },
 
     add: function( selector ) {
-        return !selector ? this : this.pushStack( jQuery.merge( 
+        return !selector ? this : this.pushStack( jQuery.merge(
             this.get(),
-            selector.constructor == String ? 
+            selector.constructor == String ?
                 jQuery( selector ).get() :
                 selector.length != undefined && (!selector.nodeName || jQuery.nodeName(selector, "form")) ?
                     selector : [selector] ) );
@@ -377,7 +377,7 @@ jQuery.fn = jQuery.prototype = {
     hasClass: function( selector ) {
         return this.is( "." + selector );
     },
-    
+
     val: function( value ) {
         if ( value == undefined ) {
 
@@ -390,7 +390,7 @@ jQuery.fn = jQuery.prototype = {
                         values = [],
                         options = elem.options,
                         one = elem.type == "select-one";
-                    
+
                     // Nothing was selected
                     if ( index < 0 )
                         return null;
@@ -402,18 +402,18 @@ jQuery.fn = jQuery.prototype = {
                         if ( option.selected ) {
                             // Get the specifc value for the option
                             value = jQuery.browser.msie && !option.attributes.value.specified ? option.text : option.value;
-                            
+
                             // We don't need an array for one selects
                             if ( one )
                                 return value;
-                            
+
                             // Multi-Selects return an array
                             values.push( value );
                         }
                     }
-                    
+
                     return values;
-                    
+
                 // Everything else, we just grab the value
                 } else
                     return (this[0].value || "").replace(/\r/g, "");
@@ -448,7 +448,7 @@ jQuery.fn = jQuery.prototype = {
                 this.value = value;
         });
     },
-    
+
     html: function( value ) {
         return value == undefined ?
             (this.length ?
@@ -485,7 +485,7 @@ jQuery.fn = jQuery.prototype = {
 
         if ( value == null ) {
             var data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
-            
+
             if ( data == undefined && this.length )
                 data = jQuery.data( this[0], key );
 
@@ -503,9 +503,9 @@ jQuery.fn = jQuery.prototype = {
             jQuery.removeData( this, key );
         });
     },
-    
+
     domManip: function( args, table, reverse, callback ) {
-        var clone = this.length > 1, elems; 
+        var clone = this.length > 1, elems;
 
         return this.each(function(){
             if ( !elems ) {
@@ -625,10 +625,10 @@ jQuery.extend({
 
     // See test/unit/core.js for details concerning this function.
     isFunction: function( fn ) {
-        return !!fn && typeof fn != "string" && !fn.nodeName && 
+        return !!fn && typeof fn != "string" && !fn.nodeName &&
             fn.constructor != Array && /function/i.test( fn + "" );
     },
-    
+
     // check if an element is in a (or is an) XML document
     isXMLDoc: function( elem ) {
         return elem.documentElement && !elem.body ||
@@ -659,9 +659,9 @@ jQuery.extend({
     nodeName: function( elem, name ) {
         return elem.nodeName && elem.nodeName.toUpperCase() == name.toUpperCase();
     },
-    
+
     cache: {},
-    
+
     data: function( elem, name, data ) {
         elem = elem == window ?
             windowData :
@@ -670,24 +670,24 @@ jQuery.extend({
         var id = elem[ expando ];
 
         // Compute a unique ID for the element
-        if ( !id ) 
+        if ( !id )
             id = elem[ expando ] = ++uuid;
 
         // Only generate the data cache if we're
         // trying to access or manipulate it
         if ( name && !jQuery.cache[ id ] )
             jQuery.cache[ id ] = {};
-        
+
         // Prevent overriding the named cache with undefined values
         if ( data != undefined )
             jQuery.cache[ id ][ name ] = data;
-        
-        // Return the named cache data, or the ID for the element    
+
+        // Return the named cache data, or the ID for the element
         return name ?
             jQuery.cache[ id ][ name ] :
             id;
     },
-    
+
     removeData: function( elem, name ) {
         elem = elem == window ?
             windowData :
@@ -747,18 +747,18 @@ jQuery.extend({
                     if ( callback.call( object[ name ], name, object[ name ] ) === false )
                         break;
             } else
-                for ( var i = 0, length = object.length, value = object[0]; 
+                for ( var i = 0, length = object.length, value = object[0];
                     i < length && callback.call( value, i, value ) !== false; value = object[++i] ){}
         }
 
         return object;
     },
-    
+
     prop: function( elem, value, type, i, name ) {
             // Handle executable functions
             if ( jQuery.isFunction( value ) )
                 value = value.call( elem, i );
-                
+
             // Handle passing in a number to a CSS property
             return value && value.constructor == Number && type == "curCSS" && !exclude.test( name ) ?
                 value + "px" :
@@ -779,7 +779,7 @@ jQuery.extend({
             if (elem.nodeType == 1)
                 elem.className = classNames != undefined ?
                     jQuery.grep(elem.className.split(/\s+/), function(className){
-                        return !jQuery.className.has( classNames, className );    
+                        return !jQuery.className.has( classNames, className );
                     }).join(" ") :
                     "";
         },
@@ -809,7 +809,7 @@ jQuery.extend({
     css: function( elem, name, force ) {
         if ( name == "width" || name == "height" ) {
             var val, props = { position: "absolute", visibility: "hidden", display:"block" }, which = name == "width" ? [ "Left", "Right" ] : [ "Top", "Bottom" ];
-        
+
             function getWH() {
                 val = name == "width" ? elem.offsetWidth : elem.offsetHeight;
                 var padding = 0, border = 0;
@@ -819,15 +819,15 @@ jQuery.extend({
                 });
                 val -= Math.round(padding + border);
             }
-        
+
             if ( jQuery(elem).is(":visible") )
                 getWH();
             else
                 jQuery.swap( elem, props, getWH );
-            
+
             return Math.max(0, val);
         }
-        
+
         return jQuery.curCSS( elem, name, force );
     },
 
@@ -857,7 +857,7 @@ jQuery.extend({
             elem.style.outline = "0 solid black";
             elem.style.outline = save;
         }
-        
+
         // Make sure we're using the right name for getting the float value
         if ( name.match( /float/i ) )
             name = styleFloat;
@@ -940,12 +940,12 @@ jQuery.extend({
 
         return ret;
     },
-    
+
     clean: function( elems, context ) {
         var ret = [];
         context = context || document;
         // !context.createElement fails in IE with an error but returns typeof 'object'
-        if (typeof context.createElement == 'undefined') 
+        if (typeof context.createElement == 'undefined')
             context = context.ownerDocument || context[0] && context[0].ownerDocument || document;
 
         jQuery.each(elems, function(i, elem){
@@ -954,7 +954,7 @@ jQuery.extend({
 
             if ( elem.constructor == Number )
                 elem = elem.toString();
-            
+
             // Convert html string into DOM nodes
             if ( typeof elem == "string" ) {
                 // Fix "XHTML"-style tags in all browsers
@@ -971,58 +971,58 @@ jQuery.extend({
                     // option or optgroup
                     !tags.indexOf("<opt") &&
                     [ 1, "<select multiple='multiple'>", "</select>" ] ||
-                    
+
                     !tags.indexOf("<leg") &&
                     [ 1, "<fieldset>", "</fieldset>" ] ||
-                    
+
                     tags.match(/^<(thead|tbody|tfoot|colg|cap)/) &&
                     [ 1, "<table>", "</table>" ] ||
-                    
+
                     !tags.indexOf("<tr") &&
                     [ 2, "<table><tbody>", "</tbody></table>" ] ||
-                    
+
                      // <thead> matched above
                     (!tags.indexOf("<td") || !tags.indexOf("<th")) &&
                     [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ] ||
-                    
+
                     !tags.indexOf("<col") &&
                     [ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ] ||
 
                     // IE can't serialize <link> and <script> tags normally
                     jQuery.browser.msie &&
                     [ 1, "div<div>", "</div>" ] ||
-                    
+
                     [ 0, "", "" ];
 
                 // Go to html and back, then peel off extra wrappers
                 div.innerHTML = wrap[1] + elem + wrap[2];
-                
+
                 // Move to the right depth
                 while ( wrap[0]-- )
                     div = div.lastChild;
-                
+
                 // Remove IE's autoinserted <tbody> from table fragments
                 if ( jQuery.browser.msie ) {
-                    
+
                     // String was a <table>, *may* have spurious <tbody>
                     var tbody = !tags.indexOf("<table") && tags.indexOf("<tbody") < 0 ?
                         div.firstChild && div.firstChild.childNodes :
-                        
+
                         // String was a bare <thead> or <tfoot>
                         wrap[1] == "<table>" && tags.indexOf("<tbody") < 0 ?
                             div.childNodes :
                             [];
-                
+
                     for ( var j = tbody.length - 1; j >= 0 ; --j )
                         if ( jQuery.nodeName( tbody[ j ], "tbody" ) && !tbody[ j ].childNodes.length )
                             tbody[ j ].parentNode.removeChild( tbody[ j ] );
-                    
-                    // IE completely kills leading whitespace when innerHTML is used    
-                    if ( /^\s/.test( elem ) )    
+
+                    // IE completely kills leading whitespace when innerHTML is used
+                    if ( /^\s/.test( elem ) )
                         div.insertBefore( context.createTextNode( elem.match(/^\s*/)[0] ), div.firstChild );
-                
+
                 }
-                
+
                 elem = jQuery.makeArray( div.childNodes );
             }
 
@@ -1039,7 +1039,7 @@ jQuery.extend({
 
         return ret;
     },
-    
+
     attr: function( elem, name, value ) {
         // don't set attributes on text and comment nodes
         if (!elem || elem.nodeType == 3 || elem.nodeType == 8)
@@ -1053,7 +1053,7 @@ jQuery.extend({
         // Accessing the parent's selectedIndex property fixes it
         if ( name == "selected" && jQuery.browser.safari )
             elem.parentNode.selectedIndex;
-        
+
         // Certain attributes only work when accessed via the old DOM 0 way
         if ( fix[ name ] ) {
             if ( value != undefined )
@@ -1079,7 +1079,7 @@ jQuery.extend({
                 elem.setAttribute( name, "" + value );
             }
 
-            if ( jQuery.browser.msie && /href|src/.test( name ) && !jQuery.isXMLDoc( elem ) ) 
+            if ( jQuery.browser.msie && /href|src/.test( name ) && !jQuery.isXMLDoc( elem ) )
                 return elem.getAttribute( name, 2 );
 
             return elem.getAttribute( name );
@@ -1091,13 +1091,13 @@ jQuery.extend({
                 if ( value != undefined ) {
                     // IE has trouble with opacity if it does not have layout
                     // Force it by setting the zoom level
-                    elem.zoom = 1; 
-    
+                    elem.zoom = 1;
+
                     // Set the alpha filter to set the opacity
                     elem.filter = (elem.filter || "").replace( /alpha\([^)]*\)/, "" ) +
                         (parseFloat( value ).toString() == "NaN" ? "" : "alpha(opacity=" + value * 100 + ")");
                 }
-    
+
                 return elem.filter && elem.filter.indexOf("opacity=") >= 0 ?
                     (parseFloat( elem.filter.match(/opacity=([^)]*)/)[1] ) / 100).toString() :
                     "";
@@ -1113,7 +1113,7 @@ jQuery.extend({
             return elem[ name ];
         }
     },
-    
+
     trim: function( text ) {
         return (text || "").replace( /^\s+|\s+$/g, "" );
     },
@@ -1224,11 +1224,11 @@ jQuery.browser = {
 var styleFloat = jQuery.browser.msie ?
     "styleFloat" :
     "cssFloat";
-    
+
 jQuery.extend({
     // Check to see if the W3C box model is being used
     boxModel: !jQuery.browser.msie || document.compatMode == "CSS1Compat",
-    
+
     props: {
         "for": "htmlFor",
         "class": "className",
@@ -1291,7 +1291,7 @@ jQuery.each({
 jQuery.each({
     removeAttr: function( name ) {
         jQuery.attr( this, name, "" );
-        if (this.nodeType == 1) 
+        if (this.nodeType == 1)
             this.removeAttribute( name );
     },
 
@@ -1322,7 +1322,7 @@ jQuery.each({
     empty: function() {
         // Remove element nodes and prevent memory leaks
         jQuery( ">*", this ).remove();
-        
+
         // Remove any remaining nodes
         while ( this.firstChild )
             this.removeChild( this.firstChild );
@@ -1335,25 +1335,25 @@ jQuery.each({
 
 jQuery.each([ "Height", "Width" ], function(i, name){
     var type = name.toLowerCase();
-    
+
     jQuery.fn[ type ] = function( size ) {
         // Get window width or height
         return this[0] == window ?
             // Opera reports document.body.client[Width/Height] properly in both quirks and standards
-            jQuery.browser.opera && document.body[ "client" + name ] || 
-            
+            jQuery.browser.opera && document.body[ "client" + name ] ||
+
             // Safari reports inner[Width/Height] just fine (Mozilla and Opera include scroll bar widths)
             jQuery.browser.safari && window[ "inner" + name ] ||
-            
+
             // Everyone else use document.documentElement or document.body depending on Quirks vs Standards mode
             document.compatMode == "CSS1Compat" && document.documentElement[ "client" + name ] || document.body[ "client" + name ] :
-        
+
             // Get document width or height
             this[0] == document ?
                 // Either scroll[Width/Height] or offset[Width/Height], whichever is greater
-                Math.max( 
-                    Math.max(document.body["scroll" + name], document.documentElement["scroll" + name]), 
-                    Math.max(document.body["offset" + name], document.documentElement["offset" + name]) 
+                Math.max(
+                    Math.max(document.body["scroll" + name], document.documentElement["scroll" + name]),
+                    Math.max(document.body["offset" + name], document.documentElement["offset" + name])
                 ) :
 
                 // Get or set width or height on the element
@@ -1432,7 +1432,7 @@ jQuery.extend({
             animated: function(a){return jQuery.grep(jQuery.timers,function(fn){return a==fn.elem;}).length;}
         }
     },
-    
+
     // The regular expressions that power the parsing engine
     parse: [
         // Match: [@value='test'], [@foo]
@@ -1518,12 +1518,12 @@ jQuery.extend({
                                 var id = jQuery.data(n);
 
                                 if ( m == "~" && merge[id] ) break;
-                                
+
                                 if (!nodeName || n.nodeName.toUpperCase() == nodeName ) {
                                     if ( m == "~" ) merge[id] = true;
                                     r.push( n );
                                 }
-                                
+
                                 if ( m == "+" ) break;
                             }
                     }
@@ -1557,7 +1557,7 @@ jQuery.extend({
                     // Optimize for the case nodeName#idName
                     var re2 = quickID;
                     var m = re2.exec(t);
-                    
+
                     // Re-organize the results, so that they're consistent
                     if ( m ) {
                         m = [ 0, m[2], m[3], m[1] ];
@@ -1577,7 +1577,7 @@ jQuery.extend({
                     if ( m[1] == "#" && elem && elem.getElementById && !jQuery.isXMLDoc(elem) ) {
                         // Optimization for HTML document case
                         var oid = elem.getElementById(m[2]);
-                        
+
                         // Do a quick check for the existence of the actual ID attribute
                         // to avoid selecting by the name attribute in IE
                         // also check to insure id is a string to avoid selecting an element with the name of 'id' inside a form
@@ -1699,10 +1699,10 @@ jQuery.extend({
 
             else if ( m[1] == "[" ) {
                 var tmp = [], type = m[3];
-                
+
                 for ( var i = 0, rl = r.length; i < rl; i++ ) {
                     var a = r[i], z = a[ jQuery.props[m[2]] || m[2] ];
-                    
+
                     if ( z == null || /href|src|selected/.test(m[2]) )
                         z = jQuery.attr(a,m[2]) || '';
 
@@ -1714,7 +1714,7 @@ jQuery.extend({
                          (type == "*=" || type == "~=") && z.indexOf(m[5]) >= 0) ^ not )
                             tmp.push( a );
                 }
-                
+
                 r = tmp;
 
             // We can get a speed boost by handling nth-child here
@@ -1726,7 +1726,7 @@ jQuery.extend({
                         !/\D/.test(m[3]) && "0n+" + m[3] || m[3]),
                     // calculate the numbers (first)n+(last) including if they are negative
                     first = (test[1] + (test[2] || 1)) - 0, last = test[3] - 0;
- 
+
                 // loop through all the elements left in the jQuery object
                 for ( var i = 0, rl = r.length; i < rl; i++ ) {
                     var node = r[i], parentNode = node.parentNode, id = jQuery.data(parentNode);
@@ -1786,7 +1786,7 @@ jQuery.extend({
         }
         return matched;
     },
-    
+
     nth: function(cur,result,dir,elem){
         result = result || 1;
         var num = 0;
@@ -1797,7 +1797,7 @@ jQuery.extend({
 
         return cur;
     },
-    
+
     sibling: function( n, elem ) {
         var r = [];
 
@@ -1812,7 +1812,7 @@ jQuery.extend({
 
 /*
  * A number of helper functions used for managing events.
- * Many of the ideas behind this code orignated from 
+ * Many of the ideas behind this code orignated from
  * Dean Edwards' addEvent library.
  */
 jQuery.event = {
@@ -1831,22 +1831,22 @@ jQuery.event = {
         // Make sure that the function being executed has a unique ID
         if ( !handler.guid )
             handler.guid = this.guid++;
-            
-        // if data is passed, bind to handler 
-        if( data != undefined ) { 
-            // Create temporary function pointer to original handler 
-            var fn = handler; 
 
-            // Create unique handler function, wrapped around original handler 
-            handler = function() { 
-                // Pass arguments and context to original handler 
-                return fn.apply(this, arguments); 
+        // if data is passed, bind to handler
+        if( data != undefined ) {
+            // Create temporary function pointer to original handler
+            var fn = handler;
+
+            // Create unique handler function, wrapped around original handler
+            handler = function() {
+                // Pass arguments and context to original handler
+                return fn.apply(this, arguments);
             };
 
-            // Store data in unique handler 
+            // Store data in unique handler
             handler.data = data;
 
-            // Set the guid of unique handler to the same of original handler, so it can be removed 
+            // Set the guid of unique handler to the same of original handler, so it can be removed
             handler.guid = fn.guid;
         }
 
@@ -1860,16 +1860,16 @@ jQuery.event = {
                 // an event is called after a page has unloaded
                 if ( typeof jQuery == "undefined" || jQuery.event.triggered )
                     return val;
-        
+
                 val = jQuery.event.handle.apply(arguments.callee.elem, arguments);
-        
+
                 return val;
             });
         // Add elem as a property of the handle function
         // This is to prevent a memory leak with non-native
         // event in IE.
         handle.elem = elem;
-            
+
             // Handle multiple events seperated by a space
             // jQuery(...).bind("mouseover mouseout", fn);
             jQuery.each(types.split(/\s+/), function(index, type) {
@@ -1884,7 +1884,7 @@ jQuery.event = {
                 // Init the event handler queue
                 if (!handlers) {
                     handlers = events[type] = {};
-        
+
                     // Check for a special event handler
                     // Only use addEventListener/attachEvent if the special
                     // events handler returns false
@@ -1903,7 +1903,7 @@ jQuery.event = {
                 // Keep track of which events have been used, for global triggering
                 jQuery.event.global[type] = true;
             });
-        
+
         // Nullify elem to prevent memory leaks in IE
         elem = null;
     },
@@ -1930,19 +1930,19 @@ jQuery.event = {
                     handler = types.handler;
                     types = types.type;
                 }
-                
+
                 // Handle multiple events seperated by a space
                 // jQuery(...).unbind("mouseover mouseout", fn);
                 jQuery.each(types.split(/\s+/), function(index, type){
                     // Namespaced event handlers
                     var parts = type.split(".");
                     type = parts[0];
-                    
+
                     if ( events[type] ) {
                         // remove the given handler for the given type
                         if ( handler )
                             delete events[type][handler.guid];
-            
+
                         // remove all handlers for the given type
                         else
                             for ( handler in events[type] )
@@ -2001,7 +2001,7 @@ jQuery.event = {
             var val, ret, fn = jQuery.isFunction( elem[ type ] || null ),
                 // Check to see if we need to provide a fake event, or not
                 event = !data[0] || !data[0].preventDefault;
-            
+
             // Pass along a fake event
             if ( event )
                 data.unshift( this.fix({ type: type, target: elem }) );
@@ -2052,7 +2052,7 @@ jQuery.event = {
         var val;
 
         // Empty object is for triggered events with no data
-        event = jQuery.event.fix( event || window.event || {} ); 
+        event = jQuery.event.fix( event || window.event || {} );
 
         // Namespaced event handlers
         var parts = event.type.split(".");
@@ -2091,12 +2091,12 @@ jQuery.event = {
     },
 
     fix: function(event) {
-        // store a copy of the original event object 
+        // store a copy of the original event object
         // and clone to set read-only properties
         var originalEvent = event;
         event = jQuery.extend({}, originalEvent);
-        
-        // add preventDefault and stopPropagation since 
+
+        // add preventDefault and stopPropagation since
         // they will not work on the clone
         event.preventDefault = function() {
             // if preventDefault exists run it on the original event
@@ -2112,11 +2112,11 @@ jQuery.event = {
             // otherwise set the cancelBubble property of the original event to true (IE)
             originalEvent.cancelBubble = true;
         };
-        
+
         // Fix target property, if necessary
         if ( !event.target )
             event.target = event.srcElement || document; // Fixes #1925 where srcElement might not be defined either
-                
+
         // check if target is a textnode (safari)
         if ( event.target.nodeType == 3 )
             event.target = originalEvent.target.parentNode;
@@ -2131,11 +2131,11 @@ jQuery.event = {
             event.pageX = event.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0);
             event.pageY = event.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientTop || 0);
         }
-            
+
         // Add which for key events
         if ( !event.which && ((event.charCode || event.charCode === 0) ? event.charCode : event.keyCode) )
             event.which = event.charCode || event.keyCode;
-        
+
         // Add metaKey to non-Mac browsers (use ctrl for PC's and Meta for Macs)
         if ( !event.metaKey && event.ctrlKey )
             event.metaKey = event.ctrlKey;
@@ -2144,10 +2144,10 @@ jQuery.event = {
         // Note: button is not normalized, so don't use it
         if ( !event.which && event.button )
             event.which = (event.button & 1 ? 1 : ( event.button & 2 ? 3 : ( event.button & 4 ? 2 : 0 ) ));
-            
+
         return event;
     },
-    
+
     special: {
         ready: {
             setup: function() {
@@ -2155,23 +2155,23 @@ jQuery.event = {
                 bindReady();
                 return;
             },
-            
+
             teardown: function() { return; }
         },
-        
+
         mouseenter: {
             setup: function() {
                 if ( jQuery.browser.msie ) return false;
                 jQuery(this).bind("mouseover", jQuery.event.special.mouseenter.handler);
                 return true;
             },
-        
+
             teardown: function() {
                 if ( jQuery.browser.msie ) return false;
                 jQuery(this).unbind("mouseover", jQuery.event.special.mouseenter.handler);
                 return true;
             },
-            
+
             handler: function(event) {
                 // If we actually just moused on to a sub-element, ignore it
                 if ( withinElement(event, this) ) return true;
@@ -2180,20 +2180,20 @@ jQuery.event = {
                 return jQuery.event.handle.apply(this, arguments);
             }
         },
-    
+
         mouseleave: {
             setup: function() {
                 if ( jQuery.browser.msie ) return false;
                 jQuery(this).bind("mouseout", jQuery.event.special.mouseleave.handler);
                 return true;
             },
-        
+
             teardown: function() {
                 if ( jQuery.browser.msie ) return false;
                 jQuery(this).unbind("mouseout", jQuery.event.special.mouseleave.handler);
                 return true;
             },
-            
+
             handler: function(event) {
                 // If we actually just moused on to a sub-element, ignore it
                 if ( withinElement(event, this) ) return true;
@@ -2211,7 +2211,7 @@ jQuery.fn.extend({
             jQuery.event.add( this, type, fn || data, fn && data );
         });
     },
-    
+
     one: function( type, data, fn ) {
         return this.each(function(){
             jQuery.event.add( this, type, function(event) {
@@ -2246,10 +2246,10 @@ jQuery.fn.extend({
         return this.click(function(event) {
             // Figure out which function to execute
             this.lastToggle = 0 == this.lastToggle ? 1 : 0;
-            
+
             // Make sure that clicks stop
             event.preventDefault();
-            
+
             // and execute the function
             return args[this.lastToggle].apply( this, arguments ) || false;
         });
@@ -2258,7 +2258,7 @@ jQuery.fn.extend({
     hover: function(fnOver, fnOut) {
         return this.bind('mouseenter', fnOver).bind('mouseleave', fnOut);
     },
-    
+
     ready: function(fn) {
         // Attach the listeners
         bindReady();
@@ -2267,12 +2267,12 @@ jQuery.fn.extend({
         if ( jQuery.isReady )
             // Execute the function immediately
             fn.call( document, jQuery );
-            
+
         // Otherwise, remember the function for later
         else
             // Add the function to the wait list
             jQuery.readyList.push( function() { return fn.call(this, jQuery); } );
-    
+
         return this;
     }
 });
@@ -2286,18 +2286,18 @@ jQuery.extend({
         if ( !jQuery.isReady ) {
             // Remember that the DOM is ready
             jQuery.isReady = true;
-            
+
             // If there are functions bound, to execute
             if ( jQuery.readyList ) {
                 // Execute all of them
                 jQuery.each( jQuery.readyList, function(){
                     this.apply( document );
                 });
-                
+
                 // Reset the list of functions
                 jQuery.readyList = null;
             }
-        
+
             // Trigger any bound ready events
             jQuery(document).triggerHandler("ready");
         }
@@ -2314,7 +2314,7 @@ function bindReady(){
     if ( document.addEventListener && !jQuery.browser.opera)
         // Use the handy event callback
         document.addEventListener( "DOMContentLoaded", jQuery.ready, false );
-    
+
     // If IE is used and is not in a frame
     // Continually check to see if the document is ready
     if ( jQuery.browser.msie && window == top ) (function(){
@@ -2367,9 +2367,9 @@ function bindReady(){
 }
 
 jQuery.each( ("blur,focus,load,resize,scroll,unload,click,dblclick," +
-    "mousedown,mouseup,mousemove,mouseover,mouseout,change,select," + 
+    "mousedown,mouseup,mousemove,mouseover,mouseout,change,select," +
     "submit,keydown,keypress,keyup,error").split(","), function(i, name){
-    
+
     // Handle event binding
     jQuery.fn[name] = function(fn){
         return fn ? this.bind(name, fn) : this.trigger(name);
@@ -2463,8 +2463,8 @@ jQuery.fn.extend({
                 jQuery.makeArray(this.elements) : this;
         })
         .filter(function(){
-            return this.name && !this.disabled && 
-                (this.checked || /select|textarea/i.test(this.nodeName) || 
+            return this.name && !this.disabled &&
+                (this.checked || /select|textarea/i.test(this.nodeName) ||
                     /text|hidden|password/i.test(this.type));
         })
         .map(function(i, elem){
@@ -2495,7 +2495,7 @@ jQuery.extend({
             callback = data;
             data = null;
         }
-        
+
         return jQuery.ajax({
             type: "GET",
             url: url,
@@ -2551,7 +2551,7 @@ jQuery.extend({
             _default: "*/*"
         }
     },
-    
+
     // Last-Modified header cache for next request
     lastModified: {},
 
@@ -2640,7 +2640,7 @@ jQuery.extend({
 
                 // Attach handlers for all browsers
                 script.onload = script.onreadystatechange = function(){
-                    if ( !done && (!this.readyState || 
+                    if ( !done && (!this.readyState ||
                             this.readyState == "loaded" || this.readyState == "complete") ) {
                         done = true;
                         success();
@@ -2688,7 +2688,7 @@ jQuery.extend({
         // Allow custom headers/mimetypes
         if ( s.beforeSend )
             s.beforeSend(xml);
-            
+
         if ( s.global )
             jQuery.event.trigger("ajaxSend", [xml, s]);
 
@@ -2697,13 +2697,13 @@ jQuery.extend({
             // The transfer is complete and the data is available, or the request timed out
             if ( !requestDone && xml && (xml.readyState == 4 || isTimeout == "timeout") ) {
                 requestDone = true;
-                
+
                 // clear poll interval
                 if (ival) {
                     clearInterval(ival);
                     ival = null;
                 }
-                
+
                 status = isTimeout == "timeout" && "timeout" ||
                     !jQuery.httpSuccess( xml ) && "error" ||
                     s.ifModified && jQuery.httpNotModified( xml, s.url ) && "notmodified" ||
@@ -2726,13 +2726,13 @@ jQuery.extend({
                     try {
                         modRes = xml.getResponseHeader("Last-Modified");
                     } catch(e) {} // swallow exception thrown by FF if header is not available
-    
+
                     if ( s.ifModified && modRes )
                         jQuery.lastModified[s.url] = modRes;
 
                     // JSONP handles its own success callback
                     if ( !jsonp )
-                        success();    
+                        success();
                 } else
                     jQuery.handleError(s, xml, status);
 
@@ -2744,10 +2744,10 @@ jQuery.extend({
                     xml = null;
             }
         };
-        
+
         if ( s.async ) {
             // don't attach the handler to the request, just poll it instead
-            var ival = setInterval(onreadystatechange, 13); 
+            var ival = setInterval(onreadystatechange, 13);
 
             // Timeout checker
             if ( s.timeout > 0 )
@@ -2756,20 +2756,20 @@ jQuery.extend({
                     if ( xml ) {
                         // Cancel the request
                         xml.abort();
-    
+
                         if( !requestDone )
                             onreadystatechange( "timeout" );
                     }
                 }, s.timeout);
         }
-            
+
         // Send the data
         try {
             xml.send(s.data);
         } catch(e) {
             jQuery.handleError(s, xml, null, e);
         }
-        
+
         // firefox 1.5 doesn't fire statechange for sync requests
         if ( !s.async )
             onreadystatechange();
@@ -2797,7 +2797,7 @@ jQuery.extend({
             if ( s.global && ! --jQuery.active )
                 jQuery.event.trigger( "ajaxStop" );
         }
-        
+
         // return XMLHttpRequest to allow aborting the request etc.
         return xml;
     },
@@ -2892,7 +2892,7 @@ jQuery.fn.extend({
             this.animate({
                 height: "show", width: "show", opacity: "show"
             }, speed, callback) :
-            
+
             this.filter(":hidden").each(function(){
                 this.style.display = this.oldblock || "";
                 if ( jQuery.css(this,"display") == "none" ) {
@@ -2905,13 +2905,13 @@ jQuery.fn.extend({
                 }
             }).end();
     },
-    
+
     hide: function(speed,callback){
         return speed ?
             this.animate({
                 height: "hide", width: "hide", opacity: "hide"
             }, speed, callback) :
-            
+
             this.filter(":visible").each(function(){
                 this.oldblock = this.oldblock || jQuery.css(this,"display");
                 this.style.display = "none";
@@ -2920,7 +2920,7 @@ jQuery.fn.extend({
 
     // Save the old toggle function
     _toggle: jQuery.fn.toggle,
-    
+
     toggle: function( fn, fn2 ){
         return jQuery.isFunction(fn) && jQuery.isFunction(fn2) ?
             this._toggle( fn, fn2 ) :
@@ -2932,11 +2932,11 @@ jQuery.fn.extend({
                     jQuery(this)[ jQuery(this).is(":hidden") ? "show" : "hide" ]();
                 });
     },
-    
+
     slideDown: function(speed,callback){
         return this.animate({height: "show"}, speed, callback);
     },
-    
+
     slideUp: function(speed,callback){
         return this.animate({height: "hide"}, speed, callback);
     },
@@ -2944,19 +2944,19 @@ jQuery.fn.extend({
     slideToggle: function(speed, callback){
         return this.animate({height: "toggle"}, speed, callback);
     },
-    
+
     fadeIn: function(speed, callback){
         return this.animate({opacity: "show"}, speed, callback);
     },
-    
+
     fadeOut: function(speed, callback){
         return this.animate({opacity: "hide"}, speed, callback);
     },
-    
+
     fadeTo: function(speed,to,callback){
         return this.animate({opacity: to}, speed, callback);
     },
-    
+
     animate: function( prop, speed, easing, callback ) {
         var optall = jQuery.speed(speed, easing, callback);
 
@@ -2966,7 +2966,7 @@ jQuery.fn.extend({
 
             var opt = jQuery.extend({}, optall);
             var hidden = jQuery(this).is(":hidden"), self = this;
-            
+
             for ( var p in prop ) {
                 if ( prop[p] == "hide" && hidden || prop[p] == "show" && !hidden )
                     return jQuery.isFunction(opt.complete) && opt.complete.apply(this);
@@ -2984,7 +2984,7 @@ jQuery.fn.extend({
                 this.style.overflow = "hidden";
 
             opt.curAnim = jQuery.extend({}, prop);
-            
+
             jQuery.each( prop, function(name, val){
                 var e = new jQuery.fx( self, opt, name );
 
@@ -3019,7 +3019,7 @@ jQuery.fn.extend({
             return true;
         });
     },
-    
+
     queue: function(type, fn){
         if ( jQuery.isFunction(type) || ( type && type.constructor == Array )) {
             fn = type;
@@ -3034,7 +3034,7 @@ jQuery.fn.extend({
                 queue(this, type, fn);
             else {
                 queue(this, type).push( fn );
-            
+
                 if ( queue(this, type).length == 1 )
                     fn.apply(this);
             }
@@ -3076,7 +3076,7 @@ var queue = function( elem, type, array ) {
     var q = jQuery.data( elem, type + "queue" );
 
     if ( !q || array )
-        q = jQuery.data( elem, type + "queue", 
+        q = jQuery.data( elem, type + "queue",
             array ? jQuery.makeArray(array) : [] );
 
     return q;
@@ -3096,19 +3096,19 @@ jQuery.fn.dequeue = function(type){
 };
 
 jQuery.extend({
-    
+
     speed: function(speed, easing, fn) {
         var opt = speed && speed.constructor == Object ? speed : {
-            complete: fn || !fn && easing || 
+            complete: fn || !fn && easing ||
                 jQuery.isFunction( speed ) && speed,
             duration: speed,
             easing: fn && easing || easing && easing.constructor != Function && easing
         };
 
-        opt.duration = (opt.duration && opt.duration.constructor == Number ? 
-            opt.duration : 
+        opt.duration = (opt.duration && opt.duration.constructor == Number ?
+            opt.duration :
             { slow: 600, fast: 200 }[opt.duration]) || 400;
-    
+
         // Queueing
         opt.old = opt.complete;
         opt.complete = function(){
@@ -3117,10 +3117,10 @@ jQuery.extend({
             if ( jQuery.isFunction( opt.old ) )
                 opt.old.apply( this );
         };
-    
+
         return opt;
     },
-    
+
     easing: {
         linear: function( p, n, firstNum, diff ) {
             return firstNum + diff * p;
@@ -3129,7 +3129,7 @@ jQuery.extend({
             return ((-Math.cos(p*Math.PI)/2) + 0.5) * diff + firstNum;
         }
     },
-    
+
     timers: [],
     timerId: null,
 
@@ -3189,7 +3189,7 @@ jQuery.fx.prototype = {
         if ( jQuery.timerId == null ) {
             jQuery.timerId = setInterval(function(){
                 var timers = jQuery.timers;
-                
+
                 for ( var i = 0; i < timers.length; i++ )
                     if ( !timers[i]() )
                         timers.splice(i--, 1);
@@ -3215,7 +3215,7 @@ jQuery.fx.prototype = {
         // flash of content
         if ( this.prop == "width" || this.prop == "height" )
             this.elem.style[this.prop] = "1px";
-        
+
         // Start by showing the element
         jQuery(this.elem).show();
     },
@@ -3250,7 +3250,7 @@ jQuery.fx.prototype = {
                 if ( this.options.display != null ) {
                     // Reset the overflow
                     this.elem.style.overflow = this.options.overflow;
-                
+
                     // Reset the display
                     this.elem.style.display = this.options.display;
                     if ( jQuery.css(this.elem, "display") == "none" )
@@ -3312,23 +3312,23 @@ jQuery.fx.step = {
 // http://jquery.com/plugins/project/dimensions
 jQuery.fn.offset = function() {
     var left = 0, top = 0, elem = this[0], results;
-    
+
     if ( elem ) with ( jQuery.browser ) {
-        var parent       = elem.parentNode, 
+        var parent       = elem.parentNode,
             offsetChild  = elem,
-            offsetParent = elem.offsetParent, 
+            offsetParent = elem.offsetParent,
             doc          = elem.ownerDocument,
             safari2      = safari && parseInt(version) < 522 && !/adobeair/i.test(userAgent),
             fixed        = jQuery.css(elem, "position") == "fixed";
-    
+
         // Use getBoundingClientRect if available
         if ( elem.getBoundingClientRect ) {
             var box = elem.getBoundingClientRect();
-        
+
             // Add the document scroll offsets
             add(box.left + Math.max(doc.documentElement.scrollLeft, doc.body.scrollLeft),
                 box.top  + Math.max(doc.documentElement.scrollTop,  doc.body.scrollTop));
-        
+
             // IE adds the HTML element's border, by default it is medium which is 2px
             // IE 6 and 7 quirks mode the border width is overwritable by the following css html { border: 0; }
             // IE 7 standards mode, the border is always 2px
@@ -3336,54 +3336,54 @@ jQuery.fn.offset = function() {
             // However, in IE6 and 7 quirks mode the clientLeft and clientTop properties are not updated when overwriting it via CSS
             // Therefore this method will be off by 2px in IE while in quirksmode
             add( -doc.documentElement.clientLeft, -doc.documentElement.clientTop );
-    
+
         // Otherwise loop through the offsetParents and parentNodes
         } else {
-        
+
             // Initial element offsets
             add( elem.offsetLeft, elem.offsetTop );
-            
+
             // Get parent offsets
             while ( offsetParent ) {
                 // Add offsetParent offsets
                 add( offsetParent.offsetLeft, offsetParent.offsetTop );
-            
+
                 // Mozilla and Safari > 2 does not include the border on offset parents
                 // However Mozilla adds the border for table or table cells
                 if ( mozilla && !/^t(able|d|h)$/i.test(offsetParent.tagName) || safari && !safari2 )
                     border( offsetParent );
-                    
+
                 // Add the document scroll offsets if position is fixed on any offsetParent
                 if ( !fixed && jQuery.css(offsetParent, "position") == "fixed" )
                     fixed = true;
-            
+
                 // Set offsetChild to previous offsetParent unless it is the body element
                 offsetChild  = /^body$/i.test(offsetParent.tagName) ? offsetChild : offsetParent;
                 // Get next offsetParent
                 offsetParent = offsetParent.offsetParent;
             }
-        
+
             // Get parent scroll offsets
             while ( parent && parent.tagName && !/^body|html$/i.test(parent.tagName) ) {
                 // Remove parent scroll UNLESS that parent is inline or a table to work around Opera inline/table scrollLeft/Top bug
                 if ( !/^inline|table.*$/i.test(jQuery.css(parent, "display")) )
                     // Subtract parent scroll offsets
                     add( -parent.scrollLeft, -parent.scrollTop );
-            
+
                 // Mozilla does not add the border for a parent that has overflow != visible
                 if ( mozilla && jQuery.css(parent, "overflow") != "visible" )
                     border( parent );
-            
+
                 // Get next parent
                 parent = parent.parentNode;
             }
-        
+
             // Safari <= 2 doubles body offsets with a fixed position element/offsetParent or absolutely positioned offsetChild
             // Mozilla doubles body offsets with a non-absolutely positioned offsetChild
-            if ( (safari2 && (fixed || jQuery.css(offsetChild, "position") == "absolute")) || 
+            if ( (safari2 && (fixed || jQuery.css(offsetChild, "position") == "absolute")) ||
                 (mozilla && jQuery.css(offsetChild, "position") != "absolute") )
                     add( -doc.body.offsetLeft, -doc.body.offsetTop );
-            
+
             // Add the document scroll offsets if position is fixed
             if ( fixed )
                 add(Math.max(doc.documentElement.scrollLeft, doc.body.scrollLeft),
@@ -3420,7 +3420,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 // Tabindex normalization
 (function ($) {
     // -- Private functions --
-    
+
     var normalizeTabindexName = function () {
         return $.browser.msie ? "tabIndex" : "tabindex";
     };
@@ -3452,13 +3452,13 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
        return jQuery (elements[0]).is ("a, input, button, select, area, textarea, object");
     };
-    
+
     // -- Public API --
-    
+
     /**
      * Gets the value of the tabindex attribute for the first item, or sets the tabindex value of all elements
      * if toIndex is specified.
-     * 
+     *
      * @param {String|Number} toIndex
      */
     $.fn.tabindex = function (toIndex) {
@@ -3500,7 +3500,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
 
 // Keyboard navigation
-(function ($) {    
+(function ($) {
     // Public, static constants needed by the rest of the library.
     $.a11y = $.a11y || {};
 
@@ -3910,15 +3910,15 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 }) (jQuery);
 /***
  Copyright 2007 Chris Hoffman
- 
+
  This software is dual licensed under the MIT (MIT-LICENSE.txt)
  and GPL (GPL-LICENSE.txt) licenses.
 
- You may obtain a copy of the GPL License at 
- https://source.fluidproject.org/svn/fluid/components/trunk/src/webapp/fluid-components/js/jquery/GPL-LICENSE.txt
+ You may obtain a copy of the GPL License at
+ https://source.fluidproject.org/svn/fluid/components/trunk/src/fluid-components/js/jquery/GPL-LICENSE.txt
 
- You may obtain a copy of the MIT License at 
- https://source.fluidproject.org/svn/fluid/components/trunk/src/webapp/fluid-components/js/jquery/MIT-LICENSE.txt
+ You may obtain a copy of the MIT License at
+ https://source.fluidproject.org/svn/fluid/components/trunk/src/fluid-components/js/jquery/MIT-LICENSE.txt
 ***/
 
 /******************************
@@ -3977,8 +3977,8 @@ var ariaStateAttr = (function() {
         };
     }
 })();
-  
-$.fn.extend({  
+
+$.fn.extend({
     ariaRole : function(role){
         var jq = this;
         if (role) {
@@ -4055,39 +4055,39 @@ $.extend($.expr[':'], {
  */
 
 (function($){
-    
+
 $.dimensions = {
     version: '@VERSION'
 };
 
 // Create innerHeight, innerWidth, outerHeight and outerWidth methods
 $.each( [ 'Height', 'Width' ], function(i, name){
-    
+
     // innerHeight and innerWidth
     $.fn[ 'inner' + name ] = function() {
         if (!this[0]) return;
-        
+
         var torl = name == 'Height' ? 'Top'    : 'Left',  // top or left
             borr = name == 'Height' ? 'Bottom' : 'Right'; // bottom or right
-        
+
         return this.css('display') != 'none' ? this[0]['client' + name] : num( this, name.toLowerCase() ) + num(this, 'padding' + torl) + num(this, 'padding' + borr);
     };
-    
+
     // outerHeight and outerWidth
     $.fn[ 'outer' + name ] = function(options) {
         if (!this[0]) return;
-        
+
         var torl = name == 'Height' ? 'Top'    : 'Left',  // top or left
             borr = name == 'Height' ? 'Bottom' : 'Right'; // bottom or right
-        
+
         options = $.extend({ margin: false }, options || {});
-        
-        var val = this.css('display') != 'none' ? 
-                this[0]['offset' + name] : 
+
+        var val = this.css('display') != 'none' ?
+                this[0]['offset' + name] :
                 num( this, name.toLowerCase() )
                     + num(this, 'border' + torl + 'Width') + num(this, 'border' + borr + 'Width')
                     + num(this, 'padding' + torl) + num(this, 'padding' + borr);
-        
+
         return val + (options.margin ? (num(this, 'margin' + torl) + num(this, 'margin' + borr)) : 0);
     };
 });
@@ -4096,19 +4096,19 @@ $.each( [ 'Height', 'Width' ], function(i, name){
 $.each( ['Left', 'Top'], function(i, name) {
     $.fn[ 'scroll' + name ] = function(val) {
         if (!this[0]) return;
-        
+
         return val != undefined ?
-        
+
             // Set the scroll offset
             this.each(function() {
                 this == window || this == document ?
-                    window.scrollTo( 
+                    window.scrollTo(
                         name == 'Left' ? val : $(window)[ 'scrollLeft' ](),
                         name == 'Top'  ? val : $(window)[ 'scrollTop'  ]()
                     ) :
                     this[ 'scroll' + name ] = val;
             }) :
-            
+
             // Return the scroll offset
             this[0] == window || this[0] == document ?
                 self[ (name == 'Left' ? 'pageXOffset' : 'pageYOffset') ] ||
@@ -4121,33 +4121,33 @@ $.each( ['Left', 'Top'], function(i, name) {
 $.fn.extend({
     position: function() {
         var left = 0, top = 0, elem = this[0], offset, parentOffset, offsetParent, results;
-        
+
         if (elem) {
             // Get *real* offsetParent
             offsetParent = this.offsetParent();
-            
+
             // Get correct offsets
             offset       = this.offset();
             parentOffset = offsetParent.offset();
-            
+
             // Subtract element margins
             offset.top  -= num(elem, 'marginTop');
             offset.left -= num(elem, 'marginLeft');
-            
+
             // Add offsetParent borders
             parentOffset.top  += num(offsetParent, 'borderTopWidth');
             parentOffset.left += num(offsetParent, 'borderLeftWidth');
-            
+
             // Subtract the two offsets
             results = {
                 top:  offset.top  - parentOffset.top,
                 left: offset.left - parentOffset.left
             };
         }
-        
+
         return results;
     },
-    
+
     offsetParent: function() {
         var offsetParent = this[0].offsetParent;
         while ( offsetParent && (!/^body|html$/i.test(offsetParent.tagName) && $.css(offsetParent, 'position') == 'static') )
@@ -4176,7 +4176,7 @@ function num(el, prop) {
 
     //If the UI scope is not available, add it
     $.ui = $.ui || {};
-    
+
     //Add methods that are vital for all mouse interaction stuff (plugin registering)
     $.extend($.ui, {
         plugin: {
@@ -4192,20 +4192,20 @@ function num(el, prop) {
                 for (var i = 0; i < set.length; i++) {
                     if (instance.options[set[i][0]]) set[i][1].apply(instance.element, arguments);
                 }
-            }    
+            }
         },
         cssCache: {},
         css: function(name) {
             if ($.ui.cssCache[name]) return $.ui.cssCache[name];
             var tmp = $('<div class="ui-resizable-gen">').addClass(name).css({position:'absolute', top:'-5000px', left:'-5000px', display:'block'}).appendTo('body');
-            
+
             //if (!$.browser.safari)
-                //tmp.appendTo('body'); 
-            
+                //tmp.appendTo('body');
+
             //Opera and Safari set width and height to 0px instead of auto
             //Safari returns rgba(0,0,0,0) when bgcolor is not set
             $.ui.cssCache[name] = !!(
-                (!/auto|default/.test(tmp.css('cursor')) || (/^[1-9]/).test(tmp.css('height')) || (/^[1-9]/).test(tmp.css('width')) || 
+                (!/auto|default/.test(tmp.css('cursor')) || (/^[1-9]/).test(tmp.css('height')) || (/^[1-9]/).test(tmp.css('width')) ||
                 !(/none/).test(tmp.css('backgroundImage')) || !(/transparent|rgba\(0, 0, 0, 0\)/).test(tmp.css('backgroundColor')))
             );
             try { $('body').get(0).removeChild(tmp.get(0));    } catch(e){}
@@ -4225,7 +4225,7 @@ function num(el, prop) {
               var scroll = /top/.test(a||"top") ? 'scrollTop' : 'scrollLeft', has = false;
               if (e[scroll] > 0) return true; e[scroll] = 1;
               has = e[scroll] > 0 ? true : false; e[scroll] = 0;
-              return has; 
+              return has;
         }
     });
 
@@ -4273,50 +4273,50 @@ function num(el, prop) {
             return _remove.apply(this, arguments );
         }
     });
-    
+
     function num(el, prop) {
         return parseInt($.curCSS(el.jquery?el[0]:el,prop,true))||0;
     };
-    
-    
+
+
     /********** Mouse Interaction Plugin *********/
-    
+
     $.ui.mouseInteraction = function(element, options) {
-    
+
         var self = this;
         this.element = element;
 
         $.data(this.element, "ui-mouse", this);
         this.options = $.extend({}, options);
-        
+
         $(element).bind('mousedown.draggable', function() { return self.click.apply(self, arguments); });
         if($.browser.msie) $(element).attr('unselectable', 'on'); //Prevent text selection in IE
-        
+
         // prevent draggable-options-delay bug #2553
         $(element).mouseup(function() {
             if(self.timer) clearInterval(self.timer);
         });
     };
-    
+
     $.extend($.ui.mouseInteraction.prototype, {
-        
+
         destroy: function() { $(this.element).unbind('mousedown.draggable'); },
         trigger: function() { return this.click.apply(this, arguments); },
         click: function(e) {
-            
+
             if(
                    e.which != 1 //only left click starts dragging
                 || $.inArray(e.target.nodeName.toLowerCase(), this.options.dragPrevention || []) != -1 // Prevent execution on defined elements
                 || (this.options.condition && !this.options.condition.apply(this.options.executor || this, [e, this.element])) //Prevent execution on condition
             ) return true;
-                
+
             var self = this;
             var initialize = function() {
                 self._MP = { left: e.pageX, top: e.pageY }; // Store the click mouse position
                 $(document).bind('mouseup.draggable', function() { return self.stop.apply(self, arguments); });
                 $(document).bind('mousemove.draggable', function() { return self.drag.apply(self, arguments); });
-                
-                if(!self.initalized && Math.abs(self._MP.left-e.pageX) >= self.options.distance || Math.abs(self._MP.top-e.pageY) >= self.options.distance) {                
+
+                if(!self.initalized && Math.abs(self._MP.left-e.pageX) >= self.options.distance || Math.abs(self._MP.top-e.pageY) >= self.options.distance) {
                     if(self.options.start) self.options.start.call(self.options.executor || self, e, self.element);
                     if(self.options.drag) self.options.drag.call(self.options.executor || self, e, this.element); //This is actually not correct, but expected
                     self.initialized = true;
@@ -4329,12 +4329,12 @@ function num(el, prop) {
             } else {
                 initialize();
             }
-                
+
             return false;
-            
+
         },
-        stop: function(e) {            
-            
+        stop: function(e) {
+
             var o = this.options;
             if(!this.initialized) return $(document).unbind('mouseup.draggable').unbind('mousemove.draggable');
 
@@ -4342,14 +4342,14 @@ function num(el, prop) {
             $(document).unbind('mouseup.draggable').unbind('mousemove.draggable');
             this.initialized = false;
             return false;
-            
+
         },
         drag: function(e) {
 
             var o = this.options;
             if ($.browser.msie && !e.button) return this.stop.apply(this, [e]); // IE mouseup check
-            
-            if(!this.initialized && (Math.abs(this._MP.left-e.pageX) >= o.distance || Math.abs(this._MP.top-e.pageY) >= o.distance)) {                
+
+            if(!this.initialized && (Math.abs(this._MP.left-e.pageX) >= o.distance || Math.abs(this._MP.top-e.pageY) >= o.distance)) {
                 if(this.options.start) this.options.start.call(this.options.executor || this, e, this.element);
                 this.initialized = true;
             } else {
@@ -4358,13 +4358,13 @@ function num(el, prop) {
 
             if(o.drag) o.drag.call(this.options.executor || this, e, this.element);
             return false;
-            
+
         }
     });
-    
+
 })(jQuery);
  ;(function($) {
-    
+
     //If the UI scope is not available, add it
     $.ui = $.ui || {};
 
@@ -4386,7 +4386,7 @@ function num(el, prop) {
     });
 
     $.ui.dialog = function(el, options) {
-        
+
         this.options = options = $.extend({},
             $.ui.dialog.defaults,
             options && options.modal ? {resizable: false} : {},
@@ -4395,7 +4395,7 @@ function num(el, prop) {
         var self = this; //Do bindings
 
         $.data(this.element, "ui-dialog", this);
-        
+
         $(el).bind("setData.dialog", function(event, key, value){
             options[key] = value;
         }).bind("getData.dialog", function(event, key){
@@ -4413,7 +4413,7 @@ function num(el, prop) {
         var uiDialogContainer = uiDialogContent.parent().addClass('ui-dialog-container').css({position: 'relative'});
         var uiDialog = this.uiDialog = uiDialogContainer.parent().hide()
             .addClass('ui-dialog')
-            .css({position: 'absolute', width: options.width, height: options.height, overflow: 'hidden'}); 
+            .css({position: 'absolute', width: options.width, height: options.height, overflow: 'hidden'});
 
         var classNames = uiDialogContent.attr('className').split(' ');
 
@@ -4422,7 +4422,7 @@ function num(el, prop) {
             if (className != 'ui-dialog-content')
                 uiDialog.addClass(className);
         });
-        
+
         if (options.resizable && $.fn.resizable) {
             uiDialog.append('<div class="ui-resizable-n ui-resizable-handle"></div>')
                 .append('<div class="ui-resizable-s ui-resizable-handle"></div>')
@@ -4441,7 +4441,7 @@ function num(el, prop) {
         uiDialogTitlebar.append('<span class="ui-dialog-title">' + title + '</span>');
         uiDialogTitlebar.append('<a href="#" class="ui-dialog-titlebar-close"><span>X</span></a>');
         this.uiDialogTitlebarClose = $('.ui-dialog-titlebar-close', uiDialogTitlebar)
-            .hover(function() { $(this).addClass('ui-dialog-titlebar-close-hover'); }, 
+            .hover(function() { $(this).addClass('ui-dialog-titlebar-close-hover'); },
                    function() { $(this).removeClass('ui-dialog-titlebar-close-hover'); })
             .mousedown(function(ev) {
                 ev.stopPropagation();
@@ -4452,7 +4452,7 @@ function num(el, prop) {
             })
             .keydown(function(ev) {
                 var ESC = 27;
-                ev.keyCode && ev.keyCode == ESC && self.close(); 
+                ev.keyCode && ev.keyCode == ESC && self.close();
             });
 
         var l = 0;
@@ -4465,7 +4465,7 @@ function num(el, prop) {
                 uiDialogButtonPane.append(btn);
             });
         }
-    
+
         if (options.draggable && $.fn.draggable) {
             uiDialog.draggable({
                 handle: '.ui-dialog-titlebar',
@@ -4480,10 +4480,10 @@ function num(el, prop) {
         uiDialogTitlebar.click(function() {
             self.activate();
         });
-        
+
         // TODO: determine if this is necessary for modal dialogs
         options.bgiframe && $.fn.bgiframe && uiDialog.bgiframe();
-        
+
         this.open = function() {
             options.modal && overlay.show(self, options.overlay);
             uiDialog.appendTo('body');
@@ -4554,11 +4554,11 @@ function num(el, prop) {
             };
             $(this.element).triggerHandler("dialogclose", [closeEV, closeUI], options.close);
         };
-        
+
         if (options.autoOpen)
             this.open();
     };
-    
+
     $.extend($.ui.dialog, {
         defaults: {
             autoOpen: true,
@@ -4575,17 +4575,17 @@ function num(el, prop) {
             width: 300
         }
     });
-    
+
     // This is a port of relevant pieces of Mike Alsup's blockUI plugin (http://www.malsup.com/jquery/block/)
     // duplicated here for minimal overlay functionality and no dependency on a non-UI plugin
     var overlay = {
         $el: null,
         events: $.map('focus,mousedown,mouseup,keydown,keypress,click'.split(','),
             function(e) { return e + '.ui-dialog-overlay'; }).join(' '),
-        
+
         show: function(dialog, css) {
             if (this.$el) return;
-            
+
             this.dialog = dialog;
             this.selects = this.ie6 && $('select:visible').css('visibility', 'hidden');
             var width = this.width();
@@ -4597,7 +4597,7 @@ function num(el, prop) {
                     width: width,
                     height: height
                 }, css));
-            
+
             // prevent use of anchors and inputs
             $('a, :input').bind(this.events, function() {
                 if ($(this).parents('.ui-dialog').length == 0) {
@@ -4605,13 +4605,13 @@ function num(el, prop) {
                     return false;
                 }
             });
-            
+
             // allow closing by pressing the escape key
             $(document).bind('keydown.ui-dialog-overlay', function(e) {
                 var ESC = 27;
-                e.keyCode && e.keyCode == ESC && dialog.close(); 
+                e.keyCode && e.keyCode == ESC && dialog.close();
             });
-            
+
             // handle window resizing
             $overlay = this.$el;
             function resize() {
@@ -4634,14 +4634,14 @@ function num(el, prop) {
             dialog.uiDialog.is('.ui-draggable') && dialog.uiDialog.data('stop.draggable', resize);
             dialog.uiDialog.is('.ui-resizable') && dialog.uiDialog.data('stop.resizable', resize);
         },
-        
+
         hide: function() {
             $('a, :input').add([document, window]).unbind('.ui-dialog-overlay');
             this.ie6 && this.selects.css('visibility', 'visible');
             this.$el = null;
             $('.ui-dialog-overlay').remove();
         },
-        
+
         height: function() {
             var height;
             if (this.ie6
@@ -4658,7 +4658,7 @@ function num(el, prop) {
             }
             return height + 'px';
         },
-        
+
         width: function() {
             var width;
             if (this.ie6
@@ -4675,7 +4675,7 @@ function num(el, prop) {
             }
             return width + 'px';
         },
-        
+
         // IE 6 compatibility
         ie6: $.browser.msie && $.browser.version < 7,
         selects: null
@@ -4688,7 +4688,7 @@ function num(el, prop) {
  * Copyright (c) 2008 Paul Bakaus
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
- * 
+ *
  * http://docs.jquery.com/UI/Draggables
  *
  * Depends:
@@ -4701,7 +4701,7 @@ function num(el, prop) {
     $.fn.extend({
         draggable: function(options) {
             var args = Array.prototype.slice.call(arguments, 1);
-            
+
             return this.each(function() {
                 if (typeof options == "string") {
                     var drag = $.data(this, "draggable");
@@ -4712,31 +4712,31 @@ function num(el, prop) {
             });
         }
     });
-    
+
     $.ui.draggable = function(element, options) {
         //Initialize needed constants
         var self = this;
-        
+
         this.element = $(element);
-        
+
         $.data(element, "draggable", this);
         this.element.addClass("ui-draggable");
-        
+
         //Prepare the passed options
         this.options = $.extend({}, options);
         var o = this.options;
         $.extend(o, {
             helper: o.ghosting == true ? 'clone' : (o.helper || 'original'),
             handle : o.handle ? ($(o.handle, element)[0] ? $(o.handle, element) : this.element) : this.element,
-            appendTo: o.appendTo || 'parent'        
+            appendTo: o.appendTo || 'parent'
         });
-        
+
         $(element).bind("setData.draggable", function(event, key, value){
             self.options[key] = value;
         }).bind("getData.draggable", function(event, key){
             return self.options[key];
         });
-        
+
         //Initialize mouse events for interaction
         $(o.handle).mouseInteraction({
             executor: this,
@@ -4748,17 +4748,17 @@ function num(el, prop) {
             drag: this.drag,
             condition: function(e) { return !(e.target.className.indexOf("ui-resizable-handle") != -1 || this.options.disabled); }
         });
-        
+
         //Position the node
         if(o.helper == 'original' && (this.element.css('position') == 'static' || this.element.css('position') == ''))
             this.element.css('position', 'relative');
-            
+
         //Prepare cursorAt
         if(o.cursorAt && o.cursorAt.constructor == Array)
             o.cursorAt = { left: o.cursorAt[0], top: o.cursorAt[1] };
-        
+
     };
-    
+
     $.extend($.ui.draggable.prototype, {
         plugins: {},
         ui: function(e) {
@@ -4768,7 +4768,7 @@ function num(el, prop) {
                 absolutePosition: this.positionAbs,
                 instance: this,
                 options: this.options,
-                element: this.element                
+                element: this.element
             };
         },
         propagate: function(n,e) {
@@ -4813,29 +4813,29 @@ function num(el, prop) {
                 left: (r ? parseInt(this.helper.css('left'),10) || 0 : elementPosition.left + (this.offsetParent[0] == document.body ? 0 : this.offsetParent[0].scrollLeft)),
                 top: (r ? parseInt(this.helper.css('top'),10) || 0 : elementPosition.top + (this.offsetParent[0] == document.body ? 0 : this.offsetParent[0].scrollTop))
             };
-            
+
             //Generate a flexible offset that will later be subtracted from e.pageX/Y
             this.offset = {left: this._pageX - this.originalPosition.left, top: this._pageY - this.originalPosition.top };
-            
+
         },
         start: function(e) {
             var o = this.options;
             if($.ui.ddmanager) $.ui.ddmanager.current = this;
-            
+
             //Create and append the visible helper
             this.helper = typeof o.helper == 'function' ? $(o.helper.apply(this.element[0], [e])) : (o.helper == 'clone' ? this.element.clone().appendTo((o.appendTo == 'parent' ? this.element[0].parentNode : o.appendTo)) : this.element);
             if(this.helper[0] != this.element[0]) this.helper.css('position', 'absolute');
             if(!this.helper.parents('body').length) this.helper.appendTo((o.appendTo == 'parent' ? this.element[0].parentNode : o.appendTo));
-            
-            
+
+
             //Find out the next positioned parent
             this.offsetParent = (function(cp) {
                 while(cp) {
                     if(cp.style && (/(absolute|relative|fixed)/).test($.css(cp,'position'))) return $(cp);
                     cp = cp.parentNode ? cp.parentNode : null;
-                }; return $("body");        
+                }; return $("body");
             })(this.helper[0].parentNode);
-            
+
             //Prepare variables for position generation
             this.elementOffset = this.element.offset();
             this.offsetParentOffset = this.offsetParent.offset();
@@ -4849,28 +4849,28 @@ function num(el, prop) {
                 left: (r ? parseInt(this.helper.css('left'),10) || 0 : elementPosition.left + (this.offsetParent[0] == document.body ? 0 : this.offsetParent[0].scrollLeft)),
                 top: (r ? parseInt(this.helper.css('top'),10) || 0 : elementPosition.top + (this.offsetParent[0] == document.body ? 0 : this.offsetParent[0].scrollTop))
             };
-            
+
             //If we have a fixed element, we must subtract the scroll offset again
             if(this.element.css('position') == 'fixed') {
                 this.originalPosition.top -= this.offsetParent[0] == document.body ? $(document).scrollTop() : this.offsetParent[0].scrollTop;
                 this.originalPosition.left -= this.offsetParent[0] == document.body ? $(document).scrollLeft() : this.offsetParent[0].scrollLeft;
             }
-            
+
             //Generate a flexible offset that will later be subtracted from e.pageX/Y
             this.offset = {left: e.pageX - this.originalPosition.left, top: e.pageY - this.originalPosition.top };
-            
+
             //Substract margins
             if(this.element[0] != this.helper[0]) {
                 this.offset.left += parseInt(this.element.css('marginLeft'),10) || 0;
                 this.offset.top += parseInt(this.element.css('marginTop'),10) || 0;
             }
-            
+
             //Call plugins and callbacks
             this.propagate("start", e);
 
             this.helperProportions = { width: this.helper.outerWidth(), height: this.helper.outerHeight() };
             if ($.ui.ddmanager && !o.dropBehaviour) $.ui.ddmanager.prepareOffsets(this, e);
-            
+
             //If we have something in cursorAt, we'll use it
             if(o.cursorAt) {
                 if(o.cursorAt.top != undefined || o.cursorAt.bottom != undefined) {
@@ -4895,11 +4895,11 @@ function num(el, prop) {
             //If we are using droppables, inform the manager about the drop
             if ($.ui.ddmanager && !this.options.dropBehaviour)
                 $.ui.ddmanager.drop(this, e);
-                
+
             //Call plugins and trigger callbacks
             this.propagate("stop", e);
-            
-            if(this.cancelHelperRemoval) return false;            
+
+            if(this.cancelHelperRemoval) return false;
             if(this.options.helper != 'original') this.helper.remove();
             this.clear();
 
@@ -4912,21 +4912,21 @@ function num(el, prop) {
             this.positionAbs = { left: e.pageX - this.clickOffset.left, top: e.pageY - this.clickOffset.top };
 
             //Call plugins and callbacks
-            this.checkConstrains();            
+            this.checkConstrains();
             this.position = this.propagate("drag", e) || this.position;
             this.checkConstrains();
-            
+
             $(this.helper).css({ left: this.position.left+'px', top: this.position.top+'px' }); // Stick the helper to the cursor
             if($.ui.ddmanager) $.ui.ddmanager.drag(this, e);
             return false;
-            
+
         }
     });
-    
+
 /*
  * Draggable Extensions
  */
-     
+
     $.ui.plugin.add("draggable", "cursor", {
         start: function(e, ui) {
             var t = $('body');
@@ -4965,7 +4965,7 @@ function num(el, prop) {
         stop: function(e, ui) {
             var self = ui.instance, helper = $(self.helper);
             self.cancelHelperRemoval = true;
-            
+
             $(ui.helper).animate({ left: self.originalPosition.left, top: self.originalPosition.top }, parseInt(ui.options.revert, 10) || 500, function() {
                 if(ui.options.helper != 'original') helper.remove();
                 if (!helper) self.clear();
@@ -4978,25 +4978,25 @@ function num(el, prop) {
 
             var o = ui.options;
             if(ui.instance.slowMode) return; // Make clones on top of iframes (only if we are not in slowMode)
-            
+
             if(o.iframeFix.constructor == Array) {
                 for(var i=0;i<o.iframeFix.length;i++) {
                     var co = $(o.iframeFix[i]).offset({ border: false });
                     $('<div class="DragDropIframeFix"" style="background: #fff;"></div>').css("width", $(o.iframeFix[i])[0].offsetWidth+"px").css("height", $(o.iframeFix[i])[0].offsetHeight+"px").css("position", "absolute").css("opacity", "0.001").css("z-index", "1000").css("top", co.top+"px").css("left", co.left+"px").appendTo("body");
-                }        
+                }
             } else {
-                $("iframe").each(function() {                    
+                $("iframe").each(function() {
                     var co = $(this).offset({ border: false });
                     $('<div class="DragDropIframeFix" style="background: #fff;"></div>').css("width", this.offsetWidth+"px").css("height", this.offsetHeight+"px").css("position", "absolute").css("opacity", "0.001").css("z-index", "1000").css("top", co.top+"px").css("left", co.left+"px").appendTo("body");
-                });                            
+                });
             }
 
         },
         stop: function(e, ui) {
-            if(ui.options.iframeFix) $("div.DragDropIframeFix").each(function() { this.parentNode.removeChild(this); }); //Remove frame helpers    
+            if(ui.options.iframeFix) $("div.DragDropIframeFix").each(function() { this.parentNode.removeChild(this); }); //Remove frame helpers
         }
     });
-    
+
     $.ui.plugin.add("draggable", "containment", {
         start: function(e, ui) {
 
@@ -5025,7 +5025,7 @@ function num(el, prop) {
                     co.top+(ce.offsetHeight || ce.scrollHeight)
                 ];
             }
-            
+
             var c = o.containment;
             ui.instance.setContrains(
                 c[0] - (self.offset.left - self.clickOffset.left), //min left
@@ -5042,7 +5042,7 @@ function num(el, prop) {
             var o = ui.options;
             var newLeft = ui.instance.originalPosition.left + Math.round((e.pageX - ui.instance._pageX) / o.grid[0]) * o.grid[0];
             var newTop = ui.instance.originalPosition.top + Math.round((e.pageY - ui.instance._pageY) / o.grid[1]) * o.grid[1];
-            
+
             ui.instance.position.left = newLeft;
             ui.instance.position.top = newTop;
 
@@ -5076,7 +5076,7 @@ function num(el, prop) {
             }(this);
         },
         drag: function(e, ui) {
-            
+
             var o = ui.options;
             var i = ui.instance;
 
@@ -5084,7 +5084,7 @@ function num(el, prop) {
                 if(i.overflowY[0].offsetHeight - (ui.position.top - i.overflowY[0].scrollTop + i.clickOffset.top) < o.scrollSensitivity)
                     i.overflowY[0].scrollTop = i.overflowY[0].scrollTop + o.scrollSpeed;
                 if((ui.position.top - i.overflowY[0].scrollTop + i.clickOffset.top) < o.scrollSensitivity)
-                    i.overflowY[0].scrollTop = i.overflowY[0].scrollTop - o.scrollSpeed;                
+                    i.overflowY[0].scrollTop = i.overflowY[0].scrollTop - o.scrollSpeed;
             } else {
                 //$(document.body).append('<p>'+(e.pageY - $(document).scrollTop())+'</p>');
                 if(e.pageY - $(document).scrollTop() < o.scrollSensitivity)
@@ -5092,27 +5092,27 @@ function num(el, prop) {
                 if($(window).height() - (e.pageY - $(document).scrollTop()) < o.scrollSensitivity)
                     $(document).scrollTop($(document).scrollTop() + o.scrollSpeed);
             }
-            
+
             if(i.overflowX[0] != document && i.overflowX[0].tagName != 'HTML') {
                 if(i.overflowX[0].offsetWidth - (ui.position.left - i.overflowX[0].scrollLeft + i.clickOffset.left) < o.scrollSensitivity)
                     i.overflowX[0].scrollLeft = i.overflowX[0].scrollLeft + o.scrollSpeed;
                 if((ui.position.top - i.overflowX[0].scrollLeft + i.clickOffset.left) < o.scrollSensitivity)
-                    i.overflowX[0].scrollLeft = i.overflowX[0].scrollLeft - o.scrollSpeed;                
+                    i.overflowX[0].scrollLeft = i.overflowX[0].scrollLeft - o.scrollSpeed;
             } else {
                 if(e.pageX - $(document).scrollLeft() < o.scrollSensitivity)
                     $(document).scrollLeft($(document).scrollLeft() - o.scrollSpeed);
                 if($(window).width() - (e.pageX - $(document).scrollLeft()) < o.scrollSensitivity)
                     $(document).scrollLeft($(document).scrollLeft() + o.scrollSpeed);
             }
-            
+
             ui.instance.recallOffset(e);
 
         }
     });
-    
+
     $.ui.plugin.add("draggable", "snap", {
         start: function(e, ui) {
-            
+
             ui.instance.snapElements = [];
             $(ui.options.snap === true ? '.ui-draggable' : ui.options.snap).each(function() {
                 var $t = $(this); var $o = $t.offset();
@@ -5124,7 +5124,7 @@ function num(el, prop) {
                     left: $o.left
                 });
             });
-            
+
         },
         drag: function(e, ui) {
 
@@ -5134,7 +5134,7 @@ function num(el, prop) {
 
             for (var i = ui.instance.snapElements.length - 1; i >= 0; i--){
 
-                var l = ui.instance.snapElements[i].left, r = l + ui.instance.snapElements[i].width, 
+                var l = ui.instance.snapElements[i].left, r = l + ui.instance.snapElements[i].width,
                     t = ui.instance.snapElements[i].top,  b = t + ui.instance.snapElements[i].height;
 
                 //Yes, I know, this is insane ;)
@@ -5150,7 +5150,7 @@ function num(el, prop) {
                     if(ls) ui.position.left = l - ui.instance.offset.left + ui.instance.clickOffset.left - ui.instance.helperProportions.width;
                     if(rs) ui.position.left = r - ui.instance.offset.left + ui.instance.clickOffset.left;
                 }
-                
+
                 if(ui.options.snapMode != 'outer') {
                     var ts = Math.abs(t - y1) <= 20;
                     var bs = Math.abs(b - y2) <= 20;
@@ -5176,7 +5176,7 @@ function num(el, prop) {
  * Copyright (c) 2008 Paul Bakaus
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
- * 
+ *
  * http://docs.jquery.com/UI/Droppables
  *
  * Depends:
@@ -5190,7 +5190,7 @@ function num(el, prop) {
     $.fn.extend({
         droppable: function(options) {
             var args = Array.prototype.slice.call(arguments, 1);
-            
+
             return this.each(function() {
                 if (typeof options == "string") {
                     var drop = $.data(this, "droppable");
@@ -5201,37 +5201,37 @@ function num(el, prop) {
             });
         }
     });
-    
+
     $.ui.droppable = function(element, options) {
 
-        //Initialize needed constants            
+        //Initialize needed constants
         this.element = $(element);
         $.data(element, "droppable", this);
-        this.element.addClass("ui-droppable");        
-        
+        this.element.addClass("ui-droppable");
+
         //Prepare the passed options
         var o = this.options = options = $.extend({}, $.ui.droppable.defaults, options);
         var accept = o.accept;
         o = $.extend(o, {
             accept: o.accept && o.accept.constructor == Function ? o.accept : function(d) {
-                return $(d).is(accept);    
+                return $(d).is(accept);
             }
         });
-        
+
         $(element).bind("setData.droppable", function(event, key, value){
             o[key] = value;
         }).bind("getData.droppable", function(event, key){
             return o[key];
         });
-        
+
         //Store the droppable's proportions
         this.proportions = { width: this.element.outerWidth(), height: this.element.outerHeight() };
-        
+
         // Add the reference and positions to the manager
         $.ui.ddmanager.droppables.push({ item: this, over: 0, out: 1 });
-            
+
     };
-    
+
     $.extend($.ui.droppable, {
         defaults: {
             disabled: false,
@@ -5249,15 +5249,15 @@ function num(el, prop) {
                 position: c.position,
                 absolutePosition: c.positionAbs,
                 options: this.options,
-                element: this.element    
-            };        
+                element: this.element
+            };
         },
         destroy: function() {
             var drop = $.ui.ddmanager.droppables;
             for ( var i = 0; i < drop.length; i++ )
                 if ( drop[i].item == this )
                     drop.splice(i, 1);
-            
+
             this.element
                 .removeClass("ui-droppable ui-droppable-disabled")
                 .removeData("droppable")
@@ -5275,12 +5275,12 @@ function num(el, prop) {
 
             var draggable = $.ui.ddmanager.current;
             if (!draggable || (draggable.currentItem || draggable.element)[0] == this.element[0]) return; // Bail if draggable and droppable are same element
-            
+
             if (this.options.accept.call(this.element,(draggable.currentItem || draggable.element))) {
                 $.ui.plugin.call(this, 'over', [e, this.ui(draggable)]);
                 this.element.triggerHandler("dropover", [e, this.ui(draggable)], this.options.over);
             }
-            
+
         },
         out: function(e) {
 
@@ -5291,63 +5291,63 @@ function num(el, prop) {
                 $.ui.plugin.call(this, 'out', [e, this.ui(draggable)]);
                 this.element.triggerHandler("dropout", [e, this.ui(draggable)], this.options.out);
             }
-            
+
         },
         drop: function(e,custom) {
 
             var draggable = custom || $.ui.ddmanager.current;
             if (!draggable || (draggable.currentItem || draggable.element)[0] == this.element[0]) return; // Bail if draggable and droppable are same element
-            
+
             var childrenIntersection = false;
             this.element.find(".ui-droppable").each(function() {
                 var inst = $.data(this, 'droppable');
-                if(inst.options.greedy && $.ui.intersect(draggable, { item: inst, offset: inst.element.offset() }, inst.options.tolerance)) { 
+                if(inst.options.greedy && $.ui.intersect(draggable, { item: inst, offset: inst.element.offset() }, inst.options.tolerance)) {
                     childrenIntersection = true; return false;
                 }
             });
             if(childrenIntersection) return;
-            
+
             if(this.options.accept.call(this.element,(draggable.currentItem || draggable.element))) {
                 $.ui.plugin.call(this, 'drop', [e, this.ui(draggable)]);
                 this.element.triggerHandler("drop", [e, this.ui(draggable)], this.options.drop);
             }
-            
+
         },
         activate: function(e) {
 
             var draggable = $.ui.ddmanager.current;
             $.ui.plugin.call(this, 'activate', [e, this.ui(draggable)]);
             if(draggable) this.element.triggerHandler("dropactivate", [e, this.ui(draggable)], this.options.activate);
-                
+
         },
         deactivate: function(e) {
-            
+
             var draggable = $.ui.ddmanager.current;
             $.ui.plugin.call(this, 'deactivate', [e, this.ui(draggable)]);
             if(draggable) this.element.triggerHandler("dropdeactivate", [e, this.ui(draggable)], this.options.deactivate);
-            
+
         }
     });
-    
+
     $.ui.intersect = function(draggable, droppable, toleranceMode) {
 
         if (!droppable.offset) return false;
 
         var x1 = draggable.positionAbs.left, x2 = x1 + draggable.helperProportions.width,
             y1 = draggable.positionAbs.top, y2 = y1 + draggable.helperProportions.height;
-        var l = droppable.offset.left, r = l + droppable.item.proportions.width, 
+        var l = droppable.offset.left, r = l + droppable.item.proportions.width,
             t = droppable.offset.top,  b = t + droppable.item.proportions.height;
 
         switch (toleranceMode) {
             case 'fit':
-                
+
                 if(!((y2-(draggable.helperProportions.height/2) > t && y1 < t) || (y1 < b && y2 > b) || (x2 > l && x1 < l) || (x1 < r && x2 > r))) return false;
-                
+
                 if(y2-(draggable.helperProportions.height/2) > t && y1 < t) return 1; //Crosses top edge
                 if(y1 < b && y2 > b) return 2; //Crosses bottom edge
                 if(x2 > l && x1 < l) return 1; //Crosses left edge
                 if(x1 < r && x2 > r) return 2; //Crosses right edge
-                
+
                 //return (   l < x1 && x2 < r
                 //    && t < y1 && y2 < b);
                 break;
@@ -5375,9 +5375,9 @@ function num(el, prop) {
                 return false;
                 break;
             }
-        
+
     };
-    
+
     /*
         This manager tracks offsets of draggables and droppables
     */
@@ -5389,67 +5389,67 @@ function num(el, prop) {
             var m = $.ui.ddmanager.droppables;
             var type = e ? e.type : null; // workaround for #2317
             for (var i = 0; i < m.length; i++) {
-                
+
                 if(m[i].item.options.disabled || (t && !m[i].item.options.accept.call(m[i].item.element,(t.currentItem || t.element)))) continue;
                 m[i].offset = $(m[i].item.element).offset();
                 m[i].item.proportions = { width: m[i].item.element.outerWidth(), height: m[i].item.element.outerHeight() };
-                
+
                 if(type == "dragstart") m[i].item.activate.call(m[i].item, e); //Activate the droppable if used directly from draggables
             }
-            
+
         },
         drop: function(draggable, e) {
-            
+
             $.each($.ui.ddmanager.droppables, function() {
-                
+
                 if (!this.item.options.disabled && $.ui.intersect(draggable, this, this.item.options.tolerance))
                     this.item.drop.call(this.item, e);
-                    
+
                 if (!this.item.options.disabled && this.item.options.accept.call(this.item.element,(draggable.currentItem || draggable.element))) {
                     this.out = 1; this.over = 0;
                     this.item.deactivate.call(this.item, e);
                 }
-                
+
             });
-            
+
         },
         drag: function(draggable, e) {
-            
+
             //If you have a highly dynamic page, you might try this option. It renders positions every time you move the mouse.
             if(draggable.options.refreshPositions) $.ui.ddmanager.prepareOffsets(draggable, e);
-        
+
             //Run through all droppables and check their positions based on specific tolerance options
             $.each($.ui.ddmanager.droppables, function() {
 
-                if(this.item.disabled || this.greedyChild) return; 
+                if(this.item.disabled || this.greedyChild) return;
                 var intersects = $.ui.intersect(draggable, this, this.item.options.tolerance);
 
                 var c = !intersects && this.over == 1 ? 'out' : (intersects && this.over == 0 ? 'over' : null);
                 if(!c) return;
 
-                var instance = $.data(this.item.element[0], 'droppable'); 
-                if (instance.options.greedy) { 
-                    this.item.element.parents('.ui-droppable').each(function() { 
-                        var parent = this; 
-                        $.each($.ui.ddmanager.droppables, function() { 
-                            if (this.item.element[0] != parent) return; 
-                            this[c] = 0; 
-                            this[c == 'out' ? 'over' : 'out'] = 1; 
-                            this.greedyChild = (c == 'over' ? 1 : 0); 
-                            this.item[c == 'out' ? 'over' : 'out'].call(this.item, e); 
-                            return false; 
-                        }); 
-                    }); 
-                } 
+                var instance = $.data(this.item.element[0], 'droppable');
+                if (instance.options.greedy) {
+                    this.item.element.parents('.ui-droppable').each(function() {
+                        var parent = this;
+                        $.each($.ui.ddmanager.droppables, function() {
+                            if (this.item.element[0] != parent) return;
+                            this[c] = 0;
+                            this[c == 'out' ? 'over' : 'out'] = 1;
+                            this.greedyChild = (c == 'over' ? 1 : 0);
+                            this.item[c == 'out' ? 'over' : 'out'].call(this.item, e);
+                            return false;
+                        });
+                    });
+                }
 
                 this[c] = 1; this[c == 'out' ? 'over' : 'out'] = 0;
                 this.item[c].call(this.item, e);
-                    
+
             });
-            
+
         }
     };
-    
+
 /*
  * Droppable Extensions
  */
@@ -5476,7 +5476,7 @@ function num(el, prop) {
         drop: function(e, ui) {
             $(this).removeClass(ui.options.hoverClass);
         }
-    });    
+    });
 
 })(jQuery);
 /*
@@ -5511,32 +5511,32 @@ var fluid = fluid || {};
         k: 75,
         m: 77
     };
-    
+
     /**
      * These roles are used to add ARIA roles to orderable items. This list can be extended as needed,
      * but the values of the container and item roles must match ARIA-specified roles.
-     */  
+     */
     fluid.roles = {
         GRID: { container: "grid", item: "gridcell" },
         LIST: { container: "list", item: "listitem" }
     };
-    
+
     fluid.orientation = {
         HORIZONTAL: "horiz",
         VERTICAL: "vert"
     };
-    
+
     /**
      * This is the position, relative to a given drop target, that a dragged item should be dropped.
      */
     fluid.position = {
-        BEFORE: 0, 
+        BEFORE: 0,
         AFTER: 1,
         INSIDE: 2,
         USE_LAST_KNOWN: 3,  // given configuration meaningless, use last known drop target
         DISALLOWED: -1      // cannot drop in given configuration
     };
-    
+
     /**
      * For incrementing/decrementing a count or index.
      */
@@ -5544,7 +5544,7 @@ var fluid = fluid || {};
         NEXT: 1,
         PREVIOUS: -1
     };
-    
+
     fluid.defaultKeysets = [{
         modifier : function (evt) {
             return evt.ctrlKey;
@@ -5563,7 +5563,7 @@ var fluid = fluid || {};
         right : fluid.keys.k,
         left : fluid.keys.j
     }];
-    
+
     fluid.mixin = function (target, args) {
         for (var arg in args) {
             if (args.hasOwnProperty (arg)) {
@@ -5571,21 +5571,21 @@ var fluid = fluid || {};
             }
         }
     };
-    
+
     fluid.wrap = function (obj) {
-        return ((!obj || obj.jquery) ? obj : jQuery (obj)); 
+        return ((!obj || obj.jquery) ? obj : jQuery (obj));
     };
-    
+
     fluid.unwrap = function (obj) {
         return (obj.jquery) ? obj[0] : obj; // Unwrap the element if it's a jQuery.
     };
-    
+
     /*
      * Utilities object for providing various general convenience functions
      */
     fluid.utils = {};
-    
-    // Custom query method seeks all tags descended from a given root with a 
+
+    // Custom query method seeks all tags descended from a given root with a
     // particular tag name, whose id matches a regex. The Dojo query parser
     // is broken http://trac.dojotoolkit.org/ticket/3520#preview, this is all
     // it might do anyway, and this will be plenty fast.
@@ -5601,11 +5601,11 @@ var fluid = fluid || {};
         }
         return togo;
     };
-          
+
     fluid.utils.escapeSelector = function(id) {
         return id.replace (/\:/g,"\\:");
     };
-      
+
     fluid.utils.findForm = function (element) {
         while(element) {
             if (element.nodeName.toLowerCase() === "form") {
@@ -5614,28 +5614,28 @@ var fluid = fluid || {};
             element = element.parentNode;
         }
     };
-    
+
     /**
-     * Adapt 'findItems' object given either a 'findItems' object or a 'findMovables' function 
+     * Adapt 'findItems' object given either a 'findItems' object or a 'findMovables' function
      **/
     fluid.utils.adaptFindItems = function (finder) {
         var finderFn = function () {};
         var findItems = {};
-        
+
         if (typeof finder === 'function') {
             finderFn = finder;
         } else {
             findItems = finder;
         }
-    
+
         findItems.movables = findItems.movables || finderFn;
         findItems.selectables = findItems.selectables || findItems.movables;
         findItems.dropTargets = findItems.dropTargets || findItems.movables;
         findItems.grabHandle = findItems.grabHandle || function (item) { return item; };
-            
+
         return findItems;
     };
-    
+
     /**
      * Returns a jQuery object given the id of a DOM node
      */
@@ -5662,7 +5662,7 @@ var fluid = fluid || {};
     fluid.utils.filesizeStr = function (bytes) {
         return Math.round(bytes/1028) + ' KB';
     };
-    
+
     fluid.utils.initCssClassNames = function (defaultNames, classNames) {
         if (!classNames) {
             return defaultNames;
@@ -5695,7 +5695,7 @@ var fluid = fluid || {};
 (function (jQuery, fluid) {
     var defaultContainerRole = fluid.roles.LIST;
     var defaultInstructionMessageId = "message-bundle:";
-    
+
     var defaultCssClassNames = {
         defaultStyle: "orderable-default",
         selected: "orderable-selected",
@@ -5705,7 +5705,7 @@ var fluid = fluid || {};
         dropMarker: "orderable-drop-marker",
         avatar: "orderable-avatar"
     };
-    
+
     var defaultAvatarCreator = function(item, cssClass, dropWarning) {
         var avatar = jQuery (item).clone ();
         avatar.removeAttr ("id");
@@ -5720,7 +5720,7 @@ var fluid = fluid || {};
 //                    avatar.droppable ("destroy");
         avatar.removeClass ("ui-droppable");
         avatar.addClass (cssClass);
-        
+
         if (dropWarning) {
             // Will a 'div' always be valid in this position?
             var avatarContainer = jQuery (document.createElement("div"));
@@ -5730,8 +5730,8 @@ var fluid = fluid || {};
         } else {
             return avatar;
         }
-    };   
-    
+    };
+
     function firstSelectable (findItems) {
         var selectables = fluid.wrap (findItems.selectables());
         if (selectables.length <= 0) {
@@ -5739,7 +5739,7 @@ var fluid = fluid || {};
         }
         return selectables[0];
     }
-    
+
     function bindHandlersToContainer (container, focusHandler, keyDownHandler, keyUpHandler, mouseMoveHandler) {
         container.focus (focusHandler);
         container.keydown (keyDownHandler);
@@ -5749,11 +5749,11 @@ var fluid = fluid || {};
         // ondrag() and onselectstart() are Internet Explorer specific functions.
         // Override them so that drag+drop actions don't also select text in IE.
         if (jQuery.browser.msie) {
-            container[0].ondrag = function () { return false; }; 
+            container[0].ondrag = function () { return false; };
             container[0].onselectstart = function () { return false; };
-        } 
+        }
     }
-    
+
     function addRolesToContainer (container, findItems, role) {
         var first = firstSelectable(findItems);
         if (first) {
@@ -5764,30 +5764,30 @@ var fluid = fluid || {};
         container.ariaState ("readonly", "false");
         container.ariaState ("disabled", "false");
     }
-    
+
     function changeSelectedToDefault (jItem, cssClasses) {
         jItem.removeClass (cssClasses.selected);
         jItem.addClass (cssClasses.defaultStyle);
         jItem.ariaState("selected", "false");
     }
-    
-    // This is the start of refactoring the drag and drop code out into its own space. 
+
+    // This is the start of refactoring the drag and drop code out into its own space.
     // These are the private stateless functions.
     var dndFunctions = {};
     dndFunctions.findTarget = function (element, dropTargets, avatarId, lastTarget) {
         var isAvatar = function (el) {
             return (el && el.id === avatarId);
         };
-            
+
         var isTargetOrAvatar = function (el) {
             return ((dropTargets.index (el) > -1) || isAvatar (el));
         };
 
         var target = isTargetOrAvatar(element) ? element : jQuery.grep(jQuery(element).parents(), isTargetOrAvatar)[0];
-        
+
         // If the avatar was the target of the event, use the last known drop target instead.
         if (isAvatar(target)) {
-            target = lastTarget;        
+            target = lastTarget;
         }
         return target;
     };
@@ -5796,15 +5796,15 @@ var fluid = fluid || {};
         // This is safe since there is only a single avatar at a time
         return parentId + "_avatar";
     };
-    
+
     var setupKeysets = function (defaultKeysets, userKeysets) {
         // Check if the user has given us an array of keysets or a single keyset.
         if (userKeysets && !(userKeysets instanceof Array)) {
-            userKeysets = [userKeysets];    
+            userKeysets = [userKeysets];
         }
         return userKeysets || defaultKeysets;
     };
-    
+
     /**
      * @param container - the root node of the Reorderer.
      * @param findItems - a function that returns all of the movable elements in the container OR
@@ -5812,7 +5812,7 @@ var fluid = fluid || {};
      *                    movables - a function that returns all of the movable elements in the container
      *                    selectables (optional) - a function that returns all of the selectable elements
      *                    dropTargets (optional) - a function that returns all of the elements that can be used as drop targets
-     *                    grabHandle (optional) - a function that returns the element within the given movable that is to be used as a 'handle' for the mouse-based drag and drop of the movable. 
+     *                    grabHandle (optional) - a function that returns the element within the given movable that is to be used as a 'handle' for the mouse-based drag and drop of the movable.
      * @param layoutHandler - an instance of a Layout Handler.
      * @param options - an object containing any of the available options:
      *                  role - indicates the role, or general use, for this instance of the Reorderer
@@ -5836,7 +5836,7 @@ var fluid = fluid || {};
     fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         // Reliable 'this'.
         var thisReorderer = this;
-        
+
         // Basic setup
         this.domNode = jQuery (container);
         this.activeItem = undefined;
@@ -5851,12 +5851,12 @@ var fluid = fluid || {};
         var avatarCreator = options.avatarCreator || defaultAvatarCreator;
         var kbDropWarning = fluid.utils.jById(options.dropWarningId);
         var mouseDropWarning = kbDropWarning.clone();
-        
+
         this.focusActiveItem = function (evt) {
             // If the active item has not been set yet, set it to the first selectable.
             if (!thisReorderer.activeItem) {
                 var first = firstSelectable(findItems);
-                if (!first) {  
+                if (!first) {
                     return evt.stopPropagation();
                 }
                 jQuery(first).focus ();
@@ -5874,16 +5874,16 @@ var fluid = fluid || {};
             }
             return false;
         };
-        
+
         var isActiveItemMovable = function () {
             return (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0);
         };
-        
+
         var setDropEffects = function (value) {
             var dropTargets = fluid.wrap (findItems.dropTargets());
             dropTargets.ariaState ("dropeffect", value);
         };
-        
+
         this.handleKeyDown = function (evt) {
             if (!thisReorderer.activeItem || (thisReorderer.activeItem !== evt.target)) {
                 return true;
@@ -5909,7 +5909,7 @@ var fluid = fluid || {};
                 return true;
             }
             var jActiveItem = jQuery (thisReorderer.activeItem);
-            
+
             // Handle a key up event for the modifier
             if (jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && !isMove(evt)) {
                 kbDropWarning.hide();
@@ -5919,7 +5919,7 @@ var fluid = fluid || {};
                 setDropEffects("none");
                 return false;
             }
-            
+
             return false;
         };
 
@@ -5931,11 +5931,11 @@ var fluid = fluid || {};
                 jQuery(thisReorderer.activeItem).removeClass(thisReorderer.cssClasses.selected);
             }
         };
-        
+
         var noModifier = function (evt) {
             return (!evt.ctrlKey && !evt.altKey && !evt.shiftKey && !evt.metaKey);
         };
-        
+
         var moveItemForKeyCode = function (keyCode, keyset, layoutHandler) {
             var didMove = false;
             switch (keyCode) {
@@ -5956,10 +5956,10 @@ var fluid = fluid || {};
                     didMove = true;
                     break;
             }
-            
+
             return didMove;
         };
-        
+
         var focusItemForKeyCode = function(keyCode, keyset, layoutHandler, activeItem){
             var didFocus = false;
             var item;
@@ -5982,32 +5982,32 @@ var fluid = fluid || {};
                     break;
             }
             jQuery (item).focus ();
-            
+
             return didFocus;
         };
-        
+
         this.handleDirectionKeyDown = function (evt) {
             if (!thisReorderer.activeItem) {
                 return true;
             }
-            
+
             for (var i = 0; i < keysets.length; i++) {
                 var keyset = keysets[i];
                 var didProcessKey = false;
                 if (keyset.modifier (evt)) {
                     kbDropWarning.hide();
                     didProcessKey = moveItemForKeyCode (evt.keyCode, keyset, layoutHandler);
-            
+
                 } else if (noModifier(evt)) {
                     didProcessKey = focusItemForKeyCode (evt.keyCode, keyset, layoutHandler, thisReorderer.activeItem);
                 }
-                
+
                 // We got the right key press. Bail right away by swallowing the event.
                 if (didProcessKey) {
                     return false;
                 }
             }
-            
+
             return true;
         };
 
@@ -6026,7 +6026,7 @@ var fluid = fluid || {};
         var targetOver;
         // Storing the most recent valid target and drop position to implement correct behaviour for locked modules
         var validTargetAndPos;
-        
+
         /**
          * Creates an event handler for mouse move events that moves, shows and hides the drop marker accordingly
          * @param {Object} dropTargets    a list of valid drop targets
@@ -6034,20 +6034,20 @@ var fluid = fluid || {};
         var createTrackMouse = function (dropTargets){
             dropTargets = fluid.wrap (dropTargets);
             var avatarId = dndFunctions.createAvatarId(thisReorderer.domNode.id);
-           
+
             return function (evt){
                 // Bail if we are not over a target
                 if (!targetOver) {
                     return;
                 }
-                
+
                 var target = dndFunctions.findTarget (evt.target, dropTargets, avatarId, targetOver);
-                
+
                 if (target) {
                     var position = layoutHandler.dropPosition(target, thisReorderer.activeItem, evt.clientX, evt.pageY);
                     if (position === fluid.position.DISALLOWED) {
                         mouseDropWarning.show();
-                    } 
+                    }
                     else {
                         mouseDropWarning.hide();
                         if (position !== fluid.position.USE_LAST_KNOWN) {
@@ -6082,20 +6082,20 @@ var fluid = fluid || {};
             item.addClass (thisReorderer.cssClasses.defaultStyle);
             item.ariaState ("grab", "supported");
 
-            item.mouseover ( 
+            item.mouseover (
                 function () {
                     var handle = jQuery (findItems.grabHandle (item[0]));
                     handle.addClass (thisReorderer.cssClasses.hover);
                 }
             );
-        
-            item.mouseout (  
+
+            item.mouseout (
                 function () {
                     var handle = jQuery (findItems.grabHandle (item[0]));
                     handle.removeClass (thisReorderer.cssClasses.hover);
                 }
             );
-        
+
             item.draggable ({
                 refreshPositions: true,
                 scroll: true,
@@ -6120,13 +6120,13 @@ var fluid = fluid || {};
                     targetOver = null;
                     validTargetAndPos = null;
                     setDropEffects ("none");
-                    
+
                     // refocus on the active item because moving places focus on the body
                     thisReorderer.activeItem.focus();
                 },
                 handle: findItems.grabHandle (item[0])
             });
-        }   
+        }
 
         /**
          * Takes a jQuery object and a selector that matches movable items
@@ -6153,38 +6153,38 @@ var fluid = fluid || {};
                 }
             });
         }
-   
+
         var initSelectables = function (selectables) {
             var handleBlur = function (evt) {
                 changeSelectedToDefault (jQuery(this), thisReorderer.cssClasses);
                 return evt.stopPropagation();
             };
-        
+
             var handleFocus = function (evt) {
                 thisReorderer.selectItem (this);
                 return evt.stopPropagation();
             };
-        
-            // set up selectables 
+
+            // set up selectables
             // Remove the selectables from the taborder
             for (var i = 0; i < selectables.length; i++) {
                 var item = jQuery(selectables[i]);
                 item.tabindex ("-1");
                 item.blur (handleBlur);
                 item.focus (handleFocus);
-            
+
                 item.ariaRole (role.item);
                 item.ariaState ("selected", "false");
                 item.ariaState ("disabled", "false");
             }
         };
-    
+
         var initItems = function () {
             var i;
             var movables = fluid.wrap (findItems.movables());
             var dropTargets = fluid.wrap (findItems.dropTargets());
             initSelectables (fluid.wrap (findItems.selectables ()));
-        
+
             // Setup movables
             for (i = 0; i < movables.length; i++) {
                 var item = movables[i];
@@ -6192,26 +6192,26 @@ var fluid = fluid || {};
             }
 
             // In order to create valid html, the drop marker is the same type as the node being dragged.
-            // This creates a confusing UI in cases such as an ordered list. 
-            // drop marker functionality should be made pluggable. 
+            // This creates a confusing UI in cases such as an ordered list.
+            // drop marker functionality should be made pluggable.
             if (movables.length > 0) {
                 dropMarker = createDropMarker(movables[0].tagName);
             }
 
             // Create a simple predicate function that will identify items that can be dropped.
             var droppablePredicate = function (potentialDroppable) {
-                return (movables.index(potentialDroppable[0]) > -1);    
+                return (movables.index(potentialDroppable[0]) > -1);
             };
-        
+
             // Setup dropTargets
             for (i = 0; i < dropTargets.length; i++) {
                 initDropTarget (jQuery (dropTargets[i]), droppablePredicate);
-            }         
+            }
         };
 
-        // Final initialization of the Reorderer at the end of the construction process 
+        // Final initialization of the Reorderer at the end of the construction process
         if (this.domNode) {
-            bindHandlersToContainer (this.domNode, 
+            bindHandlersToContainer (this.domNode,
                 thisReorderer.focusActiveItem,
                 thisReorderer.handleKeyDown,
                 thisReorderer.handleKeyUp,
@@ -6224,7 +6224,7 @@ var fluid = fluid || {};
             initItems();
         }
     };
-    
+
     fluid.Reorderer.prototype.selectItem = function (anItem) {
         // Set the previous active item back to its default state.
         if (this.activeItem && this.activeItem !== anItem) {
@@ -6238,21 +6238,21 @@ var fluid = fluid || {};
         jItem.ariaState ("selected", "true");
         this.domNode.ariaState ("activedescendent", anItem.id);
     };
-    
+
     var buildFnFromSelector = function (selector, container) {
         return function () {
             return jQuery(selector, container);
         };
     };
-    
+
     var buildFindItems = function (itemSelectors, container) {
         // If a single selector has been passed in we just need to wrap it in a function.
         if (typeof itemSelectors === 'string') {
             return buildFnFromSelector(itemSelectors, container);
-        } 
+        }
 
-        // This code is very similar to fluid.utils.adaptFindItems. 
-        // It would be nice if adaptFindItems could take in either functions or selectors. 
+        // This code is very similar to fluid.utils.adaptFindItems.
+        // It would be nice if adaptFindItems could take in either functions or selectors.
         var findItems = {};
         // TODO: We should check if there is no movable and throw an error.
         findItems.movables = buildFnFromSelector(itemSelectors.movables, container);
@@ -6269,25 +6269,25 @@ var fluid = fluid || {};
         }
         return findItems;
     };
-    
+
     // Simplified API for reordering lists and grids.
     var simpleInit = function (containerSelector, itemSelector, layoutHandlerFn, orderChangedCallback, options) {
         var container = jQuery(containerSelector);
         var itemFinder = buildFindItems(itemSelector, container);
-        
+
         var lOptions = options || {};
         lOptions.orderChangedCallback = orderChangedCallback;
         var layoutHandler = new layoutHandlerFn(itemFinder, lOptions);
-        
+
         return new fluid.Reorderer(container, itemFinder, layoutHandler, options);
     };
-    
+
     fluid.reorderList = function (containerSelector, itemSelector, orderChangedCallback, options) {
         return simpleInit(containerSelector, itemSelector, fluid.ListLayoutHandler, orderChangedCallback, options);
     };
-    
+
     fluid.reorderGrid = function (containerSelector, itemSelector, orderChangedCallback, options) {
-        return simpleInit(containerSelector, itemSelector, fluid.GridLayoutHandler, orderChangedCallback, options); 
+        return simpleInit(containerSelector, itemSelector, fluid.GridLayoutHandler, orderChangedCallback, options);
     };
 }) (jQuery, fluid);
 
@@ -6301,21 +6301,21 @@ var fluid = fluid || {};
         if (relatedItemInfo.hasWrapped) {
             itemPlacement = wrappedPosition;
         }
-        
+
         if (itemPlacement === fluid.position.AFTER) {
             jQuery (relatedItemInfo.item).after (item);
         } else {
             jQuery (relatedItemInfo.item).before (item);
-        } 
+        }
     };
-    
+
     /**
      * For drag-and-drop during the drag:  is the mouse over the "before" half
      * of the droppable?  In the case of a vertically oriented set of orderables,
      * "before" means "above".  For a horizontally oriented set, "before" means
      * "left of".
      */
-    var mousePosition = function (droppableEl, orientation, x, y) {        
+    var mousePosition = function (droppableEl, orientation, x, y) {
         var mid;
         var isBefore;
         if (orientation === fluid.orientation.VERTICAL) {
@@ -6325,10 +6325,10 @@ var fluid = fluid || {};
             mid = jQuery (droppableEl).offset().left + (droppableEl.offsetWidth / 2);
             isBefore = x < mid;
         }
-        
+
         return (isBefore ? fluid.position.BEFORE : fluid.position.AFTER);
-    };    
-    
+    };
+
     var itemInfoFinders = {
         /*
          * A general get{Left|Right}SiblingInfo() given an item, a list of orderables and a direction.
@@ -6339,8 +6339,8 @@ var fluid = fluid || {};
         getSiblingInfo: function (item, orderables, /* NEXT, PREVIOUS */ direction) {
             var index = jQuery (orderables).index (item) + direction;
             var hasWrapped = false;
-                
-            // Handle wrapping to 'before' the beginning. 
+
+            // Handle wrapping to 'before' the beginning.
             if (index === -1) {
                 index = orderables.length - 1;
                 hasWrapped = true;
@@ -6349,14 +6349,14 @@ var fluid = fluid || {};
             else if (index === orderables.length) {
                 index = 0;
                 hasWrapped = true;
-            } 
+            }
             // Handle case where the passed-in item is *not* an "orderable"
             // (or other undefined error).
             //
             else if (index < -1 || index > orderables.length) {
                 index = 0;
             }
-            
+
             return {item: orderables[index], hasWrapped: hasWrapped};
         },
 
@@ -6368,7 +6368,7 @@ var fluid = fluid || {};
         getRightSiblingInfo: function (item, orderables) {
             return this.getSiblingInfo (item, orderables, fluid.direction.NEXT);
         },
-        
+
         /*
          * Returns an object containing the item that is to the left of the given item
          * and a flag indicating whether or not the process has 'wrapped' around the end of
@@ -6377,7 +6377,7 @@ var fluid = fluid || {};
         getLeftSiblingInfo: function (item, orderables) {
             return this.getSiblingInfo (item, orderables, fluid.direction.PREVIOUS);
         },
-        
+
         /*
          * Returns an object containing the item that is below the given item in the current grid
          * and a flag indicating whether or not the process has 'wrapped' around the end of
@@ -6389,7 +6389,7 @@ var fluid = fluid || {};
             var curCoords = jQuery (inItem).offset();
             var i, iCoords;
             var firstItemInColumn, currentItem;
-            
+
             for (i = 0; i < orderables.length; i++) {
                 currentItem = orderables [i];
                 iCoords = jQuery (orderables[i]).offset();
@@ -6400,11 +6400,11 @@ var fluid = fluid || {};
                     }
                 }
             }
-    
+
             firstItemInColumn = firstItemInColumn || orderables [0];
             return {item: firstItemInColumn, hasWrapped: true};
         },
-        
+
         /*
          * Returns an object containing the item that is above the given item in the current grid
          * and a flag indicating whether or not the process has 'wrapped' around the end of
@@ -6416,7 +6416,7 @@ var fluid = fluid || {};
             var curCoords = jQuery (inItem).offset();
             var i, iCoords;
             var lastItemInColumn, currentItem;
-            
+
             for (i = orderables.length - 1; i > -1; i--) {
                 currentItem = orderables [i];
                 iCoords = jQuery (orderables[i]).offset();
@@ -6427,13 +6427,13 @@ var fluid = fluid || {};
                     }
                 }
             }
-    
+
             lastItemInColumn = lastItemInColumn || orderables [0];
             return {item: lastItemInColumn, hasWrapped: true};
         }
-    
+
     };
-    
+
     // Public layout handlers.
     fluid.ListLayoutHandler = function (findItems, options) {
         findItems = fluid.utils.adaptFindItems (findItems);
@@ -6443,39 +6443,39 @@ var fluid = fluid || {};
             orderChangedCallback = options.orderChangedCallback || orderChangedCallback;
             orientation = options.orientation || orientation;
         }
-                
+
         this.getRightSibling = function (item) {
             return itemInfoFinders.getRightSiblingInfo (item, findItems.selectables ()).item;
         };
-        
+
         this.moveItemRight = function (item) {
             var rightSiblingInfo = itemInfoFinders.getRightSiblingInfo (item, findItems.movables ());
             moveItem (item, rightSiblingInfo, fluid.position.AFTER, fluid.position.BEFORE);
             orderChangedCallback();
         };
-    
+
         this.getLeftSibling = function (item) {
             return itemInfoFinders.getLeftSiblingInfo(item, findItems.selectables ()).item;
         };
-    
+
         this.moveItemLeft = function (item) {
              var leftSiblingInfo = itemInfoFinders.getLeftSiblingInfo (item, findItems.movables ());
             moveItem (item, leftSiblingInfo, fluid.position.BEFORE, fluid.position.AFTER);
             orderChangedCallback();
         };
-    
+
         this.getItemBelow = this.getRightSibling;
-    
+
         this.getItemAbove = this.getLeftSibling;
-        
+
         this.moveItemUp = this.moveItemLeft;
-        
+
         this.moveItemDown = this.moveItemRight;
-    
+
         this.dropPosition = function (target, moving, x, y) {
             return mousePosition (target, orientation, x, y);
         };
-        
+
         this.mouseMoveItem = function (moving, target, x, y) {
             var whereTo = this.dropPosition (target, moving, x, y);
             if (whereTo === fluid.position.BEFORE) {
@@ -6485,14 +6485,14 @@ var fluid = fluid || {};
             }
             orderChangedCallback();
         };
-        
+
     }; // End ListLayoutHandler
-    
+
     /*
      * Items in the Lightbox are stored in a list, but they are visually presented as a grid that
      * changes dimensions when the window changes size. As a result, when the user presses the up or
      * down arrow key, what lies above or below depends on the current window size.
-     * 
+     *
      * The GridLayoutHandler is responsible for handling changes to this virtual 'grid' of items
      * in the window, and of informing the Lightbox of which items surround a given item.
      */
@@ -6500,42 +6500,42 @@ var fluid = fluid || {};
         fluid.ListLayoutHandler.call (this, findItems, options);
 
         findItems = fluid.utils.adaptFindItems (findItems);
-        
+
         var orderChangedCallback = function () {};
         if (options) {
             orderChangedCallback = options.orderChangedCallback || orderChangedCallback;
         }
-        
+
         var orientation = fluid.orientation.HORIZONTAL;
-                
+
         this.getItemBelow = function(item) {
             return itemInfoFinders.getItemInfoBelow (item, findItems.selectables ()).item;
         };
-    
+
         this.moveItemDown = function (item) {
             var itemBelow = itemInfoFinders.getItemInfoBelow (item, findItems.movables ());
             moveItem (item, itemBelow, fluid.position.AFTER, fluid.position.BEFORE);
-            orderChangedCallback(); 
+            orderChangedCallback();
         };
-                
+
         this.getItemAbove = function (item) {
-            return itemInfoFinders.getItemInfoAbove (item, findItems.selectables ()).item;   
-        }; 
-        
+            return itemInfoFinders.getItemInfoAbove (item, findItems.selectables ()).item;
+        };
+
         this.moveItemUp = function (item) {
             var itemAbove = itemInfoFinders.getItemInfoAbove (item, findItems.movables ());
             moveItem (item, itemAbove, fluid.position.BEFORE, fluid.position.AFTER);
-            orderChangedCallback(); 
+            orderChangedCallback();
         };
-                    
+
         // We need to override ListLayoutHandler.dropPosition to ensure that the local private
         // orientation is used.
         this.dropPosition = function (target, moving, x, y) {
             return mousePosition (target, orientation, x, y);
         };
-        
+
     }; // End of GridLayoutHandler
-    
+
     var defaultWillShowKBDropWarning = function (item, dropWarning) {
         if (dropWarning) {
             var offset = jQuery(item).offset();
@@ -6548,16 +6548,16 @@ var fluid = fluid || {};
 
     /*
      * Module Layout Handler for reordering content modules.
-     * 
+     *
      * General movement guidelines:
-     * 
+     *
      * - Arrowing sideways will always go to the top (moveable) module in the column
      * - Moving sideways will always move to the top available drop target in the column
      * - Wrapping is not necessary at this first pass, but is ok
      */
     fluid.ModuleLayoutHandler = function (layout, targetPerms, options) {
         var orientation = fluid.orientation.VERTICAL;
-        
+
         // Configure optional parameters
         targetPerms = targetPerms || fluid.moduleLayout.buildEmptyPerms(layout);
         options = options || {};
@@ -6565,17 +6565,17 @@ var fluid = fluid || {};
         if (options.orderChangedCallbackUrl) {
             // Create the orderChangedCallback function
             orderChangedCallback = function () {
-                jQuery.post (options.orderChangedCallbackUrl, 
+                jQuery.post (options.orderChangedCallbackUrl,
                     JSON.stringify (layout),
-                    function (data, textStatus) { 
-                        targetPerms = data; 
-                    }, 
+                    function (data, textStatus) {
+                        targetPerms = data;
+                    },
                     "json");
             };
-        } 
+        }
         var dropWarning = fluid.utils.jById(options.dropWarningId);
         var willShowKBDropWarning = options.willShowKBDropWarning || defaultWillShowKBDropWarning;
-        
+
         // Private Methods.
         /*
          * Find an item's sibling in the vertical direction based on the
@@ -6588,7 +6588,7 @@ var fluid = fluid || {};
             var siblingId = fluid.moduleLayout.itemAboveBelow (item.id, direction, layout);
             return fluid.utils.jById (siblingId)[0];
         };
-    
+
         /*
          * Find an item's sibling in the horizontal direction based on the
          * layout.  This assumes that there is no wrapping the ends of
@@ -6600,12 +6600,12 @@ var fluid = fluid || {};
             var itemId = fluid.moduleLayout.firstItemInAdjacentColumn (item.id, direction, layout);
             return fluid.utils.jById (itemId)[0];
         };
-                
+
         // This should probably be part of the public API so it can be configured.
         var move = function (item, relatedItem, position /* BEFORE, AFTER or INSIDE */) {
             if (!item || !relatedItem) {
                 return;
-            }           
+            }
             if (position === fluid.position.BEFORE) {
                 jQuery(relatedItem).before(item);
             } else if (position === fluid.position.AFTER) {
@@ -6613,20 +6613,20 @@ var fluid = fluid || {};
             } else if (position === fluid.position.INSIDE) {
                 jQuery(relatedItem).append(item);
             }  // otherwise it's either DISALLOWED or USE_LAST_KNOWN
-            
+
             fluid.moduleLayout.updateLayout (item.id, relatedItem.id, position, layout);
-            orderChangedCallback (); 
+            orderChangedCallback ();
         };
-        
+
         var moveHorizontally = function (item, direction /* PREVIOUS, NEXT */) {
             var targetInfo = fluid.moduleLayout.findTarget (item.id, direction, layout, targetPerms);
             var targetItem = fluid.utils.jById (targetInfo.id)[0];
             move (item, targetItem, targetInfo.position);
         };
-        
+
         var moveVertically = function (item, targetFunc) {
             var targetAndPos = targetFunc(item.id, layout, targetPerms);
-            var target = fluid.utils.jById(targetAndPos.id)[0]; 
+            var target = fluid.utils.jById(targetAndPos.id)[0];
             if (targetAndPos.position === fluid.position.DISALLOWED) {
                 willShowKBDropWarning(item, dropWarning[0]);
                 dropWarning.show();
@@ -6634,40 +6634,40 @@ var fluid = fluid || {};
                 move(item, target, targetAndPos.position);
             }
         };
-        
+
         // Public Methods
         this.getRightSibling = function (item) {
             return getHorizontalSibling (item, fluid.direction.NEXT);
         };
-        
+
         this.moveItemRight = function (item) {
             moveHorizontally (item, fluid.direction.NEXT);
         };
-    
+
         this.getLeftSibling = function (item) {
             return getHorizontalSibling (item, fluid.direction.PREVIOUS);
         };
-    
+
         this.moveItemLeft = function (item) {
             moveHorizontally (item, fluid.direction.PREVIOUS);
         };
-    
+
         this.getItemAbove = function (item) {
             return getVerticalSibling (item, fluid.direction.PREVIOUS);
         };
-        
+
         this.moveItemUp = function (item) {
             moveVertically(item, fluid.moduleLayout.targetAndPositionAbove);
         };
-            
+
         this.getItemBelow = function (item) {
             return getVerticalSibling (item, fluid.direction.NEXT);
         };
-    
+
         this.moveItemDown = function (item) {
             moveVertically(item, fluid.moduleLayout.targetAndPositionBelow);
         };
-        
+
         this.dropPosition = function (target, moving, x, y) {
             if (fluid.moduleLayout.isColumn (target.id, layout)) {
                 var lastItemInColId = fluid.moduleLayout.lastItemInCol(target.id, layout);
@@ -6676,14 +6676,14 @@ var fluid = fluid || {};
                 }
                 var lastItem = fluid.utils.jById(lastItemInColId);
                 var topOfEmptySpace = lastItem.offset().top + lastItem.height();
-                
+
                 if (y > topOfEmptySpace) {
                     return fluid.position.INSIDE;
                 } else {
                     return fluid.position.USE_LAST_KNOWN;
                 }
             }
-            
+
             var position = mousePosition (target, orientation, x, y);
             var canDrop = fluid.moduleLayout.canMove (moving.id, target.id, position, layout, targetPerms);
             if (canDrop) {
@@ -6697,7 +6697,7 @@ var fluid = fluid || {};
         this.mouseMoveItem = function (moving, target, x, y, position) {
             move(moving, target, position);
         };
-        
+
     }; // End ModuleLayoutHandler
 }) (jQuery, fluid);
 
@@ -6714,7 +6714,7 @@ fluid.moduleLayout = function (jQuery, fluid) {
                 }
             }
         },
-        
+
         /**
          * Calculate the location of the item and the column in which it resides.
          * @return  An object with column index and item index (within that column) properties.
@@ -6724,13 +6724,13 @@ fluid.moduleLayout = function (jQuery, fluid) {
             var findIndices = function (idsInCol, index, col) {
                 if (idsInCol[index] === itemId) {
                     return {columnIndex: col, itemIndex: index};
-                }  
+                }
             };
-            
+
             var indices = internals.layoutWalker (findIndices, layout);
             return indices || { columnIndex: -1, itemIndex: -1 };
         },
-        
+
         findColIndex: function (colId, layout) {
             for (var col = 0; col < layout.columns.length; col++ ) {
                 if (colId === layout.columns[col].id) {
@@ -6739,15 +6739,15 @@ fluid.moduleLayout = function (jQuery, fluid) {
             }
             return -1;
         },
-        
+
         findItemIndex: function (itemId, layout) {
             return internals.findColumnAndItemIndices (itemId, layout).itemIndex;
         },
-        
+
         numColumns: function (layout) {
             return layout.columns.length;
         },
-        
+
         numModules: function (layout) {
             var numModules = 0;
             for (var col = 0; col < layout.columns.length; col++) {
@@ -6755,64 +6755,64 @@ fluid.moduleLayout = function (jQuery, fluid) {
             }
             return numModules;
         },
-        
+
         isColumnIndex: function (index, layout) {
             return (index < layout.columns.length) && (index >= 0);
         },
-        
+
         /**
          * Returns targetIndex
-         * This could have been written in two functions for clarity however it gets called a lot and 
+         * This could have been written in two functions for clarity however it gets called a lot and
          * the two functions were considerably less performant then this single function.
-         * 
+         *
          * Item index is the row in the permissions object pertaining to the item.
          * Target index is the column in the permission object refering to the postion before or after the target.
          */
         findItemAndTargetIndices: function (itemId, targetId, position, layout) {
             var columns = layout.columns;
-            
+
             // Default to not found.
             var foundIndices = {
                 itemIndex: -1,
                 targetIndex: -1
             };
-            
+
             // If the ids are invalid, bail immediately.
-            if (!itemId || !targetId) {            
+            if (!itemId || !targetId) {
                 return foundIndices;
             }
 
             var itemIndexCounter = 0;
             var targetIndexCounter = position;
-            
+
             for (var i = 0; i < columns.length; i++) {
                 var idsInCol = columns[i].children;
                 for (var j = 0; j < idsInCol.length; j++) {
-                    var currId = idsInCol[j];                    
+                    var currId = idsInCol[j];
                     if (currId === itemId) {
-                        foundIndices.itemIndex = itemIndexCounter; 
+                        foundIndices.itemIndex = itemIndexCounter;
                     }
                     if (currId === targetId) {
-                        foundIndices.targetIndex = targetIndexCounter; 
+                        foundIndices.targetIndex = targetIndexCounter;
                     }
-                    
+
                     // Check if we're done, and if so, bail early.
                     if (foundIndices.itemIndex >= 0 && foundIndices.targetIndex >= 0) {
                         return foundIndices;
                     }
-                    
+
                     // Increment our index counters and keep searching.
                     itemIndexCounter++;
                     targetIndexCounter++;
                 }
-                
+
                 // Make sure we account for the additional drop target at the end of a column.
                 targetIndexCounter++;
             }
 
-            return foundIndices;     
+            return foundIndices;
         },
-        
+
         /**
          * Return the item in the given column (index) and at the given position (index)
          * in that column.  If either of the column or item index is out of bounds, this
@@ -6821,17 +6821,17 @@ fluid.moduleLayout = function (jQuery, fluid) {
         getItemAt: function (columnIndex, itemIndex, layout) {
             var itemId = null;
             var cols = layout.columns;
-            
+
             if (columnIndex >= 0 && columnIndex < cols.length) {
                 var idsInCol = cols[columnIndex].children;
                 if (itemIndex >= 0 && itemIndex < idsInCol.length) {
                     itemId = idsInCol[itemIndex];
                 }
             }
-            
+
             return itemId;
         },
-        
+
         canItemMove: function (itemIndex, perms) {
             var itemPerms = perms[itemIndex];
             for (var i = 0; i < itemPerms.length; i++) {
@@ -6840,8 +6840,8 @@ fluid.moduleLayout = function (jQuery, fluid) {
                 }
             }
             return false;
-        }, 
-        
+        },
+
         isDropTarget: function (beforeTargetIndex, perms) {
             for (var i = 0; i < perms.length; i++) {
                 if (perms[i][beforeTargetIndex] === 1 || perms[i][beforeTargetIndex + 1] === 1) {
@@ -6850,20 +6850,20 @@ fluid.moduleLayout = function (jQuery, fluid) {
             }
             return false;
         },
-        
+
         targetAndPos: function(itemId, position, layout, perms){
-            var inc = (position === fluid.position.BEFORE) ? -1 : 1;            
+            var inc = (position === fluid.position.BEFORE) ? -1 : 1;
             var startCoords = internals.findColumnAndItemIndices (itemId, layout);
             var defaultTarg = {
                     id: itemId,
                     position: fluid.position.USE_LAST_KNOWN
                 };
-            
+
             // If invalid column, return USE_LAST_KNOWN
             if (startCoords.columnIndex < 0) {
                 return defaultTarg;
             }
-            
+
             // Loop thru the target column's items, starting with the item adjacent to the given item,
             // looking for an item that can be moved to.
             var idsInCol = layout.columns[startCoords.columnIndex].children;
@@ -6880,11 +6880,11 @@ fluid.moduleLayout = function (jQuery, fluid) {
                     firstTarg = { id: targetId, position: fluid.position.DISALLOWED};
                 }
             }
-        
+
             // Didn't find a valid move so return the first target
-            return firstTarg || defaultTarg;                        
+            return firstTarg || defaultTarg;
         },
-            
+
         findPortletsInColumn: function (portlets, column) {
             var portletsForColumn = [];
             portlets.each(function (idx, portlet) {
@@ -6892,10 +6892,10 @@ fluid.moduleLayout = function (jQuery, fluid) {
                     portletsForColumn.push(portlet);
                 }
             });
-            
+
             return portletsForColumn;
         },
-    
+
         columnStructure: function (column, portletsInColumn) {
             var structure = {};
             structure.id = column.id;
@@ -6903,12 +6903,12 @@ fluid.moduleLayout = function (jQuery, fluid) {
             jQuery(portletsInColumn).each(function (idx, portlet) {
                 structure.children.push(portlet.id);
             });
-            
+
             return structure;
         }
 
-    };   
-    
+    };
+
     // Public API.
     return {
         internals: internals,
@@ -6917,7 +6917,7 @@ fluid.moduleLayout = function (jQuery, fluid) {
             var colIndex = internals.findColIndex(id, layout);
             return (colIndex > -1);
         },
-        
+
        /**
         * Determine if a given item can move before or after the given target position, given the
         * permissions information.
@@ -6930,9 +6930,9 @@ fluid.moduleLayout = function (jQuery, fluid) {
                 return true;
             }
             var indices = internals.findItemAndTargetIndices (itemId, targetItemId, position, layout);
-            return (!!perms[indices.itemIndex][indices.targetIndex]); 
+            return (!!perms[indices.itemIndex][indices.targetIndex]);
         },
-        
+
         /**
          * Given an item id, and a direction, find the top item in the next/previous column.
          */
@@ -6951,14 +6951,14 @@ fluid.moduleLayout = function (jQuery, fluid) {
                             adjacentItem = itemId;
                         }
                     }
-                    return adjacentItem; 
+                    return adjacentItem;
                 //    return internals.getItemAt (adjacentCol, 0, layout);
                 }
             };
-            
-            return internals.layoutWalker (findItemInAdjacentCol, layout) || itemId; 
-        }, 
-        
+
+            return internals.layoutWalker (findItemInAdjacentCol, layout) || itemId;
+        },
+
         /**
          * Return the item above/below the given item within that item's column.  If at
          * bottom of column or at top, return the item itelf (no wrapping).
@@ -6977,13 +6977,13 @@ fluid.moduleLayout = function (jQuery, fluid) {
 
             return internals.layoutWalker (findItemAboveBelow, layout) || itemId;
         },
-        
+
         /**
-         * Move an item within the layout object. 
+         * Move an item within the layout object.
          */
         updateLayout: function (itemId, targetId, position, layout) {
-            if (!itemId || !targetId || itemId === targetId) { 
-                return; 
+            if (!itemId || !targetId || itemId === targetId) {
+                return;
             }
             var itemIndices = internals.findColumnAndItemIndices (itemId, layout);
             layout.columns[itemIndices.columnIndex].children.splice (itemIndices.itemIndex, 1);
@@ -6999,21 +6999,21 @@ fluid.moduleLayout = function (jQuery, fluid) {
             }
 
         },
-        
+
         /**
          * Find the first target that can be moved to in the given column, possibly moving to the end
-         * of the column if there are no valid drop targets. 
+         * of the column if there are no valid drop targets.
          * @return Object containing id (the id of the target) and position (relative to the target)
          */
         findTarget: function (itemId, /* NEXT, PREVIOUS */ direction, layout, perms) {
             var targetColIndex = internals.findColumnAndItemIndices (itemId, layout).columnIndex + direction;
             var targetCol = layout.columns[targetColIndex];
-            
+
             // If column is invalid, bail returning the current position.
             if (targetColIndex < 0 || targetColIndex >= internals.numColumns (layout)) {
-                return { id: itemId, position: fluid.position.BEFORE };               
+                return { id: itemId, position: fluid.position.BEFORE };
             }
-            
+
             // Loop thru the target column's items, looking for the first item that can be moved to.
             var idsInCol = targetCol.children;
             for (var i = 0; (i < idsInCol.length); i++) {
@@ -7025,7 +7025,7 @@ fluid.moduleLayout = function (jQuery, fluid) {
                     return { id: targetId, position: fluid.position.AFTER };
                 }
             }
-            
+
             // no valid modules found, so target is the column itself
             return { id: targetCol.id, position: fluid.position.INSIDE };
         },
@@ -7033,25 +7033,25 @@ fluid.moduleLayout = function (jQuery, fluid) {
         /**
          * Returns a valid drop target and position above the item being moved.
          * @param {Object} itemId The id of the item being moved
-         * @param {Object} layout 
+         * @param {Object} layout
          * @param {Object} perms
          * @returns {Object} id: the target id, position: a 'fluid.position' value relative to the target
          */
         targetAndPositionAbove: function (itemId, layout, perms) {
             return internals.targetAndPos (itemId, fluid.position.BEFORE, layout, perms);
         },
-        
+
         /**
          * Returns a valid drop target and position below the item being moved.
          * @param {Object} itemId The id of the item being moved
-         * @param {Object} layout 
+         * @param {Object} layout
          * @param {Object} perms
          * @returns {Object} id: the target id, position: a 'fluid.position' value relative to the target
          */
         targetAndPositionBelow: function (itemId, layout, perms) {
             return internals.targetAndPos (itemId, fluid.position.AFTER, layout, perms);
         },
-        
+
         /**
          * Determine the moveables, selectables, and drop targets based on the information
          * in the layout and permission objects.
@@ -7060,11 +7060,11 @@ fluid.moduleLayout = function (jQuery, fluid) {
             perms = perms || fluid.moduleLayout.buildEmptyPerms(layout);
             var findItems = {};
             findItems.grabHandle = grabHandle;
-            
+
             var selectablesSelector;
             var movablesSelector;
             var dropTargets;
-            
+
             var cols = layout.columns;
             for (var i = 0; i < cols.length; i++) {
                 var idsInCol = cols[i].children;
@@ -7072,10 +7072,10 @@ fluid.moduleLayout = function (jQuery, fluid) {
                     var itemId = idsInCol[j];
                     var idSelector = "[id=" + itemId  + "]";
                     selectablesSelector = selectablesSelector ? selectablesSelector + "," + idSelector : idSelector;
-                    
+
                     var indices = internals.findItemAndTargetIndices (itemId, itemId, fluid.position.BEFORE, layout);
                     if (internals.canItemMove (indices.itemIndex, perms)) {
-                        movablesSelector = movablesSelector ? movablesSelector + "," + idSelector : idSelector; 
+                        movablesSelector = movablesSelector ? movablesSelector + "," + idSelector : idSelector;
                     }
                     if (internals.isDropTarget (indices.targetIndex, perms)) {
                         dropTargets = dropTargets ? dropTargets + "," + idSelector : idSelector;
@@ -7085,11 +7085,11 @@ fluid.moduleLayout = function (jQuery, fluid) {
                 var colIdSelector = "[id=" + cols[i].id  + "]";
                 dropTargets = dropTargets ? dropTargets + "," + colIdSelector : colIdSelector;
             }
-            
+
             findItems.selectables = function () {
                 return jQuery (selectablesSelector);
             };
-            
+
             findItems.movables = function () {
                 return jQuery (movablesSelector);
             };
@@ -7097,24 +7097,24 @@ fluid.moduleLayout = function (jQuery, fluid) {
             findItems.dropTargets = function() {
                 return jQuery (dropTargets);
             };
-                      
+
             return findItems;
         },
-        
+
         containerId: function (layout) {
             return layout.id;
         },
-        
+
         lastItemInCol: function (colId, layout) {
             var colIndex = internals.findColIndex(colId, layout);
             var col = layout.columns[colIndex];
             var numChildren = col.children.length;
             if (numChildren > 0) {
-                return col.children[numChildren-1];                
+                return col.children[numChildren-1];
             }
             return undefined;
         },
-        
+
         /**
          * Builds a fake permission object stuffed with 1s.
          * @param {Object} layout
@@ -7122,7 +7122,7 @@ fluid.moduleLayout = function (jQuery, fluid) {
         buildEmptyPerms: function (layout) {
             var numCols = internals.numColumns(layout);
             var numModules = internals.numModules(layout);
-            
+
             var permsStructure = [];
             // Each column has a drop target at its top.
             // Each portlet has a drop target below it.
@@ -7133,12 +7133,12 @@ fluid.moduleLayout = function (jQuery, fluid) {
                 for (var j = 0; j < numItemsInBitmap; j++) {
                     rowForPortlet.push(1);
                 }
-                permsStructure.push(rowForPortlet);                
+                permsStructure.push(rowForPortlet);
             }
-            
+
             return permsStructure;
         },
-    
+
         /**
          * Builds a layout object from a set of columns and portlets.
          * @param {jQuery} container
@@ -7153,10 +7153,10 @@ fluid.moduleLayout = function (jQuery, fluid) {
                 var portletsInColumn = internals.findPortletsInColumn(portlets, column);
                 layoutStructure.columns.push(internals.columnStructure(column, portletsInColumn));
             });
-            
+
             return layoutStructure;
         }
-    };    
+    };
 } (jQuery, fluid);
 /*
 Copyright 2007-2009 University of Toronto
@@ -7184,19 +7184,19 @@ var fluid = fluid || {};
         lhOptions.dropWarningId = options.dropWarningId;
 
         var reordererRoot = fluid.utils.jById (fluid.moduleLayout.containerId (layout));
-        var items = fluid.moduleLayout.createFindItems (layout, perms, rOptions.grabHandle);    
+        var items = fluid.moduleLayout.createFindItems (layout, perms, rOptions.grabHandle);
         var layoutHandler = new fluid.ModuleLayoutHandler (layout, perms, lhOptions);
 
         return new fluid.Reorderer (reordererRoot, items, layoutHandler, rOptions);
     };
-    
+
 
     /**
      * Creates a layout customizer from a combination of a layout and permissions object.
      * @param {Object} layout a layout object. See http://wiki.fluidproject.org/x/FYsk for more details
      * @param {Object} perms a permissions data structure. See the above documentation
      */
-    fluid.initLayoutCustomizer = function (layout, perms, orderChangedCallbackUrl, options) {        
+    fluid.initLayoutCustomizer = function (layout, perms, orderChangedCallbackUrl, options) {
         return createLayoutCustomizer (layout, perms, orderChangedCallbackUrl, options);
     };
 
@@ -7204,21 +7204,21 @@ var fluid = fluid || {};
      * Simple way to create a layout customizer.
      * @param {selector} a selector for the layout container
      * @param {Object} a map of selectors for columns and modules within the layout
-     * @param {Function} a function to be called when the order changes 
+     * @param {Function} a function to be called when the order changes
      * @param {Object} additional configuration options
      */
     fluid.reorderLayout = function(containerSelector, layoutSelectors, orderChangedCallback, options) {
         options = options || {};
         options.orderChangedCallback = orderChangedCallback;
-        
+
         var container = jQuery(containerSelector);
         var columns = jQuery(layoutSelectors.columns, container);
         var modules = jQuery(layoutSelectors.modules, container);
-        
+
         var layout = fluid.moduleLayout.buildLayout(container, columns, modules);
-        
+
         return fluid.initLayoutCustomizer(layout, null, null, options);
-    };    
+    };
 }) (fluid);
 /*
 Copyright 2007-2009 University of Toronto
@@ -7237,7 +7237,7 @@ var fluid = fluid || {};
     var deriveLightboxCellBase = function (namebase, index) {
         return namebase + "lightbox-cell:" + index + ":";
     };
-            
+
     var addThumbnailActivateHandler = function (lightboxContainer) {
         var enterKeyHandler = function (evt) {
             if (evt.which === fluid.keys.ENTER) {
@@ -7245,55 +7245,55 @@ var fluid = fluid || {};
                 document.location = thumbnailAnchors.attr ('href');
             }
         };
-        
+
         jQuery (lightboxContainer).keypress (enterKeyHandler);
     };
-    
+
     var createItemFinder = function (parentNode, containerId) {
         // This orderable finder knows that the lightbox thumbnails are 'div' elements
         var lightboxCellNamePattern = "^" + deriveLightboxCellBase (containerId, "[0-9]+") +"$";
-        
+
         return function () {
             return fluid.utils.seekNodesById (parentNode, "div", lightboxCellNamePattern);
         };
     };
-    
+
     // Public Lightbox API
     fluid.lightbox = {
         /**
          * Returns the default Lightbox order change callback. This callback is used by the Lightbox
          * to send any changes in image order back to the server. It is implemented by nesting
          * a form and set of hidden fields within the Lightbox container which contain the order value
-         * for each image displayed in the Lightbox. The default callback submits the form's default 
+         * for each image displayed in the Lightbox. The default callback submits the form's default
          * action via AJAX.
-         * 
-         * @param {Element} lightboxContainer The DOM element containing the form that is POSTed back to the server upon order change 
+         *
+         * @param {Element} lightboxContainer The DOM element containing the form that is POSTed back to the server upon order change
          */
         defaultOrderChangedCallback: function (lightboxContainer) {
             var reorderform = fluid.utils.findForm (lightboxContainer);
-            
+
             return function () {
                 var inputs = fluid.utils.seekNodesById(
-                    reorderform, 
-                    "input", 
+                    reorderform,
+                    "input",
                     "^" + deriveLightboxCellBase (lightboxContainer.id, "[^:]*") + "reorder-index$");
-                
+
                 for (var i = 0; i < inputs.length; i = i+1) {
                     inputs[i].value = i;
                 }
-            
+
                 if (reorderform && reorderform.action) {
-                    jQuery.post(reorderform.action, 
+                    jQuery.post(reorderform.action,
                     jQuery(reorderform).serialize(),
                     function (type, data, evt) { /* No-op response */ });
                 }
             };
         },
-        
+
         /**
          * Creates a new Lightbox instance from the specified parameters, providing full control over how
          * the Lightbox is configured.
-         * 
+         *
          * @param {Element} container The DOM element that represents the Lightbox
          * @param {Function} itemFinderFn A function that returns a list of orderable images
          * @param {Function} orderChangedFn A function that is called when the image order is changed by the user
@@ -7305,7 +7305,7 @@ var fluid = fluid || {};
             // Remove the anchors from the taborder.
             jQuery ("a", container).tabindex (-1);
             addThumbnailActivateHandler (container);
-            
+
             var orderChangedFn = options.orderChangedCallback || fluid.lightbox.defaultOrderChangedCallback (fluid.unwrap(container));
 
             var layoutHandler = new fluid.GridLayoutHandler (itemFinderFn, {
@@ -7314,46 +7314,46 @@ var fluid = fluid || {};
 
             var reordererOptions = {
                 role : fluid.roles.GRID
-            };            
+            };
             fluid.mixin (reordererOptions, options);
-            
+
             return new fluid.Reorderer (container, itemFinderFn, layoutHandler, reordererOptions);
         },
-        
+
         /**
          * Creates a new Lightbox by binding to element ids in the DOM.
          * This provides a convenient way of constructing a Lightbox with the default configuration.
-         * 
+         *
          * @param {String} containerId The id of the DOM element that represents the Lightbox
          * @param {String} instructionMessageId The id of the DOM element containing instructional text for Lightbox users
          */
         createLightboxFromId: function (containerId, options) {
             var parentNode = document.getElementById (containerId);
             var itemFinder = createItemFinder(parentNode, containerId);
-            
+
             return fluid.lightbox.createLightbox (parentNode, itemFinder, options);
         }
     };
 }) (jQuery, document);
 /* Fluid Multi-File Uploader Component
- * 
+ *
  * Built by The Fluid Project (http://www.fluidproject.org)
- * 
+ *
  * LEGAL
- * 
+ *
  * Copyright 2008-2009 University of California, Berkeley
  * Copyright 2008-2009 University of Toronto
- * 
+ *
  * Licensed under the Educational Community License (ECL), Version 2.0 or the New
  * BSD license. You may not use this file except in compliance with one these
  * Licenses.
- * 
+ *
  * You may obtain a copy of the ECL 2.0 License and BSD License at
  * https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
- * 
+ *
  * DOCUMENTATION
  * Technical documentation is available at: http://wiki.fluidproject.org/x/d4ck
- * 
+ *
  */
 
 /* TODO:
@@ -7373,8 +7373,8 @@ var fluid = fluid || {};
 var fluid = fluid || {};
 
 (function ($,fluid) {
-      
-    /* these are the internal UI elements of the Uploader as defined in the 
+
+    /* these are the internal UI elements of the Uploader as defined in the
      * default HTML for the Fluid Uploader
      */
     var defaultSelectors = {
@@ -7399,13 +7399,13 @@ var fluid = fluid || {};
         qRowRemove: '.fileRemove',
         debug: false
     };
-    
+
     // Default configuration options.
     var uploadDefaults = {
         uploadUrl : "",
         flashUrl : "",
         fileSizeLimit : "20480",
-        fileTypes : "*.*", 
+        fileTypes : "*.*",
         fileTypesText : "image files",
         fileUploadLimit : 0,
         fileQueueLimit : 0,
@@ -7424,34 +7424,34 @@ var fluid = fluid || {};
         // if true
             // if using dialog then browser will show immediately
             // else browser will show as soon as dialog shows
-        browseOnInit: false, 
+        browseOnInit: false,
         // dialog settings
         dialogDisplay: false,
         addFilesBtn: ".fluid-add-files-btn", // used in conjunction with dialog display to activate the Uploader
         debug: false
     };
-    
+
     var dialog_settings = {
-        title: "Upload Files", 
+        title: "Upload Files",
         width: 482,
         height: '', // left empty so that the dialog will auto-resize
-        draggable: true, 
-        modal: true, 
+        draggable: true,
+        modal: true,
         resizable: false,
         autoOpen: false
     };
-    
+
     var strings = {
         macControlKey: "Command",
         browseText: "Browse files",
         addMoreText: "Add more",
         fileUploaded: "File Uploaded"
     };
-        
+
     /* DOM Manipulation */
 
-    /** 
-    * removes the defined row from the file queue 
+    /**
+    * removes the defined row from the file queue
     * @param {jQuery} row    a jQuery object for the row
     * @param {SWFUpload} swfObj    the SWF upload object
     * @param {Object} status    the status object to be updated
@@ -7473,50 +7473,50 @@ var fluid = fluid || {};
         });
         return row;
     };
-    
+
     var updateQueueHeight = function(scrollingElm, maxHeight){
         var overMaxHeight = (scrollingElm.children().eq(0).height() > maxHeight);
         var setHeight = (overMaxHeight) ? maxHeight : '';
         scrollingElm.height( setHeight ) ;
         return overMaxHeight;
     };
-    
+
     var scrollBottom = function(scrollingElm){
         // cast potentially a jQuery obj to a regular obj
         scrollingElm = $(scrollingElm)[0];
         // set the scrollTop to the scrollHeight
         scrollingElm.scrollTop = scrollingElm.scrollHeight;
     };
-    
+
     var scrollTo = function(scrollingElm,row){
         var rowPosTop = $(row)[0].offsetTop;
         var rowHeight = $(row).height();
         var containerScrollTop = $(scrollingElm)[0].scrollTop;
         var containerHeight = $(scrollingElm).height();
-        
+
         // if the top of the row is ABOVE the view port move the row into position
         if (rowPosTop < containerScrollTop) {
             $(scrollingElm)[0].scrollTop = rowPosTop;
         }
-        
+
         // if the bottom of the row is BELOW the viewport then scroll it into position
         if ((rowPosTop + rowHeight) > (containerScrollTop + containerHeight)) {
             $(scrollingElm)[0].scrollTop = (rowPosTop - containerHeight + rowHeight);
         }
         //$(scrollingElm)[0].scrollTop = $(row)[0].offsetTop;
     };
-    
+
     var updateNumFiles = function(uploaderContainer, totalFilesSelector, fileQueueSelector) {
         $(totalFilesSelector, uploaderContainer).text(numFilesToUpload(uploaderContainer, fileQueueSelector));
     };
-    
+
     /**
      * Updates the total number of bytes in the UI
      */
     var updateTotalBytes = function(uploaderContainer, totalBytesSelector, status) {
         $(totalBytesSelector, uploaderContainer).text(fluid.utils.filesizeStr(queueSize(status)));
     };
-     
+
     /*
      * Sets the state (using a css class) for the top level element
      * @param {String} uploaderContainer    the uploader container
@@ -7526,7 +7526,7 @@ var fluid = fluid || {};
         var totalRows = numberOfRows(uploaderContainer, fileQueueSelector);
         var rowsUploaded = numFilesUploaded(uploaderContainer, fileQueueSelector);
         var rowsReady = numFilesToUpload(uploaderContainer, fileQueueSelector);
-        
+
         if (rowsUploaded > 0) {
             if (rowsReady === 0) {
                 updateState(uploaderContainer, 'empty');
@@ -7539,7 +7539,7 @@ var fluid = fluid || {};
             updateState(uploaderContainer, 'loaded');
         }
     };
-    
+
     /*
      * Sets the state (using a css class) for the top level element
      * @param {String} uploaderContainer    the uploader container
@@ -7548,7 +7548,7 @@ var fluid = fluid || {};
     var updateState = function(uploaderContainer, stateClass) {
         $(uploaderContainer).children("div:first").attr('className',stateClass);
     };
-    
+
     var updateBrowseBtnText = function(uploaderContainer, browseButtonSelector, status) {
         if (status.totalCount > 0) {
             $(browseButtonSelector, uploaderContainer).text(strings.addMoreText);
@@ -7556,42 +7556,42 @@ var fluid = fluid || {};
             $(browseButtonSelector, uploaderContainer).text(strings.browseText);
         }
     };
-    
+
      var markRowComplete = function(row, fileStatusSelector, removeBtnSelector) {
         // update the status of the row to "uploaded"
         rowChangeState(row, removeBtnSelector, fileStatusSelector, 'uploaded', strings.fileUploaded);
     };
-    
+
     var markRowError = function(row, fileStatusSelector, removeBtnSelector, scrollingElm, maxHeight, humanError) {
         // update the status of the row to "error"
         rowChangeState(row, removeBtnSelector, fileStatusSelector, 'error', 'File Upload Error');
-        
+
         updateQueueHeight(scrollingElm, maxHeight);
-        
+
         if (humanError !== '') {
             displayHumanReableError(row, humanError);
-        }    
+        }
     };
-    
+
     /* rows can only go from ready to error or uploaded */
     var rowChangeState = function(row, removeBtnSelector, fileStatusSelector, stateClass, stateMessage) {
-        
+
         // remove the ready status and add the new status
         row.removeClass('ready').addClass(stateClass);
-        
+
         // remove click event on Remove button
         $(row).find(removeBtnSelector).unbind('click');
-        
+
         // add text status
         $(row).find(fileStatusSelector).attr('title',stateMessage);
     };
-    
+
     var displayHumanReableError = function(row, humanError) {
         var newErrorRow = $('#queue-error-tmplt').clone();
         $(newErrorRow).find('.queue-error').html(humanError);
         $(newErrorRow).removeAttr('id').insertAfter(row);
     };
-        
+
     // UTILITY SCRIPTS
     /**
      * displays URL/URI or runs provided function
@@ -7608,13 +7608,13 @@ var fluid = fluid || {};
             }
         }
     };
-    
+
     // SWF Upload Callback Handlers
 
     /*
      * @param {String} uploaderContainer    the uploader container
      * @param {int} maxHeight    maximum height in pixels for the file queue before scrolling
-     * @param {Object} status    
+     * @param {Object} status
      */
     var createFileQueuedHandler = function (uploaderContainer, fragmentSelectors, maxHeight, status) {
         return function(file){
@@ -7623,7 +7623,7 @@ var fluid = fluid || {};
                 // make a new jQuery object
                 // add the size of the file to the variable maintaining the total size
                 queueSize(status, file.size);
-                
+
                 // make a new row
                 var newQueueRow = $(fragmentSelectors.qRowTemplate).clone();
                 // update the file name
@@ -7642,36 +7642,36 @@ var fluid = fluid || {};
                 });
                 // insert the new row into the file queue
                 $(fragmentSelectors.fileQueue, uploaderContainer).append(newQueueRow);
-                
+
                 // add remove action to the button
                 $('#' + file.id, uploaderContainer).children(fragmentSelectors.qRowRemove).click(function(){
-                    removeRow(uploaderContainer, fragmentSelectors, $(this).parents('tr'), swfObj, status, maxHeight);  
+                    removeRow(uploaderContainer, fragmentSelectors, $(this).parents('tr'), swfObj, status, maxHeight);
                 });
-                
+
                 // display the new row
                 $('#' + file.id, uploaderContainer).fadeIn('slow');
-                
+
                 updateStateByState(uploaderContainer, fragmentSelectors.fluidUploader);
 
                 var scrollingElm = $(fragmentSelectors.scrollingElement, uploaderContainer);
-                
+
                 var scrolling = updateQueueHeight(scrollingElm, maxHeight);
-                
+
                 // scroll to the bottom to reviel element
                 if (scrolling) {
                     scrollBottom(scrollingElm);
                 }
-                
+
                 updateNumFiles(uploaderContainer, fragmentSelectors.txtTotalFiles, fragmentSelectors.fluidUploader, fragmentSelectors.emptyRow);
                 updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
-                
-            } 
+
+            }
             catch (ex) {
                 fluid.utils.debug(ex);
             }
         };
     };
-    
+
     var createSWFReadyHandler = function (browseOnInit, allowMultipleFiles, useDialog) {
         return function(){
             if (browseOnInit && !useDialog) {
@@ -7679,7 +7679,7 @@ var fluid = fluid || {};
             }
         };
     };
-    
+
     function browseForFiles(swfObj,allowMultipleFiles) {
         if (allowMultipleFiles) {
             this.selectFiles();
@@ -7693,7 +7693,7 @@ var fluid = fluid || {};
         return function(){
             try {
                 $(uploaderContainer).children("div:first").addClass('browsing');
-            } 
+            }
             catch (ex) {
                 fluid.utils.debug(ex);
             }
@@ -7709,7 +7709,7 @@ var fluid = fluid || {};
                 updateBrowseBtnText(uploaderContainer, fragmentSelectors.browse, status);
                 $(uploaderContainer).children("div:first").removeClass('browsing');
                 debugStatus(status);
-            } 
+            }
             catch (ex) {
                 fluid.utils.debug(ex);
             }
@@ -7741,14 +7741,14 @@ var fluid = fluid || {};
         } catch (ex) {
             fluid.utils.debug (ex);
         }
-    }    
+    }
 
     var createUploadStartHandler = function (uploaderContainer, fragmentSelectors, progressBar, status) {
         return function (fileObj) {
             uploadStart (fileObj, uploaderContainer, fragmentSelectors, progressBar, status);
         };
     };
-    
+
     var uploadStart = function(fileObj, uploaderContainer, fragmentSelectors, progressBar, status) {
         status.currError = ''; // zero out the error so we can check it later
         status.currCount++;
@@ -7772,7 +7772,7 @@ var fluid = fluid || {};
                 switch (error_code) {
                     case SWFUpload.UPLOAD_ERROR.HTTP_ERROR:
                         status.currError = "Error Code: HTTP Error, File name: " + file.name + ", Message: " + message;
-                        humanErrorMsg = 'An upload error occurred. Mostly likely because the file is already in your collection.' + 
+                        humanErrorMsg = 'An upload error occurred. Mostly likely because the file is already in your collection.' +
                         formatErrorCode(message);
                         queueContinueOnError = true;
                         break;
@@ -7812,27 +7812,27 @@ var fluid = fluid || {};
                         status.currError = "Error Code: " + error_code + ", File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
                         break;
                 }
-                                
+
                 if (markError) {
                     markRowError($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove, $(fragmentSelectors.scrollingElement, uploaderContainer), maxHeight, humanErrorMsg);
                 }
-                
+
                 // if the file upload error is very file specific then start the next upload
                 if (queueContinueOnError) {
                     this.startUpload();
                 }
-                
+
                 fluid.utils.debug(status.currError + '\n' + humanErrorMsg);
-                
+
                 // override continueAfterUpload
                 options.continueAfterUpload = false;
-            } 
+            }
             catch (ex) {
                 fluid.utils.debug(ex);
             }
         };
     };
-    
+
     var formatErrorCode = function(str) {
         return " (Error code: " + str + ")";
     };
@@ -7847,17 +7847,17 @@ var fluid = fluid || {};
                        status.currCount,
                        status.totalCount);
     };
-    
+
     var createUploadProgressHandler = function (progressBar, fragmentSelectors, status) {
         return function(fileObj, bytes, totalBytes) {
             uploadProgress (progressBar, fileObj, bytes, totalBytes, fragmentSelectors, status);
         };
     };
-    
+
     var createUploadCompleteHandler = function (uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj) {
         return function(file){
             if (!status.currError) {
-            
+
                 if ((file.index + 1) === status.totalCount) {
                     // we've completed all the files in this upload
                     updateProgress(progressBar, 100, file.name, 100, status.totalCount, status.totalCount);
@@ -7870,9 +7870,9 @@ var fluid = fluid || {};
                     this.startUpload(); // if there hasn't been an error then start up the next upload
                                         // in this handler, 'this' is the SWFUpload object
                 }
-                
+
                 markRowComplete($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove);
-                
+
             }
             else {
                 fluid.utils.debug(status.currError);
@@ -7880,13 +7880,13 @@ var fluid = fluid || {};
             }
         };
     };
-    
+
     var createUploadSuccessHandler =  function(whenFileUploaded){
         return function(file, server_data) {
             whenFileUploaded(file.name, server_data);
         };
-    };    
-    
+    };
+
     var fileQueueComplete = function(uploaderContainer, options, progressBar, fragmentSelectors) {
         updateState(uploaderContainer, 'done');
         hideProgress(progressBar, false, $(fragmentSelectors.done, uploaderContainer));
@@ -7899,7 +7899,7 @@ var fluid = fluid || {};
                 closeDialog(dialogObj);
             }
         }
-        
+
     };
 
     /*
@@ -7911,7 +7911,7 @@ var fluid = fluid || {};
         }
         return status.totalBytes;
     };
-    
+
     function numberOfRows(uploaderContainer, fileQueueSelector) {
         return $(fileQueueSelector, uploaderContainer).find('.row').length ;
     }
@@ -7919,43 +7919,43 @@ var fluid = fluid || {};
     function numFilesToUpload(uploaderContainer, fileQueueSelector) {
         return $(fileQueueSelector, uploaderContainer).find('.ready').length ;
     }
-    
+
     function numFilesUploaded(uploaderContainer, fileQueueSelector) {
         return $(fileQueueSelector, uploaderContainer).find('.uploaded').length;
     }
-    
+
 
     /* PROGRESS
-     * 
+     *
      */
 
     var updateProgress = function(progressBar, filePercent, fileName, totalPercent, fileIndex, totalFileNum){
-        
+
         //<span class="file_name">&nbsp;</span> :: 0</span>% complete
         // update file information
         var fileLabel = '<span class="file_name">' + fileName + '</span> :: <span class="percent">' + filePercent + '</span>% complete';
         progressBar.update(progressBar.fragmentSelectors.fileProgress, filePercent, fileLabel);
-        
+
         // update total info
         if (totalPercent) {
-            var totalLabel = 'Total Progress: <span class="percent">' + totalPercent 
-            + '</span>% [<span class="file_index">' + fileIndex 
-            + '</span> of <span class="total_file_num">' + totalFileNum 
+            var totalLabel = 'Total Progress: <span class="percent">' + totalPercent
+            + '</span>% [<span class="file_index">' + fileIndex
+            + '</span> of <span class="total_file_num">' + totalFileNum
             + '</span> files]';
             progressBar.update(progressBar.fragmentSelectors.totalProgress, totalPercent, totalLabel);
             // if we've completed the progress then hide the progress after a delay
         }
     };
-    
+
     var hideProgress = function(progressBar, dontPause, focusAfterHide) {
          progressBar.hide(dontPause);
         focusAfterHide.focus();
     };
-    
+
     /* DIALOG
-     * 
+     *
      */
-    
+
      var initDialog = function(uploaderSelector, addBtnSelector, browseOnInit, uploaderContainer, fileBrowseSelector) {
         dialogObj = $(uploaderSelector).dialog(dialog_settings).css('display','block');
         $(addBtnSelector).click(function(){
@@ -7964,12 +7964,12 @@ var fluid = fluid || {};
                 $(fileBrowseSelector, uploaderSelector).click();
             }
         });
-        
-        
-        
+
+
+
         return dialogObj;
     };
-        
+
     var closeDialog = function(dialogObj) {
         $(dialogObj).dialog("close");
     };
@@ -7977,29 +7977,29 @@ var fluid = fluid || {};
     /* DEV CODE
      * to be removed after beta or factored into unit tests
      */
-    
+
     function debugStatus(status) {
         fluid.utils.debug (
-            "\n status.totalBytes = " + queueSize (status) + 
-            "\n status.totalCount = " + status.totalCount + 
-            "\n status.currCount = " + status.currCount + 
-            "\n status.currTotalBytes = " + status.currTotalBytes + 
+            "\n status.totalBytes = " + queueSize (status) +
+            "\n status.totalCount = " + status.totalCount +
+            "\n status.currCount = " + status.currCount +
+            "\n status.currTotalBytes = " + status.currTotalBytes +
             "\n status.currError = " + status.currError
         );
     }
-    
+
     /* DEMO CODE
      * this is code that fakes an upload with out a server
      */
 
- 
+
     // need to pass in current uploader
-    
+
     var demoUpload = function (uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status, dialogObj) {
         var demoState = {};
-        
-        fluid.utils.debug("num of ready files = " + numFilesToUpload(uploaderContainer, fragmentSelectors.fluidUploader)); // check the current state 
-        
+
+        fluid.utils.debug("num of ready files = " + numFilesToUpload(uploaderContainer, fragmentSelectors.fluidUploader)); // check the current state
+
         if (status.stop === true) {
             queueSize (status, -status.currTotalBytes);
             updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
@@ -8010,18 +8010,18 @@ var fluid = fluid || {};
             demoState.byteChunk = 200000; // used to break the demo upload into byte-sized chunks
             // set up data
             demoState.row = $(fragmentSelectors.fluidUploader + ' tbody tr:not(".fluid-uploader-placeholder"):not(".uploaded)', uploaderContainer).eq(0);
-            
+
             demoState.fileId = jQuery(demoState.row).attr('id');
             demoState.fileObj = swfObj.getFile(demoState.fileId);
             demoState.bytes = 0;
             demoState.totalBytes = demoState.fileObj.size;
             demoState.numChunks = Math.ceil(demoState.totalBytes / demoState.byteChunk);
-            fluid.utils.debug ('DEMO :: ' + demoState.fileId + ' :: totalBytes = ' 
+            fluid.utils.debug ('DEMO :: ' + demoState.fileId + ' :: totalBytes = '
                 + demoState.totalBytes + ' numChunks = ' + demoState.numChunks);
-            
+
             // start the demo upload
             uploadStart(demoState.fileObj, uploaderContainer, fragmentSelectors, progressBar, status);
-            
+
             // perform demo progress
             demoProgress();
         } else { // no more files to upload close the display
@@ -8044,23 +8044,23 @@ var fluid = fluid || {};
                     uploadProgress(progressBar, demoState.fileObj, demoState.totalBytes, demoState.totalBytes, fragmentSelectors, status);
                     var timer = setTimeout(demoComplete,delay);
                 }
-            }  
+            }
         }
-        
+
         function demoComplete() {
             var row = $('tr#'+ demoState.fileObj.id, uploaderContainer);
             // mark the row completed
             markRowComplete(row, fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove);
-            
-            status.currTotalBytes += demoState.fileObj.size; 
+
+            status.currTotalBytes += demoState.fileObj.size;
             updateNumFiles(uploaderContainer, fragmentSelectors.txtTotalFiles, fragmentSelectors.fluidUploader, fragmentSelectors.emptyRow);
             updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
             var dUpload = function () {
                 demoUpload(uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status, dialogObj);
             };
-            var pause = setTimeout(dUpload,1200); // if there hasn't been an error then start up the next upload    
+            var pause = setTimeout(dUpload,1200); // if there hasn't been an error then start up the next upload
         }
-        
+
         function demoStop () {
             hideProgress(progressBar, true, $(fragmentSelectors.done, uploaderContainer));
             status.stop = false;
@@ -8073,8 +8073,8 @@ var fluid = fluid || {};
                 updateState(uploaderContainer,'done');
             }
         }
-        
-     };    
+
+     };
 
     function initSWFUpload(uploaderContainer, uploadURL, flashURL, progressBar, status, fragmentSelectors, options, allowMultipleFiles, dialogObj) {
         // Initialize the uploader SWF component
@@ -8082,19 +8082,19 @@ var fluid = fluid || {};
         if (typeof(SWFUpload) === "undefined") {
             return null;
         }
-        
+
         var swf_settings = {
             // File Upload Settings
             upload_url: uploadURL,
             flash_url: flashURL,
             post_params: options.postParams,
-            
+
             file_size_limit: options.fileSizeLimit,
             file_types: options.fileTypes,
             file_types_description: options.fileTypesDescription,
             file_upload_limit: options.fileUploadLimit,
             file_queue_limit: options.fileQueueLimit,
-            
+
             // Event Handler Settings
             swfupload_loaded_handler : createSWFReadyHandler(options.browseOnInit, allowMultipleFiles, options.dialogDisplay),
             file_dialog_start_handler: createFileDialogStartHandler (uploaderContainer),
@@ -8108,11 +8108,11 @@ var fluid = fluid || {};
             upload_success_handler: createUploadSuccessHandler (options.whenFileUploaded),
             // Debug setting
             debug: options.debug
-        }; 
-        
+        };
+
         return new SWFUpload(swf_settings);
     }
-    
+
     var whichOS = function () {
         if (navigator.appVersion.indexOf("Win") !== -1) {
             return "Windows";
@@ -8130,53 +8130,53 @@ var fluid = fluid || {};
             return "unknown";
         }
     };
-    
+
     var setKeyboardModifierString = function (uploaderContainer, modifierKeySelector) {
         // set the text difference for the instructions based on Mac or Windows
         if (whichOS() === 'MacOS') {
             $(modifierKeySelector, uploaderContainer).text(strings.macControlKey);
         }
     };
-    
+
     var bindEvents = function (uploader, uploaderContainer, swfObj, allowMultipleFiles, whenDone, whenCancel) {
 
         // browse button
         var activateBrowse = function () {
             return (allowMultipleFiles) ? swfObj.selectFiles() : swfObj.selectFile();
         };
-        
+
         $(uploader.fragmentSelectors.browse, uploaderContainer).click(activateBrowse).activatable(activateBrowse);
-        
+
         // upload button
         $(uploader.fragmentSelectors.upload, uploaderContainer).click(function(){
             if ($(uploader.fragmentSelectors.upload, uploaderContainer).css('cursor') === 'pointer') {
                 uploader.actions.beginUpload();
             }
         });
-        
+
         // resume button
         $(uploader.fragmentSelectors.resume, uploaderContainer).click(function(){
             if ($(uploader.fragmentSelectors.resume, uploaderContainer).css('cursor') === 'pointer') {
                 uploader.actions.beginUpload();
             }
         });
-        
+
         // pause button
         $(uploader.fragmentSelectors.pause, uploaderContainer).click(function(){
             swfObj.stopUpload();
         });
-        
+
         // done button
         $(uploader.fragmentSelectors.done, uploaderContainer).click(function(){
             variableAction(whenDone);
         });
-        
+
         // cancel button
         $(uploader.fragmentSelectors.cancel, uploaderContainer).click(function(){
             variableAction(whenCancel);
         });
     };
-    
+
     var enableDemoMode = function (uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status, dialogObj) {
         // this is a local override to do a fake upload
         swfObj.startUpload = function(){
@@ -8186,19 +8186,19 @@ var fluid = fluid || {};
             status.stop = true;
         };
     };
-    
+
     /* Public API */
     fluid.Uploader = function(uploaderSelector, uploadURL, flashURL, settings){
-        
+
         this.uploaderContainer = jQuery(uploaderSelector);
-        
+
         // Mix user's settings in with our defaults.
         // temporarily public; to be made private after beta
         this.options = $.extend({}, uploadDefaults, settings);
-        
+
         this.fragmentSelectors = this.options.fragmentSelectors;
         var progressSelector = this.fragmentSelectors.progress;
-        
+
         // Should the status object be more self-aware? Should various functions that operate on
         // it (and do little else) be encapsulated in it?
         this.status = {
@@ -8209,9 +8209,9 @@ var fluid = fluid || {};
             currError:'',
             stop: false
         };
-    
+
         var progressBar = new fluid.Progress(progressSelector);
-                
+
         var allowMultipleFiles = (this.options.fileQueueLimit !== 1);
 
          // displaying Uploader in a dialog
@@ -8220,23 +8220,23 @@ var fluid = fluid || {};
         }
 
         var swfObj = initSWFUpload(this.uploaderContainer, uploadURL, flashURL, progressBar, this.status, this.fragmentSelectors, this.options, allowMultipleFiles, dialogObj);
-        
+
         this.actions = new fluid.SWFWrapper(swfObj);
-        
+
         setKeyboardModifierString(this.uploaderContainer, this.fragmentSelectors.osModifierKey);
-        
+
         // Bind all our event handlers.
         bindEvents(this, this.uploaderContainer, swfObj, allowMultipleFiles, this.options.whenDone, this.options.whenCancel);
-        
+
         // If we've been given an empty URL, kick into demo mode.
         if (uploadURL === '') {
             enableDemoMode(this.uploaderContainer, swfObj, progressBar, this.options, this.fragmentSelectors, this.status, dialogObj);
         }
     };
-    
+
     // temporary debuggin' code to be removed after beta
     // USE: call from the console to check the current state of the options and fragmentSelectors objects
-    
+
     fluid.Uploader.prototype._test = function() {
         var str = "";
         for (key in options) {
@@ -8251,42 +8251,42 @@ var fluid = fluid || {};
         }
         fluid.utils.debug (str);
     };
-    
+
     fluid.SWFWrapper = function (swfObject) {
         this.swfObj = swfObject;
     };
-    
+
     fluid.SWFWrapper.prototype.beginUpload = function() {
         this.swfObj.startUpload();
     };
-    
+
 })(jQuery,fluid);
 
 /* PROGRESS
- * Currently, Progress is 'contextless' in that it requires the element which contains the progress bar to be 
- * passed in however, it is not fully stateless in that it holds a 'lastPercent' variable. 
+ * Currently, Progress is 'contextless' in that it requires the element which contains the progress bar to be
+ * passed in however, it is not fully stateless in that it holds a 'lastPercent' variable.
 */
 
 (function ($) {
-    
+
     var defaultSelectors = {
         fileProgress: '.file-progress',
         totalProgress: '.total-progress',
         pause: ".fluid-uploader-pause"
     };
 
-     
+
      function animateToWidth(elm,width) {
-        elm.animate({ 
+        elm.animate({
             width: width,
             queue: false
          }, 200 );
     }
-    
+
     var hideNow = function(which){
         which.fadeOut('slow');
-    };      
-    
+    };
+
     // This should probably be done in the CSS style sheet rather than in javascript
     var createInitScript = function (container, fragmentSelectors) {
         return function() {
@@ -8294,12 +8294,12 @@ var fluid = fluid || {};
             $('.progress-mask-btm', container).height(container.height() - 14);
          };
     };
- 
+
      /* Constructor */
     fluid.Progress = function (containerSelector, options) {
         this.progressContainer = jQuery(containerSelector);
         this.fragmentSelectors = (options) ? fluid.utils.initCssClassNames(defaultSelectors, options.fragmentSelectors) : defaultSelectors;
-        
+
         this.lastPercent = 0;
         // other states to be added
         // opacity
@@ -8311,44 +8311,44 @@ var fluid = fluid || {};
         $(document).ready(createInitScript(this.progressContainer, this.fragmentSelectors));
 
     };
-    
+
     fluid.Progress.prototype.update = function(indicator, percent, label, text) {
         var percentpercent = percent+'%';
         // we may want to pull out the 'progress' element and use it to constrain the other searches.
         var labelElm = $(indicator + ' .progress-label', this.progressContainer);
         var progressElm = $(indicator + ' .progress-indicator', this.progressContainer);
-        
+
         // if there is a separate text indicator then update the text
         if (text) {
             var textElm = $(indicator + ' .progress-text', this.progressContainer);
             textElm.html(text);
         }
-        
+
         if (this.progressContainer.css("display") === "none") {
             this.progressContainer.fadeIn('slow');
             $(this.fragmentSelectors.pause, this.progressContainer).focus();
         }
         fluid.utils.debug ('percent = ' + percent + ' lastPercent = ' + this.lastPercent);
-        
+
         //update the label of the indicator
         labelElm.html(label);
-        
+
         // de-queue any left over animations
-        progressElm.queue("fx", []); 
-        
+        progressElm.queue("fx", []);
+
         if (percent === 0) {
             progressElm.width(1);
         } else if (percent < this.lastPercent) {
             progressElm.width(percentpercent);
         } else {
-            progressElm.animate({ 
+            progressElm.animate({
                 width: percentpercent,
                 queue: false
               }, 200 );
         }
         this.lastPercent = percent;
     };
-        
+
     fluid.Progress.prototype.hide = function(dontPause) {
         var progressContainer = this.progressContainer;
         var delay = 1600;
@@ -8360,18 +8360,18 @@ var fluid = fluid || {};
             }, delay);
         }
     };
-    
+
     fluid.Progress.prototype.show = function() {
         this.progressContainer.fadeIn('slow');
     };
-    
+
 })(jQuery);
 
 //fluid.Progress.update('.fluid-progress','.file-progress',40,"Label Change");
 
 
 /* GRAVEYARD and SCRATCH
-    
+
     // eventually used to create fileTypes sets.
     var fileTypes = {
         all: {
