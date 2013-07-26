@@ -1,34 +1,33 @@
 .settings
 .project
 
-src/webapp/WEB-INF
-src/webapp/components
-src/webapp/demos
-src/webapp/integration-demos
-src/webapp/standalone-demos
+src/WEB-INF
+src/components
+src/demos
+src/integration-demos
+src/standalone-demos
 
-src/webapp/tests/3rd-party-tests
-src/webapp/tests/component-tests
-src/webapp/tests/framework-tests
-src/webapp/tests/manual-tests
-src/webapp/tests/all-tests.html
-src/webapp/tests/lib/jquery-ui
-src/webapp/tests/lib/mockjax
-src/webapp/tests/lib/README
-src/webapp/tests/test-core/testTests
-src/webapp/tests/test-core/utils/js/DebugFocus.js
+src/tests/3rd-party-tests
+src/tests/component-tests
+src/tests/framework-tests
+src/tests/manual-tests
+src/tests/all-tests.html
+src/tests/lib/jquery-ui
+src/tests/lib/mockjax
+src/tests/lib/README
+src/tests/test-core/testTests
+src/tests/test-core/utils/js/DebugFocus.js
 
-src/webapp/lib/jquery/plugins
-src/webapp/lib/jquery/ui
+src/lib/jquery/plugins
+src/lib/jquery/ui
 
-src/webapp/lib/json
-src/webapp/lib/swfobject
-src/webapp/lib/swfupload
-src/webapp/framework/fss
+src/lib/json
+src/lib/swfobject
+src/lib/swfupload
+src/framework/fss
 
 build-scripts
 products
 project.xml
 project.properties
 pom.xml
-maven.xml
