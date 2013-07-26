@@ -18,6 +18,6 @@
   ],
   "keywords": ["infusion", "framework", "application", "fluid", "IoC", "Inversion of Control", "MVC", "evented"],
   "repository": "git://github.com/fluid-project/infusion.git",
-  "main": "./src/webapp/module/fluid.js",
+  "main": "./src/module/fluid.js",
   "engines": { "node" : ">=0.1.9" }
 }
