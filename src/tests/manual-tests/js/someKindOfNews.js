@@ -12,13 +12,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global skon:true, fluid, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var skon = skon || {};
 (function ($, fluid) {
-	
-    /* Our demo script */   
+
+    /* Our demo script */
     skon.slidingUIOptions = function (panel, uioptions) {
         // First, start up Settings Store and Page Enhancer
         fluid.globalSettingsStore();
@@ -31,14 +31,20 @@ var skon = skon || {};
             },
             tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
         });
-        
+
         // Next, start up UI Options
         fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
             gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
-            prefix: "../../../components/uiOptions/html/",
-            resourceLoader: {
+            templatePrefix: "../../../components/uiOptions/html/",
+            messagePrefix: "../../../components/uiOptions/messages/",
+            messageLoader: {
                 options: {
-                    gradeNames: ["fluid.uiOptions.starterResourceLoader"]
+                    gradeNames: ["fluid.uiOptions.starterMessageLoader"]
+                }
+            },
+            templateLoader: {
+                options: {
+                    gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
                 }
             },
             uiOptions: {
@@ -46,7 +52,7 @@ var skon = skon || {};
                     gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
                 }
             },
-            markupRenderer: {
+            iframeRenderer: {
                 options: {
                     markupProps: {
                         src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
@@ -55,5 +61,5 @@ var skon = skon || {};
             }
         });
     };
-    
+
 })(jQuery, fluid);

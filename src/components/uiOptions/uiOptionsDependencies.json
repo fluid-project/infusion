@@ -17,6 +17,7 @@
             "Panels.js",
             "ModelRelay.js",
             "Enactors.js",
+            "StarterGrades.js",
             "UIEnhancer.js",
             "FatPanelUIOptions.js",
             "FullNoPreviewUIOptions.js",

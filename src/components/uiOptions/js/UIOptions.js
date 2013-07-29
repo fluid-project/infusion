@@ -307,24 +307,6 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.rootModel.starter", {
-        gradeNames: ["fluid.uiOptions.rootModel", "autoInit"],
-        members: {
-            // TODO: This information is supposed to be generated from the JSON
-            // schema describing various preferences. For now it's kept in top
-            // level uiOptions to avoid further duplication.
-            rootModel: {
-                textFont: "default",          // key from classname map
-                theme: "default",             // key from classname map
-                textSize: 1,                  // in points
-                lineSpace: 1,               // in ems
-                toc: false,                   // boolean
-                links: false,                 // boolean
-                inputsLarger: false           // boolean
-            }
-        }
-    });
-
     fluid.defaults("fluid.uiOptions.uiEnhancerRelay", {
         gradeNames: ["autoInit", "fluid.eventedComponent"],
         listeners: {
