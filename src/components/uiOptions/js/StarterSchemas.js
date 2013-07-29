@@ -20,19 +20,10 @@ var fluid_1_5 = fluid_1_5 || {};
 (function (fluid) {
 
     /*******************************************************************************
-     * Base auxiliary schema grade
-     *******************************************************************************/
-
-    fluid.defaults("fluid.uiOptions.auxSchema", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        auxiliarySchema: {}
-    });
-
-    /*******************************************************************************
      * Starter auxiliary schema grade
      *
-     * Contains the settings for 6 preferences: text size, line space, text font,
-     * table of contents, inputs larger and emphasize links
+     * Contains the settings for 7 preferences: text size, line space, text font,
+     * contrast, table of contents, inputs larger and emphasize links
      *******************************************************************************/
 
     fluid.defaults("fluid.uiOptions.auxSchema.starter", {
@@ -155,6 +146,91 @@ var fluid_1_5 = fluid_1_5 || {};
                 "panel": {
                     "type": "fluid.uiOptions.panels.linksControls"
                 }
+            }
+        }
+    });
+
+    /*******************************************************************************
+     * Starter primary schema grades
+     *
+     * Contains the settings for 7 preferences: text size, line space, text font,
+     * contrast, table of contents, inputs larger and emphasize links
+     *******************************************************************************/
+
+    fluid.defaults("fluid.uiOptions.schemas.textSize", {
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+        schema: {
+            "fluid.uiOptions.textSize": {
+                "type": "number",
+                "default": 1,
+                "minimum": 1,
+                "maximum": 2,
+                "divisibleBy": 0.1
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.schemas.lineSpace", {
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+        schema: {
+            "fluid.uiOptions.lineSpace": {
+                "type": "number",
+                "default": 1,
+                "minimum": 1,
+                "maximum": 2,
+                "divisibleBy": 0.1
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.schemas.textFont", {
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+        schema: {
+            "fluid.uiOptions.textFont": {
+                "type": "string",
+                "default": "",
+                "enum": ["", "Times New Roman", "Comic Sans", "Arial", "Verdana"]
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.schemas.contrast", {
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+        schema: {
+            "fluid.uiOptions.contrast": {
+                "type": "string",
+                "default": "default",
+                "enum": ["default", "bw", "wb", "by", "yb", "lgdg"]
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.schemas.tableOfContents", {
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+        schema: {
+            "fluid.uiOptions.tableOfContents": {
+                "type": "boolean",
+                "default": false
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.schemas.emphasizeLinks", {
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+        schema: {
+            "fluid.uiOptions.emphasizeLinks": {
+                "type": "boolean",
+                "default": false
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiOptions.schemas.inputsLarger", {
+        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+        schema: {
+            "fluid.uiOptions.inputsLarger": {
+                "type": "boolean",
+                "default": false
             }
         }
     });

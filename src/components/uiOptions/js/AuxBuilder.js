@@ -22,6 +22,15 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.registerNamespace("fluid.uiOptions");
 
+    /*******************************************************************************
+     * Base auxiliary schema grade
+     *******************************************************************************/
+
+    fluid.defaults("fluid.uiOptions.auxSchema", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        auxiliarySchema: {}
+    });
+
     /**
      * Look up the value on the given source object by using the path.
      * Takes a template string containing tokens in the form of "@source-path-to-value".

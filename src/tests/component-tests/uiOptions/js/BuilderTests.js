@@ -283,7 +283,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 uiOptions: "fluid.uiOptions.builder.uio"
             }
         },
-        modules: [/*{
+        modules: [{
             name: "fluid.uiOptions.builder - empty",
             tests: [{
                 expect: 16,
@@ -367,7 +367,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanels}.options.assembledUIOGrade", {gradeNames: ["fluid.uiOptions.assembler.uio"]}]
             }]
-        },*/ {
+        }, {
             name: "fluid.uiOptions.builder - panels & messages",
             tests: [{
                 expect: 5,

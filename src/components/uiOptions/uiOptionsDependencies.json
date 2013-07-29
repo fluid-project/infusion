@@ -22,9 +22,9 @@
             "FullNoPreviewUIOptions.js",
             "FullPreviewUIOptions.js",
             "SlidingPanel.js",
-            "AuxiliarySchema.js",
             "PrimaryBuilder.js",
             "AuxBuilder.js",
+            "StarterSchemas.js",
             "Builder.js"
         ],
         "dependencies": [
