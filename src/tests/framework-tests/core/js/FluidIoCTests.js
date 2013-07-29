@@ -3111,4 +3111,54 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertValue("Components must be merged correctly", root.subComponent.mustExist);
     });
 
+    fluid.defaults("fluid.tests.auxSchema", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        auxiliarySchema: {}
+    });
+
+    fluid.defaults("fluid.tests.auxSchema.starter", {
+        gradeNames: ["fluid.tests.auxSchema", "autoInit"],
+        auxiliarySchema: {
+            "exists": true
+        }
+    });
+
+    fluid.defaults("fluid.tests.primaryBuilder", {
+        gradeNames: ["fluid.littleComponent", "autoInit", "{that}.buildPrimary"],
+        primarySchema: {},
+        auxiliarySchema: {},
+        auxSchema: {
+            expander: {
+                func: "fluid.tests.primaryBuilder.parseAuxSchema",
+                args: "{that}.options.auxiliarySchema"
+            }
+        },
+        invokers: {
+            buildPrimary: {
+                funcName: "fluid.tests.primaryBuilder.buildPrimary",
+                args: "{that}.options.auxSchema"
+            }
+        },
+    });
+
+    fluid.tests.primaryBuilder.buildPrimary = function (auxSchema) {
+        return [];
+    };
+
+    fluid.tests.primaryBuilder.parseAuxSchema = function (auxSchema) {
+        return {exists: auxSchema.exists};
+    };
+
+    fluid.defaults("fluid.tests.auxBuilder", {
+        gradeNames: ["autoInit", "fluid.tests.auxSchema", "fluid.tests.primaryBuilder"]
+    });
+
+    jqUnit.test("FLUID-5105: Contributed grade options merging.", function () {
+        var builder = fluid.tests.auxBuilder({
+            gradeNames: ["fluid.tests.auxSchema.starter"]
+        });
+        jqUnit.assertValue("Options from the contributed grade must be merged in", builder.options.auxiliarySchema.exists);
+        jqUnit.assertValue("Options from the contributed grade must be merged in", builder.options.auxSchema.exists);
+    });
+
 })(jQuery);
