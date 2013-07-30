@@ -678,6 +678,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 enactors: {
                     "gradeNames": ["fluid.uiEnhancer", "autoInit"],
+                    "selectors": {},
                     "components": {
                         "fluid_uiOptions_enactors_textSize": {
                             type: "fluid.uiOptions.enactors.textSize",
@@ -701,6 +702,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             fluid_uiOptions_textSize: 1
                         }
                     }
+                },
+                messageLoader: {
+                    gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
+                    templates: {}
+                },
+                templateLoader: {
+                    gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
+                    templates: {}
                 }
             },
             expectedManyPanelsOnePref: {
@@ -936,7 +945,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 }
                             }
                         }
-                    }
+                    },
+                    "selectors": {}
                 },
                 rootModel: {
                     gradeNames: ["fluid.uiOptions.rootModel", "autoInit"],
