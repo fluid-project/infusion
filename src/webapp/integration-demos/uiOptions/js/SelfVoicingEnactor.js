@@ -12,16 +12,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid_1_5:true, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
-    
+
     /*******************************************************************************
      * selfVoicing
-     * 
+     *
      * The enactor that enables self voicing in the user interface options.
      *******************************************************************************/
 
@@ -80,10 +80,9 @@ var fluid_1_5 = fluid_1_5 || {};
         markup: '<audio type="audio/x-wav"></audio>',
 
         // Fireworks Server
-        ttsUrl: "http://ec2-23-23-52-224.compute-1.amazonaws.com?q=%text"
-        // Google Translate TTS Proxy
-        // lang: "en",
-        // ttsUrl: "http://ec2-23-23-52-224.compute-1.amazonaws.com?q=%text&tl=%lang"
+        ttsUrl: "http://tts.idrc.ocadu.ca?q=%text",
+
+        lang: "en"
     });
 
     fluid.uiOptions.actionAnts.selfVoicingEnactor.finalInit = function (that) {
