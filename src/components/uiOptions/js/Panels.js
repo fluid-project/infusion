@@ -115,7 +115,12 @@ var fluid_1_5 = fluid_1_5 || {};
             label: ".flc-uiOptions-text-font-label"
         },
         strings: {
-            textFont: "{that}.options.parentBundle.messageBase.textFont"
+            textFont: {
+                expander: {
+                    func: "fluid.uiOptions.panels.textFont.lookupMsg",
+                    args: ["{that}.options.parentBundle", "textFont", "{that}.options.controlValues.textFont"]
+                }
+            }
         },
         protoTree: {
             label: {messagekey: "textFontLabel"},
@@ -137,6 +142,15 @@ var fluid_1_5 = fluid_1_5 || {};
             textFont: ["default", "times", "comic", "arial", "verdana"]
         }
     });
+
+    fluid.uiOptions.panels.textFont.lookupMsg = function (messageResolver, prefix, values) {
+        var messages = [];
+        fluid.each(values, function (value, key) {
+            var looked = messageResolver.lookup([prefix + "." + value]);
+            messages.push(looked ? looked.template : looked);
+        });
+        return messages;
+    };
 
     /*************************
      * UI Options Line Space *
@@ -212,7 +226,12 @@ var fluid_1_5 = fluid_1_5 || {};
             label: ".flc-uiOptions-contrast-label"
         },
         strings: {
-            theme: "{that}.options.parentBundle.messageBase.theme"
+            theme: {
+                expander: {
+                    func: "fluid.uiOptions.panels.contrast.lookupMsg",
+                    args: ["{that}.options.parentBundle", "contrast"]
+                }
+            }
         },
         repeatingSelectors: ["themeRow"],
         protoTree: {
@@ -245,6 +264,11 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
+
+    fluid.uiOptions.panels.contrast.lookupMsg = function (messageResolver, value) {
+        var looked = messageResolver.lookup([value]);
+        return looked ? looked.template : looked;
+    };
 
     fluid.uiOptions.panels.contrast.style = function (labels, strings, markup, theme, style) {
         fluid.each(labels, function (label, index) {

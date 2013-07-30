@@ -30,8 +30,18 @@ var fluid_1_5 = fluid_1_5 || {};
             toggleButton: ".flc-slidingPanel-toggleButton"
         },
         strings: {
-            showText: "{that}.msgBundle.messageBase.slidingPanelShowText",
-            hideText: "{that}.msgBundle.messageBase.slidingPanelHideText"
+            showText: {
+                expander: {
+                    func: "fluid.slidingPanel.lookupMsg",
+                    args: ["{that}.msgBundle", "slidingPanelShowText"]
+                }
+            },
+            hideText: {
+                expander: {
+                    func: "fluid.slidingPanel.lookupMsg",
+                    args: ["{that}.msgBundle", "slidingPanelHideText"]
+                }
+            }
         },
         events: {
             onPanelHide: null,
@@ -58,6 +68,11 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
+
+    fluid.slidingPanel.lookupMsg = function (messageResolver, value) {
+        var looked = messageResolver.lookup([value]);
+        return looked ? looked.template : looked;
+    };
 
     fluid.slidingPanel.slideUp = function (element, callback, duration) {
         $(element).slideUp(duration || "400", callback);
