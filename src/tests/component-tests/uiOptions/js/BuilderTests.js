@@ -153,7 +153,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testNotCreated = function (that, grades) {
         fluid.each(grades, function (grade) {
-            jqUnit.assertUndefined("{that}.options.constructedGrades." + "grade should be undefined", that.options.constructedGrades[grade]);
+            jqUnit.assertUndefined("{that}.options.constructedGrades." + grade + " should be undefined", that.options.constructedGrades[grade]);
             jqUnit.assertUndefined("No defaults for the " + grade + " grade should have been created", fluid.defaults(that.options.auxSchema.namespace + "." + grade));
         });
     };
@@ -304,7 +304,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, {
             name: "fluid.uiOptions.builder - only enactors",
             tests: [{
-                expect: 4,
+                expect: 5,
                 name: "enactors",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderEnactors}.options.constructedGrades.enactors", "{builderEnactors}.options.auxSchema.enactors"]
@@ -314,10 +314,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderEnactors}.options.constructedGrades.rootModel", "{builderEnactors}.options.auxSchema.rootModel"]
             }, {
-                expect: 12,
+                expect: 8,
                 name: "not created",
                 func: "fluid.tests.testNotCreated",
-                args: ["{builderEnactors}", ["messages", "panels", "templateLoader", "templatePrefix", "messageLoader", "messagePrefix"]]
+                args: ["{builderEnactors}", ["messages", "panels", "templatePrefix", "messagePrefix"]]
             }, {
                 expect: 2,
                 name: "assembledUIEGrade",
@@ -471,7 +471,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderAll}.options.constructedGrades.messagePrefix", "{builderAll}.options.auxSchema.messagePrefix"]
             }, {
-                expect: 4,
+                expect: 5,
                 name: "enactors",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderAll}.options.constructedGrades.enactors", "{builderAll}.options.auxSchema.enactors"]

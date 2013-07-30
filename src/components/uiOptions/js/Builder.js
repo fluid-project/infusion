@@ -117,7 +117,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var constructedGrades = {};
         fluid.each(gradeCategories, function (category) {
             var gradeOpts = auxSchema[category];
-            if (gradeOpts) {
+            if (fluid.get(gradeOpts, "gradeNames")) {
                 constructedGrades[category] = fluid.uiOptions.builder.generateGrade(category, auxSchema.namespace, gradeOpts);
             }
         });

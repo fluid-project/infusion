@@ -101,9 +101,7 @@ var fluid_1_5 = fluid_1_5 || {};
             delete componentOptions.template;
             delete componentOptions.message;
 
-            if (fluid.keys(componentOptions).length > 0) {
-                instance.options = componentOptions;
-            }
+            instance.options = $.extend(true, {}, componentOptions);
 
             var preferenceMap = fluid.defaults(componentName).preferenceMap;
 
@@ -135,22 +133,12 @@ var fluid_1_5 = fluid_1_5 || {};
             components[memberName] = instance;
         }
 
-        if (fluid.keys(components).length > 0) {
-            auxSchema = fluid.uiOptions.addAtPath(auxSchema, [type, "components"], components);
+        fluid.uiOptions.addAtPath(auxSchema, [type, "components"], components);
+        fluid.uiOptions.addAtPath(auxSchema, [type, "selectors"], selectors);
+        fluid.uiOptions.addAtPath(auxSchema, ["templateLoader", "templates"], templates);
+        fluid.uiOptions.addAtPath(auxSchema, ["messageLoader", "templates"], messages);
+        fluid.uiOptions.addAtPath(auxSchema, "rootModel", rootModel);
 
-            if (fluid.keys(selectors).length > 0) {
-                auxSchema = fluid.uiOptions.addAtPath(auxSchema, [type, "selectors"], selectors);
-            }
-        }
-        if (fluid.keys(templates).length > 0) {
-            auxSchema = fluid.uiOptions.addAtPath(auxSchema, ["templateLoader", "templates"], templates);
-        }
-        if (fluid.keys(messages).length > 0) {
-            auxSchema = fluid.uiOptions.addAtPath(auxSchema, ["messageLoader", "templates"], messages);
-        }
-        if (fluid.keys(rootModel).length > 0) {
-            auxSchema = fluid.uiOptions.addAtPath(auxSchema, "rootModel", rootModel);
-        }
         return auxSchema;
     };
 
@@ -159,7 +147,6 @@ var fluid_1_5 = fluid_1_5 || {};
         if (value) {
             delete auxSchema[type];
             fluid.set(auxSchema, targetPath, value);
-            var a = 1;
         }
     };
 
