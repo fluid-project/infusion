@@ -61,12 +61,13 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     fluid.uiOptions.primaryBuilder.buildPrimary = function (schemaIndex, typeFilter, primarySchema) {
-        fluid.defaults("fluid.uiOptions.schemas.suppliedPrimary", {
+        var suppliedPrimaryGradeName = "fluid.uiOptions.schemas.suppliedPrimary" + fluid.allocateGuid();
+        fluid.defaults(suppliedPrimaryGradeName, {
             gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
             schema: fluid.filterKeys(primarySchema.properties || primarySchema,
                 typeFilter, false)
         });
-        var primary = ["fluid.uiOptions.schemas.suppliedPrimary"];
+        var primary = [suppliedPrimaryGradeName];
         fluid.each(typeFilter, function merge(type) {
             var schemaGrades = schemaIndex[type];
             if (schemaGrades) {
