@@ -22,7 +22,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.registerNamespace("fluid.uiOptions");
 
     fluid.defaults("fluid.uiOptions.builder", {
-        gradeNames: ["fluid.eventedComponent", "fluid.uiOptions.primaryBuilder", "fluid.uiOptions.auxBuilder", "autoInit"],
+        gradeNames: ["fluid.eventedComponent", "fluid.uiOptions.auxBuilder", "autoInit"],
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
         },
@@ -50,13 +50,20 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "rootModel", "templateLoader", "messageLoader", "templatePrefix", "messagePrefix"]]
             }
         },
-        typeFilter: {
-            expander: {
-                func: "fluid.uiOptions.builder.parseAuxSchema",
-                args: "{that}.options.auxiliarySchema"
+        mappedDefaults: "{primaryBuilder}.options.schema.properties",
+        components: {
+            primaryBuilder: {
+                type: "fluid.uiOptions.primaryBuilder",
+                options: {
+                    typeFilter: {
+                        expander: {
+                            func: "fluid.uiOptions.builder.parseAuxSchema",
+                            args: "{builder}.options.auxiliarySchema"
+                        }
+                    },
+                }
             }
-        },
-        mappedDefaults: "{that}.options.schema.properties"
+        }
 
     });
 
