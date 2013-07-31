@@ -222,7 +222,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 var message = JSON.parse(oneResource.resourceText);
                 completeMessage = $.extend({}, completeMessage, message);
             });
-            that.msgBundle = fluid.messageResolver({messageBase: completeMessage});
+            var parentResolver = fluid.messageResolver({messageBase: completeMessage});
+            that.msgBundle = fluid.messageResolver({messageBase: {}, parents: [parentResolver]});
             that.events.onUIOptionsMessageReady.fire();
         });
     };
@@ -296,16 +297,6 @@ var fluid_1_5 = fluid_1_5 || {};
         var userSettings = fluid.copy(model);
         set(userSettings);
     };
-
-    fluid.defaults("fluid.uiOptions.rootModel", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        members: {
-            // TODO: This information is supposed to be generated from the JSON
-            // schema describing various preferences. For now it's kept in top
-            // level uiOptions to avoid further duplication.
-            rootModel: {}
-        }
-    });
 
     fluid.defaults("fluid.uiOptions.uiEnhancerRelay", {
         gradeNames: ["autoInit", "fluid.eventedComponent"],

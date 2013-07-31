@@ -26,7 +26,6 @@ var fluid_1_5 = fluid_1_5 || {};
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
         },
-
         assembledUIOGrade: {
             expander: {
                 func: "fluid.uiOptions.builder.generateGrade",
@@ -36,7 +35,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 }]
             }
         },
-
         assembledUIEGrade: {
             expander: {
                 func: "fluid.uiOptions.builder.generateGrade",
@@ -46,13 +44,27 @@ var fluid_1_5 = fluid_1_5 || {};
                 }]
             }
         },
-
         constructedGrades: {
             expander: {
                 func: "fluid.uiOptions.builder.constructGrades",
                 args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "rootModel", "templateLoader", "messageLoader", "templatePrefix", "messagePrefix"]]
             }
+        },
+        mappedDefaults: "{primaryBuilder}.options.schema.properties",
+        components: {
+            primaryBuilder: {
+                type: "fluid.uiOptions.primaryBuilder",
+                options: {
+                    typeFilter: {
+                        expander: {
+                            func: "fluid.uiOptions.builder.parseAuxSchema",
+                            args: "{builder}.options.auxiliarySchema"
+                        }
+                    },
+                }
+            }
         }
+
     });
 
     fluid.defaults("fluid.uiOptions.assembler.uie", {
@@ -117,11 +129,22 @@ var fluid_1_5 = fluid_1_5 || {};
         var constructedGrades = {};
         fluid.each(gradeCategories, function (category) {
             var gradeOpts = auxSchema[category];
-            if (gradeOpts) {
+            if (fluid.get(gradeOpts, "gradeNames")) {
                 constructedGrades[category] = fluid.uiOptions.builder.generateGrade(category, auxSchema.namespace, gradeOpts);
             }
         });
         return constructedGrades;
+    };
+
+    fluid.uiOptions.builder.parseAuxSchema = function (auxSchema) {
+        var auxTypes = [];
+        fluid.each(auxSchema, function parse(field) {
+            var type = field.type;
+            if (type) {
+                auxTypes.push(type);
+            }
+        });
+        return auxTypes;
     };
 
 })(jQuery, fluid_1_5);

@@ -1,4 +1,8 @@
 {
-    "textFont": ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana"],
+    "textFont.default": "Default",
+    "textFont.times": "Times New Roman",
+    "textFont.comic": "Comic Sans",
+    "textFont.arial": "Arial",
+    "textFont.verdana": "Verdana",
     "textFontLabel": "Text Style"
 }

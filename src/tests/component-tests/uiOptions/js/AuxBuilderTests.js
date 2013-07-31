@@ -550,6 +550,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         messagePrefix: "../messages"
     };
 
+    fluid.tests.auxSchema.mappedDefaults = {
+        "fluid.uiOptions.textSize": {
+            "type": "number",
+            "default": 1,
+            "minimum": 1,
+            "maximum": 2,
+            "divisibleBy": 0.1
+        },
+        "fluid.uiOptions.emphasizeLinks": {
+            "type": "boolean",
+            "default": false
+        },
+        "fluid.uiOptions.inputsLarger": {
+            "type": "boolean",
+            "default": false
+        }
+    };
+
     fluid.defaults("fluid.tests.auxBuilderTest", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
@@ -557,42 +575,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.auxBuilder",
                 options: {
                     auxiliarySchema: fluid.tests.auxSchema.prefs,
-                    elementCommonOptions: fluid.tests.elementCommonOptions
+                    elementCommonOptions: fluid.tests.elementCommonOptions,
+                    mappedDefaults: fluid.tests.auxSchema.mappedDefaults
                 }
             },
             auxbuilderOnlyEnactor: {
                 type: "fluid.uiOptions.auxBuilder",
                 options: {
                     auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.enactors, fluid.tests.auxSchema.namespace),
-                    elementCommonOptions: fluid.tests.elementCommonOptions
+                    elementCommonOptions: fluid.tests.elementCommonOptions,
+                    mappedDefaults: fluid.tests.auxSchema.mappedDefaults
                 }
             },
             auxbuilderOnlyPanel: {
                 type: "fluid.uiOptions.auxBuilder",
                 options: {
                     auxiliarySchema: fluid.tests.auxSchema.panels,
-                    elementCommonOptions: fluid.tests.elementCommonOptions
+                    elementCommonOptions: fluid.tests.elementCommonOptions,
+                    mappedDefaults: fluid.tests.auxSchema.mappedDefaults
                 }
             },
             auxbuilderManyPanelsOnePref: {
                 type: "fluid.uiOptions.auxBuilder",
                 options: {
                     auxiliarySchema: fluid.tests.auxSchema.manyPanelsOnePref,
-                    elementCommonOptions: fluid.tests.elementCommonOptions
+                    elementCommonOptions: fluid.tests.elementCommonOptions,
+                    mappedDefaults: fluid.tests.auxSchema.mappedDefaults
                 }
             },
             auxbuilderManyPrefsOnePanel: {
                 type: "fluid.uiOptions.auxBuilder",
                 options: {
                     auxiliarySchema: fluid.tests.auxSchema.manyPrefsOnePanel,
-                    elementCommonOptions: fluid.tests.elementCommonOptions
+                    elementCommonOptions: fluid.tests.elementCommonOptions,
+                    mappedDefaults: fluid.tests.auxSchema.mappedDefaults
                 }
             },
             auxbuilderAll: {
                 type: "fluid.uiOptions.auxBuilder",
                 options: {
                     auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.enactors, fluid.tests.auxSchema.panels, fluid.tests.auxSchema.namespace, fluid.tests.auxSchema.messages, fluid.tests.auxSchema.templatePrefix, fluid.tests.auxSchema.template, fluid.tests.auxSchema.messagePrefix, fluid.tests.auxSchema.message),
-                    elementCommonOptions: fluid.tests.elementCommonOptions
+                    elementCommonOptions: fluid.tests.elementCommonOptions,
+                    mappedDefaults: fluid.tests.auxSchema.mappedDefaults
                 }
             },
             auxBuilderTester: {
@@ -678,6 +702,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 enactors: {
                     "gradeNames": ["fluid.uiEnhancer", "autoInit"],
+                    "selectors": {},
                     "components": {
                         "fluid_uiOptions_enactors_textSize": {
                             type: "fluid.uiOptions.enactors.textSize",
@@ -701,6 +726,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             fluid_uiOptions_textSize: 1
                         }
                     }
+                },
+                messageLoader: {
+                    gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
+                    templates: {}
+                },
+                templateLoader: {
+                    gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
+                    templates: {}
                 }
             },
             expectedManyPanelsOnePref: {
@@ -936,7 +969,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 }
                             }
                         }
-                    }
+                    },
+                    "selectors": {}
                 },
                 rootModel: {
                     gradeNames: ["fluid.uiOptions.rootModel", "autoInit"],

@@ -71,14 +71,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             primaryBuilder: {
                 type: "fluid.uiOptions.primaryBuilder",
                 options: {
-                    auxiliarySchema: {
-                        textSize: {
-                            type: "fluid.uiOptions.textSize"
-                        },
-                        lineSpace: {
-                            type: "fluid.uiOptions.lineSpace"
-                        }
-                    }
+                    typeFilter: ["fluid.uiOptions.textSize", "fluid.uiOptions.lineSpace"],
                 }
             },
             primaryBuilderSchema: {
@@ -90,17 +83,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             primaryBuilderWithSuppliedPrimarySchema: {
                 type: "fluid.uiOptions.primaryBuilder",
                 options: {
-                    auxiliarySchema: {
-                        textSize: {
-                            type: "fluid.uiOptions.textSize"
-                        },
-                        lineSpace: {
-                            type: "fluid.uiOptions.lineSpace"
-                        },
-                        somePreference: {
-                            type: "fluid.tests.somePreference"
-                        }
-                    },
+                    typeFilter: ["fluid.uiOptions.textSize", "fluid.uiOptions.lineSpace", "fluid.tests.somePreference"],
                     primarySchema: {
                         "fluid.tests.somePreference": {
                             "type": "number",

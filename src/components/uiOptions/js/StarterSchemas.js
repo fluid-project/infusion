@@ -70,11 +70,11 @@ var fluid_1_5 = fluid_1_5 || {};
             "textFont": {
                 "type": "fluid.uiOptions.textFont",
                 "classes": {
-                    "": "",
-                    "Times New Roman": "fl-font-uio-times",
-                    "Comic Sans": "fl-font-uio-comic-sans",
-                    "Arial": "fl-font-uio-arial",
-                    "Verdana": "fl-font-uio-verdana"
+                    "default": "",
+                    "times": "fl-font-uio-times",
+                    "comic": "fl-font-uio-comic-sans",
+                    "arial": "fl-font-uio-arial",
+                    "verdana": "fl-font-uio-verdana"
                 },
                 "enactor": {
                     "type": "fluid.uiOptions.enactors.textFont",
@@ -189,7 +189,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "fluid.uiOptions.textFont": {
                 "type": "string",
                 "default": "",
-                "enum": ["", "Times New Roman", "Comic Sans", "Arial", "Verdana"]
+                "enum": ["default", "times", "comic", "arial", "verdana"]
             }
         }
     });

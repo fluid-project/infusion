@@ -20,16 +20,9 @@ var demo = demo || {};
 (function ($, fluid) {
 
     demo.initFatPanel = function (container) {
-        // var builder = fluid.uiOptions.builder({
-        //     gradeNames: ["fluid.uiOptions.auxSchema.starter"]
-        // });
-        // fluid.invokeGlobalFunction(builder.options.assembledUIOGrade, [".flc-uiOptions-fatPanel"]);
-
-        // work around for FLUID- 5105
-        fluid.defaults("demo.uiOptions.builder", {
-            gradeNames: ["fluid.uiOptions.auxSchema.starter", "fluid.uiOptions.builder", "autoInit"]
+        var builder = fluid.uiOptions.builder({
+            gradeNames: ["fluid.uiOptions.auxSchema.starter"]
         });
-        var builder = demo.uiOptions.builder();
         fluid.invokeGlobalFunction(builder.options.assembledUIOGrade, [".flc-uiOptions-fatPanel"]);
     };
 

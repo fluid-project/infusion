@@ -22,6 +22,22 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     /*******************************************************************************
+     * Root Model                                                                  *
+     *                                                                             *
+     * Holds the default values for enactors and panel model values                *
+     *******************************************************************************/
+
+    fluid.defaults("fluid.uiOptions.rootModel", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+            // TODO: This information is supposed to be generated from the JSON
+            // schema describing various preferences. For now it's kept in top
+            // level uiOptions to avoid further duplication.
+            rootModel: {}
+        }
+    });
+
+    /*******************************************************************************
      * UI Enhancer                                                                 *
      *                                                                             *
      * Works in conjunction with FSS to transform the page based on user settings. *
