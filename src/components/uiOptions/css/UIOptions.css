@@ -381,9 +381,9 @@
 .fl-theme-by .fl-uiOptions .fl-slider a,
 .fl-theme-by .fl-uiOptions .fl-slider a:hover {border:1px solid #000; background-color:#ffff00;}
 
-.fl-theme-lgdg .fl-uiOptions .fl-slider {background: none; background-color:#343434;}
+.fl-theme-lgdg .fl-uiOptions .fl-slider {background: none; background-color:#555555;}
 .fl-theme-lgdg .fl-uiOptions .fl-slider a,
-.fl-theme-lgdg .fl-uiOptions .fl-slider a:hover {border:1px solid #bdbdbb; background-color:#343434;}
+.fl-theme-lgdg .fl-uiOptions .fl-slider a:hover {border:1px solid #bdbdbb; background-color:#555555;}
 
 .fl-theme-bw .fl-uiOptions .ui-slider .ui-slider-handle,
 .fl-theme-wb .fl-uiOptions .ui-slider .ui-slider-handle,
@@ -449,7 +449,7 @@
 .fl-uiOptions .fl-choice label.fl-theme-lgdg,
 .fl-uiOptions .fl-choice label.fl-theme-lgdg span,
 .fl-uiOptions .fl-choice label.fl-theme-lgdg .fl-crossout {
-    background-color: #343434 !important;
+    background-color: #555555 !important;
     border-color: #bdbdbb !important;
     color: #bdbdbb !important;
 }
