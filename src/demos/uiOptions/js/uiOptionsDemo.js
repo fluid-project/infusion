@@ -30,6 +30,7 @@ var demo = demo || {};
             gradeNames: ["fluid.uiOptions.auxSchema.starter", "fluid.uiOptions.builder", "autoInit"]
         });
         var builder = demo.uiOptions.builder();
+        demo.builder = builder;
         fluid.invokeGlobalFunction(builder.options.assembledUIOGrade, [".flc-uiOptions-fatPanel"]);
     };
 

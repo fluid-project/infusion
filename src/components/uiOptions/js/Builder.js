@@ -22,11 +22,10 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.registerNamespace("fluid.uiOptions");
 
     fluid.defaults("fluid.uiOptions.builder", {
-        gradeNames: ["fluid.eventedComponent", "fluid.uiOptions.auxBuilder", "autoInit"],
+        gradeNames: ["fluid.eventedComponent", "fluid.uiOptions.primaryBuilder", "fluid.uiOptions.auxBuilder", "autoInit"],
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
         },
-
         assembledUIOGrade: {
             expander: {
                 func: "fluid.uiOptions.builder.generateGrade",
@@ -36,7 +35,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 }]
             }
         },
-
         assembledUIEGrade: {
             expander: {
                 func: "fluid.uiOptions.builder.generateGrade",
@@ -46,13 +44,20 @@ var fluid_1_5 = fluid_1_5 || {};
                 }]
             }
         },
-
         constructedGrades: {
             expander: {
                 func: "fluid.uiOptions.builder.constructGrades",
                 args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "rootModel", "templateLoader", "messageLoader", "templatePrefix", "messagePrefix"]]
             }
-        }
+        },
+        typeFilter: {
+            expander: {
+                func: "fluid.uiOptions.builder.parseAuxSchema",
+                args: "{that}.options.auxiliarySchema"
+            }
+        },
+        mappedDefaults: "{that}.options.schema.properties"
+
     });
 
     fluid.defaults("fluid.uiOptions.assembler.uie", {
@@ -122,6 +127,17 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
         return constructedGrades;
+    };
+
+    fluid.uiOptions.builder.parseAuxSchema = function (auxSchema) {
+        var auxTypes = [];
+        fluid.each(auxSchema, function parse(field) {
+            var type = field.type;
+            if (type) {
+                auxTypes.push(type);
+            }
+        });
+        return auxTypes;
     };
 
 })(jQuery, fluid_1_5);

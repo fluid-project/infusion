@@ -76,7 +76,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return result;
     };
 
-    fluid.uiOptions.expandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, commonOptions, primarySchema) {
+    fluid.uiOptions.expandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, commonOptions, mappedDefaults) {
         var components = {};
         var rootModel = {};
 
@@ -107,7 +107,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
             var map = preferenceMap[prefKey];
             fluid.each(map, function (PrimaryPath, internalPath) {
-                var prefSchema = primarySchema[prefKey];
+                var prefSchema = mappedDefaults[prefKey];
                 if (prefSchema) {
                     if (internalPath.indexOf("model.") === 0) {
                         var internalModelName = internalPath.slice(6);
@@ -177,18 +177,18 @@ var fluid_1_5 = fluid_1_5 || {};
         return expandedSchema;
     };
 
-    fluid.uiOptions.expandSchema = function (schemaToExpand, defaultNamespace, indexes, topCommonOptions, elementCommonOptions, primarySchema) {
+    fluid.uiOptions.expandSchema = function (schemaToExpand, defaultNamespace, indexes, topCommonOptions, elementCommonOptions, mappedDefaults) {
         var auxSchema = fluid.uiOptions.expandSchemaImpl(schemaToExpand);
         auxSchema.namespace = auxSchema.namespace || defaultNamespace;
 
         fluid.each(auxSchema, function (category, prefName) {
             var type = "panel";
             if (category[type]) {
-                fluid.uiOptions.expandSchemaComponents(auxSchema, type, category.type, category[type], fluid.get(indexes, type), fluid.get(elementCommonOptions, type), primarySchema);
+                fluid.uiOptions.expandSchemaComponents(auxSchema, type, category.type, category[type], fluid.get(indexes, type), fluid.get(elementCommonOptions, type), mappedDefaults);
             }
             type = "enactor";
             if (category[type]) {
-                fluid.uiOptions.expandSchemaComponents(auxSchema, type, category.type, category[type], fluid.get(indexes, type), fluid.get(elementCommonOptions, type), primarySchema);
+                fluid.uiOptions.expandSchemaComponents(auxSchema, type, category.type, category[type], fluid.get(indexes, type), fluid.get(elementCommonOptions, type), mappedDefaults);
             }
 
             type = "template";
@@ -227,7 +227,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.defaults("fluid.uiOptions.auxBuilder", {
-        gradeNames: ["fluid.uiOptions.primaryBuilder", "fluid.uiOptions.auxSchema", "autoInit"],
+        gradeNames: ["fluid.uiOptions.auxSchema", "autoInit"],
         defaultNamespace: "fluid.uiOptions.create",
         mergePolicy: {
             elementCommonOptions: "noexpand"
@@ -287,6 +287,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
         },
+        mappedDefaults: {},
         expandedAuxSchema: {
             expander: {
                 func: "fluid.uiOptions.expandSchema",
@@ -296,7 +297,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "{that}.options.indexes",
                     "{that}.options.topCommonOptions",
                     "{that}.options.elementCommonOptions",
-                    "{that}.options.schema.properties"
+                    "{that}.options.mappedDefaults"
                 ]
             }
         }

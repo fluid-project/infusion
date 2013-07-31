@@ -47,50 +47,33 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         primarySchema: {},
-        auxiliarySchema: {},
-        auxTypes: {
-            expander: {
-                func: "fluid.uiOptions.primaryBuilder.parseAuxSchema",
-                args: "{that}.options.auxiliarySchema"
-            }
-        },
+        typeFilter: [],
         invokers: {
             buildPrimary: {
                 funcName: "fluid.uiOptions.primaryBuilder.buildPrimary",
                 args: [
                     "{that}.options.schemaIndex",
-                    "{that}.options.auxTypes",
+                    "{that}.options.typeFilter",
                     "{that}.options.primarySchema"
                 ]
             }
-        },
+        }
     });
 
-    fluid.uiOptions.primaryBuilder.buildPrimary = function (schemaIndex, auxTypes, primarySchema) {
+    fluid.uiOptions.primaryBuilder.buildPrimary = function (schemaIndex, typeFilter, primarySchema) {
         fluid.defaults("fluid.uiOptions.schemas.suppliedPrimary", {
             gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
             schema: fluid.filterKeys(primarySchema.properties || primarySchema,
-                auxTypes, false)
+                typeFilter, false)
         });
         var primary = ["fluid.uiOptions.schemas.suppliedPrimary"];
-        fluid.each(auxTypes, function merge(auxType) {
-            var schemaGrades = schemaIndex[auxType];
+        fluid.each(typeFilter, function merge(type) {
+            var schemaGrades = schemaIndex[type];
             if (schemaGrades) {
                 primary.push.apply(primary, schemaGrades);
             }
         });
         return primary;
-    };
-
-    fluid.uiOptions.primaryBuilder.parseAuxSchema = function (auxSchema) {
-        var auxTypes = [];
-        fluid.each(auxSchema, function parse(field) {
-            var type = field.type;
-            if (type) {
-                auxTypes.push(type);
-            }
-        });
-        return auxTypes;
     };
 
     fluid.uiOptions.primaryBuilder.defaultSchemaIndexer = function (defaults) {
