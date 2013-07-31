@@ -23,6 +23,14 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.registerNamespace("fluid.uiOptions.schemas");
 
+    /**
+     * A custom merge policy that merges primary schema blocks and
+     * places them in the right location (consistent with the JSON schema
+     * format).
+     * @param  {JSON} target A base for merging the options.
+     * @param  {JSON} source Options being merged.
+     * @return {JSON}        Updated target.
+     */
     fluid.uiOptions.schemas.merge = function (target, source) {
         if (!target) {
             target = {
@@ -30,13 +38,20 @@ var fluid_1_5 = fluid_1_5 || {};
                 properties: {}
             };
         }
+        // We can handle both schema blocks in options directly and also inside
+        // the |properties| field.
         source = source.properties || source;
         $.extend(true, target.properties, source);
         return target;
     };
 
+    /*******************************************************************************
+     * Primary builder grade
+     *******************************************************************************/
+
     fluid.defaults("fluid.uiOptions.primaryBuilder", {
         gradeNames: ["fluid.littleComponent", "autoInit", "{that}.buildPrimary"],
+        // An index of all schema grades registered with the framework.
         schemaIndex: {
             expander: {
                 func: "fluid.indexDefaults",
@@ -47,8 +62,12 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         primarySchema: {},
+        // A list of all necessarry top level preference names.
         typeFilter: [],
         invokers: {
+            // An invoker used to generate a set of grades that comprise a
+            // final version of the primary schema to be used by the UIOptions
+            // builder.
             buildPrimary: {
                 funcName: "fluid.uiOptions.primaryBuilder.buildPrimary",
                 args: [
@@ -60,14 +79,28 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
+    /**
+     * An invoker method that builds a list of grades that comprise a final
+     * version of the primary schema.
+     * @param  {JSON}  schemaIndex   A global index of all schema grades
+     *                               registered with the framework.
+     * @param  {Array} typeFilter    A list of all necessarry top level
+     *                               preference names.
+     * @param  {JSON}  primarySchema Primary schema provided as an option to
+     *                               the primary builder.
+     * @return {Array}               A list of schema grades.
+     */
     fluid.uiOptions.primaryBuilder.buildPrimary = function (schemaIndex, typeFilter, primarySchema) {
         var suppliedPrimaryGradeName = "fluid.uiOptions.schemas.suppliedPrimary" + fluid.allocateGuid();
+        // Create a grade that has a primary schema passed as an option inclosed.
         fluid.defaults(suppliedPrimaryGradeName, {
             gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
             schema: fluid.filterKeys(primarySchema.properties || primarySchema,
                 typeFilter, false)
         });
         var primary = [suppliedPrimaryGradeName];
+        // Lookup all available schema grades from the index that match the
+        // top level preference name.
         fluid.each(typeFilter, function merge(type) {
             var schemaGrades = schemaIndex[type];
             if (schemaGrades) {
@@ -77,12 +110,21 @@ var fluid_1_5 = fluid_1_5 || {};
         return primary;
     };
 
+    /**
+     * An index function that indexes all shcema grades based on their
+     * preference name.
+     * @param  {JSON}   defaults Registered defaults for a schema grade.
+     * @return {String}          A preference name.
+     */
     fluid.uiOptions.primaryBuilder.defaultSchemaIndexer = function (defaults) {
         if (defaults.schema) {
             return fluid.keys(defaults.schema.properties);
         }
     };
 
+    /*******************************************************************************
+     * Base primary schema grade
+     *******************************************************************************/
     fluid.defaults("fluid.uiOptions.schemas", {
         gradeNames: ["autoInit", "fluid.littleComponent"],
         mergePolicy: {
