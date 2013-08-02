@@ -71,7 +71,7 @@ var demo = demo || {};
     //     messagePrefix: pathToMessages,
     //     templateLoader: {
     //         options: {
-    //             gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
+    //             gradeNames: ["fluid.uiOptions.starterFatPanelTemplateLoader"]
     //         }
     //     },
     //     messageLoader: {

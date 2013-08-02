@@ -44,7 +44,7 @@ var skon = skon || {};
             },
             templateLoader: {
                 options: {
-                    gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
+                    gradeNames: ["fluid.uiOptions.starterFatPanelTemplateLoader"]
                 }
             },
             uiOptions: {

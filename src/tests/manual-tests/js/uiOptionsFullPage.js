@@ -70,11 +70,6 @@ var demo = demo || {};
         // Tell UIOptions where to find all the templates, relative to this file
         templatePrefix: pathToTemplates,
         messagePrefix: pathToMessages,
-        templateLoader: {
-            options: {
-                gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
-            }
-        },
         messageLoader: {
             options: {
                 gradeNames: ["fluid.uiOptions.starterMessageLoader"]
@@ -97,14 +92,28 @@ var demo = demo || {};
      * Initialize UI Options on the "Full Page, No Preview" version.
      */
     demo.initFullNoPreview = function (container, options) {
-        fluid.uiOptions.fullNoPreview(container, $.extend(true, {}, basicFullPageOpts, options));
+        var noPreviewOps = {
+            templateLoader: {
+                options: {
+                    gradeNames: ["fluid.uiOptions.starterFullNoPreviewTemplateLoader"]
+                }
+            }
+        };
+        fluid.uiOptions.fullNoPreview(container, $.extend(true, {}, basicFullPageOpts, noPreviewOps, options));
     };
 
     /**
      * Initialize UI Options on the "Full Page, With Preview" version.
      */
     demo.initFullWithPreview = function (container, options) {
-        fluid.uiOptions.fullPreview(container, $.extend(true, {}, basicFullPageOpts, options));
+        var previewOps = {
+            templateLoader: {
+                options: {
+                    gradeNames: ["fluid.uiOptions.starterFullPreviewTemplateLoader"]
+                }
+            }
+        };
+        fluid.uiOptions.fullPreview(container, $.extend(true, {}, basicFullPageOpts, previewOps, options));
     };
 
 })(jQuery, fluid);

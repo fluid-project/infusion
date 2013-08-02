@@ -40,7 +40,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 templateLoader: {
                     type: "fluid.uiOptions.resourceLoader",
                     options: {
-                        gradeNames: ["fluid.uiOptions.starterTemplateLoader"],
+                        gradeNames: ["fluid.uiOptions.starterFullNoPreviewTemplateLoader"],
                         templates: {
                             uiOptions: templatePrefix + "FullNoPreviewUIOptions.html"
                         },
@@ -75,19 +75,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.defaults("fluid.uiOptionsTests", {
             gradeNames: ["fluid.uiOptionsDefaultTests", "autoInit"]
         });
-
-        // Supply the paths to templates and message json files
-        // fluid.demands("fluid.uiOptions.resourcePath", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.starterTemplateLoader"], {
-        //     options: {
-        //         value: templatePrefix
-        //     }
-        // });
-
-        // fluid.demands("fluid.uiOptions.resourcePath", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.starterMessageLoader"], {
-        //     options: {
-        //         value: messagePrefix
-        //     }
-        // });
 
         // Options for UIOptions
         var saveCalled = false;
