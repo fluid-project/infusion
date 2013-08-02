@@ -862,13 +862,13 @@ fluid.registerNamespace("fluid.tests");
         that.events.eventTwo.fire("twoFired");
         jqUnit.assertTrue("Event two listener notified", that.twoFired);
     });
-    
+
     /** FLUID-5082 auto-namespaces (soft) **/
-    
+
     fluid.tests.FLUID5082func = function (that, arg) {
         that.fireRecord.push(arg);
     };
-    
+
     fluid.tests.FLUID5082func2 = fluid.tests.FLUID5082func;
 
     fluid.defaults("fluid.tests.FLUID5082Parent", {
@@ -883,7 +883,7 @@ fluid.registerNamespace("fluid.tests");
         listeners: {
             testEvent: [{
                 funcName: "fluid.tests.FLUID5082func",
-                args: ["{that}", 1]  
+                args: ["{that}", 1]
             }, {
                 func: "{that}.FLUID5082invoker",
                 args: ["{that}", 2]
@@ -905,14 +905,14 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
-    
+
     fluid.defaults("fluid.tests.FLUID5082Child", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         listeners: {
             testEvent: [{
                 funcName: "fluid.tests.FLUID5082func",
                 namespace: "fluid.tests.FLUID5082Parent.FLUID5082func", // will override
-                args: ["{FLUID5082Parent}", 5]  
+                args: ["{FLUID5082Parent}", 5]
             }, {
                 func: "{FLUID5082Parent}.FLUID5082invoker",
                 namespace: "fluid.tests.FLUID5082Parent.FLUID5082invoker", // will override
@@ -945,13 +945,13 @@ fluid.registerNamespace("fluid.tests");
                     options: {
                         events: {
                             testEvent: "{FLUID5082Parent}.events.testEvent"
-                        }  
+                        }
                     }
                 }
             }
         });
         that3.events.testEvent.fire();
-        jqUnit.assertDeepEq("Base grade listeners fired", [4, 5, 6, 7, 8], that3.fireRecord);        
+        jqUnit.assertDeepEq("Base grade listeners fired", [4, 5, 6, 7, 8], that3.fireRecord);
     });
 
     /** withEnvironment tests - eventually to be deprecated **/
@@ -3107,8 +3107,46 @@ fluid.registerNamespace("fluid.tests");
         var root = fluid.tests.fluid5094({
             gradeName: "fluid.tests.fluid5094Grade"
         });
-        
+
         jqUnit.assertValue("Components must be merged correctly", root.subComponent.mustExist);
+    });
+
+    /** FLUID-5108: Source and supplied dynamic grades that both have common option(s) to be handled by IoCSS don't get merged correctly **/
+    fluid.defaults("fluid.tests.fluid5108", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            subComponent: {
+                type: "fluid.littleComponent"
+            }
+        },
+        subComponent: {
+            options: {
+                userOption: "initial"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.subComponent.options",
+            removeSource: true,
+            target: "{that subComponent}.options"
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid5108Grade", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        subComponent: {
+            options: {
+                userOption: "fromSuppliedGrade"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5108: Dynamic grade merging takes the undefined source passed in from IoCSS into account rather than ignoring it", function () {
+        var root = fluid.tests.fluid5108({
+            gradeNames: "fluid.tests.fluid5108Grade"
+        });
+
+        jqUnit.assertTrue("The grade is merged correctly", fluid.hasGrade(root.options, "fluid.tests.fluid5108Grade"));
+        jqUnit.assertEquals("The option from the supplied grade should overwrite the original component option", "fromSuppliedGrade", root.subComponent.options.userOption);
     });
 
 })(jQuery);
