@@ -3140,7 +3140,7 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
-    jqUnit.test("FLUID-5108: Dynamic grade merging takes the undefined source passed in from IoCSS into account rather than ignoring it", function () {
+    jqUnit.test("FLUID-5108: Source and supplied dynamic grades that both have common option(s) to be handled by IoCSS don't get merged correctly", function () {
         var root = fluid.tests.fluid5108({
             gradeNames: "fluid.tests.fluid5108Grade"
         });
