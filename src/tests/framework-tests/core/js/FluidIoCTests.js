@@ -3111,23 +3111,13 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertValue("Components must be merged correctly", root.subComponent.mustExist);
     });
 
-    /** FLUID-5108: Source and supplied dynamic grades that both have common option(s) to be handled by IoCSS don't get merged correctly **/
+    /** FLUID-5108: Source and supplied dynamic grades that both have common option(s) are not merged correctly **/
     fluid.defaults("fluid.tests.fluid5108", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            subComponent: {
-                type: "fluid.littleComponent"
-            }
-        },
         source: {
             options: {
                 userOption: "initial"
             }
-        },
-        distributeOptions: {
-            source: "{that}.options.source.options",
-            removeSource: true,
-            target: "{that subComponent}.options"
         }
     });
 
@@ -3140,13 +3130,13 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
-    jqUnit.test("FLUID-5108: Source and supplied dynamic grades that both have common option(s) to be handled by IoCSS don't get merged correctly", function () {
+    jqUnit.test("FLUID-5108: Source and supplied dynamic grades that both have common option(s) are not merged correctly", function () {
         var root = fluid.tests.fluid5108({
             gradeNames: "fluid.tests.fluid5108Grade"
         });
 
         jqUnit.assertTrue("The grade is merged correctly", fluid.hasGrade(root.options, "fluid.tests.fluid5108Grade"));
-        jqUnit.assertEquals("The option from the supplied grade should overwrite the original component option", "fromSuppliedGrade", root.subComponent.options.userOption);
+        jqUnit.assertEquals("The option from the supplied grade should overwrite the original component option", "fromSuppliedGrade", root.options.source.options.userOption);
     });
 
 })(jQuery);
