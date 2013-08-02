@@ -3119,13 +3119,13 @@ fluid.registerNamespace("fluid.tests");
                 type: "fluid.littleComponent"
             }
         },
-        subComponent: {
+        source: {
             options: {
                 userOption: "initial"
             }
         },
         distributeOptions: {
-            source: "{that}.options.subComponent.options",
+            source: "{that}.options.source.options",
             removeSource: true,
             target: "{that subComponent}.options"
         }
@@ -3133,7 +3133,7 @@ fluid.registerNamespace("fluid.tests");
 
     fluid.defaults("fluid.tests.fluid5108Grade", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
-        subComponent: {
+        source: {
             options: {
                 userOption: "fromSuppliedGrade"
             }
