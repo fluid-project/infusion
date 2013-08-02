@@ -116,4 +116,52 @@ var demo = demo || {};
         fluid.uiOptions.fullPreview(container, $.extend(true, {}, basicFullPageOpts, previewOps, options));
     };
 
+    fluid.registerNamespace("demo.initWithSchema");
+
+    demo.initWithSchema.fullWithPreview = function (container, options) {
+        var builder = fluid.uiOptions.builder({
+            gradeNames: ["fluid.uiOptions.auxSchema.starter"],
+            auxiliarySchema: {
+                "template": "%prefix/FullPreviewUIOptions.html",
+            }
+        });
+        var baseOpts = {
+            components: {
+                uiOptions: {
+                    type: "fluid.uiOptions.fullPreview",
+                    options: {
+                        templateLoader: {
+                            gradeNames: ["fluid.uiOptions.starterFullPreviewTemplateLoader"]
+                        }
+                    }
+                }
+            }
+        };
+        $.extend(true, baseOpts, options);
+        return fluid.invokeGlobalFunction(builder.options.assembledUIOGrade, [container, baseOpts]);
+    }
+
+    demo.initWithSchema.fullNoPreview = function (container, options) {
+        var builder = fluid.uiOptions.builder({
+            gradeNames: ["fluid.uiOptions.auxSchema.starter"],
+            auxiliarySchema: {
+                "template": "%prefix/FullNoPreviewUIOptions.html",
+            }
+        });
+        var baseOpts = {
+            components: {
+                uiOptions: {
+                    type: "fluid.uiOptions.fullNoPreview",
+                    options: {
+                        templateLoader: {
+                            gradeNames: ["fluid.uiOptions.starterFullNoPreviewTemplateLoader"]
+                        }
+                    }
+                }
+            }
+        };
+        $.extend(true, baseOpts, options);
+        return fluid.invokeGlobalFunction(builder.options.assembledUIOGrade, [container, baseOpts]);
+    }
+
 })(jQuery, fluid);

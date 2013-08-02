@@ -358,38 +358,38 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
 
-     fluid.defaults("fluid.uiOptions.starterTemplateLoader", {
-         gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
-         templates: {
-             textSize: "%prefix/UIOptionsTemplate-textSize.html",
-             textFont: "%prefix/UIOptionsTemplate-textFont.html",
-             lineSpace: "%prefix/UIOptionsTemplate-lineSpace.html",
-             contrast: "%prefix/UIOptionsTemplate-contrast.html",
-             layoutControls: "%prefix/UIOptionsTemplate-layout.html",
-             linksControls: "%prefix/UIOptionsTemplate-links.html"
-         }
-     });
+    fluid.defaults("fluid.uiOptions.starterTemplateLoader", {
+        gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
+        templates: {
+            textSize: "%prefix/UIOptionsTemplate-textSize.html",
+            textFont: "%prefix/UIOptionsTemplate-textFont.html",
+            lineSpace: "%prefix/UIOptionsTemplate-lineSpace.html",
+            contrast: "%prefix/UIOptionsTemplate-contrast.html",
+            layoutControls: "%prefix/UIOptionsTemplate-layout.html",
+            linksControls: "%prefix/UIOptionsTemplate-links.html"
+        }
+    });
 
-     fluid.defaults("fluid.uiOptions.starterFatPanelTemplateLoader", {
-         gradeNames: ["fluid.uiOptions.starterTemplateLoader", "autoInit"],
-         templates: {
-             uiOptions: "%prefix/FatPanelUIOptions.html"
-         }
-     });
+    fluid.defaults("fluid.uiOptions.starterFatPanelTemplateLoader", {
+        gradeNames: ["fluid.uiOptions.starterTemplateLoader", "autoInit"],
+        templates: {
+            uiOptions: "%prefix/FatPanelUIOptions.html"
+        }
+    });
 
-     fluid.defaults("fluid.uiOptions.starterFullPreviewTemplateLoader", {
-         gradeNames: ["fluid.uiOptions.starterTemplateLoader", "autoInit"],
-         templates: {
-             uiOptions: "%prefix/FullPreviewUIOptions.html"
-         }
-     });
+    fluid.defaults("fluid.uiOptions.starterFullPreviewTemplateLoader", {
+        gradeNames: ["fluid.uiOptions.starterTemplateLoader", "autoInit"],
+        templates: {
+            uiOptions: "%prefix/FullPreviewUIOptions.html"
+        }
+    });
 
-     fluid.defaults("fluid.uiOptions.starterFullNoPreviewTemplateLoader", {
-         gradeNames: ["fluid.uiOptions.starterTemplateLoader", "autoInit"],
-         templates: {
-             uiOptions: "%prefix/FullNoPreviewUIOptions.html"
-         }
-     });
+    fluid.defaults("fluid.uiOptions.starterFullNoPreviewTemplateLoader", {
+        gradeNames: ["fluid.uiOptions.starterTemplateLoader", "autoInit"],
+        templates: {
+            uiOptions: "%prefix/FullNoPreviewUIOptions.html"
+        }
+    });
 
     /******************************
      * Starter Message Loader

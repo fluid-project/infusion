@@ -68,7 +68,7 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     fluid.defaults("fluid.uiOptions.assembler.uie", {
-        gradeNames: ["autoInit", "fluid.viewComponent", "fluid.originalEnhancerOptions"],
+        gradeNames: ["autoInit", "fluid.viewComponent"],
         components: {
             store: {
                 type: "fluid.globalSettingsStore"
@@ -77,7 +77,13 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uiEnhancer",
                 container: "body",
                 options: {
-                    gradeNames: ["{fluid.uiOptions.assembler.uie}.options.componentGrades.enactors", "{fluid.uiOptions.assembler.uie}.options.componentGrades.rootModel"],
+                    gradeNames: ["{fluid.uiOptions.assembler.uie}.options.componentGrades.enactors",  "fluid.originalEnhancerOptions"],
+                    originalUserOptions: {
+                        expander: {
+                            func: "fluid.copy",
+                            args: ["{that}.options"]
+                        }
+                    },
                     listeners: {
                         onCreate: {
                             listener: "fluid.set",
@@ -110,7 +116,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     },
                     uiOptions: {
                         options: {
-                            gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.panels", "{fluid.uiOptions.assembler.uio}.options.componentGrades.rootModel"]
+                            gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.panels", "{fluid.uiOptions.assembler.uio}.options.componentGrades.rootModel", "fluid.uiOptions.uiEnhancerRelay"]
                         }
                     }
                 }

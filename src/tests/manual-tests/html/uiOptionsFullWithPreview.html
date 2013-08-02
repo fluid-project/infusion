@@ -57,6 +57,10 @@
         <script type="text/javascript" src="../../../components/uiOptions/js/StarterGrades.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/FullPreviewUIOptions.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/PrimaryBuilder.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/AuxBuilder.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/StarterSchemas.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/Builder.js"></script>
 
         <script type="text/javascript" src="../js/uiOptionsFullPage.js"></script>
     </head>
@@ -65,12 +69,25 @@
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             $(document).ready(function () {
-                demo.initSettingsStore();
-                demo.initPageEnhancer();
-                demo.initFullWithPreview("#myUIOptions", {
-                    preview: {
-                        options: {
-                            templateUrl: "uiOptionsPreview.html"
+                // demo.initSettingsStore();
+                // demo.initPageEnhancer();
+                // demo.initFullWithPreview("#myUIOptions", {
+                //     preview: {
+                //         options: {
+                //             templateUrl: "uiOptionsPreview.html"
+                //         }
+                //     }
+                // });
+                demo.uio = demo.initWithSchema.fullWithPreview("#myUIOptions", {
+                    components: {
+                        uiOptions: {
+                            options: {
+                                preview: {
+                                    options: {
+                                        templateUrl: "uiOptionsPreview.html"
+                                    }
+                                }
+                            }
                         }
                     }
                 });
