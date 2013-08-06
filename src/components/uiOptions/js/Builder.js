@@ -63,8 +63,12 @@ var fluid_1_5 = fluid_1_5 || {};
                     },
                 }
             }
-        }
-
+        },
+        distributeOptions: [{
+            source: "{that}.options.primarySchema",
+            removeSource: true,
+            target: "{that > primaryBuilder}.options.primarySchema"
+        }]
     });
 
     fluid.defaults("fluid.uiOptions.assembler.uie", {
