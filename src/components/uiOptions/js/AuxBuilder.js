@@ -83,8 +83,9 @@ var fluid_1_5 = fluid_1_5 || {};
         type = type + "s";
 
         var componentName = componentConfig.type;
-        var memberName = componentName.replace(new RegExp("\\.", 'g'),  "_");
-        var flattenedPrefKey = prefKey.replace(new RegExp("\\.", 'g'),  "_");
+        var regexp = new RegExp("\\.", 'g');
+        var memberName = componentName.replace(regexp,  "_");
+        var flattenedPrefKey = prefKey.replace(regexp,  "_");
 
         if (componentName) {
             var instance = {

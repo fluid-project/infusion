@@ -33,7 +33,7 @@ var demo = demo || {};
                 "messagePrefix": "../../../../components/uiOptions/messages/"
             }
         });
-        fluid.invokeGlobalFunction(builder.options.assembledUIOGrade, [container]);
+        return fluid.invokeGlobalFunction(builder.options.assembledUIOGrade, [container]);
     };
 
 })(jQuery, fluid);
