@@ -27,7 +27,7 @@
 
         <link rel="stylesheet" type="text/css" href="../css/UIOptionsFullPage.css" /> <!-- Demo style -->
 
-        <title>UI Options: Full Page, With Preview</title>
+        <title>UI Options: Full Page, With Preview, Using Schema</title>
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
@@ -57,20 +57,28 @@
         <script type="text/javascript" src="../../../components/uiOptions/js/StarterGrades.js"></script>
         <script type="text/javascript" src="../../../components/uiOptions/js/FullPreviewUIOptions.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/PrimaryBuilder.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/AuxBuilder.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/StarterSchemas.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/Builder.js"></script>
 
-        <script type="text/javascript" src="../js/uiOptionsFullPage.js"></script>
+        <script type="text/javascript" src="../js/uiOptionsFullPageSchema.js"></script>
     </head>
 
     <body>
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             $(document).ready(function () {
-                demo.initSettingsStore();
-                demo.initPageEnhancer();
                 demo.initFullWithPreview("#myUIOptions", {
-                    preview: {
-                        options: {
-                            templateUrl: "uiOptionsPreview.html"
+                    components: {
+                        uiOptions: {
+                            options: {
+                                preview: {
+                                    options: {
+                                        templateUrl: "uiOptionsPreview.html"
+                                    }
+                                }
+                            }
                         }
                     }
                 });
