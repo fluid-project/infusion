@@ -254,7 +254,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onDestroy: "{that}.removeListener"
         },
         events: {
-            updateEnhancerModel: "{fluid.uiOptions}.events.onUIOptionsRefresh"
+            updateEnhancerModel: "{fluid.uiOptions}.events.onUpdateEnhancerModel"
         },
         invokers: {
             addListener: {
@@ -349,6 +349,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onAutoSave: null,
             modelChanged: null,
             onUIOptionsRefresh: null,
+            onUpdateEnhancerModel: null,
             onUIOptionsMarkupReady: null,
             onUIOptionsComponentReady: null
         },
@@ -369,13 +370,14 @@ var fluid_1_5 = fluid_1_5 || {};
      * Refresh UIOptions
      */
     fluid.uiOptions.applyChanges = function (that) {
-        that.events.onUIOptionsRefresh.fire();
+        that.events.onUpdateEnhancerModel.fire();
     };
 
     fluid.uiOptions.fetch = function (that) {
         var completeModel = that.getSettings();
         completeModel = $.extend(true, {}, that.rootModel, completeModel);
         that.updateModel(completeModel, "settingsStore");
+        that.events.onUIOptionsRefresh.fire();
         that.applyChanges();
     };
 
@@ -391,6 +393,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uiOptions.saveAndApply = function (that) {
         that.save();
+        that.events.onUIOptionsRefresh.fire();
         that.applyChanges();
     };
 
@@ -399,6 +402,7 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.uiOptions.reset = function (that) {
         that.updateModel(fluid.copy(that.rootModel));
+        that.events.onUIOptionsRefresh.fire();
         that.events.onReset.fire(that);
     };
 
@@ -481,10 +485,7 @@ var fluid_1_5 = fluid_1_5 || {};
             enhancer: {
                 type: "fluid.uiEnhancer",
                 container: "{preview}.enhancerContainer",
-                createOnEvent: "onReady",
-                options: {
-                    gradeNames: ["fluid.uiOptions.uiEnhancerRelay"]
-                }
+                createOnEvent: "onReady"
             },
             // TODO: This is a violation of containment, but we can't use up our allowance of demands
             // blocks as a result of FLUID-4392
