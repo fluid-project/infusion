@@ -67,9 +67,16 @@ var fluid_1_5 = fluid_1_5 || {};
         return root;
     };
 
+    // only works with top level elements
+    fluid.uiOptions.removeKey = function (root, key) {
+        var value = root[key];
+        delete root[key];
+        return value;
+    };
+
     fluid.uiOptions.rearrangeDirect = function (root, toPath, sourcePath) {
         var result = {};
-        var sourceValue = fluid.get(root, sourcePath);
+        var sourceValue = fluid.uiOptions.removeKey(root, sourcePath);
         if (sourceValue) {
             fluid.set(result, toPath, sourceValue);
         }
@@ -77,32 +84,25 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.expandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, commonOptions, mappedDefaults) {
+        var componentOptions = fluid.copy(componentConfig) || {};
         var components = {};
         var rootModel = {};
 
-        type = type + "s";
-
-        var componentName = componentConfig.type;
+        var componentName = fluid.uiOptions.removeKey(componentOptions, "type");
         var regexp = new RegExp("\\.", 'g');
         var memberName = componentName.replace(regexp,  "_");
         var flattenedPrefKey = prefKey.replace(regexp,  "_");
 
         if (componentName) {
-            var instance = {
-                type: componentName
+
+            var cmp = components[memberName] = {
+                type: componentName,
+                options: componentOptions
             };
 
-            var selectors = fluid.uiOptions.rearrangeDirect(componentConfig, memberName, "container");
-            var templates = fluid.uiOptions.rearrangeDirect(componentConfig, memberName, "template");
-            var messages = fluid.uiOptions.rearrangeDirect(componentConfig, memberName, "message");
-
-            var componentOptions = fluid.copy(componentConfig);
-            delete componentOptions.type;
-            delete componentOptions.container;
-            delete componentOptions.template;
-            delete componentOptions.message;
-
-            instance.options = $.extend(true, {}, componentOptions);
+            var selectors = fluid.uiOptions.rearrangeDirect(componentOptions, memberName, "container");
+            var templates = fluid.uiOptions.rearrangeDirect(componentOptions, memberName, "template");
+            var messages = fluid.uiOptions.rearrangeDirect(componentOptions, memberName, "message");
 
             var preferenceMap = fluid.defaults(componentName).preferenceMap;
 
@@ -110,35 +110,34 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.each(map, function (PrimaryPath, internalPath) {
                 var prefSchema = mappedDefaults[prefKey];
                 if (prefSchema) {
+                    var opts = {};
                     if (internalPath.indexOf("model.") === 0) {
                         var internalModelName = internalPath.slice(6);
-                        fluid.set(instance, ["options", "rules", flattenedPrefKey], internalModelName);
-                        fluid.set(instance, ["options", "model", internalModelName], prefSchema[PrimaryPath]);
+                        fluid.set(opts, ["rules", flattenedPrefKey], internalModelName);
+                        fluid.set(opts, ["model", internalModelName], prefSchema[PrimaryPath]);
                         fluid.set(rootModel, ["members", "rootModel", flattenedPrefKey], prefSchema[PrimaryPath]);
                     } else {
-                        fluid.set(instance, "options." + internalPath, prefSchema[PrimaryPath]);
+                        fluid.set(opts, internalPath, prefSchema[PrimaryPath]);
                     }
+                    $.extend(true, componentOptions, opts);
                 }
             });
 
-            // Merge common options
-            if (commonOptions) {
-                fluid.each(commonOptions, function (value, key) {
-                    value = fluid.stringTemplate(value, {
-                        prefKey: memberName
-                    });
-                    fluid.set(instance, key, value);
+            fluid.each(commonOptions, function (value, path) {
+                var opts = {};
+                value = fluid.stringTemplate(value, {
+                    prefKey: memberName
                 });
-            }
+                fluid.set(opts, path, value);
+                $.extend(true, cmp, opts);
+            });
 
-            components[memberName] = instance;
+            fluid.uiOptions.addAtPath(auxSchema, [type, "components"], components);
+            fluid.uiOptions.addAtPath(auxSchema, [type, "selectors"], selectors);
+            fluid.uiOptions.addAtPath(auxSchema, ["templateLoader", "templates"], templates);
+            fluid.uiOptions.addAtPath(auxSchema, ["messageLoader", "templates"], messages);
+            fluid.uiOptions.addAtPath(auxSchema, "rootModel", rootModel);
         }
-
-        fluid.uiOptions.addAtPath(auxSchema, [type, "components"], components);
-        fluid.uiOptions.addAtPath(auxSchema, [type, "selectors"], selectors);
-        fluid.uiOptions.addAtPath(auxSchema, ["templateLoader", "templates"], templates);
-        fluid.uiOptions.addAtPath(auxSchema, ["messageLoader", "templates"], messages);
-        fluid.uiOptions.addAtPath(auxSchema, "rootModel", rootModel);
 
         return auxSchema;
     };
@@ -185,11 +184,11 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.each(auxSchema, function (category, prefName) {
             var type = "panel";
             if (category[type]) {
-                fluid.uiOptions.expandSchemaComponents(auxSchema, type, category.type, category[type], fluid.get(indexes, type), fluid.get(elementCommonOptions, type), mappedDefaults);
+                fluid.uiOptions.expandSchemaComponents(auxSchema, "panels", category.type, category[type], fluid.get(indexes, type), fluid.get(elementCommonOptions, type), mappedDefaults);
             }
             type = "enactor";
             if (category[type]) {
-                fluid.uiOptions.expandSchemaComponents(auxSchema, type, category.type, category[type], fluid.get(indexes, type), fluid.get(elementCommonOptions, type), mappedDefaults);
+                fluid.uiOptions.expandSchemaComponents(auxSchema, "enactors", category.type, category[type], fluid.get(indexes, type), fluid.get(elementCommonOptions, type), mappedDefaults);
             }
 
             type = "template";
