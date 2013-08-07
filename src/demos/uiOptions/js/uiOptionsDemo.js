@@ -45,12 +45,23 @@ var demo = demo || {};
      * UI Options pages as well as by the demo page itself.
      */
     demo.initPageEnhancer = function (customThemeName) {
+        // fluid.pageEnhancer({
+        //     gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+        //     tocTemplate: pathToTocTemplate,
+        //     classnameMap: {
+        //         theme: {
+        //             "default": customThemeName
+        //         }
+        //     }
+        // });
         fluid.pageEnhancer({
-            gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-            tocTemplate: pathToTocTemplate,
-            classnameMap: {
-                theme: {
-                    "default": customThemeName
+            uiEnhancer: {
+                gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+                tocTemplate: pathToTocTemplate,
+                classnameMap: {
+                    theme: {
+                        "default": customThemeName
+                    }
                 }
             }
         });

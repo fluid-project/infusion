@@ -233,44 +233,42 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
     
-    /*******************************************************************************
-     * PageEnhancer                                                                *
-     *                                                                             *
-     * A UIEnhancer wrapper that concerns itself with the entire page.             *
-     *******************************************************************************/
-    fluid.pageEnhancer = function (uiEnhancerOptions) {
-        var that = fluid.initLittleComponent("fluid.pageEnhancer");
-        // This hack is required to resolve FLUID-4409 - much improved framework support is required
-        that.options.originalUserOptions = fluid.copy(uiEnhancerOptions);
-        that.uiEnhancerOptions = uiEnhancerOptions;
-        fluid.initDependents(that);
-        that.uiEnhancer.updateModel(that.getSettings());
-        fluid.staticEnvironment.uiEnhancer = that.uiEnhancer;
-        return that;
-    };
-
+    /********************************************************************************
+     * PageEnhancer                                                                 *
+     *                                                                              *
+     * A UIEnhancer wrapper that concerns itself with the entire page.              *
+     *                                                                              *
+     * "originalEnhancerOptions" is a grade component to keep track of the original *
+     * uiEnhancer user options                                                      *
+     ********************************************************************************/
     fluid.defaults("fluid.pageEnhancer", {
-        gradeNames: ["fluid.originalEnhancerOptions", "fluid.uiOptions.rootModel", "fluid.uiOptions.settingsGetter"],
+        gradeNames: ["fluid.eventedComponent", "fluid.originalEnhancerOptions", "fluid.uiOptions.rootModel", "fluid.uiOptions.settingsGetter", "autoInit"],
         components: {
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
-                container: "body",
-                options: "{pageEnhancer}.uiEnhancerOptions"
+                container: "body"
             }
+        },
+        distributeOptions: {
+            source: "{that}.options.uiEnhancer",
+            target: "{that > uiEnhancer}.options"
+        },
+        invokers: {
+            init: {
+                funcName: "fluid.pageEnhancer.init",
+                args: "{that}"
+            }
+        },
+        listeners: {
+            onCreate: "{that}.init"
         }
     });
-    
-    /*******************************************************************************
-     * originalEnhancerOptions
-     *
-     * A grade component for pageEnhancer to keep track of the original user options
-     *******************************************************************************/
-    fluid.defaults("fluid.originalEnhancerOptions", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
-    });
-    
-    fluid.originalEnhancerOptions.preInit = function (that) {
+
+    fluid.pageEnhancer.init = function (that) {
+        that.options.originalUserOptions = fluid.copy(that.options.uiEnhancer);
         fluid.staticEnvironment.originalEnhancerOptions = that;
+        that.uiEnhancer.updateModel(that.getSettings());
+        fluid.staticEnvironment.uiEnhancer = that.uiEnhancer;
     };
-    
+
 })(jQuery, fluid_1_5);
