@@ -46,6 +46,19 @@ var fluid_1_5 = fluid_1_5 || {};
         sliderOptions: "{fluid.uiOptions.panels}.options.sliderOptions"
     });
 
+    /**************************************
+     * Functions shared by several panels *
+     **************************************/
+
+    fluid.uiOptions.panels.lookupMsg = function (messageResolver, prefix, values) {
+        var messages = [];
+        fluid.each(values, function (value, key) {
+            var looked = messageResolver.lookup([prefix + "." + value]);
+            messages.push(looked ? looked.template : looked);
+        });
+        return messages;
+    };
+
     /************************
      * UI Options Text Size *
      ************************/
@@ -117,7 +130,7 @@ var fluid_1_5 = fluid_1_5 || {};
         strings: {
             textFont: {
                 expander: {
-                    func: "fluid.uiOptions.panels.textFont.lookupMsg",
+                    func: "fluid.uiOptions.panels.lookupMsg",
                     args: ["{that}.options.parentBundle", "textFont", "{that}.options.controlValues.textFont"]
                 }
             }
@@ -142,15 +155,6 @@ var fluid_1_5 = fluid_1_5 || {};
             textFont: ["default", "times", "comic", "arial", "verdana"]
         }
     });
-
-    fluid.uiOptions.panels.textFont.lookupMsg = function (messageResolver, prefix, values) {
-        var messages = [];
-        fluid.each(values, function (value, key) {
-            var looked = messageResolver.lookup([prefix + "." + value]);
-            messages.push(looked ? looked.template : looked);
-        });
-        return messages;
-    };
 
     /*************************
      * UI Options Line Space *
@@ -228,8 +232,8 @@ var fluid_1_5 = fluid_1_5 || {};
         strings: {
             theme: {
                 expander: {
-                    func: "fluid.uiOptions.panels.contrast.lookupMsg",
-                    args: ["{that}.options.parentBundle", "contrast"]
+                    func: "fluid.uiOptions.panels.lookupMsg",
+                    args: ["{that}.options.parentBundle", "contrast", "{that}.options.controlValues.theme"]
                 }
             }
         },
@@ -264,11 +268,6 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-
-    fluid.uiOptions.panels.contrast.lookupMsg = function (messageResolver, value) {
-        var looked = messageResolver.lookup([value]);
-        return looked ? looked.template : looked;
-    };
 
     fluid.uiOptions.panels.contrast.style = function (labels, strings, markup, theme, style) {
         fluid.each(labels, function (label, index) {
