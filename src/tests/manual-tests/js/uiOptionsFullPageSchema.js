@@ -22,7 +22,7 @@ var demo = demo || {};
         var builder = fluid.uiOptions.builder({
             gradeNames: ["fluid.uiOptions.auxSchema.starter"],
             auxiliarySchema: {
-                "template": template,
+                "template": template
             }
         });
         var baseOpts = {
