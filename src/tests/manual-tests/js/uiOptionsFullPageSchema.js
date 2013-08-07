@@ -28,12 +28,7 @@ var demo = demo || {};
         var baseOpts = {
             components: {
                 uiOptions: {
-                    type: uioType,
-                    options: {
-                        templateLoader: {
-                            gradeNames: ["fluid.uiOptions.starterFullPreviewTemplateLoader"]
-                        }
-                    }
+                    type: uioType
                 }
             }
         };
@@ -46,7 +41,7 @@ var demo = demo || {};
     };
 
     demo.initFullNoPreview = function (container, options) {
-        return demo.initWithSchema(container, options, "fluid.uiOptions.fullNoPreview", "%prefix/FullPreviewNoUIOptions.html");
+        return demo.initWithSchema(container, options, "fluid.uiOptions.fullNoPreview", "%prefix/FullNoPreviewUIOptions.html");
     };
 
 })(jQuery, fluid);
