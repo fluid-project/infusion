@@ -862,13 +862,13 @@ fluid.registerNamespace("fluid.tests");
         that.events.eventTwo.fire("twoFired");
         jqUnit.assertTrue("Event two listener notified", that.twoFired);
     });
-    
+
     /** FLUID-5082 auto-namespaces (soft) **/
-    
+
     fluid.tests.FLUID5082func = function (that, arg) {
         that.fireRecord.push(arg);
     };
-    
+
     fluid.tests.FLUID5082func2 = fluid.tests.FLUID5082func;
 
     fluid.defaults("fluid.tests.FLUID5082Parent", {
@@ -883,7 +883,7 @@ fluid.registerNamespace("fluid.tests");
         listeners: {
             testEvent: [{
                 funcName: "fluid.tests.FLUID5082func",
-                args: ["{that}", 1]  
+                args: ["{that}", 1]
             }, {
                 func: "{that}.FLUID5082invoker",
                 args: ["{that}", 2]
@@ -905,14 +905,14 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
-    
+
     fluid.defaults("fluid.tests.FLUID5082Child", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         listeners: {
             testEvent: [{
                 funcName: "fluid.tests.FLUID5082func",
                 namespace: "fluid.tests.FLUID5082Parent.FLUID5082func", // will override
-                args: ["{FLUID5082Parent}", 5]  
+                args: ["{FLUID5082Parent}", 5]
             }, {
                 func: "{FLUID5082Parent}.FLUID5082invoker",
                 namespace: "fluid.tests.FLUID5082Parent.FLUID5082invoker", // will override
@@ -945,13 +945,13 @@ fluid.registerNamespace("fluid.tests");
                     options: {
                         events: {
                             testEvent: "{FLUID5082Parent}.events.testEvent"
-                        }  
+                        }
                     }
                 }
             }
         });
         that3.events.testEvent.fire();
-        jqUnit.assertDeepEq("Base grade listeners fired", [4, 5, 6, 7, 8], that3.fireRecord);        
+        jqUnit.assertDeepEq("Base grade listeners fired", [4, 5, 6, 7, 8], that3.fireRecord);
     });
 
     /** withEnvironment tests - eventually to be deprecated **/
@@ -1513,6 +1513,44 @@ fluid.registerNamespace("fluid.tests");
         });
         that.events.baseEvent2.fire();
         jqUnit.assertEquals("Double relay to base event", 1, count);
+    });
+
+    /** FLUID-5112: Composite event firing test **/
+    fluid.defaults("fluid.tests.composite.test", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            onReady: {
+                events: {
+                    "onCreate": "onCreate",
+                    "refresh": "afterRefresh"
+                },
+                args: ["{that}"]
+            },
+            afterRefresh: null
+        },
+        listeners: {
+            "onCreate.setup": "{that}.events.afterRefresh.fire"
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-5112: composite event firing test", function () {
+        jqUnit.expect(2);
+
+        fluid.tests.composite.test({
+            listeners: {
+                onReady: {
+                    listener: function (that) {
+                        jqUnit.assert("the onReady event should have fired.");
+                        that.events.afterRefresh.addListener(function () {
+                            jqUnit.assert("the afterRefresh event should have fired.");
+                            jqUnit.start();
+                        });
+                        that.events.afterRefresh.fire();
+                    }
+                }
+            }
+        });
+
     });
 
     /** FLUID-4135 - simple event injection test **/
@@ -3107,7 +3145,7 @@ fluid.registerNamespace("fluid.tests");
         var root = fluid.tests.fluid5094({
             gradeName: "fluid.tests.fluid5094Grade"
         });
-        
+
         jqUnit.assertValue("Components must be merged correctly", root.subComponent.mustExist);
     });
 
