@@ -31,7 +31,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.compat.fluid_1_2.uploader.optionsRules = {
         "components": {
-            expander: [
+            transform: [
                 {
                     type: "fluid.transforms.value",
                     inputPath: "components",
@@ -44,7 +44,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "strategy": {
                             "options": {
                                 "flashMovieSettings": {
-                                    expander: {
+                                    transform: {
                                         type: "fluid.transforms.value",
                                         value: {
                                             "flashURL": "uploadManager.options.flashURL",
@@ -67,7 +67,7 @@ var fluid_1_5 = fluid_1_5 || {};
             ]
         },
         "queueSettings": {
-            expander: {
+            transform: {
                 type: "fluid.transforms.firstValue",
                 values: ["queueSettings", "uploadManager.options"]
             }
