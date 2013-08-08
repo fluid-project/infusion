@@ -78,12 +78,14 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.globalSettingsStore"
             },
             enhancer: {
-                type: "fluid.pageEnhancer",
+                type: "fluid.littleComponent",
                 options: {
+                    gradeNames: "{that}.options.enhancerGrade",
+                    enhancerGrade: "fluid.pageEnhancer",
                     components: {
                         uiEnhancer: {
                             options: {
-                                gradeNames: ["{fluid.uiOptions.assembler.uie}.options.componentGrades.enactors"],
+                                gradeNames: ["{fluid.uiOptions.assembler.uie}.options.componentGrades.enactors"]
                             }
                         }
                     }
