@@ -23,13 +23,15 @@ var skon = skon || {};
         // First, start up Settings Store and Page Enhancer
         fluid.globalSettingsStore();
         fluid.pageEnhancer({
-            gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-            classnameMap: {
-                theme: {
-                    "default": "skon-theme-basic"
-                }
-            },
-            tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
+            uiEnhancer: {
+                gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+                classnameMap: {
+                    theme: {
+                        "default": "skon-theme-basic"
+                    }
+                },
+                tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
+            }
         });
 
         // Next, start up UI Options

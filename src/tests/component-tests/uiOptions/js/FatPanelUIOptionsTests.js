@@ -222,8 +222,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.testEnhancerTransit = function testEnhancerTransit(fatPanel, expectedIframeSelector) {
-        var cMap = fluid.tests.uiOptions.enhancerOptions.classnameMap;
-
+        var cMap = fluid.tests.uiOptions.enhancerOptions.uiEnhancer.classnameMap;
+        
         // "outerEnhancerOptions" option mapping
         jqUnit.assertEquals("classnameMap transferred to outer UIEnhancer", cMap.textFont["default"],
              fatPanel.pageEnhancer.options.classnameMap.textFont["default"]);

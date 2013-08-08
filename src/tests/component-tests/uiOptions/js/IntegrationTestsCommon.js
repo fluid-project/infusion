@@ -98,8 +98,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest(componentName + " Integration tests", function () {
             fluid.globalSettingsStore();
             fluid.pageEnhancer({
-                gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-                tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                uiEnhancer: {
+                    gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                }
             });
             var savedSelections;
             function testSave(selections) {
@@ -189,14 +191,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.uiOptions.enhancerOptions = {
-        gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.uiOptions.rootModel.starter"],
-        tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
-        classnameMap: {
-            "textFont": {
-                "default": "fl-font-times"
-            },
-            "theme": {
-                "yb": "fl-test"
+        uiEnhancer: {
+            gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.uiOptions.rootModel.starter"],
+            tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
+            classnameMap: {
+                "textFont": {
+                    "default": "fl-font-times"
+                },
+                "theme": {
+                    "yb": "fl-test"
+                }
             }
         }
     };
