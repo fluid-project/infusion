@@ -115,7 +115,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "type": "fluid.uiOptions.tableOfContents",
                 "enactor": {
                     "type": "fluid.uiOptions.enactors.tableOfContents",
-                    "tocTemplate": "../../../components/tableOfContents/html/TableOfContents.html"
+                    "tocTemplate": "../../../../components/tableOfContents/html/TableOfContents.html"
                 },
                 "panel": {
                     "type": "fluid.uiOptions.panels.layoutControls",
