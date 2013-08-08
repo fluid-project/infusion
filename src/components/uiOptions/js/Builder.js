@@ -78,20 +78,13 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.globalSettingsStore"
             },
             enhancer: {
-                type: "fluid.uiEnhancer",
-                container: "body",
+                type: "fluid.pageEnhancer",
                 options: {
-                    gradeNames: ["{fluid.uiOptions.assembler.uie}.options.componentGrades.enactors",  "fluid.originalEnhancerOptions"],
-                    originalUserOptions: {
-                        expander: {
-                            func: "fluid.copy",
-                            args: ["{that}.options"]
-                        }
-                    },
-                    listeners: {
-                        onCreate: {
-                            listener: "fluid.set",
-                            args: [fluid.staticEnvironment, "uiEnhancer", "{that}"]
+                    components: {
+                        uiEnhancer: {
+                            options: {
+                                gradeNames: ["{fluid.uiOptions.assembler.uie}.options.componentGrades.enactors"],
+                            }
                         }
                     }
                 }

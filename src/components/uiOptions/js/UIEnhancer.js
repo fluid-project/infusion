@@ -84,12 +84,19 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         listeners: {
-            onCreate: "{that}.init"
+            onCreate: [{
+                listener: "{that}.init"
+            }]
+        },
+        originalUserOptions: {
+            expander: {
+                func: "fluid.copy",
+                args: ["{that}.options.uiEnhancer"]
+            }
         }
     });
 
     fluid.pageEnhancer.init = function (that) {
-        that.options.originalUserOptions = fluid.copy(that.options.uiEnhancer);
         fluid.staticEnvironment.originalEnhancerOptions = that;
         that.uiEnhancer.updateModel(that.getSettings());
         fluid.staticEnvironment.uiEnhancer = that.uiEnhancer;
