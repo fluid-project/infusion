@@ -81,6 +81,110 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
     
+    var outputTests = [{
+        message: "Value transform with nested transform containing outputToDocument false",
+        method: "assertDeepEq",
+        model: {},
+        transform: {
+            "dog": {
+                transform: [{
+                    type: "fluid.transforms.linearScale",
+                    outputToDocument: false,
+                    value: 3,
+                    factor: 2,
+                    offset: 5
+                }]
+            }
+        },
+        expected: {
+            dog: 11
+        }
+    }, {
+        message: "Value transform with nested transform containing outputToDocument=false and returnValue=false",
+        method: "assertDeepEq",
+        model: {},
+        transform: {
+            "dog": {
+                transform: [{
+                    type: "fluid.transforms.linearScale",
+                    outputToDocument: false,
+                    returnValue: false,
+                    value: 3,
+                    factor: 2,
+                    offset: 5
+                }]
+            }
+        },
+        expected: {}
+    }, {
+        message: "Value transform with nested transform containing outputPath ",
+        method: "assertDeepEq",
+        model: {},
+        transform: {
+            "dog": {
+                transform: [{
+                    type: "fluid.transforms.linearScale",
+                    outputToDocument: false,
+                    outputPath: "cat",
+                    value: 3,
+                    factor: 2,
+                    offset: 5
+                }]
+            }
+        },
+        expected: {
+            dog: {
+                cat: 11
+            }
+        }
+    }, {
+        message: "Value transform with nested array of transforms - single return",
+        method: "assertDeepEq",
+        model: {},
+        transform: [{
+            "dog": {
+                transform: [{
+                    type: "fluid.transforms.value",
+                    value: "hexagon",
+                    returnValue: true
+                }, {
+                    type: "fluid.transforms.linearScale",
+                    returnValue: false,
+                    value: 3,
+                    factor: 2,
+                    offset: 5
+                }]
+            }
+        }],
+        expected: {
+            dog: "hexagon"
+        }
+    }, {
+        message: "Value transform with nested array of transforms - no returns",
+        method: "assertDeepEq",
+        model: {},
+        transform: [{
+            "dog": {
+                transform: [{
+                    type: "fluid.transforms.value",
+                    value: "hexagon",
+                    returnValue: false
+                }, {
+                    type: "fluid.transforms.linearScale",
+                    returnValue: false,
+                    value: 3,
+                    factor: 2,
+                    offset: 5
+                }]
+            }
+        }],
+        expected: {}
+    }];
+
+    jqUnit.test("fluid.transforms.outputTests()", function () {
+        testOneStructure(outputTests);
+    });
+
     var linearScaleTests = [{
         message: "linearScale - no parameters given",
         transform: {
