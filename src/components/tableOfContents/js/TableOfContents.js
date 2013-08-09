@@ -26,11 +26,12 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.registerNamespace("fluid.tableOfContents");
 
 
-    fluid.tableOfContents.insertAnchor = function (name, element) {
+    fluid.tableOfContents.insertAnchor = function (name, element, anchorIdentifier) {
        // In order to resolve FLUID-4453, we need to make sure that the owner document is correctly
        // taken from the target element (the preview may be in an iframe)
         var anchor = $("<a></a>", element.ownerDocument);
         anchor.prop({
+            "class": anchorIdentifier,
             name: name,
             id: name
         });
@@ -51,14 +52,16 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.tableOfContents.refreshView = function (that) {
         var headings = that.locate("headings");
 
+        // remove existing toc anchors from the the DOM, before adding any new ones.
+        that.locate("tocAnchors").remove();
+
         that.anchorInfo = fluid.transform(headings, function (heading) {
             var info = that.headingTextToAnchorInfo(heading);
-            that.insertAnchor(info.id, heading);
+            that.insertAnchor(info.id, heading, that.options.anchorIdentifier);
             return info;
         });
 
         var headingsModel = that.modelBuilder.assembleModel(headings, that.anchorInfo);
-
         that.applier.requestChange("", headingsModel);
 
         that.events.onRefresh.fire();
@@ -111,8 +114,10 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         selectors: {
             headings: ":header:visible:not(.flc-toc-tocContainer :header)",
-            tocContainer: ".flc-toc-tocContainer"
+            tocContainer: ".flc-toc-tocContainer",
+            tocAnchors: ".flc-toc-anchors"
         },
+        anchorIdentifier: "flc-toc-anchors",
         events: {
             onRefresh: null,
             afterRender: null,

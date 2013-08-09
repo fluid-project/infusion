@@ -563,31 +563,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Component test refreshView", function () {
             // craft headingInfo so renderTOCTest() can use it
             var testHeadingsStart = {
-                headingInfo : []
+                headingInfo: [{
+                    level: "2",
+                    text: "H2",
+                    url: "#test"
+                }]
             };
             var testHeadingRefreshed = {
                 headingInfo: [{
-                    level: "1",
+                    level: "2",
+                    text: "H2",
+                    url: "#test"
+                }, {
+                    level: "2",
                     text: "test",
                     url: "#test"
                 }]
-            }
-            renderTOCComponent("#flc-toc-noHeaders", {
+            };
+            renderTOCComponent("#flc-toc-refreshHeadings", {
                 listeners: {
                     //FLUID-5112: have to use the onCreate event instead of onReady to prevent infinite recursion.
                     "onCreate.intialState": {
                         listener: function (levels, that) {
-                            renderTOCTest(levels, testHeadingsStart);
-                            renderTOCAnchorTest();
-
                             that.events.onRefresh.addListener(function () {
                                 jqUnit.assert("The onRefresh event should have fired");
                                 renderTOCTest(levels, testHeadingRefreshed);
                                 renderTOCAnchorTest();
+                                var numHeadings = testHeadingRefreshed.headingInfo.length;
+
+                                jqUnit.assertEquals("The correct number of anchors should be present", numHeadings, that.locate("tocAnchors").length);
                                 jqUnit.start();
                             }, "inTestCase", null, "last");
 
-                            that.container.append("<h1>test</h1>");
+                            that.container.append("<h2>test</h2>");
                             that.refreshView();
                         },
                         args: ["{that}.levels", "{that}"],
