@@ -1,14 +1,16 @@
 {
     "files": [
-        "src/webapp/framework/fss/css/fss-theme-by.css",
-        "src/webapp/framework/fss/css/fss-theme-yb.css",
-        "src/webapp/framework/fss/css/fss-theme-coal.css",
-        "src/webapp/framework/fss/css/fss-theme-bw.css",
-        "src/webapp/framework/fss/css/fss-theme-wb.css",
-        "src/webapp/framework/fss/css/fss-theme-mist.css",
-        "src/webapp/framework/fss/css/fss-theme-rust.css",
-        "src/webapp/framework/fss/css/fss-theme-slate.css",
-        "src/webapp/framework/fss/css/fss-text.css"
+        "src/framework/fss/css/fss-theme-by.css",
+        "src/framework/fss/css/fss-theme-yb.css",
+        "src/framework/fss/css/fss-theme-coal.css",
+        "src/framework/fss/css/fss-theme-bw.css",
+        "src/framework/fss/css/fss-theme-wb.css",
+        "src/framework/fss/css/fss-theme-mist.css",
+        "src/framework/fss/css/fss-theme-rust.css",
+        "src/framework/fss/css/fss-theme-slate.css",
+        "src/framework/fss/css/fss-theme-lgdg.css",
+        "src/framework/fss/css/fss-theme-dglg.css",
+        "src/framework/fss/css/fss-text.css"
     ],
     "urlPrefix": "../../../../framework/fss/css/"
 }
