@@ -368,13 +368,16 @@ fluid_1_5 = fluid_1_5 || {};
      * It satisfies the same contract as fluid.extractEL, in that it will either return
      * an EL path, or undefined if the string value supplied cannot be interpreted
      * as an EL path with respect to the supplied options.
+     *
+     * An external parser will be used if the parsed context doesn't exist within the env
+     *
      */
     // unsupported, non-API function
-    fluid.extractContextualPath = function (string, options, env) {
+    fluid.extractContextualPath = function (string, options, env, externalFetcher) {
         var parsed = fluid.extractELWithContext(string, options);
         if (parsed) {
             if (parsed.context) {
-                return fluid.transformContextPath(parsed, env).path;
+                return env[parsed.context] ? fluid.transformContextPath(parsed, env).path : {value: externalFetcher(parsed)};
             }
             else {
                 return parsed.path;
@@ -468,12 +471,16 @@ fluid_1_5 = fluid_1_5 || {};
             } else {
                 proto = {};
             }
-            var EL = typeof (value) === "string" ? fetchEL(value) : null;
+            var EL;
+            if (typeof (value) === "string") {
+                var fetched = fetchEL(value);
+                EL = typeof (fetched) === "string" ? fetched : null;
+                value = fluid.get(fetched, "value") || value;
+            }
             if (EL) {
                 proto.valuebinding = EL;
             } else if (value !== undefined) {
-                var expanded = expandLight(value);
-                proto.value = expanded !== undefined ? expanded : value;
+                proto.value = value;
             }
             if (options.model && proto.valuebinding && proto.value === undefined) {
                 proto.value = fluid.get(options.model, proto.valuebinding, options.resolverGetConfig);
