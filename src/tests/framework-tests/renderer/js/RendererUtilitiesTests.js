@@ -1772,7 +1772,7 @@ fluid.registerNamespace("fluid.tests");
         });
 
         jqUnit.test("FLUID-5099: source name collision", function () {
-            jqUnit.expect(3)
+            jqUnit.expect(3);
             var that = fluid.tests.fluid5099("#FLUID-5099");
             var test = that.locate("test");
             jqUnit.assertEquals("Original value is correct", "TEST", test.val());
@@ -1801,8 +1801,8 @@ fluid.registerNamespace("fluid.tests");
             },
             protoTree: {
                 select: {
-                    optionnames: "{that}.options.optionnames",
-                    optionlist: "{that}.options.optionlist",
+                    optionnames: "${{that}.options.optionnames}",
+                    optionlist: "${{that}.options.optionlist}",
                     selection: "${select}"
                 },
                 simpleBound1: "{test}.string",
@@ -1828,7 +1828,7 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("A bound with incorrect } nested resolvable context should be rendered correctly",
                 "", that.locate("simpleBound5").text());
             jqUnit.assertEquals("A bound with incorrect {} nested resolvable context should be rendered correctly",
-                "", that.locate("simpleBound6").text());
+                "${{test}.string}", that.locate("simpleBound6").text());
         });
     };
 })(jQuery);
