@@ -12,14 +12,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global demo:true, fluid, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var demo = demo || {};
 
 (function ($, fluid) {
     demo.initTableOfContent = function () {
-        fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContentsDemo");   
+        fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContentsDemo");
         fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "fluid.tableOfContentsDemo"], {
             options: {
                 resources: {
@@ -30,7 +30,7 @@ var demo = demo || {};
                 }
             }
         });
-                   
+
         fluid.tableOfContents("body");
-    };    
+    };
 })(jQuery, fluid);
