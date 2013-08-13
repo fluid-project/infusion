@@ -1772,7 +1772,7 @@ fluid.registerNamespace("fluid.tests");
         });
 
         jqUnit.test("FLUID-5099: source name collision", function () {
-            jqUnit.expect(3)
+            jqUnit.expect(3);
             var that = fluid.tests.fluid5099("#FLUID-5099");
             var test = that.locate("test");
             jqUnit.assertEquals("Original value is correct", "TEST", test.val());
@@ -1781,6 +1781,54 @@ fluid.registerNamespace("fluid.tests");
                 jqUnit.assertEquals("Source is set correctly", "DOM:test", changeRequest[0].source);
             });
             test.val("NEW VALUE").change();
+        });
+
+        fluid.defaults("fluid.tests.fluid4986", {
+            gradeNames: ["autoInit", "fluid.rendererComponent"],
+            selectors: {
+                select: ".flc-fluid4986-select",
+                simpleBound1: ".flc-fluid4986-simpleBound1",
+                simpleBound2: ".flc-fluid4986-simpleBound2",
+                simpleBound3: ".flc-fluid4986-simpleBound3",
+                simpleBound4: ".flc-fluid4986-simpleBound4",
+                simpleBound5: ".flc-fluid4986-simpleBound5",
+                simpleBound6: ".flc-fluid4986-simpleBound6"
+            },
+            optionnames: ["One", "Two", "Three"],
+            optionlist: ["one", "two", "three"],
+            model: {
+                select: "two"
+            },
+            protoTree: {
+                select: {
+                    optionnames: "${{that}.options.optionnames}",
+                    optionlist: "${{that}.options.optionlist}",
+                    selection: "${select}"
+                },
+                simpleBound1: "{test}.string",
+                simpleBound2: "{test.string .....",
+                simpleBound3: "test}.string .....",
+                simpleBound4: "${{test.string}",
+                simpleBound5: "${test.string}}",
+                simpleBound6: "${{test}.string}"
+            },
+            renderOnInit: true
+        });
+        jqUnit.test("FLUID-4986: Select", function () {
+            var that = fluid.tests.fluid4986("#FLUID-4986");
+            jqUnit.assertEquals("Select should be rendered properly", that.model.select, that.locate("select").val());
+            jqUnit.assertEquals("Simple bound with that includes {} should be rendered correctly",
+                "{test}.string", that.locate("simpleBound1").text());
+            jqUnit.assertEquals("Simple bound with that includes just { should be rendered correctly",
+                "{test.string .....", that.locate("simpleBound2").text());
+            jqUnit.assertEquals("Simple bound with that includes just } should be rendered correctly",
+                "test}.string .....", that.locate("simpleBound3").text());
+            jqUnit.assertEquals("A bound with incorrect { nested resolvable context should be rendered correctly",
+                "", that.locate("simpleBound4").text());
+            jqUnit.assertEquals("A bound with incorrect } nested resolvable context should be rendered correctly",
+                "", that.locate("simpleBound5").text());
+            jqUnit.assertEquals("A bound with incorrect {} nested resolvable context should be rendered correctly",
+                "${{test}.string}", that.locate("simpleBound6").text());
         });
     };
 })(jQuery);
