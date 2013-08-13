@@ -362,19 +362,20 @@ fluid_1_5 = fluid_1_5 || {};
 
 
     /* An EL extraction utility suitable for context expressions which occur in
-     * expanding component trees. It assumes that any context expressions refer
-     * to EL paths that are to be referred to the "true (direct) model" - since
-     * the context during expansion may not agree with the context during rendering.
-     * It satisfies the same contract as fluid.extractEL, in that it will either return
+     * expanding component trees. It dispatches context expressions to fluid.transformContextPath
+     * in order to resolve them against EL references stored in the direct environment, and hence
+     * to the "true (direct) model" - however, if there is no entry in the direct environment, it will resort to the "externalFetcher".
+     * It satisfies a similar contract as fluid.extractEL, in that it will either return
      * an EL path, or undefined if the string value supplied cannot be interpreted
-     * as an EL path with respect to the supplied options.
+     * as an EL path with respect to the supplied options - it may also return {value: value}
+     * in the case the context can be resolved by the supplied "externalFetcher" (required for FLUID-4986)
      */
     // unsupported, non-API function
-    fluid.extractContextualPath = function (string, options, env) {
+    fluid.extractContextualPath = function (string, options, env, externalFetcher) {
         var parsed = fluid.extractELWithContext(string, options);
         if (parsed) {
             if (parsed.context) {
-                return fluid.transformContextPath(parsed, env).path;
+                return env[parsed.context] ? fluid.transformContextPath(parsed, env).path : {value: externalFetcher(parsed)};
             }
             else {
                 return parsed.path;
@@ -382,6 +383,7 @@ fluid_1_5 = fluid_1_5 || {};
         }
     };
 
+    // unsupported, non-API function
     fluid.transformContextPath = function (parsed, env) {
         if (parsed.context) {
             var fetched = env[parsed.context];
@@ -468,12 +470,16 @@ fluid_1_5 = fluid_1_5 || {};
             } else {
                 proto = {};
             }
-            var EL = typeof (value) === "string" ? fetchEL(value) : null;
+            var EL;
+            if (typeof (value) === "string") {
+                var fetched = fetchEL(value);
+                EL = typeof (fetched) === "string" ? fetched : null;
+                value = fluid.get(fetched, "value") || value;
+            }
             if (EL) {
                 proto.valuebinding = EL;
             } else if (value !== undefined) {
-                var expanded = expandLight(value);
-                proto.value = expanded !== undefined ? expanded : value;
+                proto.value = value;
             }
             if (options.model && proto.valuebinding && proto.value === undefined) {
                 proto.value = fluid.get(options.model, proto.valuebinding, options.resolverGetConfig);
