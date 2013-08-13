@@ -138,8 +138,8 @@ var fluid_1_5 = fluid_1_5 || {};
         protoTree: {
             label: {messagekey: "textFontLabel"},
             textFont: {
-                optionnames: "{that}.options.strings.textFont",
-                optionlist: "{that}.options.controlValues.textFont",
+                optionnames: "${{that}.options.strings.textFont}",
+                optionlist: "${{that}.options.controlValues.textFont}",
                 selection: "${value}",
                 decorators: {
                     type: "fluid",
@@ -247,8 +247,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 inputID: "themeInput",
                 selectID: "theme-radio",
                 tree: {
-                    optionnames: "{that}.options.strings.theme",
-                    optionlist: "{that}.options.controlValues.theme",
+                    optionnames: "${{that}.options.strings.theme}",
+                    optionlist: "${{that}.options.controlValues.theme}",
                     selection: "${value}"
                 }
             }
