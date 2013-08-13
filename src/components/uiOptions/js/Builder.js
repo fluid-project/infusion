@@ -80,8 +80,8 @@ var fluid_1_5 = fluid_1_5 || {};
             enhancer: {
                 type: "fluid.littleComponent",
                 options: {
-                    gradeNames: "{that}.options.enhancerGrade",
-                    enhancerGrade: "fluid.pageEnhancer",
+                    gradeNames: "{that}.options.enhancerType",
+                    enhancerType: "fluid.pageEnhancer",
                     components: {
                         uiEnhancer: {
                             options: {
@@ -91,18 +91,24 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             }
-        }
+        },
+        distributeOptions: [{
+            source: "{that}.options.enhancer.options",
+            removeSource: true,
+            target: "{that uiEnhancer}.options"
+        }]
     });
 
     fluid.defaults("fluid.uiOptions.assembler.uio", {
         gradeNames: ["autoInit", "fluid.viewComponent", "fluid.uiOptions.assembler.uie"],
         components: {
-            uiOptions: {
-                type: "fluid.uiOptions.fatPanel",
+            uiOptionsInline: {
+                type: "fluid.viewComponent",
                 container: "{fluid.uiOptions.assembler.uio}.container",
                 priority: "last",
                 options: {
-                    gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.templatePrefix", "{fluid.uiOptions.assembler.uio}.options.componentGrades.messagePrefix", "{fluid.uiOptions.assembler.uio}.options.componentGrades.messages"],
+                    gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.templatePrefix", "{fluid.uiOptions.assembler.uio}.options.componentGrades.messagePrefix", "{fluid.uiOptions.assembler.uio}.options.componentGrades.messages", "{that}.options.uioType"],
+                    uioType: "fluid.uiOptions.fatPanel",
                     templateLoader: {
                         options: {
                             gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.templateLoader"]
@@ -120,7 +126,20 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             }
-        }
+        },
+        distributeOptions: [{
+            source: "{that}.options.uioType",
+            removeSource: true,
+            target: "{that > uiOptionsInline}.options.uioType"
+        }, {
+            source: "{that}.options.uiOptionsInline.options",
+            removeSource: true,
+            target: "{that > uiOptionsInline}.options"
+        }, {
+            source: "{that}.options.uiOptions.options",
+            removeSource: true,
+            target: "{that uiOptions}.options"
+        }]
     });
 
     fluid.uiOptions.builder.generateGrade = function (name, namespace, options) {

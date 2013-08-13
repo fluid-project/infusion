@@ -55,23 +55,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * fluid.uiOptions.builder.parseAuxSchema tests *
      ************************************************/
 
-     fluid.tests.testparseAuxSchema = function (expected, funcArgs) {
-         var actualFitler = fluid.invokeGlobalFunction("fluid.uiOptions.builder.parseAuxSchema", funcArgs);
-         jqUnit.assertDeepEq("The schema should have been parsed correctly", expected, actualFitler);
-     };
+    fluid.tests.testparseAuxSchema = function (expected, funcArgs) {
+        var actualFitler = fluid.invokeGlobalFunction("fluid.uiOptions.builder.parseAuxSchema", funcArgs);
+        jqUnit.assertDeepEq("The schema should have been parsed correctly", expected, actualFitler);
+    };
 
-     fluid.defaults("fluid.tests.parseAuxSchema", {
-         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
-         components: {
-             defaultsTester: {
-                 type: "fluid.tests.parseAuxSchemaTester"
-             }
-         }
-     });
+    fluid.defaults("fluid.tests.parseAuxSchema", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            defaultsTester: {
+                type: "fluid.tests.parseAuxSchemaTester"
+            }
+        }
+    });
 
-     fluid.defaults("fluid.tests.parseAuxSchemaTester", {
-         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
-         testOpts: {
+    fluid.defaults("fluid.tests.parseAuxSchemaTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        testOpts: {
             auxSchema: {
                 "namespace": "fluid.uiOptions.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
                 "textSize": {
@@ -109,17 +109,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             expectedTypeFilter: ["fluid.uiOptions.textSize", "fluid.uiOptions.lineSpace"]
-         },
-         modules: [{
-             name: "fluid.uiOptions.builder.parseAuxSchema",
-             tests: [{
-                 expect: 1,
-                 name: "grade creation",
-                 func: "fluid.tests.testparseAuxSchema",
-                 args: ["{that}.options.testOpts.expectedTypeFilter", ["{that}.options.testOpts.auxSchema"]]
-             }]
-         }]
-     });
+        },
+        modules: [{
+            name: "fluid.uiOptions.builder.parseAuxSchema",
+            tests: [{
+                expect: 1,
+                name: "grade creation",
+                func: "fluid.tests.testparseAuxSchema",
+                args: ["{that}.options.testOpts.expectedTypeFilter", ["{that}.options.testOpts.auxSchema"]]
+            }]
+        }]
+    });
 
     /***********************************************
      * fluid.uiOptions.builder.generateGrade tests *
@@ -232,7 +232,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var auxSchema = {
             namespace: namespace
         };
-        fluid.each(auxObjs, function(auxObj) {
+        fluid.each(auxObjs, function (auxObj) {
             $.extend(true, auxSchema, auxObj);
         });
         return auxSchema;
@@ -574,6 +574,102 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    /**********************************
+     * Builder munging tests          *
+     **********************************/
+    var uioType = "fluid.uiOptions.fullNoPreview";
+
+    fluid.defaults("fluid.tests.builderMunging", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        testOpts: {
+            topCommonOptions: fluid.tests.topCommonOptions
+        },
+        components: {
+            builder: {
+                type: "fluid.uiOptions.builder",
+                options: {
+                    gradeNames: ["fluid.uiOptions.auxSchema.starter"],
+                    auxiliarySchema: {
+                        "templatePrefix": "../../../../components/uiOptions/html/",
+                        "messagePrefix": "../../../../components/uiOptions/messages/",
+                        "template": "%prefix/FullNoPreviewUIOptions.html",
+                        "tableOfContents": {
+                            "enactor": {
+                                "tocTemplate": "../../../../components/tableOfContents/html/TableOfContents.html"
+                            }
+                        }
+                    }
+                }
+            },
+            uio: {
+                type: "fluid.viewComponent",
+                container: "#flc-uiOptions",
+                createOnEvent: "{builderMungingTester}.events.onTestCaseStart",
+                options: {
+                    gradeNames: ["{builder}.options.assembledUIOGrade"],
+                    uioType: uioType,
+                    uiOptionsInline: {
+                        options: {
+                            uiOptionsLoader: {
+                                options: {
+                                    listeners: {
+                                        onReady: {
+                                            listener: "{uio}.events.onReady",
+                                            args: "{uio}"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    enhancer: {
+                        options: {
+                            classnameMap: {
+                                "textFont.default": "fl-aria"
+                            }
+                        }
+                    },
+                    uiOptions: {
+                        options: {
+                            userOption: 1
+                        }
+                    },
+                    events: {
+                        onReady: null
+                    }
+                }
+            },
+            builderMungingTester: {
+                type: "fluid.tests.builderMungingTester"
+            }
+        }
+    });
+
+    fluid.tests.assertBuilderMunging = function (uio) {
+        return function (uio) {
+            jqUnit.assertEquals("Munging options for UIO options should be passed down to the uiOptions", 1, uio.uiOptionsInline.uiOptionsLoader.uiOptions.options.userOption);
+
+            jqUnit.assertTrue(uioType + " should be in the base uio grades", fluid.hasGrade(uio.uiOptionsInline.options, uioType));
+            jqUnit.assertEquals("Munging options for enhancer should be passed down to the enhancer", "fl-aria", uio.enhancer.uiEnhancer.options.classnameMap["textFont.default"]);
+        };
+    };
+
+    fluid.defaults("fluid.tests.builderMungingTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        modules: [{
+            name: "Builder munging",
+            tests: [{
+                expect: 3,
+                name: "Builder munging",
+                sequence: [{
+                    listenerMaker: "fluid.tests.assertBuilderMunging",
+                    spec: {priority: "last"},
+                    event: "{builderMunging uio}.events.onReady"
+                }]
+            }]
+        }]
+    });
+
     /***********************
      * Test Initialization *
      ***********************/
@@ -583,7 +679,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.tests.parseAuxSchema",
             "fluid.tests.generateGrade",
             "fluid.tests.constructGrades",
-            "fluid.tests.builder"
+            "fluid.tests.builder",
+            "fluid.tests.builderMunging"
         ]);
     });
 

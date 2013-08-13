@@ -31,11 +31,7 @@ var demo = demo || {};
             }
         });
         var baseOpts = {
-            components: {
-                uiOptions: {
-                    type: uioType
-                }
-            }
+            uioType: uioType
         };
         $.extend(true, baseOpts, compOpts);
         return fluid.invokeGlobalFunction(builder.options.assembledUIOGrade, [container, baseOpts]);
