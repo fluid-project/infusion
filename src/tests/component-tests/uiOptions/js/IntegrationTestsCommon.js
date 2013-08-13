@@ -55,8 +55,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "textFont",
             "contrast",
             "layoutControls",
-            "linksControls",
-            "eventBinder"
+            "linksControls"
         ],
         "fluid.uiOptions.fullNoPreview": [
             "textSize",
@@ -64,8 +63,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "textFont",
             "contrast",
             "layoutControls",
-            "linksControls",
-            "eventBinder"
+            "linksControls"
         ],
         "fluid.uiOptions.fullPreview": [
             "textSize",
@@ -74,8 +72,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "contrast",
             "layoutControls",
             "linksControls",
-            "preview",
-            "eventBinder"
+            "preview"
         ]
     };
 
@@ -93,7 +90,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.uiOptions.applierRequestChanges = function (uiOptions, selectionOptions) {
         fluid.each(selectionOptions, function (value, key) {
-            uiOptions.applier.requestChange("selections." + key, value);
+            uiOptions.applier.requestChange("" + key, value);
         });
     };
 
@@ -101,8 +98,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest(componentName + " Integration tests", function () {
             fluid.globalSettingsStore();
             fluid.pageEnhancer({
-                gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-                tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                uiEnhancer: {
+                    gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                }
             });
             var savedSelections;
             function testSave(selections) {
@@ -121,30 +120,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 var saveButton = uiOptions.locate("save");
                 saveButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from bwSkin", fluid.tests.uiOptions.bwSkin, uiOptions.model.selections);
-                jqUnit.assertEquals("Save event fired with selections", uiOptions.model.selections, savedSelections);
-                jqUnit.assertEquals("Direct save event fired with selections", uiOptions.model.selections, savedSelections2);
+                fluid.tests.uiOptions.checkModelSelections("model from bwSkin", fluid.tests.uiOptions.bwSkin, uiOptions.model);
+                jqUnit.assertEquals("Save event fired with selections", uiOptions.model, savedSelections);
+                jqUnit.assertEquals("Direct save event fired with selections", uiOptions.model, savedSelections2);
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.ybSkin);
 
                 var cancelButton = uiOptions.locate("cancel");
                 cancelButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from bwSkin (unchanged after cancel", fluid.tests.uiOptions.bwSkin, uiOptions.model.selections);
+                fluid.tests.uiOptions.checkModelSelections("model from bwSkin (unchanged after cancel", fluid.tests.uiOptions.bwSkin, uiOptions.model);
 
                 var resetButton = uiOptions.locate("reset");
                 resetButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from original", rootModel, uiOptions.model.selections);
+                fluid.tests.uiOptions.checkModelSelections("model from original", rootModel, uiOptions.model);
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
 
                 cancelButton.click();
                 fluid.tests.uiOptions.checkModelSelections("model from original (correct state after reset and cancel)",
-                    (resetShouldSave ? rootModel : fluid.tests.uiOptions.bwSkin), uiOptions.model.selections);
+                    (resetShouldSave ? rootModel : fluid.tests.uiOptions.bwSkin), uiOptions.model);
 
                 jqUnit.start();
             }
 
             var that = fluid.invokeGlobalFunction(componentName, ["#myUIOptions", {
                 gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
-                prefix: "../../../../components/uiOptions/html/",
+                templatePrefix: "../../../../components/uiOptions/html/",
+                messagePrefix: "../../../../components/uiOptions/messages/",
                 uiOptionsLoader: {
                     options: {
                         listeners: {
@@ -154,7 +154,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 templateLoader: {
                     options: {
-                        gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
+                        gradeNames: ["fluid.uiOptions.starterFullPreviewTemplateLoader"]
+                    }
+                },
+                messageLoader: {
+                    options: {
+                        gradeNames: ["fluid.uiOptions.starterMessageLoader"]
                     }
                 },
                 uiOptions: {
@@ -186,14 +191,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.uiOptions.enhancerOptions = {
-        gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.uiOptions.rootModel.starter"],
-        tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
-        classnameMap: {
-            "textFont": {
-                "default": "fl-font-times"
-            },
-            "theme": {
-                "yb": "fl-test"
+        uiEnhancer: {
+            gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.uiOptions.rootModel.starter"],
+            tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
+            classnameMap: {
+                "textFont": {
+                    "default": "fl-font-times"
+                },
+                "theme": {
+                    "yb": "fl-test"
+                }
             }
         }
     };
@@ -223,7 +230,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.uiOptions.mungingIntegrationOptions = {
         gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
-        prefix: "../../../../components/uiOptions/html/",
+        templatePrefix: "../../../../components/uiOptions/html/",
+        messagePrefix: "../../../../components/uiOptions/messages/",
         textFont: {
             options: {
                 strings: {
@@ -236,7 +244,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         templateLoader: {
             options: {
-                gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
+                gradeNames: ["fluid.uiOptions.starterFullPreviewTemplateLoader"]
+            }
+        },
+        messageLoader: {
+            options: {
+                gradeNames: ["fluid.uiOptions.starterMessageLoader"]
             }
         },
         uiOptions: {
@@ -248,7 +261,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.uiOptions.mungingIntegrationTest = function (componentName, container, extraOpts, extraListener) {
         extraListener = extraListener || function () { jqUnit.start(); };
-        
+
         jqUnit.asyncTest(componentName + " Munging Integration tests", function () {
             fluid.globalSettingsStore();
             fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
