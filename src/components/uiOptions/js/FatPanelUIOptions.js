@@ -122,8 +122,7 @@ var fluid_1_5 = fluid_1_5 || {};
             source: "{that}.options.outerEnhancerOptions",
             removeSource: true,
             target: "{that iframeEnhancer}.options"
-        }, 
-        {
+        }, {
             source: "{that}.options.prefix",
             target: "{that > iframeRenderer}.options.prefix"
         }]
@@ -268,7 +267,8 @@ var fluid_1_5 = fluid_1_5 || {};
                         onCreate: {
                             listener: "{fatPanel}.bindReset",
                             args: ["{that}.reset"]
-                        }
+                        },
+                        onReset: "{that}.applyChanges"
                     },
                     components: {
                         iframeRenderer: "{fatPanel}.iframeRenderer"
