@@ -26,12 +26,12 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.registerNamespace("fluid.tableOfContents");
 
 
-    fluid.tableOfContents.insertAnchor = function (name, element, anchorIdentifier) {
+    fluid.tableOfContents.insertAnchor = function (name, element, anchorClass) {
        // In order to resolve FLUID-4453, we need to make sure that the owner document is correctly
        // taken from the target element (the preview may be in an iframe)
         var anchor = $("<a></a>", element.ownerDocument);
         anchor.prop({
-            "class": anchorIdentifier,
+            "class": anchorClass,
             name: name,
             id: name
         });
@@ -57,7 +57,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
         that.anchorInfo = fluid.transform(headings, function (heading) {
             var info = that.headingTextToAnchorInfo(heading);
-            that.insertAnchor(info.id, heading, that.options.anchorIdentifier);
+            that.insertAnchor(info.id, heading, that.options.anchorClass);
             return info;
         });
 
@@ -117,7 +117,7 @@ var fluid_1_5 = fluid_1_5 || {};
             tocContainer: ".flc-toc-tocContainer",
             tocAnchors: ".flc-toc-anchors"
         },
-        anchorIdentifier: "flc-toc-anchors",
+        anchorClass: "flc-toc-anchors",
         events: {
             onRefresh: null,
             afterRender: null,
