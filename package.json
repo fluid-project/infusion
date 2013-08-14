@@ -7,17 +7,35 @@
   "homepage": "http://www.fluidproject.org/",
   "dependencies": {},
   "licenses": [
-     {
-       "type": "BSD-3-Clause",
-       "url": "http://www.opensource.org/licenses/BSD-3-Clause"
-     },
-     {
-       "type": "ECL-2.0",
-       "url":  "http://www.opensource.org/licenses/ECL-2.0"
-     }
+    {
+      "type": "BSD-3-Clause",
+      "url": "http://www.opensource.org/licenses/BSD-3-Clause"
+    },
+    {
+      "type": "ECL-2.0",
+      "url": "http://www.opensource.org/licenses/ECL-2.0"
+    }
   ],
-  "keywords": ["infusion", "framework", "application", "fluid", "IoC", "Inversion of Control", "MVC", "evented"],
+  "keywords": [
+    "infusion",
+    "framework",
+    "application",
+    "fluid",
+    "IoC",
+    "Inversion of Control",
+    "MVC",
+    "evented"
+  ],
   "repository": "git://github.com/fluid-project/infusion.git",
   "main": "./src/module/fluid.js",
-  "engines": { "node" : ">=0.1.9" }
+  "engines": {
+    "node": ">=0.1.9"
+  },
+  "scripts": {
+    "preinstall": "sudo npm i -g grunt-cli"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.2"
+  }
 }
