@@ -27,11 +27,9 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         container: "{fullNoPreview}.container",
         uiOptions: {
-            options: {
-                listeners: {
-                    onReset: function (uiOptions) {
-                        uiOptions.save();
-                    }
+            listeners: {
+                onReset: function (uiOptions) {
+                    uiOptions.save();
                 }
             }
         }

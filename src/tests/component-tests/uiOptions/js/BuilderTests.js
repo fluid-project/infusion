@@ -609,30 +609,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     gradeNames: ["{builder}.options.assembledUIOGrade"],
                     uioType: uioType,
                     uiOptionsInline: {
-                        options: {
-                            uiOptionsLoader: {
-                                options: {
-                                    listeners: {
-                                        onReady: {
-                                            listener: "{uio}.events.onReady",
-                                            args: "{uio}"
-                                        }
-                                    }
+                        uiOptionsLoader: {
+                            listeners: {
+                                onReady: {
+                                    listener: "{uio}.events.onReady",
+                                    args: "{uio}"
                                 }
                             }
                         }
                     },
                     enhancer: {
-                        options: {
-                            classnameMap: {
-                                "textFont.default": "fl-aria"
-                            }
+                        classnameMap: {
+                            "textFont.default": "fl-aria"
                         }
                     },
                     uiOptions: {
-                        options: {
-                            userOption: 1
-                        }
+                        userOption: 1
                     },
                     events: {
                         onReady: null

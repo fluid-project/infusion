@@ -110,11 +110,11 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         outerEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
         distributeOptions: [{
-            source: "{that}.options.slidingPanel.options",
+            source: "{that}.options.slidingPanel",
             removeSource: true,
             target: "{that > slidingPanel}.options"
         }, {
-            source: "{that}.options.iframeRenderer.options",
+            source: "{that}.options.iframeRenderer",
             removeSource: true,
             target: "{that > iframeRenderer}.options"
         }, {

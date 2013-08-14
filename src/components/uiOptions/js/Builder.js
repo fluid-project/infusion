@@ -93,7 +93,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         distributeOptions: [{
-            source: "{that}.options.enhancer.options",
+            source: "{that}.options.enhancer",
             removeSource: true,
             target: "{that uiEnhancer}.options"
         }]
@@ -110,19 +110,13 @@ var fluid_1_5 = fluid_1_5 || {};
                     gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.templatePrefix", "{fluid.uiOptions.assembler.uio}.options.componentGrades.messagePrefix", "{fluid.uiOptions.assembler.uio}.options.componentGrades.messages", "{that}.options.uioType"],
                     uioType: "fluid.uiOptions.fatPanel",
                     templateLoader: {
-                        options: {
-                            gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.templateLoader"]
-                        }
+                        gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.templateLoader"]
                     },
                     messageLoader: {
-                        options: {
-                            gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.messageLoader"]
-                        }
+                        gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.messageLoader"]
                     },
                     uiOptions: {
-                        options: {
-                            gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.panels", "{fluid.uiOptions.assembler.uio}.options.componentGrades.rootModel", "fluid.uiOptions.uiEnhancerRelay"]
-                        }
+                        gradeNames: ["{fluid.uiOptions.assembler.uio}.options.componentGrades.panels", "{fluid.uiOptions.assembler.uio}.options.componentGrades.rootModel", "fluid.uiOptions.uiEnhancerRelay"]
                     }
                 }
             }
@@ -132,11 +126,11 @@ var fluid_1_5 = fluid_1_5 || {};
             removeSource: true,
             target: "{that > uiOptionsInline}.options.uioType"
         }, {
-            source: "{that}.options.uiOptionsInline.options",
+            source: "{that}.options.uiOptionsInline",
             removeSource: true,
             target: "{that > uiOptionsInline}.options"
         }, {
-            source: "{that}.options.uiOptions.options",
+            source: "{that}.options.uiOptions",
             removeSource: true,
             target: "{that uiOptions}.options"
         }]

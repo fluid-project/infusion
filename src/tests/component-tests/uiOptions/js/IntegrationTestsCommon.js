@@ -146,28 +146,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 templatePrefix: "../../../../components/uiOptions/html/",
                 messagePrefix: "../../../../components/uiOptions/messages/",
                 uiOptionsLoader: {
-                    options: {
-                        listeners: {
-                            onReady: testComponent
-                        }
+                    listeners: {
+                        onReady: testComponent
                     }
                 },
                 templateLoader: {
-                    options: {
-                        gradeNames: ["fluid.uiOptions.starterFullPreviewTemplateLoader"]
-                    }
+                    gradeNames: ["fluid.uiOptions.starterFullPreviewTemplateLoader"]
                 },
                 messageLoader: {
-                    options: {
-                        gradeNames: ["fluid.uiOptions.starterMessageLoader"]
-                    }
+                    gradeNames: ["fluid.uiOptions.starterMessageLoader"]
                 },
                 uiOptions: {
-                    options: {
-                        gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter"],
-                        listeners: {
-                            "onSave.munged": testSave
-                        }
+                    gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter"],
+                    listeners: {
+                        "onSave.munged": testSave
                     }
                 },
                 components: {
@@ -233,29 +225,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         templatePrefix: "../../../../components/uiOptions/html/",
         messagePrefix: "../../../../components/uiOptions/messages/",
         textFont: {
-            options: {
-                strings: {
-                    textFont: fluid.tests.uiOptions.testStrings
-                },
-                controlValues: {
-                    textFont: fluid.tests.uiOptions.testControlValues
-                }
+            strings: {
+                textFont: fluid.tests.uiOptions.testStrings
+            },
+            controlValues: {
+                textFont: fluid.tests.uiOptions.testControlValues
             }
         },
         templateLoader: {
-            options: {
-                gradeNames: ["fluid.uiOptions.starterFullPreviewTemplateLoader"]
-            }
+            gradeNames: ["fluid.uiOptions.starterFullPreviewTemplateLoader"]
         },
         messageLoader: {
-            options: {
-                gradeNames: ["fluid.uiOptions.starterMessageLoader"]
-            }
+            gradeNames: ["fluid.uiOptions.starterMessageLoader"]
         },
         uiOptions: {
-            options: {
-                gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
-            }
+            gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
         }
     };
 
@@ -267,21 +251,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
             var options = fluid.merge(null, fluid.tests.uiOptions.mungingIntegrationOptions, {
                 uiOptionsLoader: {
-                    options: {
-                        listeners: {
-                            onReady: [
-                                "fluid.tests.uiOptions.testComponentIntegration",
-                                extraListener
-                            ]
-                        }
+                    listeners: {
+                        onReady: [
+                            "fluid.tests.uiOptions.testComponentIntegration",
+                            extraListener
+                        ]
                     }
                 },
                 uiOptions: {
-                    options: {
-                        members: {
-                            rootModel: {
-                                theme: "yb"
-                            }
+                    members: {
+                        rootModel: {
+                            theme: "yb"
                         }
                     }
                 }

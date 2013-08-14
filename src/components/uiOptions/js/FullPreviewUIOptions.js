@@ -28,13 +28,11 @@ var fluid_1_5 = fluid_1_5 || {};
         container: "{fullPreview}.container",
         outerPreviewEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
         uiOptions: {
-            options: {
-                components: {
-                    preview: {
-                        type: "fluid.uiOptions.preview",
-                        createOnEvent: "onUIOptionsComponentReady",
-                        container: "{uiOptions}.dom.previewFrame"
-                    }
+            components: {
+                preview: {
+                    type: "fluid.uiOptions.preview",
+                    createOnEvent: "onUIOptionsComponentReady",
+                    container: "{uiOptions}.dom.previewFrame"
                 }
             }
         },
@@ -43,10 +41,10 @@ var fluid_1_5 = fluid_1_5 || {};
             removeSource: true,
             target: "{that enhancer}.options"
         }, {
-            source: "{that}.options.preview.options",
+            source: "{that}.options.preview",
             target: "{that preview}.options"
         }, {
-            source: "{that}.options.previewEnhancer.options",
+            source: "{that}.options.previewEnhancer",
             removeSource: true,
             target: "{that enhancer}.options"
         }]

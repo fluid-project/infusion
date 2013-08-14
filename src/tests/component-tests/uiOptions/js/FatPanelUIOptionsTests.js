@@ -44,26 +44,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     templatePrefix: "../../../../components/uiOptions/html/",
                     messagePrefix: "../../../../components/uiOptions/messages/",
                     iframeRenderer: {
-                        options: {
-                            markupProps: {
-                                src: "./FatPanelUIOptionsFrame.html"
-                            }
+                        markupProps: {
+                            src: "./FatPanelUIOptionsFrame.html"
                         }
                     },
                     templateLoader: {
-                        options: {
-                            gradeNames: ["fluid.uiOptions.starterFatPanelTemplateLoader"]
-                        }
+                        gradeNames: ["fluid.uiOptions.starterFatPanelTemplateLoader"]
                     },
                     messageLoader: {
-                        options: {
-                            gradeNames: ["fluid.uiOptions.starterMessageLoader"]
-                        }
+                        gradeNames: ["fluid.uiOptions.starterMessageLoader"]
                     },
                     uiOptions: {
-                        options: {
-                            gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
-                        }
+                        gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
                     }
                 }
             },
@@ -188,28 +180,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 createOnEvent: "{mungingIntegrationTester}.events.onTestCaseStart",
                 options: fluid.merge(null, fluid.tests.uiOptions.mungingIntegrationOptions, {
                     iframeRenderer: {
-                        options: {
-                            markupProps: {
-                                src: "./FatPanelUIOptionsFrame.html"
-                            }
+                        markupProps: {
+                            src: "./FatPanelUIOptionsFrame.html"
                         }
                     },
                     slidingPanel: {
-                        options: {
-                            listeners: {
-                                onPanelShow: function() {
-                                    isSlidingPanelShown = true;
-                                }
+                        listeners: {
+                            onPanelShow: function() {
+                                isSlidingPanelShown = true;
                             }
                         }
                     },
                     iframe: expectedIframeSelector,
                     uiOptions: {
-                        options: {
-                            members: {
-                                rootModel: {
-                                    theme: "yb"
-                                }
+                        members: {
+                            rootModel: {
+                                theme: "yb"
                             }
                         }
                     }

@@ -65,19 +65,13 @@ var demo = demo || {};
         templatePrefix: pathToTemplates,
         messagePrefix: pathToMessages,
         templateLoader: {
-            options: {
-                gradeNames: ["fluid.uiOptions.starterFatPanelTemplateLoader"]
-            }
+            gradeNames: ["fluid.uiOptions.starterFatPanelTemplateLoader"]
         },
         messageLoader: {
-            options: {
-                gradeNames: ["fluid.uiOptions.starterMessageLoader"]
-            }
+            gradeNames: ["fluid.uiOptions.starterMessageLoader"]
         },
         uiOptions: {
-            options: {
-                gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
-            }
+            gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
         }
     };
 

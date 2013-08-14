@@ -48,11 +48,11 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         container: "{that}.container",
         distributeOptions: [{
-            source: "{that}.options.templateLoader.options",
+            source: "{that}.options.templateLoader",
             removeSource: true,
             target: "{that templateLoader}.options"
         }, {
-            source: "{that}.options.messageLoader.options",
+            source: "{that}.options.messageLoader",
             removeSource: true,
             target: "{that messageLoader}.options"
         }, {
@@ -62,11 +62,11 @@ var fluid_1_5 = fluid_1_5 || {};
             source: "{that}.options.messagePrefix",
             target: "{that > messageLoader > resourcePath}.options.value"
         }, {
-            source: "{that}.options.uiOptionsLoader.options",
+            source: "{that}.options.uiOptionsLoader",
             removeSource: true,
             target: "{that > uiOptionsLoader}.options"
         }, {
-            source: "{that}.options.uiOptions.options",
+            source: "{that}.options.uiOptions",
             removeSource: true,
             target: "{that uiOptions}.options"
         }, {
@@ -79,27 +79,27 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions", {
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         distributeOptions: [{
-            source: "{that}.options.textSize.options",
+            source: "{that}.options.textSize",
             removeSource: true,
             target: "{that textSize}.options"
         }, {
-            source: "{that}.options.lineSpace.options",
+            source: "{that}.options.lineSpace",
             removeSource: true,
             target: "{that lineSpace}.options"
         }, {
-            source: "{that}.options.textFont.options",
+            source: "{that}.options.textFont",
             removeSource: true,
             target: "{that textFont}.options"
         }, {
-            source: "{that}.options.contrast.options",
+            source: "{that}.options.contrast",
             removeSource: true,
             target: "{that contrast}.options"
         }, {
-            source: "{that}.options.layoutControls.options",
+            source: "{that}.options.layoutControls",
             removeSource: true,
             target: "{that layoutControls}.options"
         }, {
-            source: "{that}.options.linksControls.options",
+            source: "{that}.options.linksControls",
             removeSource: true,
             target: "{that linksControls}.options"
         }]
