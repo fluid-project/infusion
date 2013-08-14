@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global skon:true, fluid, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var demo = demo || {};
@@ -23,7 +23,14 @@ var demo = demo || {};
      * versions of the component.
      */
     var pathToTemplates = "../../../components/uiOptions/html/";
-    
+
+    /**
+     * The strings used on UI Options interface is defined by several JSON files. The component
+     * needs to know where those files are. This variable will be used by all versions of the
+     * component.
+     */
+    var pathToMessages = "../../../components/uiOptions/messages/";
+
     /**
      * The UI Enhancer's Table of Contents uses a template. This path variable is used by all
      * three versions of the component, as well as by the UI Enhancer present in the Preview
@@ -37,22 +44,24 @@ var demo = demo || {};
     demo.initSettingsStore = function () {
         fluid.globalSettingsStore();
     };
-	
+
     /**
      * Initialize UI Enhancer for the page.
      */
     demo.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
-            gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-            tocTemplate: pathToTocTemplate,
-            classnameMap: {
-                theme: {
-                    "default": customThemeName
+            uiEnhancer: {
+                gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+                tocTemplate: pathToTocTemplate,
+                classnameMap: {
+                    theme: {
+                        "default": customThemeName
+                    }
                 }
             }
         });
     };
-    
+
     /**
      * The basic options for configuring the full-page versions of UI Options are the same,
      * regardless of whether or not the Preview is used. These settings used by both
@@ -61,37 +70,44 @@ var demo = demo || {};
     var basicFullPageOpts = {
         gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
         // Tell UIOptions where to find all the templates, relative to this file
-        prefix: pathToTemplates,
-        templateLoader: {
-            options: {
-                gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
-            }
+        templatePrefix: pathToTemplates,
+        messagePrefix: pathToMessages,
+        messageLoader: {
+            gradeNames: ["fluid.uiOptions.starterMessageLoader"]
         },
         // Tell UIOptions where to redirect to if the user cancels the operation
         uiOptions: {
-            options: {
-                gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
-                listeners: {
-                    onCancel: function () {
-                        alert("Cancelled - would normally cancel any unsaved changes and return to the previous page.");
-                    }
+            gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
+            listeners: {
+                onCancel: function () {
+                    alert("Cancelled - would normally cancel any unsaved changes and return to the previous page.");
                 }
             }
         }
     };
-    
+
     /**
      * Initialize UI Options on the "Full Page, No Preview" version.
      */
     demo.initFullNoPreview = function (container, options) {
-        fluid.uiOptions.fullNoPreview(container, $.extend(true, {}, basicFullPageOpts, options));
+        var noPreviewOps = {
+            templateLoader: {
+                gradeNames: ["fluid.uiOptions.starterFullNoPreviewTemplateLoader"]
+            }
+        };
+        fluid.uiOptions.fullNoPreview(container, $.extend(true, {}, basicFullPageOpts, noPreviewOps, options));
     };
 
     /**
      * Initialize UI Options on the "Full Page, With Preview" version.
      */
     demo.initFullWithPreview = function (container, options) {
-        fluid.uiOptions.fullPreview(container, $.extend(true, {}, basicFullPageOpts, options));
-    };        
-    
+        var previewOps = {
+            templateLoader: {
+                gradeNames: ["fluid.uiOptions.starterFullPreviewTemplateLoader"]
+            }
+        };
+        fluid.uiOptions.fullPreview(container, $.extend(true, {}, basicFullPageOpts, previewOps, options));
+    };
+
 })(jQuery, fluid);

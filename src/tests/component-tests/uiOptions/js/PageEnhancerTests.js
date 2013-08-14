@@ -25,14 +25,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             settingsStore: {
-                type: "fluid.globalSettingsStore"
+                type: "fluid.tempStore"
             },
             pageEnhancer: {
                 type: "fluid.pageEnhancer",
-                creatOnEvent: "createPageEnhancer",
                 options: {
-                    gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    creatOnEvent: "createPageEnhancer",
+                    uiEnhancer: {
+                        options: {
+                            gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+                            tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                        }
+                    }
                 }
             },
             pageEnhancerTester: {

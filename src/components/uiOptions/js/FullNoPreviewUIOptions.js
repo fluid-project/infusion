@@ -13,7 +13,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid_1_5:true, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_5 = fluid_1_5 || {};
@@ -26,24 +26,15 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.fullNoPreview", {
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         container: "{fullNoPreview}.container",
-        templateLoader: {
-            options: {
-                templates: {
-                    uiOptions: "%prefix/FullNoPreviewUIOptions.html"
-                }
-            }
-        },
         uiOptions: {
-            options: {
-                listeners: {
-                    onReset: [{
-                        listener: "{that}.applyChanges"
-                    }, {
-                        listener: "{that}.save"
-                    }]
-                }
+            listeners: {
+                onReset: [{
+                    listener: "{that}.applyChanges"
+                }, {
+                    listener: "{that}.save"
+                }]
             }
         }
     });
-    
+
 })(jQuery, fluid_1_5);
