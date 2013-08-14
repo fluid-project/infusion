@@ -113,6 +113,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     var opts = {};
                     if (internalPath.indexOf("model.") === 0) {
                         var internalModelName = internalPath.slice(6);
+                        // Set up the binding in "rules" accepted by the modelRelay base grade of every panel
                         fluid.set(opts, ["rules", flattenedPrefKey], internalModelName);
                         fluid.set(opts, ["model", internalModelName], prefSchema[PrimaryPath]);
                         fluid.set(rootModel, ["members", "rootModel", flattenedPrefKey], prefSchema[PrimaryPath]);
@@ -182,6 +183,7 @@ var fluid_1_5 = fluid_1_5 || {};
         auxSchema.namespace = auxSchema.namespace || defaultNamespace;
 
         fluid.each(auxSchema, function (category, prefName) {
+            // TODO: Replace this cumbersome scheme with one based on an extensible lookup to handlers
             var type = "panel";
             if (category[type]) {
                 fluid.uiOptions.expandSchemaComponents(auxSchema, "panels", category.type, category[type], fluid.get(indexes, type), fluid.get(elementCommonOptions, type), mappedDefaults);

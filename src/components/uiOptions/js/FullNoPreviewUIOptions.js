@@ -28,9 +28,11 @@ var fluid_1_5 = fluid_1_5 || {};
         container: "{fullNoPreview}.container",
         uiOptions: {
             listeners: {
-                onReset: function (uiOptions) {
-                    uiOptions.save();
-                }
+                onReset: [{
+                    listener: "{that}.applyChanges"
+                }, {
+                    listener: "{that}.save"
+                }]
             }
         }
     });

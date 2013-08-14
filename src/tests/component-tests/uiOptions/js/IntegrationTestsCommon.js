@@ -133,6 +133,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 resetButton.click();
                 fluid.tests.uiOptions.checkModelSelections("model from original", rootModel, uiOptions.model);
                 fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
+                fluid.tests.uiOptions.checkModelSelections("model from original (correct state after reset)",
+                    (resetShouldSave ? rootModel : fluid.tests.uiOptions.bwSkin), fluid.staticEnvironment.uiEnhancer.model);
 
                 cancelButton.click();
                 fluid.tests.uiOptions.checkModelSelections("model from original (correct state after reset and cancel)",
@@ -157,7 +159,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     gradeNames: ["fluid.uiOptions.starterMessageLoader"]
                 },
                 uiOptions: {
-                    gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter"],
+                    gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
                     listeners: {
                         "onSave.munged": testSave
                     }
