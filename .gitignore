@@ -1,3 +1,4 @@
 build/
 products/
+node_modules/
 src/components/uiOptions/css/fss/
