@@ -35,10 +35,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 textFont: "default",          // key from classname map
                 theme: "default",             // key from classname map
                 textSize: 1,                  // in points
-                lineSpace: 1,               // in ems
-                toc: false,                   // boolean
-                links: false,                 // boolean
-                inputsLarger: false           // boolean
+                lineSpace: 1,                 // in ems
+                toc: false,                  // boolean
+                links: false,                // boolean
+                inputsLarger: false          // boolean
             }
         }
     });
