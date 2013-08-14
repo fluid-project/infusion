@@ -269,7 +269,8 @@ var fluid_1_5 = fluid_1_5 || {};
                         onCreate: {
                             listener: "{fatPanel}.bindReset",
                             args: ["{that}.reset"]
-                        }
+                        },
+                        onReset: "{that}.applyChanges"
                     },
                     components: {
                         iframeRenderer: "{fatPanel}.iframeRenderer"
