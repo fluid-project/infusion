@@ -14,7 +14,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid, jqUnit, expect, start, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
@@ -23,9 +23,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * Empty uiEnhancer works with customized enactors grades
      *******************************************************************************/
-    
+
     var emphasizeLinksClass = "fl-emphasize-links";
-    
+
     fluid.defaults("fluid.uiEnhancer.customizedEnactors", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
@@ -66,7 +66,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testCustomizedEnactors = function (container, cssClass, expectedValue) {
         jqUnit.assertEquals("The emphasized links are applied - " + expectedValue, expectedValue, $(container).children("a").hasClass(cssClass));
     };
-    
+
     fluid.defaults("fluid.tests.customizedEnactorsTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOpts: {
@@ -100,7 +100,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * Apply default settings
      *******************************************************************************/
-    
+
     fluid.defaults("fluid.tests.settings", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
@@ -123,7 +123,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.getInitialFontSize = function (container, tester) {
         tester.options.testOpts.initialFontSize = parseFloat(container.css("fontSize"));
     };
-    
+
     fluid.tests.testTocStyling = function () {
         var tocLinks = $(".flc-toc-tocContainer a");
         var filtered = tocLinks.filter(".fl-link-enhanced");
@@ -133,7 +133,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testSettings = function (uiEnhancer, testSettings, initialFontSize) {
         var expectedTextSize = initialFontSize * testSettings.textSize;
-        
+
         jqUnit.assertEquals("Large text size is set", expectedTextSize.toFixed(0) + "px", uiEnhancer.container.css("fontSize"));
         jqUnit.assertTrue("Verdana font is set", uiEnhancer.container.hasClass("fl-font-uio-verdana"));
         jqUnit.assertTrue("High contrast is set", uiEnhancer.container.hasClass("fl-theme-bw"));
@@ -165,7 +165,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.testTocStyling",
                     spec: {priority: "last"},
-                    event: "{uiEnhancer}.events.onAsyncEnactorReady"
+                    event: "{uiEnhancer}.tableOfContents.events.afterTocRender"
                 }, {
                     func: "fluid.tests.testSettings",
                     args: ["{uiEnhancer}", "{that}.options.testOpts.testSettings", "{that}.options.testOpts.initialFontSize"]
@@ -177,7 +177,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * Options munging
      *******************************************************************************/
-    
+
     fluid.defaults("fluid.tests.optionsMunging", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
@@ -217,7 +217,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertTrue("The initial times font is set correctly", uiEnhancer.container.hasClass("fl-font-times"));
         jqUnit.assertTrue("The initial test theme is set correctly", uiEnhancer.container.hasClass("fl-test"));
     };
-    
+
     fluid.defaults("fluid.tests.optionsMungingTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
@@ -235,7 +235,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * FLUID-4703: Line height unit
      *******************************************************************************/
-    
+
     fluid.defaults("fluid.tests.lineHeightUnit", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
@@ -253,7 +253,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var child2emHeight = child2El.height();
         jqUnit.assertTrue("The line height of the 2em child should be close to twice the size of the 1em child", 2 * child1emHeight < child2emHeight);
     };
-    
+
     fluid.defaults("fluid.tests.lineHeightUnitTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{

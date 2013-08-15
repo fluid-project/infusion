@@ -13,7 +13,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid_1_5:true, jQuery, window*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_5 = fluid_1_5 || {};
@@ -21,9 +21,9 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     fluid.registerNamespace("fluid.dom");
-    
+
     fluid.dom.getDocumentHeight = function (dokkument) {
-        var body = $("body", dokkument)[0]; 
+        var body = $("body", dokkument)[0];
         return body.offsetHeight;
     };
 
@@ -62,24 +62,27 @@ var fluid_1_5 = fluid_1_5 || {};
             slidingPanel: {
                 type: "fluid.slidingPanel",
                 container: "{fatPanel}.container",
+                createOnEvent: "afterRender",
                 options: {
+                    members: {
+                        msgBundle: "{uiOptionsLoader}.msgBundle"
+                    },
                     invokers: {
                         operateShow: {
                             funcName: "fluid.uiOptions.fatPanel.showPanel"
                         },
                         operateHide: {
                             funcName: "fluid.uiOptions.fatPanel.hidePanel"
-                        } 
+                        }
                     }
-                },
-                createOnEvent: "afterRender"
+                }
             },
             iframeRenderer: {
                 type: "fluid.uiOptions.fatPanel.renderIframe",
                 container: "{fatPanel}.dom.iframe",
                 options: {
                     markupProps: {
-                        src: "%prefix/FatPanelUIOptionsFrame.html"
+                        src: "%templatePrefix/FatPanelUIOptionsFrame.html"
                     },
                     events: {
                         afterRender: "{fatPanel}.events.afterRender"
@@ -90,7 +93,7 @@ var fluid_1_5 = fluid_1_5 || {};
                             container: "{iframeRenderer}.renderUIOContainer",
                             createOnEvent: "afterRender",
                             options: {
-                                gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+                                gradeNames: ["{pageEnhancer}.options.gradeNames"],
                                 jQuery: "{iframeRenderer}.jQuery",
                                 tocTemplate: "{pageEnhancer}.options.tocTemplate",
                                 events: {
@@ -107,11 +110,11 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         outerEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
         distributeOptions: [{
-            source: "{that}.options.slidingPanel.options",
+            source: "{that}.options.slidingPanel",
             removeSource: true,
             target: "{that > slidingPanel}.options"
         }, {
-            source: "{that}.options.iframeRenderer.options",
+            source: "{that}.options.iframeRenderer",
             removeSource: true,
             target: "{that > iframeRenderer}.options"
         }, {
@@ -123,11 +126,11 @@ var fluid_1_5 = fluid_1_5 || {};
             removeSource: true,
             target: "{that iframeEnhancer}.options"
         }, {
-            source: "{that}.options.prefix",
-            target: "{that > iframeRenderer}.options.prefix"
+            source: "{that}.options.templatePrefix",
+            target: "{that > iframeRenderer}.options.templatePrefix"
         }]
     });
-    
+
     fluid.uiOptions.fatPanel.hideReset = function (fatPanel) {
         fatPanel.locate("reset").hide();
     };
@@ -144,19 +147,19 @@ var fluid_1_5 = fluid_1_5 || {};
             containerFlex: "fl-container-flex",
             container: "fl-uiOptions-fatPanel-iframe"
         },
-        prefix: "./",
+        templatePrefix: "./",
         markupProps: {
             "class": "flc-iframe",
-            src: "%prefix/uiOptionsIframe.html"
+            src: "%templatePrefix/uiOptionsIframe.html"
         }
     });
-    
+
     fluid.uiOptions.fatPanel.renderIframe.finalInit = function (that) {
         var styles = that.options.styles;
-        // TODO: get earlier access to templateLoader, 
-        that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, {"prefix/": that.options.prefix});
+        // TODO: get earlier access to templateLoader,
+        that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, {"templatePrefix/": that.options.templatePrefix});
         that.iframeSrc = that.options.markupProps.src;
-        
+
         // Create iframe and append to container
         that.iframe = $("<iframe/>");
         that.iframe.load(function () {
@@ -168,7 +171,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
         });
         that.iframe.attr(that.options.markupProps);
-        
+
         that.iframe.addClass(styles.containerFlex);
         that.iframe.addClass(styles.container);
         that.iframe.hide();
@@ -180,17 +183,17 @@ var fluid_1_5 = fluid_1_5 || {};
         uiOptions.events.onUIOptionsRefresh.fire();
         uiOptions.events.onSignificantDOMChange.fire();
     };
-    
+
     fluid.uiOptions.fatPanel.bindEvents = function (uiOptions, iframeEnhancer, fatPanel) {
         // TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component - and also uiOptionsLoader which is another child
         fatPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             iframeEnhancer.events.onIframeVisible.fire(iframeEnhancer);
             fluid.uiOptions.fatPanel.updateView(uiOptions);
-        });  
-    
+        });
+
         uiOptions.events.onUIOptionsRefresh.addListener(function () {
-            iframeEnhancer.updateModel(uiOptions.model.selections);
+            iframeEnhancer.updateModel(uiOptions.model);
         });
         uiOptions.events.onReset.addListener(function (uiOptions) {
             fluid.uiOptions.fatPanel.updateView(uiOptions);
@@ -204,17 +207,16 @@ var fluid_1_5 = fluid_1_5 || {};
             panel.css({height: ""});
             iframe.animate(attrs, 400);
         });
-        
+
         // Re-apply text size and line space to iframe content since these initial css values are not detectable
         // when the iframe is hidden.
         iframeEnhancer.events.onIframeVisible.addListener(function () {
-            iframeEnhancer.textSize.set(iframeEnhancer.model.textSize);
-            iframeEnhancer.lineSpace.set(iframeEnhancer.model.lineSpace);
+            iframeEnhancer.applier.requestChange("", iframeEnhancer.model);
         });
 
         fatPanel.slidingPanel.events.afterPanelHide.addListener(function () {
             fatPanel.iframeRenderer.iframe.height(0);
-            
+
             // Prevent the hidden UIO panel from being keyboard and screen reader accessible
             fatPanel.iframeRenderer.iframe.hide();
         });
@@ -232,7 +234,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uiOptions.fatPanel.hidePanel = function (panel, callback) {
         $(panel).animate({height: 0}, {duration: 400, complete: callback});
     };
-    
+
     // no activity - the kickback to the updateView listener will automatically trigger the
     // DOMChangeListener above. This ordering is preferable to avoid causing the animation to
     // jump by refreshing the view inside the iframe
@@ -241,10 +243,10 @@ var fluid_1_5 = fluid_1_5 || {};
         // react synchronously to being shown
         setTimeout(callback, 1);
     };
-    
+
     /*************************************************************
-     * fluid.uiOptions.fatPanelLoader: 
-     * 
+     * fluid.uiOptions.fatPanelLoader:
+     *
      * Define the loader that are specifically for the fat panel.
      *************************************************************/
     fluid.defaults("fluid.uiOptions.fatPanelLoader", {

@@ -11,18 +11,22 @@
         ],
         "files": [
             "URLUtilities.js",
-            "i18n.js",
             "Store.js",
             "TextfieldSlider.js",
+            "UIEnhancer.js",
             "UIOptions.js",
             "Panels.js",
             "ModelRelay.js",
             "Enactors.js",
-            "UIEnhancer.js",
+            "StarterGrades.js",
             "FatPanelUIOptions.js",
             "FullNoPreviewUIOptions.js",
             "FullPreviewUIOptions.js",
-            "SlidingPanel.js"
+            "SlidingPanel.js",
+            "PrimaryBuilder.js",
+            "AuxBuilder.js",
+            "StarterSchemas.js",
+            "Builder.js"
         ],
         "dependencies": [
             "fss",
