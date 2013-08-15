@@ -35,9 +35,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "wb": "fl-theme-uio-wb fl-theme-wb",
                 "by": "fl-theme-uio-by fl-theme-by",
                 "yb": "fl-theme-uio-yb fl-theme-yb",
-                "lgdg": "fl-theme-uio-lgdg fl-theme-lgdg"                
+                "lgdg": "fl-theme-uio-lgdg fl-theme-lgdg"
             }
         };
+
+    var messages = {
+        "textFont.default": "default",
+        "textFont.times": "Times New Roman",
+        "textFont.comic": "Comic Sans",
+        "textFont.arial": "Arial",
+        "textFont.verdana": "Verdana",
+        "textFontLabel": "Text Style",
+        "contrast": ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"],
+        "contrastLabel": "Colour & Contrast"
+    };
+
+    var parentResolver = fluid.messageResolver({messageBase: messages});
 
     /*******************************************************************************
      * Functions shared by panel tests
@@ -49,6 +62,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
     };
 
+    fluid.defaults("fluid.uiOptions.defaultTestPanel", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        strings: {},
+        parentBundle: {
+            expander: {
+                funcName: "fluid.messageResolver",
+                args: [{messageBase: {}, parents: [parentResolver]}]
+            }
+        }
+    });
+
+
     /*******************************************************************************
      * textFontPanel
      *******************************************************************************/
@@ -59,6 +84,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.panels.textFont",
                 container: ".flc-textFont",
                 options: {
+                    gradeNames: "fluid.uiOptions.defaultTestPanel",
                     model: {
                         value: 1
                     },
@@ -131,6 +157,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.panels.contrast",
                 container: ".flc-contrast",
                 options: {
+                    gradeNames: "fluid.uiOptions.defaultTestPanel",
                     model: {
                         value: "default"
                     },
@@ -221,6 +248,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.panels.textSize",
                 container: ".flc-textSize",
                 options: {
+                    gradeNames: "fluid.uiOptions.defaultTestPanel",
                     model: {
                         value: 1
                     }
@@ -271,6 +299,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.panels.lineSpace",
                 container: ".flc-lineSpace",
                 options: {
+                    gradeNames: "fluid.uiOptions.defaultTestPanel",
                     model: {
                         value: 1
                     }
@@ -328,6 +357,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.panels.layoutControls",
                 container: ".flc-layout",
                 options: {
+                    gradeNames: "fluid.uiOptions.defaultTestPanel",
                     model: {
                         toc: false,
                         layout: false
@@ -387,6 +417,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.uiOptions.panels.linksControls",
                 container: ".flc-links",
                 options: {
+                    gradeNames: "fluid.uiOptions.defaultTestPanel",
                     model: {
                         links: false,
                         inputsLarger: false

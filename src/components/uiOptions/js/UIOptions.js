@@ -26,8 +26,8 @@ var fluid_1_5 = fluid_1_5 || {};
      *********************/
 
     /**
-     * An UI Options top-level component that reflects the collaboration between uiOptionsLoader
-     * and templateLoader. This component is the only UI Options component that is intended to be
+     * An UI Options top-level component that reflects the collaboration between uiOptionsLoader,
+     * templateLoader and messageLoader. This component is the only UI Options component that is intended to be
      * called by the outside world.
      *
      * @param {Object} options
@@ -36,27 +36,37 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             uiOptionsLoader: {
+                priority: "last",
                 type: "fluid.uiOptions.loader"
             },
             templateLoader: {
-                priority: "first",
-                type: "fluid.uiOptions.templateLoader"
+                type: "fluid.uiOptions.resourceLoader"
+            },
+            messageLoader: {
+                type: "fluid.uiOptions.resourceLoader"
             }
         },
         container: "{that}.container",
         distributeOptions: [{
-            source: "{that}.options.templateLoader.options",
+            source: "{that}.options.templateLoader",
             removeSource: true,
             target: "{that templateLoader}.options"
         }, {
-            source: "{that}.options.prefix",
-            target: "{that templatePath}.options.value"
+            source: "{that}.options.messageLoader",
+            removeSource: true,
+            target: "{that messageLoader}.options"
         }, {
-            source: "{that}.options.uiOptionsLoader.options",
+            source: "{that}.options.templatePrefix",
+            target: "{that > templateLoader > resourcePath}.options.value"
+        }, {
+            source: "{that}.options.messagePrefix",
+            target: "{that > messageLoader > resourcePath}.options.value"
+        }, {
+            source: "{that}.options.uiOptionsLoader",
             removeSource: true,
             target: "{that > uiOptionsLoader}.options"
         }, {
-            source: "{that}.options.uiOptions.options",
+            source: "{that}.options.uiOptions",
             removeSource: true,
             target: "{that uiOptions}.options"
         }, {
@@ -65,31 +75,31 @@ var fluid_1_5 = fluid_1_5 || {};
             target: "{that > uiOptionsLoader}.container"
         }]
     });
-    
+
     fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions", {
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         distributeOptions: [{
-            source: "{that}.options.textSize.options",
+            source: "{that}.options.textSize",
             removeSource: true,
             target: "{that textSize}.options"
         }, {
-            source: "{that}.options.lineSpace.options",
+            source: "{that}.options.lineSpace",
             removeSource: true,
             target: "{that lineSpace}.options"
         }, {
-            source: "{that}.options.textFont.options",
+            source: "{that}.options.textFont",
             removeSource: true,
             target: "{that textFont}.options"
         }, {
-            source: "{that}.options.contrast.options",
+            source: "{that}.options.contrast",
             removeSource: true,
             target: "{that contrast}.options"
         }, {
-            source: "{that}.options.layoutControls.options",
+            source: "{that}.options.layoutControls",
             removeSource: true,
             target: "{that layoutControls}.options"
         }, {
-            source: "{that}.options.linksControls.options",
+            source: "{that}.options.linksControls",
             removeSource: true,
             target: "{that linksControls}.options"
         }]
@@ -101,34 +111,32 @@ var fluid_1_5 = fluid_1_5 || {};
 
     /**
      * A configurable component that works in conjunction with or without the UI Options template path
-     * component (fluid.uiOptionsTemplatePath) to allow users to set either the location of their own
+     * component (fluid.uiOptionsResourcePath) to allow users to set either the location of their own
      * templates or the templates that are relative to the path defined in the UI Options template path
      * component.
      *
      * @param {Object} options
      */
 
-    fluid.defaults("fluid.uiOptions.templateLoader", {
+    fluid.defaults("fluid.uiOptions.resourceLoader", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
-        finalInitFunction: "fluid.uiOptions.templateLoader.resolveTemplates",
-        templates: {
-            uiOptions: "%prefix/FatPanelUIOptions.html"
-        },
+        finalInitFunction: "fluid.uiOptions.resourceLoader.resolveTemplates",
+        templates: {},
         // Unsupported, non-API option
         components: {
-            templatePath: {
-                type: "fluid.uiOptions.templatePath"
+            resourcePath: {
+                type: "fluid.uiOptions.resourcePath"
             }
         },
         invokers: {
             transformURL: {
                 funcName: "fluid.stringTemplate",
-                args: [ "{arguments}.0", { "prefix/" : "{templateLoader}.templatePath.options.value"} ]
+                args: [ "{arguments}.0", { "prefix/" : "{that}.resourcePath.options.value"} ]
             }
         }
     });
 
-    fluid.uiOptions.templateLoader.resolveTemplates = function (that) {
+    fluid.uiOptions.resourceLoader.resolveTemplates = function (that) {
         var mapped = fluid.transform(that.options.templates, that.transformURL);
 
         that.resources = fluid.transform(mapped, function (url) {
@@ -146,7 +154,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
 
-    fluid.defaults("fluid.uiOptions.templatePath", {
+    fluid.defaults("fluid.uiOptions.resourcePath", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         value: "../html/"
     });
@@ -157,13 +165,21 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.loader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        resources: "{templateLoader}.resources",
+        templateResources: "{templateLoader}.resources",
+        messageResources: "{messageLoader}.resources",
         events: {
             // These two are events private to uiOptions
             onUIOptionsTemplateReady: null, // templates are loaded - construct UIOptions itself
-            onUIOptionsComponentReady: null, // UIOptions is loaded - construct its subcomponents
+            onUIOptionsComponentReady: null, // UIOptions templates are loaded
             // This is a public event which users outside the component can subscribe to - the argument
             // supplied is UIOptions.loader itself
+            onUIOptionsMessageReady: null,  // UIOptions message json files are loaded
+            onCreateUIOptionsReady: {
+                events: {
+                    templateLoaded: "onUIOptionsTemplateReady",
+                    messageLoaded: "onUIOptionsMessageReady"
+                }
+            },
             onReady: null
         },
         listeners: {
@@ -181,10 +197,13 @@ var fluid_1_5 = fluid_1_5 || {};
             uiOptions: {
                 type: "fluid.uiOptions",
                 container: "{loader}.container",
-                createOnEvent: "onUIOptionsTemplateReady",
+                createOnEvent: "onCreateUIOptionsReady",
                 options: {
                     events: {
                         "onUIOptionsComponentReady": "{loader}.events.onUIOptionsComponentReady"
+                    },
+                    members: {
+                        msgBundle: "{loader}.msgBundle"
                     }
                 }
             }
@@ -192,8 +211,20 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     fluid.uiOptions.loader.init = function (that) {
-        fluid.fetchResources(that.options.resources, function () {
+        fluid.fetchResources(that.options.templateResources, function () {
             that.events.onUIOptionsTemplateReady.fire();
+        });
+
+        // Load message json files and create message resolver
+        fluid.fetchResources(that.options.messageResources, function () {
+            var completeMessage;
+            fluid.each(that.options.messageResources, function (oneResource) {
+                var message = JSON.parse(oneResource.resourceText);
+                completeMessage = $.extend({}, completeMessage, message);
+            });
+            var parentResolver = fluid.messageResolver({messageBase: completeMessage});
+            that.msgBundle = fluid.messageResolver({messageBase: {}, parents: [parentResolver]});
+            that.events.onUIOptionsMessageReady.fire();
         });
     };
 
@@ -219,34 +250,6 @@ var fluid_1_5 = fluid_1_5 || {};
         set(userSettings);
     };
 
-    fluid.defaults("fluid.uiOptions.rootModel", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        members: {
-            // TODO: This information is supposed to be generated from the JSON
-            // schema describing various preferences. For now it's kept in top
-            // level uiOptions to avoid further duplication.
-            rootModel: {}
-        }
-    });
-
-    fluid.defaults("fluid.uiOptions.rootModel.starter", {
-        gradeNames: ["fluid.uiOptions.rootModel", "autoInit"],
-        members: {
-            // TODO: This information is supposed to be generated from the JSON
-            // schema describing various preferences. For now it's kept in top
-            // level uiOptions to avoid further duplication.
-            rootModel: {
-                textFont: "default",          // key from classname map
-                theme: "default",             // key from classname map
-                textSize: 1,                  // in points
-                lineSpace: 1,               // in ems
-                toc: false,                   // boolean
-                links: false,                 // boolean
-                inputsLarger: false           // boolean
-            }
-        }
-    });
-
     fluid.defaults("fluid.uiOptions.uiEnhancerRelay", {
         gradeNames: ["autoInit", "fluid.eventedComponent"],
         listeners: {
@@ -267,7 +270,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             updateEnhancerModel: {
                 funcName: "fluid.uiOptions.uiEnhancerRelay.updateEnhancerModel",
-                args: ["{uiEnhancer}", "{fluid.uiOptions}.model.selections"]
+                args: ["{uiEnhancer}", "{fluid.uiOptions}.model"]
             }
         }
     });
@@ -295,11 +298,6 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.uiOptions", {
         gradeNames: ["fluid.viewComponent", "fluid.uiOptions.settingsGetter", "fluid.uiOptions.settingsSetter", "fluid.uiOptions.rootModel", "autoInit"],
-        components: {
-            eventBinder: {
-                type: "fluid.uiOptions.eventBinder"
-            }
-        },
         invokers: {
             /**
              * Updates the change applier and fires modelChanged on subcomponent fluid.uiOptions.controls
@@ -309,7 +307,7 @@ var fluid_1_5 = fluid_1_5 || {};
              */
             updateModel: {
                 funcName: "fluid.fireSourcedChange",
-                args: ["{that}.applier", "selections", "{arguments}.0", "{arguments}.1"]
+                args: ["{that}.applier", "", "{arguments}.0", "{arguments}.1"]
             },
             fetch: {
                 funcName: "fluid.uiOptions.fetch",
@@ -385,9 +383,9 @@ var fluid_1_5 = fluid_1_5 || {};
      * Saves the current model and fires onSave
      */
     fluid.uiOptions.save = function (that) {
-        that.events.onSave.fire(that.model.selections);
+        that.events.onSave.fire(that.model);
 
-        var savedSelections = fluid.copy(that.model.selections);
+        var savedSelections = fluid.copy(that.model);
         that.setSettings(savedSelections);
     };
 
@@ -439,7 +437,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uiOptions.init = function (that) {
-        that.applier.modelChanged.addListener("selections", function (newModel, oldModel, changeRequest) {
+        that.applier.modelChanged.addListener("", function (newModel, oldModel, changeRequest) {
             that.events.modelChanged.fire(newModel, oldModel, changeRequest[0].source);
             if (that.options.autoSave) {
                 that.events.onAutoSave.fire();
@@ -455,25 +453,6 @@ var fluid_1_5 = fluid_1_5 || {};
             }, 1);
         });
     };
-
-    /***********************************************
-     * Base grade panels
-     ***********************************************/
-
-    fluid.defaults("fluid.uiOptions.panels", {
-        gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay", "autoInit"],
-        strings: {},
-        parentBundle: "{uioMsgBundle}"
-    });
-
-    /******************************************************
-     * UI Options Event binder:                           *
-     * Binds events between UI Options and the UIEnhancer *
-     ******************************************************/
-
-    fluid.defaults("fluid.uiOptions.eventBinder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"]
-    });
 
     /**********************
      * UI Options Preview *
@@ -496,7 +475,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.uiOptions.preview.updateModel",
                 args: [
                     "{preview}",
-                    "{uiOptions}.model.selections"
+                    "{uiOptions}.model"
                 ]
             }
         },
@@ -511,13 +490,13 @@ var fluid_1_5 = fluid_1_5 || {};
         templateUrl: "%prefix/UIOptionsPreview.html"
     });
 
-    fluid.uiOptions.preview.updateModel = function (that, selections) {
+    fluid.uiOptions.preview.updateModel = function (that, model) {
         /**
          * SetTimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
          */
         setTimeout(function () {
             if (that.enhancer) {
-                that.enhancer.updateModel(selections);
+                that.enhancer.updateModel(model);
             }
         }, 0);
     };
@@ -529,7 +508,6 @@ var fluid_1_5 = fluid_1_5 || {};
             that.events.onReady.fire();
         });
         that.container.attr("src", templateUrl);
-
     };
 
 })(jQuery, fluid_1_5);
