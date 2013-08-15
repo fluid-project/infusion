@@ -2204,14 +2204,31 @@ fluid.registerNamespace("fluid.tests");
             try {
                 fluid.expandOptions(circular, circular);
             } catch (e2) {
-                jqUnit.assertTrue("Exception caught in circular expansion", e2 instanceof fluid.FluidError);
+                jqUnit.assertTrue("Framework exception caught in circular expansion", e2 instanceof fluid.FluidError);
             }
         } finally {
             fluid.pushSoftFailure(-1);
         }
     });
-
-
+    
+    fluid.defaults("fluid.tests.FLUID5088Circularity", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        option1: "{that}.options.option2",
+        option2: "{that}.options.option1"
+    });
+    
+    jqUnit.test("Direct circularity test", function () {
+         try {
+             fluid.pushSoftFailure(true);
+             jqUnit.expect(1);
+             var circular = fluid.tests.FLUID5088Circularity();
+         } catch (e) {
+             jqUnit.assertTrue("Framework exception caught in circular expansion", e instanceof fluid.FluidError);
+         } finally {
+             fluid.pushSoftFailure(-1);
+         }
+    });
+    
     /** This test case reproduces a circular reference condition found in the Flash
      *  implementation of the uploader, which the framework did not properly detect. In the
      *  FLUID-4330 framework, this is no longer an error */

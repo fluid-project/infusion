@@ -1739,8 +1739,7 @@ var fluid = fluid || fluid_1_5;
     fluid.makeMergeOptions = function (policy, sources, userOptions) {
         var options = {
             mergePolicy: policy,
-            sources: sources,
-            seenIds: {}
+            sources: sources
         };
         options = $.extend(options, userOptions);
         options.target = options.target || fluid.freshContainer(options.sources[0]);

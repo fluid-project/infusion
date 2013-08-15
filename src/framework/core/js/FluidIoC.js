@@ -1769,7 +1769,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // to execute it to get the first recursion going at top level. This was one of the most odd results
     // of the reorganisation, since the "old work" seemed much more naturally expressed in terms of values
     // and what happened to them. The "new work" is expressed in terms of paths and how to move amongst them.
-    fluid.fetchExpandChildren = function (target, source, mergePolicy, miniWorld, options) {
+    fluid.fetchExpandChildren = function (target, i, segs, source, mergePolicy, miniWorld, options) {
         if (source.expander /* && source.expander.type */) { // possible expander at top level
             var expanded = fluid.expandExpander(target, source, options);
             if (fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
@@ -1788,8 +1788,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             if (newSource === undefined) {
                 target[key] = undefined; // avoid ever dispatching to ourselves with undefined source
             }
-            else { // Don't bother to generate segs or i in direct dispatch to self!!!!!!
-                options.strategy(target, key, null, null, source, mergePolicy, miniWorld);
+            else {
+                segs[i] = key;
+                options.strategy(target, key, i + 1, segs, source, mergePolicy, miniWorld);
             }
         });
         return target;
@@ -1810,26 +1811,18 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         return fluid.isPrimitive(source) || source.nodeType !== undefined || source.jquery;
     };
 
-    // unsupported, NON-API function
-    fluid.guardCircularity = function (seenIds, source, message1, message2) {
-        if (source && source.id) {
-            if (!seenIds[source.id]) {
-                seenIds[source.id] = source;
-            } else if (seenIds[source.id] === source) {
-                fluid.fail("Circularity in options " + message1 + " - " + fluid.nameComponent(source)
-                    + " has already been seen" + message2);
-            }
-        }
-    };
-
-    // unsupported, NON-API function
-    fluid.expandSource = function (options, target, deliverer, source, policy, miniWorld, recurse) {
+    // unsupported, NON-API function    
+    fluid.expandSource = function (options, target, i, segs, deliverer, source, policy, miniWorld, recurse) {
         var expanded, isTrunk, isLate;
         var thisPolicy = fluid.derefMergePolicy(policy);
-        fluid.guardCircularity(options.seenIds, source, "expansion",
-             " - please ensure options are not circularly connected, or protect from expansion using the \"noexpand\" policy or expander");
         if (typeof (source) === "string" && !thisPolicy.noexpand) {
-            expanded = fluid.resolveContextValue(source, options);
+            if (!options.defaultEL || source.charAt(0) === "{") { // hard-code this for performance
+                fluid.pushActivity("expandContextValue", "expanding context value %source held at path %path", {source: source, path: fluid.path.apply(null, segs.slice(0, i))});
+                expanded = fluid.resolveContextValue(source, options);
+                fluid.popActivity(1);
+            } else {
+                expanded = source;
+            }
         }
         else if (thisPolicy.noexpand || fluid.isUnexpandable(source)) {
             expanded = source;
@@ -1851,7 +1844,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             deliverer(expanded);
         }
         if (isTrunk) {
-            recurse(expanded, source, policy, miniWorld || isLate);
+            recurse(expanded, source, i, segs, policy, miniWorld || isLate);
         }
         if (isLate && expanded !== fluid.NO_VALUE) {
             deliverer(expanded);
@@ -1861,10 +1854,13 @@ outer:  for (var i = 0; i < exist.length; ++i) {
 
     // unsupported, NON-API function
     fluid.makeExpandStrategy = function (options) {
-        var recurse = function (target, source, policy, miniWorld) {
-            return fluid.fetchExpandChildren(target, source, policy, miniWorld, options);
+        var recurse = function (target, source, i, segs, policy, miniWorld) {
+            return fluid.fetchExpandChildren(target, i || 0, segs || [], source, policy, miniWorld, options);
         };
         var strategy = function (target, name, i, segs, source, policy, miniWorld) {
+            if (i > fluid.strategyRecursionBailout) {
+                fluid.fail("Overflow/circularity in options expansion, current path is ", segs, " at depth " , i, " - please ensure options are not circularly connected, or protect from expansion using the \"noexpand\" policy or expander");
+            }
             if (!target) {
                 return;
             }
@@ -1883,8 +1879,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             function deliverer(value) {
                 target[name] = value;
             }
-
-            return fluid.expandSource(options, target, deliverer, thisSource, thisPolicy, miniWorld, recurse);
+            return fluid.expandSource(options, target, i, segs, deliverer, thisSource, thisPolicy, miniWorld, recurse);
         };
         options.recurse = recurse;
         options.strategy = strategy;
@@ -1900,17 +1895,17 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // unsupported, NON-API function
     fluid.makeExpandOptions = function (source, options) {
         options = $.extend({}, fluid.rawDefaults("fluid.makeExpandOptions"), options);
+        options.defaultEL = options.ELStyle === "${}" && options.bareContextRefs; // optimisation to help expander
         options.expandSource = function (source) {
-            return fluid.expandSource(options, null, fluid.identity, source, options.mergePolicy, false);
+            return fluid.expandSource(options, null, 0, [], fluid.identity, source, options.mergePolicy, false);
         };
         if (!fluid.isUnexpandable(source)) {
             options.source = source;
-            options.seenIds = {};
             options.target = fluid.freshContainer(source);
             options.sourceStrategy = options.sourceStrategy || fluid.concreteTrundler;
             fluid.makeExpandStrategy(options);
             options.initter = function () {
-                options.target = fluid.fetchExpandChildren(options.target, options.source, options.mergePolicy, false, options);
+                options.target = fluid.fetchExpandChildren(options.target, 0, [], options.source, options.mergePolicy, false, options);
             };
         }
         else { // these init immediately since we must deliver a valid root target
