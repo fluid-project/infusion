@@ -3111,4 +3111,32 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertValue("Components must be merged correctly", root.subComponent.mustExist);
     });
 
+    /** FLUID-5108: Source and supplied dynamic grades that both have common option(s) are not merged correctly **/
+    fluid.defaults("fluid.tests.fluid5108", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        source: {
+            options: {
+                userOption: "initial"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid5108Grade", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        source: {
+            options: {
+                userOption: "fromSuppliedGrade"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5108: Source and supplied dynamic grades that both have common option(s) are not merged correctly", function () {
+        var root = fluid.tests.fluid5108({
+            gradeNames: "fluid.tests.fluid5108Grade"
+        });
+
+        jqUnit.assertTrue("The grade is merged correctly", fluid.hasGrade(root.options, "fluid.tests.fluid5108Grade"));
+        jqUnit.assertEquals("The option from the supplied grade should overwrite the original component option", "fromSuppliedGrade", root.options.source.options.userOption);
+    });
+
 })(jQuery);
