@@ -463,14 +463,23 @@
 }
 
 .fl-theme-bw .fl-uiOptions input:focus + label,
-.fl-theme-wb .fl-uiOptions input:focus + label,
-.fl-theme-by .fl-uiOptions input:focus + label,
-.fl-theme-yb .fl-uiOptions input:focus + label,
-.fl-theme-lgdg .fl-uiOptions input:focus + label,
 .fl-theme-bw .fl-uiOptions .fl-choice input:focus ~ label,
-.fl-theme-wb .fl-uiOptions .fl-choice input:focus ~ label,
-.fl-theme-by .fl-uiOptions .fl-choice input:focus ~ label,
-.fl-theme-yb .fl-uiOptions .fl-choice input:focus ~ label,
+.fl-theme-by .fl-uiOptions input:focus + label,
+.fl-theme-by .fl-uiOptions .fl-choice input:focus ~ label {
+    outline: 0.2em solid #000;
+}
+
+.fl-theme-wb .fl-uiOptions input:focus + label,
+.fl-theme-wb .fl-uiOptions .fl-choice input:focus ~ label {
+    outline: 0.2em solid #fff;
+}
+
+.fl-theme-yb .fl-uiOptions input:focus + label,
+.fl-theme-yb .fl-uiOptions .fl-choice input:focus ~ label {
+    outline: 0.2em solid #ffff00;
+}
+
+.fl-theme-lgdg .fl-uiOptions input:focus + label,
 .fl-theme-lgdg .fl-uiOptions .fl-choice input:focus ~ label {
-    outline: 0.2em solid #00AAFF;
+    outline: 0.2em solid #bdbdbb;
 }
