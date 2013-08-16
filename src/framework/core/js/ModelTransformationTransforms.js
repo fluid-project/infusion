@@ -127,29 +127,19 @@ var fluid = fluid || fluid_1_5;
         return inputs.value * inputs.factor + inputs.offset;
     };
 
+    /* TODO: This inversion doesn't work if the value and factors are given as paths in the source model */
     fluid.transforms.linearScale.invert = function  (expandSpec, expander) {
         var togo = fluid.copy(expandSpec);
-        togo.type = "fluid.transforms.inverseLinearScale";
+        togo.type = "fluid.transforms.linearScale";
+        if (togo.factor) {
+            togo.factor = (togo.factor === 0) ? 0 : 1 / togo.factor;
+        }
+        if (togo.offset) {
+            togo.offset = - togo.offset * (togo.factor != undefined ? togo.factor : 1);
+        }
         togo.valuePath = fluid.model.composePaths(expander.outputPrefix, expandSpec.outputPath);
         togo.outputPath = fluid.model.composePaths(expander.inputPrefix, expandSpec.valuePath);
         return togo;
-    };
-
-    fluid.defaults("fluid.transforms.inverseLinearScale", {
-        gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction" ],
-        inputVariables: { 
-            value: null, 
-            factor: 1,
-            offset: 0
-        }
-    });
-
-    /* inverse linear transformation y = (x-b)/a   where a=factor, b=offset and x=value */
-    fluid.transforms.inverseLinearScale = function (inputs, expandSpec, expander) {        
-        if (typeof(inputs.value) !== "number" || typeof(inputs.factor) !== "number" || typeof(inputs.offset) !== "number") {
-            return undefined;
-        }
-        return (inputs.value - inputs.offset) / inputs.factor;
     };
 
     fluid.defaults("fluid.transforms.binaryOp", { 

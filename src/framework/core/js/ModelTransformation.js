@@ -70,7 +70,7 @@ var fluid = fluid || fluid_1_5;
     };
     
     // unsupported, NON-API function    
-    fluid.model.transform.valueToRule = function (value) {
+    fluid.model.transform.literalValueToRule = function (value) {
         return {
             expander: {
                 type: "fluid.transforms.literalValue",
@@ -365,8 +365,8 @@ var fluid = fluid || fluid_1_5;
         }
         // special dispensation to allow "value" at top level
         // TODO: Proper escaping rules
-        else if (rule.value && expander.outputPrefix !== "") {
-            rule = fluid.model.transform.valueToRule(rule.value);
+        else if (rule.literalValue && expander.outputPrefix !== "") {
+            rule = fluid.model.transform.literalValueToRule(rule.literalValue);
         }
         var togo;
         if (rule.expander) {
