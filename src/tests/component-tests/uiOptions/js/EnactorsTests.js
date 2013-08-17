@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid, jqUnit, expect, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
@@ -20,17 +20,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testStyle = function (that, container, expectedDefaultFlag, expectedCssClass) {
         var elements = that.getElements();
-        
+
         jqUnit.assertEquals("Default value: " + expectedDefaultFlag, expectedDefaultFlag, that.model.value);
         jqUnit.assertEquals("Default css class: " + expectedCssClass, expectedCssClass, that.options.cssClass);
         jqUnit.assertEquals("Default - css class is not applied", undefined, elements.attr("class"));
-        
+
         that.applier.requestChange("value", true);
         jqUnit.assertEquals("True value - Css class has been applied", expectedCssClass, elements.attr("class"));
 
         that.applier.requestChange("value", false);
         jqUnit.assertEquals("False value - Css class has been removed", "", elements.attr("class"));
-    }; 
+    };
 
     /*******************************************************************************
      * Unit tests for fluid.uiOptions.styleElements
@@ -66,7 +66,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.getElements = function (container) {
         return $(container).children();
     };
-    
+
     fluid.defaults("fluid.tests.styleElementsTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
@@ -190,15 +190,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testClassSwapper = function (that, expectedClass) {
         var defaultStyle = that.container.attr("class");
-        
+
         jqUnit.assertEquals("The style class is not applied by default", defaultStyle, that.container.attr("class"));
-        
+
         that.applier.requestChange("value", "test");
         jqUnit.assertEquals("The style class has been applied", defaultStyle + " " + expectedClass, that.container.attr("class"));
 
         that.applier.requestChange("value", "");
         jqUnit.assertEquals("The style class has been removed", defaultStyle, that.container.attr("class"));
-    }; 
+    };
 
     fluid.defaults("fluid.tests.classSwapperTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
@@ -227,7 +227,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "x-large":  "23px",
         "xx-large": "30px"
     };
-    
+
     fluid.defaults("fluid.tests.getSizeTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         container: ".flc-getSize",
@@ -243,7 +243,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testGetSize = function (container, fontSizeMap, expectedTestSize, expectedSizeAtUndetected) {
         container = $(container);
-        
+
         var px2emFactor = fluid.uiOptions.enactors.textSize.getPx2EmFactor(container, fontSizeMap);
         jqUnit.assertEquals("Check that the factor is pulled from the container correctly", expectedTestSize, px2emFactor);
 
@@ -253,7 +253,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var fontSizeInEm = fluid.uiOptions.enactors.textSize.getTextSizeInEm(textSizeInPx, px2emFactor);
 
         jqUnit.assertEquals("Unable to detect the text size in em for the DOM root element <html>. Always return 1em.", expectedSizeAtUndetected, fontSizeInEm);
-    }; 
+    };
 
     fluid.defaults("fluid.tests.getSizeTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
@@ -295,11 +295,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testTextSize = function (that) {
         var px2emFactor = fluid.uiOptions.enactors.textSize.getPx2EmFactor(that.container, that.options.fontSizeMap);
         var expectedInitialSize = Math.round(8 / px2emFactor * 10000) / 10000;
-        
+
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, that.initialSize);
         that.applier.requestChange("value", 2);
         jqUnit.assertEquals("The size should be doubled", "16px", that.container.css("fontSize"));
-    }; 
+    };
 
     fluid.defaults("fluid.tests.textSizeTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
@@ -345,17 +345,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         container = $(".flc-lineSpace");
         lineHeight = fluid.uiOptions.enactors.lineSpace.getLineHeight(container);
         jqUnit.assertEquals("getLineHeight without IE simulation", "12px", lineHeight);
-    }; 
+    };
 
     var testNumerizeLineHeight = function (lineHeight, expected) {
         var container = $(".flc-lineSpace");
         var fontSize = fluid.uiOptions.enactors.getTextSizeInPx(container, fontSizeMap);
-        
+
         var numerizedLineHeight = fluid.uiOptions.enactors.lineSpace.numerizeLineHeight(lineHeight, Math.round(fontSize));
 
         jqUnit.assertEquals("line-height value '" + lineHeight + "' has been converted correctly", expected, numerizedLineHeight);
     };
-    
+
     fluid.tests.testNumerizeLineHeight = function () {
         var undefinedLineHeight;
         testNumerizeLineHeight(undefinedLineHeight, 0);
@@ -363,7 +363,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testNumerizeLineHeight("6px", 1);
         testNumerizeLineHeight("1.5", 1.5);
     };
-    
+
     fluid.defaults("fluid.tests.getLineHeightTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
@@ -423,7 +423,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Check the line spacing size in pixels", "12px", convertLineHeightFactor(that.container.css("lineHeight"), that.container.css("fontSize")));
         that.applier.requestChange("value", 2);
         jqUnit.assertEquals("The size should be doubled", "24px", convertLineHeightFactor(that.container.css("lineHeight"), that.container.css("fontSize")));
-    }; 
+    };
 
     fluid.defaults("fluid.tests.lineSpaceTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
@@ -465,14 +465,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.checkTocLevels = function (that, expectedTocLevels) {
         jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
     };
-    
+
     fluid.tests.makeTocVisibilityChecker = function (that, expectedTocLevels, tocContainer, isShown) {
         return function () {
             jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
             jqUnit.assertEquals("The visibility of the table of contents is " + isShown, isShown, $(tocContainer).is(":visible"));
         };
     };
-    
+
     fluid.defaults("fluid.tests.tableOfContentsTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {

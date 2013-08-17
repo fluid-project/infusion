@@ -61,15 +61,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         that = fluid.tests.uiOptions.mungingIntegrationTest("fluid.uiOptions.fullPreview", "#myUIOptions", {
             previewEnhancer: {
-                options: {
-                    components: {
-                        tableOfContents: {
-                            options: {
-                                listeners: {
-                                    afterTocRender: {
-                                        listener: testToCEnhancement2,
-                                        priority: "last"
-                                    }
+                components: {
+                    tableOfContents: {
+                        options: {
+                            listeners: {
+                                afterTocRender: {
+                                    listener: testToCEnhancement2,
+                                    priority: "last"
                                 }
                             }
                         }
@@ -77,13 +75,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             preview: {
-                options: {
-                    templateUrl: "TestPreviewTemplate.html",
-                    listeners: {
-                        "onReady.toc2": {
-                            listener: requestApplierChange,
-                            priority: "last"
-                        }
+                templateUrl: "TestPreviewTemplate.html",
+                listeners: {
+                    "onReady.toc2": {
+                        listener: requestApplierChange,
+                        priority: "last"
                     }
                 }
             }

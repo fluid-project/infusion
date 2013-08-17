@@ -13,25 +13,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global demo:true, fluid, jQuery, window*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var demo = demo || {};
-(function ($, fluid) {       
+(function ($, fluid) {
 
     /**
      * The UI Options interface is defined by several HTML templates. The component
      * needs to know where those templates are. This variable will be used by all
      * versions of the component.
      */
-    var pathToTemplates = "../../../components/uiOptions/html/";
-    
+    var pathToTemplates = "../../../../components/uiOptions/html/";
+    var pathToMessages = "../../../../components/uiOptions/messages/";
+
     /**
      * The UI Enhancer's Table of Contents uses a template. This path variable is used by all
      * three versions of the component, as well as by the UI Enhancer present in the Preview
      * itself.
      */
-    var pathToTocTemplate = "../../../components/tableOfContents/html/TableOfContents.html";
+    var pathToTocTemplate = "../../../../components/tableOfContents/html/TableOfContents.html";
 
     /**
      * Initialize a settings store for the page.
@@ -46,11 +47,13 @@ var demo = demo || {};
      */
     demo.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
-            gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-            tocTemplate: pathToTocTemplate,
-            classnameMap: {
-                theme: {
-                    "default": customThemeName
+            uiEnhancer: {
+                gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+                tocTemplate: pathToTocTemplate,
+                classnameMap: {
+                    theme: {
+                        "default": customThemeName
+                    }
                 }
             }
         });
@@ -58,20 +61,20 @@ var demo = demo || {};
 
     var commonOpts = {
         gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
-        // Tell UIOptions where to find all the templates, relative to this file
-        prefix: pathToTemplates,
+        // Tell UIOptions where to find all the templates, relative to this path
+        templatePrefix: pathToTemplates,
+        messagePrefix: pathToMessages,
         templateLoader: {
-            options: {
-                gradeNames: ["fluid.uiOptions.starterTemplateLoader"]
-            }
+            gradeNames: ["fluid.uiOptions.starterFatPanelTemplateLoader"]
+        },
+        messageLoader: {
+            gradeNames: ["fluid.uiOptions.starterMessageLoader"]
         },
         uiOptions: {
-            options: {
-                gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
-            }
+            gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
         }
     };
-    
+
     /**
      * Initialize UI Options on the "Fat Panel" version. This version of UI Options uses the
      * page itself as a live preview.
@@ -79,5 +82,5 @@ var demo = demo || {};
     demo.initFatPanel = function (container) {
         fluid.uiOptions.fatPanel(container, commonOpts);
     };
-    
+
 })(jQuery, fluid);
