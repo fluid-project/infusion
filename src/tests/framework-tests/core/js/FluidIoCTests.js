@@ -934,9 +934,9 @@ fluid.registerNamespace("fluid.tests");
         that.events.testEvent.fire();
         jqUnit.assertDeepEq("Base grade listeners fired", [1, 2, 3, 4], that.fireRecord);
         // Test configuration with child superposed on parent
-        var that2 = fluid.tests.FLUID5082Child({gradeNames: "fluid.tests.FLUID5082Parent"});
+        var that2 = fluid.tests.FLUID5082Parent({gradeNames: "fluid.tests.FLUID5082Child"});
         that2.events.testEvent.fire();
-        jqUnit.assertDeepEq("Base grade listeners fired", [4, 5, 6, 7, 8], that2.fireRecord);
+        jqUnit.assertDeepEq("Composite grade listeners fired", [4, 5, 6, 7, 8], that2.fireRecord);
         // Test configuration with child as child component - results should be identical
         var that3 = fluid.tests.FLUID5082Parent( {
             components: {
@@ -951,7 +951,7 @@ fluid.registerNamespace("fluid.tests");
             }
         });
         that3.events.testEvent.fire();
-        jqUnit.assertDeepEq("Base grade listeners fired", [4, 5, 6, 7, 8], that3.fireRecord);
+        jqUnit.assertDeepEq("Subcomponent listeners fired", [4, 5, 6, 7, 8], that3.fireRecord);
     });
 
     /** withEnvironment tests - eventually to be deprecated **/
@@ -2524,10 +2524,11 @@ fluid.registerNamespace("fluid.tests");
     });
 
     jqUnit.test("FLUID-4939: init functions with gradeName modification - circular grades", function () {
-        jqUnit.expect(3);
-        fluid.tests.initFuncs({
+        jqUnit.expect(4);
+        var that = fluid.tests.initFuncs({
             gradeNames: ["fluid.tests.circularGrade"]
         });
+        jqUnit.assertEquals("Extra option added", "extraOpt", that.options.extraOpt);
     });
 
     /** FLUID-5012: IoCSS doesn't apply the gradeNames option onto the target component **/
@@ -2554,7 +2555,7 @@ fluid.registerNamespace("fluid.tests");
                 gradeNames: ["fluid.tests.defaultTemplateLoader"]
             }
         });
-        var expectedGrades = ["autoInit", "fluid.littleComponent", "fluid.tests.defaultTemplateLoader"];
+        var expectedGrades = ["fluid.tests.defaultTemplateLoader", "fluid.littleComponent", "autoInit"];
 
         jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, uio.templateLoader.options.gradeNames);
         jqUnit.assertEquals("The user option from the grade component is transmitted", 10, uio.templateLoader.options.userOption);
