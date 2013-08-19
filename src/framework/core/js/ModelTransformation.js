@@ -81,8 +81,8 @@ var fluid = fluid || fluid_1_5;
         
     /** Accepts two fully escaped paths, either of which may be empty or null **/
     fluid.model.composePaths = function (prefix, suffix) {
-        prefix = prefix || "";
-        suffix = suffix || "";
+        prefix = prefix === 0 ? "0" : prefix || "";
+        suffix = suffix === 0 ? "0" : suffix || "";
         return !prefix ? suffix : (!suffix ? prefix : prefix + "." + suffix);
     };
 
@@ -262,7 +262,13 @@ var fluid = fluid || fluid_1_5;
         }
         var transformed = transformFn.apply(null, transformArgs);
         if (fluid.hasGrade(expdef, "fluid.standardOutputTransformFunction")) {
-            transformed = fluid.model.transform.setValue(transformSpec.outputPath, transformed, transform, transformSpec.merge);
+            if (transformSpec.outputPath && transformed !== undefined) {
+                //If outputPath is given in the expander we want to: 
+                // (1) output to the document 
+                // (2) return undefined, to ensure that expanders higher up in the hierarchy doesn't attempt to output it again
+                fluid.model.transform.setValue(transformSpec.outputPath, transformed, transform, transformSpec.merge);
+                transformed = undefined;
+            }
         }
         return transformed;
     };
@@ -370,21 +376,32 @@ var fluid = fluid || fluid_1_5;
         }
         var togo;
         if (rule.transform) {
-            var transforms = fluid.makeArray(rule.transform);
-            for (var i = 0; i < transforms.length; ++i) {
-                var transformSpec = transforms[i];
-                var expdef = fluid.defaults(transformSpec.type);
-                var returned = transform.transformHandler(transformSpec, transform, expdef);
-                if (returned !== undefined) {
-                    togo = returned;
+            if (rule.transform instanceof Array) {
+                //if the transform holds an array, each transformer within that is responsible for its own output
+                var transforms = rule.transform;
+                togo = undefined;
+                for (var i = 0; i < transforms.length; ++i) {
+                    var transformSpec = transforms[i];
+                    var expdef = fluid.defaults(transformSpec.type);
+                    transform.transformHandler(transformSpec, transform, expdef);
                 }
+            } else {
+                //else we just have a normal single transform which will return 'undefined' as a flag whether to output further up the rules
+                var transformSpec = rule.transform;
+                var expdef = fluid.defaults(transformSpec.type);
+                togo = transform.transformHandler(transformSpec, transform, expdef);
             }
         }
         fluid.each(rule, function (value, key) {
             if (key !== "transform") {
                 transform.outputPrefixOp.push(key);
-                // TODO: Note that result by convention is discarded otherwise value transforms will cascade in a faulty way 
-                var result = transform.expand(value, transform); 
+                var togo = transform.expand(value, transform);
+                //Value expanders and arrays as rules implicitly outputs, unless they have nothing (undefined) to output
+                if (togo !== undefined) {
+                    fluid.model.transform.setValue(null, togo, transform);
+                    //ensure that expanders further up does not try to output this value as well.
+                    togo = undefined;
+                }
                 transform.outputPrefixOp.pop();
             }
         });
