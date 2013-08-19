@@ -26,35 +26,61 @@ var fluid_1_5 = fluid_1_5 || {};
      *********************/
 
     /**
-     * An UI Options top-level component that reflects the collaboration between uiOptionsLoader,
-     * templateLoader and messageLoader. This component is the only UI Options component that is intended to be
-     * called by the outside world.
+     * An UI Options top-level component that reflects the collaboration between uiOptions, templateLoader and messageLoader.
+     * This component is the only UI Options component that is intended to be called by the outside world.
      *
      * @param {Object} options
      */
     fluid.defaults("fluid.uiOptions.inline", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
-            uiOptionsLoader: {
+            uiOptions: {
                 priority: "last",
-                type: "fluid.uiOptions.loader"
+                type: "fluid.uiOptions",
+                createOnEvent: "onCreateUIOptionsReady"
             },
             templateLoader: {
-                type: "fluid.uiOptions.resourceLoader"
+                type: "fluid.uiOptions.resourceLoader",
+                options: {
+                    events: {
+                        onTemplatesLoaded: "{inline}.events.onUIOTemplatesLoaded"
+                    }
+                }
             },
             messageLoader: {
-                type: "fluid.uiOptions.resourceLoader"
+                type: "fluid.uiOptions.resourceLoader",
+                options: {
+                    events: {
+                        onTemplatesLoaded: "{inline}.events.onUIOMessagesLoaded"
+                    },
+                }
             }
         },
-        container: "{that}.container",
+        events: {
+            onUIOTemplatesLoaded: null,
+            onUIOMessagesLoaded: null,
+            onMsgBundleReady: null,
+            onCreateUIOptionsReady: {
+                events: {
+                    templateLoaded: "onUIOTemplatesLoaded",
+                    msgBundleReady: "onMsgBundleReady"
+                }
+            }
+        },
+        listeners: {
+            onUIOMessagesLoaded: {
+                funcName: "fluid.uiOptions.inline.createMsgBundle",
+                args: ["{arguments}.0", "{that}"]
+            }
+        },
         distributeOptions: [{
             source: "{that}.options.templateLoader",
             removeSource: true,
-            target: "{that templateLoader}.options"
+            target: "{that > templateLoader}.options"
         }, {
             source: "{that}.options.messageLoader",
             removeSource: true,
-            target: "{that messageLoader}.options"
+            target: "{that > messageLoader}.options"
         }, {
             source: "{that}.options.templatePrefix",
             target: "{that > templateLoader > resourcePath}.options.value"
@@ -62,19 +88,22 @@ var fluid_1_5 = fluid_1_5 || {};
             source: "{that}.options.messagePrefix",
             target: "{that > messageLoader > resourcePath}.options.value"
         }, {
-            source: "{that}.options.uiOptionsLoader",
-            removeSource: true,
-            target: "{that > uiOptionsLoader}.options"
-        }, {
             source: "{that}.options.uiOptions",
             removeSource: true,
-            target: "{that uiOptions}.options"
-        }, {
-            source: "{that}.options.container",
-            removeSource: true,
-            target: "{that > uiOptionsLoader}.container"
+            target: "{that > uiOptions}.options"
         }]
     });
+
+    fluid.uiOptions.inline.createMsgBundle = function (messageResources, that) {
+        var completeMessage;
+        fluid.each(messageResources, function (oneResource) {
+            var message = JSON.parse(oneResource.resourceText);
+            completeMessage = $.extend({}, completeMessage, message);
+        });
+        var parentResolver = fluid.messageResolver({messageBase: completeMessage});
+        that.msgBundle = fluid.messageResolver({messageBase: {}, parents: [parentResolver]});
+        that.events.onMsgBundleReady.fire();
+    };
 
     fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions", {
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
@@ -120,7 +149,12 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.resourceLoader", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
-        finalInitFunction: "fluid.uiOptions.resourceLoader.resolveTemplates",
+        listeners: {
+            "onCreate": {
+                listener: "fluid.uiOptions.resourceLoader.loadTemplates",
+                args: ["{that}", {expander: {func: "{that}.resolveTemplates"}}]
+            }
+        },
         templates: {},
         // Unsupported, non-API option
         components: {
@@ -131,16 +165,31 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             transformURL: {
                 funcName: "fluid.stringTemplate",
-                args: [ "{arguments}.0", { "prefix/" : "{that}.resourcePath.options.value"} ]
+                args: [ "{arguments}.0", {"prefix/" : "{that}.resourcePath.options.value"} ]
+            },
+            resolveTemplates: {
+                funcName: "fluid.uiOptions.resourceLoader.resolveTemplates",
+                args: "{that}"
             }
+        },
+        events: {
+            onTemplatesLoaded: null
         }
     });
 
     fluid.uiOptions.resourceLoader.resolveTemplates = function (that) {
         var mapped = fluid.transform(that.options.templates, that.transformURL);
 
-        that.resources = fluid.transform(mapped, function (url) {
+        return fluid.transform(mapped, function (url) {
             return {url: url, forceCache: true};
+        });
+    };
+
+    fluid.uiOptions.resourceLoader.loadTemplates = function (that, resources) {
+        delete resources.expander;   // A work-around for FLUID-5117
+        fluid.fetchResources(resources, function () {
+            that.resources = resources;
+            that.events.onTemplatesLoaded.fire(resources);
         });
     };
 
@@ -162,71 +211,6 @@ var fluid_1_5 = fluid_1_5 || {};
     /**************
      * UI Options *
      **************/
-
-    fluid.defaults("fluid.uiOptions.loader", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        templateResources: "{templateLoader}.resources",
-        messageResources: "{messageLoader}.resources",
-        events: {
-            // These two are events private to uiOptions
-            onUIOptionsTemplateReady: null, // templates are loaded - construct UIOptions itself
-            onUIOptionsComponentReady: null, // UIOptions templates are loaded
-            // This is a public event which users outside the component can subscribe to - the argument
-            // supplied is UIOptions.loader itself
-            onUIOptionsMessageReady: null,  // UIOptions message json files are loaded
-            onCreateUIOptionsReady: {
-                events: {
-                    templateLoaded: "onUIOptionsTemplateReady",
-                    messageLoaded: "onUIOptionsMessageReady"
-                }
-            },
-            onReady: null
-        },
-        listeners: {
-            onUIOptionsComponentReady: {
-                listener: "{loader}.events.onReady",
-                args: ["{fluid.uiOptions.loader}", "{arguments}.0"],
-                priority: "last"
-            },
-            onCreate: {
-                listener: "fluid.uiOptions.loader.init",
-                args: "{that}"
-            }
-        },
-        components: {
-            uiOptions: {
-                type: "fluid.uiOptions",
-                container: "{loader}.container",
-                createOnEvent: "onCreateUIOptionsReady",
-                options: {
-                    events: {
-                        "onUIOptionsComponentReady": "{loader}.events.onUIOptionsComponentReady"
-                    },
-                    members: {
-                        msgBundle: "{loader}.msgBundle"
-                    }
-                }
-            }
-        }
-    });
-
-    fluid.uiOptions.loader.init = function (that) {
-        fluid.fetchResources(that.options.templateResources, function () {
-            that.events.onUIOptionsTemplateReady.fire();
-        });
-
-        // Load message json files and create message resolver
-        fluid.fetchResources(that.options.messageResources, function () {
-            var completeMessage;
-            fluid.each(that.options.messageResources, function (oneResource) {
-                var message = JSON.parse(oneResource.resourceText);
-                completeMessage = $.extend({}, completeMessage, message);
-            });
-            var parentResolver = fluid.messageResolver({messageBase: completeMessage});
-            that.msgBundle = fluid.messageResolver({messageBase: {}, parents: [parentResolver]});
-            that.events.onUIOptionsMessageReady.fire();
-        });
-    };
 
     fluid.defaults("fluid.uiOptions.settingsGetter", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
@@ -352,10 +336,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onUIOptionsComponentReady: null
         },
         listeners: {
-            "onCreate": {
-                listener: "fluid.uiOptions.init",
-                args: ["{that}"]
-            },
+            onCreate: "fluid.uiOptions.init",
             onAutoSave: "{that}.save"
         },
         resources: {
@@ -444,14 +425,12 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
 
-        fluid.fetchResources(that.options.resources, function () {
-          // This setTimeout is to ensure that fetching of resources is asynchronous,
-          // and so that component construction does not run ahead of subcomponents for FatPanel
-          // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix)
-            setTimeout(function () {
-                fluid.uiOptions.finishInit(that);
-            }, 1);
-        });
+      // This setTimeout is to ensure that fetching of resources is asynchronous,
+      // and so that component construction does not run ahead of subcomponents for FatPanel
+      // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix)
+        setTimeout(function () {
+            fluid.uiOptions.finishInit(that);
+        }, 1);
     };
 
     /**********************

@@ -35,12 +35,25 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.uiOptions.inline", "autoInit"],
         events: {
             afterRender: null,
-            onReady: null
+            onReady: null,
+            onCreateSlidingPanelReady: {
+                events: {
+                    iframeRendered: "afterRender",
+                    onMsgBundleReady: "onMsgBundleReady"
+                }
+            },
+            templatesAndIframeReady: {
+                events: {
+                    iframeReady: "afterRender",
+                    templatesLoaded: "onUIOTemplatesLoaded",
+                    messagesLoaded: "onUIOMessagesLoaded"
+                }
+            }
         },
         listeners: {
             onReady: {
                 listener: "fluid.uiOptions.fatPanel.bindEvents",
-                args: ["{fatPanel}.uiOptionsLoader.uiOptions", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
+                args: ["{fatPanel}.uiOptions", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
             },
             onCreate: {
                 listener: "fluid.uiOptions.fatPanel.hideReset",
@@ -62,10 +75,10 @@ var fluid_1_5 = fluid_1_5 || {};
             slidingPanel: {
                 type: "fluid.slidingPanel",
                 container: "{fatPanel}.container",
-                createOnEvent: "afterRender",
+                createOnEvent: "onCreateSlidingPanelReady",
                 options: {
                     members: {
-                        msgBundle: "{uiOptionsLoader}.msgBundle"
+                        msgBundle: "{fatPanel}.msgBundle"
                     },
                     invokers: {
                         operateShow: {
@@ -104,8 +117,29 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             },
-            uiOptionsLoader: {
-                type: "fluid.uiOptions.fatPanelLoader"
+            uiOptions: {
+                // type: "fluid.uiOptions.fatPanelUIOptions"
+                createOnEvent: "templatesAndIframeReady",
+                container: "{iframeRenderer}.renderUIOContainer",
+                options: {
+                    gradeNames: ["fluid.uiOptions.uiEnhancerRelay"],
+                    // ensure that model and applier are available to users at top level
+                    model: "{fatPanel}.model",
+                    applier: "{fatPanel}.applier",
+                    events: {
+                        onSignificantDOMChange: null,
+                        updateEnhancerModel: "{that}.events.modelChanged"
+                    },
+                    listeners: {
+                        modelChanged: "{that}.save",
+                        onCreate: {
+                            listener: "{fatPanel}.bindReset",
+                            args: ["{that}.reset"]
+                        },
+                        onReset: "{that}.applyChanges",
+                        onUIOptionsComponentReady: "{fatPanel}.events.onReady"
+                    }
+                }
             }
         },
         outerEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
@@ -243,50 +277,5 @@ var fluid_1_5 = fluid_1_5 || {};
         // react synchronously to being shown
         setTimeout(callback, 1);
     };
-
-    /*************************************************************
-     * fluid.uiOptions.fatPanelLoader:
-     *
-     * Define the loader that are specifically for the fat panel.
-     *************************************************************/
-    fluid.defaults("fluid.uiOptions.fatPanelLoader", {
-        gradeNames: ["fluid.uiOptions.loader", "autoInit"],
-        components: {
-            uiOptions: {
-                createOnEvent: "templatesAndIframeReady",
-                container: "{iframeRenderer}.renderUIOContainer",
-                options: {
-                    gradeNames: ["fluid.uiOptions.uiEnhancerRelay"],
-                    // ensure that model and applier are available to users at top level
-                    model: "{fatPanel}.model",
-                    applier: "{fatPanel}.applier",
-                    events: {
-                        onSignificantDOMChange: null,
-                        updateEnhancerModel: "{that}.events.modelChanged"
-                    },
-                    listeners: {
-                        modelChanged: "{that}.save",
-                        onCreate: {
-                            listener: "{fatPanel}.bindReset",
-                            args: ["{that}.reset"]
-                        },
-                        onReset: "{that}.applyChanges"
-                    },
-                    components: {
-                        iframeRenderer: "{fatPanel}.iframeRenderer"
-                    }
-                }
-            }
-        },
-        events: {
-            templatesAndIframeReady: {
-                events: {
-                    iframeReady: "{fatPanel}.events.afterRender",
-                    templateReady: "onUIOptionsTemplateReady"
-                }
-            },
-            onReady: "{fatPanel}.events.onReady"
-        }
-    });
 
 })(jQuery, fluid_1_5);
