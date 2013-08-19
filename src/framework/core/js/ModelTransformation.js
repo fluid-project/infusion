@@ -365,13 +365,8 @@ var fluid = fluid || fluid_1_5;
         }
         // special dispensation to allow "value" at top level
         // TODO: Proper escaping rules
-<<<<<<< HEAD
-        else if (rule.value && transform.outputPrefix !== "") {
-            rule = fluid.model.transform.valueToRule(rule.value);
-=======
-        else if (rule.literalValue && expander.outputPrefix !== "") {
+        else if (rule.literalValue && transform.outputPrefix !== "") {
             rule = fluid.model.transform.literalValueToRule(rule.literalValue);
->>>>>>> FLUID-5084
         }
         var togo;
         if (rule.transform) {
