@@ -137,7 +137,7 @@ var fluid_1_5 = fluid_1_5 || {};
                             args: ["{that}.reset"]
                         },
                         onReset: "{that}.applyChanges",
-                        onUIOptionsComponentReady: "{fatPanel}.events.onReady"
+                        onReady: "{fatPanel}.events.onReady"
                     }
                 }
             }

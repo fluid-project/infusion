@@ -599,7 +599,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     components: {
                         preview: {
                             type: "fluid.uiOptions.preview",
-                            createOnEvent: "onUIOptionsComponentReady",
+                            createOnEvent: "onReady",
                             container: "{uiOptions}.dom.previewFrame",
                             options: {
                                 templateUrl: templateUrl,

@@ -33,7 +33,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     components: {
                         preview: {
                             type: "fluid.uiOptions.preview",
-                            createOnEvent: "onUIOptionsComponentReady",
+                            createOnEvent: "onReady",
                             container: "{uiOptions}.dom.previewFrame"
                         }
                     }

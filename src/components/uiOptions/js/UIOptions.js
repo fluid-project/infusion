@@ -333,7 +333,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onUIOptionsRefresh: null,
             onUpdateEnhancerModel: null,
             onUIOptionsMarkupReady: null,
-            onUIOptionsComponentReady: null
+            onReady: null
         },
         listeners: {
             onCreate: "fluid.uiOptions.init",
@@ -357,7 +357,6 @@ var fluid_1_5 = fluid_1_5 || {};
         completeModel = $.extend(true, {}, that.rootModel, completeModel);
         that.updateModel(completeModel, "settingsStore");
         that.events.onUIOptionsRefresh.fire();
-        that.applyChanges();
     };
 
     /**
@@ -414,7 +413,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that.events.onUIOptionsMarkupReady.fire(that);
 
         that.fetch();
-        that.events.onUIOptionsComponentReady.fire(that);
+        that.events.onReady.fire(that);
     };
 
     fluid.uiOptions.init = function (that) {
