@@ -732,6 +732,40 @@ fluid.registerNamespace("fluid.tests");
         fluid.pushSoftFailure(-1);
     });
 
+    /** FLUID-5118 Invoker tests - start **/
+
+    fluid.defaults("fluid.tests.fluid_5118.child", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        name: "child"
+    });
+
+    fluid.defaults("fluid.tests.fluid_5118.parent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        name: "parent",
+        components: {
+            child: {
+                type: "fluid.tests.fluid_5118.child"
+            }
+        },
+
+        child: {
+            name: "{that}.options.name"
+        },
+
+        distributeOptions: [{
+            source: "{that}.options.child",
+            removeSource: true,
+            target: "{that child}.options"
+        }]
+    });
+
+    jqUnit.test("FLUID-5118 expansion of {that} in distributed options", function () {
+        var that = fluid.tests.fluid_5118.parent();
+        jqUnit.assertEquals("The name should be set correctly", that.child.options.name, "child");
+    });
+
+    /** FLUID-5118 Invoker tests - end **/
+
     fluid.defaults("fluid.tests.uploader", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -2210,13 +2244,13 @@ fluid.registerNamespace("fluid.tests");
             fluid.pushSoftFailure(-1);
         }
     });
-    
+
     fluid.defaults("fluid.tests.FLUID5088Circularity", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         option1: "{that}.options.option2",
         option2: "{that}.options.option1"
     });
-    
+
     jqUnit.test("Direct circularity test", function () {
          try {
              fluid.pushSoftFailure(true);
@@ -2228,7 +2262,7 @@ fluid.registerNamespace("fluid.tests");
              fluid.pushSoftFailure(-1);
          }
     });
-    
+
     /** This test case reproduces a circular reference condition found in the Flash
      *  implementation of the uploader, which the framework did not properly detect. In the
      *  FLUID-4330 framework, this is no longer an error */
