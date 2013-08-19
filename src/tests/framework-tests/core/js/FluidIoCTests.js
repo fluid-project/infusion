@@ -1534,18 +1534,26 @@ fluid.registerNamespace("fluid.tests");
     });
 
     jqUnit.asyncTest("FLUID-5112: composite event firing test", function () {
-        jqUnit.expect(2);
+        jqUnit.expect(3); // afterRefresh, then onReady, then afterRefresh again
+        var started = false;
+        var onReadyCount = 0;
 
         fluid.tests.composite.test({
             listeners: {
+                afterRefresh: function () {
+                    jqUnit.assert("the afterRefresh event should have fired.");
+                    if (!started) {
+                        started = true;
+                        jqUnit.start();
+                    }                  
+                },
                 onReady: {
                     listener: function (that) {
-                        jqUnit.assert("the onReady event should have fired.");
-                        that.events.afterRefresh.addListener(function () {
-                            jqUnit.assert("the afterRefresh event should have fired.");
-                            jqUnit.start();
-                        });
-                        that.events.afterRefresh.fire();
+                        jqUnit.assertEquals("the onReady event should fire exactly once", 0, onReadyCount);
+                        ++onReadyCount;
+                        if (onReadyCount < 2) {
+                            that.events.afterRefresh.fire();
+                        }
                     }
                 }
             }
