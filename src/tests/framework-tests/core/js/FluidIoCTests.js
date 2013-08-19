@@ -934,9 +934,9 @@ fluid.registerNamespace("fluid.tests");
         that.events.testEvent.fire();
         jqUnit.assertDeepEq("Base grade listeners fired", [1, 2, 3, 4], that.fireRecord);
         // Test configuration with child superposed on parent
-        var that2 = fluid.tests.FLUID5082Child({gradeNames: "fluid.tests.FLUID5082Parent"});
+        var that2 = fluid.tests.FLUID5082Parent({gradeNames: "fluid.tests.FLUID5082Child"});
         that2.events.testEvent.fire();
-        jqUnit.assertDeepEq("Base grade listeners fired", [4, 5, 6, 7, 8], that2.fireRecord);
+        jqUnit.assertDeepEq("Composite grade listeners fired", [4, 5, 6, 7, 8], that2.fireRecord);
         // Test configuration with child as child component - results should be identical
         var that3 = fluid.tests.FLUID5082Parent( {
             components: {
@@ -951,7 +951,7 @@ fluid.registerNamespace("fluid.tests");
             }
         });
         that3.events.testEvent.fire();
-        jqUnit.assertDeepEq("Base grade listeners fired", [4, 5, 6, 7, 8], that3.fireRecord);
+        jqUnit.assertDeepEq("Subcomponent listeners fired", [4, 5, 6, 7, 8], that3.fireRecord);
     });
 
     /** withEnvironment tests - eventually to be deprecated **/
@@ -2242,14 +2242,31 @@ fluid.registerNamespace("fluid.tests");
             try {
                 fluid.expandOptions(circular, circular);
             } catch (e2) {
-                jqUnit.assertTrue("Exception caught in circular expansion", e2 instanceof fluid.FluidError);
+                jqUnit.assertTrue("Framework exception caught in circular expansion", e2 instanceof fluid.FluidError);
             }
         } finally {
             fluid.pushSoftFailure(-1);
         }
     });
-
-
+    
+    fluid.defaults("fluid.tests.FLUID5088Circularity", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        option1: "{that}.options.option2",
+        option2: "{that}.options.option1"
+    });
+    
+    jqUnit.test("Direct circularity test", function () {
+         try {
+             fluid.pushSoftFailure(true);
+             jqUnit.expect(1);
+             var circular = fluid.tests.FLUID5088Circularity();
+         } catch (e) {
+             jqUnit.assertTrue("Framework exception caught in circular expansion", e instanceof fluid.FluidError);
+         } finally {
+             fluid.pushSoftFailure(-1);
+         }
+    });
+    
     /** This test case reproduces a circular reference condition found in the Flash
      *  implementation of the uploader, which the framework did not properly detect. In the
      *  FLUID-4330 framework, this is no longer an error */
@@ -2545,10 +2562,11 @@ fluid.registerNamespace("fluid.tests");
     });
 
     jqUnit.test("FLUID-4939: init functions with gradeName modification - circular grades", function () {
-        jqUnit.expect(3);
-        fluid.tests.initFuncs({
+        jqUnit.expect(4);
+        var that = fluid.tests.initFuncs({
             gradeNames: ["fluid.tests.circularGrade"]
         });
+        jqUnit.assertEquals("Extra option added", "extraOpt", that.options.extraOpt);
     });
 
     /** FLUID-5012: IoCSS doesn't apply the gradeNames option onto the target component **/
@@ -2575,7 +2593,7 @@ fluid.registerNamespace("fluid.tests");
                 gradeNames: ["fluid.tests.defaultTemplateLoader"]
             }
         });
-        var expectedGrades = ["autoInit", "fluid.littleComponent", "fluid.tests.defaultTemplateLoader"];
+        var expectedGrades = ["fluid.tests.defaultTemplateLoader", "fluid.littleComponent", "autoInit"];
 
         jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, uio.templateLoader.options.gradeNames);
         jqUnit.assertEquals("The user option from the grade component is transmitted", 10, uio.templateLoader.options.userOption);
@@ -3147,6 +3165,34 @@ fluid.registerNamespace("fluid.tests");
         });
 
         jqUnit.assertValue("Components must be merged correctly", root.subComponent.mustExist);
+    });
+
+    /** FLUID-5108: Source and supplied dynamic grades that both have common option(s) are not merged correctly **/
+    fluid.defaults("fluid.tests.fluid5108", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        source: {
+            options: {
+                userOption: "initial"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid5108Grade", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        source: {
+            options: {
+                userOption: "fromSuppliedGrade"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5108: Source and supplied dynamic grades that both have common option(s) are not merged correctly", function () {
+        var root = fluid.tests.fluid5108({
+            gradeNames: "fluid.tests.fluid5108Grade"
+        });
+
+        jqUnit.assertTrue("The grade is merged correctly", fluid.hasGrade(root.options, "fluid.tests.fluid5108Grade"));
+        jqUnit.assertEquals("The option from the supplied grade should overwrite the original component option", "fromSuppliedGrade", root.options.source.options.userOption);
     });
 
 })(jQuery);
