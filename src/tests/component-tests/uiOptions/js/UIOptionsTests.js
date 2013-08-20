@@ -187,7 +187,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     resourceLoader: {
                         type: "fluid.uiOptions.resourceLoader",
                         options: {
-                            gradeNames: ["fluid.uiOptions.customizedResourceLoader"],
+                            gradeNames: ["fluid.uiOptions.customizedResourceLoader"]
                         }
                     }
                 }

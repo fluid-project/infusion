@@ -52,7 +52,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     events: {
                         onTemplatesLoaded: "{inline}.events.onUIOMessagesLoaded"
-                    },
+                    }
                 }
             }
         },
@@ -425,9 +425,9 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
 
-      // This setTimeout is to ensure that fetching of resources is asynchronous,
-      // and so that component construction does not run ahead of subcomponents for FatPanel
-      // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix)
+        // This setTimeout is to ensure that fetching of resources is asynchronous,
+        // and so that component construction does not run ahead of subcomponents for FatPanel
+        // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix)
         setTimeout(function () {
             fluid.uiOptions.finishInit(that);
         }, 1);
