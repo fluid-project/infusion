@@ -1911,12 +1911,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.transforms.arrayToObject",
                     inputPath: "foo.bar",
                     key: "product",
+                    outputPath: "",
                     innerValue: [{
                         transform: {
                             type: "fluid.transforms.value",
                             inputPath: "info.healthy"
                         }
-
                     }]
                 }
             },

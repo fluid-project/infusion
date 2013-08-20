@@ -256,13 +256,13 @@ var fluid = fluid || fluid_1_5;
             var inputs = {};
             fluid.each(expdef.inputVariables, function (v, k) {
                 var input = fluid.model.transform.getValue(transformSpec[k + "Path"], transformSpec[k], transform);
-                inputs[k] = (input !== undefined) ? input : v; // if no match, assign default
+                inputs[k] = (input === undefined && v !== null) ? v : input; // if no match, assign default
             });
             transformArgs.unshift(inputs);
         }
         var transformed = transformFn.apply(null, transformArgs);
         if (fluid.hasGrade(expdef, "fluid.standardOutputTransformFunction")) {
-            if (transformSpec.outputPath && transformed !== undefined) {
+            if (typeof(transformSpec.outputPath) === "string" && transformed !== undefined) {
                 //If outputPath is given in the expander we want to: 
                 // (1) output to the document 
                 // (2) return undefined, to ensure that expanders higher up in the hierarchy doesn't attempt to output it again
@@ -376,7 +376,7 @@ var fluid = fluid || fluid_1_5;
         }
         var togo;
         if (rule.transform) {
-            if (rule.transform instanceof Array) {
+            if (fluid.isArrayable(rule.transform)) {
                 //if the transform holds an array, each transformer within that is responsible for its own output
                 var transforms = rule.transform;
                 togo = undefined;
