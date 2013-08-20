@@ -357,6 +357,7 @@ var fluid_1_5 = fluid_1_5 || {};
         completeModel = $.extend(true, {}, that.rootModel, completeModel);
         that.updateModel(completeModel, "settingsStore");
         that.events.onUIOptionsRefresh.fire();
+        that.applyChanges();
     };
 
     /**

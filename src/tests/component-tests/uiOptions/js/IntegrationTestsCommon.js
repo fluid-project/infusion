@@ -156,7 +156,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 uiOptions: {
                     gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
                     listeners: {
-                        onReady: testComponent,
+                        onReady: {
+                            listener: testComponent,
+                            priority: "last"
+                        },
                         "onSave.direct": testSave2,
                         "onSave.munged": testSave
                     }

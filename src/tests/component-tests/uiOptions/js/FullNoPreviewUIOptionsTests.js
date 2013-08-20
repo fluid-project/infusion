@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.module("FullNoPreviewUIOptions Tests");
 
-        // fluid.tests.uiOptions.integrationTest("fluid.uiOptions.fullNoPreview", true);
+        fluid.tests.uiOptions.integrationTest("fluid.uiOptions.fullNoPreview", true);
         fluid.tests.uiOptions.mungingIntegrationTest("fluid.uiOptions.fullNoPreview", "#myUIOptions");
 
     });
