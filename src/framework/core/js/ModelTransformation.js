@@ -11,6 +11,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
+
 /*global fluid:true, fluid_1_5:true, jQuery*/
 
 // JSLint options 
@@ -62,17 +63,17 @@ var fluid = fluid || fluid_1_5;
     fluid.model.transform.pathToRule = function (inputPath) {
         return {
             expander: {
-                type: "fluid.model.transform.value",
+                type: "fluid.transforms.value",
                 inputPath: inputPath
             }
         };
     };
     
     // unsupported, NON-API function    
-    fluid.model.transform.valueToRule = function (value) {
+    fluid.model.transform.literalValueToRule = function (value) {
         return {
             expander: {
-                type: "fluid.model.transform.literalValue",
+                type: "fluid.transforms.literalValue",
                 value: value
             }
         };
@@ -232,7 +233,7 @@ var fluid = fluid || fluid_1_5;
             fluid.fail("Transformation record is missing a type name: ", expandSpec);
         }
         if (typeName.indexOf(".") === -1) {
-            typeName = "fluid.model.transform." + typeName;
+            typeName = "fluid.transforms." + typeName;
         }
         var expanderFn = fluid.getGlobalValue(typeName);
         var expdef = fluid.defaults(typeName);
@@ -364,8 +365,8 @@ var fluid = fluid || fluid_1_5;
         }
         // special dispensation to allow "value" at top level
         // TODO: Proper escaping rules
-        else if (rule.value && expander.outputPrefix !== "") {
-            rule = fluid.model.transform.valueToRule(rule.value);
+        else if (rule.literalValue && expander.outputPrefix !== "") {
+            rule = fluid.model.transform.literalValueToRule(rule.literalValue);
         }
         var togo;
         if (rule.expander) {
