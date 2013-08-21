@@ -655,7 +655,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var transformToShortNames = {
         transform: {
             inputPath: "*.transform.type",
-            type: "fluid.computeNickName"
+            type: "fluid.computeNickName",
+            outputPath: ""
         }
     };
 
@@ -1108,8 +1109,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.expandCompactRule = function (value) {
         return {
-            outputValue: value,
-            outputPath: ""
+            outputValue: value
         };
     };
 
@@ -1159,6 +1159,45 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ];
         var result = fluid.model.transform(source, rules, {flatSchema: schema});
         jqUnit.assertDeepEq("Default array structure should have been created by transform", expected, result);
+    });
+
+   jqUnit.test("transform with custom schema and collected schema options for flatSchema", function () {
+        var rules = {
+            "0.0.feline": [
+                {
+                    transform: {
+                        type: "fluid.transforms.linearScale",
+                        value: 3,
+                        factor: 2,
+                        offset: 5
+                    }
+                }, {
+                    "cat": {
+                        transform: {
+                            type: "fluid.transforms.literalValue",
+                            value: "I'm a cat"
+                        }
+                    }
+                }, {
+                    transform: {
+                        type: "fluid.transforms.literalValue",
+                        value: "And I'm a squirrel",
+                        outputPath: "squirrel"
+                    }
+                }
+            ]
+        };
+        var schema = {
+            "": "array",
+            "*": "array"
+        };
+        var expected = [
+            [ {
+                feline: [ 11, { cat: "I'm a cat"}, { "squirrel": "And I'm a squirrel"} ]
+            } ]
+        ];
+        var result = fluid.model.transform(source, rules, {flatSchema: schema});
+        jqUnit.assertDeepEq("Array structure should have been created by transform", expected, result);
     });
 
     jqUnit.test("transform with isomorphic schema and wildcards", function () {
@@ -2144,7 +2183,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }]
                 }]
             }
-        }
+         }
     ];
 
     var arrayTest = function (json) {

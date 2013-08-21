@@ -21,6 +21,7 @@ var fluid_1_5 = fluid_1_5 || {};
 var fluid = fluid || fluid_1_5;
 
 (function ($) {
+    "use strict";
 
     fluid.registerNamespace("fluid.model.transform");
     
@@ -285,9 +286,13 @@ var fluid = fluid || fluid_1_5;
                         esCopy.inputPath = "";
                     }
                     // TODO: allow some kind of interpolation for output path
+                    // Also, currently we require outputPath to be specified in these cases for output to be produced as well.. Is that something we want to continue with?
                     transform.inputPrefixOp.push(transform.path);
                     transform.outputPrefixOp.push(transform.path);
-                    fluid.model.transform.expandTransform(esCopy, transform);
+                    var result = fluid.model.transform.expandTransform(esCopy, transform);
+                    if (result !== undefined) {
+                        fluid.model.transform.setValue(null, result, transform);
+                    }                    
                     transform.outputPrefixOp.pop();
                     transform.inputPrefixOp.pop();
                 }
@@ -376,21 +381,27 @@ var fluid = fluid || fluid_1_5;
         }
         var togo;
         if (rule.transform) {
+            var transformSpec, expdef;
+
             if (fluid.isArrayable(rule.transform)) {
                 //if the transform holds an array, each transformer within that is responsible for its own output
                 var transforms = rule.transform;
                 togo = undefined;
                 for (var i = 0; i < transforms.length; ++i) {
-                    var transformSpec = transforms[i];
-                    var expdef = fluid.defaults(transformSpec.type);
+                    transformSpec = transforms[i];
+                    expdef = fluid.defaults(transformSpec.type);
                     transform.transformHandler(transformSpec, transform, expdef);
                 }
             } else {
                 //else we just have a normal single transform which will return 'undefined' as a flag whether to output further up the rules
-                var transformSpec = rule.transform;
-                var expdef = fluid.defaults(transformSpec.type);
+                transformSpec = rule.transform;
+                expdef = fluid.defaults(transformSpec.type);
                 togo = transform.transformHandler(transformSpec, transform, expdef);
             }
+        }
+        //if rule is an array, save path to the transform object to include in final applier later (so output will be interpret as array)
+        if (fluid.isArrayable(rule)) {
+            transform.collectedFlatSchemaOpts[transform.outputPrefix] = "array";
         }
         fluid.each(rule, function (value, key) {
             if (key !== "transform") {
@@ -483,7 +494,8 @@ var fluid = fluid || fluid_1_5;
         return function (root, segment, index, segs) {
             if (root[segment] === undefined) {
                 var schemaValue = strategy(root, segment, index, segs); 
-                return root[segment] = fluid.model.transform.defaultSchemaValue(schemaValue);
+                root[segment] = fluid.model.transform.defaultSchemaValue(schemaValue);
+                return root[segment];
             }
         };  
     };
@@ -536,14 +548,12 @@ var fluid = fluid || fluid_1_5;
         var getConfig = fluid.model.escapedGetConfig;
         
         var schemaStrategy = fluid.model.transform.decodeStrategy(source, options, getConfig);
-        var setConfig = fluid.copy(fluid.model.escapedSetConfig);
-        setConfig.strategies = [fluid.model.defaultFetchStrategy, schemaStrategy ? fluid.model.transform.schemaToCreatorStrategy(schemaStrategy)
-                : fluid.model.defaultCreatorStrategy];
 
         var transform = {
             source: source,
             target: schemaStrategy ? fluid.model.transform.defaultSchemaValue(schemaStrategy(null, "", 0, [""])) : {},
             resolverGetConfig: getConfig,
+            collectedFlatSchemaOpts: {}, //to hold options for flat schema collected during transforms
             queuedChanges: [],
             queuedTransforms: [] // TODO: This is used only by wildcard applier - explain its operation
         };
@@ -555,9 +565,19 @@ var fluid = fluid || fluid_1_5;
             }
         };
         fluid.bindRequestChange(transform.applier);
-        transform.finalApplier = fluid.makeChangeApplier(transform.target, {resolverSetConfig: setConfig});
         
         transform.expand(rules);
+
+        var setConfig = fluid.copy(fluid.model.escapedSetConfig);
+        // Modify schemaStrategy if we collected flat schema options for the setConfig of finalApplier
+        if (!$.isEmptyObject(transform.collectedFlatSchemaOpts)) {
+            $.extend(transform.collectedFlatSchemaOpts, options.flatSchema);
+            schemaStrategy = fluid.model.transform.flatSchemaStrategy(transform.collectedFlatSchemaOpts);
+        }
+        setConfig.strategies = [fluid.model.defaultFetchStrategy, schemaStrategy ? fluid.model.transform.schemaToCreatorStrategy(schemaStrategy)
+                : fluid.model.defaultCreatorStrategy];
+        transform.finalApplier = fluid.makeChangeApplier(transform.target, {resolverSetConfig: setConfig});
+        
         if (transform.queuedTransforms.length > 0) {
             transform.typeStack = [];
             transform.pathOp = fluid.model.makePathStack(transform, "path");

@@ -258,9 +258,13 @@ var fluid = fluid || fluid_1_5;
                 outputValue = (outputValue === undefined) ? transformSpec.defaultOutputValue : outputValue;
             }
         }
-        var togo = fluid.model.transform.setValue(undefined, outputValue, transform, transformSpec.merge);
+        //output if outputPath or defaultOutputPath have been specified and the relevant child hasn't done the outputting
+        if (typeof(outputPath) === "string" && outputValue !== undefined) {
+            fluid.model.transform.setValue(undefined, outputValue, transform, transformSpec.merge);
+            outputValue = undefined;
+        }
         transform.outputPrefixOp.pop();
-        return togo; 
+        return outputValue; 
     };
     
     fluid.transforms.valueMapper.invert = function (transformSpec, transform) {
@@ -444,7 +448,11 @@ var fluid = fluid || fluid_1_5;
         var expanded = {};
         fluid.each(innerValues, function (innerValue) {
             var expandedInner = transform.expand(innerValue);
-            $.extend(true, expanded, expandedInner);
+            if (!fluid.isPrimitive(expandedInner)) {
+                $.extend(true, expanded, expandedInner);
+            } else {
+                expanded = expandedInner;
+            }
         });
         apply("pop", outputPrefixOp, outputPath);
         apply("pop", inputPrefixOp, inputPath);

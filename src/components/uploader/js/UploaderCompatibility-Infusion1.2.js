@@ -35,7 +35,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 {
                     type: "fluid.transforms.value",
                     inputPath: "components",
-                    merge: true
+                    merge: true,
+                    outputPath: ""
                 },
                 {
                     type: "fluid.transforms.value",
@@ -62,7 +63,8 @@ var fluid_1_5 = fluid_1_5 || {};
                         },
                         "fileQueueView": "fileQueueView",
                         "totalProgressBar": "totalProgressBar"
-                    }
+                    },                    
+                    outputPath: ""
                 }
             ]
         },
