@@ -135,7 +135,7 @@ var fluid = fluid || fluid_1_5;
             togo.factor = (togo.factor === 0) ? 0 : 1 / togo.factor;
         }
         if (togo.offset) {
-            togo.offset = - togo.offset * (togo.factor != undefined ? togo.factor : 1);
+            togo.offset = - togo.offset * (togo.factor !== undefined ? togo.factor : 1);
         }
         togo.valuePath = fluid.model.composePaths(expander.outputPrefix, expandSpec.outputPath);
         togo.outputPath = fluid.model.composePaths(expander.inputPrefix, expandSpec.valuePath);
