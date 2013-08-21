@@ -66,7 +66,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     function testOneInversion (test) {
         var inverseRules = fluid.model.transform.invertConfiguration(test.transform);
         jqUnit.assertDeepEq(test.message + " -- inverted rules", test.invertedRules, inverseRules);
-        if (test.fullyInvertable) {
+        if (test.fullyinvertible) {
             var transformed = fluid.model.transform(test.expected, inverseRules);
             jqUnit.assertDeepEq(test.message + " -- result transformation with inverse", test.model, transformed);
         }
@@ -251,7 +251,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {
             value: 12
         },
-        fullyInvertable: true,
+        fullyinvertible: true,
     }, {
         message: "linearScale - factor parameter only",
         model: {
@@ -278,7 +278,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {
             value: 3
         },
-        fullyInvertable: true
+        fullyinvertible: true
     }, {
         message: "linearScale - factor parameter and offset",
         model: {
@@ -307,7 +307,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {
             value: 106
         },
-        fullyInvertable: true
+        fullyinvertible: true
     }, {
         message: "linearScale - everything by path",
         transform: {
