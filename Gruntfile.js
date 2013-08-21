@@ -37,6 +37,16 @@ module.exports = function(grunt) {
                     dest: './build/src/'
                 }]
             }
+        },
+        concat: {
+            options: {
+                separator: ';',
+                banner: "/*! <%= pkg.name %> - v<%= pkg.version %> <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>*/\n"
+            },
+            dist: {
+              src: ['./build/src/lib/**/*.js', './build/src/framework/**/*.js', './build/src/components/**/*.js'],
+              dest: './build/infusionAll.js'
+            }
         }
     });
 
@@ -44,8 +54,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-concat');
 
     // Custom task(s):
-    grunt.registerTask("minify", ["clean", "copy", "uglify"]);
+    grunt.registerTask("source", ["clean", "copy", "concat"]);
+    grunt.registerTask("minify", ["clean", "copy", "uglify", "concat"]);
     grunt.registerTask("default", ["minify"]);
 };
