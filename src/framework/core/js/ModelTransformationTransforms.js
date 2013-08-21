@@ -120,7 +120,7 @@ var fluid = fluid || fluid_1_5;
     });
 
     /* simple linear transformation */
-    fluid.transforms.linearScale = function (inputs, transformSpec, transform) {        
+    fluid.transforms.linearScale = function (inputs) {        
         if (typeof(inputs.value) !== "number" || typeof(inputs.factor) !== "number" || typeof(inputs.offset) !== "number") {
             return undefined;
         }
@@ -135,7 +135,7 @@ var fluid = fluid || fluid_1_5;
             togo.factor = (togo.factor === 0) ? 0 : 1 / togo.factor;
         }
         if (togo.offset) {
-            togo.offset = - togo.offset * (togo.factor != undefined ? togo.factor : 1);
+            togo.offset = - togo.offset * (togo.factor !== undefined ? togo.factor : 1);
         }
         togo.valuePath = fluid.model.composePaths(transform.outputPrefix, transformSpec.outputPath);
         togo.outputPath = fluid.model.composePaths(transform.inputPrefix, transformSpec.valuePath);
@@ -183,7 +183,7 @@ var fluid = fluid || fluid_1_5;
         }
     });
     
-    fluid.transforms.condition = function (inputs, transformSpec, transform) {
+    fluid.transforms.condition = function (inputs) {
         if (inputs.condition === null) {
             return undefined;
         }

@@ -257,7 +257,7 @@ var fluid = fluid || fluid_1_5;
             var inputs = {};
             fluid.each(expdef.inputVariables, function (v, k) {
                 var input = fluid.model.transform.getValue(transformSpec[k + "Path"], transformSpec[k], transform);
-                inputs[k] = (input === undefined && v !== null) ? v : input; // if no match, assign default
+                inputs[k] = (input === undefined && v !== null) ? v : input; // if no match, assign default if one exists (v != null)
             });
             transformArgs.unshift(inputs);
         }
@@ -286,7 +286,7 @@ var fluid = fluid || fluid_1_5;
                         esCopy.inputPath = "";
                     }
                     // TODO: allow some kind of interpolation for output path
-                    // Also, currently we require outputPath to be specified in these cases for output to be produced as well.. Is that something we want to continue with?
+                    // TODO: Also, we now require outputPath to be specified in these cases for output to be produced as well.. Is that something we want to continue with?
                     transform.inputPrefixOp.push(transform.path);
                     transform.outputPrefixOp.push(transform.path);
                     var result = fluid.model.transform.expandTransform(esCopy, transform);
@@ -399,7 +399,7 @@ var fluid = fluid || fluid_1_5;
                 togo = transform.transformHandler(transformSpec, transform, expdef);
             }
         }
-        //if rule is an array, save path to the transform object to include in final applier later (so output will be interpret as array)
+        //if rule is an array, save path for later use in schema strategy on final applier (so output will be interpreted as array)
         if (fluid.isArrayable(rule)) {
             transform.collectedFlatSchemaOpts[transform.outputPrefix] = "array";
         }
