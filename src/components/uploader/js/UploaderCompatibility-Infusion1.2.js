@@ -35,10 +35,12 @@ var fluid_1_5 = fluid_1_5 || {};
                 {
                     type: "fluid.transforms.value",
                     inputPath: "components",
+                    outputPath: "",
                     merge: true
                 },
                 {
                     type: "fluid.transforms.value",
+                    outputPath: "",
                     merge: true,
                     value: {
                         "strategy": {
