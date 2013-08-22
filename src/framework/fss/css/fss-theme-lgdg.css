@@ -72,7 +72,7 @@
 .fl-theme-dglg .fl-inverted-color .fl-focus:focus,
 .fl-theme-dglg .fl-inverted-color .fl-focus :focus,
 .fl-theme-dglg.fl-inverted-color.fl-focus :focus,
-.fl-theme-dglg .fl-inverted-color .selectable {outline: 0.2em solid #00AAFF;}
+.fl-theme-dglg .fl-inverted-color .selectable {outline: 0.2em solid #bdbdbb;}
 
 .fl-theme-lgdg .fl-knockout,
 .fl-theme-dglg .fl-inverted-color .fl-knockout {background:transparent !important; color:#bdbdbb;} /* Deprecated: use .fl-noBackgroundImages */

@@ -862,13 +862,13 @@ fluid.registerNamespace("fluid.tests");
         that.events.eventTwo.fire("twoFired");
         jqUnit.assertTrue("Event two listener notified", that.twoFired);
     });
-    
+
     /** FLUID-5082 auto-namespaces (soft) **/
-    
+
     fluid.tests.FLUID5082func = function (that, arg) {
         that.fireRecord.push(arg);
     };
-    
+
     fluid.tests.FLUID5082func2 = fluid.tests.FLUID5082func;
 
     fluid.defaults("fluid.tests.FLUID5082Parent", {
@@ -883,7 +883,7 @@ fluid.registerNamespace("fluid.tests");
         listeners: {
             testEvent: [{
                 funcName: "fluid.tests.FLUID5082func",
-                args: ["{that}", 1]  
+                args: ["{that}", 1]
             }, {
                 func: "{that}.FLUID5082invoker",
                 args: ["{that}", 2]
@@ -905,14 +905,14 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
-    
+
     fluid.defaults("fluid.tests.FLUID5082Child", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         listeners: {
             testEvent: [{
                 funcName: "fluid.tests.FLUID5082func",
                 namespace: "fluid.tests.FLUID5082Parent.FLUID5082func", // will override
-                args: ["{FLUID5082Parent}", 5]  
+                args: ["{FLUID5082Parent}", 5]
             }, {
                 func: "{FLUID5082Parent}.FLUID5082invoker",
                 namespace: "fluid.tests.FLUID5082Parent.FLUID5082invoker", // will override
@@ -945,13 +945,13 @@ fluid.registerNamespace("fluid.tests");
                     options: {
                         events: {
                             testEvent: "{FLUID5082Parent}.events.testEvent"
-                        }  
+                        }
                     }
                 }
             }
         });
         that3.events.testEvent.fire();
-        jqUnit.assertDeepEq("Base grade listeners fired", [4, 5, 6, 7, 8], that3.fireRecord);        
+        jqUnit.assertDeepEq("Base grade listeners fired", [4, 5, 6, 7, 8], that3.fireRecord);
     });
 
     /** withEnvironment tests - eventually to be deprecated **/
@@ -2204,14 +2204,31 @@ fluid.registerNamespace("fluid.tests");
             try {
                 fluid.expandOptions(circular, circular);
             } catch (e2) {
-                jqUnit.assertTrue("Exception caught in circular expansion", e2 instanceof fluid.FluidError);
+                jqUnit.assertTrue("Framework exception caught in circular expansion", e2 instanceof fluid.FluidError);
             }
         } finally {
             fluid.pushSoftFailure(-1);
         }
     });
-
-
+    
+    fluid.defaults("fluid.tests.FLUID5088Circularity", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        option1: "{that}.options.option2",
+        option2: "{that}.options.option1"
+    });
+    
+    jqUnit.test("Direct circularity test", function () {
+         try {
+             fluid.pushSoftFailure(true);
+             jqUnit.expect(1);
+             var circular = fluid.tests.FLUID5088Circularity();
+         } catch (e) {
+             jqUnit.assertTrue("Framework exception caught in circular expansion", e instanceof fluid.FluidError);
+         } finally {
+             fluid.pushSoftFailure(-1);
+         }
+    });
+    
     /** This test case reproduces a circular reference condition found in the Flash
      *  implementation of the uploader, which the framework did not properly detect. In the
      *  FLUID-4330 framework, this is no longer an error */
@@ -3107,7 +3124,7 @@ fluid.registerNamespace("fluid.tests");
         var root = fluid.tests.fluid5094({
             gradeName: "fluid.tests.fluid5094Grade"
         });
-        
+
         jqUnit.assertValue("Components must be merged correctly", root.subComponent.mustExist);
     });
 

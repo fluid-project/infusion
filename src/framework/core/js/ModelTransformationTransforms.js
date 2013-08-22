@@ -130,7 +130,7 @@ var fluid = fluid || fluid_1_5;
     /* TODO: This inversion doesn't work if the value and factors are given as paths in the source model */
     fluid.transforms.linearScale.invert = function  (transformSpec, transform) {
         var togo = fluid.copy(transformSpec);
-        togo.type = "fluid.transforms.linearScale";
+        
         if (togo.factor) {
             togo.factor = (togo.factor === 0) ? 0 : 1 / togo.factor;
         }

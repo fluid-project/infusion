@@ -374,8 +374,7 @@ var fluid = fluid || fluid_1_5;
         if (typeof(rule) === "string") {
             rule = fluid.model.transform.pathToRule(rule);
         }
-        // special dispensation to allow "value" at top level
-        // TODO: Proper escaping rules
+        // special dispensation to allow "literalValue" at top level
         else if (rule.literalValue && transform.outputPrefix !== "") {
             rule = fluid.model.transform.literalValueToRule(rule.literalValue);
         }
