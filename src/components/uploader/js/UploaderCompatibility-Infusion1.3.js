@@ -67,7 +67,7 @@ var fluid_1_5 = fluid_1_5 || {};
         "mergePolicy": "mergePolicy",
         
         "queueSettings.fileTypes": {
-            expander: {
+            transform: {
                 type: "fluid.compat.fluid_1_3.uploader.fileTypeTransformer", 
                 inputPath: "queueSettings.fileTypes"
             }
