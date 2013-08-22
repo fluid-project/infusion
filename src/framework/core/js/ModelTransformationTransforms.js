@@ -120,26 +120,25 @@ var fluid = fluid || fluid_1_5;
     });
 
     /* simple linear transformation */
-    fluid.transforms.linearScale = function (inputs, transformSpec, transform) {        
+    fluid.transforms.linearScale = function (inputs) {        
         if (typeof(inputs.value) !== "number" || typeof(inputs.factor) !== "number" || typeof(inputs.offset) !== "number") {
             return undefined;
         }
         return inputs.value * inputs.factor + inputs.offset;
     };
 
-
     /* TODO: This inversion doesn't work if the value and factors are given as paths in the source model */
-    fluid.transforms.linearScale.invert = function  (expandSpec, expander) {
-        var togo = fluid.copy(expandSpec);
-        togo.type = "fluid.transforms.linearScale";
+    fluid.transforms.linearScale.invert = function  (transformSpec, transform) {
+        var togo = fluid.copy(transformSpec);
+        
         if (togo.factor) {
             togo.factor = (togo.factor === 0) ? 0 : 1 / togo.factor;
         }
         if (togo.offset) {
             togo.offset = - togo.offset * (togo.factor !== undefined ? togo.factor : 1);
         }
-        togo.valuePath = fluid.model.composePaths(expander.outputPrefix, expandSpec.outputPath);
-        togo.outputPath = fluid.model.composePaths(expander.inputPrefix, expandSpec.valuePath);
+        togo.valuePath = fluid.model.composePaths(transform.outputPrefix, transformSpec.outputPath);
+        togo.outputPath = fluid.model.composePaths(transform.inputPrefix, transformSpec.valuePath);
         return togo;
     };
 
@@ -184,7 +183,7 @@ var fluid = fluid || fluid_1_5;
         }
     });
     
-    fluid.transforms.condition = function (inputs, transformSpec, transform) {
+    fluid.transforms.condition = function (inputs) {
         if (inputs.condition === null) {
             return undefined;
         }
@@ -259,9 +258,13 @@ var fluid = fluid || fluid_1_5;
                 outputValue = (outputValue === undefined) ? transformSpec.defaultOutputValue : outputValue;
             }
         }
-        var togo = fluid.model.transform.setValue(undefined, outputValue, transform, transformSpec.merge);
+        //output if outputPath or defaultOutputPath have been specified and the relevant child hasn't done the outputting
+        if (typeof(outputPath) === "string" && outputValue !== undefined) {
+            fluid.model.transform.setValue(undefined, outputValue, transform, transformSpec.merge);
+            outputValue = undefined;
+        }
         transform.outputPrefixOp.pop();
-        return togo; 
+        return outputValue; 
     };
     
     fluid.transforms.valueMapper.invert = function (transformSpec, transform) {
@@ -445,7 +448,11 @@ var fluid = fluid || fluid_1_5;
         var expanded = {};
         fluid.each(innerValues, function (innerValue) {
             var expandedInner = transform.expand(innerValue);
-            $.extend(true, expanded, expandedInner);
+            if (!fluid.isPrimitive(expandedInner)) {
+                $.extend(true, expanded, expandedInner);
+            } else {
+                expanded = expandedInner;
+            }
         });
         apply("pop", outputPrefixOp, outputPath);
         apply("pop", inputPrefixOp, inputPath);
