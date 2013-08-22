@@ -1257,59 +1257,100 @@ var fluid = fluid || fluid_1_5;
         return fluid.makeArray(target).concat(fluid.makeArray(source));
     };
     
-    fluid.uniqueArrayConcatPolicy = function (target, source) {
-        target = (target || []).concat(source);
-        fluid.unique(target.sort());
-        return target;
+    /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
+            
+    /** Create a "type tag" component with no state but simply a type name and id. The most
+     *  minimal form of Fluid component */
+       
+    fluid.typeTag = function (name) {
+        return name ? {
+            typeName: name,
+            id: fluid.allocateGuid()
+        } : null;
     };
     
-    /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
+    // Definitions for ThreadLocals, the static and dynamic environment - lifted here from
+    // FluidIoC.js so that we can issue calls to fluid.describeActivity for debugging purposes
+    // in the core framework
+    
+    fluid.staticEnvironment = fluid.typeTag("fluid.staticEnvironment");
+    
+    // unsupported, non-API function
+    fluid.singleThreadLocal = function (initFunc) {
+        var value = initFunc();
+        return function (newValue) {
+            return newValue === undefined ? value : value = newValue;
+        };
+    };
+    
+    // Currently we only support single-threaded environments - ensure that this function
+    // is not used on startup so it can be successfully monkey-patched
+    // unsupported, non-API function
+    fluid.threadLocal = fluid.singleThreadLocal;
+
+    // unsupported, non-API function    
+    fluid.globalThreadLocal = fluid.threadLocal(function () {
+        return fluid.typeTag("fluid.dynamicEnvironment");
+    });
     
     var gradeTick = 1; // tick counter for managing grade cache invalidation    
     var gradeTickStore = {};
     
     var defaultsStore = {};
         
-    var resolveGradesImpl = function (gs, gradeNames) {
-        gradeNames = fluid.makeArray(gradeNames);
+    var resolveGradesImpl = function (gs, gradeNames, base) {
+        var raw = true;
+        if (base) {
+            raw = gradeNames.length === 1; // We are just resolving a single grade and populating the cache
+        }
+        else {
+            gradeNames = fluid.makeArray(gradeNames);
+        }
         fluid.each(gradeNames, function (gradeName) {
-            if (!gs.gradeHash[gradeName]) {
-                var options = fluid.rawDefaults(gradeName) || {};
+            if (gradeName && !gs.gradeHash[gradeName]) {
+                var isDynamic = gradeName.charAt(0) === "{"
+                var options = (isDynamic ? null : (raw ? fluid.rawDefaults(gradeName) : fluid.getGradedDefaults(gradeName))) || {};
                 var thisTick = gradeTickStore[gradeName] || (gradeTick - 1); // a nonexistent grade is recorded as previous to current
                 gs.lastTick = Math.max(gs.lastTick, thisTick);
                 gs.gradeHash[gradeName] = true;
                 gs.gradeChain.push(gradeName);
                 gs.optionsChain.push(options);
                 var oGradeNames = fluid.makeArray(options.gradeNames);
-                fluid.each(oGradeNames, function (gradeName) {
-                    if (gradeName !== "autoInit" && gradeName.charAt(0) !== "{") {
-                        resolveGradesImpl(gs, gradeName);
+                for (var i = 0; i < oGradeNames.length; ++ i) {
+                    var oGradeName = oGradeNames[i];
+                    var isAuto = oGradeName === "autoInit";
+                    if (!raw) {
+                        if (!gs.gradeHash[oGradeName] && !isAuto) {
+                            gs.gradeHash[oGradeName] = true; // these have already been resolved
+                            gs.gradeChain.push(oGradeName);
+                        }
                     }
-                });
+                    else if (!isAuto) {
+                        resolveGradesImpl(gs, oGradeName);
+                    }
+                };
             }
         });
         return gs;
     };
     
     // unsupported, NON-API function
-    fluid.resolveGradeStructure = function (defaultName, defaultGrades, gradeNames) {
+    fluid.resolveGradeStructure = function (defaultName, gradeNames) {
         var gradeStruct = {
             lastTick: 0,
-            gradeChain: [defaultName],
+            gradeChain: [],
             gradeHash: {},
-            optionsChain: [] // this has already been fetched in resolveGrade
+            optionsChain: []
         };
-        gradeStruct.gradeHash[defaultName] = true;
-        // TODO: this algorithm will fail if extra grades are mutually redundant and supplied out of dependency order
-        // expectation is that stronger grades appear to the left in defaults - dynamic grades are stronger still - FLUID-5085
-        return resolveGradesImpl(gradeStruct, (gradeNames || []).concat(fluid.makeArray(defaultGrades)));
+        // stronger grades appear to the left in defaults - dynamic grades are stronger still - FLUID-5085
+        return resolveGradesImpl(gradeStruct, (gradeNames || []).concat([defaultName]), true);
     };
         
     var mergedDefaultsCache = {};
 
     // unsupported, NON-API function    
-    fluid.gradeNamesToKey = function (gradeNames, defaultName) {
-        return defaultName + "|" + fluid.makeArray(gradeNames).sort().join("|");
+    fluid.gradeNamesToKey = function (defaultName, gradeNames) {
+        return defaultName + "|" + gradeNames.join("|");
     };
     
     fluid.hasGrade = function (options, gradeName) {
@@ -1318,9 +1359,8 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function
     fluid.resolveGrade = function (defaults, defaultName, gradeNames) {
-        var mergeArgs = [defaults];
-        var gradeStruct = fluid.resolveGradeStructure(defaultName, defaults && defaults.gradeNames, gradeNames);
-        mergeArgs = gradeStruct.optionsChain.reverse().concat(mergeArgs).concat({gradeNames: gradeStruct.gradeChain});
+        var gradeStruct = fluid.resolveGradeStructure(defaultName, gradeNames);
+        var mergeArgs = gradeStruct.optionsChain.reverse();
         var mergePolicy = {};
         for (var i = 0; i < mergeArgs.length; ++ i) {
             if (mergeArgs[i] && mergeArgs[i].mergePolicy) {
@@ -1329,15 +1369,17 @@ var fluid = fluid || fluid_1_5;
         }
         mergeArgs = [mergePolicy, {}].concat(mergeArgs);
         var mergedDefaults = fluid.merge.apply(null, mergeArgs);
-        if (!fluid.hasGrade(defaults, "autoInit")) {
-            fluid.remove_if(mergedDefaults.gradeNames, function (gradeName) { return gradeName === "autoInit";});
+        mergedDefaults.gradeNames = gradeStruct.gradeChain;
+        if (fluid.hasGrade(defaults, "autoInit")) {
+            mergedDefaults.gradeNames.push("autoInit");
         }
         return {defaults: mergedDefaults, lastTick: gradeStruct && gradeStruct.lastTick};
     };
 
     // unsupported, NON-API function    
     fluid.getGradedDefaults = function (defaultName, gradeNames) {
-        var key = fluid.gradeNamesToKey(gradeNames, defaultName);
+        gradeNames = fluid.makeArray(gradeNames);
+        var key = fluid.gradeNamesToKey(defaultName, gradeNames);
         var mergedDefaults = mergedDefaultsCache[key];
         if (mergedDefaults) {
             var lastTick = 0; // check if cache should be invalidated through real latest tick being later than the one stored
@@ -1908,7 +1950,7 @@ var fluid = fluid || fluid_1_5;
     };
     
     fluid.rootMergePolicy = $.extend({
-            gradeNames: fluid.uniqueArrayConcatPolicy,
+            gradeNames: fluid.arrayConcatPolicy,
             distributeOptions: fluid.arrayConcatPolicy,
             transformOptions: "replace"
         },
@@ -1990,16 +2032,6 @@ var fluid = fluid || fluid_1_5;
     fluid.computeNickName = function (typeName) {
         var segs = fluid.model.parseEL(typeName);
         return segs[segs.length - 1];
-    };
-        
-    /** Create a "type tag" component with no state but simply a type name and id. The most
-     *  minimal form of Fluid component */
-       
-    fluid.typeTag = function (name) {
-        return name ? {
-            typeName: name,
-            id: fluid.allocateGuid()
-        } : null;
     };
     
     /** A combined "component and grade name" which allows type tags to be declaratively constructed
@@ -2205,31 +2237,6 @@ var fluid = fluid || fluid_1_5;
     fluid.initSubcomponent = function (that, className, args) {
         return fluid.initSubcomponents(that, className, args)[0];
     };
-    
-    // Definitions for ThreadLocals, the static and dynamic environment - lifted here from
-    // FluidIoC.js so that we can issue calls to fluid.describeActivity for debugging purposes
-    // in the core framework
-    
-    // unsupported, non-API function
-    fluid.singleThreadLocal = function (initFunc) {
-        var value = initFunc();
-        return function (newValue) {
-            return newValue === undefined ? value : value = newValue;
-        };
-    };
-    
-    // Currently we only support single-threaded environments - ensure that this function
-    // is not used on startup so it can be successfully monkey-patched
-    // unsupported, non-API function
-    fluid.threadLocal = fluid.singleThreadLocal;
-
-    // unsupported, non-API function    
-    fluid.globalThreadLocal = fluid.threadLocal(function () {
-        return fluid.typeTag("fluid.dynamicEnvironment");
-    });
-    
-    fluid.staticEnvironment = fluid.typeTag("fluid.staticEnvironment");
-
   
     // ******* SELECTOR ENGINE *********
       
@@ -2347,9 +2354,19 @@ var fluid = fluid || fluid_1_5;
         return template;
     };
     
+    fluid.defaults("fluid.messageResolver", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        mergePolicy: {
+            messageBase: "nomerge",
+            parents: "nomerge"
+        },
+        resolveFunc: fluid.stringTemplate,
+        parseFunc: fluid.identity,
+        messageBase: {},
+        parents: []
+    });
 
-    fluid.messageResolver = function (options) {
-        var that = fluid.initLittleComponent("fluid.messageResolver", options);
+    fluid.messageResolver.preInit = function (that) {
         that.messageBase = that.options.parseFunc(that.options.messageBase);
         
         that.lookup = function (messagecodes) {
@@ -2371,20 +2388,7 @@ var fluid = fluid || fluid_1_5;
             return looked ? looked.resolveFunc(looked.template, args) :
                 "[Message string for key " + messagecodes[0] + " not found]";
         };
-        
-        return that;
     };
-    
-    fluid.defaults("fluid.messageResolver", {
-        mergePolicy: {
-            messageBase: "nomerge",
-            parents: "nomerge"
-        },
-        resolveFunc: fluid.stringTemplate,
-        parseFunc: fluid.identity,
-        messageBase: {},
-        parents: []
-    });
 
     // unsupported, NON-API function    
     fluid.messageResolver.resolveOne = function (messageBase, messagecodes) {

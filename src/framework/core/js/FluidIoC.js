@@ -1410,7 +1410,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
         }
         var demandspec = functionName? fluid.determineDemands(that, functionName) : invokerec;
-        return function () {
+        return function invokeInvoker () {
             fluid.pushActivity("invokeInvoker", "invoking invoker with name %name and record %record from component %that", {name: name, record: invokerec, that: that});
             var func = fluid.recordToApplicable(invokerec, that);
             var args = fluid.makeArray(arguments);
