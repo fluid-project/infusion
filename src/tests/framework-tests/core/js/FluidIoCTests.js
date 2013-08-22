@@ -1515,6 +1515,52 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("Double relay to base event", 1, count);
     });
 
+    /** FLUID-5112: Composite event firing test **/
+    fluid.defaults("fluid.tests.composite.test", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            onReady: {
+                events: {
+                    "onCreate": "onCreate",
+                    "refresh": "afterRefresh"
+                },
+                args: ["{that}"]
+            },
+            afterRefresh: null
+        },
+        listeners: {
+            "onCreate.setup": "{that}.events.afterRefresh.fire"
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-5112: composite event firing test", function () {
+        jqUnit.expect(3); // afterRefresh, then onReady, then afterRefresh again
+        var started = false;
+        var onReadyCount = 0;
+
+        fluid.tests.composite.test({
+            listeners: {
+                afterRefresh: function () {
+                    jqUnit.assert("the afterRefresh event should have fired.");
+                    if (!started) {
+                        started = true;
+                        jqUnit.start();
+                    }                  
+                },
+                onReady: {
+                    listener: function (that) {
+                        jqUnit.assertEquals("the onReady event should fire exactly once", 0, onReadyCount);
+                        ++onReadyCount;
+                        if (onReadyCount < 2) {
+                            that.events.afterRefresh.fire();
+                        }
+                    }
+                }
+            }
+        });
+
+    });
+
     /** FLUID-4135 - simple event injection test **/
 
     // Simpler demonstration matching docs, also using "scoped event binding"
