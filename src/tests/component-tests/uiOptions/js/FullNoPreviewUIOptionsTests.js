@@ -13,16 +13,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid, jqUnit, expect, start, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
     $(document).ready(function () {
-        
+
         jqUnit.module("FullNoPreviewUIOptions Tests");
 
         fluid.tests.uiOptions.integrationTest("fluid.uiOptions.fullNoPreview", true);
-        fluid.tests.uiOptions.mungingIntegrationTest("fluid.uiOptions.fullNoPreview", "#myUIOptions");   
+        fluid.tests.uiOptions.mungingIntegrationTest("fluid.uiOptions.fullNoPreview", "#myUIOptions");
 
     });
 })(jQuery);

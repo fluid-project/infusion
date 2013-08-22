@@ -112,7 +112,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 savedSelections2 = selections;
             }
 
-            function testComponent(uiOptionsLoader, uiOptions) {
+            function testComponent(uiOptions) {
                 var rootModel = uiOptions.rootModel;
 
                 fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents[componentName]);
@@ -147,11 +147,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
                 templatePrefix: "../../../../components/uiOptions/html/",
                 messagePrefix: "../../../../components/uiOptions/messages/",
-                uiOptionsLoader: {
-                    listeners: {
-                        onReady: testComponent
-                    }
-                },
                 templateLoader: {
                     gradeNames: ["fluid.uiOptions.starterFullPreviewTemplateLoader"]
                 },
@@ -161,22 +156,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 uiOptions: {
                     gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
                     listeners: {
+                        onReady: {
+                            listener: testComponent,
+                            priority: "last"
+                        },
+                        "onSave.direct": testSave2,
                         "onSave.munged": testSave
-                    }
-                },
-                components: {
-                    uiOptionsLoader: {
-                        options: {
-                            components: {
-                                uiOptions: {
-                                    options: {
-                                        listeners: {
-                                            "onSave.direct": testSave2
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }]);
@@ -202,7 +187,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.uiOptions.testStrings = ["Test1", "Test2", "Test3", "Test4", "Test5"];
     fluid.tests.uiOptions.testControlValues = ["a", "b", "c", "d", "e"];
 
-    fluid.tests.uiOptions.testComponentIntegration = function (uiOptionsLoader, uiOptions) {
+    fluid.tests.uiOptions.testComponentIntegration = function (uiOptions) {
         var body = $("body");
         var testStrings = fluid.tests.uiOptions.testStrings;
         var testControlValues = fluid.tests.uiOptions.testControlValues;
@@ -252,19 +237,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.globalSettingsStore();
             fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
             var options = fluid.merge(null, fluid.tests.uiOptions.mungingIntegrationOptions, {
-                uiOptionsLoader: {
-                    listeners: {
-                        onReady: [
-                            "fluid.tests.uiOptions.testComponentIntegration",
-                            extraListener
-                        ]
-                    }
-                },
                 uiOptions: {
                     members: {
                         rootModel: {
                             theme: "yb"
                         }
+                    },
+                    listeners: {
+                        onReady: [
+                            "fluid.tests.uiOptions.testComponentIntegration",
+                            extraListener
+                        ]
                     }
                 }
             }, extraOpts);

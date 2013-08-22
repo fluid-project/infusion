@@ -24,15 +24,19 @@ var fluid_1_5 = fluid_1_5 || {};
      ***************************/
 
     fluid.defaults("fluid.uiOptions.fullPreview", {
-        gradeNames: ["fluid.uiOptions.inline", "autoInit"],
-        container: "{fullPreview}.container",
+        gradeNames: ["fluid.uiOptions.uiOptionsLoader", "autoInit"],
         outerPreviewEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
-        uiOptions: {
-            components: {
-                preview: {
-                    type: "fluid.uiOptions.preview",
-                    createOnEvent: "onUIOptionsComponentReady",
-                    container: "{uiOptions}.dom.previewFrame"
+        components: {
+            uiOptions: {
+                container: "{that}.container",
+                options: {
+                    components: {
+                        preview: {
+                            type: "fluid.uiOptions.preview",
+                            createOnEvent: "onReady",
+                            container: "{uiOptions}.dom.previewFrame"
+                        }
+                    }
                 }
             }
         },
