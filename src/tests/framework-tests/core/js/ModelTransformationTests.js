@@ -66,7 +66,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     function testOneInversion (test) {
         var inverseRules = fluid.model.transform.invertConfiguration(test.transform);
         jqUnit.assertDeepEq(test.message + " -- inverted rules", test.invertedRules, inverseRules);
-        if (test.fullyInvertable) {
+        if (test.fullyinvertible) {
             var transformed = fluid.model.transform(test.expected, inverseRules);
             jqUnit.assertDeepEq(test.message + " -- result transformation with inverse", test.model, transformed);         
         }
@@ -93,7 +93,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         invertedRules: {
             transform: [{
-                type: "fluid.transforms.inverseLinearScale",
+                type: "fluid.transforms.linearScale",
                 outputPath: "dozen",
                 valuePath: "value"
             }]
@@ -105,7 +105,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {
             value: 12
         },
-        fullyInvertable: true,
+        fullyinvertible: true,
     }, {
         message: "linearScale - factor parameter only",
         model: {
@@ -122,33 +122,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         invertedRules: {
             transform: [{
-                type: "fluid.transforms.inverseLinearScale",
+                type: "fluid.transforms.linearScale",
                 outputPath: "dozen",
                 valuePath: "value",
-                factor: 0.25
+                factor: 4
             }]
         },
         method: "assertDeepEq",
         expected: {
             value: 3
         },
-        fullyInvertable: true
+        fullyinvertible: true
     }, {
         message: "linearScale - factor parameter and offset",
+        model: {
+            dozen: 12
+        },
         transform: {
             value: {
                 transform: {
                     type: "fluid.transforms.linearScale",
-                    value: 12,
+                    valuePath: "dozen",
                     factor: 0.50,
                     offset: 100
                 }
             }
         },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.linearScale",
+                outputPath: "dozen",
+                valuePath: "value",
+                factor: 2,
+                offset: -200
+            }]
+        },
         method: "assertDeepEq",
         expected: {
             value: 106
-        }
+        },
+        fullyinvertible: true
     }, {
         message: "linearScale - everything by path",
         transform: {
@@ -164,39 +177,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("fluid.transforms.linearScale()", function () {
         testOneStructure(linearScaleTests);
-    });
-
-    var inverseLinearScaleTests = [{
-        message: "inverseLinearScale - factor parameter and offset",
-        transform: {
-            value: {
-                transform: {
-                    type: "fluid.transforms.inverseLinearScale",
-                    value: 106,
-                    factor: 0.50,
-                    offset: 100
-                }
-            }
-        },
-        method: "assertDeepEq",
-        expected: {
-            value: 12
-        }
-    }, {
-        message: "inverseLinearScale - everything by path",
-        transform: {
-            type: "fluid.transforms.inverseLinearScale",
-            valuePath: "lots",
-            factorPath: "halfdozen",
-            offsetPath: "hundred"
-        },
-        method: "assertEquals",
-        expected: 12,
-        expandWrap: true
-    }];
-
-    jqUnit.test("fluid.transforms.inverseLinearScale()", function () {
-        testOneStructure(inverseLinearScaleTests);
     });
 
     var binaryOpTests = [{
@@ -1116,7 +1096,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("wildcards, recursive transform and dot-paths", expected, result);    
     });
 
-    jqUnit.test("transform with path named value and literalValue", function () {
+    jqUnit.test("Test of keyword literalValue as key and outputting 'literalValue' to output document", function () {
         var model = {
             "Magnification": 100
         };
@@ -1125,34 +1105,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 transform: {
                     type: "fluid.transforms.value",
                     inputPath: "Magnification",
-                    outputPath: "value"
+                    outputPath: "literalValue"
                 },
-                dataType: {
-                    transform: {
-                        type: "fluid.transforms.literalValue",
-                        value: "REG_DWORD"
-                    }
+                "dataType": {
+                    "literalValue": "REG_DWORD"
                 }
             }
         };
          
         var expected = {
             "Magnification": {
-                "value": 100,
+                "literalValue": 100,
                 "dataType": "REG_DWORD"
             }
         };
      
         var actual = fluid.model.transform(model, transform);
      
-        jqUnit.assertDeepEq("Model transformed with value", actual, expected);
+        jqUnit.assertDeepEq("Model transformed with value", expected, actual);
     });
    
     jqUnit.test("transform with compact inputPath", function () {
         var rules = {
             feline: "cat",
             kangaroo: {
-                value: "literal value"
+                literalValue: "literal value"
             },
             "farm.goat": "goat",
             "farm.sheep": "sheep"
