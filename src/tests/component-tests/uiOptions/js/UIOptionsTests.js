@@ -26,7 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // Define a default configuration but will specify different demands to test the full config with settings
         fluid.defaults("fluid.uiOptionsTests", {
-            gradeNames: ["fluid.uiOptions.inline", "autoInit"],
+            gradeNames: ["fluid.uiOptions.uiOptionsLoader", "autoInit"],
             templatePrefix: templatePrefix,
             messagePrefix: messagePrefix,
             messageLoader: {
@@ -137,7 +137,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     textControls: textControlsFullResourcePath
                 },
                 listeners: {
-                    onTemplatesLoaded: testTemplateLoader
+                    onResourcesLoaded: testTemplateLoader
                 },
                 components: {
                     resourcePath: {
@@ -170,7 +170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     lineSpace: "%prefix/" + lineSpaceTemplateName
                 },
                 listeners: {
-                    onTemplatesLoaded: testCustomizedResourceLoader
+                    onResourcesLoaded: testCustomizedResourceLoader
                 },
                 components: {
                     resourcePath: {

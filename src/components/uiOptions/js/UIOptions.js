@@ -22,7 +22,7 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     /*********************
-     * UI Options Inline *
+     * UI Options Loader *
      *********************/
 
     /**
@@ -31,7 +31,7 @@ var fluid_1_5 = fluid_1_5 || {};
      *
      * @param {Object} options
      */
-    fluid.defaults("fluid.uiOptions.inline", {
+    fluid.defaults("fluid.uiOptions.uiOptionsLoader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             uiOptions: {
@@ -43,7 +43,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uiOptions.resourceLoader",
                 options: {
                     events: {
-                        onTemplatesLoaded: "{inline}.events.onUIOTemplatesLoaded"
+                        onResourcesLoaded: "{uiOptionsLoader}.events.onUIOTemplatesLoaded"
                     }
                 }
             },
@@ -51,7 +51,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uiOptions.resourceLoader",
                 options: {
                     events: {
-                        onTemplatesLoaded: "{inline}.events.onUIOMessagesLoaded"
+                        onResourcesLoaded: "{uiOptionsLoader}.events.onUIOMessagesLoaded"
                     }
                 }
             }
@@ -69,7 +69,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         listeners: {
             onUIOMessagesLoaded: {
-                funcName: "fluid.uiOptions.inline.createMsgBundle",
+                funcName: "fluid.uiOptions.uiOptionsLoader.createMsgBundle",
                 args: ["{arguments}.0", "{that}"]
             }
         },
@@ -94,7 +94,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }]
     });
 
-    fluid.uiOptions.inline.createMsgBundle = function (messageResources, that) {
+    fluid.uiOptions.uiOptionsLoader.createMsgBundle = function (messageResources, that) {
         var completeMessage;
         fluid.each(messageResources, function (oneResource) {
             var message = JSON.parse(oneResource.resourceText);
@@ -106,7 +106,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions", {
-        gradeNames: ["fluid.uiOptions.inline", "autoInit"],
+        gradeNames: ["fluid.uiOptions.uiOptionsLoader", "autoInit"],
         distributeOptions: [{
             source: "{that}.options.textSize",
             removeSource: true,
@@ -173,7 +173,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         events: {
-            onTemplatesLoaded: null
+            onResourcesLoaded: null
         }
     });
 
@@ -189,7 +189,7 @@ var fluid_1_5 = fluid_1_5 || {};
         delete resources.expander;   // A work-around for FLUID-5117
         fluid.fetchResources(resources, function () {
             that.resources = resources;
-            that.events.onTemplatesLoaded.fire(resources);
+            that.events.onResourcesLoaded.fire(resources);
         });
     };
 

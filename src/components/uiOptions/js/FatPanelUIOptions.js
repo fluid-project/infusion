@@ -32,7 +32,7 @@ var fluid_1_5 = fluid_1_5 || {};
      *****************************************/
 
     fluid.defaults("fluid.uiOptions.fatPanel", {
-        gradeNames: ["fluid.uiOptions.inline", "autoInit"],
+        gradeNames: ["fluid.uiOptions.uiOptionsLoader", "autoInit"],
         events: {
             afterRender: null,
             onReady: null,
@@ -118,7 +118,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             uiOptions: {
-                // type: "fluid.uiOptions.fatPanelUIOptions"
                 createOnEvent: "templatesAndIframeReady",
                 container: "{iframeRenderer}.renderUIOContainer",
                 options: {
@@ -220,7 +219,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uiOptions.fatPanel.bindEvents = function (uiOptions, iframeEnhancer, fatPanel) {
         // TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
-        // which is a child of this component - and also uiOptionsLoader which is another child
+        // which is a child of this component
         fatPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             iframeEnhancer.events.onIframeVisible.fire(iframeEnhancer);
             fluid.uiOptions.fatPanel.updateView(uiOptions);

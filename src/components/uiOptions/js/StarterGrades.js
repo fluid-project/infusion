@@ -219,7 +219,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "{uiOptions}.events.onUIOptionsRefresh": "{fluid.uiOptions.panels}.refreshView"
         },
         strings: {},
-        parentBundle: "{inline}.msgBundle"
+        parentBundle: "{uiOptionsLoader}.msgBundle"
     });
 
     /*********************************************************************************************************

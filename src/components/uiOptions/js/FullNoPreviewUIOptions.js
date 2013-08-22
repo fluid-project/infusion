@@ -24,7 +24,7 @@ var fluid_1_5 = fluid_1_5 || {};
      ******************************/
 
     fluid.defaults("fluid.uiOptions.fullNoPreview", {
-        gradeNames: ["fluid.uiOptions.inline", "autoInit"],
+        gradeNames: ["fluid.uiOptions.uiOptionsLoader", "autoInit"],
         components: {
             uiOptions: {
                 container: "{that}.container",
