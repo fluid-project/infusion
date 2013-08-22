@@ -105,8 +105,13 @@ var fluid_1_5 = fluid_1_5 || {};
         that.events.onMsgBundleReady.fire();
     };
 
+    // TODO: This mixin grade appears to be supplied manually by various test cases but no longer appears in 
+    // the main configuration. We should remove the need for users to supply this - also the use of "defaultPanels" in fact
+    // refers to "starter panels"
     fluid.defaults("fluid.uiOptions.transformDefaultPanelsOptions", {
-        gradeNames: ["fluid.uiOptions.uiOptionsLoader", "autoInit"],
+        // Do not supply "fluid.uiOptions.inline" here, since when this is used as a mixin for fatPanel, it ends up displacing the 
+        // more refined type of the uiOptionsLoader
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         distributeOptions: [{
             source: "{that}.options.textSize",
             removeSource: true,
