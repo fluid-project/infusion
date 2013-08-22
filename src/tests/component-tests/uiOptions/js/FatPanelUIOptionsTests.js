@@ -70,20 +70,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.staticEnvironment.settingsStore.set();
     };
 
-    fluid.tests.testComponent = function (uiOptionsLoader, uiOptions) {
-        jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, uiOptions.iframeRenderer.iframe.is(":visible"));
+    fluid.tests.testComponent = function (uiOptions) {
         jqUnit.assertEquals("Reset button is invisible", false, $(".flc-uiOptions-reset").is(":visible"));
 
         fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents["fluid.uiOptions.fatPanel"]);
     };
 
     fluid.tests.testFatPanel = function (fatPanel) {
+        jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, fatPanel.iframeRenderer.iframe.is(":visible"));
         fluid.tests.uiOptions.assertPresent(fatPanel, fluid.tests.uiOptions.expectedFatPanel);
     };
 
     fluid.tests.afterShowFunc1 = function (fatPanel) {
         return function () {
-            fluid.tests.uiOptions.applierRequestChanges(fatPanel.uiOptionsLoader.uiOptions, fluid.tests.uiOptions.bwSkin);
+            fluid.tests.uiOptions.applierRequestChanges(fatPanel.uiOptions, fluid.tests.uiOptions.bwSkin);
             fluid.tests.uiOptions.checkModelSelections("pageModel from bwSkin", fluid.tests.uiOptions.bwSkin, fatPanel.pageEnhancer.model);
             jqUnit.assertEquals("Reset button is visible", true, $(".flc-uiOptions-reset").is(":visible"));
         };
@@ -106,7 +106,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.afterShowFunc3 = function (fatPanel) {
         return function () {
-            var rootModel = fatPanel.uiOptionsLoader.uiOptions.rootModel;
+            var rootModel = fatPanel.uiOptions.rootModel;
             var pageModel = fatPanel.pageEnhancer.model;
             var panelModel = fatPanel.iframeRenderer.iframeEnhancer.model;
 
@@ -127,7 +127,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Fat panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testComponent",
-                    event: "{fatPanelIntegration fatPanel uiOptionsLoader}.events.onReady"
+                    event: "{fatPanelIntegration fatPanel uiOptions}.events.onReady"
                 }, {
                     func: "fluid.tests.testFatPanel",
                     args: "{fatPanel}"
@@ -209,7 +209,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testEnhancerTransit = function testEnhancerTransit(fatPanel, expectedIframeSelector) {
         var cMap = fluid.tests.uiOptions.enhancerOptions.uiEnhancer.classnameMap;
-        
+
         // "outerEnhancerOptions" option mapping
         jqUnit.assertEquals("classnameMap transferred to outer UIEnhancer", cMap.textFont["default"],
              fatPanel.pageEnhancer.options.classnameMap.textFont["default"]);
@@ -235,7 +235,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Fat panel munging integration tests",
                 sequence: [{
                     listener: "fluid.tests.uiOptions.testComponentIntegration",
-                    event: "{fatPanelMungingIntegration fatPanel uiOptionsLoader}.events.onReady"
+                    event: "{fatPanelMungingIntegration fatPanel uiOptions}.events.onReady"
                 }, {
                     func: "fluid.tests.testEnhancerTransit",
                     args: ["{fatPanel}", "{that}.options.expectedIframeSelector"]

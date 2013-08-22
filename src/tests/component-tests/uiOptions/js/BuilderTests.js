@@ -608,22 +608,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: ["{builder}.options.assembledUIOGrade"],
                     uioType: uioType,
-                    uiOptionsInline: {
-                        uiOptionsLoader: {
-                            listeners: {
-                                onReady: {
-                                    listener: "{uio}.events.onReady",
-                                    args: "{uio}"
-                                }
-                            }
-                        }
-                    },
                     enhancer: {
                         classnameMap: {
                             "textFont.default": "fl-aria"
                         }
                     },
                     uiOptions: {
+                        listeners: {
+                            onReady: {
+                                listener: "{uio}.events.onReady",
+                                args: "{uio}"
+                            }
+                        },
                         userOption: 1
                     },
                     events: {
@@ -639,9 +635,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.assertBuilderMunging = function (uio) {
         return function (uio) {
-            jqUnit.assertEquals("Munging options for UIO options should be passed down to the uiOptions", 1, uio.uiOptionsInline.uiOptionsLoader.uiOptions.options.userOption);
+            jqUnit.assertEquals("Munging options for UIO options should be passed down to the uiOptions", 1, uio.uiOptionsLoader.uiOptions.options.userOption);
 
-            jqUnit.assertTrue(uioType + " should be in the base uio grades", fluid.hasGrade(uio.uiOptionsInline.options, uioType));
+            jqUnit.assertTrue(uioType + " should be in the base uio grades", fluid.hasGrade(uio.uiOptionsLoader.options, uioType));
             jqUnit.assertEquals("Munging options for enhancer should be passed down to the enhancer", "fl-aria", uio.enhancer.uiEnhancer.options.classnameMap["textFont.default"]);
         };
     };

@@ -40,25 +40,17 @@ var skon = skon || {};
             templatePrefix: "../../../components/uiOptions/html/",
             messagePrefix: "../../../components/uiOptions/messages/",
             messageLoader: {
-                options: {
-                    gradeNames: ["fluid.uiOptions.starterMessageLoader"]
-                }
+                gradeNames: ["fluid.uiOptions.starterMessageLoader"]
             },
             templateLoader: {
-                options: {
-                    gradeNames: ["fluid.uiOptions.starterFatPanelTemplateLoader"]
-                }
+                gradeNames: ["fluid.uiOptions.starterFatPanelTemplateLoader"]
             },
             uiOptions: {
-                options: {
-                    gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
-                }
+                gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
             },
             iframeRenderer: {
-                options: {
-                    markupProps: {
-                        src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
-                    }
+                markupProps: {
+                    src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
                 }
             }
         });
