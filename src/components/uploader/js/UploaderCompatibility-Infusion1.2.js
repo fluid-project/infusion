@@ -31,21 +31,23 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.compat.fluid_1_2.uploader.optionsRules = {
         "components": {
-            expander: [
+            transform: [
                 {
-                    type: "fluid.model.transform.value",
+                    type: "fluid.transforms.value",
                     inputPath: "components",
+                    outputPath: "",
                     merge: true
                 },
                 {
-                    type: "fluid.model.transform.value",
+                    type: "fluid.transforms.value",
+                    outputPath: "",
                     merge: true,
                     value: {
                         "strategy": {
                             "options": {
                                 "flashMovieSettings": {
-                                    expander: {
-                                        type: "fluid.model.transform.value",
+                                    transform: {
+                                        type: "fluid.transforms.value",
                                         value: {
                                             "flashURL": "uploadManager.options.flashURL",
                                             "flashButtonPeerId": "decorators.0.options.flashButtonPeerId",
@@ -67,8 +69,8 @@ var fluid_1_5 = fluid_1_5 || {};
             ]
         },
         "queueSettings": {
-            expander: {
-                type: "fluid.model.transform.firstValue",
+            transform: {
+                type: "fluid.transforms.firstValue",
                 values: ["queueSettings", "uploadManager.options"]
             }
         },
