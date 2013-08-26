@@ -246,6 +246,10 @@ var fluid = fluid || fluid_1_5;
             }
             var expanded = fluid.model.transform.getValue(transformSpec.inputPath, transformSpec.value, transform);
             transformArgs.unshift(expanded);
+            //if the function has no input, the result is considered undefined, and this is returned
+            if (expanded === undefined) {
+                return undefined;
+            }
         } else if (fluid.hasGrade(expdef, "fluid.multiInputTransformFunction")) {
             var inputs = {};
             fluid.each(expdef.inputVariables, function (v, k) {
@@ -577,7 +581,8 @@ var fluid = fluid || fluid_1_5;
 
         var setConfig = fluid.copy(fluid.model.escapedSetConfig);
         // Modify schemaStrategy if we collected flat schema options for the setConfig of finalApplier
-        if (!$.isEmptyObject(transform.collectedFlatSchemaOpts)) {
+        if (JSON.stringify(transform.collectedFlatSchemaOpts).length !== 2) {
+            // if (!$.isEmptyObject(transform.collectedFlatSchemaOpts)) {
             $.extend(transform.collectedFlatSchemaOpts, options.flatSchema);
             schemaStrategy = fluid.model.transform.flatSchemaStrategy(transform.collectedFlatSchemaOpts);
         }
