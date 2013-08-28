@@ -102,7 +102,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.assembler.uio", {
         gradeNames: ["autoInit", "fluid.viewComponent", "fluid.uiOptions.assembler.uie"],
         components: {
-            uiOptionsInline: {
+            uiOptionsLoader: {
                 type: "fluid.viewComponent",
                 container: "{fluid.uiOptions.assembler.uio}.container",
                 priority: "last",
@@ -124,11 +124,7 @@ var fluid_1_5 = fluid_1_5 || {};
         distributeOptions: [{
             source: "{that}.options.uioType",
             removeSource: true,
-            target: "{that > uiOptionsInline}.options.uioType"
-        }, {
-            source: "{that}.options.uiOptionsInline",
-            removeSource: true,
-            target: "{that > uiOptionsInline}.options"
+            target: "{that > uiOptionsLoader}.options.uioType"
         }, {
             source: "{that}.options.uiOptions",
             removeSource: true,

@@ -1449,8 +1449,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 }
             });
             if (!notall) {
-                callback(argstruc);
-                fluid.clear(argstruc);
+                var oldstruc = argstruc;
+                argstruc = {}; // guard against the case the callback perversely fires one of its prerequisites (FLUID-5112)
+                callback(oldstruc);
             }
         }
         fluid.each(eventSpec, function (event, eventName) {
