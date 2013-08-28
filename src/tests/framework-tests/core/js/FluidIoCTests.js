@@ -3182,7 +3182,7 @@ fluid.registerNamespace("fluid.tests");
         },
         invokers: {
             getObject: {
-                funcName: "fluid.tests.fluid5117.getObject",
+                funcName: "fluid.identity",
                 args: "{that}.options.inputObject"
             }
         },
@@ -3193,10 +3193,6 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
-
-    fluid.tests.fluid5117.getObject = function (inputObject) {
-        return inputObject;
-    };
 
     fluid.tests.fluid5117.init = function (that, retrievedObject) {
         that.options.outputObject = retrievedObject;
