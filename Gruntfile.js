@@ -5,7 +5,8 @@ module.exports = function(grunt) {
         // Project package file destination.
         pkg: grunt.file.readJSON("package.json"),
         clean: {
-            build: "build"
+            build: "build",
+            products: "products"
         },
         copy: {
             src: {
@@ -47,6 +48,19 @@ module.exports = function(grunt) {
               src: ['./build/src/lib/**/*.js', './build/src/framework/**/*.js', './build/src/components/**/*.js'],
               dest: './build/infusionAll.js'
             }
+        },
+        compress: {
+            all: {
+                options: {
+                    archive: "products/infusionAll.zip"
+                },
+                files: [{
+                    expand: true,     // Enable dynamic expansion.
+                    cwd: './build/',      // Src matches are relative to this path.
+                    src: ['**/*'], // Actual pattern(s) to match.
+                    dest: './infusion'   // Destination path prefix in the zip package
+                }]
+            }
         }
     });
 
@@ -55,9 +69,12 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-compress');
 
     // Custom task(s):
     grunt.registerTask("source", ["clean", "copy", "concat"]);
     grunt.registerTask("minify", ["clean", "copy", "uglify", "concat"]);
-    grunt.registerTask("default", ["minify"]);
+    grunt.registerTask("srczip", ["source", "compress", "clean:build"]);
+    grunt.registerTask("minzip", ["minify", "compress", "clean:build"]);
+    grunt.registerTask("default", ["minzip"]);
 };
