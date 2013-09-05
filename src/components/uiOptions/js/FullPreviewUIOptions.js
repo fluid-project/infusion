@@ -36,6 +36,11 @@ var fluid_1_5 = fluid_1_5 || {};
                             createOnEvent: "onReady",
                             container: "{uiOptions}.dom.previewFrame"
                         }
+                    },
+                    distributeOptions: {
+                        source: "{that}.options.preview",
+                        removeSource: true,
+                        target: "{that > preview}.options"
                     }
                 }
             }
