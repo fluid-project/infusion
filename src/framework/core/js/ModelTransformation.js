@@ -412,6 +412,7 @@ var fluid = fluid || fluid_1_5;
         }
         // if rule is an array, save path for later use in schema strategy on final applier (so output will be interpreted as array)
         if (fluid.isArrayable(rule)) {
+            transform.collectedFlatSchemaOpts = transform.collectedFlatSchemaOpts || {};
             transform.collectedFlatSchemaOpts[transform.outputPrefix] = "array";
         }
         fluid.each(rule, function (value, key) {
@@ -564,7 +565,7 @@ var fluid = fluid || fluid_1_5;
             source: source,
             target: schemaStrategy ? fluid.model.transform.defaultSchemaValue(schemaStrategy(null, "", 0, [""])) : {},
             resolverGetConfig: getConfig,
-            collectedFlatSchemaOpts: {}, //to hold options for flat schema collected during transforms
+            collectedFlatSchemaOpts: undefined, //to hold options for flat schema collected during transforms
             queuedChanges: [],
             queuedTransforms: [] // TODO: This is used only by wildcard applier - explain its operation
         };
@@ -581,7 +582,7 @@ var fluid = fluid || fluid_1_5;
 
         var setConfig = fluid.copy(fluid.model.escapedSetConfig);
         // Modify schemaStrategy if we collected flat schema options for the setConfig of finalApplier
-        if (JSON.stringify(transform.collectedFlatSchemaOpts).length !== 2) {
+        if (transform.collectedFlatSchemaOpts !== undefined) {
             // if (!$.isEmptyObject(transform.collectedFlatSchemaOpts)) {
             $.extend(transform.collectedFlatSchemaOpts, options.flatSchema);
             schemaStrategy = fluid.model.transform.flatSchemaStrategy(transform.collectedFlatSchemaOpts);
