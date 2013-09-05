@@ -70,9 +70,13 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 demo.initFullWithPreview("#myUIOptions", {
-                    uiOptionsLoader: {
-                        preview: {
-                            templateUrl: "uiOptionsPreview.html"
+                    uiOptions: {
+                        components: {
+                            preview: {
+                                options: {
+                                    templateUrl: "uiOptionsPreview.html"
+                                }
+                            }
                         }
                     }
                 });
