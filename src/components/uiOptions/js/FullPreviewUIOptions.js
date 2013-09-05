@@ -34,7 +34,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         preview: {
                             type: "fluid.uiOptions.preview",
                             createOnEvent: "onReady",
-                            container: "{uiOptions}.dom.previewFrame",
+                            container: "{uiOptions}.dom.previewFrame"
                         }
                     },
                     distributeOptions: {
