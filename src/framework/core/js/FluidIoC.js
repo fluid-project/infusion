@@ -1332,9 +1332,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }
 
         return $.extend(true, {funcName: newFuncName,
-                                args: demandspec[0] ? fluid.makeArray(demandspec[0].args) : [],
-                                backSpecs: demandspec.slice(1)
+                                args: demandspec[0] ? fluid.makeArray(demandspec[0].args) : []
                                 },
+                                { backSpecs: demandspec.slice(1) }, // Fix for FLUID-5126
             fluid.censorKeys(demandspec[0], ["funcName", "args"]));
     };
     // "options" includes - passArgs, componentRecord, memberName (latter two from initDependent route)
