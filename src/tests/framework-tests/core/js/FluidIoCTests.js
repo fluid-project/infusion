@@ -954,6 +954,53 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertDeepEq("Subcomponent listeners fired", [4, 5, 6, 7, 8], that3.fireRecord);
     });
 
+    /** FLUID-5128 - Soft Namespaces removal test **/
+    
+    fluid.tests.fluid5128listener = function (that, index) {
+        that.fireRecord.push(index);
+    };
+    
+    fluid.defaults("fluid.tests.fluid5128child", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        listeners: {
+            "{fluid5128head}.events.subscrEvent": {
+                funcName: "fluid.tests.fluid5128listener",
+                args: ["{fluid5128head}", "{arguments}.0"]
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid5128head", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        members: {
+            fireRecord: []
+        },
+        events: {
+            createEvent: null,
+            subscrEvent: null
+        },
+        components: {
+            child1: {
+                type: "fluid.tests.fluid5128child",
+                createOnEvent: "createEvent"
+            },
+            child2: {
+                type: "fluid.tests.fluid5128child",
+                createOnEvent: "createEvent"
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5128 Soft listener deregistration test", function () {
+        var that = fluid.tests.fluid5128head();
+        that.events.createEvent.fire();
+        that.events.subscrEvent.fire(1);
+        jqUnit.assertDeepEq("Two initial firings", [1, 1], that.fireRecord);
+        that.events.createEvent.fire();
+        that.events.subscrEvent.fire(2);
+        jqUnit.assertDeepEq("Two subsequent firings", [1, 1, 2, 2], that.fireRecord);
+    });
+
     /** withEnvironment tests - eventually to be deprecated **/
 
     fluid.defaults("fluid.tests.fluid3818head", {
