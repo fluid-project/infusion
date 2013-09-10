@@ -2773,6 +2773,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     /** FLUID-5018 - IoCSS: Pass to-be-resolved option to a target **/
+    
     fluid.defaults("fluid.tests.own", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -2792,6 +2793,70 @@ fluid.registerNamespace("fluid.tests");
         var root = fluid.tests.own();
 
         jqUnit.assertEquals("The to-be-resolved option is passed down to the target", 10, root.ownSub.options.resolvedOption);
+    });
+    
+    /** FLUID-5126 - Corruption of listener material held in demands blocks **/
+    
+    fluid.defaults("fluid.tests.fluid5126parent", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            createEvent: null
+        },
+        members: {
+            idRecord: []
+        },
+        components: {
+            child: {
+                createOnEvent: "createEvent",
+                type: "fluid.eventedComponent",
+                options: {
+                    invokers: {
+                        childListener: {
+                            funcName: "fluid.tests.fluid5126listener",
+                            args: ["{that}", "{fluid5126parent}"]
+                        }
+                    },
+                    events: {
+                        "childEvent": null
+                    }
+                }
+
+            }
+        }
+    });
+    
+    fluid.tests.fluid5126register = function () {
+        fluid.demands("fluid.eventedComponent", "fluid.tests.fluid5126parent", {
+            options: {
+                listeners: {
+                    childEvent: {
+                        func: "{that}.childListener"
+                    }
+                }
+            }
+        });
+    };
+    
+    fluid.tests.fluid5126listener = function (that, parent) {
+        parent.idRecord.push(that.id);
+    };
+    
+    jqUnit.test("FLUID-5126: Corruption of listener records in demands blocks", function () {
+        var parent = fluid.tests.fluid5126parent();
+        function cycle() {
+            fluid.tests.fluid5126register();
+            parent.events.createEvent.fire();
+        }
+        cycle();
+        var localChild = [parent.child.id];
+        parent.child.events.childEvent.fire();
+        cycle();
+        localChild.push(parent.child.id); localChild.push(parent.child.id); // two listeners for duplicate from demands block
+        parent.child.events.childEvent.fire();
+        cycle();
+        localChild.push(parent.child.id); localChild.push(parent.child.id); localChild.push(parent.child.id); // two listeners for duplicate from demands block
+        parent.child.events.childEvent.fire();
+        jqUnit.assertDeepEq("The three children should be registered in order", localChild, parent.idRecord);
     });
 
     /** FLUID-5023 - Corruption of model material in shared grades **/
