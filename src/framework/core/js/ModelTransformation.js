@@ -583,7 +583,6 @@ var fluid = fluid || fluid_1_5;
         var setConfig = fluid.copy(fluid.model.escapedSetConfig);
         // Modify schemaStrategy if we collected flat schema options for the setConfig of finalApplier
         if (transform.collectedFlatSchemaOpts !== undefined) {
-            // if (!$.isEmptyObject(transform.collectedFlatSchemaOpts)) {
             $.extend(transform.collectedFlatSchemaOpts, options.flatSchema);
             schemaStrategy = fluid.model.transform.flatSchemaStrategy(transform.collectedFlatSchemaOpts);
         }
