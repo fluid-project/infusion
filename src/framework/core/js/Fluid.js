@@ -1418,7 +1418,8 @@ var fluid = fluid || fluid_1_5;
     };
 
     // unsupported, NON-API function
-    // Modify supplied options record to include "componentSource" annotation required by FLUID-5082    
+    // Modify supplied options record to include "componentSource" annotation required by FLUID-5082
+    // TODO: This function really needs to act recursively in order to catch listeners registered for subcomponents    
     fluid.annotateListeners = function (componentName, options) {
         if (options.listeners) {
             options.listeners = fluid.transform(options.listeners, function (record) {
@@ -1436,10 +1437,13 @@ var fluid = fluid || fluid_1_5;
         if (options === undefined) {
             return defaultsStore[componentName];
         } else {
-            var optionsCopy = fluid.copy(options);
+            fluid.pushActivity("registerDefaults", "registering defaults for grade %componentName with options %options",
+                {componentName: componentName, options: options});
+            var optionsCopy = fluid.expandCompact ? fluid.expandCompact(options) : fluid.copy(options);
             fluid.annotateListeners(componentName, optionsCopy);
             defaultsStore[componentName] = optionsCopy;
             gradeTickStore[componentName] = gradeTick++;
+            fluid.popActivity();
         }
     };
     
