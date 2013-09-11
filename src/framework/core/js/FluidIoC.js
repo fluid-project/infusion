@@ -1909,7 +1909,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             if (newSource === undefined) {
                 target[key] = undefined; // avoid ever dispatching to ourselves with undefined source
             }
-            else {
+            else if (key !== "expander") {
                 segs[i] = key;
                 options.strategy(target, key, i + 1, segs, source, mergePolicy, miniWorld);
             }
@@ -1987,9 +1987,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
             if (!miniWorld && target.hasOwnProperty(name)) { // bail out if our work has already been done
                 return target[name];
-            }
-            if (name === "expander" && source && source.expander.type) { // must be direct dispatch from fetchChildren
-                return;
             }
             if (source === undefined) { // recover our state in case this is an external entry point
                 source = regenerateCursor(options.source, segs, i - 1, options.sourceStrategy);

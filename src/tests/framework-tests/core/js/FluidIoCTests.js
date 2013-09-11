@@ -2303,13 +2303,13 @@ fluid.registerNamespace("fluid.tests");
             fluid.pushSoftFailure(-1);
         }
     });
-    
+
     fluid.defaults("fluid.tests.FLUID5088Circularity", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         option1: "{that}.options.option2",
         option2: "{that}.options.option1"
     });
-    
+
     jqUnit.test("Direct circularity test", function () {
          try {
              fluid.pushSoftFailure(true);
@@ -2321,7 +2321,7 @@ fluid.registerNamespace("fluid.tests");
              fluid.pushSoftFailure(-1);
          }
     });
-    
+
     /** This test case reproduces a circular reference condition found in the Flash
      *  implementation of the uploader, which the framework did not properly detect. In the
      *  FLUID-4330 framework, this is no longer an error */
@@ -3390,6 +3390,34 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertValue("Components must be merged correctly", root.subComponent.mustExist);
     });
 
+    fluid.defaults("fluid.tests.fluid5117", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        inputObject: {
+            "key1": "value1"
+        },
+        invokers: {
+            getObject: {
+                funcName: "fluid.identity",
+                args: "{that}.options.inputObject"
+            }
+        },
+        listeners: {
+            onCreate: {
+                listener: "fluid.tests.fluid5117.init",
+                args: ["{that}", {expander: {func: "{that}.getObject"}}]
+            }
+        }
+    });
+
+    fluid.tests.fluid5117.init = function (that, retrievedObject) {
+        that.options.outputObject = retrievedObject;
+    };
+
+    jqUnit.test("FLUID-5117: Function that uses an expander as an argument have the expander itself in the resolved expander return", function () {
+        var that = fluid.tests.fluid5117();
+        jqUnit.assertDeepEq("The output of an expander argument is same as the return of the expander function", that.options.inputObject, that.options.outputObject);
+    });
+    
     /** FLUID-5108: Source and supplied dynamic grades that both have common option(s) are not merged correctly **/
     
     fluid.defaults("fluid.tests.fluid5108", {
@@ -3400,7 +3428,7 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
-
+    
     fluid.defaults("fluid.tests.fluid5108Grade", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         source: {
