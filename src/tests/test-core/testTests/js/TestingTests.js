@@ -203,10 +203,11 @@ fluid.tests.startRendering = function (asyncTest, instantiator) {
 fluid.defaults("fluid.tests.initTree", {
     gradeNames: ["fluid.test.testEnvironment", "autoInit"],
     components: {
-        initTest: {
-            type: "fluid.tests.initTest",
-            createOnEvent: "{initTester}.events.onTestCaseStart"
-        },
+// moved into driver to test FLUID-5132
+//        initTest: {
+//            type: "fluid.tests.initTest",
+//            createOnEvent: "{initTester}.events.onTestCaseStart"
+//        },
         initTester: {
             type: "fluid.tests.initTester"
         }
@@ -252,7 +253,16 @@ fluid.defaults("fluid.tests.initTester", {
 fluid.tests.testTests = function () {
     fluid.test.runTests([
         "fluid.tests.myTestTree",
-        "fluid.tests.asyncTestTree",
-        "fluid.tests.initTree"
+        "fluid.tests.asyncTestTree", {
+            type: "fluid.tests.initTree",
+            options: {
+                components: {
+                    initTest: {
+                        type: "fluid.tests.initTest",
+                        createOnEvent: "{initTester}.events.onTestCaseStart"
+                    }
+                }  
+            }
+        }
     ]);
 };
