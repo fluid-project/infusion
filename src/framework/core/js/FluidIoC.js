@@ -1715,6 +1715,12 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
 
     /** END of unofficial IoC material **/
+
+    // unsupported, non-API function    
+    fluid.coerceToPrimitive = function (string) {
+        return string === "false" ? false : (string === "true" ? true : 
+            (isFinite(string) ? Number(string) : string)); 
+    };
     
     // unsupported, non-API function
     fluid.compactStringToRec = function (string, type) {
@@ -1726,10 +1732,14 @@ outer:  for (var i = 0; i < exist.length; ++i) {
          if (openPos !== -1 && closePos !== -1) {
              var prefix = string.substring(0, openPos);
              var body = string.substring(openPos + 1, closePos);
-             var args = fluid.transform(body.split(","), $.trim);
+             var args = fluid.transform(body.split(","), $.trim, fluid.coerceToPrimitive);
              var togo = {
                  args: args 
              };
+             if (type === "invoker" && prefix.charAt(openPos - 1) === "!") {
+                 prefix = string.substring(0, openPos - 1);
+                 togo.dynamic = true;
+             } 
              togo[prefix.charAt(0) === "{" ? "func" : "funcName"] = prefix;
              return togo;
          }
