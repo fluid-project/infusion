@@ -246,7 +246,8 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             refresh: {
                 funcName: "fluid.reorderer.refresh",
-                args: ["{that}.dom", "{that}.events", "{that}.selectableContext", "{that}.activeItem"]
+                args: ["{that}.dom", "{that}.events", "{that}.selectableContext", "{that}.activeItem"],
+                dynamic: true
             },
             selectItem: {
                 funcName: "fluid.reorderer.selectItem",
@@ -266,7 +267,8 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             isActiveItemMovable: { // unsupported, NON-API function
                 funcName: "fluid.reorderer.isActiveItemMovable",
-                args: ["{that}.activeItem", "{that}.dom"]
+                args: ["{that}.activeItem", "{that}.dom"],
+                dynamic: true
             },
             handleKeyDown: { // unsupported, NON-API function
                 funcName: "fluid.reorderer.handleKeyDown",

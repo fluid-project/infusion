@@ -38,11 +38,13 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             startFile: {
                 funcName: "fluid.uploader.fileQueue.startFile",
-                args: "{that}.currentBatch"
+                args: "{that}.currentBatch",
+                dynamic: true
             },
             finishFile: {
                 funcName: "fluid.uploader.fileQueue.finishFile",
-                args: "{that}.currentBatch"
+                args: "{that}.currentBatch",
+                dynamic: true
             },
             shouldUploadNextFile: {
                 funcName: "fluid.uploader.fileQueue.shouldUploadNextFile",
@@ -98,13 +100,14 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: "{that}"
             },
             updateCurrentBatch:  {
-                // dynamic: true
                 funcName: "fluid.uploader.fileQueue.updateCurrentBatch",
-                args: [{expander: {func: "{that}.getReadyFiles"}}, "{that}.currentBatch"]
+                args: [{expander: {func: "{that}.getReadyFiles"}}, "{that}.currentBatch"],
+                dynamic: true
             },
             updateBatchStatus:  {
                 funcName: "fluid.uploader.fileQueue.updateBatchStatus",
-                args: ["{arguments}.0", "{that}.currentBatch"]
+                args: ["{arguments}.0", "{that}.currentBatch"],
+                dynamic: true
             }
         }
     });
