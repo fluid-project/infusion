@@ -3068,6 +3068,10 @@ fluid.registerNamespace("fluid.tests");
         return a + b;
     };
     
+    fluid.tests.addArray = function (a, array) {
+        return a + array[0] + array[1];
+    };
+    
     fluid.defaults("fluid.tests.fluid4922", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         members: {
@@ -3078,6 +3082,10 @@ fluid.registerNamespace("fluid.tests");
                 funcName: "fluid.tests.add",
                 args: ["{that}.value", "{arguments}.0"],
                 dynamic: true
+            },
+            argsInvoker: { // This will be fast
+                funcName: "fluid.tests.addArray",
+                args: ["{that}.value", "{arguments}"]
             },
             fastInvoker: {
                 funcName: "fluid.tests.add",
@@ -3094,9 +3102,11 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("Slow init", 2, that.slowInvoker(1));
         jqUnit.assertEquals("Fast init", 2, that.fastInvoker(1));
         jqUnit.assertEquals("Through init", 2, that.throughInvoker(1, 1));
+        jqUnit.assertEquals("Args init", 3, that.argsInvoker(1, 1));
         that.value = 2;
-        jqUnit.assertEquals("Slow changed", 3, that.slowInvoker(1));
-        jqUnit.assertEquals("Fast changed", 2, that.fastInvoker(1));
+        jqUnit.assertEquals("Slow changed", 4, that.slowInvoker(2));
+        jqUnit.assertEquals("Fast changed", 3, that.fastInvoker(2));
+        jqUnit.assertEquals("Args changed", 5, that.argsInvoker(2, 2));
     });
 
     /** FLUID-5036, Case 1 - The IoCSS source that is fetched from the static environment is not resolved correctly **/

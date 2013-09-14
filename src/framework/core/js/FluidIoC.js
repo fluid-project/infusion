@@ -1413,13 +1413,17 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             argMap = {};
             for (var i = 0; i < invokeSpec.preExpand.length; ++ i) {
                 var value = invokeSpec.preExpand[i];
-                if (typeof(value) === "string" && value.indexOf(argPrefix) === 0) {
-                    var argIndex = fluid.parseInteger(value.substring(argPrefix.length));
-                    if (isNaN(argIndex)) {
-                        return {noFast: true}
-                    }
-                    else {
-                        argMap[i] = argIndex; // target arg pos = original arg pos
+                if (typeof(value) === "string") {
+                    if (value === "{arguments}") {
+                        argMap[i] = "*";
+                    } else if (value.indexOf(argPrefix) === 0) {
+                        var argIndex = fluid.parseInteger(value.substring(argPrefix.length));
+                        if (isNaN(argIndex)) {
+                            return {noFast: true}
+                        }
+                        else {
+                            argMap[i] = argIndex; // target arg pos = original arg pos
+                        }
                     }
                 }
             }
@@ -1427,7 +1431,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var outArgs = invokeSpec.args;
         var invoke = argMap ? function invoke(args) {
             for (var i in argMap) {
-                outArgs[i] = args[argMap[i]];
+                outArgs[i] = argMap[i] === "*" ? args : args[argMap[i]];
             }
             return func.apply(null, outArgs);
         } : function invoke (args) {
