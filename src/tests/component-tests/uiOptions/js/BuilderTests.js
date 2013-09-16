@@ -80,7 +80,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "type": "fluid.uiOptions.enactors.textSize"
                     },
                     "panel": {
-                        "type": "fluid.uiOptions.panels.textSize",
+                        "type": "fluid.uiOptions.panel.textSize",
                         "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/UIOptionsTemplate-textSize.html",
                         "message": "%prefix/textSize.json"
@@ -101,7 +101,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     },
                     "panel": {
-                        "type": "fluid.uiOptions.panels.lineSpace",
+                        "type": "fluid.uiOptions.panel.lineSpace",
                         "container": ".flc-uiOptions-line-space",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/UIOptionsTemplate-lineSpace.html",
                         "message": "%prefix/lineSpace.json"
@@ -263,7 +263,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.panels = {
         "textSize": {
             "panel": {
-                "type": "fluid.uiOptions.panels.textSize",
+                "type": "fluid.uiOptions.panel.textSize",
                 "container": ".flc-uiOptions-text-size",
                 "template": "templates/textSize",
                 "message": "messages/textSize"

@@ -99,12 +99,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "random": "@random.path"
         }],
         "panels": [{
-            "type": "fluid.uiOptions.panels.textFont",
+            "type": "fluid.uiOptions.panel.textFont",
             "container": ".flc-uiOptions-text-font",
             "classnameMap": "@textFont.classes",
             "template": "templates/textFont"
         }, {
-            "type": "fluid.uiOptions.panels.contrast",
+            "type": "fluid.uiOptions.panel.contrast",
             "container": ".flc-uiOptions-contrast",
             "classnameMap": "@contrast.classes",
             "template": "templates/contrast"
@@ -156,7 +156,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "template": "the-location-of-toc-template"
         }],
         "panels": [{
-            "type": "fluid.uiOptions.panels.textFont",
+            "type": "fluid.uiOptions.panel.textFont",
             "container": ".flc-uiOptions-text-font",
             "classnameMap": {
                 "default": "",
@@ -167,7 +167,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             "template": "templates/textFont"
         }, {
-            "type": "fluid.uiOptions.panels.contrast",
+            "type": "fluid.uiOptions.panel.contrast",
             "container": ".flc-uiOptions-contrast",
             "classnameMap": {
                 "default": "fl-theme-uio-default",
@@ -267,7 +267,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "yb": "fl-theme-uio-yb fl-theme-yb"
                     },
                     "panel": {
-                        "type": "fluid.uiOptions.panels.contrast",
+                        "type": "fluid.uiOptions.panel.contrast",
                         "container": ".flc-uiOptions-contrast",  // the css selector in the template where the panel is rendered
                         "classnameMap": {
                             "default": "fl-theme-uio-default",
@@ -282,7 +282,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             index: {
-                "fluid.uiOptions.contrast": ["fluid.uiOptions.panels.contrast"]
+                "fluid.uiOptions.contrast": ["fluid.uiOptions.panel.contrast"]
             },
             primarySchema: {
                 "fluid.uiOptions.contrast": {
@@ -302,7 +302,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "yb": "fl-theme-uio-yb fl-theme-yb"
                     },
                     "panel": {
-                        "type": "fluid.uiOptions.panels.contrast",
+                        "type": "fluid.uiOptions.panel.contrast",
                         "container": ".flc-uiOptions-contrast",  // the css selector in the template where the panel is rendered
                         "classnameMap": {
                             "default": "fl-theme-uio-default",
@@ -317,12 +317,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 panels: {
                     selectors: {
-                        "fluid_uiOptions_panels_contrast": ".flc-uiOptions-contrast",
+                        "fluid_uiOptions_panel_contrast": ".flc-uiOptions-contrast",
                     },
                     components: {
-                        "fluid_uiOptions_panels_contrast": {
-                            type: "fluid.uiOptions.panels.contrast",
-                            container: "uiOptions.dom.fluid_uiOptions_panels_contrast",
+                        "fluid_uiOptions_panel_contrast": {
+                            type: "fluid.uiOptions.panel.contrast",
+                            container: "uiOptions.dom.fluid_uiOptions_panel_contrast",
                             createOnEvent: "onUIOptionsMarkupReady",
                             options: {
                                 gradeNames: "fluid.uiOptions.defaultPanel",
@@ -343,7 +343,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     theme: ["default", "bw", "wb", "by", "yb"]
                                 },
                                 resources: {
-                                    template: "templateLoader.resources.fluid_uiOptions_panels_contrast"
+                                    template: "templateLoader.resources.fluid_uiOptions_panel_contrast"
                                 }
                             }
                         }
@@ -351,12 +351,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 templateLoader: {
                     templates: {
-                        "fluid_uiOptions_panels_contrast": "templates/contrast"
+                        "fluid_uiOptions_panel_contrast": "templates/contrast"
                     }
                 },
                 messageLoader: {
                     templates: {
-                        "fluid_uiOptions_panels_contrast": "messages/contrast"
+                        "fluid_uiOptions_panel_contrast": "messages/contrast"
                     }
                 },
                 rootModel: {
@@ -459,7 +459,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "textSize": {
             "type": "fluid.uiOptions.textSize",
             "panel": {
-                "type": "fluid.uiOptions.panels.textSize",
+                "type": "fluid.uiOptions.panel.textSize",
                 "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
                 "template": "%prefix/UIOptionsTemplate-textSize.html",
                 "message": "%prefix/UIOptionsTemplate-textSize.json"
@@ -471,7 +471,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "emphasizeLinks": {
             "type": "fluid.uiOptions.emphasizeLinks",
             "panel": {
-                "type": "fluid.uiOptions.panels.linksControls",
+                "type": "fluid.uiOptions.panel.linksControls",
                 "container": ".flc-uiOptions-links-controls",  // the css selector in the template where the panel is rendered
                 "template": "%prefix/UIOptionsTemplate-links.html",
                 "message": "%prefix/UIOptionsTemplate-links.json"
@@ -480,12 +480,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "inputsLarger": {
             "type": "fluid.uiOptions.inputsLarger",
             "panel": {
-                "type": "fluid.uiOptions.panels.linksControls"
+                "type": "fluid.uiOptions.panel.linksControls"
             }
         }
     };
 
-    fluid.defaults("fluid.uiOptions.panels.otherTextSize", {
+    fluid.defaults("fluid.uiOptions.panel.otherTextSize", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         preferenceMap: {
             "fluid.uiOptions.textSize": {
@@ -504,7 +504,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "textSize": {
             "type": "fluid.uiOptions.textSize",
             "panel": {
-                "type": "fluid.uiOptions.panels.textSize",
+                "type": "fluid.uiOptions.panel.textSize",
                 "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
                 "template": "%prefix/UIOptionsTemplate-textSize.html",
                 "message": "%prefix/UIOptionsTemplate-textSize.json"
@@ -513,7 +513,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "textSize.other": {
             "type": "fluid.uiOptions.textSize",
             "panel": {
-                "type": "fluid.uiOptions.panels.otherTextSize",
+                "type": "fluid.uiOptions.panel.otherTextSize",
                 "container": ".flc-uiOptions-otherTextSize",  // the css selector in the template where the panel is rendered
                 "template": "%prefix/UIOptionsTemplate-otherTextSize.html",
                 "message": "%prefix/UIOptionsTemplate-otherTextSize.json"
@@ -636,7 +636,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "textSize": {
                     "type": "fluid.uiOptions.textSize",
                     "panel": {
-                        "type": "fluid.uiOptions.panels.textSize",
+                        "type": "fluid.uiOptions.panel.textSize",
                         "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/UIOptionsTemplate-textSize.html",
                         "message": "%prefix/UIOptionsTemplate-textSize.json"
@@ -645,12 +645,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 panels: {
                     "gradeNames": ["fluid.uiOptions", "autoInit"],
                     "selectors": {
-                        "fluid_uiOptions_panels_textSize": ".flc-uiOptions-text-size"
+                        "fluid_uiOptions_panel_textSize": ".flc-uiOptions-text-size"
                     },
                     "components": {
-                        "fluid_uiOptions_panels_textSize": {
-                            "type": "fluid.uiOptions.panels.textSize",
-                            "container": "uiOptions.dom.fluid_uiOptions_panels_textSize",
+                        "fluid_uiOptions_panel_textSize": {
+                            "type": "fluid.uiOptions.panel.textSize",
+                            "container": "uiOptions.dom.fluid_uiOptions_panel_textSize",
                             "createOnEvent": "onUIOptionsMarkupReady",
                             options: {
                                 gradeNames: "fluid.uiOptions.defaultPanel",
@@ -665,7 +665,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     max: 2
                                 },
                                 resources: {
-                                    template: "templateLoader.resources.fluid_uiOptions_panels_textSize"
+                                    template: "templateLoader.resources.fluid_uiOptions_panel_textSize"
                                 }
                             }
                         }
@@ -674,13 +674,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 templateLoader: {
                     gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
                     templates: {
-                        "fluid_uiOptions_panels_textSize": "%prefix/UIOptionsTemplate-textSize.html"
+                        "fluid_uiOptions_panel_textSize": "%prefix/UIOptionsTemplate-textSize.html"
                     }
                 },
                 messageLoader: {
                     gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
                     templates: {
-                        "fluid_uiOptions_panels_textSize": "%prefix/UIOptionsTemplate-textSize.json"
+                        "fluid_uiOptions_panel_textSize": "%prefix/UIOptionsTemplate-textSize.json"
                     }
                 },
                 rootModel: {
@@ -741,7 +741,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "textSize": {
                     "type": "fluid.uiOptions.textSize",
                     "panel": {
-                        "type": "fluid.uiOptions.panels.textSize",
+                        "type": "fluid.uiOptions.panel.textSize",
                         "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/UIOptionsTemplate-textSize.html",
                         "message": "%prefix/UIOptionsTemplate-textSize.json"
@@ -750,7 +750,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "textSize.other": {
                     "type": "fluid.uiOptions.textSize",
                     "panel": {
-                        "type": "fluid.uiOptions.panels.otherTextSize",
+                        "type": "fluid.uiOptions.panel.otherTextSize",
                         "container": ".flc-uiOptions-otherTextSize",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/UIOptionsTemplate-otherTextSize.html",
                         "message": "%prefix/UIOptionsTemplate-otherTextSize.json"
@@ -759,13 +759,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 panels: {
                     "gradeNames": ["fluid.uiOptions", "autoInit"],
                     "selectors": {
-                        "fluid_uiOptions_panels_textSize": ".flc-uiOptions-text-size",
-                        "fluid_uiOptions_panels_otherTextSize": ".flc-uiOptions-otherTextSize"
+                        "fluid_uiOptions_panel_textSize": ".flc-uiOptions-text-size",
+                        "fluid_uiOptions_panel_otherTextSize": ".flc-uiOptions-otherTextSize"
                     },
                     "components": {
-                        "fluid_uiOptions_panels_textSize": {
-                            "type": "fluid.uiOptions.panels.textSize",
-                            "container": "uiOptions.dom.fluid_uiOptions_panels_textSize",
+                        "fluid_uiOptions_panel_textSize": {
+                            "type": "fluid.uiOptions.panel.textSize",
+                            "container": "uiOptions.dom.fluid_uiOptions_panel_textSize",
                             "createOnEvent": "onUIOptionsMarkupReady",
                             options: {
                                 gradeNames: "fluid.uiOptions.defaultPanel",
@@ -780,13 +780,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     max: 2
                                 },
                                 resources: {
-                                    template: "templateLoader.resources.fluid_uiOptions_panels_textSize"
+                                    template: "templateLoader.resources.fluid_uiOptions_panel_textSize"
                                 }
                             }
                         },
-                        "fluid_uiOptions_panels_otherTextSize": {
-                            "type": "fluid.uiOptions.panels.otherTextSize",
-                            "container": "uiOptions.dom.fluid_uiOptions_panels_otherTextSize",
+                        "fluid_uiOptions_panel_otherTextSize": {
+                            "type": "fluid.uiOptions.panel.otherTextSize",
+                            "container": "uiOptions.dom.fluid_uiOptions_panel_otherTextSize",
                             "createOnEvent": "onUIOptionsMarkupReady",
                             options: {
                                 gradeNames: "fluid.uiOptions.defaultPanel",
@@ -801,7 +801,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     max: 2
                                 },
                                 resources: {
-                                    template: "templateLoader.resources.fluid_uiOptions_panels_otherTextSize"
+                                    template: "templateLoader.resources.fluid_uiOptions_panel_otherTextSize"
                                 }
                             }
                         }
@@ -810,15 +810,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 templateLoader: {
                     gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
                     templates: {
-                        "fluid_uiOptions_panels_textSize": "%prefix/UIOptionsTemplate-textSize.html",
-                        "fluid_uiOptions_panels_otherTextSize": "%prefix/UIOptionsTemplate-otherTextSize.html"
+                        "fluid_uiOptions_panel_textSize": "%prefix/UIOptionsTemplate-textSize.html",
+                        "fluid_uiOptions_panel_otherTextSize": "%prefix/UIOptionsTemplate-otherTextSize.html"
                     }
                 },
                 messageLoader: {
                     gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
                     templates: {
-                        "fluid_uiOptions_panels_textSize": "%prefix/UIOptionsTemplate-textSize.json",
-                        "fluid_uiOptions_panels_otherTextSize": "%prefix/UIOptionsTemplate-otherTextSize.json"
+                        "fluid_uiOptions_panel_textSize": "%prefix/UIOptionsTemplate-textSize.json",
+                        "fluid_uiOptions_panel_otherTextSize": "%prefix/UIOptionsTemplate-otherTextSize.json"
                     }
                 },
                 rootModel: {
@@ -835,7 +835,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "emphasizeLinks": {
                     "type": "fluid.uiOptions.emphasizeLinks",
                     "panel": {
-                        "type": "fluid.uiOptions.panels.linksControls",
+                        "type": "fluid.uiOptions.panel.linksControls",
                         "container": ".flc-uiOptions-links-controls",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/UIOptionsTemplate-links.html",
                         "message": "%prefix/UIOptionsTemplate-links.json"
@@ -844,18 +844,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "inputsLarger": {
                     "type": "fluid.uiOptions.inputsLarger",
                     "panel": {
-                        "type": "fluid.uiOptions.panels.linksControls"
+                        "type": "fluid.uiOptions.panel.linksControls"
                     }
                 },
                 panels: {
                     "gradeNames": ["fluid.uiOptions", "autoInit"],
                     "selectors": {
-                        "fluid_uiOptions_panels_linksControls": ".flc-uiOptions-links-controls"
+                        "fluid_uiOptions_panel_linksControls": ".flc-uiOptions-links-controls"
                     },
                     "components": {
-                        "fluid_uiOptions_panels_linksControls": {
-                            "type": "fluid.uiOptions.panels.linksControls",
-                            "container": "uiOptions.dom.fluid_uiOptions_panels_linksControls",
+                        "fluid_uiOptions_panel_linksControls": {
+                            "type": "fluid.uiOptions.panel.linksControls",
+                            "container": "uiOptions.dom.fluid_uiOptions_panel_linksControls",
                             "createOnEvent": "onUIOptionsMarkupReady",
                             options: {
                                 gradeNames: "fluid.uiOptions.defaultPanel",
@@ -868,7 +868,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     fluid_uiOptions_inputsLarger: "inputsLarger"
                                 },
                                 resources: {
-                                    template: "templateLoader.resources.fluid_uiOptions_panels_linksControls"
+                                    template: "templateLoader.resources.fluid_uiOptions_panel_linksControls"
                                 }
                             }
                         }
@@ -877,13 +877,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 templateLoader: {
                     gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
                     templates: {
-                        "fluid_uiOptions_panels_linksControls": "%prefix/UIOptionsTemplate-links.html"
+                        "fluid_uiOptions_panel_linksControls": "%prefix/UIOptionsTemplate-links.html"
                     }
                 },
                 messageLoader: {
                     gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
                     templates: {
-                        "fluid_uiOptions_panels_linksControls": "%prefix/UIOptionsTemplate-links.json"
+                        "fluid_uiOptions_panel_linksControls": "%prefix/UIOptionsTemplate-links.json"
                     }
                 },
                 rootModel: {
@@ -901,7 +901,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "textSize": {
                     "type": "fluid.uiOptions.textSize",
                     "panel": {
-                        "type": "fluid.uiOptions.panels.textSize",
+                        "type": "fluid.uiOptions.panel.textSize",
                         "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/UIOptionsTemplate-textSize.html",
                         "message": "%prefix/UIOptionsTemplate-textSize.json"
@@ -913,12 +913,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 panels: {
                     "gradeNames": ["fluid.uiOptions", "autoInit"],
                     "selectors": {
-                        "fluid_uiOptions_panels_textSize": ".flc-uiOptions-text-size"
+                        "fluid_uiOptions_panel_textSize": ".flc-uiOptions-text-size"
                     },
                     "components": {
-                        "fluid_uiOptions_panels_textSize": {
-                            "type": "fluid.uiOptions.panels.textSize",
-                            "container": "uiOptions.dom.fluid_uiOptions_panels_textSize",
+                        "fluid_uiOptions_panel_textSize": {
+                            "type": "fluid.uiOptions.panel.textSize",
+                            "container": "uiOptions.dom.fluid_uiOptions_panel_textSize",
                             "createOnEvent": "onUIOptionsMarkupReady",
                             options: {
                                 gradeNames: "fluid.uiOptions.defaultPanel",
@@ -933,7 +933,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     max: 2
                                 },
                                 resources: {
-                                    template: "templateLoader.resources.fluid_uiOptions_panels_textSize"
+                                    template: "templateLoader.resources.fluid_uiOptions_panel_textSize"
                                 }
                             }
                         }
@@ -943,13 +943,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
                     templates: {
                         "uiOptions": "%prefix/FatPanelUIOptions.html",
-                        "fluid_uiOptions_panels_textSize": "%prefix/UIOptionsTemplate-textSize.html"
+                        "fluid_uiOptions_panel_textSize": "%prefix/UIOptionsTemplate-textSize.html"
                     }
                 },
                 messageLoader: {
                     gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
                     templates: {
-                        "fluid_uiOptions_panels_textSize": "%prefix/UIOptionsTemplate-textSize.json",
+                        "fluid_uiOptions_panel_textSize": "%prefix/UIOptionsTemplate-textSize.json",
                         "uiOptions": "%prefix/UIOptionsTemplate-uiOptions.json"
                     }
                 },

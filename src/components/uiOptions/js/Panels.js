@@ -24,7 +24,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * Base grade panels
      ***********************************************/
 
-    fluid.defaults("fluid.uiOptions.panels", {
+    fluid.defaults("fluid.uiOptions.panel", {
         gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay", "autoInit"]
     });
 
@@ -34,23 +34,23 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiOptions.textfieldSlider", {
         gradeNames: ["fluid.textfieldSlider", "autoInit"],
-        model: "{fluid.uiOptions.panels}.model",
-        range: "{fluid.uiOptions.panels}.options.range",
+        model: "{fluid.uiOptions.panel}.model",
+        range: "{fluid.uiOptions.panel}.options.range",
         listeners: {
             modelChanged: {
-                listener: "{fluid.uiOptions.panels}.applier.requestChange",
+                listener: "{fluid.uiOptions.panel}.applier.requestChange",
                 args: ["{that}.options.path", "{arguments}.0"]
             }
         },
         path: "value",
-        sliderOptions: "{fluid.uiOptions.panels}.options.sliderOptions"
+        sliderOptions: "{fluid.uiOptions.panel}.options.sliderOptions"
     });
 
     /**************************************
      * Functions shared by several panels *
      **************************************/
 
-    fluid.uiOptions.panels.lookupMsg = function (messageResolver, prefix, values) {
+    fluid.uiOptions.panel.lookupMsg = function (messageResolver, prefix, values) {
         var messages = [];
         fluid.each(values, function (value, key) {
             var looked = messageResolver.lookup([prefix + "." + value]);
@@ -66,8 +66,8 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A sub-component of fluid.uiOptions that renders the "text size" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.panels.textSize", {
-        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+    fluid.defaults("fluid.uiOptions.panel.textSize", {
+        gradeNames: ["fluid.uiOptions.panel", "autoInit"],
         preferenceMap: {
             "fluid.uiOptions.textSize": {
                 "model.value": "default",
@@ -115,8 +115,8 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A sub-component of fluid.uiOptions that renders the "text font" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.panels.textFont", {
-        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+    fluid.defaults("fluid.uiOptions.panel.textFont", {
+        gradeNames: ["fluid.uiOptions.panel", "autoInit"],
         preferenceMap: {
             "fluid.uiOptions.textFont": {
                 "model.value": "default",
@@ -130,7 +130,7 @@ var fluid_1_5 = fluid_1_5 || {};
         strings: {
             textFont: {
                 expander: {
-                    func: "fluid.uiOptions.panels.lookupMsg",
+                    func: "fluid.uiOptions.panel.lookupMsg",
                     args: ["{that}.options.parentBundle", "textFont", "{that}.options.controlValues.textFont"]
                 }
             }
@@ -163,8 +163,8 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A sub-component of fluid.uiOptions that renders the "line space" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.panels.lineSpace", {
-        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+    fluid.defaults("fluid.uiOptions.panel.lineSpace", {
+        gradeNames: ["fluid.uiOptions.panel", "autoInit"],
         preferenceMap: {
             "fluid.uiOptions.lineSpace": {
                 "model.value": "default",
@@ -212,8 +212,8 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A sub-component of fluid.uiOptions that renders the "contrast" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.panels.contrast", {
-        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+    fluid.defaults("fluid.uiOptions.panel.contrast", {
+        gradeNames: ["fluid.uiOptions.panel", "autoInit"],
         preferenceMap: {
             "fluid.uiOptions.contrast": {
                 "model.value": "default",
@@ -232,7 +232,7 @@ var fluid_1_5 = fluid_1_5 || {};
         strings: {
             theme: {
                 expander: {
-                    func: "fluid.uiOptions.panels.lookupMsg",
+                    func: "fluid.uiOptions.panel.lookupMsg",
                     args: ["{that}.options.parentBundle", "contrast", "{that}.options.controlValues.theme"]
                 }
             }
@@ -261,7 +261,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         invokers: {
             style: {
-                funcName: "fluid.uiOptions.panels.contrast.style",
+                funcName: "fluid.uiOptions.panel.contrast.style",
                 args: ["{that}.dom.themeLabel", "{that}.options.strings.theme",
                     "{that}.options.markup.label", "{that}.options.controlValues.theme",
                     "{that}.options.classnameMap.theme"]
@@ -269,7 +269,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.uiOptions.panels.contrast.style = function (labels, strings, markup, theme, style) {
+    fluid.uiOptions.panel.contrast.style = function (labels, strings, markup, theme, style) {
         fluid.each(labels, function (label, index) {
             label = $(label);
             label.html(fluid.stringTemplate(markup, {
@@ -286,8 +286,8 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A sub-component of fluid.uiOptions that renders the "layout and navigation" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.panels.layoutControls", {
-        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+    fluid.defaults("fluid.uiOptions.panel.layoutControls", {
+        gradeNames: ["fluid.uiOptions.panel", "autoInit"],
         preferenceMap: {
             "fluid.uiOptions.tableOfContents": {
                 "model.toc": "default"
@@ -311,8 +311,8 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A sub-component of fluid.uiOptions that renders the "links and buttons" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.panels.linksControls", {
-        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+    fluid.defaults("fluid.uiOptions.panel.linksControls", {
+        gradeNames: ["fluid.uiOptions.panel", "autoInit"],
         preferenceMap: {
             "fluid.uiOptions.emphasizeLinks": {
                 "model.links": "default"

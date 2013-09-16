@@ -395,7 +395,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     components: {
                         textSize: {
-                            type: "fluid.uiOptions.panels.textSize",
+                            type: "fluid.uiOptions.panel.textSize",
                             container: "{uiOptions}.dom.textSize",
                             createOnEvent: "onUIOptionsMarkupReady",
                             options: {

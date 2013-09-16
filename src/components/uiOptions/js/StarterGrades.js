@@ -216,7 +216,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         sourceApplier: "{fluid.uiOptions}.applier",
         listeners: {
-            "{uiOptions}.events.onUIOptionsRefresh": "{fluid.uiOptions.panels}.refreshView"
+            "{uiOptions}.events.onUIOptionsRefresh": "{fluid.uiOptions.panel}.refreshView"
         },
         strings: {},
         parentBundle: "{uiOptionsLoader}.msgBundle"
@@ -240,7 +240,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         components: {
             textSize: {
-                type: "fluid.uiOptions.panels.textSize",
+                type: "fluid.uiOptions.panel.textSize",
                 container: "{uiOptions}.dom.textSize",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
@@ -257,7 +257,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             lineSpace: {
-                type: "fluid.uiOptions.panels.lineSpace",
+                type: "fluid.uiOptions.panel.lineSpace",
                 container: "{uiOptions}.dom.lineSpace",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
@@ -274,7 +274,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             textFont: {
-                type: "fluid.uiOptions.panels.textFont",
+                type: "fluid.uiOptions.panel.textFont",
                 container: "{uiOptions}.dom.textFont",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
@@ -292,7 +292,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             contrast: {
-                type: "fluid.uiOptions.panels.contrast",
+                type: "fluid.uiOptions.panel.contrast",
                 container: "{uiOptions}.dom.contrast",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
@@ -310,7 +310,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             layoutControls: {
-                type: "fluid.uiOptions.panels.layoutControls",
+                type: "fluid.uiOptions.panel.layoutControls",
                 container: "{uiOptions}.dom.layoutControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
@@ -327,7 +327,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             linksControls: {
-                type: "fluid.uiOptions.panels.linksControls",
+                type: "fluid.uiOptions.panel.linksControls",
                 container: "{uiOptions}.dom.linksControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {

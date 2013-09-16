@@ -274,7 +274,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 expander: {
                     func: "fluid.indexDefaults",
                     args: ["panelsIndex", {
-                        gradeNames: "fluid.uiOptions.panels",
+                        gradeNames: "fluid.uiOptions.panel",
                         indexFunc: "fluid.uiOptions.auxBuilder.prefMapIndexer"
                     }]
                 }

@@ -40,7 +40,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "type": "fluid.uiOptions.enactors.textSize"
                 },
                 "panel": {
-                    "type": "fluid.uiOptions.panels.textSize",
+                    "type": "fluid.uiOptions.panel.textSize",
                     "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
                     "template": "%prefix/UIOptionsTemplate-textSize.html",
                     "message": "%prefix/textSize.json"
@@ -61,7 +61,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 },
                 "panel": {
-                    "type": "fluid.uiOptions.panels.lineSpace",
+                    "type": "fluid.uiOptions.panel.lineSpace",
                     "container": ".flc-uiOptions-line-space",  // the css selector in the template where the panel is rendered
                     "template": "%prefix/UIOptionsTemplate-lineSpace.html",
                     "message": "%prefix/lineSpace.json"
@@ -81,7 +81,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "classes": "@textFont.classes"
                 },
                 "panel": {
-                    "type": "fluid.uiOptions.panels.textFont",
+                    "type": "fluid.uiOptions.panel.textFont",
                     "container": ".flc-uiOptions-text-font",  // the css selector in the template where the panel is rendered
                     "classnameMap": {"textFont": "@textFont.classes"},
                     "template": "%prefix/UIOptionsTemplate-textFont.html",
@@ -104,7 +104,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "classes": "@contrast.classes"
                 },
                 "panel": {
-                    "type": "fluid.uiOptions.panels.contrast",
+                    "type": "fluid.uiOptions.panel.contrast",
                     "container": ".flc-uiOptions-contrast",  // the css selector in the template where the panel is rendered
                     "classnameMap": {"theme": "@contrast.classes"},
                     "template": "%prefix/UIOptionsTemplate-contrast.html",
@@ -118,7 +118,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "tocTemplate": "../../../../components/tableOfContents/html/TableOfContents.html"
                 },
                 "panel": {
-                    "type": "fluid.uiOptions.panels.layoutControls",
+                    "type": "fluid.uiOptions.panel.layoutControls",
                     "container": ".flc-uiOptions-layout-controls",  // the css selector in the template where the panel is rendered
                     "template": "%prefix/UIOptionsTemplate-layout.html",
                     "message": "%prefix/tableOfContents.json"
@@ -131,7 +131,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "cssClass": "fl-link-enhanced"
                 },
                 "panel": {
-                    "type": "fluid.uiOptions.panels.linksControls",
+                    "type": "fluid.uiOptions.panel.linksControls",
                     "container": ".flc-uiOptions-links-controls",  // the css selector in the template where the panel is rendered
                     "template": "%prefix/UIOptionsTemplate-links.html",
                     "message": "%prefix/links.json"
@@ -144,7 +144,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "cssClass": "fl-text-larger"
                 },
                 "panel": {
-                    "type": "fluid.uiOptions.panels.linksControls"
+                    "type": "fluid.uiOptions.panel.linksControls"
                 }
             }
         }
