@@ -251,9 +251,10 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         invokers: {
-            produceTree: { // TODO: a dynamic invoker
+            produceTree: {
                 funcName: "fluid.identity",
-                args: "{that}.pageTree"  
+                args: "{that}.pageTree",
+                dynamic: true,  
             },
             assembleComponent: {
                 funcName: "fluid.pager.renderedPageList.assembleComponent", 

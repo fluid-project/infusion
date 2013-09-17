@@ -43,7 +43,8 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             handleStyle: {
                 funcName: "fluid.uiOptions.enactors.styleElements.handleStyle",
-                args: ["{arguments}.0", {expander: {func: "{that}.getElements"}}, "{that}"]
+                args: ["{arguments}.0", {expander: {func: "{that}.getElements"}}, "{that}"],
+                dynamic: true
             },
 
             // Must be supplied by implementors

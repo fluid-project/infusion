@@ -1049,6 +1049,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         arg = "{arguments}." + argpos;
                     }
                 }
+                demands[i] = arg;
                 if (!argMap || argMap.options !== i) {
                     // expand immediately if there can be no options or this is not the options
                     args[i] = fluid.expand(arg, expandOptions);
@@ -1083,6 +1084,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
         var togo = {
             args: args,
+            preExpand: demands,
             funcName: demandspec.funcName
         };
         return togo;
@@ -1398,6 +1400,47 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
         };
     };
+    
+    var argPrefix = "{arguments}.";
+    
+    fluid.parseInteger = function (string) {
+        return isFinite(string) && ((string % 1) === 0) ? Number(string) : NaN;
+    };
+    
+    fluid.makeFastInvoker = function (invokeSpec, func) {
+        var argMap;
+        if (invokeSpec.preExpand) {
+            argMap = {};
+            for (var i = 0; i < invokeSpec.preExpand.length; ++ i) {
+                var value = invokeSpec.preExpand[i];
+                if (typeof(value) === "string") {
+                    if (value === "{arguments}") {
+                        argMap[i] = "*";
+                    } else if (value.indexOf(argPrefix) === 0) {
+                        var argIndex = fluid.parseInteger(value.substring(argPrefix.length));
+                        if (isNaN(argIndex)) {
+                            return {noFast: true}
+                        }
+                        else {
+                            argMap[i] = argIndex; // target arg pos = original arg pos
+                        }
+                    }
+                }
+            }
+        }
+        var outArgs = invokeSpec.args;
+        var invoke = argMap ? function invoke(args) {
+            for (var i in argMap) {
+                outArgs[i] = argMap[i] === "*" ? args : args[argMap[i]];
+            }
+            return func.apply(null, outArgs);
+        } : function invoke (args) {
+            return func.apply(null, args);
+        };
+        return {
+            invoke: invoke
+        };
+    };
 
     // unsupported, non-API function
     fluid.makeInvoker = function (that, invokerec, name, environment) {
@@ -1410,18 +1453,32 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
         }
         var demandspec = functionName? fluid.determineDemands(that, functionName) : invokerec;
+        var fastRec = {noFast: invokerec.dynamic};
         return function invokeInvoker () {
-            fluid.pushActivity("invokeInvoker", "invoking invoker with name %name and record %record from component %that", {name: name, record: invokerec, that: that});
-            var func = fluid.recordToApplicable(invokerec, that);
-            var args = fluid.makeArray(arguments);
-            var invokeSpec = fluid.embodyDemands(that, demandspec, args, {passArgs: true});
-            func = func || (invokeSpec.funcName? fluid.getGlobalValue(invokeSpec.funcName, environment)
-                : fluid.expandOptions(demandspec.func, that));
-            if (!func) {
-                fluid.fail("Error in invoker record: could not resolve members func, funcName or method to a function implementation", demandspec);
+            if (fluid.defeatLogging === false) {
+                fluid.pushActivity("invokeInvoker", "invoking invoker with name %name and record %record from component %that", {name: name, record: invokerec, that: that});
             }
-            var togo = func.apply(null, invokeSpec.args);
-            fluid.popActivity();
+            var togo;
+            if (fastRec.invoke) {
+                togo = fastRec.invoke(arguments);
+            }
+            else {
+                var func = fluid.recordToApplicable(invokerec, that);
+                var args = fluid.makeArray(arguments);
+                var invokeSpec = fluid.embodyDemands(that, demandspec, args, {passArgs: true});
+                func = func || (invokeSpec.funcName? fluid.getGlobalValue(invokeSpec.funcName, environment)
+                    : fluid.expandOptions(demandspec.func, that));
+                if (!func) {
+                    fluid.fail("Error in invoker record: could not resolve members func, funcName or method to a function implementation", demandspec);
+                }
+                if (fastRec.noFast !== true) {
+                    fastRec = fluid.makeFastInvoker(invokeSpec, func);
+                }
+                togo = func.apply(null, invokeSpec.args);
+            }
+            if (fluid.defeatLogging === false) {
+                fluid.popActivity();
+            }
             return togo;
         };
     };
