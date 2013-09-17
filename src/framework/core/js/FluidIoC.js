@@ -547,8 +547,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     // unsupported, non-API function
     fluid.dumpThat = function (that) {
-        return "{ typeName: \"" + that.typeName + "\"" +
-             fluid.dumpGradeNames(that) + " id: " + that.id + "}";
+        return "{ typeName: \"" + that.typeName + "\"" + fluid.dumpGradeNames(that) + " id: " + that.id + "}";
     };
 
     // unsupported, non-API function
@@ -607,7 +606,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (!foundComponent && parsed.path !== "") {
                 var ref = fluid.renderContextReference(parsed);
                 fluid.fail("Failed to resolve reference " + ref + " - could not match context with name "
-                    + context + " from component leaf ", parentThat);
+                    + context + " from component " + fluid.dumpThat(parentThat), parentThat);
             }
             return fluid.getForComponent(foundComponent, parsed.path);
         };
