@@ -921,24 +921,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var display = $("#empty-display");
                 jqUnit.assertEquals("Initialized with both strings, the new one should win out", newWay, display.text());
             });
-            
-            jqUnit.test("IOC InlineEdit test", function () {
-                var inlineEdit = $("#ioc-inline-edit").find(".flc-ioc-inlineEditable");
-                
-                fluid.defaults("fluid.componentWithInlineEdit", {
-                    gradeNames: ["fluid.eventedComponent", "autoInit"],
-                    components: {
-                        iocInlineEdit: {
-                            type: "fluid.inlineEdit",
-                            container: inlineEdit,
-                            options: {
-                                tooltipText: "My optional tooltip. InlineEdit has options"
-                            }
+
+            fluid.defaults("fluid.componentWithInlineEdit", {
+                gradeNames: ["fluid.viewComponent", "autoInit"],
+                selectors: {
+                    inlineEdit: ".flc-ioc-inlineEditable"  
+                },
+                components: {
+                    iocInlineEdit: {
+                        type: "fluid.inlineEdit",
+                        container: "{componentWithInlineEdit}.dom.inlineEdit",
+                        options: {
+                            tooltipText: "My optional tooltip. InlineEdit has options"
                         }
                     }
-                });
-                var someComponent = fluid.componentWithInlineEdit();
-                jqUnit.assertTrue("inlineEdit was resolved in IOC", someComponent.iocInlineEdit);
+                }
+            });
+            
+            jqUnit.test("IoC InlineEdit test", function () {
+                var someComponent = fluid.componentWithInlineEdit("#ioc-inline-edit");
+                jqUnit.assertValue("inlineEdit was resolved in IOC", someComponent.iocInlineEdit);
             });
         })();
     });
