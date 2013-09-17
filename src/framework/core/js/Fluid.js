@@ -121,7 +121,7 @@ var fluid = fluid || fluid_1_5;
             fluid.activityTrace.push(record);
         }
         if (fluid.passLogLevel(fluid.logLevel.TRACE)) {
-            fluid.doLog(fluid.renderOneActivity(record, true));  
+            fluid.doLog(fluid.renderOneActivity(record, true));
         }
         var activityStack = fluid.getActivityStack();
         activityStack.push(record);
@@ -286,7 +286,7 @@ var fluid = fluid || fluid_1_5;
      * YAHOO logger or the Opera "postError" stream will be used. On capable environments (those other than
      * IE8 or IE9) the entire argument set will be dispatched to the logger - otherwise they will be flattened into
      * a string first, destroying any information held in non-primitive values. 
-     */ 
+     */
     fluid.doLog = function (args) {
         var str = args.join("");
         if (typeof (console) !== "undefined") {
@@ -301,7 +301,7 @@ var fluid = fluid || fluid_1_5;
             YAHOO.log(str);
         } else if (typeof (opera) !== "undefined") {
             opera.postError(str);
-        }      
+        }
     };
 
     /** Log a message to a suitable environmental console. If the first argument to fluid.log is
@@ -813,7 +813,7 @@ var fluid = fluid || fluid_1_5;
             segs = initSegs.concat(segs);
         }
         var uncess = newValue === fluid.NO_VALUE ? 0 : 1;
-        var root = traverser(root, segs, initPos, config, uncess);
+        root = traverser(root, segs, initPos, config, uncess);
         if (newValue === fluid.NO_VALUE || newValue === fluid.VALUE) { // get or custom
             return returnSegs ? {root: root, segs: segs} : root;
         }
@@ -910,7 +910,7 @@ var fluid = fluid || fluid_1_5;
      */
     fluid.bind = function (obj, fnName, args) {
         return obj[fnName].apply(obj, fluid.makeArray(args));
-    }
+    };
     
     /**
      * Allows for the calling of a function from an EL expression "functionPath", with the arguments "args", scoped to an framework version "environment".
@@ -1002,8 +1002,8 @@ var fluid = fluid || fluid_1_5;
     fluid.event.sortListeners = function (listeners) {
         var togo = [];
         fluid.each(listeners, function (listener) {
-            if (listener.length) {
-                togo = togo.concat(listener)
+            if (listener.length !== undefined) {
+                togo = togo.concat(listener);
             } else {
                 togo.push(listener);
             }
@@ -1117,7 +1117,7 @@ var fluid = fluid || fluid_1_5;
 
             removeListener: function (listener) {
                 if (!listeners) { return; }
-                var namespace;
+                var namespace, id;
                 if (typeof (listener) === "string") {
                     namespace = listener;
                     var record = listeners[listener];
@@ -1127,14 +1127,22 @@ var fluid = fluid || fluid_1_5;
                     listener = record.length !== undefined ? record : record.listener;
                 }
                 if (typeof(listener) === "function") {
-                    var id = identify(listener);
+                    id = identify(listener);
                     if (!id) {
                         fluid.fail("Cannot remove unregistered listener function ", listener, " from event " + that.name);
                     }
                 }
-                namespace = namespace || (byId[id] && byId[id].namespace) || id;
+                var rec = byId[id];
+                var softNamespace = rec && rec.softNamespace;
+                namespace = namespace || (rec && rec.namespace) || id;
                 delete byId[id];
-                delete listeners[namespace];
+                if (softNamespace) {
+                    fluid.remove_if(listeners[namespace], function (thisLis) {
+                        return thisLis.listener.$$fluid_guid === id;
+                    });
+                } else {
+                    delete listeners[namespace];
+                }
                 sortedListeners = fluid.event.sortListeners(listeners);
             },
             // NB - this method exists currently solely for the convenience of the new,
@@ -1210,7 +1218,7 @@ var fluid = fluid || fluid_1_5;
                 }
                 firer = events[key];
             }
-            record = fluid.event.resolveListenerRecord(value, that, key, namespace);
+            var record = fluid.event.resolveListenerRecord(value, that, key, namespace);
             fluid.event.addListenerToFirer(firer, record.records, namespace, record.adderWrapper);
         });
     };
@@ -1315,7 +1323,7 @@ var fluid = fluid || fluid_1_5;
         }
         fluid.each(gradeNames, function (gradeName) {
             if (gradeName && !gs.gradeHash[gradeName]) {
-                var isDynamic = gradeName.charAt(0) === "{"
+                var isDynamic = gradeName.charAt(0) === "{";
                 var options = (isDynamic ? null : (raw ? fluid.rawDefaults(gradeName) : fluid.getGradedDefaults(gradeName))) || {};
                 var thisTick = gradeTickStore[gradeName] || (gradeTick - 1); // a nonexistent grade is recorded as previous to current
                 gs.lastTick = Math.max(gs.lastTick, thisTick);
@@ -1335,7 +1343,7 @@ var fluid = fluid || fluid_1_5;
                     else if (!isAuto) {
                         resolveGradesImpl(gs, oGradeName);
                     }
-                };
+                }
             }
         });
         return gs;
@@ -1392,7 +1400,7 @@ var fluid = fluid || fluid_1_5;
             var lastTick = 0; // check if cache should be invalidated through real latest tick being later than the one stored
             var searchGrades = mergedDefaults.defaults.gradeNames || [];
             for (var i = 0; i < searchGrades.length; ++ i) {
-                lastTick = Math.max(lastTick, gradeTickStore[searchGrades[i]] || 0);  
+                lastTick = Math.max(lastTick, gradeTickStore[searchGrades[i]] || 0);
             }
             if (lastTick > mergedDefaults.lastTick) {
                 fluid.log("Clearing cache for component " + defaultName + " with gradeNames ", searchGrades);
@@ -1440,7 +1448,7 @@ var fluid = fluid || fluid_1_5;
         for (var i = 0; i < requiredGrades.length; ++ i) {
             if (!fluid.hasGrade(defaults, requiredGrades[i])) return;
         }
-        var indexFunc = typeof(indexSpec.indexFunc) === "function" ? indexSpec.indexFunc : fluid.getGlobalValue(indexSpec.indexFunc); 
+        var indexFunc = typeof(indexSpec.indexFunc) === "function" ? indexSpec.indexFunc : fluid.getGlobalValue(indexSpec.indexFunc);
         var keys = indexFunc(defaults) || [];
         for (var j = 0; j < keys.length; ++ j) {
             (index[keys[j]] = index[keys[j]] || []).push(defaultName);
@@ -1461,7 +1469,7 @@ var fluid = fluid || fluid_1_5;
         var index = {};
         for (var defaultName in defaultsStore) {
             var defaults = fluid.getGradedDefaults(defaultName);
-            fluid.doIndexDefaults(defaultName, defaults, index, indexSpec);    
+            fluid.doIndexDefaults(defaultName, defaults, index, indexSpec);
         }
         return index;
     };
@@ -1818,7 +1826,7 @@ var fluid = fluid || fluid_1_5;
     
     // unsupported, NON-API function    
     fluid.transformOptionsBlocks = function (mergeBlocks, transformOptions, recordTypes) {
-        fluid.each(recordTypes, function (recordType) {       
+        fluid.each(recordTypes, function (recordType) {
             var blocks = fluid.findMergeBlocks(mergeBlocks, recordType);
             fluid.each(blocks, function (block) {
                 block[block.simple? "target": "source"] = fluid.transformOptions(block.source, transformOptions);
