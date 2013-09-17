@@ -73,6 +73,99 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    /************************
+     * combined panel tests *
+     ************************/
+
+    fluid.tests.assertPathsExist = function (root, paths) {
+        fluid.each(paths, function (path) {
+            jqUnit.assertValue("The path '" + path + "' should exist", fluid.get(root, path));
+        });
+    };
+
+    fluid.defaults("fluid.tests.subPanel", {
+        gradeNames: ["fluid.uiOptions.panel", "autoInit"]
+    });
+
+    fluid.defaults("fluid.tests.combinedPanels", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            combinedPanel: {
+                type: "fluid.uiOptions.combinedPanel",
+                container: ".flc-uiOptions-combinedPanel",
+                options: {
+                    selectors: {
+                        sub1: ".subPanel1",
+                        sub2: ".subPanel2"
+                    },
+                    components: {
+                        subPanel1: {
+                            type: "fluid.tests.subPanel",
+                            container: "{combinedPanel}.dom.sub1",
+                            options: {
+                                preferenceMap: {
+                                    "fluid.uiOptions.sub1": {
+                                        "model.value": "default",
+                                        "range.min": "minimum",
+                                        "range.max": "maximum"
+                                    }
+                                }
+                            }
+                        },
+                        subPanel2: {
+                            type: "fluid.tests.subPanel",
+                            container: "{combinedPanel}.dom.sub2",
+                            options: {
+                                preferenceMap: {
+                                    "fluid.uiOptions.sub2": {
+                                        "model.value": "default",
+                                        "range.min": "minimum",
+                                        "range.max": "maximum"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            combinedPanelTester: {
+                type: "fluid.tests.combinedPanelTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.combinedPanelTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        expected: {
+            preferenceMap: {
+                "fluid.uiOptions.sub1": {
+                    "model.fluid_uiOptions_sub1": "default",
+                    "subPanel1.range.min": "minimum",
+                    "subPanel1.range.max": "maximum"
+                },
+                "fluid.uiOptions.sub2": {
+                    "model.fluid_uiOptions_sub2": "default",
+                    "subPanel2.range.min": "minimum",
+                    "subPanel2.range.max": "maximum"
+                }
+            }
+        },
+        modules: [{
+            name: "Test the combining of panels into a single parent panel",
+            tests: [{
+                expect: 2,
+                name: "Tests that the subcomponents are all initialized",
+                func: "fluid.tests.assertPathsExist",
+                args: ["{combinedPanel}", ["subPanel1", "subPanel2"]]
+            }, {
+                expect: 1,
+                name: "Tests that the preferenceMaps are merged",
+                func: "jqUnit.assertDeepEq",
+                args: ["The preferenceMap should be combined correctly", "{that}.options.expected.preferenceMap", "{combinedPanel}.options.preferenceMap"]
+            }]
+        }]
+    });
+
 
     /*******************************************************************************
      * textFontPanel
@@ -480,6 +573,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
         fluid.test.runTests([
+            "fluid.tests.combinedPanels",
             "fluid.tests.textFontPanel",
             "fluid.tests.contrastPanel",
             "fluid.tests.textSizePanel",

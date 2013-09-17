@@ -21,13 +21,52 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     /***********************************************
-     * Base grade panels
+     * Base grade panel
      ***********************************************/
 
     fluid.defaults("fluid.uiOptions.panel", {
         gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay", "autoInit"],
         preferenceMap: {}
     });
+
+
+    /*********************************
+     * Base grade for combined panel *
+     *********************************/
+
+    fluid.defaults("fluid.uiOptions.combinedPanel", {
+        gradeNames: ["fluid.uiOptions.panel", "autoInit"],
+        preferenceMap: {
+            expander: {
+                funcName: "fluid.uiOptions.combinedPanel.combinePreferenceMaps",
+                args: ["{that}.options.components"]
+            }
+        },
+        components: {},
+    });
+
+    fluid.uiOptions.combinedPanel.combinePreferenceMaps = function (components) {
+        var preferenceMap = {};
+        fluid.each(components, function (component, cmpName) {
+            var opts = $.extend(true, {}, fluid.defaults(component.type), component.options);
+            var prefMap = opts.preferenceMap;
+            if (prefMap) {
+                fluid.each(prefMap, function (preference, prefName) {
+                    var prefObj = {};
+                    fluid.each(preference, function (rule, ruleName) {
+                        var mdlPrefix = "model.";
+                        if (ruleName.indexOf(mdlPrefix) === 0) {
+                            prefObj[mdlPrefix + prefName.replace(".", "_", "g")] = rule;
+                        } else {
+                            prefObj[cmpName  + "." + ruleName] = rule;
+                        }
+                    });
+                    preferenceMap[prefName] = prefObj;
+                });
+            }
+        });
+        return preferenceMap;
+    };
 
     /********************************
      * UI Options Text Field Slider *
