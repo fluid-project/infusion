@@ -547,8 +547,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     // unsupported, non-API function
     fluid.dumpThat = function (that) {
-        return "{ typeName: \"" + that.typeName + "\"" +
-             fluid.dumpGradeNames(that) + " id: " + that.id + "}";
+        return "{ typeName: \"" + that.typeName + "\"" + fluid.dumpGradeNames(that) + " id: " + that.id + "}";
     };
 
     // unsupported, non-API function
@@ -607,7 +606,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (!foundComponent && parsed.path !== "") {
                 var ref = fluid.renderContextReference(parsed);
                 fluid.fail("Failed to resolve reference " + ref + " - could not match context with name "
-                    + context + " from component leaf ", parentThat);
+                    + context + " from component " + fluid.dumpThat(parentThat), parentThat);
             }
             return fluid.getForComponent(foundComponent, parsed.path);
         };
@@ -1049,6 +1048,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         arg = "{arguments}." + argpos;
                     }
                 }
+                demands[i] = arg;
                 if (!argMap || argMap.options !== i) {
                     // expand immediately if there can be no options or this is not the options
                     args[i] = fluid.expand(arg, expandOptions);
@@ -1083,6 +1083,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
         var togo = {
             args: args,
+            preExpand: demands,
             funcName: demandspec.funcName
         };
         return togo;
@@ -1398,6 +1399,47 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
         };
     };
+    
+    var argPrefix = "{arguments}.";
+    
+    fluid.parseInteger = function (string) {
+        return isFinite(string) && ((string % 1) === 0) ? Number(string) : NaN;
+    };
+    
+    fluid.makeFastInvoker = function (invokeSpec, func) {
+        var argMap;
+        if (invokeSpec.preExpand) {
+            argMap = {};
+            for (var i = 0; i < invokeSpec.preExpand.length; ++ i) {
+                var value = invokeSpec.preExpand[i];
+                if (typeof(value) === "string") {
+                    if (value === "{arguments}") {
+                        argMap[i] = "*";
+                    } else if (value.indexOf(argPrefix) === 0) {
+                        var argIndex = fluid.parseInteger(value.substring(argPrefix.length));
+                        if (isNaN(argIndex)) {
+                            return {noFast: true}
+                        }
+                        else {
+                            argMap[i] = argIndex; // target arg pos = original arg pos
+                        }
+                    }
+                }
+            }
+        }
+        var outArgs = invokeSpec.args;
+        var invoke = argMap ? function invoke(args) {
+            for (var i in argMap) {
+                outArgs[i] = argMap[i] === "*" ? args : args[argMap[i]];
+            }
+            return func.apply(null, outArgs);
+        } : function invoke (args) {
+            return func.apply(null, args);
+        };
+        return {
+            invoke: invoke
+        };
+    };
 
     // unsupported, non-API function
     fluid.makeInvoker = function (that, invokerec, name, environment) {
@@ -1410,18 +1452,32 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             }
         }
         var demandspec = functionName? fluid.determineDemands(that, functionName) : invokerec;
+        var fastRec = {noFast: invokerec.dynamic};
         return function invokeInvoker () {
-            fluid.pushActivity("invokeInvoker", "invoking invoker with name %name and record %record from component %that", {name: name, record: invokerec, that: that});
-            var func = fluid.recordToApplicable(invokerec, that);
-            var args = fluid.makeArray(arguments);
-            var invokeSpec = fluid.embodyDemands(that, demandspec, args, {passArgs: true});
-            func = func || (invokeSpec.funcName? fluid.getGlobalValue(invokeSpec.funcName, environment)
-                : fluid.expandOptions(demandspec.func, that));
-            if (!func) {
-                fluid.fail("Error in invoker record: could not resolve members func, funcName or method to a function implementation", demandspec);
+            if (fluid.defeatLogging === false) {
+                fluid.pushActivity("invokeInvoker", "invoking invoker with name %name and record %record from component %that", {name: name, record: invokerec, that: that});
             }
-            var togo = func.apply(null, invokeSpec.args);
-            fluid.popActivity();
+            var togo;
+            if (fastRec.invoke) {
+                togo = fastRec.invoke(arguments);
+            }
+            else {
+                var func = fluid.recordToApplicable(invokerec, that);
+                var args = fluid.makeArray(arguments);
+                var invokeSpec = fluid.embodyDemands(that, demandspec, args, {passArgs: true});
+                func = func || (invokeSpec.funcName? fluid.getGlobalValue(invokeSpec.funcName, environment)
+                    : fluid.expandOptions(demandspec.func, that));
+                if (!func || !func.apply) {
+                    fluid.fail("Error in invoker record: could not resolve members func, funcName or method to a function implementation - got " + func + " from ", demandspec);
+                }
+                if (fastRec.noFast !== true) {
+                    fastRec = fluid.makeFastInvoker(invokeSpec, func);
+                }
+                togo = func.apply(null, invokeSpec.args);
+            }
+            if (fluid.defeatLogging === false) {
+                fluid.popActivity();
+            }
             return togo;
         };
     };
@@ -1663,6 +1719,84 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
 
     /** END of unofficial IoC material **/
+
+    // unsupported, non-API function    
+    fluid.coerceToPrimitive = function (string) {
+        return string === "false" ? false : (string === "true" ? true : 
+            (isFinite(string) ? Number(string) : string)); 
+    };
+    
+    // unsupported, non-API function
+    fluid.compactStringToRec = function (string, type) {
+         var openPos = string.indexOf("(");
+         var closePos = string.indexOf(")");
+         if (openPos === -1 ^ closePos === -1 || openPos > closePos) {
+             fluid.fail("Badly-formed compact " + type + " record without matching parentheses: ", string);
+         }
+         if (openPos !== -1 && closePos !== -1) {
+             var prefix = string.substring(0, openPos);
+             var body = string.substring(openPos + 1, closePos);
+             var args = fluid.transform(body.split(","), $.trim, fluid.coerceToPrimitive);
+             var togo = {
+                 args: args 
+             };
+             if (type === "invoker" && prefix.charAt(openPos - 1) === "!") {
+                 prefix = string.substring(0, openPos - 1);
+                 togo.dynamic = true;
+             } 
+             togo[prefix.charAt(0) === "{" ? "func" : "funcName"] = prefix;
+             return togo;
+         }
+         else if (type === "expander") {
+             fluid.fail("Badly-formed compact expander record without parentheses: ", string);
+         }
+         return string;
+    };
+    
+    fluid.expandPrefix = "@expand:";
+    // unsupported, non-API function
+    fluid.expandCompactString = function (string, active) {
+         var rec = string;
+         if (string.indexOf(fluid.expandPrefix) === 0) {  
+             var rem = string.substring(fluid.expandPrefix.length);
+             rec = {
+                 expander: fluid.compactStringToRec(rem, "expander")
+             }
+         }
+         else if (active) {
+             rec = fluid.compactStringToRec(string, active);
+         }
+         return rec;
+    };
+    
+    // unsupported, non-API function
+    fluid.expandCompactRec = function (segs, target, source) {
+        var pen = segs.length > 0 ? segs[segs.length - 1] : "";
+        var active = pen === "invokers" ? "invoker" : (pen === "listeners" ? "listener" : "");
+        if (!active && segs.length > 1 && segs[segs.length - 2] === "listeners") { // support array of listeners
+            active = "listener";
+        }
+        fluid.each(source, function (value, key) {
+            if (!fluid.isPrimitive(value)) {
+                target[key] = fluid.freshContainer(value);
+                segs.push(key);
+                fluid.expandCompactRec(segs, target[key], value);
+                segs.pop();
+                return;
+            }
+            else if (typeof(value) === "string") {
+                value = fluid.expandCompactString(value, active);
+            }
+            target[key] = value;
+        });
+    };
+    
+    // unsupported, non-API function    
+    fluid.expandCompact = function (options) {
+        var togo = {};
+        fluid.expandCompactRec([], togo, options)
+        return togo;
+    };
 
     // unsupported, non-API function
     fluid.extractEL = function (string, options) {

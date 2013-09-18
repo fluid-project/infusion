@@ -120,6 +120,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+    
     fluid.tests.getInitialFontSize = function (container, tester) {
         tester.options.testOpts.initialFontSize = parseFloat(container.css("fontSize"));
     };
