@@ -264,7 +264,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.uiOptions.panels.contrast.style",
                 args: ["{that}.dom.themeLabel", "{that}.options.strings.theme",
                     "{that}.options.markup.label", "{that}.options.controlValues.theme",
-                    "{that}.options.classnameMap.theme"]
+                    "{that}.options.classnameMap.theme"],
+                    dynamic: true
             }
         }
     });
