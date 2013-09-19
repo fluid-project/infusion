@@ -203,7 +203,7 @@ fluid.tests.startRendering = function (asyncTest, instantiator) {
 fluid.defaults("fluid.tests.initTree", {
     gradeNames: ["fluid.test.testEnvironment", "autoInit"],
     components: {
-// moved into driver to test FLUID-5132
+// natural place for this configuration is here - however, moved into driver to test FLUID-5132
 //        initTest: {
 //            type: "fluid.tests.initTest",
 //            createOnEvent: "{initTester}.events.onTestCaseStart"
