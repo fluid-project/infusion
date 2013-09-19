@@ -420,19 +420,27 @@ var fluid_1_5 = fluid_1_5 || {};
 
     /** Top-level driver function for users. Supply an array of grade names holding the
      *  list of the testing environments to be executed in sequence
-     *  @param envNames (Array of string) The testing environments to be executed
+     *  @param envs (Array of string/object) The testing environments to be executed - either a simple
+     *  string holding the testing environment's name, or a record {type: typeName, options: options} holding
+     *  IoC configuration for the environment as if for a subcomponent.
      */
 
-    fluid.test.runTests = function (envNames) {
+    fluid.test.runTests = function (envs) {
         var index = 0;
         var nextLater;
         var next = function () {
-            if (index < envNames.length) {
-                fluid.invokeGlobalFunction(envNames[index++], [{
+            if (index < envs.length) {
+                var env = envs[index];
+                if (typeof(env) === "string") {
+                    env = {type: env};
+                }
+                var options = $.extend(true, {}, env.options, {
                     listeners: {
                         onDestroy: nextLater
                     }
-                }]);
+                });
+                fluid.invokeGlobalFunction(env.type, [options]);
+                index++;
             }
         };
         nextLater = function () {
