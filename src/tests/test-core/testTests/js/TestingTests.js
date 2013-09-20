@@ -1,18 +1,18 @@
 /*
 
  Copyright 2010-2011 Lucendo Development Ltd.
- 
+
  Licensed under the Educational Community License (ECL), Version 2.0 or the New
  BSD license. You may not use this file except in compliance with one these
  Licenses.
  You may obtain a copy of the ECL 2.0 License and BSD License at
  https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  */
- 
+
 // Declare dependencies
 /*global fluid, jqUnit, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid.registerNamespace("fluid.tests");
@@ -67,7 +67,7 @@ fluid.defaults("fluid.tests.catTester", {
 
 fluid.tests.globalCatTest = function (catt) {
     jqUnit.assertEquals("Sound", "meow", catt.makeSound());
-}; 
+};
 
 fluid.tests.catTester.preInit = function (that) {
     that.testMeow = fluid.tests.globalCatTest;
@@ -83,7 +83,7 @@ fluid.defaults("fluid.tests.asyncTest", {
         textField: ".flc-async-text"
     },
     events: {
-        buttonClicked: null  
+        buttonClicked: null
     },
     protoTree: {
         textField: "${textValue}",
@@ -138,7 +138,7 @@ fluid.defaults("fluid.tests.asyncTester", {
             }, {
                 listener: "fluid.tests.checkEvent",
                 event: "{asyncTest}.events.buttonClicked"
-            }, { // manually click on the button  
+            }, { // manually click on the button
                 jQueryTrigger: "click",
                 element: "{asyncTest}.dom.button"
             }, {
@@ -146,7 +146,7 @@ fluid.defaults("fluid.tests.asyncTester", {
                 event: "{asyncTest}.events.buttonClicked"
             }, { // Issue two requests via UI to change field, and check model update
                 func: "fluid.tests.changeField",
-                args: ["{asyncTest}.dom.textField", "{asyncTester}.options.newTextValue"]  
+                args: ["{asyncTest}.dom.textField", "{asyncTester}.options.newTextValue"]
             }, {
                 listenerMaker: "fluid.tests.makeChangeChecker",
                 makerArgs: ["{asyncTester}.options.newTextValue", "textValue"],
@@ -154,7 +154,7 @@ fluid.defaults("fluid.tests.asyncTester", {
                 changeEvent: "{asyncTest}.applier.modelChanged"
             }, {
                 func: "fluid.tests.changeField",
-                args: ["{asyncTest}.dom.textField", "{asyncTester}.options.furtherTextValue"]  
+                args: ["{asyncTest}.dom.textField", "{asyncTester}.options.furtherTextValue"]
             }, {
                 listenerMaker: "fluid.tests.makeChangeChecker",
                 makerArgs: ["{asyncTester}.options.furtherTextValue", "textValue"],
@@ -164,7 +164,7 @@ fluid.defaults("fluid.tests.asyncTester", {
             }, {
                 func: "jqUnit.assertEquals",
                 args: ["Model updated", "{asyncTester}.options.furtherTextValue",
-                    "{asyncTest}.model.textValue"]  
+                    "{asyncTest}.model.textValue"]
             }, { // manually click on the button a final time with direct listener
                 jQueryTrigger: "click",
                 element: "{asyncTest}.dom.button"
@@ -248,6 +248,63 @@ fluid.defaults("fluid.tests.initTester", {
     }]
 });
 
+fluid.defaults("fluid.tests.FLUID-5145.boiledEventTree", {
+    gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+    components: {
+        boiledEventComp: {
+            type: "fluid.eventedComponent",
+            options: {
+                events: {
+                    testEvent: null
+                },
+                invokers: {
+                    trigger: {
+                        func: "{that}.events.testEvent.fire"
+                    }
+                },
+                components: {
+                    child: {
+                        type: "fluid.eventedComponent",
+                        options: {
+                            events: {
+                                testEvent: null
+                            },
+                            listeners: {
+                                "{boiledEventComp}.events.testEvent": {
+                                    listener: "{that}.events.testEvent"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        boiledEventTester: {
+            type: "fluid.tests.FLUID-5145.boiledEventTester"
+        }
+    }
+});
+
+fluid.defaults("fluid.tests.FLUID-5145.boiledEventTester", {
+    gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+    modules: [ {
+        name: "Boiled Event test case",
+        tests: [{
+            name: "Boiled Event sequence",
+            expect: 2,
+            sequence: [{
+                func: "{boiledEventComp}.trigger"
+            }, {
+                listener: "fluid.tests.checkEvent",
+                event: "{boiledEventComp}.child.events.testEvent"
+            }, {
+                listener: "fluid.tests.checkEvent",
+                event: "{boiledEventComp}.child.events.testEvent"
+            }]
+        }]
+    }]
+});
+
 /** Global driver function **/
 
 fluid.tests.testTests = function () {
@@ -261,8 +318,9 @@ fluid.tests.testTests = function () {
                         type: "fluid.tests.initTest",
                         createOnEvent: "{initTester}.events.onTestCaseStart"
                     }
-                }  
+                }
             }
-        }
+        },
+        "fluid.tests.FLUID-5145.boiledEventTree"
     ]);
 };
