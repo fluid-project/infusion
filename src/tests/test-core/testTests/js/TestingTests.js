@@ -263,7 +263,20 @@ fluid.defaults("fluid.tests.FLUID-5145.boiledEventTree", {
                     }
                 },
                 components: {
-                    child: {
+                    childOne: {
+                        type: "fluid.eventedComponent",
+                        options: {
+                            events: {
+                                testEvent: null
+                            },
+                            listeners: {
+                                "{boiledEventComp}.events.testEvent": {
+                                    listener: "{that}.events.testEvent"
+                                }
+                            }
+                        }
+                    },
+                    childTwo: {
                         type: "fluid.eventedComponent",
                         options: {
                             events: {
@@ -287,19 +300,43 @@ fluid.defaults("fluid.tests.FLUID-5145.boiledEventTree", {
 
 fluid.defaults("fluid.tests.FLUID-5145.boiledEventTester", {
     gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
-    modules: [ {
+    modules: [{
         name: "Boiled Event test case",
         tests: [{
-            name: "Boiled Event sequence",
+            name: "Boiled Event sequence - events in child",
             expect: 2,
             sequence: [{
                 func: "{boiledEventComp}.trigger"
             }, {
                 listener: "fluid.tests.checkEvent",
-                event: "{boiledEventComp}.child.events.testEvent"
+                event: "{boiledEventComp}.childOne.events.testEvent"
             }, {
                 listener: "fluid.tests.checkEvent",
-                event: "{boiledEventComp}.child.events.testEvent"
+                event: "{boiledEventComp}.childTwo.events.testEvent"
+            }]
+        }, {
+            name: "Boiled Event sequence - event in parent",
+            expect: 1,
+            sequence: [{
+                func: "{boiledEventComp}.trigger"
+            }, {
+                listener: "fluid.tests.checkEvent",
+                event: "{boiledEventComp}.events.testEvent"
+            }]
+        }, {
+            name: "Boiled Event sequence - event in parent and children",
+            expect: 3,
+            sequence: [{
+                func: "{boiledEventComp}.trigger"
+            }, {
+                listener: "fluid.tests.checkEvent",
+                event: "{boiledEventComp}.events.testEvent"
+            }, {
+                listener: "fluid.tests.checkEvent",
+                event: "{boiledEventComp}.childOne.events.testEvent"
+            }, {
+                listener: "fluid.tests.checkEvent",
+                event: "{boiledEventComp}.childTwo.events.testEvent"
             }]
         }]
     }]
