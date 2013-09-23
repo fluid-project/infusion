@@ -212,6 +212,11 @@ fluid.registerNamespace("fluid.tests");
             changeNest2: {
                 changePath: "thing1.nest2",
                 value: "{arguments}.0"
+            },
+            changeThing2: {
+                changePath: "thing2",
+                source: "internalSource",
+                value: "{arguments}.0"
             }
         },
         components: {
@@ -235,9 +240,11 @@ fluid.registerNamespace("fluid.tests");
             }
         },
         modelListeners: {
-            "thing1.nest1": {
+            "thing1.nest1": "{that}.record({change}.path, {change}.value, {change}.oldValue)",
+            "thing2": {
                 func: "{that}.record",
-                args: ["{change}.path", "{change}.value", "{change}.oldValue"]
+                args: "{change}.value",
+                guardSource: "internalSource"
             }
         }
     });
@@ -255,6 +262,9 @@ fluid.registerNamespace("fluid.tests");
                 [{path: ["thing1", "nest2"], value: true, oldValue: false}], that.fireRecord);
             that.child.changeNest2(false);
         }
+        that.fireRecord.length = 0;
+        that.changeThing2(5);
+        jqUnit.assertDeepEq("Source guarded change not reported", [], that.fireRecord);
     });
     
     /** Preservation of material with "exotic types" (with constructor) for FLUID-5089 **/
@@ -3220,6 +3230,10 @@ fluid.registerNamespace("fluid.tests");
         return a + b;
     };
     
+    fluid.tests.addArray = function (a, array) {
+        return a + array[0] + array[1];
+    };
+    
     fluid.defaults("fluid.tests.fluid4922", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         members: {
@@ -3230,6 +3244,10 @@ fluid.registerNamespace("fluid.tests");
                 funcName: "fluid.tests.add",
                 args: ["{that}.value", "{arguments}.0"],
                 dynamic: true
+            },
+            argsInvoker: { // This will be fast
+                funcName: "fluid.tests.addArray",
+                args: ["{that}.value", "{arguments}"]
             },
             fastInvoker: {
                 funcName: "fluid.tests.add",
@@ -3246,9 +3264,11 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("Slow init", 2, that.slowInvoker(1));
         jqUnit.assertEquals("Fast init", 2, that.fastInvoker(1));
         jqUnit.assertEquals("Through init", 2, that.throughInvoker(1, 1));
+        jqUnit.assertEquals("Args init", 3, that.argsInvoker(1, 1));
         that.value = 2;
-        jqUnit.assertEquals("Slow changed", 3, that.slowInvoker(1));
-        jqUnit.assertEquals("Fast changed", 2, that.fastInvoker(1));
+        jqUnit.assertEquals("Slow changed", 4, that.slowInvoker(2));
+        jqUnit.assertEquals("Fast changed", 3, that.fastInvoker(2));
+        jqUnit.assertEquals("Args changed", 5, that.argsInvoker(2, 2));
     });
 
     /** FLUID-5127 - Test cases for compact invokers, listeners and expandesr **/

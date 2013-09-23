@@ -504,7 +504,7 @@ var fluid_1_5 = fluid_1_5 || {};
             // Bypass fluid.event.dispatchListener by means of "standard = false" and enter our custom workflow including expanding "change":
             fluid.each(records.records, function (record) {
                 var func = fluid.resolveModelListener(that, record);
-                fluid.addSourceGuardedListener(parsed.that.applier, parsed.path, record.source, func, "modelChanged", record.namespace, record.softNamespace);
+                fluid.addSourceGuardedListener(parsed.that.applier, parsed.path, record.guardSource, func, "modelChanged", record.namespace, record.softNamespace);
                 fluid.recordListener(parsed.that.applier.modelChanged, func, fluid.shadowForComponent(that));
             });  
         });

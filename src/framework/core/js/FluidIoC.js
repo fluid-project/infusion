@@ -1431,7 +1431,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                     if (value.indexOf("}.model") !== -1) {
                         return {noFast: true}
                     }
-                    if (value.indexOf(argPrefix) === 0) {
+                    if (value === "{arguments}") {
+                        argMap[i] = "*";
+                    } else if (value.indexOf(argPrefix) === 0) {
                         var argIndex = fluid.parseInteger(value.substring(argPrefix.length));
                         if (isNaN(argIndex)) {
                             return {noFast: true}
@@ -1446,7 +1448,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var outArgs = invokeSpec.args;
         var invoke = argMap ? function invoke(args) {
             for (var i in argMap) {
-                outArgs[i] = args[argMap[i]];
+                outArgs[i] = argMap[i] === "*" ? args : args[argMap[i]];
             }
             return func.apply(null, outArgs);
         } : function invoke (args) {
