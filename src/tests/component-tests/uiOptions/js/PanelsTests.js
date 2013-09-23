@@ -83,87 +83,124 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
+    fluid.tests.listenerFuncMaker = function (funcName, args, environment) {
+        return function () {
+            fluid.invokeGlobalFunction(funcName, args, environment);
+        };
+    };
+
     fluid.defaults("fluid.tests.subPanel", {
-        gradeNames: ["fluid.uiOptions.panel", "autoInit"]
+        gradeNames: ["fluid.uiOptions.panel", "autoInit"],
+        renderOnInit: true
     });
 
-    fluid.defaults("fluid.tests.combinedPanels", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+    fluid.defaults("fluid.tests.combinedPanel", {
+        gradeNames: ["fluid.uiOptions.combinedPanel", "autoInit"],
+        members: {
+            fireRecord: {}
+        },
+        invokers: {
+            writeRecord: {
+                funcName: "fluid.tests.combinedPanel.writeRecord",
+                args: ["{that}.fireRecord", "{arguments}.0"]
+            }
+        },
+        listeners: {
+            afterRender: {
+                listener: "{that}.writeRecord",
+                args: ["combinedPanel"]
+            }
+        },
         components: {
-            combinedPanel: {
-                type: "fluid.uiOptions.combinedPanel",
-                container: ".flc-uiOptions-combinedPanel",
+            subPanel1: {
+                type: "fluid.tests.subPanel",
+                container: "{combinedPanel}.container",
                 options: {
-                    selectors: {
-                        sub1: ".subPanel1",
-                        sub2: ".subPanel2"
+                    preferenceMap: {
+                        "fluid.uiOptions.sub1": {
+                            "model.value": "default",
+                            "range.min": "minimum",
+                            "range.max": "maximum"
+                        }
                     },
-                    components: {
-                        subPanel1: {
-                            type: "fluid.tests.subPanel",
-                            container: "{combinedPanel}.dom.sub1",
-                            options: {
-                                preferenceMap: {
-                                    "fluid.uiOptions.sub1": {
-                                        "model.value": "default",
-                                        "range.min": "minimum",
-                                        "range.max": "maximum"
-                                    }
-                                }
-                            }
-                        },
-                        subPanel2: {
-                            type: "fluid.tests.subPanel",
-                            container: "{combinedPanel}.dom.sub2",
-                            options: {
-                                preferenceMap: {
-                                    "fluid.uiOptions.sub2": {
-                                        "model.value": "default",
-                                        "range.min": "minimum",
-                                        "range.max": "maximum"
-                                    }
-                                }
-                            }
+                    listeners: {
+                        afterRender: {
+                            listener: "{combinedPanel}.writeRecord",
+                            args: ["subPanel1"]
                         }
                     }
                 }
             },
-            combinedPanelTester: {
-                type: "fluid.tests.combinedPanelTester"
+            subPanel2: {
+                type: "fluid.tests.subPanel",
+                container: "{combinedPanel}.container",
+                options: {
+                    preferenceMap: {
+                        "fluid.uiOptions.sub2": {
+                            "model.value": "default",
+                            "range.min": "minimum",
+                            "range.max": "maximum"
+                        }
+                    },
+                    listeners: {
+                        afterRender: {
+                            listener: "{combinedPanel}.writeRecord",
+                            args: ["subPanel2"]
+                        }
+                    }
+                }
             }
         }
     });
 
-    fluid.defaults("fluid.tests.combinedPanelTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
-        expected: {
-            preferenceMap: {
-                "fluid.uiOptions.sub1": {
-                    "model.fluid_uiOptions_sub1": "default",
-                    "subPanel1.range.min": "minimum",
-                    "subPanel1.range.max": "maximum"
-                },
-                "fluid.uiOptions.sub2": {
-                    "model.fluid_uiOptions_sub2": "default",
-                    "subPanel2.range.min": "minimum",
-                    "subPanel2.range.max": "maximum"
-                }
+    fluid.tests.combinedPanel.writeRecord = function (fireRecord, id) {
+        var currentVal = fluid.get(fireRecord, id);
+        fluid.set(fireRecord, id, currentVal !== undefined ? ++currentVal : 1);
+    };
+
+    jqUnit.test("fluid.uiOptions.combinedPanel", function () {
+        jqUnit.expect(6);
+        var that = fluid.tests.combinedPanel(".flc-uiOptions-combinedPanel");
+        console.log(that);
+
+        var expectedPreferenceMap = {
+            "fluid.uiOptions.sub1": {
+                "model.fluid_uiOptions_sub1": "default",
+                "components.subPanel1.range.min": "minimum",
+                "components.subPanel1.range.max": "maximum"
+            },
+            "fluid.uiOptions.sub2": {
+                "model.fluid_uiOptions_sub2": "default",
+                "components.subPanel2.range.min": "minimum",
+                "components.subPanel2.range.max": "maximum"
             }
-        },
-        modules: [{
-            name: "Test the combining of panels into a single parent panel",
-            tests: [{
-                expect: 2,
-                name: "Tests that the subcomponents are all initialized",
-                func: "fluid.tests.assertPathsExist",
-                args: ["{combinedPanel}", ["subPanel1", "subPanel2"]]
-            }, {
-                expect: 1,
-                name: "Tests that the preferenceMaps are merged",
-                func: "jqUnit.assertDeepEq",
-                args: ["The preferenceMap should be combined correctly", "{that}.options.expected.preferenceMap", "{combinedPanel}.options.preferenceMap"]
-            }]
-        }]
+        };
+
+        var expectedSubPanel1Rules = {
+            "fluid_uiOptions_sub1": "value"
+        };
+
+        var expectedSubPanel2Rules = {
+            "fluid_uiOptions_sub2": "value"
+        };
+
+        var expectedFireRecord = {
+            combinedPanel: 3,
+            subPanel1: 3,
+            subPanel2: 3
+        };
+
+        jqUnit.assertDeepEq("The preferenceMap should have been assembled correctly", expectedPreferenceMap, that.options.preferenceMap);
+        jqUnit.assertFalse("The renderOnInit option for subPanel1 should be false", that.subPanel1.options.renderOnInit);
+        jqUnit.assertFalse("The renderOnInit option for subPanel2 should be false", that.subPanel2.options.renderOnInit);
+        jqUnit.assertDeepEq("the rules block for subPanel1 should be generated correctly", expectedSubPanel1Rules, that.subPanel1.options.rules);
+        jqUnit.assertDeepEq("the rules block for subPanel2 should be generated correctly", expectedSubPanel2Rules, that.subPanel2.options.rules);
+
+        that.refreshView();
+        that.subPanel1.refreshView();
+        that.subPanel2.refreshView();
+        jqUnit.assertDeepEq("The events should have populated the fireRecored correctly", expectedFireRecord, that.fireRecord);
+
     });
 
 
@@ -573,7 +610,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.tests.combinedPanels",
             "fluid.tests.textFontPanel",
             "fluid.tests.contrastPanel",
             "fluid.tests.textSizePanel",

@@ -30,21 +30,101 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
 
+    /***************************
+     * Base grade for subpanel *
+     ***************************/
+
+    fluid.defaults("fluid.uiOptions.supPanel", {
+        gradeNames: ["fluid.uiOptions.panel", "autoInit"],
+        mergePolicy: {
+            sourceApplier: "nomerge"
+        },
+        sourceApplier: "{combinedPanel}.applier",
+        listeners: {
+            "{combinedPanel}.events.afterRender": {
+                listener: "{that}.events.afterRender",
+                args: ["{that}"]
+            }
+        },
+        rules: {
+            expander: {
+                func: "fluid.uiOptions.supPanel.generateRules",
+                args: ["{that}.options.preferenceMap"]
+            }
+        },
+        invokers: {
+            refreshView: "{combinedPanel}.refreshView"
+        },
+        strings: {},
+        // parentBundle: "", // add this in later
+        renderOnInit: false
+    });
+
+    /*
+     * Generates the model relay rules for a subpanel.
+     * Takes advantage of the fact that combinedPanel
+     * uses the preference key (with "." replaced by "_"),
+     * as its model path.
+     */
+    fluid.uiOptions.supPanel.generateRules = function (preferenceMap) {
+        var rules = {};
+        fluid.each(preferenceMap, function (prefObj, prefKey) {
+            $.each(prefObj, function (prefRule) {
+                if (prefRule.indexOf("model.") === 0) {
+                    rules[prefKey.replace(".", "_", "g")] = prefRule.slice(6);
+                }
+            });
+        });
+        return rules;
+    };
+
     /*********************************
      * Base grade for combined panel *
      *********************************/
 
     fluid.defaults("fluid.uiOptions.combinedPanel", {
         gradeNames: ["fluid.uiOptions.panel", "autoInit"],
+        mergePolicy: {
+            subPanelOverrides: "noexpand"
+        },
         preferenceMap: {
             expander: {
                 funcName: "fluid.uiOptions.combinedPanel.combinePreferenceMaps",
                 args: ["{that}.options.components"]
             }
         },
-        components: {},
+
+        // Temporary. Should switch to the dynamically genearted distributeOptions block
+        // commented out below. However, currently distributeOptions doesn't support expanders.
+        distributeOptions: [{
+            source: "{that}.options.subPanelOverrides",
+            target: "{that > subPanel1}.options"
+        }, {
+            source: "{that}.options.subPanelOverrides",
+            target: "{that > subPanel2}.options"
+        }],
+
+        // distributeOptions: {
+        //     expander: {
+        //         funcName: "fluid.uiOptions.combinedPanel.assembleDistributeOptions",
+        //         args: ["{that}.options.components"]
+        //     }
+        // },
+
+        subPanelOverrides: {
+            gradeNames: ["fluid.uiOptions.supPanel"]
+        },
+
+        components: {}
     });
 
+    /*
+     * Combines the preference maps of the subpanels into a single preference map,
+     * to be used by the combined panel.
+     * Note that this assumes the internal model paths to be the same as the
+     * preference key (with "." replaced by "_").
+     * Any other options mapping is done by forwarding the option down to the subpanel.
+     */
     fluid.uiOptions.combinedPanel.combinePreferenceMaps = function (components) {
         var preferenceMap = {};
         fluid.each(components, function (component, cmpName) {
@@ -58,7 +138,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         if (ruleName.indexOf(mdlPrefix) === 0) {
                             prefObj[mdlPrefix + prefName.replace(".", "_", "g")] = rule;
                         } else {
-                            prefObj[cmpName  + "." + ruleName] = rule;
+                            prefObj["components." + cmpName  + "." + ruleName] = rule;
                         }
                     });
                     preferenceMap[prefName] = prefObj;
@@ -66,6 +146,20 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
         return preferenceMap;
+    };
+
+    /*
+     * Assembles the distributeOption rules based on the sub components.
+     */
+    fluid.uiOptions.combinedPanel.assembleDistributeOptions = function (components) {
+        var distributeRules = [];
+        $.each(components, function (componentName) {
+            distributeRules.push({
+                source: "{that}.options.subPanelOverrides",
+                target: "{that > " + componentName + "}.options"
+            });
+        });
+        return distributeRules;
     };
 
     /********************************
