@@ -531,5 +531,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             applier.requestChange("selections", {lineSpace: 1.5});
             jqUnit.assertTrue("Over-broad change triggers listener", notified);
         });
+
+        jqUnit.test("FLUID-5151: One single listener function defined for multiple model paths is only registered succesfully on one path", function() {
+            var model = {
+                path1: null,
+                path2: null
+            };
+            var applier = fluid.makeChangeApplier(model);
+
+            var currentPath = null;
+            var listenerToFire = function (newModel, oldModel, changeRequest) {
+                currentPath = changeRequest[0].path;
+            };
+
+            applier.modelChanged.addListener("path1", listenerToFire);
+            applier.modelChanged.addListener("path2", listenerToFire);
+
+            var triggerChangeRequest = function (fireOn) {
+                applier.requestChange(fireOn, fireOn);
+                jqUnit.assertEquals("The listener registered for model path " + fireOn + " has been fired", fireOn, currentPath);
+            };
+
+            triggerChangeRequest("path1");
+            triggerChangeRequest("path2");
+        });
     });
 })(jQuery);
