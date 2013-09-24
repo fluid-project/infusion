@@ -96,6 +96,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.combinedPanel", {
         gradeNames: ["fluid.uiOptions.combinedPanel", "autoInit"],
+        selectors: {
+            subPanel1: ".subPanel1",
+            subPanel2: ".subPanel2"
+        },
         members: {
             fireRecord: {}
         },
@@ -110,6 +114,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listener: "{that}.writeRecord",
                 args: ["combinedPanel"]
             }
+        },
+        resources: {
+            template: {
+                resourceText: '<section><article class="subPanel1"></article><article class="subPanel2"></article></section>'
+            },
+            subPanel1: {
+                resourceText: "<h2>subPanel1</h2>"
+            },
+            subPanel2: {
+                resourceText: "<h2>subPanel2</h2>"
+            },
         },
         components: {
             subPanel1: {
@@ -159,9 +174,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.test("fluid.uiOptions.combinedPanel", function () {
-        jqUnit.expect(6);
+        jqUnit.expect(7);
         var that = fluid.tests.combinedPanel(".flc-uiOptions-combinedPanel");
-        console.log(that);
 
         var expectedPreferenceMap = {
             "fluid.uiOptions.sub1": {
@@ -184,6 +198,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid_uiOptions_sub2": "value"
         };
 
+        var expectedResourceText = '<section><article class="subPanel1"><h2>subPanel1</h2></article><article class="subPanel2"><h2>subPanel2</h2></article></section>';
+
         var expectedFireRecord = {
             combinedPanel: 3,
             subPanel1: 3,
@@ -193,8 +209,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The preferenceMap should have been assembled correctly", expectedPreferenceMap, that.options.preferenceMap);
         jqUnit.assertFalse("The renderOnInit option for subPanel1 should be false", that.subPanel1.options.renderOnInit);
         jqUnit.assertFalse("The renderOnInit option for subPanel2 should be false", that.subPanel2.options.renderOnInit);
-        jqUnit.assertDeepEq("the rules block for subPanel1 should be generated correctly", expectedSubPanel1Rules, that.subPanel1.options.rules);
-        jqUnit.assertDeepEq("the rules block for subPanel2 should be generated correctly", expectedSubPanel2Rules, that.subPanel2.options.rules);
+        jqUnit.assertDeepEq("The rules block for subPanel1 should be generated correctly", expectedSubPanel1Rules, that.subPanel1.options.rules);
+        jqUnit.assertDeepEq("The rules block for subPanel2 should be generated correctly", expectedSubPanel2Rules, that.subPanel2.options.rules);
+        jqUnit.assertEquals("The resourceText should have been combined correctly", expectedResourceText, that.options.resources.template.resourceText);
 
         that.refreshView();
         that.subPanel1.refreshView();

@@ -93,18 +93,25 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}.options.components"]
             }
         },
-
+        selectors: {}, // requires selectors into the template which will act as the containers for the subpanels
+        listeners: {
+            "onCreate.combineResources": "{that}.combineResources"
+        },
         invokers: {
             getDistributeOptionsGrade: {
                 funcName: "fluid.uiOptions.combinedPanel.assembleDistributeOptions",
                 args: ["{that}.options.components"]
+            },
+            combineResources: {
+                funcName: "fluid.uiOptions.combinedPanel.combineTemplates",
+                args: ["{that}.options.resources", "{that}.options.selectors"]
             }
         },
         subPanelOverrides: {
             gradeNames: ["fluid.uiOptions.supPanel"]
         },
-
-        components: {}
+        components: {},
+        resources: {} // template is reserved for the combinedPanel's template, the subpanel template should have same key as the selector for its container.
     });
 
     /*
@@ -170,6 +177,41 @@ var fluid_1_5 = fluid_1_5 || {};
         });
 
         return gradeName;
+    };
+
+    /*
+     * Use the renderer directly to combine the templates into a single
+     * template to be used by the components actual rendering.
+     */
+    fluid.uiOptions.combinedPanel.combineTemplates = function (resources, selectors) {
+        var cutpoints = [];
+        var tree = {children: []};
+
+        fluid.each(resources, function (resource, resourceName) {
+            if (resourceName !== "template") {
+                tree.children.push({
+                    ID: resourceName,
+                    markup: resource.resourceText
+                });
+                cutpoints.push({
+                    id: resourceName,
+                    selector: selectors[resourceName]
+                });
+            }
+        });
+
+        var resourceSpec = {
+            base: {
+                resourceText: resources.template.resourceText,
+                href: ".",
+                resourceKey: ".",
+                cutpoints: cutpoints
+            }
+        };
+
+        var templates = fluid.parseTemplates(resourceSpec, ["base"]);
+        var renderer = fluid.renderer(templates, tree, {cutpoints: cutpoints, debugMode: true});
+        resources.template.resourceText = renderer.renderTemplates();
     };
 
 
