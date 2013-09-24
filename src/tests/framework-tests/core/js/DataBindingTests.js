@@ -532,7 +532,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Over-broad change triggers listener", notified);
         });
 
-        jqUnit.test("FLUID-5151: One single listener function defined for multiple model paths is only registered succesfully on one path", function() {
+        jqUnit.test("FLUID-5151: One single listener function hooked up for multiple model paths only have the last call registered succesfully", function() {
             var model = {
                 path1: null,
                 path2: null
