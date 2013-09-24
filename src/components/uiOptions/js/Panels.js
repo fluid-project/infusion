@@ -83,7 +83,7 @@ var fluid_1_5 = fluid_1_5 || {};
      *********************************/
 
     fluid.defaults("fluid.uiOptions.combinedPanel", {
-        gradeNames: ["fluid.uiOptions.panel", "autoInit"],
+        gradeNames: ["fluid.uiOptions.panel", "autoInit", "{that}.getDistributeOptionsGrade"],
         mergePolicy: {
             subPanelOverrides: "noexpand"
         },
@@ -94,23 +94,12 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
 
-        // Temporary. Should switch to the dynamically genearted distributeOptions block
-        // commented out below. However, currently distributeOptions doesn't support expanders.
-        distributeOptions: [{
-            source: "{that}.options.subPanelOverrides",
-            target: "{that > subPanel1}.options"
-        }, {
-            source: "{that}.options.subPanelOverrides",
-            target: "{that > subPanel2}.options"
-        }],
-
-        // distributeOptions: {
-        //     expander: {
-        //         funcName: "fluid.uiOptions.combinedPanel.assembleDistributeOptions",
-        //         args: ["{that}.options.components"]
-        //     }
-        // },
-
+        invokers: {
+            getDistributeOptionsGrade: {
+                funcName: "fluid.uiOptions.combinedPanel.assembleDistributeOptions",
+                args: ["{that}.options.components"]
+            }
+        },
         subPanelOverrides: {
             gradeNames: ["fluid.uiOptions.supPanel"]
         },
@@ -161,6 +150,29 @@ var fluid_1_5 = fluid_1_5 || {};
         });
         return distributeRules;
     };
+
+    /*
+     * Creates a grade containing the distributeOptions rules needed for the subcomponents
+     */
+    fluid.uiOptions.combinedPanel.assembleDistributeOptions = function (components) {
+        var gradeName = "fluid.uiOptions.combinedPanel.distributeOptions";
+        var distributeRules = [];
+        $.each(components, function (componentName) {
+            distributeRules.push({
+                source: "{that}.options.subPanelOverrides",
+                target: "{that > " + componentName + "}.options"
+            });
+        });
+
+        fluid.defaults(gradeName, {
+            gradeNames: ["fluid.littleComponent", "autoInit"],
+            distributeOptions: distributeRules
+        });
+
+        return gradeName;
+    };
+
+
 
     /********************************
      * UI Options Text Field Slider *
