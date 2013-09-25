@@ -95,7 +95,8 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         selectors: {}, // requires selectors into the template which will act as the containers for the subpanels
         listeners: {
-            "onCreate.combineResources": "{that}.combineResources"
+            "onCreate.combineResources": "{that}.combineResources",
+            "onCreate.surfaceSubpanelRendererSelectors": "{that}.surfaceSubpanelRendererSelectors"
         },
         invokers: {
             getDistributeOptionsGrade: {
@@ -105,6 +106,10 @@ var fluid_1_5 = fluid_1_5 || {};
             combineResources: {
                 funcName: "fluid.uiOptions.combinedPanel.combineTemplates",
                 args: ["{that}.options.resources", "{that}.options.selectors"]
+            },
+            surfaceSubpanelRendererSelectors: {
+                funcName: "fluid.uiOptions.combinedPanel.surfaceSubpanelRendererSelectors",
+                args: ["{that}.options.components", "{that}.options.selectors"]
             }
         },
         subPanelOverrides: {
@@ -142,20 +147,6 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
         return preferenceMap;
-    };
-
-    /*
-     * Assembles the distributeOption rules based on the sub components.
-     */
-    fluid.uiOptions.combinedPanel.assembleDistributeOptions = function (components) {
-        var distributeRules = [];
-        $.each(components, function (componentName) {
-            distributeRules.push({
-                source: "{that}.options.subPanelOverrides",
-                target: "{that > " + componentName + "}.options"
-            });
-        });
-        return distributeRules;
     };
 
     /*
@@ -214,7 +205,20 @@ var fluid_1_5 = fluid_1_5 || {};
         resources.template.resourceText = renderer.renderTemplates();
     };
 
-
+    /*
+     * Surfaces the rendering selectors from the subpanels to the combinedPanel,
+     * and scopes them to the subpanel's container.
+     */
+    fluid.uiOptions.combinedPanel.surfaceSubpanelRendererSelectors = function (components, selectors) {
+        fluid.each(components, function (compOpts, compName) {
+            var comp = fluid.defaults(compOpts.type);
+            fluid.each(comp.selectors, function (selector, selName) {
+                if (!comp.selectorsToIgnore || $.inArray(selName, comp.selectorsToIgnore) < 0) {
+                    fluid.set(selectors,  compName + "_" + selName, selectors[compName] + " " + selector);
+                }
+            });
+        });
+    };
 
     /********************************
      * UI Options Text Field Slider *
