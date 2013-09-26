@@ -24,19 +24,14 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
     
     fluid.defaults("fluid.viewComponent", {
-        gradeNames: ["fluid.littleComponent", "fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.standardComponent", "autoInit"],
         initFunction: "fluid.initView",
         argumentMap: {
             container: 0,
             options: 1
         },
         members: { // Used to allow early access to DOM binder via IoC, but to also avoid triggering evaluation of selectors
-            dom: {
-                expander: {
-                    funcName: "fluid.initDomBinder",
-                    args: ["{that}", "{that}.options.selectors"]
-                }
-            }
+            dom: "@expand:fluid.initDomBinder({that}, {that}.options.selectors)"
         }
     });
 

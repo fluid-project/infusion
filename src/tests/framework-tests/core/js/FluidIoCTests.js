@@ -3054,7 +3054,7 @@ fluid.registerNamespace("fluid.tests");
         var defs = fluid.defaults("fluid.tests.fluid5023comp2");
 
         jqUnit.assertUndefined("The defaults should not have the tempId", defs.model.tempId);
-        jqUnit.assertNotEquals("The ids in the models are not equal", c1.applier.model.tempId, c2.applier.model.tempId);
+        jqUnit.assertNotEquals("The ids in the models are not equal", c1.model.tempId, c2.model.tempId);
 
         delete fluid.staticEnvironment.testSharedGrade;
     });

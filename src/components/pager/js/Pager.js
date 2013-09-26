@@ -354,16 +354,17 @@ var fluid_1_5 = fluid_1_5 || {};
     
     // TODO: Remove this and replace with FLUID-4258 scheme
     fluid.pager.preInit = function (that) {
+        var applier = fluid.getForComponent(that, "applier");
         // Explicit namespace to evade FLUID-5077
-        that.applier.postGuards.addListener({path: "pageSize", transactional: true}, 
+        applier.postGuards.addListener({path: "pageSize", transactional: true}, 
                 fluid.pager.pageCountGuard, "pageSizeGuard");
-        that.applier.postGuards.addListener({path: "totalRange", transactional: true}, 
+        applier.postGuards.addListener({path: "totalRange", transactional: true}, 
                 fluid.pager.pageCountGuard, "totalRangeGuard");
                 
-        that.applier.guards.addListener({path: "pageIndex", transactional: true}, 
+        applier.guards.addListener({path: "pageIndex", transactional: true}, 
                 fluid.pager.pageIndexGuard);
         
-        that.applier.modelChanged.addListener({path: "*"},
+        applier.modelChanged.addListener({path: "*"},
             function (newModel, oldModel, changes) {
                 that.events.onModelChange.fire(newModel, oldModel);
         });

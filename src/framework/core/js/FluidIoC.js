@@ -106,7 +106,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     // unsupported, NON-API function
     fluid.memberFromRecord = function (memberrec, name, that) {
-        var value = fluid.expandOptions(memberrec, that);
+        var value = fluid.expandOptions(memberrec, that, null, null, {freeRoot: true});
         return value;
     };
 
@@ -765,6 +765,7 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.pushActivity("expandOptions", "expanding options %args for component %that ", {that: that, args: args});
         var expandOptions = fluid.makeStackResolverOptions(that, localRecord);
         expandOptions.mergePolicy = mergePolicy;
+        expandOptions.freeRoot = outerExpandOptions && outerExpandOptions.freeRoot;
         var expanded = outerExpandOptions && outerExpandOptions.defer ?
             fluid.makeExpandOptions(args, expandOptions) : fluid.expand(args, expandOptions);
         fluid.popActivity();
@@ -1933,7 +1934,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.fetchExpandChildren = function (target, i, segs, source, mergePolicy, miniWorld, options) {
         if (source.expander /* && source.expander.type */) { // possible expander at top level
             var expanded = fluid.expandExpander(target, source, options);
-            if (fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || !fluid.isPlainObject(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
+            if (options.freeRoot || fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || !fluid.isPlainObject(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
                 return expanded;
             }
             else { // make an attempt to preserve the root reference if possible

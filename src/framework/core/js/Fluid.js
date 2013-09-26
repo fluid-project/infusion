@@ -2018,33 +2018,6 @@ var fluid = fluid || fluid_1_5;
         }
     });
     
-    
-    fluid.preInitModelComponent = function (that) {
-        that.model = that.options.model || {};
-        that.applier = that.options.applier || (fluid.makeChangeApplier ? fluid.makeChangeApplier(that.model, that.options.changeApplierOptions) : null);
-    };
-    
-    fluid.defaults("fluid.modelComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        preInitFunction: {
-            namespace: "preInitModelComponent",
-            listener: "fluid.preInitModelComponent"
-        },
-        mergePolicy: {
-            model: "preserve",
-            applier: "nomerge",
-            modelListeners: fluid.makeMergeListenersPolicy(fluid.arrayConcatPolicy)
-        }
-    });
-    
-    fluid.defaults("fluid.modelRelayComponent", {
-        gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"]
-    });
-    
-    fluid.defaults("fluid.standardComponent", {
-        gradeNames: ["fluid.modelRelayComponent", "autoInit"]
-    });
-    
     /** A special "marker object" which is recognised as one of the arguments to
      * fluid.initSubcomponents. This object is recognised by reference equality -
      * where it is found, it is replaced in the actual argument position supplied

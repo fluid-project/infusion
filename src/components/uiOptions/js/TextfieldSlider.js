@@ -33,7 +33,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     model: "{textfieldSlider}.model",
                     range: "{textfieldSlider}.options.range",
-                    applier: "{textfieldSlider}.applier"
+                    members: {
+                        applier: "{textfieldSlider}.applier"
+                    }
                 }
             },
             slider: {
@@ -42,7 +44,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     model: "{textfieldSlider}.model",
                     range: "{textfieldSlider}.options.range",
-                    applier: "{textfieldSlider}.applier",
+                    members: {
+                        applier: "{textfieldSlider}.applier"
+                    },
                     sliderOptions: "{textfieldSlider}.options.sliderOptions"
                 }
             }
