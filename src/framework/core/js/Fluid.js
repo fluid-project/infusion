@@ -2102,9 +2102,6 @@ var fluid = fluid || fluid_1_5;
         if (evented) {
             fluid.instantiateFirers(that, options);
             fluid.mergeListeners(that, that.events, options.listeners);
-            if (fluid.mergeModelListeners) {
-                fluid.mergeModelListeners(that, options.modelListeners);
-            }
         }
         if (!fluid.hasGrade(options, "autoInit")) {
             fluid.clearLifecycleFunctions(options);

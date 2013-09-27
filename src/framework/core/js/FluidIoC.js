@@ -1055,11 +1055,14 @@ var fluid_1_5 = fluid_1_5 || {};
                     args[i] = fluid.expand(arg, expandOptions);
                 }
                 else { // It is the component options
+                    if (options.passArgs) {
+                        fluid.fail("Error invoking function " + demandspec.funcName + ": found component creator rather than free function");
+                    }
                     if (typeof(arg) === "object" && !arg.targetTypeName) {
                         arg.targetTypeName = demandspec.funcName;
                     }
                     mergeRecords.demands = [];
-                    fluid.each(demandspec.backSpecs.reverse(), function (backSpec) {
+                    fluid.each((demandspec.backSpecs).reverse(), function (backSpec) {
                         fluid.pushDemandSpec(mergeRecords.demands, backSpec.options, backSpec.mergeOptions);
                     });
                     fluid.pushDemandSpec(mergeRecords.demands, demandspec.options || arg, demandspec.mergeOptions);

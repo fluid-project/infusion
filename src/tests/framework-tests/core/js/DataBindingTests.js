@@ -589,4 +589,140 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Priority order respected", 1, that.initted);
         jqUnit.assertEquals("Two global name listeners added", 2, that.initMultiple);
     });
+    
+        
+    /** FLUID-3674: New model semantic tests **/
+    
+    fluid.tests.recordChange = function (fireRecord, path, value, oldValue) {
+        fireRecord.push({path: path, value: value, oldValue: oldValue});
+    };
+    
+    fluid.defaults("fluid.tests.changeRecorder", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        members: {
+            fireRecord: []
+        },
+        invokers: {
+            record: "fluid.tests.recordChange({that}.fireRecord, {arguments}.0, {arguments}.1, {arguments}.2)",
+        }        
+    });
+    
+    fluid.defaults("fluid.tests.fluid4258head", {
+        gradeNames: ["fluid.tests.changeRecorder", "autoInit"],
+        model: {
+            thing1: {
+                nest1: 2,
+                nest2: false
+            },
+            thing2: 3
+        },
+        events: {
+            createEvent: null
+        },
+        invokers: {
+            changeNest2: {
+                changePath: "thing1.nest2",
+                value: "{arguments}.0"
+            },
+            changeThing2: {
+                changePath: "thing2",
+                source: "internalSource",
+                value: "{arguments}.0"
+            }
+        },
+        components: {
+            child: {
+                type: "fluid.standardComponent",
+                createOnEvent: "createEvent",
+                options: {
+                    modelListeners: {
+                        "{fluid4258head}.model.thing1.nest2": {
+                            func: "{fluid4258head}.record",
+                            args: ["{change}.path", "{change}.value", "{change}.oldValue"]
+                        }
+                    },
+                    invokers: {
+                        changeNest2: {
+                            changePath: "{fluid4258head}.model.thing1.nest2",
+                            value: "{arguments}.0"
+                        }
+                    }
+                }
+            }
+        },
+        modelListeners: {
+            "thing1.nest1": "{that}.record({change}.path, {change}.value, {change}.oldValue)",
+            "thing2": {
+                func: "{that}.record",
+                args: "{change}.value",
+                guardSource: "internalSource"
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-4258 declarative listener test", function () {
+        var that = fluid.tests.fluid4258head();
+        that.applier.requestChange("thing1.nest1", 3);
+        jqUnit.assertDeepEq("Single change correctly reported", 
+            [{path: ["thing1", "nest1"], value: 3, oldValue: 2}], that.fireRecord);
+        for (var i = 0; i < 2; ++ i) {
+            that.fireRecord.length = 0;
+            that.events.createEvent.fire();
+            that.changeNest2(true);
+            jqUnit.assertDeepEq("Change reported to subcomponent - time " + (i + 1), 
+                [{path: ["thing1", "nest2"], value: true, oldValue: false}], that.fireRecord);
+            that.child.changeNest2(false);
+        }
+        that.fireRecord.length = 0;
+        that.changeThing2(5);
+        jqUnit.assertDeepEq("Source guarded change not reported", [], that.fireRecord);
+    });
+    
+    fluid.defaults("fluid.tests.changer", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        invokers: {
+            change: {
+                changePath: "{arguments}.0",
+                value: "{arguments.1"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid3674head", {
+        gradeNames: ["fluid.standardRelayComponent", "fluid.tests.changer", "fluid.tests.changeRecorder", "autoInit"],
+        model: { // test forward reference as well as transactional initialisation
+            innerModel: "{child}.model.nested1"
+        },
+        modelListeners: {
+            "innerModel": "{that}.record({change}.path, {change}.value, {change}.oldValue)"
+        },
+        components: {
+            child: {
+                type: "fluid.tests.changer",
+                options: {
+                    gradeNames: ["fluid.standardRelayComponent"],
+                    model: {
+                        nested1: {
+                            nested2: "thing"
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-3674 basic model relay test", function () {
+        var that = fluid.tests.fluid3674head();
+        var expected = {
+            innerModel: {
+                nested2: "thing"
+            }
+        };
+        jqUnit.assertDeepEq("Model successfully resolved on init", expected, that.model);
+        var expected2 = [{
+            path: ["innerModel"], oldValue: undefined, value: {nested2: "thing"}
+        }];
+        jqUnit.assertDeepEq("Registered initial change", expected2, that.fireRecord);
+    });
+    
 })(jQuery);

@@ -402,8 +402,14 @@ var fluid_1_5 = fluid_1_5 || {};
         return that.model = optionsModel || {};
     };
     
-    fluid.initRelayModel = function (that, modelOptions, applier) {
-      
+    fluid.initRelayModel = function (that, optionsModel, applier) {
+        return optionsModel || {};
+    };
+    
+    fluid.establishModelRelay = function (that, model, optionsModel, optionsML, applier) {
+        // build up here
+        fluid.mergeModelListeners(that, optionsML);
+        applier.initModelEvent();
     };
     
     // Grade common to "old" and "new" model components
@@ -418,7 +424,8 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.commonModelComponent", "autoInit"], 
         members: {
             model: "@expand:fluid.initSimpleModel({that}, {that}.options.model)",
-            applier: "@expand:fluid.makeChangeApplier({that}.model, {that}.options.changeApplierOptions)"
+            applier: "@expand:fluid.makeChangeApplier({that}.model, {that}.options.changeApplierOptions)",
+            modelListeners: "@expand:fluid.mergeModelListeners({that}, {that}.options.modelListeners)"
         },
         mergePolicy: {
             model: "preserve"
@@ -429,10 +436,10 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.commonModelComponent", "fluid.eventedComponent", "autoInit"],
         members: {
             model: "@expand:fluid.initRelayModel({that}, {that}.options.model, {that}.applier)",
-            applier: "@expand:fluid.makeHolderChangeApplier({that}, {that}.options.changeApplierOptions)"
+            applier: "@expand:fluid.makeHolderChangeApplier({that}, {that}.options.changeApplierOptions)",
+            modelRelay: "@expand:fluid.establishModelRelay({that}, {that}.model, {that}.options.model, {that}.options.modelListeners, {that}.applier)"
         },
         mergePolicy: {
-            model: "noexpand",
             modelRelay: fluid.arrayConcatPolicy
         }
     });
