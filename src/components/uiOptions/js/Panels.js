@@ -39,9 +39,9 @@ var fluid_1_5 = fluid_1_5 || {};
         mergePolicy: {
             sourceApplier: "nomerge"
         },
-        sourceApplier: "{combinedPanel}.applier",
+        sourceApplier: "{compositePanel}.applier",
         listeners: {
-            "{combinedPanel}.events.afterRender": {
+            "{compositePanel}.events.afterRender": {
                 listener: "{that}.events.afterRender",
                 args: ["{that}"]
             }
@@ -53,7 +53,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         invokers: {
-            refreshView: "{combinedPanel}.refreshView"
+            refreshView: "{compositePanel}.refreshView"
         },
         strings: {},
         // parentBundle: "", // add this in later
@@ -62,7 +62,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     /*
      * Generates the model relay rules for a subpanel.
-     * Takes advantage of the fact that combinedPanel
+     * Takes advantage of the fact that compositePanel
      * uses the preference key (with "." replaced by "_"),
      * as its model path.
      */
@@ -82,14 +82,14 @@ var fluid_1_5 = fluid_1_5 || {};
      * Base grade for combined panel *
      *********************************/
 
-    fluid.defaults("fluid.uiOptions.combinedPanel", {
+    fluid.defaults("fluid.uiOptions.compositePanel", {
         gradeNames: ["fluid.uiOptions.panel", "autoInit", "{that}.getDistributeOptionsGrade"],
         mergePolicy: {
             subPanelOverrides: "noexpand"
         },
         preferenceMap: {
             expander: {
-                funcName: "fluid.uiOptions.combinedPanel.combinePreferenceMaps",
+                funcName: "fluid.uiOptions.compositePanel.combinePreferenceMaps",
                 args: ["{that}.options.components"]
             }
         },
@@ -100,15 +100,15 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         invokers: {
             getDistributeOptionsGrade: {
-                funcName: "fluid.uiOptions.combinedPanel.assembleDistributeOptions",
+                funcName: "fluid.uiOptions.compositePanel.assembleDistributeOptions",
                 args: ["{that}.options.components"]
             },
             combineResources: {
-                funcName: "fluid.uiOptions.combinedPanel.combineTemplates",
+                funcName: "fluid.uiOptions.compositePanel.combineTemplates",
                 args: ["{that}.options.resources", "{that}.options.selectors"]
             },
             surfaceSubpanelRendererSelectors: {
-                funcName: "fluid.uiOptions.combinedPanel.surfaceSubpanelRendererSelectors",
+                funcName: "fluid.uiOptions.compositePanel.surfaceSubpanelRendererSelectors",
                 args: ["{that}.options.components", "{that}.options.selectors"]
             }
         },
@@ -116,7 +116,7 @@ var fluid_1_5 = fluid_1_5 || {};
             gradeNames: ["fluid.uiOptions.supPanel"]
         },
         components: {},
-        resources: {} // template is reserved for the combinedPanel's template, the subpanel template should have same key as the selector for its container.
+        resources: {} // template is reserved for the compositePanel's template, the subpanel template should have same key as the selector for its container.
     });
 
     /*
@@ -126,7 +126,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * preference key (with "." replaced by "_").
      * Any other options mapping is done by forwarding the option down to the subpanel.
      */
-    fluid.uiOptions.combinedPanel.combinePreferenceMaps = function (components) {
+    fluid.uiOptions.compositePanel.combinePreferenceMaps = function (components) {
         var preferenceMap = {};
         fluid.each(components, function (component, cmpName) {
             var opts = $.extend(true, {}, fluid.defaults(component.type), component.options);
@@ -152,8 +152,8 @@ var fluid_1_5 = fluid_1_5 || {};
     /*
      * Creates a grade containing the distributeOptions rules needed for the subcomponents
      */
-    fluid.uiOptions.combinedPanel.assembleDistributeOptions = function (components) {
-        var gradeName = "fluid.uiOptions.combinedPanel.distributeOptions";
+    fluid.uiOptions.compositePanel.assembleDistributeOptions = function (components) {
+        var gradeName = "fluid.uiOptions.compositePanel.distributeOptions";
         var distributeRules = [];
         $.each(components, function (componentName) {
             distributeRules.push({
@@ -174,7 +174,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * Use the renderer directly to combine the templates into a single
      * template to be used by the components actual rendering.
      */
-    fluid.uiOptions.combinedPanel.combineTemplates = function (resources, selectors) {
+    fluid.uiOptions.compositePanel.combineTemplates = function (resources, selectors) {
         var cutpoints = [];
         var tree = {children: []};
 
@@ -206,10 +206,10 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     /*
-     * Surfaces the rendering selectors from the subpanels to the combinedPanel,
+     * Surfaces the rendering selectors from the subpanels to the compositePanel,
      * and scopes them to the subpanel's container.
      */
-    fluid.uiOptions.combinedPanel.surfaceSubpanelRendererSelectors = function (components, selectors) {
+    fluid.uiOptions.compositePanel.surfaceSubpanelRendererSelectors = function (components, selectors) {
         fluid.each(components, function (compOpts, compName) {
             var comp = fluid.defaults(compOpts.type);
             fluid.each(comp.selectors, function (selector, selName) {
@@ -220,7 +220,7 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
 
-    fluid.uiOptions.combinedPanel.rebaseProtoTree = function (protoTree, selectors, memberName) {
+    fluid.uiOptions.compositePanel.rebaseProtoTree = function (protoTree, selectors, memberName) {
         var rules = {};
         var rebased = fluid.copy(protoTree);
         fluid.each(rebased, function (value, key) {
@@ -230,7 +230,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 rules[key] = key;
             }
             if (typeof value === "object" && !fluid.isArrayable(value)) {
-                rebased[key] = fluid.uiOptions.combinedPanel.rebaseProtoTree(value, selectors, memberName);
+                rebased[key] = fluid.uiOptions.compositePanel.rebaseProtoTree(value, selectors, memberName);
             }
         });
         return fluid.model.transform(rebased, rules);

@@ -100,8 +100,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.tests.combinedPanel", {
-        gradeNames: ["fluid.uiOptions.combinedPanel", "autoInit"],
+    fluid.defaults("fluid.tests.compositePanel", {
+        gradeNames: ["fluid.uiOptions.compositePanel", "autoInit"],
         selectors: {
             subPanel1: ".subPanel1",
             subPanel2: ".subPanel2"
@@ -111,14 +111,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         invokers: {
             writeRecord: {
-                funcName: "fluid.tests.combinedPanel.writeRecord",
+                funcName: "fluid.tests.compositePanel.writeRecord",
                 args: ["{that}.fireRecord", "{arguments}.0"]
             }
         },
         listeners: {
             afterRender: {
                 listener: "{that}.writeRecord",
-                args: ["combinedPanel"]
+                args: ["compositePanel"]
             }
         },
         resources: {
@@ -135,7 +135,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             subPanel1: {
                 type: "fluid.tests.subPanel",
-                container: "{combinedPanel}.container",
+                container: "{compositePanel}.container",
                 options: {
                     preferenceMap: {
                         "fluid.uiOptions.sub1": {
@@ -149,7 +149,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     listeners: {
                         afterRender: {
-                            listener: "{combinedPanel}.writeRecord",
+                            listener: "{compositePanel}.writeRecord",
                             args: ["subPanel1"]
                         }
                     }
@@ -157,7 +157,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             subPanel2: {
                 type: "fluid.tests.subPanel",
-                container: "{combinedPanel}.container",
+                container: "{compositePanel}.container",
                 options: {
                     preferenceMap: {
                         "fluid.uiOptions.sub2": {
@@ -171,7 +171,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     listeners: {
                         afterRender: {
-                            listener: "{combinedPanel}.writeRecord",
+                            listener: "{compositePanel}.writeRecord",
                             args: ["subPanel2"]
                         }
                     }
@@ -180,14 +180,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.combinedPanel.writeRecord = function (fireRecord, id) {
+    fluid.tests.compositePanel.writeRecord = function (fireRecord, id) {
         var currentVal = fluid.get(fireRecord, id);
         fluid.set(fireRecord, id, currentVal !== undefined ? ++currentVal : 1);
     };
 
-    jqUnit.test("fluid.uiOptions.combinedPanel", function () {
+    jqUnit.test("fluid.uiOptions.compositePanel", function () {
         jqUnit.expect(9);
-        var that = fluid.tests.combinedPanel(".flc-uiOptions-combinedPanel");
+        var that = fluid.tests.compositePanel(".flc-uiOptions-compositePanel");
 
         var expectedPreferenceMap = {
             "fluid.uiOptions.sub1": {
@@ -213,7 +213,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expectedResourceText = '<section><article class="subPanel1"><h2>subPanel1</h2></article><article class="subPanel2"><h2>subPanel2</h2></article></section>';
 
         var expectedFireRecord = {
-            combinedPanel: 3,
+            compositePanel: 3,
             subPanel1: 3,
             subPanel2: 3
         };
@@ -227,8 +227,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The rules block for subPanel1 should be generated correctly", expectedSubPanel1Rules, that.subPanel1.options.rules);
         jqUnit.assertDeepEq("The rules block for subPanel2 should be generated correctly", expectedSubPanel2Rules, that.subPanel2.options.rules);
         jqUnit.assertEquals("The resourceText should have been combined correctly", expectedResourceText, that.options.resources.template.resourceText);
-        jqUnit.assertEquals("subPanel1's selectors should be surfaced to the combinedPanel correctly", expectedSupanel1Selector, that.options.selectors.subPanel1_header);
-        jqUnit.assertEquals("subPanel2's selectors should be surfaced to the combinedPanel correctly", expectedSupanel2Selector, that.options.selectors.subPanel2_header);
+        jqUnit.assertEquals("subPanel1's selectors should be surfaced to the compositePanel correctly", expectedSupanel1Selector, that.options.selectors.subPanel1_header);
+        jqUnit.assertEquals("subPanel2's selectors should be surfaced to the compositePanel correctly", expectedSupanel2Selector, that.options.selectors.subPanel2_header);
 
         that.refreshView();
         that.subPanel1.refreshView();
@@ -237,7 +237,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     });
 
-    jqUnit.test("fluid.uiOptions.combinedPanel.rebaseProtoTree", function () {
+    jqUnit.test("fluid.uiOptions.compositePanel.rebaseProtoTree", function () {
         var selectors = {
             title: ""
         };
@@ -252,7 +252,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
 
-        var actual = fluid.uiOptions.combinedPanel.rebaseProtoTree(uiBoundFixture.simple, selectors, memberName);
+        var actual = fluid.uiOptions.compositePanel.rebaseProtoTree(uiBoundFixture.simple, selectors, memberName);
         jqUnit.assertDeepEq("The simple uiBound case should have been rebased correctly.", uiBoundFixture.simpleExpected, actual);
     });
 
