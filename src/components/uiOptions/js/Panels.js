@@ -222,10 +222,18 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uiOptions.combinedPanel.rebaseProtoTree = function (protoTree, selectors, memberName) {
         var rules = {};
-        $.each(selectors, function (selectorName) {
-            rules[memberName + "_" + selectorName] = selectorName;
+        var rebased = fluid.copy(protoTree);
+        fluid.each(rebased, function (value, key) {
+            if ($.inArray(key, selectors)) {
+                rules[memberName + "_" + key] = key;
+            } else {
+                rules[key] = key;
+            }
+            if (typeof value === "object" && !fluid.isArrayable(value)) {
+                rebased[key] = fluid.uiOptions.combinedPanel.rebaseProtoTree(value, selectors, memberName);
+            }
         });
-        return fluid.model.transform(protoTree, rules);
+        return fluid.model.transform(rebased, rules);
     };
 
     /********************************
