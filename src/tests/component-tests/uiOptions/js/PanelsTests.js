@@ -237,6 +237,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     });
 
+    jqUnit.test("fluid.uiOptions.combinedPanel.rebaseProtoTree", function () {
+        var selectors = {
+            title: ""
+        };
+        var memberName = "subPanel";
+
+        var uiBoundFixture = {
+            simple: {
+                title: "simple"
+            },
+            simpleExpected: {
+                "subPanel_title": "simple"
+            }
+        };
+
+        var actual = fluid.uiOptions.combinedPanel.rebaseProtoTree(uiBoundFixture.simple, selectors, memberName);
+        jqUnit.assertDeepEq("The simple uiBound case should have been rebased correctly.", uiBoundFixture.simpleExpected, actual);
+    });
+
 
     /*******************************************************************************
      * textFontPanel

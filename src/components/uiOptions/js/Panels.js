@@ -220,6 +220,14 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
 
+    fluid.uiOptions.combinedPanel.rebaseProtoTree = function (protoTree, selectors, memberName) {
+        var rules = {};
+        $.each(selectors, function (selectorName) {
+            rules[memberName + "_" + selectorName] = selectorName;
+        });
+        return fluid.model.transform(protoTree, rules);
+    };
+
     /********************************
      * UI Options Text Field Slider *
      ********************************/
