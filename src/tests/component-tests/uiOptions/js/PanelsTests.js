@@ -96,7 +96,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             header: "h2"
         },
         protTree: {
-            header: "${{value}}"
+            header: "${value}"
         }
     });
 
