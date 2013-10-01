@@ -95,7 +95,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         selectors: {
             header: "h2"
         },
-        protTree: {
+        protoTree: {
             header: "${value}"
         }
     });
@@ -186,7 +186,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.test("fluid.uiOptions.compositePanel", function () {
-        jqUnit.expect(9);
+        jqUnit.expect(10);
         var that = fluid.tests.compositePanel(".flc-uiOptions-compositePanel");
 
         var expectedPreferenceMap = {
@@ -221,6 +221,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expectedSupanel1Selector = ".subPanel1 h2";
         var expectedSupanel2Selector = ".subPanel2 h2";
 
+        var expectedTree = {
+            children: [{
+                ID: "subPanel1_header",
+                componentType: "UIBound",
+                value: "subPanel1",
+                valuebinding: "fluid_uiOptions_sub1"
+            }, {
+                ID: "subPanel2_header",
+                componentType: "UIBound",
+                value: "subPanel2",
+                valuebinding: "fluid_uiOptions_sub2"
+            }]
+        };
+
         jqUnit.assertDeepEq("The preferenceMap should have been assembled correctly", expectedPreferenceMap, that.options.preferenceMap);
         jqUnit.assertFalse("The renderOnInit option for subPanel1 should be false", that.subPanel1.options.renderOnInit);
         jqUnit.assertFalse("The renderOnInit option for subPanel2 should be false", that.subPanel2.options.renderOnInit);
@@ -229,31 +243,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The resourceText should have been combined correctly", expectedResourceText, that.options.resources.template.resourceText);
         jqUnit.assertEquals("subPanel1's selectors should be surfaced to the compositePanel correctly", expectedSupanel1Selector, that.options.selectors.subPanel1_header);
         jqUnit.assertEquals("subPanel2's selectors should be surfaced to the compositePanel correctly", expectedSupanel2Selector, that.options.selectors.subPanel2_header);
+        jqUnit.assertDeepEq("The produceTree should have combined the subPanel protoTrees together correctly", expectedTree, that.produceTree());
 
-        that.refreshView();
-        that.subPanel1.refreshView();
-        that.subPanel2.refreshView();
-        jqUnit.assertDeepEq("The events should have populated the fireRecored correctly", expectedFireRecord, that.fireRecord);
+        // that.refreshView();
+        // that.subPanel1.refreshView();
+        // that.subPanel2.refreshView();
+        // jqUnit.assertDeepEq("The events should have populated the fireRecored correctly", expectedFireRecord, that.fireRecord);
 
-    });
-
-    jqUnit.test("fluid.uiOptions.compositePanel.rebaseProtoTree", function () {
-        var selectors = {
-            title: ""
-        };
-        var memberName = "subPanel";
-
-        var uiBoundFixture = {
-            simple: {
-                title: "simple"
-            },
-            simpleExpected: {
-                "subPanel_title": "simple"
-            }
-        };
-
-        var actual = fluid.uiOptions.compositePanel.rebaseProtoTree(uiBoundFixture.simple, selectors, memberName);
-        jqUnit.assertDeepEq("The simple uiBound case should have been rebased correctly.", uiBoundFixture.simpleExpected, actual);
     });
 
 

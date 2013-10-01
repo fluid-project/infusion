@@ -34,7 +34,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * Base grade for subpanel *
      ***************************/
 
-    fluid.defaults("fluid.uiOptions.supPanel", {
+    fluid.defaults("fluid.uiOptions.subPanel", {
         gradeNames: ["fluid.uiOptions.panel", "autoInit"],
         mergePolicy: {
             sourceApplier: "nomerge"
@@ -48,7 +48,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         rules: {
             expander: {
-                func: "fluid.uiOptions.supPanel.generateRules",
+                func: "fluid.uiOptions.subPanel.generateRules",
                 args: ["{that}.options.preferenceMap"]
             }
         },
@@ -66,7 +66,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * uses the preference key (with "." replaced by "_"),
      * as its model path.
      */
-    fluid.uiOptions.supPanel.generateRules = function (preferenceMap) {
+    fluid.uiOptions.subPanel.generateRules = function (preferenceMap) {
         var rules = {};
         fluid.each(preferenceMap, function (prefObj, prefKey) {
             $.each(prefObj, function (prefRule) {
@@ -113,8 +113,9 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         subPanelOverrides: {
-            gradeNames: ["fluid.uiOptions.supPanel"]
+            gradeNames: ["fluid.uiOptions.subPanel"]
         },
+        produceTree: "fluid.uiOptions.compositePanel.produceTree",
         components: {},
         resources: {} // template is reserved for the compositePanel's template, the subpanel template should have same key as the selector for its container.
     });
@@ -220,20 +221,78 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
 
-    fluid.uiOptions.compositePanel.rebaseProtoTree = function (protoTree, selectors, memberName) {
-        var rules = {};
-        var rebased = fluid.copy(protoTree);
-        fluid.each(rebased, function (value, key) {
-            if ($.inArray(key, selectors)) {
-                rules[memberName + "_" + key] = key;
-            } else {
-                rules[key] = key;
-            }
-            if (typeof value === "object" && !fluid.isArrayable(value)) {
-                rebased[key] = fluid.uiOptions.compositePanel.rebaseProtoTree(value, selectors, memberName);
+    fluid.defaults("fluid.uiOptions.compositePanel.rebaseID", {
+        gradeNames: "fluid.standardTransformFunction",
+        memberName: null
+    });
+
+    fluid.uiOptions.compositePanel.rebaseID = function (value, transformSpec) {
+        return transformSpec.memberName + "_" + value;
+    };
+
+
+    fluid.defaults("fluid.uiOptions.compositePanel.rebaseValueBinding", {
+        gradeNames: "fluid.standardTransformFunction",
+        rules: {}
+    });
+
+    fluid.uiOptions.compositePanel.rebaseValueBinding = function (value, transformSpec) {
+        return fluid.find(transformSpec.rules, function (oldModelPath, newModelPath) {
+            if (value === oldModelPath) {
+                return newModelPath;
             }
         });
+    };
+
+    fluid.uiOptions.compositePanel.rebaseTreeImp = function (tree, rules) {
+        var rebased = fluid.transform(tree, function (val, key) {
+            if (key === "children") {
+                return fluid.transform(val, function (v) {
+                    return fluid.uiOptions.compositePanel.rebaseTreeImp(v, rules);
+                });
+            } else {
+                return val;
+            }
+        });
+
         return fluid.model.transform(rebased, rules);
+    };
+
+    fluid.uiOptions.compositePanel.rebaseTree = function (tree, that, memberName, funcs) {
+        var rules = {
+            "ID": {
+                transform: {
+                    type: "fluid.uiOptions.compositePanel.rebaseID",
+                    inputPath: "ID",
+                    memberName: memberName
+                }
+            },
+            "valuebinding": {
+                transform: {
+                    type: "fluid.uiOptions.compositePanel.rebaseValueBinding",
+                    inputPath: "valuebinding",
+                    rules: that[memberName].options.rules
+                }
+            },
+            "": ""
+        };
+        return fluid.uiOptions.compositePanel.rebaseTreeImp(tree, rules);
+    };
+
+    fluid.uiOptions.compositePanel.produceTree = function (that) {
+        var tree = {children: []};
+        fluid.each(that.options.components, function (options, componentName) {
+            var subPanel = that[componentName];
+            var expanderOptions = fluid.renderer.modeliseOptions(subPanel.options.expanderOptions, {ELstyle: "${}"}, subPanel);
+            var expander = fluid.renderer.makeProtoExpander(expanderOptions, subPanel);
+            var rebasedTree = fluid.uiOptions.compositePanel.rebaseTree(expander(subPanel.produceTree()), that, componentName, {
+                "ID": "fluid.uiOptions.compositePanel.rebaseID",
+                "valuebinding": "fluid.uiOptions.compositePanel.rebaseValueBinding"
+            });
+            console.log(rebasedTree);
+            tree.children = tree.children.concat(rebasedTree.children);
+        });
+        return tree;
     };
 
     /********************************
