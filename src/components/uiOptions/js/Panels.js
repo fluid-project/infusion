@@ -152,9 +152,9 @@ var fluid_1_5 = fluid_1_5 || {};
                     fluid.each(preference, function (rule, ruleName) {
                         var mdlPrefix = "model.";
                         if (ruleName.indexOf(mdlPrefix) === 0) {
-                            prefObj[mdlPrefix + prefName.replace(".", "_", "g")] = rule;
+                            prefObj[mdlPrefix + prefName.replace(/[.]/g, "_")] = rule;
                         } else {
-                            prefObj["components." + cmpName  + "." + ruleName] = rule;
+                            prefObj["components." + cmpName  + ".options." + ruleName] = rule;
                         }
                     });
                     preferenceMap[prefName] = prefObj;

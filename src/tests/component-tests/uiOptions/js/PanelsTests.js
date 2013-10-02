@@ -195,13 +195,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expectedPreferenceMap = {
             "fluid.uiOptions.sub1": {
                 "model.fluid_uiOptions_sub1": "default",
-                "components.subPanel1.range.min": "minimum",
-                "components.subPanel1.range.max": "maximum"
+                "components.subPanel1.options.range.min": "minimum",
+                "components.subPanel1.options.range.max": "maximum"
             },
             "fluid.uiOptions.sub2": {
                 "model.fluid_uiOptions_sub2": "default",
-                "components.subPanel2.range.min": "minimum",
-                "components.subPanel2.range.max": "maximum"
+                "components.subPanel2.options.range.min": "minimum",
+                "components.subPanel2.options.range.max": "maximum"
             }
         };
 
