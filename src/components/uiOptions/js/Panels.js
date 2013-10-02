@@ -116,6 +116,9 @@ var fluid_1_5 = fluid_1_5 || {};
             gradeNames: ["fluid.uiOptions.subPanel"]
         },
         produceTree: "fluid.uiOptions.compositePanel.produceTree",
+        rendererFnOptions: {
+            noexpand: true
+        },
         components: {},
         resources: {} // template is reserved for the compositePanel's template, the subpanel template should have same key as the selector for its container.
     });
@@ -258,7 +261,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return fluid.model.transform(rebased, rules);
     };
 
-    fluid.uiOptions.compositePanel.rebaseTree = function (tree, that, memberName, funcs) {
+    fluid.uiOptions.compositePanel.rebaseTree = function (tree, memberName, modelRelayRules) {
         var rules = {
             "ID": {
                 transform: {
@@ -271,7 +274,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 transform: {
                     type: "fluid.uiOptions.compositePanel.rebaseValueBinding",
                     inputPath: "valuebinding",
-                    rules: that[memberName].options.rules
+                    rules: modelRelayRules
                 }
             },
             "": ""
@@ -285,11 +288,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var subPanel = that[componentName];
             var expanderOptions = fluid.renderer.modeliseOptions(subPanel.options.expanderOptions, {ELstyle: "${}"}, subPanel);
             var expander = fluid.renderer.makeProtoExpander(expanderOptions, subPanel);
-            var rebasedTree = fluid.uiOptions.compositePanel.rebaseTree(expander(subPanel.produceTree()), that, componentName, {
-                "ID": "fluid.uiOptions.compositePanel.rebaseID",
-                "valuebinding": "fluid.uiOptions.compositePanel.rebaseValueBinding"
-            });
-            console.log(rebasedTree);
+            var rebasedTree = fluid.uiOptions.compositePanel.rebaseTree(expander(subPanel.produceTree()), componentName, that[componentName].options.rules);
             tree.children = tree.children.concat(rebasedTree.children);
         });
         return tree;

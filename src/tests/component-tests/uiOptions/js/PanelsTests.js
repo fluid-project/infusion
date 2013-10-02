@@ -186,7 +186,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.test("fluid.uiOptions.compositePanel", function () {
-        jqUnit.expect(10);
+        jqUnit.expect(12);
         var that = fluid.tests.compositePanel(".flc-uiOptions-compositePanel");
 
         var expectedPreferenceMap = {
@@ -245,10 +245,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("subPanel2's selectors should be surfaced to the compositePanel correctly", expectedSupanel2Selector, that.options.selectors.subPanel2_header);
         jqUnit.assertDeepEq("The produceTree should have combined the subPanel protoTrees together correctly", expectedTree, that.produceTree());
 
-        // that.refreshView();
-        // that.subPanel1.refreshView();
-        // that.subPanel2.refreshView();
-        // jqUnit.assertDeepEq("The events should have populated the fireRecored correctly", expectedFireRecord, that.fireRecord);
+        that.refreshView();
+        that.subPanel1.refreshView();
+        that.subPanel2.refreshView();
+        jqUnit.assertDeepEq("The events should have populated the fireRecored correctly", expectedFireRecord, that.fireRecord);
+        jqUnit.assertEquals("The markup for subPanel1 should have rendered correctly", that.subPanel1.model.value, that.locate("header").text());
+        jqUnit.assertEquals("The markup for subPanel2 should have rendered correctly", that.subPanel2.model.value, that.locate("header").text());
 
     });
 
