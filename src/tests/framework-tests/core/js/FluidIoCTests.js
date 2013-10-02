@@ -3468,21 +3468,25 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("The option from the supplied grade should overwrite the original component option", "fromSuppliedGrade", root.options.source.options.userOption);
     });
 
-    /** FLUID-5154 dynamic grade doesn't run **/
+    /** FLUID-5155 failure of dynamic grade delivered dynamically **/
 
-    fluid.defaults("fluid.tests.dynamicParent", {
+    fluid.defaults("fluid.tests.fluid5155dynamicParent", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         parentOption: 1
     });
 
-    fluid.defaults("fluid.tests.dynamicGrade", {
+    fluid.defaults("fluid.tests.fluid5155dynamicGrade", {
         gradeNames: ["fluid.littleComponent", "autoInit", "{that}.computeGrade"],
         invokers: {
-            computeGrade: "fluid.tests.computeDynamicParent"
+            computeGrade: "fluid.tests.computeFluid5155DynamicParent"
         }
     });
 
-    fluid.defaults("fluid.tests.root5154", {
+    fluid.tests.computeFluid5155DynamicParent = function () {
+        return "fluid.tests.fluid5155dynamicParent";
+    };
+
+    fluid.defaults("fluid.tests.fluid5155root", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             subComponent: {
@@ -3496,18 +3500,14 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
-    fluid.tests.computeDynamicParent = function () {
-        return "fluid.tests.dynamicParent";
-    };
-
-    jqUnit.test("FLUID-5154 Dynamic grade support", function () {
-        var that = fluid.tests.root5154({
+    jqUnit.test("FLUID-5155 Dynamic grade support", function () {
+        var that = fluid.tests.fluid5155root({
             subComponent: {
-                gradeNames: "fluid.tests.dynamicGrade"
+                gradeNames: "fluid.tests.fluid5155dynamicGrade"
             }
         });
 
-        jqUnit.assertTrue("Correctly resolved parent grade", fluid.hasGrade(that.subComponent.options, "fluid.tests.dynamicParent"));
+        jqUnit.assertTrue("Correctly resolved parent grade", fluid.hasGrade(that.subComponent.options, "fluid.tests.fluid5155dynamicParent"));
         jqUnit.assertEquals("Correctly resolved options from parent grade", 1, that.subComponent.options.parentOption);
     });
 
