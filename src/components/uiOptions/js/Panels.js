@@ -41,7 +41,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         sourceApplier: "{compositePanel}.applier",
         listeners: {
-            "{compositePanel}.events.afterRender": {
+            "{compositePanel}.events.subPanelAfterRender": {
                 listener: "{that}.events.afterRender",
                 args: ["{that}"]
             }
@@ -94,9 +94,20 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         selectors: {}, // requires selectors into the template which will act as the containers for the subpanels
+        selectorsToIgnore: [], // should match the selectors that are used to identify the containers for the subpanels
+        events: {
+            initSubPanels: null,
+            subPanelAfterRender: null,
+        },
         listeners: {
             "onCreate.combineResources": "{that}.combineResources",
-            "onCreate.surfaceSubpanelRendererSelectors": "{that}.surfaceSubpanelRendererSelectors"
+            "onCreate.surfaceSubpanelRendererSelectors": "{that}.surfaceSubpanelRendererSelectors",
+            "onCreate.initSubPanels": "{that}.events.initSubPanels",
+            "afterRender.initSubPanels": "{that}.events.initSubPanels",
+            "afterRender.subPanelRelay": {
+                listener: "{that}.events.subPanelAfterRender",
+                priority: "last"
+            }
         },
         invokers: {
             getDistributeOptionsGrade: {
