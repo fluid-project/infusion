@@ -136,7 +136,10 @@ var fluid_1_5 = fluid_1_5 || {};
                             args: ["{that}.reset"]
                         },
                         onReset: "{that}.applyChanges",
-                        onReady: "{fatPanel}.events.onReady"
+                        onReady: {
+                            listener: "{fatPanel}.events.onReady",
+                            args: "{fatPanel}"
+                        }
                     }
                 }
             }

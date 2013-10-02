@@ -24,6 +24,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * UIOptions fatPanel integration tests
      *******************************************************************************/
     fluid.tests.uiOptions.expectedFatPanel = [
+        "templateLoader",
+        "messageLoader",
         "pageEnhancer",
         "slidingPanel",
         "iframeRenderer",
@@ -70,15 +72,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.staticEnvironment.settingsStore.set();
     };
 
-    fluid.tests.testComponent = function (uiOptions) {
-        jqUnit.assertEquals("Reset button is invisible", false, $(".flc-uiOptions-reset").is(":visible"));
-
-        fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents["fluid.uiOptions.fatPanel"]);
-    };
-
     fluid.tests.testFatPanel = function (fatPanel) {
         jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, fatPanel.iframeRenderer.iframe.is(":visible"));
         fluid.tests.uiOptions.assertPresent(fatPanel, fluid.tests.uiOptions.expectedFatPanel);
+
+        var uiOptions = fatPanel.uiOptions;
+        jqUnit.assertEquals("Reset button is invisible", false, $(".flc-uiOptions-reset").is(":visible"));
+        fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents["fluid.uiOptions.fatPanel"]);
     };
 
     fluid.tests.afterShowFunc1 = function (fatPanel) {
@@ -123,14 +123,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Fat panel integration tests",
             tests: [{
-                expect: 20,
+                expect: 22,
                 name: "Fat panel integration tests",
                 sequence: [{
-                    listener: "fluid.tests.testComponent",
-                    event: "{fatPanelIntegration fatPanel uiOptions}.events.onReady"
-                }, {
-                    func: "fluid.tests.testFatPanel",
-                    args: "{fatPanel}"
+                    listener: "fluid.tests.testFatPanel",
+                    event: "{fatPanelIntegration fatPanel}.events.onReady"
                 }, {
                     func: "{fatPanel}.slidingPanel.hidePanel"
                 }, {
