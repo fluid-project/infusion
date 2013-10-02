@@ -3468,4 +3468,47 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("The option from the supplied grade should overwrite the original component option", "fromSuppliedGrade", root.options.source.options.userOption);
     });
 
+    /** FLUID-5154 dynamic grade doesn't run **/
+
+    fluid.defaults("fluid.tests.dynamicParent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        parentOption: 1
+    });
+
+    fluid.defaults("fluid.tests.dynamicGrade", {
+        gradeNames: ["fluid.littleComponent", "autoInit", "{that}.computeGrade"],
+        invokers: {
+            computeGrade: "fluid.tests.computeDynamicParent"
+        }
+    });
+
+    fluid.defaults("fluid.tests.root5154", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            subComponent: {
+                type: "fluid.littleComponent"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.subComponent",
+            removeSource: true,
+            target: "{that subComponent}.options"
+        }
+    });
+
+    fluid.tests.computeDynamicParent = function () {
+        return "fluid.tests.dynamicParent";
+    };
+
+    jqUnit.test("FLUID-5154 Dynamic grade support", function () {
+        var that = fluid.tests.root5154({
+            subComponent: {
+                gradeNames: "fluid.tests.dynamicGrade"
+            }
+        });
+
+        jqUnit.assertTrue("Correctly resolved parent grade", fluid.hasGrade(that.subComponent.options, "fluid.tests.dynamicParent"));
+        jqUnit.assertEquals("Correctly resolved options from parent grade", 1, that.subComponent.options.parentOption);
+    });
+
 })(jQuery);
