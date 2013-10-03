@@ -955,11 +955,11 @@ fluid.registerNamespace("fluid.tests");
     });
 
     /** FLUID-5128 - Soft Namespaces removal test **/
-    
+
     fluid.tests.fluid5128listener = function (that, index) {
         that.fireRecord.push(index);
     };
-    
+
     fluid.defaults("fluid.tests.fluid5128child", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         listeners: {
@@ -969,7 +969,7 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
-    
+
     fluid.defaults("fluid.tests.fluid5128head", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         members: {
@@ -990,7 +990,7 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
-    
+
     jqUnit.test("FLUID-5128 Soft listener deregistration test", function () {
         var that = fluid.tests.fluid5128head();
         that.events.createEvent.fire();
@@ -1592,7 +1592,7 @@ fluid.registerNamespace("fluid.tests");
                     if (!started) {
                         started = true;
                         jqUnit.start();
-                    }                  
+                    }
                 },
                 onReady: {
                     listener: function (that) {
@@ -2655,7 +2655,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     /** FLUID-5013: IoCSS doesn't pass down non-options blocks **/
-    
+
     fluid.defaults("fluid.tests.top", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -2690,7 +2690,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     /** FLUID-5014 Case 1 - IoCSS: one source value gets passed down to several subcomponents **/
-    
+
     fluid.defaults("fluid.tests.fluid5014root", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -2748,7 +2748,7 @@ fluid.registerNamespace("fluid.tests");
     fluid.tests.testDistro("fluid.tests.fluid5014distro2");
 
     /** FLUID-5014 Case 2 - IoCSS: one source value gets passed down to its own and its grade component **/
-    
+
     fluid.defaults("fluid.tests.fluid5014gradeComponent", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -2823,7 +2823,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     /** FLUID-5018 - IoCSS: Pass to-be-resolved option to a target **/
-    
+
     fluid.defaults("fluid.tests.own", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -2844,9 +2844,9 @@ fluid.registerNamespace("fluid.tests");
 
         jqUnit.assertEquals("The to-be-resolved option is passed down to the target", 10, root.ownSub.options.resolvedOption);
     });
-    
+
     /** FLUID-5126 - Corruption of listener material held in demands blocks **/
-    
+
     fluid.defaults("fluid.tests.fluid5126parent", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         events: {
@@ -2874,7 +2874,7 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
-    
+
     fluid.tests.fluid5126register = function () {
         fluid.demands("fluid.eventedComponent", "fluid.tests.fluid5126parent", {
             options: {
@@ -2886,11 +2886,11 @@ fluid.registerNamespace("fluid.tests");
             }
         });
     };
-    
+
     fluid.tests.fluid5126listener = function (that, parent) {
         parent.idRecord.push(that.id);
     };
-    
+
     jqUnit.test("FLUID-5126: Corruption of listener records in demands blocks", function () {
         var parent = fluid.tests.fluid5126parent();
         function cycle() {
@@ -3090,7 +3090,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     /** FLUID-5033 - Grade reloading **/
-    
+
     function defineFluid5033Grade(value) {
         // Note that this technique must not be used within ordinary user code - in general the dynamic redefinition of a grade is an error.
         // This technique is only appropriate for development or "live coding" scenarios
@@ -3114,15 +3114,15 @@ fluid.registerNamespace("fluid.tests");
     });
 
     /** FLUID-4922 - Fast invokers and their caching characteristics **/
-    
+
     fluid.tests.add = function (a, b) {
         return a + b;
     };
-    
+
     fluid.tests.addArray = function (a, array) {
         return a + array[0] + array[1];
     };
-    
+
     fluid.defaults("fluid.tests.fluid4922", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         members: {
@@ -3147,7 +3147,7 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
-    
+
     jqUnit.test("FLUID-4922 - fast and slow invokers", function () {
         var that = fluid.tests.fluid4922();
         jqUnit.assertEquals("Slow init", 2, that.slowInvoker(1));
@@ -3161,15 +3161,15 @@ fluid.registerNamespace("fluid.tests");
     });
 
     /** FLUID-5127 - Test cases for compact invokers, listeners and expandesr **/
-    
+
     fluid.tests.fluid5127listener = function (value1, value2, that) {
         that.fireValue = value1 + value2;
     };
-    
+
     fluid.tests.fluid5127modifyOne = function (value1, that) {
         that.one = value1;
     };
-    
+
     fluid.defaults("fluid.tests.fluid5127root", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         members: {
@@ -3203,36 +3203,36 @@ fluid.registerNamespace("fluid.tests");
             ]
         }
     });
-    
+
     jqUnit.test("FLUID-5127 - compact syntax", function () {
         var that = fluid.tests.fluid5127root();
         jqUnit.assertEquals("String arguments", "thing", that.thing);
         jqUnit.assertEquals("Single arguments", "thing", that.thing2);
         jqUnit.assertEquals("Two arguments", 3, that.added);
-        
+
         jqUnit.assertEquals("Number", 3.5, that.number);
         jqUnit.assertEquals("true", true, that["true"]);
         jqUnit.assertEquals("false", false, that["false"]);
-        
+
         var added = that.addOne(2);
         jqUnit.assertEquals("Compact invoker", 3, added);
         jqUnit.assertEquals("Expander to invoker", 3, that.addedInvoke);
-        
+
         that.events.addEvent.fire(1);
         jqUnit.assertEquals("Compact direct listener", 2, that.fireValue);
-        
+
         that.events.addEvent2.fire(1);
         jqUnit.assertEquals("Compact invoker listener", 2, that.fireValue);
-        
+
         that.events.addEvent3.fire(); // listener modifies the value of "one" to 2
         jqUnit.assertEquals("Multiple compact listeners", 4, that.fireValue);
-        
+
         jqUnit.assertEquals("Static invoker", 2, that.addOne(1));
         jqUnit.assertEquals("Dynamic invoker", 3, that.addOneDynamic(1));
     });
 
     /** FLUID-5036, Case 1 - An IoCSS source that is fetched from the static environment is not resolved correctly **/
-    
+
     fluid.defaults("fluid.tests.fluid5036_1Root", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -3264,7 +3264,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     /** FLUID-5036, Case 2 - An IoCSS source that is fetched from the static environment is not resolved correctly **/
-    
+
     fluid.defaults("fluid.tests.fluid5036_2Root", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         // Note: this is not a recommended implementation technique, causing double nesting of options - this test is purely intendend to verify fix to a
@@ -3376,7 +3376,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     /** FLUID-5094: Dynamic grade merging takes an undefined source passed in from IoCSS into account rather than ignoring it **/
-    
+
     fluid.defaults("fluid.tests.fluid5094", {
         gradeNames: ["fluid.littleComponent", "fluid.tests.nonExistedGrade", "autoInit"],
         components: {
@@ -3438,9 +3438,9 @@ fluid.registerNamespace("fluid.tests");
         var that = fluid.tests.fluid5117();
         jqUnit.assertDeepEq("The output of an expander argument is same as the return of the expander function", that.options.inputObject, that.options.outputObject);
     });
-    
+
     /** FLUID-5108: Source and supplied dynamic grades that both have common option(s) are not merged correctly **/
-    
+
     fluid.defaults("fluid.tests.fluid5108", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         source: {
@@ -3449,7 +3449,7 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
-    
+
     fluid.defaults("fluid.tests.fluid5108Grade", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         source: {
@@ -3466,6 +3466,37 @@ fluid.registerNamespace("fluid.tests");
 
         jqUnit.assertTrue("The grade is merged correctly", fluid.hasGrade(root.options, "fluid.tests.fluid5108Grade"));
         jqUnit.assertEquals("The option from the supplied grade should overwrite the original component option", "fromSuppliedGrade", root.options.source.options.userOption);
+    });
+
+    fluid.defaults("fluid.tests.dynamicInvoker", {
+        gradeNames: ["autoInit", "fluid.littleComponent", "{that}.getDynamicInvoker"],
+        invokers: {
+            getDynamicInvoker: {
+                funcName: "fluid.tests.dynamicInvoker.getDynamicInvoker"
+            }
+        }
+    });
+
+    fluid.tests.dynamicInvoker.getDynamicInvoker = function () {
+        return "fluid.tests.dynamicInvokerGrade";
+    };
+
+    fluid.defaults("fluid.tests.dynamicInvokerGrade", {
+        gradeNames: ["autoInit", "fluid.littleComponent"],
+        invokers: {
+            method: "fluid.tests.dynamicInvokerGrade.method"
+        }
+    });
+
+    fluid.tests.dynamicInvokerGrade.method = function () {
+        jqUnit.assertTrue("Dyncamic invoker is called", true);
+    };
+
+    jqUnit.test("FLUID-5169: Test dynamic grade invoker contribution.", function () {
+        jqUnit.expect(2);
+        var component = fluid.tests.dynamicInvoker();
+        jqUnit.assertValue("Invoker is resolved correctly", component.method);
+        component.method();
     });
 
 })(jQuery);
