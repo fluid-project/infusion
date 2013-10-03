@@ -3511,4 +3511,37 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("Correctly resolved options from parent grade", 1, that.subComponent.options.parentOption);
     });
 
+
+
+    fluid.defaults("fluid.tests.dynamicInvoker", {
+        gradeNames: ["autoInit", "fluid.littleComponent", "{that}.getDynamicInvoker"],
+        invokers: {
+            getDynamicInvoker: {
+                funcName: "fluid.tests.dynamicInvoker.getDynamicInvoker"
+            }
+        }
+    });
+ 
+    fluid.tests.dynamicInvoker.getDynamicInvoker = function () {
+        return "fluid.tests.dynamicInvokerGrade";
+    };
+ 
+    fluid.defaults("fluid.tests.dynamicInvokerGrade", {
+        gradeNames: ["autoInit", "fluid.littleComponent"],
+        invokers: {
+            method: "fluid.tests.dynamicInvokerGrade.method"
+        }
+    });
+ 
+    fluid.tests.dynamicInvokerGrade.method = function () {
+        jqUnit.assertTrue("Dynamic invoker is called", true);
+    };
+ 
+    jqUnit.test("Test dynamic grade invoker contribution.", function () {
+        jqUnit.expect(2);
+        var component = fluid.tests.dynamicInvoker();
+        jqUnit.assertValue("Invoker is resolved correctly", component.method);
+        component.method();
+    });
+
 })(jQuery);

@@ -409,6 +409,29 @@ var fluid_1_5 = fluid_1_5 || {};
         });
         return resolved;    
     };
+    
+    fluid.collectDynamicGrades = function (that, shadow, defaultsBlock, gradeNames, dynamicGrades, resolved) {
+        var newDefaults = fluid.copy(fluid.getGradedDefaults(that.typeName, resolved));
+        gradeNames.length = 0; // acquire derivatives of dynamic grades (FLUID-5054)
+        gradeNames.push.apply(gradeNames, newDefaults.gradeNames);
+        
+        fluid.cacheShadowGrades(that, shadow);
+        // This cheap strategy patches FLUID-5091 for now - some more sophisticated activity will take place
+        // at this site when we have a full fix for FLUID-5028
+        shadow.mergeOptions.destroyValue("components");
+        shadow.mergeOptions.destroyValue("invokers");
+
+        defaultsBlock.source = newDefaults;
+        shadow.mergeOptions.updateBlocks();
+            
+        var furtherResolved = fluid.remove_if(gradeNames, function (gradeName) {
+            return gradeName.charAt(0) === "{" && !fluid.contains(dynamicGrades, gradeName);
+        }, []);
+        dynamicGrades.push.apply(dynamicGrades, furtherResolved);
+        furtherResolved = fluid.expandDynamicGrades(that, furtherResolved);
+        resolved.push.apply(resolved, furtherResolved);
+        return furtherResolved;
+    };
 
     // unsupported, NON-API function
     fluid.computeDynamicGrades = function (that, shadow, strategy) {
@@ -421,32 +444,11 @@ var fluid_1_5 = fluid_1_5 || {};
             return gradeName.charAt(0) === "{" || !fluid.hasGrade(defaultsBlock.target, gradeName);
         }, []);
         var resolved = fluid.expandDynamicGrades(that, dynamicGrades);
-
         if (resolved.length !== 0) {
             do { // repeatedly collect dynamic grades whilst they arrive (FLUID-5155)
-                var newDefaults = fluid.copy(fluid.getGradedDefaults(that.typeName, resolved));
-                gradeNames.length = 0; // acquire derivatives of dynamic grades (FLUID-5054)
-                gradeNames.push.apply(gradeNames, newDefaults.gradeNames);
-                
-                fluid.cacheShadowGrades(that, shadow);
-                // This cheap strategy patches FLUID-5091 for now - some more sophisticated activity will take place
-                // at this site when we have a full fix for FLUID-5028
-                shadow.mergeOptions.destroyValue("components");
-    
-                // var defaultsBlock = fluid.findMergeBlocks(shadow.mergeOptions.mergeBlocks, "defaults")[0];
-                defaultsBlock.source = newDefaults;
-                shadow.mergeOptions.updateBlocks();
-                    
-                var furtherResolved = fluid.remove_if(gradeNames, function (gradeName) {
-                    return gradeName.charAt(0) === "{" && !fluid.contains(dynamicGrades, gradeName);
-                }, []);
-                console.log(furtherResolved);
-                dynamicGrades = dynamicGrades.concat(furtherResolved);
-                furtherResolved = fluid.expandDynamicGrades(that, furtherResolved);
-                resolved = resolved.concat(furtherResolved);
+                var furtherResolved = fluid.collectDynamicGrades(that, shadow, defaultsBlock, gradeNames, dynamicGrades, resolved);
             }
             while (furtherResolved.length !== 0);
-            
         }
     };
 
