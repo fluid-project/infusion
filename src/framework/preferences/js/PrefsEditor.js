@@ -21,13 +21,13 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
-    /*********************
-     * UI Options Loader *
-     *********************/
+    /*****************************
+     * Preferences Editor Loader *
+     *****************************/
 
     /**
-     * An UI Options top-level component that reflects the collaboration between prefsEditor, templateLoader and messageLoader.
-     * This component is the only UI Options component that is intended to be called by the outside world.
+     * An Preferences Editor top-level component that reflects the collaboration between prefsEditor, templateLoader and messageLoader.
+     * This component is the only Preferences Editor component that is intended to be called by the outside world.
      *
      * @param {Object} options
      */
@@ -139,15 +139,15 @@ var fluid_1_5 = fluid_1_5 || {};
         }]
     });
 
-    /******************************
-     * UI Options Template Loader *
-     ******************************/
+    /**************************************
+     * Preferences Editor Template Loader *
+     **************************************/
 
     /**
-     * A configurable component that works in conjunction with or without the UI Options template path
-     * component (fluid.prefsResourcePath) to allow users to set either the location of their own
-     * templates or the templates that are relative to the path defined in the UI Options template path
-     * component.
+     * A configurable component that works in conjunction with or without the Preferences Editor template
+     * path component (fluid.prefsResourcePath) to allow users to set either the location of their own
+     * templates or the templates that are relative to the path defined in the Preferences Editor template 
+     * path component.
      *
      * @param {Object} options
      */
@@ -198,12 +198,12 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
 
-    /**************************************
-     * UI Options Template Path Specifier *
-     **************************************/
+    /**********************************************
+     * Preferences Editor Template Path Specifier *
+     **********************************************/
 
     /**
-     * A configurable component that defines the relative path from the html to UI Options templates.
+     * A configurable component that defines the relative path from the html to Preferences Editor templates.
      *
      * @param {Object} options
      */
@@ -213,9 +213,9 @@ var fluid_1_5 = fluid_1_5 || {};
         value: "../html/"
     });
 
-    /**************
-     * UI Options *
-     **************/
+    /**********************
+     * Preferences Editor *
+     **********************/
 
     fluid.defaults("fluid.prefs.settingsGetter", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
@@ -278,7 +278,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     /**
      * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS)
-     * to allow users to set personal user interface preferences. The UI Options component provides a user
+     * to allow users to set personal user interface preferences. The Preferences Editor component provides a user
      * interface for setting and saving personal preferences, and the UI Enhancer component carries out the
      * work of applying those preferences to the user interface.
      *
@@ -438,9 +438,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }, 1);
     };
 
-    /**********************
-     * UI Options Preview *
-     **********************/
+    /******************************
+     * Preferences Editor Preview *
+     ******************************/
 
     fluid.defaults("fluid.prefs.preview", {
         gradeNames: ["fluid.viewComponent", "autoInit"],

@@ -19,9 +19,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
-    /******************************
-     * Full No Preview UI Options *
-     ******************************/
+    /**************************************
+     * Full No Preview Preferences Editor *
+     **************************************/
 
     fluid.defaults("fluid.prefs.fullNoPreview", {
         gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],

@@ -28,9 +28,9 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.rendererComponent", "fluid.prefs.modelRelay", "autoInit"]
     });
 
-    /********************************
-     * UI Options Text Field Slider *
-     ********************************/
+    /****************************************
+     * Preferences Editor Text Field Slider *
+     ****************************************/
 
     fluid.defaults("fluid.prefs.textfieldSlider", {
         gradeNames: ["fluid.textfieldSlider", "autoInit"],
@@ -59,9 +59,9 @@ var fluid_1_5 = fluid_1_5 || {};
         return messages;
     };
 
-    /************************
-     * UI Options Text Size *
-     ************************/
+    /********************************
+     * Preferences Editor Text Size *
+     ********************************/
 
     /**
      * A sub-component of fluid.prefs that renders the "text size" panel of the user preferences interface.
@@ -108,9 +108,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    /************************
-     * UI Options Text Font *
-     ************************/
+    /********************************
+     * Preferences Editor Text Font *
+     ********************************/
 
     /**
      * A sub-component of fluid.prefs that renders the "text font" panel of the user preferences interface.
@@ -156,9 +156,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    /*************************
-     * UI Options Line Space *
-     *************************/
+    /*********************************
+     * Preferences Editor Line Space *
+     *********************************/
 
     /**
      * A sub-component of fluid.prefs that renders the "line space" panel of the user preferences interface.
@@ -205,9 +205,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    /***********************
-     * UI Options Contrast *
-     ***********************/
+    /*******************************
+     * Preferences Editor Contrast *
+     *******************************/
 
     /**
      * A sub-component of fluid.prefs that renders the "contrast" panel of the user preferences interface.
@@ -279,9 +279,9 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
 
-    /******************************
-     * UI Options Layout Controls *
-     ******************************/
+    /**************************************
+     * Preferences Editor Layout Controls *
+     **************************************/
 
     /**
      * A sub-component of fluid.prefs that renders the "layout and navigation" panel of the user preferences interface.
@@ -305,9 +305,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    /*****************************
-     * UI Options Links Controls *
-     *****************************/
+    /*************************************
+     * Preferences Editor Links Controls *
+     *************************************/
     /**
      * A sub-component of fluid.prefs that renders the "links and buttons" panel of the user preferences interface.
      */
@@ -337,9 +337,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    /************************************************
-     * UI Options Select Dropdown Options Decorator *
-     ************************************************/
+    /********************************************************
+     * Preferences Editor Select Dropdown Options Decorator *
+     ********************************************************/
 
     /**
      * A sub-component that decorates the options on the select dropdown list box with the css style

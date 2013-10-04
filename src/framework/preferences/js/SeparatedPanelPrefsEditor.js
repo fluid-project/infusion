@@ -27,9 +27,9 @@ var fluid_1_5 = fluid_1_5 || {};
         return body.offsetHeight;
     };
 
-    /*****************************************
-     * Fat Panel UI Options Top Level Driver *
-     *****************************************/
+    /*************************************************
+     * Fat Panel Preferences Editor Top Level Driver *
+     *************************************************/
 
     fluid.defaults("fluid.prefs.separatedPanel", {
         gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],

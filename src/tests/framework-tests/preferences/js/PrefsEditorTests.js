@@ -318,10 +318,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-        /********************************
-         * UI Options Integration tests *
-         * ******************************
-         */
+        /****************************************
+         * Preferences Editor Integration tests *
+         * **************************************/
 
         var applierRequestChanges = function (prefsEditor, selectionOptions) {
             prefsEditor.applier.requestChange("textFont", selectionOptions.textFont);

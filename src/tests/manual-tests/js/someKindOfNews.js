@@ -34,7 +34,7 @@ var skon = skon || {};
             }
         });
 
-        // Next, start up UI Options
+        // Next, start up Preferences Editor
         fluid.prefs.separatedPanel(".flc-prefsEditor-separatedPanel", {
             gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
             templatePrefix: "../../../framework/preferences/html/",

@@ -18,14 +18,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var demo = demo || {};
 (function ($, fluid) {
     /**
-     * The UI Options interface is defined by several HTML templates. The component
+     * The Preferences Editor interface is defined by several HTML templates. The component
      * needs to know where those templates are. This variable will be used by all
      * versions of the component.
      */
     var pathToTemplates = "../../../framework/preferences/html/";
 
     /**
-     * The strings used on UI Options interface is defined by several JSON files. The component
+     * The strings used on Preferences Editor interface is defined by several JSON files. The component
      * needs to know where those files are. This variable will be used by all versions of the
      * component.
      */
@@ -63,7 +63,7 @@ var demo = demo || {};
     };
 
     /**
-     * The basic options for configuring the full-page versions of UI Options are the same,
+     * The basic options for configuring the full-page versions of Preferences Editor are the same,
      * regardless of whether or not the Preview is used. These settings used by both
      * full-page version, with and without Preview.
      */
@@ -87,7 +87,7 @@ var demo = demo || {};
     };
 
     /**
-     * Initialize UI Options on the "Full Page, No Preview" version.
+     * Initialize Preferences Editor on the "Full Page, No Preview" version.
      */
     demo.initFullNoPreview = function (container, options) {
         var noPreviewOps = {
@@ -99,7 +99,7 @@ var demo = demo || {};
     };
 
     /**
-     * Initialize UI Options on the "Full Page, With Preview" version.
+     * Initialize Preferences Editor on the "Full Page, With Preview" version.
      */
     demo.initFullWithPreview = function (container, options) {
         var previewOps = {
