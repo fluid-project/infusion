@@ -143,7 +143,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.start();
             }
 
-            var that = fluid.invokeGlobalFunction(componentName, ["#myUIOptions", {
+            var that = fluid.invokeGlobalFunction(componentName, ["#myPrefsEditor", {
                 gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
                 templatePrefix: "../../../../framework/preferences/html/",
                 messagePrefix: "../../../../framework/preferences/messages/",

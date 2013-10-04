@@ -37,7 +37,7 @@ var fluid_1_5 = fluid_1_5 || {};
             prefsEditor: {
                 priority: "last",
                 type: "fluid.prefs",
-                createOnEvent: "onCreateUIOptionsReady"
+                createOnEvent: "onCreatePrefsEditorReady"
             },
             templateLoader: {
                 type: "fluid.prefs.resourceLoader",
@@ -60,7 +60,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onUIOTemplatesLoaded: null,
             onUIOMessagesLoaded: null,
             onMsgBundleReady: null,
-            onCreateUIOptionsReady: {
+            onCreatePrefsEditorReady: {
                 events: {
                     templateLoaded: "onUIOTemplatesLoaded",
                     msgBundleReady: "onMsgBundleReady"
@@ -335,9 +335,9 @@ var fluid_1_5 = fluid_1_5 || {};
             onReset: null,
             onAutoSave: null,
             modelChanged: null,
-            onUIOptionsRefresh: null,
+            onPrefsEditorRefresh: null,
             onUpdateEnhancerModel: null,
-            onUIOptionsMarkupReady: null,
+            onPrefsEditorMarkupReady: null,
             onReady: null
         },
         listeners: {
@@ -351,7 +351,7 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     /**
-     * Refresh UIOptions
+     * Refresh PrefsEditor
      */
     fluid.prefs.applyChanges = function (that) {
         that.events.onUpdateEnhancerModel.fire();
@@ -361,7 +361,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var completeModel = that.getSettings();
         completeModel = $.extend(true, {}, that.rootModel, completeModel);
         that.updateModel(completeModel, "settingsStore");
-        that.events.onUIOptionsRefresh.fire();
+        that.events.onPrefsEditorRefresh.fire();
         that.applyChanges();
     };
 
@@ -377,7 +377,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.prefs.saveAndApply = function (that) {
         that.save();
-        that.events.onUIOptionsRefresh.fire();
+        that.events.onPrefsEditorRefresh.fire();
         that.applyChanges();
     };
 
@@ -386,7 +386,7 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.prefs.reset = function (that) {
         that.updateModel(fluid.copy(that.rootModel));
-        that.events.onUIOptionsRefresh.fire();
+        that.events.onPrefsEditorRefresh.fire();
         that.events.onReset.fire(that);
     };
 
@@ -416,7 +416,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that.container.append(that.options.resources.template.resourceText);
         bindHandlers(that);
         // This creates subcomponents - we can find default model afterwards
-        that.events.onUIOptionsMarkupReady.fire(that);
+        that.events.onPrefsEditorMarkupReady.fire(that);
 
         that.fetch();
         that.events.onReady.fire(that);
@@ -471,7 +471,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "{prefsEditor}.events.modelChanged": "{that}.updateModel",
             onReady: "{that}.updateModel"
         },
-        templateUrl: "%prefix/UIOptionsPreview.html"
+        templateUrl: "%prefix/PrefsEditorPreview.html"
     });
 
     fluid.prefs.preview.updateModel = function (that, model) {

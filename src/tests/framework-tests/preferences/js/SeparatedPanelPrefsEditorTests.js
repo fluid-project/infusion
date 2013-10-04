@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     /*******************************************************************************
-     * UIOptions separatedPanel integration tests
+     * PrefsEditor separatedPanel integration tests
      *******************************************************************************/
     fluid.tests.prefs.expectedSeparatedPanel = [
         "templateLoader",
@@ -162,7 +162,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * UIOptions separatedPanel options munging integration tests
+     * PrefsEditor separatedPanel options munging integration tests
      *******************************************************************************/
 
     var expectedIframeSelector = ".uio-munging";

@@ -19,10 +19,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
 
-        jqUnit.module("FullPreviewUIOptions Tests");
+        jqUnit.module("FullPreviewPrefsEditor Tests");
 
         /**************************************************
-         * fluid.fullPreviewUIOptions Integration Tests *
+         * fluid.fullPreviewPrefsEditor Integration Tests *
          **************************************************/
         fluid.demands("fluid.prefs.preview", ["fluid.prefs.fullPreview"], {
             options: {
@@ -43,8 +43,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // TODO: we need MUCH better event boiling support in order to avoid rubbish like this
         var that, prefsEditor;
-        function testToCEnhancement(innerUIOptions) {
-            prefsEditor = innerUIOptions;
+        function testToCEnhancement(innerPrefsEditor) {
+            prefsEditor = innerPrefsEditor;
         }
 
         function requestApplierChange() {
@@ -59,7 +59,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.start();
         }
 
-        that = fluid.tests.prefs.mungingIntegrationTest("fluid.prefs.fullPreview", "#myUIOptions", {
+        that = fluid.tests.prefs.mungingIntegrationTest("fluid.prefs.fullPreview", "#myPrefsEditor", {
             previewEnhancer: {
                 components: {
                     tableOfContents: {

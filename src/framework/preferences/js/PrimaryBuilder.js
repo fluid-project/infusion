@@ -66,7 +66,7 @@ var fluid_1_5 = fluid_1_5 || {};
         typeFilter: [],
         invokers: {
             // An invoker used to generate a set of grades that comprise a
-            // final version of the primary schema to be used by the UIOptions
+            // final version of the primary schema to be used by the PrefsEditor
             // builder.
             buildPrimary: {
                 funcName: "fluid.prefs.primaryBuilder.buildPrimary",

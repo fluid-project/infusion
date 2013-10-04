@@ -259,7 +259,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         elementCommonOptions: {
             panel: {
-                "createOnEvent": "onUIOptionsMarkupReady",
+                "createOnEvent": "onPrefsEditorMarkupReady",
                 "container": "{prefsEditor}.dom.%prefKey",
                 "options.gradeNames": "fluid.prefs.defaultPanel",
                 "options.resources.template": "{templateLoader}.resources.%prefKey"

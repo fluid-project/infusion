@@ -216,7 +216,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.prefs.separatedPanel.updateView = function (prefsEditor) {
-        prefsEditor.events.onUIOptionsRefresh.fire();
+        prefsEditor.events.onPrefsEditorRefresh.fire();
         prefsEditor.events.onSignificantDOMChange.fire();
     };
 
@@ -228,7 +228,7 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.prefs.separatedPanel.updateView(prefsEditor);
         });
 
-        prefsEditor.events.onUIOptionsRefresh.addListener(function () {
+        prefsEditor.events.onPrefsEditorRefresh.addListener(function () {
             iframeEnhancer.updateModel(prefsEditor.model);
         });
         prefsEditor.events.onReset.addListener(function (prefsEditor) {

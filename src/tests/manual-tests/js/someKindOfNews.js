@@ -19,7 +19,7 @@ var skon = skon || {};
 (function ($, fluid) {
 
     /* Our demo script */
-    skon.slidingUIOptions = function (panel, uioptions) {
+    skon.slidingPrefsEditor = function (panel, prefsEditor) {
         // First, start up Settings Store and Page Enhancer
         fluid.globalSettingsStore();
         fluid.pageEnhancer({

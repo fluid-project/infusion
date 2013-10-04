@@ -216,7 +216,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         sourceApplier: "{fluid.prefs}.applier",
         listeners: {
-            "{prefsEditor}.events.onUIOptionsRefresh": "{fluid.prefs.panels}.refreshView"
+            "{prefsEditor}.events.onPrefsEditorRefresh": "{fluid.prefs.panels}.refreshView"
         },
         strings: {},
         parentBundle: "{prefsEditorLoader}.msgBundle"
@@ -242,7 +242,7 @@ var fluid_1_5 = fluid_1_5 || {};
             textSize: {
                 type: "fluid.prefs.panels.textSize",
                 container: "{prefsEditor}.dom.textSize",
-                createOnEvent: "onUIOptionsMarkupReady",
+                createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
                     gradeNames: "fluid.prefs.defaultPanel",
                     rules: {
@@ -259,7 +259,7 @@ var fluid_1_5 = fluid_1_5 || {};
             lineSpace: {
                 type: "fluid.prefs.panels.lineSpace",
                 container: "{prefsEditor}.dom.lineSpace",
-                createOnEvent: "onUIOptionsMarkupReady",
+                createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
                     gradeNames: "fluid.prefs.defaultPanel",
                     rules: {
@@ -276,7 +276,7 @@ var fluid_1_5 = fluid_1_5 || {};
             textFont: {
                 type: "fluid.prefs.panels.textFont",
                 container: "{prefsEditor}.dom.textFont",
-                createOnEvent: "onUIOptionsMarkupReady",
+                createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
                     gradeNames: "fluid.prefs.defaultPanel",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
@@ -294,7 +294,7 @@ var fluid_1_5 = fluid_1_5 || {};
             contrast: {
                 type: "fluid.prefs.panels.contrast",
                 container: "{prefsEditor}.dom.contrast",
-                createOnEvent: "onUIOptionsMarkupReady",
+                createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
                     gradeNames: "fluid.prefs.defaultPanel",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
@@ -312,7 +312,7 @@ var fluid_1_5 = fluid_1_5 || {};
             layoutControls: {
                 type: "fluid.prefs.panels.layoutControls",
                 container: "{prefsEditor}.dom.layoutControls",
-                createOnEvent: "onUIOptionsMarkupReady",
+                createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
                     gradeNames: "fluid.prefs.defaultPanel",
                     rules: {
@@ -329,7 +329,7 @@ var fluid_1_5 = fluid_1_5 || {};
             linksControls: {
                 type: "fluid.prefs.panels.linksControls",
                 container: "{prefsEditor}.dom.linksControls",
-                createOnEvent: "onUIOptionsMarkupReady",
+                createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
                     gradeNames: "fluid.prefs.defaultPanel",
                     rules: {

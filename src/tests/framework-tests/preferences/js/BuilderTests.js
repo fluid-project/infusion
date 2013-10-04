@@ -253,7 +253,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.message = {
-        "message": "%prefix/UIOptionsTemplate-prefsEditor.json"
+        "message": "%prefix/PrefsEditorTemplate-prefsEditor.json"
     };
 
     fluid.tests.messagePrefix = {

@@ -39,7 +39,7 @@ var demo = demo || {};
     var pathToTocTemplate = "../../../components/tableOfContents/html/TableOfContents.html";
 
     /**
-     * Initialize UIOptions global settings store.
+     * Initialize PrefsEditor global settings store.
      */
     demo.initSettingsStore = function () {
         fluid.globalSettingsStore();
@@ -69,13 +69,13 @@ var demo = demo || {};
      */
     var basicFullPageOpts = {
         gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-        // Tell UIOptions where to find all the templates, relative to this file
+        // Tell PrefsEditor where to find all the templates, relative to this file
         templatePrefix: pathToTemplates,
         messagePrefix: pathToMessages,
         messageLoader: {
             gradeNames: ["fluid.prefs.starterMessageLoader"]
         },
-        // Tell UIOptions where to redirect to if the user cancels the operation
+        // Tell PrefsEditor where to redirect to if the user cancels the operation
         prefsEditor: {
             gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"],
             listeners: {

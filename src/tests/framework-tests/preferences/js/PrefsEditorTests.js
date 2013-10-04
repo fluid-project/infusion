@@ -47,7 +47,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
 
-        // Options for UIOptions
+        // Options for PrefsEditor
         var saveCalled = false;
 
         fluid.demands("fluid.prefs", ["fluid.prefsTests", "fluid.prefs.tests"], {
@@ -98,7 +98,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             textSize: "1.0"
         };
 
-        var testUIOptions = function (testFn, uio) {
+        var testPrefsEditor = function (testFn, uio) {
             uio = uio || fluid.prefsTests;
             uio.testFn = testFn;
             fluid.globalSettingsStore();
@@ -109,7 +109,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             saveCalled = false;
         };
 
-        jqUnit.module("UIOptions Tests");
+        jqUnit.module("PrefsEditor Tests");
 
         jqUnit.asyncTest("Template Loader", function () {
             jqUnit.expect(4);
@@ -204,7 +204,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Init Model - default", function () {
-            testUIOptions(function (prefsEditor) {
+            testPrefsEditor(function (prefsEditor) {
                 assertRootModel(prefsEditor.model);
                 jqUnit.start();
             });
@@ -213,7 +213,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Init Model and Controls", function () {
             jqUnit.expect(4);
 
-            testUIOptions(function (prefsEditor) {
+            testPrefsEditor(function (prefsEditor) {
                 assertRootModel(prefsEditor.model);
 
                 var themeValues = prefsEditor.contrast.options.controlValues.theme;
@@ -228,10 +228,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-        jqUnit.asyncTest("UIOptions Save, Reset, and Cancel", function () {
+        jqUnit.asyncTest("PrefsEditor Save, Reset, and Cancel", function () {
             jqUnit.expect(13);
 
-            testUIOptions(function (prefsEditor) {
+            testPrefsEditor(function (prefsEditor) {
                 prefsEditor.updateModel(bwSkin);
 
                 jqUnit.assertFalse("Save hasn't been called", saveCalled);
@@ -266,7 +266,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Refresh View", function () {
             jqUnit.expect(5);
 
-            testUIOptions(function (prefsEditor) {
+            testPrefsEditor(function (prefsEditor) {
                 prefsEditor.updateModel(bwSkin);
 
                 jqUnit.assertEquals("bw setting was set in the model", bwSkin.theme, prefsEditor.model.theme);
@@ -274,7 +274,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var uiEnhancerSettings = prefsEditor.getSettings();
                 jqUnit.assertUndefined("bw setting was not saved", uiEnhancerSettings.theme);
 
-                prefsEditor.events.onUIOptionsRefresh.fire();
+                prefsEditor.events.onPrefsEditorRefresh.fire();
                 var fontSizeCtrl = $(".flc-prefsEditor-min-text-size");
                 var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val();
                 jqUnit.assertEquals("Small font size selected", "1.8", fontSizeSetting);
@@ -288,7 +288,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-        jqUnit.asyncTest("Init with site defaults different from UIOptions control values", function () {
+        jqUnit.asyncTest("Init with site defaults different from PrefsEditor control values", function () {
             jqUnit.expect(2);
 
             fluid.enhance.check({"fluid.prefs.testDiffInit": true});
@@ -304,7 +304,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            testUIOptions(function (prefsEditor) {
+            testPrefsEditor(function (prefsEditor) {
                 var settings = prefsEditor.rootModel;
 
                 var themeValue = settings.theme;
@@ -383,7 +383,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             saveButton.click();
         };
 
-        jqUnit.asyncTest("Non-default UIOptions Integration tests", function () {
+        jqUnit.asyncTest("Non-default PrefsEditor Integration tests", function () {
             fluid.enhance.check({"fluid.prefs.testsNonDefaultIntegration": true});
 
             fluid.demands("fluid.prefs", ["fluid.prefs.testsNonDefaultIntegration", "fluid.prefs.tests", "fluid.prefsTests"], {
@@ -396,14 +396,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         textSize: {
                             type: "fluid.prefs.panels.textSize",
                             container: "{prefsEditor}.dom.textSize",
-                            createOnEvent: "onUIOptionsMarkupReady",
+                            createOnEvent: "onPrefsEditorMarkupReady",
                             options: {
                                 sourceApplier: "{prefsEditor}.applier",
                                 rules: {
                                     "textSize": "value"
                                 },
                                 listeners: {
-                                    "{prefsEditor}.events.onUIOptionsRefresh": "{that}.refreshView"
+                                    "{prefsEditor}.events.onPrefsEditorRefresh": "{that}.refreshView"
                                 },
                                 resources: {
                                     template: "{templateLoader}.resources.textSize"
@@ -435,7 +435,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            testUIOptions(function (prefsEditor) {
+            testPrefsEditor(function (prefsEditor) {
                 var customizedPanelPaths = {
                     "uiEnhancer": true,
                     "textSize": true,
@@ -461,7 +461,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             prefsEditor.applier.requestChange("lineSpace", selectionOptions.lineSpace);
         };
 
-        jqUnit.asyncTest("UIOptions Integration tests", function () {
+        jqUnit.asyncTest("PrefsEditor Integration tests", function () {
             fluid.enhance.check({"fluid.prefs.testsIntegration": true});
 
             fluid.demands("fluid.prefs", ["fluid.prefs.testsIntegration", "fluid.prefs.tests", "fluid.prefsTests"], {
@@ -487,7 +487,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            testUIOptions(function (prefsEditor) {
+            testPrefsEditor(function (prefsEditor) {
                 var defaultPanelsPaths = {
                     "uiEnhancer": true,
                     "textSize": true,
@@ -512,7 +512,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /*******************
          * Auto-save tests *
          *******************/
-        jqUnit.asyncTest("UIOptions Auto-save", function () {
+        jqUnit.asyncTest("PrefsEditor Auto-save", function () {
             jqUnit.expect(2);
 
             fluid.enhance.check({"fluid.prefs.testsAutoSave": true});
@@ -523,7 +523,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            testUIOptions(function (prefsEditor) {
+            testPrefsEditor(function (prefsEditor) {
                 resetSaveCalled();
                 prefsEditor.updateModel(bwSkin);
                 jqUnit.assertTrue("Model has changed, auto-save changes", saveCalled);
@@ -584,7 +584,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            testUIOptions(function (prefsEditorIn) {
+            testPrefsEditor(function (prefsEditorIn) {
                 prefsEditor = prefsEditorIn;
             });
         });
