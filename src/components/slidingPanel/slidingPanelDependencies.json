@@ -1,0 +1,9 @@
+{
+    "slidingPanel": {
+        "name": "Sliding Panel",
+        "description": "A widget that slides a panel in and out of view.",
+        "cssFiles": [],
+        "files": ["SlidingPanel.js"],
+        "dependencies": ["jQuery", "jQueryUICore", "framework"]
+    }
+}
