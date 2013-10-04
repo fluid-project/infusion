@@ -19,28 +19,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        fluid.enhance.check({"fluid.uiOptions.tests": true});
+        fluid.enhance.check({"fluid.prefs.tests": true});
 
         var templatePrefix = "../../../../components/uiOptions/html/";
         var messagePrefix = "../../../../components/uiOptions/messages/";
 
         // Define a default configuration but will specify different demands to test the full config with settings
-        fluid.defaults("fluid.uiOptionsTests", {
-            gradeNames: ["fluid.uiOptions.uiOptionsLoader", "autoInit"],
+        fluid.defaults("fluid.prefsTests", {
+            gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
             templatePrefix: templatePrefix,
             messagePrefix: messagePrefix,
             messageLoader: {
-                gradeNames: ["fluid.uiOptions.starterMessageLoader"]
+                gradeNames: ["fluid.prefs.starterMessageLoader"]
             },
             templateLoader: {
-                gradeNames: ["fluid.uiOptions.starterFullNoPreviewTemplateLoader"]
+                gradeNames: ["fluid.prefs.starterFullNoPreviewTemplateLoader"]
             },
             components: {
                 uiOptions: {
                     container: "{uiOptionsTests}.container",
                     options: {
                         listeners: {
-                            onReady: "fluid.uiOptionsTests.testFn"
+                            onReady: "fluid.prefsTests.testFn"
                         }
                     }
                 }
@@ -50,10 +50,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Options for UIOptions
         var saveCalled = false;
 
-        fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
-            funcName: "fluid.uiOptions.starterPanels",
+        fluid.demands("fluid.prefs", ["fluid.prefsTests", "fluid.prefs.tests"], {
+            funcName: "fluid.prefs.starterPanels",
             options: {
-                gradeNames: ["fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
+                gradeNames: ["fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"],
                 components: {
                     uiEnhancer: {
                         type: "fluid.uiEnhancer",
@@ -72,7 +72,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
 
-        fluid.demands("fluid.uiOptions.store", ["fluid.globalSettingsStore", "fluid.uiOptions.tests"], {
+        fluid.demands("fluid.prefs.store", ["fluid.globalSettingsStore", "fluid.prefs.tests"], {
             funcName: "fluid.tempStore"
         });
 
@@ -99,7 +99,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         var testUIOptions = function (testFn, uio) {
-            uio = uio || fluid.uiOptionsTests;
+            uio = uio || fluid.prefsTests;
             uio.testFn = testFn;
             fluid.globalSettingsStore();
             uio("#ui-options");
@@ -130,8 +130,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.start();
             }
 
-            fluid.defaults("fluid.uiOptionsTestResourceLoader", {
-                gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
+            fluid.defaults("fluid.prefsTestResourceLoader", {
+                gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
                 templates: {
                     linksControls: "%prefix/" + linksControlsTemplateName,
                     textControls: textControlsFullResourcePath
@@ -148,7 +148,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            var loader = fluid.uiOptionsTestResourceLoader(null);
+            var loader = fluid.prefsTestResourceLoader(null);
         });
 
         jqUnit.asyncTest("Customized Template Loader", function () {
@@ -164,8 +164,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.start();
             }
 
-            fluid.defaults("fluid.uiOptions.customizedResourceLoader", {
-                gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
+            fluid.defaults("fluid.prefs.customizedResourceLoader", {
+                gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
                 templates: {
                     lineSpace: "%prefix/" + lineSpaceTemplateName
                 },
@@ -181,26 +181,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            fluid.defaults("fluid.uiOptionsCustomizedResourceLoader", {
+            fluid.defaults("fluid.prefsCustomizedResourceLoader", {
                 gradeNames: ["fluid.littleComponent", "autoInit"],
                 components: {
                     resourceLoader: {
-                        type: "fluid.uiOptions.resourceLoader",
+                        type: "fluid.prefs.resourceLoader",
                         options: {
-                            gradeNames: ["fluid.uiOptions.customizedResourceLoader"]
+                            gradeNames: ["fluid.prefs.customizedResourceLoader"]
                         }
                     }
                 }
             });
 
-            var loader = fluid.uiOptionsCustomizedResourceLoader(null);
+            var loader = fluid.prefsCustomizedResourceLoader(null);
         });
 
         var assertRootModel = function (model) {
             jqUnit.expect(3);
             jqUnit.assertNotNull("Model is not null", model);
             jqUnit.assertNotUndefined("Model is not undefined", model);
-            jqUnit.assertDeepEq("Initial model is the starter rootModel", fluid.defaults("fluid.uiOptions.rootModel.starter").members.rootModel, model);
+            jqUnit.assertDeepEq("Initial model is the starter rootModel", fluid.defaults("fluid.prefs.rootModel.starter").members.rootModel, model);
         };
 
         jqUnit.asyncTest("Init Model - default", function () {
@@ -291,9 +291,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Init with site defaults different from UIOptions control values", function () {
             jqUnit.expect(2);
 
-            fluid.enhance.check({"fluid.uiOptions.testDiffInit": true});
+            fluid.enhance.check({"fluid.prefs.testDiffInit": true});
 
-            fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testDiffInit"], {
+            fluid.demands("fluid.prefs", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testDiffInit"], {
                 options: {
                     members: {
                         rootModel: {
@@ -313,7 +313,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var fontValue = settings.textFont;
                 jqUnit.assertEquals("The font is set to times", "times", fontValue);
 
-                fluid.enhance.forget("fluid.uiOptions.testDiffInit");
+                fluid.enhance.forget("fluid.prefs.testDiffInit");
                 jqUnit.start();
             });
         });
@@ -385,17 +385,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Non-default UIOptions Integration tests", function () {
-            fluid.enhance.check({"fluid.uiOptions.testsNonDefaultIntegration": true});
+            fluid.enhance.check({"fluid.prefs.testsNonDefaultIntegration": true});
 
-            fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsNonDefaultIntegration", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
-                funcName: "fluid.uiOptions",
+            fluid.demands("fluid.prefs", ["fluid.prefs.testsNonDefaultIntegration", "fluid.prefs.tests", "fluid.prefsTests"], {
+                funcName: "fluid.prefs",
                 options: {
                     selectors: {
                         textSize: ".flc-uiOptions-text-size"
                     },
                     components: {
                         textSize: {
-                            type: "fluid.uiOptions.panels.textSize",
+                            type: "fluid.prefs.panels.textSize",
                             container: "{uiOptions}.dom.textSize",
                             createOnEvent: "onUIOptionsMarkupReady",
                             options: {
@@ -418,7 +418,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 components: {
                                     textSize: {
-                                        type: "fluid.uiOptions.enactors.textSize",
+                                        type: "fluid.prefs.enactors.textSize",
                                         container: "{uiEnhancer}.container",
                                         options: {
                                             fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
@@ -450,7 +450,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 checkPaths(uiOptions, customizedPanelPaths);
                 checkSaveCancel(uiOptions, maxTextSize, minTextSize);
-                fluid.enhance.forget("fluid.uiOptions.testsNonDefaultIntegration");
+                fluid.enhance.forget("fluid.prefs.testsNonDefaultIntegration");
                 jqUnit.start();
             });
         });
@@ -463,12 +463,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("UIOptions Integration tests", function () {
-            fluid.enhance.check({"fluid.uiOptions.testsIntegration": true});
+            fluid.enhance.check({"fluid.prefs.testsIntegration": true});
 
-            fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsIntegration", "fluid.uiOptions.tests", "fluid.uiOptionsTests"], {
-                funcName: "fluid.uiOptions.starterPanels",
+            fluid.demands("fluid.prefs", ["fluid.prefs.testsIntegration", "fluid.prefs.tests", "fluid.prefsTests"], {
+                funcName: "fluid.prefs.starterPanels",
                 options: {
-                    gradeNames: ["fluid.uiOptions.rootModel.starter"],
+                    gradeNames: ["fluid.prefs.rootModel.starter"],
                     components: {
                         uiEnhancer: {
                             type: "fluid.uiEnhancer",
@@ -502,7 +502,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 checkPaths(uiOptions, defaultPanelsPaths);
                 checkSaveCancel(uiOptions, bwSkin, bwSkin2);
-                fluid.enhance.forget("fluid.uiOptions.testsIntegration");
+                fluid.enhance.forget("fluid.prefs.testsIntegration");
                 jqUnit.start();
             });
         });
@@ -516,9 +516,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("UIOptions Auto-save", function () {
             jqUnit.expect(2);
 
-            fluid.enhance.check({"fluid.uiOptions.testsAutoSave": true});
+            fluid.enhance.check({"fluid.prefs.testsAutoSave": true});
 
-            fluid.demands("fluid.uiOptions", ["fluid.uiOptions.testsAutoSave", "fluid.uiOptionsTests", "fluid.uiOptions.tests"], {
+            fluid.demands("fluid.prefs", ["fluid.prefs.testsAutoSave", "fluid.prefsTests", "fluid.prefs.tests"], {
                 options: {
                     autoSave: true
                 }
@@ -532,7 +532,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var uiEnhancerSettings = uiOptions.getSettings();
                 jqUnit.assertDeepEq("bw setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
 
-                fluid.enhance.forget("fluid.uiOptions.uiOptionsTestsAutoSave");
+                fluid.enhance.forget("fluid.prefs.prefsEditorTestsAutoSave");
                 uiOptions.reset();
                 jqUnit.start();
             });
@@ -546,9 +546,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Preview URL", function () {
             jqUnit.expect(1);
 
-            fluid.enhance.check({"fluid.uiOptions.testsPreview": true});
+            fluid.enhance.check({"fluid.prefs.testsPreview": true});
 
-            fluid.demands("templateLoader", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
+            fluid.demands("templateLoader", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testsPreview"], {
                 options: {
                     templates: {
                         uiOptions: templatePrefix + "FullPreviewUIOptions.html"
@@ -563,15 +563,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
                         templateUrl, uiOptions.preview.container.attr("src"));
 
-                fluid.enhance.forget("fluid.uiOptions.testsPreview");
+                fluid.enhance.forget("fluid.prefs.testsPreview");
                 jqUnit.start();
             };
 
-            fluid.demands("fluid.uiOptions", ["fluid.uiOptionsTests", "fluid.uiOptions.tests", "fluid.uiOptions.testsPreview"], {
+            fluid.demands("fluid.prefs", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testsPreview"], {
                 options: {
                     components: {
                         preview: {
-                            type: "fluid.uiOptions.preview",
+                            type: "fluid.prefs.preview",
                             createOnEvent: "onReady",
                             container: "{uiOptions}.dom.previewFrame",
                             options: {

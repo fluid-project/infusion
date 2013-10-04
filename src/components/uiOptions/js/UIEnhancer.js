@@ -27,7 +27,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * Holds the default values for enactors and panel model values                *
      *******************************************************************************/
 
-    fluid.defaults("fluid.uiOptions.rootModel", {
+    fluid.defaults("fluid.prefs.rootModel", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         members: {
             // TODO: This information is supposed to be generated from the JSON
@@ -66,7 +66,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * uiEnhancer user options                                                      *
      ********************************************************************************/
     fluid.defaults("fluid.pageEnhancer", {
-        gradeNames: ["fluid.eventedComponent", "fluid.originalEnhancerOptions", "fluid.uiOptions.rootModel", "fluid.uiOptions.settingsGetter", "autoInit"],
+        gradeNames: ["fluid.eventedComponent", "fluid.originalEnhancerOptions", "fluid.prefs.rootModel", "fluid.prefs.settingsGetter", "autoInit"],
         components: {
             uiEnhancer: {
                 type: "fluid.uiEnhancer",

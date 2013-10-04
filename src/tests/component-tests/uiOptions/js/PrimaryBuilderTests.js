@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     fluid.defaults("fluid.tests.sampleSchemaGrade", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
         schema: {
             "type": "object",
             "properties": {
@@ -42,7 +42,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         schema: {
             "type": "object",
             "properties": {
-                "fluid.uiOptions.textSize": {
+                "fluid.prefs.textSize": {
                     "type": "number",
                     "default": 1,
                     "minimum": 1,
@@ -59,7 +59,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             schema: {
                 type: "fluid.littleComponent",
                 options: {
-                    gradeNames: ["fluid.uiOptions.schemas.textSize", "fluid.uiOptions.schemas.lineSpace"]
+                    gradeNames: ["fluid.prefs.schemas.textSize", "fluid.prefs.schemas.lineSpace"]
                 }
             },
             properSchema: {
@@ -69,9 +69,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             primaryBuilder: {
-                type: "fluid.uiOptions.primaryBuilder",
+                type: "fluid.prefs.primaryBuilder",
                 options: {
-                    typeFilter: ["fluid.uiOptions.textSize", "fluid.uiOptions.lineSpace"],
+                    typeFilter: ["fluid.prefs.textSize", "fluid.prefs.lineSpace"],
                 }
             },
             primaryBuilderSchema: {
@@ -81,9 +81,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             primaryBuilderWithSuppliedPrimarySchema: {
-                type: "fluid.uiOptions.primaryBuilder",
+                type: "fluid.prefs.primaryBuilder",
                 options: {
-                    typeFilter: ["fluid.uiOptions.textSize", "fluid.uiOptions.lineSpace", "fluid.tests.somePreference"],
+                    typeFilter: ["fluid.prefs.textSize", "fluid.prefs.lineSpace", "fluid.tests.somePreference"],
                     primarySchema: {
                         "fluid.tests.somePreference": {
                             "type": "number",
@@ -92,8 +92,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "maximum": 10,
                             "divisibleBy": 1
                         },
-                        "fluid.uiOptions.textSize": fluid.defaults(
-                            "fluid.tests.customTextSize").schema.properties["fluid.uiOptions.textSize"]
+                        "fluid.prefs.textSize": fluid.defaults(
+                            "fluid.tests.customTextSize").schema.properties["fluid.prefs.textSize"]
                     }
                 }
             },
@@ -157,21 +157,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.primaryBuilderWithSuppliedPrimarySchema = function (schema, that) {
         verifyBuilder(schema, [
             "fluid.tests.customTextSize",
-            "fluid.uiOptions.schemas.lineSpace",
+            "fluid.prefs.schemas.lineSpace",
             "fluid.tests.sampleSchemaGrade"
         ], [
-            "fluid.uiOptions.contrast"
+            "fluid.prefs.contrast"
         ]);
         jqUnit.assertEquals("Supplied primary schema should override the default schema grades",
-            0.2, schema.properties["fluid.uiOptions.textSize"].divisibleBy);
+            0.2, schema.properties["fluid.prefs.textSize"].divisibleBy);
     };
 
     fluid.tests.primaryBuilder = function (schema) {
         verifyBuilder(schema, [
-            "fluid.uiOptions.schemas.textSize",
-            "fluid.uiOptions.schemas.lineSpace"
+            "fluid.prefs.schemas.textSize",
+            "fluid.prefs.schemas.lineSpace"
         ], [
-            "fluid.uiOptions.contrast",
+            "fluid.prefs.contrast",
             "fluid.tests.somePreference"
         ]);
     };
@@ -199,17 +199,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testContributedSchema = function (schema) {
         var contributedSchema = $.extend(true, {},
-            fluid.defaults("fluid.uiOptions.schemas.textSize").schema,
-            fluid.defaults("fluid.uiOptions.schemas.lineSpace").schema);
+            fluid.defaults("fluid.prefs.schemas.textSize").schema,
+            fluid.defaults("fluid.prefs.schemas.lineSpace").schema);
         var finalSchema = schema.options.schema;
         verifySchema(contributedSchema, finalSchema);
         contributedSchema =
-            fluid.defaults("fluid.uiOptions.schemas.textSize").schema.properties["fluid.uiOptions.textSize"];
-        finalSchema = schema.options.schema.properties["fluid.uiOptions.textSize"];
+            fluid.defaults("fluid.prefs.schemas.textSize").schema.properties["fluid.prefs.textSize"];
+        finalSchema = schema.options.schema.properties["fluid.prefs.textSize"];
         verifySchema(contributedSchema, finalSchema);
         contributedSchema =
-            fluid.defaults("fluid.uiOptions.schemas.lineSpace").schema.properties["fluid.uiOptions.lineSpace"];
-        finalSchema = schema.options.schema.properties["fluid.uiOptions.lineSpace"];
+            fluid.defaults("fluid.prefs.schemas.lineSpace").schema.properties["fluid.prefs.lineSpace"];
+        finalSchema = schema.options.schema.properties["fluid.prefs.lineSpace"];
         verifySchema(contributedSchema, finalSchema);
     };
 

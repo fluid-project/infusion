@@ -23,8 +23,8 @@ var fluid_1_5 = fluid_1_5 || {};
      * Full No Preview UI Options *
      ******************************/
 
-    fluid.defaults("fluid.uiOptions.fullNoPreview", {
-        gradeNames: ["fluid.uiOptions.uiOptionsLoader", "autoInit"],
+    fluid.defaults("fluid.prefs.fullNoPreview", {
+        gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
         components: {
             uiOptions: {
                 container: "{that}.container",

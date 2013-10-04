@@ -60,18 +60,18 @@ var demo = demo || {};
     };
 
     var commonOpts = {
-        gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
+        gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
         // Tell UIOptions where to find all the templates, relative to this path
         templatePrefix: pathToTemplates,
         messagePrefix: pathToMessages,
         templateLoader: {
-            gradeNames: ["fluid.uiOptions.starterFatPanelTemplateLoader"]
+            gradeNames: ["fluid.prefs.starterFatPanelTemplateLoader"]
         },
         messageLoader: {
-            gradeNames: ["fluid.uiOptions.starterMessageLoader"]
+            gradeNames: ["fluid.prefs.starterMessageLoader"]
         },
         uiOptions: {
-            gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
+            gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
         }
     };
 
@@ -80,7 +80,7 @@ var demo = demo || {};
      * page itself as a live preview.
      */
     demo.initFatPanel = function (container) {
-        fluid.uiOptions.fatPanel(container, commonOpts);
+        fluid.prefs.fatPanel(container, commonOpts);
     };
 
 })(jQuery, fluid);

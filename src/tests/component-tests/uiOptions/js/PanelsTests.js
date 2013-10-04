@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.textFont
+     * Unit tests for fluid.prefs.textFont
      *******************************************************************************/
     var classnameMap = {
             "textFont": {
@@ -62,7 +62,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
     };
 
-    fluid.defaults("fluid.uiOptions.defaultTestPanel", {
+    fluid.defaults("fluid.prefs.defaultTestPanel", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         strings: {},
         parentBundle: {
@@ -81,10 +81,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             textFont: {
-                type: "fluid.uiOptions.panels.textFont",
+                type: "fluid.prefs.panels.textFont",
                 container: ".flc-textFont",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultTestPanel",
+                    gradeNames: "fluid.prefs.defaultTestPanel",
                     model: {
                         value: 1
                     },
@@ -154,10 +154,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             contrast: {
-                type: "fluid.uiOptions.panels.contrast",
+                type: "fluid.prefs.panels.contrast",
                 container: ".flc-contrast",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultTestPanel",
+                    gradeNames: "fluid.prefs.defaultTestPanel",
                     model: {
                         value: "default"
                     },
@@ -245,10 +245,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             textSize: {
-                type: "fluid.uiOptions.panels.textSize",
+                type: "fluid.prefs.panels.textSize",
                 container: ".flc-textSize",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultTestPanel",
+                    gradeNames: "fluid.prefs.defaultTestPanel",
                     model: {
                         value: 1
                     }
@@ -296,10 +296,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             lineSpace: {
-                type: "fluid.uiOptions.panels.lineSpace",
+                type: "fluid.prefs.panels.lineSpace",
                 container: ".flc-lineSpace",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultTestPanel",
+                    gradeNames: "fluid.prefs.defaultTestPanel",
                     model: {
                         value: 1
                     }
@@ -354,10 +354,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             layout: {
-                type: "fluid.uiOptions.panels.layoutControls",
+                type: "fluid.prefs.panels.layoutControls",
                 container: ".flc-layout",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultTestPanel",
+                    gradeNames: "fluid.prefs.defaultTestPanel",
                     model: {
                         toc: false,
                         layout: false
@@ -414,10 +414,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             links: {
-                type: "fluid.uiOptions.panels.linksControls",
+                type: "fluid.prefs.panels.linksControls",
                 container: ".flc-links",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultTestPanel",
+                    gradeNames: "fluid.prefs.defaultTestPanel",
                     model: {
                         links: false,
                         inputsLarger: false

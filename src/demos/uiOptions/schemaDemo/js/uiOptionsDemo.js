@@ -26,8 +26,8 @@ var demo = demo || {};
      * Makes use of a schema to configure UI Options
      */
     demo.initFatPanel = function (container) {
-        var builder = fluid.uiOptions.builder({
-            gradeNames: ["fluid.uiOptions.auxSchema.starter"],
+        var builder = fluid.prefs.builder({
+            gradeNames: ["fluid.prefs.auxSchema.starter"],
             auxiliarySchema: {
                 "templatePrefix": "../../../../components/uiOptions/html/",
                 "messagePrefix": "../../../../components/uiOptions/messages/"

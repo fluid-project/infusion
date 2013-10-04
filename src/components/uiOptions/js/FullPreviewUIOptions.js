@@ -23,8 +23,8 @@ var fluid_1_5 = fluid_1_5 || {};
      * Full Preview UI Options *
      ***************************/
 
-    fluid.defaults("fluid.uiOptions.fullPreview", {
-        gradeNames: ["fluid.uiOptions.uiOptionsLoader", "autoInit"],
+    fluid.defaults("fluid.prefs.fullPreview", {
+        gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
         outerPreviewEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
         components: {
             uiOptions: {
@@ -32,7 +32,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     components: {
                         preview: {
-                            type: "fluid.uiOptions.preview",
+                            type: "fluid.prefs.preview",
                             createOnEvent: "onReady",
                             container: "{uiOptions}.dom.previewFrame"
                         }

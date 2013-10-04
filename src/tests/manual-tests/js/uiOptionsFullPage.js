@@ -68,16 +68,16 @@ var demo = demo || {};
      * full-page version, with and without Preview.
      */
     var basicFullPageOpts = {
-        gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
+        gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
         // Tell UIOptions where to find all the templates, relative to this file
         templatePrefix: pathToTemplates,
         messagePrefix: pathToMessages,
         messageLoader: {
-            gradeNames: ["fluid.uiOptions.starterMessageLoader"]
+            gradeNames: ["fluid.prefs.starterMessageLoader"]
         },
         // Tell UIOptions where to redirect to if the user cancels the operation
         uiOptions: {
-            gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
+            gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"],
             listeners: {
                 onCancel: function () {
                     alert("Cancelled - would normally cancel any unsaved changes and return to the previous page.");
@@ -92,10 +92,10 @@ var demo = demo || {};
     demo.initFullNoPreview = function (container, options) {
         var noPreviewOps = {
             templateLoader: {
-                gradeNames: ["fluid.uiOptions.starterFullNoPreviewTemplateLoader"]
+                gradeNames: ["fluid.prefs.starterFullNoPreviewTemplateLoader"]
             }
         };
-        fluid.uiOptions.fullNoPreview(container, $.extend(true, {}, basicFullPageOpts, noPreviewOps, options));
+        fluid.prefs.fullNoPreview(container, $.extend(true, {}, basicFullPageOpts, noPreviewOps, options));
     };
 
     /**
@@ -104,10 +104,10 @@ var demo = demo || {};
     demo.initFullWithPreview = function (container, options) {
         var previewOps = {
             templateLoader: {
-                gradeNames: ["fluid.uiOptions.starterFullPreviewTemplateLoader"]
+                gradeNames: ["fluid.prefs.starterFullPreviewTemplateLoader"]
             }
         };
-        fluid.uiOptions.fullPreview(container, $.extend(true, {}, basicFullPageOpts, previewOps, options));
+        fluid.prefs.fullPreview(container, $.extend(true, {}, basicFullPageOpts, previewOps, options));
     };
 
 })(jQuery, fluid);

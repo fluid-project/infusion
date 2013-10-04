@@ -52,11 +52,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     /************************************************
-     * fluid.uiOptions.builder.parseAuxSchema tests *
+     * fluid.prefs.builder.parseAuxSchema tests *
      ************************************************/
 
     fluid.tests.testparseAuxSchema = function (expected, funcArgs) {
-        var actualFitler = fluid.invokeGlobalFunction("fluid.uiOptions.builder.parseAuxSchema", funcArgs);
+        var actualFitler = fluid.invokeGlobalFunction("fluid.prefs.builder.parseAuxSchema", funcArgs);
         jqUnit.assertDeepEq("The schema should have been parsed correctly", expected, actualFitler);
     };
 
@@ -73,23 +73,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOpts: {
             auxSchema: {
-                "namespace": "fluid.uiOptions.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
+                "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
                 "textSize": {
-                    "type": "fluid.uiOptions.textSize",
+                    "type": "fluid.prefs.textSize",
                     "enactor": {
-                        "type": "fluid.uiOptions.enactors.textSize"
+                        "type": "fluid.prefs.enactors.textSize"
                     },
                     "panel": {
-                        "type": "fluid.uiOptions.panels.textSize",
+                        "type": "fluid.prefs.panels.textSize",
                         "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/UIOptionsTemplate-textSize.html",
                         "message": "%prefix/textSize.json"
                     }
                 },
                 "lineSpace": {
-                    "type": "fluid.uiOptions.lineSpace",
+                    "type": "fluid.prefs.lineSpace",
                     "enactor": {
-                        "type": "fluid.uiOptions.enactors.lineSpace",
+                        "type": "fluid.prefs.enactors.lineSpace",
                         "fontSizeMap": {
                             "xx-small": "9px",
                             "x-small": "11px",
@@ -101,17 +101,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     },
                     "panel": {
-                        "type": "fluid.uiOptions.panels.lineSpace",
+                        "type": "fluid.prefs.panels.lineSpace",
                         "container": ".flc-uiOptions-line-space",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/UIOptionsTemplate-lineSpace.html",
                         "message": "%prefix/lineSpace.json"
                     }
                 }
             },
-            expectedTypeFilter: ["fluid.uiOptions.textSize", "fluid.uiOptions.lineSpace"]
+            expectedTypeFilter: ["fluid.prefs.textSize", "fluid.prefs.lineSpace"]
         },
         modules: [{
-            name: "fluid.uiOptions.builder.parseAuxSchema",
+            name: "fluid.prefs.builder.parseAuxSchema",
             tests: [{
                 expect: 1,
                 name: "grade creation",
@@ -122,11 +122,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /***********************************************
-     * fluid.uiOptions.builder.generateGrade tests *
+     * fluid.prefs.builder.generateGrade tests *
      ***********************************************/
 
     fluid.tests.testGenerateGrade = function (expectedOpts, funcArgs) {
-        var gradeName = fluid.invokeGlobalFunction("fluid.uiOptions.builder.generateGrade", funcArgs);
+        var gradeName = fluid.invokeGlobalFunction("fluid.prefs.builder.generateGrade", funcArgs);
         fluid.tests.assertDefaults(gradeName, expectedOpts);
     };
 
@@ -142,7 +142,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.generateGradeTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
-            name: "fluid.uiOptions.builder.generateGrade",
+            name: "fluid.prefs.builder.generateGrade",
             tests: [{
                 expect: 4,
                 name: "grade creation",
@@ -153,11 +153,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*************************************************
-     * fluid.uiOptions.builder.constructGrades tests *
+     * fluid.prefs.builder.constructGrades tests *
      *************************************************/
 
     fluid.tests.testConstructGrades = function (expected, funcArgs) {
-        var gradeNames = fluid.invokeGlobalFunction("fluid.uiOptions.builder.constructGrades", funcArgs);
+        var gradeNames = fluid.invokeGlobalFunction("fluid.prefs.builder.constructGrades", funcArgs);
 
         fluid.each(expected, function (expectValues, category) {
             var actualGradeName = gradeNames[category];
@@ -207,7 +207,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         modules: [{
-            name: "fluid.uiOptions.builder.constructGrade",
+            name: "fluid.prefs.builder.constructGrade",
             tests: [{
                 expect: 7,
                 name: "generate grades",
@@ -218,7 +218,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /**********************************
-     * fluid.uiOptions.builder. tests *
+     * fluid.prefs.builder. tests *
      **********************************/
 
     fluid.tests.testNotCreated = function (that, grades) {
@@ -240,7 +240,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs = {
         "textSize": {
-            "type": "fluid.uiOptions.textSize"
+            "type": "fluid.prefs.textSize"
         }
     };
 
@@ -263,7 +263,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.panels = {
         "textSize": {
             "panel": {
-                "type": "fluid.uiOptions.panels.textSize",
+                "type": "fluid.prefs.panels.textSize",
                 "container": ".flc-uiOptions-text-size",
                 "template": "templates/textSize",
                 "message": "messages/textSize"
@@ -274,7 +274,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.enactors = {
         "textSize": {
             "enactor": {
-                "type": "fluid.uiOptions.enactors.textSize"
+                "type": "fluid.prefs.enactors.textSize"
             }
         }
     };
@@ -300,40 +300,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             builderEmpty: {
-                type: "fluid.uiOptions.builder",
+                type: "fluid.prefs.builder",
                 options: {
                     auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.empty", [fluid.tests.prefs])
                 }
             },
             builderEnactors: {
-                type: "fluid.uiOptions.builder",
+                type: "fluid.prefs.builder",
                 options: {
                     auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.enactorsOnly", [fluid.tests.prefs, fluid.tests.enactors])
                 }
             },
             builderPanels: {
-                type: "fluid.uiOptions.builder",
+                type: "fluid.prefs.builder",
                 options: {
                     auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.panelsOnly", [fluid.tests.prefs, fluid.tests.panels]),
                     topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
                 }
             },
             builderPanelsAndMessages: {
-                type: "fluid.uiOptions.builder",
+                type: "fluid.prefs.builder",
                 options: {
                     auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.builderPanelsAndMessages", [fluid.tests.prefs, fluid.tests.panels, fluid.tests.message, fluid.tests.messagePrefix]),
                     topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
                 }
             },
             builderPanelsAndTemplates: {
-                type: "fluid.uiOptions.builder",
+                type: "fluid.prefs.builder",
                 options: {
                     auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.builderPanelsAndTemplates", [fluid.tests.prefs, fluid.tests.panels, fluid.tests.template, fluid.tests.templatePrefix]),
                     topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
                 }
             },
             builderAll: {
-                type: "fluid.uiOptions.builder",
+                type: "fluid.prefs.builder",
                 options: {
                     auxiliarySchema: fluid.tests.assembleAuxSchema("fluid.tests.created.all", [fluid.tests.prefs, fluid.tests.panels, fluid.tests.enactors, fluid.tests.message, fluid.tests.messagePrefix, fluid.tests.template, fluid.tests.templatePrefix]),
                     topCommonOptions: "{fluid.tests.builder}.options.testOpts.topCommonOptions"
@@ -349,12 +349,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
             consolidationGrades: {
-                enhancer: "fluid.uiOptions.builder.uie",
-                uiOptions: "fluid.uiOptions.builder.uio"
+                enhancer: "fluid.prefs.builder.uie",
+                uiOptions: "fluid.prefs.builder.uio"
             }
         },
         modules: [{
-            name: "fluid.uiOptions.builder - empty",
+            name: "fluid.prefs.builder - empty",
             tests: [{
                 expect: 16,
                 name: "not created",
@@ -364,15 +364,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledUIEGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderEmpty}.options.assembledUIEGrade", {gradeNames: ["fluid.uiOptions.assembler.uie"]}]
+                args: ["{builderEmpty}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
             }, {
                 expect: 2,
                 name: "assembledUIOGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderEmpty}.options.assembledUIOGrade", {gradeNames: ["fluid.uiOptions.assembler.uio"]}]
+                args: ["{builderEmpty}.options.assembledUIOGrade", {gradeNames: ["fluid.prefs.assembler.uio"]}]
             }]
         }, {
-            name: "fluid.uiOptions.builder - only enactors",
+            name: "fluid.prefs.builder - only enactors",
             tests: [{
                 expect: 5,
                 name: "enactors",
@@ -392,15 +392,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledUIEGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderEnactors}.options.assembledUIEGrade", {gradeNames: ["fluid.uiOptions.assembler.uie"]}]
+                args: ["{builderEnactors}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
             }, {
                 expect: 2,
                 name: "assembledUIOGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderEnactors}.options.assembledUIOGrade", {gradeNames: ["fluid.uiOptions.assembler.uio"]}]
+                args: ["{builderEnactors}.options.assembledUIOGrade", {gradeNames: ["fluid.prefs.assembler.uio"]}]
             }]
         }, {
-            name: "fluid.uiOptions.builder - only panels",
+            name: "fluid.prefs.builder - only panels",
             tests: [{
                 expect: 5,
                 name: "panels",
@@ -430,15 +430,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledUIEGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.assembledUIEGrade", {gradeNames: ["fluid.uiOptions.assembler.uie"]}]
+                args: ["{builderPanels}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
             }, {
                 expect: 2,
                 name: "assembledUIOGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.assembledUIOGrade", {gradeNames: ["fluid.uiOptions.assembler.uio"]}]
+                args: ["{builderPanels}.options.assembledUIOGrade", {gradeNames: ["fluid.prefs.assembler.uio"]}]
             }]
         }, {
-            name: "fluid.uiOptions.builder - panels & messages",
+            name: "fluid.prefs.builder - panels & messages",
             tests: [{
                 expect: 5,
                 name: "panels",
@@ -473,15 +473,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledUIEGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.assembledUIEGrade", {gradeNames: ["fluid.uiOptions.assembler.uie"]}]
+                args: ["{builderPanelsAndMessages}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
             }, {
                 expect: 2,
                 name: "assembledUIOGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.assembledUIOGrade", {gradeNames: ["fluid.uiOptions.assembler.uio"]}]
+                args: ["{builderPanelsAndMessages}.options.assembledUIOGrade", {gradeNames: ["fluid.prefs.assembler.uio"]}]
             }]
         }, {
-            name: "fluid.uiOptions.builder - panels & templates",
+            name: "fluid.prefs.builder - panels & templates",
             tests: [{
                 expect: 5,
                 name: "panels",
@@ -516,15 +516,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledUIEGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.assembledUIEGrade", {gradeNames: ["fluid.uiOptions.assembler.uie"]}]
+                args: ["{builderPanelsAndTemplates}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
             }, {
                 expect: 2,
                 name: "assembledUIOGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.assembledUIOGrade", {gradeNames: ["fluid.uiOptions.assembler.uio"]}]
+                args: ["{builderPanelsAndTemplates}.options.assembledUIOGrade", {gradeNames: ["fluid.prefs.assembler.uio"]}]
             }]
         }, {
-            name: "fluid.uiOptions.builder - all",
+            name: "fluid.prefs.builder - all",
             tests: [{
                 expect: 5,
                 name: "panels",
@@ -564,12 +564,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledUIEGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.assembledUIEGrade", {gradeNames: ["fluid.uiOptions.assembler.uie"]}]
+                args: ["{builderAll}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
             }, {
                 expect: 2,
                 name: "assembledUIOGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.assembledUIOGrade", {gradeNames: ["fluid.uiOptions.assembler.uio"]}]
+                args: ["{builderAll}.options.assembledUIOGrade", {gradeNames: ["fluid.prefs.assembler.uio"]}]
             }]
         }]
     });
@@ -577,7 +577,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**********************************
      * Builder munging tests          *
      **********************************/
-    var uioType = "fluid.uiOptions.fullNoPreview";
+    var uioType = "fluid.prefs.fullNoPreview";
 
     fluid.defaults("fluid.tests.builderMunging", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
@@ -586,9 +586,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             builder: {
-                type: "fluid.uiOptions.builder",
+                type: "fluid.prefs.builder",
                 options: {
-                    gradeNames: ["fluid.uiOptions.auxSchema.starter"],
+                    gradeNames: ["fluid.prefs.auxSchema.starter"],
                     auxiliarySchema: {
                         "templatePrefix": "../../../../components/uiOptions/html/",
                         "messagePrefix": "../../../../components/uiOptions/messages/",
@@ -635,9 +635,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.assertBuilderMunging = function (uio) {
         return function (uio) {
-            jqUnit.assertEquals("Munging options for UIO options should be passed down to the uiOptions", 1, uio.uiOptionsLoader.uiOptions.options.userOption);
+            jqUnit.assertEquals("Munging options for UIO options should be passed down to the uiOptions", 1, uio.prefsEditorLoader.uiOptions.options.userOption);
 
-            jqUnit.assertTrue(uioType + " should be in the base uio grades", fluid.hasGrade(uio.uiOptionsLoader.options, uioType));
+            jqUnit.assertTrue(uioType + " should be in the base uio grades", fluid.hasGrade(uio.prefsEditorLoader.options, uioType));
             jqUnit.assertEquals("Munging options for enhancer should be passed down to the enhancer", "fl-aria", uio.enhancer.uiEnhancer.options.classnameMap["textFont.default"]);
         };
     };

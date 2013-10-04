@@ -24,11 +24,11 @@ var fluid_1_5 = fluid_1_5 || {};
      * A Generic data source grade that defines an API for getting and setting
      * data.
      */
-    fluid.defaults("fluid.uiOptions.dataSource", {
+    fluid.defaults("fluid.prefs.dataSource", {
         gradeNames: ["fluid.littleComponent"],
         invokers: {
-            get: "fluid.uiOptions.dataSource.get",
-            set: "fluid.uiOptions.dataSource.set"
+            get: "fluid.prefs.dataSource.get",
+            set: "fluid.prefs.dataSource.set"
         }
     });
 
@@ -41,7 +41,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.cookieStore", {
-        gradeNames: ["fluid.uiOptions.dataSource", "autoInit"],
+        gradeNames: ["fluid.prefs.dataSource", "autoInit"],
         cookie: {
             name: "fluid-ui-settings",
             path: "/",
@@ -49,12 +49,12 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.demands("fluid.uiOptions.dataSource.get", "fluid.cookieStore", {
+    fluid.demands("fluid.prefs.dataSource.get", "fluid.cookieStore", {
         funcName: "fluid.cookieStore.get",
         args: "{that}.options.cookie.name"
     });
 
-    fluid.demands("fluid.uiOptions.dataSource.set", "fluid.cookieStore", {
+    fluid.demands("fluid.prefs.dataSource.set", "fluid.cookieStore", {
         funcName: "fluid.cookieStore.set",
         args: ["{arguments}.0", "{that}.options.cookie"]
     });
@@ -122,15 +122,15 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.tempStore", {
-        gradeNames: ["fluid.uiOptions.dataSource", "fluid.modelComponent", "autoInit"]
+        gradeNames: ["fluid.prefs.dataSource", "fluid.modelComponent", "autoInit"]
     });
 
-    fluid.demands("fluid.uiOptions.dataSource.get", "fluid.tempStore", {
+    fluid.demands("fluid.prefs.dataSource.get", "fluid.tempStore", {
         funcName: "fluid.identity",
         args: "{that}.model"
     });
 
-    fluid.demands("fluid.uiOptions.dataSource.set", "fluid.tempStore", {
+    fluid.demands("fluid.prefs.dataSource.set", "fluid.tempStore", {
         funcName: "fluid.tempStore.set",
         args: ["{arguments}.0", "{that}.applier"]
     });
@@ -143,7 +143,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["autoInit", "fluid.littleComponent"],
         components: {
             settingsStore: {
-                type: "fluid.uiOptions.store"
+                type: "fluid.prefs.store"
             }
         }
     });
@@ -152,7 +152,7 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.staticEnvironment.settingsStore = that.settingsStore;
     };
 
-    fluid.demands("fluid.uiOptions.store", ["fluid.globalSettingsStore"], {
+    fluid.demands("fluid.prefs.store", ["fluid.globalSettingsStore"], {
         funcName: "fluid.cookieStore"
     });
 

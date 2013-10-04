@@ -24,33 +24,33 @@ var fluid_1_5 = fluid_1_5 || {};
      * Base grade panels
      ***********************************************/
 
-    fluid.defaults("fluid.uiOptions.panels", {
-        gradeNames: ["fluid.rendererComponent", "fluid.uiOptions.modelRelay", "autoInit"]
+    fluid.defaults("fluid.prefs.panels", {
+        gradeNames: ["fluid.rendererComponent", "fluid.prefs.modelRelay", "autoInit"]
     });
 
     /********************************
      * UI Options Text Field Slider *
      ********************************/
 
-    fluid.defaults("fluid.uiOptions.textfieldSlider", {
+    fluid.defaults("fluid.prefs.textfieldSlider", {
         gradeNames: ["fluid.textfieldSlider", "autoInit"],
-        model: "{fluid.uiOptions.panels}.model",
-        range: "{fluid.uiOptions.panels}.options.range",
+        model: "{fluid.prefs.panels}.model",
+        range: "{fluid.prefs.panels}.options.range",
         listeners: {
             modelChanged: {
-                listener: "{fluid.uiOptions.panels}.applier.requestChange",
+                listener: "{fluid.prefs.panels}.applier.requestChange",
                 args: ["{that}.options.path", "{arguments}.0"]
             }
         },
         path: "value",
-        sliderOptions: "{fluid.uiOptions.panels}.options.sliderOptions"
+        sliderOptions: "{fluid.prefs.panels}.options.sliderOptions"
     });
 
     /**************************************
      * Functions shared by several panels *
      **************************************/
 
-    fluid.uiOptions.panels.lookupMsg = function (messageResolver, prefix, values) {
+    fluid.prefs.panels.lookupMsg = function (messageResolver, prefix, values) {
         var messages = [];
         fluid.each(values, function (value, key) {
             var looked = messageResolver.lookup([prefix + "." + value]);
@@ -64,12 +64,12 @@ var fluid_1_5 = fluid_1_5 || {};
      ************************/
 
     /**
-     * A sub-component of fluid.uiOptions that renders the "text size" panel of the user preferences interface.
+     * A sub-component of fluid.prefs that renders the "text size" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.panels.textSize", {
-        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+    fluid.defaults("fluid.prefs.panels.textSize", {
+        gradeNames: ["fluid.prefs.panels", "autoInit"],
         preferenceMap: {
-            "fluid.uiOptions.textSize": {
+            "fluid.prefs.textSize": {
                 "model.value": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
@@ -97,7 +97,7 @@ var fluid_1_5 = fluid_1_5 || {};
             textSize: {
                 decorators: {
                     type: "fluid",
-                    func: "fluid.uiOptions.textfieldSlider"
+                    func: "fluid.prefs.textfieldSlider"
                 }
             }
         },
@@ -113,12 +113,12 @@ var fluid_1_5 = fluid_1_5 || {};
      ************************/
 
     /**
-     * A sub-component of fluid.uiOptions that renders the "text font" panel of the user preferences interface.
+     * A sub-component of fluid.prefs that renders the "text font" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.panels.textFont", {
-        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+    fluid.defaults("fluid.prefs.panels.textFont", {
+        gradeNames: ["fluid.prefs.panels", "autoInit"],
         preferenceMap: {
-            "fluid.uiOptions.textFont": {
+            "fluid.prefs.textFont": {
                 "model.value": "default",
                 "controlValues.textFont": "enum"
             }
@@ -130,7 +130,7 @@ var fluid_1_5 = fluid_1_5 || {};
         strings: {
             textFont: {
                 expander: {
-                    func: "fluid.uiOptions.panels.lookupMsg",
+                    func: "fluid.prefs.panels.lookupMsg",
                     args: ["{that}.options.parentBundle", "textFont", "{that}.options.controlValues.textFont"]
                 }
             }
@@ -143,7 +143,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 selection: "${value}",
                 decorators: {
                     type: "fluid",
-                    func: "fluid.uiOptions.selectDecorator",
+                    func: "fluid.prefs.selectDecorator",
                     options: {
                         styles: "{that}.options.classnameMap.textFont"
                     }
@@ -161,12 +161,12 @@ var fluid_1_5 = fluid_1_5 || {};
      *************************/
 
     /**
-     * A sub-component of fluid.uiOptions that renders the "line space" panel of the user preferences interface.
+     * A sub-component of fluid.prefs that renders the "line space" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.panels.lineSpace", {
-        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+    fluid.defaults("fluid.prefs.panels.lineSpace", {
+        gradeNames: ["fluid.prefs.panels", "autoInit"],
         preferenceMap: {
-            "fluid.uiOptions.lineSpace": {
+            "fluid.prefs.lineSpace": {
                 "model.value": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
@@ -194,7 +194,7 @@ var fluid_1_5 = fluid_1_5 || {};
             lineSpace: {
                 decorators: {
                     type: "fluid",
-                    func: "fluid.uiOptions.textfieldSlider"
+                    func: "fluid.prefs.textfieldSlider"
                 }
             }
         },
@@ -210,12 +210,12 @@ var fluid_1_5 = fluid_1_5 || {};
      ***********************/
 
     /**
-     * A sub-component of fluid.uiOptions that renders the "contrast" panel of the user preferences interface.
+     * A sub-component of fluid.prefs that renders the "contrast" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.panels.contrast", {
-        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+    fluid.defaults("fluid.prefs.panels.contrast", {
+        gradeNames: ["fluid.prefs.panels", "autoInit"],
         preferenceMap: {
-            "fluid.uiOptions.contrast": {
+            "fluid.prefs.contrast": {
                 "model.value": "default",
                 "controlValues.theme": "enum"
             }
@@ -232,7 +232,7 @@ var fluid_1_5 = fluid_1_5 || {};
         strings: {
             theme: {
                 expander: {
-                    func: "fluid.uiOptions.panels.lookupMsg",
+                    func: "fluid.prefs.panels.lookupMsg",
                     args: ["{that}.options.parentBundle", "contrast", "{that}.options.controlValues.theme"]
                 }
             }
@@ -261,16 +261,15 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         invokers: {
             style: {
-                funcName: "fluid.uiOptions.panels.contrast.style",
+                funcName: "fluid.prefs.panels.contrast.style",
                 args: ["{that}.dom.themeLabel", "{that}.options.strings.theme",
                     "{that}.options.markup.label", "{that}.options.controlValues.theme",
-                    "{that}.options.classnameMap.theme"],
-                    dynamic: true
+                    "{that}.options.classnameMap.theme"]
             }
         }
     });
 
-    fluid.uiOptions.panels.contrast.style = function (labels, strings, markup, theme, style) {
+    fluid.prefs.panels.contrast.style = function (labels, strings, markup, theme, style) {
         fluid.each(labels, function (label, index) {
             label = $(label);
             label.html(fluid.stringTemplate(markup, {
@@ -285,12 +284,12 @@ var fluid_1_5 = fluid_1_5 || {};
      ******************************/
 
     /**
-     * A sub-component of fluid.uiOptions that renders the "layout and navigation" panel of the user preferences interface.
+     * A sub-component of fluid.prefs that renders the "layout and navigation" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.panels.layoutControls", {
-        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+    fluid.defaults("fluid.prefs.panels.layoutControls", {
+        gradeNames: ["fluid.prefs.panels", "autoInit"],
         preferenceMap: {
-            "fluid.uiOptions.tableOfContents": {
+            "fluid.prefs.tableOfContents": {
                 "model.toc": "default"
             }
         },
@@ -310,15 +309,15 @@ var fluid_1_5 = fluid_1_5 || {};
      * UI Options Links Controls *
      *****************************/
     /**
-     * A sub-component of fluid.uiOptions that renders the "links and buttons" panel of the user preferences interface.
+     * A sub-component of fluid.prefs that renders the "links and buttons" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.uiOptions.panels.linksControls", {
-        gradeNames: ["fluid.uiOptions.panels", "autoInit"],
+    fluid.defaults("fluid.prefs.panels.linksControls", {
+        gradeNames: ["fluid.prefs.panels", "autoInit"],
         preferenceMap: {
-            "fluid.uiOptions.emphasizeLinks": {
+            "fluid.prefs.emphasizeLinks": {
                 "model.links": "default"
             },
-            "fluid.uiOptions.inputsLarger": {
+            "fluid.prefs.inputsLarger": {
                 "model.inputsLarger": "default"
             }
         },
@@ -345,17 +344,17 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A sub-component that decorates the options on the select dropdown list box with the css style
      */
-    fluid.defaults("fluid.uiOptions.selectDecorator", {
+    fluid.defaults("fluid.prefs.selectDecorator", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         listeners: {
-            onCreate: "fluid.uiOptions.selectDecorator.decorateOptions"
+            onCreate: "fluid.prefs.selectDecorator.decorateOptions"
         },
         styles: {
             preview: "fl-preview-theme"
         }
     });
 
-    fluid.uiOptions.selectDecorator.decorateOptions = function (that) {
+    fluid.prefs.selectDecorator.decorateOptions = function (that) {
         fluid.each($("option", that.container), function (option) {
             var styles = that.options.styles;
             $(option).addClass(styles.preview + " " + styles[fluid.value(option)]);

@@ -27,7 +27,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * a simple string representing a direct relay between changes to one path and another
      ***************************************************************************************/
 
-    fluid.defaults("fluid.uiOptions.modelRelay", {
+    fluid.defaults("fluid.prefs.modelRelay", {
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
         listenerNamespaces: [], // keep track of all the added listeners for removal at the destroy of this component
         mergePolicy: {
@@ -39,11 +39,11 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         invokers: {
             addListeners: {
-                funcName: "fluid.uiOptions.modelRelay.addListeners",
+                funcName: "fluid.prefs.modelRelay.addListeners",
                 args: ["{that}.options.rules", "{that}.applier", "{that}.options.sourceApplier", "{that}.options.listenerNamespaces"]
             },
             removeListeners: {
-                funcName: "fluid.uiOptions.modelRelay.removeListeners",
+                funcName: "fluid.prefs.modelRelay.removeListeners",
                 args: ["{that}.options.sourceApplier.modelChanged", "{that}.options.listenerNamespaces"]
             }
         },
@@ -51,13 +51,13 @@ var fluid_1_5 = fluid_1_5 || {};
         rules: {}  // must be supplied by implementors, in format: "externalModelKey": "internalModelKey"
     });
 
-    fluid.uiOptions.modelRelay.removeListeners = function (modelChanged, namespaces) {
+    fluid.prefs.modelRelay.removeListeners = function (modelChanged, namespaces) {
         fluid.each(namespaces, function (namespace) {
             modelChanged.removeListener(namespace);
         });
     };
 
-    fluid.uiOptions.modelRelay.addListeners = function (rules, applier, sourceApplier, listenerNamespaces) {
+    fluid.prefs.modelRelay.addListeners = function (rules, applier, sourceApplier, listenerNamespaces) {
         fluid.each(rules, function (internalKey, sourceKey) {
             var uniqueNamespace = fluid.allocateGuid();
 

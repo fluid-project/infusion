@@ -24,13 +24,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /**************************************************
          * fluid.fullPreviewUIOptions Integration Tests *
          **************************************************/
-        fluid.demands("fluid.uiOptions.preview", ["fluid.uiOptions.fullPreview"], {
+        fluid.demands("fluid.prefs.preview", ["fluid.prefs.fullPreview"], {
             options: {
                 templateUrl: "TestPreviewTemplate.html"
             }
         });
 
-        fluid.tests.uiOptions.integrationTest("fluid.uiOptions.fullPreview", false);
+        fluid.tests.uiOptions.integrationTest("fluid.prefs.fullPreview", false);
 
         var testSettings = {
             textSize: "1.5",
@@ -59,7 +59,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.start();
         }
 
-        that = fluid.tests.uiOptions.mungingIntegrationTest("fluid.uiOptions.fullPreview", "#myUIOptions", {
+        that = fluid.tests.uiOptions.mungingIntegrationTest("fluid.prefs.fullPreview", "#myUIOptions", {
             previewEnhancer: {
                 components: {
                     tableOfContents: {

@@ -38,11 +38,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             fatPanel: {
-                type: "fluid.uiOptions.fatPanel",
+                type: "fluid.prefs.fatPanel",
                 container: ".flc-uiOptions-fatPanel",
                 createOnEvent: "{fatPanelIntegrationTester}.events.onTestCaseStart",
                 options: {
-                    gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
+                    gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
                     templatePrefix: "../../../../components/uiOptions/html/",
                     messagePrefix: "../../../../components/uiOptions/messages/",
                     iframeRenderer: {
@@ -51,13 +51,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     },
                     templateLoader: {
-                        gradeNames: ["fluid.uiOptions.starterFatPanelTemplateLoader"]
+                        gradeNames: ["fluid.prefs.starterFatPanelTemplateLoader"]
                     },
                     messageLoader: {
-                        gradeNames: ["fluid.uiOptions.starterMessageLoader"]
+                        gradeNames: ["fluid.prefs.starterMessageLoader"]
                     },
                     uiOptions: {
-                        gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
+                        gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
                     }
                 }
             },
@@ -78,7 +78,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var uiOptions = fatPanel.uiOptions;
         jqUnit.assertEquals("Reset button is invisible", false, $(".flc-uiOptions-reset").is(":visible"));
-        fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents["fluid.uiOptions.fatPanel"]);
+        fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents["fluid.prefs.fatPanel"]);
     };
 
     fluid.tests.afterShowFunc1 = function (fatPanel) {
@@ -172,7 +172,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             fatPanel: {
-                type: "fluid.uiOptions.fatPanel",
+                type: "fluid.prefs.fatPanel",
                 container: ".flc-uiOptions-fatPanel",
                 createOnEvent: "{mungingIntegrationTester}.events.onTestCaseStart",
                 options: fluid.merge(null, fluid.tests.uiOptions.mungingIntegrationOptions, {

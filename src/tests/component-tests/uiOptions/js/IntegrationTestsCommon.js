@@ -21,12 +21,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.staticEnvironment.uiOptionsTest = fluid.typeTag("fluid.tests.uiOptions");
 
     // Use temp store rather than the cookie store for setting save
-    fluid.demands("fluid.uiOptions.store", ["fluid.globalSettingsStore", "fluid.tests.uiOptions"], {
+    fluid.demands("fluid.prefs.store", ["fluid.globalSettingsStore", "fluid.tests.uiOptions"], {
         funcName: "fluid.tempStore"
     });
 
     // Supply the table of contents' template URL
-    fluid.demands("fluid.uiOptions.enactors.tableOfContents", ["fluid.uiEnhancer"], {
+    fluid.demands("fluid.prefs.enactors.tableOfContents", ["fluid.uiEnhancer"], {
         options: {
             templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
         }
@@ -49,7 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.uiOptions.expectedComponents = {
-        "fluid.uiOptions.fatPanel": [
+        "fluid.prefs.fatPanel": [
             "textSize",
             "lineSpace",
             "textFont",
@@ -57,7 +57,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "layoutControls",
             "linksControls"
         ],
-        "fluid.uiOptions.fullNoPreview": [
+        "fluid.prefs.fullNoPreview": [
             "textSize",
             "lineSpace",
             "textFont",
@@ -65,7 +65,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "layoutControls",
             "linksControls"
         ],
-        "fluid.uiOptions.fullPreview": [
+        "fluid.prefs.fullPreview": [
             "textSize",
             "lineSpace",
             "textFont",
@@ -144,17 +144,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
 
             var that = fluid.invokeGlobalFunction(componentName, ["#myUIOptions", {
-                gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
+                gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
                 templatePrefix: "../../../../components/uiOptions/html/",
                 messagePrefix: "../../../../components/uiOptions/messages/",
                 templateLoader: {
-                    gradeNames: ["fluid.uiOptions.starterFullPreviewTemplateLoader"]
+                    gradeNames: ["fluid.prefs.starterFullPreviewTemplateLoader"]
                 },
                 messageLoader: {
-                    gradeNames: ["fluid.uiOptions.starterMessageLoader"]
+                    gradeNames: ["fluid.prefs.starterMessageLoader"]
                 },
                 uiOptions: {
-                    gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"],
+                    gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"],
                     listeners: {
                         onReady: {
                             listener: testComponent,
@@ -171,7 +171,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.uiOptions.enhancerOptions = {
         uiEnhancer: {
-            gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.uiOptions.rootModel.starter"],
+            gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.prefs.rootModel.starter"],
             tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
             classnameMap: {
                 "textFont": {
@@ -208,7 +208,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.uiOptions.mungingIntegrationOptions = {
-        gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
+        gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
         templatePrefix: "../../../../components/uiOptions/html/",
         messagePrefix: "../../../../components/uiOptions/messages/",
         textFont: {
@@ -220,13 +220,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         templateLoader: {
-            gradeNames: ["fluid.uiOptions.starterFullPreviewTemplateLoader"]
+            gradeNames: ["fluid.prefs.starterFullPreviewTemplateLoader"]
         },
         messageLoader: {
-            gradeNames: ["fluid.uiOptions.starterMessageLoader"]
+            gradeNames: ["fluid.prefs.starterMessageLoader"]
         },
         uiOptions: {
-            gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
+            gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
         }
     };
 

@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     /*******************************************************************************
-     * Unit tests for fluid.uiOptions.modelRelay
+     * Unit tests for fluid.prefs.modelRelay
      *******************************************************************************/
 
     var resultValue, resultWrapperValue;
@@ -28,7 +28,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             modelRelayWrapper: {
-                type: "fluid.uiOptions.modelRelayWrapper"
+                type: "fluid.prefs.modelRelayWrapper"
             },
             modelRelayTester: {
                 type: "fluid.tests.modelRelayTester"
@@ -36,7 +36,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.uiOptions.modelRelayWrapper", {
+    fluid.defaults("fluid.prefs.modelRelayWrapper", {
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"],
         model: {
             wrapperValue: null,
@@ -44,7 +44,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             modelRelayImpl: {
-                type: "fluid.uiOptions.modelRelay",
+                type: "fluid.prefs.modelRelay",
                 options: {
                     sourceApplier: "{modelRelayWrapper}.applier",
                     rules: {
@@ -57,7 +57,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     listeners: {
                         onCreate: {
-                            listener: "fluid.uiOptions.modelRelay.init",
+                            listener: "fluid.prefs.modelRelay.init",
                             args: "{that}"
                         }
                     }
@@ -66,19 +66,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         listeners: {
             onCreate: {
-                listener: "fluid.uiOptions.modelRelayWrapper.init",
+                listener: "fluid.prefs.modelRelayWrapper.init",
                 args: "{that}"
             }
         }
     });
 
-    fluid.uiOptions.modelRelay.init = function (that) {
+    fluid.prefs.modelRelay.init = function (that) {
         that.applier.modelChanged.addListener("value", function (newModel) {
             resultValue = newModel.value;
         });
     };
 
-    fluid.uiOptions.modelRelayWrapper.init = function (that) {
+    fluid.prefs.modelRelayWrapper.init = function (that) {
         that.applier.modelChanged.addListener("wrapperValue", function (newModel) {
             resultWrapperValue = newModel.wrapperValue;
         });

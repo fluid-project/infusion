@@ -26,30 +26,30 @@ var fluid_1_5 = fluid_1_5 || {};
      * contrast, table of contents, inputs larger and emphasize links
      *******************************************************************************/
 
-    fluid.defaults("fluid.uiOptions.auxSchema.starter", {
-        gradeNames: ["fluid.uiOptions.auxSchema", "autoInit"],
+    fluid.defaults("fluid.prefs.auxSchema.starter", {
+        gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
         auxiliarySchema: {
-            "namespace": "fluid.uiOptions.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
+            "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
             "templatePrefix": "../../../components/uiOptions/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
             "template": "%prefix/FatPanelUIOptions.html",
             "messagePrefix": "../../../components/uiOptions/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
             "message": "%prefix/uiOptions.json",
             "textSize": {
-                "type": "fluid.uiOptions.textSize",
+                "type": "fluid.prefs.textSize",
                 "enactor": {
-                    "type": "fluid.uiOptions.enactors.textSize"
+                    "type": "fluid.prefs.enactors.textSize"
                 },
                 "panel": {
-                    "type": "fluid.uiOptions.panels.textSize",
+                    "type": "fluid.prefs.panels.textSize",
                     "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
                     "template": "%prefix/UIOptionsTemplate-textSize.html",
                     "message": "%prefix/textSize.json"
                 }
             },
             "lineSpace": {
-                "type": "fluid.uiOptions.lineSpace",
+                "type": "fluid.prefs.lineSpace",
                 "enactor": {
-                    "type": "fluid.uiOptions.enactors.lineSpace",
+                    "type": "fluid.prefs.enactors.lineSpace",
                     "fontSizeMap": {
                         "xx-small": "9px",
                         "x-small": "11px",
@@ -61,14 +61,14 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 },
                 "panel": {
-                    "type": "fluid.uiOptions.panels.lineSpace",
+                    "type": "fluid.prefs.panels.lineSpace",
                     "container": ".flc-uiOptions-line-space",  // the css selector in the template where the panel is rendered
                     "template": "%prefix/UIOptionsTemplate-lineSpace.html",
                     "message": "%prefix/lineSpace.json"
                 }
             },
             "textFont": {
-                "type": "fluid.uiOptions.textFont",
+                "type": "fluid.prefs.textFont",
                 "classes": {
                     "default": "",
                     "times": "fl-font-uio-times",
@@ -77,11 +77,11 @@ var fluid_1_5 = fluid_1_5 || {};
                     "verdana": "fl-font-uio-verdana"
                 },
                 "enactor": {
-                    "type": "fluid.uiOptions.enactors.textFont",
+                    "type": "fluid.prefs.enactors.textFont",
                     "classes": "@textFont.classes"
                 },
                 "panel": {
-                    "type": "fluid.uiOptions.panels.textFont",
+                    "type": "fluid.prefs.panels.textFont",
                     "container": ".flc-uiOptions-text-font",  // the css selector in the template where the panel is rendered
                     "classnameMap": {"textFont": "@textFont.classes"},
                     "template": "%prefix/UIOptionsTemplate-textFont.html",
@@ -89,7 +89,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             "contrast": {
-                "type": "fluid.uiOptions.contrast",
+                "type": "fluid.prefs.contrast",
                 "classes": {
                     "default": "fl-theme-uio-default",
                     "bw": "fl-theme-uio-bw fl-theme-bw",
@@ -100,11 +100,11 @@ var fluid_1_5 = fluid_1_5 || {};
 
                 },
                 "enactor": {
-                    "type": "fluid.uiOptions.enactors.contrast",
+                    "type": "fluid.prefs.enactors.contrast",
                     "classes": "@contrast.classes"
                 },
                 "panel": {
-                    "type": "fluid.uiOptions.panels.contrast",
+                    "type": "fluid.prefs.panels.contrast",
                     "container": ".flc-uiOptions-contrast",  // the css selector in the template where the panel is rendered
                     "classnameMap": {"theme": "@contrast.classes"},
                     "template": "%prefix/UIOptionsTemplate-contrast.html",
@@ -112,39 +112,39 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             "tableOfContents": {
-                "type": "fluid.uiOptions.tableOfContents",
+                "type": "fluid.prefs.tableOfContents",
                 "enactor": {
-                    "type": "fluid.uiOptions.enactors.tableOfContents",
+                    "type": "fluid.prefs.enactors.tableOfContents",
                     "tocTemplate": "../../../../components/tableOfContents/html/TableOfContents.html"
                 },
                 "panel": {
-                    "type": "fluid.uiOptions.panels.layoutControls",
+                    "type": "fluid.prefs.panels.layoutControls",
                     "container": ".flc-uiOptions-layout-controls",  // the css selector in the template where the panel is rendered
                     "template": "%prefix/UIOptionsTemplate-layout.html",
                     "message": "%prefix/tableOfContents.json"
                 }
             },
             "emphasizeLinks": {
-                "type": "fluid.uiOptions.emphasizeLinks",
+                "type": "fluid.prefs.emphasizeLinks",
                 "enactor": {
-                    "type": "fluid.uiOptions.enactors.emphasizeLinks",
+                    "type": "fluid.prefs.enactors.emphasizeLinks",
                     "cssClass": "fl-link-enhanced"
                 },
                 "panel": {
-                    "type": "fluid.uiOptions.panels.linksControls",
+                    "type": "fluid.prefs.panels.linksControls",
                     "container": ".flc-uiOptions-links-controls",  // the css selector in the template where the panel is rendered
                     "template": "%prefix/UIOptionsTemplate-links.html",
                     "message": "%prefix/links.json"
                 }
             },
             "inputsLarger": {
-                "type": "fluid.uiOptions.inputsLarger",
+                "type": "fluid.prefs.inputsLarger",
                 "enactor": {
-                    "type": "fluid.uiOptions.enactors.inputsLarger",
+                    "type": "fluid.prefs.enactors.inputsLarger",
                     "cssClass": "fl-text-larger"
                 },
                 "panel": {
-                    "type": "fluid.uiOptions.panels.linksControls"
+                    "type": "fluid.prefs.panels.linksControls"
                 }
             }
         }
@@ -157,10 +157,10 @@ var fluid_1_5 = fluid_1_5 || {};
      * contrast, table of contents, inputs larger and emphasize links
      *******************************************************************************/
 
-    fluid.defaults("fluid.uiOptions.schemas.textSize", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+    fluid.defaults("fluid.prefs.schemas.textSize", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
         schema: {
-            "fluid.uiOptions.textSize": {
+            "fluid.prefs.textSize": {
                 "type": "number",
                 "default": 1,
                 "minimum": 1,
@@ -170,10 +170,10 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.schemas.lineSpace", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+    fluid.defaults("fluid.prefs.schemas.lineSpace", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
         schema: {
-            "fluid.uiOptions.lineSpace": {
+            "fluid.prefs.lineSpace": {
                 "type": "number",
                 "default": 1,
                 "minimum": 1,
@@ -183,10 +183,10 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.schemas.textFont", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+    fluid.defaults("fluid.prefs.schemas.textFont", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
         schema: {
-            "fluid.uiOptions.textFont": {
+            "fluid.prefs.textFont": {
                 "type": "string",
                 "default": "",
                 "enum": ["default", "times", "comic", "arial", "verdana"]
@@ -194,10 +194,10 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.schemas.contrast", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+    fluid.defaults("fluid.prefs.schemas.contrast", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
         schema: {
-            "fluid.uiOptions.contrast": {
+            "fluid.prefs.contrast": {
                 "type": "string",
                 "default": "default",
                 "enum": ["default", "bw", "wb", "by", "yb", "lgdg"]
@@ -205,30 +205,30 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.schemas.tableOfContents", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+    fluid.defaults("fluid.prefs.schemas.tableOfContents", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
         schema: {
-            "fluid.uiOptions.tableOfContents": {
+            "fluid.prefs.tableOfContents": {
                 "type": "boolean",
                 "default": false
             }
         }
     });
 
-    fluid.defaults("fluid.uiOptions.schemas.emphasizeLinks", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+    fluid.defaults("fluid.prefs.schemas.emphasizeLinks", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
         schema: {
-            "fluid.uiOptions.emphasizeLinks": {
+            "fluid.prefs.emphasizeLinks": {
                 "type": "boolean",
                 "default": false
             }
         }
     });
 
-    fluid.defaults("fluid.uiOptions.schemas.inputsLarger", {
-        gradeNames: ["autoInit", "fluid.uiOptions.schemas"],
+    fluid.defaults("fluid.prefs.schemas.inputsLarger", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
         schema: {
-            "fluid.uiOptions.inputsLarger": {
+            "fluid.prefs.inputsLarger": {
                 "type": "boolean",
                 "default": false
             }

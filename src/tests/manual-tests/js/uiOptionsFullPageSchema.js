@@ -19,8 +19,8 @@ var demo = demo || {};
 (function ($, fluid) {
 
     demo.initWithSchema = function (container, compOpts, uioType, template) {
-        var builder = fluid.uiOptions.builder({
-            gradeNames: ["fluid.uiOptions.auxSchema.starter"],
+        var builder = fluid.prefs.builder({
+            gradeNames: ["fluid.prefs.auxSchema.starter"],
             auxiliarySchema: {
                 "template": template,
                 "tableOfContents": {
@@ -38,11 +38,11 @@ var demo = demo || {};
     };
 
     demo.initFullWithPreview = function (container, options) {
-        return demo.initWithSchema(container, options, "fluid.uiOptions.fullPreview", "%prefix/FullPreviewUIOptions.html");
+        return demo.initWithSchema(container, options, "fluid.prefs.fullPreview", "%prefix/FullPreviewUIOptions.html");
     };
 
     demo.initFullNoPreview = function (container, options) {
-        return demo.initWithSchema(container, options, "fluid.uiOptions.fullNoPreview", "%prefix/FullNoPreviewUIOptions.html");
+        return demo.initWithSchema(container, options, "fluid.prefs.fullNoPreview", "%prefix/FullNoPreviewUIOptions.html");
     };
 
 })(jQuery, fluid);

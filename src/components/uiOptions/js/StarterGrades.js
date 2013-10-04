@@ -25,8 +25,8 @@ var fluid_1_5 = fluid_1_5 || {};
      * Provides the default values for the starter enhancer/panels models
      *******************************************************************************/
 
-    fluid.defaults("fluid.uiOptions.rootModel.starter", {
-        gradeNames: ["fluid.uiOptions.rootModel", "autoInit"],
+    fluid.defaults("fluid.prefs.rootModel.starter", {
+        gradeNames: ["fluid.prefs.rootModel", "autoInit"],
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
@@ -104,7 +104,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
         components: {
             textSize: {
-                type: "fluid.uiOptions.enactors.textSize",
+                type: "fluid.prefs.enactors.textSize",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
@@ -113,12 +113,12 @@ var fluid_1_5 = fluid_1_5 || {};
                         "textSize": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.rootModel}.rootModel.textSize"
+                        value: "{fluid.prefs.rootModel}.rootModel.textSize"
                     }
                 }
             },
             textFont: {
-                type: "fluid.uiOptions.enactors.textFont",
+                type: "fluid.prefs.enactors.textFont",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.textFont",
@@ -127,12 +127,12 @@ var fluid_1_5 = fluid_1_5 || {};
                         "textFont": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.rootModel}.rootModel.textFont"
+                        value: "{fluid.prefs.rootModel}.rootModel.textFont"
                     }
                 }
             },
             lineSpace: {
-                type: "fluid.uiOptions.enactors.lineSpace",
+                type: "fluid.prefs.enactors.lineSpace",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
@@ -141,12 +141,12 @@ var fluid_1_5 = fluid_1_5 || {};
                         "lineSpace": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.rootModel}.rootModel.lineSpace"
+                        value: "{fluid.prefs.rootModel}.rootModel.lineSpace"
                     }
                 }
             },
             contrast: {
-                type: "fluid.uiOptions.enactors.contrast",
+                type: "fluid.prefs.enactors.contrast",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.theme",
@@ -155,12 +155,12 @@ var fluid_1_5 = fluid_1_5 || {};
                         "theme": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.rootModel}.rootModel.theme"
+                        value: "{fluid.prefs.rootModel}.rootModel.theme"
                     }
                 }
             },
             emphasizeLinks: {
-                type: "fluid.uiOptions.enactors.emphasizeLinks",
+                type: "fluid.prefs.enactors.emphasizeLinks",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.links",
@@ -169,12 +169,12 @@ var fluid_1_5 = fluid_1_5 || {};
                         "links": "value"
                     },
                     model: {
-                        links: "{fluid.uiOptions.rootModel}.rootModel.links"
+                        links: "{fluid.prefs.rootModel}.rootModel.links"
                     }
                 }
             },
             inputsLarger: {
-                type: "fluid.uiOptions.enactors.inputsLarger",
+                type: "fluid.prefs.enactors.inputsLarger",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.inputsLarger",
@@ -183,12 +183,12 @@ var fluid_1_5 = fluid_1_5 || {};
                         "inputsLarger": "value"
                     },
                     model: {
-                        inputsLarger: "{fluid.uiOptions.rootModel}.rootModel.inputsLarger"
+                        inputsLarger: "{fluid.prefs.rootModel}.rootModel.inputsLarger"
                     }
                 }
             },
             tableOfContents: {
-                type: "fluid.uiOptions.enactors.tableOfContents",
+                type: "fluid.prefs.enactors.tableOfContents",
                 container: "{uiEnhancer}.container",
                 // createOnEvent: "onCreateToc",
                 options: {
@@ -198,7 +198,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         "toc": "value"
                     },
                     model: {
-                        toc: "{fluid.uiOptions.rootModel}.rootModel.toc"
+                        toc: "{fluid.prefs.rootModel}.rootModel.toc"
                     }
                 }
             }
@@ -209,17 +209,17 @@ var fluid_1_5 = fluid_1_5 || {};
      * The grade that contains shared options by all default settings panels
      ************************************************************************/
 
-    fluid.defaults("fluid.uiOptions.defaultPanel", {
+    fluid.defaults("fluid.prefs.defaultPanel", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         mergePolicy: {
             sourceApplier: "nomerge"
         },
-        sourceApplier: "{fluid.uiOptions}.applier",
+        sourceApplier: "{fluid.prefs}.applier",
         listeners: {
-            "{uiOptions}.events.onUIOptionsRefresh": "{fluid.uiOptions.panels}.refreshView"
+            "{uiOptions}.events.onUIOptionsRefresh": "{fluid.prefs.panels}.refreshView"
         },
         strings: {},
-        parentBundle: "{uiOptionsLoader}.msgBundle"
+        parentBundle: "{prefsEditorLoader}.msgBundle"
     });
 
     /*********************************************************************************************************
@@ -227,8 +227,8 @@ var fluid_1_5 = fluid_1_5 || {};
      *
      * A collection of all the default UIO setting panels.
      *********************************************************************************************************/
-    fluid.defaults("fluid.uiOptions.starterPanels", {
-        gradeNames: ["fluid.uiOptions", "autoInit"],
+    fluid.defaults("fluid.prefs.starterPanels", {
+        gradeNames: ["fluid.prefs", "autoInit"],
         selectors: {
             textSize: ".flc-uiOptions-text-size",
             textFont: ".flc-uiOptions-text-font",
@@ -240,16 +240,16 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         components: {
             textSize: {
-                type: "fluid.uiOptions.panels.textSize",
+                type: "fluid.prefs.panels.textSize",
                 container: "{uiOptions}.dom.textSize",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultPanel",
+                    gradeNames: "fluid.prefs.defaultPanel",
                     rules: {
                         "textSize": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.rootModel}.rootModel.textSize"
+                        value: "{fluid.prefs.rootModel}.rootModel.textSize"
                     },
                     resources: {
                         template: "{templateLoader}.resources.textSize"
@@ -257,16 +257,16 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             lineSpace: {
-                type: "fluid.uiOptions.panels.lineSpace",
+                type: "fluid.prefs.panels.lineSpace",
                 container: "{uiOptions}.dom.lineSpace",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultPanel",
+                    gradeNames: "fluid.prefs.defaultPanel",
                     rules: {
                         "lineSpace": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.rootModel}.rootModel.lineSpace"
+                        value: "{fluid.prefs.rootModel}.rootModel.lineSpace"
                     },
                     resources: {
                         template: "{templateLoader}.resources.lineSpace"
@@ -274,17 +274,17 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             textFont: {
-                type: "fluid.uiOptions.panels.textFont",
+                type: "fluid.prefs.panels.textFont",
                 container: "{uiOptions}.dom.textFont",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultPanel",
+                    gradeNames: "fluid.prefs.defaultPanel",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "textFont": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.rootModel}.rootModel.textFont"
+                        value: "{fluid.prefs.rootModel}.rootModel.textFont"
                     },
                     resources: {
                         template: "{templateLoader}.resources.textFont"
@@ -292,17 +292,17 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             contrast: {
-                type: "fluid.uiOptions.panels.contrast",
+                type: "fluid.prefs.panels.contrast",
                 container: "{uiOptions}.dom.contrast",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultPanel",
+                    gradeNames: "fluid.prefs.defaultPanel",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "theme": "value"
                     },
                     model: {
-                        value: "{fluid.uiOptions.rootModel}.rootModel.theme"
+                        value: "{fluid.prefs.rootModel}.rootModel.theme"
                     },
                     resources: {
                         template: "{templateLoader}.resources.contrast"
@@ -310,16 +310,16 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             layoutControls: {
-                type: "fluid.uiOptions.panels.layoutControls",
+                type: "fluid.prefs.panels.layoutControls",
                 container: "{uiOptions}.dom.layoutControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultPanel",
+                    gradeNames: "fluid.prefs.defaultPanel",
                     rules: {
                         "toc": "toc"
                     },
                     model: {
-                        toc: "{fluid.uiOptions.rootModel}.rootModel.toc"
+                        toc: "{fluid.prefs.rootModel}.rootModel.toc"
                     },
                     resources: {
                         template: "{templateLoader}.resources.layoutControls"
@@ -327,18 +327,18 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             linksControls: {
-                type: "fluid.uiOptions.panels.linksControls",
+                type: "fluid.prefs.panels.linksControls",
                 container: "{uiOptions}.dom.linksControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
-                    gradeNames: "fluid.uiOptions.defaultPanel",
+                    gradeNames: "fluid.prefs.defaultPanel",
                     rules: {
                         "links": "links",
                         "inputsLarger": "inputsLarger"
                     },
                     model: {
-                        links: "{fluid.uiOptions.rootModel}.rootModel.links",
-                        inputsLarger: "{fluid.uiOptions.rootModel}.rootModel.inputsLarger"
+                        links: "{fluid.prefs.rootModel}.rootModel.links",
+                        inputsLarger: "{fluid.prefs.rootModel}.rootModel.inputsLarger"
                     },
                     resources: {
                         template: "{templateLoader}.resources.linksControls"
@@ -358,8 +358,8 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
 
-    fluid.defaults("fluid.uiOptions.starterTemplateLoader", {
-        gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
+    fluid.defaults("fluid.prefs.starterTemplateLoader", {
+        gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
         templates: {
             textSize: "%prefix/UIOptionsTemplate-textSize.html",
             textFont: "%prefix/UIOptionsTemplate-textFont.html",
@@ -370,22 +370,22 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.uiOptions.starterFatPanelTemplateLoader", {
-        gradeNames: ["fluid.uiOptions.starterTemplateLoader", "autoInit"],
+    fluid.defaults("fluid.prefs.starterFatPanelTemplateLoader", {
+        gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
         templates: {
             uiOptions: "%prefix/FatPanelUIOptions.html"
         }
     });
 
-    fluid.defaults("fluid.uiOptions.starterFullPreviewTemplateLoader", {
-        gradeNames: ["fluid.uiOptions.starterTemplateLoader", "autoInit"],
+    fluid.defaults("fluid.prefs.starterFullPreviewTemplateLoader", {
+        gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
         templates: {
             uiOptions: "%prefix/FullPreviewUIOptions.html"
         }
     });
 
-    fluid.defaults("fluid.uiOptions.starterFullNoPreviewTemplateLoader", {
-        gradeNames: ["fluid.uiOptions.starterTemplateLoader", "autoInit"],
+    fluid.defaults("fluid.prefs.starterFullNoPreviewTemplateLoader", {
+        gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
         templates: {
             uiOptions: "%prefix/FullNoPreviewUIOptions.html"
         }
@@ -401,8 +401,8 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} options
      */
 
-    fluid.defaults("fluid.uiOptions.starterMessageLoader", {
-        gradeNames: ["fluid.uiOptions.resourceLoader", "autoInit"],
+    fluid.defaults("fluid.prefs.starterMessageLoader", {
+        gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
         templates: {
             uiOptions: "%prefix/uiOptions.json",
             textSize: "%prefix/textSize.json",
