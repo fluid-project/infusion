@@ -185,6 +185,36 @@ fluid.registerNamespace("fluid.tests");
             }
         }
     });
+    
+    /** Preservation of material with "exotic types" (with constructor) for FLUID-5089 **/
+    
+    fluid.tests.customType = new Date();
+
+    fluid.defaults("fluid.tests.typedMemberComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+            cat: fluid.tests.customType,
+            cat3: "@expand:fluid.identity({that}.cat)"
+        },
+        synthDef: {
+            cat: "{that}.cat",
+            cat2: "@expand:fluid.identity({that}.cat)"
+        }
+    });
+    
+    jqUnit.test("FLUID-5089: Preservation of exotic types", function () {
+        jqUnit.assertTrue("Sanity check: detect custom object by instanceof", fluid.tests.customType instanceof Date);
+        
+        var comp = fluid.tests.typedMemberComponent();
+        jqUnit.assertTrue("An exotic object stored as a component default should not be corrupted.", 
+            comp.cat instanceof Date);
+        jqUnit.assertTrue("An exotic object stored as an IoC-resolved component default should not be corrupted.", 
+            comp.options.synthDef.cat instanceof Date);
+        jqUnit.assertTrue("An exotic object resolved via an expander should not be corrupted.", 
+            comp.options.synthDef.cat2 instanceof Date);
+        jqUnit.assertTrue("An exotic object resolved via a top-level expander should not be corrupted.", 
+            comp.cat3 instanceof Date);
+    });
 
     /** Resolution based on increasingly specific context combinations **/
 

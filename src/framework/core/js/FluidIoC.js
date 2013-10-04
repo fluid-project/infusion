@@ -1777,7 +1777,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             active = "listener";
         }
         fluid.each(source, function (value, key) {
-            if (!fluid.isPrimitive(value)) {
+            if (fluid.isPlainObject(value)) {
                 target[key] = fluid.freshContainer(value);
                 segs.push(key);
                 fluid.expandCompactRec(segs, target[key], value);
@@ -1907,7 +1907,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.fetchExpandChildren = function (target, i, segs, source, mergePolicy, miniWorld, options) {
         if (source.expander /* && source.expander.type */) { // possible expander at top level
             var expanded = fluid.expandExpander(target, source, options);
-            if (fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
+            if (fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || !fluid.isPlainObject(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
                 return expanded;
             }
             else { // make an attempt to preserve the root reference if possible
@@ -1943,7 +1943,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
 
     // unsupported, NON-API function
     fluid.isUnexpandable = function (source) {
-        return fluid.isPrimitive(source) || source.nodeType !== undefined || source.jquery;
+        return fluid.isPrimitive(source) || source.nodeType !== undefined || source.jquery || !fluid.isPlainObject(source);
     };
 
     // unsupported, NON-API function    
