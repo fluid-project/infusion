@@ -32,6 +32,7 @@
             "jQuery",
             "jQueryUICore",
             "framework",
+            "enhancement",
             "renderer",
             "slidingPanel",
             "textfieldSlider",
