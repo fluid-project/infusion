@@ -1,15 +1,9 @@
 {
     "slidingPanel": {
         "name": "Sliding Panel",
-        "description": "Open or close a sliding panel by clicking on a button.",
-        "files": [
-            "SlidingPanel.js"
-        ],
-        "dependencies": [
-            "jQuery",
-            "jQueryUICore",
-            "jQueryUIWidgets",
-            "framework"
-        ]
+        "description": "A widget that slides a panel in and out of view.",
+        "cssFiles": [],
+        "files": ["SlidingPanel.js"],
+        "dependencies": ["jQuery", "jQueryUICore", "framework"]
     }
 }

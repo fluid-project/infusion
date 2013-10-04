@@ -1,15 +1,9 @@
 {
     "textfieldSlider": {
-        "name": "Text Field Slider",
-        "description": "Adjust the value in a text field by sliding a slider.",
-        "files": [
-            "TextfieldSlider.js"
-        ],
-        "dependencies": [
-            "jQuery",
-            "jQueryUICore",
-            "jQueryUIWidgets",
-            "framework"
-        ]
+        "name": "Textfield Slider",
+        "description": "A synchronized slider and textfield",
+        "cssFiles": [],
+        "files": ["TextfieldSlider.js"],
+        "dependencies": ["jQuery", "jQueryUICore", "framework", "jQueryUIWidgets", "jQueryTouchPunchPlugin"]
     }
 }

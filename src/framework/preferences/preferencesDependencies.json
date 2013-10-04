@@ -1,7 +1,7 @@
 {
-    "prefsEditor": {
-        "name": "Preferences Editor",
-        "description": "Users customize their preferences and needs for viewing content.",
+    "preferences": {
+        "name": "Preferences Framework",
+        "description": "Framework for implementing user preference editing and persistence",
         "cssFiles": [
             "PrefsEditor.css",
             "SeparatedPanelPrefsEditor.css",
@@ -32,15 +32,12 @@
             "jQuery",
             "jQueryUICore",
             "framework",
+            "enhancement",
             "renderer",
-            "jQueryUIWidgets",
-            "tabs",
-            "tableOfContents",
             "slidingPanel",
             "textfieldSlider",
-            "json",
-            "jQueryAriaTabsPlugin",
-            "jQueryTouchPunchPlugin"
+            "tableOfContents",
+            "json"
         ]
     }
 }
