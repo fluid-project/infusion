@@ -22,12 +22,12 @@
 
         <!-- Component styles -->
         <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/PrefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/FullPrefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/FullPreviewPrefsEditor.css" />
+		<link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/FullPrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/FullNoPreviewPrefsEditor.css" />
 
-        <link rel="stylesheet" type="text/css" href="../css/UIOptionsFullPage.css" /> <!-- Demo style -->
+        <link rel="stylesheet" type="text/css" href="../css/PrefsEditorFullPage.css" /> <!-- Demo style -->
 
-        <title>UI Options: Full Page, With Preview</title>
+        <title>UI Options: Full Page, Without Preview</title>
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
@@ -55,10 +55,10 @@
         <script type="text/javascript" src="../../../framework/preferences/js/PrefsEditor.js"></script>
         <script type="text/javascript" src="../../../framework/preferences/js/Panels.js"></script>
         <script type="text/javascript" src="../../../framework/preferences/js/StarterGrades.js"></script>
-        <script type="text/javascript" src="../../../framework/preferences/js/FullPreviewPrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../framework/preferences/js/FullNoPreviewPrefsEditor.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
 
-        <script type="text/javascript" src="../js/uiOptionsFullPage.js"></script>
+        <script type="text/javascript" src="../js/prefsEditorFullPage.js"></script>
     </head>
 
     <body>
@@ -67,11 +67,7 @@
             $(document).ready(function () {
                 demo.initSettingsStore();
                 demo.initPageEnhancer();
-                demo.initFullWithPreview("#myUIOptions", {
-                    preview: {
-                        templateUrl: "uiOptionsPreview.html"
-                    }
-                });
+                demo.initFullNoPreview("#myUIOptions");
             });
         </script>
 
