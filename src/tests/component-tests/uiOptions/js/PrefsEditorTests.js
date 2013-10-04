@@ -37,7 +37,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             components: {
                 uiOptions: {
-                    container: "{uiOptionsTests}.container",
+                    container: "{prefsTests}.container",
                     options: {
                         listeners: {
                             onReady: "fluid.prefsTests.testFn"
@@ -115,8 +115,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(4);
 
             var testTemplatePrefix = "../../../../components/uiOptions/html/";
-            var textControlsFullResourcePath = "../../../../components/uiOptions/html/UIOptionsTemplate-textSize.html";
-            var linksControlsTemplateName = "UIOptionsTemplate-links.html";
+            var textControlsFullResourcePath = "../../../../components/uiOptions/html/PrefsEditorTemplate-textSize.html";
+            var linksControlsTemplateName = "PrefsEditorTemplate-links.html";
 
             function testTemplateLoader(resources) {
                 // The template with a customized full url
@@ -155,7 +155,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(2);
 
             var testTemplatePrefix = "../../../../components/uiOptions/html/";
-            var lineSpaceTemplateName = "UIOptionsTemplate-lineSpace.html";
+            var lineSpaceTemplateName = "PrefsEditorTemplate-lineSpace.html";
 
             function testCustomizedResourceLoader(resources) {
                 jqUnit.assertEquals("lineSpace template url is set correctly", testTemplatePrefix + lineSpaceTemplateName, resources.lineSpace.url);
@@ -551,7 +551,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.demands("templateLoader", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testsPreview"], {
                 options: {
                     templates: {
-                        uiOptions: templatePrefix + "FullPreviewUIOptions.html"
+                        uiOptions: templatePrefix + "FullPreviewPrefsEditor.html"
                     }
                 }
             });

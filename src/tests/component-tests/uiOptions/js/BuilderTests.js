@@ -82,7 +82,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panels.textSize",
                         "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
-                        "template": "%prefix/UIOptionsTemplate-textSize.html",
+                        "template": "%prefix/PrefsEditorTemplate-textSize.html",
                         "message": "%prefix/textSize.json"
                     }
                 },
@@ -103,7 +103,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panels.lineSpace",
                         "container": ".flc-uiOptions-line-space",  // the css selector in the template where the panel is rendered
-                        "template": "%prefix/UIOptionsTemplate-lineSpace.html",
+                        "template": "%prefix/PrefsEditorTemplate-lineSpace.html",
                         "message": "%prefix/lineSpace.json"
                     }
                 }
@@ -253,7 +253,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.message = {
-        "message": "%prefix/UIOptionsTemplate-uiOptions.json"
+        "message": "%prefix/UIOptionsTemplate-prefsEditor.json"
     };
 
     fluid.tests.messagePrefix = {
@@ -592,7 +592,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     auxiliarySchema: {
                         "templatePrefix": "../../../../components/uiOptions/html/",
                         "messagePrefix": "../../../../components/uiOptions/messages/",
-                        "template": "%prefix/FullNoPreviewUIOptions.html",
+                        "template": "%prefix/FullNoPreviewPrefsEditor.html",
                         "tableOfContents": {
                             "enactor": {
                                 "tocTemplate": "../../../../components/tableOfContents/html/TableOfContents.html"

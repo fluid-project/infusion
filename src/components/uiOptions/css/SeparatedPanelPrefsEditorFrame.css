@@ -31,7 +31,7 @@ html {
 /* UI Options Fat Panel styles */
 .fl-uiOptions-separatedPanel {
     background-color: #fff;
-    background-image: url('../images/default/fatpanelbg.png');
+    background-image: url('../images/default/separatedpanelbg.png');
     background-repeat: repeat;
     height: 100%;
     overflow-x: scroll;

@@ -2,8 +2,8 @@
 
 @font-face {
     font-family: 'InfusionIcons';
-    src: url('../fonts/InfusionIcons-UIOptions.ttf'),
-         url('../fonts/InfusionIcons-UIOptions.eot');
+    src: url('../fonts/InfusionIcons-PrefsEditor.ttf'),
+         url('../fonts/InfusionIcons-PrefsEditor.eot');
 }
 
 .fl-uiOptions {

@@ -33,7 +33,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "templatePrefix": "../../../components/uiOptions/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
             "template": "%prefix/SeparatedPanelPrefsEditor.html",
             "messagePrefix": "../../../components/uiOptions/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
-            "message": "%prefix/uiOptions.json",
+            "message": "%prefix/prefsEditor.json",
             "textSize": {
                 "type": "fluid.prefs.textSize",
                 "enactor": {
@@ -42,7 +42,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "panel": {
                     "type": "fluid.prefs.panels.textSize",
                     "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
-                    "template": "%prefix/UIOptionsTemplate-textSize.html",
+                    "template": "%prefix/PrefsEditorTemplate-textSize.html",
                     "message": "%prefix/textSize.json"
                 }
             },
@@ -63,7 +63,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "panel": {
                     "type": "fluid.prefs.panels.lineSpace",
                     "container": ".flc-uiOptions-line-space",  // the css selector in the template where the panel is rendered
-                    "template": "%prefix/UIOptionsTemplate-lineSpace.html",
+                    "template": "%prefix/PrefsEditorTemplate-lineSpace.html",
                     "message": "%prefix/lineSpace.json"
                 }
             },
@@ -84,7 +84,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "type": "fluid.prefs.panels.textFont",
                     "container": ".flc-uiOptions-text-font",  // the css selector in the template where the panel is rendered
                     "classnameMap": {"textFont": "@textFont.classes"},
-                    "template": "%prefix/UIOptionsTemplate-textFont.html",
+                    "template": "%prefix/PrefsEditorTemplate-textFont.html",
                     "message": "%prefix/textFont.json"
                 }
             },
@@ -107,7 +107,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "type": "fluid.prefs.panels.contrast",
                     "container": ".flc-uiOptions-contrast",  // the css selector in the template where the panel is rendered
                     "classnameMap": {"theme": "@contrast.classes"},
-                    "template": "%prefix/UIOptionsTemplate-contrast.html",
+                    "template": "%prefix/PrefsEditorTemplate-contrast.html",
                     "message": "%prefix/contrast.json"
                 }
             },
@@ -120,7 +120,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "panel": {
                     "type": "fluid.prefs.panels.layoutControls",
                     "container": ".flc-uiOptions-layout-controls",  // the css selector in the template where the panel is rendered
-                    "template": "%prefix/UIOptionsTemplate-layout.html",
+                    "template": "%prefix/PrefsEditorTemplate-layout.html",
                     "message": "%prefix/tableOfContents.json"
                 }
             },
@@ -133,7 +133,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "panel": {
                     "type": "fluid.prefs.panels.linksControls",
                     "container": ".flc-uiOptions-links-controls",  // the css selector in the template where the panel is rendered
-                    "template": "%prefix/UIOptionsTemplate-links.html",
+                    "template": "%prefix/PrefsEditorTemplate-links.html",
                     "message": "%prefix/links.json"
                 }
             },

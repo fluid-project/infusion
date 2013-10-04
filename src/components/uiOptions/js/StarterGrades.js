@@ -361,12 +361,12 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.prefs.starterTemplateLoader", {
         gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
         templates: {
-            textSize: "%prefix/UIOptionsTemplate-textSize.html",
-            textFont: "%prefix/UIOptionsTemplate-textFont.html",
-            lineSpace: "%prefix/UIOptionsTemplate-lineSpace.html",
-            contrast: "%prefix/UIOptionsTemplate-contrast.html",
-            layoutControls: "%prefix/UIOptionsTemplate-layout.html",
-            linksControls: "%prefix/UIOptionsTemplate-links.html"
+            textSize: "%prefix/PrefsEditorTemplate-textSize.html",
+            textFont: "%prefix/PrefsEditorTemplate-textFont.html",
+            lineSpace: "%prefix/PrefsEditorTemplate-lineSpace.html",
+            contrast: "%prefix/PrefsEditorTemplate-contrast.html",
+            layoutControls: "%prefix/PrefsEditorTemplate-layout.html",
+            linksControls: "%prefix/PrefsEditorTemplate-links.html"
         }
     });
 
@@ -380,14 +380,14 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.prefs.starterFullPreviewTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
         templates: {
-            uiOptions: "%prefix/FullPreviewUIOptions.html"
+            uiOptions: "%prefix/FullPreviewPrefsEditor.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterFullNoPreviewTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
         templates: {
-            uiOptions: "%prefix/FullNoPreviewUIOptions.html"
+            uiOptions: "%prefix/FullNoPreviewPrefsEditor.html"
         }
     });
 
@@ -404,7 +404,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.prefs.starterMessageLoader", {
         gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
         templates: {
-            uiOptions: "%prefix/uiOptions.json",
+            uiOptions: "%prefix/prefsEditor.json",
             textSize: "%prefix/textSize.json",
             textFont: "%prefix/textFont.json",
             lineSpace: "%prefix/lineSpace.json",

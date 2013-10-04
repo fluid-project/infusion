@@ -38,11 +38,11 @@ var demo = demo || {};
     };
 
     demo.initFullWithPreview = function (container, options) {
-        return demo.initWithSchema(container, options, "fluid.prefs.fullPreview", "%prefix/FullPreviewUIOptions.html");
+        return demo.initWithSchema(container, options, "fluid.prefs.fullPreview", "%prefix/FullPreviewPrefsEditor.html");
     };
 
     demo.initFullNoPreview = function (container, options) {
-        return demo.initWithSchema(container, options, "fluid.prefs.fullNoPreview", "%prefix/FullNoPreviewUIOptions.html");
+        return demo.initWithSchema(container, options, "fluid.prefs.fullNoPreview", "%prefix/FullNoPreviewPrefsEditor.html");
     };
 
 })(jQuery, fluid);
