@@ -21,9 +21,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     /*******************************************************************************
-     * UIOptions fatPanel integration tests
+     * UIOptions separatedPanel integration tests
      *******************************************************************************/
-    fluid.tests.uiOptions.expectedFatPanel = [
+    fluid.tests.uiOptions.expectedSeparatedPanel = [
         "templateLoader",
         "messageLoader",
         "pageEnhancer",
@@ -31,27 +31,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "iframeRenderer",
         "iframeRenderer.iframeEnhancer"];
 
-    fluid.defaults("fluid.tests.fatPanelIntegration", {
+    fluid.defaults("fluid.tests.separatedPanelIntegration", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         listeners: {
             onDestroy: "fluid.tests.clearStore"
         },
         components: {
-            fatPanel: {
-                type: "fluid.prefs.fatPanel",
-                container: ".flc-uiOptions-fatPanel",
-                createOnEvent: "{fatPanelIntegrationTester}.events.onTestCaseStart",
+            separatedPanel: {
+                type: "fluid.prefs.separatedPanel",
+                container: ".flc-uiOptions-separatedPanel",
+                createOnEvent: "{separatedPanelIntegrationTester}.events.onTestCaseStart",
                 options: {
                     gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
                     templatePrefix: "../../../../components/uiOptions/html/",
                     messagePrefix: "../../../../components/uiOptions/messages/",
                     iframeRenderer: {
                         markupProps: {
-                            src: "./FatPanelUIOptionsFrame.html"
+                            src: "./SeparatedPanelPrefsEditorFrame.html"
                         }
                     },
                     templateLoader: {
-                        gradeNames: ["fluid.prefs.starterFatPanelTemplateLoader"]
+                        gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
                     },
                     messageLoader: {
                         gradeNames: ["fluid.prefs.starterMessageLoader"]
@@ -61,8 +61,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             },
-            fatPanelIntegrationTester: {
-                type: "fluid.tests.fatPanelIntegrationTester"
+            separatedPanelIntegrationTester: {
+                type: "fluid.tests.separatedPanelIntegrationTester"
             }
         }
     });
@@ -72,53 +72,53 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.staticEnvironment.settingsStore.set();
     };
 
-    fluid.tests.testFatPanel = function (fatPanel) {
-        jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, fatPanel.iframeRenderer.iframe.is(":visible"));
-        fluid.tests.uiOptions.assertPresent(fatPanel, fluid.tests.uiOptions.expectedFatPanel);
+    fluid.tests.testSeparatedPanel = function (separatedPanel) {
+        jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, separatedPanel.iframeRenderer.iframe.is(":visible"));
+        fluid.tests.uiOptions.assertPresent(separatedPanel, fluid.tests.uiOptions.expectedSeparatedPanel);
 
-        var uiOptions = fatPanel.uiOptions;
+        var uiOptions = separatedPanel.uiOptions;
         jqUnit.assertEquals("Reset button is invisible", false, $(".flc-uiOptions-reset").is(":visible"));
-        fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents["fluid.prefs.fatPanel"]);
+        fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents["fluid.prefs.separatedPanel"]);
     };
 
-    fluid.tests.afterShowFunc1 = function (fatPanel) {
+    fluid.tests.afterShowFunc1 = function (separatedPanel) {
         return function () {
-            fluid.tests.uiOptions.applierRequestChanges(fatPanel.uiOptions, fluid.tests.uiOptions.bwSkin);
-            fluid.tests.uiOptions.checkModelSelections("pageModel from bwSkin", fluid.tests.uiOptions.bwSkin, fatPanel.pageEnhancer.model);
+            fluid.tests.uiOptions.applierRequestChanges(separatedPanel.uiOptions, fluid.tests.uiOptions.bwSkin);
+            fluid.tests.uiOptions.checkModelSelections("pageModel from bwSkin", fluid.tests.uiOptions.bwSkin, separatedPanel.pageEnhancer.model);
             jqUnit.assertEquals("Reset button is visible", true, $(".flc-uiOptions-reset").is(":visible"));
         };
     };
 
-    fluid.tests.afterHideFunc1 = function (fatPanel) {
+    fluid.tests.afterHideFunc1 = function (separatedPanel) {
         return function () {
             jqUnit.assertEquals("Reset button is invisible", false, $(".flc-uiOptions-reset").is(":visible"));
         };
     };
-    fluid.tests.afterShowFunc2 = function (fatPanel) {
+    fluid.tests.afterShowFunc2 = function (separatedPanel) {
         return function () {
-            var pageModel = fatPanel.pageEnhancer.model;
-            var panelModel = fatPanel.iframeRenderer.iframeEnhancer.model;
+            var pageModel = separatedPanel.pageEnhancer.model;
+            var panelModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
 
             fluid.tests.uiOptions.checkModelSelections("panelModel from bwSkin", fluid.tests.uiOptions.bwSkin, panelModel);
             fluid.tests.uiOptions.checkModelSelections("panelModel from pageModel", pageModel, panelModel);
         };
     };
 
-    fluid.tests.afterShowFunc3 = function (fatPanel) {
+    fluid.tests.afterShowFunc3 = function (separatedPanel) {
         return function () {
-            var rootModel = fatPanel.uiOptions.rootModel;
-            var pageModel = fatPanel.pageEnhancer.model;
-            var panelModel = fatPanel.iframeRenderer.iframeEnhancer.model;
+            var rootModel = separatedPanel.uiOptions.rootModel;
+            var pageModel = separatedPanel.pageEnhancer.model;
+            var panelModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
 
-            fatPanel.locate("reset").click();
+            separatedPanel.locate("reset").click();
             fluid.tests.uiOptions.checkModelSelections("pageModel from defaults", rootModel, pageModel);
-            fatPanel.slidingPanel.hidePanel();
+            separatedPanel.slidingPanel.hidePanel();
             fluid.tests.uiOptions.checkModelSelections("panelModel from defaults", rootModel, panelModel);
             fluid.tests.uiOptions.checkModelSelections("pageModel from panelModel", pageModel, panelModel);
         };
     };
 
-    fluid.defaults("fluid.tests.fatPanelIntegrationTester", {
+    fluid.defaults("fluid.tests.separatedPanelIntegrationTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
             name: "Fat panel integration tests",
@@ -126,59 +126,59 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 22,
                 name: "Fat panel integration tests",
                 sequence: [{
-                    listener: "fluid.tests.testFatPanel",
-                    event: "{fatPanelIntegration fatPanel}.events.onReady"
+                    listener: "fluid.tests.testSeparatedPanel",
+                    event: "{separatedPanelIntegration separatedPanel}.events.onReady"
                 }, {
-                    func: "{fatPanel}.slidingPanel.hidePanel"
+                    func: "{separatedPanel}.slidingPanel.hidePanel"
                 }, {
-                    func: "{fatPanel}.slidingPanel.showPanel"
+                    func: "{separatedPanel}.slidingPanel.showPanel"
                 }, {
                     listenerMaker: "fluid.tests.afterShowFunc1",
-                    makerArgs: ["{fatPanel}"],
-                    event: "{fatPanel}.slidingPanel.events.afterPanelShow"
+                    makerArgs: ["{separatedPanel}"],
+                    event: "{separatedPanel}.slidingPanel.events.afterPanelShow"
                 }, {
-                    func: "{fatPanel}.slidingPanel.hidePanel"
+                    func: "{separatedPanel}.slidingPanel.hidePanel"
                 }, {
                     listenerMaker: "fluid.tests.afterHideFunc1",
-                    makerArgs: ["{fatPanel}"],
-                    event: "{fatPanel}.slidingPanel.events.afterPanelHide"
+                    makerArgs: ["{separatedPanel}"],
+                    event: "{separatedPanel}.slidingPanel.events.afterPanelHide"
                 }, {
-                    func: "{fatPanel}.slidingPanel.showPanel"
+                    func: "{separatedPanel}.slidingPanel.showPanel"
                 }, {
                     listenerMaker: "fluid.tests.afterShowFunc2",
-                    makerArgs: ["{fatPanel}"],
-                    event: "{fatPanel}.slidingPanel.events.afterPanelShow"
+                    makerArgs: ["{separatedPanel}"],
+                    event: "{separatedPanel}.slidingPanel.events.afterPanelShow"
                 }, {
-                    func: "{fatPanel}.slidingPanel.hidePanel"
+                    func: "{separatedPanel}.slidingPanel.hidePanel"
                 }, {
-                    func: "{fatPanel}.slidingPanel.showPanel"
+                    func: "{separatedPanel}.slidingPanel.showPanel"
                 }, {
                     listenerMaker: "fluid.tests.afterShowFunc3",
-                    makerArgs: ["{fatPanel}"],
-                    event: "{fatPanel}.slidingPanel.events.afterPanelShow"
+                    makerArgs: ["{separatedPanel}"],
+                    event: "{separatedPanel}.slidingPanel.events.afterPanelShow"
                 }]
             }]
         }]
     });
 
     /*******************************************************************************
-     * UIOptions fatPanel options munging integration tests
+     * UIOptions separatedPanel options munging integration tests
      *******************************************************************************/
 
     var expectedIframeSelector = ".uio-munging";
     var isSlidingPanelShown = false;
 
-    fluid.defaults("fluid.tests.fatPanelMungingIntegration", {
+    fluid.defaults("fluid.tests.separatedPanelMungingIntegration", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            fatPanel: {
-                type: "fluid.prefs.fatPanel",
-                container: ".flc-uiOptions-fatPanel",
+            separatedPanel: {
+                type: "fluid.prefs.separatedPanel",
+                container: ".flc-uiOptions-separatedPanel",
                 createOnEvent: "{mungingIntegrationTester}.events.onTestCaseStart",
                 options: fluid.merge(null, fluid.tests.uiOptions.mungingIntegrationOptions, {
                     iframeRenderer: {
                         markupProps: {
-                            src: "./FatPanelUIOptionsFrame.html"
+                            src: "./SeparatedPanelPrefsEditorFrame.html"
                         }
                     },
                     slidingPanel: {
@@ -204,22 +204,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.testEnhancerTransit = function testEnhancerTransit(fatPanel, expectedIframeSelector) {
+    fluid.tests.testEnhancerTransit = function testEnhancerTransit(separatedPanel, expectedIframeSelector) {
         var cMap = fluid.tests.uiOptions.enhancerOptions.uiEnhancer.classnameMap;
 
         // "outerEnhancerOptions" option mapping
         jqUnit.assertEquals("classnameMap transferred to outer UIEnhancer", cMap.textFont["default"],
-             fatPanel.pageEnhancer.options.classnameMap.textFont["default"]);
+             separatedPanel.pageEnhancer.options.classnameMap.textFont["default"]);
         jqUnit.assertEquals("classnameMap transferred to inner UIEnhancer", cMap.textFont["default"],
-             fatPanel.iframeRenderer.iframeEnhancer.options.classnameMap.textFont["default"]);
+             separatedPanel.iframeRenderer.iframeEnhancer.options.classnameMap.textFont["default"]);
 
         // "slidingPanel" option mapping
         jqUnit.assertFalse("UIO Panel is hidden", isSlidingPanelShown);
-        fatPanel.slidingPanel.locate("toggleButton").click();
+        separatedPanel.slidingPanel.locate("toggleButton").click();
         jqUnit.assertTrue("UIO Panel is shown", isSlidingPanelShown);
 
         // "iframe" option mapping
-        jqUnit.assertEquals("Iframe selector is transferred in", expectedIframeSelector, fatPanel.options.selectors.iframe);
+        jqUnit.assertEquals("Iframe selector is transferred in", expectedIframeSelector, separatedPanel.options.selectors.iframe);
     };
 
     fluid.defaults("fluid.tests.mungingIntegrationTester", {
@@ -232,10 +232,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Fat panel munging integration tests",
                 sequence: [{
                     listener: "fluid.tests.uiOptions.testComponentIntegration",
-                    event: "{fatPanelMungingIntegration fatPanel uiOptions}.events.onReady"
+                    event: "{separatedPanelMungingIntegration separatedPanel uiOptions}.events.onReady"
                 }, {
                     func: "fluid.tests.testEnhancerTransit",
-                    args: ["{fatPanel}", "{that}.options.expectedIframeSelector"]
+                    args: ["{separatedPanel}", "{that}.options.expectedIframeSelector"]
                 }]
             }]
         }]
@@ -247,8 +247,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
 
         fluid.test.runTests([
-            "fluid.tests.fatPanelIntegration",
-            "fluid.tests.fatPanelMungingIntegration"
+            "fluid.tests.separatedPanelIntegration",
+            "fluid.tests.separatedPanelMungingIntegration"
         ]);
     });
 

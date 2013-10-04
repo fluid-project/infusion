@@ -35,7 +35,7 @@ var skon = skon || {};
         });
 
         // Next, start up UI Options
-        fluid.prefs.fatPanel(".flc-uiOptions-fatPanel", {
+        fluid.prefs.separatedPanel(".flc-uiOptions-separatedPanel", {
             gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
             templatePrefix: "../../../components/uiOptions/html/",
             messagePrefix: "../../../components/uiOptions/messages/",
@@ -43,14 +43,14 @@ var skon = skon || {};
                 gradeNames: ["fluid.prefs.starterMessageLoader"]
             },
             templateLoader: {
-                gradeNames: ["fluid.prefs.starterFatPanelTemplateLoader"]
+                gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
             },
             uiOptions: {
                 gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
             },
             iframeRenderer: {
                 markupProps: {
-                    src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
+                    src: "../../../components/uiOptions/html/SeparatedPanelPrefsEditorFrame.html"
                 }
             }
         });

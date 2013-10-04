@@ -108,7 +108,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 priority: "last",
                 options: {
                     gradeNames: ["{fluid.prefs.assembler.uio}.options.componentGrades.templatePrefix", "{fluid.prefs.assembler.uio}.options.componentGrades.messagePrefix", "{fluid.prefs.assembler.uio}.options.componentGrades.messages", "{that}.options.uioType"],
-                    uioType: "fluid.prefs.fatPanel",
+                    uioType: "fluid.prefs.separatedPanel",
                     templateLoader: {
                         gradeNames: ["{fluid.prefs.assembler.uio}.options.componentGrades.templateLoader"]
                     },

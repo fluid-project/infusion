@@ -65,7 +65,7 @@ var demo = demo || {};
         templatePrefix: pathToTemplates,
         messagePrefix: pathToMessages,
         templateLoader: {
-            gradeNames: ["fluid.prefs.starterFatPanelTemplateLoader"]
+            gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
         },
         messageLoader: {
             gradeNames: ["fluid.prefs.starterMessageLoader"]
@@ -79,8 +79,8 @@ var demo = demo || {};
      * Initialize UI Options on the "Fat Panel" version. This version of UI Options uses the
      * page itself as a live preview.
      */
-    demo.initFatPanel = function (container) {
-        fluid.prefs.fatPanel(container, commonOpts);
+    demo.initSeparatedPanel = function (container) {
+        fluid.prefs.separatedPanel(container, commonOpts);
     };
 
 })(jQuery, fluid);

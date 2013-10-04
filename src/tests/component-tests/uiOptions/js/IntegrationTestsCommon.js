@@ -49,7 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.uiOptions.expectedComponents = {
-        "fluid.prefs.fatPanel": [
+        "fluid.prefs.separatedPanel": [
             "textSize",
             "lineSpace",
             "textFont",

@@ -23,7 +23,7 @@
         <link rel="stylesheet" type="text/css" href="../../../../lib/jquery/ui/css/fl-theme-dglg/dglg.css" />
 
         <link rel="stylesheet" type="text/css" href="../../../../components/uiOptions/css/UIOptions.css" />
-        <link rel="stylesheet" type="text/css" href="../../../../components/uiOptions/css/FatPanelUIOptions.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../components/uiOptions/css/SeparatedPanelPrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../css/uiOptions.css" />
 
         <!--[if IE 8]>
@@ -63,7 +63,7 @@
         <script type="text/javascript" src="../../../../components/uiOptions/js/ModelRelay.js"></script>
         <script type="text/javascript" src="../../../../components/uiOptions/js/Enactors.js"></script>
         <script type="text/javascript" src="../../../../components/uiOptions/js/StarterGrades.js"></script>
-        <script type="text/javascript" src="../../../../components/uiOptions/js/FatPanelUIOptions.js"></script>
+        <script type="text/javascript" src="../../../../components/uiOptions/js/SeparatedPanelPrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../components/uiOptions/js/SlidingPanel.js"></script>
         <script type="text/javascript" src="../../../../components/tableOfContents/js/TableOfContents.js"></script>
         <script type="text/javascript" src="../../../../components/uiOptions/js/PrimaryBuilder.js"></script>
@@ -80,12 +80,12 @@
             $(document).ready(function () {
                 demo.initSettingsStore();
                 demo.initPageEnhancer();
-                demo.initFatPanel(".flc-uiOptions-fatPanel");
+                demo.initSeparatedPanel(".flc-uiOptions-separatedPanel");
             })
         </script>
 
         <!-- BEGIN markup for fat-panel UI Options -->
-        <div class="flc-uiOptions-fatPanel fl-uiOptions-fatPanel">
+        <div class="flc-uiOptions-separatedPanel fl-uiOptions-separatedPanel">
             <!-- This is the div that will contain the UI Options component -->
             <div class="flc-slidingPanel-panel flc-uiOptions-iframe"></div>
 

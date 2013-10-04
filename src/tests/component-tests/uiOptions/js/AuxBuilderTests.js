@@ -535,7 +535,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.template = {
-        "template": "%prefix/FatPanelUIOptions.html"
+        "template": "%prefix/SeparatedPanelPrefsEditor.html"
     };
 
     fluid.tests.auxSchema.templatePrefix = {
@@ -942,7 +942,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 templateLoader: {
                     gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
                     templates: {
-                        "uiOptions": "%prefix/FatPanelUIOptions.html",
+                        "uiOptions": "%prefix/SeparatedPanelPrefsEditor.html",
                         "fluid_uiOptions_panels_textSize": "%prefix/UIOptionsTemplate-textSize.html"
                     }
                 },

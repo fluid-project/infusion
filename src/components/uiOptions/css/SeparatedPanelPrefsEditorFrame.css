@@ -23,13 +23,13 @@ html {
     overflow: visible;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions {
+.fl-uiOptions-separatedPanel .fl-uiOptions {
     font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
     line-height: 1.2em !important; /* FLUID-4959: fix the line height so it doesn't scale with the UIO line space scaling. */
 }
 
 /* UI Options Fat Panel styles */
-.fl-uiOptions-fatPanel {
+.fl-uiOptions-separatedPanel {
     background-color: #fff;
     background-image: url('../images/default/fatpanelbg.png');
     background-repeat: repeat;
@@ -43,12 +43,12 @@ html {
 }
 
 /* Preference Panels */
-.fl-uiOptions-fatPanel ul.fl-uiOptions-panels {
+.fl-uiOptions-separatedPanel ul.fl-uiOptions-panels {
     margin: 0 20px;
     white-space: nowrap;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions-panels li.fl-uiOptions-panel {
+.fl-uiOptions-separatedPanel .fl-uiOptions-panels li.fl-uiOptions-panel {
     border: 1px solid #615e59;
     border-radius: 5px;
     box-shadow: 2px 2px #7a766d;
@@ -62,7 +62,7 @@ html {
     vertical-align:middle;
  }
 
-.fl-uiOptions-fatPanel h2 {
+.fl-uiOptions-separatedPanel h2 {
     color: #766d68;
     padding: 0 0 0.5em 0;
     margin: 0 0 1.5em 0;   
@@ -75,38 +75,38 @@ html {
     height: 2em;
 }
 
-.fl-uiOptions-fatPanel .fl-inputs {
+.fl-uiOptions-separatedPanel .fl-inputs {
     float: none;
 }
 
-.fl-uiOptions-fatPanel label {
+.fl-uiOptions-separatedPanel label {
     font-size: 1em;
 }
 
 /* Table of Contents switch */
-.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc {
+.fl-uiOptions-separatedPanel .fl-uiOptions-separatedPanel-toc {
     width: 6em;
     height:2em;
     margin-right:10px;
     float:left;
 }
 
-.fl-uiOptions-fatPanel .fl-uiOptions-fatPanel-toc label {
+.fl-uiOptions-separatedPanel .fl-uiOptions-separatedPanel-toc label {
     line-height: 1.7em !important;
 }
 
 /* Emphasize links & buttons panel */
-.fl-uiOptions-fatPanel .fl-links-buttons-options label {
+.fl-uiOptions-separatedPanel .fl-links-buttons-options label {
     width: 22em;
     display:inline-block;
 }
 
-.fl-uiOptions-fatPanel .fl-links-buttons-options li {
+.fl-uiOptions-separatedPanel .fl-links-buttons-options li {
     margin-bottom: 0.4em;
 }
 
-.fl-uiOptions-fatPanel h2 label,
-.fl-uiOptions-fatPanel h2 .heading-text {
+.fl-uiOptions-separatedPanel h2 label,
+.fl-uiOptions-separatedPanel h2 .heading-text {
     float:left;
     padding-top: 0.2em;
     font-size: 1.3em;
@@ -114,7 +114,7 @@ html {
 }
 
 /* Font Icons */
-.fl-uiOptions-fatPanel .fl-icon-next, .fl-uiOptions-fatPanel .fl-icon-prev {
+.fl-uiOptions-separatedPanel .fl-icon-next, .fl-uiOptions-separatedPanel .fl-icon-prev {
     font-family: 'InfusionIcons' !important;
     speak: none;
     font-style: normal;
@@ -126,18 +126,18 @@ html {
     margin: 0.2em 0.3em 0 0;
     font-size: 1.5em; 
 }
-.fl-uiOptions-fatPanel .fl-icon-next:before {
+.fl-uiOptions-separatedPanel .fl-icon-next:before {
     content: "\e001";
 }
-.fl-uiOptions-fatPanel .fl-icon-prev:before {
+.fl-uiOptions-separatedPanel .fl-icon-prev:before {
     content: "\e002";
 }
 
 /* Theming */
-.fl-uiOptions-fatPanel.fl-theme-bw,
-.fl-uiOptions-fatPanel.fl-theme-wb,
-.fl-uiOptions-fatPanel.fl-theme-by,
-.fl-uiOptions-fatPanel.fl-theme-yb,
-.fl-uiOptions-fatPanel.fl-theme-lgdg {
+.fl-uiOptions-separatedPanel.fl-theme-bw,
+.fl-uiOptions-separatedPanel.fl-theme-wb,
+.fl-uiOptions-separatedPanel.fl-theme-by,
+.fl-uiOptions-separatedPanel.fl-theme-yb,
+.fl-uiOptions-separatedPanel.fl-theme-lgdg {
     background-image: none;
 }

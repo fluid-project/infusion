@@ -31,7 +31,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * Fat Panel UI Options Top Level Driver *
      *****************************************/
 
-    fluid.defaults("fluid.prefs.fatPanel", {
+    fluid.defaults("fluid.prefs.separatedPanel", {
         gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
         events: {
             afterRender: null,
@@ -52,12 +52,12 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         listeners: {
             onReady: {
-                listener: "fluid.prefs.fatPanel.bindEvents",
-                args: ["{fatPanel}.uiOptions", "{iframeRenderer}.iframeEnhancer", "{fatPanel}"]
+                listener: "fluid.prefs.separatedPanel.bindEvents",
+                args: ["{separatedPanel}.uiOptions", "{iframeRenderer}.iframeEnhancer", "{separatedPanel}"]
             },
             onCreate: {
-                listener: "fluid.prefs.fatPanel.hideReset",
-                args: ["{fatPanel}"]
+                listener: "fluid.prefs.separatedPanel.hideReset",
+                args: ["{separatedPanel}"]
             }
         },
         selectors: {
@@ -67,38 +67,38 @@ var fluid_1_5 = fluid_1_5 || {};
         invokers: {
             bindReset: {
                 funcName: "fluid.bind",
-                args: ["{fatPanel}.dom.reset", "click", "{arguments}.0"]
+                args: ["{separatedPanel}.dom.reset", "click", "{arguments}.0"]
             }
         },
         components: {
             pageEnhancer: "{uiEnhancer}",
             slidingPanel: {
                 type: "fluid.slidingPanel",
-                container: "{fatPanel}.container",
+                container: "{separatedPanel}.container",
                 createOnEvent: "onCreateSlidingPanelReady",
                 options: {
                     members: {
-                        msgBundle: "{fatPanel}.msgBundle"
+                        msgBundle: "{separatedPanel}.msgBundle"
                     },
                     invokers: {
                         operateShow: {
-                            funcName: "fluid.prefs.fatPanel.showPanel"
+                            funcName: "fluid.prefs.separatedPanel.showPanel"
                         },
                         operateHide: {
-                            funcName: "fluid.prefs.fatPanel.hidePanel"
+                            funcName: "fluid.prefs.separatedPanel.hidePanel"
                         }
                     }
                 }
             },
             iframeRenderer: {
-                type: "fluid.prefs.fatPanel.renderIframe",
-                container: "{fatPanel}.dom.iframe",
+                type: "fluid.prefs.separatedPanel.renderIframe",
+                container: "{separatedPanel}.dom.iframe",
                 options: {
                     markupProps: {
-                        src: "%templatePrefix/FatPanelUIOptionsFrame.html"
+                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame.html"
                     },
                     events: {
-                        afterRender: "{fatPanel}.events.afterRender"
+                        afterRender: "{separatedPanel}.events.afterRender"
                     },
                     components: {
                         iframeEnhancer: {
@@ -123,8 +123,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     gradeNames: ["fluid.prefs.uiEnhancerRelay"],
                     // ensure that model and applier are available to users at top level
-                    model: "{fatPanel}.model",
-                    applier: "{fatPanel}.applier",
+                    model: "{separatedPanel}.model",
+                    applier: "{separatedPanel}.applier",
                     events: {
                         onSignificantDOMChange: null,
                         updateEnhancerModel: "{that}.events.modelChanged"
@@ -132,13 +132,13 @@ var fluid_1_5 = fluid_1_5 || {};
                     listeners: {
                         modelChanged: "{that}.save",
                         onCreate: {
-                            listener: "{fatPanel}.bindReset",
+                            listener: "{separatedPanel}.bindReset",
                             args: ["{that}.reset"]
                         },
                         onReset: "{that}.applyChanges",
                         onReady: {
-                            listener: "{fatPanel}.events.onReady",
-                            args: "{fatPanel}"
+                            listener: "{separatedPanel}.events.onReady",
+                            args: "{separatedPanel}"
                         }
                     }
                 }
@@ -167,21 +167,21 @@ var fluid_1_5 = fluid_1_5 || {};
         }]
     });
 
-    fluid.prefs.fatPanel.hideReset = function (fatPanel) {
-        fatPanel.locate("reset").hide();
+    fluid.prefs.separatedPanel.hideReset = function (separatedPanel) {
+        separatedPanel.locate("reset").hide();
     };
     /*****************************************
-     * fluid.prefs.fatPanel.renderIframe *
+     * fluid.prefs.separatedPanel.renderIframe *
      *****************************************/
 
-    fluid.defaults("fluid.prefs.fatPanel.renderIframe", {
+    fluid.defaults("fluid.prefs.separatedPanel.renderIframe", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         events: {
             afterRender: null
         },
         styles: {
             containerFlex: "fl-container-flex",
-            container: "fl-uiOptions-fatPanel-iframe"
+            container: "fl-uiOptions-separatedPanel-iframe"
         },
         templatePrefix: "./",
         markupProps: {
@@ -190,7 +190,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.prefs.fatPanel.renderIframe.finalInit = function (that) {
+    fluid.prefs.separatedPanel.renderIframe.finalInit = function (that) {
         var styles = that.options.styles;
         // TODO: get earlier access to templateLoader,
         that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, {"templatePrefix/": that.options.templatePrefix});
@@ -215,31 +215,31 @@ var fluid_1_5 = fluid_1_5 || {};
         that.iframe.appendTo(that.container);
     };
 
-    fluid.prefs.fatPanel.updateView = function (uiOptions) {
+    fluid.prefs.separatedPanel.updateView = function (uiOptions) {
         uiOptions.events.onUIOptionsRefresh.fire();
         uiOptions.events.onSignificantDOMChange.fire();
     };
 
-    fluid.prefs.fatPanel.bindEvents = function (uiOptions, iframeEnhancer, fatPanel) {
+    fluid.prefs.separatedPanel.bindEvents = function (uiOptions, iframeEnhancer, separatedPanel) {
         // TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component
-        fatPanel.slidingPanel.events.afterPanelShow.addListener(function () {
+        separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             iframeEnhancer.events.onIframeVisible.fire(iframeEnhancer);
-            fluid.prefs.fatPanel.updateView(uiOptions);
+            fluid.prefs.separatedPanel.updateView(uiOptions);
         });
 
         uiOptions.events.onUIOptionsRefresh.addListener(function () {
             iframeEnhancer.updateModel(uiOptions.model);
         });
         uiOptions.events.onReset.addListener(function (uiOptions) {
-            fluid.prefs.fatPanel.updateView(uiOptions);
+            fluid.prefs.separatedPanel.updateView(uiOptions);
         });
         uiOptions.events.onSignificantDOMChange.addListener(function () {
             var dokkument = uiOptions.container[0].ownerDocument;
             var height = fluid.dom.getDocumentHeight(dokkument);
-            var iframe = fatPanel.iframeRenderer.iframe;
+            var iframe = separatedPanel.iframeRenderer.iframe;
             var attrs = {height: height + 15}; // TODO: Configurable padding here
-            var panel = fatPanel.slidingPanel.locate("panel");
+            var panel = separatedPanel.slidingPanel.locate("panel");
             panel.css({height: ""});
             iframe.animate(attrs, 400);
         });
@@ -250,31 +250,31 @@ var fluid_1_5 = fluid_1_5 || {};
             iframeEnhancer.applier.requestChange("", iframeEnhancer.model);
         });
 
-        fatPanel.slidingPanel.events.afterPanelHide.addListener(function () {
-            fatPanel.iframeRenderer.iframe.height(0);
+        separatedPanel.slidingPanel.events.afterPanelHide.addListener(function () {
+            separatedPanel.iframeRenderer.iframe.height(0);
 
             // Prevent the hidden UIO panel from being keyboard and screen reader accessible
-            fatPanel.iframeRenderer.iframe.hide();
+            separatedPanel.iframeRenderer.iframe.hide();
         });
-        fatPanel.slidingPanel.events.onPanelShow.addListener(function () {
-            fatPanel.iframeRenderer.iframe.show();
-            fatPanel.locate("reset").show();
+        separatedPanel.slidingPanel.events.onPanelShow.addListener(function () {
+            separatedPanel.iframeRenderer.iframe.show();
+            separatedPanel.locate("reset").show();
         });
-        fatPanel.slidingPanel.events.onPanelHide.addListener(function () {
-            fatPanel.locate("reset").hide();
+        separatedPanel.slidingPanel.events.onPanelHide.addListener(function () {
+            separatedPanel.locate("reset").hide();
         });
     };
 
     // Replace the standard animator since we don't want the panel to become hidden
     // (potential cause of jumping)
-    fluid.prefs.fatPanel.hidePanel = function (panel, callback) {
+    fluid.prefs.separatedPanel.hidePanel = function (panel, callback) {
         $(panel).animate({height: 0}, {duration: 400, complete: callback});
     };
 
     // no activity - the kickback to the updateView listener will automatically trigger the
     // DOMChangeListener above. This ordering is preferable to avoid causing the animation to
     // jump by refreshing the view inside the iframe
-    fluid.prefs.fatPanel.showPanel = function (panel, callback) {
+    fluid.prefs.separatedPanel.showPanel = function (panel, callback) {
         // A bizarre race condition has emerged under FF where the iframe held within the panel does not
         // react synchronously to being shown
         setTimeout(callback, 1);

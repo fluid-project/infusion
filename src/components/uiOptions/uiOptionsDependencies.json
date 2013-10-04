@@ -4,7 +4,7 @@
         "description": "Users customize their preferences and needs for viewing content.",
         "cssFiles": [
             "UIOptions.css",
-            "FatPanelUIOptions.css",
+            "SeparatedPanelPrefsEditor.css",
             "FullNoPreviewUIOptions.css",
             "FullPreviewUIOptions.css",
             "FullUIOptions.css"
@@ -19,7 +19,7 @@
             "ModelRelay.js",
             "Enactors.js",
             "StarterGrades.js",
-            "FatPanelUIOptions.js",
+            "SeparatedPanelPrefsEditor.js",
             "FullNoPreviewUIOptions.js",
             "FullPreviewUIOptions.js",
             "SlidingPanel.js",

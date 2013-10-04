@@ -109,7 +109,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // the main configuration. We should remove the need for users to supply this - also the use of "defaultPanels" in fact
     // refers to "starter panels"
     fluid.defaults("fluid.prefs.transformDefaultPanelsOptions", {
-        // Do not supply "fluid.prefs.inline" here, since when this is used as a mixin for fatPanel, it ends up displacing the 
+        // Do not supply "fluid.prefs.inline" here, since when this is used as a mixin for separatedPanel, it ends up displacing the 
         // more refined type of the prefsEditorLoader
         gradeNames: ["fluid.viewComponent", "autoInit"],
         distributeOptions: [{
@@ -431,7 +431,7 @@ var fluid_1_5 = fluid_1_5 || {};
         });
 
         // This setTimeout is to ensure that fetching of resources is asynchronous,
-        // and so that component construction does not run ahead of subcomponents for FatPanel
+        // and so that component construction does not run ahead of subcomponents for SeparatedPanel
         // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix)
         setTimeout(function () {
             fluid.prefs.finishInit(that);

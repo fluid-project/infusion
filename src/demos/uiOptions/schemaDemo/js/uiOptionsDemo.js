@@ -25,7 +25,7 @@ var demo = demo || {};
      *
      * Makes use of a schema to configure UI Options
      */
-    demo.initFatPanel = function (container) {
+    demo.initSeparatedPanel = function (container) {
         var builder = fluid.prefs.builder({
             gradeNames: ["fluid.prefs.auxSchema.starter"],
             auxiliarySchema: {

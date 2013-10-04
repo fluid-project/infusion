@@ -370,10 +370,10 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.defaults("fluid.prefs.starterFatPanelTemplateLoader", {
+    fluid.defaults("fluid.prefs.starterSeparatedPanelTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
         templates: {
-            uiOptions: "%prefix/FatPanelUIOptions.html"
+            uiOptions: "%prefix/SeparatedPanelPrefsEditor.html"
         }
     });
 
