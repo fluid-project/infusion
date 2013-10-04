@@ -12,7 +12,6 @@
         "files": [
             "URLUtilities.js",
             "Store.js",
-            "TextfieldSlider.js",
             "UIEnhancer.js",
             "PrefsEditor.js",
             "Panels.js",
@@ -22,7 +21,6 @@
             "SeparatedPanelPrefsEditor.js",
             "FullNoPreviewPrefsEditor.js",
             "FullPreviewPrefsEditor.js",
-            "SlidingPanel.js",
             "PrimaryBuilder.js",
             "AuxBuilder.js",
             "StarterSchemas.js",

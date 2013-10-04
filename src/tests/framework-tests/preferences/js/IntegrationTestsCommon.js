@@ -145,8 +145,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             var that = fluid.invokeGlobalFunction(componentName, ["#myUIOptions", {
                 gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-                templatePrefix: "../../../../components/uiOptions/html/",
-                messagePrefix: "../../../../components/uiOptions/messages/",
+                templatePrefix: "../../../../framework/preferences/html/",
+                messagePrefix: "../../../../framework/preferences/messages/",
                 templateLoader: {
                     gradeNames: ["fluid.prefs.starterFullPreviewTemplateLoader"]
                 },
@@ -209,8 +209,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.uiOptions.mungingIntegrationOptions = {
         gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-        templatePrefix: "../../../../components/uiOptions/html/",
-        messagePrefix: "../../../../components/uiOptions/messages/",
+        templatePrefix: "../../../../framework/preferences/html/",
+        messagePrefix: "../../../../framework/preferences/messages/",
         textFont: {
             strings: {
                 textFont: fluid.tests.uiOptions.testStrings

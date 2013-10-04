@@ -590,8 +590,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: ["fluid.prefs.auxSchema.starter"],
                     auxiliarySchema: {
-                        "templatePrefix": "../../../../components/uiOptions/html/",
-                        "messagePrefix": "../../../../components/uiOptions/messages/",
+                        "templatePrefix": "../../../../framework/preferences/html/",
+                        "messagePrefix": "../../../../framework/preferences/messages/",
                         "template": "%prefix/FullNoPreviewPrefsEditor.html",
                         "tableOfContents": {
                             "enactor": {
