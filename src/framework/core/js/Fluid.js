@@ -354,9 +354,15 @@ var fluid = fluid || fluid_1_5;
         return totest && (totest.jquery || Object.prototype.toString.call(totest) === "[object Array]");
     };
     
+    fluid.isPlainObject = function (totest) {
+        var string = Object.prototype.toString.call(totest);
+        return string === "[object Array]" || string === "[object Object]";
+    };
+    
     fluid.isDOMNode = function (obj) {
       // This could be more sound, but messy:
       // http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
+      // The real problem is browsers like IE6, 7 and 8 which still do not feature a "constructor" property on DOM nodes
         return obj && typeof (obj.nodeType) === "number";
     };
     
@@ -1587,7 +1593,7 @@ var fluid = fluid || fluid_1_5;
         var primitiveTarget = fluid.isPrimitive(thisTarget);
 
         if (thisSource !== undefined) {
-            if (!newPolicy.func && thisSource !== null && typeof (thisSource) === "object" &&
+            if (!newPolicy.func && thisSource !== null && fluid.isPlainObject(thisSource) &&
                     !fluid.isDOMish(thisSource) && thisSource !== fluid.VALUE &&
                     !newPolicy.preserve && !newPolicy.nomerge) {
                 if (primitiveTarget) {
