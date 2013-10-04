@@ -1,0 +1,15 @@
+{
+    "textfieldSlider": {
+        "name": "Text Field Slider",
+        "description": "Adjust the value in a text field by sliding a slider.",
+        "files": [
+            "TextfieldSlider.js"
+        ],
+        "dependencies": [
+            "jQuery",
+            "jQueryUICore",
+            "jQueryUIWidgets",
+            "framework"
+        ]
+    }
+}

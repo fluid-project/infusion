@@ -29,40 +29,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         var tests = [{
-            iframeLoc: "file:///E:/Source/gits/infusion-master/src/components/uiOptions/html/SeparatedPanelPrefsEditorFrame.html",
+            iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
             outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/uiOptions/SeparatedPanelUIOptions/html/uiOptions.html",
-            relPath: "../../../../components/uiOptions/html/",
+            relPath: "../../../../framework/preferences/html/",
             expected: ""
         },
         {
-            iframeLoc: "file:///E:/Source/gits/infusion-master/src/components/uiOptions/html/SeparatedPanelPrefsEditorFrame.html",
+            iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
             outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/uiOptions/SeparatedPanelUIOptions/html/uiOptions.html",
-            relPath: "../../../../components/uiOptions/html/extra/",
+            relPath: "../../../../framework/preferences/html/extra/",
             expected: "extra/"
         },
         {
-            iframeLoc: "file:///E:/Source/gits/infusion-master/src/components/uiOptions/html/SeparatedPanelPrefsEditorFrame.html",
+            iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
             outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/uiOptions/SeparatedPanelUIOptions/html/uiOptions.html",
-            relPath: "../../../../components/uiOptions/html/extra/extra2/",
+            relPath: "../../../../framework/preferences/html/extra/extra2/",
             expected: "extra/extra2/"
         },
         {
-            iframeLoc: "file:///E:/Source/gits/infusion-master/src/components/uiOptions/html/SeparatedPanelPrefsEditorFrame.html",
+            iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
             outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/uiOptions/SeparatedPanelUIOptions/html/uiOptions.html",
             relPath: "a/b/g/",
             expected: "../../../demos/uiOptions/SeparatedPanelUIOptions/html/a/b/g/"
         },
         {
-            iframeLoc: "file:///E:/Source/gits/infusion-master/src/components/uiOptions/html/SeparatedPanelPrefsEditorFrame.html",
+            iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
             outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/uiOptions/SeparatedPanelUIOptions/html/uiOptions.html",
             relPath: "/a/b/g/",
             expected: "/a/b/g/"
         },
         {
-            iframeLoc: "file:///E:/Source/gits/infusion-master/src/components/uiOptions/html/SeparatedPanelPrefsEditorFrame.html",
+            iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
             outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/uiOptions/SeparatedPanelUIOptions/html/uiOptions.html",
-            relPath: "http://localhost:8888/wordpress/wp-content/themes/FSSFive/infusion/components/uiOptions/html/",
-            expected: "http://localhost:8888/wordpress/wp-content/themes/FSSFive/infusion/components/uiOptions/html/"
+            relPath: "http://localhost:8888/wordpress/wp-content/themes/FSSFive/infusion/framework/preferences/html/",
+            expected: "http://localhost:8888/wordpress/wp-content/themes/FSSFive/infusion/framework/preferences/html/"
         }
         ]
         fluid.each(tests, function(test, key) {

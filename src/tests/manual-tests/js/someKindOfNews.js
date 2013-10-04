@@ -37,8 +37,8 @@ var skon = skon || {};
         // Next, start up UI Options
         fluid.prefs.separatedPanel(".flc-uiOptions-separatedPanel", {
             gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-            templatePrefix: "../../../components/uiOptions/html/",
-            messagePrefix: "../../../components/uiOptions/messages/",
+            templatePrefix: "../../../framework/preferences/html/",
+            messagePrefix: "../../../framework/preferences/messages/",
             messageLoader: {
                 gradeNames: ["fluid.prefs.starterMessageLoader"]
             },
@@ -50,7 +50,7 @@ var skon = skon || {};
             },
             iframeRenderer: {
                 markupProps: {
-                    src: "../../../components/uiOptions/html/SeparatedPanelPrefsEditorFrame.html"
+                    src: "../../../framework/preferences/html/SeparatedPanelPrefsEditorFrame.html"
                 }
             }
         });

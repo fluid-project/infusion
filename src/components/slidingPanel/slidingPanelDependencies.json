@@ -1,0 +1,15 @@
+{
+    "slidingPanel": {
+        "name": "Sliding Panel",
+        "description": "Open or close a sliding panel by clicking on a button.",
+        "files": [
+            "SlidingPanel.js"
+        ],
+        "dependencies": [
+            "jQuery",
+            "jQueryUICore",
+            "jQueryUIWidgets",
+            "framework"
+        ]
+    }
+}
