@@ -22,12 +22,12 @@
 
         <!-- Component styles -->
         <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/PrefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/FullPrefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/FullPreviewPrefsEditor.css" />
+		<link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/FullPrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/FullNoPreviewPrefsEditor.css" />
 
-        <link rel="stylesheet" type="text/css" href="../css/UIOptionsFullPage.css" /> <!-- Demo style -->
+        <link rel="stylesheet" type="text/css" href="../css/PrefsEditorFullPage.css" /> <!-- Demo style -->
 
-        <title>UI Options: Full Page, With Preview, Using Schema</title>
+        <title>UI Options: Full Page, Without Preview, Using Schema</title>
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
@@ -55,27 +55,21 @@
         <script type="text/javascript" src="../../../framework/preferences/js/PrefsEditor.js"></script>
         <script type="text/javascript" src="../../../framework/preferences/js/Panels.js"></script>
         <script type="text/javascript" src="../../../framework/preferences/js/StarterGrades.js"></script>
-        <script type="text/javascript" src="../../../framework/preferences/js/FullPreviewPrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../framework/preferences/js/FullNoPreviewPrefsEditor.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
         <script type="text/javascript" src="../../../framework/preferences/js/PrimaryBuilder.js"></script>
         <script type="text/javascript" src="../../../framework/preferences/js/AuxBuilder.js"></script>
         <script type="text/javascript" src="../../../framework/preferences/js/StarterSchemas.js"></script>
         <script type="text/javascript" src="../../../framework/preferences/js/Builder.js"></script>
 
-        <script type="text/javascript" src="../js/uiOptionsFullPageSchema.js"></script>
+        <script type="text/javascript" src="../js/prefsEditorFullPageSchema.js"></script>
     </head>
 
     <body>
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             $(document).ready(function () {
-                demo.initFullWithPreview("#myUIOptions", {
-                    uiOptions: {
-                        preview: {
-                            templateUrl: "uiOptionsPreview.html"
-                        }
-                    }
-                });
+                demo.initFullNoPreview("#myUIOptions");
             });
         </script>
 

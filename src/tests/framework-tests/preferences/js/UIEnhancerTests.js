@@ -104,7 +104,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.settings", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            uiOptions: {
+            prefsEditor: {
                 type: "fluid.prefs.rootModel.starter"
             },
             uiEnhancer: {
@@ -182,7 +182,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.optionsMunging", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            uiOptions: {
+            prefsEditor: {
                 type: "fluid.prefs.rootModel.starter",
                 options: {
                     members: {

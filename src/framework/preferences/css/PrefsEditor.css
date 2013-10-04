@@ -6,83 +6,83 @@
          url('../fonts/InfusionIcons-PrefsEditor.eot');
 }
 
-.fl-uiOptions {
+.fl-prefsEditor {
     font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
 }
 
 /* Controls */
-.fl-uiOptions ul {
+.fl-prefsEditor ul {
     margin-left: 0px;
 }
 
-.fl-uiOptions ul li {
+.fl-prefsEditor ul li {
     list-style: none;
 }
 
-.fl-uiOptions label {
+.fl-prefsEditor label {
     text-transform: lowercase;
     font-size: 1.2em;
 }
 
-.fl-uiOptions input[type="text"] {
+.fl-prefsEditor input[type="text"] {
     width:2em;
     font-size: 1em;
 }
 
 /* Sliders */
-.fl-uiOptions .fl-slider {
+.fl-prefsEditor .fl-slider {
     float:left;
     margin-right: 10px;
 }
 
 /* Check boxes */
-.fl-uiOptions input[type="checkbox"] {
+.fl-prefsEditor input[type="checkbox"] {
     margin-right:10px;
     border: 1px solid black;
 }
 
 /* Drop downs */
-.fl-uiOptions select {
+.fl-prefsEditor select {
     border: 2px solid #ebebeb;
 }
 
-.fl-uiOptions select#textFont { font-weight:bold; }
-.fl-uiOptions select#textFont option.times { font-family: "Times New Roman"; }
-.fl-uiOptions select#textFont option.comic { font-family: "Comic Sans MS"; }
-.fl-uiOptions select#textFont option.arial { font-family: Arial; }
-.fl-uiOptions select#textFont option.verdana { font-family: Verdana; }
+.fl-prefsEditor select#textFont { font-weight:bold; }
+.fl-prefsEditor select#textFont option.times { font-family: "Times New Roman"; }
+.fl-prefsEditor select#textFont option.comic { font-family: "Comic Sans MS"; }
+.fl-prefsEditor select#textFont option.arial { font-family: Arial; }
+.fl-prefsEditor select#textFont option.verdana { font-family: Verdana; }
 
-.fl-uiOptions select#theme { font-weight:bold; text-transform: uppercase; }
+.fl-prefsEditor select#theme { font-weight:bold; text-transform: uppercase; }
 
 /* 
     Had to add !importants in order for this style to still show up when another contrast theme has been selected
     It should be removed when we have an Infusion Theme
 */
-.fl-uiOptions select#theme option.fl-uio-default-theme { color: #000 !important; background-color: #efefef !important;}
+.fl-prefsEditor select#theme option.fl-uio-default-theme { color: #000 !important; background-color: #efefef !important;}
 
 /* Text and display controls */
-.fl-uiOptions .fl-uiOptions-text label {
+.fl-prefsEditor .fl-prefsEditor-text label {
     display: block;
 }
 
-.fl-uiOptions .fl-uiOptions-text .fl-inputs {
+.fl-prefsEditor .fl-prefsEditor-text .fl-inputs {
     float: left;
     font-size: 1em;
 }
 
 /* Layout and links controls */
-.fl-uiOptions .fl-uiOptions-option-description {
+.fl-prefsEditor .fl-prefsEditor-option-description {
     padding-top: 5px;
     font-size: 1.1em;
 }
 
-.fl-uiOptions .fl-uiOptions-layout div, 
-.fl-uiOptions .fl-uiOptions-links div {
+.fl-prefsEditor .fl-prefsEditor-layout div, 
+.fl-prefsEditor .fl-prefsEditor-links div {
     margin-left: 25px;
 }
 
 /* Slider specifics */
-.fl-uiOptions .fl-slider {    
+.fl-prefsEditor .fl-slider {    
     border: 1px solid #b3b3b3;
     border-radius: 0.3em;   
     background-color: #dad6d3;
@@ -93,7 +93,7 @@
     margin-left: 0.5em;    
 }
 
-.fl-uiOptions .fl-slider a {
+.fl-prefsEditor .fl-slider a {
     position:absolute; 
     display:block; 
     top:0; 
@@ -119,34 +119,34 @@
     );    
     background-image: linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);   
 }
-.fl-uiOptions .fl-slider a:active { outline: none; }
+.fl-prefsEditor .fl-slider a:active { outline: none; }
 
-.fl-uiOptions .fl-slider-horz {
+.fl-prefsEditor .fl-slider-horz {
     width:11em; 
 }
 
-.fl-uiOptions .fl-slider-input {
+.fl-prefsEditor .fl-slider-input {
     margin-left: 1em;
     float:left; 
 }
 
-.fl-uiOptions .ui-slider-range { 
+.fl-prefsEditor .ui-slider-range { 
     background-color: #62bb3d; 
     height: 100%;   
 }
 
-.fl-uiOptions .fl-inputs div[class*='fl-icon-'] {
+.fl-prefsEditor .fl-inputs div[class*='fl-icon-'] {
     font-size: 1.5em;
     margin-top: -0.15em;
 }
 
 /* Theme radio buttons */
-.fl-uiOptions .fl-choice {
+.fl-prefsEditor .fl-choice {
     display: inline;
     float: left;    
 }
 
-.fl-uiOptions .fl-choice label {
+.fl-prefsEditor .fl-choice label {
     margin-right: 5px;  
     border: 1px solid black;
     border-radius: 5px;
@@ -159,18 +159,18 @@
     padding: 2px;
 }
 
-.fl-uiOptions .fl-choice .fl-preview-A {
+.fl-prefsEditor .fl-choice .fl-preview-A {
     font-size: 2em;
 }
 
-.fl-uiOptions .fl-choice input:focus ~ label {
+.fl-prefsEditor .fl-choice input:focus ~ label {
     outline: 2px solid black;
 }
 
 /* ON/OFF Switch for checkboxes */
 
 /* The container for the toggle, which is also a label for the hidden checkbox. */
-.fl-uiOptions .fl-uiOptions-onoff .fl-uiOptions-switch { 
+.fl-prefsEditor .fl-prefsEditor-onoff .fl-prefsEditor-switch { 
     border-radius:50px;
     border: 1px solid #776D67;
     width: 5em;
@@ -187,7 +187,7 @@
 }
 
 /* Hide input */
-.fl-uiOptions .fl-uiOptions-onoff input {
+.fl-prefsEditor .fl-prefsEditor-onoff input {
     border: 0 none;
     clip: rect(0px, 0px, 0px, 0px);
     height: 1px;
@@ -198,11 +198,11 @@
     width: 1px;
 }
 
-.fl-uiOptions .fl-uiOptions-onoff input:focus + label {
+.fl-prefsEditor .fl-prefsEditor-onoff input:focus + label {
     outline: 2px solid black;
 }
 
-.fl-uiOptions .fl-uiOptions-onoff input:checked + label .fl-uiOptions-switch {
+.fl-prefsEditor .fl-prefsEditor-onoff input:checked + label .fl-prefsEditor-switch {
     padding-left: 3em;
     width: 2em;
     background-color: #2da750;
@@ -210,15 +210,15 @@
 }
 
 /* With data attributes defining the on/off text, localizing the templates is easier */
-.fl-uiOptions .fl-uiOptions-onoff input + label [data-checkboxStateOn]:before {
+.fl-prefsEditor .fl-prefsEditor-onoff input + label [data-checkboxStateOn]:before {
     content: attr(data-checkboxStateOn);
 }
-.fl-uiOptions .fl-uiOptions-onoff input + label [data-checkboxStateOff]:after {
+.fl-prefsEditor .fl-prefsEditor-onoff input + label [data-checkboxStateOff]:after {
     content: attr(data-checkboxStateOff);
 }
 
 /* The "on" portion of the toggle and the knob. */
-.fl-uiOptions .fl-uiOptions-onoff input + label .fl-uiOptions-switch:before {
+.fl-prefsEditor .fl-prefsEditor-onoff input + label .fl-prefsEditor-switch:before {
     color: #fff;
     border: 1px solid #776D67;
     border-radius: 50px;
@@ -245,7 +245,7 @@
 }
 
 /* The "off" portion of the toggle. */
-.fl-uiOptions .fl-uiOptions-onoff input + label .fl-uiOptions-switch:after {
+.fl-prefsEditor .fl-prefsEditor-onoff input + label .fl-prefsEditor-switch:after {
     float:left;
     position:relative;
     top: 0.36em;    
@@ -253,7 +253,7 @@
 }
 
 /* The dark inner circle to the toggle knob. */
-.fl-uiOptions .fl-uiOptions-onoff .fl-uiOptions-switch-inner {
+.fl-prefsEditor .fl-prefsEditor-onoff .fl-prefsEditor-switch-inner {
     border: 1px solid #493A30;
     border-radius: 50px;
     width: 1em;
@@ -268,20 +268,20 @@
     display:inline-block;
 }
 
-.fl-uiOptions .fl-uiOptions-onoff input:checked + label .fl-uiOptions-switch .fl-uiOptions-switch-inner {
+.fl-prefsEditor .fl-prefsEditor-onoff input:checked + label .fl-prefsEditor-switch .fl-prefsEditor-switch-inner {
     top:-1.6em;
     left: 0.46em;
 }
 
 /* FLUID-4966: Fix horizontal scroll bar */
-.fl-uiOptions .fl-hidden-accessible  {
+.fl-prefsEditor .fl-hidden-accessible  {
     top: 0px;
     left: 0px;
 }
 
 /* Font Icons */
-.fl-uiOptions .fl-icon-lines, .fl-uiOptions .fl-icon-indicator, .fl-uiOptions .fl-icon-crossout, .fl-uiOptions .fl-icon-big-a, .fl-uiOptions .fl-icon-small-a, .fl-uiOptions .fl-icon-line-space-expanded, .fl-uiOptions .fl-icon-line-space-condensed,
- .fl-uiOptions .fl-icon-contrast, .fl-uiOptions .fl-icon-undo, .fl-uiOptions .fl-icon-line-space, .fl-uiOptions .fl-icon-links, .fl-uiOptions .fl-icon-simplify, .fl-uiOptions .fl-icon-font, .fl-uiOptions .fl-icon-size, .fl-uiOptions .fl-icon-text-to-speech, .fl-uiOptions .fl-icon-toc {
+.fl-prefsEditor .fl-icon-lines, .fl-prefsEditor .fl-icon-indicator, .fl-prefsEditor .fl-icon-crossout, .fl-prefsEditor .fl-icon-big-a, .fl-prefsEditor .fl-icon-small-a, .fl-prefsEditor .fl-icon-line-space-expanded, .fl-prefsEditor .fl-icon-line-space-condensed,
+ .fl-prefsEditor .fl-icon-contrast, .fl-prefsEditor .fl-icon-undo, .fl-prefsEditor .fl-icon-line-space, .fl-prefsEditor .fl-icon-links, .fl-prefsEditor .fl-icon-simplify, .fl-prefsEditor .fl-icon-font, .fl-prefsEditor .fl-icon-size, .fl-prefsEditor .fl-icon-text-to-speech, .fl-prefsEditor .fl-icon-toc {
     font-family: 'InfusionIcons' !important;
     speak: none;
     font-style: normal;
@@ -295,66 +295,66 @@
 }
 
 /* control icons */
-.fl-uiOptions .fl-icon-lines:before {
+.fl-prefsEditor .fl-icon-lines:before {
     content: "\e000";
 }
-.fl-uiOptions .fl-icon-crossout:before,
-.fl-uiOptions .fl-choice .fl-theme-uio-default .fl-crossout:before {
+.fl-prefsEditor .fl-icon-crossout:before,
+.fl-prefsEditor .fl-choice .fl-theme-uio-default .fl-crossout:before {
     content: "\e004";
 }
-.fl-uiOptions .fl-icon-big-a:before {
+.fl-prefsEditor .fl-icon-big-a:before {
     content: "\e006";
 }
-.fl-uiOptions .fl-icon-small-a:before {
+.fl-prefsEditor .fl-icon-small-a:before {
     content: "\e007";
 }
-.fl-uiOptions .fl-icon-line-space-expanded:before {
+.fl-prefsEditor .fl-icon-line-space-expanded:before {
     content: "\e009";
 }
-.fl-uiOptions .fl-icon-line-space-condensed:before {
+.fl-prefsEditor .fl-icon-line-space-condensed:before {
     content: "\e00a";
 }
-.fl-uiOptions .fl-icon-indicator:before,
-.fl-uiOptions .fl-choice input:checked + div:before {
+.fl-prefsEditor .fl-icon-indicator:before,
+.fl-prefsEditor .fl-choice input:checked + div:before {
     content: "\e003";
 }
 
-.fl-uiOptions .fl-choice .fl-indicator {    
+.fl-prefsEditor .fl-choice .fl-indicator {    
     font-family: 'InfusionIcons' !important; 
     font-size: 1.3em;
     margin: -0.75em 0 0 0.75em;   
     height: 1em;
 }
 
-.fl-uiOptions .fl-choice .fl-theme-uio-default .fl-crossout {
+.fl-prefsEditor .fl-choice .fl-theme-uio-default .fl-crossout {
     font-family: 'InfusionIcons' !important;
     margin-top:-1.75em;
     font-size: 1.85em;
 }
 
 /* header icons */
-.fl-uiOptions .fl-icon-contrast:before {
+.fl-prefsEditor .fl-icon-contrast:before {
     content: "\e005";
 }
-.fl-uiOptions .fl-icon-line-space:before {
+.fl-prefsEditor .fl-icon-line-space:before {
     content: "\e00b";
 }
-.fl-uiOptions .fl-icon-links:before {
+.fl-prefsEditor .fl-icon-links:before {
     content: "\e00c";
 }
-.fl-uiOptions .fl-icon-simplify:before {
+.fl-prefsEditor .fl-icon-simplify:before {
     content: "\e00e";
 }
-.fl-uiOptions .fl-icon-font:before {
+.fl-prefsEditor .fl-icon-font:before {
     content: "\e00f";
 }
-.fl-uiOptions .fl-icon-size:before {
+.fl-prefsEditor .fl-icon-size:before {
     content: "\e010";
 }
-.fl-uiOptions .fl-icon-text-to-speech:before {
+.fl-prefsEditor .fl-icon-text-to-speech:before {
     content: "\e011";
 }
-.fl-uiOptions .fl-icon-toc:before {
+.fl-prefsEditor .fl-icon-toc:before {
 	content: "\e012";
 }
 
@@ -365,51 +365,51 @@
 .fl-theme-yb .ui-slider-horizontal .ui-slider-handle,
 .fl-theme-lgdg .ui-slider-horizontal .ui-slider-handle { margin-top: -5px; }
 
-.fl-theme-bw .fl-uiOptions .fl-slider { background: none; background-color:#000;} 
-.fl-theme-bw .fl-uiOptions .fl-slider a,
-.fl-theme-bw .fl-uiOptions .fl-slider a:hover {border:1px solid #000; background-color:#fff;}
+.fl-theme-bw .fl-prefsEditor .fl-slider { background: none; background-color:#000;} 
+.fl-theme-bw .fl-prefsEditor .fl-slider a,
+.fl-theme-bw .fl-prefsEditor .fl-slider a:hover {border:1px solid #000; background-color:#fff;}
 
-.fl-theme-wb .fl-uiOptions .fl-slider { background: none; background-color:#fff;} 
-.fl-theme-wb .fl-uiOptions .fl-slider a,
-.fl-theme-wb .fl-uiOptions .fl-slider a:hover {border:1px solid #fff; background-color:#000;}
+.fl-theme-wb .fl-prefsEditor .fl-slider { background: none; background-color:#fff;} 
+.fl-theme-wb .fl-prefsEditor .fl-slider a,
+.fl-theme-wb .fl-prefsEditor .fl-slider a:hover {border:1px solid #fff; background-color:#000;}
 
-.fl-theme-yb .fl-uiOptions .fl-slider {background: none; background-color:#000;}
-.fl-theme-yb .fl-uiOptions .fl-slider a,
-.fl-theme-yb .fl-uiOptions .fl-slider a:hover {border:1px solid #ffff00; background-color:#000;}
+.fl-theme-yb .fl-prefsEditor .fl-slider {background: none; background-color:#000;}
+.fl-theme-yb .fl-prefsEditor .fl-slider a,
+.fl-theme-yb .fl-prefsEditor .fl-slider a:hover {border:1px solid #ffff00; background-color:#000;}
 
-.fl-theme-by .fl-uiOptions .fl-slider {background: none; background-color:#ffff00;}
-.fl-theme-by .fl-uiOptions .fl-slider a,
-.fl-theme-by .fl-uiOptions .fl-slider a:hover {border:1px solid #000; background-color:#ffff00;}
+.fl-theme-by .fl-prefsEditor .fl-slider {background: none; background-color:#ffff00;}
+.fl-theme-by .fl-prefsEditor .fl-slider a,
+.fl-theme-by .fl-prefsEditor .fl-slider a:hover {border:1px solid #000; background-color:#ffff00;}
 
-.fl-theme-lgdg .fl-uiOptions .fl-slider {background: none; background-color:#555555;}
-.fl-theme-lgdg .fl-uiOptions .fl-slider a,
-.fl-theme-lgdg .fl-uiOptions .fl-slider a:hover {border:1px solid #bdbdbb; background-color:#555555;}
+.fl-theme-lgdg .fl-prefsEditor .fl-slider {background: none; background-color:#555555;}
+.fl-theme-lgdg .fl-prefsEditor .fl-slider a,
+.fl-theme-lgdg .fl-prefsEditor .fl-slider a:hover {border:1px solid #bdbdbb; background-color:#555555;}
 
-.fl-theme-bw .fl-uiOptions .ui-slider .ui-slider-handle,
-.fl-theme-wb .fl-uiOptions .ui-slider .ui-slider-handle,
-.fl-theme-by .fl-uiOptions .ui-slider .ui-slider-handle,
-.fl-theme-yb .fl-uiOptions .ui-slider .ui-slider-handle,
-.fl-theme-lgdg .fl-uiOptions .ui-slider .ui-slider-handle {
+.fl-theme-bw .fl-prefsEditor .ui-slider .ui-slider-handle,
+.fl-theme-wb .fl-prefsEditor .ui-slider .ui-slider-handle,
+.fl-theme-by .fl-prefsEditor .ui-slider .ui-slider-handle,
+.fl-theme-yb .fl-prefsEditor .ui-slider .ui-slider-handle,
+.fl-theme-lgdg .fl-prefsEditor .ui-slider .ui-slider-handle {
     height: 1.8em;
     width: 1.8em;
 }
 
 /* ON/OFF switch */
-.fl-theme-bw .fl-uiOptions .fl-uiOptions-switch,
-.fl-theme-bw .fl-uiOptions .fl-uiOptions-switch-inner,
-.fl-theme-bw .fl-uiOptions input + label .fl-uiOptions-switch:before,
-.fl-theme-wb .fl-uiOptions .fl-uiOptions-switch,
-.fl-theme-wb .fl-uiOptions .fl-uiOptions-switch-inner,
-.fl-theme-wb .fl-uiOptions input + label .fl-uiOptions-switch:before,
-.fl-theme-by .fl-uiOptions .fl-uiOptions-switch,
-.fl-theme-by .fl-uiOptions .fl-uiOptions-switch-inner,
-.fl-theme-by .fl-uiOptions input + label .fl-uiOptions-switch:before,
-.fl-theme-yb .fl-uiOptions .fl-uiOptions-switch,
-.fl-theme-yb .fl-uiOptions .fl-uiOptions-switch-inner,
-.fl-theme-yb .fl-uiOptions input + label .fl-uiOptions-switch:before,
-.fl-theme-lgdg .fl-uiOptions .fl-uiOptions-switch,
-.fl-theme-lgdg .fl-uiOptions .fl-uiOptions-switch-inner,
-.fl-theme-lgdg .fl-uiOptions input + label .fl-uiOptions-switch:before {
+.fl-theme-bw .fl-prefsEditor .fl-prefsEditor-switch,
+.fl-theme-bw .fl-prefsEditor .fl-prefsEditor-switch-inner,
+.fl-theme-bw .fl-prefsEditor input + label .fl-prefsEditor-switch:before,
+.fl-theme-wb .fl-prefsEditor .fl-prefsEditor-switch,
+.fl-theme-wb .fl-prefsEditor .fl-prefsEditor-switch-inner,
+.fl-theme-wb .fl-prefsEditor input + label .fl-prefsEditor-switch:before,
+.fl-theme-by .fl-prefsEditor .fl-prefsEditor-switch,
+.fl-theme-by .fl-prefsEditor .fl-prefsEditor-switch-inner,
+.fl-theme-by .fl-prefsEditor input + label .fl-prefsEditor-switch:before,
+.fl-theme-yb .fl-prefsEditor .fl-prefsEditor-switch,
+.fl-theme-yb .fl-prefsEditor .fl-prefsEditor-switch-inner,
+.fl-theme-yb .fl-prefsEditor input + label .fl-prefsEditor-switch:before,
+.fl-theme-lgdg .fl-prefsEditor .fl-prefsEditor-switch,
+.fl-theme-lgdg .fl-prefsEditor .fl-prefsEditor-switch-inner,
+.fl-theme-lgdg .fl-prefsEditor input + label .fl-prefsEditor-switch:before {
     box-shadow: none !important;
     text-shadow: none;
     color: inherit;
@@ -418,68 +418,68 @@
 }
 
 /* Theme radio buttons */
-.fl-uiOptions .fl-choice label.fl-theme-bw,
-.fl-uiOptions .fl-choice label.fl-theme-bw span,
-.fl-uiOptions .fl-choice label.fl-theme-bw .fl-crossout {
+.fl-prefsEditor .fl-choice label.fl-theme-bw,
+.fl-prefsEditor .fl-choice label.fl-theme-bw span,
+.fl-prefsEditor .fl-choice label.fl-theme-bw .fl-crossout {
     background-color: #FFFFFF !important;
     border-color: #000000 !important;
     color: #000000 !important;  
 }
-.fl-uiOptions .fl-choice label.fl-theme-wb,
-.fl-uiOptions .fl-choice label.fl-theme-wb span,
-.fl-uiOptions .fl-choice label.fl-theme-wb .fl-crossout {
+.fl-prefsEditor .fl-choice label.fl-theme-wb,
+.fl-prefsEditor .fl-choice label.fl-theme-wb span,
+.fl-prefsEditor .fl-choice label.fl-theme-wb .fl-crossout {
     background-color: #000000 !important;
     border-color: #FFFFFF !important;
     color: #FFFFFF !important;
 }
-.fl-uiOptions .fl-choice label.fl-theme-by,
-.fl-uiOptions .fl-choice label.fl-theme-by span,
-.fl-uiOptions .fl-choice label.fl-theme-by .fl-crossout {
+.fl-prefsEditor .fl-choice label.fl-theme-by,
+.fl-prefsEditor .fl-choice label.fl-theme-by span,
+.fl-prefsEditor .fl-choice label.fl-theme-by .fl-crossout {
     background-color: #FFFF00 !important;
     border-color: #000000 !important;
     color: #000000 !important;
 }
-.fl-uiOptions .fl-choice label.fl-theme-yb,
-.fl-uiOptions .fl-choice label.fl-theme-yb span,
-.fl-uiOptions .fl-choice label.fl-theme-yb .fl-crossout {
+.fl-prefsEditor .fl-choice label.fl-theme-yb,
+.fl-prefsEditor .fl-choice label.fl-theme-yb span,
+.fl-prefsEditor .fl-choice label.fl-theme-yb .fl-crossout {
     background-color: #000000 !important;
     border-color: #FFFF00 !important;
     color: #FFFF00 !important;
 }
-.fl-uiOptions .fl-choice label.fl-theme-lgdg,
-.fl-uiOptions .fl-choice label.fl-theme-lgdg span,
-.fl-uiOptions .fl-choice label.fl-theme-lgdg .fl-crossout {
+.fl-prefsEditor .fl-choice label.fl-theme-lgdg,
+.fl-prefsEditor .fl-choice label.fl-theme-lgdg span,
+.fl-prefsEditor .fl-choice label.fl-theme-lgdg .fl-crossout {
     background-color: #555555 !important;
     border-color: #bdbdbb !important;
     color: #bdbdbb !important;
 }
 
-.fl-uiOptions .fl-choice label.fl-theme-uio-default,
-.fl-uiOptions .fl-choice label.fl-theme-uio-default span,
-.fl-uiOptions .fl-choice label.fl-theme-uio-default .fl-crossout {
+.fl-prefsEditor .fl-choice label.fl-theme-uio-default,
+.fl-prefsEditor .fl-choice label.fl-theme-uio-default span,
+.fl-prefsEditor .fl-choice label.fl-theme-uio-default .fl-crossout {
     background-color: #FFFFFF !important;
     border-color: #433F3D !important;
     color: #433F3D !important;  
 }
 
-.fl-theme-bw .fl-uiOptions input:focus + label,
-.fl-theme-bw .fl-uiOptions .fl-choice input:focus ~ label,
-.fl-theme-by .fl-uiOptions input:focus + label,
-.fl-theme-by .fl-uiOptions .fl-choice input:focus ~ label {
+.fl-theme-bw .fl-prefsEditor input:focus + label,
+.fl-theme-bw .fl-prefsEditor .fl-choice input:focus ~ label,
+.fl-theme-by .fl-prefsEditor input:focus + label,
+.fl-theme-by .fl-prefsEditor .fl-choice input:focus ~ label {
     outline: 0.2em solid #000;
 }
 
-.fl-theme-wb .fl-uiOptions input:focus + label,
-.fl-theme-wb .fl-uiOptions .fl-choice input:focus ~ label {
+.fl-theme-wb .fl-prefsEditor input:focus + label,
+.fl-theme-wb .fl-prefsEditor .fl-choice input:focus ~ label {
     outline: 0.2em solid #fff;
 }
 
-.fl-theme-yb .fl-uiOptions input:focus + label,
-.fl-theme-yb .fl-uiOptions .fl-choice input:focus ~ label {
+.fl-theme-yb .fl-prefsEditor input:focus + label,
+.fl-theme-yb .fl-prefsEditor .fl-choice input:focus ~ label {
     outline: 0.2em solid #ffff00;
 }
 
-.fl-theme-lgdg .fl-uiOptions input:focus + label,
-.fl-theme-lgdg .fl-uiOptions .fl-choice input:focus ~ label {
+.fl-theme-lgdg .fl-prefsEditor input:focus + label,
+.fl-theme-lgdg .fl-prefsEditor .fl-choice input:focus ~ label {
     outline: 0.2em solid #bdbdbb;
 }

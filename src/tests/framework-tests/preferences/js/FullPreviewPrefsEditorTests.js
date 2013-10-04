@@ -30,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
 
-        fluid.tests.uiOptions.integrationTest("fluid.prefs.fullPreview", false);
+        fluid.tests.prefs.integrationTest("fluid.prefs.fullPreview", false);
 
         var testSettings = {
             textSize: "1.5",
@@ -42,24 +42,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         // TODO: we need MUCH better event boiling support in order to avoid rubbish like this
-        var that, uiOptions;
+        var that, prefsEditor;
         function testToCEnhancement(innerUIOptions) {
-            uiOptions = innerUIOptions;
+            prefsEditor = innerUIOptions;
         }
 
         function requestApplierChange() {
-            fluid.tests.uiOptions.applierRequestChanges(uiOptions, testSettings);
+            fluid.tests.prefs.applierRequestChanges(prefsEditor, testSettings);
         }
 
         var refreshCount = 0;
         function testToCEnhancement2() {
-            var container = uiOptions.preview.enhancerContainer;
+            var container = prefsEditor.preview.enhancerContainer;
             var links = $(".flc-toc-tocContainer a", container);
             jqUnit.assertTrue("ToC links created", links.length > 0);
             jqUnit.start();
         }
 
-        that = fluid.tests.uiOptions.mungingIntegrationTest("fluid.prefs.fullPreview", "#myUIOptions", {
+        that = fluid.tests.prefs.mungingIntegrationTest("fluid.prefs.fullPreview", "#myUIOptions", {
             previewEnhancer: {
                 components: {
                     tableOfContents: {

@@ -16,59 +16,59 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
-    $(document).ready(function () {
-        fluid.setLogging(true);
+$(document).ready(function () {
+    fluid.setLogging(true); 
 
-        jqUnit.module("URLUtilities Tests");
+    jqUnit.module("URLUtilities Tests");
 
-        var testRelPath = function (options, key) {
-            jqUnit.test("Expand Path " + key, function() {
-                var actual =  fluid.url.computeRelativePrefix(options.outerLoc, options.iframeLoc, options.relPath);
-                jqUnit.assertEquals("Relative path computed", options.expected, actual);
-            });
-        };
-
-        var tests = [{
-            iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
-            outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/uiOptions/SeparatedPanelUIOptions/html/uiOptions.html",
-            relPath: "../../../../framework/preferences/html/",
-            expected: ""
-        },
-        {
-            iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
-            outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/uiOptions/SeparatedPanelUIOptions/html/uiOptions.html",
-            relPath: "../../../../framework/preferences/html/extra/",
-            expected: "extra/"
-        },
-        {
-            iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
-            outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/uiOptions/SeparatedPanelUIOptions/html/uiOptions.html",
-            relPath: "../../../../framework/preferences/html/extra/extra2/",
-            expected: "extra/extra2/"
-        },
-        {
-            iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
-            outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/uiOptions/SeparatedPanelUIOptions/html/uiOptions.html",
-            relPath: "a/b/g/",
-            expected: "../../../demos/uiOptions/SeparatedPanelUIOptions/html/a/b/g/"
-        },
-        {
-            iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
-            outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/uiOptions/SeparatedPanelUIOptions/html/uiOptions.html",
-            relPath: "/a/b/g/",
-            expected: "/a/b/g/"
-        },
-        {
-            iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
-            outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/uiOptions/SeparatedPanelUIOptions/html/uiOptions.html",
-            relPath: "http://localhost:8888/wordpress/wp-content/themes/FSSFive/infusion/framework/preferences/html/",
-            expected: "http://localhost:8888/wordpress/wp-content/themes/FSSFive/infusion/framework/preferences/html/"
-        }
-        ]
-        fluid.each(tests, function(test, key) {
-            testRelPath(test, key);
+    var testRelPath = function (options, key) {
+        jqUnit.test("Expand Path " + key, function() {
+            var actual =  fluid.url.computeRelativePrefix(options.outerLoc, options.iframeLoc, options.relPath);
+            jqUnit.assertEquals("Relative path computed", options.expected, actual);
         });
+    };
 
+    var tests = [{
+        iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
+        outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/prefsEditor/SeparatedPanelUIOptions/html/prefsEditor.html",
+        relPath: "../../../../framework/preferences/html/",
+        expected: ""
+    },
+    {
+        iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
+        outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/prefsEditor/SeparatedPanelUIOptions/html/prefsEditor.html",
+        relPath: "../../../../framework/preferences/html/extra/",
+        expected: "extra/"
+    },
+    {
+        iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
+        outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/prefsEditor/SeparatedPanelUIOptions/html/prefsEditor.html",
+        relPath: "../../../../framework/preferences/html/extra/extra2/",
+        expected: "extra/extra2/"
+    },
+    {
+        iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
+        outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/prefsEditor/SeparatedPanelUIOptions/html/prefsEditor.html",
+        relPath: "a/b/g/",
+        expected: "../../../demos/prefsEditor/SeparatedPanelUIOptions/html/a/b/g/"
+    },
+    {
+        iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
+        outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/prefsEditor/SeparatedPanelUIOptions/html/prefsEditor.html",
+        relPath: "/a/b/g/",
+        expected: "/a/b/g/"
+    },
+    {
+        iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
+        outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/prefsEditor/SeparatedPanelUIOptions/html/prefsEditor.html",
+        relPath: "http://localhost:8888/wordpress/wp-content/themes/FSSFive/infusion/framework/preferences/html/",
+        expected: "http://localhost:8888/wordpress/wp-content/themes/FSSFive/infusion/framework/preferences/html/"
+    }
+    ]
+    fluid.each(tests, function(test, key) {
+        testRelPath(test, key);
     });
+
+});
 
 })(jQuery);

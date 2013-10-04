@@ -81,7 +81,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     "panel": {
                         "type": "fluid.prefs.panels.textSize",
-                        "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
+                        "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/PrefsEditorTemplate-textSize.html",
                         "message": "%prefix/textSize.json"
                     }
@@ -102,7 +102,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     "panel": {
                         "type": "fluid.prefs.panels.lineSpace",
-                        "container": ".flc-uiOptions-line-space",  // the css selector in the template where the panel is rendered
+                        "container": ".flc-prefsEditor-line-space",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/PrefsEditorTemplate-lineSpace.html",
                         "message": "%prefix/lineSpace.json"
                     }
@@ -264,7 +264,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "textSize": {
             "panel": {
                 "type": "fluid.prefs.panels.textSize",
-                "container": ".flc-uiOptions-text-size",
+                "container": ".flc-prefsEditor-text-size",
                 "template": "templates/textSize",
                 "message": "messages/textSize"
             }
@@ -285,15 +285,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             topCommonOptions: {
                 panels: {
                     selectors: {
-                        cancel: ".flc-uiOptions-cancel",
-                        reset: ".flc-uiOptions-reset",
-                        save: ".flc-uiOptions-save",
-                        previewFrame : ".flc-uiOptions-preview-frame"
+                        cancel: ".flc-prefsEditor-cancel",
+                        reset: ".flc-prefsEditor-reset",
+                        save: ".flc-prefsEditor-save",
+                        previewFrame : ".flc-prefsEditor-preview-frame"
                     }
                 },
                 templateLoader: {
                     templates: {
-                        uiOptions: "%prefix/SeparatedPanelPrefsEditor.html"
+                        prefsEditor: "%prefix/SeparatedPanelPrefsEditor.html"
                     }
                 }
             }
@@ -350,7 +350,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOptions: {
             consolidationGrades: {
                 enhancer: "fluid.prefs.builder.uie",
-                uiOptions: "fluid.prefs.builder.uio"
+                prefsEditor: "fluid.prefs.builder.uio"
             }
         },
         modules: [{
@@ -603,7 +603,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             uio: {
                 type: "fluid.viewComponent",
-                container: "#flc-uiOptions",
+                container: "#flc-prefsEditor",
                 createOnEvent: "{builderMungingTester}.events.onTestCaseStart",
                 options: {
                     gradeNames: ["{builder}.options.assembledUIOGrade"],
@@ -613,7 +613,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "textFont.default": "fl-aria"
                         }
                     },
-                    uiOptions: {
+                    prefsEditor: {
                         listeners: {
                             onReady: {
                                 listener: "{uio}.events.onReady",
@@ -635,7 +635,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.assertBuilderMunging = function (uio) {
         return function (uio) {
-            jqUnit.assertEquals("Munging options for UIO options should be passed down to the uiOptions", 1, uio.prefsEditorLoader.uiOptions.options.userOption);
+            jqUnit.assertEquals("Munging options for UIO options should be passed down to the prefsEditor", 1, uio.prefsEditorLoader.prefsEditor.options.userOption);
 
             jqUnit.assertTrue(uioType + " should be in the base uio grades", fluid.hasGrade(uio.prefsEditorLoader.options, uioType));
             jqUnit.assertEquals("Munging options for enhancer should be passed down to the enhancer", "fl-aria", uio.enhancer.uiEnhancer.options.classnameMap["textFont.default"]);

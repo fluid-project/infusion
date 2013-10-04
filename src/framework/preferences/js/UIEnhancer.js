@@ -32,7 +32,7 @@ var fluid_1_5 = fluid_1_5 || {};
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
-            // level uiOptions to avoid further duplication.
+            // level prefsEditor to avoid further duplication.
             rootModel: {}
         }
     });

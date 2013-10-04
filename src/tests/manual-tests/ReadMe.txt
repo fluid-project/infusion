@@ -9,7 +9,7 @@ UI Options, Fat Panel:
 
 UI Options, Full with Preview:
     To run this test:
-        1. open uiOptionsFullWithPreview.html in a browser
+        1. open prefsEditorFullWithPreview.html in a browser
         2. experiment with the various UI Options settings and verify that the preview window
            contents are styled correctly.
         3. use the "save and apply" button to apply the preview styles to UI Options
@@ -17,7 +17,7 @@ UI Options, Full with Preview:
 
 UI Options, Full without Preview:
     To run this test:
-        1. open uiOptionsFullWithoutPreview.html in a browser
+        1. open prefsEditorFullNoPreview.html in a browser
         2. experiment with the various UI Options settings
         3. use the "save and apply" button to apply the styles to UI Options and verify that the
            contents are styled correctly.

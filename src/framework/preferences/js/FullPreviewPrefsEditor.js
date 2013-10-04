@@ -27,14 +27,14 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
         outerPreviewEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
         components: {
-            uiOptions: {
+            prefsEditor: {
                 container: "{that}.container",
                 options: {
                     components: {
                         preview: {
                             type: "fluid.prefs.preview",
                             createOnEvent: "onReady",
-                            container: "{uiOptions}.dom.previewFrame"
+                            container: "{prefsEditor}.dom.previewFrame"
                         }
                     },
                     distributeOptions: {

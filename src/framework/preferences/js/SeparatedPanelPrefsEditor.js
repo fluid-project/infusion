@@ -53,7 +53,7 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             onReady: {
                 listener: "fluid.prefs.separatedPanel.bindEvents",
-                args: ["{separatedPanel}.uiOptions", "{iframeRenderer}.iframeEnhancer", "{separatedPanel}"]
+                args: ["{separatedPanel}.prefsEditor", "{iframeRenderer}.iframeEnhancer", "{separatedPanel}"]
             },
             onCreate: {
                 listener: "fluid.prefs.separatedPanel.hideReset",
@@ -61,8 +61,8 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         selectors: {
-            reset: ".flc-uiOptions-reset",
-            iframe: ".flc-uiOptions-iframe"
+            reset: ".flc-prefsEditor-reset",
+            iframe: ".flc-prefsEditor-iframe"
         },
         invokers: {
             bindReset: {
@@ -117,7 +117,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             },
-            uiOptions: {
+            prefsEditor: {
                 createOnEvent: "templatesAndIframeReady",
                 container: "{iframeRenderer}.renderUIOContainer",
                 options: {
@@ -181,12 +181,12 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         styles: {
             containerFlex: "fl-container-flex",
-            container: "fl-uiOptions-separatedPanel-iframe"
+            container: "fl-prefsEditor-separatedPanel-iframe"
         },
         templatePrefix: "./",
         markupProps: {
             "class": "flc-iframe",
-            src: "%templatePrefix/uiOptionsIframe.html"
+            src: "%templatePrefix/prefsEditorIframe.html"
         }
     });
 
@@ -215,27 +215,27 @@ var fluid_1_5 = fluid_1_5 || {};
         that.iframe.appendTo(that.container);
     };
 
-    fluid.prefs.separatedPanel.updateView = function (uiOptions) {
-        uiOptions.events.onUIOptionsRefresh.fire();
-        uiOptions.events.onSignificantDOMChange.fire();
+    fluid.prefs.separatedPanel.updateView = function (prefsEditor) {
+        prefsEditor.events.onUIOptionsRefresh.fire();
+        prefsEditor.events.onSignificantDOMChange.fire();
     };
 
-    fluid.prefs.separatedPanel.bindEvents = function (uiOptions, iframeEnhancer, separatedPanel) {
+    fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, iframeEnhancer, separatedPanel) {
         // TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component
         separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             iframeEnhancer.events.onIframeVisible.fire(iframeEnhancer);
-            fluid.prefs.separatedPanel.updateView(uiOptions);
+            fluid.prefs.separatedPanel.updateView(prefsEditor);
         });
 
-        uiOptions.events.onUIOptionsRefresh.addListener(function () {
-            iframeEnhancer.updateModel(uiOptions.model);
+        prefsEditor.events.onUIOptionsRefresh.addListener(function () {
+            iframeEnhancer.updateModel(prefsEditor.model);
         });
-        uiOptions.events.onReset.addListener(function (uiOptions) {
-            fluid.prefs.separatedPanel.updateView(uiOptions);
+        prefsEditor.events.onReset.addListener(function (prefsEditor) {
+            fluid.prefs.separatedPanel.updateView(prefsEditor);
         });
-        uiOptions.events.onSignificantDOMChange.addListener(function () {
-            var dokkument = uiOptions.container[0].ownerDocument;
+        prefsEditor.events.onSignificantDOMChange.addListener(function () {
+            var dokkument = prefsEditor.container[0].ownerDocument;
             var height = fluid.dom.getDocumentHeight(dokkument);
             var iframe = separatedPanel.iframeRenderer.iframe;
             var attrs = {height: height + 15}; // TODO: Configurable padding here

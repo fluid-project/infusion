@@ -195,7 +195,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
             type = "template";
             if (prefName === type) {
-                fluid.set(auxSchema, ["templateLoader", "templates", "uiOptions"], auxSchema[type]);
+                fluid.set(auxSchema, ["templateLoader", "templates", "prefsEditor"], auxSchema[type]);
                 delete auxSchema[type];
             }
 
@@ -206,7 +206,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
             type = "message";
             if (prefName === type) {
-                fluid.set(auxSchema, ["messageLoader", "templates", "uiOptions"], auxSchema[type]);
+                fluid.set(auxSchema, ["messageLoader", "templates", "prefsEditor"], auxSchema[type]);
                 delete auxSchema[type];
             }
 
@@ -260,7 +260,7 @@ var fluid_1_5 = fluid_1_5 || {};
         elementCommonOptions: {
             panel: {
                 "createOnEvent": "onUIOptionsMarkupReady",
-                "container": "{uiOptions}.dom.%prefKey",
+                "container": "{prefsEditor}.dom.%prefKey",
                 "options.gradeNames": "fluid.prefs.defaultPanel",
                 "options.resources.template": "{templateLoader}.resources.%prefKey"
             },

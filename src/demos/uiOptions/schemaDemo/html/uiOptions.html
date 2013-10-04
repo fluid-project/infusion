@@ -78,20 +78,20 @@
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             $(document).ready(function () {
-                demo.initSeparatedPanel(".flc-uiOptions-separatedPanel");
+                demo.initSeparatedPanel(".flc-prefsEditor-separatedPanel");
             })
         </script>
 
         <!-- BEGIN markup for fat-panel UI Options -->
-        <div class="flc-uiOptions-separatedPanel fl-uiOptions-separatedPanel">
+        <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
             <!-- This is the div that will contain the UI Options component -->
-            <div class="flc-slidingPanel-panel flc-uiOptions-iframe"></div>
+            <div class="flc-slidingPanel-panel flc-prefsEditor-iframe"></div>
 
             <!-- This div is for the sliding panel that shows and hides the UI Options controls -->
             <div class="fl-panelBar">
             	<span class="fl-uio-tabs">
-	                <button id="reset" class="flc-uiOptions-reset fl-uiOptions-reset"><span class="fl-icon-undo"></span> Reset</button>
-	            	<button id="show-hide" class="flc-slidingPanel-toggleButton fl-uiOptions-showHide"> Show/Hide</button>
+	                <button id="reset" class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+	            	<button id="show-hide" class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
             	</span>
             </div>
         </div>

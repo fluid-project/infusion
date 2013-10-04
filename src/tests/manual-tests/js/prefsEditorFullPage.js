@@ -76,7 +76,7 @@ var demo = demo || {};
             gradeNames: ["fluid.prefs.starterMessageLoader"]
         },
         // Tell UIOptions where to redirect to if the user cancels the operation
-        uiOptions: {
+        prefsEditor: {
             gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"],
             listeners: {
                 onCancel: function () {

@@ -30,7 +30,7 @@ var fluid_1_5 = fluid_1_5 || {};
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
-            // level uiOptions to avoid further duplication.
+            // level prefsEditor to avoid further duplication.
             rootModel: {
                 textFont: "default",          // key from classname map
                 theme: "default",             // key from classname map
@@ -216,7 +216,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         sourceApplier: "{fluid.prefs}.applier",
         listeners: {
-            "{uiOptions}.events.onUIOptionsRefresh": "{fluid.prefs.panels}.refreshView"
+            "{prefsEditor}.events.onUIOptionsRefresh": "{fluid.prefs.panels}.refreshView"
         },
         strings: {},
         parentBundle: "{prefsEditorLoader}.msgBundle"
@@ -230,18 +230,18 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.prefs.starterPanels", {
         gradeNames: ["fluid.prefs", "autoInit"],
         selectors: {
-            textSize: ".flc-uiOptions-text-size",
-            textFont: ".flc-uiOptions-text-font",
-            lineSpace: ".flc-uiOptions-line-space",
-            contrast: ".flc-uiOptions-contrast",
-            textControls: ".flc-uiOptions-text-controls",
-            layoutControls: ".flc-uiOptions-layout-controls",
-            linksControls: ".flc-uiOptions-links-controls"
+            textSize: ".flc-prefsEditor-text-size",
+            textFont: ".flc-prefsEditor-text-font",
+            lineSpace: ".flc-prefsEditor-line-space",
+            contrast: ".flc-prefsEditor-contrast",
+            textControls: ".flc-prefsEditor-text-controls",
+            layoutControls: ".flc-prefsEditor-layout-controls",
+            linksControls: ".flc-prefsEditor-links-controls"
         },
         components: {
             textSize: {
                 type: "fluid.prefs.panels.textSize",
-                container: "{uiOptions}.dom.textSize",
+                container: "{prefsEditor}.dom.textSize",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
                     gradeNames: "fluid.prefs.defaultPanel",
@@ -258,7 +258,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             lineSpace: {
                 type: "fluid.prefs.panels.lineSpace",
-                container: "{uiOptions}.dom.lineSpace",
+                container: "{prefsEditor}.dom.lineSpace",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
                     gradeNames: "fluid.prefs.defaultPanel",
@@ -275,7 +275,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             textFont: {
                 type: "fluid.prefs.panels.textFont",
-                container: "{uiOptions}.dom.textFont",
+                container: "{prefsEditor}.dom.textFont",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
                     gradeNames: "fluid.prefs.defaultPanel",
@@ -293,7 +293,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             contrast: {
                 type: "fluid.prefs.panels.contrast",
-                container: "{uiOptions}.dom.contrast",
+                container: "{prefsEditor}.dom.contrast",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
                     gradeNames: "fluid.prefs.defaultPanel",
@@ -311,7 +311,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             layoutControls: {
                 type: "fluid.prefs.panels.layoutControls",
-                container: "{uiOptions}.dom.layoutControls",
+                container: "{prefsEditor}.dom.layoutControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
                     gradeNames: "fluid.prefs.defaultPanel",
@@ -328,7 +328,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             linksControls: {
                 type: "fluid.prefs.panels.linksControls",
-                container: "{uiOptions}.dom.linksControls",
+                container: "{prefsEditor}.dom.linksControls",
                 createOnEvent: "onUIOptionsMarkupReady",
                 options: {
                     gradeNames: "fluid.prefs.defaultPanel",
@@ -373,21 +373,21 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.prefs.starterSeparatedPanelTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
         templates: {
-            uiOptions: "%prefix/SeparatedPanelPrefsEditor.html"
+            prefsEditor: "%prefix/SeparatedPanelPrefsEditor.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterFullPreviewTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
         templates: {
-            uiOptions: "%prefix/FullPreviewPrefsEditor.html"
+            prefsEditor: "%prefix/FullPreviewPrefsEditor.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterFullNoPreviewTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
         templates: {
-            uiOptions: "%prefix/FullNoPreviewPrefsEditor.html"
+            prefsEditor: "%prefix/FullNoPreviewPrefsEditor.html"
         }
     });
 
@@ -404,7 +404,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.prefs.starterMessageLoader", {
         gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
         templates: {
-            uiOptions: "%prefix/prefsEditor.json",
+            prefsEditor: "%prefix/prefsEditor.json",
             textSize: "%prefix/textSize.json",
             textFont: "%prefix/textFont.json",
             lineSpace: "%prefix/lineSpace.json",

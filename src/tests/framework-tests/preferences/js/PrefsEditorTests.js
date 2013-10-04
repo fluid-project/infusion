@@ -36,7 +36,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 gradeNames: ["fluid.prefs.starterFullNoPreviewTemplateLoader"]
             },
             components: {
-                uiOptions: {
+                prefsEditor: {
                     container: "{prefsTests}.container",
                     options: {
                         listeners: {
@@ -204,8 +204,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Init Model - default", function () {
-            testUIOptions(function (uiOptions) {
-                assertRootModel(uiOptions.model);
+            testUIOptions(function (prefsEditor) {
+                assertRootModel(prefsEditor.model);
                 jqUnit.start();
             });
         });
@@ -213,14 +213,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Init Model and Controls", function () {
             jqUnit.expect(4);
 
-            testUIOptions(function (uiOptions) {
-                assertRootModel(uiOptions.model);
+            testUIOptions(function (prefsEditor) {
+                assertRootModel(prefsEditor.model);
 
-                var themeValues = uiOptions.contrast.options.controlValues.theme;
+                var themeValues = prefsEditor.contrast.options.controlValues.theme;
                 jqUnit.assertEquals("There are 6 themes in the control", 6, themeValues.length);
                 jqUnit.assertEquals("The first theme is default", "default", themeValues[0]);
 
-                var fontValues = uiOptions.textFont.options.controlValues.textFont;
+                var fontValues = prefsEditor.textFont.options.controlValues.textFont;
                 jqUnit.assertEquals("There are 5 font values in the control", 5, fontValues.length);
                 jqUnit.assertEquals("There is default font value", 0, jQuery.inArray("default", fontValues));
 
@@ -231,33 +231,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("UIOptions Save, Reset, and Cancel", function () {
             jqUnit.expect(13);
 
-            testUIOptions(function (uiOptions) {
-                uiOptions.updateModel(bwSkin);
+            testUIOptions(function (prefsEditor) {
+                prefsEditor.updateModel(bwSkin);
 
                 jqUnit.assertFalse("Save hasn't been called", saveCalled);
-                uiOptions.saveAndApply();
+                prefsEditor.saveAndApply();
                 var container = $("body");
                 jqUnit.assertTrue("Save has been called", saveCalled);
 
-                var uiEnhancerSettings = uiOptions.getSettings();
+                var uiEnhancerSettings = prefsEditor.getSettings();
                 jqUnit.assertDeepEq("bw setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
                 jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-bw"));
-                jqUnit.assertEquals("Text size has been saved", bwSkin.textSize, uiOptions.model.textSize);
-                jqUnit.assertEquals("Text font has been saved", bwSkin.textFont, uiOptions.model.textFont);
-                jqUnit.assertEquals("Theme has been saved", bwSkin.theme, uiOptions.model.theme);
+                jqUnit.assertEquals("Text size has been saved", bwSkin.textSize, prefsEditor.model.textSize);
+                jqUnit.assertEquals("Text font has been saved", bwSkin.textFont, prefsEditor.model.textFont);
+                jqUnit.assertEquals("Theme has been saved", bwSkin.theme, prefsEditor.model.theme);
 
-                uiOptions.reset();
-                jqUnit.assertNotEquals("Reset model text size", bwSkin.textSize, uiOptions.options.textSize);
-                jqUnit.assertNotEquals("Reset model text font", bwSkin.textFont, uiOptions.options.textFont);
-                jqUnit.assertNotEquals("Reset model theme", bwSkin.theme, uiOptions.options.theme);
+                prefsEditor.reset();
+                jqUnit.assertNotEquals("Reset model text size", bwSkin.textSize, prefsEditor.options.textSize);
+                jqUnit.assertNotEquals("Reset model text font", bwSkin.textFont, prefsEditor.options.textFont);
+                jqUnit.assertNotEquals("Reset model theme", bwSkin.theme, prefsEditor.options.theme);
 
-                uiOptions.updateModel(bwSkin);
-                uiOptions.updateModel(bwSkin2);
+                prefsEditor.updateModel(bwSkin);
+                prefsEditor.updateModel(bwSkin2);
 
-                uiOptions.cancel();
-                jqUnit.assertEquals("Cancel text size change", bwSkin.textSize, uiOptions.model.textSize);
-                jqUnit.assertEquals("Cancel text font change", bwSkin.textFont, uiOptions.model.textFont);
-                jqUnit.assertEquals("Cancel theme change", bwSkin.theme, uiOptions.model.theme);
+                prefsEditor.cancel();
+                jqUnit.assertEquals("Cancel text size change", bwSkin.textSize, prefsEditor.model.textSize);
+                jqUnit.assertEquals("Cancel text font change", bwSkin.textFont, prefsEditor.model.textFont);
+                jqUnit.assertEquals("Cancel theme change", bwSkin.theme, prefsEditor.model.theme);
 
                 jqUnit.start();
             });
@@ -266,24 +266,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Refresh View", function () {
             jqUnit.expect(5);
 
-            testUIOptions(function (uiOptions) {
-                uiOptions.updateModel(bwSkin);
+            testUIOptions(function (prefsEditor) {
+                prefsEditor.updateModel(bwSkin);
 
-                jqUnit.assertEquals("bw setting was set in the model", bwSkin.theme, uiOptions.model.theme);
+                jqUnit.assertEquals("bw setting was set in the model", bwSkin.theme, prefsEditor.model.theme);
 
-                var uiEnhancerSettings = uiOptions.getSettings();
+                var uiEnhancerSettings = prefsEditor.getSettings();
                 jqUnit.assertUndefined("bw setting was not saved", uiEnhancerSettings.theme);
 
-                uiOptions.events.onUIOptionsRefresh.fire();
-                var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
+                prefsEditor.events.onUIOptionsRefresh.fire();
+                var fontSizeCtrl = $(".flc-prefsEditor-min-text-size");
                 var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val();
                 jqUnit.assertEquals("Small font size selected", "1.8", fontSizeSetting);
-                var fontStyleSelection = $(":selected", $(".flc-uiOptions-text-font"));
+                var fontStyleSelection = $(":selected", $(".flc-prefsEditor-text-font"));
                 jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
-                var contrastSelection = $(":checked", $(".flc-uiOptions-contrast"));
+                var contrastSelection = $(":checked", $(".flc-prefsEditor-contrast"));
                 jqUnit.assertEquals("Black on white is selected", "bw", contrastSelection[0].value);
 
-                uiOptions.reset();
+                prefsEditor.reset();
                 jqUnit.start();
             });
         });
@@ -304,8 +304,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            testUIOptions(function (uiOptions) {
-                var settings = uiOptions.rootModel;
+            testUIOptions(function (prefsEditor) {
+                var settings = prefsEditor.rootModel;
 
                 var themeValue = settings.theme;
                 jqUnit.assertEquals("The theme is set to wb", "wb", themeValue);
@@ -323,16 +323,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * ******************************
          */
 
-        var applierRequestChanges = function (uiOptions, selectionOptions) {
-            uiOptions.applier.requestChange("textFont", selectionOptions.textFont);
-            uiOptions.applier.requestChange("theme", selectionOptions.theme);
-            uiOptions.applier.requestChange("textSize", selectionOptions.textSize);
-            uiOptions.applier.requestChange("lineSpace", selectionOptions.lineSpace);
+        var applierRequestChanges = function (prefsEditor, selectionOptions) {
+            prefsEditor.applier.requestChange("textFont", selectionOptions.textFont);
+            prefsEditor.applier.requestChange("theme", selectionOptions.theme);
+            prefsEditor.applier.requestChange("textSize", selectionOptions.textSize);
+            prefsEditor.applier.requestChange("lineSpace", selectionOptions.lineSpace);
         };
 
-        var checkPaths = function (uiOptions, paths) {
+        var checkPaths = function (prefsEditor, paths) {
             fluid.each(paths, function (exists, path) {
-                jqUnit.assertEquals("Check existence of path " + path, exists, !!fluid.get(uiOptions, path));
+                jqUnit.assertEquals("Check existence of path " + path, exists, !!fluid.get(prefsEditor, path));
             });
         };
 
@@ -351,34 +351,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         };
 
-        var checkSaveCancel = function (uiOptions, saveModel, cancelModel) {
-            var saveButton = uiOptions.locate("save");
-            var cancelButton = uiOptions.locate("cancel");
-            var resetButton = uiOptions.locate("reset");
+        var checkSaveCancel = function (prefsEditor, saveModel, cancelModel) {
+            var saveButton = prefsEditor.locate("save");
+            var cancelButton = prefsEditor.locate("cancel");
+            var resetButton = prefsEditor.locate("reset");
 
             jqUnit.assertTrue("Initially, settings store settings are empty",
-                $.isEmptyObject(uiOptions.getSettings()));
+                $.isEmptyObject(prefsEditor.getSettings()));
             jqUnit.assertDeepEq("Initially, model should correspond to default model",
-                uiOptions.rootModel, uiOptions.model);
+                prefsEditor.rootModel, prefsEditor.model);
 
-            var preSaveSelections = fluid.copy(uiOptions.model);
-            applierRequestChanges(uiOptions, saveModel);
-            checkModelSelections("After apply saveModel", saveModel, uiOptions.model);
-            checkSettingsStore("After apply saveModel", saveModel, uiOptions.model,
+            var preSaveSelections = fluid.copy(prefsEditor.model);
+            applierRequestChanges(prefsEditor, saveModel);
+            checkModelSelections("After apply saveModel", saveModel, prefsEditor.model);
+            checkSettingsStore("After apply saveModel", saveModel, prefsEditor.model,
                 preSaveSelections);
             saveButton.click();
-            checkModelSelections("After clicking save", saveModel, uiOptions.getSettings());
-            checkSettingsStore("After clicking save", saveModel, uiOptions.getSettings(), preSaveSelections);
-            applierRequestChanges(uiOptions, cancelModel);
+            checkModelSelections("After clicking save", saveModel, prefsEditor.getSettings());
+            checkSettingsStore("After clicking save", saveModel, prefsEditor.getSettings(), preSaveSelections);
+            applierRequestChanges(prefsEditor, cancelModel);
             cancelButton.click();
-            checkModelSelections("After applying cancelModel and clicking cancel", saveModel, uiOptions.getSettings());
+            checkModelSelections("After applying cancelModel and clicking cancel", saveModel, prefsEditor.getSettings());
             checkSettingsStore("After applying cancelModel and clicking cancel", saveModel,
-                uiOptions.getSettings(), preSaveSelections);
+                prefsEditor.getSettings(), preSaveSelections);
             resetButton.click();
-            checkModelSelections("After clicking reset", uiOptions.rootModel, uiOptions.model);
+            checkModelSelections("After clicking reset", prefsEditor.rootModel, prefsEditor.model);
             cancelButton.click();
-            checkModelSelections("After clicking cancel", saveModel, uiOptions.getSettings());
-            checkSettingsStore("After clicking cancel", saveModel, uiOptions.getSettings(), preSaveSelections);
+            checkModelSelections("After clicking cancel", saveModel, prefsEditor.getSettings());
+            checkSettingsStore("After clicking cancel", saveModel, prefsEditor.getSettings(), preSaveSelections);
             // apply the reset settings to make the test result page more readable
             resetButton.click();
             saveButton.click();
@@ -391,20 +391,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 funcName: "fluid.prefs",
                 options: {
                     selectors: {
-                        textSize: ".flc-uiOptions-text-size"
+                        textSize: ".flc-prefsEditor-text-size"
                     },
                     components: {
                         textSize: {
                             type: "fluid.prefs.panels.textSize",
-                            container: "{uiOptions}.dom.textSize",
+                            container: "{prefsEditor}.dom.textSize",
                             createOnEvent: "onUIOptionsMarkupReady",
                             options: {
-                                sourceApplier: "{uiOptions}.applier",
+                                sourceApplier: "{prefsEditor}.applier",
                                 rules: {
                                     "textSize": "value"
                                 },
                                 listeners: {
-                                    "{uiOptions}.events.onUIOptionsRefresh": "{that}.refreshView"
+                                    "{prefsEditor}.events.onUIOptionsRefresh": "{that}.refreshView"
                                 },
                                 resources: {
                                     template: "{templateLoader}.resources.textSize"
@@ -436,7 +436,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            testUIOptions(function (uiOptions) {
+            testUIOptions(function (prefsEditor) {
                 var customizedPanelPaths = {
                     "uiEnhancer": true,
                     "textSize": true,
@@ -448,18 +448,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "uiEnhancer.options.components.tableOfContents": true
                 };
 
-                checkPaths(uiOptions, customizedPanelPaths);
-                checkSaveCancel(uiOptions, maxTextSize, minTextSize);
+                checkPaths(prefsEditor, customizedPanelPaths);
+                checkSaveCancel(prefsEditor, maxTextSize, minTextSize);
                 fluid.enhance.forget("fluid.prefs.testsNonDefaultIntegration");
                 jqUnit.start();
             });
         });
 
-        applierRequestChanges = function (uiOptions, selectionOptions) {
-            uiOptions.applier.requestChange("textFont", selectionOptions.textFont);
-            uiOptions.applier.requestChange("theme", selectionOptions.theme);
-            uiOptions.applier.requestChange("textSize", selectionOptions.textSize);
-            uiOptions.applier.requestChange("lineSpace", selectionOptions.lineSpace);
+        applierRequestChanges = function (prefsEditor, selectionOptions) {
+            prefsEditor.applier.requestChange("textFont", selectionOptions.textFont);
+            prefsEditor.applier.requestChange("theme", selectionOptions.theme);
+            prefsEditor.applier.requestChange("textSize", selectionOptions.textSize);
+            prefsEditor.applier.requestChange("lineSpace", selectionOptions.lineSpace);
         };
 
         jqUnit.asyncTest("UIOptions Integration tests", function () {
@@ -488,7 +488,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            testUIOptions(function (uiOptions) {
+            testUIOptions(function (prefsEditor) {
                 var defaultPanelsPaths = {
                     "uiEnhancer": true,
                     "textSize": true,
@@ -500,8 +500,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "uiEnhancer.options.components.tableOfContents": true
                 };
 
-                checkPaths(uiOptions, defaultPanelsPaths);
-                checkSaveCancel(uiOptions, bwSkin, bwSkin2);
+                checkPaths(prefsEditor, defaultPanelsPaths);
+                checkSaveCancel(prefsEditor, bwSkin, bwSkin2);
                 fluid.enhance.forget("fluid.prefs.testsIntegration");
                 jqUnit.start();
             });
@@ -524,16 +524,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            testUIOptions(function (uiOptions) {
+            testUIOptions(function (prefsEditor) {
                 resetSaveCalled();
-                uiOptions.updateModel(bwSkin);
+                prefsEditor.updateModel(bwSkin);
                 jqUnit.assertTrue("Model has changed, auto-save changes", saveCalled);
 
-                var uiEnhancerSettings = uiOptions.getSettings();
+                var uiEnhancerSettings = prefsEditor.getSettings();
                 jqUnit.assertDeepEq("bw setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
 
                 fluid.enhance.forget("fluid.prefs.prefsEditorTestsAutoSave");
-                uiOptions.reset();
+                prefsEditor.reset();
                 jqUnit.start();
             });
 
@@ -551,17 +551,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.demands("templateLoader", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testsPreview"], {
                 options: {
                     templates: {
-                        uiOptions: templatePrefix + "FullPreviewPrefsEditor.html"
+                        prefsEditor: templatePrefix + "FullPreviewPrefsEditor.html"
                     }
                 }
             });
 
             var templateUrl = "TestPreviewTemplate.html";
-            var uiOptions;
+            var prefsEditor;
 
             var testPreview = function () {
                 jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
-                        templateUrl, uiOptions.preview.container.attr("src"));
+                        templateUrl, prefsEditor.preview.container.attr("src"));
 
                 fluid.enhance.forget("fluid.prefs.testsPreview");
                 jqUnit.start();
@@ -573,7 +573,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         preview: {
                             type: "fluid.prefs.preview",
                             createOnEvent: "onReady",
-                            container: "{uiOptions}.dom.previewFrame",
+                            container: "{prefsEditor}.dom.previewFrame",
                             options: {
                                 templateUrl: templateUrl,
                                 listeners: {
@@ -585,8 +585,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            testUIOptions(function (uiOptionsIn) {
-                uiOptions = uiOptionsIn;
+            testUIOptions(function (prefsEditorIn) {
+                prefsEditor = prefsEditorIn;
             });
         });
 
