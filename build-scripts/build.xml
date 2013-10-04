@@ -7,7 +7,7 @@
       To jsLint source code within a specific directory, type: ant validate -Dlint="../some/folder"
       To create a custom build use the customBuild target.
         Custom build has three optional parameters:  'include', 'exclude', and 'jsfilename'
-        e.g. ant customBuild -Dinclude="uiOptions, inlineEdit" -Dexclude="jQuery" -Djsfilename="MyInfusion.js"
+        e.g. ant customBuild -Dinclude="preferences, inlineEdit" -Dexclude="jQuery" -Djsfilename="MyInfusion.js"
       To create an unminified package when using the customBuild, builderBuild and releaseBuild targets, use -DnoMinify="true"
 
     </description>

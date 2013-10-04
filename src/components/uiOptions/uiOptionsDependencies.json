@@ -1,9 +1,0 @@
-{
-    "uiOptions": {
-        "name": "User Interface Options",
-        "description": "The default preference editor instance allowing users to customize their preferences and needs for viewing content.",
-        "cssFiles": [],
-        "files": ["UIOptions.js"],
-        "dependencies": ["preferences"]
-    }
-}
