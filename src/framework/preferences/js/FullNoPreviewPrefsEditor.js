@@ -26,7 +26,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.prefs.fullNoPreview", {
         gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
         components: {
-            uiOptions: {
+            prefsEditor: {
                 container: "{that}.container",
                 options: {
                     listeners: {

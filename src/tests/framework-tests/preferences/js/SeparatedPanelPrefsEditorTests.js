@@ -23,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * UIOptions separatedPanel integration tests
      *******************************************************************************/
-    fluid.tests.uiOptions.expectedSeparatedPanel = [
+    fluid.tests.prefs.expectedSeparatedPanel = [
         "templateLoader",
         "messageLoader",
         "pageEnhancer",
@@ -39,7 +39,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             separatedPanel: {
                 type: "fluid.prefs.separatedPanel",
-                container: ".flc-uiOptions-separatedPanel",
+                container: ".flc-prefsEditor-separatedPanel",
                 createOnEvent: "{separatedPanelIntegrationTester}.events.onTestCaseStart",
                 options: {
                     gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
@@ -56,7 +56,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     messageLoader: {
                         gradeNames: ["fluid.prefs.starterMessageLoader"]
                     },
-                    uiOptions: {
+                    prefsEditor: {
                         gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
                     }
                 }
@@ -74,24 +74,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testSeparatedPanel = function (separatedPanel) {
         jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, separatedPanel.iframeRenderer.iframe.is(":visible"));
-        fluid.tests.uiOptions.assertPresent(separatedPanel, fluid.tests.uiOptions.expectedSeparatedPanel);
+        fluid.tests.prefs.assertPresent(separatedPanel, fluid.tests.prefs.expectedSeparatedPanel);
 
-        var uiOptions = separatedPanel.uiOptions;
-        jqUnit.assertEquals("Reset button is invisible", false, $(".flc-uiOptions-reset").is(":visible"));
-        fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents["fluid.prefs.separatedPanel"]);
+        var prefsEditor = separatedPanel.prefsEditor;
+        jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
+        fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
     };
 
     fluid.tests.afterShowFunc1 = function (separatedPanel) {
         return function () {
-            fluid.tests.uiOptions.applierRequestChanges(separatedPanel.uiOptions, fluid.tests.uiOptions.bwSkin);
-            fluid.tests.uiOptions.checkModelSelections("pageModel from bwSkin", fluid.tests.uiOptions.bwSkin, separatedPanel.pageEnhancer.model);
-            jqUnit.assertEquals("Reset button is visible", true, $(".flc-uiOptions-reset").is(":visible"));
+            fluid.tests.prefs.applierRequestChanges(separatedPanel.prefsEditor, fluid.tests.prefs.bwSkin);
+            fluid.tests.prefs.checkModelSelections("pageModel from bwSkin", fluid.tests.prefs.bwSkin, separatedPanel.pageEnhancer.model);
+            jqUnit.assertEquals("Reset button is visible", true, $(".flc-prefsEditor-reset").is(":visible"));
         };
     };
 
     fluid.tests.afterHideFunc1 = function (separatedPanel) {
         return function () {
-            jqUnit.assertEquals("Reset button is invisible", false, $(".flc-uiOptions-reset").is(":visible"));
+            jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
         };
     };
     fluid.tests.afterShowFunc2 = function (separatedPanel) {
@@ -99,22 +99,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var pageModel = separatedPanel.pageEnhancer.model;
             var panelModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
 
-            fluid.tests.uiOptions.checkModelSelections("panelModel from bwSkin", fluid.tests.uiOptions.bwSkin, panelModel);
-            fluid.tests.uiOptions.checkModelSelections("panelModel from pageModel", pageModel, panelModel);
+            fluid.tests.prefs.checkModelSelections("panelModel from bwSkin", fluid.tests.prefs.bwSkin, panelModel);
+            fluid.tests.prefs.checkModelSelections("panelModel from pageModel", pageModel, panelModel);
         };
     };
 
     fluid.tests.afterShowFunc3 = function (separatedPanel) {
         return function () {
-            var rootModel = separatedPanel.uiOptions.rootModel;
+            var rootModel = separatedPanel.prefsEditor.rootModel;
             var pageModel = separatedPanel.pageEnhancer.model;
             var panelModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
 
             separatedPanel.locate("reset").click();
-            fluid.tests.uiOptions.checkModelSelections("pageModel from defaults", rootModel, pageModel);
+            fluid.tests.prefs.checkModelSelections("pageModel from defaults", rootModel, pageModel);
             separatedPanel.slidingPanel.hidePanel();
-            fluid.tests.uiOptions.checkModelSelections("panelModel from defaults", rootModel, panelModel);
-            fluid.tests.uiOptions.checkModelSelections("pageModel from panelModel", pageModel, panelModel);
+            fluid.tests.prefs.checkModelSelections("panelModel from defaults", rootModel, panelModel);
+            fluid.tests.prefs.checkModelSelections("pageModel from panelModel", pageModel, panelModel);
         };
     };
 
@@ -173,9 +173,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             separatedPanel: {
                 type: "fluid.prefs.separatedPanel",
-                container: ".flc-uiOptions-separatedPanel",
+                container: ".flc-prefsEditor-separatedPanel",
                 createOnEvent: "{mungingIntegrationTester}.events.onTestCaseStart",
-                options: fluid.merge(null, fluid.tests.uiOptions.mungingIntegrationOptions, {
+                options: fluid.merge(null, fluid.tests.prefs.mungingIntegrationOptions, {
                     iframeRenderer: {
                         markupProps: {
                             src: "./SeparatedPanelPrefsEditorFrame.html"
@@ -189,7 +189,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     },
                     iframe: expectedIframeSelector,
-                    uiOptions: {
+                    prefsEditor: {
                         members: {
                             rootModel: {
                                 theme: "yb"
@@ -205,7 +205,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.testEnhancerTransit = function testEnhancerTransit(separatedPanel, expectedIframeSelector) {
-        var cMap = fluid.tests.uiOptions.enhancerOptions.uiEnhancer.classnameMap;
+        var cMap = fluid.tests.prefs.enhancerOptions.uiEnhancer.classnameMap;
 
         // "outerEnhancerOptions" option mapping
         jqUnit.assertEquals("classnameMap transferred to outer UIEnhancer", cMap.textFont["default"],
@@ -231,8 +231,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 13,
                 name: "Fat panel munging integration tests",
                 sequence: [{
-                    listener: "fluid.tests.uiOptions.testComponentIntegration",
-                    event: "{separatedPanelMungingIntegration separatedPanel uiOptions}.events.onReady"
+                    listener: "fluid.tests.prefs.testComponentIntegration",
+                    event: "{separatedPanelMungingIntegration separatedPanel prefsEditor}.events.onReady"
                 }, {
                     func: "fluid.tests.testEnhancerTransit",
                     args: ["{separatedPanel}", "{that}.options.expectedIframeSelector"]
@@ -244,7 +244,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
 
         fluid.globalSettingsStore();
-        fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
+        fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
 
         fluid.test.runTests([
             "fluid.tests.separatedPanelIntegration",

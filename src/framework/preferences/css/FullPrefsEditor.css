@@ -1,7 +1,7 @@
 /* UI Option styles for full page layouts both with and without preview */
 
 /* Control section headers */
-.fl-uiOptions h2 {
+.fl-prefsEditor h2 {
     font-size: 1.29em;
     font-weight: bold;
     clear: both;
@@ -10,13 +10,13 @@
 }
 
 /* Save, reset, cancel buttons */
-.fl-uiOptions .fl-uiOptions-buttons {
+.fl-prefsEditor .fl-prefsEditor-buttons {
     margin-top: 1em;
     float: left;
     width: 100%;
 }
 
-.fl-uiOptions .fl-uiOptions-buttons input {
+.fl-prefsEditor .fl-prefsEditor-buttons input {
     text-transform: uppercase;
     text-decoration: underline;
     font-weight: bold;
@@ -29,17 +29,17 @@
 }
 
 /* Section header icons */
-.fl-uiOptions h2 img {
+.fl-prefsEditor h2 img {
     margin-bottom: -3px;
     padding-right: 5px;
 }
 
 /* Text controls */
-.fl-uiOptions .fl-uiOptions-text ul li {
+.fl-prefsEditor .fl-prefsEditor-text ul li {
     clear: left;
     height: 3.5em;
 }
 
-.fl-uiOptions .fl-slider-input {
+.fl-prefsEditor .fl-slider-input {
     float: right;
 }

@@ -1,6 +1,6 @@
 {
-    "uiOptions": {
-        "name": "User Interface Options",
+    "prefsEditor": {
+        "name": "Preferences Editor",
         "description": "Users customize their preferences and needs for viewing content.",
         "cssFiles": [
             "PrefsEditor.css",

@@ -35,7 +35,7 @@ var skon = skon || {};
         });
 
         // Next, start up UI Options
-        fluid.prefs.separatedPanel(".flc-uiOptions-separatedPanel", {
+        fluid.prefs.separatedPanel(".flc-prefsEditor-separatedPanel", {
             gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
             templatePrefix: "../../../framework/preferences/html/",
             messagePrefix: "../../../framework/preferences/messages/",
@@ -45,7 +45,7 @@ var skon = skon || {};
             templateLoader: {
                 gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
             },
-            uiOptions: {
+            prefsEditor: {
                 gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
             },
             iframeRenderer: {

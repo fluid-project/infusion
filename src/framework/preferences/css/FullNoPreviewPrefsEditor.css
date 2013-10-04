@@ -6,36 +6,36 @@ body {
 }
 
 /* Category separator */
-.fl-uiOptions-fullNoPreview .fl-uiOptions-category {
+.fl-prefsEditor-fullNoPreview .fl-prefsEditor-category {
     border-top: 2px solid #dddddd;
     clear:both;
 }
 
 /* Section header icons */
-.fl-uiOptions-fullNoPreview .fl-uiOptions-category h2 img {
+.fl-prefsEditor-fullNoPreview .fl-prefsEditor-category h2 img {
     padding-top: 10px;
     margin-bottom: -4px;
 }
 
 /* Save, reset, cancel buttons */
-.fl-uiOptions-fullNoPreview .fl-uiOptions-buttons {
+.fl-prefsEditor-fullNoPreview .fl-prefsEditor-buttons {
     text-align: right;
 }
 
 /* Controls */
-.fl-uiOptions-fullNoPreview .fl-col-flex {
+.fl-prefsEditor-fullNoPreview .fl-col-flex {
     padding-top: 15px;
 }
 
-.fl-uiOptions-fullNoPreview ul {
+.fl-prefsEditor-fullNoPreview ul {
     float:left;
 }
 
-.fl-uiOptions-fullNoPreview ul li {
+.fl-prefsEditor-fullNoPreview ul li {
     clear: left;
 }
 
-.fl-uiOptions-fullNoPreview label, 
-.fl-uiOptions-fullNoPreview .fl-inputs  {
+.fl-prefsEditor-fullNoPreview label, 
+.fl-prefsEditor-fullNoPreview .fl-inputs  {
     margin-bottom: 15px;        /* adds space between label, inputs when browser window is narrow */
 }

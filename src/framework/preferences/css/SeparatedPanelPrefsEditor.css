@@ -20,13 +20,13 @@
 }
 
 /* Top bar and show/hide button */
-.fl-uiOptions-separatedPanel .fl-panelBar {
+.fl-prefsEditor-separatedPanel .fl-panelBar {
     width: 100%;
     background-color: #fff;
     border-bottom: 1px solid #ccc;  
 }
 
-.fl-uiOptions-separatedPanel .fl-panelBar .fl-uio-tabs {
+.fl-prefsEditor-separatedPanel .fl-panelBar .fl-uio-tabs {
     box-shadow: 2px 2px 3px 0px #6f6f6f;
     border-bottom: 1px solid #ccc;
     border-left: 1px solid #ccc;
@@ -39,8 +39,8 @@
     float:right;    
 }
 
-.fl-uiOptions-separatedPanel .fl-uiOptions-showHide,
-.fl-uiOptions-separatedPanel .fl-uiOptions-reset {
+.fl-prefsEditor-separatedPanel .fl-prefsEditor-showHide,
+.fl-prefsEditor-separatedPanel .fl-prefsEditor-reset {
     text-transform: lowercase;
     font-weight: bold;
     border:0;
@@ -53,16 +53,16 @@
     margin-left: 0.5em;
 }
 
-.fl-uiOptions-separatedPanel .fl-uiOptions-reset {
+.fl-prefsEditor-separatedPanel .fl-prefsEditor-reset {
     border-right: 1px solid #ccc;
 }
 
-.fl-uiOptions-separatedPanel .fl-uiOptions-showHide{
+.fl-prefsEditor-separatedPanel .fl-prefsEditor-showHide{
     min-width: 15em;
 }
 
 /* Font icons for reset/save tabs */
-.fl-uiOptions-separatedPanel .fl-icon-undo, .fl-uiOptions-separatedPanel .fl-icon-preferences {
+.fl-prefsEditor-separatedPanel .fl-icon-undo, .fl-prefsEditor-separatedPanel .fl-icon-preferences {
     font-family: 'InfusionIcons' !important;
     speak: none;
     font-style: normal;
@@ -75,16 +75,16 @@
     margin-top: -0.1em;
     font-size: 1em; 
 }
-.fl-uiOptions-separatedPanel .fl-icon-undo:before {
+.fl-prefsEditor-separatedPanel .fl-icon-undo:before {
     content: "\e008";
 }
-.fl-uiOptions-separatedPanel .fl-icon-preferences:before {
+.fl-prefsEditor-separatedPanel .fl-icon-preferences:before {
     content: "\e00f";
 }
     
 
 /* IFrame */
-.fl-uiOptions-separatedPanel-iframe {
+.fl-prefsEditor-separatedPanel-iframe {
     border: 0;
     background-color: #fff;
     height: 0px;
@@ -99,26 +99,26 @@
 .fl-theme-lgdg { background-image:none !important; }
 
 .fl-theme-bw,
-.fl-theme-bw .fl-uiOptions-separatedPanel .fl-panelBar, 
-.fl-theme-bw .fl-uiOptions-separatedPanel .fl-toggleButton,
-.fl-theme-yb .fl-uiOptions-separatedPanel .fl-uiOptions-reset { background-color: #fff; border-color: #000; }
+.fl-theme-bw .fl-prefsEditor-separatedPanel .fl-panelBar, 
+.fl-theme-bw .fl-prefsEditor-separatedPanel .fl-toggleButton,
+.fl-theme-yb .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset { background-color: #fff; border-color: #000; }
 
 .fl-theme-wb,
-.fl-theme-wb .fl-uiOptions-separatedPanel .fl-panelBar, 
-.fl-theme-wb .fl-uiOptions-separatedPanel .fl-toggleButton,
-.fl-theme-yb .fl-uiOptions-separatedPanel .fl-uiOptions-reset { background-color: #000; border-color: #fff; color: #fff; }
+.fl-theme-wb .fl-prefsEditor-separatedPanel .fl-panelBar, 
+.fl-theme-wb .fl-prefsEditor-separatedPanel .fl-toggleButton,
+.fl-theme-yb .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset { background-color: #000; border-color: #fff; color: #fff; }
 
 .fl-theme-by,
-.fl-theme-by .fl-uiOptions-separatedPanel .fl-panelBar, 
-.fl-theme-by .fl-uiOptions-separatedPanel .fl-toggleButton,
-.fl-theme-yb .fl-uiOptions-separatedPanel .fl-uiOptions-reset { background-color: #FFFF00; border-color: #000; }
+.fl-theme-by .fl-prefsEditor-separatedPanel .fl-panelBar, 
+.fl-theme-by .fl-prefsEditor-separatedPanel .fl-toggleButton,
+.fl-theme-yb .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset { background-color: #FFFF00; border-color: #000; }
 
 .fl-theme-yb,
-.fl-theme-yb .fl-uiOptions-separatedPanel .fl-panelBar, 
-.fl-theme-yb .fl-uiOptions-separatedPanel .fl-toggleButton,
-.fl-theme-yb .fl-uiOptions-separatedPanel .fl-uiOptions-reset { background-color: #000; border-color: #ffff00; color: #ffff00; }
+.fl-theme-yb .fl-prefsEditor-separatedPanel .fl-panelBar, 
+.fl-theme-yb .fl-prefsEditor-separatedPanel .fl-toggleButton,
+.fl-theme-yb .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset { background-color: #000; border-color: #ffff00; color: #ffff00; }
 
 .fl-theme-lgdg,
-.fl-theme-lgdg .fl-uiOptions-separatedPanel .fl-panelBar, 
-.fl-theme-lgdg .fl-uiOptions-separatedPanel .fl-toggleButton,
-.fl-theme-lgdg .fl-uiOptions-separatedPanel .fl-uiOptions-reset { background-color: #555555; border-color: #bdbdbb; color: #bdbdbb; }
+.fl-theme-lgdg .fl-prefsEditor-separatedPanel .fl-panelBar, 
+.fl-theme-lgdg .fl-prefsEditor-separatedPanel .fl-toggleButton,
+.fl-theme-lgdg .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset { background-color: #555555; border-color: #bdbdbb; color: #bdbdbb; }

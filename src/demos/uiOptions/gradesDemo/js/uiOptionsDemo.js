@@ -70,7 +70,7 @@ var demo = demo || {};
         messageLoader: {
             gradeNames: ["fluid.prefs.starterMessageLoader"]
         },
-        uiOptions: {
+        prefsEditor: {
             gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
         }
     };

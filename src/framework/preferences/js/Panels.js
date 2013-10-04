@@ -83,11 +83,11 @@ var fluid_1_5 = fluid_1_5 || {};
             max: 2
         },
         selectors: {
-            textSize: ".flc-uiOptions-min-text-size",
-            label: ".flc-uiOptions-min-text-size-label",
-            smallIcon: ".flc-uiOptions-min-text-size-smallIcon",
-            largeIcon: ".flc-uiOptions-min-text-size-largeIcon",
-            multiplier: ".flc-uiOptions-multiplier"
+            textSize: ".flc-prefsEditor-min-text-size",
+            label: ".flc-prefsEditor-min-text-size-label",
+            smallIcon: ".flc-prefsEditor-min-text-size-smallIcon",
+            largeIcon: ".flc-prefsEditor-min-text-size-largeIcon",
+            multiplier: ".flc-prefsEditor-multiplier"
         },
         protoTree: {
             label: {messagekey: "textSizeLabel"},
@@ -124,8 +124,8 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         selectors: {
-            textFont: ".flc-uiOptions-text-font",
-            label: ".flc-uiOptions-text-font-label"
+            textFont: ".flc-prefsEditor-text-font",
+            label: ".flc-prefsEditor-text-font-label"
         },
         strings: {
             textFont: {
@@ -180,11 +180,11 @@ var fluid_1_5 = fluid_1_5 || {};
             max: 2
         },
         selectors: {
-            lineSpace: ".flc-uiOptions-line-space",
-            label: ".flc-uiOptions-line-space-label",
-            narrowIcon: ".flc-uiOptions-line-space-narrowIcon",
-            wideIcon: ".flc-uiOptions-line-space-wideIcon",
-            multiplier: ".flc-uiOptions-multiplier"
+            lineSpace: ".flc-prefsEditor-line-space",
+            label: ".flc-prefsEditor-line-space-label",
+            narrowIcon: ".flc-prefsEditor-line-space-narrowIcon",
+            wideIcon: ".flc-prefsEditor-line-space-wideIcon",
+            multiplier: ".flc-prefsEditor-multiplier"
         },
         protoTree: {
             label: {messagekey: "lineSpaceLabel"},
@@ -224,10 +224,10 @@ var fluid_1_5 = fluid_1_5 || {};
             afterRender: "{that}.style"
         },
         selectors: {
-            themeRow: ".flc-uiOptions-themeRow",
-            themeLabel: ".flc-uiOptions-theme-label",
-            themeInput: ".flc-uiOptions-themeInput",
-            label: ".flc-uiOptions-contrast-label"
+            themeRow: ".flc-prefsEditor-themeRow",
+            themeLabel: ".flc-prefsEditor-theme-label",
+            themeInput: ".flc-prefsEditor-themeInput",
+            label: ".flc-prefsEditor-contrast-label"
         },
         strings: {
             theme: {
@@ -294,9 +294,9 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         selectors: {
-            toc: ".flc-uiOptions-toc",
-            label: ".flc-uiOptions-toc-label",
-            choiceLabel: ".flc-uiOptions-toc-choice-label"
+            toc: ".flc-prefsEditor-toc",
+            label: ".flc-prefsEditor-toc-label",
+            choiceLabel: ".flc-prefsEditor-toc-choice-label"
         },
         protoTree: {
             label: {messagekey: "tocLabel"},
@@ -322,11 +322,11 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         selectors: {
-            links: ".flc-uiOptions-links",
-            inputsLarger: ".flc-uiOptions-inputs-larger",
-            label: ".flc-uiOptions-links-label",
-            linksChoiceLabel: ".flc-uiOptions-links-choice-label",
-            inputsChoiceLabel: ".flc-uiOptions-links-inputs-choice-label"
+            links: ".flc-prefsEditor-links",
+            inputsLarger: ".flc-prefsEditor-inputs-larger",
+            label: ".flc-prefsEditor-links-label",
+            linksChoiceLabel: ".flc-prefsEditor-links-choice-label",
+            inputsChoiceLabel: ".flc-prefsEditor-links-inputs-choice-label"
         },
         protoTree: {
             label: {messagekey: "linksLabel"},

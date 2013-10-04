@@ -26,7 +26,7 @@ var fluid_1_5 = fluid_1_5 || {};
      *********************/
 
     /**
-     * An UI Options top-level component that reflects the collaboration between uiOptions, templateLoader and messageLoader.
+     * An UI Options top-level component that reflects the collaboration between prefsEditor, templateLoader and messageLoader.
      * This component is the only UI Options component that is intended to be called by the outside world.
      *
      * @param {Object} options
@@ -34,7 +34,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.prefs.prefsEditorLoader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
-            uiOptions: {
+            prefsEditor: {
                 priority: "last",
                 type: "fluid.prefs",
                 createOnEvent: "onCreateUIOptionsReady"
@@ -88,9 +88,9 @@ var fluid_1_5 = fluid_1_5 || {};
             source: "{that}.options.messagePrefix",
             target: "{that > messageLoader > resourcePath}.options.value"
         }, {
-            source: "{that}.options.uiOptions",
+            source: "{that}.options.prefsEditor",
             removeSource: true,
-            target: "{that > uiOptions}.options"
+            target: "{that > prefsEditor}.options"
         }]
     });
 
@@ -324,10 +324,10 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         selectors: {
-            cancel: ".flc-uiOptions-cancel",
-            reset: ".flc-uiOptions-reset",
-            save: ".flc-uiOptions-save",
-            previewFrame : ".flc-uiOptions-preview-frame"
+            cancel: ".flc-prefsEditor-cancel",
+            reset: ".flc-prefsEditor-reset",
+            save: ".flc-prefsEditor-save",
+            previewFrame : ".flc-prefsEditor-preview-frame"
         },
         events: {
             onSave: null,
@@ -345,7 +345,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onAutoSave: "{that}.save"
         },
         resources: {
-            template: "{templateLoader}.resources.uiOptions"
+            template: "{templateLoader}.resources.prefsEditor"
         },
         autoSave: false
     });
@@ -459,7 +459,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.prefs.preview.updateModel",
                 args: [
                     "{preview}",
-                    "{uiOptions}.model"
+                    "{prefsEditor}.model"
                 ]
             }
         },
@@ -468,7 +468,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onReady: null
         },
         listeners: {
-            "{uiOptions}.events.modelChanged": "{that}.updateModel",
+            "{prefsEditor}.events.modelChanged": "{that}.updateModel",
             onReady: "{that}.updateModel"
         },
         templateUrl: "%prefix/UIOptionsPreview.html"

@@ -18,10 +18,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
 
-    fluid.staticEnvironment.uiOptionsTest = fluid.typeTag("fluid.tests.uiOptions");
+    fluid.staticEnvironment.prefsEditorTest = fluid.typeTag("fluid.tests.prefs");
 
     // Use temp store rather than the cookie store for setting save
-    fluid.demands("fluid.prefs.store", ["fluid.globalSettingsStore", "fluid.tests.uiOptions"], {
+    fluid.demands("fluid.prefs.store", ["fluid.globalSettingsStore", "fluid.tests.prefs"], {
         funcName: "fluid.tempStore"
     });
 
@@ -32,23 +32,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.registerNamespace("fluid.tests.uiOptions");
+    fluid.registerNamespace("fluid.tests.prefs");
 
-    fluid.tests.uiOptions.bwSkin = {
+    fluid.tests.prefs.bwSkin = {
         textSize: "1.8",
         textFont: "verdana",
         theme: "bw",
         lineSpace: 2
     };
 
-    fluid.tests.uiOptions.ybSkin = {
+    fluid.tests.prefs.ybSkin = {
         textSize: "2",
         textFont: "comic sans",
         theme: "yb",
         lineSpace: 1.5
     };
 
-    fluid.tests.uiOptions.expectedComponents = {
+    fluid.tests.prefs.expectedComponents = {
         "fluid.prefs.separatedPanel": [
             "textSize",
             "lineSpace",
@@ -77,24 +77,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
 
-    fluid.tests.uiOptions.assertPresent = function (uiOptions, expecteds) {
+    fluid.tests.prefs.assertPresent = function (prefsEditor, expecteds) {
         fluid.each(expecteds, function (expected) {
-            var value = fluid.get(uiOptions, expected);
+            var value = fluid.get(prefsEditor, expected);
             jqUnit.assertTrue("Expected component at path " + expected, value);
         });
     };
 
-    fluid.tests.uiOptions.checkModelSelections = function (message, expectedSelections, actualSelections) {
+    fluid.tests.prefs.checkModelSelections = function (message, expectedSelections, actualSelections) {
         jqUnit.assertLeftHand("Model correctly updated: " + message, expectedSelections, actualSelections);
     };
 
-    fluid.tests.uiOptions.applierRequestChanges = function (uiOptions, selectionOptions) {
+    fluid.tests.prefs.applierRequestChanges = function (prefsEditor, selectionOptions) {
         fluid.each(selectionOptions, function (value, key) {
-            uiOptions.applier.requestChange("" + key, value);
+            prefsEditor.applier.requestChange("" + key, value);
         });
     };
 
-    fluid.tests.uiOptions.integrationTest = function (componentName, resetShouldSave) {
+    fluid.tests.prefs.integrationTest = function (componentName, resetShouldSave) {
         jqUnit.asyncTest(componentName + " Integration tests", function () {
             fluid.globalSettingsStore();
             fluid.pageEnhancer({
@@ -112,33 +112,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 savedSelections2 = selections;
             }
 
-            function testComponent(uiOptions) {
-                var rootModel = uiOptions.rootModel;
+            function testComponent(prefsEditor) {
+                var rootModel = prefsEditor.rootModel;
 
-                fluid.tests.uiOptions.assertPresent(uiOptions, fluid.tests.uiOptions.expectedComponents[componentName]);
-                fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
+                fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents[componentName]);
+                fluid.tests.prefs.applierRequestChanges(prefsEditor, fluid.tests.prefs.bwSkin);
 
-                var saveButton = uiOptions.locate("save");
+                var saveButton = prefsEditor.locate("save");
                 saveButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from bwSkin", fluid.tests.uiOptions.bwSkin, uiOptions.model);
-                jqUnit.assertEquals("Save event fired with selections", uiOptions.model, savedSelections);
-                jqUnit.assertEquals("Direct save event fired with selections", uiOptions.model, savedSelections2);
-                fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.ybSkin);
+                fluid.tests.prefs.checkModelSelections("model from bwSkin", fluid.tests.prefs.bwSkin, prefsEditor.model);
+                jqUnit.assertEquals("Save event fired with selections", prefsEditor.model, savedSelections);
+                jqUnit.assertEquals("Direct save event fired with selections", prefsEditor.model, savedSelections2);
+                fluid.tests.prefs.applierRequestChanges(prefsEditor, fluid.tests.prefs.ybSkin);
 
-                var cancelButton = uiOptions.locate("cancel");
+                var cancelButton = prefsEditor.locate("cancel");
                 cancelButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from bwSkin (unchanged after cancel", fluid.tests.uiOptions.bwSkin, uiOptions.model);
+                fluid.tests.prefs.checkModelSelections("model from bwSkin (unchanged after cancel", fluid.tests.prefs.bwSkin, prefsEditor.model);
 
-                var resetButton = uiOptions.locate("reset");
+                var resetButton = prefsEditor.locate("reset");
                 resetButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from original", rootModel, uiOptions.model);
-                fluid.tests.uiOptions.applierRequestChanges(uiOptions, fluid.tests.uiOptions.bwSkin);
-                fluid.tests.uiOptions.checkModelSelections("model from original (correct state after reset)",
-                    (resetShouldSave ? rootModel : fluid.tests.uiOptions.bwSkin), fluid.staticEnvironment.uiEnhancer.model);
+                fluid.tests.prefs.checkModelSelections("model from original", rootModel, prefsEditor.model);
+                fluid.tests.prefs.applierRequestChanges(prefsEditor, fluid.tests.prefs.bwSkin);
+                fluid.tests.prefs.checkModelSelections("model from original (correct state after reset)",
+                    (resetShouldSave ? rootModel : fluid.tests.prefs.bwSkin), fluid.staticEnvironment.uiEnhancer.model);
 
                 cancelButton.click();
-                fluid.tests.uiOptions.checkModelSelections("model from original (correct state after reset and cancel)",
-                    (resetShouldSave ? rootModel : fluid.tests.uiOptions.bwSkin), uiOptions.model);
+                fluid.tests.prefs.checkModelSelections("model from original (correct state after reset and cancel)",
+                    (resetShouldSave ? rootModel : fluid.tests.prefs.bwSkin), prefsEditor.model);
 
                 jqUnit.start();
             }
@@ -153,7 +153,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 messageLoader: {
                     gradeNames: ["fluid.prefs.starterMessageLoader"]
                 },
-                uiOptions: {
+                prefsEditor: {
                     gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"],
                     listeners: {
                         onReady: {
@@ -169,7 +169,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.tests.uiOptions.enhancerOptions = {
+    fluid.tests.prefs.enhancerOptions = {
         uiEnhancer: {
             gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.prefs.rootModel.starter"],
             tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
@@ -184,19 +184,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    fluid.tests.uiOptions.testStrings = ["Test1", "Test2", "Test3", "Test4", "Test5"];
-    fluid.tests.uiOptions.testControlValues = ["a", "b", "c", "d", "e"];
+    fluid.tests.prefs.testStrings = ["Test1", "Test2", "Test3", "Test4", "Test5"];
+    fluid.tests.prefs.testControlValues = ["a", "b", "c", "d", "e"];
 
-    fluid.tests.uiOptions.testComponentIntegration = function (uiOptions) {
+    fluid.tests.prefs.testComponentIntegration = function (prefsEditor) {
         var body = $("body");
-        var testStrings = fluid.tests.uiOptions.testStrings;
-        var testControlValues = fluid.tests.uiOptions.testControlValues;
+        var testStrings = fluid.tests.prefs.testStrings;
+        var testControlValues = fluid.tests.prefs.testControlValues;
 
         jqUnit.assertTrue("Times font is set", body.hasClass("fl-font-times"));
         jqUnit.assertTrue("The default test theme is set", body.hasClass("fl-test"));
 
-        var actualTextFontStrings = uiOptions.textFont.options.strings.textFont;
-        var actualTextFontControlValues = uiOptions.textFont.options.controlValues.textFont;
+        var actualTextFontStrings = prefsEditor.textFont.options.strings.textFont;
+        var actualTextFontControlValues = prefsEditor.textFont.options.controlValues.textFont;
 
         jqUnit.assertEquals("There are 5 elements in the text font string list", 5, actualTextFontStrings.length);
         jqUnit.assertEquals("The first text font string value matches", testStrings[0], actualTextFontStrings[0]);
@@ -207,16 +207,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The fifth text font control value matches", testControlValues[4], actualTextFontControlValues[4]);
     };
 
-    fluid.tests.uiOptions.mungingIntegrationOptions = {
+    fluid.tests.prefs.mungingIntegrationOptions = {
         gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
         templatePrefix: "../../../../framework/preferences/html/",
         messagePrefix: "../../../../framework/preferences/messages/",
         textFont: {
             strings: {
-                textFont: fluid.tests.uiOptions.testStrings
+                textFont: fluid.tests.prefs.testStrings
             },
             controlValues: {
-                textFont: fluid.tests.uiOptions.testControlValues
+                textFont: fluid.tests.prefs.testControlValues
             }
         },
         templateLoader: {
@@ -225,19 +225,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         messageLoader: {
             gradeNames: ["fluid.prefs.starterMessageLoader"]
         },
-        uiOptions: {
+        prefsEditor: {
             gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
         }
     };
 
-    fluid.tests.uiOptions.mungingIntegrationTest = function (componentName, container, extraOpts, extraListener) {
+    fluid.tests.prefs.mungingIntegrationTest = function (componentName, container, extraOpts, extraListener) {
         extraListener = extraListener || function () { jqUnit.start(); };
 
         jqUnit.asyncTest(componentName + " Munging Integration tests", function () {
             fluid.globalSettingsStore();
-            fluid.pageEnhancer(fluid.tests.uiOptions.enhancerOptions);
-            var options = fluid.merge(null, fluid.tests.uiOptions.mungingIntegrationOptions, {
-                uiOptions: {
+            fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
+            var options = fluid.merge(null, fluid.tests.prefs.mungingIntegrationOptions, {
+                prefsEditor: {
                     members: {
                         rootModel: {
                             theme: "yb"
@@ -245,7 +245,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     listeners: {
                         onReady: [
-                            "fluid.tests.uiOptions.testComponentIntegration",
+                            "fluid.tests.prefs.testComponentIntegration",
                             extraListener
                         ]
                     }

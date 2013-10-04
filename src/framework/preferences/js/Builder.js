@@ -115,7 +115,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     messageLoader: {
                         gradeNames: ["{fluid.prefs.assembler.uio}.options.componentGrades.messageLoader"]
                     },
-                    uiOptions: {
+                    prefsEditor: {
                         gradeNames: ["{fluid.prefs.assembler.uio}.options.componentGrades.panels", "{fluid.prefs.assembler.uio}.options.componentGrades.rootModel", "fluid.prefs.uiEnhancerRelay"]
                     }
                 }
@@ -126,9 +126,9 @@ var fluid_1_5 = fluid_1_5 || {};
             removeSource: true,
             target: "{that > prefsEditorLoader}.options.uioType"
         }, {
-            source: "{that}.options.uiOptions",
+            source: "{that}.options.prefsEditor",
             removeSource: true,
-            target: "{that uiOptions}.options"
+            target: "{that prefsEditor}.options"
         }]
     });
 
