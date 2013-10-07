@@ -225,7 +225,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /*********************************************************************************************************
      * Starter Settings Panels
      *
-     * A collection of all the default UIO setting panels.
+     * A collection of all the default Preferences Editorsetting panels.
      *********************************************************************************************************/
     fluid.defaults("fluid.prefs.starterPanels", {
         gradeNames: ["fluid.prefs", "autoInit"],

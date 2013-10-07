@@ -43,7 +43,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.prefs.resourceLoader",
                 options: {
                     events: {
-                        onResourcesLoaded: "{prefsEditorLoader}.events.onUIOTemplatesLoaded"
+                        onResourcesLoaded: "{prefsEditorLoader}.events.onPrefsEditorTemplatesLoaded"
                     }
                 }
             },
@@ -51,24 +51,24 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.prefs.resourceLoader",
                 options: {
                     events: {
-                        onResourcesLoaded: "{prefsEditorLoader}.events.onUIOMessagesLoaded"
+                        onResourcesLoaded: "{prefsEditorLoader}.events.onPrefsEditorMessagesLoaded"
                     }
                 }
             }
         },
         events: {
-            onUIOTemplatesLoaded: null,
-            onUIOMessagesLoaded: null,
+            onPrefsEditorTemplatesLoaded: null,
+            onPrefsEditorMessagesLoaded: null,
             onMsgBundleReady: null,
             onCreatePrefsEditorReady: {
                 events: {
-                    templateLoaded: "onUIOTemplatesLoaded",
+                    templateLoaded: "onPrefsEditorTemplatesLoaded",
                     msgBundleReady: "onMsgBundleReady"
                 }
             }
         },
         listeners: {
-            onUIOMessagesLoaded: {
+            onPrefsEditorMessagesLoaded: {
                 funcName: "fluid.prefs.prefsEditorLoader.createMsgBundle",
                 args: ["{arguments}.0", "{that}"]
             }

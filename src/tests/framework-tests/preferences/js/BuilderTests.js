@@ -73,7 +73,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOpts: {
             auxSchema: {
-                "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
+                "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed PrefsEditor.
                 "textSize": {
                     "type": "fluid.prefs.textSize",
                     "enactor": {
@@ -350,7 +350,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOptions: {
             consolidationGrades: {
                 enhancer: "fluid.prefs.builder.uie",
-                prefsEditor: "fluid.prefs.builder.uio"
+                prefsEditor: "fluid.prefs.builder.prefsEditor"
             }
         },
         modules: [{
@@ -367,9 +367,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderEmpty}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
             }, {
                 expect: 2,
-                name: "assembledUIOGrade",
+                name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderEmpty}.options.assembledUIOGrade", {gradeNames: ["fluid.prefs.assembler.uio"]}]
+                args: ["{builderEmpty}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEditor"]}]
             }]
         }, {
             name: "fluid.prefs.builder - only enactors",
@@ -395,9 +395,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderEnactors}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
             }, {
                 expect: 2,
-                name: "assembledUIOGrade",
+                name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderEnactors}.options.assembledUIOGrade", {gradeNames: ["fluid.prefs.assembler.uio"]}]
+                args: ["{builderEnactors}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEditor"]}]
             }]
         }, {
             name: "fluid.prefs.builder - only panels",
@@ -433,9 +433,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderPanels}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
             }, {
                 expect: 2,
-                name: "assembledUIOGrade",
+                name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.assembledUIOGrade", {gradeNames: ["fluid.prefs.assembler.uio"]}]
+                args: ["{builderPanels}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEditor"]}]
             }]
         }, {
             name: "fluid.prefs.builder - panels & messages",
@@ -476,9 +476,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderPanelsAndMessages}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
             }, {
                 expect: 2,
-                name: "assembledUIOGrade",
+                name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.assembledUIOGrade", {gradeNames: ["fluid.prefs.assembler.uio"]}]
+                args: ["{builderPanelsAndMessages}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEditor"]}]
             }]
         }, {
             name: "fluid.prefs.builder - panels & templates",
@@ -519,9 +519,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderPanelsAndTemplates}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
             }, {
                 expect: 2,
-                name: "assembledUIOGrade",
+                name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.assembledUIOGrade", {gradeNames: ["fluid.prefs.assembler.uio"]}]
+                args: ["{builderPanelsAndTemplates}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEditor"]}]
             }]
         }, {
             name: "fluid.prefs.builder - all",
@@ -567,9 +567,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderAll}.options.assembledUIEGrade", {gradeNames: ["fluid.prefs.assembler.uie"]}]
             }, {
                 expect: 2,
-                name: "assembledUIOGrade",
+                name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.assembledUIOGrade", {gradeNames: ["fluid.prefs.assembler.uio"]}]
+                args: ["{builderAll}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEditor"]}]
             }]
         }]
     });
@@ -577,7 +577,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**********************************
      * Builder munging tests          *
      **********************************/
-    var uioType = "fluid.prefs.fullNoPreview";
+    var prefsEditorType = "fluid.prefs.fullNoPreview";
 
     fluid.defaults("fluid.tests.builderMunging", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
@@ -601,13 +601,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             },
-            uio: {
+            prefsEditor: {
                 type: "fluid.viewComponent",
                 container: "#flc-prefsEditor",
                 createOnEvent: "{builderMungingTester}.events.onTestCaseStart",
                 options: {
-                    gradeNames: ["{builder}.options.assembledUIOGrade"],
-                    uioType: uioType,
+                    gradeNames: ["{builder}.options.assembledPrefsEditorGrade"],
+                    prefsEditorType: prefsEditorType,
                     enhancer: {
                         classnameMap: {
                             "textFont.default": "fl-aria"
@@ -616,8 +616,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     prefsEditor: {
                         listeners: {
                             onReady: {
-                                listener: "{uio}.events.onReady",
-                                args: "{uio}"
+                                listener: "{prefsEditor}.events.onReady",
+                                args: "{prefsEditor}"
                             }
                         },
                         userOption: 1
@@ -633,12 +633,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.assertBuilderMunging = function (uio) {
-        return function (uio) {
-            jqUnit.assertEquals("Munging options for UIO options should be passed down to the prefsEditor", 1, uio.prefsEditorLoader.prefsEditor.options.userOption);
+    fluid.tests.assertBuilderMunging = function (prefsEditor) {
+        return function (prefsEditor) {
+            jqUnit.assertEquals("Munging options for prefsEditor should be passed down to the prefsEditor", 1, prefsEditor.prefsEditorLoader.prefsEditor.options.userOption);
 
-            jqUnit.assertTrue(uioType + " should be in the base uio grades", fluid.hasGrade(uio.prefsEditorLoader.options, uioType));
-            jqUnit.assertEquals("Munging options for enhancer should be passed down to the enhancer", "fl-aria", uio.enhancer.uiEnhancer.options.classnameMap["textFont.default"]);
+            jqUnit.assertTrue(prefsEditorType + " should be in the base prefsEditor grades", fluid.hasGrade(prefsEditor.prefsEditorLoader.options, prefsEditorType));
+            jqUnit.assertEquals("Munging options for enhancer should be passed down to the enhancer", "fl-aria", prefsEditor.enhancer.uiEnhancer.options.classnameMap["textFont.default"]);
         };
     };
 
@@ -652,7 +652,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     listenerMaker: "fluid.tests.assertBuilderMunging",
                     spec: {priority: "last"},
-                    event: "{builderMunging uio}.events.onReady"
+                    event: "{builderMunging prefsEditor}.events.onReady"
                 }]
             }]
         }]

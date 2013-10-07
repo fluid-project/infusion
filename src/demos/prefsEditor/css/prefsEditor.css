@@ -1,4 +1,4 @@
-/* the grades and schemas UIO demos use the same css */
+/* the grades and schemas Preferences Editor demos use the same css */
 
 /* Define font families */
 @font-face {
@@ -123,35 +123,35 @@ img {
     Font color: #3E606F
     Button blue: #0071BC
  */
-.uio-demo-theme {
+.prefsEditor-demo-theme {
     color: #3E606F;
     background-image: url("../images/background_texture.png");
     background-position: left top;
     background-repeat: repeat;
 }
-.uio-demo-theme a {
+.prefsEditor-demo-theme a {
     color: #3E606F;
 }
-.uio-demo-theme .disp-opts-button-container {
+.prefsEditor-demo-theme .disp-opts-button-container {
     background-color: #0071BC;
     background-image: url("../images/arrow_right.png");
     background-repeat: no-repeat;
     background-position: right;
 }
-.uio-demo-theme .disp-opts-button {
+.prefsEditor-demo-theme .disp-opts-button {
     color: white;
     background-color: #0071BC;
 }
-.uio-demo-theme .disp-opts-button a {
+.prefsEditor-demo-theme .disp-opts-button a {
     color: white;
 }
-.uio-demo-theme .feedback-form input,
-.uio-demo-theme .feedback-form textarea {
+.prefsEditor-demo-theme .feedback-form input,
+.prefsEditor-demo-theme .feedback-form textarea {
     color: grey;
 }
 
 /* Overriding some of the default colours of Preference Editor - separated panel */
-.uio-demo-theme .fl-prefsEditor-separatedPanel .fl-panelBar .fl-uio-tabs {
+.prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-tabs {
     background-color: #0071BC;
 }
 .fl-prefsEditor-separatedPanel .fl-panelBar button {
@@ -162,13 +162,13 @@ img {
     font-weight: bold;
 }
 
-.uio-demo-theme .fl-prefsEditor-separatedPanel .fl-prefsEditor-showHide,
-.uio-demo-theme .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset  {
+.prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-prefsEditor-showHide,
+.prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset  {
     background-color: #0071BC;
     color: white;
 }
 
-.uio-demo-theme .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset  {
+.prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset  {
     border-right: 1px solid #fff;
 }
 

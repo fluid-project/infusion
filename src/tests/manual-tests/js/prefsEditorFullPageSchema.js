@@ -18,7 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var demo = demo || {};
 (function ($, fluid) {
 
-    demo.initWithSchema = function (container, compOpts, uioType, template) {
+    demo.initWithSchema = function (container, compOpts, prefsEditorType, template) {
         var builder = fluid.prefs.builder({
             gradeNames: ["fluid.prefs.auxSchema.starter"],
             auxiliarySchema: {
@@ -31,10 +31,10 @@ var demo = demo || {};
             }
         });
         var baseOpts = {
-            uioType: uioType
+            prefsEditorType: prefsEditorType
         };
         $.extend(true, baseOpts, compOpts);
-        return fluid.invokeGlobalFunction(builder.options.assembledUIOGrade, [container, baseOpts]);
+        return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container, baseOpts]);
     };
 
     demo.initFullWithPreview = function (container, options) {

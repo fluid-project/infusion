@@ -45,8 +45,8 @@ var fluid_1_5 = fluid_1_5 || {};
             templatesAndIframeReady: {
                 events: {
                     iframeReady: "afterRender",
-                    templatesLoaded: "onUIOTemplatesLoaded",
-                    messagesLoaded: "onUIOMessagesLoaded"
+                    templatesLoaded: "onPrefsEditorTemplatesLoaded",
+                    messagesLoaded: "onPrefsEditorMessagesLoaded"
                 }
             }
         },
@@ -103,7 +103,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     components: {
                         iframeEnhancer: {
                             type: "fluid.uiEnhancer",
-                            container: "{iframeRenderer}.renderUIOContainer",
+                            container: "{iframeRenderer}.renderPrefsEditorContainer",
                             createOnEvent: "afterRender",
                             options: {
                                 gradeNames: ["{pageEnhancer}.options.gradeNames"],
@@ -119,7 +119,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             prefsEditor: {
                 createOnEvent: "templatesAndIframeReady",
-                container: "{iframeRenderer}.renderUIOContainer",
+                container: "{iframeRenderer}.renderPrefsEditorContainer",
                 options: {
                     gradeNames: ["fluid.prefs.uiEnhancerRelay"],
                     // ensure that model and applier are available to users at top level
@@ -203,7 +203,7 @@ var fluid_1_5 = fluid_1_5 || {};
             that.iframeDocument = iframeWindow.document;
 
             that.jQuery = iframeWindow.jQuery;
-            that.renderUIOContainer = that.jQuery("body", that.iframeDocument);
+            that.renderPrefsEditorContainer = that.jQuery("body", that.iframeDocument);
             that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
         });
         that.iframe.attr(that.options.markupProps);
@@ -253,7 +253,7 @@ var fluid_1_5 = fluid_1_5 || {};
         separatedPanel.slidingPanel.events.afterPanelHide.addListener(function () {
             separatedPanel.iframeRenderer.iframe.height(0);
 
-            // Prevent the hidden UIO panel from being keyboard and screen reader accessible
+            // Prevent the hidden Preferences Editorpanel from being keyboard and screen reader accessible
             separatedPanel.iframeRenderer.iframe.hide();
         });
         separatedPanel.slidingPanel.events.onPanelShow.addListener(function () {

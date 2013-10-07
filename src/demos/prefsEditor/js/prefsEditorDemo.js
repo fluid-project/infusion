@@ -33,7 +33,7 @@ var demo = demo || {};
                 "messagePrefix": "../../../framework/preferences/messages/"
             }
         });
-        return fluid.invokeGlobalFunction(builder.options.assembledUIOGrade, [container]);
+        return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container]);
     };
 
 })(jQuery, fluid);

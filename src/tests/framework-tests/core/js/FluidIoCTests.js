@@ -2655,7 +2655,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     /** FLUID-5012: IoCSS doesn't apply the gradeNames option onto the target component **/
-    fluid.defaults("fluid.tests.uio", {
+    fluid.defaults("fluid.tests.prefsEditor", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             templateLoader: {
@@ -2673,15 +2673,15 @@ fluid.registerNamespace("fluid.tests");
     });
 
     jqUnit.test("FLUID-5012: Apply gradeNames option onto the target component with IoCSS", function () {
-        var uio = fluid.tests.uio({
+        var prefsEditor = fluid.tests.prefsEditor({
             templateLoader: {
                 gradeNames: ["fluid.tests.defaultTemplateLoader"]
             }
         });
         var expectedGrades = ["fluid.tests.defaultTemplateLoader", "fluid.littleComponent", "autoInit"];
 
-        jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, uio.templateLoader.options.gradeNames);
-        jqUnit.assertEquals("The user option from the grade component is transmitted", 10, uio.templateLoader.options.userOption);
+        jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, prefsEditor.templateLoader.options.gradeNames);
+        jqUnit.assertEquals("The user option from the grade component is transmitted", 10, prefsEditor.templateLoader.options.userOption);
     });
 
     /** FLUID-5013: IoCSS doesn't pass down non-options blocks **/

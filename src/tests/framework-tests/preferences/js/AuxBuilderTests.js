@@ -453,7 +453,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.defaultNamespace = fluid.defaults("fluid.prefs.auxBuilder").defaultNamespace;
-    fluid.tests.auxSchema.newNamespace = "fluid.prefs.constructedUIO";
+    fluid.tests.auxSchema.newNamespace = "fluid.prefs.constructedPrefsEditor";
 
     fluid.tests.auxSchema.panels = {
         "textSize": {

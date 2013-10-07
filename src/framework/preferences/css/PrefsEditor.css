@@ -58,7 +58,7 @@
     Had to add !importants in order for this style to still show up when another contrast theme has been selected
     It should be removed when we have an Infusion Theme
 */
-.fl-prefsEditor select#theme option.fl-uio-default-theme { color: #000 !important; background-color: #efefef !important;}
+.fl-prefsEditor select#theme option.fl-prefsEditor-default-theme { color: #000 !important; background-color: #efefef !important;}
 
 /* Text and display controls */
 .fl-prefsEditor .fl-prefsEditor-text label {

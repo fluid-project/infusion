@@ -14,7 +14,7 @@
     outline: none;
 }
 
-.fl-prefsEditor-separatedPanel .fl-choice .uio-demo-theme .fl-crossout {
+.fl-prefsEditor-separatedPanel .fl-choice .prefsEditor-demo-theme .fl-crossout {
     margin-top:-2.75em;
     margin-left: 0.5em;
     -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand', M11=0.7071067811865476, M12=-0.7071067811865475, M21=0.7071067811865475, M22=0.7071067811865476)";

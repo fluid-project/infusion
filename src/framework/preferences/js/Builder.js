@@ -26,11 +26,11 @@ var fluid_1_5 = fluid_1_5 || {};
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
         },
-        assembledUIOGrade: {
+        assembledPrefsEditorGrade: {
             expander: {
                 func: "fluid.prefs.builder.generateGrade",
-                args: ["uio", "{that}.options.auxSchema.namespace", {
-                    gradeNames: ["fluid.viewComponent", "autoInit", "fluid.prefs.assembler.uio"],
+                args: ["prefsEditor", "{that}.options.auxSchema.namespace", {
+                    gradeNames: ["fluid.viewComponent", "autoInit", "fluid.prefs.assembler.prefsEditor"],
                     componentGrades: "{that}.options.constructedGrades"
                 }]
             }
@@ -99,32 +99,32 @@ var fluid_1_5 = fluid_1_5 || {};
         }]
     });
 
-    fluid.defaults("fluid.prefs.assembler.uio", {
+    fluid.defaults("fluid.prefs.assembler.prefsEditor", {
         gradeNames: ["autoInit", "fluid.viewComponent", "fluid.prefs.assembler.uie"],
         components: {
             prefsEditorLoader: {
                 type: "fluid.viewComponent",
-                container: "{fluid.prefs.assembler.uio}.container",
+                container: "{fluid.prefs.assembler.prefsEditor}.container",
                 priority: "last",
                 options: {
-                    gradeNames: ["{fluid.prefs.assembler.uio}.options.componentGrades.templatePrefix", "{fluid.prefs.assembler.uio}.options.componentGrades.messagePrefix", "{fluid.prefs.assembler.uio}.options.componentGrades.messages", "{that}.options.uioType"],
-                    uioType: "fluid.prefs.separatedPanel",
+                    gradeNames: ["{fluid.prefs.assembler.prefsEditor}.options.componentGrades.templatePrefix", "{fluid.prefs.assembler.prefsEditor}.options.componentGrades.messagePrefix", "{fluid.prefs.assembler.prefsEditor}.options.componentGrades.messages", "{that}.options.prefsEditorType"],
+                    prefsEditorType: "fluid.prefs.separatedPanel",
                     templateLoader: {
-                        gradeNames: ["{fluid.prefs.assembler.uio}.options.componentGrades.templateLoader"]
+                        gradeNames: ["{fluid.prefs.assembler.prefsEditor}.options.componentGrades.templateLoader"]
                     },
                     messageLoader: {
-                        gradeNames: ["{fluid.prefs.assembler.uio}.options.componentGrades.messageLoader"]
+                        gradeNames: ["{fluid.prefs.assembler.prefsEditor}.options.componentGrades.messageLoader"]
                     },
                     prefsEditor: {
-                        gradeNames: ["{fluid.prefs.assembler.uio}.options.componentGrades.panels", "{fluid.prefs.assembler.uio}.options.componentGrades.rootModel", "fluid.prefs.uiEnhancerRelay"]
+                        gradeNames: ["{fluid.prefs.assembler.prefsEditor}.options.componentGrades.panels", "{fluid.prefs.assembler.prefsEditor}.options.componentGrades.rootModel", "fluid.prefs.uiEnhancerRelay"]
                     }
                 }
             }
         },
         distributeOptions: [{
-            source: "{that}.options.uioType",
+            source: "{that}.options.prefsEditorType",
             removeSource: true,
-            target: "{that > prefsEditorLoader}.options.uioType"
+            target: "{that > prefsEditorLoader}.options.prefsEditorType"
         }, {
             source: "{that}.options.prefsEditor",
             removeSource: true,

@@ -98,11 +98,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             textSize: "1.0"
         };
 
-        var testPrefsEditor = function (testFn, uio) {
-            uio = uio || fluid.prefsTests;
-            uio.testFn = testFn;
+        var testPrefsEditor = function (testFn, prefsEditor) {
+            prefsEditor = prefsEditor || fluid.prefsTests;
+            prefsEditor.testFn = testFn;
             fluid.globalSettingsStore();
-            uio("#ui-options");
+            prefsEditor("#ui-options");
         };
 
         var resetSaveCalled = function () {

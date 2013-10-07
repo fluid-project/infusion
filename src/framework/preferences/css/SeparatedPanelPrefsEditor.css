@@ -26,7 +26,7 @@
     border-bottom: 1px solid #ccc;  
 }
 
-.fl-prefsEditor-separatedPanel .fl-panelBar .fl-uio-tabs {
+.fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-tabs {
     box-shadow: 2px 2px 3px 0px #6f6f6f;
     border-bottom: 1px solid #ccc;
     border-left: 1px solid #ccc;

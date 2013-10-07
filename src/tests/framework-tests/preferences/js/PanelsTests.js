@@ -30,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "verdana": "fl-font-prefsEditor-verdana"
             },
             "theme": {
-                "default": "fl-uio-default-theme",
+                "default": "fl-prefsEditor-default-theme",
                 "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
                 "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
                 "by": "fl-theme-prefsEditor-by fl-theme-by",

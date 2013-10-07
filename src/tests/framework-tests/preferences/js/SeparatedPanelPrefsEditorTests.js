@@ -165,7 +165,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * PrefsEditor separatedPanel options munging integration tests
      *******************************************************************************/
 
-    var expectedIframeSelector = ".uio-munging";
+    var expectedIframeSelector = ".prefsEditor-munging";
     var isSlidingPanelShown = false;
 
     fluid.defaults("fluid.tests.separatedPanelMungingIntegration", {
@@ -214,9 +214,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
              separatedPanel.iframeRenderer.iframeEnhancer.options.classnameMap.textFont["default"]);
 
         // "slidingPanel" option mapping
-        jqUnit.assertFalse("UIO Panel is hidden", isSlidingPanelShown);
+        jqUnit.assertFalse("Preferences EditorPanel is hidden", isSlidingPanelShown);
         separatedPanel.slidingPanel.locate("toggleButton").click();
-        jqUnit.assertTrue("UIO Panel is shown", isSlidingPanelShown);
+        jqUnit.assertTrue("Preferences EditorPanel is shown", isSlidingPanelShown);
 
         // "iframe" option mapping
         jqUnit.assertEquals("Iframe selector is transferred in", expectedIframeSelector, separatedPanel.options.selectors.iframe);
