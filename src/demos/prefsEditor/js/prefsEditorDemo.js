@@ -20,12 +20,12 @@ var demo = demo || {};
 (function ($, fluid) {
 
     /**
-     * Initialize UI Options on the "Fat Panel" version. This version of UI Options uses the
+     * Initialize Preference Editor. This version of Preferences Editor uses the
      * page itself as a live preview.
      *
-     * Makes use of a schema to configure UI Options
+     * Makes use of a schema to configure Preferences Editor
      */
-    demo.initSeparatedPanel = function (container) {
+    demo.initPrefsEditor = function (container) {
         var builder = fluid.prefs.builder({
             gradeNames: ["fluid.prefs.auxSchema.starter"],
             auxiliarySchema: {

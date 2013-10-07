@@ -41,7 +41,7 @@ fluid.registerNamespace("fluid.tests");
     // position is now reversed. Supporting "non-monotonic merges" that the first case would require much more
     // complexity in the implementation in the form of a "provenance" object holding the merge depth of each
     // value. In fact we don't require this support since the Reorderer defaults changed to be "monotonic" in any
-    // case, and the current implementation should be adequate for FLUID-4409/FLUID-4636 situations in UIOptions.
+    // case, and the current implementation should be adequate for FLUID-4409/FLUID-4636 situations in PrefsEditor.
     /*{
         message: "merge policy has no effect on plain defaults",
         options: undefined,
@@ -823,7 +823,7 @@ fluid.registerNamespace("fluid.tests");
 
     /** Expansion order test **/
 
-    // Example liberated from UIOptions implementation, which revealed requirement for
+    // Example liberated from PrefsEditor implementation, which revealed requirement for
     // "expansion before merging" when constructing the new framework. This is a perverse
     // but probably valid usage of the framework. These kinds of "wholesale options transmissions"
     // cases are intended to be handled by FLUID-4873 "Luke Skywalker Options" ("distributeOptions")
@@ -2169,7 +2169,7 @@ fluid.registerNamespace("fluid.tests");
                     }
                 }
             },
-            uiOptionsBridge: {
+            prefsEditorBridge: {
                 type: "fluid.littleComponent",
                 createOnEvent: "afterRender"
             }

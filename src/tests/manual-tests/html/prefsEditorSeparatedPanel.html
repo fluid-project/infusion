@@ -24,7 +24,7 @@
 
         <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/PrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/SeparatedPanelPrefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../../../demos/uiOptions/css/uiOptions.css" />
+        <link rel="stylesheet" type="text/css" href="../../../demos/prefsEditor/css/prefsEditor.css" />
 
         <!--[if IE 8]>
             <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/ie8.css" />
@@ -80,16 +80,16 @@
             $(document).ready(function () {
                 demo.initSettingsStore();
                 demo.initPageEnhancer();
-                demo.initSeparatedPanel(".flc-prefsEditor-separatedPanel");
+                demo.initPrefsEditor(".flc-prefsEditor-separatedPanel");
             })
         </script>
 
-        <!-- BEGIN markup for fat-panel UI Options -->
+        <!-- BEGIN markup for Preferences Editor -->
         <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
-            <!-- This is the div that will contain the UI Options component -->
+            <!-- This is the div that will contain the Preferences Editor component -->
             <div class="flc-slidingPanel-panel flc-prefsEditor-iframe"></div>
 
-            <!-- This div is for the sliding panel that shows and hides the UI Options controls -->
+            <!-- This div is for the sliding panel that shows and hides the Preferences Editor controls -->
             <div class="fl-panelBar">
             	<span class="fl-uio-tabs">
 	                <button id="reset" class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
@@ -97,7 +97,7 @@
             	</span>
             </div>
         </div>
-        <!-- END markup for fat-panel UI Options -->
+        <!-- END markup for Preferences Editor -->
 
         <div class="fl-container-950 fl-centered">
             <div class="flc-toc-tocContainer toc"> </div>
@@ -111,15 +111,15 @@
                 <h2>Some helpful tips</h2>
                 <ol>
                     <li>User Interface Options and its different configurations.<br/>
-                        <span class="instruction-comment">On this page, the "Fat panel" version of UI Options can be found along the top edge.
-                        There are other layout options in development - see <a href="http://wiki.fluidproject.org/display/fluid/%28Floe%29+UI+Options+Design+Wireframes%2C+C.1" target="_blank" title="Opens in new window">UI Options Design Wireframes</a>.</span></li>
+                        <span class="instruction-comment">On this page, the "Fat panel" version of Preferences Editor can be found along the top edge.
+                        There are other layout options in development - see <a href="http://wiki.fluidproject.org/display/fluid/%28Floe%29+UI+Options+Design+Wireframes%2C+C.1" target="_blank" title="Opens in new window">Preferences Editor Design Wireframes</a>.</span></li>
                     <li>Try tinkering with the options.</li>
                 </ol>
             </div>
             <div class="fl-col-flex4 content">
                 <div class="fl-col">
                     <h2>Introduction</h2>
-                    <img src="../../../demos/uiOptions/images/photo_orange.png" alt="an orange"/>
+                    <img src="../../../demos/prefsEditor/images/photo_orange.png" alt="an orange"/>
                     <p>
                         Aliquam varius lacus non arcu venenatis scelerisque quis in sapien.
                         Curabitur nec felis tortor.
@@ -173,7 +173,7 @@
                     </p>
 
                     <h2>Some people actually prefer apples</h2>
-                    <img src="../../../demos/uiOptions/images/photo_apple.png" alt="an apple"/>
+                    <img src="../../../demos/prefsEditor/images/photo_apple.png" alt="an apple"/>
                     <p>
                         Praesent vulputate, sem vel feugiat iaculis, eros diam condimentum nisl, eget suscipit nunc est vitae justo.
                         Vivamus imperdiet convallis laoreet.

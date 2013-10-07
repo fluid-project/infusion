@@ -150,7 +150,7 @@ img {
     color: grey;
 }
 
-/* Overriding some of the default Fat Panel UI Options colours */
+/* Overriding some of the default colours of Preference Editor - separated panel */
 .uio-demo-theme .fl-prefsEditor-separatedPanel .fl-panelBar .fl-uio-tabs {
     background-color: #0071BC;
 }

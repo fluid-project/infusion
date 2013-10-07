@@ -29,7 +29,7 @@ var demo = demo || {};
             url: "../../../build-scripts/build.xml",
             async : false,
             error: function (XMLHttpRequest, state, error) {
-                if (error && error.code === 1012 && (demo.name === "uiOptions" || demo.name === "uploader")) {
+                if (error && error.code === 1012 && (demo.name === "prefsEditor" || demo.name === "uploader")) {
                     // Access denied: we're prob. in FF with the same origin policy blocking our fetch
                     abortDemo = true;
                 }

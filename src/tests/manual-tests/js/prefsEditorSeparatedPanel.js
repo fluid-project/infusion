@@ -20,7 +20,7 @@ var demo = demo || {};
 (function ($, fluid) {
 
     /**
-     * The UI Options interface is defined by several HTML templates. The component
+     * The Preferences Editor interface is defined by several HTML templates. The component
      * needs to know where those templates are. This variable will be used by all
      * versions of the component.
      */
@@ -43,7 +43,7 @@ var demo = demo || {};
 
     /**
      * Initialize UI Enhancer for the page. This function is used by the two full-page
-     * UI Options pages as well as by the demo page itself.
+     * Preferences Editor pages as well as by the demo page itself.
      */
     demo.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
@@ -61,7 +61,7 @@ var demo = demo || {};
 
     var commonOpts = {
         gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-        // Tell UIOptions where to find all the templates, relative to this path
+        // Tell preference editor where to find all the templates, relative to this path
         templatePrefix: pathToTemplates,
         messagePrefix: pathToMessages,
         templateLoader: {
@@ -76,10 +76,10 @@ var demo = demo || {};
     };
 
     /**
-     * Initialize UI Options on the "Fat Panel" version. This version of UI Options uses the
+     * Initialize Preferences Editor. This version of Preferences Editor uses the
      * page itself as a live preview.
      */
-    demo.initSeparatedPanel = function (container) {
+    demo.initPrefsEditor = function (container) {
         fluid.prefs.separatedPanel(container, commonOpts);
     };
 

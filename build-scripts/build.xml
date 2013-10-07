@@ -69,8 +69,8 @@
         </condition>
     </target>
 
-    <!-- UI Options style sheet creation / !important injection -->
-    <target name="generateUIOThemes" depends="init" description="Namespace and inject !important into UI Options' stylesheets">
+    <!-- Preference editor style sheet creation / !important injection -->
+    <target name="generateUIOThemes" depends="init" description="Namespace and inject !important into Preference Editor' stylesheets">
         <property name="buildJSDir" value="${buildDir}/prefsFramework/js" />
         <property name="jscssp" value="${buildDir}/lib/jscssp/js/jscssp.js" />
         <property name="evalScripts" value="${jscssp}, ${buildJSDir}/CSSGenerator.js, ${buildJSDir}/RhinoStylesheetHandler.js, ${buildJSDir}/StylesheetImportant.js" />
