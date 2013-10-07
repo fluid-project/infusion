@@ -36,7 +36,7 @@ var fluid_1_5 = fluid_1_5 || {};
         components: {
             prefsEditor: {
                 priority: "last",
-                type: "fluid.prefs",
+                type: "fluid.prefs.prefsEditor",
                 createOnEvent: "onCreatePrefsEditorReady"
             },
             templateLoader: {
@@ -246,7 +246,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onDestroy: "{that}.removeListener"
         },
         events: {
-            updateEnhancerModel: "{fluid.prefs}.events.onUpdateEnhancerModel"
+            updateEnhancerModel: "{fluid.prefs.prefsEditor}.events.onUpdateEnhancerModel"
         },
         invokers: {
             addListener: {
@@ -259,7 +259,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             updateEnhancerModel: {
                 funcName: "fluid.prefs.uiEnhancerRelay.updateEnhancerModel",
-                args: ["{uiEnhancer}", "{fluid.prefs}.model"]
+                args: ["{uiEnhancer}", "{fluid.prefs.prefsEditor}.model"]
             }
         }
     });
@@ -285,7 +285,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {Object} container
      * @param {Object} options
      */
-    fluid.defaults("fluid.prefs", {
+    fluid.defaults("fluid.prefs.prefsEditor", {
         gradeNames: ["fluid.viewComponent", "fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.rootModel", "autoInit"],
         invokers: {
             /**
@@ -299,27 +299,27 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}.applier", "", "{arguments}.0", "{arguments}.1"]
             },
             fetch: {
-                funcName: "fluid.prefs.fetch",
+                funcName: "fluid.prefs.prefsEditor.fetch",
                 args: ["{that}"]
             },
             applyChanges: {
-                funcName: "fluid.prefs.applyChanges",
+                funcName: "fluid.prefs.prefsEditor.applyChanges",
                 args: ["{that}"]
             },
             save: {
-                funcName: "fluid.prefs.save",
+                funcName: "fluid.prefs.prefsEditor.save",
                 args: ["{that}"]
             },
             saveAndApply: {
-                funcName: "fluid.prefs.saveAndApply",
+                funcName: "fluid.prefs.prefsEditor.saveAndApply",
                 args: ["{that}"]
             },
             reset: {
-                funcName: "fluid.prefs.reset",
+                funcName: "fluid.prefs.prefsEditor.reset",
                 args: ["{that}"]
             },
             cancel: {
-                funcName: "fluid.prefs.cancel",
+                funcName: "fluid.prefs.prefsEditor.cancel",
                 args: ["{that}"]
             }
         },
@@ -341,7 +341,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onReady: null
         },
         listeners: {
-            onCreate: "fluid.prefs.init",
+            onCreate: "fluid.prefs.prefsEditor.init",
             onAutoSave: "{that}.save"
         },
         resources: {
@@ -353,11 +353,11 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * Refresh PrefsEditor
      */
-    fluid.prefs.applyChanges = function (that) {
+    fluid.prefs.prefsEditor.applyChanges = function (that) {
         that.events.onUpdateEnhancerModel.fire();
     };
 
-    fluid.prefs.fetch = function (that) {
+    fluid.prefs.prefsEditor.fetch = function (that) {
         var completeModel = that.getSettings();
         completeModel = $.extend(true, {}, that.rootModel, completeModel);
         that.updateModel(completeModel, "settingsStore");
@@ -368,14 +368,14 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * Saves the current model and fires onSave
      */
-    fluid.prefs.save = function (that) {
+    fluid.prefs.prefsEditor.save = function (that) {
         that.events.onSave.fire(that.model);
 
         var savedSelections = fluid.copy(that.model);
         that.setSettings(savedSelections);
     };
 
-    fluid.prefs.saveAndApply = function (that) {
+    fluid.prefs.prefsEditor.saveAndApply = function (that) {
         that.save();
         that.events.onPrefsEditorRefresh.fire();
         that.applyChanges();
@@ -384,7 +384,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * Resets the selections to the integrator's defaults and fires onReset
      */
-    fluid.prefs.reset = function (that) {
+    fluid.prefs.prefsEditor.reset = function (that) {
         that.updateModel(fluid.copy(that.rootModel));
         that.events.onPrefsEditorRefresh.fire();
         that.events.onReset.fire(that);
@@ -393,13 +393,13 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * Resets the selections to the last saved selections and fires onCancel
      */
-    fluid.prefs.cancel = function (that) {
+    fluid.prefs.prefsEditor.cancel = function (that) {
         that.events.onCancel.fire();
         that.fetch();
     };
 
     // called once markup is applied to the document containing tab component roots
-    fluid.prefs.finishInit = function (that) {
+    fluid.prefs.prefsEditor.finishInit = function (that) {
         var bindHandlers = function (that) {
             var saveButton = that.locate("save");
             if (saveButton.length > 0) {
@@ -422,7 +422,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that.events.onReady.fire(that);
     };
 
-    fluid.prefs.init = function (that) {
+    fluid.prefs.prefsEditor.init = function (that) {
         that.applier.modelChanged.addListener("", function (newModel, oldModel, changeRequest) {
             that.events.modelChanged.fire(newModel, oldModel, changeRequest[0].source);
             if (that.options.autoSave) {
@@ -434,7 +434,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // and so that component construction does not run ahead of subcomponents for SeparatedPanel
         // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix)
         setTimeout(function () {
-            fluid.prefs.finishInit(that);
+            fluid.prefs.prefsEditor.finishInit(that);
         }, 1);
     };
 

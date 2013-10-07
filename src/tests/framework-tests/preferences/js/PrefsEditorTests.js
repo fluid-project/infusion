@@ -50,7 +50,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Options for PrefsEditor
         var saveCalled = false;
 
-        fluid.demands("fluid.prefs", ["fluid.prefsTests", "fluid.prefs.tests"], {
+        fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefsTests", "fluid.prefs.tests"], {
             funcName: "fluid.prefs.starterPanels",
             options: {
                 gradeNames: ["fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"],
@@ -293,7 +293,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.enhance.check({"fluid.prefs.testDiffInit": true});
 
-            fluid.demands("fluid.prefs", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testDiffInit"], {
+            fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testDiffInit"], {
                 options: {
                     members: {
                         rootModel: {
@@ -386,8 +386,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Non-default PrefsEditor Integration tests", function () {
             fluid.enhance.check({"fluid.prefs.testsNonDefaultIntegration": true});
 
-            fluid.demands("fluid.prefs", ["fluid.prefs.testsNonDefaultIntegration", "fluid.prefs.tests", "fluid.prefsTests"], {
-                funcName: "fluid.prefs",
+            fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefs.testsNonDefaultIntegration", "fluid.prefs.tests", "fluid.prefsTests"], {
+                funcName: "fluid.prefs.prefsEditor",
                 options: {
                     selectors: {
                         textSize: ".flc-prefsEditor-text-size"
@@ -464,7 +464,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("PrefsEditor Integration tests", function () {
             fluid.enhance.check({"fluid.prefs.testsIntegration": true});
 
-            fluid.demands("fluid.prefs", ["fluid.prefs.testsIntegration", "fluid.prefs.tests", "fluid.prefsTests"], {
+            fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefs.testsIntegration", "fluid.prefs.tests", "fluid.prefsTests"], {
                 funcName: "fluid.prefs.starterPanels",
                 options: {
                     gradeNames: ["fluid.prefs.rootModel.starter"],
@@ -517,7 +517,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.enhance.check({"fluid.prefs.testsAutoSave": true});
 
-            fluid.demands("fluid.prefs", ["fluid.prefs.testsAutoSave", "fluid.prefsTests", "fluid.prefs.tests"], {
+            fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefs.testsAutoSave", "fluid.prefsTests", "fluid.prefs.tests"], {
                 options: {
                     autoSave: true
                 }
@@ -566,7 +566,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.start();
             };
 
-            fluid.demands("fluid.prefs", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testsPreview"], {
+            fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testsPreview"], {
                 options: {
                     components: {
                         preview: {

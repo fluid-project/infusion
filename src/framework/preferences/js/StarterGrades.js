@@ -214,7 +214,7 @@ var fluid_1_5 = fluid_1_5 || {};
         mergePolicy: {
             sourceApplier: "nomerge"
         },
-        sourceApplier: "{fluid.prefs}.applier",
+        sourceApplier: "{fluid.prefs.prefsEditor}.applier",
         listeners: {
             "{prefsEditor}.events.onPrefsEditorRefresh": "{fluid.prefs.panels}.refreshView"
         },
@@ -228,7 +228,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A collection of all the default Preferences Editorsetting panels.
      *********************************************************************************************************/
     fluid.defaults("fluid.prefs.starterPanels", {
-        gradeNames: ["fluid.prefs", "autoInit"],
+        gradeNames: ["fluid.prefs.prefsEditor", "autoInit"],
         selectors: {
             textSize: ".flc-prefsEditor-text-size",
             textFont: ".flc-prefsEditor-text-font",

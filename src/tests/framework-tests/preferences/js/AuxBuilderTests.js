@@ -643,7 +643,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 panels: {
-                    "gradeNames": ["fluid.prefs", "autoInit"],
+                    "gradeNames": ["fluid.prefs.prefsEditor", "autoInit"],
                     "selectors": {
                         "fluid_prefs_panels_textSize": ".flc-prefsEditor-text-size"
                     },
@@ -757,7 +757,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 panels: {
-                    "gradeNames": ["fluid.prefs", "autoInit"],
+                    "gradeNames": ["fluid.prefs.prefsEditor", "autoInit"],
                     "selectors": {
                         "fluid_prefs_panels_textSize": ".flc-prefsEditor-text-size",
                         "fluid_prefs_panels_otherTextSize": ".flc-prefsEditor-otherTextSize"
@@ -848,7 +848,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 panels: {
-                    "gradeNames": ["fluid.prefs", "autoInit"],
+                    "gradeNames": ["fluid.prefs.prefsEditor", "autoInit"],
                     "selectors": {
                         "fluid_prefs_panels_linksControls": ".flc-prefsEditor-links-controls"
                     },
@@ -911,7 +911,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 panels: {
-                    "gradeNames": ["fluid.prefs", "autoInit"],
+                    "gradeNames": ["fluid.prefs.prefsEditor", "autoInit"],
                     "selectors": {
                         "fluid_prefs_panels_textSize": ".flc-prefsEditor-text-size"
                     },

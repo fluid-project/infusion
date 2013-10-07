@@ -30,7 +30,7 @@ var fluid_1_5 = fluid_1_5 || {};
             expander: {
                 func: "fluid.prefs.builder.generateGrade",
                 args: ["prefsEditor", "{that}.options.auxSchema.namespace", {
-                    gradeNames: ["fluid.viewComponent", "autoInit", "fluid.prefs.assembler.prefsEditor"],
+                    gradeNames: ["fluid.viewComponent", "autoInit", "fluid.prefs.assembler.prefsEd"],
                     componentGrades: "{that}.options.constructedGrades"
                 }]
             }
@@ -99,24 +99,24 @@ var fluid_1_5 = fluid_1_5 || {};
         }]
     });
 
-    fluid.defaults("fluid.prefs.assembler.prefsEditor", {
+    fluid.defaults("fluid.prefs.assembler.prefsEd", {
         gradeNames: ["autoInit", "fluid.viewComponent", "fluid.prefs.assembler.uie"],
         components: {
             prefsEditorLoader: {
                 type: "fluid.viewComponent",
-                container: "{fluid.prefs.assembler.prefsEditor}.container",
+                container: "{fluid.prefs.assembler.prefsEd}.container",
                 priority: "last",
                 options: {
-                    gradeNames: ["{fluid.prefs.assembler.prefsEditor}.options.componentGrades.templatePrefix", "{fluid.prefs.assembler.prefsEditor}.options.componentGrades.messagePrefix", "{fluid.prefs.assembler.prefsEditor}.options.componentGrades.messages", "{that}.options.prefsEditorType"],
+                    gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.templatePrefix", "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messagePrefix", "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messages", "{that}.options.prefsEditorType"],
                     prefsEditorType: "fluid.prefs.separatedPanel",
                     templateLoader: {
-                        gradeNames: ["{fluid.prefs.assembler.prefsEditor}.options.componentGrades.templateLoader"]
+                        gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.templateLoader"]
                     },
                     messageLoader: {
-                        gradeNames: ["{fluid.prefs.assembler.prefsEditor}.options.componentGrades.messageLoader"]
+                        gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.messageLoader"]
                     },
                     prefsEditor: {
-                        gradeNames: ["{fluid.prefs.assembler.prefsEditor}.options.componentGrades.panels", "{fluid.prefs.assembler.prefsEditor}.options.componentGrades.rootModel", "fluid.prefs.uiEnhancerRelay"]
+                        gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.panels", "{fluid.prefs.assembler.prefsEd}.options.componentGrades.rootModel", "fluid.prefs.uiEnhancerRelay"]
                     }
                 }
             }

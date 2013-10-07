@@ -151,7 +151,7 @@ img {
 }
 
 /* Overriding some of the default colours of Preference Editor - separated panel */
-.prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-tabs {
+.prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-buttons {
     background-color: #0071BC;
 }
 .fl-prefsEditor-separatedPanel .fl-panelBar button {

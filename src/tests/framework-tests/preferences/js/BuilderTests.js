@@ -369,7 +369,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderEmpty}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEditor"]}]
+                args: ["{builderEmpty}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEd"]}]
             }]
         }, {
             name: "fluid.prefs.builder - only enactors",
@@ -397,7 +397,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderEnactors}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEditor"]}]
+                args: ["{builderEnactors}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEd"]}]
             }]
         }, {
             name: "fluid.prefs.builder - only panels",
@@ -435,7 +435,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEditor"]}]
+                args: ["{builderPanels}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEd"]}]
             }]
         }, {
             name: "fluid.prefs.builder - panels & messages",
@@ -478,7 +478,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEditor"]}]
+                args: ["{builderPanelsAndMessages}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEd"]}]
             }]
         }, {
             name: "fluid.prefs.builder - panels & templates",
@@ -521,7 +521,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEditor"]}]
+                args: ["{builderPanelsAndTemplates}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEd"]}]
             }]
         }, {
             name: "fluid.prefs.builder - all",
@@ -569,7 +569,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "assembledPrefsEditorGrade",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEditor"]}]
+                args: ["{builderAll}.options.assembledPrefsEditorGrade", {gradeNames: ["fluid.prefs.assembler.prefsEd"]}]
             }]
         }]
     });
@@ -601,7 +601,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             },
-            prefsEditor: {
+            prefsEd: {
                 type: "fluid.viewComponent",
                 container: "#flc-prefsEditor",
                 createOnEvent: "{builderMungingTester}.events.onTestCaseStart",
@@ -616,8 +616,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     prefsEditor: {
                         listeners: {
                             onReady: {
-                                listener: "{prefsEditor}.events.onReady",
-                                args: "{prefsEditor}"
+                                listener: "{prefsEd}.events.onReady",
+                                args: "{prefsEd}"
                             }
                         },
                         userOption: 1
@@ -652,7 +652,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     listenerMaker: "fluid.tests.assertBuilderMunging",
                     spec: {priority: "last"},
-                    event: "{builderMunging prefsEditor}.events.onReady"
+                    event: "{builderMunging prefsEd}.events.onReady"
                 }]
             }]
         }]

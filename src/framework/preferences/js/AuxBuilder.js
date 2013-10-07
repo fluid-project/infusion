@@ -236,7 +236,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         topCommonOptions: {
             panels: {
-                gradeNames: ["fluid.prefs", "autoInit"]
+                gradeNames: ["fluid.prefs.prefsEditor", "autoInit"]
             },
             enactors: {
                 gradeNames: ["fluid.uiEnhancer", "autoInit"]
