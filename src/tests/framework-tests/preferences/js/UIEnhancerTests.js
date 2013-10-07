@@ -120,7 +120,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.tests.getInitialFontSize = function (container, tester) {
         tester.options.testOpts.initialFontSize = parseFloat(container.css("fontSize"));
     };
@@ -136,7 +136,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expectedTextSize = initialFontSize * testSettings.textSize;
 
         jqUnit.assertEquals("Large text size is set", expectedTextSize.toFixed(0) + "px", uiEnhancer.container.css("fontSize"));
-        jqUnit.assertTrue("Verdana font is set", uiEnhancer.container.hasClass("fl-font-uio-verdana"));
+        jqUnit.assertTrue("Verdana font is set", uiEnhancer.container.hasClass("fl-font-prefsEditor-verdana"));
         jqUnit.assertTrue("High contrast is set", uiEnhancer.container.hasClass("fl-theme-bw"));
     };
 

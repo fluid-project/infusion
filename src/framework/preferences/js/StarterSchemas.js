@@ -71,10 +71,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 "type": "fluid.prefs.textFont",
                 "classes": {
                     "default": "",
-                    "times": "fl-font-uio-times",
-                    "comic": "fl-font-uio-comic-sans",
-                    "arial": "fl-font-uio-arial",
-                    "verdana": "fl-font-uio-verdana"
+                    "times": "fl-font-prefsEditor-times",
+                    "comic": "fl-font-prefsEditor-comic-sans",
+                    "arial": "fl-font-prefsEditor-arial",
+                    "verdana": "fl-font-prefsEditor-verdana"
                 },
                 "enactor": {
                     "type": "fluid.prefs.enactors.textFont",
@@ -91,12 +91,12 @@ var fluid_1_5 = fluid_1_5 || {};
             "contrast": {
                 "type": "fluid.prefs.contrast",
                 "classes": {
-                    "default": "fl-theme-uio-default",
-                    "bw": "fl-theme-uio-bw fl-theme-bw",
-                    "wb": "fl-theme-uio-wb fl-theme-wb",
-                    "by": "fl-theme-uio-by fl-theme-by",
-                    "yb": "fl-theme-uio-yb fl-theme-yb",
-                    "lgdg": "fl-theme-uio-lgdg fl-theme-lgdg"
+                    "default": "fl-theme-prefsEditor-default",
+                    "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
+                    "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
+                    "by": "fl-theme-prefsEditor-by fl-theme-by",
+                    "yb": "fl-theme-prefsEditor-yb fl-theme-yb",
+                    "lgdg": "fl-theme-prefsEditor-lgdg fl-theme-lgdg"
 
                 },
                 "enactor": {
