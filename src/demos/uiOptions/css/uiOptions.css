@@ -3,27 +3,27 @@
 /* Define font families */
 @font-face {
   font-family: Lato;
-  src: url(../../fonts/Lato-Regular.ttf);
+  src: url(../fonts/Lato-Regular.ttf);
 }
 @font-face {
   font-family: LatoLight;
-  src: url(../../fonts/Lato-Light.ttf);
+  src: url(../fonts/Lato-Light.ttf);
 }
 @font-face {
   font-family: LatoLightItalic;
-  src: url(../../fonts/Lato-LightItalic.ttf);
+  src: url(../fonts/Lato-LightItalic.ttf);
 }
 @font-face {
   font-family: LatoBlack;
-  src: url(../../fonts/Lato-Black.ttf);
+  src: url(../fonts/Lato-Black.ttf);
 }
 @font-face {
   font-family: LatoRegular;
-  src: url(../../fonts/Lato-Regular.ttf);
+  src: url(../fonts/Lato-Regular.ttf);
 }
 @font-face {
   font-family: LoveYaLikeASister;
-  src: url(../../fonts/LoveYaLikeASister.ttf);
+  src: url(../fonts/LoveYaLikeASister.ttf);
 }
 
 
@@ -125,7 +125,7 @@ img {
  */
 .uio-demo-theme {
     color: #3E606F;
-    background-image: url("../../images/background_texture.png");
+    background-image: url("../images/background_texture.png");
     background-position: left top;
     background-repeat: repeat;
 }
@@ -134,7 +134,7 @@ img {
 }
 .uio-demo-theme .disp-opts-button-container {
     background-color: #0071BC;
-    background-image: url("../../images/arrow_right.png");
+    background-image: url("../images/arrow_right.png");
     background-repeat: no-repeat;
     background-position: right;
 }

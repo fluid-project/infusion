@@ -29,8 +29,8 @@ var demo = demo || {};
         var builder = fluid.prefs.builder({
             gradeNames: ["fluid.prefs.auxSchema.starter"],
             auxiliarySchema: {
-                "templatePrefix": "../../../../framework/preferences/html/",
-                "messagePrefix": "../../../../framework/preferences/messages/"
+                "templatePrefix": "../../../framework/preferences/html/",
+                "messagePrefix": "../../../framework/preferences/messages/"
             }
         });
         return fluid.invokeGlobalFunction(builder.options.assembledUIOGrade, [container]);

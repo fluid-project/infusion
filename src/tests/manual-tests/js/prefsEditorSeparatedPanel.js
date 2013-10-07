@@ -24,15 +24,15 @@ var demo = demo || {};
      * needs to know where those templates are. This variable will be used by all
      * versions of the component.
      */
-    var pathToTemplates = "../../../../framework/preferences/html/";
-    var pathToMessages = "../../../../framework/preferences/messages/";
+    var pathToTemplates = "../../../framework/preferences/html/";
+    var pathToMessages = "../../../framework/preferences/messages/";
 
     /**
      * The UI Enhancer's Table of Contents uses a template. This path variable is used by all
      * three versions of the component, as well as by the UI Enhancer present in the Preview
      * itself.
      */
-    var pathToTocTemplate = "../../../../components/tableOfContents/html/TableOfContents.html";
+    var pathToTocTemplate = "../../../components/tableOfContents/html/TableOfContents.html";
 
     /**
      * Initialize a settings store for the page.
