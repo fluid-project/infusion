@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid, jqUnit, expect, jQuery, start*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid = fluid || {};
@@ -23,20 +23,20 @@ var fluid = fluid || {};
         var generator = fluid.build.cssGenerator({
             sheetStore: sheetStore
         });
-        
+
         generator.processRules([
             {
                 type: fluid.build.cssGenerator.prioritize,
                 options: {
                     "fluid-cssGenerator-allRules": [
-                        "font-size", 
-                        "line-height", 
-                        "font-family", 
-                        "color", 
-                        "background-color", 
-                        "background-image", 
-                        "background", 
-                        "border", 
+                        "font-size",
+                        "line-height",
+                        "font-family",
+                        "color",
+                        "background-color",
+                        "background-image",
+                        "background",
+                        "border",
                         "border-color",
                         "border-bottom-color",
                         "border-top-color",
@@ -52,14 +52,14 @@ var fluid = fluid || {};
                 type: fluid.build.cssGenerator.rewriteSelector,
                 options: {
                     match: "fl-theme-",
-                    replace: "fl-theme-uio-"
+                    replace: "fl-theme-prefsEditor-"
                 }
             },
             {
                 type: fluid.build.cssGenerator.rewriteSelector,
                 options: {
                     match: "fl-font-",
-                    replace: "fl-font-uio-"
+                    replace: "fl-font-prefsEditor-"
                 }
             },
             {
@@ -69,7 +69,7 @@ var fluid = fluid || {};
                 }
             }
         ]);
-        
+
         // Now that the stylesheet has been prioritized, generate
         // the new stylesheet and write the contents out to a file
         var modifiedStylesheet = generator.generate();
@@ -80,19 +80,19 @@ var fluid = fluid || {};
     var moduleOpts = fluid.build.readJSONFile(importantInjectionModule);
     var files = moduleOpts.files,
         i;
-        
+
     // Make them absolute.
     for (i = 0; i < files.length; i++) {
         files[i] = project.getProperty("base-dir") + "/" + files[i];
     }
-    
+
     var generateWritePath = function (originalPath) {
         var startIdx = Math.max(originalPath.lastIndexOf("/"), 0);
         var fileName = originalPath.substring(startIdx);
-        
-        return fssImportant + fileName.replace(".css", "-uio.css");
+
+        return fssImportant + fileName.replace(".css", "-prefsEditor.css");
     };
-     
+
     for (i = 0; i < files.length; i++) {
         var filePath = files[i];
         fluid.build.log("Generating an !important theme for " + files[i]);

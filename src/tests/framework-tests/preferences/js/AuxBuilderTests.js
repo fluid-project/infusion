@@ -71,20 +71,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "type": "fluid.prefs.textFont",
             "classes": {
                 "default": "",
-                "times": "fl-font-uio-times",
-                "comic": "fl-font-uio-comic-sans",
-                "arial": "fl-font-uio-arial",
-                "verdana": "fl-font-uio-verdana"
+                "times": "fl-font-prefsEditor-times",
+                "comic": "fl-font-prefsEditor-comic-sans",
+                "arial": "fl-font-prefsEditor-arial",
+                "verdana": "fl-font-prefsEditor-verdana"
             }
         },
         "contrast": {
             "type": "fluid.prefs.contrast",
             "classes": {
-                "default": "fl-theme-uio-default",
-                "bw": "fl-theme-uio-bw fl-theme-bw",
-                "wb": "fl-theme-uio-wb fl-theme-wb",
-                "by": "fl-theme-uio-by fl-theme-by",
-                "yb": "fl-theme-uio-yb fl-theme-yb"
+                "default": "fl-theme-prefsEditor-default",
+                "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
+                "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
+                "by": "fl-theme-prefsEditor-by fl-theme-by",
+                "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
             }
         },
         "enactors": [{
@@ -116,39 +116,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "type": "fluid.prefs.textFont",
             "classes": {
                 "default": "",
-                "times": "fl-font-uio-times",
-                "comic": "fl-font-uio-comic-sans",
-                "arial": "fl-font-uio-arial",
-                "verdana": "fl-font-uio-verdana"
+                "times": "fl-font-prefsEditor-times",
+                "comic": "fl-font-prefsEditor-comic-sans",
+                "arial": "fl-font-prefsEditor-arial",
+                "verdana": "fl-font-prefsEditor-verdana"
             }
         },
         "contrast": {
             "type": "fluid.prefs.contrast",
             "classes": {
-                "default": "fl-theme-uio-default",
-                "bw": "fl-theme-uio-bw fl-theme-bw",
-                "wb": "fl-theme-uio-wb fl-theme-wb",
-                "by": "fl-theme-uio-by fl-theme-by",
-                "yb": "fl-theme-uio-yb fl-theme-yb"
+                "default": "fl-theme-prefsEditor-default",
+                "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
+                "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
+                "by": "fl-theme-prefsEditor-by fl-theme-by",
+                "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
             }
         },
         "enactors": [{
             "type": "fluid.prefs.enactors.textFont",
             "classes": {
                 "default": "",
-                "times": "fl-font-uio-times",
-                "comic": "fl-font-uio-comic-sans",
-                "arial": "fl-font-uio-arial",
-                "verdana": "fl-font-uio-verdana"
+                "times": "fl-font-prefsEditor-times",
+                "comic": "fl-font-prefsEditor-comic-sans",
+                "arial": "fl-font-prefsEditor-arial",
+                "verdana": "fl-font-prefsEditor-verdana"
             }
         }, {
             "type": "fluid.prefs.enactors.contrast",
             "classes": {
-                "default": "fl-theme-uio-default",
-                "bw": "fl-theme-uio-bw fl-theme-bw",
-                "wb": "fl-theme-uio-wb fl-theme-wb",
-                "by": "fl-theme-uio-by fl-theme-by",
-                "yb": "fl-theme-uio-yb fl-theme-yb"
+                "default": "fl-theme-prefsEditor-default",
+                "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
+                "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
+                "by": "fl-theme-prefsEditor-by fl-theme-by",
+                "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
             }
         }, {
             "type": "fluid.prefs.enactors.tableOfContents",
@@ -160,21 +160,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "container": ".flc-prefsEditor-text-font",
             "classnameMap": {
                 "default": "",
-                "times": "fl-font-uio-times",
-                "comic": "fl-font-uio-comic-sans",
-                "arial": "fl-font-uio-arial",
-                "verdana": "fl-font-uio-verdana"
+                "times": "fl-font-prefsEditor-times",
+                "comic": "fl-font-prefsEditor-comic-sans",
+                "arial": "fl-font-prefsEditor-arial",
+                "verdana": "fl-font-prefsEditor-verdana"
             },
             "template": "templates/textFont"
         }, {
             "type": "fluid.prefs.panels.contrast",
             "container": ".flc-prefsEditor-contrast",
             "classnameMap": {
-                "default": "fl-theme-uio-default",
-                "bw": "fl-theme-uio-bw fl-theme-bw",
-                "wb": "fl-theme-uio-wb fl-theme-wb",
-                "by": "fl-theme-uio-by fl-theme-by",
-                "yb": "fl-theme-uio-yb fl-theme-yb"
+                "default": "fl-theme-prefsEditor-default",
+                "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
+                "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
+                "by": "fl-theme-prefsEditor-by fl-theme-by",
+                "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
             },
             "template": "templates/contrast"
         }]
@@ -260,21 +260,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "contrast": {
                     "type": "fluid.prefs.contrast",
                     "classes": {
-                        "default": "fl-theme-uio-default",
-                        "bw": "fl-theme-uio-bw fl-theme-bw",
-                        "wb": "fl-theme-uio-wb fl-theme-wb",
-                        "by": "fl-theme-uio-by fl-theme-by",
-                        "yb": "fl-theme-uio-yb fl-theme-yb"
+                        "default": "fl-theme-prefsEditor-default",
+                        "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
+                        "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
+                        "by": "fl-theme-prefsEditor-by fl-theme-by",
+                        "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
                     },
                     "panel": {
                         "type": "fluid.prefs.panels.contrast",
                         "container": ".flc-prefsEditor-contrast",  // the css selector in the template where the panel is rendered
                         "classnameMap": {
-                            "default": "fl-theme-uio-default",
-                            "bw": "fl-theme-uio-bw fl-theme-bw",
-                            "wb": "fl-theme-uio-wb fl-theme-wb",
-                            "by": "fl-theme-uio-by fl-theme-by",
-                            "yb": "fl-theme-uio-yb fl-theme-yb"
+                            "default": "fl-theme-prefsEditor-default",
+                            "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
+                            "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
+                            "by": "fl-theme-prefsEditor-by fl-theme-by",
+                            "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
                         },
                         "template": "templates/contrast",
                         "message": "messages/contrast"
@@ -295,21 +295,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "contrast": {
                     "type": "fluid.prefs.contrast",
                     "classes": {
-                        "default": "fl-theme-uio-default",
-                        "bw": "fl-theme-uio-bw fl-theme-bw",
-                        "wb": "fl-theme-uio-wb fl-theme-wb",
-                        "by": "fl-theme-uio-by fl-theme-by",
-                        "yb": "fl-theme-uio-yb fl-theme-yb"
+                        "default": "fl-theme-prefsEditor-default",
+                        "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
+                        "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
+                        "by": "fl-theme-prefsEditor-by fl-theme-by",
+                        "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
                     },
                     "panel": {
                         "type": "fluid.prefs.panels.contrast",
                         "container": ".flc-prefsEditor-contrast",  // the css selector in the template where the panel is rendered
                         "classnameMap": {
-                            "default": "fl-theme-uio-default",
-                            "bw": "fl-theme-uio-bw fl-theme-bw",
-                            "wb": "fl-theme-uio-wb fl-theme-wb",
-                            "by": "fl-theme-uio-by fl-theme-by",
-                            "yb": "fl-theme-uio-yb fl-theme-yb"
+                            "default": "fl-theme-prefsEditor-default",
+                            "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
+                            "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
+                            "by": "fl-theme-prefsEditor-by fl-theme-by",
+                            "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
                         },
                         "template": "templates/contrast",
                         "message": "messages/contrast"
@@ -327,11 +327,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 gradeNames: "fluid.prefs.defaultPanel",
                                 classnameMap: {
-                                    "default": "fl-theme-uio-default",
-                                    "bw": "fl-theme-uio-bw fl-theme-bw",
-                                    "wb": "fl-theme-uio-wb fl-theme-wb",
-                                    "by": "fl-theme-uio-by fl-theme-by",
-                                    "yb": "fl-theme-uio-yb fl-theme-yb"
+                                    "default": "fl-theme-prefsEditor-default",
+                                    "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
+                                    "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
+                                    "by": "fl-theme-prefsEditor-by fl-theme-by",
+                                    "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
                                 },
                                 rules: {
                                     "fluid_prefs_contrast": "value"

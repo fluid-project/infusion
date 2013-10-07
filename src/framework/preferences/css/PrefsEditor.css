@@ -54,7 +54,7 @@
 
 .fl-prefsEditor select#theme { font-weight:bold; text-transform: uppercase; }
 
-/* 
+/*
     Had to add !importants in order for this style to still show up when another contrast theme has been selected
     It should be removed when we have an Infusion Theme
 */
@@ -76,36 +76,36 @@
     font-size: 1.1em;
 }
 
-.fl-prefsEditor .fl-prefsEditor-layout div, 
+.fl-prefsEditor .fl-prefsEditor-layout div,
 .fl-prefsEditor .fl-prefsEditor-links div {
     margin-left: 25px;
 }
 
 /* Slider specifics */
-.fl-prefsEditor .fl-slider {    
+.fl-prefsEditor .fl-slider {
     border: 1px solid #b3b3b3;
-    border-radius: 0.3em;   
+    border-radius: 0.3em;
     background-color: #dad6d3;
     padding: 0;
     position: relative;
     height: 1em;
     margin-top: 0;
-    margin-left: 0.5em;    
+    margin-left: 0.5em;
 }
 
 .fl-prefsEditor .fl-slider a {
-    position:absolute; 
-    display:block; 
-    top:0; 
+    position:absolute;
+    display:block;
+    top:0;
     left:0;
     height: 2.2em;
     width: 2.2em;
     margin-top: -0.75em;
     margin-left: -0.4em;
     background-color: #fff;
-    border: 1px solid #b3b3b3;  
+    border: 1px solid #b3b3b3;
     border-radius: 2em;
-    box-shadow: 4px 2px 3px rgba(0,0,0,0.3);    
+    box-shadow: 4px 2px 3px rgba(0,0,0,0.3);
     background-image: -o-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
     background-image: -moz-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
     background-image: -webkit-linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
@@ -116,23 +116,23 @@
         left bottom,
         color-stop(0.46, rgb(255,255,255)),
         color-stop(0.73, rgb(233,234,234))
-    );    
-    background-image: linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);   
+    );
+    background-image: linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
 }
 .fl-prefsEditor .fl-slider a:active { outline: none; }
 
 .fl-prefsEditor .fl-slider-horz {
-    width:11em; 
+    width:11em;
 }
 
 .fl-prefsEditor .fl-slider-input {
     margin-left: 1em;
-    float:left; 
+    float:left;
 }
 
-.fl-prefsEditor .ui-slider-range { 
-    background-color: #62bb3d; 
-    height: 100%;   
+.fl-prefsEditor .ui-slider-range {
+    background-color: #62bb3d;
+    height: 100%;
 }
 
 .fl-prefsEditor .fl-inputs div[class*='fl-icon-'] {
@@ -143,11 +143,11 @@
 /* Theme radio buttons */
 .fl-prefsEditor .fl-choice {
     display: inline;
-    float: left;    
+    float: left;
 }
 
 .fl-prefsEditor .fl-choice label {
-    margin-right: 5px;  
+    margin-right: 5px;
     border: 1px solid black;
     border-radius: 5px;
     height: 3em;
@@ -170,7 +170,7 @@
 /* ON/OFF Switch for checkboxes */
 
 /* The container for the toggle, which is also a label for the hidden checkbox. */
-.fl-prefsEditor .fl-prefsEditor-onoff .fl-prefsEditor-switch { 
+.fl-prefsEditor .fl-prefsEditor-onoff .fl-prefsEditor-switch {
     border-radius:50px;
     border: 1px solid #776D67;
     width: 5em;
@@ -223,7 +223,7 @@
     border: 1px solid #776D67;
     border-radius: 50px;
     float:left;
-    width:1.9em; 
+    width:1.9em;
     height: 1.9em; /* Width and height of the knob. */
     text-indent:-1.6em;
     line-height:1.7em;
@@ -240,7 +240,7 @@
         color-stop(0, rgb(205,204,202)),
         color-stop(1, rgb(244,244,244))
     );
-    background-image: linear-gradient(bottom, rgb(205,204,202) 0%, rgb(244,244,244) 100%);  
+    background-image: linear-gradient(bottom, rgb(205,204,202) 0%, rgb(244,244,244) 100%);
     box-shadow: 0.2em 0.2em 0.5em #888;
 }
 
@@ -248,7 +248,7 @@
 .fl-prefsEditor .fl-prefsEditor-onoff input + label .fl-prefsEditor-switch:after {
     float:left;
     position:relative;
-    top: 0.36em;    
+    top: 0.36em;
     left: 0.5em;
 }
 
@@ -291,7 +291,7 @@
     -webkit-font-smoothing: antialiased;
     float:left;
     margin: 0.2em 0.3em 0 0;
-    font-size: 1.5em; 
+    font-size: 1.5em;
 }
 
 /* control icons */
@@ -299,7 +299,7 @@
     content: "\e000";
 }
 .fl-prefsEditor .fl-icon-crossout:before,
-.fl-prefsEditor .fl-choice .fl-theme-uio-default .fl-crossout:before {
+.fl-prefsEditor .fl-choice .fl-theme-prefsEditor-default .fl-crossout:before {
     content: "\e004";
 }
 .fl-prefsEditor .fl-icon-big-a:before {
@@ -319,14 +319,14 @@
     content: "\e003";
 }
 
-.fl-prefsEditor .fl-choice .fl-indicator {    
-    font-family: 'InfusionIcons' !important; 
+.fl-prefsEditor .fl-choice .fl-indicator {
+    font-family: 'InfusionIcons' !important;
     font-size: 1.3em;
-    margin: -0.75em 0 0 0.75em;   
+    margin: -0.75em 0 0 0.75em;
     height: 1em;
 }
 
-.fl-prefsEditor .fl-choice .fl-theme-uio-default .fl-crossout {
+.fl-prefsEditor .fl-choice .fl-theme-prefsEditor-default .fl-crossout {
     font-family: 'InfusionIcons' !important;
     margin-top:-1.75em;
     font-size: 1.85em;
@@ -365,11 +365,11 @@
 .fl-theme-yb .ui-slider-horizontal .ui-slider-handle,
 .fl-theme-lgdg .ui-slider-horizontal .ui-slider-handle { margin-top: -5px; }
 
-.fl-theme-bw .fl-prefsEditor .fl-slider { background: none; background-color:#000;} 
+.fl-theme-bw .fl-prefsEditor .fl-slider { background: none; background-color:#000;}
 .fl-theme-bw .fl-prefsEditor .fl-slider a,
 .fl-theme-bw .fl-prefsEditor .fl-slider a:hover {border:1px solid #000; background-color:#fff;}
 
-.fl-theme-wb .fl-prefsEditor .fl-slider { background: none; background-color:#fff;} 
+.fl-theme-wb .fl-prefsEditor .fl-slider { background: none; background-color:#fff;}
 .fl-theme-wb .fl-prefsEditor .fl-slider a,
 .fl-theme-wb .fl-prefsEditor .fl-slider a:hover {border:1px solid #fff; background-color:#000;}
 
@@ -423,7 +423,7 @@
 .fl-prefsEditor .fl-choice label.fl-theme-bw .fl-crossout {
     background-color: #FFFFFF !important;
     border-color: #000000 !important;
-    color: #000000 !important;  
+    color: #000000 !important;
 }
 .fl-prefsEditor .fl-choice label.fl-theme-wb,
 .fl-prefsEditor .fl-choice label.fl-theme-wb span,
@@ -454,12 +454,12 @@
     color: #bdbdbb !important;
 }
 
-.fl-prefsEditor .fl-choice label.fl-theme-uio-default,
-.fl-prefsEditor .fl-choice label.fl-theme-uio-default span,
-.fl-prefsEditor .fl-choice label.fl-theme-uio-default .fl-crossout {
+.fl-prefsEditor .fl-choice label.fl-theme-prefsEditor-default,
+.fl-prefsEditor .fl-choice label.fl-theme-prefsEditor-default span,
+.fl-prefsEditor .fl-choice label.fl-theme-prefsEditor-default .fl-crossout {
     background-color: #FFFFFF !important;
     border-color: #433F3D !important;
-    color: #433F3D !important;  
+    color: #433F3D !important;
 }
 
 .fl-theme-bw .fl-prefsEditor input:focus + label,
