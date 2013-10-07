@@ -70,7 +70,7 @@
     </target>
 
     <!-- UI Options style sheet creation / !important injection -->
-    <target name="generateUIOThemes" depends="init" description="Namespace and inject !important into UI Options' stylesheets">
+    <target name="generatePrefsEditorThemes" depends="init" description="Namespace and inject !important into UI Options' stylesheets">
         <property name="buildJSDir" value="${buildDir}/prefsFramework/js" />
         <property name="jscssp" value="${buildDir}/lib/jscssp/js/jscssp.js" />
         <property name="evalScripts" value="${jscssp}, ${buildJSDir}/CSSGenerator.js, ${buildJSDir}/RhinoStylesheetHandler.js, ${buildJSDir}/StylesheetImportant.js" />
@@ -179,11 +179,11 @@
 
     <!-- Top level targets -->
 
-    <target name="customBuild" depends="clean, init, generateUIOThemes, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assemble, zip"
+    <target name="customBuild" depends="clean, init, generatePrefsEditorThemes, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assemble, zip"
         description="Builds a custom package of Infusion containing the modules specified as command line arguments.">
     </target>
 
-    <target name="pretreatMinify" depends="clean, init, generateUIOThemes, alwaysMinify"
+    <target name="pretreatMinify" depends="clean, init, generatePrefsEditorThemes, alwaysMinify"
         description="Minifies everything to prepare for builds done from pretreated source">
     </target>
 
@@ -191,7 +191,7 @@
         description="Builds a custom package of Infusion containing the modules specified by the builder - expects pretreatMinify to have been run before.">
     </target>
 
-    <target name="releaseBuild" depends="cleanExceptProducts, init, generateUIOThemes, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assembleFull, zip"
+    <target name="releaseBuild" depends="cleanExceptProducts, init, generatePrefsEditorThemes, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assembleFull, zip"
         description="Builds and packages a release bundle of Infusion"/>
 
     <target name="releaseBuilds" depends="clean"
