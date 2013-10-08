@@ -395,34 +395,60 @@ var fluid_1_5 = fluid_1_5 || {};
         // This prevents corruption of instantiator records by defeating effect of "returnedPath" for non-roots
         return shadow && shadow.path !== "" ? null : returnedPath;
     };
+    
+    fluid.expandDynamicGrades = function (that, dynamicGrades) {
+        var resolved = [];
+        fluid.each(dynamicGrades, function (dynamicGrade) {
+            var expanded = fluid.expandOptions(dynamicGrade, that);
+            if (typeof(expanded) === "function") {
+                expanded = expanded();
+            }
+            if (expanded) {    
+                resolved = resolved.concat(expanded);
+            }
+        });
+        return resolved;    
+    };
+    
+    fluid.collectDynamicGrades = function (that, shadow, defaultsBlock, gradeNames, dynamicGrades, resolved) {
+        var newDefaults = fluid.copy(fluid.getGradedDefaults(that.typeName, resolved));
+        gradeNames.length = 0; // acquire derivatives of dynamic grades (FLUID-5054)
+        gradeNames.push.apply(gradeNames, newDefaults.gradeNames);
+        
+        fluid.cacheShadowGrades(that, shadow);
+        // This cheap strategy patches FLUID-5091 for now - some more sophisticated activity will take place
+        // at this site when we have a full fix for FLUID-5028
+        shadow.mergeOptions.destroyValue("components");
+        shadow.mergeOptions.destroyValue("invokers");
+
+        defaultsBlock.source = newDefaults;
+        shadow.mergeOptions.updateBlocks();
+            
+        var furtherResolved = fluid.remove_if(gradeNames, function (gradeName) {
+            return gradeName.charAt(0) === "{" && !fluid.contains(dynamicGrades, gradeName);
+        }, []);
+        dynamicGrades.push.apply(dynamicGrades, furtherResolved);
+        furtherResolved = fluid.expandDynamicGrades(that, furtherResolved);
+        resolved.push.apply(resolved, furtherResolved);
+        return furtherResolved;
+    };
 
     // unsupported, NON-API function
     fluid.computeDynamicGrades = function (that, shadow, strategy) {
         delete that.options.gradeNames; // Recompute gradeNames for FLUID-5012 and others
+        
         var gradeNames = fluid.driveStrategy(that.options, "gradeNames", strategy);
-
         // TODO: In complex distribution cases, a component might end up with multiple default blocks
         var defaultsBlock = fluid.findMergeBlocks(shadow.mergeOptions.mergeBlocks, "defaults")[0];
         var dynamicGrades = fluid.remove_if(gradeNames, function (gradeName) {
             return gradeName.charAt(0) === "{" || !fluid.hasGrade(defaultsBlock.target, gradeName);
         }, []);
-        var resolved = [];
-        fluid.each(dynamicGrades, function (dynamicGrade) {
-            var func = fluid.expandOptions(dynamicGrade, that);
-            resolved = resolved.concat(typeof(func) === "function" ? func() : func);
-        });
+        var resolved = fluid.expandDynamicGrades(that, dynamicGrades);
         if (resolved.length !== 0) {
-            var newDefaults = fluid.copy(fluid.getGradedDefaults(that.typeName, resolved));
-            gradeNames.length = 0; // acquire derivatives of dynamic grades (FLUID-5054)
-            gradeNames.push.apply(gradeNames, newDefaults.gradeNames);
-            fluid.cacheShadowGrades(that, shadow);
-            // This cheap strategy patches FLUID-5091 for now - some more sophisticated activity will take place
-            // at this site when we have a full fix for FLUID-5028
-            shadow.mergeOptions.destroyValue("components");
-
-            var defaultsBlock = fluid.findMergeBlocks(shadow.mergeOptions.mergeBlocks, "defaults")[0];
-            defaultsBlock.source = newDefaults;
-            shadow.mergeOptions.updateBlocks();
+            do { // repeatedly collect dynamic grades whilst they arrive (FLUID-5155)
+                var furtherResolved = fluid.collectDynamicGrades(that, shadow, defaultsBlock, gradeNames, dynamicGrades, resolved);
+            }
+            while (furtherResolved.length !== 0);
         }
     };
 
@@ -1777,7 +1803,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             active = "listener";
         }
         fluid.each(source, function (value, key) {
-            if (!fluid.isPrimitive(value)) {
+            if (fluid.isPlainObject(value)) {
                 target[key] = fluid.freshContainer(value);
                 segs.push(key);
                 fluid.expandCompactRec(segs, target[key], value);
@@ -1907,7 +1933,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.fetchExpandChildren = function (target, i, segs, source, mergePolicy, miniWorld, options) {
         if (source.expander /* && source.expander.type */) { // possible expander at top level
             var expanded = fluid.expandExpander(target, source, options);
-            if (fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
+            if (fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || !fluid.isPlainObject(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
                 return expanded;
             }
             else { // make an attempt to preserve the root reference if possible
@@ -1943,7 +1969,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
 
     // unsupported, NON-API function
     fluid.isUnexpandable = function (source) {
-        return fluid.isPrimitive(source) || source.nodeType !== undefined || source.jquery;
+        return fluid.isPrimitive(source) || source.nodeType !== undefined || source.jquery || !fluid.isPlainObject(source);
     };
 
     // unsupported, NON-API function    
