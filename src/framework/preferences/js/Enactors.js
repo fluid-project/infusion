@@ -275,7 +275,8 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             getTextSizeInEm: {
                 funcName: "fluid.prefs.enactors.textSize.getTextSizeInEm",
-                args: [{expander: {func: "{that}.getTextSizeInPx"}}, {expander: {func: "{that}.getPx2EmFactor"}}]
+                args: [{expander: {func: "{that}.getTextSizeInPx"}}, {expander: {func: "{that}.getPx2EmFactor"}}],
+                dynamic: true
             },
             getPx2EmFactor: {
                 funcName: "fluid.prefs.enactors.textSize.getPx2EmFactor",
@@ -362,7 +363,8 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             numerizeLineHeight: {
                 funcName: "fluid.prefs.enactors.lineSpace.numerizeLineHeight",
-                args: [{expander: {func: "{that}.getLineHeight"}}, {expander: {func: "{that}.getTextSizeInPx"}}]
+                args: [{expander: {func: "{that}.getLineHeight"}}, {expander: {func: "{that}.getTextSizeInPx"}}],
+                dynamic: true
             }
         },
         listeners: {
