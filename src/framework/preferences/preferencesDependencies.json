@@ -1,0 +1,43 @@
+{
+    "preferences": {
+        "name": "Preferences Framework",
+        "description": "Framework for implementing user preference editing and persistence",
+        "cssFiles": [
+            "PrefsEditor.css",
+            "SeparatedPanelPrefsEditor.css",
+            "FullNoPreviewPrefsEditor.css",
+            "FullPreviewPrefsEditor.css",
+            "FullPrefsEditor.css"
+        ],
+        "files": [
+            "URLUtilities.js",
+            "Store.js",
+            "UIEnhancer.js",
+            "PrefsEditor.js",
+            "Panels.js",
+            "ModelRelay.js",
+            "Enactors.js",
+            "StarterGrades.js",
+            "SeparatedPanelPrefsEditor.js",
+            "FullNoPreviewPrefsEditor.js",
+            "FullPreviewPrefsEditor.js",
+            "PrimaryBuilder.js",
+            "AuxBuilder.js",
+            "StarterSchemas.js",
+            "Builder.js"
+        ],
+        "dependencies": [
+            "fss",
+            "fonts",
+            "jQuery",
+            "jQueryUICore",
+            "framework",
+            "enhancement",
+            "renderer",
+            "slidingPanel",
+            "textfieldSlider",
+            "tableOfContents",
+            "json"
+        ]
+    }
+}

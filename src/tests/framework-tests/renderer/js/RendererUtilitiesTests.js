@@ -1716,8 +1716,8 @@ fluid.registerNamespace("fluid.tests");
         fluid.defaults("fluid.tests.fluid5048.parent", {
             gradeNames: ["fluid.viewComponent", "autoInit"],
             selectors: {
-                captionsSettings: ".flc-uiOptions-captions-settings",
-                transcriptsSettings: ".flc-uiOptions-transcripts-settings"
+                captionsSettings: ".flc-prefsEditor-captions-settings",
+                transcriptsSettings: ".flc-prefsEditor-transcripts-settings"
             },
             components: {
                 captions: {

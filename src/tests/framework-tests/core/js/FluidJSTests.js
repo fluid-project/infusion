@@ -751,7 +751,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.schema.textSizer", { 
         gradeNames: ["fluid.tests.schema", "fluid.littleComponent", "autoInit"], 
         schema: { 
-            "fluid.uiOptions.textSizer": { // common grade name 
+            "fluid.prefs.textSizer": { // common grade name 
                 "type": "number", 
                 "default": 1, 
                 "min": 1, 
@@ -764,15 +764,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.nonPanel", { // A dummy grade to ensure that grade filtration is working in the indexer
         gradeNames: ["fluid.littleComponent"],
         preferenceMap: {
-            thing: "fluid.uiOptions.nonThing"
+            thing: "fluid.prefs.nonThing"
         }
     });
     
     fluid.defaults("fluid.tests.panels.linksControls", { 
         gradeNames: ["fluid.tests.settingsPanel", "fluid.littleComponent", "autoInit"], 
         preferenceMap: { 
-            links: "fluid.uiOptions.emphasizeLinks", 
-            inputsLarger: "fluid.uiOptions.inputsLarger" 
+            links: "fluid.prefs.emphasizeLinks", 
+            inputsLarger: "fluid.prefs.inputsLarger" 
         }
     });
     
@@ -789,14 +789,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: "fluid.tests.schema",
             indexFunc: "fluid.tests.schema.indexer"
         });
-        jqUnit.assertDeepEq("Indexed grade", ["fluid.tests.schema.textSizer"], indexedSchema["fluid.uiOptions.textSizer"]);
+        jqUnit.assertDeepEq("Indexed grade", ["fluid.tests.schema.textSizer"], indexedSchema["fluid.prefs.textSizer"]);
         var indexedPanels = fluid.indexDefaults("panelIndexer", {
             gradeNames: "fluid.tests.settingsPanel",
             indexFunc: "fluid.tests.panels.indexer"
         });
         var expected = {
-            "fluid.uiOptions.emphasizeLinks": ["fluid.tests.panels.linksControls"],
-            "fluid.uiOptions.inputsLarger": ["fluid.tests.panels.linksControls"]
+            "fluid.prefs.emphasizeLinks": ["fluid.tests.panels.linksControls"],
+            "fluid.prefs.inputsLarger": ["fluid.tests.panels.linksControls"]
         };
         jqUnit.assertDeepEq("Indexed multiple grades", expected, indexedPanels);
     });

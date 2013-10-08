@@ -1,25 +1,25 @@
 This directory contains tests that are run manually. 
 
-UI Options, Fat Panel:
+Preferences Editor, Separated Panel:
     To run this test:
         1. open SomeKindOfNews.html in a browser
         2. activate the "Show Display Preferences" button in the top right corner of the screen
-        3. experiment with the various UI Options settings and verify that the window
+        3. experiment with the various Preferences Editor settings and verify that the window
            contents are styled correctly.
 
-UI Options, Full with Preview:
+Preferences Editor, Full with Preview:
     To run this test:
-        1. open uiOptionsFullWithPreview.html in a browser
-        2. experiment with the various UI Options settings and verify that the preview window
+        1. open prefsEditorFullWithPreview.html in a browser
+        2. experiment with the various Preferences Editor settings and verify that the preview window
            contents are styled correctly.
-        3. use the "save and apply" button to apply the preview styles to UI Options
+        3. use the "save and apply" button to apply the preview styles to Preferences Editor
         4. use the "reset" button to reset the styles
 
-UI Options, Full without Preview:
+Preferences Editor, Full without Preview:
     To run this test:
-        1. open uiOptionsFullWithoutPreview.html in a browser
-        2. experiment with the various UI Options settings
-        3. use the "save and apply" button to apply the styles to UI Options and verify that the
+        1. open prefsEditorFullNoPreview.html in a browser
+        2. experiment with the various Preferences Editor settings
+        3. use the "save and apply" button to apply the styles to Preferences Editor and verify that the
            contents are styled correctly.
         4. use the "reset and apply" button to reset the styles
 

@@ -41,7 +41,7 @@ fluid.registerNamespace("fluid.tests");
     // position is now reversed. Supporting "non-monotonic merges" that the first case would require much more
     // complexity in the implementation in the form of a "provenance" object holding the merge depth of each
     // value. In fact we don't require this support since the Reorderer defaults changed to be "monotonic" in any
-    // case, and the current implementation should be adequate for FLUID-4409/FLUID-4636 situations in UIOptions.
+    // case, and the current implementation should be adequate for FLUID-4409/FLUID-4636 situations in PrefsEditor.
     /*{
         message: "merge policy has no effect on plain defaults",
         options: undefined,
@@ -823,7 +823,7 @@ fluid.registerNamespace("fluid.tests");
 
     /** Expansion order test **/
 
-    // Example liberated from UIOptions implementation, which revealed requirement for
+    // Example liberated from PrefsEditor implementation, which revealed requirement for
     // "expansion before merging" when constructing the new framework. This is a perverse
     // but probably valid usage of the framework. These kinds of "wholesale options transmissions"
     // cases are intended to be handled by FLUID-4873 "Luke Skywalker Options" ("distributeOptions")
@@ -2169,7 +2169,7 @@ fluid.registerNamespace("fluid.tests");
                     }
                 }
             },
-            uiOptionsBridge: {
+            prefsEditorBridge: {
                 type: "fluid.littleComponent",
                 createOnEvent: "afterRender"
             }
@@ -2655,7 +2655,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     /** FLUID-5012: IoCSS doesn't apply the gradeNames option onto the target component **/
-    fluid.defaults("fluid.tests.uio", {
+    fluid.defaults("fluid.tests.prefsEditor", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             templateLoader: {
@@ -2673,15 +2673,15 @@ fluid.registerNamespace("fluid.tests");
     });
 
     jqUnit.test("FLUID-5012: Apply gradeNames option onto the target component with IoCSS", function () {
-        var uio = fluid.tests.uio({
+        var prefsEditor = fluid.tests.prefsEditor({
             templateLoader: {
                 gradeNames: ["fluid.tests.defaultTemplateLoader"]
             }
         });
         var expectedGrades = ["fluid.tests.defaultTemplateLoader", "fluid.littleComponent", "autoInit"];
 
-        jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, uio.templateLoader.options.gradeNames);
-        jqUnit.assertEquals("The user option from the grade component is transmitted", 10, uio.templateLoader.options.userOption);
+        jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, prefsEditor.templateLoader.options.gradeNames);
+        jqUnit.assertEquals("The user option from the grade component is transmitted", 10, prefsEditor.templateLoader.options.userOption);
     });
 
     /** FLUID-5013: IoCSS doesn't pass down non-options blocks **/
