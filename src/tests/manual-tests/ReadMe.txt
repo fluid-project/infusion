@@ -1,6 +1,6 @@
 This directory contains tests that are run manually. 
 
-Preferences Editor, Fat Panel:
+Preferences Editor, Separated Panel:
     To run this test:
         1. open SomeKindOfNews.html in a browser
         2. activate the "Show Display Preferences" button in the top right corner of the screen

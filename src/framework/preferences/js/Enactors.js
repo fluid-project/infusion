@@ -293,7 +293,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.prefs.enactors.textSize.set = function (times, that) {
         // Calculating the initial size here rather than using a members expand because the "font-size"
-        // cannot be detected on hidden containers such as fat paenl iframe.
+        // cannot be detected on hidden containers such as separated paenl iframe.
         if (!that.initialSize) {
             that.initialSize = that.getTextSizeInEm();
         }
@@ -415,7 +415,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.prefs.enactors.lineSpace.set = function (times, that) {
         // Calculating the initial size here rather than using a members expand because the "line-height"
-        // cannot be detected on hidden containers such as fat paenl iframe.
+        // cannot be detected on hidden containers such as separated paenl iframe.
         if (!that.initialSize) {
             that.initialSize = that.numerizeLineHeight();
         }

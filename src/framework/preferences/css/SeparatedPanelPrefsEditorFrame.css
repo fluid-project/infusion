@@ -28,7 +28,7 @@ html {
     line-height: 1.2em !important; /* FLUID-4959: fix the line height so it doesn't scale with the Preferences Editor line space scaling. */
 }
 
-/* Preferences Editor Fat Panel styles */
+/* Preferences Editor Separated Panel styles */
 .fl-prefsEditor-separatedPanel {
     background-color: #fff;
     background-image: url('../images/default/separatedpanelbg.png');

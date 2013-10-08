@@ -121,10 +121,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.separatedPanelIntegrationTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         modules: [{
-            name: "Fat panel integration tests",
+            name: "Separated panel integration tests",
             tests: [{
                 expect: 22,
-                name: "Fat panel integration tests",
+                name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testSeparatedPanel",
                     event: "{separatedPanelIntegration separatedPanel}.events.onReady"
@@ -226,10 +226,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         expectedIframeSelector: expectedIframeSelector,
         modules: [{
-            name: "Fat panel munging integration tests",
+            name: "Separated panel munging integration tests",
             tests: [{
                 expect: 13,
-                name: "Fat panel munging integration tests",
+                name: "Separated panel munging integration tests",
                 sequence: [{
                     listener: "fluid.tests.prefs.testComponentIntegration",
                     event: "{separatedPanelMungingIntegration separatedPanel prefsEditor}.events.onReady"
