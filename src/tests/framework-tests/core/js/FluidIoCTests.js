@@ -3498,4 +3498,80 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("The option from the supplied grade should overwrite the original component option", "fromSuppliedGrade", root.options.source.options.userOption);
     });
 
+    /** FLUID-5155 failure of dynamic grade delivered dynamically **/
+
+    fluid.defaults("fluid.tests.fluid5155dynamicParent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        parentOption: 1
+    });
+
+    fluid.defaults("fluid.tests.fluid5155dynamicGrade", {
+        gradeNames: ["fluid.littleComponent", "autoInit", "{that}.computeGrade"],
+        invokers: {
+            computeGrade: "fluid.tests.computeFluid5155DynamicParent"
+        }
+    });
+
+    fluid.tests.computeFluid5155DynamicParent = function () {
+        return "fluid.tests.fluid5155dynamicParent";
+    };
+
+    fluid.defaults("fluid.tests.fluid5155root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            subComponent: {
+                type: "fluid.littleComponent"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.subComponent",
+            removeSource: true,
+            target: "{that subComponent}.options"
+        }
+    });
+
+    jqUnit.test("FLUID-5155 Dynamic grade support", function () {
+        var that = fluid.tests.fluid5155root({
+            subComponent: {
+                gradeNames: "fluid.tests.fluid5155dynamicGrade"
+            }
+        });
+
+        jqUnit.assertTrue("Correctly resolved parent grade", fluid.hasGrade(that.subComponent.options, "fluid.tests.fluid5155dynamicParent"));
+        jqUnit.assertEquals("Correctly resolved options from parent grade", 1, that.subComponent.options.parentOption);
+    });
+
+
+
+    fluid.defaults("fluid.tests.dynamicInvoker", {
+        gradeNames: ["autoInit", "fluid.littleComponent", "{that}.getDynamicInvoker"],
+        invokers: {
+            getDynamicInvoker: {
+                funcName: "fluid.tests.dynamicInvoker.getDynamicInvoker"
+            }
+        }
+    });
+ 
+    fluid.tests.dynamicInvoker.getDynamicInvoker = function () {
+        return "fluid.tests.dynamicInvokerGrade";
+    };
+ 
+    fluid.defaults("fluid.tests.dynamicInvokerGrade", {
+        gradeNames: ["autoInit", "fluid.littleComponent"],
+        invokers: {
+            method: "fluid.tests.dynamicInvokerGrade.method"
+        }
+    });
+ 
+    fluid.tests.dynamicInvokerGrade.method = function () {
+        jqUnit.assertTrue("Dynamic invoker is called", true);
+    };
+ 
+    jqUnit.test("Test dynamic grade invoker contribution.", function () {
+        jqUnit.expect(2);
+        var component = fluid.tests.dynamicInvoker();
+        jqUnit.assertValue("Invoker is resolved correctly", component.method);
+        component.method();
+    });
+
 })(jQuery);
