@@ -1,0 +1,82 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>SeparatedPanel Preferences Editor Tests</title>
+
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-layout.css" />
+
+        <!--  This is the jqUnit test css file -->
+        <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+        <!-- deliberately don't include tabs and slider out here to test jquery cascading -->
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
+        <script type="text/javascript" src="../../../../lib/json/js/json2.js"></script>
+
+        <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/RendererUtilities.js"></script>
+
+        <script type="text/javascript" src="../../../../framework/preferences/js/URLUtilities.js"></script>
+        <script type="text/javascript" src="../../../../framework/preferences/js/Store.js"></script>
+        <script type="text/javascript" src="../../../../framework/preferences/js/ModelRelay.js"></script>
+        <script type="text/javascript" src="../../../../framework/preferences/js/Enactors.js"></script>
+        <script type="text/javascript" src="../../../../framework/preferences/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../../../components/textfieldSlider/js/TextfieldSlider.js"></script>
+        <script type="text/javascript" src="../../../../framework/preferences/js/PrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../../framework/preferences/js/Panels.js"></script>
+        <script type="text/javascript" src="../../../../framework/preferences/js/StarterGrades.js"></script>
+        <script type="text/javascript" src="../../../../framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../../components/slidingPanel/js/SlidingPanel.js"></script>
+        <script type="text/javascript" src="../../../../components/tableOfContents/js/TableOfContents.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script type="text/javascript" src="../js/IntegrationTestsCommon.js"></script>
+        <script type="text/javascript" src="../js/SeparatedPanelPrefsEditorTests.js"></script>
+
+    </head>
+    <body>
+    <h1 id="qunit-header">SeparatedPanel Preferences Editor Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <div id="qunit-fixture">
+
+        <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
+            <div id="myPrefsEditor" class="flc-slidingPanel-panel flc-prefsEditor-iframe prefsEditor-munging"></div>
+
+            <div class="fl-panelBar">
+                <button class="flc-slidingPanel-toggleButton fl-toggleButton">Show/Hide</button>
+                <button class="flc-prefsEditor-reset fl-prefsEditor-reset">Reset</button>
+            </div>
+        </div>
+
+        <div class="flc-toc-tocContainer toc">
+        </div>
+
+        <div id="main">
+            <h1>Some Sample Title</h1>
+            <p>Some content with <a id="myLink">a link</a> and <button>a button</button>. </p>
+        </div>
+
+    </div>
+
+    </body>
+</html>

@@ -7,7 +7,7 @@
       To jsLint source code within a specific directory, type: ant validate -Dlint="../some/folder"
       To create a custom build use the customBuild target.
         Custom build has three optional parameters:  'include', 'exclude', and 'jsfilename'
-        e.g. ant customBuild -Dinclude="uiOptions, inlineEdit" -Dexclude="jQuery" -Djsfilename="MyInfusion.js"
+        e.g. ant customBuild -Dinclude="preferences, inlineEdit" -Dexclude="jQuery" -Djsfilename="MyInfusion.js"
       To create an unminified package when using the customBuild, builderBuild and releaseBuild targets, use -DnoMinify="true"
 
     </description>
@@ -69,9 +69,9 @@
         </condition>
     </target>
 
-    <!-- UI Options style sheet creation / !important injection -->
-    <target name="generateUIOThemes" depends="init" description="Namespace and inject !important into UI Options' stylesheets">
-        <property name="buildJSDir" value="${buildDir}/uiOptions/js" />
+    <!-- Preference editor style sheet creation / !important injection -->
+    <target name="generatePrefsEditorThemes" depends="init" description="Namespace and inject !important into Preference Editor's stylesheets">
+        <property name="buildJSDir" value="${buildDir}/prefsFramework/js" />
         <property name="jscssp" value="${buildDir}/lib/jscssp/js/jscssp.js" />
         <property name="evalScripts" value="${jscssp}, ${buildJSDir}/CSSGenerator.js, ${buildJSDir}/RhinoStylesheetHandler.js, ${buildJSDir}/StylesheetImportant.js" />
         <script language="javascript" src="${buildDir}/build-core.js" manager="bsf">
@@ -179,11 +179,11 @@
 
     <!-- Top level targets -->
 
-    <target name="customBuild" depends="clean, init, generateUIOThemes, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assemble, zip"
+    <target name="customBuild" depends="clean, init, generatePrefsEditorThemes, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assemble, zip"
         description="Builds a custom package of Infusion containing the modules specified as command line arguments.">
     </target>
 
-    <target name="pretreatMinify" depends="clean, init, generateUIOThemes, alwaysMinify"
+    <target name="pretreatMinify" depends="clean, init, generatePrefsEditorThemes, alwaysMinify"
         description="Minifies everything to prepare for builds done from pretreated source">
     </target>
 
@@ -191,7 +191,7 @@
         description="Builds a custom package of Infusion containing the modules specified by the builder - expects pretreatMinify to have been run before.">
     </target>
 
-    <target name="releaseBuild" depends="cleanExceptProducts, init, generateUIOThemes, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assembleFull, zip"
+    <target name="releaseBuild" depends="cleanExceptProducts, init, generatePrefsEditorThemes, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assembleFull, zip"
         description="Builds and packages a release bundle of Infusion"/>
 
     <target name="releaseBuilds" depends="clean"
