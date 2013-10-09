@@ -127,12 +127,15 @@ var fluid_1_5 = fluid_1_5 || {};
             expandProtoTree: {
                 funcName: "fluid.prefs.compositePanel.expandProtoTree",
                 args: ["{that}"]
+            },
+            produceTree: {
+                funcName: "fluid.prefs.compositePanel.produceTree",
+                args: ["{that}"]
             }
         },
         subPanelOverrides: {
             gradeNames: ["fluid.prefs.subPanel"]
         },
-        produceTree: "fluid.prefs.compositePanel.produceTree",
         rendererFnOptions: {
             noexpand: true
         },
@@ -300,7 +303,10 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.prefs.compositePanel.produceTree = function (that) {
-        var ownTree = that.expandProtoTree();
+        var produceTreeOption = that.options.produceTree;
+        var ownTree = produceTreeOption ?
+            (typeof(produceTreeOption) === "string" ? fluid.getGlobalValue(produceTreeOption) : produceTreeOption) (that) :
+            that.expandProtoTree();
         var subPanelTree = that.produceSubPanelTrees();
         var tree = {
             children: ownTree.children.concat(subPanelTree.children)
@@ -309,13 +315,9 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.prefs.compositePanel.expandProtoTree = function (that) {
-        var tree = {children: []};
-        if (that.options.protoTree) {
-            var expanderOptions = fluid.renderer.modeliseOptions(that.options.expanderOptions, {ELstyle: "${}"}, that);
-            var expander = fluid.renderer.makeProtoExpander(expanderOptions, that);
-            tree = expander(that.options.protoTree);
-        }
-        return tree;
+        var expanderOptions = fluid.renderer.modeliseOptions(that.options.expanderOptions, {ELstyle: "${}"}, that);
+        var expander = fluid.renderer.makeProtoExpander(expanderOptions, that);
+        return expander(that.options.protoTree || {});
     };
 
     fluid.prefs.compositePanel.produceSubPanelTrees = function (that) {
