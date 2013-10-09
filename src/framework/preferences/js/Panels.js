@@ -119,6 +119,14 @@ var fluid_1_5 = fluid_1_5 || {};
             surfaceSubpanelRendererSelectors: {
                 funcName: "fluid.prefs.compositePanel.surfaceSubpanelRendererSelectors",
                 args: ["{that}.options.components", "{that}.options.selectors"]
+            },
+            produceSubPanelTrees: {
+                funcName: "fluid.prefs.compositePanel.produceSubPanelTrees",
+                args: ["{that}"]
+            },
+            expandProtoTree: {
+                funcName: "fluid.prefs.compositePanel.expandProtoTree",
+                args: ["{that}"]
             }
         },
         subPanelOverrides: {
@@ -292,6 +300,25 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.prefs.compositePanel.produceTree = function (that) {
+        var ownTree = that.expandProtoTree();
+        var subPanelTree = that.produceSubPanelTrees();
+        var tree = {
+            children: ownTree.children.concat(subPanelTree.children)
+        };
+        return tree;
+    };
+
+    fluid.prefs.compositePanel.expandProtoTree = function (that) {
+        var tree = {children: []};
+        if (that.options.protoTree) {
+            var expanderOptions = fluid.renderer.modeliseOptions(that.options.expanderOptions, {ELstyle: "${}"}, that);
+            var expander = fluid.renderer.makeProtoExpander(expanderOptions, that);
+            tree = expander(that.options.protoTree);
+        }
+        return tree;
+    };
+
+    fluid.prefs.compositePanel.produceSubPanelTrees = function (that) {
         var tree = {children: []};
         fluid.each(that.options.components, function (options, componentName) {
             var subPanel = that[componentName];

@@ -104,7 +104,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
         selectors: {
             subPanel1: ".subPanel1",
-            subPanel2: ".subPanel2"
+            subPanel2: ".subPanel2",
+            heading: ".heading"
+        },
+        strings: {
+            heading: "Heading"
         },
         selectorsToIgnore: ["subPanel1", "subPanel2"],
         members: {
@@ -122,9 +126,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["compositePanel"]
             }
         },
+        protoTree: {
+            "heading": {
+                messagekey: "heading"
+            }
+        },
         resources: {
             template: {
-                resourceText: '<section><article class="subPanel1"></article><article class="subPanel2"></article></section>'
+                resourceText: '<section><h1 class="heading"></h1><article class="subPanel1"></article><article class="subPanel2"></article></section>'
             },
             subPanel1: {
                 resourceText: "<h2>subPanel1</h2>"
@@ -189,7 +198,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.test("fluid.prefs.compositePanel", function () {
-        jqUnit.expect(12);
+        jqUnit.expect(13);
         var that = fluid.tests.compositePanel(".flc-prefs-compositePanel");
 
         var expectedPreferenceMap = {
@@ -213,7 +222,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid_prefs_sub2": "value"
         };
 
-        var expectedResourceText = '<section><article class="subPanel1"><h2>subPanel1</h2></article><article class="subPanel2"><h2>subPanel2</h2></article></section>';
+        var expectedResourceText = '<section><h1 class="heading"></h1><article class="subPanel1"><h2>subPanel1</h2></article><article class="subPanel2"><h2>subPanel2</h2></article></section>';
 
         var expectedFireRecord = {
             compositePanel: 3,
@@ -226,6 +235,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var expectedTree = {
             children: [{
+                "ID": "heading",
+                "componentType": "UIMessage",
+                "messagekey": {
+                    "value": "heading"
+                }
+            }, {
                 ID: "subPanel1_header",
                 componentType: "UIBound",
                 value: "subPanel1",
@@ -238,14 +253,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         };
 
-
-
         that.refreshView();
         that.subPanel1.refreshView();
         that.subPanel2.refreshView();
         jqUnit.assertDeepEq("The events should have populated the fireRecored correctly", expectedFireRecord, that.fireRecord);
-        jqUnit.assertEquals("The markup for subPanel1 should have rendered correctly", that.subPanel1.model.value, that.subPanel1.locate("header").text());
-        jqUnit.assertEquals("The markup for subPanel2 should have rendered correctly", that.subPanel2.model.value, that.subPanel2.locate("header").text());
 
         jqUnit.assertDeepEq("The preferenceMap should have been assembled correctly", expectedPreferenceMap, that.options.preferenceMap);
         jqUnit.assertFalse("The renderOnInit option for subPanel1 should be false", that.subPanel1.options.renderOnInit);
@@ -256,6 +267,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("subPanel1's selectors should be surfaced to the compositePanel correctly", expectedSupanel1Selector, that.options.selectors.subPanel1_header);
         jqUnit.assertEquals("subPanel2's selectors should be surfaced to the compositePanel correctly", expectedSupanel2Selector, that.options.selectors.subPanel2_header);
         jqUnit.assertDeepEq("The produceTree should have combined the subPanel protoTrees together correctly", expectedTree, that.produceTree());
+        jqUnit.assertEquals("The markup for the compositePanel should have rendered correctly", that.options.strings.heading, that.locate("heading").text());
+        jqUnit.assertEquals("The markup for subPanel1 should have rendered correctly", that.subPanel1.model.value, that.subPanel1.locate("header").text());
+        jqUnit.assertEquals("The markup for subPanel2 should have rendered correctly", that.subPanel2.model.value, that.subPanel2.locate("header").text());
     });
 
 
