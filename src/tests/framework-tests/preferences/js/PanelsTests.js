@@ -90,7 +90,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.subPanel", {
-        gradeNames: ["fluid.uiOptions.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
         renderOnInit: true,
         selectors: {
             header: "h2"
@@ -101,7 +101,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.compositePanel", {
-        gradeNames: ["fluid.uiOptions.compositePanel", "autoInit"],
+        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
         selectors: {
             subPanel1: ".subPanel1",
             subPanel2: ".subPanel2"
@@ -140,7 +140,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 createOnEvent: "initSubPanels",
                 options: {
                     preferenceMap: {
-                        "fluid.uiOptions.sub1": {
+                        "fluid.prefs.sub1": {
                             "model.value": "default",
                             "range.min": "minimum",
                             "range.max": "maximum"
@@ -163,7 +163,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 createOnEvent: "initSubPanels",
                 options: {
                     preferenceMap: {
-                        "fluid.uiOptions.sub2": {
+                        "fluid.prefs.sub2": {
                             "model.value": "default",
                             "range.min": "minimum",
                             "range.max": "maximum"
@@ -188,29 +188,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.set(fireRecord, id, currentVal !== undefined ? ++currentVal : 1);
     };
 
-    jqUnit.test("fluid.uiOptions.compositePanel", function () {
+    jqUnit.test("fluid.prefs.compositePanel", function () {
         jqUnit.expect(12);
-        var that = fluid.tests.compositePanel(".flc-uiOptions-compositePanel");
+        var that = fluid.tests.compositePanel(".flc-prefs-compositePanel");
 
         var expectedPreferenceMap = {
-            "fluid.uiOptions.sub1": {
-                "model.fluid_uiOptions_sub1": "default",
+            "fluid.prefs.sub1": {
+                "model.fluid_prefs_sub1": "default",
                 "components.subPanel1.options.range.min": "minimum",
                 "components.subPanel1.options.range.max": "maximum"
             },
-            "fluid.uiOptions.sub2": {
-                "model.fluid_uiOptions_sub2": "default",
+            "fluid.prefs.sub2": {
+                "model.fluid_prefs_sub2": "default",
                 "components.subPanel2.options.range.min": "minimum",
                 "components.subPanel2.options.range.max": "maximum"
             }
         };
 
         var expectedSubPanel1Rules = {
-            "fluid_uiOptions_sub1": "value"
+            "fluid_prefs_sub1": "value"
         };
 
         var expectedSubPanel2Rules = {
-            "fluid_uiOptions_sub2": "value"
+            "fluid_prefs_sub2": "value"
         };
 
         var expectedResourceText = '<section><article class="subPanel1"><h2>subPanel1</h2></article><article class="subPanel2"><h2>subPanel2</h2></article></section>';
@@ -229,12 +229,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 ID: "subPanel1_header",
                 componentType: "UIBound",
                 value: "subPanel1",
-                valuebinding: "fluid_uiOptions_sub1"
+                valuebinding: "fluid_prefs_sub1"
             }, {
                 ID: "subPanel2_header",
                 componentType: "UIBound",
                 value: "subPanel2",
-                valuebinding: "fluid_uiOptions_sub2"
+                valuebinding: "fluid_prefs_sub2"
             }]
         };
 
