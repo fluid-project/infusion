@@ -186,6 +186,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             listener: "{compositePanel}.writeRecord",
                             args: ["subPanel2"]
                         }
+                    },
+                    rendererFnOptions: {
+                        noexpand: true
+                    },
+                    produceTree: function (that) {
+                        return {
+                            children: [{
+                                ID: "header",
+                                componentType: "UIBound",
+                                value: "subPanel2",
+                                valuebinding: "value"
+                            }]
+                        }
                     }
                 }
             }
