@@ -24,7 +24,7 @@
 
         <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/PrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/SeparatedPanelPrefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../css/prefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../css/uiOptions.css" />
 
         <!--[if IE 8]>
             <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/ie8.css" />
@@ -68,15 +68,13 @@
         <script type="text/javascript" src="../../../framework/preferences/js/AuxBuilder.js"></script>
         <script type="text/javascript" src="../../../framework/preferences/js/StarterSchemas.js"></script>
         <script type="text/javascript" src="../../../framework/preferences/js/Builder.js"></script>
-
-        <script type="text/javascript" src="../js/prefsEditorDemo.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/UIOptions.js"></script>
     </head>
 
     <body class="prefsEditor-demo-theme fl-focus">
-        <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             $(document).ready(function () {
-                demo.initPrefsEditor(".flc-prefsEditor-separatedPanel");
+                fluid.uiOptions.prefsEditor(".flc-prefsEditor-separatedPanel");
             })
         </script>
 
