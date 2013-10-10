@@ -58,6 +58,10 @@ var fluid_1_5 = fluid_1_5 || {};
         renderOnInit: false
     });
 
+    fluid.prefs.subPanel.safePrefKey = function (prefKey) {
+        return prefKey.replace(/[.]/g, "_");
+    };
+
     /*
      * Generates the model relay rules for a subpanel.
      * Takes advantage of the fact that compositePanel
@@ -69,7 +73,7 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.each(preferenceMap, function (prefObj, prefKey) {
             $.each(prefObj, function (prefRule) {
                 if (prefRule.indexOf("model.") === 0) {
-                    rules[prefKey.replace(".", "_", "g")] = prefRule.slice(6);
+                    rules[fluid.prefs.subPanel.safePrefKey(prefKey)] = prefRule.slice(6);
                 }
             });
         });
@@ -161,7 +165,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     fluid.each(preference, function (rule, ruleName) {
                         var mdlPrefix = "model.";
                         if (ruleName.indexOf(mdlPrefix) === 0) {
-                            prefObj[mdlPrefix + prefName.replace(/[.]/g, "_")] = rule;
+                            prefObj[mdlPrefix + fluid.prefs.subPanel.safePrefKey(prefName)] = rule;
                         } else {
                             prefObj["components." + cmpName  + ".options." + ruleName] = rule;
                         }
