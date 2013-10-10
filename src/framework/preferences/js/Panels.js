@@ -244,62 +244,34 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
 
-    fluid.defaults("fluid.prefs.compositePanel.rebaseID", {
-        gradeNames: "fluid.standardTransformFunction",
-        memberName: null
-    });
-
-    fluid.prefs.compositePanel.rebaseID = function (value, transformSpec) {
-        return transformSpec.memberName + "_" + value;
+    fluid.prefs.compositePanel.rebaseID = function (value, memberName) {
+        return memberName + "_" + value;
     };
 
-
-    fluid.defaults("fluid.prefs.compositePanel.rebaseValueBinding", {
-        gradeNames: "fluid.standardTransformFunction",
-        rules: {}
-    });
-
-    fluid.prefs.compositePanel.rebaseValueBinding = function (value, transformSpec) {
-        return fluid.find(transformSpec.rules, function (oldModelPath, newModelPath) {
+    fluid.prefs.compositePanel.rebaseValueBinding = function (value, modelRelayRules) {
+        return fluid.find(modelRelayRules, function (oldModelPath, newModelPath) {
             if (value === oldModelPath) {
                 return newModelPath;
             }
         });
     };
 
-    fluid.prefs.compositePanel.rebaseTreeImp = function (tree, rules) {
+    fluid.prefs.compositePanel.rebaseTree = function (tree, memberName, modelRelayRules) {
         var rebased = fluid.transform(tree, function (val, key) {
             if (key === "children") {
                 return fluid.transform(val, function (v) {
-                    return fluid.prefs.compositePanel.rebaseTreeImp(v, rules);
+                    return fluid.prefs.compositePanel.rebaseTree(v, memberName, modelRelayRules);
                 });
+            } else if (key === "ID") {
+                return fluid.prefs.compositePanel.rebaseID(val, memberName);
+            } else if (key === "valuebinding") {
+                return fluid.prefs.compositePanel.rebaseValueBinding(val, modelRelayRules);
             } else {
                 return val;
             }
         });
 
-        return fluid.model.transform(rebased, rules);
-    };
-
-    fluid.prefs.compositePanel.rebaseTree = function (tree, memberName, modelRelayRules) {
-        var rules = {
-            "ID": {
-                transform: {
-                    type: "fluid.prefs.compositePanel.rebaseID",
-                    inputPath: "ID",
-                    memberName: memberName
-                }
-            },
-            "valuebinding": {
-                transform: {
-                    type: "fluid.prefs.compositePanel.rebaseValueBinding",
-                    inputPath: "valuebinding",
-                    rules: modelRelayRules
-                }
-            },
-            "": ""
-        };
-        return fluid.prefs.compositePanel.rebaseTreeImp(tree, rules);
+        return rebased;
     };
 
     fluid.prefs.compositePanel.produceTree = function (that) {
