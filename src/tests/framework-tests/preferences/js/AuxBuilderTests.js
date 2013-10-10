@@ -224,7 +224,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         panel: {
             "createOnEvent": "onPrefsEditorMarkupReady",
             "container": "prefsEditor.dom.%prefKey",
-            "options.gradeNames": "fluid.prefs.defaultPanel",
+            "options.gradeNames": "fluid.prefs.prefsEditorConnections",
             "options.resources.template": "templateLoader.resources.%prefKey"
         },
         enactor: {
@@ -325,7 +325,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             container: "prefsEditor.dom.fluid_prefs_panels_contrast",
                             createOnEvent: "onPrefsEditorMarkupReady",
                             options: {
-                                gradeNames: "fluid.prefs.defaultPanel",
+                                gradeNames: "fluid.prefs.prefsEditorConnections",
                                 classnameMap: {
                                     "default": "fl-theme-prefsEditor-default",
                                     "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
@@ -653,7 +653,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "container": "prefsEditor.dom.fluid_prefs_panels_textSize",
                             "createOnEvent": "onPrefsEditorMarkupReady",
                             options: {
-                                gradeNames: "fluid.prefs.defaultPanel",
+                                gradeNames: "fluid.prefs.prefsEditorConnections",
                                 model: {
                                     value: 1
                                 },
@@ -768,7 +768,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "container": "prefsEditor.dom.fluid_prefs_panels_textSize",
                             "createOnEvent": "onPrefsEditorMarkupReady",
                             options: {
-                                gradeNames: "fluid.prefs.defaultPanel",
+                                gradeNames: "fluid.prefs.prefsEditorConnections",
                                 model: {
                                     value: 1
                                 },
@@ -789,7 +789,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "container": "prefsEditor.dom.fluid_prefs_panels_otherTextSize",
                             "createOnEvent": "onPrefsEditorMarkupReady",
                             options: {
-                                gradeNames: "fluid.prefs.defaultPanel",
+                                gradeNames: "fluid.prefs.prefsEditorConnections",
                                 model: {
                                     value: 1
                                 },
@@ -858,7 +858,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "container": "prefsEditor.dom.fluid_prefs_panels_linksControls",
                             "createOnEvent": "onPrefsEditorMarkupReady",
                             options: {
-                                gradeNames: "fluid.prefs.defaultPanel",
+                                gradeNames: "fluid.prefs.prefsEditorConnections",
                                 model: {
                                     links: false,
                                     inputsLarger: false
@@ -921,7 +921,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "container": "prefsEditor.dom.fluid_prefs_panels_textSize",
                             "createOnEvent": "onPrefsEditorMarkupReady",
                             options: {
-                                gradeNames: "fluid.prefs.defaultPanel",
+                                gradeNames: "fluid.prefs.prefsEditorConnections",
                                 model: {
                                     value: 1
                                 },
