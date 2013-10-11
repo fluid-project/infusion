@@ -1,0 +1,10 @@
+{
+    "uiOptions": {
+        "name": "User Interface Options",
+        "description": "An instance of a preference editor created by the Infusion Prefernce Framework. Users customize their preferences and needs for viewing content.",
+        "files": [
+            "UIOptions.js"
+        ],
+        "dependencies": ["jQuery", "framework", "preferences"]
+    }
+}

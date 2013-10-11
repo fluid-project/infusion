@@ -24,14 +24,14 @@
 
         <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/PrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/SeparatedPanelPrefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../css/prefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../../demos/uiOptions/css/uiOptions.css" />
 
         <!--[if IE 8]>
             <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/ie8.css" />
-            <link rel="stylesheet" type="text/css" href="../css/ie8.css" />
+            <link rel="stylesheet" type="text/css" href="../../../demos/uiOptions/css/ie8.css" />
         <![endif]-->
 
-        <title>Preferences Editor Demo: Using Schemas</title>
+        <title>Preferences Editor Demo: Using Schema</title>
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
@@ -60,6 +60,7 @@
         <script type="text/javascript" src="../../../framework/preferences/js/Panels.js"></script>
         <script type="text/javascript" src="../../../framework/preferences/js/ModelRelay.js"></script>
         <script type="text/javascript" src="../../../framework/preferences/js/Enactors.js"></script>
+        <script type="text/javascript" src="../../../framework/preferences/js/StarterGrades.js"></script>
         <script type="text/javascript" src="../../../framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
         <script type="text/javascript" src="../../../components/slidingPanel/js/SlidingPanel.js"></script>
         <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
@@ -68,7 +69,7 @@
         <script type="text/javascript" src="../../../framework/preferences/js/StarterSchemas.js"></script>
         <script type="text/javascript" src="../../../framework/preferences/js/Builder.js"></script>
 
-        <script type="text/javascript" src="../js/prefsEditorDemo.js"></script>
+        <script type="text/javascript" src="../js/prefsEditorSeparatedPanelSchema.js"></script>
     </head>
 
     <body class="prefsEditor-demo-theme fl-focus">
@@ -79,12 +80,12 @@
             })
         </script>
 
-        <!-- BEGIN markup for Preference Editor -->
+        <!-- BEGIN markup for Preferences Editor -->
         <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
-            <!-- This is the div that will contain the Preference Editor component -->
+            <!-- This is the div that will contain the Preferences Editor component -->
             <div class="flc-slidingPanel-panel flc-prefsEditor-iframe"></div>
 
-            <!-- This div is for the sliding panel that shows and hides the Preference Editor controls -->
+            <!-- This div is for the sliding panel that shows and hides the Preferences Editor controls -->
             <div class="fl-panelBar">
             	<span class="fl-prefsEditor-buttons">
 	                <button id="reset" class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
@@ -92,7 +93,7 @@
             	</span>
             </div>
         </div>
-        <!-- END markup for Preference Editor -->
+        <!-- END markup for Preferences Editor -->
 
         <div class="fl-container-950 fl-centered">
             <div class="flc-toc-tocContainer toc"> </div>
@@ -105,16 +106,16 @@
             <div class="instructions">
                 <h2>Some helpful tips</h2>
                 <ol>
-                    <li>Preference Editor and its different configurations.<br/>
-                        <span class="instruction-comment">On this page, Preference Editor can be found along the top edge.
-                        There are other layout options in development - see <a href="http://wiki.fluidproject.org/display/fluid/%28Floe%29+UI+Options+Design+Wireframes%2C+C.1" target="_blank" title="Opens in new window">Preference Editor Design Wireframes</a>.</span></li>
+                    <li>Preferences Editor and its different configurations.<br/>
+                        <span class="instruction-comment">On this page, Preferences Editor can be found along the top edge.
+                        There are other layout options in development - see <a href="http://wiki.fluidproject.org/display/fluid/%28Floe%29+UI+Options+Design+Wireframes%2C+C.1" target="_blank" title="Opens in new window">Preferences Editor Design Wireframes</a>.</span></li>
                     <li>Try tinkering with the options.</li>
                 </ol>
             </div>
             <div class="fl-col-flex4 content">
                 <div class="fl-col">
                     <h2>Introduction</h2>
-                    <img src="../images/photo_orange.png" alt="an orange"/>
+                    <img src="../../../demos/uiOptions/images/photo_orange.png" alt="an orange"/>
                     <p>
                         Aliquam varius lacus non arcu venenatis scelerisque quis in sapien.
                         Curabitur nec felis tortor.
@@ -168,7 +169,7 @@
                     </p>
 
                     <h2>Some people actually prefer apples</h2>
-                    <img src="../images/photo_apple.png" alt="an apple"/>
+                    <img src="../../../demos/uiOptions/images/photo_apple.png" alt="an apple"/>
                     <p>
                         Praesent vulputate, sem vel feugiat iaculis, eros diam condimentum nisl, eget suscipit nunc est vitae justo.
                         Vivamus imperdiet convallis laoreet.
@@ -215,7 +216,7 @@
                         </div>
                         <div>
                             <label for="comments">Your comments</label>
-                            <textarea id="comments">This form is non-functional, and exists only for demonstrating Preferences Editor functionality</textarea>
+                            <textarea id="comments">This form is non-functional, and exists only for demonstrating Preferences Editorfunctionality</textarea>
                         </div>
                         <div>
                             <button class="fl-force-right">Send</button>
