@@ -261,7 +261,7 @@ var fluid_1_5 = fluid_1_5 || {};
             panel: {
                 "createOnEvent": "onPrefsEditorMarkupReady",
                 "container": "{prefsEditor}.dom.%prefKey",
-                "options.gradeNames": "fluid.prefs.defaultPanel",
+                "options.gradeNames": "fluid.prefs.prefsEditorConnections",
                 "options.resources.template": "{templateLoader}.resources.%prefKey"
             },
             enactor: {

@@ -310,6 +310,23 @@ var fluid_1_5 = fluid_1_5 || {};
         return tree;
     };
 
+    /********************************************************************************
+     * The grade that contains the connections between a panel and the prefs editor *
+     ********************************************************************************/
+
+    fluid.defaults("fluid.prefs.prefsEditorConnections", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        mergePolicy: {
+            sourceApplier: "nomerge"
+        },
+        sourceApplier: "{fluid.prefs.prefsEditor}.applier",
+        listeners: {
+            "{fluid.prefs.prefsEditor}.events.onPrefsEditorRefresh": "{fluid.prefs.panel}.refreshView"
+        },
+        strings: {},
+        parentBundle: "{fluid.prefs.prefsEditorLoader}.msgBundle"
+    });
+
     /****************************************
      * Preferences Editor Text Field Slider *
      ****************************************/
