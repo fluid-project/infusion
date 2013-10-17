@@ -80,15 +80,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "type": "fluid.prefs.enactors.textSize"
                     },
                     "panel": {
-<<<<<<< HEAD:src/tests/component-tests/uiOptions/js/BuilderTests.js
-                        "type": "fluid.uiOptions.panel.textSize",
-                        "container": ".flc-uiOptions-text-size",  // the css selector in the template where the panel is rendered
-                        "template": "%prefix/UIOptionsTemplate-textSize.html",
-=======
                         "type": "fluid.prefs.panel.textSize",
                         "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/PrefsEditorTemplate-textSize.html",
->>>>>>> master:src/tests/framework-tests/preferences/js/BuilderTests.js
                         "message": "%prefix/textSize.json"
                     }
                 },
@@ -107,15 +101,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     },
                     "panel": {
-<<<<<<< HEAD:src/tests/component-tests/uiOptions/js/BuilderTests.js
-                        "type": "fluid.uiOptions.panel.lineSpace",
-                        "container": ".flc-uiOptions-line-space",  // the css selector in the template where the panel is rendered
-                        "template": "%prefix/UIOptionsTemplate-lineSpace.html",
-=======
                         "type": "fluid.prefs.panel.lineSpace",
                         "container": ".flc-prefsEditor-line-space",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/PrefsEditorTemplate-lineSpace.html",
->>>>>>> master:src/tests/framework-tests/preferences/js/BuilderTests.js
                         "message": "%prefix/lineSpace.json"
                     }
                 }
@@ -275,13 +263,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.panels = {
         "textSize": {
             "panel": {
-<<<<<<< HEAD:src/tests/component-tests/uiOptions/js/BuilderTests.js
-                "type": "fluid.uiOptions.panel.textSize",
-                "container": ".flc-uiOptions-text-size",
-=======
                 "type": "fluid.prefs.panel.textSize",
                 "container": ".flc-prefsEditor-text-size",
->>>>>>> master:src/tests/framework-tests/preferences/js/BuilderTests.js
                 "template": "templates/textSize",
                 "message": "messages/textSize"
             }

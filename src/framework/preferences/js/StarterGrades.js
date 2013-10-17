@@ -205,23 +205,6 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    /************************************************************************
-     * The grade that contains shared options by all default settings panels
-     ************************************************************************/
-
-    fluid.defaults("fluid.prefs.defaultPanel", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        mergePolicy: {
-            sourceApplier: "nomerge"
-        },
-        sourceApplier: "{fluid.prefs.prefsEditor}.applier",
-        listeners: {
-            "{prefsEditor}.events.onPrefsEditorRefresh": "{fluid.prefs.panel}.refreshView"
-        },
-        strings: {},
-        parentBundle: "{prefsEditorLoader}.msgBundle"
-    });
-
     /*********************************************************************************************************
      * Starter Settings Panels
      *
@@ -244,7 +227,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{prefsEditor}.dom.textSize",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
-                    gradeNames: "fluid.prefs.defaultPanel",
+                    gradeNames: "fluid.prefs.prefsEditorConnections",
                     rules: {
                         "textSize": "value"
                     },
@@ -261,7 +244,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{prefsEditor}.dom.lineSpace",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
-                    gradeNames: "fluid.prefs.defaultPanel",
+                    gradeNames: "fluid.prefs.prefsEditorConnections",
                     rules: {
                         "lineSpace": "value"
                     },
@@ -278,7 +261,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{prefsEditor}.dom.textFont",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
-                    gradeNames: "fluid.prefs.defaultPanel",
+                    gradeNames: "fluid.prefs.prefsEditorConnections",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "textFont": "value"
@@ -296,7 +279,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{prefsEditor}.dom.contrast",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
-                    gradeNames: "fluid.prefs.defaultPanel",
+                    gradeNames: "fluid.prefs.prefsEditorConnections",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "theme": "value"
@@ -314,7 +297,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{prefsEditor}.dom.layoutControls",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
-                    gradeNames: "fluid.prefs.defaultPanel",
+                    gradeNames: "fluid.prefs.prefsEditorConnections",
                     rules: {
                         "toc": "toc"
                     },
@@ -331,7 +314,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{prefsEditor}.dom.linksControls",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
-                    gradeNames: "fluid.prefs.defaultPanel",
+                    gradeNames: "fluid.prefs.prefsEditorConnections",
                     rules: {
                         "links": "links",
                         "inputsLarger": "inputsLarger"
