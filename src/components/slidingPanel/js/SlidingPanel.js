@@ -59,11 +59,6 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.slidingPanel.lookupMsg = function (messageResolver, value) {
-        var looked = messageResolver.lookup([value]);
-        return looked ? looked.template : looked;
-    };
-
     fluid.slidingPanel.slideUp = function (element, callback, duration) {
         $(element).slideUp(duration || "400", callback);
     };
