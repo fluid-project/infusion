@@ -65,26 +65,6 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.rendererComponent", "fluid.prefs.stringBundle", "fluid.prefs.modelRelay", "autoInit"],
     });
 
-    fluid.prefs.stringLookup = function (messageResolver, stringArrayIndex) {
-        var that = {id: fluid.allocateGuid()};
-        that.singleLookup = function (value) {
-            var looked = messageResolver.lookup([value]);
-            return fluid.get(looked, "template");
-        };
-        that.multiLookup = function (values) {
-            return fluid.transform(values, function (value) {
-                return that.singleLookup(value);
-            });
-        };
-        that.lookup = function (value) {
-            var values = fluid.get(stringArrayIndex, value) || value;
-            var lookupFn = fluid.isArrayable(values) ? "multiLookup" : "singleLookup";
-            return that[lookupFn](values);
-        };
-        that.resolvePathSegment = that.lookup;
-        return that;
-    };
-
     /********************************************************************************
      * The grade that contains the connections between a panel and the prefs editor *
      ********************************************************************************/
