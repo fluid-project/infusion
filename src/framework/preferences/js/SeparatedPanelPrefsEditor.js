@@ -77,8 +77,13 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{separatedPanel}.container",
                 createOnEvent: "onCreateSlidingPanelReady",
                 options: {
+                    gradeNames: ["fluid.prefs.stringBundle"],
                     members: {
-                        msgBundle: "{separatedPanel}.msgBundle"
+                        messageResolver: "{separatedPanel}.msgBundle"
+                    },
+                    strings: {
+                        showText: "{that}.stringBundle.slidingPanelShowText",
+                        hideText: "{that}.stringBundle.slidingPanelHideText"
                     },
                     invokers: {
                         operateShow: {

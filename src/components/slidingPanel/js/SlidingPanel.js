@@ -30,18 +30,8 @@ var fluid_1_5 = fluid_1_5 || {};
             toggleButton: ".flc-slidingPanel-toggleButton"
         },
         strings: {
-            showText: {
-                expander: {
-                    func: "fluid.slidingPanel.lookupMsg",
-                    args: ["{that}.msgBundle", "slidingPanelShowText"]
-                }
-            },
-            hideText: {
-                expander: {
-                    func: "fluid.slidingPanel.lookupMsg",
-                    args: ["{that}.msgBundle", "slidingPanelHideText"]
-                }
-            }
+            showText: "show",
+            hideText: "hide"
         },
         events: {
             onPanelHide: null,
