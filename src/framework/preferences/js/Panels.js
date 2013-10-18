@@ -44,11 +44,9 @@ var fluid_1_5 = fluid_1_5 || {};
             return fluid.get(looked, "template");
         };
         that.multiLookup = function (values) {
-            var looked = [];
-            fluid.each(values, function (value) {
-                looked.push(that.singleLookup(value));
+            return fluid.transform(values, function (value) {
+                return that.singleLookup(value);
             });
-            return looked;
         };
         that.lookup = function (value) {
             var values = fluid.get(stringArrayIndex, value) || value;
