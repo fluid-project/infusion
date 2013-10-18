@@ -88,11 +88,17 @@ var fluid_1_5 = fluid_1_5 || {};
                     invokers: {
                         operateShow: {
                             funcName: "fluid.prefs.separatedPanel.showPanel",
-                            args: ["{that}.dom.panel", "{that}.events.afterPanelShow.fire"]
+                            args: ["{that}.dom.panel", "{that}.events.afterPanelShow.fire"],
+                            // override default implementation
+                            "this": null,
+                            "method": null
                         },
                         operateHide: {
                             funcName: "fluid.prefs.separatedPanel.hidePanel",
-                            args: ["{that}.dom.panel", "{that}.events.afterPanelHide.fire"]
+                            args: ["{that}.dom.panel", "{that}.events.afterPanelHide.fire"],
+                            // override default implementation
+                            "this": null,
+                            "method": null
                         }
                     }
                 }

@@ -76,12 +76,14 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         invokers: {
             operateHide: {
-                funcName: "fluid.slidingPanel.slideUp",
-                args: ["{that}.dom.panel", 400, "{that}.events.afterPanelHide.fire"]
+                "this": "{that}.dom.panel",
+                "method": "slideUp",
+                "args": [400, "{that}.events.afterPanelHide.fire"]
             },
             operateShow: {
-                funcName: "fluid.slidingPanel.slideDown",
-                "args": ["{that}.dom.panel", 400, "{that}.events.afterPanelShow.fire"]
+                "this": "{that}.dom.panel",
+                "method": "slideDown",
+                "args": [400, "{that}.events.afterPanelShow.fire"]
             },
             hidePanel: {
                 func: "{that}.events.onPanelHide.fire"
@@ -102,17 +104,6 @@ var fluid_1_5 = fluid_1_5 || {};
             isShowing: false
         }
     });
-
-    //FLUID-5184: Couldn't specify these declaratively with
-    //a this-ist syntax. Had to write wrapper functions to allow
-    //overriding operate methods in SeparatedPanelPrefsEditor.js
-    fluid.slidingPanel.slideUp = function (panel, duration, callback) {
-        panel.slideUp(duration, callback);
-    };
-
-    fluid.slidingPanel.slideDown = function (panel, duration, callback) {
-        panel.slideDown(duration, callback);
-    };
 
     fluid.slidingPanel.refreshView = function (that, toggle) {
         // if the toggle flag is on, it will flip the state, otherwise just refreshes.
