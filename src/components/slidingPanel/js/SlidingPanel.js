@@ -27,7 +27,8 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.viewComponent", "autoInit"],
         selectors: {
             panel: ".flc-slidingPanel-panel",
-            toggleButton: ".flc-slidingPanel-toggleButton"
+            toggleButton: ".flc-slidingPanel-toggleButton",
+            toggleButtonLabel: ".flc-slidingPanel-toggleButton"
         },
         strings: {
             showText: "show",
@@ -39,59 +40,83 @@ var fluid_1_5 = fluid_1_5 || {};
             afterPanelHide: null,
             afterPanelShow: null
         },
-        finalInitFunction: "fluid.slidingPanel.finalInit",
+        listeners: {
+            "onCreate.bindClick": {
+                "this": "{that}.dom.toggleButton",
+                "method": "click",
+                "args": ["{that}.togglePanel"]
+            },
+            "onCreate.setInitialState": {
+                listener: "{that}.refreshView"
+            },
+            "onPanelHide.setText": {
+                "this": "{that}.dom.toggleButtonLabel",
+                "method": "text",
+                "args": ["{that}.options.strings.showText"]
+            },
+            "onPanelShow.setText": {
+                "this": "{that}.dom.toggleButtonLabel",
+                "method": "text",
+                "args": ["{that}.options.strings.hideText"]
+            },
+            "onPanelHide.updateModel": {
+                listener: "{that}.applier.requestChange",
+                args: ["isShowing", false]
+            },
+            "onPanelShow.updateModel": {
+                listener: "{that}.applier.requestChange",
+                args: ["isShowing", true]
+            },
+            "onPanelHide.operate": {
+                listener: "{that}.operateHide"
+            },
+            "onPanelShow.operate": {
+                listener: "{that}.operateShow"
+            }
+        },
         invokers: {
-            operateHide: "fluid.slidingPanel.slideUp",
-            operateShow: "fluid.slidingPanel.slideDown"
+            operateHide: {
+                funcName: "fluid.slidingPanel.slideUp",
+                args: ["{that}.dom.panel", 400, "{that}.events.afterPanelHide.fire"]
+            },
+            operateShow: {
+                funcName: "fluid.slidingPanel.slideDown",
+                "args": ["{that}.dom.panel", 400, "{that}.events.afterPanelShow.fire"]
+            },
+            hidePanel: {
+                func: "{that}.events.onPanelHide.fire"
+            },
+            showPanel: {
+                func: "{that}.events.onPanelShow.fire"
+            },
+            togglePanel: {
+                funcName: "fluid.slidingPanel.refreshView",
+                args: ["{that}", true]
+            },
+            refreshView: {
+                funcName: "fluid.slidingPanel.refreshView",
+                args: ["{that}", false]
+            }
         },
         model: {
             isShowing: false
-        },
-        methods: {
-            showPanel: {
-                finalState: true,
-                name: "Show"
-            },
-            hidePanel: {
-                finalState: false,
-                name: "Hide"
-            }
         }
     });
 
-    fluid.slidingPanel.slideUp = function (element, callback, duration) {
-        $(element).slideUp(duration || "400", callback);
+    //FLUID-5184: Couldn't specify these declaratively with
+    //a this-ist syntax. Had to write wrapper functions to allow
+    //overriding operate methods in SeparatedPanelPrefsEditor.js
+    fluid.slidingPanel.slideUp = function (panel, duration, callback) {
+        panel.slideUp(duration, callback);
     };
 
-    fluid.slidingPanel.slideDown = function (element, callback, duration) {
-        $(element).slideDown(duration || "400", callback);
+    fluid.slidingPanel.slideDown = function (panel, duration, callback) {
+        panel.slideDown(duration, callback);
     };
 
-    fluid.slidingPanel.finalInit = function (that) {
-        fluid.each(that.options.methods, function (method, methodName) {
-            that[methodName] = function () {
-                that.events["onPanel" + method.name].fire(that);
-                that.applier.requestChange("isShowing", method.finalState);
-                that.refreshView();
-                that["operate" + method.name](that.locate("panel"), that.events["afterPanel" + method.name].fire);
-            };
-        });
-
-        that.togglePanel = function () {
-            that[that.model.isShowing ? "hidePanel" : "showPanel"]();
-        };
-
-        that.setPanelHeight = function (newHeight) {
-            that.locate("panel").height(newHeight);
-        };
-
-        that.refreshView = function () {
-            that.locate("toggleButton").text(that.options.strings[that.model.isShowing ? "hideText" : "showText"]);
-        };
-
-        that.locate("toggleButton").click(that.togglePanel);
-
-        that.refreshView();
+    fluid.slidingPanel.refreshView = function (that, toggle) {
+        // if the toggle flag is on, it will flip the state, otherwise just refreshes.
+        that[that.model.isShowing !== toggle  ? "showPanel" : "hidePanel"]();
     };
 
 })(jQuery, fluid_1_5);
