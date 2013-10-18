@@ -971,7 +971,10 @@ var fluid_1_5 = fluid_1_5 || {};
 
         var argMap = upDefaults? upDefaults.argumentMap : null;
         var inferMap = false;
-        if (!argMap && (upDefaults || (options && options.componentRecord)) && !options.passArgs) {
+        if (upDefaults) {
+            options.passArgs = false; // Don't attempt to construct a component using "passArgs" spec
+        }
+        if (!argMap && (upDefaults || (options && options.componentRecord))) {
             inferMap = true;
             // infer that it must be a little component if we have any reason to believe it is a component
             if (demands.length < 2) {

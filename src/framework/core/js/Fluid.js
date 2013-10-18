@@ -1058,9 +1058,6 @@ var fluid = fluid || fluid_1_5;
      * will be the return value of fire()
      */
     fluid.makeEventFirer = function (unicast, preventable, name) {
-        var listeners; // = {}
-        var byId; // = {}
-        var sortedListeners; // = []
         
         function fireToListeners(listeners, args, wrapper) {
             if (!listeners) { return; }
@@ -1090,9 +1087,9 @@ var fluid = fluid || fluid_1_5;
         
         var that;
         var lazyInit = function () { // Lazy init function to economise on object references
-            listeners = {};
-            byId = {};
-            sortedListeners = [];
+            that.listeners = {};
+            that.byId = {};
+            that.sortedListeners = [];
             that.addListener = function (listener, namespace, predicate, priority, softNamespace) {
                 if (!listener) {
                     return;
@@ -1108,17 +1105,17 @@ var fluid = fluid || fluid_1_5;
                 var record = {listener: listener, predicate: predicate,
                     namespace: namespace,
                     softNamespace: softNamespace,
-                    priority: fluid.event.mapPriority(priority, sortedListeners.length)};
-                byId[id] = record;
+                    priority: fluid.event.mapPriority(priority, that.sortedListeners.length)};
+                that.byId[id] = record;
                 if (softNamespace) {
-                    var thisListeners = (listeners[namespace] = fluid.makeArray(listeners[namespace]));
+                    var thisListeners = (that.listeners[namespace] = fluid.makeArray(that.listeners[namespace]));
                     thisListeners.push(record);
                 }
                 else {
-                    listeners[namespace] = record;
+                    that.listeners[namespace] = record;
                 }
                 
-                sortedListeners = fluid.event.sortListeners(listeners);
+                that.sortedListeners = fluid.event.sortListeners(that.listeners);
             };
             that.addListener.apply(null, arguments);
         };
@@ -1130,11 +1127,11 @@ var fluid = fluid || fluid_1_5;
             },
 
             removeListener: function (listener) {
-                if (!listeners) { return; }
+                if (!that.listeners) { return; }
                 var namespace, id;
                 if (typeof (listener) === "string") {
                     namespace = listener;
-                    var record = listeners[listener];
+                    var record = that.listeners[listener];
                     if (!record) {
                         return;
                     }
@@ -1146,18 +1143,18 @@ var fluid = fluid || fluid_1_5;
                         fluid.fail("Cannot remove unregistered listener function ", listener, " from event " + that.name);
                     }
                 }
-                var rec = byId[id];
+                var rec = that.byId[id];
                 var softNamespace = rec && rec.softNamespace;
                 namespace = namespace || (rec && rec.namespace) || id;
-                delete byId[id];
+                delete that.byId[id];
                 if (softNamespace) {
-                    fluid.remove_if(listeners[namespace], function (thisLis) {
+                    fluid.remove_if(that.listeners[namespace], function (thisLis) {
                         return thisLis.listener.$$fluid_guid === id;
                     });
                 } else {
-                    delete listeners[namespace];
+                    delete that.listeners[namespace];
                 }
-                sortedListeners = fluid.event.sortListeners(listeners);
+                that.sortedListeners = fluid.event.sortListeners(that.listeners);
             },
             // NB - this method exists currently solely for the convenience of the new,
             // transactional changeApplier. As it exists it is hard to imagine the function
@@ -1167,7 +1164,7 @@ var fluid = fluid || fluid_1_5;
                 return fireToListeners(listeners, args, wrapper);
             },
             fire: function () {
-                return fireToListeners(sortedListeners, arguments);
+                return fireToListeners(that.sortedListeners, arguments);
             }
         };
         return that;

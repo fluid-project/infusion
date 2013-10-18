@@ -434,6 +434,10 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.defaults("fluid.modelRelayComponent", {
         gradeNames: ["fluid.commonModelComponent", "fluid.eventedComponent", "autoInit"],
+        changeApplierOptions: {
+            relayStyle: true,
+            cullUnchanged: true
+        },
         members: {
             model: "@expand:fluid.initRelayModel({that}, {that}.options.model, {that}.applier)",
             applier: "@expand:fluid.makeHolderChangeApplier({that}, {that}.options.changeApplierOptions)",
@@ -512,7 +516,10 @@ var fluid_1_5 = fluid_1_5 || {};
             // Bypass fluid.event.dispatchListener by means of "standard = false" and enter our custom workflow including expanding "change":
             fluid.each(records.records, function (record) {
                 var func = fluid.resolveModelListener(that, record);
-                fluid.addSourceGuardedListener(parsed.applier, parsed.path, record.guardSource, func, "modelChanged", record.namespace, record.softNamespace);
+                fluid.addSourceGuardedListener(parsed.applier, {
+                    path: parsed.path,
+                    transactional: true
+                }, record.guardSource, func, "modelChanged", record.namespace, record.softNamespace);
                 fluid.recordListener(parsed.applier.modelChanged, func, fluid.shadowForComponent(that));
             });  
         });
@@ -521,12 +528,137 @@ var fluid_1_5 = fluid_1_5 || {};
 
     /** CHANGE APPLIER **/
 
+    // unsupported, NON-API function - will be eliminated for 2.0
     fluid.model.isNullChange = function (model, request, resolverGetConfig) {
         if (request.type === "ADD" && !request.forceChange) {
-            var existing = fluid.get(model, request.path, resolverGetConfig);
+            var existing = fluid.get(model, request.segs, resolverGetConfig);
             if (existing === request.value) {
                 return true;
             }
+        }
+    };
+
+    // unsupported, NON-API function      
+    fluid.typeCode = function (totest) {
+        return fluid.isPrimitive(totest) || !fluid.isPlainObject(totest) ? "primitive" : 
+            fluid.isArrayable(totest) ? "array" : "object" 
+    };
+    
+    // unsupported, NON-API function 
+    fluid.model.isChangedPath = function (changeMap, segs, limit) {
+        if (limit === undefined) {
+            limit = segs.length;
+        }
+        for (var i = 0; i <= limit; ++ i) {
+            if (typeof(changeMap) === "string") {
+                return true;
+            }
+            if (i < segs.length && changeMap) {
+                changeMap = changeMap[segs[i]];
+            }
+        }
+        return false;
+    };
+
+    // unsupported, NON-API function     
+    fluid.model.setChangedPath = function (options, segs, value, limit) {
+        if (limit === undefined) {
+            limit = segs.length;
+        }
+        if (!fluid.model.isChangedPath(options.changeMap, segs, limit)) {
+            segs.unshift("changeMap");
+            fluid.model.setSimple(options, segs.slice(0, limit + 2), value);
+            segs.shift();
+        }
+    };
+
+    // unsupported, NON-API function      
+    fluid.model.fetchChangeChildren = function (target, i, segs, source, options) {
+        fluid.each(source, function (value, key) {
+            fluid.model.applyChangeStrategy(target, key, i, segs, value, options);
+        });
+    };
+
+    // unsupported, NON-API function
+    fluid.model.applyChangeStrategy = function (target, name, i, segs, source, options) {
+        var sourceCode = fluid.typeCode(source);
+        var targetCode = fluid.typeCode(target);
+        var changedValue = fluid.NO_VALUE;
+        if (sourceCode === "primitive") {
+            if (target[name] !== source) {
+                changedValue = source;
+            }
+        } else if (targetCode !== sourceCode) { // RH is not primitive - array or object and mismatching
+            changedValue = fluid.freshContainer(source);
+        }
+        if (changedValue !== fluid.NO_VALUE) {
+            target[name] = source;
+            if (options.changeMap) {
+                segs.push(name);
+                fluid.model.setChangedPath(options, segs, "ADD");
+                segs.pop();
+                ++ options.changes;
+            }
+        }
+        if (sourceCode !== "primitive") {
+            segs.push(name);
+            var pen = fluid.model.stepTargetAccess(target, "ADD", segs, segs.length - 1, segs.length, options);
+            fluid.model.fetchChangeChildren(pen.root, i + 1, segs, source[name], options);
+            segs.pop(); 
+        }
+    };
+    
+    fluid.model.stepTargetAccess = function (target, type, segs, startpos, endpos, options) {
+        for (var i = startpos; i < endpos; ++ i) {
+            var oldTrunk = target[segs[i]];
+            var target = fluid.model.traverseWithStrategy(target, segs, i, options[type === "ADD" ? "resolverSetConfig" : "resolverGetConfig"], 
+                segs.length - i - 1);
+            if (oldTrunk !== target && options.changeMap) {
+                fluid.model.setChangedPath(options, segs, "ADD", i);
+            }
+        }
+        return {root: target, last: segs[endpos - 1]};
+    };
+    
+    // After the 1.5 release, this will replace the old "applyChangeRequest"
+    // Changes: "MERGE" action abolished
+    // ADD/DELETE at root can be destructive
+    // changes tracked in optional final argument holding "changeMap: {}, changes: 0"
+    fluid.model.applyHolderChangeRequest = function (holder, request, options) {
+        options = options || {};
+        options.resolverSetConfig = options.resolverSetConfig || fluid.model.defaultSetConfig;
+        options.resolverGetConfig = options.resolverGetConfig || fluid.model.defaultGetConfig;
+        var length = request.segs.length;
+        var pen, atRoot = length === 0;
+        if (atRoot) {
+            pen = {root: holder, last: "model"};
+        } else {
+            pen = fluid.model.stepTargetAccess(holder.model, request.type, request.segs, 0, length - 1, options);
+        }
+        if (request.type === "ADD") {
+            var value = request.value;
+            var segs = fluid.makeArray(request.segs);
+            if (fluid.isPrimitive(value) || !fluid.isPlainObject(value)) {
+                fluid.model.applyChangeStrategy(pen.root, pen.last, length - 1, segs, value, options);
+            }
+            else {
+                if (atRoot) {
+                    pen.root = holder.model;
+                } else {
+                    pen = fluid.model.stepTargetAccess(pen.root, request.type, request.segs, length - 1, length, options);
+                }
+                fluid.model.fetchChangeChildren(pen.root, length, segs, value, options);
+            }
+        } else if (request.type === "DELETE") {
+            if (pen.root && pen.root[pen.last] !== undefined) {
+                delete pen.root[pen.last];
+                if (options.changeMap) {
+                    fluid.model.setChangedPath(options, request.segs, "DELETE");
+                    ++ options.changes;
+                }
+            }
+        } else {
+            fluid.fail("Unrecognised change type of " + request.type);
         }
     };
     
@@ -681,18 +813,17 @@ var fluid_1_5 = fluid_1_5 || {};
             var pathSpec = spec;
             var transactional = false;
             var priority = Number.MAX_VALUE;
-            if (typeof (spec) !== "string") {
-                pathSpec = spec.path;
-                transactional = spec.transactional;
-                if (spec.priority !== undefined) {
-                    priority = spec.priority;
-                }
+            if (typeof (spec) === "string") {
+                spec = {path: spec};
             }
-            else {
-                if (pathSpec.charAt(0) === "!") {
-                    transactional = true;
-                    pathSpec = pathSpec.substring(1);
-                }
+            pathSpec = spec.path;
+            transactional = spec.transactional;
+            if (spec.priority !== undefined) {
+                priority = spec.priority;
+            }
+            if (pathSpec.charAt(0) === "!") {
+                transactional = true;
+                pathSpec = pathSpec.substring(1)
             }
             var wrapped = function (changePath, fireSpec, accum) {
                 var guid = fluid.event.identifyListener(listener);
@@ -758,12 +889,24 @@ var fluid_1_5 = fluid_1_5 || {};
         }
 
         function adaptListener(that, name) {
+            var baseEvent = baseEvents[name];
             that[name] = {
                 addListener: function (spec, listener, namespace, softNamespace) {
-                    baseEvents[name].addListener(wrapListener(listener, spec), namespace, null, null, softNamespace);
+                    if (typeof(spec) === "string") {
+                        spec = {path: spec}
+                    }
+                    var id = fluid.event.identifyListener(listener);
+                    var exist = baseEvent.byId && baseEvent.byId[id];
+                    if (exist) {
+                        exist.paths.push(spec.path);
+                    }
+                    else {
+                        baseEvent.addListener(wrapListener(listener, spec), namespace, null, null, softNamespace);
+                        baseEvent.byId[id].paths = [spec.path];
+                    }
                 },
                 removeListener: function (listener) {
-                    baseEvents[name].removeListener(listener);
+                    baseEvent.removeListener(listener);
                 }
             };
         }
@@ -775,6 +918,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (!changeRequest.type) {
                 changeRequest.type = "ADD";
             }
+            changeRequest.segs = fluid.model.pathToSegments(changeRequest.path, options.resolverSetConfig);
         }
 
         var bareApplier = {
@@ -800,12 +944,12 @@ var fluid_1_5 = fluid_1_5 || {};
             preFireChangeRequest(changeRequest);
             var guardFireSpec = defeatGuards ? null : getFireSpec("guards", changeRequest.path);
             var postGuardSpec = getFireSpec("postGuards", changeRequest.path);
-            if (guardFireSpec && guardFireSpec.transListeners.length > 0 || postGuardSpec.transListeners.length > 0) {
+//            if (guardFireSpec && guardFireSpec.transListeners.length > 0 || postGuardSpec.transListeners.length > 0) {
                 var ation = that.initiate();
-                ation.fireChangeRequest(changeRequest, guardFireSpec);
+                ation.fireChangeRequest(changeRequest);
                 ation.commit();
-            }
-            else {
+//            }
+/*            else {
                 if (!defeatGuards) {
                     // TODO: this use of "listeners" seems pointless since we have just verified that there are no transactional listeners
                     var prevent = fireFromSpec("guards", guardFireSpec, [holder.model, changeRequest, bareApplier], "listeners");
@@ -821,11 +965,14 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.model.applyChangeRequest(holder.model, changeRequest, options.resolverSetConfig);
                 fireAgglomerated("modelChanged", "all", [changeRequest], [holder.model, oldModel, null, null], 2, 3);
             }
+            */
         };
 
         that.fireChangeRequest = sourceWrapModelChanged(that.fireChangeRequest, threadLocal);
         fluid.bindRequestChange(that);
 
+        // TODO: modelChanged has been moved to new model for firing. Once we abolish "guards", fireAgglomerated can go too.
+        // Possibly also all the prepareFireEvent/wrapListener/fireSpec nonsense too. 
         function fireAgglomerated(eventName, formName, changes, args, accpos, matchpos) {
             var fireSpec = makeFireSpec();
             for (var i = 0; i < changes.length; ++i) {
@@ -857,6 +1004,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.model.copyModel(newModel, holder.model);
             }
             var ation = {
+                bim: {}, // "beanInvalidationModel"
                 commit: function () {
                     var oldModel;
                     if (cancelled) {
@@ -889,6 +1037,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                     if (!cancelled) {
                         if (!(wrapper && wrapper.culled)) {
+                            fluid.model.setSimple(ation.bim, changeRequest.segs, true);
                             fluid.model.applyChangeRequest(newModel, changeRequest, options.resolverSetConfig);
                             changes.push(changeRequest);
                         }

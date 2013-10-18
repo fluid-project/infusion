@@ -213,14 +213,90 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     jqUnit.test("FLUID-3729 test: application into nothing", function () {
         var model = {};
+        var holder = {model: model};
         
-        fluid.model.applyChangeRequest(model, {type: "ADD", path: "path1.nonexistent", value: "value"});
-        jqUnit.assertEquals("Application 2 levels into nothing", "value", model.path1.nonexistent);
+        var applyOldChange = function (request) {
+            fluid.model.applyChangeRequest(model, request);
+        }
+        var applyHolderChange = function (request) {
+            request.segs = fluid.model.parseEL(request.path);
+            fluid.model.applyHolderChangeRequest(holder, request);
+        }
         
-        fluid.model.applyChangeRequest(model, {type: "ADD", path: "path1.nonexistent2", value: "value2"});
-        jqUnit.assertEquals("Application 1 level into nothing", "value2", model.path1.nonexistent2);
+        function applyTests(applyFunc) {
+            applyFunc({type: "ADD", path: "path1.nonexistent", value: "value"});
+            jqUnit.assertEquals("Application 2 levels into nothing", "value", model.path1.nonexistent);
+            
+        
+            applyFunc({type: "ADD", path: "path1.nonexistent2", value: "value2"});
+            jqUnit.assertEquals("Application 1 level into nothing", "value2", model.path1.nonexistent2);
+        }
+        applyTests(applyOldChange);
+        applyTests(applyHolderChange);
     });
-        
+    
+    // These "new tests" start with the same cases as for the "old applier" written in declarative form,
+    // but in many cases the expected results are different.
+    
+    fluid.tests.changeTests = [{
+        message: "Added at root: cautious application", // note change of meaning from old model - previously "add + clear"
+        model: {a: 1, b: 2},
+        request: {type: "ADD", path: "", value: {c: 3}},
+        expected: {a: 1, b: 2, c: 3},
+        changes: 1,
+        changeMap: {c: "ADD"}
+    }, {
+        message: "Delete root: true destruction", // note change of meaning from old model - previously "clear"
+        model: {a: 1, b: 2},
+        request: {type: "DELETE", path: ""},
+        expected: undefined,
+        changes: 1,
+        changeMap: "DELETE"
+    }, {
+        message: "Add at trunk",
+        model: {a: 1, b: 2, c: {a: 1, b: 2}},
+        request: {type: "ADD", path: "c", value: {c: 3}},
+        expected: {a: 1, b: 2, c: {a: 1, b: 2, c: 3}},
+        changes: 1,
+        changeMap: {c: {c: "ADD"}}
+    }, {
+        message: "Add into nothing",
+        model: {a: 1, b: 2},
+        request: {type: "ADD", path: "c", value: {c: 3}},
+        expected: {a: 1, b: 2, c: {c: 3}},
+        changes: 1,
+        changeMap: {c: "ADD"}
+    }, {
+        message: "Add primitive into nothing",
+        model: {a: 1, b: 2},
+        request: {type: "ADD", path: "c.c", value: 3},
+        expected: {a: 1, b: 2, c: {c: 3}},
+        changes: 1,
+        changeMap: {c: "ADD"}
+    }, {
+        message: "Delete into nothing",
+        model: {a: 1, b: 2},
+        request: {type: "DELETE", path: "c.c"},
+        expected: {a: 1, b: 2},
+        changes: 0,
+        changeMap: {}
+    }];
+    
+    jqUnit.test("ApplyHolderChangeRequest - cautious application + invalidation", function () {
+        for (var i = 0; i < fluid.tests.changeTests.length; ++ i) {
+            var test = fluid.tests.changeTests[i];
+            var holder = {model: fluid.copy(test.model)};
+            var options = {changeMap: {}, changes: 0};
+            test.request.segs = fluid.model.parseEL(test.request.path);
+            fluid.model.applyHolderChangeRequest(holder, test.request, options);
+            var message = "index " + i + ": " + test.message;
+            jqUnit.assertDeepEq(message, test.expected, holder.model);
+            if (test.changes !== undefined) {
+               jqUnit.assertEquals(message + " changes", test.changes, options.changes);
+               jqUnit.assertDeepEq(message + " changeMap", test.changeMap, options.changeMap);
+            }
+        }
+    });
     
     jqUnit.test("ApplyChangeRequest - ADD, DELETE and MERGE", function () {
         var model = {a: 1, b: 2};
@@ -446,7 +522,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         applier.modelChanged.addListener("*", observingListener);
         applier.requestChange("outerProperty", true);
         
-        jqUnit.assertDeepEq("Guard triggered", {
+        jqUnit.assertLeftHand("Guard triggered", {
             path: "outerProperty",
             value: true,
             type: "ADD"
@@ -472,7 +548,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         applier.guards.addListener("innerProperty.*", checkingGuard2);
         applier.requestChange("innerProperty.innerPath1", 6);
-        jqUnit.assertDeepEq("Guard2 triggered", {
+        jqUnit.assertLeftHand("Guard2 triggered", {
             path: "innerProperty.innerPath1",
             value: 6,
             type: "ADD"
@@ -608,7 +684,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.defaults("fluid.tests.fluid4258head", {
-        gradeNames: ["fluid.tests.changeRecorder", "autoInit"],
+        gradeNames: ["fluid.standardComponent", "fluid.tests.changeRecorder", "autoInit"],
         model: {
             thing1: {
                 nest1: 2,
@@ -723,6 +799,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             path: ["innerModel"], oldValue: undefined, value: {nested2: "thing"}
         }];
         jqUnit.assertDeepEq("Registered initial change", expected2, that.fireRecord);
+    });
+
+
+    jqUnit.test("FLUID-5151: One single listener function hooked up for multiple model paths only have the last call registered succesfully", function () {
+        var model = {
+            path1: null,
+            path2: null
+        };
+        var applier = fluid.makeChangeApplier(model);
+
+        var currentPath = null;
+        var listenerToFire = function (newModel, oldModel, changeRequest) {
+            currentPath = changeRequest[0].path;
+        };
+
+        applier.modelChanged.addListener("path1", listenerToFire);
+        applier.modelChanged.addListener("path2", listenerToFire);
+
+        var triggerChangeRequest = function (fireOn) {
+            applier.requestChange(fireOn, fireOn);
+            jqUnit.assertEquals("The listener registered for model path " + fireOn + " has been fired", fireOn, currentPath);
+        };
+
+        triggerChangeRequest("path1");
+        triggerChangeRequest("path2");
     });
     
 })(jQuery);
