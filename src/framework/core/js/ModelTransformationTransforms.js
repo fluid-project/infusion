@@ -170,7 +170,7 @@ var fluid = fluid || fluid_1_5;
         var operator = fluid.model.transform.getValue(undefined, transformSpec.operator, transform);
 
         var fun = fluid.transforms.binaryLookup[operator];
-        return (fun === undefined || inputs.left === null || inputs.right === null) ? undefined : fun(inputs.left, inputs.right);
+        return (fun === undefined || inputs.left === undefined || inputs.right === undefined) ? undefined : fun(inputs.left, inputs.right);
     };
 
 

@@ -41,7 +41,7 @@ fluid.registerNamespace("fluid.tests");
     // position is now reversed. Supporting "non-monotonic merges" that the first case would require much more
     // complexity in the implementation in the form of a "provenance" object holding the merge depth of each
     // value. In fact we don't require this support since the Reorderer defaults changed to be "monotonic" in any
-    // case, and the current implementation should be adequate for FLUID-4409/FLUID-4636 situations in UIOptions.
+    // case, and the current implementation should be adequate for FLUID-4409/FLUID-4636 situations in PrefsEditor.
     /*{
         message: "merge policy has no effect on plain defaults",
         options: undefined,
@@ -904,7 +904,7 @@ fluid.registerNamespace("fluid.tests");
 
     /** Expansion order test **/
 
-    // Example liberated from UIOptions implementation, which revealed requirement for
+    // Example liberated from PrefsEditor implementation, which revealed requirement for
     // "expansion before merging" when constructing the new framework. This is a perverse
     // but probably valid usage of the framework. These kinds of "wholesale options transmissions"
     // cases are intended to be handled by FLUID-4873 "Luke Skywalker Options" ("distributeOptions")
@@ -2250,7 +2250,7 @@ fluid.registerNamespace("fluid.tests");
                     }
                 }
             },
-            uiOptionsBridge: {
+            prefsEditorBridge: {
                 type: "fluid.littleComponent",
                 createOnEvent: "afterRender"
             }
@@ -2736,7 +2736,7 @@ fluid.registerNamespace("fluid.tests");
     });
 
     /** FLUID-5012: IoCSS doesn't apply the gradeNames option onto the target component **/
-    fluid.defaults("fluid.tests.uio", {
+    fluid.defaults("fluid.tests.prefsEditor", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             templateLoader: {
@@ -2754,15 +2754,15 @@ fluid.registerNamespace("fluid.tests");
     });
 
     jqUnit.test("FLUID-5012: Apply gradeNames option onto the target component with IoCSS", function () {
-        var uio = fluid.tests.uio({
+        var prefsEditor = fluid.tests.prefsEditor({
             templateLoader: {
                 gradeNames: ["fluid.tests.defaultTemplateLoader"]
             }
         });
         var expectedGrades = ["fluid.tests.defaultTemplateLoader", "fluid.littleComponent", "autoInit"];
 
-        jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, uio.templateLoader.options.gradeNames);
-        jqUnit.assertEquals("The user option from the grade component is transmitted", 10, uio.templateLoader.options.userOption);
+        jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, prefsEditor.templateLoader.options.gradeNames);
+        jqUnit.assertEquals("The user option from the grade component is transmitted", 10, prefsEditor.templateLoader.options.userOption);
     });
 
     /** FLUID-5013: IoCSS doesn't pass down non-options blocks **/
@@ -3577,6 +3577,82 @@ fluid.registerNamespace("fluid.tests");
 
         jqUnit.assertTrue("The grade is merged correctly", fluid.hasGrade(root.options, "fluid.tests.fluid5108Grade"));
         jqUnit.assertEquals("The option from the supplied grade should overwrite the original component option", "fromSuppliedGrade", root.options.source.options.userOption);
+    });
+
+    /** FLUID-5155 failure of dynamic grade delivered dynamically **/
+
+    fluid.defaults("fluid.tests.fluid5155dynamicParent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        parentOption: 1
+    });
+
+    fluid.defaults("fluid.tests.fluid5155dynamicGrade", {
+        gradeNames: ["fluid.littleComponent", "autoInit", "{that}.computeGrade"],
+        invokers: {
+            computeGrade: "fluid.tests.computeFluid5155DynamicParent"
+        }
+    });
+
+    fluid.tests.computeFluid5155DynamicParent = function () {
+        return "fluid.tests.fluid5155dynamicParent";
+    };
+
+    fluid.defaults("fluid.tests.fluid5155root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            subComponent: {
+                type: "fluid.littleComponent"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.subComponent",
+            removeSource: true,
+            target: "{that subComponent}.options"
+        }
+    });
+
+    jqUnit.test("FLUID-5155 Dynamic grade support", function () {
+        var that = fluid.tests.fluid5155root({
+            subComponent: {
+                gradeNames: "fluid.tests.fluid5155dynamicGrade"
+            }
+        });
+
+        jqUnit.assertTrue("Correctly resolved parent grade", fluid.hasGrade(that.subComponent.options, "fluid.tests.fluid5155dynamicParent"));
+        jqUnit.assertEquals("Correctly resolved options from parent grade", 1, that.subComponent.options.parentOption);
+    });
+
+
+
+    fluid.defaults("fluid.tests.dynamicInvoker", {
+        gradeNames: ["autoInit", "fluid.littleComponent", "{that}.getDynamicInvoker"],
+        invokers: {
+            getDynamicInvoker: {
+                funcName: "fluid.tests.dynamicInvoker.getDynamicInvoker"
+            }
+        }
+    });
+ 
+    fluid.tests.dynamicInvoker.getDynamicInvoker = function () {
+        return "fluid.tests.dynamicInvokerGrade";
+    };
+ 
+    fluid.defaults("fluid.tests.dynamicInvokerGrade", {
+        gradeNames: ["autoInit", "fluid.littleComponent"],
+        invokers: {
+            method: "fluid.tests.dynamicInvokerGrade.method"
+        }
+    });
+ 
+    fluid.tests.dynamicInvokerGrade.method = function () {
+        jqUnit.assertTrue("Dynamic invoker is called", true);
+    };
+ 
+    jqUnit.test("Test dynamic grade invoker contribution.", function () {
+        jqUnit.expect(2);
+        var component = fluid.tests.dynamicInvoker();
+        jqUnit.assertValue("Invoker is resolved correctly", component.method);
+        component.method();
     });
 
 })(jQuery);
