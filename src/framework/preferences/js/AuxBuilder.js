@@ -102,6 +102,13 @@ var fluid_1_5 = fluid_1_5 || {};
         return root;
     };
 
+    fluid.prefs.checkPrimarySchema = function (primarySchema, prefKey) {
+        if (!primarySchema) {
+            fluid.fail("The primary schema for " + prefKey + " is not defined.");
+        }
+        return !!primarySchema;
+    };
+
     fluid.prefs.expandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, commonOptions, mappedDefaults) {
         var componentOptions = fluid.copy(componentConfig) || {};
         var components = {};
@@ -129,7 +136,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var prefSchema = mappedDefaults[prefKey];
 
             fluid.each(map, function (primaryPath, internalPath) {
-                if (prefSchema) {
+                if (fluid.prefs.checkPrimarySchema(prefSchema, prefKey)) {
                     var opts = {};
                     if (internalPath.indexOf("model.") === 0) {
                         var internalModelName = internalPath.slice(6);
@@ -228,7 +235,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 var prefSchema = mappedDefaults[subPanelPrefsKey];
 
                 fluid.each(map, function (primaryPath, internalPath) {
-                    if (prefSchema) {
+                    if (fluid.prefs.checkPrimarySchema(prefSchema, subPanelPrefsKey)) {
                         var opts;
                         if (internalPath.indexOf("model.") === 0) {
                             var internalModelName = internalPath.slice(6);
