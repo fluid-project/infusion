@@ -129,6 +129,14 @@ var fluid_1_5 = fluid_1_5 || {};
             source: "{that}.options.prefsEditor",
             removeSource: true,
             target: "{that prefsEditor}.options"
+        }, {
+            source: "{that}.options.templatePrefix",
+            removeSource: true,
+            target: "{that prefsEditorLoader}.options.templatePrefix"
+        }, {
+            source: "{that}.options.messagePrefix",
+            removeSource: true,
+            target: "{that prefsEditorLoader}.options.messagePrefix"
         }]
     });
 

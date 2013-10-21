@@ -578,6 +578,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Builder munging tests          *
      **********************************/
     var prefsEditorType = "fluid.prefs.fullNoPreview";
+    var templatePrefix = "../../../../framework/preferences/html/";
+    var messagePrefix = "../../../../framework/preferences/messages/";
+    var prefsEdReady = false;
 
     fluid.defaults("fluid.tests.builderMunging", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
@@ -590,8 +593,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: ["fluid.prefs.auxSchema.starter"],
                     auxiliarySchema: {
-                        "templatePrefix": "../../../../framework/preferences/html/",
-                        "messagePrefix": "../../../../framework/preferences/messages/",
                         "template": "%prefix/FullNoPreviewPrefsEditor.html",
                         "tableOfContents": {
                             "enactor": {
@@ -608,6 +609,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: ["{builder}.options.assembledPrefsEditorGrade"],
                     prefsEditorType: prefsEditorType,
+                    templatePrefix: templatePrefix,
+                    messagePrefix: messagePrefix,
                     enhancer: {
                         classnameMap: {
                             "textFont.default": "fl-aria"
@@ -637,6 +640,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return function (prefsEditor) {
             jqUnit.assertEquals("Munging options for prefsEditor should be passed down to the prefsEditor", 1, prefsEditor.prefsEditorLoader.prefsEditor.options.userOption);
 
+            jqUnit.assertEquals("Munging options for templatePrefix should be passed down to the template loader", templatePrefix, prefsEditor.prefsEditorLoader.templateLoader.resourcePath.options.value);
+            jqUnit.assertEquals("Munging options for messagePrefix should be passed down to the message loader", messagePrefix, prefsEditor.prefsEditorLoader.messageLoader.resourcePath.options.value);
+
             jqUnit.assertTrue(prefsEditorType + " should be in the base prefsEditor grades", fluid.hasGrade(prefsEditor.prefsEditorLoader.options, prefsEditorType));
             jqUnit.assertEquals("Munging options for enhancer should be passed down to the enhancer", "fl-aria", prefsEditor.enhancer.uiEnhancer.options.classnameMap["textFont.default"]);
         };
@@ -647,7 +653,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Builder munging",
             tests: [{
-                expect: 3,
+                expect: 5,
                 name: "Builder munging",
                 sequence: [{
                     listenerMaker: "fluid.tests.assertBuilderMunging",
