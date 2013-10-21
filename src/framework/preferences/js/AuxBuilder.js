@@ -97,7 +97,6 @@ var fluid_1_5 = fluid_1_5 || {};
     
         if (typeObject) {
             $.extend(true, root[path], $.extend(true, typeObject, opts));
-            // fluid.set(root, path, $.extend(true, typeObject, opts));
         }
 
         return root;
@@ -245,12 +244,12 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 });
 
-                fluid.set(compositePanelOptions, ["options", "selectors", safeSubPanelPrefsKey], fluid.get(auxSchema, [subPanelID, "panel", "container"]));
-
                 fluid.set(templates, safeSubPanelPrefsKey, fluid.get(auxSchema, [subPanelID, "panel", "template"]));
                 fluid.set(messages, safeSubPanelPrefsKey, fluid.get(auxSchema, [subPanelID, "panel", "message"]));
 
+                fluid.set(compositePanelOptions, ["options", "selectors", safeSubPanelPrefsKey], fluid.get(auxSchema, [subPanelID, "panel", "container"]));
                 fluid.set(compositePanelOptions, ["options", "resources"], fluid.get(compositePanelOptions, ["options", "resources"]) || {});
+
                 fluid.prefs.addCommonOptions(compositePanelOptions.options, "resources", compositePanelBasedOnSubCommonOptions, {
                     subPrefKey: safeSubPanelPrefsKey
                 });
