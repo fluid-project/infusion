@@ -94,9 +94,72 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         renderOnInit: true,
         selectors: {
             header: "h2"
+        }
+    });
+
+    fluid.defaults("fluid.tests.subPanel1", {
+        gradeNames: ["fluid.tests.subPanel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.sub1": {
+                "model.value": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
         },
+        model: {
+            value: ["subPanel1", "subPanel1a"]
+        },
+        listeners: {
+            afterRender: {
+                listener: "{compositePanel}.writeRecord",
+                args: ["subPanel1"]
+            }
+        },
+        repeatingSelectors: ["header"],
         protoTree: {
-            header: "${value}"
+            expander: {
+                type: "fluid.renderer.repeat",
+                repeatID: "header",
+                controlledBy: "value",
+                pathAs: "modelPath",
+                tree: {
+                    value: "${{modelPath}}"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.subPanel2", {
+        gradeNames: ["fluid.tests.subPanel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.sub2": {
+                "model.value": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
+        },
+        model: {
+            value: "subPanel2"
+        },
+        listeners: {
+            afterRender: {
+                listener: "{compositePanel}.writeRecord",
+                args: ["subPanel2"]
+            }
+        },
+        rendererFnOptions: {
+            noexpand: true
+        },
+        repeatingSelectors: [],
+        produceTree: function (that) {
+            return {
+                children: [{
+                    ID: "header",
+                    componentType: "UIBound",
+                    value: "subPanel2",
+                    valuebinding: "value"
+                }]
+            };
         }
     });
 
@@ -144,63 +207,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             subPanel1: {
-                type: "fluid.tests.subPanel",
+                type: "fluid.tests.subPanel1",
                 container: "{compositePanel}.dom.subPanel1",
-                createOnEvent: "initSubPanels",
-                options: {
-                    preferenceMap: {
-                        "fluid.prefs.sub1": {
-                            "model.value": "default",
-                            "range.min": "minimum",
-                            "range.max": "maximum"
-                        }
-                    },
-                    model: {
-                        value: "subPanel1"
-                    },
-                    listeners: {
-                        afterRender: {
-                            listener: "{compositePanel}.writeRecord",
-                            args: ["subPanel1"]
-                        }
-                    }
-                }
+                createOnEvent: "initSubPanels"
             },
             subPanel2: {
-                type: "fluid.tests.subPanel",
+                type: "fluid.tests.subPanel2",
                 container: "{compositePanel}.dom.subPanel2",
-                createOnEvent: "initSubPanels",
-                options: {
-                    preferenceMap: {
-                        "fluid.prefs.sub2": {
-                            "model.value": "default",
-                            "range.min": "minimum",
-                            "range.max": "maximum"
-                        }
-                    },
-                    model: {
-                        value: "subPanel2"
-                    },
-                    listeners: {
-                        afterRender: {
-                            listener: "{compositePanel}.writeRecord",
-                            args: ["subPanel2"]
-                        }
-                    },
-                    rendererFnOptions: {
-                        noexpand: true
-                    },
-                    produceTree: function (that) {
-                        return {
-                            children: [{
-                                ID: "header",
-                                componentType: "UIBound",
-                                value: "subPanel2",
-                                valuebinding: "value"
-                            }]
-                        }
-                    }
-                }
+                createOnEvent: "initSubPanels"
             }
         }
     });
@@ -211,21 +225,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.test("fluid.prefs.compositePanel", function () {
-        jqUnit.expect(13);
+        jqUnit.expect(14);
         var that = fluid.tests.compositePanel(".flc-prefs-compositePanel");
-
-        var expectedPreferenceMap = {
-            "fluid.prefs.sub1": {
-                "model.fluid_prefs_sub1": "default",
-                "components.subPanel1.options.range.min": "minimum",
-                "components.subPanel1.options.range.max": "maximum"
-            },
-            "fluid.prefs.sub2": {
-                "model.fluid_prefs_sub2": "default",
-                "components.subPanel2.options.range.min": "minimum",
-                "components.subPanel2.options.range.max": "maximum"
-            }
-        };
 
         var expectedSubPanel1Rules = {
             "fluid_prefs_sub1": "value"
@@ -246,23 +247,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expectedSupanel1Selector = ".subPanel1 h2";
         var expectedSupanel2Selector = ".subPanel2 h2";
 
+        var expectedRepeatingSelectors = ["subPanel1_header"];
+
         var expectedTree = {
-            children: [{
+            "children": [{
                 "ID": "heading",
                 "componentType": "UIMessage",
                 "messagekey": {
                     "value": "heading"
                 }
             }, {
-                ID: "subPanel1_header",
-                componentType: "UIBound",
-                value: "subPanel1",
-                valuebinding: "fluid_prefs_sub1"
+                "ID": "subPanel1_header:",
+                "componentType": "UIBound",
+                "value": "subPanel1",
+                "valuebinding": "fluid_prefs_sub1.0"
             }, {
-                ID: "subPanel2_header",
-                componentType: "UIBound",
-                value: "subPanel2",
-                valuebinding: "fluid_prefs_sub2"
+                "ID": "subPanel1_header:",
+                "componentType": "UIBound",
+                "value": "subPanel1a",
+                "valuebinding": "fluid_prefs_sub1.1"
+            }, {
+                "ID": "subPanel2_header",
+                "componentType": "UIBound",
+                "value": "subPanel2",
+                "valuebinding": "fluid_prefs_sub2"
             }]
         };
 
@@ -271,7 +279,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.subPanel2.refreshView();
         jqUnit.assertDeepEq("The events should have populated the fireRecored correctly", expectedFireRecord, that.fireRecord);
 
-        jqUnit.assertDeepEq("The preferenceMap should have been assembled correctly", expectedPreferenceMap, that.options.preferenceMap);
         jqUnit.assertFalse("The renderOnInit option for subPanel1 should be false", that.subPanel1.options.renderOnInit);
         jqUnit.assertFalse("The renderOnInit option for subPanel2 should be false", that.subPanel2.options.renderOnInit);
         jqUnit.assertDeepEq("The rules block for subPanel1 should be generated correctly", expectedSubPanel1Rules, that.subPanel1.options.rules);
@@ -279,9 +286,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The resourceText should have been combined correctly", expectedResourceText, that.options.resources.template.resourceText);
         jqUnit.assertEquals("subPanel1's selectors should be surfaced to the compositePanel correctly", expectedSupanel1Selector, that.options.selectors.subPanel1_header);
         jqUnit.assertEquals("subPanel2's selectors should be surfaced to the compositePanel correctly", expectedSupanel2Selector, that.options.selectors.subPanel2_header);
+        jqUnit.assertDeepEq("The repeatingSelectors should have been surfaced correctly", expectedRepeatingSelectors, that.options.rendererFnOptions.subPanelRepeatingSelectors);
         jqUnit.assertDeepEq("The produceTree should have combined the subPanel protoTrees together correctly", expectedTree, that.produceTree());
         jqUnit.assertEquals("The markup for the compositePanel should have rendered correctly", that.options.strings.heading, that.locate("heading").text());
-        jqUnit.assertEquals("The markup for subPanel1 should have rendered correctly", that.subPanel1.model.value, that.subPanel1.locate("header").text());
+        that.subPanel1.locate("header").each(function (idx, elm) {
+            var actual = $(elm).text();
+            jqUnit.assertEquals("The markup for subPanel1 should have rendered correctly", that.subPanel1.model.value[idx], actual);
+        });
         jqUnit.assertEquals("The markup for subPanel2 should have rendered correctly", that.subPanel2.model.value, that.subPanel2.locate("header").text());
     });
 
