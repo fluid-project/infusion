@@ -577,10 +577,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**********************************
      * Builder munging tests          *
      **********************************/
-    var prefsEditorType = "fluid.prefs.fullNoPreview";
+    var prefsEditorType = "fluid.prefs.fullNoPreview", storeType = "fluid.tests.store", enhancerType = "fluid.tests.enhancer";
     var templatePrefix = "../../../../framework/preferences/html/";
     var messagePrefix = "../../../../framework/preferences/messages/";
     var prefsEdReady = false;
+
+    fluid.defaults("fluid.tests.store", {
+        gradeNames: ["fluid.globalSettingsStore", "autoInit"]
+    });
+
+    fluid.defaults("fluid.tests.enhancer", {
+        gradeNames: ["fluid.pageEnhancer", "autoInit"]
+    });
 
     fluid.defaults("fluid.tests.builderMunging", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
@@ -609,6 +617,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: ["{builder}.options.assembledPrefsEditorGrade"],
                     prefsEditorType: prefsEditorType,
+                    storeType: storeType,
+                    enhancerType: enhancerType,
                     templatePrefix: templatePrefix,
                     messagePrefix: messagePrefix,
                     enhancer: {
@@ -617,16 +627,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     },
                     prefsEditor: {
-                        listeners: {
-                            onReady: {
-                                listener: "{prefsEd}.events.onReady",
-                                args: "{prefsEd}"
-                            }
-                        },
                         userOption: 1
                     },
-                    events: {
-                        onReady: null
+                    store: {
+                        storeOption: 2
+                    },
+                    listeners: {
+                        onReady: function () {
+                            prefsEdReady = true;
+                        }
                     }
                 }
             },
@@ -639,11 +648,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.assertBuilderMunging = function (prefsEditor) {
         return function (prefsEditor) {
             jqUnit.assertEquals("Munging options for prefsEditor should be passed down to the prefsEditor", 1, prefsEditor.prefsEditorLoader.prefsEditor.options.userOption);
+            jqUnit.assertEquals("Munging options for store should be passed down to the prefsEditor", 2, prefsEditor.store.settingsStore.options.storeOption);
 
             jqUnit.assertEquals("Munging options for templatePrefix should be passed down to the template loader", templatePrefix, prefsEditor.prefsEditorLoader.templateLoader.resourcePath.options.value);
             jqUnit.assertEquals("Munging options for messagePrefix should be passed down to the message loader", messagePrefix, prefsEditor.prefsEditorLoader.messageLoader.resourcePath.options.value);
+            jqUnit.assertTrue("Munging options for onReady event should be passed down to the constructed pref editor", prefsEdReady);
 
             jqUnit.assertTrue(prefsEditorType + " should be in the base prefsEditor grades", fluid.hasGrade(prefsEditor.prefsEditorLoader.options, prefsEditorType));
+            jqUnit.assertTrue(enhancerType + " should be in the base enhancer grades", fluid.hasGrade(prefsEditor.enhancer.options, enhancerType));
+            jqUnit.assertTrue(storeType + " should be in the base store grades", fluid.hasGrade(prefsEditor.store.options, storeType));
+
             jqUnit.assertEquals("Munging options for enhancer should be passed down to the enhancer", "fl-aria", prefsEditor.enhancer.uiEnhancer.options.classnameMap["textFont.default"]);
         };
     };
@@ -653,12 +667,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Builder munging",
             tests: [{
-                expect: 5,
+                expect: 9,
                 name: "Builder munging",
                 sequence: [{
                     listenerMaker: "fluid.tests.assertBuilderMunging",
                     spec: {priority: "last"},
-                    event: "{builderMunging prefsEd}.events.onReady"
+                    event: "{builderMunging > prefsEd}.events.onReady"
                 }]
             }]
         }]
