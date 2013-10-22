@@ -90,9 +90,19 @@ var fluid_1_5 = fluid_1_5 || {};
         var opts = {};
 
         fluid.each(commonOptions, function (value, key) {
-            key = fluid.stringTemplate(key, templateValues);
-            value = typeof (value) === "string" ? fluid.stringTemplate(value, templateValues) : value;
-            fluid.set(opts, key, value);
+            var canAdd = true;
+
+            // Execute the validation function to decide if this common option should be added
+            if (value.func) {
+                canAdd = fluid.invokeGlobalFunction(value.func, [root, path, commonOptions, templateValues]);
+                value = value.value;
+            }
+
+            if (canAdd) {
+                key = fluid.stringTemplate(key, templateValues);
+                value = typeof (value) === "string" ? fluid.stringTemplate(value, templateValues) : value;
+                fluid.set(opts, key, value);
+            }
         });
     
         if (typeObject) {
@@ -100,6 +110,12 @@ var fluid_1_5 = fluid_1_5 || {};
         }
 
         return root;
+    };
+
+    fluid.prefs.containerNeeded = function (root, path, commonOptions, templateValues) {
+        var componentType = fluid.get(root, [path, "type"]);
+        var componentOptions = fluid.defaults(componentType);
+        return (fluid.hasGrade(componentOptions, "fluid.viewComponent") || fluid.hasGrade(componentOptions, "fluid.rendererComponent"));
     };
 
     fluid.prefs.checkPrimarySchema = function (primarySchema, prefKey) {
@@ -399,7 +415,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 "container": "{%compositePanel}.dom.%prefKey"
             },
             enactor: {
-                "container": "{uiEnhancer}.container",
+                // Conditional handling. Add value to the path only if the execution of func returns true.
+                "container": {
+                    value: "{uiEnhancer}.container",
+                    func: "fluid.prefs.containerNeeded"
+                },
                 "options.sourceApplier": "{uiEnhancer}.applier"
             }
         },

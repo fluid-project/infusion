@@ -241,7 +241,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "container": "%compositePanel.dom.%prefKey"
         },
         enactor: {
-            "container": "uiEnhancer.container",
+            "container": {
+                value: "uiEnhancer.container",
+                func: "fluid.prefs.containerNeeded"
+            },
             "options.sourceApplier": "uiEnhancer.applier"
         }
     };
@@ -1109,7 +1112,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.enactors.subPanel1", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactors", "autoInit"],
+        gradeNames: ["fluid.prefs.enactors", "autoInit"],
         preferenceMap: {
             "fluid.prefs.subPanel1": {
                 "model.value": "default"
@@ -1323,7 +1326,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "components": {
                 "fluid_prefs_enactors_subPanel1": {
                     type: "fluid.prefs.enactors.subPanel1",
-                    container: "uiEnhancer.container",
                     options: {
                         "cssClass": "fl-link-enhanced",
                         sourceApplier: "uiEnhancer.applier",
