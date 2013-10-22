@@ -605,6 +605,52 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
+    /**************************************
+     * Preferences Editor Emphasize Links *
+     **************************************/
+    /**
+     * A sub-component of fluid.prefs that renders the "links and buttons" panel of the user preferences interface.
+     */
+    fluid.defaults("fluid.prefs.panel.emphasizeLinks", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.emphasizeLinks": {
+                "model.links": "default"
+            }
+        },
+        selectors: {
+            links: ".flc-prefsEditor-links",
+            linksChoiceLabel: ".flc-prefsEditor-links-choice-label"
+        },
+        protoTree: {
+            linksChoiceLabel: {messagekey: "linksChoiceLabel"},
+            links: "${links}"
+        }
+    });
+
+    /************************************
+     * Preferences Editor Inputs Larger *
+     ************************************/
+    /**
+     * A sub-component of fluid.prefs that renders the "links and buttons" panel of the user preferences interface.
+     */
+    fluid.defaults("fluid.prefs.panel.inputsLarger", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.inputsLarger": {
+                "model.inputsLarger": "default"
+            }
+        },
+        selectors: {
+            inputsLarger: ".flc-prefsEditor-inputs-larger",
+            inputsChoiceLabel: ".flc-prefsEditor-links-inputs-choice-label"
+        },
+        protoTree: {
+            inputsChoiceLabel: {messagekey: "inputsChoiceLabel"},
+            inputsLarger: "${inputsLarger}"
+        }
+    });
+
     /*************************************
      * Preferences Editor Links Controls *
      *************************************/
@@ -613,27 +659,11 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.defaults("fluid.prefs.panel.linksControls", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
-        preferenceMap: {
-            "fluid.prefs.emphasizeLinks": {
-                "model.links": "default"
-            },
-            "fluid.prefs.inputsLarger": {
-                "model.inputsLarger": "default"
-            }
-        },
         selectors: {
-            links: ".flc-prefsEditor-links",
-            inputsLarger: ".flc-prefsEditor-inputs-larger",
-            label: ".flc-prefsEditor-links-label",
-            linksChoiceLabel: ".flc-prefsEditor-links-choice-label",
-            inputsChoiceLabel: ".flc-prefsEditor-links-inputs-choice-label"
+            label: ".flc-prefsEditor-links-label"
         },
         protoTree: {
-            label: {messagekey: "linksLabel"},
-            linksChoiceLabel: {messagekey: "linksChoiceLabel"},
-            inputsChoiceLabel: {messagekey: "inputsChoiceLabel"},
-            links: "${links}",
-            inputsLarger: "${inputsLarger}"
+            label: {messagekey: "linksLabel"}
         }
     });
 

@@ -230,7 +230,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         compositePanel: {
             "createOnEvent": "onPrefsEditorMarkupReady",
             "container": "prefsEditor.dom.%prefKey",
-            "options.gradeNames": ["fluid.prefs.defaultPanel", "fluid.prefs.compositePanel"],
+            "options.gradeNames": ["fluid.prefs.prefsEditorConnections", "fluid.prefs.compositePanel"],
             "options.resources.template": "templateLoader.resources.%prefKey"
         },
         compositePanelBasedOnSub: {
@@ -1243,7 +1243,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "container": "prefsEditor.dom.combinedBoth",
                     "createOnEvent": "onPrefsEditorMarkupReady",
                     options: {
-                        gradeNames: ["fluid.prefs.defaultPanel", "fluid.prefs.compositePanel"],
+                        gradeNames: ["fluid.prefs.prefsEditorConnections", "fluid.prefs.compositePanel"],
                         resources: {
                             template: "templateLoader.resources.combinedBoth",
                             "fluid_prefs_subPanel1": "templateLoader.resources.fluid_prefs_subPanel1",

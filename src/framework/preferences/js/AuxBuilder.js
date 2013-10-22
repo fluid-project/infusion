@@ -404,7 +404,7 @@ var fluid_1_5 = fluid_1_5 || {};
             compositePanel: {
                 "createOnEvent": "onPrefsEditorMarkupReady",
                 "container": "{prefsEditor}.dom.%prefKey",
-                "options.gradeNames": ["fluid.prefs.defaultPanel", "fluid.prefs.compositePanel"],
+                "options.gradeNames": ["fluid.prefs.prefsEditorConnections", "fluid.prefs.compositePanel"],
                 "options.resources.template": "{templateLoader}.resources.%prefKey"
             },
             compositePanelBasedOnSub: {
