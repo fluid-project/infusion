@@ -99,6 +99,11 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             "onCreate.combineResources": "{that}.combineResources",
             "onCreate.surfaceSubpanelRendererSelectors": "{that}.surfaceSubpanelRendererSelectors",
+            "onCreate.appendTemplate": {
+                "this": "{that}.container",
+                "method": "append",
+                "args": ["{that}.options.resources.template.resourceText"]
+            },
             "onCreate.initSubPanels": "{that}.events.initSubPanels",
             "afterRender.initSubPanels": "{that}.events.initSubPanels",
             "afterRender.subPanelRelay": {
