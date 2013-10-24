@@ -570,6 +570,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         element.attr("checked", "checked").change();
     };
 
+    fluid.tests.checkboxListenerTester = function (message, expectedState, checkbox) {
+        return function () {
+            jqUnit[expectedState ? "assertTrue" : "assertFalse"](message, checkbox.is(":checked"));
+        };
+    };
+
     /*******************************************************************************
      * layoutPanel
      *******************************************************************************/
@@ -593,13 +599,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.layoutPanel.testDefault = function (checkbox, expectedValue) {
-        return function () {
-            var inputValue = checkbox.attr("checked");
-            jqUnit.assertEquals("The toc option is not checked by default", expectedValue, inputValue);
-        };
-    };
-
     fluid.defaults("fluid.tests.layoutTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
@@ -614,8 +613,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "{layout}.refreshView"
                 }, {
-                    listenerMaker: "fluid.tests.layoutPanel.testDefault",
-                    makerArgs: ["{layout}.dom.toc", "{that}.options.testOptions.defaultInputStatus"],
+                    listenerMaker: "fluid.tests.checkboxListenerTester",
+                    makerArgs: ["The toc option is not checked by default", "{that}.options.testOptions.defaultInputStatus", "{layout}.dom.toc"],
                     event: "{layout}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeCheckboxSelection",
@@ -625,6 +624,110 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     makerArgs: ["toc", "{that}.options.testOptions.newValue"],
                     spec: {path: "toc", priority: "last"},
                     changeEvent: "{layout}.applier.modelChanged"
+                }]
+            }]
+        }]
+    });
+
+    /*******************************************************************************
+     * emphasize links
+     *******************************************************************************/
+    fluid.defaults("fluid.tests.emphasizeLinksPanel", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            layout: {
+                type: "fluid.prefs.panel.emphasizeLinks",
+                container: ".flc-links",
+                options: {
+                    gradeNames: "fluid.prefs.defaultTestPanel",
+                    model: {
+                        links: false
+                    }
+                }
+            },
+            emphasizeLinksTester: {
+                type: "fluid.tests.emphasizeLinksTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.emphasizeLinksTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        testOptions: {
+            defaultInputStatus: false,
+            newValue: true
+        },
+        modules: [{
+            name: "Test the emphasizeLinks settings panel",
+            tests: [{
+                expect: 2,
+                name: "Test the rendering of the emphasizeLinks panel",
+                sequence: [{
+                    func: "{emphasizeLinks}.refreshView"
+                }, {
+                    listenerMaker: "fluid.tests.checkboxListenerTester",
+                    makerArgs: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{emphasizeLinks}.dom.links"],
+                    event: "{emphasizeLinks}.events.afterRender"
+                }, {
+                    func: "fluid.tests.changeCheckboxSelection",
+                    args: ["{emphasizeLinks}.dom.links"]
+                }, {
+                    listenerMaker: "fluid.tests.checkModel",
+                    makerArgs: ["links", "{that}.options.testOptions.newValue"],
+                    spec: {path: "links", priority: "last"},
+                    changeEvent: "{emphasizeLinks}.applier.modelChanged"
+                }]
+            }]
+        }]
+    });
+
+    /*******************************************************************************
+     * inputs larger
+     *******************************************************************************/
+    fluid.defaults("fluid.tests.inputsLargerPanel", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            layout: {
+                type: "fluid.prefs.panel.inputsLarger",
+                container: ".flc-links",
+                options: {
+                    gradeNames: "fluid.prefs.defaultTestPanel",
+                    model: {
+                        inputsLarger: false
+                    }
+                }
+            },
+            inputsLargerTester: {
+                type: "fluid.tests.inputsLargerTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.inputsLargerTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        testOptions: {
+            defaultInputStatus: false,
+            newValue: true
+        },
+        modules: [{
+            name: "Test the inputsLarger settings panel",
+            tests: [{
+                expect: 2,
+                name: "Test the rendering of the inputsLarger panel",
+                sequence: [{
+                    func: "{inputsLarger}.refreshView"
+                }, {
+                    listenerMaker: "fluid.tests.checkboxListenerTester",
+                    makerArgs: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{inputsLarger}.dom.inputsLarger"],
+                    event: "{inputsLarger}.events.afterRender"
+                }, {
+                    func: "fluid.tests.changeCheckboxSelection",
+                    args: ["{inputsLarger}.dom.inputsLarger"]
+                }, {
+                    listenerMaker: "fluid.tests.checkModel",
+                    makerArgs: ["inputsLarger", "{that}.options.testOptions.newValue"],
+                    spec: {path: "inputsLarger", priority: "last"},
+                    changeEvent: "{inputsLarger}.applier.modelChanged"
                 }]
             }]
         }]
@@ -642,13 +745,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: "fluid.prefs.defaultTestPanel",
                     model: {
-                        links: false,
-                        inputsLarger: false
+                        fluid_prefs_emphasizeLinks: false,
+                        fluid_prefs_inputsLarger: false
+                    },
+                    components: {
+                        emphasizeLinks: {
+                            type: "fluid.prefs.panel.emphasizeLinks",
+                            container: "{that}.container",
+                            createOnEvent: "initSubPanels"
+                        },
+                        inputsLarger: {
+                            type: "fluid.prefs.panel.inputsLarger",
+                            container: "{that}.container",
+                            createOnEvent: "initSubPanels"
+                        }
                     }
                 }
             },
             linksTester: {
                 type: "fluid.tests.linksTester"
+            },
+            resources: {
+                template: {
+                    resourceText: ""
+                }
             }
         }
     });
@@ -708,6 +828,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.tests.textSizePanel",
             "fluid.tests.lineSpacePanel",
             "fluid.tests.layoutPanel",
+            "fluid.tests.emphasizeLinksPanel",
+            "fluid.tests.inputsLargerPanel",
             "fluid.tests.linksPanel"
         ]);
     });

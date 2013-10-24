@@ -663,7 +663,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * A sub-component of fluid.prefs that renders the "links and buttons" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.linksControls", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
         selectors: {
             label: ".flc-prefsEditor-links-label"
         },

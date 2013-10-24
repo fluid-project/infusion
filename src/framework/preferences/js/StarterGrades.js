@@ -316,15 +316,34 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     rules: {
-                        "links": "links",
-                        "inputsLarger": "inputsLarger"
+                        "links": "fluid_prefs_emphasizeLinks",
+                        "inputsLarger": "fluid_prefs_inputsLarger"
                     },
+                    selectors: {
+                        emphasizeLinks: "flc-prefsEditor-emphasizeLinks",
+                        inputsLarger: "flc-prefsEditor-inputsLarger"
+                    },
+                    selectorsToIgnore: ["emphasizeLinks", "inputsLarger"],
                     model: {
-                        links: "{fluid.prefs.rootModel}.rootModel.links",
-                        inputsLarger: "{fluid.prefs.rootModel}.rootModel.inputsLarger"
+                        fluid_prefs_emphasizeLinks: "{fluid.prefs.rootModel}.rootModel.links",
+                        fluid_prefs_inputsLarger: "{fluid.prefs.rootModel}.rootModel.inputsLarger"
+                    },
+                    components: {
+                        emphasizeLinks: {
+                            type: "fluid.prefs.panel.emphasizeLinks",
+                            container: "{that}.dom.emphasizeLinks",
+                            createOnEvent: "initSubPanels"
+                        },
+                        inputsLarger: {
+                            type: "fluid.prefs.panel.inputsLarger",
+                            container: "{that}.dom.inputsLarger",
+                            createOnEvent: "initSubPanels"
+                        }
                     },
                     resources: {
-                        template: "{templateLoader}.resources.linksControls"
+                        template: "{templateLoader}.resources.linksControls",
+                        emphasizeLinks: "{templateLoader}.resources.emphasizeLinks",
+                        inputsLarger: "{templateLoader}.resource.inputsLarger"
                     }
                 }
             }
@@ -349,7 +368,9 @@ var fluid_1_5 = fluid_1_5 || {};
             lineSpace: "%prefix/PrefsEditorTemplate-lineSpace.html",
             contrast: "%prefix/PrefsEditorTemplate-contrast.html",
             layoutControls: "%prefix/PrefsEditorTemplate-layout.html",
-            linksControls: "%prefix/PrefsEditorTemplate-links.html"
+            linksControls: "%prefix/PrefsEditorTemplate-links.html",
+            emphasizeLinks: "%prefix/PrefsEditorTemplate-emphasizeLinks.html",
+            inputsLarger: "%prefix/PrefsEditorTemplate-inputsLarger.html"
         }
     });
 
@@ -393,7 +414,9 @@ var fluid_1_5 = fluid_1_5 || {};
             lineSpace: "%prefix/lineSpace.json",
             contrast: "%prefix/contrast.json",
             layoutControls: "%prefix/tableOfContents.json",
-            linksControls: "%prefix/links.json"
+            linksControls: "%prefix/links.json",
+            emphasizeLinks: "%prefix/emphasizeLinks.json",
+            inputsLarger: "%prefix/inputsLarger.json"
         }
     });
 
