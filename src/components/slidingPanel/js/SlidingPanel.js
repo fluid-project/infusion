@@ -46,26 +46,24 @@ var fluid_1_5 = fluid_1_5 || {};
                 "method": "click",
                 "args": ["{that}.togglePanel"]
             },
+            "onCreate.bindModelChange": {
+                listener: "{that}.applier.modelChanged.addListener",
+                args: ["isShowing", "{that}.refreshView"]
+            },
             "onCreate.setInitialState": {
                 listener: "{that}.refreshView"
             },
             "onPanelHide.setText": {
                 "this": "{that}.dom.toggleButtonLabel",
                 "method": "text",
-                "args": ["{that}.options.strings.showText"]
+                "args": ["{that}.options.strings.showText"],
+                "priority": "first"
             },
             "onPanelShow.setText": {
                 "this": "{that}.dom.toggleButtonLabel",
                 "method": "text",
-                "args": ["{that}.options.strings.hideText"]
-            },
-            "onPanelHide.updateModel": {
-                listener: "{that}.applier.requestChange",
-                args: ["isShowing", false]
-            },
-            "onPanelShow.updateModel": {
-                listener: "{that}.applier.requestChange",
-                args: ["isShowing", true]
+                "args": ["{that}.options.strings.hideText"],
+                "priority": "first"
             },
             "onPanelHide.operate": {
                 listener: "{that}.operateHide"
@@ -86,18 +84,20 @@ var fluid_1_5 = fluid_1_5 || {};
                 "args": [400, "{that}.events.afterPanelShow.fire"]
             },
             hidePanel: {
-                func: "{that}.events.onPanelHide.fire"
+                func: "{that}.applier.requestChange",
+                args: ["isShowing", false]
             },
             showPanel: {
-                func: "{that}.events.onPanelShow.fire"
+                func: "{that}.applier.requestChange",
+                args: ["isShowing", true]
             },
             togglePanel: {
-                funcName: "fluid.slidingPanel.refreshView",
-                args: ["{that}", true]
+                funcName: "fluid.slidingPanel.togglePanel",
+                args: ["{that}"]
             },
             refreshView: {
                 funcName: "fluid.slidingPanel.refreshView",
-                args: ["{that}", false]
+                args: ["{that}"]
             }
         },
         model: {
@@ -105,9 +105,12 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.slidingPanel.refreshView = function (that, toggle) {
-        // if the toggle flag is on, it will flip the state, otherwise just refreshes.
-        that[that.model.isShowing !== toggle  ? "showPanel" : "hidePanel"]();
+    fluid.slidingPanel.togglePanel = function (that) {
+        that.applier.requestChange("isShowing", !that.model.isShowing);
+    };
+
+    fluid.slidingPanel.refreshView = function (that) {
+        that.events[that.model.isShowing ? "onPanelShow" : "onPanelHide"].fire();
     };
 
 })(jQuery, fluid_1_5);
