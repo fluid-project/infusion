@@ -501,8 +501,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "panel": {
                 "type": "fluid.prefs.panel.oneForManyPrefs",
                 "container": ".flc-prefsEditor-links-controls",  // the css selector in the template where the panel is rendered
-                "template": "%prefix/PrefsEditorTemplate-links.html",
-                "message": "%prefix/PrefsEditorTemplate-links.json"
+                "template": "%prefix/PrefsEditorTemplate-linksControls.html",
+                "message": "%prefix/PrefsEditorTemplate-linksControls.json"
             }
         },
         "inputsLarger": {
@@ -869,8 +869,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panel.oneForManyPrefs",
                         "container": ".flc-prefsEditor-links-controls",  // the css selector in the template where the panel is rendered
-                        "template": "%prefix/PrefsEditorTemplate-links.html",
-                        "message": "%prefix/PrefsEditorTemplate-links.json"
+                        "template": "%prefix/PrefsEditorTemplate-linksControls.html",
+                        "message": "%prefix/PrefsEditorTemplate-linksControls.json"
                     }
                 },
                 "inputsLarger": {
@@ -909,13 +909,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 templateLoader: {
                     gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
                     templates: {
-                        "fluid_prefs_panel_oneForManyPrefs": "%prefix/PrefsEditorTemplate-links.html"
+                        "fluid_prefs_panel_oneForManyPrefs": "%prefix/PrefsEditorTemplate-linksControls.html"
                     }
                 },
                 messageLoader: {
                     gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
                     templates: {
-                        "fluid_prefs_panel_oneForManyPrefs": "%prefix/PrefsEditorTemplate-links.json"
+                        "fluid_prefs_panel_oneForManyPrefs": "%prefix/PrefsEditorTemplate-linksControls.json"
                     }
                 },
                 rootModel: {
@@ -1140,7 +1140,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.tests.auxSchema.compositePanelMappedDefaults = {
         "fluid.prefs.subPanel1": {
             "type": "boolean",
@@ -1323,7 +1323,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("Test expanding composite panel groups fluid.prefs.expandCompositePanels()", function () {
         var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.compositePanelSchema, fluid.tests.auxSchema.compositePanelSchema.groups, fluid.tests.auxSchema.panelIndex,
-                fluid.get(fluid.tests.elementCommonOptions, "compositePanel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"), 
+                fluid.get(fluid.tests.elementCommonOptions, "compositePanel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
                 fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.tests.auxSchema.compositePanelMappedDefaults);
 
         jqUnit.assertDeepEq("The auxiliary schema for a composit panel has been parsed correctly", fluid.tests.auxSchema.expandedComposite, expandedCompositePanel);

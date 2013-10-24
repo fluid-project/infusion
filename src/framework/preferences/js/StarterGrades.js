@@ -368,7 +368,7 @@ var fluid_1_5 = fluid_1_5 || {};
             lineSpace: "%prefix/PrefsEditorTemplate-lineSpace.html",
             contrast: "%prefix/PrefsEditorTemplate-contrast.html",
             layoutControls: "%prefix/PrefsEditorTemplate-layout.html",
-            linksControls: "%prefix/PrefsEditorTemplate-links.html",
+            linksControls: "%prefix/PrefsEditorTemplate-linksControls.html",
             emphasizeLinks: "%prefix/PrefsEditorTemplate-emphasizeLinks.html",
             inputsLarger: "%prefix/PrefsEditorTemplate-inputsLarger.html"
         }
@@ -414,7 +414,7 @@ var fluid_1_5 = fluid_1_5 || {};
             lineSpace: "%prefix/lineSpace.json",
             contrast: "%prefix/contrast.json",
             layoutControls: "%prefix/tableOfContents.json",
-            linksControls: "%prefix/links.json",
+            linksControls: "%prefix/linksControls.json",
             emphasizeLinks: "%prefix/emphasizeLinks.json",
             inputsLarger: "%prefix/inputsLarger.json"
         }

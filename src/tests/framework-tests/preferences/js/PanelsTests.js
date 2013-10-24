@@ -734,12 +734,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * linksPanel
+     * linksControlsPanel
      *******************************************************************************/
-    fluid.defaults("fluid.tests.linksPanel", {
+    fluid.defaults("fluid.tests.linksControlsPanel", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            links: {
+            linksControls: {
                 type: "fluid.prefs.panel.linksControls",
                 container: ".flc-links",
                 options: {
@@ -747,6 +747,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     model: {
                         fluid_prefs_emphasizeLinks: false,
                         fluid_prefs_inputsLarger: false
+                    },
+                    strings: {
+                        linksControlsLabel: "Links & buttons"
                     },
                     selectors: {
                         emphasizeLinks: ".flc-prefsEditor-emphasizeLinks",
@@ -767,7 +770,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     resources: {
                         template: {
-                            resourceText: '<li class="flc-prefsEditor-emphasizeLinks"></li><li class="flc-prefsEditor-inputsLarger"></li>'
+                            resourceText: '<h2 class="flc-prefsEditor-linksControls-label"></h2><li class="flc-prefsEditor-emphasizeLinks"></li><li class="flc-prefsEditor-inputsLarger"></li>'
+                        },
+                        emphasizeLinks: {
+                            resourceText: '<input type="checkbox" id="links-choice" class="flc-prefsEditor-links fl-force-left" />'
+                        },
+                        inputsLarger: {
+                            resourceText: '<input type="checkbox" id="inputs-choice" class="flc-prefsEditor-inputs-larger fl-force-left" />'
                         }
                     }
                 }
@@ -778,12 +787,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.linksPanel.testDefault = function (linksPanel, expectedValue) {
+    fluid.tests.linksControlsPanel.testDefault = function (linksControlsPanel, expectedValue, expectedLabel) {
         return function () {
-            var linksValue = linksPanel.locate("links").attr("checked");
-            jqUnit.assertEquals("The links option is not checked by default", expectedValue, linksValue);
-            var inputsLargerValue = linksPanel.locate("inputsLarger").attr("checked");
-            jqUnit.assertEquals("The links option is not checked by default", expectedValue, inputsLargerValue);
+            var linksLabel = linksControlsPanel.locate("label").text();
+            jqUnit.assertEquals("The links control label is rendered correctly", expectedLabel, linksLabel);
+            var linksValue = linksControlsPanel.emphasizeLinks.locate("links").attr("checked");
+            jqUnit.assertEquals("The emphasizeLinks option is not checked by default", expectedValue, linksValue);
+            var inputsLargerValue = linksControlsPanel.inputsLarger.locate("inputsLarger").attr("checked");
+            jqUnit.assertEquals("The inputsLarger option is not checked by default", expectedValue, inputsLargerValue);
         };
     };
 
@@ -795,32 +806,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             newValue: true
         },
         modules: [{
-            name: "Test the links settings panel",
+            name: "Test the linksControls settings panel",
             tests: [{
-                expect: 4,
-                name: "Test the rendering of the links panel",
+                expect: 5,
+                name: "Test the rendering of the linksControls panel",
                 sequence: [{
-                    func: "{links}.refreshView"
+                    func: "{linksControls}.refreshView"
                 }, {
-                    listenerMaker: "fluid.tests.linksPanel.testDefault",
-                    makerArgs: ["{links}", "{that}.options.testOptions.defaultInputStatus"],
-                    event: "{links}.events.afterRender"
-                }, {
-                    func: "fluid.tests.changeCheckboxSelection",
-                    args: ["{links}.dom.links"]
-                }, {
-                    listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["links", "{that}.options.testOptions.newValue"],
-                    spec: {path: "links", priority: "last"},
-                    changeEvent: "{links}.applier.modelChanged"
+                    listenerMaker: "fluid.tests.linksControlsPanel.testDefault",
+                    makerArgs: ["{linksControls}", "{that}.options.testOptions.defaultInputStatus", "{linksControls}.options.strings.linksControlsLabel"],
+                    event: "{linksControls}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeCheckboxSelection",
-                    args: ["{links}.dom.inputsLarger"]
+                    args: ["{linksControls}.emphasizeLinks.dom.links"]
                 }, {
                     listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["inputsLarger", "{that}.options.testOptions.newValue"],
-                    spec: {path: "inputsLarger", priority: "last"},
-                    changeEvent: "{links}.applier.modelChanged"
+                    makerArgs: ["fluid_prefs_emphasizeLinks", "{that}.options.testOptions.newValue"],
+                    spec: {path: "fluid_prefs_emphasizeLinks", priority: "last"},
+                    changeEvent: "{linksControls}.applier.modelChanged"
+                }, {
+                    func: "fluid.tests.changeCheckboxSelection",
+                    args: ["{linksControls}.inputsLarger.dom.inputsLarger"]
+                }, {
+                    listenerMaker: "fluid.tests.checkModel",
+                    makerArgs: ["fluid_prefs_inputsLarger", "{that}.options.testOptions.newValue"],
+                    spec: {path: "fluid_prefs_inputsLarger", priority: "last"},
+                    changeEvent: "{linksControls}.applier.modelChanged"
                 }]
             }]
         }]
@@ -835,7 +846,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.tests.layoutPanel",
             "fluid.tests.emphasizeLinksPanel",
             "fluid.tests.inputsLargerPanel",
-            "fluid.tests.linksPanel"
+            "fluid.tests.linksControlsPanel"
         ]);
     });
 

@@ -151,10 +151,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             groups: {
-                "links": {
+                "linksControls": {
                     "container": ".flc-prefsEditor-links-controls",
-                    "template": "%prefix/PrefsEditorTemplate-links.html",
-                    "message": "%prefix/links.json",
+                    "template": "%prefix/PrefsEditorTemplate-linksControls.html",
+                    "message": "%prefix/linksControls.json",
                     "type": "fluid.prefs.panel.linksControls",
                     "panels": ["emphasizeLinks", "inputsLarger"]
                 }

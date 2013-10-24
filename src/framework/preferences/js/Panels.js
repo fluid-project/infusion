@@ -665,10 +665,10 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.prefs.panel.linksControls", {
         gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
         selectors: {
-            label: ".flc-prefsEditor-links-label"
+            label: ".flc-prefsEditor-linksControls-label"
         },
         protoTree: {
-            label: {messagekey: "linksLabel"}
+            label: {messagekey: "linksControlsLabel"}
         }
     });
 
