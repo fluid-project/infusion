@@ -483,11 +483,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
+    fluid.defaults("fluid.prefs.panel.oneForManyPrefs", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.emphasizeLinks": {
+                "model.links": "default"
+            },
+            "fluid.prefs.inputsLarger": {
+                "model.inputsLarger": "default"
+            }
+        }
+    });
+
     fluid.tests.auxSchema.manyPrefsOnePanel = {
         "emphasizeLinks": {
             "type": "fluid.prefs.emphasizeLinks",
             "panel": {
-                "type": "fluid.prefs.panel.linksControls",
+                "type": "fluid.prefs.panel.oneForManyPrefs",
                 "container": ".flc-prefsEditor-links-controls",  // the css selector in the template where the panel is rendered
                 "template": "%prefix/PrefsEditorTemplate-links.html",
                 "message": "%prefix/PrefsEditorTemplate-links.json"
@@ -496,7 +508,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "inputsLarger": {
             "type": "fluid.prefs.inputsLarger",
             "panel": {
-                "type": "fluid.prefs.panel.linksControls"
+                "type": "fluid.prefs.panel.oneForManyPrefs"
             }
         }
     };
@@ -855,7 +867,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "emphasizeLinks": {
                     "type": "fluid.prefs.emphasizeLinks",
                     "panel": {
-                        "type": "fluid.prefs.panel.linksControls",
+                        "type": "fluid.prefs.panel.oneForManyPrefs",
                         "container": ".flc-prefsEditor-links-controls",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/PrefsEditorTemplate-links.html",
                         "message": "%prefix/PrefsEditorTemplate-links.json"
@@ -864,18 +876,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "inputsLarger": {
                     "type": "fluid.prefs.inputsLarger",
                     "panel": {
-                        "type": "fluid.prefs.panel.linksControls"
+                        "type": "fluid.prefs.panel.oneForManyPrefs"
                     }
                 },
                 panels: {
                     "gradeNames": ["fluid.prefs.prefsEditor", "autoInit"],
                     "selectors": {
-                        "fluid_prefs_panel_linksControls": ".flc-prefsEditor-links-controls"
+                        "fluid_prefs_panel_oneForManyPrefs": ".flc-prefsEditor-links-controls"
                     },
                     "components": {
-                        "fluid_prefs_panel_linksControls": {
-                            "type": "fluid.prefs.panel.linksControls",
-                            "container": "prefsEditor.dom.fluid_prefs_panel_linksControls",
+                        "fluid_prefs_panel_oneForManyPrefs": {
+                            "type": "fluid.prefs.panel.oneForManyPrefs",
+                            "container": "prefsEditor.dom.fluid_prefs_panel_oneForManyPrefs",
                             "createOnEvent": "onPrefsEditorMarkupReady",
                             options: {
                                 gradeNames: "fluid.prefs.prefsEditorConnections",
@@ -888,7 +900,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     fluid_prefs_inputsLarger: "inputsLarger"
                                 },
                                 resources: {
-                                    template: "templateLoader.resources.fluid_prefs_panel_linksControls"
+                                    template: "templateLoader.resources.fluid_prefs_panel_oneForManyPrefs"
                                 }
                             }
                         }
@@ -897,13 +909,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 templateLoader: {
                     gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
                     templates: {
-                        "fluid_prefs_panel_linksControls": "%prefix/PrefsEditorTemplate-links.html"
+                        "fluid_prefs_panel_oneForManyPrefs": "%prefix/PrefsEditorTemplate-links.html"
                     }
                 },
                 messageLoader: {
                     gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
                     templates: {
-                        "fluid_prefs_panel_linksControls": "%prefix/PrefsEditorTemplate-links.json"
+                        "fluid_prefs_panel_oneForManyPrefs": "%prefix/PrefsEditorTemplate-links.json"
                     }
                 },
                 rootModel: {
