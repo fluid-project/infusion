@@ -320,8 +320,8 @@ var fluid_1_5 = fluid_1_5 || {};
                         "inputsLarger": "fluid_prefs_inputsLarger"
                     },
                     selectors: {
-                        emphasizeLinks: "flc-prefsEditor-emphasizeLinks",
-                        inputsLarger: "flc-prefsEditor-inputsLarger"
+                        emphasizeLinks: ".flc-prefsEditor-emphasizeLinks",
+                        inputsLarger: ".flc-prefsEditor-inputsLarger"
                     },
                     selectorsToIgnore: ["emphasizeLinks", "inputsLarger"],
                     model: {
@@ -343,7 +343,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     resources: {
                         template: "{templateLoader}.resources.linksControls",
                         emphasizeLinks: "{templateLoader}.resources.emphasizeLinks",
-                        inputsLarger: "{templateLoader}.resource.inputsLarger"
+                        inputsLarger: "{templateLoader}.resources.inputsLarger"
                     }
                 }
             }
