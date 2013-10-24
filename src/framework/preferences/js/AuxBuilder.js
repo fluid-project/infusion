@@ -228,15 +228,17 @@ var fluid_1_5 = fluid_1_5 || {};
         var panelsToIgnore = [], selectorsToIgnore = [];
 
         fluid.each(compositePanelList, function (compositeDetail, compositeKey) {
-            fluid.set(compositePanelOptions, "type", compositeDetail.type);
+            var thisCompositeOptions = fluid.copy(compositeDetail);
+            fluid.set(compositePanelOptions, "type", thisCompositeOptions.type);
+            delete thisCompositeOptions.type;
 
-            fluid.set(selectors, compositeKey, compositeDetail.container);
-            fluid.set(templates, compositeKey, compositeDetail.template);
-            fluid.set(messages, compositeKey, compositeDetail.message);
+            selectors = fluid.prefs.rearrangeDirect(thisCompositeOptions, compositeKey, "container");
+            templates = fluid.prefs.rearrangeDirect(thisCompositeOptions, compositeKey, "template");
+            messages = fluid.prefs.rearrangeDirect(thisCompositeOptions, compositeKey, "message");
 
             var subPanels = {};
 
-            fluid.each(compositeDetail.panels, function (subPanelID) {
+            fluid.each(thisCompositeOptions.panels, function (subPanelID) {
                 panelsToIgnore.push(subPanelID);
                 var subPanelPrefsKey = fluid.get(auxSchema, [subPanelID, "type"]);
                 var safeSubPanelPrefsKey = fluid.prefs.subPanel.safePrefKey(subPanelPrefsKey);
@@ -282,13 +284,13 @@ var fluid_1_5 = fluid_1_5 || {};
                     prefKey: safeSubPanelPrefsKey
                 });
             });
+            delete thisCompositeOptions.panels;
+
+            fluid.set(compositePanelOptions, ["options"], $.extend(true, {}, compositePanelOptions.options, thisCompositeOptions));
             fluid.set(compositePanelOptions, ["options", "selectorsToIgnore"], selectorsToIgnore);
             fluid.set(compositePanelOptions, ["options", "components"], subPanels);
 
             components[compositeKey] = compositePanelOptions;
-            selectors[compositeKey] = compositeDetail.container;
-            templates[compositeKey] = compositeDetail.template;
-            messages[compositeKey] = compositeDetail.message;
 
             fluid.prefs.addCommonOptions(components, compositeKey, compositePanelCommonOptions, {
                 prefKey: compositeKey

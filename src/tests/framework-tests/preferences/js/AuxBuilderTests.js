@@ -1171,7 +1171,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "template": "%prefix/combinedBoth.html",
                 "message": "%prefix/combinedBoth.json",
                 "type": "fluid.prefs.panel.combinedBoth",
-                "panels": ["subPanel1", "subPanel2"]
+                "panels": ["subPanel1", "subPanel2"],
+                "extraOption": 1
             }
         },
         "subPanel1": {
@@ -1215,7 +1216,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "template": "%prefix/combinedBoth.html",
                 "message": "%prefix/combinedBoth.json",
                 "type": "fluid.prefs.panel.combinedBoth",
-                "panels": ["subPanel1", "subPanel2"]
+                "panels": ["subPanel1", "subPanel2"],
+                "extraOption": 1
             }
         },
         "subPanel1": {
@@ -1256,6 +1258,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "createOnEvent": "onPrefsEditorMarkupReady",
                     options: {
                         gradeNames: ["fluid.prefs.prefsEditorConnections", "fluid.prefs.compositePanel"],
+                        extraOption: 1,
                         resources: {
                             template: "templateLoader.resources.combinedBoth",
                             "fluid_prefs_subPanel1": "templateLoader.resources.fluid_prefs_subPanel1",
