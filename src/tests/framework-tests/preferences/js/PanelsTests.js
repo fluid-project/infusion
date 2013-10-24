@@ -203,7 +203,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             subPanel2: {
                 resourceText: "<h2>subPanel2</h2>"
-            },
+            }
         },
         components: {
             subPanel1: {
@@ -748,27 +748,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         fluid_prefs_emphasizeLinks: false,
                         fluid_prefs_inputsLarger: false
                     },
+                    selectors: {
+                        emphasizeLinks: ".flc-prefsEditor-emphasizeLinks",
+                        inputsLarger: ".flc-prefsEditor-inputsLarger"
+                    },
+                    selectorsToIgnore: ["emphasizeLinks", "inputsLarger"],
                     components: {
                         emphasizeLinks: {
                             type: "fluid.prefs.panel.emphasizeLinks",
-                            container: "{that}.container",
+                            container: "{that}.dom.emphasizeLinks",
                             createOnEvent: "initSubPanels"
                         },
                         inputsLarger: {
                             type: "fluid.prefs.panel.inputsLarger",
-                            container: "{that}.container",
+                            container: "{that}.dom.inputsLarger",
                             createOnEvent: "initSubPanels"
+                        }
+                    },
+                    resources: {
+                        template: {
+                            resourceText: '<li class="flc-prefsEditor-emphasizeLinks"></li><li class="flc-prefsEditor-inputsLarger"></li>'
                         }
                     }
                 }
             },
             linksTester: {
                 type: "fluid.tests.linksTester"
-            },
-            resources: {
-                template: {
-                    resourceText: ""
-                }
             }
         }
     });
