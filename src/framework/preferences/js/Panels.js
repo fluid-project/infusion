@@ -20,12 +20,49 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
+    /**********************
+     * stringBundle grade *
+     **********************/
+
+    fluid.defaults("fluid.prefs.stringBundle", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+            stringBundle: {
+                expander: {
+                    funcName: "fluid.prefs.stringLookup",
+                    args: ["{that}.messageResolver", "{that}.options.stringArrayIndex"]
+                }
+            }
+        },
+        stringArrayIndex: {}
+    });
+
+    fluid.prefs.stringLookup = function (messageResolver, stringArrayIndex) {
+        var that = {id: fluid.allocateGuid()};
+        that.singleLookup = function (value) {
+            var looked = messageResolver.lookup([value]);
+            return fluid.get(looked, "template");
+        };
+        that.multiLookup = function (values) {
+            return fluid.transform(values, function (value) {
+                return that.singleLookup(value);
+            });
+        };
+        that.lookup = function (value) {
+            var values = fluid.get(stringArrayIndex, value) || value;
+            var lookupFn = fluid.isArrayable(values) ? "multiLookup" : "singleLookup";
+            return that[lookupFn](values);
+        };
+        that.resolvePathSegment = that.lookup;
+        return that;
+    };
+
     /***********************************************
      * Base grade panels
      ***********************************************/
 
     fluid.defaults("fluid.prefs.panels", {
-        gradeNames: ["fluid.rendererComponent", "fluid.prefs.modelRelay", "autoInit"]
+        gradeNames: ["fluid.rendererComponent", "fluid.prefs.stringBundle", "fluid.prefs.modelRelay", "autoInit"],
     });
 
     /********************************************************************************
@@ -62,19 +99,6 @@ var fluid_1_5 = fluid_1_5 || {};
         path: "value",
         sliderOptions: "{fluid.prefs.panels}.options.sliderOptions"
     });
-
-    /**************************************
-     * Functions shared by several panels *
-     **************************************/
-
-    fluid.prefs.panels.lookupMsg = function (messageResolver, prefix, values) {
-        var messages = [];
-        fluid.each(values, function (value, key) {
-            var looked = messageResolver.lookup([prefix + "." + value]);
-            messages.push(looked ? looked.template : looked);
-        });
-        return messages;
-    };
 
     /********************************
      * Preferences Editor Text Size *
@@ -144,18 +168,13 @@ var fluid_1_5 = fluid_1_5 || {};
             textFont: ".flc-prefsEditor-text-font",
             label: ".flc-prefsEditor-text-font-label"
         },
-        strings: {
-            textFont: {
-                expander: {
-                    func: "fluid.prefs.panels.lookupMsg",
-                    args: ["{that}.options.parentBundle", "textFont", "{that}.options.controlValues.textFont"]
-                }
-            }
+        stringArrayIndex: {
+            textFont: ["textFont-default", "textFont-times", "textFont-comic", "textFont-arial", "textFont-verdana"]
         },
         protoTree: {
             label: {messagekey: "textFontLabel"},
             textFont: {
-                optionnames: "${{that}.options.strings.textFont}",
+                optionnames: "${{that}.stringBundle.textFont}",
                 optionlist: "${{that}.options.controlValues.textFont}",
                 selection: "${value}",
                 decorators: {
@@ -246,13 +265,8 @@ var fluid_1_5 = fluid_1_5 || {};
             themeInput: ".flc-prefsEditor-themeInput",
             label: ".flc-prefsEditor-contrast-label"
         },
-        strings: {
-            theme: {
-                expander: {
-                    func: "fluid.prefs.panels.lookupMsg",
-                    args: ["{that}.options.parentBundle", "contrast", "{that}.options.controlValues.theme"]
-                }
-            }
+        stringArrayIndex: {
+            theme: ["contrast-default", "contrast-bw", "contrast-wb", "contrast-by", "contrast-yb", "contrast-lgdg"]
         },
         repeatingSelectors: ["themeRow"],
         protoTree: {
@@ -264,7 +278,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 inputID: "themeInput",
                 selectID: "theme-radio",
                 tree: {
-                    optionnames: "${{that}.options.strings.theme}",
+                    optionnames: "${{that}.stringBundle.theme}",
                     optionlist: "${{that}.options.controlValues.theme}",
                     selection: "${value}"
                 }
@@ -280,7 +294,7 @@ var fluid_1_5 = fluid_1_5 || {};
             style: {
                 funcName: "fluid.prefs.panels.contrast.style",
                 args: [
-                    "{that}.dom.themeLabel", "{that}.options.strings.theme",
+                    "{that}.dom.themeLabel", "{that}.stringBundle.theme",
                     "{that}.options.markup.label", "{that}.options.controlValues.theme",
                     "{that}.options.classnameMap.theme"
                 ],
