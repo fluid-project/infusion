@@ -2,5 +2,5 @@
     "name": "Tabs",
     "description": "A wrapper for jquery ui tabs",
     "files": ["Tabs.js"],
-    "dependencies": ["jQuery", "jQueryUICore", "jQueryAriaTabsPlugin", "framework"]
+    "dependencies": ["jQuery", "jQueryUICore", "jQueryUIWidgets", "framework"]
 }}
