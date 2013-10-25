@@ -40,7 +40,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "type": "fluid.prefs.enactors.textSize"
                 },
                 "panel": {
-                    "type": "fluid.prefs.panels.textSize",
+                    "type": "fluid.prefs.panel.textSize",
                     "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
                     "template": "%prefix/PrefsEditorTemplate-textSize.html",
                     "message": "%prefix/textSize.json"
@@ -61,7 +61,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 },
                 "panel": {
-                    "type": "fluid.prefs.panels.lineSpace",
+                    "type": "fluid.prefs.panel.lineSpace",
                     "container": ".flc-prefsEditor-line-space",  // the css selector in the template where the panel is rendered
                     "template": "%prefix/PrefsEditorTemplate-lineSpace.html",
                     "message": "%prefix/lineSpace.json"
@@ -81,7 +81,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "classes": "@textFont.classes"
                 },
                 "panel": {
-                    "type": "fluid.prefs.panels.textFont",
+                    "type": "fluid.prefs.panel.textFont",
                     "container": ".flc-prefsEditor-text-font",  // the css selector in the template where the panel is rendered
                     "classnameMap": {"textFont": "@textFont.classes"},
                     "template": "%prefix/PrefsEditorTemplate-textFont.html",
@@ -104,7 +104,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "classes": "@contrast.classes"
                 },
                 "panel": {
-                    "type": "fluid.prefs.panels.contrast",
+                    "type": "fluid.prefs.panel.contrast",
                     "container": ".flc-prefsEditor-contrast",  // the css selector in the template where the panel is rendered
                     "classnameMap": {"theme": "@contrast.classes"},
                     "template": "%prefix/PrefsEditorTemplate-contrast.html",
@@ -118,7 +118,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "tocTemplate": "../../../components/tableOfContents/html/TableOfContents.html"
                 },
                 "panel": {
-                    "type": "fluid.prefs.panels.layoutControls",
+                    "type": "fluid.prefs.panel.layoutControls",
                     "container": ".flc-prefsEditor-layout-controls",  // the css selector in the template where the panel is rendered
                     "template": "%prefix/PrefsEditorTemplate-layout.html",
                     "message": "%prefix/tableOfContents.json"
@@ -131,10 +131,10 @@ var fluid_1_5 = fluid_1_5 || {};
                     "cssClass": "fl-link-enhanced"
                 },
                 "panel": {
-                    "type": "fluid.prefs.panels.linksControls",
-                    "container": ".flc-prefsEditor-links-controls",  // the css selector in the template where the panel is rendered
-                    "template": "%prefix/PrefsEditorTemplate-links.html",
-                    "message": "%prefix/links.json"
+                    "type": "fluid.prefs.panel.emphasizeLinks",
+                    "container": ".flc-prefsEditor-emphasizeLinks",  // the css selector in the template where the panel is rendered
+                    "template": "%prefix/PrefsEditorTemplate-emphasizeLinks.html",
+                    "message": "%prefix/emphasizeLinks.json"
                 }
             },
             "inputsLarger": {
@@ -144,7 +144,19 @@ var fluid_1_5 = fluid_1_5 || {};
                     "cssClass": "fl-text-larger"
                 },
                 "panel": {
-                    "type": "fluid.prefs.panels.linksControls"
+                    "type": "fluid.prefs.panel.inputsLarger",
+                    "container": ".flc-prefsEditor-inputsLarger",  // the css selector in the template where the panel is rendered
+                    "template": "%prefix/PrefsEditorTemplate-inputsLarger.html",
+                    "message": "%prefix/inputsLarger.json"
+                }
+            },
+            groups: {
+                "linksControls": {
+                    "container": ".flc-prefsEditor-links-controls",
+                    "template": "%prefix/PrefsEditorTemplate-linksControls.html",
+                    "message": "%prefix/linksControls.json",
+                    "type": "fluid.prefs.panel.linksControls",
+                    "panels": ["emphasizeLinks", "inputsLarger"]
                 }
             }
         }

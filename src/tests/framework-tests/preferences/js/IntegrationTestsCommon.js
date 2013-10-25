@@ -112,7 +112,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 savedSelections2 = selections;
             }
 
-            function testComponent(prefsEditor) {
+            function testComponent(prefsEditorLoader) {
+                var prefsEditor = prefsEditorLoader.prefsEditor;
                 var rootModel = prefsEditor.rootModel;
 
                 fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents[componentName]);
@@ -156,12 +157,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 prefsEditor: {
                     gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"],
                     listeners: {
-                        onReady: {
-                            listener: testComponent,
-                            priority: "last"
-                        },
                         "onSave.direct": testSave2,
                         "onSave.munged": testSave
+                    }
+                },
+                listeners: {
+                    onReady: {
+                        listener: testComponent,
+                        priority: "last"
                     }
                 }
             }]);

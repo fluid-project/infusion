@@ -73,6 +73,229 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    /************************
+     * combined panel tests *
+     ************************/
+
+    fluid.tests.assertPathsExist = function (root, paths) {
+        fluid.each(paths, function (path) {
+            jqUnit.assertValue("The path '" + path + "' should exist", fluid.get(root, path));
+        });
+    };
+
+    fluid.tests.listenerFuncMaker = function (funcName, args, environment) {
+        return function () {
+            fluid.invokeGlobalFunction(funcName, args, environment);
+        };
+    };
+
+    fluid.defaults("fluid.tests.subPanel", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        renderOnInit: true,
+        selectors: {
+            header: "h2"
+        }
+    });
+
+    fluid.defaults("fluid.tests.subPanel1", {
+        gradeNames: ["fluid.tests.subPanel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.sub1": {
+                "model.value": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
+        },
+        model: {
+            value: ["subPanel1", "subPanel1a"]
+        },
+        listeners: {
+            afterRender: {
+                listener: "{compositePanel}.writeRecord",
+                args: ["subPanel1"]
+            }
+        },
+        repeatingSelectors: ["header"],
+        protoTree: {
+            expander: {
+                type: "fluid.renderer.repeat",
+                repeatID: "header",
+                controlledBy: "value",
+                pathAs: "modelPath",
+                tree: {
+                    value: "${{modelPath}}"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.subPanel2", {
+        gradeNames: ["fluid.tests.subPanel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.sub2": {
+                "model.value": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
+        },
+        model: {
+            value: "subPanel2"
+        },
+        listeners: {
+            afterRender: {
+                listener: "{compositePanel}.writeRecord",
+                args: ["subPanel2"]
+            }
+        },
+        rendererFnOptions: {
+            noexpand: true
+        },
+        repeatingSelectors: [],
+        produceTree: function (that) {
+            return {
+                children: [{
+                    ID: "header",
+                    componentType: "UIBound",
+                    value: "subPanel2",
+                    valuebinding: "value"
+                }]
+            };
+        }
+    });
+
+    fluid.defaults("fluid.tests.compositePanel", {
+        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
+        selectors: {
+            subPanel1: ".subPanel1",
+            subPanel2: ".subPanel2",
+            heading: ".heading"
+        },
+        strings: {
+            heading: "Heading"
+        },
+        selectorsToIgnore: ["subPanel1", "subPanel2"],
+        members: {
+            fireRecord: {}
+        },
+        invokers: {
+            writeRecord: {
+                funcName: "fluid.tests.compositePanel.writeRecord",
+                args: ["{that}.fireRecord", "{arguments}.0"]
+            }
+        },
+        listeners: {
+            afterRender: {
+                listener: "{that}.writeRecord",
+                args: ["compositePanel"]
+            }
+        },
+        protoTree: {
+            "heading": {
+                messagekey: "heading"
+            }
+        },
+        resources: {
+            template: {
+                resourceText: '<section><h1 class="heading"></h1><article class="subPanel1"></article><article class="subPanel2"></article></section>'
+            },
+            subPanel1: {
+                resourceText: "<h2>subPanel1</h2>"
+            },
+            subPanel2: {
+                resourceText: "<h2>subPanel2</h2>"
+            }
+        },
+        components: {
+            subPanel1: {
+                type: "fluid.tests.subPanel1",
+                container: "{compositePanel}.dom.subPanel1",
+                createOnEvent: "initSubPanels"
+            },
+            subPanel2: {
+                type: "fluid.tests.subPanel2",
+                container: "{compositePanel}.dom.subPanel2",
+                createOnEvent: "initSubPanels"
+            }
+        }
+    });
+
+    fluid.tests.compositePanel.writeRecord = function (fireRecord, id) {
+        var currentVal = fluid.get(fireRecord, id);
+        fluid.set(fireRecord, id, currentVal !== undefined ? ++currentVal : 1);
+    };
+
+    jqUnit.test("fluid.prefs.compositePanel", function () {
+        jqUnit.expect(14);
+        var that = fluid.tests.compositePanel(".flc-prefs-compositePanel");
+
+        var expectedSubPanel1Rules = {
+            "fluid_prefs_sub1": "value"
+        };
+
+        var expectedSubPanel2Rules = {
+            "fluid_prefs_sub2": "value"
+        };
+
+        var expectedResourceText = '<section><h1 class="heading"></h1><article class="subPanel1"><h2>subPanel1</h2></article><article class="subPanel2"><h2>subPanel2</h2></article></section>';
+
+        var expectedFireRecord = {
+            compositePanel: 3,
+            subPanel1: 3,
+            subPanel2: 3
+        };
+
+        var expectedSupanel1Selector = ".subPanel1 h2";
+        var expectedSupanel2Selector = ".subPanel2 h2";
+
+        var expectedRepeatingSelectors = ["subPanel1_header"];
+
+        var expectedTree = {
+            "children": [{
+                "ID": "heading",
+                "componentType": "UIMessage",
+                "messagekey": {
+                    "value": "heading"
+                }
+            }, {
+                "ID": "subPanel1_header:",
+                "componentType": "UIBound",
+                "value": "subPanel1",
+                "valuebinding": "fluid_prefs_sub1.0"
+            }, {
+                "ID": "subPanel1_header:",
+                "componentType": "UIBound",
+                "value": "subPanel1a",
+                "valuebinding": "fluid_prefs_sub1.1"
+            }, {
+                "ID": "subPanel2_header",
+                "componentType": "UIBound",
+                "value": "subPanel2",
+                "valuebinding": "fluid_prefs_sub2"
+            }]
+        };
+
+        that.refreshView();
+        that.subPanel1.refreshView();
+        that.subPanel2.refreshView();
+        jqUnit.assertDeepEq("The events should have populated the fireRecord correctly", expectedFireRecord, that.fireRecord);
+
+        jqUnit.assertFalse("The renderOnInit option for subPanel1 should be false", that.subPanel1.options.renderOnInit);
+        jqUnit.assertFalse("The renderOnInit option for subPanel2 should be false", that.subPanel2.options.renderOnInit);
+        jqUnit.assertDeepEq("The rules block for subPanel1 should be generated correctly", expectedSubPanel1Rules, that.subPanel1.options.rules);
+        jqUnit.assertDeepEq("The rules block for subPanel2 should be generated correctly", expectedSubPanel2Rules, that.subPanel2.options.rules);
+        jqUnit.assertEquals("The resourceText should have been combined correctly", expectedResourceText, that.options.resources.template.resourceText);
+        jqUnit.assertEquals("subPanel1's selectors should be surfaced to the compositePanel correctly", expectedSupanel1Selector, that.options.selectors.subPanel1_header);
+        jqUnit.assertEquals("subPanel2's selectors should be surfaced to the compositePanel correctly", expectedSupanel2Selector, that.options.selectors.subPanel2_header);
+        jqUnit.assertDeepEq("The repeatingSelectors should have been surfaced correctly", expectedRepeatingSelectors, that.options.rendererFnOptions.subPanelRepeatingSelectors);
+        jqUnit.assertDeepEq("The produceTree should have combined the subPanel protoTrees together correctly", expectedTree, that.produceTree());
+        jqUnit.assertEquals("The markup for the compositePanel should have rendered correctly", that.options.strings.heading, that.locate("heading").text());
+        that.subPanel1.locate("header").each(function (idx, elm) {
+            var actual = $(elm).text();
+            jqUnit.assertEquals("The markup for subPanel1 should have rendered correctly", that.subPanel1.model.value[idx], actual);
+        });
+        jqUnit.assertEquals("The markup for subPanel2 should have rendered correctly", that.subPanel2.model.value, that.subPanel2.locate("header").text());
+    });
+
 
     /*******************************************************************************
      * textFontPanel
@@ -81,7 +304,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             textFont: {
-                type: "fluid.prefs.panels.textFont",
+                type: "fluid.prefs.panel.textFont",
                 container: ".flc-textFont",
                 options: {
                     gradeNames: "fluid.prefs.defaultTestPanel",
@@ -154,7 +377,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             contrast: {
-                type: "fluid.prefs.panels.contrast",
+                type: "fluid.prefs.panel.contrast",
                 container: ".flc-contrast",
                 options: {
                     gradeNames: "fluid.prefs.defaultTestPanel",
@@ -245,7 +468,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             textSize: {
-                type: "fluid.prefs.panels.textSize",
+                type: "fluid.prefs.panel.textSize",
                 container: ".flc-textSize",
                 options: {
                     gradeNames: "fluid.prefs.defaultTestPanel",
@@ -296,7 +519,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             lineSpace: {
-                type: "fluid.prefs.panels.lineSpace",
+                type: "fluid.prefs.panel.lineSpace",
                 container: ".flc-lineSpace",
                 options: {
                     gradeNames: "fluid.prefs.defaultTestPanel",
@@ -347,6 +570,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         element.attr("checked", "checked").change();
     };
 
+    fluid.tests.checkboxListenerTester = function (message, expectedState, checkbox) {
+        return function () {
+            jqUnit[expectedState ? "assertTrue" : "assertFalse"](message, checkbox.is(":checked"));
+        };
+    };
+
     /*******************************************************************************
      * layoutPanel
      *******************************************************************************/
@@ -354,7 +583,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             layout: {
-                type: "fluid.prefs.panels.layoutControls",
+                type: "fluid.prefs.panel.layoutControls",
                 container: ".flc-layout",
                 options: {
                     gradeNames: "fluid.prefs.defaultTestPanel",
@@ -370,13 +599,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.layoutPanel.testDefault = function (checkbox, expectedValue) {
-        return function () {
-            var inputValue = checkbox.attr("checked");
-            jqUnit.assertEquals("The toc option is not checked by default", expectedValue, inputValue);
-        };
-    };
-
     fluid.defaults("fluid.tests.layoutTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
@@ -391,8 +613,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "{layout}.refreshView"
                 }, {
-                    listenerMaker: "fluid.tests.layoutPanel.testDefault",
-                    makerArgs: ["{layout}.dom.toc", "{that}.options.testOptions.defaultInputStatus"],
+                    listenerMaker: "fluid.tests.checkboxListenerTester",
+                    makerArgs: ["The toc option is not checked by default", "{that}.options.testOptions.defaultInputStatus", "{layout}.dom.toc"],
                     event: "{layout}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeCheckboxSelection",
@@ -408,19 +630,154 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * linksPanel
+     * emphasize links
      *******************************************************************************/
-    fluid.defaults("fluid.tests.linksPanel", {
+    fluid.defaults("fluid.tests.emphasizeLinksPanel", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            links: {
-                type: "fluid.prefs.panels.linksControls",
+            layout: {
+                type: "fluid.prefs.panel.emphasizeLinks",
                 container: ".flc-links",
                 options: {
                     gradeNames: "fluid.prefs.defaultTestPanel",
                     model: {
-                        links: false,
+                        links: false
+                    }
+                }
+            },
+            emphasizeLinksTester: {
+                type: "fluid.tests.emphasizeLinksTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.emphasizeLinksTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        testOptions: {
+            defaultInputStatus: false,
+            newValue: true
+        },
+        modules: [{
+            name: "Test the emphasizeLinks settings panel",
+            tests: [{
+                expect: 2,
+                name: "Test the rendering of the emphasizeLinks panel",
+                sequence: [{
+                    func: "{emphasizeLinks}.refreshView"
+                }, {
+                    listenerMaker: "fluid.tests.checkboxListenerTester",
+                    makerArgs: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{emphasizeLinks}.dom.links"],
+                    event: "{emphasizeLinks}.events.afterRender"
+                }, {
+                    func: "fluid.tests.changeCheckboxSelection",
+                    args: ["{emphasizeLinks}.dom.links"]
+                }, {
+                    listenerMaker: "fluid.tests.checkModel",
+                    makerArgs: ["links", "{that}.options.testOptions.newValue"],
+                    spec: {path: "links", priority: "last"},
+                    changeEvent: "{emphasizeLinks}.applier.modelChanged"
+                }]
+            }]
+        }]
+    });
+
+    /*******************************************************************************
+     * inputs larger
+     *******************************************************************************/
+    fluid.defaults("fluid.tests.inputsLargerPanel", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            layout: {
+                type: "fluid.prefs.panel.inputsLarger",
+                container: ".flc-links",
+                options: {
+                    gradeNames: "fluid.prefs.defaultTestPanel",
+                    model: {
                         inputsLarger: false
+                    }
+                }
+            },
+            inputsLargerTester: {
+                type: "fluid.tests.inputsLargerTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.inputsLargerTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        testOptions: {
+            defaultInputStatus: false,
+            newValue: true
+        },
+        modules: [{
+            name: "Test the inputsLarger settings panel",
+            tests: [{
+                expect: 2,
+                name: "Test the rendering of the inputsLarger panel",
+                sequence: [{
+                    func: "{inputsLarger}.refreshView"
+                }, {
+                    listenerMaker: "fluid.tests.checkboxListenerTester",
+                    makerArgs: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{inputsLarger}.dom.inputsLarger"],
+                    event: "{inputsLarger}.events.afterRender"
+                }, {
+                    func: "fluid.tests.changeCheckboxSelection",
+                    args: ["{inputsLarger}.dom.inputsLarger"]
+                }, {
+                    listenerMaker: "fluid.tests.checkModel",
+                    makerArgs: ["inputsLarger", "{that}.options.testOptions.newValue"],
+                    spec: {path: "inputsLarger", priority: "last"},
+                    changeEvent: "{inputsLarger}.applier.modelChanged"
+                }]
+            }]
+        }]
+    });
+
+    /*******************************************************************************
+     * linksControlsPanel
+     *******************************************************************************/
+    fluid.defaults("fluid.tests.linksControlsPanel", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            linksControls: {
+                type: "fluid.prefs.panel.linksControls",
+                container: ".flc-links",
+                options: {
+                    gradeNames: "fluid.prefs.defaultTestPanel",
+                    model: {
+                        fluid_prefs_emphasizeLinks: false,
+                        fluid_prefs_inputsLarger: false
+                    },
+                    strings: {
+                        linksControlsLabel: "Links & buttons"
+                    },
+                    selectors: {
+                        emphasizeLinks: ".flc-prefsEditor-emphasizeLinks",
+                        inputsLarger: ".flc-prefsEditor-inputsLarger"
+                    },
+                    selectorsToIgnore: ["emphasizeLinks", "inputsLarger"],
+                    components: {
+                        emphasizeLinks: {
+                            type: "fluid.prefs.panel.emphasizeLinks",
+                            container: "{that}.dom.emphasizeLinks",
+                            createOnEvent: "initSubPanels"
+                        },
+                        inputsLarger: {
+                            type: "fluid.prefs.panel.inputsLarger",
+                            container: "{that}.dom.inputsLarger",
+                            createOnEvent: "initSubPanels"
+                        }
+                    },
+                    resources: {
+                        template: {
+                            resourceText: '<h2 class="flc-prefsEditor-linksControls-label"></h2><li class="flc-prefsEditor-emphasizeLinks"></li><li class="flc-prefsEditor-inputsLarger"></li>'
+                        },
+                        emphasizeLinks: {
+                            resourceText: '<input type="checkbox" id="links-choice" class="flc-prefsEditor-links fl-force-left" />'
+                        },
+                        inputsLarger: {
+                            resourceText: '<input type="checkbox" id="inputs-choice" class="flc-prefsEditor-inputs-larger fl-force-left" />'
+                        }
                     }
                 }
             },
@@ -430,12 +787,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.linksPanel.testDefault = function (linksPanel, expectedValue) {
+    fluid.tests.linksControlsPanel.testDefault = function (linksControlsPanel, expectedValue, expectedLabel) {
         return function () {
-            var linksValue = linksPanel.locate("links").attr("checked");
-            jqUnit.assertEquals("The links option is not checked by default", expectedValue, linksValue);
-            var inputsLargerValue = linksPanel.locate("inputsLarger").attr("checked");
-            jqUnit.assertEquals("The links option is not checked by default", expectedValue, inputsLargerValue);
+            var linksLabel = linksControlsPanel.locate("label").text();
+            jqUnit.assertEquals("The links control label is rendered correctly", expectedLabel, linksLabel);
+            var linksValue = linksControlsPanel.emphasizeLinks.locate("links").attr("checked");
+            jqUnit.assertEquals("The emphasizeLinks option is not checked by default", expectedValue, linksValue);
+            var inputsLargerValue = linksControlsPanel.inputsLarger.locate("inputsLarger").attr("checked");
+            jqUnit.assertEquals("The inputsLarger option is not checked by default", expectedValue, inputsLargerValue);
         };
     };
 
@@ -447,32 +806,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             newValue: true
         },
         modules: [{
-            name: "Test the links settings panel",
+            name: "Test the linksControls settings panel",
             tests: [{
-                expect: 4,
-                name: "Test the rendering of the links panel",
+                expect: 5,
+                name: "Test the rendering of the linksControls panel",
                 sequence: [{
-                    func: "{links}.refreshView"
+                    func: "{linksControls}.refreshView"
                 }, {
-                    listenerMaker: "fluid.tests.linksPanel.testDefault",
-                    makerArgs: ["{links}", "{that}.options.testOptions.defaultInputStatus"],
-                    event: "{links}.events.afterRender"
-                }, {
-                    func: "fluid.tests.changeCheckboxSelection",
-                    args: ["{links}.dom.links"]
-                }, {
-                    listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["links", "{that}.options.testOptions.newValue"],
-                    spec: {path: "links", priority: "last"},
-                    changeEvent: "{links}.applier.modelChanged"
+                    listenerMaker: "fluid.tests.linksControlsPanel.testDefault",
+                    makerArgs: ["{linksControls}", "{that}.options.testOptions.defaultInputStatus", "{linksControls}.options.strings.linksControlsLabel"],
+                    event: "{linksControls}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeCheckboxSelection",
-                    args: ["{links}.dom.inputsLarger"]
+                    args: ["{linksControls}.emphasizeLinks.dom.links"]
                 }, {
                     listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["inputsLarger", "{that}.options.testOptions.newValue"],
-                    spec: {path: "inputsLarger", priority: "last"},
-                    changeEvent: "{links}.applier.modelChanged"
+                    makerArgs: ["fluid_prefs_emphasizeLinks", "{that}.options.testOptions.newValue"],
+                    spec: {path: "fluid_prefs_emphasizeLinks", priority: "last"},
+                    changeEvent: "{linksControls}.applier.modelChanged"
+                }, {
+                    func: "fluid.tests.changeCheckboxSelection",
+                    args: ["{linksControls}.inputsLarger.dom.inputsLarger"]
+                }, {
+                    listenerMaker: "fluid.tests.checkModel",
+                    makerArgs: ["fluid_prefs_inputsLarger", "{that}.options.testOptions.newValue"],
+                    spec: {path: "fluid_prefs_inputsLarger", priority: "last"},
+                    changeEvent: "{linksControls}.applier.modelChanged"
                 }]
             }]
         }]
@@ -485,7 +844,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.tests.textSizePanel",
             "fluid.tests.lineSpacePanel",
             "fluid.tests.layoutPanel",
-            "fluid.tests.linksPanel"
+            "fluid.tests.emphasizeLinksPanel",
+            "fluid.tests.inputsLargerPanel",
+            "fluid.tests.linksControlsPanel"
         ]);
     });
 
