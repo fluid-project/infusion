@@ -1067,6 +1067,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * Unit tests for composite panel
      *******************************************************************************/
+
     fluid.defaults("fluid.prefs.schemas.subPanel1", {
         gradeNames: ["autoInit", "fluid.prefs.schemas"],
         schema: {
@@ -1329,7 +1330,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.get(fluid.tests.elementCommonOptions, "compositePanel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
                 fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.tests.auxSchema.compositePanelMappedDefaults);
 
-        jqUnit.assertDeepEq("The auxiliary schema for a composit panel has been parsed correctly", fluid.tests.auxSchema.expandedComposite, expandedCompositePanel);
+        jqUnit.assertDeepEq("The auxiliary schema for a composite panel has been parsed correctly", fluid.tests.auxSchema.expandedComposite, expandedCompositePanel);
     });
 
     fluid.tests.auxSchema.expandedRestForAll = {
