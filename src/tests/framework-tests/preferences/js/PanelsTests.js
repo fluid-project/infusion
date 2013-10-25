@@ -277,7 +277,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.refreshView();
         that.subPanel1.refreshView();
         that.subPanel2.refreshView();
-        jqUnit.assertDeepEq("The events should have populated the fireRecored correctly", expectedFireRecord, that.fireRecord);
+        jqUnit.assertDeepEq("The events should have populated the fireRecord correctly", expectedFireRecord, that.fireRecord);
 
         jqUnit.assertFalse("The renderOnInit option for subPanel1 should be false", that.subPanel1.options.renderOnInit);
         jqUnit.assertFalse("The renderOnInit option for subPanel2 should be false", that.subPanel2.options.renderOnInit);
