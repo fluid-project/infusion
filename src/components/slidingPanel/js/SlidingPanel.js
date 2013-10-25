@@ -76,12 +76,12 @@ var fluid_1_5 = fluid_1_5 || {};
             operateHide: {
                 "this": "{that}.dom.panel",
                 "method": "slideUp",
-                "args": [400, "{that}.events.afterPanelHide.fire"]
+                "args": ["{that}.options.animationDurations.hide", "{that}.events.afterPanelHide.fire"]
             },
             operateShow: {
                 "this": "{that}.dom.panel",
                 "method": "slideDown",
-                "args": [400, "{that}.events.afterPanelShow.fire"]
+                "args": ["{that}.options.animationDurations.show", "{that}.events.afterPanelShow.fire"]
             },
             hidePanel: {
                 func: "{that}.applier.requestChange",
@@ -102,6 +102,10 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         model: {
             isShowing: false
+        },
+        animationDurations: {
+            hide: 400,
+            show: 400
         }
     });
 
