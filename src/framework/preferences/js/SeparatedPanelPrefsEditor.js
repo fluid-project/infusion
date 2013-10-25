@@ -77,15 +77,28 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{separatedPanel}.container",
                 createOnEvent: "onCreateSlidingPanelReady",
                 options: {
+                    gradeNames: ["fluid.prefs.stringBundle"],
                     members: {
-                        msgBundle: "{separatedPanel}.msgBundle"
+                        messageResolver: "{separatedPanel}.msgBundle"
+                    },
+                    strings: {
+                        showText: "{that}.stringBundle.slidingPanelShowText",
+                        hideText: "{that}.stringBundle.slidingPanelHideText"
                     },
                     invokers: {
                         operateShow: {
-                            funcName: "fluid.prefs.separatedPanel.showPanel"
+                            funcName: "fluid.prefs.separatedPanel.showPanel",
+                            args: ["{that}.dom.panel", "{that}.events.afterPanelShow.fire"],
+                            // override default implementation
+                            "this": null,
+                            "method": null
                         },
                         operateHide: {
-                            funcName: "fluid.prefs.separatedPanel.hidePanel"
+                            funcName: "fluid.prefs.separatedPanel.hidePanel",
+                            args: ["{that}.dom.panel", "{that}.events.afterPanelHide.fire"],
+                            // override default implementation
+                            "this": null,
+                            "method": null
                         }
                     }
                 }

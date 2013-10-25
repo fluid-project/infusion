@@ -34,8 +34,16 @@ var fluid_1_5 = fluid_1_5 || {};
                         preview: {
                             type: "fluid.prefs.preview",
                             createOnEvent: "onReady",
-                            container: "{prefsEditor}.dom.previewFrame"
+                            container: "{prefsEditor}.dom.previewFrame",
+                            options: {
+                                listeners: {
+                                    onReady: "{fullPreview}.events.onPreviewReady"
+                                }
+                            }
                         }
+                    },
+                    listeners: {
+                        onReady: "{fullPreview}.events.onPrefsEditorReady"
                     },
                     distributeOptions: {
                         source: "{that}.options.preview",
@@ -43,6 +51,17 @@ var fluid_1_5 = fluid_1_5 || {};
                         target: "{that > preview}.options"
                     }
                 }
+            }
+        },
+        events: {
+            onPrefsEditorReady: null,
+            onPreviewReady: null,
+            onReady: {
+                events: {
+                    onPrefsEditorReady: "onPrefsEditorReady",
+                    onPreviewReady: "onPreviewReady"
+                },
+                args: "{that}"
             }
         },
         distributeOptions: [{
