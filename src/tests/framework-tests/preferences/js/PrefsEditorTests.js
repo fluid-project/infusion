@@ -116,7 +116,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             var testTemplatePrefix = "../../../../framework/preferences/html/";
             var textControlsFullResourcePath = "../../../../framework/preferences/html/PrefsEditorTemplate-textSize.html";
-            var linksControlsTemplateName = "PrefsEditorTemplate-links.html";
+            var linksControlsTemplateName = "PrefsEditorTemplate-linksControls.html";
 
             function testTemplateLoader(resources) {
                 // The template with a customized full url
@@ -394,7 +394,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     components: {
                         textSize: {
-                            type: "fluid.prefs.panels.textSize",
+                            type: "fluid.prefs.panel.textSize",
                             container: "{prefsEditor}.dom.textSize",
                             createOnEvent: "onPrefsEditorMarkupReady",
                             options: {

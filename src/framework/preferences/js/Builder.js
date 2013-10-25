@@ -60,7 +60,7 @@ var fluid_1_5 = fluid_1_5 || {};
                             func: "fluid.prefs.builder.parseAuxSchema",
                             args: "{builder}.options.auxiliarySchema"
                         }
-                    },
+                    }
                 }
             }
         },
@@ -75,7 +75,11 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["autoInit", "fluid.viewComponent"],
         components: {
             store: {
-                type: "fluid.globalSettingsStore"
+                type: "fluid.littleComponent",
+                options: {
+                    gradeNames: ["{that}.options.storeType"],
+                    storeType: "fluid.globalSettingsStore"
+                }
             },
             enhancer: {
                 type: "fluid.littleComponent",
@@ -96,6 +100,18 @@ var fluid_1_5 = fluid_1_5 || {};
             source: "{that}.options.enhancer",
             removeSource: true,
             target: "{that uiEnhancer}.options"
+        }, {
+            source: "{that}.options.store",
+            removeSource: true,
+            target: "{that settingsStore}.options"
+        }, {
+            source: "{that}.options.storeType",
+            removeSource: true,
+            target: "{that > store}.options.storeType"
+        }, {
+            source: "{that}.options.enhancerType",
+            removeSource: true,
+            target: "{that > enhancer}.options.enhancerType"
         }]
     });
 
@@ -117,8 +133,21 @@ var fluid_1_5 = fluid_1_5 || {};
                     },
                     prefsEditor: {
                         gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.panels", "{fluid.prefs.assembler.prefsEd}.options.componentGrades.rootModel", "fluid.prefs.uiEnhancerRelay"]
+                    },
+                    events: {
+                        onReady: "{fluid.prefs.assembler.prefsEd}.events.onPrefsEditorReady"
                     }
                 }
+            }
+        },
+        events: {
+            onPrefsEditorReady: null,
+            onReady: {
+                events: {
+                    onPrefsEditorReady: "onPrefsEditorReady",
+                    onCreate: "onCreate"
+                },
+                args: ["{that}"]
             }
         },
         distributeOptions: [{
@@ -129,6 +158,14 @@ var fluid_1_5 = fluid_1_5 || {};
             source: "{that}.options.prefsEditor",
             removeSource: true,
             target: "{that prefsEditor}.options"
+        }, {
+            source: "{that}.options.templatePrefix",
+            removeSource: true,
+            target: "{that prefsEditorLoader}.options.templatePrefix"
+        }, {
+            source: "{that}.options.messagePrefix",
+            removeSource: true,
+            target: "{that prefsEditorLoader}.options.messagePrefix"
         }]
     });
 
