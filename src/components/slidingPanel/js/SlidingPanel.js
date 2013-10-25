@@ -27,21 +27,12 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.viewComponent", "autoInit"],
         selectors: {
             panel: ".flc-slidingPanel-panel",
-            toggleButton: ".flc-slidingPanel-toggleButton"
+            toggleButton: ".flc-slidingPanel-toggleButton",
+            toggleButtonLabel: ".flc-slidingPanel-toggleButton"
         },
         strings: {
-            showText: {
-                expander: {
-                    func: "fluid.slidingPanel.lookupMsg",
-                    args: ["{that}.msgBundle", "slidingPanelShowText"]
-                }
-            },
-            hideText: {
-                expander: {
-                    func: "fluid.slidingPanel.lookupMsg",
-                    args: ["{that}.msgBundle", "slidingPanelHideText"]
-                }
-            }
+            showText: "show",
+            hideText: "hide"
         },
         events: {
             onPanelHide: null,
@@ -49,64 +40,81 @@ var fluid_1_5 = fluid_1_5 || {};
             afterPanelHide: null,
             afterPanelShow: null
         },
-        finalInitFunction: "fluid.slidingPanel.finalInit",
+        listeners: {
+            "onCreate.bindClick": {
+                "this": "{that}.dom.toggleButton",
+                "method": "click",
+                "args": ["{that}.togglePanel"]
+            },
+            "onCreate.bindModelChange": {
+                listener: "{that}.applier.modelChanged.addListener",
+                args: ["isShowing", "{that}.refreshView"]
+            },
+            "onCreate.setInitialState": {
+                listener: "{that}.refreshView"
+            },
+            "onPanelHide.setText": {
+                "this": "{that}.dom.toggleButtonLabel",
+                "method": "text",
+                "args": ["{that}.options.strings.showText"],
+                "priority": "first"
+            },
+            "onPanelShow.setText": {
+                "this": "{that}.dom.toggleButtonLabel",
+                "method": "text",
+                "args": ["{that}.options.strings.hideText"],
+                "priority": "first"
+            },
+            "onPanelHide.operate": {
+                listener: "{that}.operateHide"
+            },
+            "onPanelShow.operate": {
+                listener: "{that}.operateShow"
+            }
+        },
         invokers: {
-            operateHide: "fluid.slidingPanel.slideUp",
-            operateShow: "fluid.slidingPanel.slideDown"
+            operateHide: {
+                "this": "{that}.dom.panel",
+                "method": "slideUp",
+                "args": ["{that}.options.animationDurations.hide", "{that}.events.afterPanelHide.fire"]
+            },
+            operateShow: {
+                "this": "{that}.dom.panel",
+                "method": "slideDown",
+                "args": ["{that}.options.animationDurations.show", "{that}.events.afterPanelShow.fire"]
+            },
+            hidePanel: {
+                func: "{that}.applier.requestChange",
+                args: ["isShowing", false]
+            },
+            showPanel: {
+                func: "{that}.applier.requestChange",
+                args: ["isShowing", true]
+            },
+            togglePanel: {
+                funcName: "fluid.slidingPanel.togglePanel",
+                args: ["{that}"]
+            },
+            refreshView: {
+                funcName: "fluid.slidingPanel.refreshView",
+                args: ["{that}"]
+            }
         },
         model: {
             isShowing: false
         },
-        methods: {
-            showPanel: {
-                finalState: true,
-                name: "Show"
-            },
-            hidePanel: {
-                finalState: false,
-                name: "Hide"
-            }
+        animationDurations: {
+            hide: 400,
+            show: 400
         }
     });
 
-    fluid.slidingPanel.lookupMsg = function (messageResolver, value) {
-        var looked = messageResolver.lookup([value]);
-        return looked ? looked.template : looked;
+    fluid.slidingPanel.togglePanel = function (that) {
+        that.applier.requestChange("isShowing", !that.model.isShowing);
     };
 
-    fluid.slidingPanel.slideUp = function (element, callback, duration) {
-        $(element).slideUp(duration || "400", callback);
-    };
-
-    fluid.slidingPanel.slideDown = function (element, callback, duration) {
-        $(element).slideDown(duration || "400", callback);
-    };
-
-    fluid.slidingPanel.finalInit = function (that) {
-        fluid.each(that.options.methods, function (method, methodName) {
-            that[methodName] = function () {
-                that.events["onPanel" + method.name].fire(that);
-                that.applier.requestChange("isShowing", method.finalState);
-                that.refreshView();
-                that["operate" + method.name](that.locate("panel"), that.events["afterPanel" + method.name].fire);
-            };
-        });
-
-        that.togglePanel = function () {
-            that[that.model.isShowing ? "hidePanel" : "showPanel"]();
-        };
-
-        that.setPanelHeight = function (newHeight) {
-            that.locate("panel").height(newHeight);
-        };
-
-        that.refreshView = function () {
-            that.locate("toggleButton").text(that.options.strings[that.model.isShowing ? "hideText" : "showText"]);
-        };
-
-        that.locate("toggleButton").click(that.togglePanel);
-
-        that.refreshView();
+    fluid.slidingPanel.refreshView = function (that) {
+        that.events[that.model.isShowing ? "onPanelShow" : "onPanelHide"].fire();
     };
 
 })(jQuery, fluid_1_5);

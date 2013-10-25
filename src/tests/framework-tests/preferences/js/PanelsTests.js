@@ -40,11 +40,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
     var messages = {
-        "textFont.default": "default",
-        "textFont.times": "Times New Roman",
-        "textFont.comic": "Comic Sans",
-        "textFont.arial": "Arial",
-        "textFont.verdana": "Verdana",
+        "textFont-default": "default",
+        "textFont-times": "Times New Roman",
+        "textFont-comic": "Comic Sans",
+        "textFont-arial": "Arial",
+        "textFont-verdana": "Verdana",
         "textFontLabel": "Text Style",
         "contrast": ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"],
         "contrastLabel": "Colour & Contrast"
