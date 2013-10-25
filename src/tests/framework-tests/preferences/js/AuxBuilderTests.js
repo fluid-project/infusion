@@ -229,7 +229,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         enactor: {
             "container": "uiEnhancer.container",
-            "options.sourceApplier": "uiEnhancer.applier"
+            "options.gradeNames": "fluid.prefs.uiEnhancerConnections"
         }
     };
 
@@ -238,7 +238,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.tests.testExpandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, primarySchema, expectedOutput) {
-        var panelsTopCommonOptions = fluid.get(fluid.defaults("fluid.prefs.auxBuilder"), "topCommonOptions.panels");
         var panelsCommonOptions = fluid.get(fluid.tests.elementCommonOptions, "panel");
         var output = fluid.prefs.expandSchemaComponents(auxSchema, type, prefKey, componentConfig, index, panelsCommonOptions, primarySchema);
         jqUnit.assertDeepEq("The components and templates blocks are constructed correctly", expectedOutput, output);
@@ -317,7 +316,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 panels: {
                     selectors: {
-                        "fluid_prefs_panels_contrast": ".flc-prefsEditor-contrast",
+                        "fluid_prefs_panels_contrast": ".flc-prefsEditor-contrast"
                     },
                     components: {
                         "fluid_prefs_panels_contrast": {
@@ -376,7 +375,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "test",
                 func: "fluid.tests.testExpandSchemaComponents",
                 args: ["{that}.options.testOptions.auxSchema", "panels", "{that}.options.testOptions.auxSchema.contrast.type", "{that}.options.testOptions.auxSchema.contrast.panel",
-                "{that}.options.testOptions.index", "{that}.options.testOptions.primarySchema", "{that}.options.testOptions.expectedOutput"]
+                    "{that}.options.testOptions.index", "{that}.options.testOptions.primarySchema", "{that}.options.testOptions.expectedOutput"]
             }]
         }]
     });
@@ -414,7 +413,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             rules: {
                 objectValue: "oPath1.oPath2",
                 arrayValue: "aPath1.aPath2",
-                stringValue: "sPath1.sPath2",
+                stringValue: "sPath1.sPath2"
             },
             expectedOutput: {
                 oPath1: {
@@ -708,7 +707,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             type: "fluid.prefs.enactors.textSize",
                             container: "uiEnhancer.container",
                             options: {
-                                sourceApplier: "uiEnhancer.applier",
+                                gradeNames: "fluid.prefs.uiEnhancerConnections",
                                 model: {
                                     value: 1
                                 },
@@ -960,7 +959,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             type: "fluid.prefs.enactors.textSize",
                             container: "uiEnhancer.container",
                             options: {
-                                sourceApplier: "uiEnhancer.applier",
+                                gradeNames: "fluid.prefs.uiEnhancerConnections",
                                 model: {
                                     value: 1
                                 },

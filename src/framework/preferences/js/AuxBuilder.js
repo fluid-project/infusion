@@ -266,7 +266,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             enactor: {
                 "container": "{uiEnhancer}.container",
-                "options.sourceApplier": "{uiEnhancer}.applier"
+                "options.gradeNames": "fluid.prefs.uiEnhancerConnections"
             }
         },
         indexes: {
