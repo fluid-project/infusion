@@ -24,7 +24,7 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     /********************************************************************************
-     * The grade that contains the connections between an enactor and uiEhancer
+     * The grade that contains the connections between an enactor and uiEnhancer
      ********************************************************************************/
 
     fluid.defaults("fluid.prefs.uiEnhancerConnections", {

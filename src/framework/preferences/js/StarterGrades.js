@@ -102,12 +102,13 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiEnhancer.starterEnactors", {
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
+        uiEnhancerConnectionsGrade: "fluid.prefs.uiEnhancerConnections",
         components: {
             textSize: {
                 type: "fluid.prefs.enactors.textSize",
                 container: "{uiEnhancer}.container",
                 options: {
-                    gradeNames: "fluid.prefs.uiEnhancerConnections",
+                    gradeNames: "{fluid.uiEnhancer.starterEnactors}.options.uiEnhancerConnectionsGrade",
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
                     rules: {
                         "textSize": "value"
@@ -121,7 +122,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.prefs.enactors.textFont",
                 container: "{uiEnhancer}.container",
                 options: {
-                    gradeNames: "fluid.prefs.uiEnhancerConnections",
+                    gradeNames: "{fluid.uiEnhancer.starterEnactors}.options.uiEnhancerConnectionsGrade",
                     classes: "{uiEnhancer}.options.classnameMap.textFont",
                     rules: {
                         "textFont": "value"
@@ -135,7 +136,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.prefs.enactors.lineSpace",
                 container: "{uiEnhancer}.container",
                 options: {
-                    gradeNames: "fluid.prefs.uiEnhancerConnections",
+                    gradeNames: "{fluid.uiEnhancer.starterEnactors}.options.uiEnhancerConnectionsGrade",
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
                     rules: {
                         "lineSpace": "value"
@@ -149,7 +150,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.prefs.enactors.contrast",
                 container: "{uiEnhancer}.container",
                 options: {
-                    gradeNames: "fluid.prefs.uiEnhancerConnections",
+                    gradeNames: "{fluid.uiEnhancer.starterEnactors}.options.uiEnhancerConnectionsGrade",
                     classes: "{uiEnhancer}.options.classnameMap.theme",
                     rules: {
                         "theme": "value"
@@ -163,7 +164,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.prefs.enactors.emphasizeLinks",
                 container: "{uiEnhancer}.container",
                 options: {
-                    gradeNames: "fluid.prefs.uiEnhancerConnections",
+                    gradeNames: "{fluid.uiEnhancer.starterEnactors}.options.uiEnhancerConnectionsGrade",
                     cssClass: "{uiEnhancer}.options.classnameMap.links",
                     rules: {
                         "links": "value"
@@ -177,7 +178,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.prefs.enactors.inputsLarger",
                 container: "{uiEnhancer}.container",
                 options: {
-                    gradeNames: "fluid.prefs.uiEnhancerConnections",
+                    gradeNames: "{fluid.uiEnhancer.starterEnactors}.options.uiEnhancerConnectionsGrade",
                     cssClass: "{uiEnhancer}.options.classnameMap.inputsLarger",
                     rules: {
                         "inputsLarger": "value"
@@ -191,7 +192,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.prefs.enactors.tableOfContents",
                 container: "{uiEnhancer}.container",
                 options: {
-                    gradeNames: "fluid.prefs.uiEnhancerConnections",
+                    gradeNames: "{fluid.uiEnhancer.starterEnactors}.options.uiEnhancerConnectionsGrade",
                     tocTemplate: "{uiEnhancer}.options.tocTemplate",
                     rules: {
                         "toc": "value"
@@ -220,13 +221,14 @@ var fluid_1_5 = fluid_1_5 || {};
             layoutControls: ".flc-prefsEditor-layout-controls",
             linksControls: ".flc-prefsEditor-links-controls"
         },
+        prefsEditorConnectionsGrade: "fluid.prefs.prefsEditorConnections",
         components: {
             textSize: {
                 type: "fluid.prefs.panel.textSize",
                 container: "{prefsEditor}.dom.textSize",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
-                    gradeNames: "fluid.prefs.prefsEditorConnections",
+                    gradeNames: "{fluid.prefs.starterPanels}.options.prefsEditorConnectionsGrade",
                     rules: {
                         "textSize": "value"
                     },
@@ -243,7 +245,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{prefsEditor}.dom.lineSpace",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
-                    gradeNames: "fluid.prefs.prefsEditorConnections",
+                    gradeNames: "{fluid.prefs.starterPanels}.options.prefsEditorConnectionsGrade",
                     rules: {
                         "lineSpace": "value"
                     },
@@ -260,7 +262,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{prefsEditor}.dom.textFont",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
-                    gradeNames: "fluid.prefs.prefsEditorConnections",
+                    gradeNames: "{fluid.prefs.starterPanels}.options.prefsEditorConnectionsGrade",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "textFont": "value"
@@ -278,7 +280,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{prefsEditor}.dom.contrast",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
-                    gradeNames: "fluid.prefs.prefsEditorConnections",
+                    gradeNames: "{fluid.prefs.starterPanels}.options.prefsEditorConnectionsGrade",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     rules: {
                         "theme": "value"
@@ -296,7 +298,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{prefsEditor}.dom.layoutControls",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
-                    gradeNames: "fluid.prefs.prefsEditorConnections",
+                    gradeNames: "{fluid.prefs.starterPanels}.options.prefsEditorConnectionsGrade",
                     rules: {
                         "toc": "toc"
                     },
@@ -313,7 +315,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{prefsEditor}.dom.linksControls",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
-                    gradeNames: "fluid.prefs.prefsEditorConnections",
+                    gradeNames: "{fluid.prefs.starterPanels}.options.prefsEditorConnectionsGrade",
                     rules: {
                         "links": "fluid_prefs_emphasizeLinks",
                         "inputsLarger": "fluid_prefs_inputsLarger"
