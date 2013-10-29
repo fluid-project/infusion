@@ -77,7 +77,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "textSize": {
                     "type": "fluid.prefs.textSize",
                     "enactor": {
-                        "type": "fluid.prefs.enactors.textSize"
+                        "type": "fluid.prefs.enactor.textSize"
                     },
                     "panel": {
                         "type": "fluid.prefs.panel.textSize",
@@ -89,7 +89,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "lineSpace": {
                     "type": "fluid.prefs.lineSpace",
                     "enactor": {
-                        "type": "fluid.prefs.enactors.lineSpace",
+                        "type": "fluid.prefs.enactor.lineSpace",
                         "fontSizeMap": {
                             "xx-small": "9px",
                             "x-small": "11px",
@@ -274,7 +274,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.enactors = {
         "textSize": {
             "enactor": {
-                "type": "fluid.prefs.enactors.textSize"
+                "type": "fluid.prefs.enactor.textSize"
             }
         }
     };

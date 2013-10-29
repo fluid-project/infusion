@@ -88,13 +88,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         "enactors": [{
-            "type": "fluid.prefs.enactors.textFont",
+            "type": "fluid.prefs.enactor.textFont",
             "classes": "@textFont.classes"
         }, {
-            "type": "fluid.prefs.enactors.contrast",
+            "type": "fluid.prefs.enactor.contrast",
             "classes": "@contrast.classes"
         }, {
-            "type": "fluid.prefs.enactors.tableOfContents",
+            "type": "fluid.prefs.enactor.tableOfContents",
             "template": "the-location-of-toc-template",
             "random": "@random.path"
         }],
@@ -133,7 +133,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         "enactors": [{
-            "type": "fluid.prefs.enactors.textFont",
+            "type": "fluid.prefs.enactor.textFont",
             "classes": {
                 "default": "",
                 "times": "fl-font-prefsEditor-times",
@@ -142,7 +142,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "verdana": "fl-font-prefsEditor-verdana"
             }
         }, {
-            "type": "fluid.prefs.enactors.contrast",
+            "type": "fluid.prefs.enactor.contrast",
             "classes": {
                 "default": "fl-theme-prefsEditor-default",
                 "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
@@ -151,7 +151,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
             }
         }, {
-            "type": "fluid.prefs.enactors.tableOfContents",
+            "type": "fluid.prefs.enactor.tableOfContents",
             "random": undefined,
             "template": "the-location-of-toc-template"
         }],
@@ -553,7 +553,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "textSize": {
             "type": "fluid.prefs.textSize",
             "enactor": {
-                "type": "fluid.prefs.enactors.textSize"
+                "type": "fluid.prefs.enactor.textSize"
             }
         }
     };
@@ -601,15 +601,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "textSize": {
             "type": "fluid.prefs.textSize",
             "enactor": {
-                "type": "fluid.prefs.enactors.textSize"
+                "type": "fluid.prefs.enactor.textSize"
             }
         },
         enactors: {
             "gradeNames": ["fluid.uiEnhancer", "autoInit"],
             "selectors": {},
             "components": {
-                "fluid_prefs_enactors_textSize": {
-                    type: "fluid.prefs.enactors.textSize",
+                "fluid_prefs_enactor_textSize": {
+                    type: "fluid.prefs.enactor.textSize",
                     container: "uiEnhancer.container",
                     options: {
                         sourceApplier: "uiEnhancer.applier",
@@ -939,7 +939,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "message": "%prefix/PrefsEditorTemplate-textSize.json"
                     },
                     "enactor": {
-                        "type": "fluid.prefs.enactors.textSize"
+                        "type": "fluid.prefs.enactor.textSize"
                     }
                 },
                 panels: {
@@ -988,8 +988,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 enactors: {
                     "gradeNames": ["fluid.uiEnhancer", "autoInit"],
                     "components": {
-                        "fluid_prefs_enactors_textSize": {
-                            type: "fluid.prefs.enactors.textSize",
+                        "fluid_prefs_enactor_textSize": {
+                            type: "fluid.prefs.enactor.textSize",
                             container: "uiEnhancer.container",
                             options: {
                                 sourceApplier: "uiEnhancer.applier",
@@ -1124,8 +1124,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.prefs.enactors.subPanel1", {
-        gradeNames: ["fluid.prefs.enactors", "autoInit"],
+    fluid.defaults("fluid.prefs.enactor.subPanel1", {
+        gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "fluid.prefs.subPanel1": {
                 "model.value": "default"
@@ -1133,8 +1133,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.prefs.enactors.subPanel2", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactors", "autoInit"],
+    fluid.defaults("fluid.prefs.enactor.subPanel2", {
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "fluid.prefs.subPanel2": {
                 "model.value": "default"
@@ -1179,7 +1179,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "subPanel1": {
             "type": "fluid.prefs.subPanel1",
             "enactor": {
-                "type": "fluid.prefs.enactors.subPanel1",
+                "type": "fluid.prefs.enactor.subPanel1",
                 "cssClass": "fl-link-enhanced"
             },
             "panel": {
@@ -1192,7 +1192,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "subPanel2": {
             "type": "fluid.prefs.subPanel2",
             "enactor": {
-                "type": "fluid.prefs.enactors.subPanel2",
+                "type": "fluid.prefs.enactor.subPanel2",
                 "cssClass": "fl-text-larger"
             },
             "panel": {
@@ -1223,7 +1223,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "subPanel1": {
             "type": "fluid.prefs.subPanel1",
             "enactor": {
-                "type": "fluid.prefs.enactors.subPanel1",
+                "type": "fluid.prefs.enactor.subPanel1",
                 "cssClass": "fl-link-enhanced"
             },
             "panel": {
@@ -1236,7 +1236,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "subPanel2": {
             "type": "fluid.prefs.subPanel2",
             "enactor": {
-                "type": "fluid.prefs.enactors.subPanel2",
+                "type": "fluid.prefs.enactor.subPanel2",
                 "cssClass": "fl-text-larger"
             },
             "panel": {
@@ -1379,8 +1379,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.prefs.enactors.subPanel3", {
-        gradeNames: ["fluid.prefs.enactors", "autoInit"],
+    fluid.defaults("fluid.prefs.enactor.subPanel3", {
+        gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "fluid.prefs.subPanel3": {
                 "model.value": "default"
@@ -1388,8 +1388,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.prefs.enactors.subPanel4", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactors", "autoInit"],
+    fluid.defaults("fluid.prefs.enactor.subPanel4", {
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "fluid.prefs.subPanel4": {
                 "model.value": "default"
@@ -1429,7 +1429,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "subPanel3": {
             "type": "fluid.prefs.subPanel3",
             "enactor": {
-                "type": "fluid.prefs.enactors.subPanel3",
+                "type": "fluid.prefs.enactor.subPanel3",
                 "cssClass": "fl-link-enhanced3"
             },
             "panel": {
@@ -1442,7 +1442,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "subPanel4": {
             "type": "fluid.prefs.subPanel4",
             "enactor": {
-                "type": "fluid.prefs.enactors.subPanel4",
+                "type": "fluid.prefs.enactor.subPanel4",
                 "cssClass": "fl-text-larger4"
             },
             "panel": {
@@ -1468,7 +1468,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "subPanel3": {
             "type": "fluid.prefs.subPanel3",
             "enactor": {
-                "type": "fluid.prefs.enactors.subPanel3",
+                "type": "fluid.prefs.enactor.subPanel3",
                 "cssClass": "fl-link-enhanced3"
             },
             "panel": {
@@ -1481,7 +1481,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "subPanel4": {
             "type": "fluid.prefs.subPanel4",
             "enactor": {
-                "type": "fluid.prefs.enactors.subPanel4",
+                "type": "fluid.prefs.enactor.subPanel4",
                 "cssClass": "fl-text-larger4"
             },
             "panel": {
@@ -1586,8 +1586,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         enactors: {
             "gradeNames": ["fluid.uiEnhancer", "autoInit"],
             "components": {
-                "fluid_prefs_enactors_subPanel1": {
-                    type: "fluid.prefs.enactors.subPanel1",
+                "fluid_prefs_enactor_subPanel1": {
+                    type: "fluid.prefs.enactor.subPanel1",
                     options: {
                         "cssClass": "fl-link-enhanced",
                         sourceApplier: "uiEnhancer.applier",
@@ -1599,8 +1599,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     }
                 },
-                "fluid_prefs_enactors_subPanel2": {
-                    type: "fluid.prefs.enactors.subPanel2",
+                "fluid_prefs_enactor_subPanel2": {
+                    type: "fluid.prefs.enactor.subPanel2",
                     container: "uiEnhancer.container",
                     options: {
                         "cssClass": "fl-text-larger",

@@ -37,7 +37,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "textSize": {
                 "type": "fluid.prefs.textSize",
                 "enactor": {
-                    "type": "fluid.prefs.enactors.textSize"
+                    "type": "fluid.prefs.enactor.textSize"
                 },
                 "panel": {
                     "type": "fluid.prefs.panel.textSize",
@@ -49,7 +49,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "lineSpace": {
                 "type": "fluid.prefs.lineSpace",
                 "enactor": {
-                    "type": "fluid.prefs.enactors.lineSpace",
+                    "type": "fluid.prefs.enactor.lineSpace",
                     "fontSizeMap": {
                         "xx-small": "9px",
                         "x-small": "11px",
@@ -77,7 +77,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "verdana": "fl-font-prefsEditor-verdana"
                 },
                 "enactor": {
-                    "type": "fluid.prefs.enactors.textFont",
+                    "type": "fluid.prefs.enactor.textFont",
                     "classes": "@textFont.classes"
                 },
                 "panel": {
@@ -100,7 +100,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
                 },
                 "enactor": {
-                    "type": "fluid.prefs.enactors.contrast",
+                    "type": "fluid.prefs.enactor.contrast",
                     "classes": "@contrast.classes"
                 },
                 "panel": {
@@ -114,7 +114,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "tableOfContents": {
                 "type": "fluid.prefs.tableOfContents",
                 "enactor": {
-                    "type": "fluid.prefs.enactors.tableOfContents",
+                    "type": "fluid.prefs.enactor.tableOfContents",
                     "tocTemplate": "../../../components/tableOfContents/html/TableOfContents.html"
                 },
                 "panel": {
@@ -127,7 +127,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "emphasizeLinks": {
                 "type": "fluid.prefs.emphasizeLinks",
                 "enactor": {
-                    "type": "fluid.prefs.enactors.emphasizeLinks",
+                    "type": "fluid.prefs.enactor.emphasizeLinks",
                     "cssClass": "fl-link-enhanced"
                 },
                 "panel": {
@@ -140,7 +140,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "inputsLarger": {
                 "type": "fluid.prefs.inputsLarger",
                 "enactor": {
-                    "type": "fluid.prefs.enactors.inputsLarger",
+                    "type": "fluid.prefs.enactor.inputsLarger",
                     "cssClass": "fl-text-larger"
                 },
                 "panel": {

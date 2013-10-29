@@ -441,7 +441,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 expander: {
                     func: "fluid.indexDefaults",
                     args: ["enactorsIndex", {
-                        gradeNames: "fluid.prefs.enactors",
+                        gradeNames: "fluid.prefs.enactor",
                         indexFunc: "fluid.prefs.auxBuilder.prefMapIndexer"
                     }]
                 }
