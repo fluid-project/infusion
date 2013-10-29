@@ -219,15 +219,17 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.prefs.expandCompositePanels = function (auxSchema, compositePanelList, panelIndex, compositePanelCommonOptions, subPanelCommonOptions, 
         compositePanelBasedOnSubCommonOptions, mappedDefaults) {
         var type = "panel";
-        var compositePanelOptions = {};
-        var components = {};
-        var rootModel = {};
-        var selectors = {};
-        var templates = {};
-        var messages = {};
-        var panelsToIgnore = [], selectorsToIgnore = [];
+        var panelsToIgnore = [];
 
         fluid.each(compositePanelList, function (compositeDetail, compositeKey) {
+            var compositePanelOptions = {};
+            var components = {};
+            var rootModel = {};
+            var selectors = {};
+            var templates = {};
+            var messages = {};
+            var selectorsToIgnore = [];
+
             var thisCompositeOptions = fluid.copy(compositeDetail);
             fluid.set(compositePanelOptions, "type", thisCompositeOptions.type);
             delete thisCompositeOptions.type;
