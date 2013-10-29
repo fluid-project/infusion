@@ -26,7 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     // Supply the table of contents' template URL
-    fluid.demands("fluid.prefs.enactors.tableOfContents", ["fluid.uiEnhancer"], {
+    fluid.demands("fluid.prefs.enactor.tableOfContents", ["fluid.uiEnhancer"], {
         options: {
             templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
         }
