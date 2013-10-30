@@ -91,7 +91,7 @@ var fluid_1_5 = fluid_1_5 || {};
             refreshView: "{compositePanel}.refreshView"
         },
         strings: {},
-        // parentBundle: "", // add this in later
+        parentBundle: "{compositePanel}.messageResolver",
         renderOnInit: false
     });
 
