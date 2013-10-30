@@ -417,7 +417,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 components: {
                                     textSize: {
-                                        type: "fluid.prefs.enactors.textSize",
+                                        type: "fluid.prefs.enactor.textSize",
                                         container: "{uiEnhancer}.container",
                                         options: {
                                             gradeNames: "fluid.prefs.uiEnhancerConnections",

@@ -91,7 +91,7 @@ var fluid_1_5 = fluid_1_5 || {};
             refreshView: "{compositePanel}.refreshView"
         },
         strings: {},
-        // parentBundle: "", // add this in later
+        parentBundle: "{compositePanel}.messageResolver",
         renderOnInit: false
     });
 
@@ -384,19 +384,6 @@ var fluid_1_5 = fluid_1_5 || {};
         path: "value",
         sliderOptions: "{fluid.prefs.panel}.options.sliderOptions"
     });
-
-    /**************************************
-     * Functions shared by several panels *
-     **************************************/
-
-    fluid.prefs.panel.lookupMsg = function (messageResolver, prefix, values) {
-        var messages = [];
-        fluid.each(values, function (value, key) {
-            var looked = messageResolver.lookup([prefix + "." + value]);
-            messages.push(looked ? looked.template : looked);
-        });
-        return messages;
-    };
 
     /********************************
      * Preferences Editor Text Size *
