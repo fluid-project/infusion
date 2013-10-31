@@ -26,10 +26,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.test("Test Init", function () {
             jqUnit.expect(8);
-            var textfieldSlider = getTextfieldSlider({model: {value: 15}});
+            var textfieldSlider = getTextfieldSlider({model: {size: 15}, modelPath: "size"});
             jqUnit.assertEquals("Slider value is set to input value", 15, $(".flc-textfieldSlider-slider").slider("value"));
             jqUnit.assertEquals("Textfield value is set", 15, $(".flc-textfieldSlider-field").val());
-            jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model.value);
+            jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model.size);
             jqUnit.assertEquals("Min should be the default", 0, textfieldSlider.options.range.min);
             jqUnit.assertEquals("Max should be the default", 100, textfieldSlider.options.range.max);
 
@@ -56,7 +56,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("Test Min/Max Size", function () {
             jqUnit.expect(18);
 
-            var textfieldSlider = getTextfieldSlider({range: {min: 5, max: 55}});
+            var textfieldSlider = getTextfieldSlider({range: {min: 5, max: 55}, modelPath: "size"});
             testSetting(56, 55);
             testSetting(55, 55);
             testSetting(4, 5);
@@ -68,7 +68,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("Test Negative Scale", function () {
             jqUnit.expect(15);
 
-            var textfieldSlider = getTextfieldSlider({range: {min: -15, max: -5}});
+            var textfieldSlider = getTextfieldSlider({range: {min: -15, max: -5}, modelPath: "size"});
             testSetting(56, -5);
             testSetting(-10, -10);
             testSetting(-16, -15);
@@ -78,7 +78,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var checkValidatedValue = function (changeRequestValue, expectedValue) {
             var model = {
-                value: 5
+                lineSpace: 5
             };
             var range = {
                 min: 2,
@@ -88,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 value: changeRequestValue
             };
 
-            fluid.textfieldSlider.validateValue(model, range, changeRequest);
+            fluid.textfieldSlider.validateValue(model, "lineSpace", range, changeRequest);
             jqUnit.assertEquals("Validating value", expectedValue, changeRequest.value);
         };
 
@@ -105,6 +105,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("afterRender event - init", function () {
             jqUnit.expect(1);
             getTextfieldSlider({
+                modelPath: "value",
                 listeners: {
                     afterRender: function () {
                         jqUnit.assert("The afterRender event fired");
@@ -117,6 +118,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("afterRender event", function () {
             jqUnit.expect(1);
             var that = getTextfieldSlider({
+                modelPath: "value",
                 listeners: {
                     afterRender: function () {
                         jqUnit.assert("The afterRender event fired");

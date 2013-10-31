@@ -26,12 +26,14 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.textfieldSlider", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
+        modelPath: null,   // Must be supplied by implementors to specify the model path to save and get the processed value. Such as "value".
         components: {
             textfield: {
                 type: "fluid.textfieldSlider.textfield",
                 container: "{textfieldSlider}.dom.textfield",
                 options: {
                     model: "{textfieldSlider}.model",
+                    modelPath: "{textfieldSlider}.options.modelPath",
                     range: "{textfieldSlider}.options.range",
                     applier: "{textfieldSlider}.applier"
                 }
@@ -41,6 +43,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{textfieldSlider}.dom.slider",
                 options: {
                     model: "{textfieldSlider}.model",
+                    modelPath: "{textfieldSlider}.options.modelPath",
                     range: "{textfieldSlider}.options.range",
                     applier: "{textfieldSlider}.applier",
                     sliderOptions: "{textfieldSlider}.options.sliderOptions"
@@ -56,11 +59,10 @@ var fluid_1_5 = fluid_1_5 || {};
             afterRender: null
         },
         listeners: {
-            modelChanged: "{that}.refreshView"
+            modelChanged: "{that}.refreshView",
+            onCreate: "fluid.textfieldSlider.init"
         },
-        model: {
-            value: null
-        },
+        model: {},
         range: {
             min: 0,
             max: 100
@@ -75,14 +77,12 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}"]
             }
         },
-        finalInitFunction: "fluid.textfieldSlider.finalInit",
         renderOnInit: true
     });
 
-    fluid.textfieldSlider.finalInit = function (that) {
-
-        that.applier.modelChanged.addListener("value", function (newModel) {
-            that.events.modelChanged.fire(newModel.value);
+    fluid.textfieldSlider.init = function (that) {
+        that.applier.modelChanged.addListener(that.options.modelPath, function (newModel) {
+            that.events.modelChanged.fire(fluid.get(newModel, that.options.modelPath));
         });
 
         if (that.options.renderOnInit) {
@@ -91,23 +91,20 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.textfieldSlider.refreshView = function (that) {
-        that.textfield.container.val(that.model.value);
+        that.textfield.container.val(fluid.get(that.model, that.options.modelPath));
         that.events.afterRender.fire(that);
     };
 
     fluid.defaults("fluid.textfieldSlider.textfield", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         listeners: {
-            onCreate: {
-                listener: "fluid.textfieldSlider.textfield.init",
-                args: "{that}"
-            }
+            onCreate: "fluid.textfieldSlider.textfield.init"
         },
         range: {} // should be used to specify the min, max range e.g. {min: 0, max: 100}
     });
 
-    fluid.textfieldSlider.validateValue = function (model, range, changeRequest) {
-        var oldValue = model.value;
+    fluid.textfieldSlider.validateValue = function (model, modelPath, range, changeRequest) {
+        var oldValue = fluid.get(model, modelPath);
         var newValue = changeRequest.value;
 
         var isValidNum = !isNaN(parseInt(newValue, 10));
@@ -125,12 +122,12 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.textfieldSlider.textfield.init = function (that) {
-        that.applier.guards.addListener({path: "value", transactional: true}, function (model, changeRequest) {
-            fluid.textfieldSlider.validateValue(model, that.options.range, changeRequest);
+        that.applier.guards.addListener({path: that.options.modelPath, transactional: true}, function (model, changeRequest) {
+            fluid.textfieldSlider.validateValue(model, that.options.modelPath, that.options.range, changeRequest);
         });
 
         that.container.change(function (source) {
-            that.applier.requestChange("value", source.target.value);
+            that.applier.requestChange(that.options.modelPath, source.target.value);
         });
     };
 
@@ -143,10 +140,7 @@ var fluid_1_5 = fluid_1_5 || {};
             modelChanged: null
         },
         listeners: {
-            onCreate: {
-                listener: "fluid.textfieldSlider.slider.init",
-                args: "{that}"
-            }
+            onCreate: "fluid.textfieldSlider.slider.init"
         },
         range: {} // should be used to specify the min, max range e.g. {min: 0, max: 100}
     });
@@ -163,8 +157,10 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.textfieldSlider.slider.init = function (that) {
+        var value = fluid.get(that.model, that.options.modelPath) || null;
+
         // To support backwards compatability, the range data can still be store in the model.
-        var sliderOptions = $.extend(true, {}, that.options.sliderOptions, that.model, that.options.range);
+        var sliderOptions = $.extend(true, {}, that.options.sliderOptions, that.model, that.options.range, {"value": value});
 
         that.slider = that.container.slider(sliderOptions);
         initSliderAria(that.locate("thumb"), sliderOptions);
@@ -178,13 +174,15 @@ var fluid_1_5 = fluid_1_5 || {};
         };
 
         that.slider.bind("slide", function (e, ui) {
-            that.applier.requestChange("value", ui.value);
+            that.applier.requestChange(that.options.modelPath, ui.value);
         });
 
-        that.applier.modelChanged.addListener("value", function (newModel) {
-            that.setSliderValue(newModel.value);
-            that.setSliderAria(newModel.value);
-            that.events.modelChanged.fire(newModel.value);
+        that.applier.modelChanged.addListener(that.options.modelPath, function (newModel) {
+            var newValue = fluid.get(newModel, that.options.modelPath);
+
+            that.setSliderValue(newValue);
+            that.setSliderAria(newValue);
+            that.events.modelChanged.fire(newValue);
         });
 
     };

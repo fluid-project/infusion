@@ -378,10 +378,10 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             modelChanged: {
                 listener: "{fluid.prefs.panel}.applier.requestChange",
-                args: ["{that}.options.path", "{arguments}.0"]
+                args: ["{that}.options.modelPath", "{arguments}.0"]
             }
         },
-        path: "value",
+        modelPath: "value",
         sliderOptions: "{fluid.prefs.panel}.options.sliderOptions"
     });
 
