@@ -106,9 +106,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "range.max": "maximum"
             }
         },
-        model: {
-            value: ["subPanel1", "subPanel1a"]
-        },
         listeners: {
             afterRender: {
                 listener: "{compositePanel}.writeRecord",
@@ -137,9 +134,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
-        },
-        model: {
-            value: "subPanel2"
         },
         listeners: {
             afterRender: {
@@ -174,6 +168,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             heading: "Heading"
         },
         selectorsToIgnore: ["subPanel1", "subPanel2"],
+        model: {
+            "fluid_prefs_sub1": ["subPanel1", "subPanel1a"],
+            "fluid_prefs_sub2": "subPanel2"
+        },
         members: {
             fireRecord: {}
         },
@@ -225,7 +223,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.test("fluid.prefs.compositePanel", function () {
-        jqUnit.expect(14);
+        jqUnit.expect(16);
         var that = fluid.tests.compositePanel(".flc-prefs-compositePanel");
 
         var expectedSubPanel1Rules = {
@@ -294,6 +292,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The markup for subPanel1 should have rendered correctly", that.subPanel1.model.value[idx], actual);
         });
         jqUnit.assertEquals("The markup for subPanel2 should have rendered correctly", that.subPanel2.model.value, that.subPanel2.locate("header").text());
+        jqUnit.assertDeepEq("The model for the subPanel1 should be the same as the corresponding value in the compositePanel", that.model.fluid_prefs_sub1, that.subPanel1.model.value);
+        jqUnit.assertEquals("The model for the subPanel2 should be the same as the corresponding value in the compositePanel", that.model.fluid_prefs_sub2, that.subPanel2.model.value);
     });
 
     /* FLUID-5201: renderer fluid decorator */
