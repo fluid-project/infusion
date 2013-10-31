@@ -104,7 +104,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
         components: {
             textSize: {
-                type: "fluid.prefs.enactors.textSize",
+                type: "fluid.prefs.enactor.textSize",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
@@ -118,7 +118,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             textFont: {
-                type: "fluid.prefs.enactors.textFont",
+                type: "fluid.prefs.enactor.textFont",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.textFont",
@@ -132,7 +132,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             lineSpace: {
-                type: "fluid.prefs.enactors.lineSpace",
+                type: "fluid.prefs.enactor.lineSpace",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
@@ -146,7 +146,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             contrast: {
-                type: "fluid.prefs.enactors.contrast",
+                type: "fluid.prefs.enactor.contrast",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.theme",
@@ -160,7 +160,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             emphasizeLinks: {
-                type: "fluid.prefs.enactors.emphasizeLinks",
+                type: "fluid.prefs.enactor.emphasizeLinks",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.links",
@@ -174,7 +174,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             inputsLarger: {
-                type: "fluid.prefs.enactors.inputsLarger",
+                type: "fluid.prefs.enactor.inputsLarger",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.inputsLarger",
@@ -188,7 +188,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             tableOfContents: {
-                type: "fluid.prefs.enactors.tableOfContents",
+                type: "fluid.prefs.enactor.tableOfContents",
                 container: "{uiEnhancer}.container",
                 // createOnEvent: "onCreateToc",
                 options: {
@@ -223,7 +223,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         components: {
             textSize: {
-                type: "fluid.prefs.panels.textSize",
+                type: "fluid.prefs.panel.textSize",
                 container: "{prefsEditor}.dom.textSize",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
@@ -240,7 +240,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             lineSpace: {
-                type: "fluid.prefs.panels.lineSpace",
+                type: "fluid.prefs.panel.lineSpace",
                 container: "{prefsEditor}.dom.lineSpace",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
@@ -257,7 +257,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             textFont: {
-                type: "fluid.prefs.panels.textFont",
+                type: "fluid.prefs.panel.textFont",
                 container: "{prefsEditor}.dom.textFont",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
@@ -275,7 +275,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             contrast: {
-                type: "fluid.prefs.panels.contrast",
+                type: "fluid.prefs.panel.contrast",
                 container: "{prefsEditor}.dom.contrast",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
@@ -293,7 +293,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             layoutControls: {
-                type: "fluid.prefs.panels.layoutControls",
+                type: "fluid.prefs.panel.layoutControls",
                 container: "{prefsEditor}.dom.layoutControls",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
@@ -310,21 +310,40 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             linksControls: {
-                type: "fluid.prefs.panels.linksControls",
+                type: "fluid.prefs.panel.linksControls",
                 container: "{prefsEditor}.dom.linksControls",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     rules: {
-                        "links": "links",
-                        "inputsLarger": "inputsLarger"
+                        "links": "fluid_prefs_emphasizeLinks",
+                        "inputsLarger": "fluid_prefs_inputsLarger"
                     },
+                    selectors: {
+                        emphasizeLinks: ".flc-prefsEditor-emphasizeLinks",
+                        inputsLarger: ".flc-prefsEditor-inputsLarger"
+                    },
+                    selectorsToIgnore: ["emphasizeLinks", "inputsLarger"],
                     model: {
-                        links: "{fluid.prefs.rootModel}.rootModel.links",
-                        inputsLarger: "{fluid.prefs.rootModel}.rootModel.inputsLarger"
+                        fluid_prefs_emphasizeLinks: "{fluid.prefs.rootModel}.rootModel.links",
+                        fluid_prefs_inputsLarger: "{fluid.prefs.rootModel}.rootModel.inputsLarger"
+                    },
+                    components: {
+                        emphasizeLinks: {
+                            type: "fluid.prefs.panel.emphasizeLinks",
+                            container: "{that}.dom.emphasizeLinks",
+                            createOnEvent: "initSubPanels"
+                        },
+                        inputsLarger: {
+                            type: "fluid.prefs.panel.inputsLarger",
+                            container: "{that}.dom.inputsLarger",
+                            createOnEvent: "initSubPanels"
+                        }
                     },
                     resources: {
-                        template: "{templateLoader}.resources.linksControls"
+                        template: "{templateLoader}.resources.linksControls",
+                        emphasizeLinks: "{templateLoader}.resources.emphasizeLinks",
+                        inputsLarger: "{templateLoader}.resources.inputsLarger"
                     }
                 }
             }
@@ -349,7 +368,9 @@ var fluid_1_5 = fluid_1_5 || {};
             lineSpace: "%prefix/PrefsEditorTemplate-lineSpace.html",
             contrast: "%prefix/PrefsEditorTemplate-contrast.html",
             layoutControls: "%prefix/PrefsEditorTemplate-layout.html",
-            linksControls: "%prefix/PrefsEditorTemplate-links.html"
+            linksControls: "%prefix/PrefsEditorTemplate-linksControls.html",
+            emphasizeLinks: "%prefix/PrefsEditorTemplate-emphasizeLinks.html",
+            inputsLarger: "%prefix/PrefsEditorTemplate-inputsLarger.html"
         }
     });
 
@@ -393,7 +414,9 @@ var fluid_1_5 = fluid_1_5 || {};
             lineSpace: "%prefix/lineSpace.json",
             contrast: "%prefix/contrast.json",
             layoutControls: "%prefix/tableOfContents.json",
-            linksControls: "%prefix/links.json"
+            linksControls: "%prefix/linksControls.json",
+            emphasizeLinks: "%prefix/emphasizeLinks.json",
+            inputsLarger: "%prefix/inputsLarger.json"
         }
     });
 

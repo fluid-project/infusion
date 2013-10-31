@@ -355,6 +355,9 @@ var fluid = fluid || fluid_1_5;
     };
     
     fluid.isPlainObject = function (totest) {
+        if (!totest) {
+            return false; // FLUID-5172 - on IE8 the line below produces [object Object] rather than [object Null] or [object Undefined]
+        }
         var string = Object.prototype.toString.call(totest);
         return string === "[object Array]" || string === "[object Object]";
     };

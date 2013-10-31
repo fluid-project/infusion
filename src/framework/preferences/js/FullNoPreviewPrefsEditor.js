@@ -34,10 +34,17 @@ var fluid_1_5 = fluid_1_5 || {};
                             listener: "{that}.applyChanges"
                         }, {
                             listener: "{that}.save"
-                        }]
+                        }],
+                        onReady: {
+                            listener: "{fullNoPreview}.events.onReady",
+                            args: "{fullNoPreview}"
+                        }
                     }
                 }
             }
+        },
+        events: {
+            onReady: null
         }
     });
 

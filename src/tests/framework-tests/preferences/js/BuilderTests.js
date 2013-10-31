@@ -77,10 +77,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "textSize": {
                     "type": "fluid.prefs.textSize",
                     "enactor": {
-                        "type": "fluid.prefs.enactors.textSize"
+                        "type": "fluid.prefs.enactor.textSize"
                     },
                     "panel": {
-                        "type": "fluid.prefs.panels.textSize",
+                        "type": "fluid.prefs.panel.textSize",
                         "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/PrefsEditorTemplate-textSize.html",
                         "message": "%prefix/textSize.json"
@@ -89,7 +89,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "lineSpace": {
                     "type": "fluid.prefs.lineSpace",
                     "enactor": {
-                        "type": "fluid.prefs.enactors.lineSpace",
+                        "type": "fluid.prefs.enactor.lineSpace",
                         "fontSizeMap": {
                             "xx-small": "9px",
                             "x-small": "11px",
@@ -101,7 +101,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     },
                     "panel": {
-                        "type": "fluid.prefs.panels.lineSpace",
+                        "type": "fluid.prefs.panel.lineSpace",
                         "container": ".flc-prefsEditor-line-space",  // the css selector in the template where the panel is rendered
                         "template": "%prefix/PrefsEditorTemplate-lineSpace.html",
                         "message": "%prefix/lineSpace.json"
@@ -263,7 +263,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.panels = {
         "textSize": {
             "panel": {
-                "type": "fluid.prefs.panels.textSize",
+                "type": "fluid.prefs.panel.textSize",
                 "container": ".flc-prefsEditor-text-size",
                 "template": "templates/textSize",
                 "message": "messages/textSize"
@@ -274,7 +274,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.enactors = {
         "textSize": {
             "enactor": {
-                "type": "fluid.prefs.enactors.textSize"
+                "type": "fluid.prefs.enactor.textSize"
             }
         }
     };
@@ -577,7 +577,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**********************************
      * Builder munging tests          *
      **********************************/
-    var prefsEditorType = "fluid.prefs.fullNoPreview";
+    var prefsEditorType = "fluid.prefs.fullNoPreview", storeType = "fluid.tests.store", enhancerType = "fluid.tests.enhancer";
+    var templatePrefix = "../../../../framework/preferences/html/";
+    var messagePrefix = "../../../../framework/preferences/messages/";
+    var prefsEdReady = false;
+
+    fluid.defaults("fluid.tests.store", {
+        gradeNames: ["fluid.globalSettingsStore", "autoInit"]
+    });
+
+    fluid.defaults("fluid.tests.enhancer", {
+        gradeNames: ["fluid.pageEnhancer", "autoInit"]
+    });
 
     fluid.defaults("fluid.tests.builderMunging", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
@@ -590,8 +601,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: ["fluid.prefs.auxSchema.starter"],
                     auxiliarySchema: {
-                        "templatePrefix": "../../../../framework/preferences/html/",
-                        "messagePrefix": "../../../../framework/preferences/messages/",
                         "template": "%prefix/FullNoPreviewPrefsEditor.html",
                         "tableOfContents": {
                             "enactor": {
@@ -608,22 +617,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: ["{builder}.options.assembledPrefsEditorGrade"],
                     prefsEditorType: prefsEditorType,
+                    storeType: storeType,
+                    enhancerType: enhancerType,
+                    templatePrefix: templatePrefix,
+                    messagePrefix: messagePrefix,
                     enhancer: {
                         classnameMap: {
                             "textFont.default": "fl-aria"
                         }
                     },
                     prefsEditor: {
-                        listeners: {
-                            onReady: {
-                                listener: "{prefsEd}.events.onReady",
-                                args: "{prefsEd}"
-                            }
-                        },
                         userOption: 1
                     },
-                    events: {
-                        onReady: null
+                    store: {
+                        storeOption: 2
+                    },
+                    listeners: {
+                        onReady: function () {
+                            prefsEdReady = true;
+                        }
                     }
                 }
             },
@@ -636,8 +648,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.assertBuilderMunging = function (prefsEditor) {
         return function (prefsEditor) {
             jqUnit.assertEquals("Munging options for prefsEditor should be passed down to the prefsEditor", 1, prefsEditor.prefsEditorLoader.prefsEditor.options.userOption);
+            jqUnit.assertEquals("Munging options for store should be passed down to the prefsEditor", 2, prefsEditor.store.settingsStore.options.storeOption);
+
+            jqUnit.assertEquals("Munging options for templatePrefix should be passed down to the template loader", templatePrefix, prefsEditor.prefsEditorLoader.templateLoader.resourcePath.options.value);
+            jqUnit.assertEquals("Munging options for messagePrefix should be passed down to the message loader", messagePrefix, prefsEditor.prefsEditorLoader.messageLoader.resourcePath.options.value);
+            jqUnit.assertTrue("Munging options for onReady event should be passed down to the constructed pref editor", prefsEdReady);
 
             jqUnit.assertTrue(prefsEditorType + " should be in the base prefsEditor grades", fluid.hasGrade(prefsEditor.prefsEditorLoader.options, prefsEditorType));
+            jqUnit.assertTrue(enhancerType + " should be in the base enhancer grades", fluid.hasGrade(prefsEditor.enhancer.options, enhancerType));
+            jqUnit.assertTrue(storeType + " should be in the base store grades", fluid.hasGrade(prefsEditor.store.options, storeType));
+
             jqUnit.assertEquals("Munging options for enhancer should be passed down to the enhancer", "fl-aria", prefsEditor.enhancer.uiEnhancer.options.classnameMap["textFont.default"]);
         };
     };
@@ -647,12 +667,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Builder munging",
             tests: [{
-                expect: 3,
+                expect: 9,
                 name: "Builder munging",
                 sequence: [{
                     listenerMaker: "fluid.tests.assertBuilderMunging",
                     spec: {priority: "last"},
-                    event: "{builderMunging prefsEd}.events.onReady"
+                    event: "{builderMunging > prefsEd}.events.onReady"
                 }]
             }]
         }]
