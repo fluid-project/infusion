@@ -452,6 +452,167 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /* end FLUID-5202 */
 
+    /* FLUID-5200: rebase parentRelativeID */
+
+    fluid.defaults("fluid.tests.panel.radioTest1", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "learning.radioTest1": {
+                "model.radioVal": "default",
+                "controlValues.radioStrings": "enum"
+            }
+        },
+        selectors: {
+            frequencyRow: ".flc-prefsEditor-frequencyRow",
+            frequencyLabel: ".flc-prefsEditor-frequency-label",
+            frequencyInput: ".flc-prefsEditor-frequencyInput",
+            label: ".flc-prefsEditor-contrast-label"
+        },
+        strings: {
+            "radioTestKey-yes": "Yes",
+            "radioTestKey-no": "No",
+            "radioTestKey-maybe": "Maybe",
+            "radioTestKey-sometimes": "Sometimes"
+        },
+        stringArrayIndex: {
+            radioTestStrings: ["radioTestKey-yes", "radioTestKey-no", "radioTestKey-maybe", "radioTestKey-sometimes"]
+        },
+        controlValues: {
+            radioStrings: ["yes", "no", "maybe", "sometimes"]
+        },
+        repeatingSelectors: ["frequencyRow"],
+        protoTree: {
+            label: {messagekey: "radioTestLabelKey"},
+            expander: {
+                type: "fluid.renderer.selection.inputs",
+                rowID: "frequencyRow",
+                labelID: "frequencyLabel",
+                inputID: "frequencyInput",
+                selectID: "frequency-radio",
+                tree: {
+                    optionnames: "${{that}.stringBundle.radioTestStrings}",
+                    optionlist: "${{that}.options.controlValues.radioStrings}",
+                    selection: "${radioVal}"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5200: rebase parentRelativeID", function () {
+        var that = fluid.prefs.compositePanel(".fluid-5200", {
+            selectors: {
+                radioTest1: ".flc-tests-panel-radioTest1"
+            },
+            selectorsToIgnore: ["radioTest1"],
+            model: {
+                "learning_radioTest1": "maybe"
+            },
+            components: {
+                radioTest1: {
+                    type: "fluid.tests.panel.radioTest1",
+                    createOnEvent: "initSubPanels",
+                    container: "{that}.dom.radioTest1"
+                }
+            },
+            resources: {
+                template: {
+                    resourceText: '<ul><li class="flc-tests-panel-radioTest1"></li></ul>'
+                },
+                radioTest1: {
+                    resourceText: '<div class="flc-prefsEditor-frequencyRow"><input type="radio" class="flc-prefsEditor-frequencyInput" name="frequency" id="frequency"/><label for="frequency" class="flc-prefsEditor-frequency-label"></label></div>'
+                }
+            }
+        });
+
+        var expectedTree = {
+            "children": [{
+                "ID": "radioTest1_label",
+                "componentType": "UIMessage",
+                "messagekey": {
+                    "value": "radioTestLabelKey"
+                }
+            }, {
+                "ID": "radioTest1_frequency-radio",
+                "componentType": "UISelect",
+                "optionlist": {
+                    "value": [
+                        "yes",
+                        "no",
+                        "maybe",
+                        "sometimes"
+                    ]
+                },
+                "optionnames": {
+                    "value": [
+                        "Yes",
+                        "No",
+                        "Maybe",
+                        "Sometimes"
+                    ]
+                },
+                "selection": {
+                    "value": "maybe",
+                    "valuebinding": "learning_radioTest1"
+                }
+            }, {
+                "ID": "radioTest1_frequencyRow:",
+                "children": [{
+                    "ID": "radioTest1_frequencyInput",
+                    "choiceindex": 0,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }, {
+                    "ID": "radioTest1_frequencyLabel",
+                    "choiceindex": 0,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }]
+            }, {
+                "ID": "radioTest1_frequencyRow:",
+                "children": [{
+                    "ID": "radioTest1_frequencyInput",
+                    "choiceindex": 1,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }, {
+                    "ID": "radioTest1_frequencyLabel",
+                    "choiceindex": 1,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }]
+            }, {
+                "ID": "radioTest1_frequencyRow:",
+                "children": [{
+                    "ID": "radioTest1_frequencyInput",
+                    "choiceindex": 2,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }, {
+                    "ID": "radioTest1_frequencyLabel",
+                    "choiceindex": 2,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }]
+            }, {
+                "ID": "radioTest1_frequencyRow:",
+                "children": [{
+                    "ID": "radioTest1_frequencyInput",
+                    "choiceindex": 3,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }, {
+                    "ID": "radioTest1_frequencyLabel",
+                    "choiceindex": 3,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }]
+            }]
+        };
+        jqUnit.assertDeepEq("The tree should be produced correctly, with all valuebinding rebased.", expectedTree, that.produceTree());
+    });
+
+    /* end FLUID-5200 */
+
     /*******************************************************************************
      * textFontPanel
      *******************************************************************************/

@@ -319,6 +319,10 @@ var fluid_1_5 = fluid_1_5 || {};
         return memberName + "_" + value;
     };
 
+    fluid.prefs.compositePanel.rebaseParentRelativeID = function (val, memberName) {
+        return val.slice(0, 4) + fluid.prefs.compositePanel.rebaseID(val.slice(4), memberName);
+    };
+
     fluid.prefs.compositePanel.rebaseValueBinding = function (value, modelRelayRules) {
         return fluid.find(modelRelayRules, function (oldModelPath, newModelPath) {
             if (value === oldModelPath) {
@@ -339,6 +343,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 return fluid.prefs.compositePanel.rebaseTree(val, memberName, modelRelayRules);
             } else if (key === "ID") {
                 return fluid.prefs.compositePanel.rebaseID(val, memberName);
+            } else if (key === "parentRelativeID") {
+                return fluid.prefs.compositePanel.rebaseParentRelativeID(val, memberName);
             } else if (key === "valuebinding") {
                 return fluid.prefs.compositePanel.rebaseValueBinding(val, modelRelayRules);
             } else {
