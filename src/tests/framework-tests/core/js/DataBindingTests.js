@@ -32,11 +32,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("getToTailPath", "path1.path2", fluid.pathUtil.getToTailPath(path));
             jqUnit.assertEquals("getFromHeadPath", "path2.path3", fluid.pathUtil.getFromHeadPath(path));
             
-            jqUnit.assertEquals("Match empty", "", fluid.pathUtil.matchPath("", "thing"));
-            jqUnit.assertEquals("Match *", "thing", fluid.pathUtil.matchPath("*", "thing"));
-            jqUnit.assertEquals("Match thing", "thing", fluid.pathUtil.matchPath("thing", "thing"));
-            jqUnit.assertEquals("Match thing", "thing", fluid.pathUtil.matchPath("thing", "thing.otherThing"));
-            jqUnit.assertEquals("Match thing *", "thing.otherThing", fluid.pathUtil.matchPath("thing.*", "thing.otherThing"));
+            jqUnit.assertDeepEq("Match empty", [], fluid.pathUtil.matchPath("", "thing"));
+            jqUnit.assertDeepEq("Match *", ["thing"], fluid.pathUtil.matchPath("*", "thing"));
+            jqUnit.assertDeepEq("Match thing", ["thing"], fluid.pathUtil.matchPath("thing", "thing"));
+            jqUnit.assertDeepEq("Match thing", ["thing"], fluid.pathUtil.matchPath("thing", "thing.otherThing"));
+            jqUnit.assertDeepEq("Match thing.*", ["thing", "otherThing"], fluid.pathUtil.matchPath("thing.*", "thing.otherThing"));
         });
         
                
@@ -275,15 +275,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     };
                     
                     var modelChangedCheck = [];
+                    var pathsCheck = [];
                     var guard1check = 0;
                     
-                    function modelChanged(newModel, oldModel, changes) {
+                    function modelChanged(newModel, oldModel, changes, paths) {
                         if (trans) {
                             jqUnit.assertEquals("Changes after guard", 1, guard1check);
                         } else {
                             jqUnit.assertEquals("Changes wrt guard", modelChangedCheck.length, guard1check);
                         }
                         modelChangedCheck = modelChangedCheck.concat(changes);
+                        pathsCheck.push(paths);
                     }
                                 
                     function transGuard1(innerModel, changeRequest, applier) {
@@ -304,6 +306,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     jqUnit.assertEquals("Guard 1 executed", 1, guard1check);
                     jqUnit.assertDeepEq("Final model state", {innerPath1: 4, innerPath2: 5}, model.transWorld);
                     jqUnit.assertEquals("2 changes received", 2, modelChangedCheck.length);
+                    var expectedPaths = trans? [["transWorld"]] : [["transWorld"], ["transWorld"]];
+                    jqUnit.assertDeepEq("Paths changed " + (trans ? "1 time" : "2 times"), expectedPaths, pathsCheck); 
                 }
             );
         }

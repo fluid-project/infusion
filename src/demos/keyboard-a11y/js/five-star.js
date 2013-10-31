@@ -65,13 +65,12 @@ var demo = demo || {};
         stars.slice(hovered + 1, rank).attr("src", imgs.select);
         stars.slice(Math.max(hovered, rank), 5).attr("src", imgs.blank);
     };
-
-    demo.fiveStar.bindChangeListener = function (that) {
-        // TODO: This will be simplified once FLUID-4258 is implemented
-        that.applier.modelChanged.addListener("rank", function (newModel) {
-            demo.fiveStar.updateARIA(that.stars, newModel.rank);
-            that.refreshView();
-        });
+    
+    /** Update all the UI state to reflect a change in rank **/
+    
+    demo.fiveStar.updateRank = function (that, newRank) {
+        demo.fiveStar.updateARIA(that.stars, newRank);
+        that.refreshView();
     };
 
     /**
@@ -109,15 +108,18 @@ var demo = demo || {};
             }, {
                 funcName: "demo.fiveStar.setARIA",
                 args: "{that}"
-            }, {
-                funcName: "demo.fiveStar.bindChangeListener",
-                args: "{that}"
             }]
+        },
+        modelListeners: {
+            "rank": {
+                funcName: "demo.fiveStar.updateRank",
+                args: ["{that}", "{change}.value"]
+            }  
         },
         invokers: {
             setRank: {
-                func: "{that}.applier.requestChange",
-                args: ["rank", "{arguments}.0"]
+               changePath: "rank",
+               value: "{arguments}.0"
             },
             renderStarState: {
                 funcName: "demo.fiveStar.renderStarState",
