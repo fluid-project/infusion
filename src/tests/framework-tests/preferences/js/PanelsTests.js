@@ -357,6 +357,100 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /* end FLUID-5201 */
 
+    /* FLUID-5202: rebase valuebinding in a renderer selection object */
+
+    fluid.defaults("fluid.tests.panel.dropdownTest1", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "learning.dropdownTest1": {
+                "model.ddVal": "default",
+                "controlValues.ddStrings": "enum"
+            }
+        },
+        strings: {
+            "dropdownTest-en": "English",
+            "dropdownTest-kl": "Klingon",
+            "dropdownTest-bj": "Bajoran",
+            "dropdownTest-rm": "Romulan",
+            "dropdownTest-cd": "Cardassian"
+        },
+        selectors: {
+            textFont: ".flc-prefsEditor-text-font",
+        },
+        stringArrayIndex: {
+            dd: ["dropdownTest-en", "dropdownTest-kl", "dropdownTest-bj", "dropdownTest-rm", "dropdownTest-cd"]
+        },
+        controlValues: {
+            ddStrings: ["en", "kl", "bj", "rm", "cd"]
+        },
+        protoTree: {
+            textFont: {
+                optionnames: "${{that}.stringBundle.dd}",
+                optionlist: "${{that}.options.controlValues.ddStrings}",
+                selection: "${ddVal}"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5202: rebase valuebinding in renderer selection object", function () {
+        var that = fluid.prefs.compositePanel(".fluid-5202", {
+            selectors: {
+                dropdownTest1: ".flc-tests-panel-dropdownTest1"
+            },
+            selectorsToIgnore: ["dropdownTest1"],
+            model: {
+                "learning_dropdownTest1": "kl"
+            },
+            components: {
+                dropdownTest1: {
+                    type: "fluid.tests.panel.dropdownTest1",
+                    createOnEvent: "initSubPanels",
+                    container: "{that}.dom.dropdownTest1"
+                }
+            },
+            resources: {
+                template: {
+                    resourceText: '<ul><li class="flc-tests-panel-dropdownTest1"></li></ul>'
+                },
+                dropdownTest1: {
+                    resourceText: '<select class="flc-prefsEditor-text-font" id="text-font"></select>'
+                }
+            }
+        });
+
+        var expectedTree = {
+            "children": [{
+                "ID": "dropdownTest1_textFont",
+                "componentType": "UISelect",
+                "optionlist": {
+                    "value": [
+                        "en",
+                        "kl",
+                        "bj",
+                        "rm",
+                        "cd"
+                    ]
+                },
+                "optionnames": {
+                    "value": [
+                        "English",
+                        "Klingon",
+                        "Bajoran",
+                        "Romulan",
+                        "Cardassian"
+                    ]
+                },
+                "selection": {
+                    "value": "kl",
+                    "valuebinding": "learning_dropdownTest1"
+                }
+            }]
+        };
+
+        jqUnit.assertDeepEq("The tree should be produced correctly, with all valuebinding rebased.", expectedTree, that.produceTree());
+    });
+
+    /* end FLUID-5202 */
 
     /*******************************************************************************
      * textFontPanel

@@ -335,6 +335,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 return fluid.transform(val, function (v) {
                     return fluid.prefs.compositePanel.rebaseTree(v, memberName, modelRelayRules);
                 });
+            } else if (key === "selection") {
+                return fluid.prefs.compositePanel.rebaseTree(val, memberName, modelRelayRules);
             } else if (key === "ID") {
                 return fluid.prefs.compositePanel.rebaseID(val, memberName);
             } else if (key === "valuebinding") {
