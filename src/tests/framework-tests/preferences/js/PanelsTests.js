@@ -73,9 +73,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    /************************
-     * combined panel tests *
-     ************************/
+    /*************************
+     * composite panel tests *
+     *************************/
 
     fluid.tests.assertPathsExist = function (root, paths) {
         fluid.each(paths, function (path) {
@@ -295,6 +295,67 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         jqUnit.assertEquals("The markup for subPanel2 should have rendered correctly", that.subPanel2.model.value, that.subPanel2.locate("header").text());
     });
+
+    /* FLUID-5201: renderer fluid decorator */
+
+    fluid.defaults("fluid.tests.panel.sliderTest1", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        selectors: {
+            textSize: ".flc-prefsEditor-min-val",
+            label: ".flc-prefsEditor-min-val-label",
+            smallIcon: ".flc-prefsEditor-min-val-smallIcon",
+            largeIcon: ".flc-prefsEditor-min-val-largeIcon",
+            multiplier: ".flc-prefsEditor-multiplier"
+        },
+        protoTree: {
+            label: {messagekey: "textSizeLabel"},
+            smallIcon: {messagekey: "textSizeSmallIcon"},
+            largeIcon: {messagekey: "textSizeLargeIcon"},
+            multiplier: {messagekey: "multiplier"},
+            textSize: {
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.prefs.textfieldSlider"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5201: renderer fluid decorator in a composite panel", function () {
+        jqUnit.expect(1);
+        var that = fluid.prefs.compositePanel(".fluid-5201", {
+            selectors: {
+                sliderTest1: ".flc-tests-panel-sliderTest1"
+            },
+            selectorsToIgnore: ["sliderTest1"],
+            components: {
+                sliderTest1: {
+                    type: "fluid.tests.panel.sliderTest1",
+                    createOnEvent: "initSubPanels",
+                    container: "{that}.dom.sliderTest1"
+                }
+            },
+            resources: {
+                template: {
+                    resourceText: '<ul><li class="flc-tests-panel-sliderTest1"></li></ul>'
+                },
+                sliderTest1: {
+                    resourceText: '<div class="flc-prefsEditor-min-val"><div class="flc-textfieldSlider-slider"></div><input id="min-val" class="flc-textfieldSlider-field" type="text" /><span class="flc-prefsEditor-multiplier"></span></div>'
+                }
+            }
+        });
+
+        // the first call to refreshView does the initial rendeirng which includes
+        // putting the component defined by the renderer decorator into the components block
+        that.refreshView();
+
+        // the second call to refresh view uses the new components block and shoudl ignore
+        // the renderer decorator component which isn't a panel
+        that.refreshView();
+        jqUnit.assert("The composite panel containing a panel with renderer fluid decorator should have instantiated", that);
+    });
+
+    /* end FLUID-5201 */
 
 
     /*******************************************************************************
